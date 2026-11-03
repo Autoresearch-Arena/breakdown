@@ -1,0 +1,29 @@
+# Author: Claude Opus 5.5 Medium
+# Date: 02-November-2026
+# PURPOSE: Keep Xcode, Swift Package Manager and macOS clutter out of git.
+#          Big data (scans, captured datasets, model weights) never lives in
+#          this repo; it goes on /Volumes/Team 4TB/ per the Boss's directive.
+# SRP/DRY check: Pass - single ignore file for the whole repo.
+
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+*.xcresult
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Big data guard: scans, captures and model weights belong on the external drive.
+# Small hand-made 3D assets (for example the table model) are allowed in the repo.
+*.mlmodel
+*.mlpackage/
+*.ply
+captures/
+scans/
