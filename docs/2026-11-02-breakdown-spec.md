@@ -483,3 +483,22 @@ A scan file format and fixture player let the whole pipeline run from saved scan
 - Leckie and Greenspan, event-based pool physics simulator.
 - Mathavan, Jackson and Parkin (2010), cushion impact; Han (2005); Marlow, The Physics of Pocket Billiards. The last three cited from memory; check before hard-coding.
 - Regulation ball and table dimensions from the world pool-billiard association specification.
+
+## 14. iPhone Duo: the lead device (added 03-November-2026, Claude Sonnet 5.5 Medium)
+
+The Boss decided to lead with and design for the iPhone Duo. What the press and Apple's own pages say (checked by web search on 03-November-2026; the Apple developer talk was not read in full, so treat items marked "unconfirmed" as open):
+
+- Two screens: an outer 5.4 inch display, and an inner 7.6 inch display that is Apple's largest on an iPhone, aspect ratio about 1.42 to 1. Pixel sizes (outer about 1398 by 2034, inner about 2007 by 2853) come from one developer blog and are unconfirmed.
+- Chip A20 Pro, ships with iOS 27.1, Touch ID instead of Face ID, dual 48 megapixel rear cameras.
+- LiDAR scanner: unconfirmed. One spec listing says yes, Apple's own spec pages were not read. This gates the scan-and-smash phase and must be checked on Apple's US spec page before any scan work starts.
+- Apple's Tech Talk guidance, as reported: the outer display is compact width, regular height in portrait like other iPhones; the inner display is regular in both directions; the inner display ignores supported-orientation settings, so layout must follow size classes, never orientation or fixed screen sizes. Apps built with older SDKs do not extend under the status bar and camera area.
+
+What this means for Breakdown:
+
+1. The table is the hero on the inner display: nearly square, so the whole table can show large with the Lens beside it, instead of the narrow portrait strip we frame today. The camera framing already fits the view by its aspect; add a layout that puts captions and controls beside the table when the width allows, driven by size class.
+2. The outer display is the one-hand mode: replay, slow motion and a quick break, using the current portrait layout.
+3. Folding and unfolding mid-shot must keep the clock and the recorded timeline untouched. The timeline is the source of truth, so only the view changes; test this explicitly.
+4. A fun idea to try once the basics hold: use both halves as teacher and student, the Lens on one side and the felt on the other, if the fold exposes two usable halves in a posture mode. Unconfirmed until the SDK posture APIs are read on disk.
+5. No iOS 27 simulator runtime is installed here yet, and only an iOS 26.5 runtime exists. Download the iOS 27 runtime and look for a Duo simulator profile before building Duo-specific layout; until then the layout is tested on iPad-shaped and iPhone-shaped windows.
+
+Sources: Apple newsroom (apple.com/newsroom/2026/09/apple-unveils-iphone-duo), Apple Tech Talk 111461, MacRumors, Macworld, a developer blog on the aspect ratio (blakecrosley.com).
