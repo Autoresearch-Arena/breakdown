@@ -2,6 +2,14 @@
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.1.0] - 03-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: First running app. Hand-written Xcode project (iPhone and Mac, deployment targets 26), the BreakdownCore package (event-driven pool solver, recorded timeline, event model, twelve passing tests), the table scene, the cold open (break, freeze, melt, rewind, slow motion), the Physics Lens (grid, phase-coloured trails, velocity arrows, impact rings, captions with equations), replay controls and generated sound.
+- Why: The spec's milestone one: a running app that shows the break and the table melting into the physics.
+- How: Solver finds exact contact times with a quartic root finder, uses closed-form segments per motion phase, and records everything; playback only reads the timeline. Deviations from the spec: the cushion uses the flat-normal Level A model with no tilt yet; equations and captions are a SwiftUI card, not billboards in the scene; rack jitter is a fifth of the gap so no ball pair starts overlapping; the iPhone cold open was checked in the simulator, the Mac build compiles and launches but was not looked at yet.
+
 ## [0.0.2] - 03-November-2026
 
 Author: Claude Opus 5.5 Medium

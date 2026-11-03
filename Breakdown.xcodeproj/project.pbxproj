@@ -1,0 +1,74 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 77;
+	objects = {
+		B1000001 /* Breakdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1000002 /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; path = App; sourceTree = "<group>"; };
+		B1000003 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (B1000012); runOnlyForDeploymentPostprocessing = 0; };
+		B1000004 = {isa = PBXGroup; children = (B1000002, B1000005); sourceTree = "<group>"; };
+		B1000005 /* Products */ = {isa = PBXGroup; children = (B1000001); name = Products; sourceTree = "<group>"; };
+		B1000006 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B1000007 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B1000008 /* Breakdown */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B100000B;
+			buildPhases = (B1000006, B1000003, B1000007);
+			buildRules = ();
+			dependencies = ();
+			fileSystemSynchronizedGroups = (B1000002);
+			name = Breakdown;
+			packageProductDependencies = (B1000011);
+			productName = Breakdown;
+			productReference = B1000001;
+			productType = "com.apple.product-type.application";
+		};
+		B1000009 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 2700; LastUpgradeCheck = 2700;};
+			buildConfigurationList = B100000A;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base);
+			mainGroup = B1000004;
+			packageReferences = (B1000010);
+			productRefGroup = B1000005;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (B1000008);
+		};
+		B1000010 /* BreakdownCore local package */ = {isa = XCLocalSwiftPackageReference; relativePath = Packages/BreakdownCore; };
+		B1000011 /* BreakdownCore product */ = {isa = XCSwiftPackageProductDependency; productName = BreakdownCore; };
+		B1000012 /* BreakdownCore in Frameworks */ = {isa = PBXBuildFile; productRef = B1000011; };
+		B100000A /* Project config list */ = {isa = XCConfigurationList; buildConfigurations = (B100000C, B100000D); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		B100000B /* Target config list */ = {isa = XCConfigurationList; buildConfigurations = (B100000E, B100000F); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		B100000C /* Debug */ = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+			ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; ENABLE_TESTABILITY = YES; ONLY_ACTIVE_ARCH = YES;
+			SWIFT_OPTIMIZATION_LEVEL = "-Onone"; SWIFT_VERSION = 6.0; };};
+		B100000D /* Release */ = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+			ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 6.0; };};
+		B100000E /* Debug */ = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+			SDKROOT = auto; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx"; SUPPORTS_MACCATALYST = NO;
+			TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 26.0; MACOSX_DEPLOYMENT_TARGET = 26.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
+			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown;
+			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;
+			ENABLE_APP_SANDBOX = YES; ENABLE_USER_SELECTED_FILES = readonly; };};
+		B100000F /* Release */ = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+			SDKROOT = auto; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx"; SUPPORTS_MACCATALYST = NO;
+			TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 26.0; MACOSX_DEPLOYMENT_TARGET = 26.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
+			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown;
+			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;
+			ENABLE_APP_SANDBOX = YES; ENABLE_USER_SELECTED_FILES = readonly; };};
+	};
+	rootObject = B1000009;
+}
