@@ -60,11 +60,11 @@ the report says how: local check, prediction, upload, or scored board result.
 ## 6. CHANGELOG
 
 A behaviour change gets a top entry in `CHANGELOG.md` (newest first): version, date, what, why, how, and your
-name with effort level. Update any doc the change touches in the same commit.
+name with effort level. Update any doc the change touches in the same commit. Use proper semver. 
 
 ## 7. Plan before you build
 
-Write `plans/YYYY-MM-DD-goal-plan.md` (scope, objectives, steps) before substantive work.
+Write `plans/DD-Mon-YYYY-goal-plan.md` (scope, objectives, steps) before substantive work.
 
 ## 8. Shell scripts on a machine where they run
 
@@ -79,7 +79,7 @@ finished, checked work, with a message that says what and why.
 ## 10. Big files stay out of Git
 
 Anything that can grow past a few MB (datasets, weights, checkpoints, compiled artifacts, caches) lives on the
-Mac Mini's Samsung SSD, never in Git and never on the internal drive. Record its logical path, origin, size,
+Mac Mini's SSDs, never in Git and never on the internal drive. Record its logical path, origin, size,
 checksum and how to rebuild it in the README or a manifest.
 
 ## 11. File and folder names: short and portable
@@ -102,7 +102,7 @@ quantum leaderboard snapshots (26-Oct-2026).
 
 ## 12. Write for a non-technical executive
 
-The Boss is a non-technical executive. Everything a person reads must make sense to someone who does not write code.
+The Boss is a non-technical executive. Everything reply and documentation artifact must make sense to someone who does not write code.
 
 - README, plans, CHANGELOG entries, ledger entries, status notes, commit messages and pull request descriptions
   lead with a plain sentence or two: what happened, what it means for the contest (score, rank, deadline, cost),
@@ -111,11 +111,11 @@ The Boss is a non-technical executive. Everything a person reads must make sense
   paragraphs and short lists, no walls of text. Say in words whether a result is good or bad; keep the raw numbers
   in the table or ledger line that backs it.
 - A real decision for the Boss goes at the top, marked DECISION, one sentence per option. Anything that is not
-  truly the Boss's to decide, decide and record why.
+  essential for the humans to decide, decide yourself and record why. Remember, the goal is to increase our score, not to run endless tests. 
 - The header's PURPOSE line is written for the next person, in plain words: what the file does, what it reads
   and writes, where it plugs in. Someone who has never seen the repo should understand the file from its header
   and comments alone.
-- Never make the reader read code to learn a result. Report it in words, then point to the evidence file.
+- Never make the reader read code to learn a result. Report it in words, then point to the evidence file.  Do not mix numbers or code snippets with prose writing. 
 
 ## Applies here: breakdown
 
