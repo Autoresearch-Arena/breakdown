@@ -1,5 +1,5 @@
-# Author: Claude Opus 5.5 Medium
-# Date: 02-November-2026
+# Author: GPT-6.1 Sol (inherited reasoning)
+# Date: 10-November-2026
 # PURPOSE: Keep Xcode, Swift Package Manager and macOS clutter out of git.
 #          Big data (scans, captured datasets, model weights) never lives in
 #          this repo; it goes on /Volumes/Team 4TB/ per the Boss's directive.
@@ -27,3 +27,14 @@ Package.resolved
 *.ply
 captures/
 scans/
+
+# Local build variants and signing/credentials must not enter published history.
+build-*/
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.mobileprovision
+*.keychain
+*.keychain-db
