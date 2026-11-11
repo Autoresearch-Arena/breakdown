@@ -1,6 +1,20 @@
+<!--
+Author: GPT-6.1 Sol (inherited reasoning)
+Date: 10-November-2026
+PURPOSE: Record project changes, including documentation and licensing readiness without altering gameplay.
+SRP/DRY check: Pass — checked existing README, specification and history; links retain one source for detailed design.
+-->
 # Changelog
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
+
+## [0.1.1] - 10-November-2026
+
+Author: GPT-6.1 Sol (inherited reasoning)
+
+- What: Added the MIT license, clear setup and project scope, roadmap, dependency/research notices and repository-readiness review. Expanded exclusions for local credentials and build folders.
+- Why: Prepare the original game repository for review without overstating finished work, ownership or program acceptance.
+- How: Preserved the original history and private visibility, reviewed all published historical files, and checked existing tests and both platform builds. No gameplay code changed; see the readiness review for exact evidence and remaining decisions.
 
 ## [0.1.0] - 03-November-2026
 

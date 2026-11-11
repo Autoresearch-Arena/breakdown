@@ -1,10 +1,7 @@
 <!--
-Author: Claude Sonnet 5.5 Medium
-Date: 26-October-2026
-PURPOSE: The Boss's coding standards as they apply to the breakdown repo. Trimmed from
-  bubba-workspace/CODING_STANDARDS.md (written for the ARC Explainer web app); only the rules that bind
-  Python, shell and Markdown research work are kept. Read by every person and agent before writing code here.
-  Updated 26-October-2026: added section 11 (portable file names) and section 12 (plain words for a non-technical executive).
+Author: GPT-6.1 Sol (inherited reasoning)
+Date: 10-November-2026
+PURPOSE: Define the shared coding and documentation standards for Breakdown, with a local section for its Swift app, physics package, tests, assets and build output.
 SRP/DRY check: Pass - one standards file per repo, same core text in all four contest repos; the last section differs.
 -->
 # Coding standards
@@ -119,6 +116,8 @@ The Boss is a non-technical executive. Everything reply and documentation artifa
 
 ## Applies here: breakdown
 
-- This file was added automatically because the repo had no coding standards. Replace this section with
-  the repo's own file types and rules the first time you work here.
-- Keep sections 1 to 12 as they are.
+- Swift app code lives in `App`; the solver, timeline and existing tests live in `Packages/BreakdownCore`.
+- Keep the physics independent of Apple user-interface frameworks; run existing package tests when changing it.
+- Check both Mac and iPhone simulator builds when changing platform-facing code. Rendering changes also need visual inspection.
+- Geometry, textures and audio are currently generated in code. Record source and redistribution terms before importing assets or dependencies.
+- Keep signing material, environment files and build products out of Git. New large output belongs on the Team 4TB drive.
