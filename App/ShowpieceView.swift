@@ -1,8 +1,9 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
+// Date: 11-November-2026
 // PURPOSE: The showpiece screen: the 3D table full-bleed, with a quiet title, the caption and equation card that
 //          appear once the table melts into the Lens, and the controls (play, speed, scrub with event ticks,
 //          Lens toggle, replay, and the player's own break). Same code on iPhone and Mac.
+//          Colours and fonts come from Theme (Apple's own fonts, one colour set); controls are a solid dark strip.
 // SRP/DRY check: Pass - presentation only; flow lives in ShowpieceModel, drawing in TableScene.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -20,13 +21,13 @@ struct ShowpieceView: View {
     @State private var holder = SceneHolder()
     @State private var showBreakPanel = false
 
-    private let ink = Color(red: 0.92, green: 0.96, blue: 1.0)
-    private let cyan = Color(red: 0.30, green: 0.88, blue: 1.0)
+    private let ink = Theme.paper
+    private let cyan = Theme.cyan
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                Color(red: 0.02, green: 0.03, blue: 0.05).ignoresSafeArea()
+                Theme.ink.ignoresSafeArea()
                 RealityView { content in
                     #if os(iOS)
                     content.camera = .virtual
@@ -35,6 +36,8 @@ struct ShowpieceView: View {
                     content.add(table.root)
                     holder.table = table
                     table.load(model.timeline, version: model.timelineVersion)
+                    // Reflections: lights the glossy parts from a generated lamp picture.
+                    await table.installEnvironment()
                     table.subscriptions.append(content.subscribe(to: SceneEvents.Update.self) { event in
                         MainActor.assumeIsolated {
                             model.advance(event.deltaTime)
@@ -96,12 +99,12 @@ struct ShowpieceView: View {
     private var header: some View {
         HStack(alignment: .firstTextBaseline) {
             Text("BREAKDOWN")
-                .font(.system(.footnote, design: .rounded, weight: .heavy))
-                .tracking(3)
+                .font(.system(.footnote, weight: .semibold))
+                .tracking(4)
                 .foregroundStyle(ink.opacity(0.85))
             Spacer()
             Text(model.stageTitle)
-                .font(.system(.footnote, design: .rounded, weight: .semibold))
+                .font(Theme.label)
                 .foregroundStyle(cyan)
                 .opacity(model.stage == .lead ? 0 : 1)
         }
@@ -111,12 +114,11 @@ struct ShowpieceView: View {
     private var titleCard: some View {
         VStack(spacing: 8) {
             Text("BREAKDOWN")
-                .font(.system(size: 44, weight: .black, design: .rounded))
-                .tracking(8)
+                .font(Theme.display(44))
+                .tracking(10)
                 .foregroundStyle(ink)
             Text("watch the physics think")
-                .font(.system(.subheadline, design: .serif))
-                .italic()
+                .font(.system(.title3, design: .serif).italic())
                 .foregroundStyle(cyan)
         }
         .shadow(color: .black.opacity(0.6), radius: 12)
@@ -138,8 +140,8 @@ struct ShowpieceView: View {
             }
         }
         .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(cyan.opacity(0.25), lineWidth: 1))
+        .background(Theme.panel.opacity(0.94), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.hairline, lineWidth: 1))
     }
 
     private var playButton: some View {
@@ -167,12 +169,12 @@ struct ShowpieceView: View {
     private func chip(_ text: String, active: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(text)
-                .font(.system(.caption, design: .rounded, weight: .semibold))
+                .font(Theme.label)
                 .monospacedDigit()
                 .lineLimit(1)
                 .padding(.horizontal, 10).padding(.vertical, 7)
                 .foregroundStyle(active ? Color.black : ink)
-                .background(active ? cyan : Color.white.opacity(0.10), in: Capsule())
+                .background(active ? cyan : Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -183,7 +185,7 @@ struct ShowpieceView: View {
                 .font(.system(size: 14, weight: .bold))
                 .frame(width: 34, height: 30)
                 .foregroundStyle(ink)
-                .background(Color.white.opacity(0.12), in: Capsule())
+                .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -198,23 +200,24 @@ struct ShowpieceView: View {
                 model.breakNow()
             } label: {
                 Text("Break")
-                    .font(.system(.headline, design: .rounded, weight: .heavy))
+                    .font(Theme.heading)
                     .frame(maxWidth: .infinity).padding(.vertical, 10)
                     .foregroundStyle(.black)
-                    .background(cyan, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(cyan, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
             .buttonStyle(.plain)
         }
         .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(Theme.panel.opacity(0.94), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Theme.hairline, lineWidth: 1))
     }
 
     private func sliderRow(_ label: String, value: Binding<Double>, range: ClosedRange<Double>, text: String) -> some View {
         HStack {
-            Text(label).font(.system(.caption, design: .rounded, weight: .semibold)).frame(width: 56, alignment: .leading)
+            Text(label).font(Theme.label).frame(width: 56, alignment: .leading)
                 .foregroundStyle(ink.opacity(0.8))
             Slider(value: value, in: range).tint(cyan)
-            Text(text).font(.system(.caption, design: .monospaced)).frame(width: 66, alignment: .trailing)
+            Text(text).font(Theme.number).frame(width: 66, alignment: .trailing)
                 .foregroundStyle(ink)
         }
     }
@@ -238,19 +241,19 @@ private struct CaptionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(caption.equation)
-                .font(.system(.title3, design: .monospaced, weight: .semibold))
+                .font(Theme.equation)
                 .foregroundStyle(accent)
             Text(caption.title)
-                .font(.system(.headline, design: .rounded, weight: .bold))
+                .font(Theme.heading)
                 .foregroundStyle(.white)
             Text(caption.detail)
-                .font(.system(.subheadline, design: .rounded))
+                .font(Theme.body)
                 .foregroundStyle(Color.white.opacity(0.86))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Theme.panel.opacity(0.9), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(alignment: .leading) {
             RoundedRectangle(cornerRadius: 2).fill(accent).frame(width: 3).padding(.vertical, 12)
         }
