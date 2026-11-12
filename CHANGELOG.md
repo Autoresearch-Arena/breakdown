@@ -8,6 +8,14 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.1.2] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: Added the app version (0.1.1), build number 1, the no-special-encryption declaration, a placeholder app icon, and made the iOS build iPhone-only.
+- Why: App Store Connect refused the first TestFlight uploads: empty version fields, no app icon, and iPad orientation rules.
+- How: Build settings in both configurations plus an asset catalog with a generated 1024-pixel icon; no gameplay code changed.
+
 ## [0.1.1] - 10-November-2026
 
 Author: GPT-6.1 Sol (inherited reasoning)
