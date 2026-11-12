@@ -8,6 +8,14 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.2.1] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The game now builds for iPhone, iPad and Mac, and the TestFlight build runs on iPad as well as iPhone.
+- Why: The earlier build was set to iPhone only to get past Apple's first checks. The Boss wants all devices.
+- How: Turned iPad support back on and allowed all four screen orientations, which Apple requires for iPad. Checked clean builds for Mac, iPhone and iPad hardware and the simulator. Build number 3.
+
 ## [0.2.0] - 11-November-2026
 
 Author: Claude Sonnet 5.5 Medium
