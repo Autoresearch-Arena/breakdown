@@ -502,3 +502,5 @@ What this means for Breakdown:
 5. No iOS 27 simulator runtime is installed here yet, and only an iOS 26.5 runtime exists. Download the iOS 27 runtime and look for a Duo simulator profile before building Duo-specific layout; until then the layout is tested on iPad-shaped and iPhone-shaped windows.
 
 Sources: Apple newsroom (apple.com/newsroom/2026/09/apple-unveils-iphone-duo), Apple Tech Talk 111461, MacRumors, Macworld, a developer blog on the aspect ratio (blakecrosley.com).
+
+Update 11-November-2026 (Claude Opus 5.5 High): the Boss approved shipping the pool launch natively in this Swift app and keeping Unreal for the smashing phase. The reasons and corrected Duo facts (pixel sizes now confirmed on Apple's screenshot page; no second live display through scene accessories; hinge as a smoothed control only) are in [the Duo research note](2026-11-03-duo-research.md). Xcode 27.2 with the iOS 27.2 SDK is now installed, so item 5's SDK concern is met; an iOS 27 simulator runtime with the Duo profile is still needed.
