@@ -1,8 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
+// Date: 11-November-2026
 // PURPOSE: The showpiece screen: the 3D table full-bleed, with a quiet title, the caption and equation card that
 //          appear once the table melts into the Lens, and the controls (play, speed, scrub with event ticks,
-//          Lens toggle, replay, and the player's own break). Same code on iPhone and Mac.
+//          Lens toggle, replay, and the player's own break and follow-up shots). Same code on iPhone and Mac.
 // SRP/DRY check: Pass - presentation only; flow lives in ShowpieceModel, drawing in TableScene.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -57,12 +57,18 @@ struct ShowpieceView: View {
                 model.viewSize = geo.size
                 // Test hook: launch with -yourBreakDemo to run the player's own break without tapping.
                 if ProcessInfo.processInfo.arguments.contains("-yourBreakDemo") { model.aimOffset = 0.012; model.breakNow() }
+                // Test hook: -yourShotDemo opens the shot panel and plays a follow-up shot from the break's layout.
+                if ProcessInfo.processInfo.arguments.contains("-yourShotDemo") { showBreakPanel = true; model.shootNow() }
             }
             .onChange(of: geo.size) { _, new in model.viewSize = new }
         }
     }
 
     private static func aim(for model: ShowpieceModel) -> AimPreview {
+        // After the first shot the guide line follows the aim slider from the cue ball's resting spot.
+        if !model.racked, model.layout.count == 16 {
+            return AimPreview(from: model.layout[0], direction: model.shotAimDirection, length: 1.4, always: true)
+        }
         let positions = Rack.positions(parameters: PoolParameters(), seed: UInt64(10 + model.breakSerial + 1))
         let target = positions[1] + Vec2(0, model.aimOffset)
         let dir = (target - positions[0]).normalized
@@ -158,7 +164,7 @@ struct ShowpieceView: View {
         HStack(spacing: 6) {
             chip(model.lensOn ? "Lens on" : "Lens off", active: model.lensOn) { model.setLens(!model.lensOn) }
             roundButton(system: "arrow.counterclockwise") { model.replay(withLens: true) }
-            chip(showBreakPanel ? "Close" : "Your break", active: showBreakPanel) { showBreakPanel.toggle() }
+            chip(showBreakPanel ? "Close" : "Your shot", active: showBreakPanel) { showBreakPanel.toggle() }
         }
     }
 
@@ -188,25 +194,51 @@ struct ShowpieceView: View {
         .buttonStyle(.plain)
     }
 
+    /// The player's panel: a break while the rack is full, then shot after shot from the resting layout.
     private var breakPanel: some View {
         VStack(alignment: .leading, spacing: 8) {
-            sliderRow("Aim", value: $model.aimOffset, range: -0.03...0.03, text: String(format: "%+.0f mm", model.aimOffset * 1000))
-            sliderRow("Power", value: $model.power, range: 7...13, text: String(format: "%.1f m/s", model.power))
-            sliderRow("Cue tip", value: $model.tipHeight, range: -0.02...0.02, text: model.tipHeight < -0.002 ? "draw" : (model.tipHeight > 0.002 ? "follow" : "centre"))
-            Button {
-                showBreakPanel = false
-                model.breakNow()
-            } label: {
-                Text("Break")
-                    .font(.system(.headline, design: .rounded, weight: .heavy))
-                    .frame(maxWidth: .infinity).padding(.vertical, 10)
-                    .foregroundStyle(.black)
-                    .background(cyan, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            if model.racked {
+                sliderRow("Aim", value: $model.aimOffset, range: -0.03...0.03, text: String(format: "%+.0f mm", model.aimOffset * 1000))
+                sliderRow("Power", value: $model.power, range: 7...13, text: String(format: "%.1f m/s", model.power))
+                sliderRow("Cue tip", value: $model.tipHeight, range: -0.02...0.02, text: tipWord(model.tipHeight))
+                actionButton("Break") { showBreakPanel = false; model.breakNow() }
+            } else {
+                HStack(spacing: 6) {
+                    Text("Aim").font(.system(.caption, design: .rounded, weight: .semibold)).frame(width: 56, alignment: .leading)
+                        .foregroundStyle(ink.opacity(0.8))
+                    roundButton(system: "minus") { model.aimDegrees -= 0.25 }
+                    Slider(value: $model.aimDegrees, in: -180...180).tint(cyan)
+                    roundButton(system: "plus") { model.aimDegrees += 0.25 }
+                    Text(String(format: "%+.1f°", model.aimDegrees)).font(.system(.caption, design: .monospaced))
+                        .frame(width: 62, alignment: .trailing).foregroundStyle(ink)
+                }
+                sliderRow("Power", value: $model.shotPower, range: 0.5...8, text: String(format: "%.1f m/s", model.shotPower))
+                sliderRow("Cue tip", value: $model.shotTipUp, range: -0.02...0.02, text: tipWord(model.shotTipUp))
+                sliderRow("Side", value: $model.shotTipSide, range: -0.02...0.02,
+                          text: model.shotTipSide < -0.002 ? "left" : (model.shotTipSide > 0.002 ? "right" : "centre"))
+                HStack(spacing: 8) {
+                    chip("Aim at nearest", active: false) { model.aimAtNearestBall() }
+                    chip("Re-rack", active: false) { model.rerack() }
+                    Spacer(minLength: 0)
+                }
+                actionButton("Shoot") { model.shootNow() }
             }
-            .buttonStyle(.plain)
         }
         .padding(12)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+
+    private func tipWord(_ v: Double) -> String { v < -0.002 ? "draw" : (v > 0.002 ? "follow" : "centre") }
+
+    private func actionButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(.headline, design: .rounded, weight: .heavy))
+                .frame(maxWidth: .infinity).padding(.vertical, 10)
+                .foregroundStyle(.black)
+                .background(cyan, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 
     private func sliderRow(_ label: String, value: Binding<Double>, range: ClosedRange<Double>, text: String) -> some View {
