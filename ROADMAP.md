@@ -23,7 +23,7 @@ Breakdown has a running pool prototype. The work below extends that game; it is 
 ## Polish and later engine work
 
 - Improve accessibility and Reduced Motion, controller support and recorded clip export.
-- The later [engine decision](docs/2026-11-03-duo-research.md#engine-decision-boss-03-november-2026-unreal) calls for an Unreal implementation, retaining the Swift app as a reference. A port must preserve the Lens event model and verify the solver against the reference tests. No Unreal project is committed yet.
+- The [engine decision](docs/2026-11-03-duo-research.md#engine-decision-updated-boss-11-november-2026-native-for-pool-unreal-kept-for-smashing) ships the pool launch natively in Swift for iPhone Duo and keeps Unreal for the later smashing phase. If smashing moves to Unreal, a port must preserve the Lens event model and verify the solver against the reference tests. No Unreal project is committed yet.
 - Scan-and-smash remains a later design exploration, not current functionality. Device-specific claims in the older research notes need primary-source verification before implementation. Its potential camera/depth data and machine-learning scope require a separate program eligibility review; do not describe this repository as permanently free of such plans.
 
 The [full specification](docs/2026-11-02-breakdown-spec.md#10-milestones) retains the detailed design and acceptance lists. The current submission candidate is ordinary game/physics development; do not silently change the stated scope or claim reviewer approval.

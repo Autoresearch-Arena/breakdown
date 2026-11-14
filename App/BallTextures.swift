@@ -1,5 +1,5 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
+// Date: 11-November-2026
 // PURPOSE: Draws the ball surfaces (solid colours, stripes, number discs) and the Lens grid with CoreGraphics,
 //          so the same code makes textures on iPhone and Mac and no image assets have to be shipped.
 // SRP/DRY check: Pass - texture drawing only.
@@ -43,7 +43,8 @@ enum BallTextures {
     }
 
     private static func drawNumber(_ text: String, at center: CGPoint, in ctx: CGContext) {
-        let font = CTFontCreateWithName("Helvetica-Bold" as CFString, 56, nil)
+        // Apple's own bold system font, so the ball numbers match the rest of the app.
+        let font = CTFontCreateUIFontForLanguage(.emphasizedSystem, 56, nil) ?? CTFontCreateWithName("Helvetica-Bold" as CFString, 56, nil)
         let attrs: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key(kCTFontAttributeName as String): font,
             NSAttributedString.Key(kCTForegroundColorFromContextAttributeName as String): true,

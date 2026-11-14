@@ -5,10 +5,14 @@
 //          from a recorded timeline, then each frame places everything for the playback clock and blends warm to
 //          cold with the melt value. RealityKit physics is not used: every transform comes from the timeline.
 //          Lens meshes are built once per timeline and revealed by time, so scrubbing in either direction is exact.
+//          Look pass (11-Nov-2026): a generated lamp-in-a-dark-room reflection image lights the balls and rails (so the
+//          clear-coat has something to reflect), the key light is warmer, and each trail piece is wider where the ball
+//          is faster with a softer, wider glow strip underneath. Trail pieces still appear in small steps.
 // SRP/DRY check: Pass - rendering only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
+import CoreGraphics
 import Foundation
 import RealityKit
 import simd
@@ -38,6 +42,7 @@ final class TableScene {
     var subscriptions: [EventSubscription] = []
 
     private let trailMaterials: [MotionPhase: UnlitMaterial]
+    private let haloMaterials: [MotionPhase: UnlitMaterial]
     private let ringMaterials: [LensEventKind: UnlitMaterial]
     private let arrowMaterial: UnlitMaterial
 
@@ -50,8 +55,12 @@ final class TableScene {
             m.faceCulling = .none
             return m
         }
-        trailMaterials = [.sliding: unlit(rgba(1.0, 0.58, 0.16, 0.95)), .rolling: unlit(rgba(0.25, 0.92, 1.0, 0.95)),
+        let amber = Theme.amberRGB, cyan = Theme.cyanRGB
+        trailMaterials = [.sliding: unlit(rgba(amber.0, amber.1, amber.2, 0.95)), .rolling: unlit(rgba(cyan.0, cyan.1, cyan.2, 0.95)),
                           .spinning: unlit(rgba(1.0, 0.35, 0.85, 0.95)), .stationary: unlit(rgba(1, 1, 1, 0.5))]
+        // Faint, wide strips under each trail piece. Decoration only: the width of the bright core is the data.
+        haloMaterials = [.sliding: unlit(rgba(amber.0, amber.1, amber.2, 0.20)), .rolling: unlit(rgba(cyan.0, cyan.1, cyan.2, 0.20)),
+                         .spinning: unlit(rgba(1.0, 0.35, 0.85, 0.20)), .stationary: unlit(rgba(1, 1, 1, 0.08))]
         ringMaterials = [.ballBall: unlit(rgba(1.0, 0.97, 0.80, 0.95)), .cushion: unlit(rgba(0.45, 0.65, 1.0, 0.95)),
                          .pocket: unlit(rgba(1.0, 0.82, 0.25, 0.95)), .cueStrike: unlit(rgba(1.0, 0.97, 0.80, 0.95)),
                          .phaseTransition: unlit(rgba(1, 1, 1, 0.5))]
@@ -79,8 +88,9 @@ final class TableScene {
             m.metallic = .init(floatLiteral: metal)
             return m
         }
-        let feltMat = pbr(rgba(0.04, 0.36, 0.33), rough: 0.96)
-        let woodMat = pbr(rgba(0.30, 0.15, 0.08), rough: 0.45)
+        let feltMat = pbr(rgba(0.05, 0.40, 0.35), rough: 0.95)
+        // Walnut: darker and glossier than before so it picks up the lamp reflection.
+        let woodMat = pbr(rgba(0.34, 0.16, 0.08), rough: 0.28)
         let cushionMat = pbr(rgba(0.03, 0.30, 0.27), rough: 0.9)
         let pocketMat = UnlitMaterial(color: rgba(0.01, 0.01, 0.015))
 
@@ -189,13 +199,14 @@ final class TableScene {
 
         // Lights: a key with shadows and a cool fill. Without image-based light the fill keeps shadows readable.
         let key = Entity()
-        let keyLight = DirectionalLightComponent(color: .white, intensity: 2600, isRealWorldProxy: false)
+        // Warm key, like a lamp over the table.
+        let keyLight = DirectionalLightComponent(color: PlatformColor(red: 1.0, green: 0.90, blue: 0.76, alpha: 1), intensity: 2900, isRealWorldProxy: false)
         key.components.set(keyLight)
         key.components.set(DirectionalLightComponent.Shadow(maximumDistance: 6, depthBias: 1.0))
         key.look(at: .zero, from: SIMD3(-0.8, 3.0, 1.2), relativeTo: nil)
         root.addChild(key)
         let fill = Entity()
-        fill.components.set(DirectionalLightComponent(color: PlatformColor(red: 0.75, green: 0.85, blue: 1.0, alpha: 1), intensity: 900, isRealWorldProxy: false))
+        fill.components.set(DirectionalLightComponent(color: PlatformColor(red: 0.75, green: 0.85, blue: 1.0, alpha: 1), intensity: 450, isRealWorldProxy: false))
         fill.look(at: .zero, from: SIMD3(1.5, 2.0, -1.5), relativeTo: nil)
         root.addChild(fill)
 
@@ -208,6 +219,51 @@ final class TableScene {
     }
 
     private(set) var cameraEntity: PerspectiveCamera?
+
+    // MARK: Reflections
+
+    /// A small sideways-panorama picture of a dark room with one warm rectangular lamp overhead and a faint cool
+    /// strip to one side. It is only ever seen as a reflection on the balls and rails, which is what makes them
+    /// look glossy instead of like plastic. Drawn in code so no image file ships.
+    private static func lampEnvironmentImage() -> CGImage? {
+        let w = 1024, h = 512
+        guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        // Top of the image is straight up. Warm dark brown overhead fading to near black below the horizon.
+        let colors = [CGColor(red: 0.10, green: 0.07, blue: 0.05, alpha: 1), CGColor(red: 0.06, green: 0.05, blue: 0.045, alpha: 1),
+                      CGColor(red: 0.015, green: 0.015, blue: 0.02, alpha: 1)] as CFArray
+        let grad = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: colors, locations: [0, 0.5, 1])!
+        ctx.drawLinearGradient(grad, start: CGPoint(x: 0, y: CGFloat(h)), end: CGPoint(x: 0, y: 0), options: [])
+        // CoreGraphics counts y upward from the bottom, so large y is high elevation.
+        func lamp(x: Double, y: Double, width: Double, height: Double, _ c: (Double, Double, Double), _ glow: Double) {
+            let rect = CGRect(x: x, y: y, width: width, height: height)
+            ctx.saveGState()
+            ctx.setShadow(offset: .zero, blur: glow, color: CGColor(red: c.0, green: c.1, blue: c.2, alpha: 0.9))
+            ctx.setFillColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 1))
+            ctx.fill(rect)
+            ctx.restoreGState()
+        }
+        // The main lamp, high and slightly left of the camera, and a thin cool strip low on the other side.
+        lamp(x: 300, y: 380, width: 280, height: 60, (1.0, 0.90, 0.70), 40)
+        lamp(x: 760, y: 280, width: 34, height: 120, (0.55, 0.72, 1.0), 20)
+        return ctx.makeImage()
+    }
+
+    /// Light the scene with the lamp picture and let every surface reflect it. If the picture cannot be built the
+    /// scene simply keeps its plain lights.
+    func installEnvironment() async {
+        guard let image = Self.lampEnvironmentImage(),
+              let environment = try? await EnvironmentResource(equirectangular: image) else { return }
+        root.components.set(ImageBasedLightComponent(source: .single(environment), intensityExponent: 0.8))
+        func attach(_ entity: Entity) {
+            if entity.components.has(ModelComponent.self) {
+                entity.components.set(ImageBasedLightReceiverComponent(imageBasedLight: root))
+            }
+            for child in entity.children { attach(child) }
+        }
+        attach(root)
+    }
 
     // MARK: Timeline-dependent layer
 
@@ -243,25 +299,36 @@ final class TableScene {
         var chunks: [(ModelEntity, Double)] = []
         let segs = timeline.segments[ball]
         let tLimit = min(timeline.duration, timeline.pocketTime[ball] ?? .infinity)
-        let half: Float = 0.0035
+        // The bright core is the data: it is wider where the ball is faster, so a still frame shows the speed.
+        func coreHalf(_ speed: Double) -> Float { 0.0022 + 0.0007 * Float(min(speed, 8)) }
         for seg in segs where seg.phase == .sliding || seg.phase == .rolling {
             let tEnd = min(seg.t1, tLimit)
             guard tEnd > seg.t0 else { continue }
             var t = seg.t0
             var pts: [SIMD3<Float>] = [frame.world(seg.kinematics(at: t).position, height: 0.0016)]
+            var halves: [Float] = [coreHalf(seg.kinematics(at: t).velocity.length)]
             while t < tEnd {
                 let speed = seg.kinematics(at: t).velocity.length
                 let dt = min(0.05, max(0.002, 0.015 / max(speed, 0.01)))
                 t = min(tEnd, t + dt)
                 pts.append(frame.world(seg.kinematics(at: t).position, height: 0.0016))
+                halves.append(coreHalf(seg.kinematics(at: t).velocity.length))
                 if pts.count >= 5 || t >= tEnd {
-                    if let mesh = ribbon(pts, half: half), let mat = trailMaterials[seg.phase] {
+                    if let mesh = ribbon(pts, halves: halves), let mat = trailMaterials[seg.phase] {
                         let e = ModelEntity(mesh: mesh, materials: [mat])
                         e.isEnabled = false
+                        // The glow strip is a child, so it appears and disappears with its trail piece. It sits a hair
+                        // lower so the bright core draws over it.
+                        if let haloMesh = ribbon(pts, halves: halves.map { $0 * 2.8 }), let haloMat = haloMaterials[seg.phase] {
+                            let halo = ModelEntity(mesh: haloMesh, materials: [haloMat])
+                            halo.position = SIMD3(0, -0.0003, 0)
+                            e.addChild(halo)
+                        }
                         trailRoot.addChild(e)
                         chunks.append((e, t))
                     }
                     pts = [pts[pts.count - 1]]
+                    halves = [halves[halves.count - 1]]
                 }
             }
         }
@@ -269,9 +336,9 @@ final class TableScene {
         trailShown.append(0)
     }
 
-    /// A flat ribbon along a short polyline, lying on the table.
-    private func ribbon(_ pts: [SIMD3<Float>], half: Float) -> MeshResource? {
-        guard pts.count >= 2 else { return nil }
+    /// A flat ribbon along a short polyline, lying on the table, with its own half-width at each point.
+    private func ribbon(_ pts: [SIMD3<Float>], halves: [Float]) -> MeshResource? {
+        guard pts.count >= 2, halves.count == pts.count else { return nil }
         var positions: [SIMD3<Float>] = []
         var indices: [UInt32] = []
         for (i, p) in pts.enumerated() {
@@ -280,7 +347,7 @@ final class TableScene {
             d.y = 0
             let len = simd_length(d)
             let dir = len > 1e-9 ? d / len : SIMD3<Float>(1, 0, 0)
-            let side = SIMD3<Float>(-dir.z, 0, dir.x) * half
+            let side = SIMD3<Float>(-dir.z, 0, dir.x) * halves[i]
             positions.append(p + side); positions.append(p - side)
         }
         for i in 0..<(pts.count - 1) {

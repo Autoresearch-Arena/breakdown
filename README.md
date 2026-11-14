@@ -10,7 +10,7 @@ A physics game for iPhone and Mac that lets you see the physics working.
 
 The first table is pool. You watch an ordinary break. Then the table melts into a dark grid, and each ball leaves a glowing path. Arrows show speed and spin, and short notes show where energy changed hands. You can scrub through the shot, slow it down, and try a different version of it. Then you take the cue.
 
-The longer-term design extends the physics view to scan-and-smash scenes. That work is not implemented. The later engine decision is Unreal; the current Swift app remains the working reference, not an Unreal implementation.
+The longer-term design extends the physics view to scan-and-smash scenes. That work is not implemented. The pool launch ships natively in this Swift app, built for iPhone Duo; Unreal stays open for the later scan-and-smash phase (decision of 11 November 2026, see the Duo research note).
 
 - Spec: [docs/2026-11-02-breakdown-spec.md](docs/2026-11-02-breakdown-spec.md)
 - Change log: [CHANGELOG.md](CHANGELOG.md)

@@ -1,7 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
+// Date: 11-November-2026
 // PURPOSE: Minimal generated audio for milestone 1a: ball click, rail thud and pocket drop, all synthesised in
 //          code (no sample files) and scaled by the impact's recorded impulse so one number drives sight and sound.
+//          Launching with the argument -muteSound keeps the engine off so testing on a shared machine is silent.
 // SRP/DRY check: Pass - sound output only; playback decides when to call it.
 import AVFoundation
 import BreakdownLensModel
@@ -48,6 +49,8 @@ final class SoundBoard {
         try? AVAudioSession.sharedInstance().setCategory(.ambient)
         try? AVAudioSession.sharedInstance().setActive(true)
         #endif
+        // Silent testing switch: never start the audio engine when asked not to.
+        if ProcessInfo.processInfo.arguments.contains("-muteSound") { running = false; return }
         do { try engine.start(); running = true } catch { running = false }
     }
 
