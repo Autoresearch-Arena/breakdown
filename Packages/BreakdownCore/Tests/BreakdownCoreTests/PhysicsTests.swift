@@ -157,6 +157,47 @@ final class PhysicsTests: XCTestCase {
         XCTAssertNil(tl.pocketTime[0])
     }
 
+    // Test 10b: the layout after the break parks pocketed balls off the table, keeps the rest inside the cushions,
+    // and a follow-up shot from it is repeatable.
+    func testNextShotLayoutAfterBreak() {
+        let p = PoolParameters()
+        let tl = PoolSolver.simulate(Rack.showpieceBreak())
+        let layout = NextShot.layout(after: tl, parameters: p)
+        XCTAssertEqual(layout.count, 16)
+        for b in 1..<16 {
+            if tl.pocketTime[b] != nil {
+                XCTAssertFalse(NextShot.isOnTable(layout[b]), "pocketed ball \(b) should be off the table")
+            } else {
+                XCTAssertTrue(layout[b].x > 0 && layout[b].x < p.tableLength && layout[b].y > 0 && layout[b].y < p.tableWidth)
+            }
+        }
+        let dir = NextShot.directionToNearestObjectBall(in: layout)
+        XCTAssertNotNil(dir)
+        let a = PoolSolver.simulate(NextShot.shot(from: layout, direction: dir!, speed: 3.0, tipUp: 0, tipSide: 0, seed: 77))
+        let b = PoolSolver.simulate(NextShot.shot(from: layout, direction: dir!, speed: 3.0, tipUp: 0, tipSide: 0, seed: 77))
+        XCTAssertEqual(a.contentHash, b.contentHash)
+    }
+
+    // Test 10c: a scratched cue ball comes back on the head spot, and slides clear if a ball is sitting there.
+    func testScratchRespot() {
+        let p = PoolParameters()
+        var pos = [Vec2](repeating: NextShot.offTable, count: 16)
+        XCTAssertEqual(NextShot.respotCueBall(among: pos, parameters: p), Vec2(p.tableLength * 0.25, p.tableWidth * 0.5))
+        pos[1] = Vec2(p.tableLength * 0.25, p.tableWidth * 0.5)
+        let moved = NextShot.respotCueBall(among: pos, parameters: p)
+        XCTAssertGreaterThanOrEqual((moved - pos[1]).length, 2 * p.ballRadius)
+        XCTAssertTrue(NextShot.isOnTable(moved))
+    }
+
+    // Test 10d: a zero-speed strike (used to show a fresh rack) records a still table without trouble.
+    func testZeroSpeedStrikeIsAStillTable() {
+        let tl = PoolSolver.simulate(Rack.breakShot(seed: 11, aimOffset: 0, speed: 0))
+        XCTAssertTrue(tl.duration.isFinite)
+        XCTAssertTrue((1..<16).allSatisfy { tl.pocketTime[$0] == nil })
+        let rack = Rack.positions(parameters: PoolParameters(), seed: 11)
+        XCTAssertEqual(tl.state(ball: 5, at: 0).position, rack[5])
+    }
+
     // Test 11: root finder agrees with a hand-computed quartic crossing.
     func testRootFinder() {
         // (t - 1)(t - 2)(t + 1)(t + 3) has down-crossings at t = -1... use (t-2)(t+1) = t^2 - t - 2, positive at t = 0? No:

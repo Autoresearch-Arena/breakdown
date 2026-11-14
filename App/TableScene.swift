@@ -1,5 +1,5 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
+// Date: 11-November-2026
 // PURPOSE: The renderer. Builds the warm table (felt, wooden rails, cushions, pockets, lit balls) and the cold
 //          Physics Lens layer (grid, glowing trails coloured by motion phase, velocity arrows, impact rings)
 //          from a recorded timeline, then each frame places everything for the playback clock and blends warm to
@@ -7,6 +7,7 @@
 //          Lens meshes are built once per timeline and revealed by time, so scrubbing in either direction is exact.
 // SRP/DRY check: Pass - rendering only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
+import BreakdownPhysics
 import BreakdownTimeline
 import Foundation
 import RealityKit
@@ -333,6 +334,8 @@ final class TableScene {
                 scale = 1 - 0.7 * k
                 visible = (t - tp) < 0.35
             }
+            // A ball parked off the table (pocketed in an earlier shot) never shows.
+            if !NextShot.isOnTable(timeline.segments[b][0].position0) { visible = false }
             balls[b].isEnabled = visible
             balls[b].position = pos
             balls[b].orientation = frame.orientation(s.orientation)

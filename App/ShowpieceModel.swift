@@ -1,8 +1,9 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
+// Date: 11-November-2026
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
-//          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own.
+//          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
+//          shot after shot from wherever the balls came to rest (aim, power, cue-tip height and side).
 //          The timeline is solved once; this only moves a playback clock over it, so replay, reverse and slow
 //          motion are exact. Sound fires as the clock crosses recorded events.
 // SRP/DRY check: Pass - playback state and flow only; drawing is TableScene, wording is CaptionEngine.
@@ -41,6 +42,17 @@ final class ShowpieceModel {
     var tipHeight = -0.006       // metres above (+) or below (-) centre
     private(set) var breakSerial = 0
 
+    // The player's follow-up shots, taken from wherever the balls came to rest.
+    /// Resting positions that the next shot starts from; index 0 is the cue ball, (-1,-1) means off the table.
+    private(set) var layout: [Vec2] = []
+    /// False once any shot has been played; true means the balls are still in the rack and the panel offers a break.
+    private(set) var racked = false
+    var aimDegrees = 0.0         // direction of the cue, counter-clockwise from the long axis
+    var shotPower = 3.0          // launch speed, m/s
+    var shotTipUp = 0.0          // metres above (+) or below (-) centre: follow and draw
+    var shotTipSide = 0.0        // metres to the right (+) or left (-) of centre: side spin
+    private(set) var shotSerial = 0
+
     private var stageTime = 0.0
     private let freezeTime: Double
     private let sound = SoundBoard()
@@ -51,6 +63,7 @@ final class ShowpieceModel {
         freezeTime = min(2.2, tl.duration * 0.4)
         captions = CaptionEngine.make(from: tl)
         timelineVersion = 1
+        adoptLayout(after: tl)
     }
 
     var duration: Double { timeline.duration }
@@ -86,7 +99,55 @@ final class ShowpieceModel {
         stage = .normalBreak
     }
 
+    /// Fresh rack, ready for a new break (the panel's break sliders drive it).
+    func rerack() {
+        // Same seed the next break will use, so the rack on screen is exactly the one that gets broken.
+        let seed = UInt64(10 + breakSerial + 1)
+        var p = PoolParameters()
+        p.version = 1
+        // A zero-speed strike records a table where nothing moves: the quickest way to put the rack on screen.
+        load(PoolSolver.simulate(Rack.breakShot(parameters: p, seed: seed, aimOffset: 0, speed: 0)))
+        layout = Rack.positions(parameters: p, seed: seed)
+        racked = true
+        stage = .explore; time = 0; playing = false; chosenRate = nil
+    }
+
+    /// Take the next shot from the resting layout. Skips the cold open: straight to the recorded replay,
+    /// at real speed, with the Lens left as the player had it.
+    func shootNow() {
+        guard layout.count == 16, !racked else { return }
+        shotSerial += 1
+        // Trig lives here in the app; the solver only ever sees a unit vector.
+        let a = aimDegrees * Double.pi / 180
+        let input = NextShot.shot(from: layout, direction: Vec2(cos(a), sin(a)), speed: shotPower,
+                                  tipUp: shotTipUp, tipSide: shotTipSide, seed: UInt64(1000 + shotSerial))
+        load(PoolSolver.simulate(input))
+        stage = .explore; stageTime = 0; time = 0; playing = true
+        chosenRate = 1; displayRate = 1
+        meltTarget = melt > 0.5 ? 1 : nil
+    }
+
+    /// Where the cue would travel with the current aim, for the on-table guide line.
+    var shotAimDirection: Vec2 {
+        let a = aimDegrees * Double.pi / 180
+        return Vec2(cos(a), sin(a))
+    }
+
+    /// Point the cue at the nearest ball still on the table.
+    func aimAtNearestBall() {
+        guard layout.count == 16, let d = NextShot.directionToNearestObjectBall(in: layout) else { return }
+        aimDegrees = atan2(d.y, d.x) * 180 / Double.pi
+    }
+
+    /// Record where everything stopped so the next shot starts from there.
+    private func adoptLayout(after tl: Timeline) {
+        layout = NextShot.layout(after: tl)
+        racked = false
+        aimAtNearestBall()
+    }
+
     private func load(_ tl: Timeline) {
+        adoptLayout(after: tl)
         timeline = tl
         captions = CaptionEngine.make(from: tl)
         timelineVersion += 1

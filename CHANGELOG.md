@@ -8,6 +8,30 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.2.1] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The game now builds for iPhone, iPad and Mac, and the TestFlight build runs on iPad as well as iPhone.
+- Why: The earlier build was set to iPhone only to get past Apple's first checks. The Boss wants all devices.
+- How: Turned iPad support back on and allowed all four screen orientations, which Apple requires for iPad. Checked clean builds for Mac, iPhone and iPad hardware and the simulator. Build number 3.
+
+## [0.2.0] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: You can now keep playing after the break. Take shot after shot from wherever the balls stopped: aim with a slider and nudge buttons, set power, cue-tip height (follow and draw) and side spin, then shoot. A scratched cue ball goes back on the head spot, pocketed balls stay gone, and Re-rack starts a fresh game. The new app icon (drawn by the other assistant) is in this build.
+- Why: Until now the game was one break and a replay. This turns it into something you can play, which is the next milestone on the roadmap.
+- How: A small new piece of the physics package carries the resting layout from one recorded shot to the next, with tests for the layout, the scratch respot and repeatability. The app panel switches from break controls to shot controls after the first shot. Pocket jaws and knuckles are still not built. Build number 2.
+
+## [0.1.2] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: Added the app version (0.1.1), build number 1, the no-special-encryption declaration, a placeholder app icon, and made the iOS build iPhone-only.
+- Why: App Store Connect refused the first TestFlight uploads: empty version fields, no app icon, and iPad orientation rules.
+- How: Build settings in both configurations plus an asset catalog with a generated 1024-pixel icon; no gameplay code changed.
+
 ## [0.1.1] - 10-November-2026
 
 Author: GPT-6.1 Sol (inherited reasoning)
