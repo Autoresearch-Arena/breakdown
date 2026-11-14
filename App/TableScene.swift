@@ -13,6 +13,8 @@
 //          Package 2 (13-Nov-2026) added: the Lens legend hangs off the camera's HUD anchor; test launch flags
 //          -lensDebugTime <seconds> and -lensDebugMelt <0..1> pin the clock and melt for screenshots, and
 //          -lensSelfTest runs the scrub-exactness check and prints the result.
+//          Package 4 (13-Nov-2026): the camera now takes the measured free space (a FramingRequest) and the clock, so it can
+//          frame between the title, caption slot and controls and push in on the break; nothing else here changed.
 //          Edit the file for the job you are doing; do not add Lens or table detail back into this one.
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
@@ -36,6 +38,8 @@ final class TableScene {
     private var timeline: Timeline
     private var loadedVersion = -1
     private var tourFrame = 0
+    /// The clock the last apply() used (after any test pinning), so the camera pushes in on exactly the frame drawn.
+    private var lastClock = 0.0
     var subscriptions: [EventSubscription] = []
 
     init(timeline: Timeline) {
@@ -81,6 +85,7 @@ final class TableScene {
         // -lensDebugTour a,b,c: before settling on the pinned time, visit these clock times, one per frame, forward
         // then back, so a screenshot afterwards can be compared with one taken with no tour (scrub exactness).
         if let tour = Self.launchList("-lensDebugTour"), tourFrame < tour.count { t = tour[tourFrame]; tourFrame += 1 }
+        lastClock = t
         let melt = Self.launchValue("-lensDebugMelt") ?? rawMelt
         let R = frame.ballRadius
         let m = Float(melt)
@@ -114,11 +119,11 @@ final class TableScene {
         lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
     }
 
-    /// Frames the whole table and swings from a low three-quarter view to straight down as the Lens melts in.
-    /// `topInset` is extra points of the top to keep clear (a caption column, say); zero keeps today's layout.
-    func updateCamera(melt: Double, viewSize: CGSize, bottomInset: Double, topInset: Double = 0) {
-        camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, viewSize: viewSize, bottomInset: bottomInset,
-                      topInset: topInset, frame: frame)
+    /// Frames the whole table in the measured free space, swings from a low three-quarter view to straight down as the
+    /// Lens melts in, and pushes in on the break (see TableCamera).
+    func updateCamera(melt: Double, request: FramingRequest) {
+        camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
+                      request: request, frame: frame)
     }
 
     // MARK: Test hooks

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Author: Claude Sonnet 5.5 High
+Date: 13-November-2026
+PURPOSE: The few Info.plist entries Xcode's generated plist cannot express through build settings. Today that is the
+         launch screen: a plain screen in the app's own near-black ground colour (the LaunchGround colour in the asset
+         catalog) so the app does not flash white before the dark table fades in. Merged with the generated plist.
+SRP/DRY check: Pass - only keys that have no INFOPLIST_KEY_ build setting live here; everything else stays in the project.
+-->
+<plist version="1.0">
+<dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchGround</string>
+	</dict>
+</dict>
+</plist>

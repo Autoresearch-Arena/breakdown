@@ -21,6 +21,10 @@
 //          iOS 27 / macOS 27 only and this app deploys to 26. So the glow is built in the pictures first (a thin bright
 //          core inside a wider soft halo, on every device), and the system bloom is added on top only where it exists,
 //          with the halo turned down so the two do not stack into mush. Launch with -noBloom to see the fallback.
+//          FADE (package 4, 0.4.0): the newest second of a path is full strength, then brightness drops steeply (a power
+//          curve under a smoothstep) to a faint floor by four seconds of age, and the line also narrows with age (the picture
+//          is thinner for older time), so a late-break frame shows bold fresh lines over dim hairlines instead of a scribble.
+//          Both curves are functions of age alone, baked into the one picture, so the clock-only exactness is untouched.
 //          Draw order is fixed with sort groups: grid, then trails, then rings, then arrows, then the legend.
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 import BreakdownLensModel
@@ -44,20 +48,37 @@ final class LensLayer {
     // MARK: Tunables
 
     /// Seconds of clock the newest part of a path stays at full brightness.
-    static let trailHold = 1.2
-    /// Age at which a path has faded to its faint trace, and how bright that trace is (0 to 1).
-    static let trailFadeEnd = 3.4
-    static let trailFloor = 0.20
+    static let trailHold = 1.0
+    /// Age at which a path has faded to its faint trace, and how bright that trace is (0 to 1). Package 4 (0.4.0) made
+    /// the hold shorter and the floor lower: by the end of a break the old 0.20 floor on thick lines was still a dense
+    /// scribble; now only the last second or so is bright and everything older is a faint hairline (see `trailWidth`).
+    static let trailFadeEnd = 4.0
+    static let trailFloor = 0.11
+    /// How thin the oldest path gets, as a share of its fresh width (the picture narrows the line as it ages).
+    static let trailOldWidth = 0.42
     /// Clock seconds an impact ring takes to expand and fade. Fixed in clock time so it depends on the clock alone.
     static let ringSpan = 0.4
 
-    /// Brightness of a trail at `age` seconds behind the ball: 1 while fresh, easing to `trailFloor`, never below it.
+    /// Fraction 0 (fresh) to 1 (fully faded) of the way through the fade at `age` seconds behind the ball, eased at
+    /// both ends so there is no visible kink where the hold ends or the trace begins.
+    static func trailFade(age: Double) -> Double {
+        if age <= trailHold { return 0 }
+        if age >= trailFadeEnd { return 1 }
+        let s = (age - trailHold) / (trailFadeEnd - trailHold)
+        return s * s * (3 - 2 * s)
+    }
+
+    /// Brightness of a trail at `age` seconds behind the ball: 1 while fresh, dropping steeply (the power makes the
+    /// first part of the fade quick, so path older than about two seconds is already dim), never below `trailFloor`.
     /// The trail picture is baked from this one function, so this is the single definition of the fade.
     static func trailBrightness(age: Double) -> Double {
-        if age <= trailHold { return 1 }
-        if age >= trailFadeEnd { return trailFloor }
-        let s = (age - trailHold) / (trailFadeEnd - trailHold)
-        return 1 - (1 - trailFloor) * s * s * (3 - 2 * s)
+        let f = trailFade(age: age)
+        return trailFloor + (1 - trailFloor) * pow(1 - f, 1.6)
+    }
+
+    /// Width of a trail at `age`: 1 while fresh, narrowing to `trailOldWidth`. Baked into the picture's cross-section.
+    static func trailWidth(age: Double) -> Double {
+        1 - (1 - trailOldWidth) * trailFade(age: age)
     }
 
     // MARK: Parts
@@ -120,7 +141,7 @@ final class LensLayer {
         let amber = Theme.amberRGB, cyan = Theme.cyanRGB
         let phaseColours: [MotionPhase: (Double, Double, Double)] = [.sliding: amber, .rolling: cyan]
         for (phase, c) in phaseColours {
-            if let tex = LensTextures.trail(color: c, haloGain: haloGain, brightness: { Self.trailBrightness(age: $0) }) {
+            if let tex = LensTextures.trail(color: c, haloGain: haloGain, brightness: { Self.trailBrightness(age: $0) }, width: { Self.trailWidth(age: $0) }) {
                 trailMaterials[phase] = Self.glow(tex)
             }
         }

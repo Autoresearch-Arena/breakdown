@@ -5,6 +5,9 @@
 //          in the side column everywhere else: ShowpieceView decides where). The ring position is the ball's place
 //          on the table, read from the recorded timeline and projected to the screen by the 3D view each frame, so no
 //          model change was needed. Reads the model; writes nothing to it.
+//          Package 4 (0.4.0): CaptionSlot reserves a fixed slot for the card on a phone held upright (sized to the tallest
+//          caption by an invisible sizer) so the camera frames the table below it instead of under it; the card is a
+//          little tighter (12 point padding) to give the table more room.
 // SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette.
 import BreakdownLensModel
 import BreakdownTimeline
@@ -13,13 +16,14 @@ import SwiftUI
 
 // MARK: Card
 
-struct CaptionCard: View {
+/// The words of one caption, laid out. Shared by the real card and by the hidden sizer that measures the tallest
+/// caption, so the slot reserved for captions is exactly as tall as the tallest card will be.
+private struct CaptionContent: View {
     let caption: Caption
-    @Environment(\.palette) private var palette
+    var accent: Color
 
     var body: some View {
-        let accent = palette.color(for: caption.accent)
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 3) {
             Text(caption.equation)
                 .font(Theme.equation)
                 .foregroundStyle(accent)
@@ -30,7 +34,19 @@ struct CaptionCard: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 20, padding: 14)
+    }
+}
+
+struct CaptionCard: View {
+    let caption: Caption
+    @Environment(\.palette) private var palette
+    /// Inner padding of the glass card; the sizer adds the same so both measure alike.
+    static let padding: CGFloat = 12
+
+    var body: some View {
+        let accent = palette.color(for: caption.accent)
+        CaptionContent(caption: caption, accent: accent)
+        .glassCard(cornerRadius: 20, padding: Self.padding)
         .overlay(alignment: .leading) {
             Capsule().fill(accent).frame(width: 3).padding(.vertical, 14).padding(.leading, 5)
         }
@@ -70,6 +86,56 @@ struct CaptionArea: View {
             }
         }
         .animation(.easeOut(duration: 0.2), value: model.activeCaption()?.id)
+    }
+}
+
+/// The caption's place on a phone held upright: a slot under the title row whose height is the height of the TALLEST
+/// caption of the shot (measured by laying every caption out, invisibly), capped at `maxHeight` for the largest text
+/// sizes, where the card scrolls instead. The slot is the same height whichever caption is showing, so the screen is
+/// laid out once and the camera can frame the table in the space below it: the card never lands on the table, and the
+/// table never jumps as captions change. The real card sits at the top of the slot.
+struct CaptionSlot: View {
+    let model: ShowpieceModel
+    let leader: LeaderState
+    let maxHeight: CGFloat
+    /// Height of the tallest caption laid out at the slot's width, from the sizer. Zero until the first layout.
+    @State private var tallest: CGFloat = 0
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// At the accessibility text sizes the controls already fill most of a phone, so the card gets a smaller cap
+    /// (it scrolls) to leave the table some room.
+    private var cap: CGFloat { typeSize.isAccessibilitySize ? maxHeight * 0.5 : maxHeight }
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            // The sizer is what gives the slot its height. A plain frame(maxHeight:) would not do: it expands to the
+            // whole offer, so the measured height is applied as an exact frame instead.
+            CaptionSizer(captions: model.captions)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tallest = $0 }
+            // With the Lens up and nothing to say right now (paused at the end, say) the slot shows a quiet hint instead
+            // of a blank hole; on the warm table the slot stays empty because the camera has not reserved it there.
+            if model.melt > 0.4 {
+                CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: cap)
+            }
+        }
+        .frame(height: min(tallest, cap), alignment: .top)
+    }
+}
+
+/// Every caption laid out at the card's width and thrown away: only its height counts. Taking the tallest child
+/// makes the ZStack around it exactly as tall as the tallest card. Hidden from the eye and from VoiceOver.
+private struct CaptionSizer: View, Equatable {
+    let captions: [Caption]
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            ForEach(captions) { c in
+                CaptionContent(caption: c, accent: .clear)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(CaptionCard.padding)
+            }
+        }
+        .hidden()
+        .accessibilityHidden(true)
     }
 }
 

@@ -10,6 +10,8 @@
 //          3. the LEGEND picture: the "what the colours mean" card shown the first time trails appear.
 //          Pixels are written straight into a byte buffer (no CoreGraphics compositing) so the brightness at each
 //          texel is exactly the number the formulas say. The legend is the only text and uses CoreText.
+//          Package 4 (0.4.0): the trail picture now also narrows the line with age (older path is a hairline) and the legend
+//          is one row instead of two, so it costs the table less height.
 //          Does NOT belong here: where the pictures are used (LensLayer.swift), the grid (BallTextures.gridTexture).
 // SRP/DRY check: Pass - Lens picture generation only; colours arrive from Theme through the caller.
 import CoreGraphics
@@ -90,8 +92,10 @@ enum LensTextures {
 
     // MARK: Trail picture
 
-    /// One picture per motion colour. `brightness` maps age in seconds to 0...1 (LensLayer.trailBrightness).
-    static func trail(color: (Double, Double, Double), haloGain: Double, brightness: (Double) -> Double) -> TextureResource? {
+    /// One picture per motion colour. `brightness` maps age in seconds to 0...1 (LensLayer.trailBrightness); `width` maps
+    /// age to the share of the fresh width still drawn (LensLayer.trailWidth).
+    static func trail(color: (Double, Double, Double), haloGain: Double, brightness: (Double) -> Double,
+                      width: (Double) -> Double) -> TextureResource? {
         texture(width: trailWidth, height: trailHeight) { x, y in
             let xn = (Double(x) + 0.5) / Double(trailWidth)
             // Future (right of the head): transparent. The sampler clamps to this edge, so every vertex whose time
@@ -99,8 +103,10 @@ enum LensTextures {
             guard xn <= headX else { return (color.0, color.1, color.2, 0) }
             let age = (headX - xn) * ageWindow
             let v = (Double(y) + 0.5) / Double(trailHeight)
-            let d = abs(v - 0.5) * 2
-            let cs = crossSection(d, haloGain: haloGain)
+            // Older path is drawn thinner: dividing the distance by the width shrinks the whole cross-section (core and
+            // halo) toward the middle, so a late-break frame shows fresh bold lines over old hairlines.
+            let d = abs(v - 0.5) * 2 / max(0.05, width(age))
+            let cs = crossSection(min(d, 1.0), haloGain: haloGain)
             // White-hot at the head, settling to the motion colour over the first quarter second; the core is
             // whiter than the halo so a bright line reads as light, not paint.
             let hot = exp(-age / 0.22) * 0.6 + cs.whiten * 0.42
@@ -126,7 +132,7 @@ enum LensTextures {
 
     // MARK: Legend
 
-    /// The legend card: two coloured line samples with names, and one quiet line saying what width and fade mean.
+    /// The legend card: one row with two coloured line samples and their names, then what width and fade mean.
     /// Drawn at 4 pixels per point of `CameraFraming.legendSize`. Not scaled by Dynamic Type (it is a baked picture);
     /// the plan's Open items note that.
     static func legend(amber: (Double, Double, Double), cyan: (Double, Double, Double)) -> TextureResource? {
@@ -139,7 +145,7 @@ enum LensTextures {
         ctx.scaleBy(x: scale, y: scale)
         let pw = Double(size.width), ph = Double(size.height)
         // Dark rounded card so the text reads over the grid at any contrast.
-        let card = CGPath(roundedRect: CGRect(x: 0, y: 0, width: pw, height: ph), cornerWidth: 10, cornerHeight: 10, transform: nil)
+        let card = CGPath(roundedRect: CGRect(x: 0, y: 0, width: pw, height: ph), cornerWidth: 13, cornerHeight: 13, transform: nil)
         ctx.addPath(card)
         // Reduce Transparency: a solid card. Increase Contrast: a brighter edge as well.
         ctx.setFillColor(CGColor(red: 0.03, green: 0.06, blue: 0.10, alpha: reduceTransparency ? 1.0 : 0.82))
@@ -152,17 +158,19 @@ enum LensTextures {
         func sample(_ c: (Double, Double, Double), x: Double, y: Double) {
             // Soft halo under a bright core, like the trail itself.
             ctx.setLineCap(.round)
-            ctx.setStrokeColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 0.30)); ctx.setLineWidth(9)
-            ctx.move(to: CGPoint(x: x, y: y)); ctx.addLine(to: CGPoint(x: x + 22, y: y)); ctx.strokePath()
-            ctx.setStrokeColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 1)); ctx.setLineWidth(3.5)
-            ctx.move(to: CGPoint(x: x, y: y)); ctx.addLine(to: CGPoint(x: x + 22, y: y)); ctx.strokePath()
+            ctx.setStrokeColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 0.30)); ctx.setLineWidth(8)
+            ctx.move(to: CGPoint(x: x, y: y)); ctx.addLine(to: CGPoint(x: x + 18, y: y)); ctx.strokePath()
+            ctx.setStrokeColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 1)); ctx.setLineWidth(3)
+            ctx.move(to: CGPoint(x: x, y: y)); ctx.addLine(to: CGPoint(x: x + 18, y: y)); ctx.strokePath()
         }
-        // Coordinates are y-up: the top row sits near ph.
-        sample(amber, x: 12, y: ph - 14)
-        sample(cyan, x: 112, y: ph - 14)
-        text("Sliding", at: CGPoint(x: 40, y: ph - 14), size: 13, weight: .semibold, white: 1.0, in: ctx)
-        text("Rolling", at: CGPoint(x: 140, y: ph - 14), size: 13, weight: .semibold, white: 1.0, in: ctx)
-        text("Thicker = faster. Older path fades.", at: CGPoint(x: 12, y: 10), size: 10.5, weight: .regular, white: increaseContrast ? 1.0 : 0.78, in: ctx)
+        // One row (package 4: the old two-row card cost the table 50 points of height on a phone). Coordinates are
+        // y-up; the row sits on the vertical middle.
+        let mid = ph * 0.5
+        sample(amber, x: 12, y: mid)
+        text("Sliding", at: CGPoint(x: 36, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
+        sample(cyan, x: 94, y: mid)
+        text("Rolling", at: CGPoint(x: 118, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
+        text("Thicker = faster. Fades with age.", at: CGPoint(x: 172, y: mid), size: 10, weight: .regular, white: increaseContrast ? 1.0 : 0.78, in: ctx)
         guard let image = ctx.makeImage() else { return nil }
         return try? TextureResource(image: image, options: .init(semantic: .color))
     }

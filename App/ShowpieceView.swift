@@ -7,6 +7,10 @@
 //          a side column on the right for the caption and the shot panel, so nothing covers the action. The camera is
 //          told how much room the controls take (measured, so large text pushes the table up instead of hiding it).
 //          Owns the model, the shot-panel switch and the leader state; every control lives in its own file.
+//          Package 4 (0.4.0, Claude Sonnet 5.5 High): the screen now MEASURES where its title row, caption slot and control
+//          strip really are and hands those edges and the safe areas to the 3D view (StageChrome), so the camera frames the
+//          table in exactly the space left between them; and the opening title fades in with the system's smooth motion
+//          instead of appearing and cutting away.
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -19,6 +23,10 @@ struct ShowpieceView: View {
     @State private var showShotPanel = false
     /// Height of the controls (and the shot panel on a phone), measured, for the camera and for safe spacing.
     @State private var bottomHeight: CGFloat = 0
+    /// Real laid-out edges in StageSpace, measured from the views themselves, for the camera (see StageChrome).
+    @State private var headerBottom: Double?
+    @State private var captionBottom: Double?
+    @State private var controlsTop: Double?
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
@@ -59,16 +67,21 @@ struct ShowpieceView: View {
     // MARK: The table and what floats over it
 
     private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool) -> some View {
-        // The 3D view is full-bleed, so its height includes the safe areas. The controls sit inside them.
-        let fullHeight = geo.size.height + geo.safeAreaInsets.top + geo.safeAreaInsets.bottom
-        let covered = (controlsInColumn ? 0 : bottomHeight) + geo.safeAreaInsets.bottom + 12 + 8
+        // The 3D view is full-bleed; the camera is told the safe areas and the measured edges of what floats over it.
+        // In the wide layout the table's view stops at the side column, so it has no safe inset on that side.
+        let i = geo.safeAreaInsets
+        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading, bottom: i.bottom, right: wide ? 0 : i.trailing),
+                                 headerBottom: headerBottom, captionBottom: wide ? nil : captionBottom,
+                                 controlsTop: controlsInColumn ? nil : controlsTop)
         return ZStack {
-            TableStage(model: model, bridge: bridge, leader: leader,
-                       showAim: showShotPanel, bottomInset: min(0.66, Double(covered / max(1, fullHeight))))
+            TableStage(model: model, bridge: bridge, leader: leader, showAim: showShotPanel, chrome: chrome)
             VStack(spacing: 10) {
                 ScreenHeader(model: model)
+                    .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
                 if !wide {
-                    CaptionArea(model: model, leader: leader, showsPlaceholder: false, maxHeight: geo.size.height * 0.3)
+                    // The caption has its own slot, sized for the tallest caption, so the table is framed below it.
+                    CaptionSlot(model: model, leader: leader, maxHeight: geo.size.height * 0.3)
+                        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { captionBottom = $0 }
                 }
                 Spacer(minLength: 0)
                 if !controlsInColumn { bottomStack(geo: geo, wide: wide) }
@@ -80,6 +93,8 @@ struct ShowpieceView: View {
             .frame(maxWidth: .infinity)
             if model.stage == .lead { TitleCard() }
         }
+        // The title and anything else that comes or goes with the opening uses the system's smooth motion, not a cut.
+        .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.stage == .lead)
     }
 
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
@@ -94,6 +109,7 @@ struct ShowpieceView: View {
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomHeight = $0 }
+        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
     // MARK: Side column (Mac, iPad, landscape)
@@ -174,9 +190,14 @@ private struct ScreenHeader: View {
     }
 }
 
+/// The opening title. It rises into place with the system's smooth animation (a gentle fade, scale and un-blur, the
+/// tagline a beat later) and leaves the same way, instead of appearing and cutting away. With Reduce Motion on it only
+/// fades, with no scale or blur.
 private struct TitleCard: View {
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
+    @State private var shown = false
 
     var body: some View {
         VStack(spacing: 8) {
@@ -188,11 +209,18 @@ private struct TitleCard: View {
             Text("watch the physics think")
                 .font(Theme.tagline)
                 .foregroundStyle(palette.accent)
+                .opacity(shown ? 1 : 0)
+                .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: shown)
         }
         .multilineTextAlignment(.center)
         .padding(.horizontal, 16)
         .shadow(color: .black.opacity(0.6), radius: 12)
-        .transition(.opacity)
+        .opacity(shown ? 1 : 0)
+        .scaleEffect(reduceMotion || shown ? 1 : 0.94)
+        .blur(radius: reduceMotion || shown ? 0 : 8)
+        // Leaving: fade and swell a touch (the stage's animation drives this transition).
+        .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 1.04)))
         .allowsHitTesting(false)
+        .onAppear { withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true } }
     }
 }

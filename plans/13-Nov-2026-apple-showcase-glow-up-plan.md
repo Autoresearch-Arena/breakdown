@@ -6,7 +6,7 @@ PURPOSE: The working plan for making Breakdown look and feel like a showcase of 
          how each one is checked.
 SRP/DRY check: Pass - checked README, ROADMAP, the spec and the existing plans; this plan covers presentation and
          feel only and links to the spec for game design instead of repeating it.
-Edited: Claude Sonnet 5.5 High, 13-November-2026 (package 2: recorded the glow route and the framing hand-offs under Open items).
+Edited: Claude Sonnet 5.5 High, 13-November-2026 (package 2: recorded the glow route and the framing hand-offs under Open items; package 4 / 0.4.0: recorded the measured framing, caption slot, trail fade and camera push under Open items).
 -->
 # Apple showcase glow-up
 
@@ -216,3 +216,13 @@ frames match.
 - Confirm the environment lighting route for package 1 the same way.
 - The Mac build has not been looked at by anyone. The first person on package 3 takes Mac screenshots of the
   current state before changing anything.
+- DONE (0.4.0, Claude Sonnet 5.5 High, 13-Nov-2026) Framing, camera and Lens readability. The package 2 hand-offs (a) to (d) above are closed:
+  the screen now measures the title row, the caption slot and the control strip (StageChrome in StageSpace) and the camera
+  frames the table in exactly the space between them (FramingRequest), so no guessed height fraction and no window read
+  remain; on a phone upright the caption has its own slot sized to the tallest caption, in the side column layouts the table is
+  framed in the table area only. Trails: hold 1.0 s, fade to a 0.11 floor by 4 s, narrowing with age. Camera: 3 percent push-in on
+  the break, settle over the last 3.5 s, launch pull-back, all a scale on the fitted distance, all off under Reduce Motion.
+  Opening: fade-up title, dark launch screen. Launch flags added: -frameDebug, -noPushIn, -forceLandscape.
+- Still open after 0.4.0: the largest text size on a phone held upright leaves the table small (the control strip fills most of the
+  screen, package 3 territory); the Mac window and iPad sideways were not looked at; the legend is still a baked picture (no
+  Dynamic Type); the leader line from the caption card to the ring runs across the table on a phone.
