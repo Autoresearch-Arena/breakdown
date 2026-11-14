@@ -72,11 +72,12 @@ struct ShotPanel: View {
                 Text(String(format: "%+.1f°", model.aimDegrees)).font(Theme.number).accessibilityHidden(true)
             }
             HStack(spacing: 8) {
-                Button { model.aimDegrees -= 0.25 } label: { Image(systemName: "minus").frame(width: 20, height: 20) }
+                Button { model.aimDegrees -= 0.25 } label: { Image(systemName: "minus").frame(width: 30, height: 30) }
                     .accessibilityLabel("Aim left a little")
                 Slider(value: $model.aimDegrees, in: -180...180) { Text("Aim") }
+                    .labelsHidden()   // the Mac draws a slider's label unless told not to; the row already shows it
                     .accessibilityValue(String(format: "%.1f degrees", model.aimDegrees))
-                Button { model.aimDegrees += 0.25 } label: { Image(systemName: "plus").frame(width: 20, height: 20) }
+                Button { model.aimDegrees += 0.25 } label: { Image(systemName: "plus").frame(width: 30, height: 30) }
                     .accessibilityLabel("Aim right a little")
             }
             .buttonStyle(.bordered)
@@ -132,6 +133,7 @@ private struct SliderRow: View {
 
     private var slider: some View {
         Slider(value: $value, in: range) { Text(label) }
+            .labelsHidden()
             .accessibilityValue(readout)
     }
 }

@@ -137,7 +137,7 @@ struct CaptionLeader: View {
                     let end = CGPoint(x: ring.x - dx / len * ringRadius, y: ring.y - dy / len * ringRadius)
                     var line = Path()
                     line.move(to: from); line.addLine(to: end)
-                    ctx.stroke(line, with: .color(color.opacity(0.9)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                    ctx.stroke(line, with: .color(color.opacity(0.6)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
                 }
             }
             let rect = CGRect(x: ring.x - ringRadius, y: ring.y - ringRadius, width: ringRadius * 2, height: ringRadius * 2)

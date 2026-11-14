@@ -54,15 +54,22 @@ struct ShowpieceToolbar: ToolbarContent {
 
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .navigation) {
-            PlayPauseButton(model: model).labelStyle(.iconOnly)
-            ReplayButton(model: model).labelStyle(.iconOnly)
+            PlayPauseButton(model: model).labelStyle(.iconOnly).help("Play or pause (space)")
+            ReplayButton(model: model).labelStyle(.iconOnly).help("Replay with the Lens (Command-R)")
         }
         ToolbarItem(placement: .principal) {
-            SpeedPicker(model: model).frame(minWidth: 220)
+            SpeedPicker(model: model).frame(minWidth: 220).help("Playback speed (Command-1 to 4)")
         }
         ToolbarItemGroup(placement: .primaryAction) {
-            ToggleButton(title: "Lens", symbol: "viewfinder", isOn: model.lensOn) { model.setLens(!model.lensOn) }
-            ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen) { shotPanelOpen.toggle() }
+            // Real toggles: the system draws the pressed state, so on and off are visible in the toolbar.
+            Toggle(isOn: Binding(get: { model.lensOn }, set: { model.setLens($0) })) {
+                Label("Lens", systemImage: "viewfinder")
+            }
+            .toggleStyle(.button)
+            .help("Show the Physics Lens (Command-L)")
+            Toggle(isOn: $shotPanelOpen) { Label("Your shot", systemImage: "target") }
+                .toggleStyle(.button)
+                .help("Take your own shot (Command-Y)")
         }
     }
 }

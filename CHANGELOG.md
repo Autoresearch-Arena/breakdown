@@ -1,12 +1,20 @@
 <!--
-Author: GPT-6.1 Sol (inherited reasoning)
-Date: 10-November-2026
+Author: Claude Sonnet 5.5 High
+Date: 13-November-2026
 PURPOSE: Record project changes, including documentation and licensing readiness without altering gameplay.
 SRP/DRY check: Pass — checked existing README, specification and history; links retain one source for detailed design.
 -->
 # Changelog
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
+
+## [0.3.0] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: Every control is now a standard Apple control. Buttons are Liquid Glass, play and pause morph with the system symbol effect, speed is a segmented control (a menu at the largest text sizes), and Lens and Your shot are toggle buttons whose label never changes, so the buttons beside them no longer jump. The caption has moved off the action: under the title on a phone held upright, in a side column on iPad, Mac and any sideways screen, with a ring around the ball it describes and a thin line back to the card. The shot panel (break, then shot after shot) works exactly as before but is built from standard sliders and buttons, and the table now moves up to clear it instead of being covered. The status label at the top right wraps instead of running off the edge. The scrub bar has a full-size touch area, a light haptic tick at each impact as you drag, and speaks its position to VoiceOver. On the Mac there is a real window toolbar, a Playback menu (space play or pause, Command-R replay, Command-L Lens, Command-1 to 4 speed, Command-Y your shot), pointer hover feedback and a minimum window size.
+- Why: The Boss judged the old look awful. The glow-up plan (package 3) asks for standard parts, one palette, text that scales, safe areas, 44 point touch targets and VoiceOver support, and a Mac build that has been looked at.
+- How: ShowpieceView was split into ShowpieceView (layout), TableStage (hosts the 3D scene), PlaybackControls, ScrubBar, CaptionViews, ShotPanel, Surfaces, MacChrome and Theme. Colours live once in Theme with light, dark and increased-contrast values. All text uses system text styles. The controls get their room from a measurement, so large text pushes the table up instead of hiding it. The ring is found by projecting the ball's table position (from the recorded timeline) through the camera; no model change. Not changed: the physics package, ShowpieceModel, the table, Lens, camera and sound files. Checked: iPhone simulator and Mac builds succeed, the physics tests pass, and screenshots on an iPhone 17 Pro simulator (portrait, landscape, largest text size, Increase Contrast, Reduce Transparency, Reduce Motion), an iPad Pro simulator and the Mac build were looked at. Not checked: a real device, a real VoiceOver run, haptics on hardware, light appearance (the app stays dark because the table is a dark room).
 
 ## [0.2.3] - 13-November-2026
 

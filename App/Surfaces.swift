@@ -49,4 +49,9 @@ enum ScreenLayout {
     static func isWide(_ size: CGSize) -> Bool {
         size.width >= 700 || size.width > size.height
     }
+
+    /// A phone turned sideways: too short to stack the controls under the table, so they move into the column.
+    static func isShort(_ size: CGSize) -> Bool {
+        size.width > size.height && size.height < 500
+    }
 }

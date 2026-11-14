@@ -26,15 +26,16 @@ struct ShowpieceView: View {
     var body: some View {
         GeometryReader { geo in
             let wide = ScreenLayout.isWide(geo.size)
+            let short = ScreenLayout.isShort(geo.size)
             ZStack {
                 palette.ground.ignoresSafeArea()
                 if wide {
                     HStack(spacing: 0) {
-                        stage(geo: geo, wide: true)
-                        sideColumn(geo: geo)
+                        stage(geo: geo, wide: true, controlsInColumn: short)
+                        sideColumn(geo: geo, controlsInColumn: short)
                     }
                 } else {
-                    stage(geo: geo, wide: false)
+                    stage(geo: geo, wide: false, controlsInColumn: false)
                 }
                 CaptionLeader(leader: leader)
             }
@@ -57,10 +58,10 @@ struct ShowpieceView: View {
 
     // MARK: The table and what floats over it
 
-    private func stage(geo: GeometryProxy, wide: Bool) -> some View {
+    private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool) -> some View {
         // The 3D view is full-bleed, so its height includes the safe areas. The controls sit inside them.
         let fullHeight = geo.size.height + geo.safeAreaInsets.top + geo.safeAreaInsets.bottom
-        let covered = bottomHeight + geo.safeAreaInsets.bottom + 12 + 8
+        let covered = (controlsInColumn ? 0 : bottomHeight) + geo.safeAreaInsets.bottom + 12 + 8
         return ZStack {
             TableStage(model: model, bridge: bridge, leader: leader,
                        showAim: showShotPanel, bottomInset: min(0.6, Double(covered / max(1, fullHeight))))
@@ -70,9 +71,10 @@ struct ShowpieceView: View {
                     CaptionArea(model: model, leader: leader, showsPlaceholder: false, maxHeight: geo.size.height * 0.3)
                 }
                 Spacer(minLength: 0)
-                bottomStack(geo: geo, wide: wide)
+                if !controlsInColumn { bottomStack(geo: geo, wide: wide) }
             }
             .padding(.horizontal, 16)
+            .padding(.top, 8)
             .padding(.bottom, 12)
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
@@ -96,19 +98,30 @@ struct ShowpieceView: View {
 
     // MARK: Side column (Mac, iPad, landscape)
 
-    private func sideColumn(geo: GeometryProxy) -> some View {
-        ScrollView {
-            VStack(spacing: 12) {
-                CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: .greatestFiniteMagnitude)
-                if showShotPanel {
-                    ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
-                        .transition(.opacity)
+    /// On a phone turned sideways there is no room under the table for the controls, so they join the column and the
+    /// table gets the full height.
+    private func sideColumn(geo: GeometryProxy, controlsInColumn: Bool) -> some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 12) {
+                    CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: .greatestFiniteMagnitude)
+                    if showShotPanel {
+                        ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+                            .transition(.opacity)
+                        // With the panel open there is no room to pin the controls too, so they scroll with it.
+                        if controlsInColumn { PlaybackControls(model: model, shotPanelOpen: $showShotPanel) }
+                    }
                 }
+                .padding(16)
+                .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
             }
-            .padding(16)
-            .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
+            .scrollBounceBehavior(.basedOnSize)
+            if controlsInColumn && !showShotPanel {
+                PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
         }
-        .scrollBounceBehavior(.basedOnSize)
         .frame(width: min(columnWidth, geo.size.width * 0.45))
         .background(palette.ground)
         .overlay(alignment: .leading) { Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea() }
@@ -131,13 +144,13 @@ private struct ScreenHeader: View {
             // On the Mac the window's title bar already says Breakdown. At the largest text sizes the wordmark would
             // fill the whole line and push the status off, so it gives way (the title card still names the app).
             if !typeSize.isAccessibilitySize {
-            Text("BREAKDOWN")
-                .font(.footnote.weight(.semibold))
-                .tracking(tracking)
-                .foregroundStyle(palette.paper.opacity(0.85))
-                .fixedSize()
-                .padding(.top, 8)
-                .accessibilityAddTraits(.isHeader)
+                Text("BREAKDOWN")
+                    .font(.footnote.weight(.semibold))
+                    .tracking(tracking)
+                    .foregroundStyle(palette.paper.opacity(0.85))
+                    .fixedSize()
+                    .padding(.top, 8)
+                    .accessibilityAddTraits(.isHeader)
             }
             #endif
             Spacer(minLength: 0)

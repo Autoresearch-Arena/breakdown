@@ -10,17 +10,6 @@
 //          ToggleButton now serves both toggles and the toolbar.
 import SwiftUI
 
-extension View {
-    /// At least 44 by 44 points on touch screens (Apple's minimum). Pointer-driven Mac controls keep standard sizes.
-    func touchTarget() -> some View {
-        #if os(iOS)
-        self.frame(minWidth: 44, minHeight: 44)
-        #else
-        self
-        #endif
-    }
-}
-
 enum PlaybackSpeed {
     static let rates: [Double] = [0.1, 0.25, 0.5, 1.0]
     static func label(_ r: Double) -> String { r.formatted(.number.precision(.fractionLength(0...2))) + "×" }
@@ -178,6 +167,7 @@ struct PlaybackControls: View {
                     ViewThatFits(in: .horizontal) {
                         oneRow
                         twoRows
+                        threeRows
                     }
                 }
             }
@@ -209,6 +199,22 @@ struct PlaybackControls: View {
                 shot
                 Spacer(minLength: 0)
             }
+        }
+    }
+
+    /// Narrow columns (a phone turned sideways, a small window): the third row takes Your shot.
+    private var threeRows: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 8) {
+                PlayPauseButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
+                SpeedPicker(model: model)
+            }
+            HStack(spacing: 8) {
+                lens
+                ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
+                Spacer(minLength: 0)
+            }
+            HStack(spacing: 8) { shot; Spacer(minLength: 0) }
         }
     }
 
