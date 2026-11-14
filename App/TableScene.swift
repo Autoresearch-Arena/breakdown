@@ -1,4 +1,4 @@
-// Author: Claude Sonnet 5.5 Medium
+// Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // PURPOSE: The thin coordinator of the 3D scene. Owns the root entity and the shared state (current timeline and
 //          table frame, the ball entities), wires the three jobs together, and runs the per-frame apply(): fade the
@@ -10,6 +10,9 @@
 //            TableBuilder.swift the static warm table, rails, cushions, pockets, balls, lights, reflections.
 //            LensLayer.swift    grid, trails, rings, arrows, aim line and their per-frame reveal.
 //            TableCamera.swift  camera rig, framing and the melt swing.
+//          Package 2 (13-Nov-2026) added: the Lens legend hangs off the camera's HUD anchor; test launch flags
+//          -lensDebugTime <seconds> and -lensDebugMelt <0..1> pin the clock and melt for screenshots, and
+//          -lensSelfTest runs the scrub-exactness check and prints the result.
 //          Edit the file for the job you are doing; do not add Lens or table detail back into this one.
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
@@ -32,6 +35,7 @@ final class TableScene {
     private var frame: TableFrame
     private var timeline: Timeline
     private var loadedVersion = -1
+    private var tourFrame = 0
     var subscriptions: [EventSubscription] = []
 
     init(timeline: Timeline) {
@@ -42,7 +46,8 @@ final class TableScene {
         root.addChild(tableGroup)
         root.addChild(lens.root)
         root.addChild(camera.rig)
-        lens.buildStatic(ballCount: timeline.ballCount, frame: frame)
+        lens.buildStatic(ballCount: timeline.ballCount, frame: frame, table: timeline.table)
+        camera.hud.addChild(lens.legend)
         for n in 0..<timeline.ballCount {
             let parts = TableBuilder.makeBall(number: n, radius: frame.ballRadius, parent: root)
             balls.append(parts.ball); bodies.append(parts.body); markers.append(parts.marker)
@@ -65,11 +70,18 @@ final class TableScene {
         for b in 0..<balls.count {
             balls[b].isEnabled = true
         }
+        if Self.launchFlag("-lensSelfTest") { runSelfTest() }
     }
 
     // MARK: Per frame
 
-    func apply(time t: Double, melt: Double, rate: Double, aim: AimPreview?) {
+    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?) {
+        // Test hooks (launch flags): pin the clock and/or the melt so a screenshot shows one exact frame.
+        var t = Self.launchValue("-lensDebugTime") ?? rawT
+        // -lensDebugTour a,b,c: before settling on the pinned time, visit these clock times, one per frame, forward
+        // then back, so a screenshot afterwards can be compared with one taken with no tour (scrub exactness).
+        if let tour = Self.launchList("-lensDebugTour"), tourFrame < tour.count { t = tour[tourFrame]; tourFrame += 1 }
+        let melt = Self.launchValue("-lensDebugMelt") ?? rawMelt
         let R = frame.ballRadius
         let m = Float(melt)
         let tableOpacity = max(0, 1 - Float(melt) * 1.15)
@@ -99,11 +111,58 @@ final class TableScene {
             visibility.append(visible)
         }
 
-        lens.apply(time: t, melt: melt, rate: rate, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
+        lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
     }
 
     /// Frames the whole table and swings from a low three-quarter view to straight down as the Lens melts in.
-    func updateCamera(melt: Double, viewSize: CGSize, bottomInset: Double) {
-        camera.update(melt: melt, viewSize: viewSize, bottomInset: bottomInset, frame: frame)
+    /// `topInset` is extra points of the top to keep clear (a caption column, say); zero keeps today's layout.
+    func updateCamera(melt: Double, viewSize: CGSize, bottomInset: Double, topInset: Double = 0) {
+        camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, viewSize: viewSize, bottomInset: bottomInset,
+                      topInset: topInset, frame: frame)
+    }
+
+    // MARK: Test hooks
+
+    private static func launchFlag(_ name: String) -> Bool { ProcessInfo.processInfo.arguments.contains(name) }
+
+    private static func launchList(_ name: String) -> [Double]? {
+        let a = ProcessInfo.processInfo.arguments
+        guard let i = a.firstIndex(of: name), i + 1 < a.count else { return nil }
+        return a[i + 1].split(separator: ",").compactMap { Double($0) }
+    }
+
+    private static func launchValue(_ name: String) -> Double? {
+        let a = ProcessInfo.processInfo.arguments
+        guard let i = a.firstIndex(of: name), i + 1 < a.count else { return nil }
+        return Double(a[i + 1])
+    }
+
+    /// Scrub-exactness check. Drives the Lens to a list of clock times, records its fingerprint at each, then
+    /// visits the same times again going backwards, then in a shuffled order, and compares. Also checks that the
+    /// trail fade only ever dims with age. Results go to the console (visible with simctl launch --console).
+    private func runSelfTest() {
+        let d = timeline.duration
+        let times = [0.0, 0.05, 0.3, 0.9, 1.7, 2.6, d * 0.5, d * 0.8, d].map { min($0, d) }
+        let visible = [Bool](repeating: true, count: timeline.ballCount)
+        func print(at t: Double) -> UInt64 {
+            lens.apply(time: t, melt: 1, aim: nil, timeline: timeline, frame: frame, ballVisible: visible)
+            return lens.fingerprint()
+        }
+        var first: [Double: UInt64] = [:]
+        for t in times { first[t] = print(at: t) }                     // forward
+        var mismatches = 0
+        for t in times.reversed() where print(at: t) != first[t] { mismatches += 1 }   // backward
+        for t in [times[5], times[1], times[8], times[0], times[6], times[3], times[2], times[7], times[4]] {
+            _ = print(at: d * 0.37)                                    // jump somewhere unrelated first
+            if print(at: t) != first[t] { mismatches += 1 }            // then back to a known time
+        }
+        // Different times should look different (guards against a fingerprint that ignores the clock).
+        let distinct = Set(first.values).count
+        var monotone = true
+        var prev = 2.0
+        for i in 0...400 { let b = LensLayer.trailBrightness(age: Double(i) * 0.01); if b > prev + 1e-12 { monotone = false }; prev = b }
+        NSLog("LENS-SELFTEST scrub mismatches=%d distinctStates=%d/%d fadeMonotone=%@ floor=%.2f bloom=%@ -> %@",
+              mismatches, distinct, times.count, monotone ? "yes" : "NO", LensLayer.trailBrightness(age: 99),
+              lens.bloomActive ? "on" : "off", (mismatches == 0 && monotone && distinct > 4) ? "PASS" : "FAIL")
     }
 }
