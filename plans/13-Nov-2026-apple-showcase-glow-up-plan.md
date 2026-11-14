@@ -6,6 +6,7 @@ PURPOSE: The working plan for making Breakdown look and feel like a showcase of 
          how each one is checked.
 SRP/DRY check: Pass - checked README, ROADMAP, the spec and the existing plans; this plan covers presentation and
          feel only and links to the spec for game design instead of repeating it.
+Edited: Claude Sonnet 5.5 High, 13-November-2026 (package 2: recorded the glow route and the framing hand-offs under Open items; package 4 / 0.4.0: recorded the measured framing, caption slot, trail fade and camera push under Open items).
 -->
 # Apple showcase glow-up
 
@@ -161,6 +162,21 @@ Done when the break feels like something hit something.
 Working pocket jaws, shot after shot, and the lessons in the spec. This is game work, not presentation, and
 follows the roadmap and spec. It is listed so nobody thinks the glow-up is the finish line.
 
+## Layout after the split (package 0, done 13-Nov-2026)
+
+The renderer is now four files in App, so three people can work at once without touching the same lines.
+
+- TableScene.swift: the thin coordinator. Owns the root, the shared state, loading a new shot, and the per-frame
+  step that fades the table and places the balls. Keep it short; do not add table or Lens detail back.
+- TableBuilder.swift: the static warm table. Felt, rails, cushions, corner blocks, pockets, the balls and their
+  materials, the lights and the lamp reflection. Package 1 and package 3 live here.
+- LensLayer.swift: the cold Lens. Grid, trails, rings, arrows, the aim line, their materials and their per-frame
+  reveal. Also holds the aim preview type. Package 2 lives here.
+- TableCamera.swift: the camera rig, framing and the melt swing. Package 3 camera work lives here.
+
+The split changed no behaviour: the title and table frames are byte-for-byte the same as before, and the Lens
+frames match.
+
 ## What this plan does not cover
 
 - The Unreal port and scan-and-smash. Both stay as later decisions in the roadmap.
@@ -169,7 +185,44 @@ follows the roadmap and spec. It is listed so nobody thinks the glow-up is the f
 
 ## Open items for whoever picks this up
 
-- Confirm in the installed Xcode which glow route package 2 can use, and record the answer here.
+- DONE (package 2, Claude Sonnet 5.5 High, 13-Nov-2026) Glow route. Checked in the installed Xcode 27.2 SDK: RealityKit has
+  a system bloom (BloomComponent with a hierarchical or unbounded scope, plus BloomOptionsComponent for strength,
+  threshold and blur radius) but it is marked iOS 27 / macOS 27 only; the old ARView post-process hook is not available
+  to RealityView. The app deploys to iOS 26 / macOS 26, so the glow is built into the pictures first on every device
+  (each trail is a thin bright core inside a wider soft halo, drawn into one generated texture) and the system bloom is
+  added only behind an availability check, on the Lens layer alone (hierarchical scope), with the halo turned down so the
+  two do not stack. Tested both ways: the iOS 27.2 simulator with bloom on, the same build with the -noBloom launch flag,
+  and an iOS 26.5 simulator (bloom correctly off). Additive blending is not offered by RealityKit's unlit material, which
+  is why the halo is ordinary alpha-blended and the picture carries the glow.
+- Package 2 hand-offs for package 3 (ShowpieceView): (a) the 3D view fills the whole window but the screen passes the
+  camera only the size inside the safe area, so the camera now asks the window for its real size and safe-area insets
+  itself; if package 3 changes the control strip, keep passing its height as the bottom inset (a share of the view
+  height, as now) or pass real points. (b) TableScene.updateCamera takes an optional topInset in points: pass the height of
+  the caption column there once captions move to the top, and the table will frame itself below it. (c) The Lens colour
+  legend is drawn inside the 3D scene as a baked picture, so it does not follow Dynamic Type and VoiceOver cannot read it;
+  give the 3D view an accessibility label that says what the colours mean (sliding amber, rolling cyan, thicker is
+  faster, older path fades). (d) The Lens is readable except where the caption card still sits on top of the bottom of
+  the table; package 3 moves the card.
+- Package 2 launch flags for checks (no effect in normal use): -noBloom, -forceReduceMotion, -lensDebugTime <s>,
+  -lensDebugMelt <0..1>, -lensDebugTour a,b,c, -lensSelfTest (prints PASS or FAIL for scrub exactness).
+- Package 2 framing check: CameraFraming.swift is pure maths; a scratch harness (kept on the build drive, not in the repo,
+  under breakdown-build/p2-lens-harness) sweeps ten window shapes (iPhone and iPad portrait and landscape, a narrow iPad
+  split, five Mac window shapes) and camera angles from 40 to 89 degrees and checks with an independent matrix projection
+  that every outer table corner lands inside the usable rectangle: all 170 cases pass.
+- Not verified by package 2: the Mac window itself (the Mac build compiles and the framing maths is checked for Mac shapes,
+  but a launched Mac window would not appear in this session, so no Mac screenshot was taken and the Mac window-inset
+  read in TableCamera has not been seen working), a real device, Dynamic Type at the largest size (the legend is a picture),
+  and Increase Contrast and Reduce Transparency were coded (stronger grid, solid legend card) but not screenshotted.
 - Confirm the environment lighting route for package 1 the same way.
 - The Mac build has not been looked at by anyone. The first person on package 3 takes Mac screenshots of the
   current state before changing anything.
+- DONE (0.4.0, Claude Sonnet 5.5 High, 13-Nov-2026) Framing, camera and Lens readability. The package 2 hand-offs (a) to (d) above are closed:
+  the screen now measures the title row, the caption slot and the control strip (StageChrome in StageSpace) and the camera
+  frames the table in exactly the space between them (FramingRequest), so no guessed height fraction and no window read
+  remain; on a phone upright the caption has its own slot sized to the tallest caption, in the side column layouts the table is
+  framed in the table area only. Trails: hold 1.0 s, fade to a 0.11 floor by 4 s, narrowing with age. Camera: 3 percent push-in on
+  the break, settle over the last 3.5 s, launch pull-back, all a scale on the fitted distance, all off under Reduce Motion.
+  Opening: fade-up title, dark launch screen. Launch flags added: -frameDebug, -noPushIn, -forceLandscape.
+- Still open after 0.4.0: the largest text size on a phone held upright leaves the table small (the control strip fills most of the
+  screen, package 3 territory); the Mac window and iPad sideways were not looked at; the legend is still a baked picture (no
+  Dynamic Type); the leader line from the caption card to the ring runs across the table on a phone.

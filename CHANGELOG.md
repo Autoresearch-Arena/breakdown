@@ -1,12 +1,119 @@
 <!--
-Author: GPT-6.1 Sol (inherited reasoning)
-Date: 10-November-2026
+Author: Claude Sonnet 5.5 High
+Date: 13-November-2026
 PURPOSE: Record project changes, including documentation and licensing readiness without altering gameplay.
 SRP/DRY check: Pass — checked existing README, specification and history; links retain one source for detailed design.
 -->
 # Changelog
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
+
+## [0.4.2] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: You now aim by touching the table. Open Your shot, drag anywhere on the table and the aim line swings to follow your finger. Put your finger on the white ball and pull back to set the power; a bar beside the table fills as you pull, a percentage shows by the ball, and the cue stick on screen draws back. Let go and the power stays; tap Shoot (or Break on a fresh rack). A small picture of the cue ball sets the tip: touch it for follow, draw, or left and right spin. The table also shows what the shot will do before you take it: the first ball the cue ball will hit, a ghost ball where they touch, and short lines for where each ball heads next (or the line to the cushion when nothing is in the way). The old sliders did not go away: More, then Fine controls, opens them in a sheet with spoken values, so VoiceOver and keyboard users have a full route. The panel is now one short row under the table instead of a stack of sliders, so the table stays whole above it. The first time the panel opens, a short hint explains the gestures and can be dismissed. On the Mac the pointer works the same way and the arrow keys fine-tune (left and right turn the aim, up and down change power, Return shoots). The break works the same way (drag chooses how far off the front ball you hit, now up to nearly a full ball width either side instead of about half, and the break has side spin too).
+- Why: The Boss judged the old look awful. Three sliders in a panel that covered the table you were aiming at was the worst of it. A new player should be able to break without instructions.
+- How: New files AimGeometry (the first-contact calculation and the screen-to-table camera maths), AimOverlay (the touch layer: gestures, keys, drawing), AimGauges (cue-ball picture and power bar). The touch is turned into a table position through the live camera, so it is right in portrait, landscape and mid-melt, with no copy of the camera numbers. The ghost is a plain geometric check against ball centres, not the solver, and it is a guide: the solver still decides what really happens, and the physics package is untouched. ShowpieceModel gained "active" power and tip values that point at the break values while racked and the shot values afterwards, so the gauges and the sliders always agree. The old fixed-length aim line in the 3D scene is switched off while the new overlay is up (its code in the Lens layer is left as it was). New launch flags for testing: -aimDemo and -aimDemoRack open the aiming panel without tapping, -aimDemoSheet opens the fine controls, and -aimScript break, shots or scratch drives a scripted aim, pull and shot through the same handlers a finger uses; -aimHintSeen NO shows the hint again. All stay silent with -muteSound. Also fixed: the left and right labels on the fine-aim nudge buttons were the wrong way round.
+- Checked: iPhone simulator (iOS 27.2) and Mac builds succeed, the 15 physics tests pass. On the iPhone simulator and an iPad simulator I looked at screenshots of: the aim line and ghost over a long shot, pulling back with the percentage showing, a shot playing (guide hidden, Shoot greyed until the balls stop), a second shot, a scratch (the cue ball dropped and came back on the head spot, aim ready again), a break from the full rack, the fine-controls sheet, and the largest text size. The scripted run checked that a pull of 55 percent gave 4.6 metres a second as the gauge says.
+- Not checked: real finger touches. The tool that sends taps to the simulator was not allowed in this run, so every drag in the screenshots came from the scripted run, which calls the same handlers but skips the system's touch delivery. A phone turned sideways (the wide layout was checked on iPad instead), the Mac window by eye (it builds and launches and stays up, but no screenshot was taken), real VoiceOver, Reduce Motion and Increase Contrast, haptic ticks on hardware. Whether the one-time hint is enough for a stranger to break unaided cannot be judged from screenshots; it needs a person who has never seen the game. The fine-controls sheet, at half height, covers the lower half of the table while open.
+
+## [0.4.1] - 13-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The app opens faster and dark. The launch screen is now the room's dark colour instead of white, and a dark cover over the window fades away once the table is built, so the table lights up instead of popping in. The pockets look right up close: every pocket now has a complete metal rim (the side pockets only showed part of a ring), and the cushion ends follow the pocket's round mouth with a rounded jaw face instead of a flat slanted block. The cloth hole is now exactly the size of the physics capture radius, so a ball taken near the pocket edge is no longer cut by cloth.
+- Why: The Boss judged the first glow-up slow to appear, with a blank first frame; wave one's review also listed the pocket flaws above.
+- How: A new StartupAssets file draws cloth, wood, floor, pocket wall, all sixteen ball faces, the Lens grid and the reflection environment on background threads the moment the app launches; the main thread only turns finished pictures into textures. The picture functions now return plain images and touch nothing shared. The launch colour comes from a colour asset plus a one-key Info.plist fragment (Config/Launch-Info.plist), because the generated settings cannot name a launch background. Launch argument -logStartup prints timings. Measured on a simulator (Apple silicon Mac, machine under heavy load, so rough): main-thread scene building in a Debug build fell from about 2.0 s to about 0.26 s (pictures now finish on background threads about 0.55 s after launch, before the table needs them); in a Release build it was already about 0.22 s and is now about 0.19 s, so Release gains little on this Mac. A real iPhone was not measured. Physics untouched; the 15 physics tests pass; iPhone simulator and Mac builds succeed.
+- Not checked: a real device, landscape or iPad screenshots, a ball caught mid-drop in a screenshot (the hole size follows the capture radius by construction), the Mac window launched, Increase Contrast launch colour (the launch screen is the standard dark). The cushion end still reads as a small angular face from some angles.
+
+## [0.4.0] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: The table is now framed in the space that is really free. On a phone held upright the caption card has its own slot under the title, so it no longer sits on the top rail, the pockets and the balls, and the table fills everything between that slot and the controls. On iPad, in landscape and on the Mac the table is framed inside the table area beside the caption column, centred and clear of the title and controls (before, it was framed against the whole window and slid under the column, and the colour key was cut off at the left edge). The colour key is one short row and only takes room from the table when there is no spare room above it. The Lens trails now fade properly: the newest second is bright, older path drops quickly to a faint, thinner line, so a frame late in the break reads clearly instead of looking like a scribble. The camera pushes in a little on the break and settles back as the balls stop (and eases in from slightly further back when the app opens); with Reduce Motion on, none of that happens and the camera holds one steady angle. The opening title now fades up with the system's smooth motion and leaves the same way, and the app no longer flashes white before the dark table appears.
+- Why: The Boss called the look awful. The caption hid the table, the table used a small part of the screen, the trails were still a dense scribble by the end of the break, and the first moments were a hard cut from a white screen.
+- How: The screen now measures the real edges of the title row, the caption slot and the control strip and hands them, with the safe areas, to the camera (new StageChrome and FramingRequest), replacing a guessed fraction of the height and the window read. The caption slot is as tall as the tallest caption of the shot, found by laying every caption out invisibly. Framing, the push-in and the settle live in the camera as a scale on the fitted distance, so they cannot fight the framing; the push is a function of the playback clock, so scrubbing either way shows the same camera. The free rectangle eases over a tenth of a second when layout changes. Trail brightness and width are baked into the one trail picture as functions of age, so the fade is still a pure function of the playback clock. Extra launch switches for checking: -frameDebug (prints the measured space), -noPushIn (turns off the push, settle and opening pull-back), -forceLandscape (iPhone). New small files: Breakdown-Info.plist and a LaunchGround colour for the dark launch screen. Touched outside the package list, minimally: ShowpieceView (measuring, caption slot, opening title), TableScene (hands the clock to the camera), the project file (points at the new plist).
+- Checked: iPhone simulator (iOS 27.2) portrait and landscape, iPad simulator portrait, and the Mac app window (one picture of the Lens at the end of the break, taken of that window only), launched with the sound muted every time; 15 physics tests pass; a scratch sweep of 2400 shape, margin, angle and orientation cases (iPhone, iPad, Mac shapes) puts every table corner inside the free space and touches its edge (as large as it can be); scrubbing a tour of clock times and back gave a pixel-identical frame to going straight there, both with the camera push off (Lens up) and with it on (warm table), and the Lens self-test passes. Largest text size on a phone upright shows a small table because the control strip fills most of the screen (not changed here). In portrait on a phone the Lens table is a little smaller than before, because it now sits below the caption instead of under it. Not checked: a real device, the Mac window with the warm table, iPad sideways (the simulator ignored the forced turn), Increase Contrast and Reduce Transparency screenshots for the new legend, VoiceOver, and the push-in as motion (only still frames at its start and end were compared).
+## [0.3.1] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: The Physics Lens now fits and glows. The whole table sits inside the screen, clear of the status bar, the title and the controls, in portrait and landscape on iPhone, iPad and Mac window shapes. Trails glow (a bright core inside a soft halo, with the system bloom added where the system has it), fade with age so the newest second or two is bright and older path stays as a faint trace, and stay exact when you scrub back and forth. Impact rings and velocity arrows glow and sit above the trails. The grid is quieter and now shows the cushion line, the rail outline and a ring at every pocket. A small legend (amber is sliding, cyan is rolling, thicker is faster, older fades) appears the first time trails show. With Reduce Motion on, the table and Lens cross-fade under one steady near-overhead camera instead of swinging.
+- Why: The Boss called the look awful: the table ran off the screen and behind the title in portrait, the trails were thin flat scribbles that all stayed on screen, and nobody could read a paused frame.
+- How: Camera framing is now exact maths (new CameraFraming file) fed by the window's real size and safe areas; trails are two meshes whose vertices carry the time the ball was there, with a generated picture slid along by the playback clock, so the fade is a pure function of the clock and no trail piece is ever switched on or off; rings use a fixed span of clock time. Bloom is behind an availability check (iOS 27 and macOS 27 only; the app targets 26). Checked: iPhone simulator (iOS 27.2 and 26.5) and Mac builds succeed, the 15 physics tests pass, a 170-case framing sweep passes, scrub exactness passes by fingerprint and by identical screenshots after a forward-and-back tour. Not checked: a launched Mac window, a real device, the largest text size. Physics untouched.
+
+## [0.3.0] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: Every control is now a standard Apple control. Buttons are Liquid Glass, play and pause morph with the system symbol effect, speed is a segmented control (a menu at the largest text sizes), and Lens and Your shot are toggle buttons whose label never changes, so the buttons beside them no longer jump. The caption has moved off the action: under the title on a phone held upright, in a side column on iPad, Mac and any sideways screen, with a ring around the ball it describes and a thin line back to the card. The shot panel (break, then shot after shot) works exactly as before but is built from standard sliders and buttons, and the table now moves up to clear it instead of being covered. The status label at the top right wraps instead of running off the edge. The scrub bar has a full-size touch area, a light haptic tick at each impact as you drag, and speaks its position to VoiceOver. On the Mac there is a real window toolbar, a Playback menu (space play or pause, Command-R replay, Command-L Lens, Command-1 to 4 speed, Command-Y your shot), pointer hover feedback and a minimum window size.
+- Why: The Boss judged the old look awful. The glow-up plan (package 3) asks for standard parts, one palette, text that scales, safe areas, 44 point touch targets and VoiceOver support, and a Mac build that has been looked at.
+- How: ShowpieceView was split into ShowpieceView (layout), TableStage (hosts the 3D scene), PlaybackControls, ScrubBar, CaptionViews, ShotPanel, Surfaces, MacChrome and Theme. Colours live once in Theme with light, dark and increased-contrast values. All text uses system text styles. The controls get their room from a measurement, so large text pushes the table up instead of hiding it. The ring is found by projecting the ball's table position (from the recorded timeline) through the camera; no model change. Not changed: the physics package, ShowpieceModel, the table, Lens, camera and sound files. Checked: iPhone simulator and Mac builds succeed, the physics tests pass, and screenshots on an iPhone 17 Pro simulator (portrait, landscape, largest text size, Increase Contrast, and Reduce Transparency compared on against off), an iPad Pro simulator and the Mac build were looked at, and the Mac Playback menu was clicked through. When the ball a caption describes is hidden behind the caption card (phone portrait puts the card across the top of the table) the ring is left out; the camera needs a top margin to fix that properly. Not checked: a real device, a real VoiceOver run, haptics on hardware, the look with Reduce Motion on (the setting is honoured in the code, but no motion was compared), light appearance (the app stays dark because the table is a dark room).
+
+## [0.2.5] - 13-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The break now has a proper sound and, on phones with a haptic motor, a feel. A sharp crack when the rack bursts, soft clicks for light contacts and brighter ones for hard hits, a weighty thump on the rail (heavier for harder hits), a short tock for the cue tip, and a thud followed by a rattle when a ball drops. The phone taps along with the same events, harder for stronger impacts. Nothing changes on a Mac or in the simulator, which have no haptic motor, and the mute launch switch still silences everything.
+- Why: The break should feel like something hit something. Before, thirty contacts at the same instant were played as a pile of identical clicks, and nothing was felt.
+- How: A new mapping file turns the impacts crossed in a frame into a few cues (one crack plus a few scatter clicks, not thirty sounds), scaled by each impact's recorded strength. Sound and haptics both read those cues. Haptics only fire while the clock plays forward live, so dragging the scrubber stays quiet and still. Haptics stay on under Reduce Motion, since that setting is about on-screen movement; the system's own haptics switch is still respected. A new launch switch, log feel, prints each cue for checking against the recording. Checked: builds and physics tests (see the work report). Not judged by ear or by hand: the actual sound and feel were not heard or felt, only checked through the cue log.
+
+## [0.2.4] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: The table now looks like a real pool table in a real room. The cloth stops exactly at the cushions (no more green sheet sticking out), the cushions have a rounded sloped nose, the wooden rails have a rounded edge, a real wood grain and pearl diamond sights, and each pocket is a proper well with a metal rim that a ball visibly drops into. There are head and foot spots on the cloth, legs under the table, and a dark floor with a warm pool of lamplight and a soft table shadow. The lamp is now a spotlight hung over the middle that casts shadows under every ball. Ball numbers are now real-sized discs at both ends of each ball's stripe line, drawn crisp and turned toward the camera, so in the resting rack nearly every number can be read on a phone.
+- Why: The Boss judged the old look awful. This is package 1 of the Apple showcase glow-up plan: a still of the resting table should pass for a product photo at a glance.
+- How: Lighting route confirmed against the installed Xcode 27.2 SDK: a SpotLight with shadows (available since iOS 18) as the key light, and the existing generated lamp picture kept as image-based light and retuned. New files for custom mesh building (TableMeshes), and for cloth, wood and floor pictures drawn in code (SurfaceTextures); the table builder and ball pictures were rebuilt. Everything new sits under the one table group, so the melt into the Lens still fades it all, and the Lens view shows none of it. Physics code is untouched. Checked: iPhone simulator stills at rest, mid-break and at four points of the melt; iPhone and Mac builds; physics tests. Not checked on a real device. Known gaps: no soft penumbra control on shadows (RealityKit offers none), the felt weave is drawn into the colour rather than a normal map, and the Lens still shows the old trails (package 2).
+
+## [0.2.3] - 13-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: Nothing changes on screen. The drawing code is now split into separate files for the table, the Lens, and the camera, with a short coordinator on top.
+- Why: The glow-up plan has three people changing the table look, the Lens, and the camera at once. One big file would have made them collide.
+- How: The old single scene file became four files, each with a header saying what belongs in it. Checked: iPhone and Mac builds succeed, the physics tests all pass, and screenshots from the iPhone 17 Pro simulator match the old build (the title and table frames are identical to the pixel; the Lens frames show the same grid, trails, rings, arrows and caption). Not checked on a real device.
+
+## [0.2.2] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: First look pass. The balls now reflect a warm lamp so they look glossy, the table is lit warmer, trails are wider where a ball is faster and have a soft glow strip, and all text uses Apple's own fonts (New York serif for titles and equations, the standard system font for labels, its monospaced cut for numbers) under one shared colour set. Controls are a solid dark strip instead of frosted glass. A new launch argument, -muteSound, silences the game for testing.
+- Why: The game looked generic and janky. This is the first slice of the plan to make it worth featuring on iPhone Duo. Gameplay and physics are unchanged.
+- How: New Theme file shared by the screen and the 3D scene; a lamp reflection image drawn in code and applied as image-based light; trail pieces get per-point width from the recorded speed plus a wider faint child strip. Still to do: trail pieces still appear in small steps (a shader-driven trail is the next rendering job), no bloom (iOS 27 only, needs an availability check), rails are still plain boxes, pockets are still flat discs. Checked: iPhone and Mac builds succeed, physics tests unchanged, and screenshots on the iPhone 17 Pro simulator before and after the Lens melts in. Not checked on a real device or the Duo.
+
+## [0.2.1] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The game now builds for iPhone, iPad and Mac, and the TestFlight build runs on iPad as well as iPhone.
+- Why: The earlier build was set to iPhone only to get past Apple's first checks. The Boss wants all devices.
+- How: Turned iPad support back on and allowed all four screen orientations, which Apple requires for iPad. Checked clean builds for Mac, iPhone and iPad hardware and the simulator. Build number 3.
+
+## [0.2.0] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: You can now keep playing after the break. Take shot after shot from wherever the balls stopped: aim with a slider and nudge buttons, set power, cue-tip height (follow and draw) and side spin, then shoot. A scratched cue ball goes back on the head spot, pocketed balls stay gone, and Re-rack starts a fresh game. The new app icon (drawn by the other assistant) is in this build.
+- Why: Until now the game was one break and a replay. This turns it into something you can play, which is the next milestone on the roadmap.
+- How: A small new piece of the physics package carries the resting layout from one recorded shot to the next, with tests for the layout, the scratch respot and repeatability. The app panel switches from break controls to shot controls after the first shot. Pocket jaws and knuckles are still not built. Build number 2.
+
+## [0.1.3] - 11-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Recorded the Boss's decision to ship the pool launch natively in Swift for iPhone Duo and keep Unreal for the later smashing phase. Corrected the Duo research note against Apple's own pages.
+- Why: Apple counts an app as optimized for iPhone Duo only when built with the iOS 27.1 SDK or later, and Unreal does not yet target it; the Duo simulator, needed for pose testing and store screenshots, also favours the native app.
+- How: Updated the Duo research note (new decision section and corrections: no second live display through scene accessories, hinge as a smoothed control only, confirmed screenshot sizes), spec section 14, README and roadmap. No code changed.
+
+## [0.1.2] - 11-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: Added the app version (0.1.1), build number 1, the no-special-encryption declaration, a placeholder app icon, and made the iOS build iPhone-only.
+- Why: App Store Connect refused the first TestFlight uploads: empty version fields, no app icon, and iPad orientation rules.
+- How: Build settings in both configurations plus an asset catalog with a generated 1024-pixel icon; no gameplay code changed.
 
 ## [0.1.1] - 10-November-2026
 

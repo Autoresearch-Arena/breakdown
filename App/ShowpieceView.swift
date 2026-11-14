@@ -1,301 +1,236 @@
-// Author: Claude Sonnet 5.5 Medium
-// Date: 03-November-2026
-// PURPOSE: The showpiece screen: the 3D table full-bleed, with a quiet title, the caption and equation card that
-//          appear once the table melts into the Lens, and the controls (play, speed, scrub with event ticks,
-//          Lens toggle, replay, and the player's own break). Same code on iPhone and Mac.
-// SRP/DRY check: Pass - presentation only; flow lives in ShowpieceModel, drawing in TableScene.
-import BreakdownLensModel
+// Author: Claude Sonnet 5.5 High
+// Date: 13-November-2026
+// PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title, the status
+//          label, the controls, and the caption and shot panel arranged for the screen at hand. On a phone held upright
+//          the caption sits under the title and the shot panel above the controls, all floating over the table. On
+//          the Mac, on iPad and in landscape the screen splits: the table on the left with the controls under it, and
+//          a side column on the right for the caption and the shot panel, so nothing covers the action. The camera is
+//          told how much room the controls take (measured, so large text pushes the table up instead of hiding it).
+//          Owns the model, the shot-panel switch and the leader state; every control lives in its own file.
+//          Package 4 (0.4.0, Claude Sonnet 5.5 High): the screen now MEASURES where its title row, caption slot and control
+//          strip really are and hands those edges and the safe areas to the 3D view (StageChrome), so the camera frames the
+//          table in exactly the space left between them; and the opening title fades in with the system's smooth motion
+//          instead of appearing and cutting away.
+//          Package 4 (13-Nov-2026): while "Your shot" is open the screen lays the aiming layer (AimOverlay) over the
+//          table, between the 3D view and the floating controls, and tells the scene not to draw its own fixed-length
+//          aim line (the overlay draws a better one that stops at the first ball). Launch flags -aimDemo (skip the cold
+//          open and open the aiming panel on the break's resting balls) and -aimDemoRack (same, on a fresh rack ready for
+//          a break) put the screen in the aiming state for screenshots without tapping through.
+// SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
+//          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
-import BreakdownTimeline
-import RealityKit
 import SwiftUI
-
-@MainActor
-final class SceneHolder {
-    var table: TableScene?
-}
 
 struct ShowpieceView: View {
     @State private var model = ShowpieceModel()
-    @State private var holder = SceneHolder()
-    @State private var showBreakPanel = false
-
-    private let ink = Color(red: 0.92, green: 0.96, blue: 1.0)
-    private let cyan = Color(red: 0.30, green: 0.88, blue: 1.0)
+    @State private var bridge = SceneBridge()
+    @State private var leader = LeaderState()
+    @State private var showShotPanel = false
+    /// Real laid-out edges in StageSpace, measured from the views themselves, for the camera (see StageChrome).
+    @State private var headerBottom: Double?
+    @State private var captionBottom: Double?
+    @State private var controlsTop: Double?
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
 
     var body: some View {
         GeometryReader { geo in
+            let wide = ScreenLayout.isWide(geo.size)
+            let short = ScreenLayout.isShort(geo.size)
             ZStack {
-                Color(red: 0.02, green: 0.03, blue: 0.05).ignoresSafeArea()
-                RealityView { content in
-                    #if os(iOS)
-                    content.camera = .virtual
-                    #endif
-                    let table = TableScene(timeline: model.timeline)
-                    content.add(table.root)
-                    holder.table = table
-                    table.load(model.timeline, version: model.timelineVersion)
-                    table.subscriptions.append(content.subscribe(to: SceneEvents.Update.self) { event in
-                        MainActor.assumeIsolated {
-                            model.advance(event.deltaTime)
-                            let aim: AimPreview? = showBreakPanel ? Self.aim(for: model) : nil
-                            table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim)
-                            let inset = min(0.38, 190 / max(300, geo.size.height))
-                            table.updateCamera(melt: model.melt, viewSize: geo.size, bottomInset: inset)
-                        }
-                    })
-                } update: { _ in
-                    if let table = holder.table, model.timelineVersion >= 0 {
-                        table.load(model.timeline, version: model.timelineVersion)
+                palette.ground.ignoresSafeArea()
+                if wide {
+                    HStack(spacing: 0) {
+                        stage(geo: geo, wide: true, controlsInColumn: short)
+                        sideColumn(geo: geo, controlsInColumn: short)
                     }
+                } else {
+                    stage(geo: geo, wide: false, controlsInColumn: false)
                 }
-                .ignoresSafeArea()
-
-                overlay(size: geo.size)
+                CaptionLeader(leader: leader)
             }
+            .coordinateSpace(name: StageSpace.name)
             .onAppear {
                 model.viewSize = geo.size
                 // Test hook: launch with -yourBreakDemo to run the player's own break without tapping.
                 if ProcessInfo.processInfo.arguments.contains("-yourBreakDemo") { model.aimOffset = 0.012; model.breakNow() }
+                // Test hook: -yourShotDemo opens the shot panel and plays a follow-up shot from the break's layout.
+                if ProcessInfo.processInfo.arguments.contains("-yourShotDemo") { showShotPanel = true; model.shootNow() }
+                // Test hooks for the aiming layer: skip the cold open, open "Your shot", optionally on a fresh rack.
+                if ProcessInfo.processInfo.arguments.contains("-aimDemo") || ProcessInfo.processInfo.arguments.contains("-aimDemoRack") {
+                    model.skipToResult(); model.setLens(false); showShotPanel = true
+                    if ProcessInfo.processInfo.arguments.contains("-aimDemoRack") { model.rerack() }
+                }
             }
             .onChange(of: geo.size) { _, new in model.viewSize = new }
         }
+        .focusedSceneValue(\.showpieceModel, model)
+        .focusedSceneValue(\.shotPanelOpen, $showShotPanel)
+        #if os(macOS)
+        .toolbar { ShowpieceToolbar(model: model, shotPanelOpen: $showShotPanel) }
+        #endif
     }
 
-    private static func aim(for model: ShowpieceModel) -> AimPreview {
-        let positions = Rack.positions(parameters: PoolParameters(), seed: UInt64(10 + model.breakSerial + 1))
-        let target = positions[1] + Vec2(0, model.aimOffset)
-        let dir = (target - positions[0]).normalized
-        return AimPreview(from: positions[0], direction: dir, length: 1.2, always: true)
-    }
+    // MARK: The table and what floats over it
 
-    // MARK: Overlay
-
-    @ViewBuilder
-    private func overlay(size: CGSize) -> some View {
-        VStack(spacing: 10) {
-            header
-            Spacer(minLength: 0)
-            if model.melt > 0.4, let caption = model.activeCaption() {
-                CaptionCard(caption: caption)
-                    .transition(.opacity)
-            }
-            if showBreakPanel { breakPanel }
-            controls
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 12)
-        .frame(maxWidth: 760)
-        .frame(maxWidth: .infinity)
-        .animation(.easeOut(duration: 0.2), value: model.activeCaption()?.id)
-        .overlay {
-            if model.stage == .lead { titleCard }
-        }
-    }
-
-    private var header: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text("BREAKDOWN")
-                .font(.system(.footnote, design: .rounded, weight: .heavy))
-                .tracking(3)
-                .foregroundStyle(ink.opacity(0.85))
-            Spacer()
-            Text(model.stageTitle)
-                .font(.system(.footnote, design: .rounded, weight: .semibold))
-                .foregroundStyle(cyan)
-                .opacity(model.stage == .lead ? 0 : 1)
-        }
-        .padding(.top, 8)
-    }
-
-    private var titleCard: some View {
-        VStack(spacing: 8) {
-            Text("BREAKDOWN")
-                .font(.system(size: 44, weight: .black, design: .rounded))
-                .tracking(8)
-                .foregroundStyle(ink)
-            Text("watch the physics think")
-                .font(.system(.subheadline, design: .serif))
-                .italic()
-                .foregroundStyle(cyan)
-        }
-        .shadow(color: .black.opacity(0.6), radius: 12)
-        .transition(.opacity)
-    }
-
-    // MARK: Controls
-
-    private var controls: some View {
-        VStack(spacing: 10) {
-            ScrubBar(model: model, accent: cyan)
-                .frame(height: 34)
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) { playButton; speedChips; Spacer(minLength: 4); lensButtons }
-                VStack(spacing: 8) {
-                    HStack(spacing: 8) { playButton; speedChips; Spacer(minLength: 0) }
-                    HStack(spacing: 8) { lensButtons; Spacer(minLength: 0) }
+    private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool) -> some View {
+        // The 3D view is full-bleed; the camera is told the safe areas and the measured edges of what floats over it.
+        // In the wide layout the table's view stops at the side column, so it has no safe inset on that side.
+        let i = geo.safeAreaInsets
+        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading, bottom: i.bottom, right: wide ? 0 : i.trailing),
+                                 headerBottom: headerBottom, captionBottom: wide ? nil : captionBottom,
+                                 controlsTop: controlsInColumn ? nil : controlsTop)
+        return ZStack {
+            // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
+            TableStage(model: model, bridge: bridge, leader: leader, showAim: false, chrome: chrome)
+            // Drag to aim, pull back to set power. Under the controls so they keep their touches.
+            if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
+            VStack(spacing: 10) {
+                ScreenHeader(model: model)
+                    .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
+                if !wide {
+                    // The caption has its own slot, sized for the tallest caption, so the table is framed below it.
+                    CaptionSlot(model: model, leader: leader, maxHeight: geo.size.height * 0.3)
+                        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { captionBottom = $0 }
                 }
+                Spacer(minLength: 0)
+                if !controlsInColumn { bottomStack(geo: geo, wide: wide) }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 12)
+            .frame(maxWidth: 760)
+            .frame(maxWidth: .infinity)
+            if model.stage == .lead { TitleCard() }
+        }
+        // The title and anything else that comes or goes with the opening uses the system's smooth motion, not a cut.
+        .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.stage == .lead)
+    }
+
+    private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
+        FittingScroll(maxHeight: geo.size.height * 0.62) {
+            VStack(spacing: 10) {
+                if showShotPanel && !wide {
+                    ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+                        .transition(.opacity)
+                }
+                PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
             }
         }
-        .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(cyan.opacity(0.25), lineWidth: 1))
+        .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
+        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
-    private var playButton: some View {
-        roundButton(system: model.playing && model.time < model.duration ? "pause.fill" : "play.fill") { model.togglePlay() }
-    }
+    // MARK: Side column (Mac, iPad, landscape)
 
-    private var speedChips: some View {
-        HStack(spacing: 6) {
-            ForEach([0.1, 0.25, 0.5, 1.0], id: \.self) { r in
-                chip(rateLabel(r), active: abs(model.displayRate - r) < 0.001 && model.chosenRate != nil) { model.setRate(r) }
-            }
-        }
-    }
-
-    private var lensButtons: some View {
-        HStack(spacing: 6) {
-            chip(model.lensOn ? "Lens on" : "Lens off", active: model.lensOn) { model.setLens(!model.lensOn) }
-            roundButton(system: "arrow.counterclockwise") { model.replay(withLens: true) }
-            chip(showBreakPanel ? "Close" : "Your break", active: showBreakPanel) { showBreakPanel.toggle() }
-        }
-    }
-
-    private func rateLabel(_ r: Double) -> String { r < 1 ? String(format: "%g×", r) : "1×" }
-
-    private func chip(_ text: String, active: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(text)
-                .font(.system(.caption, design: .rounded, weight: .semibold))
-                .monospacedDigit()
-                .lineLimit(1)
-                .padding(.horizontal, 10).padding(.vertical, 7)
-                .foregroundStyle(active ? Color.black : ink)
-                .background(active ? cyan : Color.white.opacity(0.10), in: Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func roundButton(system: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: system)
-                .font(.system(size: 14, weight: .bold))
-                .frame(width: 34, height: 30)
-                .foregroundStyle(ink)
-                .background(Color.white.opacity(0.12), in: Capsule())
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var breakPanel: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            sliderRow("Aim", value: $model.aimOffset, range: -0.03...0.03, text: String(format: "%+.0f mm", model.aimOffset * 1000))
-            sliderRow("Power", value: $model.power, range: 7...13, text: String(format: "%.1f m/s", model.power))
-            sliderRow("Cue tip", value: $model.tipHeight, range: -0.02...0.02, text: model.tipHeight < -0.002 ? "draw" : (model.tipHeight > 0.002 ? "follow" : "centre"))
-            Button {
-                showBreakPanel = false
-                model.breakNow()
-            } label: {
-                Text("Break")
-                    .font(.system(.headline, design: .rounded, weight: .heavy))
-                    .frame(maxWidth: .infinity).padding(.vertical, 10)
-                    .foregroundStyle(.black)
-                    .background(cyan, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-    }
-
-    private func sliderRow(_ label: String, value: Binding<Double>, range: ClosedRange<Double>, text: String) -> some View {
-        HStack {
-            Text(label).font(.system(.caption, design: .rounded, weight: .semibold)).frame(width: 56, alignment: .leading)
-                .foregroundStyle(ink.opacity(0.8))
-            Slider(value: value, in: range).tint(cyan)
-            Text(text).font(.system(.caption, design: .monospaced)).frame(width: 66, alignment: .trailing)
-                .foregroundStyle(ink)
-        }
-    }
-}
-
-// MARK: Caption card
-
-private struct CaptionCard: View {
-    let caption: Caption
-
-    private var accent: Color {
-        switch caption.accent {
-        case .strike: return Color(red: 1.0, green: 0.93, blue: 0.55)
-        case .impact: return Color(red: 1.0, green: 0.85, blue: 0.55)
-        case .cushion: return Color(red: 0.55, green: 0.72, blue: 1.0)
-        case .friction: return Color(red: 1.0, green: 0.62, blue: 0.25)
-        case .pocket: return Color(red: 1.0, green: 0.82, blue: 0.25)
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(caption.equation)
-                .font(.system(.title3, design: .monospaced, weight: .semibold))
-                .foregroundStyle(accent)
-            Text(caption.title)
-                .font(.system(.headline, design: .rounded, weight: .bold))
-                .foregroundStyle(.white)
-            Text(caption.detail)
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(Color.white.opacity(0.86))
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Color.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 2).fill(accent).frame(width: 3).padding(.vertical, 12)
-        }
-    }
-}
-
-// MARK: Scrub bar
-
-private struct ScrubBar: View {
-    let model: ShowpieceModel
-    let accent: Color
-
-    var body: some View {
-        GeometryReader { geo in
-            let w = geo.size.width
-            let d = max(model.duration, 0.001)
-            ZStack(alignment: .leading) {
-                Capsule().fill(Color.white.opacity(0.12)).frame(height: 6)
-                Canvas { ctx, size in
-                    for e in model.timeline.events {
-                        let x = size.width * (e.time / d)
-                        var c: Color
-                        var h: CGFloat = 8
-                        switch e.kind {
-                        case .ballBall: c = Color(red: 1, green: 0.9, blue: 0.6)
-                        case .cushion: c = Color(red: 0.5, green: 0.7, blue: 1)
-                        case .pocket: c = Color(red: 1, green: 0.8, blue: 0.2); h = 14
-                        case .cueStrike: c = .white; h = 14
-                        case .phaseTransition: continue
-                        }
-                        let rect = CGRect(x: x - 0.5, y: (size.height - h) / 2, width: 1.2, height: h)
-                        ctx.fill(Path(rect), with: .color(c.opacity(0.7)))
+    /// On a phone turned sideways there is no room under the table for the controls, so they join the column and the
+    /// table gets the full height.
+    private func sideColumn(geo: GeometryProxy, controlsInColumn: Bool) -> some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 12) {
+                    CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: .greatestFiniteMagnitude)
+                    if showShotPanel {
+                        ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+                            .transition(.opacity)
+                        // With the panel open there is no room to pin the controls too, so they scroll with it.
+                        if controlsInColumn { PlaybackControls(model: model, shotPanelOpen: $showShotPanel) }
                     }
                 }
-                .allowsHitTesting(false)
-                Capsule().fill(accent).frame(width: max(6, w * (model.time / d)), height: 6)
-                Circle().fill(.white).frame(width: 16, height: 16)
-                    .offset(x: min(max(0, w * (model.time / d) - 8), w - 16))
-                    .shadow(color: accent.opacity(0.8), radius: 4)
+                .padding(16)
+                .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
             }
-            .contentShape(Rectangle())
-            .gesture(DragGesture(minimumDistance: 0).onChanged { g in
-                model.scrub(to: Double(g.location.x / max(1, w)) * d)
-            })
-            .frame(maxHeight: .infinity)
+            .scrollBounceBehavior(.basedOnSize)
+            if controlsInColumn && !showShotPanel {
+                PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
         }
+        .frame(width: min(columnWidth, geo.size.width * 0.45))
+        .background(palette.ground)
+        .overlay(alignment: .leading) { Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea() }
+    }
+}
+
+// MARK: Header and title
+
+/// The wordmark and the status label, along the top inside the safe area. The status wraps to two lines instead of
+/// running off the edge, and sits on glass so it reads over the bright Lens grid as well as the dark table.
+private struct ScreenHeader: View {
+    let model: ShowpieceModel
+    @Environment(\.palette) private var palette
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @ScaledMetric(relativeTo: .footnote) private var tracking: CGFloat = 4
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            #if os(iOS)
+            // On the Mac the window's title bar already says Breakdown. At the largest text sizes the wordmark would
+            // fill the whole line and push the status off, so it gives way (the title card still names the app).
+            if !typeSize.isAccessibilitySize {
+                Text("BREAKDOWN")
+                    .font(.footnote.weight(.semibold))
+                    .tracking(tracking)
+                    .foregroundStyle(palette.paper.opacity(0.85))
+                    .fixedSize()
+                    .padding(.top, 8)
+                    .accessibilityAddTraits(.isHeader)
+            }
+            #endif
+            Spacer(minLength: 0)
+            status
+        }
+    }
+
+    private var status: some View {
+        // While the title card is up the label is invisible but keeps its space, so the header never changes height.
+        let lead = model.stage == .lead
+        return Text(lead ? "Table" : model.stageTitle)
+            .font(Theme.label)
+            .multilineTextAlignment(.trailing)
+            .lineLimit(2)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
+            .opacity(lead ? 0 : 1)
+            .accessibilityHidden(lead)
+            .accessibilityLabel("Status: \(model.stageTitle)")
+    }
+}
+
+/// The opening title. It rises into place with the system's smooth animation (a gentle fade, scale and un-blur, the
+/// tagline a beat later) and leaves the same way, instead of appearing and cutting away. With Reduce Motion on it only
+/// fades, with no scale or blur.
+private struct TitleCard: View {
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
+    @State private var shown = false
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Text("BREAKDOWN")
+                .font(Theme.display)
+                .tracking(tracking)
+                .foregroundStyle(palette.paper)
+                .accessibilityAddTraits(.isHeader)
+            Text("watch the physics think")
+                .font(Theme.tagline)
+                .foregroundStyle(palette.accent)
+                .opacity(shown ? 1 : 0)
+                .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: shown)
+        }
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, 16)
+        .shadow(color: .black.opacity(0.6), radius: 12)
+        .opacity(shown ? 1 : 0)
+        .scaleEffect(reduceMotion || shown ? 1 : 0.94)
+        .blur(radius: reduceMotion || shown ? 0 : 8)
+        // Leaving: fade and swell a touch (the stage's animation drives this transition).
+        .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 1.04)))
+        .allowsHitTesting(false)
+        .onAppear { withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true } }
     }
 }
