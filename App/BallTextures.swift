@@ -1,8 +1,12 @@
-// Author: Claude Sonnet 5.5 Medium
-// Date: 11-November-2026
+// Author: Claude Sonnet 5.5 High
+// Date: 13-November-2026
 // PURPOSE: Draws the ball surfaces (solid colours, stripes, number discs) and the Lens grid with CoreGraphics,
 //          so the same code makes textures on iPhone and Mac and no image assets have to be shipped.
-// SRP/DRY check: Pass - texture drawing only.
+//          13-Nov-2026 (glow-up package 1): ball pictures are now twice as sharp, with larger number discs, bolder
+//          numerals and a thin dark ring so the digit and the stripe still read when a ball is only a few dozen
+//          pixels wide on a phone; every picture gets mipmaps so distant balls do not shimmer.
+//          The cloth, wood and floor pictures live in SurfaceTextures.swift.
+// SRP/DRY check: Pass - ball and Lens-grid drawing only; table surfaces are in SurfaceTextures.swift.
 import CoreGraphics
 import CoreText
 import Foundation
@@ -17,7 +21,7 @@ enum BallTextures {
     ]
 
     static func ballTexture(number: Int) -> TextureResource? {
-        let w = 512, h = 256
+        let w = 1024, h = 512
         guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
                                   space: CGColorSpace(name: CGColorSpace.sRGB)!,
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
@@ -35,8 +39,12 @@ enum BallTextures {
         }
         // Number discs on two opposite sides of the equator so spin is easy to read.
         for cx in [Double(w) * 0.25, Double(w) * 0.75] {
+            let r = 74.0
+            // A thin ring in the ball's own colour, then the ivory disc, so the disc edge is crisp on any base.
+            ctx.setFillColor(CGColor(red: 0.05, green: 0.05, blue: 0.06, alpha: 0.55))
+            ctx.fillEllipse(in: CGRect(x: cx - r - 3, y: Double(h) / 2 - r - 3, width: 2 * r + 6, height: 2 * r + 6))
             ctx.setFillColor(ivory)
-            ctx.fillEllipse(in: CGRect(x: cx - 46, y: Double(h) / 2 - 46, width: 92, height: 92))
+            ctx.fillEllipse(in: CGRect(x: cx - r, y: Double(h) / 2 - r, width: 2 * r, height: 2 * r))
             drawNumber("\(number)", at: CGPoint(x: cx, y: Double(h) / 2), in: ctx)
         }
         return make(ctx)
@@ -44,7 +52,7 @@ enum BallTextures {
 
     private static func drawNumber(_ text: String, at center: CGPoint, in ctx: CGContext) {
         // Apple's own bold system font, so the ball numbers match the rest of the app.
-        let font = CTFontCreateUIFontForLanguage(.emphasizedSystem, 56, nil) ?? CTFontCreateWithName("Helvetica-Bold" as CFString, 56, nil)
+        let font = CTFontCreateUIFontForLanguage(.emphasizedSystem, 104, nil) ?? CTFontCreateWithName("Helvetica-Bold" as CFString, 104, nil)
         let attrs: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key(kCTFontAttributeName as String): font,
             NSAttributedString.Key(kCTForegroundColorFromContextAttributeName as String): true,
@@ -97,6 +105,6 @@ enum BallTextures {
 
     private static func make(_ ctx: CGContext) -> TextureResource? {
         guard let image = ctx.makeImage() else { return nil }
-        return try? TextureResource(image: image, options: .init(semantic: .color))
+        return try? TextureResource(image: image, options: .init(semantic: .color, mipmapsMode: .allocateAndGenerateAll))
     }
 }

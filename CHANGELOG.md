@@ -8,6 +8,14 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.2.4] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: The table now looks like a real pool table in a real room. The cloth stops exactly at the cushions (no more green sheet sticking out), the cushions have a rounded sloped nose, the wooden rails have a rounded edge, a real wood grain and pearl diamond sights, and each pocket is a proper well with a metal rim that a ball visibly drops into. There are head and foot spots on the cloth, legs under the table, and a dark floor with a warm pool of lamplight and a soft table shadow. The lamp is now a spotlight hung over the middle that casts shadows under every ball. Ball numbers and stripes are sharper and larger so they read at phone size.
+- Why: The Boss judged the old look awful. This is package 1 of the Apple showcase glow-up plan: a still of the resting table should pass for a product photo at a glance.
+- How: New files for custom mesh building (TableMeshes), and for cloth, wood and floor pictures drawn in code (SurfaceTextures); the table builder and ball pictures were rebuilt. Everything new sits under the one table group, so the melt into the Lens still fades it all, and the Lens view shows none of it. Physics code is untouched. Checked: iPhone simulator stills at rest, mid-break and at four points of the melt; iPhone and Mac builds; physics tests. Not checked on a real device. Known gaps: no soft penumbra control on shadows (RealityKit offers none), the felt weave is drawn into the colour rather than a normal map, and the Lens still shows the old trails (package 2).
+
 ## [0.2.3] - 13-November-2026
 
 Author: Claude Sonnet 5.5 Medium
