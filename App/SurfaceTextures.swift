@@ -141,7 +141,7 @@ enum SurfaceTextures {
     /// the table body in the middle of it, and a fade to fully transparent at the edge so no border shows against the
     /// dark. It is drawn as finished colour (and shown with an unlit material) so it looks the same however the scene
     /// lights change. `planeSize` is the square's side in metres; `tableHalf` is half the table's outer length and width.
-    static func roomFloor(size s: Int = 1024, planeSize: Float = 16, tableHalf: SIMD2<Float>) -> TextureResource? {
+    static func roomFloor(size s: Int = 512, planeSize: Float = 16, tableHalf: SIMD2<Float>) -> TextureResource? {
         var r = Raster(s, s)
         for y in 0..<s {
             for x in 0..<s {
@@ -177,8 +177,8 @@ enum SurfaceTextures {
         var r = Raster(w, h)
         for y in 0..<h {
             let t = Float(y) / Float(h - 1)
-            let k = pow(1 - t, 2.2)
-            for x in 0..<w { r.set(x, y, 0.20 * k + 0.004, 0.15 * k + 0.004, 0.12 * k + 0.004) }
+            let k = pow(1 - t, 1.8)
+            for x in 0..<w { r.set(x, y, 0.40 * k + 0.004, 0.30 * k + 0.004, 0.24 * k + 0.004) }
         }
         return texture(r)
     }

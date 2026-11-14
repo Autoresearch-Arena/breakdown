@@ -219,7 +219,7 @@ enum TableBuilder {
         var diamonds = MeshBuilder()
         let railMid = c + railWidth * 0.5
         func diamond(at p: SIMD2<Float>, alongX: Bool) {
-            let hl: Float = 0.012, hw: Float = 0.0075
+            let hl: Float = 0.016, hw: Float = 0.010
             let along = alongX ? SIMD2<Float>(1, 0) : SIMD2<Float>(0, 1), across = alongX ? SIMD2<Float>(0, 1) : SIMD2<Float>(1, 0)
             let pts = [p + along * hl, p + across * hw, p - along * hl, p - across * hw]
             diamonds.addFlat(pts, y: railTop + 0.0007, normal: SIMD3(0, 1, 0)) { _, _ in .zero }
@@ -305,7 +305,7 @@ enum TableBuilder {
         lamp.look(at: .zero, from: SIMD3(-0.25, 2.3, 0.45), relativeTo: nil)
         parent.addChild(lamp)
         let fill = Entity()
-        fill.components.set(DirectionalLightComponent(color: PlatformColor(red: 0.75, green: 0.85, blue: 1.0, alpha: 1), intensity: 350, isRealWorldProxy: false))
+        fill.components.set(DirectionalLightComponent(color: PlatformColor(red: 0.75, green: 0.85, blue: 1.0, alpha: 1), intensity: 650, isRealWorldProxy: false))
         fill.look(at: .zero, from: SIMD3(1.5, 2.0, -1.5), relativeTo: nil)
         parent.addChild(fill)
     }
