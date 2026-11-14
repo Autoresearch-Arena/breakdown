@@ -8,6 +8,14 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.2.4] - 13-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The break now has a proper sound and, on phones with a haptic motor, a feel. A sharp crack when the rack bursts, soft clicks for light contacts and brighter ones for hard hits, a weighty thump on the rail (heavier for harder hits), a short tock for the cue tip, and a thud followed by a rattle when a ball drops. The phone taps along with the same events, harder for stronger impacts. Nothing changes on a Mac or in the simulator, which have no haptic motor, and the mute launch switch still silences everything.
+- Why: The break should feel like something hit something. Before, thirty contacts at the same instant were played as a pile of identical clicks, and nothing was felt.
+- How: A new mapping file turns the impacts crossed in a frame into a few cues (one crack plus a few scatter clicks, not thirty sounds), scaled by each impact's recorded strength. Sound and haptics both read those cues. Haptics only fire while the clock plays forward live, so dragging the scrubber stays quiet and still. Haptics stay on under Reduce Motion, since that setting is about on-screen movement; the system's own haptics switch is still respected. A new launch switch, log feel, prints each cue for checking against the recording. Checked: builds and physics tests (see the work report). Not judged by ear or by hand: the actual sound and feel were not heard or felt, only checked through the cue log.
+
 ## [0.2.3] - 13-November-2026
 
 Author: Claude Sonnet 5.5 Medium

@@ -1,11 +1,11 @@
 // Author: Claude Sonnet 5.5 Medium
-// Date: 11-November-2026
+// Date: 13-November-2026
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
 //          shot after shot from wherever the balls came to rest (aim, power, cue-tip height and side).
 //          The timeline is solved once; this only moves a playback clock over it, so replay, reverse and slow
-//          motion are exact. Sound fires as the clock crosses recorded events.
+//          motion are exact. Sound and haptics fire together as the live clock crosses recorded events.
 // SRP/DRY check: Pass - playback state and flow only; drawing is TableScene, wording is CaptionEngine.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -56,6 +56,7 @@ final class ShowpieceModel {
     private var stageTime = 0.0
     private let freezeTime: Double
     private let sound = SoundBoard()
+    private let haptics = Haptics()
 
     init() {
         let tl = PoolSolver.simulate(Rack.showpieceBreak())
@@ -251,13 +252,14 @@ final class ShowpieceModel {
 
     private func fireSounds(from a: Double, to b: Double) {
         guard b > a else { return }
-        // Events are sorted by time, so scan only the span crossed this frame.
-        var fired = 0
-        for e in timeline.events where e.time > a && e.time <= b {
-            sound.play(e)
-            fired += 1
-            if fired >= 6 { break }
-        }
+        // Events are sorted by time, so scan only the span crossed this frame. Only live playback calls this
+        // (scrubbing sets the time directly), so touch and sound never fire while dragging the scrubber. An event
+        // stamped exactly zero (the cue tip strike) counts as crossed when playback starts from the very start.
+        let crossed = timeline.events.filter { ($0.time > a || (a <= 0 && $0.time <= 0)) && $0.time <= b }
+        guard !crossed.isEmpty else { return }
+        let cues = FeelMapping.cues(for: crossed)
+        sound.play(cues, at: b)
+        haptics.play(cues)
     }
 
     // MARK: Captions
