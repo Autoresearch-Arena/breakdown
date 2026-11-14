@@ -81,7 +81,7 @@ enum SurfaceTextures {
     /// Billiard cloth across the whole playing surface (one picture, mapped once from corner to corner, 2:1).
     /// Woven threads, a brushed nap that runs along the table, and a few soft worn patches. The base colour is the
     /// tournament green-teal the rest of the scene is tuned for.
-    static func cloth(width w: Int = 1024, height h: Int = 512) -> TextureResource? {
+    static func cloth(width w: Int = 768, height h: Int = 384) -> TextureResource? {
         var r = Raster(w, h)
         let base: (Float, Float, Float) = (0.045, 0.40, 0.31)
         let pitch = 3   // pixels per thread
