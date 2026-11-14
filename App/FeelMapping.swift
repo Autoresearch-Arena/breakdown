@@ -47,7 +47,7 @@ enum FeelMapping {
     static func pocketStrength(_ e: LensEvent) -> Double {
         guard let b = e.balls.first else { return 0.6 }
         let speed = b.velocityBefore.lengthSquared.squareRoot()
-        return min(1, max(0.35, speed / 3.0))
+        return min(1, max(0.4, speed / 2.0))
     }
 
     /// Collapse the events crossed in one frame into the cues to play. Events of any order are accepted.
