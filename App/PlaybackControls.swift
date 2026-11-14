@@ -3,11 +3,13 @@
 // PURPOSE: The playback controls, built from standard parts: system buttons in Liquid Glass, SF Symbols with the
 //          standard replace and bounce symbol effects, a segmented picker for speed (a menu at the largest text
 //          sizes), and two toggle-style buttons (Lens, Your shot) whose label never changes, so nothing beside them
-//          can shift. The small pieces (PlayPauseButton, SpeedPicker, ToggleButton, ReplayButton) are reused by the
-//          Mac toolbar; PlaybackControls lays them out for the bottom of the screen on iPhone, iPad and Mac.
+//          can shift. The small pieces (PlayPauseButton, SpeedPicker, ReplayButton) are also used by the Mac toolbar
+//          (ToggleButton is the iPhone and iPad version of the Lens and Your shot toggles; the Mac toolbar uses the
+//          system's own toggle buttons). PlaybackControls lays them out at the bottom of the screen, or in the side
+//          column on a phone turned sideways; on the Mac it shows only the scrub bar because the toolbar has the buttons.
 //          Writes to the model only through its own play, rate, Lens and replay methods.
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
-//          ToggleButton now serves both toggles and the toolbar.
+//          ToggleButton now serves both iPhone and iPad toggles.
 import SwiftUI
 
 enum PlaybackSpeed {

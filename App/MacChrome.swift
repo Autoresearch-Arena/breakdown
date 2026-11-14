@@ -3,10 +3,11 @@
 // PURPOSE: What makes the Mac build feel like a Mac app, and what iPad gains with a hardware keyboard: a real window
 //          toolbar (play, speed, Lens, replay, Your shot), a Playback menu with keyboard shortcuts (space plays or
 //          pauses, Command-R replays, Command-L toggles the Lens, Command-1 to 4 pick the speed, Command-Y opens the
-//          shot panel), and the plumbing that lets menu items reach the window's model. The toolbar reuses the
-//          controls from PlaybackControls, so a control has one definition. Writes to the model only through its
+//          shot panel), and the plumbing that lets menu items reach the window's model. The toolbar reuses the play,
+//          replay and speed controls from PlaybackControls and uses the system's own toggle buttons for Lens and
+//          Your shot, which draw their pressed state natively in a Mac toolbar. Writes to the model only through its
 //          public methods.
-// SRP/DRY check: Pass - menu and toolbar only; checked PlaybackControls, whose pieces are reused here, not copied.
+// SRP/DRY check: Pass - menu and toolbar only; checked PlaybackControls, whose play, replay and speed pieces are reused here.
 import SwiftUI
 
 // MARK: Plumbing: menu commands find the front window's model through focused values.

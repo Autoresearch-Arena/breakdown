@@ -128,6 +128,9 @@ struct CaptionLeader: View {
             guard let ring = leader.ring else { return }
             let color = palette.color(for: leader.accent)
             let card = leader.card
+            // A ring drawn over the card would strike through its words. When the ball is hidden behind the card
+            // (the phone layout puts the card across the top of the table) there is nothing useful to draw.
+            if !card.isEmpty, card.insetBy(dx: -ringRadius, dy: -ringRadius).contains(ring) { return }
             // Line from the nearest point on the card's edge to the ring's edge, unless the ball sits under the card.
             if !card.isEmpty, !card.contains(ring) {
                 let from = CGPoint(x: min(max(ring.x, card.minX), card.maxX), y: min(max(ring.y, card.minY), card.maxY))

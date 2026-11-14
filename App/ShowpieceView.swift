@@ -64,7 +64,7 @@ struct ShowpieceView: View {
         let covered = (controlsInColumn ? 0 : bottomHeight) + geo.safeAreaInsets.bottom + 12 + 8
         return ZStack {
             TableStage(model: model, bridge: bridge, leader: leader,
-                       showAim: showShotPanel, bottomInset: min(0.6, Double(covered / max(1, fullHeight))))
+                       showAim: showShotPanel, bottomInset: min(0.66, Double(covered / max(1, fullHeight))))
             VStack(spacing: 10) {
                 ScreenHeader(model: model)
                 if !wide {
@@ -83,7 +83,7 @@ struct ShowpieceView: View {
     }
 
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
-        FittingScroll(maxHeight: geo.size.height * 0.55) {
+        FittingScroll(maxHeight: geo.size.height * 0.62) {
             VStack(spacing: 10) {
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
