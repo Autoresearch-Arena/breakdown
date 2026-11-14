@@ -8,6 +8,14 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.2.4] - 13-November-2026
+
+Author: Claude Sonnet 5.5 High
+
+- What: The Physics Lens now fits and glows. The whole table sits inside the screen, clear of the status bar, the title and the controls, in portrait and landscape on iPhone, iPad and Mac window shapes. Trails glow (a bright core inside a soft halo, with the system bloom added where the system has it), fade with age so the newest second or two is bright and older path stays as a faint trace, and stay exact when you scrub back and forth. Impact rings and velocity arrows glow and sit above the trails. The grid is quieter and now shows the cushion line, the rail outline and a ring at every pocket. A small legend (amber is sliding, cyan is rolling, thicker is faster, older fades) appears the first time trails show. With Reduce Motion on, the table and Lens cross-fade under one steady near-overhead camera instead of swinging.
+- Why: The Boss called the look awful: the table ran off the screen and behind the title in portrait, the trails were thin flat scribbles that all stayed on screen, and nobody could read a paused frame.
+- How: Camera framing is now exact maths (new CameraFraming file) fed by the window's real size and safe areas; trails are two meshes whose vertices carry the time the ball was there, with a generated picture slid along by the playback clock, so the fade is a pure function of the clock and no trail piece is ever switched on or off; rings use a fixed span of clock time. Bloom is behind an availability check (iOS 27 and macOS 27 only; the app targets 26). Checked: iPhone simulator (iOS 27.2 and 26.5) and Mac builds succeed, the 15 physics tests pass, a 170-case framing sweep passes, scrub exactness passes by fingerprint and by identical screenshots after a forward-and-back tour. Not checked: a launched Mac window, a real device, the largest text size. Physics untouched.
+
 ## [0.2.3] - 13-November-2026
 
 Author: Claude Sonnet 5.5 Medium
