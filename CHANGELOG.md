@@ -8,6 +8,14 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.2.3] - 13-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: Nothing changes on screen. The drawing code is now split into separate files for the table, the Lens, and the camera, with a short coordinator on top.
+- Why: The glow-up plan has three people changing the table look, the Lens, and the camera at once. One big file would have made them collide.
+- How: The old single scene file became four files, each with a header saying what belongs in it. Checked: iPhone and Mac builds succeed, the physics tests all pass, and screenshots from the iPhone 17 Pro simulator match the old build (the title and table frames are identical to the pixel; the Lens frames show the same grid, trails, rings, arrows and caption). Not checked on a real device.
+
 ## [0.2.2] - 11-November-2026
 
 Author: Claude Sonnet 5.5 Medium

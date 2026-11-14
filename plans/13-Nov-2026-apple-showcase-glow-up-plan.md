@@ -161,6 +161,21 @@ Done when the break feels like something hit something.
 Working pocket jaws, shot after shot, and the lessons in the spec. This is game work, not presentation, and
 follows the roadmap and spec. It is listed so nobody thinks the glow-up is the finish line.
 
+## Layout after the split (package 0, done 13-Nov-2026)
+
+The renderer is now four files in App, so three people can work at once without touching the same lines.
+
+- TableScene.swift: the thin coordinator. Owns the root, the shared state, loading a new shot, and the per-frame
+  step that fades the table and places the balls. Keep it short; do not add table or Lens detail back.
+- TableBuilder.swift: the static warm table. Felt, rails, cushions, corner blocks, pockets, the balls and their
+  materials, the lights and the lamp reflection. Package 1 and package 3 live here.
+- LensLayer.swift: the cold Lens. Grid, trails, rings, arrows, the aim line, their materials and their per-frame
+  reveal. Also holds the aim preview type. Package 2 lives here.
+- TableCamera.swift: the camera rig, framing and the melt swing. Package 3 camera work lives here.
+
+The split changed no behaviour: the title and table frames are byte-for-byte the same as before, and the Lens
+frames match.
+
 ## What this plan does not cover
 
 - The Unreal port and scan-and-smash. Both stay as later decisions in the roadmap.
