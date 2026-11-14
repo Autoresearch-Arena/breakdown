@@ -7,6 +7,11 @@
 //          a side column on the right for the caption and the shot panel, so nothing covers the action. The camera is
 //          told how much room the controls take (measured, so large text pushes the table up instead of hiding it).
 //          Owns the model, the shot-panel switch and the leader state; every control lives in its own file.
+//          Package 4 (13-Nov-2026): while "Your shot" is open the screen lays the aiming layer (AimOverlay) over the
+//          table, between the 3D view and the floating controls, and tells the scene not to draw its own fixed-length
+//          aim line (the overlay draws a better one that stops at the first ball). Launch flags -aimDemo (skip the cold
+//          open and open the aiming panel on the break's resting balls) and -aimDemoRack (same, on a fresh rack ready for
+//          a break) put the screen in the aiming state for screenshots without tapping through.
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -46,6 +51,11 @@ struct ShowpieceView: View {
                 if ProcessInfo.processInfo.arguments.contains("-yourBreakDemo") { model.aimOffset = 0.012; model.breakNow() }
                 // Test hook: -yourShotDemo opens the shot panel and plays a follow-up shot from the break's layout.
                 if ProcessInfo.processInfo.arguments.contains("-yourShotDemo") { showShotPanel = true; model.shootNow() }
+                // Test hooks for the aiming layer: skip the cold open, open "Your shot", optionally on a fresh rack.
+                if ProcessInfo.processInfo.arguments.contains("-aimDemo") || ProcessInfo.processInfo.arguments.contains("-aimDemoRack") {
+                    model.skipToResult(); model.setLens(false); showShotPanel = true
+                    if ProcessInfo.processInfo.arguments.contains("-aimDemoRack") { model.rerack() }
+                }
             }
             .onChange(of: geo.size) { _, new in model.viewSize = new }
         }
@@ -64,7 +74,9 @@ struct ShowpieceView: View {
         let covered = (controlsInColumn ? 0 : bottomHeight) + geo.safeAreaInsets.bottom + 12 + 8
         return ZStack {
             TableStage(model: model, bridge: bridge, leader: leader,
-                       showAim: showShotPanel, bottomInset: min(0.66, Double(covered / max(1, fullHeight))))
+                       showAim: false, bottomInset: min(0.66, Double(covered / max(1, fullHeight))))
+            // Drag to aim, pull back to set power. Under the controls so they keep their touches.
+            if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
             VStack(spacing: 10) {
                 ScreenHeader(model: model)
                 if !wide {
