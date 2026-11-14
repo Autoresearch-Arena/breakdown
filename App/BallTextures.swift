@@ -1,19 +1,22 @@
-// Author: Claude Sonnet 5.5 High
+// Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
 // PURPOSE: Draws the ball surfaces (solid colours, stripes, number discs) and the Lens grid with CoreGraphics,
-//          so the same code makes textures on iPhone and Mac and no image assets have to be shipped.
-//          13-Nov-2026 (glow-up package 1): ball pictures are now twice as sharp, with larger number discs, bolder
+//          so the same code makes pictures on iPhone and Mac and no image assets have to be shipped.
+//          13-Nov-2026 (glow-up package 1): ball pictures are twice as sharp, with larger number discs, bolder
 //          numerals and a thin dark ring so the digit and the stripe still read when a ball is only a few dozen
 //          pixels wide on a phone; every picture gets mipmaps so distant balls do not shimmer.
+//          13-Nov-2026 (package 0.4.1, start-up speed): the drawing functions (ballImage, gridImage) now return plain
+//          CGImages and touch nothing shared, so StartupAssets can draw all of them on background threads at launch.
+//          Only gridTexture (a thin main-thread wrapper the Lens still calls) makes a RealityKit texture.
 //          The cloth, wood and floor pictures live in SurfaceTextures.swift.
-// SRP/DRY check: Pass - ball and Lens-grid drawing only; table surfaces are in SurfaceTextures.swift.
+// SRP/DRY check: Pass - ball and Lens-grid drawing only; table surfaces are in SurfaceTextures.swift and the
+//          timing of it all is in StartupAssets.swift.
 import CoreGraphics
 import CoreText
 import Foundation
-import RealityKit
+import RealityKit  // TextureResource, for the grid wrapper
 import simd
 
-@MainActor
 enum BallTextures {
     /// Palette for balls 1 to 8 (stripes 9 to 15 reuse 1 to 7). Original colour set, tuned for the teal felt.
     private static let palette: [(Double, Double, Double)] = [
@@ -73,7 +76,7 @@ enum BallTextures {
     /// carry an ivory number disc at each end of the line through the band's middle, exactly as a real ball does,
     /// sized like the real one (a bit over half the ball's width). The disc is tilted toward the camera and turned a
     /// little differently for each ball, so in the resting rack most numbers face the viewer, as in a real rack.
-    static func ballTexture(number: Int) -> TextureResource? {
+    static func ballImage(number: Int) -> CGImage? {
         let w = ballW, h = ballH
         var raster = [UInt8](repeating: 255, count: w * h * 4)
         func rgb(_ c: (Double, Double, Double)) -> SIMD3<Float> { SIMD3(Float(c.0), Float(c.1), Float(c.2)) }
@@ -86,7 +89,7 @@ enum BallTextures {
         }
         if number == 0 {
             for i in 0..<(w * h) { put(i, ivory) }
-            return make(raster: raster, w: w, h: h)
+            return makeImage(raster: raster, w: w, h: h)
         }
         let base = rgb(palette[number <= 8 ? number - 1 : number - 9])
         let stripe = number > 8
@@ -144,7 +147,7 @@ enum BallTextures {
             }
             put(i, c)
         }
-        return make(raster: raster, w: w, h: h)
+        return makeImage(raster: raster, w: w, h: h)
     }
 
     /// How far (metres) the Lens grid picture extends past the playing surface on every side. It fades to nothing
@@ -157,11 +160,18 @@ enum BallTextures {
     /// Package 2 of the glow-up plan (13-Nov-2026): quieter lines so the glowing trails are the brightest thing on
     /// screen, plus the pocket rings and the edge fade.
     /// The picture is symmetric left-right and top-bottom, so how it is mapped onto the plane does not matter.
+    @MainActor
     static func gridTexture(length: Double, width: Double, pockets: [(x: Double, y: Double, radius: Double)]) -> TextureResource? {
+        // Usually already drawn in the background at launch (StartupAssets); drawn here only for a different table.
+        let boost = LensTextures.increaseContrast ? 2.2 : 1.0
+        return StartupAssets.texture(StartupAssets.shared.gridImage(length: length, width: width, pockets: pockets, boost: boost))
+    }
+
+    /// The grid picture itself. The boost argument is the Increase Contrast multiplier (read by the caller, since the setting
+    /// has to be asked on the main thread); this function touches nothing shared, so it can run on any thread.
+    static func gridImage(length: Double, width: Double, pockets: [(x: Double, y: Double, radius: Double)], boost: Double) -> CGImage? {
         let ppm = 300.0   // pixels per metre
         let m = gridMargin
-        // Increase Contrast: stronger grid and outlines (read at launch).
-        let boost = LensTextures.increaseContrast ? 2.2 : 1.0
         let w = Int((length + 2 * m) * ppm), h = Int((width + 2 * m) * ppm)
         guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
                                   space: CGColorSpace(name: CGColorSpace.sRGB)!,
@@ -232,21 +242,15 @@ enum BallTextures {
                 }
             }
         }
-        return make(ctx)
+        return ctx.makeImage()
     }
 
-    /// Turns a finished RGBA byte raster (opaque) into a texture with mipmaps.
-    private static func make(raster: [UInt8], w: Int, h: Int) -> TextureResource? {
-        guard let provider = CGDataProvider(data: Data(raster) as CFData),
-              let image = CGImage(width: w, height: h, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: w * 4,
-                                  space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                  bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
-                                  provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent) else { return nil }
-        return try? TextureResource(image: image, options: .init(semantic: .color, mipmapsMode: .allocateAndGenerateAll))
-    }
-
-    private static func make(_ ctx: CGContext) -> TextureResource? {
-        guard let image = ctx.makeImage() else { return nil }
-        return try? TextureResource(image: image, options: .init(semantic: .color, mipmapsMode: .allocateAndGenerateAll))
+    /// Turns a finished RGBA byte raster (opaque) into a picture. Pure CoreGraphics, so it is safe on any thread.
+    private static func makeImage(raster: [UInt8], w: Int, h: Int) -> CGImage? {
+        guard let provider = CGDataProvider(data: Data(raster) as CFData) else { return nil }
+        return CGImage(width: w, height: h, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: w * 4,
+                       space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                       bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+                       provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
     }
 }
