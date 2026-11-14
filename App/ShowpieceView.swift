@@ -21,8 +21,6 @@ struct ShowpieceView: View {
     @State private var bridge = SceneBridge()
     @State private var leader = LeaderState()
     @State private var showShotPanel = false
-    /// Height of the controls (and the shot panel on a phone), measured, for the camera and for safe spacing.
-    @State private var bottomHeight: CGFloat = 0
     /// Real laid-out edges in StageSpace, measured from the views themselves, for the camera (see StageChrome).
     @State private var headerBottom: Double?
     @State private var captionBottom: Double?
@@ -108,7 +106,6 @@ struct ShowpieceView: View {
             }
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomHeight = $0 }
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
