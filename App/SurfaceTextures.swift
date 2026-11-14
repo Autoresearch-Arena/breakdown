@@ -1,10 +1,11 @@
-// Author: Claude Sonnet 5.5 High
+// Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that fades to nothing at its edge, the
 //          pocket-wall gradient that makes a well read as deep, and the small soft blob used under the lamp pool.
-//          Each function returns a TextureResource (or nil if the system refuses), built from a plain byte array
-//          so the same code runs on iPhone and Mac. Called once at start-up by TableBuilder.makeTable; nothing here
+//          Each function returns a plain CGImage (or nil if the system refuses), built from a byte array and safe to make
+//          on any thread: StartupAssets runs them all in parallel in the background at launch, and TableBuilder turns the
+//          finished pictures into textures. The same code runs on iPhone and Mac. Nothing here
 //          runs per frame. Ball and Lens-grid pictures stay in BallTextures.swift.
 //          Cost note: the cloth is the biggest picture. It is kept at a size that builds in a fraction of a second
 //          even in a debug build, and the weave is drawn into the colour (a separate normal map would need a second
@@ -13,7 +14,7 @@
 //          TableBuilder (which only places the results); no overlap.
 import CoreGraphics
 import Foundation
-import RealityKit
+import simd
 
 enum SurfaceTextures {
     // MARK: Pixel plumbing
@@ -39,10 +40,6 @@ enum SurfaceTextures {
         }
     }
 
-    private static func texture(_ r: Raster) -> TextureResource? {
-        guard let image = r.image() else { return nil }
-        return try? TextureResource(image: image, options: .init(semantic: .color, mipmapsMode: .allocateAndGenerateAll))
-    }
 
     // MARK: Noise
 
@@ -81,7 +78,7 @@ enum SurfaceTextures {
     /// Billiard cloth across the whole playing surface (one picture, mapped once from corner to corner, 2:1).
     /// Woven threads, a brushed nap that runs along the table, and a few soft worn patches. The base colour is the
     /// tournament green-teal the rest of the scene is tuned for.
-    static func cloth(width w: Int = 768, height h: Int = 384) -> TextureResource? {
+    static func clothImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
         var r = Raster(w, h)
         let base: (Float, Float, Float) = (0.045, 0.40, 0.31)
         let pitch = 3   // pixels per thread
@@ -106,14 +103,14 @@ enum SurfaceTextures {
                 r.set(x, y, (base.0 + pale * 0.10) * shade, (base.1 + pale * 0.06) * shade, (base.2 + pale * 0.05) * shade)
             }
         }
-        return texture(r)
+        return r.image()
     }
 
     // MARK: Wood
 
     /// Walnut grain with the grain running along the picture's x direction. Tiles in x so one picture can serve a
     /// rail of any length. Warm dark brown with lighter streaks and tiny dark pores.
-    static func wood(width w: Int = 1024, height h: Int = 256) -> TextureResource? {
+    static func woodImage(width w: Int = 1024, height h: Int = 256) -> CGImage? {
         var r = Raster(w, h)
         let dark: (Float, Float, Float) = (0.17, 0.075, 0.035)
         let light: (Float, Float, Float) = (0.46, 0.25, 0.12)
@@ -132,7 +129,7 @@ enum SurfaceTextures {
                 r.set(x, y, dark.0 + (light.0 - dark.0) * t, dark.1 + (light.1 - dark.1) * t, dark.2 + (light.2 - dark.2) * t)
             }
         }
-        return texture(r)
+        return r.image()
     }
 
     // MARK: Floor
@@ -141,7 +138,7 @@ enum SurfaceTextures {
     /// the table body in the middle of it, and a fade to fully transparent at the edge so no border shows against the
     /// dark. It is drawn as finished colour (and shown with an unlit material) so it looks the same however the scene
     /// lights change. `planeSize` is the square's side in metres; `tableHalf` is half the table's outer length and width.
-    static func roomFloor(size s: Int = 512, planeSize: Float = 16, tableHalf: SIMD2<Float>) -> TextureResource? {
+    static func roomFloorImage(size s: Int = 512, planeSize: Float = 16, tableHalf: SIMD2<Float>) -> CGImage? {
         var r = Raster(s, s)
         for y in 0..<s {
             for x in 0..<s {
@@ -165,14 +162,14 @@ enum SurfaceTextures {
                 r.set(x, y, v * 1.00 + 0.004, v * 0.74 + 0.004, v * 0.52 + 0.005, alpha)
             }
         }
-        return texture(r)
+        return r.image()
     }
 
     // MARK: Pocket wall
 
     /// Top-to-bottom gradient for the inside of a pocket: a dim brown-black lip fading to black, so the well reads
     /// as deep even though the wall is lit evenly. v = 0 is the top of the wall.
-    static func pocketWall() -> TextureResource? {
+    static func pocketWallImage() -> CGImage? {
         let w = 4, h = 64
         var r = Raster(w, h)
         for y in 0..<h {
@@ -180,6 +177,6 @@ enum SurfaceTextures {
             let k = pow(1 - t, 1.8)
             for x in 0..<w { r.set(x, y, 0.40 * k + 0.004, 0.30 * k + 0.004, 0.24 * k + 0.004) }
         }
-        return texture(r)
+        return r.image()
     }
 }

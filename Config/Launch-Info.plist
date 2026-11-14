@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Author: Claude Sonnet 5.5 Medium
+Date: 13-November-2026
+PURPOSE: The part of the app's Info.plist that Xcode's generated settings cannot express: a launch screen whose
+         background is the colour set named LaunchBackground (the room's dark blue-black, the same colour the window
+         uses before the table appears), so the app opens dark instead of flashing white. Xcode merges this file with
+         the settings generated from the project (GENERATE_INFOPLIST_FILE stays on); only this key lives here.
+         iPhone and iPad only: the Mac has no launch screen and ignores the key.
+SRP/DRY check: Pass - one key, one reason; every other Info.plist value stays in the project settings.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+</dict>
+</plist>

@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.4.1] - 13-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The app opens faster and dark. The launch screen is now the room's dark colour instead of white, and a dark cover over the window fades away once the table is built, so the table lights up instead of popping in. The pockets look right up close: every pocket now has a complete metal rim (the side pockets only showed part of a ring), and the cushion ends follow the pocket's round mouth with a rounded jaw face instead of a flat slanted block. The cloth hole is now exactly the size of the physics capture radius, so a ball taken near the pocket edge is no longer cut by cloth.
+- Why: The Boss judged the first glow-up slow to appear, with a blank first frame; wave one's review also listed the pocket flaws above.
+- How: A new StartupAssets file draws cloth, wood, floor, pocket wall, all sixteen ball faces, the Lens grid and the reflection environment on background threads the moment the app launches; the main thread only turns finished pictures into textures. The picture functions now return plain images and touch nothing shared. The launch colour comes from a colour asset plus a one-key Info.plist fragment (Config/Launch-Info.plist), because the generated settings cannot name a launch background. Launch argument -logStartup prints timings. Measured on a simulator (Apple silicon Mac, machine under heavy load, so rough): main-thread scene building in a Debug build fell from about 2.0 s to about 0.26 s (pictures now finish on background threads about 0.55 s after launch, before the table needs them); in a Release build it was already about 0.22 s and is now about 0.19 s, so Release gains little on this Mac. A real iPhone was not measured. Physics untouched; the 15 physics tests pass; iPhone simulator and Mac builds succeed.
+- Not checked: a real device, landscape or iPad screenshots, a ball caught mid-drop in a screenshot (the hole size follows the capture radius by construction), the Mac window launched, Increase Contrast launch colour (the launch screen is the standard dark). The cushion end still reads as a small angular face from some angles.
+
 ## [0.3.1] - 13-November-2026
 
 Author: Claude Sonnet 5.5 High

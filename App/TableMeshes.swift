@@ -1,4 +1,4 @@
-// Author: Claude Sonnet 5.5 High
+// Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
 // PURPOSE: Small geometry toolkit for building the table out of custom meshes with Apple's MeshDescriptor: a mesh
 //          accumulator (positions, normals, texture coordinates, triangles), an ear-clipping triangulator for flat
@@ -10,6 +10,8 @@
 //          cut cleanly through felt and wood.
 //          Conventions: plan view uses SIMD2(x, z) in world metres (x along the long side, z across it); a
 //          cross-section uses (distance outward from the playing surface, height).
+//          Package 0.4.1 (13-Nov-2026): cushion strips now end on the pocket's own circle (addSweep takes the pocket
+//          centre and radius for each end) with smooth jaw-facing normals, replacing the flat slanted end block.
 //          Triangle winding is fixed automatically by comparing the geometric normal with the supplied vertex
 //          normals, so callers only have to supply correct normals, never think about winding.
 // SRP/DRY check: Pass - geometry only; no materials, no textures, no scene state. Checked TableScene and
@@ -317,17 +319,28 @@ extension MeshBuilder {
         }
     }
 
-    /// A cross-section swept along a straight run with angled ends (a cushion strip). The section is a closed polygon
-    /// of (distance outward from the playing edge, height). `origin` is the edge point at along-distance 0, `along` and
-    /// `outward` are unit plan vectors, the run covers `s0...s1`, and the ends lean by `shear0`/`shear1` metres of
-    /// along-movement per metre outward (the jaw cut facing the pocket). `uv` maps a world point to texture space.
+    /// A cross-section swept along a straight run whose two ends are cut to follow a pocket's round mouth (a cushion
+    /// strip). The section is a closed polygon of (distance outward from the playing edge, height). `origin` is the
+    /// edge point at along-distance 0, `along` and `outward` are unit plan vectors. Each end is given as the pocket's
+    /// plan centre and mouth radius (`jaw0` for the start, `jaw1` for the end): a section point at outward distance d
+    /// stops exactly where the circle crosses that line, so the cushion's end hugs the pocket wall with no gap and no
+    /// step. The end faces get smooth normals that look toward the pocket centre, so they shade as a rounded jaw
+    /// instead of a flat block. `uv` maps a world point to texture space.
     mutating func addSweep(section: [(d: Float, y: Float)], smooth: [Bool], origin: SIMD2<Float>, along: SIMD2<Float>,
-                           outward: SIMD2<Float>, s0: Float, s1: Float, shear0: Float, shear1: Float,
-                           uv: (SIMD3<Float>) -> SIMD2<Float>) {
+                           outward: SIMD2<Float>, jaw0: (centre: SIMD2<Float>, radius: Float),
+                           jaw1: (centre: SIMD2<Float>, radius: Float), uv: (SIMD3<Float>) -> SIMD2<Float>) {
+        // Along-distance of each pocket centre, and which side of it the cushion lies on.
+        let c0 = simd_dot(jaw0.centre - origin, along), c1 = simd_dot(jaw1.centre - origin, along)
+        func plan(_ p: (d: Float, y: Float), end: Int) -> SIMD2<Float> {
+            let j = end == 0 ? jaw0 : jaw1
+            // Distance from the pocket centre along the run where the mouth circle crosses this outward distance.
+            let reach = (max(0, j.radius * j.radius - p.d * p.d)).squareRoot()
+            let s = end == 0 ? c0 + reach : c1 - reach
+            return origin + along * s + outward * p.d
+        }
         func pos(_ p: (d: Float, y: Float), end: Int) -> SIMD3<Float> {
-            let s = end == 0 ? s0 + shear0 * p.d : s1 + shear1 * p.d
-            let plan = origin + along * s + outward * p.d
-            return SIMD3(plan.x, p.y, plan.y)
+            let q = plan(p, end: end)
+            return SIMD3(q.x, p.y, q.y)
         }
         let n = section.count
         // Which way is "out of the solid" for each section edge: away from the section's centroid.
@@ -359,11 +372,15 @@ extension MeshBuilder {
         // End caps: flat polygons, normal along the run direction.
         for end in 0..<2 {
             let pts2 = section.map { SIMD2($0.d, $0.y) }
-            let capN3 = SIMD3(along.x, 0, along.y) * (end == 0 ? -1 : 1)
+            let centre = end == 0 ? jaw0.centre : jaw1.centre
             for (i, j, k) in Outline.triangulate(pts2) {
                 let ids = [i, j, k].map { m -> UInt32 in
                     let p = pos(section[m], end: end)
-                    return vertex(p, capN3, uv(p))
+                    // Looks toward the pocket centre.
+                    let flat = SIMD3(centre.x - p.x, 0, centre.y - p.z)
+                    // Tilted up a little so the overhead lamp catches the jaw and it reads as a rounded, felt-covered face.
+                    let toPocket = simd_length(flat) > 1e-6 ? simd_normalize(flat) + SIMD3(0, 0.7, 0) : flat
+                    return vertex(p, simd_length(toPocket) > 1e-6 ? toPocket : SIMD3(along.x, 0, along.y), uv(p))
                 }
                 tri(ids[0], ids[1], ids[2])
             }
