@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (every line of advice is a String(localized:) key; a scratch adds its
+//          sentence as one placeholder line, not by joining two strings)
 // PURPOSE: Decides whether a player's attempt at a trick shot made it, and if not, says in one sentence what to change.
 //          It reads only the attempt's own recording (which balls dropped and in which pocket, which ball the cue ball
 //          touched first, whether a ball banked, where the cue ball stopped, whether it scratched) and the settings the
@@ -70,10 +72,14 @@ enum TrickShotJudge {
         // The stop shot is all about strike height: where the cue ball finished says which way to go.
         if fail == .cueZone, let zone = shot.goal.cueZone {
             let along = (a.cueRest - zone.centre).dot(strikeDirection(shot, a))
-            return along > 0 ? "The cue ball rolled on after the hit. Strike a little lower."
-                             : "The cue ball came back. Strike a little higher, nearer the middle."
+            return along > 0 ? String(localized: "The cue ball rolled on after the hit. Strike a little lower.")
+                             : String(localized: "The cue ball came back. Strike a little higher, nearer the middle.")
         }
-        let scratchNote = fail == .scratch ? "The cue ball went in too. " : ""
+        // A scratch adds one sentence in front of the advice. The whole sentence is one translatable line, so no
+        // translation has to glue two halves together.
+        func note(_ text: String) -> String {
+            fail == .scratch ? String(localized: "The cue ball went in too. \(text)") : text
+        }
         // Each setting's miss measured in its own window: the largest is the one to fix first.
         var errors: [(kind: String, size: Double, signed: Double)] = [
             ("aim", abs(angleGap(a.aim, sol.aim, isBreak: shot.isBreak)) / win.aim, angleGap(a.aim, sol.aim, isBreak: shot.isBreak)),
@@ -83,43 +89,44 @@ enum TrickShotJudge {
         if win.tipSide > 0 { errors.append(("tipSide", abs(a.tipSide - sol.tipSide) / win.tipSide, a.tipSide - sol.tipSide)) }
         let worst = errors.max { $0.size < $1.size }!
         guard worst.size > 1 else {
-            return scratchNote + "So close. Every setting is nearly there: same again, a fraction more care on the aim."
+            return note(String(localized: "So close. Every setting is nearly there: same again, a fraction more care on the aim."))
         }
         switch worst.kind {
         case "aim":
-            let amount = worst.size > 4 ? "well" : "a touch"
+            let amount = worst.size > 4 ? String(localized: "well") : String(localized: "a touch")
             // Positive gap: the player aimed further counter-clockwise (left) than the answer, so go right.
-            let way = worst.signed > 0 ? "right" : "left"
+            let way = worst.signed > 0 ? String(localized: "right") : String(localized: "left")
             if fail == .missedFirstBall, let first = shot.goal.firstHit {
-                return scratchNote + "The cue ball has to reach the \(first) first. Aim \(amount) \(way)."
+                return note(String(localized: "The cue ball has to reach the \(first) first. Aim \(amount) \(way)."))
             }
             if let thick = tooThick(shot, a) {
-                return scratchNote + "You hit it too \(thick ? "full" : "thin"). Aim \(amount) \(way)."
+                let thickness = thick ? String(localized: "full") : String(localized: "thin")
+                return note(String(localized: "You hit it too \(thickness). Aim \(amount) \(way)."))
             }
-            return scratchNote + "Not quite the line. Aim \(amount) \(way)."
+            return note(String(localized: "Not quite the line. Aim \(amount) \(way)."))
         case "power":
-            return scratchNote + (worst.signed < 0 ? "Not enough pace. Pull back further to hit it harder."
-                                                   : "Too much pace. Pull back less to hit it softer.")
+            return note(worst.signed < 0 ? String(localized: "Not enough pace. Pull back further to hit it harder.")
+                                         : String(localized: "Too much pace. Pull back less to hit it softer."))
         case "tipUp":
             if sol.tipUp < -0.003 {
-                return scratchNote + (worst.signed > 0 ? "Not enough draw. Strike lower on the cue ball."
-                                                      : "Too much draw. Strike a little higher.")
+                return note(worst.signed > 0 ? String(localized: "Not enough draw. Strike lower on the cue ball.")
+                                             : String(localized: "Too much draw. Strike a little higher."))
             }
             if sol.tipUp > 0.003 {
-                return scratchNote + (worst.signed < 0 ? "Not enough follow. Strike higher on the cue ball."
-                                                      : "Too much follow. Strike a little lower.")
+                return note(worst.signed < 0 ? String(localized: "Not enough follow. Strike higher on the cue ball.")
+                                             : String(localized: "Too much follow. Strike a little lower."))
             }
-            return scratchNote + "Strike nearer the middle of the cue ball."
+            return note(String(localized: "Strike nearer the middle of the cue ball."))
         default:
             // Positive side is right-hand spin. When the answer has none, any side the player added is the problem.
             if abs(sol.tipSide) < 0.002 {
-                return scratchNote + "The side spin bent it off line. Strike through the middle of the cue ball."
+                return note(String(localized: "The side spin bent it off line. Strike through the middle of the cue ball."))
             }
-            let want = sol.tipSide > 0 ? "right" : "left"
+            let want = sol.tipSide > 0 ? String(localized: "right") : String(localized: "left")
             if (sol.tipSide > 0) == (worst.signed < 0) {
-                return scratchNote + "Not enough \(want) side. Strike further to the \(want) of the cue ball."
+                return note(String(localized: "Not enough \(want) side. Strike further to the \(want) of the cue ball."))
             }
-            return scratchNote + "Too much side. Strike a little nearer the middle."
+            return note(String(localized: "Too much side. Strike a little nearer the middle."))
         }
     }
 
