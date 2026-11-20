@@ -1,6 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
-// Edited: Claude Haiku 5.5 Medium, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
+// Edited: Claude Haiku 5.5 High, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: every player shot and break is kept as a
 //          ShotAttempt; tryAgain() puts the balls back where it started with the same settings, keeps it as the ghost,
 //          and the retry's comparison is worked out from the two recordings).
@@ -103,12 +103,12 @@ final class ShowpieceModel {
     var stageTitle: String {
         switch stage {
         case .lead: return ""
-        case .normalBreak: return "The break"
-        case .freeze: return "Hold on"
-        case .melt: return "Now look at what the table is doing"
-        case .rewind: return "Rewind"
-        case .slowReplay: return "Slow motion"
-        case .explore: return lensOn ? "Physics Lens" : "Table"
+        case .normalBreak: return String(localized: "The break")
+        case .freeze: return String(localized: "Hold on")
+        case .melt: return String(localized: "Now look at what the table is doing")
+        case .rewind: return String(localized: "Rewind")
+        case .slowReplay: return String(localized: "Slow motion")
+        case .explore: return lensOn ? String(localized: "Physics Lens") : String(localized: "Table")
         }
     }
 

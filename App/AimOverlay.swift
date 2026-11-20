@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (test script "retry", also started by -retryDemo: a shot, Try again,
 //          a change of spin, the same shot again, ending on the comparison).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the Aim guide option: with it off only a short aim line is drawn,
@@ -168,8 +169,9 @@ struct AimOverlay: View {
     }
 
     private var spokenAim: String {
-        model.racked ? String(format: "%+.0f millimetres from the lead ball", model.aimOffset * 1000)
-                     : String(format: "%.1f degrees", model.aimDegrees)
+        model.racked
+            ? String(localized: "\(String(format: "%+.0f", locale: Locale.current, model.aimOffset * 1000)) millimetres from the lead ball")
+            : String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees")
     }
 
     // MARK: Drawing

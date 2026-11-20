@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (a Try again button beside Shoot once a shot of yours has played out:
 //          the balls go back where it started with the same settings, and the last try stays on the table as a ghost).
 // PURPOSE: The player's panel, now small enough to leave the table alone. The aiming itself happens on the table
@@ -149,11 +150,11 @@ struct ShotPanel: View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "hand.draw").font(.title3).foregroundStyle(palette.accent).accessibilityHidden(true)
             #if os(macOS)
-            Text("Drag on the table to aim. Pull back from the white ball to set power, then click \(model.racked ? "Break" : "Shoot"). Arrow keys fine-tune.")
+            Text(String(localized: "Drag on the table to aim. Pull back from the white ball to set power, then click \(ShotPanel.actionWord(racked: model.racked)). Arrow keys fine-tune."))
                 .font(Theme.body)
                 .fixedSize(horizontal: false, vertical: true)
             #else
-            Text("Drag on the table to aim. Pull back from the white ball to set power, then tap \(model.racked ? "Break" : "Shoot").")
+            Text(String(localized: "Drag on the table to aim. Pull back from the white ball to set power, then tap \(ShotPanel.actionWord(racked: model.racked))."))
                 .font(Theme.body)
                 .fixedSize(horizontal: false, vertical: true)
             #endif
@@ -179,6 +180,23 @@ struct ShotPanel: View {
 
     static func tipWord(_ v: Double) -> String { v < -0.002 ? "draw" : (v > 0.002 ? "follow" : "centre") }
     static func sideWord(_ v: Double) -> String { v < -0.002 ? "left" : (v > 0.002 ? "right" : "centre") }
+
+    /// The words the player actually sees for a tip or side setting. tipWord and sideWord return fixed identifiers for
+    /// comparisons; this turns one of those into its translated word for the screen and for the retry comparison.
+    static func shownWord(_ word: String) -> String {
+        switch word {
+        case "draw": return String(localized: "draw")
+        case "follow": return String(localized: "follow")
+        case "left": return String(localized: "left")
+        case "right": return String(localized: "right")
+        default: return String(localized: "centre")
+        }
+    }
+
+    /// The word on the main shot button: Break for the opening rack, Shoot after that.
+    static func actionWord(racked: Bool) -> String {
+        racked ? String(localized: "Break") : String(localized: "Shoot")
+    }
 }
 
 // MARK: Fine controls (the sliders, in a sheet)
@@ -204,14 +222,14 @@ private struct FineControls: View {
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
                               range: model.powerRange, readout: String(format: "%.1f m/s", model.activePower))
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
-                              range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.tipWord(model.activeTipUp))
+                              range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
                     SliderRow(label: "Side", value: Binding(get: { model.activeTipSide }, set: { model.activeTipSide = $0 }),
-                              range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.sideWord(model.activeTipSide))
+                              range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.shownWord(ShotPanel.sideWord(model.activeTipSide)))
                     Button {
                         sheetOpen = false
                         if model.fire() { isOpen = false }
                     } label: {
-                        Text(model.racked ? "Break" : "Shoot").frame(maxWidth: .infinity, minHeight: 30)
+                        Text(ShotPanel.actionWord(racked: model.racked)).frame(maxWidth: .infinity, minHeight: 30)
                     }
                     .buttonStyle(.glassProminent)
                     .foregroundStyle(palette.ground)
@@ -249,7 +267,7 @@ private struct FineControls: View {
                     .accessibilityLabel("Aim right a little")
                 Slider(value: $model.aimDegrees, in: -180...180) { Text("Aim") }
                     .labelsHidden()   // the Mac draws a slider's label unless told not to; the row already shows it
-                    .accessibilityValue(String(format: "%.1f degrees", model.aimDegrees))
+                    .accessibilityValue(String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees"))
                 Button { model.aimDegrees += 0.25 } label: { Image(systemName: "plus").frame(width: Self.nudgeSize, height: Self.nudgeSize) }
                     .accessibilityLabel("Aim left a little")
             }

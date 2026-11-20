@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -77,13 +78,13 @@ struct TipPicker: View {
 
     /// "follow, left" and so on; "centre" when the tip is in the middle.
     static func spoken(up: Double, side: Double) -> String {
-        let v = up < -0.002 ? "draw" : (up > 0.002 ? "follow" : nil)
-        let h = side < -0.002 ? "left" : (side > 0.002 ? "right" : nil)
+        let v = up < -0.002 ? ShotPanel.shownWord("draw") : (up > 0.002 ? ShotPanel.shownWord("follow") : nil)
+        let h = side < -0.002 ? ShotPanel.shownWord("left") : (side > 0.002 ? ShotPanel.shownWord("right") : nil)
         switch (v, h) {
-        case (nil, nil): return "centre"
+        case (nil, nil): return ShotPanel.shownWord("centre")
         case let (v?, nil): return v
         case let (nil, h?): return h
-        case let (v?, h?): return "\(v), \(h)"
+        case let (v?, h?): return String(localized: "\(v), \(h)")
         }
     }
 }
@@ -125,7 +126,7 @@ struct PowerGauge: View {
         .frame(minHeight: 44)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
-        .accessibilityValue(String(format: "%.0f percent, %.1f metres per second", fraction * 100, model.activePower))
+        .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(String(format: "%.1f", locale: Locale.current, model.activePower)) metres per second"))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: model.powerFraction += 0.1
