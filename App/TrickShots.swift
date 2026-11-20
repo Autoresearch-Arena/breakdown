@@ -1,6 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
-// Edited: Claude Opus 5.5 High, 20-November-2026 (Throw It In, The Massé and Jump the Blocker authored with the capped search and playable; elevation is the sine the solver uses).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (The Called Break, Throw It In, The Massé and Jump the Blocker authored with the capped search and playable; elevation is the sine the solver uses).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (every player-facing line is wrapped in String(localized:) for translation)
 // PURPOSE: The trick-shot library: data only. Ten shots, each with its id, title, a one-sentence hook, where the balls
 //          start (only the balls it uses; every other ball is off the table), the authored answer (aim, power, cue-tip
@@ -118,9 +118,31 @@ enum TrickShots {
     static func shot(id: String) -> TrickShot? { all.first { $0.id == id } }
 
     static let all: [TrickShot] = [
-        stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt,
+        calledBreak, stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt,
         masse, jumpOver,
     ]
+
+    // MARK: 1. The Called Break
+    // Search (BreakProbe tricks called-break-short, 20-Nov-2026, three threads, 24 minutes): a full fifteen-ball rack is
+    // chaotic at the scale a player can aim (no ball dropped in the same pocket for three millimetre steps in a row), so
+    // the called break uses the front three rows, half a millimetre apart, broken from beside the head spot. For every
+    // rack size, cue position, strength and tip the aim was swept in 0.02 degree steps and the longest run in which one
+    // ball dropped in one pocket was kept. Measured windows: aim 7.63 to 7.83 degrees (half-width 0.10), power 6.30 to
+    // 6.65 m/s, tip height 0 to +0.5 mm. The hardest shot in the list, as a called break should be.
+    static let calledBreak = TrickShot(
+        id: "called-break", number: 1, title: String(localized: "The Called Break"),
+        hook: String(localized: "Call it before you hit it: break the rack and send the 3 into the top-right corner."),
+        goalLine: String(localized: "Break and drop the 3 in the top-right corner."),
+        setup: .layout(placed([0: Vec2(0.6350, 0.4350), 1: Vec2(1.9050, 0.6350), 2: Vec2(1.9549, 0.6638),
+                               3: Vec2(2.0049, 0.6927), 8: Vec2(2.0049, 0.6350), 9: Vec2(1.9549, 0.6062),
+                               10: Vec2(2.0049, 0.5773)])),
+        solution: TrickSettings(aim: 7.73, power: 6.45, tipUp: 0.0005, tipSide: 0),
+        goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)], firstHit: 1), usesBridge: false,
+        idea: String(localized: "Where you strike the front ball decides which way the energy runs through the rack. Hit it a fraction off-centre and the push travels down one line of balls, out to the 3, and into the corner."),
+        maths: String(localized: "each contact passes the push along the line of centres:  v′ = v · cos θ"),
+        mathsSpoken: String(localized: "At each contact a ball passes on its speed times the cosine of the angle between its path and the line through the two centres."),
+        difficulty: .hard, window: TrickWindow(aim: 0.10, power: 0.15, tipUp: 0.0005, tipSide: 0),
+        praise: String(localized: "Called it, and it went. That is a trick break."), pending: false)
 
     // MARK: 2. Stop Dead
     // Search (BreakProbe tricks stop-dead, 20-Nov-2026): 945 candidates (three distances, power 1.5 to 5 m/s, tip

@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.4] - 20-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: All ten trick shots are playable. New: The Called Break (break a short rack and call the 3 into the top-right corner), Throw It In (two touching balls lined up to miss; side spin drags the 8 in anyway), The Massé (a raised cue bends the cue ball round the 4 onto the 9) and Jump the Blocker (a raised cue hops the cue ball over the 6 to sink the 11). The massé and the jump raise the cue for you on Watch it and on Your turn. The trick-shot text from the last pass is now translated into the eleven languages.
+- Why: The Boss asked for ten trick shots including a trick break, the jump and where you strike the ball.
+- How: Each answer was found with the physics solver and kept only if it still works within a measured window of aim, power and spin; the throw, massé and jump were also kept only if they fail without the thing they teach (no side spin or no ball friction; a level cue). The search tool now uses at most three threads (it once took every core of the shared Mac). Trick settings carry the cue elevation as the solver's sine, and the table takes it from the shot.
+- Checked: the iPhone build succeeds. Not checked: anything on a device or simulator (the Boss tests it himself), the Mac build and package tests this round, translations for the four new shots' text (wrapped, awaiting the next translation pass).
+
 ## [0.5.3] - 20-November-2026
 
 Author: Claude Haiku 5.5 High
