@@ -1,6 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Playback menu: Try Again, Command-T).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Ride camera: a Playback menu item, Command-E, and a toolbar toggle).
 // PURPOSE: What makes the Mac build feel like a Mac app, and what iPad gains with a hardware keyboard: a real window
 //          toolbar (play, speed, Lens, replay, Your shot), a Playback menu with keyboard shortcuts (space plays or
 //          pauses, Command-R replays, Command-L toggles the Lens, Command-1 to 4 pick the speed, Command-Y opens the
@@ -33,6 +34,10 @@ struct PlaybackCommands: Commands {
                 .keyboardShortcut("r", modifiers: .command)
             Button((model?.lensOn ?? false) ? "Hide Lens" : "Show Lens") { model?.setLens(!(model?.lensOn ?? false)) }
                 .keyboardShortcut("l", modifiers: .command)
+            // Ride: the replay camera follows the cue ball and the ball it hits at table height.
+            Toggle("Ride Camera", isOn: Binding(get: { model?.rideOn ?? false }, set: { model?.setRide($0) }))
+                .keyboardShortcut("e", modifiers: .command)
+                .disabled(model == nil)
             Divider()
             Menu("Speed") {
                 ForEach(Array(PlaybackSpeed.rates.enumerated()), id: \.offset) { index, rate in
@@ -73,6 +78,11 @@ struct ShowpieceToolbar: ToolbarContent {
             }
             .toggleStyle(.button)
             .help("Show the Physics Lens (Command-L)")
+            Toggle(isOn: Binding(get: { model.rideOn }, set: { model.setRide($0) })) {
+                Label("Ride", systemImage: "video")
+            }
+            .toggleStyle(.button)
+            .help("Ride camera: the replay follows the balls at table height (Command-E)")
             Toggle(isOn: $shotPanelOpen) { Label("Your shot", systemImage: "target") }
                 .toggleStyle(.button)
                 .help("Take your own shot (Command-Y)")

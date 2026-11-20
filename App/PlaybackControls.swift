@@ -3,6 +3,8 @@
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (fewer rows over the table on a phone: play and pause sit in the
 //          scrub row, speed is a small menu instead of four segments, and the scrub row steps aside while aiming).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (a Ride toggle beside the Lens: the replay camera rides behind the
+//          cue ball and the ball it hits; in every layout, including the largest text sizes).
 // PURPOSE: The playback controls, built from standard parts: system buttons in Liquid Glass, SF Symbols with the
 //          standard replace and bounce symbol effects, a segmented picker for speed (a menu at the largest text
 //          sizes), and two toggle-style buttons (Lens, Your shot) whose label never changes, so nothing beside them
@@ -182,6 +184,13 @@ struct PlaybackControls: View {
         ToggleButton(title: "Lens", symbol: "viewfinder", isOn: model.lensOn) { model.setLens(!model.lensOn) }
     }
 
+    /// Ride: the replay camera follows the balls at table height. Named "Ride" on the button and spoken in full.
+    private func ride(fill: Bool = false) -> some View {
+        ToggleButton(title: "Ride", symbol: "video", isOn: model.rideOn, fill: fill) { model.setRide(!model.rideOn) }
+            .accessibilityLabel("Ride camera")
+            .accessibilityHint("During a replay the camera rides behind the cue ball and the ball it hits, in slow motion at the contact")
+    }
+
     private var shot: some View {
         ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen) { shotPanelOpen.toggle() }
     }
@@ -208,6 +217,7 @@ struct PlaybackControls: View {
         HStack(spacing: 8) {
             Spacer(minLength: 0)
             lens
+            ride()
             ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
             shot
         }
@@ -218,6 +228,7 @@ struct PlaybackControls: View {
             HStack(spacing: 8) {
                 Spacer(minLength: 0)
                 lens
+                ride()
                 ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
             }
             HStack(spacing: 8) { Spacer(minLength: 0); shot }
@@ -231,6 +242,7 @@ struct PlaybackControls: View {
     private var stacked: some View {
         VStack(spacing: 8) {
             ToggleButton(title: "Lens", symbol: "viewfinder", isOn: model.lensOn, fill: true) { model.setLens(!model.lensOn) }
+            ride(fill: true)
             ReplayButton(model: model, fill: true)
             ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen, fill: true) { shotPanelOpen.toggle() }
         }

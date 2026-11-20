@@ -12,6 +12,7 @@
 //          slot and the control strip plus the safe areas, all in StageSpace; this file turns them into the 3D view's
 //          own coordinates (a FramingRequest) every frame, so the camera frames the table in exactly the space that is
 //          left, in portrait, landscape, on iPad and on the Mac. Before, a guessed fraction of the height was passed.
+//          Edited: Claude Opus 5.5 High, 20-November-2026 (one line: the camera update also passes whether Ride is on).
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -87,7 +88,7 @@ struct TableStage: View {
                     model.advance(event.deltaTime)
                     let aim: AimPreview? = bridge.showAim ? Self.aim(for: model) : nil
                     table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim)
-                    table.updateCamera(melt: model.melt, request: bridge.request())
+                    table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.
                     // (Projecting straight into the named space came back offset by twice the top safe-area inset in

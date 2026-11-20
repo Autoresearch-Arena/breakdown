@@ -10,6 +10,10 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (cue elevation: shotElevation, the sine of the cue's angle above
 //          the table, is passed into every follow-up shot (zero, a level cue, unless something sets it; there is no
 //          control for it yet). Launch flag -jumpDemo plays a jump shot over a blocking ball in slow motion, no taps.)
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Ride the shot: rideOn and setRide(_:) switch the Ride replay camera;
+//          rideActive tells the scene when it may take over; while riding, playback eases into slow motion around the
+//          first contact (RidePlan.rateFactor, a function of the clock); launch flag -rideDemo plays a straight pot
+//          with Ride on, -rideDemo lens the same over the Lens, -rideDemo break the showpiece opening).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -90,6 +94,12 @@ final class ShowpieceModel {
     /// Set by tryAgain() so the next shot keeps the ghost and is compared with it.
     private var retryPending = false
 
+    // Ride the shot (see ShotCamera).
+    /// True when the player (or the trick-shot mode, through setRide) wants the Ride camera for replays.
+    private(set) var rideOn = false
+    /// The key moments the ride and its slow motion read: first contact, struck ball, rise. Worked out once per shot.
+    private(set) var ridePlan = RidePlan.none
+
     private var stageTime = 0.0
     private let freezeTime: Double
     private let sound = SoundBoard()
@@ -101,7 +111,9 @@ final class ShowpieceModel {
         freezeTime = min(2.2, tl.duration * 0.4)
         captions = CaptionEngine.make(from: tl)
         timelineVersion = 1
+        ridePlan = RidePlan(tl)
         adoptLayout(after: tl)
+        startRideDemoIfAsked()
         if ProcessInfo.processInfo.arguments.contains("-jumpDemo") { playJumpDemo() }
     }
 
@@ -229,6 +241,41 @@ final class ShowpieceModel {
     var shotAimDirection: Vec2 {
         let a = aimDegrees * Double.pi / 180
         return Vec2(cos(a), sin(a))
+    }
+
+    // MARK: Ride the shot
+
+    /// True while the Ride camera may fly: Ride is on and a replay is playing (the player's shots, replays and the
+    /// cold open's slow-motion replay; not the cold open's first run, freeze, melt or rewind).
+    var rideActive: Bool { rideOn && (stage == .explore || stage == .slowReplay) }
+
+    /// Switch the Ride camera on or off. The trick-shot mode calls this before playing a shot so it plays riding.
+    /// Switching it on when the shot on screen has already finished plays that shot again from the start, so the
+    /// ride is seen instead of nothing visibly happening.
+    func setRide(_ on: Bool) {
+        rideOn = on
+        if on, stage == .explore, ridePlan.rideable, time >= duration - 1e-6 {
+            time = 0
+            playing = true
+        }
+    }
+
+    /// Launch flag -rideDemo: a straight pot with Ride on, no taps needed (-rideDemo lens: the same over the Lens;
+    /// -rideDemo break: the showpiece opening, whose slow-motion replay then rides over the Lens).
+    private func startRideDemoIfAsked() {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-rideDemo") else { return }
+        rideOn = true
+        let option = i + 1 < args.count ? args[i + 1] : ""
+        guard option != "break" else { return }       // the cold open runs as usual and rides its slow replay
+        load(PoolSolver.simulate(RideDemo.straightPot()))
+        stage = .explore; time = 0; playing = false; chosenRate = nil
+        if option == "lens" { melt = 1 }
+        // Start after a beat, once the dark launch cover has faded, so the strike is seen.
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(1.6))
+            self?.playing = true
+        }
     }
 
     // MARK: Try again and compare
@@ -406,6 +453,7 @@ final class ShowpieceModel {
         adoptLayout(after: tl)
         timeline = tl
         captions = CaptionEngine.make(from: tl)
+        ridePlan = RidePlan(tl)
         timelineVersion += 1
     }
 
@@ -480,7 +528,10 @@ final class ShowpieceModel {
             step(dt)
             if time >= duration { stage = .explore; playing = false; chosenRate = nil }
         case .explore:
-            displayRate = chosenRate ?? 1
+            // With Ride on, playback eases into slow motion around the first contact and back out; the curve is a
+            // function of the clock, so it plays the same however the clock got there. Any speed the player picked
+            // still applies: the curve multiplies it.
+            displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
             if playing { step(dt) }
             if let target = meltTarget {
                 let speed = 1.8
