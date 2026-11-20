@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (no caption slot any more: captions float over the table's top edge
+//          and cost it nothing, so StageChrome and the camera request no longer carry a caption edge).
 // PURPOSE: Hosts the 3D table inside SwiftUI. Builds the TableScene once, runs the per-frame step (advance the
 //          model's clock, place everything for that time, aim the camera, and project the caption's ball to the
 //          screen for the leader ring), and reloads the Lens when a new shot is recorded. Anything that changes
@@ -28,8 +30,6 @@ struct StageChrome: Equatable {
     var safe = FramingInsets()
     /// Bottom edge of the title row.
     var headerBottom: Double?
-    /// Bottom edge of the caption slot (phone held upright); nil where captions sit in a side column.
-    var captionBottom: Double?
     /// Top edge of the control strip; nil where the controls live in the side column.
     var controlsTop: Double?
 }
@@ -40,7 +40,7 @@ final class SceneBridge {
     var table: TableScene?
     /// Show the guide line from the cue ball while the shot panel is open.
     var showAim = false
-    /// The measured title, caption and control edges, for the camera.
+    /// The measured title and control edges, for the camera.
     var chrome = StageChrome()
     /// The size of the 3D view itself, which the camera frames the table to.
     var viewSize = CGSize(width: 800, height: 600)
@@ -52,8 +52,7 @@ final class SceneBridge {
     func request() -> FramingRequest {
         let oy = Double(viewOrigin.y)
         let header = chrome.headerBottom.map { $0 - oy } ?? (chrome.safe.top + 40)
-        let caption = max(header, chrome.captionBottom.map { $0 - oy } ?? header)
-        let q = FramingRequest(size: viewSize, safe: chrome.safe, headerBottom: header, captionBottom: caption,
+        let q = FramingRequest(size: viewSize, safe: chrome.safe, headerBottom: header,
                                controlsTop: chrome.controlsTop.map { $0 - oy })
         // Test hook: launch with -frameDebug to print the measured request whenever it changes.
         if Self.frameDebug, q != lastLogged { lastLogged = q; NSLog("FRAMING %@ origin=%@", String(describing: q), String(describing: viewOrigin)) }

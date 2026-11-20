@@ -2,6 +2,8 @@
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the legend is just the two colours now; its third phrase overflowed the card).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the baked legend picture is gone: the legend is a SwiftUI glass chip in
+//          the title row (LensLegendChip in CaptionViews), so it follows Dynamic Type and VoiceOver and costs no table room).
 // PURPOSE: Draws the small generated pictures the Physics Lens glows with, in code, so no image assets ship:
 //          1. the TRAIL picture: one strip per motion colour whose long axis is AGE (bright, white-hot at the head,
 //             easing to a faint trace for old path) and whose short axis is the soft cross-section of a glowing line
@@ -9,15 +11,12 @@
 //             coordinate and the Lens slides the picture along with the playback clock, so the fade with age is a pure
 //             function of the clock (see LensLayer.trailBrightness) and scrubbing either way is exact.
 //          2. the SOFT LINE picture: just the cross-section, tinted per use, for impact rings and velocity arrows.
-//          3. the LEGEND picture: the "what the colours mean" card shown the first time trails appear.
 //          Pixels are written straight into a byte buffer (no CoreGraphics compositing) so the brightness at each
-//          texel is exactly the number the formulas say. The legend is the only text and uses CoreText.
-//          Package 4 (0.4.0): the trail picture now also narrows the line with age (older path is a hairline) and the legend
-//          is one row instead of two, so it costs the table less height.
+//          texel is exactly the number the formulas say.
+//          Package 4 (0.4.0): the trail picture now also narrows the line with age (older path is a hairline).
 //          Does NOT belong here: where the pictures are used (LensLayer.swift), the grid (BallTextures.gridTexture).
 // SRP/DRY check: Pass - Lens picture generation only; colours arrive from Theme through the caller.
 import CoreGraphics
-import CoreText
 import Foundation
 import RealityKit
 #if canImport(UIKit)
@@ -28,15 +27,8 @@ import AppKit
 
 @MainActor
 enum LensTextures {
-    /// System "Reduce Transparency" setting. Read when the pictures are built (at launch), so a change needs a relaunch.
-    static var reduceTransparency: Bool {
-        #if canImport(UIKit)
-        return UIAccessibility.isReduceTransparencyEnabled
-        #else
-        return NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
-        #endif
-    }
-    /// System "Increase Contrast" setting (iOS: Darker System Colors). Same read-at-launch rule.
+    /// System "Increase Contrast" setting (iOS: Darker System Colors). Read when the pictures are built (at launch), so a
+    /// change needs a relaunch.
     static var increaseContrast: Bool {
         #if canImport(UIKit)
         return UIAccessibility.isDarkerSystemColorsEnabled
@@ -131,68 +123,4 @@ enum LensTextures {
             return (1, 1, 1, cs.alpha)
         }
     }
-
-    // MARK: Legend
-
-    /// The legend card: one row with two coloured line samples and their names. (The third phrase, about width and
-    /// fade, ran past the card on a phone and was cut on 20-Nov-2026; How to play explains both.)
-    /// Drawn at 4 pixels per point of `CameraFraming.legendSize`. Not scaled by Dynamic Type (it is a baked picture);
-    /// the plan's Open items note that.
-    static func legend(amber: (Double, Double, Double), cyan: (Double, Double, Double)) -> TextureResource? {
-        let scale = 4.0
-        let size = CameraFraming.legendSize
-        let w = Int(Double(size.width) * scale), h = Int(Double(size.height) * scale)
-        guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
-                                  space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-        ctx.scaleBy(x: scale, y: scale)
-        let pw = Double(size.width), ph = Double(size.height)
-        // Dark rounded card so the text reads over the grid at any contrast.
-        let card = CGPath(roundedRect: CGRect(x: 0, y: 0, width: pw, height: ph), cornerWidth: 13, cornerHeight: 13, transform: nil)
-        ctx.addPath(card)
-        // Reduce Transparency: a solid card. Increase Contrast: a brighter edge as well.
-        ctx.setFillColor(CGColor(red: 0.03, green: 0.06, blue: 0.10, alpha: reduceTransparency ? 1.0 : 0.82))
-        ctx.fillPath()
-        ctx.addPath(card)
-        ctx.setStrokeColor(CGColor(red: 0.30, green: 0.88, blue: 1.0, alpha: increaseContrast ? 0.95 : 0.30))
-        ctx.setLineWidth(increaseContrast ? 1.5 : 1)
-        ctx.strokePath()
-
-        func sample(_ c: (Double, Double, Double), x: Double, y: Double) {
-            // Soft halo under a bright core, like the trail itself.
-            ctx.setLineCap(.round)
-            ctx.setStrokeColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 0.30)); ctx.setLineWidth(8)
-            ctx.move(to: CGPoint(x: x, y: y)); ctx.addLine(to: CGPoint(x: x + 18, y: y)); ctx.strokePath()
-            ctx.setStrokeColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 1)); ctx.setLineWidth(3)
-            ctx.move(to: CGPoint(x: x, y: y)); ctx.addLine(to: CGPoint(x: x + 18, y: y)); ctx.strokePath()
-        }
-        // One row (package 4: the old two-row card cost the table 50 points of height on a phone). Coordinates are
-        // y-up; the row sits on the vertical middle.
-        let mid = ph * 0.5
-        sample(amber, x: 12, y: mid)
-        text(String(localized: "Sliding"), at: CGPoint(x: 36, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
-        sample(cyan, x: 94, y: mid)
-        text(String(localized: "Rolling"), at: CGPoint(x: 118, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
-        guard let image = ctx.makeImage() else { return nil }
-        return try? TextureResource(image: image, options: .init(semantic: .color))
-    }
-
-    private static func text(_ s: String, at p: CGPoint, size: CGFloat, weight: LegendWeight, white: Double, in ctx: CGContext) {
-        // Apple's own system font, as everywhere else in the app.
-        let type: CTFontUIFontType = weight == .semibold ? .emphasizedSystem : .system
-        let font = CTFontCreateUIFontForLanguage(type, size, nil) ?? CTFontCreateWithName("Helvetica" as CFString, size, nil)
-        let attrs: [NSAttributedString.Key: Any] = [
-            NSAttributedString.Key(kCTFontAttributeName as String): font,
-            NSAttributedString.Key(kCTForegroundColorAttributeName as String): CGColor(red: white, green: white, blue: white, alpha: 1),
-        ]
-        let line = CTLineCreateWithAttributedString(NSAttributedString(string: s, attributes: attrs))
-        let b = CTLineGetBoundsWithOptions(line, .useOpticalBounds)
-        ctx.saveGState()
-        ctx.textPosition = CGPoint(x: p.x, y: p.y - b.midY)
-        CTLineDraw(line, ctx)
-        ctx.restoreGState()
-    }
 }
-
-/// Just enough weight vocabulary for the legend's two text styles.
-private enum LegendWeight { case regular, semibold }

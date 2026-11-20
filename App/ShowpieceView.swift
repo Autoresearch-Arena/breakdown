@@ -7,9 +7,15 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (main menu over the table whenever the model says so, with a back
 //          button in the header; the wordmark and the in-play status label are gone from the table, and the caption
 //          slot only takes room while the Lens is up with explanations on).
-// PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title, the status
-//          label, the controls, and the caption and shot panel arranged for the screen at hand. On a phone held upright
-//          the caption sits under the title and the shot panel above the controls, all floating over the table. On
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the table fills the screen: no caption slot on a phone held upright;
+//          the explanation card floats over the table's top edge just under the title row and never moves the table;
+//          the Lens colour key is a glass chip in the title row beside the back button; gaps and paddings are tighter.
+//          The camera now keeps only the playing area clear of the title row and controls and lets the rails run under
+//          that glass, see CameraFraming).
+// PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
+//          Lens colour key, status label), the controls, and the caption and shot panel arranged for the screen at
+//          hand. On a phone held upright the caption floats over the table's top edge under the title row and the shot
+//          panel sits above the controls, all floating over the table. On
 //          the Mac, on iPad and in landscape the screen splits: the table on the left with the controls under it, and
 //          a side column on the right for the caption and the shot panel, so nothing covers the action. The camera is
 //          told how much room the controls take (measured, so large text pushes the table up instead of hiding it).
@@ -35,10 +41,10 @@ struct ShowpieceView: View {
     @State private var showShotPanel = false
     /// Real laid-out edges in StageSpace, measured from the views themselves, for the camera (see StageChrome).
     @State private var headerBottom: Double?
-    @State private var captionBottom: Double?
     @State private var controlsTop: Double?
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
     @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
 
     var body: some View {
@@ -87,8 +93,7 @@ struct ShowpieceView: View {
         // In the wide layout the table's view stops at the side column, so it has no safe inset on that side.
         let i = geo.safeAreaInsets
         let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading, bottom: i.bottom, right: wide ? 0 : i.trailing),
-                                 headerBottom: headerBottom, captionBottom: wide ? nil : captionBottom,
-                                 controlsTop: controlsInColumn ? nil : controlsTop)
+                                 headerBottom: headerBottom, controlsTop: controlsInColumn ? nil : controlsTop)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, chrome: chrome)
@@ -96,13 +101,17 @@ struct ShowpieceView: View {
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
             if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
-            VStack(spacing: 10) {
+            VStack(spacing: 6) {
                 ScreenHeader(model: model)
                     .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
                 if !wide {
-                    // The caption has its own slot, sized for the tallest caption, so the table is framed below it.
-                    CaptionSlot(model: model, leader: leader, maxHeight: geo.size.height * 0.3)
-                        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { captionBottom = $0 }
+                    // The explanation floats over the table's top edge. It is deliberately NOT measured for the camera:
+                    // the Spacer below absorbs its height, so it comes and goes without moving the table or the controls.
+                    // It takes no touches (aiming drags start anywhere on the table) except at the accessibility text
+                    // sizes, where a long card may need to scroll.
+                    CaptionArea(model: model, leader: leader, maxHeight: geo.size.height * 0.28)
+                        .frame(maxWidth: 560)
+                        .allowsHitTesting(typeSize.isAccessibilitySize)
                 }
                 Spacer(minLength: 0)
                 // Hidden (but still measured, so the table does not jump) while the menu is up.
@@ -114,8 +123,8 @@ struct ShowpieceView: View {
                 }
             }
             .padding(.horizontal, 16)
-            .padding(.top, 8)
-            .padding(.bottom, 12)
+            .padding(.top, 4)
+            .padding(.bottom, 6)
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
             // The main menu, over everything, until the player picks something (and again from the back button).
@@ -150,7 +159,7 @@ struct ShowpieceView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ComparisonCard(model: model)
-                    CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: .greatestFiniteMagnitude)
+                    CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                             .transition(.opacity)
@@ -176,14 +185,16 @@ struct ShowpieceView: View {
 
 // MARK: Header and title
 
-/// Along the top inside the safe area: the back button to the main menu on the left, and on the right a status label
-/// only while the opening tells its story ("The break", "Hold on", "Slow motion"). In play the status label is gone:
-/// the Lens button already says which view is up, and every word off the table is room for the table.
+/// Along the top inside the safe area: the back button to the main menu on the left, the Lens colour key beside it
+/// while the Lens is up, and on the right a status label only while the opening tells its story ("The break",
+/// "Hold on", "Slow motion"). In play the status label is gone: the Lens button already says which view is up, and
+/// every word off the table is room for the table. The key lives here because this row exists anyway for the back
+/// button, so the key costs the table nothing.
 private struct ScreenHeader: View {
     let model: ShowpieceModel
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .center, spacing: 12) {
             Button { model.openMenu() } label: {
                 Label("Menu", systemImage: "chevron.backward")
                     .labelStyle(.iconOnly)
@@ -197,6 +208,9 @@ private struct ScreenHeader: View {
             .keyboardShortcut(.cancelAction)
             .accessibilityLabel("Menu")
             .accessibilityHint("Pauses the game and opens the main menu")
+            if model.lensOn {
+                LensLegendChip().transition(.opacity)
+            }
             Spacer(minLength: 0)
             if model.stage != .explore && model.stage != .lead {
                 Text(model.stageTitle)
@@ -213,5 +227,6 @@ private struct ScreenHeader: View {
         .opacity(model.menuOpen ? 0 : 1)
         .accessibilityHidden(model.menuOpen)
         .animation(.easeOut(duration: 0.25), value: model.stage)
+        .animation(.easeOut(duration: 0.25), value: model.lensOn)
     }
 }

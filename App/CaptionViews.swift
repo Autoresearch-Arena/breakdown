@@ -3,14 +3,16 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (follows the Options: no card at all with explanations off, the
 //          equation only with Show the maths on; the slot under the title takes no room unless a card can show, so
 //          the warm table gets the whole screen).
-// PURPOSE: The caption and equation card, and the thin leader line and highlight ring that tie it to the ball it
-//          describes. The card is a Liquid Glass panel kept off the action (under the title on a phone held upright,
-//          in the side column everywhere else: ShowpieceView decides where). The ring position is the ball's place
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the table fills the screen: the caption slot, its invisible sizer and
+//          the "Explanations appear here" placeholder are gone. On a phone held upright the card now floats as a compact
+//          glass card over the table's top edge, takes no room from the table, and is simply absent when there is
+//          nothing to say; its glass carries a dark tint so it reads over the Lens grid. New LensLegendChip: the Lens
+//          colour key as a small glass chip for the title row, with Dynamic Type and one spoken sentence.)
+// PURPOSE: The caption and equation card, the Lens colour key chip, and the thin leader line and highlight ring that tie
+//          the card to the ball it describes. The card is a Liquid Glass panel (floating over the top edge of the table
+//          on a phone held upright, in the side column everywhere else: ShowpieceView decides where). The ring position is the ball's place
 //          on the table, read from the recorded timeline and projected to the screen by the 3D view each frame, so no
 //          model change was needed. Reads the model; writes nothing to it.
-//          Package 4 (0.4.0): CaptionSlot reserves a fixed slot for the card on a phone held upright (sized to the tallest
-//          caption by an invisible sizer) so the camera frames the table below it instead of under it; the card is a
-//          little tighter (12 point padding) to give the table more room.
 // SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette.
 import BreakdownLensModel
 import BreakdownTimeline
@@ -19,8 +21,7 @@ import SwiftUI
 
 // MARK: Card
 
-/// The words of one caption, laid out. Shared by the real card and by the hidden sizer that measures the tallest
-/// caption, so the slot reserved for captions is exactly as tall as the tallest card will be.
+/// The words of one caption, laid out.
 private struct CaptionContent: View {
     let caption: Caption
     var accent: Color
@@ -47,16 +48,21 @@ struct CaptionCard: View {
     let caption: Caption
     @Environment(\.palette) private var palette
     @AppStorage(GameSettings.mathsKey) private var maths = false
-    /// Inner padding of the glass card; the sizer adds the same so both measure alike.
-    static let padding: CGFloat = 12
+    /// Inner padding of the glass card: compact, because on a phone it floats over the table's top edge.
+    static let padding: CGFloat = 10
 
     var body: some View {
         let accent = palette.color(for: caption.accent)
         CaptionContent(caption: caption, accent: accent)
-        .glassCard(cornerRadius: 20, padding: Self.padding)
-        .overlay(alignment: .leading) {
-            Capsule().fill(accent).frame(width: 3).padding(.vertical, 14).padding(.leading, 5)
-        }
+            .padding(.leading, 4)
+            .padding(Self.padding)
+            // Liquid Glass tinted toward the room colour: over the bright Lens grid and trails plain clear glass lets
+            // the lines show through the words, so the tint keeps the text readable. Reduce Transparency still turns
+            // it solid (the system does that for every glass surface).
+            .glassEffect(.regular.tint(palette.ground.opacity(0.55)), in: .rect(cornerRadius: 18, style: .continuous))
+            .overlay(alignment: .leading) {
+                Capsule().fill(accent).frame(width: 3).padding(.vertical, 12).padding(.leading, 5)
+            }
         // One spoken sentence per caption; the equation is read last because it is decoration for most listeners.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(caption.title). \(caption.detail)")
@@ -65,92 +71,64 @@ struct CaptionCard: View {
     }
 }
 
-/// The caption for the moment on screen, or nothing. Reads the clock itself so the rest of the screen does not
-/// redraw every frame.
+/// The caption for the moment on screen, or nothing at all: when there is nothing to say no card and no placeholder
+/// shows, and on a phone the table underneath is simply uncovered. Reads the clock itself so the rest of the screen
+/// does not redraw every frame. Never measured for framing: the card floats over the table and never shrinks it.
 struct CaptionArea: View {
     let model: ShowpieceModel
     let leader: LeaderState
-    /// In the side column there is always room, so an empty column says what will appear there.
-    let showsPlaceholder: Bool
     /// The most height the card may take before it scrolls (large text sizes).
     let maxHeight: CGFloat
 
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
     var body: some View {
-        Group {
-            if !explanations || model.menuOpen {
-                EmptyView()
-            } else if model.melt > 0.4, let caption = model.activeCaption() {
+        let showing = explanations && !model.menuOpen && model.melt > 0.4 && model.activeCaption() != nil
+        // A ZStack rather than a Group so the view (and the onChange below) exists even when no card shows.
+        ZStack(alignment: .top) {
+            if showing, let caption = model.activeCaption() {
                 FittingScroll(maxHeight: maxHeight) {
                     CaptionCard(caption: caption)
                         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { leader.card = $0 }
                 }
                 .transition(.opacity)
                 .id(caption.id)
-            } else if showsPlaceholder {
-                Text("Explanations appear here as the shot plays.")
-                    .font(Theme.body)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(4)
             }
         }
         .animation(.easeOut(duration: 0.2), value: model.activeCaption()?.id)
+        // With no card on screen the leader must not keep the last card's place: CaptionLeader hides the ring for any
+        // ball inside that rectangle, so a stale one (explanations switched off, say) would swallow rings near the top.
+        .onChange(of: showing) { _, now in if !now { leader.card = .zero } }
     }
 }
 
-/// The caption's place on a phone held upright: a slot under the title row whose height is the height of the TALLEST
-/// caption of the shot (measured by laying every caption out, invisibly), capped at `maxHeight` for the largest text
-/// sizes, where the card scrolls instead. The slot is the same height whichever caption is showing, so the screen is
-/// laid out once and the camera can frame the table in the space below it: the card never lands on the table, and the
-/// table never jumps as captions change. The real card sits at the top of the slot.
-struct CaptionSlot: View {
-    let model: ShowpieceModel
-    let leader: LeaderState
-    let maxHeight: CGFloat
-    /// Height of the tallest caption laid out at the slot's width, from the sizer. Zero until the first layout.
-    @State private var tallest: CGFloat = 0
-    @Environment(\.dynamicTypeSize) private var typeSize
-    @AppStorage(GameSettings.explanationsKey) private var explanations = true
-    /// The slot only takes room while a card can show: Lens up, explanations on. Otherwise the table gets the space.
-    private var reserves: Bool { explanations && model.melt > 0.4 }
-    /// At the accessibility text sizes the controls already fill most of a phone, so the card gets a smaller cap
-    /// (it scrolls) to leave the table some room.
-    private var cap: CGFloat { typeSize.isAccessibilitySize ? maxHeight * 0.5 : maxHeight }
+// MARK: Lens colour key
 
-    var body: some View {
-        ZStack(alignment: .top) {
-            // The sizer is what gives the slot its height. A plain frame(maxHeight:) would not do: it expands to the
-            // whole offer, so the measured height is applied as an exact frame instead.
-            CaptionSizer(captions: model.captions)
-                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tallest = $0 }
-            // With the Lens up and nothing to say right now (paused at the end, say) the slot shows a quiet hint instead
-            // of a blank hole; on the warm table the slot stays empty because the camera has not reserved it there.
-            if model.melt > 0.4 {
-                CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: cap)
-            }
+/// What the Lens colours mean, as a small glass chip for the title row: an amber line for a ball sliding, a cyan line
+/// for a ball rolling. It replaces the baked 3D legend that used to take a band of height off the table. Text follows
+/// Dynamic Type; when one row does not fit beside the back button the two entries stack. Spoken as one sentence.
+struct LensLegendChip: View {
+    @Environment(\.palette) private var palette
+
+    private func entry(_ name: LocalizedStringKey, _ color: Color) -> some View {
+        HStack(spacing: 6) {
+            // A short glowing line, like the trail it stands for.
+            Capsule().fill(color).frame(width: 16, height: 3).shadow(color: color.opacity(0.8), radius: 3)
+            Text(name).font(Theme.label).lineLimit(1)
         }
-        .frame(height: reserves ? min(tallest, cap) : 0, alignment: .top)
-        .clipped()
     }
-}
-
-/// Every caption laid out at the card's width and thrown away: only its height counts. Taking the tallest child
-/// makes the ZStack around it exactly as tall as the tallest card. Hidden from the eye and from VoiceOver.
-private struct CaptionSizer: View, Equatable {
-    let captions: [Caption]
 
     var body: some View {
-        ZStack(alignment: .top) {
-            ForEach(captions) { c in
-                CaptionContent(caption: c, accent: .clear)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(CaptionCard.padding)
-            }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) { entry("Sliding", palette.slide); entry("Rolling", palette.accent) }
+            VStack(alignment: .leading, spacing: 4) { entry("Sliding", palette.slide); entry("Rolling", palette.accent) }
         }
-        .hidden()
-        .accessibilityHidden(true)
+        .fixedSize(horizontal: false, vertical: true)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .glassEffect(.regular.tint(palette.ground.opacity(0.4)), in: .capsule)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Lens colours: amber lines show a ball sliding, cyan lines a ball rolling")
     }
 }
 

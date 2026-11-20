@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the Lens colour legend is a glass chip in the title row now, so it
+//          no longer hangs off the camera).
 // PURPOSE: The thin coordinator of the 3D scene. Owns the root entity and the shared state (current timeline and
 //          table frame, the ball entities), wires the three jobs together, and runs the per-frame apply(): fade the
 //          warm table out and the Lens in with the melt value, place every ball for the playback clock, then hand the
@@ -58,7 +60,6 @@ final class TableScene {
         root.addChild(lens.root)
         root.addChild(camera.rig)
         lens.buildStatic(ballCount: timeline.ballCount, frame: frame, table: timeline.table)
-        camera.hud.addChild(lens.legend)
         for n in 0..<timeline.ballCount {
             let parts = TableBuilder.makeBall(number: n, radius: frame.ballRadius, parent: root)
             balls.append(parts.ball); bodies.append(parts.body); markers.append(parts.marker)
