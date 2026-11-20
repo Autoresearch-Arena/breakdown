@@ -17,7 +17,10 @@
 //          and only here. Does NOT belong here: table or Lens drawing, ball placement, measuring the screen (TableStage).
 //          History: split out of TableScene.swift in package 0; framing rewritten in package 2 of the glow-up plan; package
 //          4 (0.4.0) replaced the window read with measured chrome, added the legend-only-if-needed rule and the motion.
-// SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame.
+//          Edited: Claude Opus 5.5 High, 20-November-2026 (Ride the shot: update takes an optional ShotCamera, which may
+//          replace the pose, field of view and near plane for a replay; the HUD anchor now uses the field of view in use).
+// SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame;
+//          the ride camera's own logic is in ShotCamera, this file only applies its answer.
 import CoreGraphics
 import Foundation
 import RealityKit
@@ -76,7 +79,9 @@ final class TableCamera {
     /// - melt: 0 warm table, 1 Lens.
     /// - clock, duration: the playback clock and the length of the recorded shot, for the push-in and settle.
     /// - request: the measured free space (see FramingRequest); in the view's own coordinates.
-    func update(melt: Double, clock: Double, duration: Double, request q: FramingRequest, frame: TableFrame) {
+    /// - ride: the Ride camera (ShotCamera), which takes over during a replay when Ride is on; nil leaves the camera alone.
+    func update(melt: Double, clock: Double, duration: Double, request q: FramingRequest, frame: TableFrame,
+                ride: ShotCamera? = nil) {
         let size = q.size
         let reduce = Self.reduceMotion
         let m = Float(melt)
@@ -120,11 +125,18 @@ final class TableCamera {
         let elevation: Float = reduce ? lensElevation : (48 + 41 * ease) * .pi / 180
         let pose = CameraFraming.pose(size: size, rect: free, yaw: yaw, elevation: elevation, halfX: halfX, halfZ: halfZ,
                                       rimHeight: Self.railHeight, fovDegrees: Self.fov, distanceScale: scale)
-        camera.look(at: pose.target, from: pose.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
+        // Ride the shot: ShotCamera returns this overhead pose untouched unless Ride is on for the replay.
+        let shot = ride?.override(position: pose.position, target: pose.target, fov: Self.fov, free: free, size: size,
+                                  reduceMotion: reduce)
+            ?? CameraShot(position: pose.position, target: pose.target, fov: Self.fov, near: ShotCamera.overheadNear)
+        if camera.camera.fieldOfViewInDegrees != shot.fov { camera.camera.fieldOfViewInDegrees = shot.fov }
+        if camera.camera.near != shot.near { camera.camera.near = shot.near }
+        camera.look(at: shot.target, from: shot.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
 
         // HUD anchor: at the legend's spot, scaled so a local unit is one point on screen.
         let legend = CameraFraming.legendCenter(in: CameraFraming.freeRect(q, captionShare: 1))
-        let kY = tan(Self.fov * .pi / 360), d = Self.hudDistance
+        // While riding low, the legend plane comes in close (just past the near plane) so the table cannot cover it.
+        let kY = tan(shot.fov * .pi / 360), d = shot.near < ShotCamera.overheadNear ? shot.near * 4 : Self.hudDistance
         let h = Float(max(1, size.height)), w = Float(max(1, size.width))
         let perPoint = 2 * kY * d / h
         let nx = Float(legend.x) / w * 2 - 1, ny = 1 - Float(legend.y) / h * 2

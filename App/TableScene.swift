@@ -15,6 +15,8 @@
 //          -lensSelfTest runs the scrub-exactness check and prints the result.
 //          Package 4 (13-Nov-2026): the camera now takes the measured free space (a FramingRequest) and the clock, so it can
 //          frame between the title, caption slot and controls and push in on the break; nothing else here changed.
+//          Edited: Claude Opus 5.5 High, 20-November-2026 (Ride the shot: owns the ShotCamera, loads it with each new
+//          timeline and hands it to the camera with the clock and whether Ride is on; -rideSelfTest logs its check).
 //          Edit the file for the job you are doing; do not add Lens or table detail back into this one.
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
@@ -31,6 +33,8 @@ final class TableScene {
     private let tableGroup: Entity
     private let lens = LensLayer()
     private let camera = TableCamera()
+    /// The Ride camera (see ShotCamera): follows the cue ball and the ball it hits during a replay when Ride is on.
+    private let shotCamera = ShotCamera()
     private var balls: [Entity] = []
     private var bodies: [ModelEntity] = []
     private var markers: [ModelEntity] = []
@@ -51,6 +55,7 @@ final class TableScene {
         root.addChild(lens.root)
         root.addChild(camera.rig)
         lens.buildStatic(ballCount: timeline.ballCount, frame: frame, table: timeline.table)
+        shotCamera.load(timeline, frame: frame)
         camera.hud.addChild(lens.legend)
         for n in 0..<timeline.ballCount {
             let parts = TableBuilder.makeBall(number: n, radius: frame.ballRadius, parent: root)
@@ -71,10 +76,12 @@ final class TableScene {
         self.timeline = timeline
         frame = TableFrame(timeline.table)
         lens.rebuild(timeline: timeline, frame: frame)
+        shotCamera.load(timeline, frame: frame)
         for b in 0..<balls.count {
             balls[b].isEnabled = true
         }
         if Self.launchFlag("-lensSelfTest") { runSelfTest() }
+        if Self.launchFlag("-rideSelfTest") { shotCamera.selfTest(size: CGSize(width: 402, height: 874)) }
     }
 
     // MARK: Per frame
@@ -121,9 +128,13 @@ final class TableScene {
 
     /// Frames the whole table in the measured free space, swings from a low three-quarter view to straight down as the
     /// Lens melts in, and pushes in on the break (see TableCamera).
-    func updateCamera(melt: Double, request: FramingRequest) {
+    /// - ride: true while Ride is on and a replay is playing (ShowpieceModel.rideActive); the ride follows the same
+    ///   clock as the balls, including any test pinning.
+    func updateCamera(melt: Double, request: FramingRequest, ride: Bool = false) {
+        shotCamera.clock = lastClock
+        shotCamera.active = ride
         camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
-                      request: request, frame: frame)
+                      request: request, frame: frame, ride: shotCamera)
     }
 
     // MARK: Test hooks
