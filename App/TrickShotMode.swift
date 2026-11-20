@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (passes the shot's cue elevation to the table, so the massé and the jump are struck with a raised cue).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Watch it now turns the Ride camera on through model.setRide).
 // PURPOSE: Trick-shot mode: the game's main purpose. Holds which trick shot is on the table and walks the player through
 //          it: Ready (the table set up at the shot's start, a card with the hook) > Watching (the authored solution plays
@@ -211,7 +212,8 @@ final class TrickShotMode {
         guard let shot = current else { return }
         switch shot.setup {
         case .layout(let positions):
-            model.loadTrickLayout(positions, aim: s.aim, power: s.power, tipUp: s.tipUp, tipSide: s.tipSide)
+            model.loadTrickLayout(positions, aim: s.aim, power: s.power, tipUp: s.tipUp, tipSide: s.tipSide,
+                                  elevation: s.elevation ?? 0)
         case .rack(let seed):
             model.loadTrickRack(seed: seed, aimOffset: s.aim, power: s.power, tipUp: s.tipUp, tipSide: s.tipSide)
         }

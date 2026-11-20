@@ -173,6 +173,7 @@ final class ShowpieceModel {
 
     /// Play: a fresh rack, ready for the player's own break. The view opens the aiming controls.
     func startGame() {
+        shotElevation = 0      // free play is always a level cue
         menuOpen = false
         gameInProgress = true
         rerack()
@@ -593,12 +594,13 @@ final class ShowpieceModel {
 
     /// Put an authored layout on the table, still, with the given aim (degrees), power, tip height and side ready for
     /// the next shot. The same zero-speed trick tryAgain() uses; the settings are set after load(), which re-aims.
-    func loadTrickLayout(_ positions: [Vec2], aim: Double, power: Double, tipUp: Double, tipSide: Double) {
+    /// `elevation` raises the cue (sine of its angle) for the massé and the jump; every other shot is level.
+    func loadTrickLayout(_ positions: [Vec2], aim: Double, power: Double, tipUp: Double, tipSide: Double, elevation: Double = 0) {
         load(PoolSolver.simulate(NextShot.shot(from: positions, direction: Vec2(1, 0), speed: 0, tipUp: 0, tipSide: 0, seed: 0)))
         layout = positions
         racked = false
         clearAttempts()
-        aimDegrees = aim; shotPower = power; shotTipUp = tipUp; shotTipSide = tipSide
+        aimDegrees = aim; shotPower = power; shotTipUp = tipUp; shotTipSide = tipSide; shotElevation = elevation
         stage = .explore; stageTime = 0; time = 0; playing = false; chosenRate = nil
     }
 

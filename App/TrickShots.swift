@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Throw It In, The Massé and Jump the Blocker authored with the capped search and playable; elevation is the sine the solver uses).
 // PURPOSE: The trick-shot library: data only. Ten shots, each with its id, title, a one-sentence hook, where the balls
 //          start (only the balls it uses; every other ball is off the table), the authored answer (aim, power, cue-tip
 //          height and side; cue elevation is reserved for the massé and the jump), the goal the app checks from the
@@ -28,7 +29,8 @@ struct TrickSettings: Equatable {
     var power: Double            // launch speed, metres per second
     var tipUp: Double            // metres above (+) or below (-) the cue ball's centre
     var tipSide: Double          // metres right (+) or left (-) of centre
-    /// How steeply the cue is raised, degrees. Reserved for the massé and the jump; nil means a level cue.
+    /// How steeply the cue is raised, as the sine of its angle above the table (0.5 is 30 degrees), the solver's own
+    /// unit. Only the massé and the jump raise it; nil means a level cue.
     var elevation: Double? = nil
 }
 
@@ -115,7 +117,7 @@ enum TrickShots {
     static func shot(id: String) -> TrickShot? { all.first { $0.id == id } }
 
     static let all: [TrickShot] = [
-        stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain,
+        stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt,
         masse, jumpOver,
     ]
 
@@ -242,25 +244,60 @@ enum TrickShots {
         difficulty: .medium, window: TrickWindow(aim: 0.34, power: 0.50, tipUp: 0.0135, tipSide: 0.001),
         praise: "Off the far cushion and home. The mirror never lies.", pending: false)
 
-    // MARK: 9 and 10: waiting on cue elevation and airborne physics
+    // MARK: 8. Throw It In
+    // Search (BreakProbe tricks throw-it, 20-Nov-2026, three threads): the 2 and the 8 half a millimetre apart, their
+    // line pointing 9 or 12 degrees past the bottom-left corner, the cue ball coming in from four angles; 8,448
+    // candidates, 661 passed, 386 survived the screen. Kept only if the same strike misses with no side spin AND misses
+    // with no friction between the balls, so the throw is really what makes it. Measured windows: aim -136.49 to
+    // -135.87 degrees (half-width 0.30), power 0.60 to 7.65 m/s, tip height -5.0 to +19.5 mm, side -19.5 to -1.0 mm.
+    static let throwIt = TrickShot(
+        id: "throw-it", number: 8, title: "Throw It In",
+        hook: "The 2 and the 8 are touching, lined up to miss the pocket. Side spin drags the 8 in anyway.",
+        goalLine: "Hit the 2 and throw the 8 into the bottom-left corner.",
+        setup: .layout(placed([0: Vec2(0.8025, 0.5992), 2: Vec2(0.4356, 0.2595), 8: Vec2(0.3825, 0.2371)])),
+        solution: TrickSettings(aim: -136.19, power: 3.85, tipUp: 0.0075, tipSide: -0.012),
+        goal: TrickGoal(drops: [TrickDrop(ball: 8, pocket: 0)], firstHit: 2), usesBridge: false,
+        idea: "Touching balls rub as they part. Left spin on the cue ball spins the 2, and the friction between the 2 and the 8 drags the 8 off its line and into the pocket.",
+        maths: "throw angle:  tan θ ≈ μ · v_slip / v_n",
+        mathsSpoken: "The throw angle grows with the friction between the balls and how fast their surfaces slip past each other.",
+        difficulty: .medium, window: TrickWindow(aim: 0.30, power: 3.25, tipUp: 0.012, tipSide: 0.0075),
+        praise: "Thrown in. Friction did what the angle could not.", pending: false)
 
+    // MARK: 9. The Massé
+    // Search (BreakProbe tricks masse-curve, 20-Nov-2026, three threads): the 4 dead in the way between the cue ball
+    // and the 9, which hangs near the top-right corner; cue raised to sine 0.4 or 0.5 (about 24 to 30 degrees), side
+    // offsets of 0.6 to 0.75 of a radius, 0.6 to 1.2 m/s, aims 40 degrees either side of straight; 5,184 candidates,
+    // 82 passed. Kept only if the same strike with a level cue misses. Measured windows: aim 62.99 to 68.19 degrees
+    // (half-width 1.62), power 0.80 to 1.45 m/s, tip height -7.5 to +0.5 mm, side +14.6 to +19.1 mm.
     static let masse = TrickShot(
         id: "masse-curve", number: 9, title: "The Massé",
-        hook: "Raise the cue almost straight up and the cue ball bends around a ball in its way.",
-        goalLine: "Curve the cue ball around the blocker to pot the target.",
-        setup: .layout(placed([:])), solution: TrickSettings(aim: 0, power: 0, tipUp: 0, tipSide: 0, elevation: 70),
-        goal: TrickGoal(drops: []), usesBridge: false,
-        idea: "A steep cue gives the cue ball spin about a tilted axis, and the cloth turns that spin into a curve.",
-        maths: nil, mathsSpoken: nil, difficulty: .hard, window: TrickWindow(aim: 1, power: 1, tipUp: 1, tipSide: 0),
-        praise: "Bent it round.", pending: true)
+        hook: "The 4 blocks the way to the 9. Raise the cue, hit the side of the cue ball, and it bends round.",
+        goalLine: "Curve round the 4 and pot the 9 in the top-right corner.",
+        setup: .layout(placed([0: Vec2(1.9992, 0.9726), 4: Vec2(2.1745, 1.0690), 9: Vec2(2.4436, 1.2170)])),
+        solution: TrickSettings(aim: 64.61, power: 0.95, tipUp: -0.0035, tipSide: 0.0171, elevation: 0.5),
+        goal: TrickGoal(drops: [TrickDrop(ball: 9, pocket: 3)], firstHit: 9), usesBridge: false,
+        idea: "A raised cue struck off-centre spins the cue ball about a tilted axis. As it slides, the cloth's friction pushes sideways on that spin and the path curves.",
+        maths: "sideways push:  F = μ m g, along the slip of the spinning contact point",
+        mathsSpoken: "The cloth pushes with the ball's weight times the friction, in the direction its spinning contact point slips.",
+        difficulty: .hard, window: TrickWindow(aim: 1.62, power: 0.15, tipUp: 0.004, tipSide: 0.002),
+        praise: "Bent it round. That is a massé.", pending: false)
 
+    // MARK: 10. Jump the Blocker
+    // Search (BreakProbe tricks jump-over, 20-Nov-2026, three threads): the 6 in the way 0.3 or 0.35 m ahead of the cue
+    // ball, the 11 near the top-right corner beyond it; cue raised to sine 0.5 to 0.65, 3 to 5.5 m/s, aims 1.5 degrees
+    // either side of straight; 2,728 candidates, 273 passed, 88 survived the screen. Kept only if the same strike with
+    // a level cue misses. Measured windows: aim 26.70 to 27.34 degrees (half-width 0.32), power 3.90 to 5.15 m/s, tip
+    // height -19.5 to +10.0 mm.
     static let jumpOver = TrickShot(
         id: "jump-over", number: 10, title: "Jump the Blocker",
-        hook: "Hit down on the cue ball and it hops clean over a ball in the way.",
-        goalLine: "Jump the blocker and pot the target.",
-        setup: .layout(placed([:])), solution: TrickSettings(aim: 0, power: 0, tipUp: 0, tipSide: 0, elevation: 45),
-        goal: TrickGoal(drops: []), usesBridge: false,
-        idea: "A downward strike drives the ball into the slate, and the slate throws it back up into the air.",
-        maths: nil, mathsSpoken: nil, difficulty: .hard, window: TrickWindow(aim: 1, power: 1, tipUp: 1, tipSide: 0),
-        praise: "Clean over the top.", pending: true)
+        hook: "The 6 sits right in the way. Hit down on the cue ball and it hops clean over to sink the 11.",
+        goalLine: "Jump the 6 and pot the 11 in the top-right corner.",
+        setup: .layout(placed([0: Vec2(1.3708, 0.6854), 6: Vec2(1.6392, 0.8196), 11: Vec2(2.2270, 1.1135)])),
+        solution: TrickSettings(aim: 27.02, power: 4.55, tipUp: -0.005, tipSide: 0, elevation: 0.55),
+        goal: TrickGoal(drops: [TrickDrop(ball: 11, pocket: 3)], firstHit: 11), usesBridge: false,
+        idea: "A raised cue drives the cue ball down into the slate. The slate pushes back, the ball leaves the cloth, flies over the 6, bounces and rolls on into the 11.",
+        maths: "flight:  h = v_up² / 2g,  range = 2 · v_up · v_along / g",
+        mathsSpoken: "The height is the upward speed squared over twice gravity, and the hop's length is twice the upward speed times the forward speed over gravity.",
+        difficulty: .medium, window: TrickWindow(aim: 0.32, power: 0.60, tipUp: 0.0145, tipSide: 0),
+        praise: "Clean over the top.", pending: false)
 }

@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (searches use at most three threads unless BREAKPROBE_THREADS says otherwise; strikes carry cue elevation).
 // PURPOSE: The search machinery behind the trick shots (run by hand with "BreakProbe tricks"; never part of the app or
 //          of the package tests). It simulates a candidate shot with the real solver, checks it against a goal (which
 //          balls must drop and where, where the cue ball must stop, which ball the cue ball must touch first, no
@@ -33,9 +34,11 @@ struct Strike: Sendable, CustomStringConvertible {
     var power: Double
     var tipUp: Double
     var tipSide: Double
+    /// Sine of the cue's angle above the table: 0 is a level cue (every shot but the massé and the jump).
+    var elevation: Double = 0
     var direction: Vec2 { let a = aim * Double.pi / 180; return Vec2(cos(a), sin(a)) }
     var description: String {
-        String(format: "aim %.3f deg, power %.2f m/s, tip up %+.4f m, side %+.4f m", aim, power, tipUp, tipSide)
+        String(format: "aim %.3f deg, power %.2f m/s, tip up %+.4f m, side %+.4f m, elevation sine %.2f", aim, power, tipUp, tipSide, elevation)
     }
 }
 
@@ -66,7 +69,7 @@ func rotate(_ v: Vec2, _ deg: Double) -> Vec2 {
 
 func simulate(_ layout: [Vec2], _ s: Strike, parameters: PoolParameters = P) -> Timeline {
     PoolSolver.simulate(NextShot.shot(from: layout, direction: s.direction, speed: s.power, tipUp: s.tipUp,
-                                      tipSide: s.tipSide, seed: 1, parameters: parameters))
+                                      tipSide: s.tipSide, seed: 1, parameters: parameters, elevation: s.elevation))
 }
 
 /// The pocket a ball dropped in, or nil.
@@ -120,11 +123,18 @@ func aimBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal, step: Double = 0.02, l
 
 /// Run `body` for every index in parallel and collect the results in order. The solver is a pure function of its
 /// input, so the order the work is done in cannot change any answer.
+/// At most `workers` threads (BREAKPROBE_THREADS, default 3): the machine this runs on is shared, and an uncapped
+/// search once took every core for an hour.
+let workers = max(1, Int(ProcessInfo.processInfo.environment["BREAKPROBE_THREADS"] ?? "") ?? 3)
+
 func parallelMap<T: Sendable>(_ count: Int, _ body: @Sendable (Int) -> T) -> [T] {
     let box = ResultBox<T>(count)
-    DispatchQueue.concurrentPerform(iterations: count) { i in
-        let v = body(i)
-        box.lock.lock(); box.items[i] = v; box.lock.unlock()
+    let n = min(workers, max(1, count))
+    DispatchQueue.concurrentPerform(iterations: n) { w in
+        for i in Swift.stride(from: w, to: count, by: n) {
+            let v = body(i)
+            box.lock.lock(); box.items[i] = v; box.lock.unlock()
+        }
     }
     return box.items.map { $0! }
 }

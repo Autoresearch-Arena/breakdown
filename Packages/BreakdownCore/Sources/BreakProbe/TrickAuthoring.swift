@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (throw search moved further off the pocket so it needs the throw, coarser aim steps; new massé and jump searches using cue elevation).
 // PURPOSE: Authors the trick shots for the app with the real solver (run "BreakProbe tricks [id ...]"). Each shot is
 //          built geometrically first (the ghost-ball line from the target pocket back through the object ball, a second
 //          ball dropped onto the cue ball's own recorded path, blockers on the straight line, a frozen pair whose line
@@ -304,7 +305,8 @@ func authorThrowIt() -> Authored? {
     for dist in [0.45, 0.6] {
         let b = pocket + unit(Vec2(1, 0.62)) * dist
         let toPocket = unit(pocket - b)
-        for miss in [-7.0, -5.0, 5.0, 7.0] {
+        // Far enough off the pocket that the cut angle alone cannot make it: the shot has to need the throw.
+        for miss in [-12.0, -9.0, 9.0, 12.0] {
             let v = rotate(toPocket, miss)                 // the line of centres, missing the pocket by `miss` degrees
             // Half a millimetre apart: touching to the eye. At a micrometre (as the rack is) the solver chatters: the
             // cue ball, following the 2 after a full hit, re-collides with it tens of thousands of times. The cue ball
@@ -315,7 +317,7 @@ func authorThrowIt() -> Authored? {
                 guard [a, b, c].allSatisfy({ clearOfRails($0) }) else { continue }
                 let layout = layoutOf([0: c, 2: a, 8: b])
                 let aim0 = degrees(of: unit(a - c))
-                for da in range(-4, 4, 0.1) { for side in [-0.016, -0.012, -0.008, 0.008, 0.012, 0.016] { for p in [1.5, 2.5] {
+                for da in range(-4, 4, 0.25) { for side in [-0.016, -0.012, 0.012, 0.016] { for p in [1.5, 2.5] {
                     cands.append(Candidate(layout: layout, strike: Strike(aim: aim0 + da, power: p, tipUp: 0, tipSide: side),
                                            goal: Goal(drops: [(8, 0)], firstHit: 2),
                                            note: String(format: "frozen pair %.0f deg off the pocket, side spin throws the 8 in", miss)))
@@ -332,6 +334,79 @@ func authorThrowIt() -> Authored? {
     return best("throw-it", cands, .medium) { a in
         var noSide = a.strike; noSide.tipSide = 0
         return !passes(a.goal, simulate(a.layout, a.strike, parameters: fl)) && !passes(a.goal, simulate(a.layout, noSide))
+    }
+}
+
+// MARK: 9. The Massé
+
+/// A ball sits dead in the way between the cue ball and the target. A steeply raised cue with side offset bends the
+/// cue ball round the blocker onto the target, which drops. A level cue on the same line hits the blocker.
+func authorMasse() -> Authored? {
+    var cands: [Candidate] = []
+    let pocket = pockets[3]                                   // top-right corner
+    // A massé covers about half a metre (sine 0.5 at 0.5 m/s ends about 0.53 m along and 0.18 m aside), so the
+    // three balls sit close together.
+    for (gap, reach) in [(0.15, 0.35), (0.2, 0.45)] {
+        // The target hangs near the pocket's mouth, as in the classic massé trick: the curve arrives slowly, so the
+        // touch it gives has to be enough.
+        let target = pocket + unit(Vec2(-1, -0.55)) * 0.11
+        let toPocket = unit(pocket - target)
+        let cueSpot = target - toPocket * (2 * R) - toPocket * reach      // straight behind the target on its pocket line
+        let blocker = cueSpot + toPocket * gap
+        guard clearOfRails(cueSpot), clearOfRails(blocker), clearOfRails(target, pocketClear: 0.05) else { continue }
+        let layout = layoutOf([0: cueSpot, 4: blocker, 9: target])
+        let direct = degrees(of: toPocket)
+        for e in [0.4, 0.5] { for side in [-0.75 * R, -0.6 * R, 0.6 * R, 0.75 * R] { for p in [0.6, 0.8, 1.0, 1.2] {
+            for da in range(-40, 40, 1.0) {
+                cands.append(Candidate(layout: layout, strike: Strike(aim: direct + da, power: p, tipUp: 0, tipSide: side, elevation: e),
+                                       goal: Goal(drops: [(9, 3)], firstHit: 9),
+                                       note: "massé round the 4 onto the 9"))
+            }
+        } } }
+    }
+    print("   masse: \(cands.count) candidates")
+    if ProcessInfo.processInfo.environment["MASSE_DIAG"] != nil {
+        var hits: [String: Int] = [:]
+        var reachTarget = 0
+        for c in cands {
+            let tl = simulate(c.layout, c.strike)
+            hits["first \(firstStruck(tl).map(String.init) ?? "none")", default: 0] += 1
+            if firstStruck(tl) == 9 { reachTarget += 1; if let k = pocketOf(9, tl) { hits["9 in \(k)", default: 0] += 1 } else { hits["9 stays up", default: 0] += 1 } }
+        }
+        print("   masse diag: \(hits.sorted { $0.key < $1.key })")
+    }
+    return best("masse-curve", cands, .hard) { a in
+        // It must really be the curve: the same strike with a level cue does not make it.
+        var level = a.strike; level.elevation = 0
+        return !passes(a.goal, simulate(a.layout, level))
+    }
+}
+
+// MARK: 10. Jump the Blocker
+
+/// A ball sits in the way, straight between the cue ball and the target. A raised cue makes the cue ball leave the
+/// cloth, clear the blocker, land and run on into the target, which drops. A level cue hits the blocker.
+func authorJump() -> Authored? {
+    var cands: [Candidate] = []
+    let pocket = pockets[3]
+    for (gap, reach) in [(0.3, 0.9), (0.35, 1.0)] {
+        let target = pocket + unit(Vec2(-1, -0.5)) * 0.35
+        let toPocket = unit(pocket - target)
+        let cueSpot = target - toPocket * (2 * R) - toPocket * reach
+        let blocker = cueSpot + toPocket * gap
+        guard [target, cueSpot, blocker].allSatisfy({ clearOfRails($0) }) else { continue }
+        let layout = layoutOf([0: cueSpot, 6: blocker, 11: target])
+        let direct = degrees(of: toPocket)
+        for e in [0.5, 0.55, 0.6, 0.65] { for p in range(3.0, 5.5, 0.25) { for da in range(-1.5, 1.5, 0.1) {
+            cands.append(Candidate(layout: layout, strike: Strike(aim: direct + da, power: p, tipUp: 0, tipSide: 0, elevation: e),
+                                   goal: Goal(drops: [(11, 3)], firstHit: 11),
+                                   note: "jump the 6, pot the 11"))
+        } } }
+    }
+    print("   jump: \(cands.count) candidates")
+    return best("jump-over", cands, .medium) { a in
+        var level = a.strike; level.elevation = 0
+        return !passes(a.goal, simulate(a.layout, level))
     }
 }
 
@@ -493,6 +568,8 @@ func runTrickAuthoring(only: Set<String>) {
         ("cross-bank", authorCrossBank),
         ("combo-chain", authorComboChain),
         ("throw-it", authorThrowIt),
+        ("masse-curve", authorMasse),
+        ("jump-over", authorJump),
     ]
     if only.isEmpty || only.contains("called-break") {
         let start = Date()
