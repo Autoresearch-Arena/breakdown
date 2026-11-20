@@ -12,6 +12,10 @@
 //          the Lens colour key is a glass chip in the title row beside the back button; gaps and paddings are tighter.
 //          The camera now keeps only the playing area clear of the title row and controls and lets the rails run under
 //          that glass, see CameraFraming).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (trick shots: the trick-shot layer (rings on the shot's balls and
+//          pockets, the success glow, the list sheet and the -trick launch flags) sits over the table under the aiming
+//          layer, and the trick-shot card sits above the controls on a phone held upright or at the top of the side
+//          column; marked "Trick shots" where they sit).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Lens colour key, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption floats over the table's top edge under the title row and the shot
@@ -100,6 +104,8 @@ struct ShowpieceView: View {
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
+            // Trick shots: rings on the shot's balls and pockets, the success glow, the list sheet, launch flags.
+            TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
             VStack(spacing: 6) {
                 ScreenHeader(model: model)
@@ -138,6 +144,8 @@ struct ShowpieceView: View {
         FittingScroll(maxHeight: geo.size.height * 0.62) {
             VStack(spacing: 10) {
                 if !wide { ComparisonCard(model: model) }
+                // Trick shots: the shot's card, above the controls so the camera frames the table above it.
+                if !wide { TrickShotCard(model: model) }
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
@@ -147,6 +155,7 @@ struct ShowpieceView: View {
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: model.comparisonReady)
+        .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
@@ -159,6 +168,8 @@ struct ShowpieceView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ComparisonCard(model: model)
+                    // Trick shots: the shot's card at the top of the column.
+                    TrickShotCard(model: model)
                     CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
