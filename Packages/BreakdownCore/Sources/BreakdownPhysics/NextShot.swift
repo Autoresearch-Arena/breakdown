@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 11-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (shot() takes the cue elevation, as a sine, default level; a ball
+//          that flew off the table is treated like a pocketed one: off the table, and the cue ball is re-spotted.)
 // PURPOSE: Turns a recorded shot into the starting layout of the next one, so the player can keep shooting from
 //          wherever the balls came to rest. Pocketed balls go off the table (the solver's (-1,-1) parking
 //          spot), a scratched cue ball is put back on the head spot (nudged clear of any ball sitting there),
@@ -57,9 +59,12 @@ public enum NextShot {
     }
 
     /// A shot from an arbitrary layout. `direction` need not be normalised; CueStrike normalises it.
+    /// `elevation` is the sine of the cue's angle above horizontal (0, the default, is a level cue).
     public static func shot(from positions: [Vec2], direction: Vec2, speed: Double, tipUp: Double, tipSide: Double,
-                            seed: UInt64, parameters p: PoolParameters = PoolParameters()) -> ShotInput {
+                            seed: UInt64, parameters p: PoolParameters = PoolParameters(),
+                            elevation: Double = 0) -> ShotInput {
         ShotInput(parameters: p, positions: positions,
-                  strike: CueStrike(direction: direction, speed: speed, tipUp: tipUp, tipSide: tipSide), seed: seed)
+                  strike: CueStrike(direction: direction, speed: speed, tipUp: tipUp, tipSide: tipSide,
+                                    elevation: elevation), seed: seed)
     }
 }

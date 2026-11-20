@@ -1,6 +1,10 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (pocket model version 2: knuckles, jaw faces and holes set back from the mouth, replacing the capture disk plus cushion gap).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (jump and masse: the slate's bounce and friction, the smallest hop
+//          that leaves the cloth and the cushion nose height, and CueStrike gains the cue's elevation as a sine. The new
+//          numbers join the parameter hash only when they differ from their defaults, so every recording made before
+//          them keeps its hash; a level strike takes exactly the old code path.)
 // PURPOSE: Every tunable number of the pool solver in one versioned value that is hashed into each recorded
 //          shot. Values follow the spec section 3.4; anything marked "calibrate" there is a first guess to
 //          tune later against the validation suite. No Foundation import anywhere in this module (no libm).
@@ -49,6 +53,19 @@ public struct PoolParameters: Sendable {
     public var cornerCaptureRadius = 0.065
     public var sideCaptureRadius = 0.052
     public var sideHoleSetback = 0.0
+    /// Jump and masse (20-Nov-2026). A cue that is raised drives the ball down into the cloth; the slate bounces it
+    /// back up with this restitution (measured cloth-on-slate values are about 0.5), and while the ball is pressed
+    /// into the cloth, cloth friction (this coefficient, capped by the impulse that stops the slip) acts on the
+    /// contact point. The same bounce applies every time a ball comes down from a jump.
+    public var slateRestitution = 0.5
+    public var slateFriction = 0.2
+    /// The smallest hop that leaves the cloth: a bounce whose rise would be lower than this (metres) is absorbed by
+    /// the cloth instead, so a jump ends after a few quickly shrinking bounces rather than an endless series.
+    public var minimumHop = 0.001
+    /// Height of the cushion nose above the cloth (regulation is 62.5 to 64.5 percent of a ball diameter). A ball in
+    /// the air whose lowest point is below this meets the cushion like a ball on the cloth; one above it sails over
+    /// the cushion and off the table.
+    public var cushionNoseHeight = 0.0363
     public var rackGap = 1e-6                   // one micrometre between rack neighbours
     public var rackJitter = 2e-7                // seeded jitter amplitude per axis, metres; stays under a quarter of the gap so no pair starts overlapping
 
@@ -105,6 +122,8 @@ public struct PoolParameters: Sendable {
         return ballBallFrictionFloor + ballBallFrictionGain / denom
     }
 
+    private static let defaultJump = [0.5, 0.2, 0.001, 0.0363]
+
     public var hash: UInt64 {
         var h = StableHasher()
         for d in [ballRadius, ballMass, gravity, slidingFriction, rollingResistance, spinDecay, ballBallRestitution,
@@ -113,20 +132,34 @@ public struct PoolParameters: Sendable {
                   sideJaw.x, sideJaw.y, jawLength, cornerCaptureRadius, sideCaptureRadius, sideHoleSetback,
                   rackGap, rackJitter] { h.combine(d) }
         h.combine(version)
+        // The jump numbers came after recordings already existed. They are folded in only when changed from their
+        // defaults (behind a marker), so the default parameters hash exactly as they did before them.
+        let jump = [slateRestitution, slateFriction, minimumHop, cushionNoseHeight]
+        if jump != PoolParameters.defaultJump {
+            h.combine(UInt64(0x4A55_4D50))   // "JUMP"
+            for d in jump { h.combine(d) }
+        }
         return h.value
     }
 }
 
 /// How the cue hits the cue ball. Direction is a unit vector supplied by the caller (no trig in the solver).
 /// `tipUp` and `tipSide` are the contact offsets from the ball centre in metres, up and to the right of the
-/// aim direction. Speed is the cue ball's launch speed.
+/// aim direction, measured across the cue (for a raised cue "up" leans back toward the player with the cue).
+/// Speed is the cue ball's launch speed along the cue.
+/// `elevation` is the sine of the cue's angle above horizontal (0 level, 1 straight down), clamped to 0...0.995;
+/// the caller does the trig, as with the direction. A raised cue sends part of the speed down into the cloth (the
+/// slate bounces it back up: a jump once the rise is at least PoolParameters.minimumHop) and tilts the side-spin axis,
+/// which makes the path curve while the ball slides (masse: a left offset curves left, a right offset right).
 public struct CueStrike: Sendable {
     public var direction: Vec2
     public var speed: Double
     public var tipUp: Double
     public var tipSide: Double
-    public init(direction: Vec2, speed: Double, tipUp: Double = 0, tipSide: Double = 0) {
+    public var elevation: Double
+    public init(direction: Vec2, speed: Double, tipUp: Double = 0, tipSide: Double = 0, elevation: Double = 0) {
         self.direction = direction.normalized; self.speed = speed; self.tipUp = tipUp; self.tipSide = tipSide
+        self.elevation = elevation < 0 ? 0 : (elevation > 0.995 ? 0.995 : elevation)
     }
 }
 

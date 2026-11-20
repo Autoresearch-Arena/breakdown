@@ -1,6 +1,9 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (TableSpec carries the pocket jaws, so the drawn table and the Lens use the solver's own geometry).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (jump shots: BallState carries the ball's height above the cloth;
+//          contentHash folds in the height terms of airborne segments and the flight fields of flight events only, so
+//          every recording without a jump hashes bit for bit as before; flewOffTable says which balls left the table.)
 // PURPOSE: The recorded shot. Holds every ball's segments, the Lens events, the table description, and a
 //          content hash for replay equality. Playback, slow motion, scrubbing, the Lens and sound all read
 //          this and never re-simulate. Doubles are hashed by bit pattern.
@@ -39,8 +42,11 @@ public struct BallState: Sendable, Equatable {
     public var omega: Vec3
     public var orientation: Quat
     public var phase: MotionPhase
-    /// True from the moment the ball is captured by a pocket.
+    /// True from the moment the ball is captured by a pocket (or flies off the table: see flewOffTable).
     public var pocketed: Bool
+    /// Height of the ball's lowest point above the cloth, metres (the centre is one radius above that). Zero on the
+    /// cloth; positive during a jump.
+    public var height: Double = 0
 }
 
 public struct Timeline: Sendable {
@@ -81,7 +87,14 @@ public struct Timeline: Sendable {
         let evalT = isPocketed ? pocketTime[ball]! : t
         let k = seg.kinematics(at: evalT)
         return BallState(position: k.position, velocity: isPocketed ? .zero : k.velocity, omega: k.omega,
-                         orientation: seg.orientation(at: evalT), phase: seg.phase, pocketed: isPocketed)
+                         orientation: seg.orientation(at: evalT), phase: seg.phase, pocketed: isPocketed,
+                         height: k.height)
+    }
+
+    /// True when the ball left the table by flying over a cushion (it then counts as off the table, like a pocketed
+    /// ball, but no pocket took it).
+    public func flewOffTable(_ ball: Int) -> Bool {
+        events.contains { $0.flight == .offTable && $0.balls.first?.ball == ball }
     }
 
     /// Hash of everything that defines the shot's outcome.
@@ -96,11 +109,19 @@ public struct Timeline: Sendable {
                 h.combine(Int(s.phase.rawValue))
                 h.combine(s.position0); h.combine(s.velocity0); h.combine(s.acceleration)
                 h.combine(s.omega0); h.combine(s.alphaXY); h.combine(s.spinDecay)
+                // Height terms only where they can be non-zero, so a recording with no jump hashes exactly as before.
+                if s.phase == .airborne || s.height0 != 0 {
+                    h.combine(s.height0); h.combine(s.verticalVelocity0); h.combine(s.verticalAcceleration)
+                }
             }
         }
         for e in events {
             h.combine(e.time); h.combine(Int(e.kind.rawValue)); h.combine(e.point); h.combine(e.normalImpulse)
             h.combine(e.balls.count)
+            if e.flight != .none {
+                h.combine(Int(e.flight.rawValue)); h.combine(e.verticalSpeedDown); h.combine(e.verticalSpeedUp)
+                h.combine(e.height)
+            }
         }
         return h.value
     }
