@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (honours the Sound option).
 // PURPOSE: Generated audio for the break, all synthesised in code with AVFoundation (no sample files). It plays
 //          the feel cues chosen by FeelMapping: a sharp crack for the break itself, soft or bright clicks for
 //          ball contacts depending on how hard they were, a low weighted thump for the rail (heavier for harder
@@ -107,7 +108,8 @@ final class SoundBoard {
                 print(String(format: "FEEL t=%.3f %@ strength=%.2f delay=%.3f", time, c.kind.rawValue, c.strength, c.delay))
             }
         }
-        guard running else { return }
+        // The Sound option is read at play time, so switching it in Options takes effect at once.
+        guard running, GameSettings.soundOn else { return }
         for cue in cues {
             if cue.delay <= 0 {
                 fire(cue)

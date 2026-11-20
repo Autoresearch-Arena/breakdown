@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (fewer rows over the table on a phone: play and pause sit in the
+//          scrub row, speed is a small menu instead of four segments, and the scrub row steps aside while aiming).
 // PURPOSE: The playback controls, built from standard parts: system buttons in Liquid Glass, SF Symbols with the
 //          standard replace and bounce symbol effects, a segmented picker for speed (a menu at the largest text
 //          sizes), and two toggle-style buttons (Lens, Your shot) whose label never changes, so nothing beside them
@@ -118,7 +120,19 @@ struct SpeedPicker: View {
 
     var body: some View {
         Group {
-            if asMenu { picker.pickerStyle(.menu) } else { picker.pickerStyle(.segmented) }
+            if asMenu {
+                // A small button that names the current speed ("Auto" while the opening paces itself) and opens the list.
+                Menu {
+                    picker.pickerStyle(.inline)
+                } label: {
+                    Text(model.chosenRate.map(PlaybackSpeed.label) ?? "Auto")
+                        .lineLimit(1)
+                        .monospacedDigit()
+                }
+                .menuIndicator(.hidden)
+            } else {
+                picker.pickerStyle(.segmented)
+            }
         }
         .accessibilityLabel("Playback speed")
         .accessibilityValue(model.chosenRate.map(PlaybackSpeed.label) ?? "Automatic")
@@ -134,7 +148,8 @@ struct PlaybackControls: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            scrubRow
+            // While aiming, the shot panel takes this place; the scrub row comes back when the panel closes.
+            if !shotPanelOpen { scrubRow }
             #if os(iOS)
             buttons   // on the Mac these live in the window toolbar
             #endif
@@ -142,11 +157,21 @@ struct PlaybackControls: View {
     }
 
     private var scrubRow: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
+            #if os(iOS)
+            PlayPauseButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
+                .buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
+            #endif
             ScrubBar(model: model)
+            #if os(iOS)
+            // On a phone the speed lives here, where the time read-out was: one fewer row over the table.
+            SpeedPicker(model: model, asMenu: true).fixedSize().buttonStyle(.plain).frame(minHeight: 44)
+            #else
             if !typeSize.isAccessibilitySize { TimeReadout(model: model) }
+            #endif
         }
-        .padding(.horizontal, 20)
+        .padding(.leading, 8)
+        .padding(.trailing, 20)
         .glassEffect(.regular, in: .capsule)
     }
 
@@ -180,8 +205,6 @@ struct PlaybackControls: View {
 
     private var oneRow: some View {
         HStack(spacing: 8) {
-            PlayPauseButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
-            SpeedPicker(model: model)
             Spacer(minLength: 0)
             lens
             ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
@@ -192,39 +215,20 @@ struct PlaybackControls: View {
     private var twoRows: some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
-                PlayPauseButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
-                SpeedPicker(model: model)
-            }
-            HStack(spacing: 8) {
+                Spacer(minLength: 0)
                 lens
                 ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
-                shot
-                Spacer(minLength: 0)
             }
+            HStack(spacing: 8) { Spacer(minLength: 0); shot }
         }
     }
 
-    /// Narrow columns (a phone turned sideways, a small window): the third row takes Your shot.
-    private var threeRows: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 8) {
-                PlayPauseButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
-                SpeedPicker(model: model)
-            }
-            HStack(spacing: 8) {
-                lens
-                ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
-                Spacer(minLength: 0)
-            }
-            HStack(spacing: 8) { shot; Spacer(minLength: 0) }
-        }
-    }
+    /// Narrow columns (a phone turned sideways, a small window) use the same two rows.
+    private var threeRows: some View { twoRows }
 
     /// Largest text sizes: everything full width, one control per row, with words on every button.
     private var stacked: some View {
         VStack(spacing: 8) {
-            PlayPauseButton(model: model, fill: true)
-            SpeedPicker(model: model, asMenu: true)
             ToggleButton(title: "Lens", symbol: "viewfinder", isOn: model.lensOn, fill: true) { model.setLens(!model.lensOn) }
             ReplayButton(model: model, fill: true)
             ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen, fill: true) { shotPanelOpen.toggle() }

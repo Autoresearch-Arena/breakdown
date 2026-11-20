@@ -2,6 +2,8 @@
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (test script "retry", also started by -retryDemo: a shot, Try again,
 //          a change of spin, the same shot again, ending on the comparison).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the Aim guide option: with it off only a short aim line is drawn,
+//          with no ghost ball, no ringed target and no follow-on lines, so the player judges the angle).
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -36,6 +38,7 @@ struct AimOverlay: View {
     @Binding var isOpen: Bool
 
     @AppStorage("aimHintSeen") private var hintSeen = false
+    @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     @Environment(\.palette) private var palette
     @State private var cameraBox = AimProjector.CameraBox()
     @State private var mode: DragMode?
@@ -179,8 +182,10 @@ struct AimOverlay: View {
         let dir = model.aimDirection
         guard dir.lengthSquared > 0.5, let cueScreen = proj.screen(origin) else { return }
 
-        let contact = AimGeometry.firstContact(layout: model.layout, from: origin, direction: dir, radius: radius)
-        let reach = contact.map { ($0.ghost - origin).length } ?? AimGeometry.cushionDistance(from: origin, direction: dir, table: table)
+        // Without the guide: no contact prediction, and the line stops a short way out instead of at the first ball.
+        let contact = aimGuide ? AimGeometry.firstContact(layout: model.layout, from: origin, direction: dir, radius: radius) : nil
+        let cushion = AimGeometry.cushionDistance(from: origin, direction: dir, table: table)
+        let reach = contact.map { ($0.ghost - origin).length } ?? (aimGuide ? cushion : min(0.35, cushion))
         let accent = palette.accent, amber = palette.slide, paper = palette.paper
 
         // The cue stick, behind the ball, pulled back as far as the power says.
@@ -230,7 +235,7 @@ struct AimOverlay: View {
                                style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [3, 4]))
                 }
             }
-        } else if let end = circle(proj, origin + dir * reach, radius) {
+        } else if aimGuide, let end = circle(proj, origin + dir * reach, radius) {
             // Nothing in the way: the cue ball finishes at the cushion.
             ctx.stroke(end, with: .color(paper.opacity(0.7)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
         }

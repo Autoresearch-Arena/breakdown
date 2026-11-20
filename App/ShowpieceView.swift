@@ -4,6 +4,9 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: the "last try" ghost is laid over the table
 //          under the aiming layer, the comparison card sits above the controls or at the top of the side column, and
 //          -retryDemo opens the aiming panel like -aimDemo and runs the scripted retry).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (main menu over the table whenever the model says so, with a back
+//          button in the header; the wordmark and the in-play status label are gone from the table, and the caption
+//          slot only takes room while the Lens is up with explanations on).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title, the status
 //          label, the controls, and the caption and shot panel arranged for the screen at hand. On a phone held upright
 //          the caption sits under the title and the shot panel above the controls, all floating over the table. On
@@ -102,18 +105,24 @@ struct ShowpieceView: View {
                         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { captionBottom = $0 }
                 }
                 Spacer(minLength: 0)
-                if !controlsInColumn { bottomStack(geo: geo, wide: wide) }
+                // Hidden (but still measured, so the table does not jump) while the menu is up.
+                if !controlsInColumn {
+                    bottomStack(geo: geo, wide: wide)
+                        .opacity(model.menuOpen ? 0 : 1)
+                        .allowsHitTesting(!model.menuOpen)
+                        .accessibilityHidden(model.menuOpen)
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 12)
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
-            // The title screen holds the opening until Start is tapped (see TitleScreen and ShowpieceModel.beginFromTitle).
-            if model.stage == .lead { TitleScreen(model: model) }
+            // The main menu, over everything, until the player picks something (and again from the back button).
+            if model.menuOpen { TitleScreen(model: model, onPlay: { showShotPanel = true }) }
         }
-        // The title and anything else that comes or goes with the opening uses the system's smooth motion, not a cut.
-        .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.stage == .lead)
+        // The menu comes and goes with the system's smooth motion, not a cut.
+        .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
     }
 
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
@@ -167,50 +176,42 @@ struct ShowpieceView: View {
 
 // MARK: Header and title
 
-/// The wordmark and the status label, along the top inside the safe area. The status wraps to two lines instead of
-/// running off the edge, and sits on glass so it reads over the bright Lens grid as well as the dark table.
+/// Along the top inside the safe area: the back button to the main menu on the left, and on the right a status label
+/// only while the opening tells its story ("The break", "Hold on", "Slow motion"). In play the status label is gone:
+/// the Lens button already says which view is up, and every word off the table is room for the table.
 private struct ScreenHeader: View {
     let model: ShowpieceModel
-    @Environment(\.palette) private var palette
-    @Environment(\.dynamicTypeSize) private var typeSize
-    @ScaledMetric(relativeTo: .footnote) private var tracking: CGFloat = 4
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            #if os(iOS)
-            // On the Mac the window's title bar already says Breakdown. At the largest text sizes the wordmark would
-            // fill the whole line and push the status off, so it gives way (the title card still names the app).
-            if !typeSize.isAccessibilitySize {
-                Text("BREAKDOWN")
-                    .font(.footnote.weight(.semibold))
-                    .tracking(tracking)
-                    .foregroundStyle(palette.paper.opacity(0.85))
-                    .fixedSize()
-                    .padding(.top, 8)
-                    .accessibilityAddTraits(.isHeader)
-                    // While the title screen is up it carries the wordmark, so the header's copy steps aside.
-                    .opacity(model.stage == .lead ? 0 : 1)
-                    .accessibilityHidden(model.stage == .lead)
+            Button { model.openMenu() } label: {
+                Label("Menu", systemImage: "chevron.backward")
+                    .labelStyle(.iconOnly)
+                    .font(.body.weight(.semibold))
+                    .frame(width: 22, height: 22)
             }
-            #endif
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .controlSize(.regular)
+            // Escape opens the menu on the Mac and with a hardware keyboard.
+            .keyboardShortcut(.cancelAction)
+            .accessibilityLabel("Menu")
+            .accessibilityHint("Pauses the game and opens the main menu")
             Spacer(minLength: 0)
-            status
+            if model.stage != .explore && model.stage != .lead {
+                Text(model.stageTitle)
+                    .font(Theme.label)
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(2)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
+                    .transition(.opacity)
+                    .accessibilityLabel("Status: \(model.stageTitle)")
+            }
         }
-    }
-
-    private var status: some View {
-        // While the title card is up the label is invisible but keeps its space, so the header never changes height.
-        let lead = model.stage == .lead
-        return Text(lead ? "Table" : model.stageTitle)
-            .font(Theme.label)
-            .multilineTextAlignment(.trailing)
-            .lineLimit(2)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
-            .opacity(lead ? 0 : 1)
-            .accessibilityHidden(lead)
-            .accessibilityLabel("Status: \(model.stageTitle)")
+        .opacity(model.menuOpen ? 0 : 1)
+        .accessibilityHidden(model.menuOpen)
+        .animation(.easeOut(duration: 0.25), value: model.stage)
     }
 }
-

@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (follows the Options: no card at all with explanations off, the
+//          equation only with Show the maths on; the slot under the title takes no room unless a card can show, so
+//          the warm table gets the whole screen).
 // PURPOSE: The caption and equation card, and the thin leader line and highlight ring that tie it to the ball it
 //          describes. The card is a Liquid Glass panel kept off the action (under the title on a phone held upright,
 //          in the side column everywhere else: ShowpieceView decides where). The ring position is the ball's place
@@ -21,12 +24,15 @@ import SwiftUI
 private struct CaptionContent: View {
     let caption: Caption
     var accent: Color
+    @AppStorage(GameSettings.mathsKey) private var maths = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
-            Text(caption.equation)
-                .font(Theme.equation)
-                .foregroundStyle(accent)
+            if maths {
+                Text(caption.equation)
+                    .font(Theme.equation)
+                    .foregroundStyle(accent)
+            }
             Text(caption.title)
                 .font(Theme.heading)
             Text(caption.detail)
@@ -40,6 +46,7 @@ private struct CaptionContent: View {
 struct CaptionCard: View {
     let caption: Caption
     @Environment(\.palette) private var palette
+    @AppStorage(GameSettings.mathsKey) private var maths = false
     /// Inner padding of the glass card; the sizer adds the same so both measure alike.
     static let padding: CGFloat = 12
 
@@ -53,7 +60,7 @@ struct CaptionCard: View {
         // One spoken sentence per caption; the equation is read last because it is decoration for most listeners.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(caption.title). \(caption.detail)")
-        .accessibilityValue(caption.equation)
+        .accessibilityValue(maths ? caption.equation : "")
         .accessibilityAddTraits(.updatesFrequently)
     }
 }
@@ -68,9 +75,13 @@ struct CaptionArea: View {
     /// The most height the card may take before it scrolls (large text sizes).
     let maxHeight: CGFloat
 
+    @AppStorage(GameSettings.explanationsKey) private var explanations = true
+
     var body: some View {
         Group {
-            if model.melt > 0.4, let caption = model.activeCaption() {
+            if !explanations || model.menuOpen {
+                EmptyView()
+            } else if model.melt > 0.4, let caption = model.activeCaption() {
                 FittingScroll(maxHeight: maxHeight) {
                     CaptionCard(caption: caption)
                         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { leader.card = $0 }
@@ -78,7 +89,7 @@ struct CaptionArea: View {
                 .transition(.opacity)
                 .id(caption.id)
             } else if showsPlaceholder {
-                Text("Captions appear here, with the equation behind each moment, as the shot plays.")
+                Text("Explanations appear here as the shot plays.")
                     .font(Theme.body)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -101,6 +112,9 @@ struct CaptionSlot: View {
     /// Height of the tallest caption laid out at the slot's width, from the sizer. Zero until the first layout.
     @State private var tallest: CGFloat = 0
     @Environment(\.dynamicTypeSize) private var typeSize
+    @AppStorage(GameSettings.explanationsKey) private var explanations = true
+    /// The slot only takes room while a card can show: Lens up, explanations on. Otherwise the table gets the space.
+    private var reserves: Bool { explanations && model.melt > 0.4 }
     /// At the accessibility text sizes the controls already fill most of a phone, so the card gets a smaller cap
     /// (it scrolls) to leave the table some room.
     private var cap: CGFloat { typeSize.isAccessibilitySize ? maxHeight * 0.5 : maxHeight }
@@ -117,7 +131,8 @@ struct CaptionSlot: View {
                 CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: cap)
             }
         }
-        .frame(height: min(tallest, cap), alignment: .top)
+        .frame(height: reserves ? min(tallest, cap) : 0, alignment: .top)
+        .clipped()
     }
 }
 
@@ -155,7 +170,7 @@ final class LeaderState {
     /// Called by the 3D view every frame. Finds the ball the current caption is about, asks the view to project it
     /// to the screen, and keeps the previous point when the move is under half a point (so a still frame costs nothing).
     func refresh(model: ShowpieceModel, project: (SIMD3<Float>) -> CGPoint?) {
-        guard model.melt > 0.4, let caption = model.activeCaption(), let world = Self.anchor(of: caption, in: model),
+        guard model.melt > 0.4, !model.menuOpen, let caption = model.activeCaption(), let world = Self.anchor(of: caption, in: model),
               let point = project(world) else {
             if ring != nil { ring = nil }
             return

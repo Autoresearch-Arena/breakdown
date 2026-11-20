@@ -4,6 +4,9 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: every player shot and break is kept as a
 //          ShotAttempt; tryAgain() puts the balls back where it started with the same settings, keeps it as the ghost,
 //          and the retry's comparison is worked out from the two recordings).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (main menu: the game opens on the menu and can go back to it at any
+//          time; menuOpen freezes everything behind it; startGame() racks for the player's own break, watchBreak()
+//          plays the showpiece opening; the one-way title hold is gone).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -38,9 +41,11 @@ final class ShowpieceModel {
     var time = 0.0
     var playing = true
     private(set) var stage: Stage = .lead
-    /// True while the title screen is up: the opening holds on the table until the player taps Start (see beginFromTitle).
-    /// Launch switches that open a specific screen skip the title, so this starts false for them.
-    private(set) var holdsAtTitle = !TitleScreen.launchSkipsTitle
+    /// True while the main menu is up. Everything behind it holds still: the clock, the cold open and the melt.
+    /// Launch switches that open a specific screen skip the menu, so this starts false for them.
+    private(set) var menuOpen = !TitleScreen.launchSkipsTitle
+    /// True once the player has started anything from the menu, so the menu offers Continue.
+    private(set) var gameInProgress = TitleScreen.launchSkipsTitle
     /// Lens blend: 0 is the warm table, 1 is the blueprint.
     private(set) var melt = 0.0
     private var meltTarget: Double?
@@ -114,11 +119,32 @@ final class ShowpieceModel {
         playing = true; chosenRate = nil
     }
 
-    /// The player tapped Start on the title screen: the cold open begins at once, with the table already at rest.
-    func beginFromTitle() {
-        guard holdsAtTitle else { return }
-        holdsAtTitle = false
-        time = 0; stageTime = 0; playing = true
+    // MARK: Menu
+
+    /// Back to the main menu: pause whatever is on the table; Continue picks it up exactly where it was.
+    func openMenu() {
+        playing = false
+        menuOpen = true
+    }
+
+    /// Continue: close the menu and leave the table as it was.
+    func closeMenu() { menuOpen = false }
+
+    /// Play: a fresh rack, ready for the player's own break. The view opens the aiming controls.
+    func startGame() {
+        menuOpen = false
+        gameInProgress = true
+        rerack()
+        setLens(false)
+    }
+
+    /// Watch the break: the showpiece opening, with the slow-motion Physics Lens replay, from the start.
+    func watchBreak() {
+        menuOpen = false
+        gameInProgress = true
+        load(PoolSolver.simulate(Rack.showpieceBreak()))
+        clearAttempts()
+        startColdOpen()
         stage = .normalBreak
     }
 
@@ -399,10 +425,10 @@ final class ShowpieceModel {
 
     func advance(_ rawDt: Double) {
         let dt = min(rawDt, 1.0 / 20.0)
+        // The menu freezes the table behind it, whatever stage it is in.
+        if menuOpen { return }
         switch stage {
         case .lead:
-            // While the title is up the opening waits here; Start moves straight on to the break.
-            guard !holdsAtTitle else { break }
             stageTime += dt
             if stageTime > 1.1 { stage = .normalBreak; stageTime = 0 }
         case .normalBreak:

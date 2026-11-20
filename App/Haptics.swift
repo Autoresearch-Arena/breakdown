@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (honours the Vibration option).
 // PURPOSE: Core Haptics for the break. Takes the same feel cues that drive sound (FeelMapping) and plays a
 //          short pattern per cue: a sharp hit with a low rumble for the break crack, light taps for ball
 //          contacts, a duller thump for the rail, a thud with a rattle for a pocket. Strength scales intensity.
@@ -36,7 +37,8 @@ final class Haptics {
 
     /// Play every cue of a frame. Cheap no-op when there is no engine.
     func play(_ cues: [FeelCue]) {
-        guard let engine, !cues.isEmpty else { return }
+        // The Vibration option is read at play time, so switching it in Options takes effect at once.
+        guard let engine, !cues.isEmpty, GameSettings.hapticsOn else { return }
         var events: [CHHapticEvent] = []
         for cue in cues { events += Self.events(for: cue) }
         guard !events.isEmpty else { return }
