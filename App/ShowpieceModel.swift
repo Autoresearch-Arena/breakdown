@@ -7,6 +7,9 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (main menu: the game opens on the menu and can go back to it at any
 //          time; menuOpen freezes everything behind it; startGame() racks for the player's own break, watchBreak()
 //          plays the showpiece opening; the one-way title hold is gone).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (trick shots: a marked "Trick shots" section near the end holds the
+//          trick-shot mode for this table and three small loaders it uses: an authored layout with given settings, an
+//          authored rack with its own seed and settings, and a way onto the table from the menu without a fresh rack).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -490,6 +493,44 @@ final class ShowpieceModel {
         let cues = FeelMapping.cues(for: crossed)
         sound.play(cues, at: b)
         haptics.play(cues)
+    }
+
+    // MARK: Trick shots (TrickShotMode) - added by Claude Opus 5.5 High, 20-November-2026
+
+    /// The trick-shot mode for this table, made on first use. Kept out of observation: the mode is observable itself,
+    /// and creating it lazily must not count as a change to the model.
+    @ObservationIgnored private var trickModeStorage: TrickShotMode?
+    var trickMode: TrickShotMode {
+        if let m = trickModeStorage { return m }
+        let m = TrickShotMode(model: self)
+        trickModeStorage = m
+        return m
+    }
+
+    /// Onto the table from the menu for a trick shot: the menu closes and Continue will come back here.
+    func enterTrickTable() {
+        menuOpen = false
+        gameInProgress = true
+    }
+
+    /// Put an authored layout on the table, still, with the given aim (degrees), power, tip height and side ready for
+    /// the next shot. The same zero-speed trick tryAgain() uses; the settings are set after load(), which re-aims.
+    func loadTrickLayout(_ positions: [Vec2], aim: Double, power: Double, tipUp: Double, tipSide: Double) {
+        load(PoolSolver.simulate(NextShot.shot(from: positions, direction: Vec2(1, 0), speed: 0, tipUp: 0, tipSide: 0, seed: 0)))
+        layout = positions
+        racked = false
+        clearAttempts()
+        aimDegrees = aim; shotPower = power; shotTipUp = tipUp; shotTipSide = tipSide
+        stage = .explore; stageTime = 0; time = 0; playing = false; chosenRate = nil
+    }
+
+    /// Put the rack built from `seed` on the table, ready for a break with the given settings. breakNow() breaks seed
+    /// 10 + breakSerial after adding one, and rerack() lays out that same seed, so stepping the serial to seed - 11 makes
+    /// both the authored rack (the same arithmetic tryAgain() uses for a break).
+    func loadTrickRack(seed: UInt64, aimOffset: Double, power: Double, tipUp: Double, tipSide: Double) {
+        breakSerial = Int(seed) - 11
+        rerack()
+        self.aimOffset = aimOffset; self.power = power; tipHeight = tipUp; breakTipSide = tipSide
     }
 
     // MARK: Captions

@@ -3,11 +3,17 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (now the main menu: Play or New game, Continue, Watch the break, How to
 //          play and Options, reachable again at any time from the back button on the table; the instructions moved
 //          into their own sheet so the menu is short).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (trick shots are now the game's purpose: "Trick shots" is the first
+//          and primary choice and opens the list of shots (TrickShotList, hosted by the table layer so a launch flag can
+//          open it too); Continue, Free play and Watch the break follow. Free play and Watch the break leave trick-shot
+//          mode. The one-line description and the first How to play step now say what the game is for.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
-//          names the game, says in one line what it is, and offers: Continue (once something is under way), Play (a
-//          fresh rack for your own break; New game once a game is under way), Watch the break (the showpiece opening
+//          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
+//          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
+//          game is under way), Watch the break (the showpiece opening
 //          with the slow-motion Physics Lens), How to play (the three steps, in a sheet) and Options (a sheet).
-//          It changes the model only through its menu methods (closeMenu, startGame, watchBreak). Launch switches that
+//          It changes the model only through its menu methods (closeMenu, startGame, watchBreak) and the trick-shot
+//          mode's list switch and end(). Launch switches that
 //          open a specific screen for testing skip it, so the screenshots those switches take stay as before.
 // SRP/DRY check: Pass - menu and instructions only. Options live in GameSettings; fonts come from Theme, colours from
 //          Palette, and the controls named in the instructions are the real labels in PlaybackControls, ShotPanel and
@@ -30,11 +36,13 @@ struct TitleScreen: View {
     /// -noTitle is there for anyone who wants the table straight away.
     static var launchSkipsTitle: Bool {
         let args = ProcessInfo.processInfo.arguments
-        let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo"]
+        // -trick and -trickPlay open a trick shot on the table; -trickList is not here: its list opens over the menu.
+        let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo",
+                        "-trick", "-trickPlay"]
         return switches.contains { args.contains($0) }
     }
 
-    private static let intro = "A pool game that shows its working. Take a shot, then watch the physics behind it."
+    private static let intro = "Learn trick shots that make people stop and stare, and see the physics that makes each one work."
 
     var body: some View {
         ZStack {
@@ -83,16 +91,23 @@ struct TitleScreen: View {
             }
 
             VStack(spacing: 12) {
+                // The game's purpose first: the list of trick shots, in a sheet over the menu.
                 if model.gameInProgress {
-                    menuButton("Continue", symbol: "play.fill", prominent: true) { model.closeMenu() }
+                    menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
+                    menuButton("Continue", symbol: "play.fill", prominent: false) { model.closeMenu() }
                         // Return continues on the Mac and with a hardware keyboard.
                         .keyboardShortcut(.defaultAction)
-                    menuButton("New game", symbol: "triangle", prominent: false) { model.startGame(); onPlay() }
+                    menuButton("New free game", symbol: "triangle", prominent: false) {
+                        model.trickMode.end(); model.startGame(); onPlay()
+                    }
                 } else {
-                    menuButton("Play", symbol: "play.fill", prominent: true) { model.startGame(); onPlay() }
+                    menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
                         .keyboardShortcut(.defaultAction)
+                    menuButton("Free play", symbol: "play.fill", prominent: false) {
+                        model.trickMode.end(); model.startGame(); onPlay()
+                    }
                 }
-                menuButton("Watch the break", symbol: "sparkles", prominent: false) { model.watchBreak() }
+                menuButton("Watch the break", symbol: "sparkles", prominent: false) { model.trickMode.end(); model.watchBreak() }
                 HStack(spacing: 12) {
                     menuButton("How to play", symbol: "questionmark.circle", prominent: false) { howToOpen = true }
                     menuButton("Options", symbol: "gearshape", prominent: false) { optionsOpen = true }
@@ -127,8 +142,8 @@ struct HowToPlaySheet: View {
     @Environment(\.palette) private var palette
 
     private static let steps: [(title: String, detail: String)] = [
-        ("Break and shoot",
-         "Tap Play. Drag on the table to aim, pull back from the white ball to set the power, touch the small cue-ball picture to add spin, and tap Break or Shoot."),
+        ("Pick a trick shot",
+         "Tap Trick shots and choose one. Watch it, then tap Your turn: drag on the table to aim, pull back from the white ball to set the power, touch the small cue-ball picture to add spin, and tap Shoot."),
         ("Read the Lens",
          "Tap Lens to see the physics: amber paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way."),
         ("Try again",
