@@ -90,9 +90,11 @@ struct TableExtents: Equatable {
 }
 
 enum CameraFraming {
-    /// Breathing room between the table and the sides of the view, in points. Small: on a phone upright every point of
-    /// width is table size.
-    static let gutter: Double = 4
+    /// Breathing room between the table and the sides of the view, in points. Small, because on a phone upright every
+    /// point of width is table size, but not smaller than the break's push-in needs: the push brings the camera
+    /// `pushDepth` (3%) closer than the exact fit, which on a phone-width table is about six points per side, and with
+    /// a smaller gutter the rails slid off both edges during every break.
+    static let gutter: Double = 8
     /// Gap between the playing area and the title row or controls it sits between.
     static let chromeGap: Double = 4
     /// Gap between the rail outline and the safe-area edges (status bar, home indicator).

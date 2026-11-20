@@ -83,10 +83,10 @@ struct CaptionArea: View {
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
     var body: some View {
-        Group {
-            if !explanations || model.menuOpen {
-                EmptyView()
-            } else if model.melt > 0.4, let caption = model.activeCaption() {
+        let showing = explanations && !model.menuOpen && model.melt > 0.4 && model.activeCaption() != nil
+        // A ZStack rather than a Group so the view (and the onChange below) exists even when no card shows.
+        ZStack(alignment: .top) {
+            if showing, let caption = model.activeCaption() {
                 FittingScroll(maxHeight: maxHeight) {
                     CaptionCard(caption: caption)
                         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { leader.card = $0 }
@@ -96,6 +96,9 @@ struct CaptionArea: View {
             }
         }
         .animation(.easeOut(duration: 0.2), value: model.activeCaption()?.id)
+        // With no card on screen the leader must not keep the last card's place: CaptionLeader hides the ring for any
+        // ball inside that rectangle, so a stale one (explanations switched off, say) would swallow rings near the top.
+        .onChange(of: showing) { _, now in if !now { leader.card = .zero } }
     }
 }
 
