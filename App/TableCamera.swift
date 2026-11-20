@@ -106,6 +106,7 @@ final class TableCamera {
         // Layout can change in one frame (a longer status label wraps, the shot panel opens, a new shot loads captions), so
         // the free rectangle is eased toward its target instead of jumping, and snaps when the view itself changes
         // shape (rotation, window resize) or when motion is off.
+        let freeNow = free   // the un-eased rectangle, for the Ride camera, which must depend on the clock alone
         let now = ProcessInfo.processInfo.systemUptime
         if let old = smoothFree, !reduce, !Self.motionOff, lastSize == size {
             let a = 1 - exp(-min(0.1, max(0, now - lastTick)) / 0.12)
@@ -126,7 +127,7 @@ final class TableCamera {
         let pose = CameraFraming.pose(size: size, rect: free, yaw: yaw, elevation: elevation, halfX: halfX, halfZ: halfZ,
                                       rimHeight: Self.railHeight, fovDegrees: Self.fov, distanceScale: scale)
         // Ride the shot: ShotCamera returns this overhead pose untouched unless Ride is on for the replay.
-        let shot = ride?.override(position: pose.position, target: pose.target, fov: Self.fov, free: free, size: size,
+        let shot = ride?.override(position: pose.position, target: pose.target, fov: Self.fov, free: freeNow, size: size,
                                   reduceMotion: reduce)
             ?? CameraShot(position: pose.position, target: pose.target, fov: Self.fov, near: ShotCamera.overheadNear)
         if camera.camera.fieldOfViewInDegrees != shot.fov { camera.camera.fieldOfViewInDegrees = shot.fov }

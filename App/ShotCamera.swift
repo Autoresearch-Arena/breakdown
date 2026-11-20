@@ -169,8 +169,10 @@ final class ShotCamera {
     private var engage = 0.0
     private var lastTick: TimeInterval?
 
-    /// Near plane while riding: the cue ball is about ten centimetres away, closer than the overhead's five-centimetre plane allows for.
-    static let rideNear: Float = 0.004
+    /// Near plane while riding: the ball followed is about ten centimetres away, closer than the overhead's
+    /// five-centimetre plane allows. One centimetre clears every ball and rail under the eye (see eyeHeight) while
+    /// keeping depth precision on the cloth and rails far better than a hair-thin plane would.
+    static let rideNear: Float = 0.01
     static let overheadNear: Float = 0.05
     /// Eye height above the cloth: just over the rail tops (7.5 cm), so the camera can never pass through a rail or a
     /// ball (ball tops are at 5.7 cm) whatever the ball does.
@@ -266,12 +268,13 @@ final class ShotCamera {
         return CameraShot(position: eye, target: look, fov: fov, near: rideNear)
     }
 
-    /// A wide lens for the ride: about 64 degrees across the narrow side of the screen, between 50 and 75 degrees
-    /// tall, so a phone held upright still sees the cue ball and where it is going.
+    /// A wide lens for the ride: about 64 degrees across the narrow side of the screen where that fits, kept between
+    /// 50 and 70 degrees tall. A phone held upright hits the 70-degree ceiling (about 36 degrees across), which still
+    /// shows the ball followed and where it is going without the stretched look of a wider lens.
     static func rideFov(_ size: CGSize) -> Float {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let vertical = 2 * atan(tan(32 * Float.pi / 180) * h / w) * 180 / .pi
-        return min(75, max(50, vertical))
+        return min(70, max(50, vertical))
     }
 
     /// Turn the ride's look direction so its centre lands in the middle of the free space (between the title, the
