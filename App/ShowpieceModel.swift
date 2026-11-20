@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 Medium, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -34,6 +35,9 @@ final class ShowpieceModel {
     var time = 0.0
     var playing = true
     private(set) var stage: Stage = .lead
+    /// True while the title screen is up: the opening holds on the table until the player taps Start (see beginFromTitle).
+    /// Launch switches that open a specific screen skip the title, so this starts false for them.
+    private(set) var holdsAtTitle = !TitleScreen.launchSkipsTitle
     /// Lens blend: 0 is the warm table, 1 is the blueprint.
     private(set) var melt = 0.0
     private var meltTarget: Double?
@@ -93,6 +97,14 @@ final class ShowpieceModel {
     func startColdOpen() {
         stage = .lead; stageTime = 0; time = 0; melt = 0; meltTarget = nil
         playing = true; chosenRate = nil
+    }
+
+    /// The player tapped Start on the title screen: the cold open begins at once, with the table already at rest.
+    func beginFromTitle() {
+        guard holdsAtTitle else { return }
+        holdsAtTitle = false
+        time = 0; stageTime = 0; playing = true
+        stage = .normalBreak
     }
 
     /// The player's own break: solve it, then run it through the same cold open.
@@ -298,6 +310,8 @@ final class ShowpieceModel {
         let dt = min(rawDt, 1.0 / 20.0)
         switch stage {
         case .lead:
+            // While the title is up the opening waits here; Start moves straight on to the break.
+            guard !holdsAtTitle else { break }
             stageTime += dt
             if stageTime > 1.1 { stage = .normalBreak; stageTime = 0 }
         case .normalBreak:

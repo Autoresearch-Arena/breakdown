@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 Medium, 18-November-2026 (the opening title is now the TitleScreen file, shown until Start is tapped; the old title card was removed).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title, the status
 //          label, the controls, and the caption and shot panel arranged for the screen at hand. On a phone held upright
 //          the caption sits under the title and the shot panel above the controls, all floating over the table. On
@@ -102,7 +103,8 @@ struct ShowpieceView: View {
             .padding(.bottom, 12)
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
-            if model.stage == .lead { TitleCard() }
+            // The title screen holds the opening until Start is tapped (see TitleScreen and ShowpieceModel.beginFromTitle).
+            if model.stage == .lead { TitleScreen(model: model) }
         }
         // The title and anything else that comes or goes with the opening uses the system's smooth motion, not a cut.
         .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.stage == .lead)
@@ -177,6 +179,9 @@ private struct ScreenHeader: View {
                     .fixedSize()
                     .padding(.top, 8)
                     .accessibilityAddTraits(.isHeader)
+                    // While the title screen is up it carries the wordmark, so the header's copy steps aside.
+                    .opacity(model.stage == .lead ? 0 : 1)
+                    .accessibilityHidden(model.stage == .lead)
             }
             #endif
             Spacer(minLength: 0)
@@ -200,37 +205,3 @@ private struct ScreenHeader: View {
     }
 }
 
-/// The opening title. It rises into place with the system's smooth animation (a gentle fade, scale and un-blur, the
-/// tagline a beat later) and leaves the same way, instead of appearing and cutting away. With Reduce Motion on it only
-/// fades, with no scale or blur.
-private struct TitleCard: View {
-    @Environment(\.palette) private var palette
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
-    @State private var shown = false
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Text("BREAKDOWN")
-                .font(Theme.display)
-                .tracking(tracking)
-                .foregroundStyle(palette.paper)
-                .accessibilityAddTraits(.isHeader)
-            Text("watch the physics think")
-                .font(Theme.tagline)
-                .foregroundStyle(palette.accent)
-                .opacity(shown ? 1 : 0)
-                .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: shown)
-        }
-        .multilineTextAlignment(.center)
-        .padding(.horizontal, 16)
-        .shadow(color: .black.opacity(0.6), radius: 12)
-        .opacity(shown ? 1 : 0)
-        .scaleEffect(reduceMotion || shown ? 1 : 0.94)
-        .blur(radius: reduceMotion || shown ? 0 : 8)
-        // Leaving: fade and swell a touch (the stage's animation drives this transition).
-        .transition(reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 1.04)))
-        .allowsHitTesting(false)
-        .onAppear { withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true } }
-    }
-}

@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.0] - 20-November-2026
+
+Author: Claude Opus 5.5 Low (title screen by Claude Haiku 5.5 Medium, 18-November-2026)
+
+- What: The app now opens on a proper title screen over the dimmed table: the name, a short plain description of what Breakdown is, three steps (watch the break, read the Lens, take the cue) and a Start button. The break waits until Start is tapped. This is also the first TestFlight build since the early builds of 11 November, so it carries everything since then: the new table look, the Lens, the camera framing and touch aiming.
+- Why: The Boss had never seen the app on his phone. The TestFlight builds were from before all the glow-up work, and the title screen had been written but never committed.
+- How: New TitleScreen file; the model holds the opening at the title until Start is pressed; launch switches that open a specific screen skip it (and -noTitle skips it outright). The project's version fields were far behind the changelog, so they now match this entry, with build number 4.
+- Checked: iPhone simulator build succeeds; screenshot of the title screen on an iPhone 17 Pro simulator, then a tap on Start, which started the break. Not checked: a real device, iPad and Mac, the largest text size (the Start button sits just below the fold on a phone and is reached by scrolling).
+
 ## [0.4.2] - 13-November-2026
 
 Author: Claude Sonnet 5.5 High

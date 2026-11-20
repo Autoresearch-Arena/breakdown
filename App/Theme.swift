@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 Medium, 18-November-2026 (added the section-title and running-text styles for the title screen).
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with light, dark and high-contrast values and resolved from the reader's appearance and Increase Contrast
 //          settings, then handed down the view tree through the environment (see PaletteProvider). (2) The font
@@ -27,6 +28,10 @@ enum Theme {
     static var display: Font { .system(.largeTitle, design: .serif, weight: .semibold) }
     /// The tagline under the title.
     static var tagline: Font { .system(.title3, design: .serif).italic() }
+    /// Section titles on the opening screen ("How it works"): New York serif, semibold.
+    static var sectionTitle: Font { .system(.title2, design: .serif, weight: .semibold) }
+    /// Running text on the opening screen: the standard body style, so it scales with the reader's text size.
+    static var copy: Font { .body }
     /// Equations: New York serif, italic so the variables read as variables.
     static var equation: Font { .system(.title3, design: .serif, weight: .medium).italic() }
     /// Titles on cards.
