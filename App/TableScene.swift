@@ -16,6 +16,8 @@
 //          Package 4 (13-Nov-2026): the camera now takes the measured free space (a FramingRequest) and the clock, so it can
 //          frame between the title, caption slot and controls and push in on the break; nothing else here changed.
 //          Edit the file for the job you are doing; do not add Lens or table detail back into this one.
+// Edited: Claude Opus 5.5 High, 20-November-2026 (jump shots: a ball is drawn at its recorded height above the cloth,
+//          so a jumping cue ball leaves the table surface on screen; on the cloth the height is zero and nothing moves.)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -96,7 +98,8 @@ final class TableScene {
         var visibility: [Bool] = []
         for b in 0..<balls.count {
             let s = timeline.state(ball: b, at: t)
-            var pos = frame.world(s.position, height: R)
+            // The centre sits one radius above the ball's lowest point, which is s.height above the cloth (a jump).
+            var pos = frame.world(s.position, height: R + Float(s.height))
             var scale: Float = 1
             var visible = true
             if s.pocketed, let tp = timeline.pocketTime[b] {

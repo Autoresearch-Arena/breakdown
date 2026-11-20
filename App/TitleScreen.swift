@@ -3,6 +3,7 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (now the main menu: Play or New game, Continue, Watch the break, How to
 //          play and Options, reachable again at any time from the back button on the table; the instructions moved
 //          into their own sheet so the menu is short).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (-jumpDemo joins the launch switches that skip the menu).
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers: Continue (once something is under way), Play (a
 //          fresh rack for your own break; New game once a game is under way), Watch the break (the showpiece opening
@@ -30,7 +31,7 @@ struct TitleScreen: View {
     /// -noTitle is there for anyone who wants the table straight away.
     static var launchSkipsTitle: Bool {
         let args = ProcessInfo.processInfo.arguments
-        let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo"]
+        let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo", "-jumpDemo"]
         return switches.contains { args.contains($0) }
     }
 

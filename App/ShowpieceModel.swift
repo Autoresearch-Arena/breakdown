@@ -7,6 +7,9 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (main menu: the game opens on the menu and can go back to it at any
 //          time; menuOpen freezes everything behind it; startGame() racks for the player's own break, watchBreak()
 //          plays the showpiece opening; the one-way title hold is gone).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (cue elevation: shotElevation, the sine of the cue's angle above
+//          the table, is passed into every follow-up shot (zero, a level cue, unless something sets it; there is no
+//          control for it yet). Launch flag -jumpDemo plays a jump shot over a blocking ball in slow motion, no taps.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -70,6 +73,9 @@ final class ShowpieceModel {
     var shotPower = 3.0          // launch speed, m/s
     var shotTipUp = 0.0          // metres above (+) or below (-) centre: follow and draw
     var shotTipSide = 0.0        // metres to the right (+) or left (-) of centre: side spin
+    /// Sine of the cue's angle above the table for the next shot: 0 is a level cue; raised, the ball can jump off the
+    /// slate or curve (masse). The app does the trig; the solver only sees this sine.
+    var shotElevation = 0.0
     private(set) var shotSerial = 0
 
     // Try again and compare.
@@ -96,6 +102,26 @@ final class ShowpieceModel {
         captions = CaptionEngine.make(from: tl)
         timelineVersion = 1
         adoptLayout(after: tl)
+        if ProcessInfo.processInfo.arguments.contains("-jumpDemo") { playJumpDemo() }
+    }
+
+    /// Test hook (-jumpDemo): the cue ball jumps a ball sitting in its path, played in slow motion with the menu
+    /// skipped, so it can be watched or screenshotted without a tap. A raised cue (sine 0.6, about 37 degrees) at
+    /// 4 m/s clears the blocker 0.3 m ahead with room to spare (peak about 73 mm, first landing about 0.6 m out).
+    func playJumpDemo() {
+        menuOpen = false
+        gameInProgress = true
+        var start = [Vec2](repeating: NextShot.offTable, count: 16)
+        start[0] = Vec2(0.6, 0.635)
+        start[1] = Vec2(0.9, 0.635)
+        start[2] = Vec2(1.75, 0.66)
+        shotElevation = 0.6
+        let input = NextShot.shot(from: start, direction: Vec2(1, 0), speed: 4.0, tipUp: 0, tipSide: 0,
+                                  seed: 2026, elevation: shotElevation)
+        load(PoolSolver.simulate(input))
+        clearAttempts()
+        stage = .explore; stageTime = 0; time = 0; playing = true
+        chosenRate = 0.25; displayRate = 0.25
     }
 
     var duration: Double { timeline.duration }
@@ -188,7 +214,8 @@ final class ShowpieceModel {
         // Trig lives here in the app; the solver only ever sees a unit vector.
         let a = aimDegrees * Double.pi / 180
         let input = NextShot.shot(from: layout, direction: Vec2(cos(a), sin(a)), speed: shotPower,
-                                  tipUp: shotTipUp, tipSide: shotTipSide, seed: UInt64(1000 + shotSerial))
+                                  tipUp: shotTipUp, tipSide: shotTipSide, seed: UInt64(1000 + shotSerial),
+                                  elevation: shotElevation)
         let settings = (aim: aimDegrees, power: shotPower, up: shotTipUp, side: shotTipSide, range: powerRange)
         load(PoolSolver.simulate(input))
         record(ShotAttempt(isBreak: false, breakSeed: 0, start: input.positions, timeline: timeline, aim: settings.aim,
