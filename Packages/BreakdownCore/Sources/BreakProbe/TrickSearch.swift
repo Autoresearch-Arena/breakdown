@@ -85,6 +85,9 @@ func firstStruck(_ tl: Timeline) -> Int? {
 func cueRest(_ tl: Timeline) -> Vec2 { tl.state(ball: 0, at: tl.duration).position }
 
 func passes(_ goal: Goal, _ tl: Timeline) -> Bool {
+    // A recording with thousands of events for a handful of balls is the solver chattering (two balls pressed
+    // together re-colliding with tiny impulses, found while authoring the throw shot): never author on that.
+    if tl.events.count > 4000 { return false }
     if tl.pocketTime[0] != nil { return false }                       // the cue ball must never scratch
     for d in goal.drops {
         guard let k = pocketOf(d.ball, tl) else { return false }
@@ -214,9 +217,9 @@ func report(_ a: Authored) {
 func fmt(_ v: Vec2) -> String { String(format: "Vec2(%.4f, %.4f)", v.x, v.y) }
 
 /// True when a ball centred at `p` sits fully on the cloth, clear of the cushions and of the pocket mouths.
-func clearOfRails(_ p: Vec2, margin: Double = 0.01) -> Bool {
+func clearOfRails(_ p: Vec2, margin: Double = 0.01, pocketClear: Double = 0.12) -> Bool {
     guard p.x > R + margin, p.x < L - R - margin, p.y > R + margin, p.y < W - R - margin else { return false }
-    return !pockets.contains { ($0 - p).length < 0.12 }
+    return !pockets.contains { ($0 - p).length < pocketClear }
 }
 
 func clearOfBalls(_ p: Vec2, _ layout: [Vec2], gap: Double = 0.004) -> Bool {

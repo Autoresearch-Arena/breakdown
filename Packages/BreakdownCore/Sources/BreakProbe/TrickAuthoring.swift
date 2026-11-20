@@ -55,7 +55,18 @@ func best(_ id: String, _ all: [Candidate], _ difficulty: Difficulty, limit: Int
         }
         return tries.allSatisfy { passes(first[i].goal, simulate(first[i].layout, $0)) }
     }
-    let passing = zip(first, sturdy).filter { $0.1 }.map { $0.0 }
+    var passing = zip(first, sturdy).filter { $0.1 }.map { $0.0 }
+    // Some shots (a long draw) are touchy in power and tip by nature: when none survive the full screen, fall back to
+    // the aim screen alone, and say so, rather than finding nothing.
+    if passing.isEmpty {
+        let aimOnly = parallelMap(first.count) { i -> Bool in
+            var lo = first[i].strike, hi = first[i].strike
+            lo.aim -= nudge; hi.aim += nudge
+            return passes(first[i].goal, simulate(first[i].layout, lo)) && passes(first[i].goal, simulate(first[i].layout, hi))
+        }
+        passing = zip(first, aimOnly).filter { $0.1 }.map { $0.0 }
+        print("   \(id): none survive the power and tip screen; \(passing.count) survive the aim screen alone")
+    }
     print("   \(id): \(all.count) candidates tried, \(first.count) pass, \(passing.count) also pass at aim +-\(nudge) deg, power +-0.12 m/s and tip +-1 mm")
     guard !passing.isEmpty else { return nil }
     let step = max(1, passing.count / limit)
@@ -85,6 +96,7 @@ func best(_ id: String, _ all: [Candidate], _ difficulty: Difficulty, limit: Int
 /// allowed pocket. `minCushions` skips the part of the path before that many cushion hits.
 func placedOnPath(base: [Vec2], ball: Int, strikes: [Strike], pocketsAllowed: [Int], fromStart: Bool = false,
                   minCushions: Int = 0, maxCushions: Int = 9, minTime: Double = 0.15, every: Int = 3,
+                  pocketDistance: ClosedRange<Double> = 0.2...9,
                   goal: (Int) -> Goal, note: (Int) -> String) -> [Candidate] {
     var out: [Candidate] = []
     let timelines = parallelMap(strikes.count) { i in simulate(base, strikes[i]) }
@@ -95,8 +107,8 @@ func placedOnPath(base: [Vec2], ball: Int, strikes: [Strike], pocketsAllowed: [I
             && sample.cushions >= minCushions && sample.cushions <= maxCushions {
             for target in pocketsAllowed {
                 let b = ballFor(cueAt: sample.p, pocket: pockets[target])
-                guard clearOfRails(b, margin: 0.02), clearOfBalls(b, base, gap: 0.03),
-                      (pockets[target] - b).length > 0.2 else { continue }
+                guard clearOfRails(b, margin: 0.02, pocketClear: min(0.12, pocketDistance.lowerBound)), clearOfBalls(b, base, gap: 0.03),
+                      pocketDistance.contains((pockets[target] - b).length) else { continue }
                 var layout = base
                 layout[ball] = b
                 out.append(Candidate(layout: layout, strike: s, goal: goal(target), note: note(target)))
@@ -137,7 +149,10 @@ func authorBridgeDraw() -> Authored? {
     let diag = unit(pockets[1] - pockets[2])                 // from top-left corner toward bottom-right corner
     for cx in [1.35, 1.5] {
         let c = pockets[2] + diag * (cx / diag.x)            // a point on the diagonal at x = cx
-        for gapAB in [0.4, 0.55] {
+        // The 6 close in front of the cue ball: a fraction of a degree of aim then changes the cut on the 6, and so
+        // the line the cue ball draws back on, far less than from further away (0.3 to 0.55 m gave half-windows of
+        // 0.06 degrees at best, too fine for anyone).
+        for gapAB in [0.12, 0.18, 0.25] {
             for bend in [-2.0, 0.0, 2.0] {
                 // A slight bend off the diagonal so the 6 is a gentle cut and the drawn cue ball comes back off line.
                 let a = c + rotate(diag, bend) * gapAB
@@ -148,15 +163,19 @@ func authorBridgeDraw() -> Authored? {
                 for da in range(-0.6, 0.6, 0.2) { for p in [5.0, 6.0, 7.0, 8.0] { for t in [-0.014, -0.017, -0.02] {
                     strikes.append(Strike(aim: aim0 + da, power: p, tipUp: t, tipSide: 0))
                 } } }
+                // The 2 hangs near its pocket (7 to 16 cm out), so the returning cue ball only has to reach it: a
+                // ball placed further out needs the return line to the centimetre, which no player could repeat.
                 cands += placedOnPath(base: base, ball: 2, strikes: strikes, pocketsAllowed: [0, 2, 5], minTime: 0.3,
-                                      every: 6, goal: { Goal(drops: [(6, 1), (2, $0)], firstHit: 6) },
+                                      every: 2, pocketDistance: 0.07...0.16, goal: { Goal(drops: [(6, 1), (2, $0)], firstHit: 6) },
                                       note: { "pot the 6, draw back the table to pot the 2 in the \(pocketNames[$0])" })
             }
         }
     }
     // Keep only shots where the 2 is really at the far end: the draw must carry the cue ball most of the table.
     let far = cands.filter { ($0.layout[2] - $0.layout[6]).length > 1.2 }
-    return best("bridge-draw", far, .medium)
+    // A long draw that also pots a second ball is touchy by nature: a fraction of a degree changes the cut on the 6
+    // and so the line the cue ball comes back on. A first run asked for the medium window and found none; it is hard.
+    return best("bridge-draw", far, .hard)
 }
 
 // MARK: 4. Follow-Through Train
@@ -218,18 +237,19 @@ func authorTwoRailKick() -> Authored? {
 
 // MARK: 6. Cross-Side Bank
 
-/// The 5 sits near the top side pocket; bank it off the bottom cushion and back across into that pocket.
+/// The 5 sits a little off the middle of the table; bank it off the bottom cushion and back across into the top side
+/// pocket. The cue ball is above it (on the top pocket's side), so the 5 has to cross the table twice.
 func authorCrossBank() -> Authored? {
     var cands: [Candidate] = []
     let target = pockets[5]
-    for ax in [0.95, 1.05, 1.5, 1.6] {
-        for ay in [0.8, 0.95] {
+    for ax in [0.85, 0.95, 1.05, 1.5, 1.6, 1.7] {
+        for ay in [0.45, 0.55, 0.65] {
             let a = Vec2(ax, ay)
             // Aim the 5 at the pocket's mirror image in the bottom cushion line (the ball's centre turns at y = R).
             let mirror = Vec2(target.x, 2 * R - target.y)
             let objDir = unit(mirror - a)
             for cut in [-20.0, -10.0, 10.0, 20.0] {
-                let c = a - rotate(objDir, cut) * 0.5
+                let c = a - rotate(objDir, cut) * 0.38
                 guard clearOfRails(c) else { continue }
                 let layout = layoutOf([0: c, 5: a])
                 let aim0 = degrees(of: unit(a - objDir * (2 * R) - c))
@@ -286,8 +306,11 @@ func authorThrowIt() -> Authored? {
         let toPocket = unit(pocket - b)
         for miss in [-7.0, -5.0, 5.0, 7.0] {
             let v = rotate(toPocket, miss)                 // the line of centres, missing the pocket by `miss` degrees
-            let a = b - v * (2 * R + 1e-6)                // frozen: a micrometre apart, as the rack is
-            for approach in [-25.0, 0.0, 25.0] {
+            // Half a millimetre apart: touching to the eye. At a micrometre (as the rack is) the solver chatters: the
+            // cue ball, following the 2 after a full hit, re-collides with it tens of thousands of times. The cue ball
+            // also comes in at an angle for the same reason, so it glances away instead of pressing on.
+            let a = b - v * (2 * R + 5e-4)
+            for approach in [-35.0, -20.0, 20.0, 35.0] {
                 let c = a - rotate(v, approach) * 0.5
                 guard [a, b, c].allSatisfy({ clearOfRails($0) }) else { continue }
                 let layout = layoutOf([0: c, 2: a, 8: b])
@@ -319,12 +342,17 @@ func authorThrowIt() -> Authored? {
 /// staying up) is found. The widest run wins: that is the break you can call.
 func authorCalledBreak() {
     struct Run: Sendable { var seed: UInt64; var power: Double; var tip: Double; var ball: Int; var pocket: Int; var lo: Double; var hi: Double }
-    let offsets = range(-0.03, 0.03, 0.0005)
+    // A full break is costly to solve (sixteen balls, hundreds of contacts), so the sweep is kept small: a few rack
+    // seeds and strengths, the aim offset in millimetre steps. (A first, much wider sweep did not finish on a shared
+    // machine.)
+    let offsets = range(-0.025, 0.025, 0.001)
     var settings: [(UInt64, Double, Double)] = []
-    for seed in UInt64(1)...UInt64(24) { for p in [9.0, 10.0, 11.0, 12.0, 13.0] { for t in [-0.008, -0.004, 0.0] { settings.append((seed, p, t)) } } }
+    for seed in [UInt64(3), 5, 8, 13] { for p in [10.0, 12.0] { for t in [-0.006] { settings.append((seed, p, t)) } } }
     let all = settings
+    let clock = Date()
     let runs = parallelMap(all.count) { i -> [Run] in
         let (seed, power, tip) = all[i]
+        defer { print(String(format: "   called-break: seed %llu power %.0f done at %.0f s", seed, power, Date().timeIntervalSince(clock))) }
         var outcome: [[Int: Int]] = []      // per offset: ball -> pocket (empty if the cue ball scratched)
         for off in offsets {
             var p = PoolParameters(); p.version = 1        // as the app's breaks are struck
@@ -367,11 +395,97 @@ func authorCalledBreak() {
     }
 }
 
+// MARK: 1. The Called Break, on a short rack
+
+/// The full fifteen-ball rack turned out to be chaotic at the scale a player can aim (no ball dropped in the same
+/// pocket for even three millimetre steps of aim in a row; see authorCalledBreak). So the called break uses the front
+/// of a rack: the first three or four rows, a micrometre apart as the full rack is, broken from the head spot as a
+/// shot. For every rack size, strength and tip, the aim is swept across the front ball in 0.02 degree steps, and for
+/// each ball-and-pocket pair the longest unbroken run of aims in which that ball drops there (cue ball staying up) is
+/// found. The widest run is kept and measured like every other shot.
+func authorCalledBreakShort() -> Authored? {
+    struct Run: Sendable { var config: Int; var ball: Int; var pocket: Int; var lo: Double; var hi: Double }
+    struct Config: Sendable { var rows: Int; var cue: Vec2; var power: Double; var tip: Double }
+    var configs: [Config] = []
+    for rows in [3, 4] { for cue in [Vec2(L * 0.25, W * 0.5), Vec2(L * 0.25, W * 0.5 - 0.2)] {
+        for power in [5.0, 6.5, 8.0] { for tip in [-0.006, 0.0] { configs.append(Config(rows: rows, cue: cue, power: power, tip: tip)) } }
+    } }
+    @Sendable func layout(_ c: Config) -> [Vec2] {
+        // Rack gaps of half a millimetre (the full rack uses a micrometre, at which the solver can chatter between
+        // balls pressed together; see the throw shot).
+        var spaced = P
+        spaced.rackGap = 5e-4
+        let full = Rack.positions(parameters: spaced, seed: 3)
+        var out = [Vec2](repeating: NextShot.offTable, count: 16)
+        out[0] = c.cue
+        for row in Rack.layout.prefix(c.rows) { for b in row { out[b] = full[b] } }
+        return out
+    }
+    let aims = range(-1.5, 1.5, 0.02)
+    let all = configs
+    let runs = parallelMap(all.count) { i -> [Run] in
+        let c = all[i]
+        let lay = layout(c)
+        let base = degrees(of: unit(lay[1] - c.cue))
+        var outcome: [[Int: Int]] = []
+        for da in aims {
+            let tl = simulate(lay, Strike(aim: base + da, power: c.power, tipUp: c.tip, tipSide: 0))
+            var o: [Int: Int] = [:]
+            if tl.pocketTime[0] == nil { for b in 1..<16 { if let k = pocketOf(b, tl) { o[b] = k } } }
+            outcome.append(o)
+        }
+        var found: [Run] = []
+        for b in 1..<16 where NextShot.isOnTable(lay[b]) { for k in 0..<6 {
+            var start: Int?
+            for j in 0...aims.count {
+                let hit = j < aims.count && outcome[j][b] == k
+                if hit { if start == nil { start = j } }
+                else if let s0 = start {
+                    found.append(Run(config: i, ball: b, pocket: k, lo: base + aims[s0], hi: base + aims[j - 1]))
+                    start = nil
+                }
+            }
+        } }
+        return found
+    }.flatMap { $0 }
+    let sorted = runs.sorted { ($0.hi - $0.lo) > ($1.hi - $1.lo) }
+    print("== called-break (short rack): \(runs.count) runs; widest first")
+    for r in sorted.prefix(10) {
+        let c = all[r.config]
+        print(String(format: "   %d rows, cue at %@, power %.1f, tip %+.3f: the %d into the %@ for aims %.2f to %.2f deg",
+                     c.rows, fmt(c.cue), c.power, c.tip, r.ball, pocketNames[r.pocket], r.lo, r.hi))
+    }
+    // Measure the best few the same way as every other shot and keep the most forgiving.
+    let top = Array(sorted.prefix(6))
+    let measuredRuns = parallelMap(top.count) { i -> Authored? in
+        let r = top[i], c = all[r.config]
+        let goal = Goal(drops: [(r.ball, r.pocket)])
+        return measured("called-break", layout(c), Strike(aim: (r.lo + r.hi) / 2, power: c.power, tipUp: c.tip, tipSide: 0), goal,
+                        note: "\(c.rows)-row rack: the \(r.ball) into the \(pocketNames[r.pocket])")
+    }.compactMap { $0 }
+    return choose(measuredRuns, .medium)
+}
+
+/// Of shots already measured, the one whose aim window best fits the difficulty band (see best()).
+func choose(_ list: [Authored], _ difficulty: Difficulty) -> Authored? {
+    let band = difficulty.band
+    func distance(_ a: Authored) -> Double {
+        let h = a.aimHalfWindow
+        return h < band.lowerBound ? band.lowerBound - h : (h > band.upperBound ? h - band.upperBound : 0)
+    }
+    return list.min { a, b in
+        let da = (distance(a) * 50).rounded(), db = (distance(b) * 50).rounded()
+        if da != db { return da < db }
+        return min(a.feelScore, 2) > min(b.feelScore, 2)
+    }
+}
+
 // MARK: Driver
 
 /// Authors every shot (or only the ids named) and prints each report.
 func runTrickAuthoring(only: Set<String>) {
     let all: [(String, () -> Authored?)] = [
+        ("called-break-short", authorCalledBreakShort),
         ("stop-dead", authorStopDead),
         ("bridge-draw", authorBridgeDraw),
         ("follow-train", authorFollowTrain),

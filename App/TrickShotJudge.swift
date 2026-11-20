@@ -111,7 +111,10 @@ enum TrickShotJudge {
             }
             return scratchNote + "Strike nearer the middle of the cue ball."
         default:
-            // Positive side is right-hand spin.
+            // Positive side is right-hand spin. When the answer has none, any side the player added is the problem.
+            if abs(sol.tipSide) < 0.002 {
+                return scratchNote + "The side spin bent it off line. Strike through the middle of the cue ball."
+            }
             let want = sol.tipSide > 0 ? "right" : "left"
             if (sol.tipSide > 0) == (worst.signed < 0) {
                 return scratchNote + "Not enough \(want) side. Strike further to the \(want) of the cue ball."

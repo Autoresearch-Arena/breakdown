@@ -16,7 +16,23 @@ import Foundation
 // Print as we go: a long search should show its progress even when its output goes to a file.
 setvbuf(stdout, nil, _IOLBF, 0)
 let args = Array(CommandLine.arguments.dropFirst())
-if args.first == "tricks" {
+if args.first == "timing" {
+    // One frozen-pair throw shot, timed, with its event count: the throw search was far slower than the others.
+    let b = pockets[0] + unit(Vec2(1, 0.62)) * 0.45
+    let v = rotate(unit(pockets[0] - b), 5)
+    for gap in [1e-6, 1e-4, 5e-4] {
+        let a = b - v * (2 * R + gap)
+        let c = a - v * 0.5
+        let lay = layoutOf([0: c, 2: a, 8: b])
+        let t0 = Date()
+        let tl = simulate(lay, Strike(aim: degrees(of: unit(a - c)), power: 2.5, tipUp: 0, tipSide: 0.012))
+        print("throw sim, gap \(gap) m: \(tl.events.count) events, duration \(tl.duration), took \(Date().timeIntervalSince(t0)) s")
+        var kinds: [String: Int] = [:]
+        for e in tl.events { kinds["\(e.kind) \(e.balls.map(\.ball))", default: 0] += 1 }
+        print("   by kind: \(kinds.sorted { $0.value > $1.value }.prefix(6))")
+        if let e = tl.events.dropFirst(200).first { print("   event 200 at t=\(e.time): \(e.kind) \(e.balls.map(\.ball)) slip \(e.slipSpeed) impulse \(e.normalImpulse)") }
+    }
+} else if args.first == "tricks" {
     runTrickAuthoring(only: Set(args.dropFirst()))
 } else {
     var shown = 0

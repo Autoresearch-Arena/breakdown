@@ -293,6 +293,7 @@ struct TrickTableLayer: View {
     @State private var glow = 0.0
 
     private var mode: TrickShotMode { model.trickMode }
+    @MainActor private static var launchHandled = false
 
     var body: some View {
         @Bindable var mode = mode
@@ -325,6 +326,9 @@ struct TrickTableLayer: View {
 
     /// -trickList opens the list over the menu; -trick <id> sets a shot up; -trickPlay <id> also plays the answer.
     private func handleLaunchFlags() {
+        // Once per launch: the layer is rebuilt when the screen switches between its narrow and wide layouts.
+        guard !Self.launchHandled else { return }
+        Self.launchHandled = true
         let args = ProcessInfo.processInfo.arguments
         func value(after flag: String) -> String? {
             guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
