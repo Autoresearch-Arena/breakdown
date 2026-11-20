@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the legend is just the two colours now; its third phrase overflowed the card).
 // PURPOSE: Draws the small generated pictures the Physics Lens glows with, in code, so no image assets ship:
 //          1. the TRAIL picture: one strip per motion colour whose long axis is AGE (bright, white-hot at the head,
 //             easing to a faint trace for old path) and whose short axis is the soft cross-section of a glowing line
@@ -132,7 +133,8 @@ enum LensTextures {
 
     // MARK: Legend
 
-    /// The legend card: one row with two coloured line samples and their names, then what width and fade mean.
+    /// The legend card: one row with two coloured line samples and their names. (The third phrase, about width and
+    /// fade, ran past the card on a phone and was cut on 20-Nov-2026; How to play explains both.)
     /// Drawn at 4 pixels per point of `CameraFraming.legendSize`. Not scaled by Dynamic Type (it is a baked picture);
     /// the plan's Open items note that.
     static func legend(amber: (Double, Double, Double), cyan: (Double, Double, Double)) -> TextureResource? {
@@ -170,7 +172,6 @@ enum LensTextures {
         text("Sliding", at: CGPoint(x: 36, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
         sample(cyan, x: 94, y: mid)
         text("Rolling", at: CGPoint(x: 118, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
-        text("Thicker = faster. Fades with age.", at: CGPoint(x: 172, y: mid), size: 10, weight: .regular, white: increaseContrast ? 1.0 : 0.78, in: ctx)
         guard let image = ctx.makeImage() else { return nil }
         return try? TextureResource(image: image, options: .init(semantic: .color))
     }

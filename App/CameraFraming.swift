@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (legend size shrunk to the two-colour card).
 // PURPOSE: The pure maths of framing the table. Given the size of the 3D view, the real positions of the title row, the
 //          caption slot and the control strip (measured from the laid-out SwiftUI views, never guessed), and the angle the
 //          camera looks from, it answers three questions with no RealityKit in sight: "which rectangle of the view is
@@ -53,7 +54,7 @@ struct FramingRequest: Equatable {
 
 enum CameraFraming {
     /// Size in points of the colour legend the Lens shows the first time trails appear (LensLayer draws it at this size).
-    static let legendSize = CGSize(width: 330, height: 26)
+    static let legendSize = CGSize(width: 174, height: 26)
     /// Gap in points kept between the legend, the title row and the table.
     static let legendGap: Double = 6
     /// Breathing room kept between the table and the sides of the view, in points.
