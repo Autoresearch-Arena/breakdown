@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (every player-facing line is wrapped in String(localized:) for translation)
 // PURPOSE: The trick-shot library: data only. Ten shots, each with its id, title, a one-sentence hook, where the balls
 //          start (only the balls it uses; every other ball is off the table), the authored answer (aim, power, cue-tip
 //          height and side; cue elevation is reserved for the massé and the jump), the goal the app checks from the
@@ -72,7 +73,7 @@ enum TrickSetup: Equatable {
 enum TrickDifficulty: Int, Comparable {
     case easy = 1, medium, hard
     var label: String {
-        switch self { case .easy: return "Easy"; case .medium: return "Medium"; case .hard: return "Hard" }
+        switch self { case .easy: return String(localized: "Easy"); case .medium: return String(localized: "Medium"); case .hard: return String(localized: "Hard") }
     }
     static func < (a: TrickDifficulty, b: TrickDifficulty) -> Bool { a.rawValue < b.rawValue }
 }
@@ -125,19 +126,19 @@ enum TrickShots {
     // stun. Measured windows around the answer: aim 41.47 to 42.87 degrees (half-width 0.70), power 1.55 to 1.95 m/s,
     // tip height -9.5 to -6.0 mm, side -3.5 to +3.5 mm. The cue ball rests 1 mm from the contact spot.
     static let stopDead = TrickShot(
-        id: "stop-dead", number: 2, title: "Stop Dead",
-        hook: "Pot the 3 and make the cue ball freeze on the very spot where it struck.",
-        goalLine: "Pot the 3. The cue ball must stop where it hit.",
+        id: "stop-dead", number: 2, title: String(localized: "Stop Dead"),
+        hook: String(localized: "Pot the 3 and make the cue ball freeze on the very spot where it struck."),
+        goalLine: String(localized: "Pot the 3. The cue ball must stop where it hit."),
         setup: .layout(placed([0: Vec2(1.7233, 0.5318), 3: Vec2(2.0200, 0.8000)])),
         solution: TrickSettings(aim: 42.17, power: 1.75, tipUp: -0.008, tipSide: 0),
         goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)],
                         cueZone: TrickZone(centre: Vec2(1.9776, 0.7617), radius: 0.05), firstHit: 3),
         usesBridge: false,
-        idea: "Strike just below centre so the backspin has worn off exactly as the cue ball arrives. With no spin left, it hands all its speed to the 3 and stops dead.",
-        maths: "equal balls, head on, no spin:  v′cue = 0,  v′3 = v",
-        mathsSpoken: "Equal balls meeting head on with no spin: the cue ball's speed afterwards is zero, and the 3 leaves with the cue ball's speed.",
+        idea: String(localized: "Strike just below centre so the backspin has worn off exactly as the cue ball arrives. With no spin left, it hands all its speed to the 3 and stops dead."),
+        maths: String(localized: "equal balls, head on, no spin:  v′cue = 0,  v′3 = v"),
+        mathsSpoken: String(localized: "Equal balls meeting head on with no spin: the cue ball's speed afterwards is zero, and the 3 leaves with the cue ball's speed."),
         difficulty: .easy, window: TrickWindow(aim: 0.70, power: 0.20, tipUp: 0.0015, tipSide: 0.0035),
-        praise: "Stopped dead. All of its speed went into the 3.", pending: false)
+        praise: String(localized: "Stopped dead. All of its speed went into the 3."), pending: false)
 
     // MARK: 3. The Long Bridge Draw
     // Search (BreakProbe tricks bridge-draw, 20-Nov-2026): the cue ball on the long diagonal in the middle of the table,
@@ -147,18 +148,18 @@ enum TrickShots {
     // degrees at best. This run: 2,171 candidates, 871 passed, 137 survived the screen. Measured windows: aim -26.24 to
     // -25.50 degrees (half-width 0.30), power 2.00 to 5.45 m/s, tip height -19.5 to -7.5 mm, side -0.5 to +1.5 mm.
     static let bridgeDraw = TrickShot(
-        id: "bridge-draw", number: 3, title: "The Long Bridge Draw",
-        hook: "Pot the 6, then screw the cue ball back the whole length of the table to sink the 2 at the far end.",
-        goalLine: "Pot the 6, then draw back to pot the 2.",
+        id: "bridge-draw", number: 3, title: String(localized: "The Long Bridge Draw"),
+        hook: String(localized: "Pot the 6, then screw the cue ball back the whole length of the table to sink the 2 at the far end."),
+        goalLine: String(localized: "Pot the 6, then draw back to pot the 2."),
         setup: .layout(placed([0: Vec2(1.5000, 0.5200), 2: Vec2(0.0901, 1.2184), 6: Vec2(1.6073, 0.4663)])),
         solution: TrickSettings(aim: -25.94, power: 3.80, tipUp: -0.0135, tipSide: 0),
         goal: TrickGoal(drops: [TrickDrop(ball: 6, pocket: 1), TrickDrop(ball: 2, pocket: 2)], firstHit: 6),
         usesBridge: true,
-        idea: "Hitting low puts backspin on the cue ball. The 6 takes its forward speed, and the backspin, still spinning, grips the cloth and pulls it all the way back.",
-        maths: "backspin into speed:  v_back = (2/7) · R · ω",
-        mathsSpoken: "The speed the cue ball comes back with is two sevenths of its radius times its spin rate.",
+        idea: String(localized: "Hitting low puts backspin on the cue ball. The 6 takes its forward speed, and the backspin, still spinning, grips the cloth and pulls it all the way back."),
+        maths: String(localized: "backspin into speed:  v_back = (2/7) · R · ω"),
+        mathsSpoken: String(localized: "The speed the cue ball comes back with is two sevenths of its radius times its spin rate."),
         difficulty: .hard, window: TrickWindow(aim: 0.30, power: 1.65, tipUp: 0.006, tipSide: 0.0005),
-        praise: "The whole length of the table, on backspin alone.", pending: false)
+        praise: String(localized: "The whole length of the table, on backspin alone."), pending: false)
 
     // MARK: 4. Follow-Through Train
     // Search (BreakProbe tricks follow-train, 20-Nov-2026): the 1 placed at three spots, the cue ball at four cut
@@ -167,18 +168,18 @@ enum TrickShots {
     // Measured windows: aim 49.86 to 50.62 degrees (half-width 0.36), power 3.30 to 4.80 m/s, tip height +0.5 to
     // +19.5 mm (a stroke through the centre fails: some follow is needed), side -6.0 to +1.5 mm.
     static let followTrain = TrickShot(
-        id: "follow-train", number: 4, title: "Follow-Through Train",
-        hook: "Pot the 1, and let topspin carry the cue ball on to sink the 2 as well.",
-        goalLine: "Pot the 1 in the corner, then the 2 in the side.",
+        id: "follow-train", number: 4, title: String(localized: "Follow-Through Train"),
+        hook: String(localized: "Pot the 1, and let topspin carry the cue ball on to sink the 2 as well."),
+        goalLine: String(localized: "Pot the 1 in the corner, then the 2 in the side."),
         setup: .layout(placed([0: Vec2(1.6830, 0.5403), 1: Vec2(2.0500, 0.9500), 2: Vec2(1.9171, 1.0103)])),
         solution: TrickSettings(aim: 50.22, power: 4.05, tipUp: 0.010, tipSide: 0),
         goal: TrickGoal(drops: [TrickDrop(ball: 1, pocket: 3), TrickDrop(ball: 2, pocket: 5)], firstHit: 1),
         usesBridge: false,
-        idea: "Topspin keeps driving after the hit. The cue ball glances off the 1 sideways, then its forward spin grips the cloth and bends it on toward the 2.",
-        maths: "rolling cue ball, half-ball cut:  turns about 30° off its line",
-        mathsSpoken: "A rolling cue ball that cuts half of the object ball ends up turned about 30 degrees off its original line.",
+        idea: String(localized: "Topspin keeps driving after the hit. The cue ball glances off the 1 sideways, then its forward spin grips the cloth and bends it on toward the 2."),
+        maths: String(localized: "rolling cue ball, half-ball cut:  turns about 30° off its line"),
+        mathsSpoken: String(localized: "A rolling cue ball that cuts half of the object ball ends up turned about 30 degrees off its original line."),
         difficulty: .medium, window: TrickWindow(aim: 0.36, power: 0.75, tipUp: 0.0095, tipSide: 0.0015),
-        praise: "Two balls, one stroke. The topspin did the second half.", pending: false)
+        praise: String(localized: "Two balls, one stroke. The topspin did the second half."), pending: false)
 
     // MARK: 5. Two-Rail Kick
     // Search (BreakProbe tricks two-rail-kick, 20-Nov-2026): the cue ball alone struck from three spots at aims every
@@ -187,19 +188,19 @@ enum TrickShots {
     // path clears them. 19,218 candidates, 3,407 passed, 215 survived the sturdiness screen. Measured windows: aim
     // 9.40 to 10.28 degrees (half-width 0.44), power 1.80 to 4.20 m/s, tip height -10.0 to +18.5 mm, side -1 to +1 mm.
     static let twoRailKick = TrickShot(
-        id: "two-rail-kick", number: 5, title: "Two-Rail Kick",
-        hook: "The 5 is hidden behind two balls. Send the cue ball the long way round, off two cushions, and pot it anyway.",
-        goalLine: "Off two cushions, hit the 5 first and pot it.",
+        id: "two-rail-kick", number: 5, title: String(localized: "Two-Rail Kick"),
+        hook: String(localized: "The 5 is hidden behind two balls. Send the cue ball the long way round, off two cushions, and pot it anyway."),
+        goalLine: String(localized: "Off two cushions, hit the 5 first and pot it."),
         setup: .layout(placed([0: Vec2(0.7000, 0.4500), 5: Vec2(0.2015, 1.2182), 9: Vec2(0.4661, 0.7895),
                                10: Vec2(0.4053, 0.9356)])),
         solution: TrickSettings(aim: 9.84, power: 2.95, tipUp: 0.0045, tipSide: 0),
         goal: TrickGoal(drops: [TrickDrop(ball: 5, pocket: 2)], firstHit: 5),
         usesBridge: false,
-        idea: "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection, and side spin would bend that angle.",
-        maths: "angle in ≈ angle out  (cushion grip and spin bend it a few degrees)",
-        mathsSpoken: "The angle in is about the angle out; the cushion's grip and any spin bend it a few degrees.",
+        idea: String(localized: "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection, and side spin would bend that angle."),
+        maths: String(localized: "angle in ≈ angle out  (cushion grip and spin bend it a few degrees)"),
+        mathsSpoken: String(localized: "The angle in is about the angle out; the cushion's grip and any spin bend it a few degrees."),
         difficulty: .hard, window: TrickWindow(aim: 0.44, power: 1.15, tipUp: 0.014, tipSide: 0.001),
-        praise: "Round the houses and in. Two mirrors, one pocket.", pending: false)
+        praise: String(localized: "Round the houses and in. Two mirrors, one pocket."), pending: false)
 
     // MARK: 7. Combination Chain
     // Search (BreakProbe tricks combo-chain, 20-Nov-2026): the 7 placed 0.42 m from the bottom-right corner, the 4 and
@@ -208,19 +209,19 @@ enum TrickShots {
     // survived the sturdiness screen. Measured windows: aim -16.78 to -15.52 degrees (half-width 0.58), power 1.10 to
     // 6.05 m/s, tip height -11.0 to +19.5 mm, any side.
     static let comboChain = TrickShot(
-        id: "combo-chain", number: 7, title: "Combination Chain",
-        hook: "Hit the 3, which hits the 4, which sinks the 7. One push down a line of balls.",
-        goalLine: "Hit the 3 first. The 7 must drop.",
+        id: "combo-chain", number: 7, title: String(localized: "Combination Chain"),
+        hook: String(localized: "Hit the 3, which hits the 4, which sinks the 7. One push down a line of balls."),
+        goalLine: String(localized: "Hit the 3 first. The 7 must drop."),
         setup: .layout(placed([0: Vec2(1.4597, 0.5082), 3: Vec2(2.0396, 0.3542), 4: Vec2(2.1263, 0.3103),
                                7: Vec2(2.2040, 0.2520)])),
         solution: TrickSettings(aim: -16.10, power: 3.65, tipUp: 0.0045, tipSide: 0),
         goal: TrickGoal(drops: [TrickDrop(ball: 7, pocket: 1)], firstHit: 3),
         usesBridge: false,
-        idea: "Each ball can only push the next one along the line through their two centres, so the last contact, not your first, decides where the 7 goes.",
-        maths: "direction out = line of centres at contact  (+ a little throw)",
-        mathsSpoken: "Each ball leaves along the line through the two centres at the moment of contact, plus a little throw.",
+        idea: String(localized: "Each ball can only push the next one along the line through their two centres, so the last contact, not your first, decides where the 7 goes."),
+        maths: String(localized: "direction out = line of centres at contact  (+ a little throw)"),
+        mathsSpoken: String(localized: "Each ball leaves along the line through the two centres at the moment of contact, plus a little throw."),
         difficulty: .hard, window: TrickWindow(aim: 0.58, power: 2.40, tipUp: 0.015, tipSide: 0.0195),
-        praise: "Three balls, one line, the 7 down.", pending: false)
+        praise: String(localized: "Three balls, one line, the 7 down."), pending: false)
 
     // MARK: 6. Cross-Side Bank
     // Search (BreakProbe tricks cross-bank, 20-Nov-2026): the 5 placed at eighteen spots across the middle of the
@@ -229,38 +230,38 @@ enum TrickShots {
     // candidates, 1,108 passed, 282 survived the sturdiness screen. Measured windows: aim -95.21 to -94.41 degrees
     // (half-width 0.34), power 2.30 to 6.80 m/s, tip height -8.0 to +19.5 mm, side -6.5 to +1.0 mm.
     static let crossBank = TrickShot(
-        id: "cross-bank", number: 6, title: "Cross-Side Bank",
-        hook: "Send the 5 away from the pocket, off the far cushion, and back across the table into the side.",
-        goalLine: "Bank the 5 off the far cushion into the marked side pocket.",
+        id: "cross-bank", number: 6, title: String(localized: "Cross-Side Bank"),
+        hook: String(localized: "Send the 5 away from the pocket, off the far cushion, and back across the table into the side."),
+        goalLine: String(localized: "Bank the 5 off the far cushion into the marked side pocket."),
         setup: .layout(placed([0: Vec2(1.0663, 0.8296), 5: Vec2(1.0500, 0.4500)])),
         solution: TrickSettings(aim: -94.75, power: 2.80, tipUp: 0.006, tipSide: 0),
         goal: TrickGoal(drops: [TrickDrop(ball: 5, pocket: 5)], firstHit: 5, bank: 5),
         usesBridge: false,
-        idea: "Picture the pocket's reflection behind the far cushion and send the 5 at that. The cushion turns it back on the mirror line, into the real pocket.",
-        maths: "aim at the mirror pocket:  y′ = 2R − y_pocket",
-        mathsSpoken: "Aim at the mirror image of the pocket: its distance behind the cushion equals the real pocket's distance in front.",
+        idea: String(localized: "Picture the pocket's reflection behind the far cushion and send the 5 at that. The cushion turns it back on the mirror line, into the real pocket."),
+        maths: String(localized: "aim at the mirror pocket:  y′ = 2R − y_pocket"),
+        mathsSpoken: String(localized: "Aim at the mirror image of the pocket: its distance behind the cushion equals the real pocket's distance in front."),
         difficulty: .medium, window: TrickWindow(aim: 0.34, power: 0.50, tipUp: 0.0135, tipSide: 0.001),
-        praise: "Off the far cushion and home. The mirror never lies.", pending: false)
+        praise: String(localized: "Off the far cushion and home. The mirror never lies."), pending: false)
 
     // MARK: 9 and 10: waiting on cue elevation and airborne physics
 
     static let masse = TrickShot(
-        id: "masse-curve", number: 9, title: "The Massé",
-        hook: "Raise the cue almost straight up and the cue ball bends around a ball in its way.",
-        goalLine: "Curve the cue ball around the blocker to pot the target.",
+        id: "masse-curve", number: 9, title: String(localized: "The Massé"),
+        hook: String(localized: "Raise the cue almost straight up and the cue ball bends around a ball in its way."),
+        goalLine: String(localized: "Curve the cue ball around the blocker to pot the target."),
         setup: .layout(placed([:])), solution: TrickSettings(aim: 0, power: 0, tipUp: 0, tipSide: 0, elevation: 70),
         goal: TrickGoal(drops: []), usesBridge: false,
-        idea: "A steep cue gives the cue ball spin about a tilted axis, and the cloth turns that spin into a curve.",
+        idea: String(localized: "A steep cue gives the cue ball spin about a tilted axis, and the cloth turns that spin into a curve."),
         maths: nil, mathsSpoken: nil, difficulty: .hard, window: TrickWindow(aim: 1, power: 1, tipUp: 1, tipSide: 0),
-        praise: "Bent it round.", pending: true)
+        praise: String(localized: "Bent it round."), pending: true)
 
     static let jumpOver = TrickShot(
-        id: "jump-over", number: 10, title: "Jump the Blocker",
-        hook: "Hit down on the cue ball and it hops clean over a ball in the way.",
-        goalLine: "Jump the blocker and pot the target.",
+        id: "jump-over", number: 10, title: String(localized: "Jump the Blocker"),
+        hook: String(localized: "Hit down on the cue ball and it hops clean over a ball in the way."),
+        goalLine: String(localized: "Jump the blocker and pot the target."),
         setup: .layout(placed([:])), solution: TrickSettings(aim: 0, power: 0, tipUp: 0, tipSide: 0, elevation: 45),
         goal: TrickGoal(drops: []), usesBridge: false,
-        idea: "A downward strike drives the ball into the slate, and the slate throws it back up into the air.",
+        idea: String(localized: "A downward strike drives the ball into the slate, and the slate throws it back up into the air."),
         maths: nil, mathsSpoken: nil, difficulty: .hard, window: TrickWindow(aim: 1, power: 1, tipUp: 1, tipSide: 0),
-        praise: "Clean over the top.", pending: true)
+        praise: String(localized: "Clean over the top."), pending: true)
 }

@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (strings that are built in code, such as the card lines, the spoken row
+//          label and the "Coming next" line, are String(localized:); literal labels and buttons are already keys)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -70,7 +72,7 @@ struct TrickShotList: View {
             .frame(minWidth: 28)
             VStack(alignment: .leading, spacing: 4) {
                 Text(shot.title).font(Theme.heading).foregroundStyle(shot.pending ? .secondary : .primary)
-                Text(shot.pending ? "Coming next. \(shot.hook)" : shot.hook)
+                Text(shot.pending ? String(localized: "Coming next. \(shot.hook)") : shot.hook)
                     .font(Theme.body)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
@@ -85,8 +87,9 @@ struct TrickShotList: View {
     }
 
     private func spoken(_ shot: TrickShot) -> String {
-        let state = shot.pending ? "coming next" : (mode.isDone(shot) ? "made" : "not made yet")
-        return "Shot \(shot.number), \(shot.title), \(shot.difficulty.label), \(state). \(shot.hook)"
+        let state = shot.pending ? String(localized: "coming next")
+            : (mode.isDone(shot) ? String(localized: "made") : String(localized: "not made yet"))
+        return String(localized: "Shot \(shot.number), \(shot.title), \(shot.difficulty.label), \(state). \(shot.hook)")
     }
 }
 
@@ -128,7 +131,7 @@ struct TrickShotCard: View {
             }
         case .watching:
             header(shot)
-            line("Watch the answer. \(shot.goalLine)")
+            line(String(localized: "Watch the answer. \(shot.goalLine)"))
             buttons { turnButton(prominent: false) }
         case .explaining:
             HStack(spacing: 6) {
@@ -157,7 +160,8 @@ struct TrickShotCard: View {
             }
         case .aiming:
             header(shot)
-            line(shot.usesBridge ? "\(shot.goalLine) The ball is out of reach, so the bridge holds the cue." : shot.goalLine)
+            line(shot.usesBridge ? String(localized: "\(shot.goalLine) The ball is out of reach, so the bridge holds the cue.")
+                                 : shot.goalLine)
             buttons {
                 watchButton(prominent: false)
                 listButton
@@ -187,7 +191,7 @@ struct TrickShotCard: View {
             }
         case .offScript:
             header(shot)
-            line("That shot started from where the balls stopped. Try again puts them back for the trick.")
+            line(String(localized: "That shot started from where the balls stopped. Try again puts them back for the trick."))
             buttons { tryAgainButton(prominent: true); listButton }
         case .off:
             EmptyView()
