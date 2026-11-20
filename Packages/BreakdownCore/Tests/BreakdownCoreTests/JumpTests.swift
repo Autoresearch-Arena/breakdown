@@ -212,6 +212,14 @@ final class JumpTests: XCTestCase {
             }
             var rest: [Int: Vec2] = [:]
             for b in 0..<6 {
+                // Every path, in the air or on the cloth, is continuous in place and height across its segments.
+                let segs = tl.segments[b]
+                for k in 1..<segs.count {
+                    let prev = segs[k - 1].kinematics(at: segs[k].t0)
+                    XCTAssertEqual((prev.position - segs[k].position0).length, 0, accuracy: 1e-9, "shot \(shot) ball \(b) segment \(k)")
+                    XCTAssertEqual(prev.height, segs[k].height0, accuracy: 1e-9, "shot \(shot) ball \(b) segment \(k) height")
+                    XCTAssertGreaterThanOrEqual(segs[k].height0, 0, "shot \(shot) ball \(b) below the cloth")
+                }
                 let s = tl.state(ball: b, at: tl.duration + 1)
                 XCTAssertFalse(s.position.x.isNaN || s.position.y.isNaN || s.height.isNaN, "shot \(shot) ball \(b) NaN")
                 if s.pocketed {
