@@ -1,5 +1,6 @@
-// Author: Claude Haiku 5.5 Medium
+// Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (now the main menu: Play or New game, Continue, Watch the break, How to
 //          play and Options, reachable again at any time from the back button on the table; the instructions moved
 //          into their own sheet so the menu is short).
@@ -34,7 +35,7 @@ struct TitleScreen: View {
         return switches.contains { args.contains($0) }
     }
 
-    private static let intro = "A pool game that shows its working. Take a shot, then watch the physics behind it."
+    private static var intro: String { String(localized: "A pool game that shows its working. Take a shot, then watch the physics behind it.") }
 
     var body: some View {
         ZStack {
@@ -126,14 +127,16 @@ struct HowToPlaySheet: View {
     @Binding var isOpen: Bool
     @Environment(\.palette) private var palette
 
-    private static let steps: [(title: String, detail: String)] = [
-        ("Break and shoot",
-         "Tap Play. Drag on the table to aim, pull back from the white ball to set the power, touch the small cue-ball picture to add spin, and tap Break or Shoot."),
-        ("Read the Lens",
-         "Tap Lens to see the physics: amber paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way."),
-        ("Try again",
-         "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare."),
-    ]
+    private static var steps: [(title: String, detail: String)] {
+        [
+            (String(localized: "Break and shoot"),
+             String(localized: "Tap Play. Drag on the table to aim, pull back from the white ball to set the power, touch the small cue-ball picture to add spin, and tap Break or Shoot.")),
+            (String(localized: "Read the Lens"),
+             String(localized: "Tap Lens to see the physics: amber paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
+            (String(localized: "Try again"),
+             String(localized: "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare.")),
+        ]
+    }
 
     var body: some View {
         NavigationStack {

@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the legend is just the two colours now; its third phrase overflowed the card).
 // PURPOSE: Draws the small generated pictures the Physics Lens glows with, in code, so no image assets ship:
 //          1. the TRAIL picture: one strip per motion colour whose long axis is AGE (bright, white-hot at the head,
@@ -169,9 +170,9 @@ enum LensTextures {
         // y-up; the row sits on the vertical middle.
         let mid = ph * 0.5
         sample(amber, x: 12, y: mid)
-        text("Sliding", at: CGPoint(x: 36, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
+        text(String(localized: "Sliding"), at: CGPoint(x: 36, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
         sample(cyan, x: 94, y: mid)
-        text("Rolling", at: CGPoint(x: 118, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
+        text(String(localized: "Rolling"), at: CGPoint(x: 118, y: mid), size: 12, weight: .semibold, white: 1.0, in: ctx)
         guard let image = ctx.makeImage() else { return nil }
         return try? TextureResource(image: image, options: .init(semantic: .color))
     }

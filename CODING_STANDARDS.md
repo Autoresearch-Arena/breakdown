@@ -114,6 +114,27 @@ The Boss is a non-technical executive. Everything reply and documentation artifa
   and comments alone.
 - Never make the reader read code to learn a result. Report it in words, then point to the evidence file.  Do not mix numbers or code snippets with prose writing. 
 
+## 13. Localization: write every word for translation
+
+Breakdown ships in eleven languages besides English. Every word a player can read is written so it can be
+translated, from the first draft, not added later.
+
+- Text written straight into a view (a button, a label, a menu item, a tooltip) is a plain literal. It is found
+  automatically by the string catalog in `App`. Nothing else is needed for it.
+- Text that is built in ordinary code (captions, the retry comparison, stage titles, anything a function returns as
+  a string) is wrapped in `String(localized:)`, so it reaches the same catalog. Never join words with `+` to make a
+  sentence: a translator must get the whole sentence, so it can be reordered.
+- A value that changes (a number, a ball name, a speed) is a placeholder in the sentence, never pasted in. Numbers
+  are formatted with the player's locale.
+- Units and symbols that are the same everywhere (m/s, the cue ball's name as a symbol) can stay. Words around them
+  are translated.
+- Debug flags, log lines, file names, SF Symbol names, font names and launch switches are not player text. Do not
+  wrap them.
+- Every new player-facing string goes into the catalog in the same change, with a translation for each language in
+  the list of known regions in the project. Changing an English line means updating its translations in the same
+  change. Nothing ships half-translated.
+- Placeholders must come back unchanged in every translation: the same count and the same kind.
+
 ## Applies here: breakdown
 
 - Swift app code lives in `App`; the solver, timeline and existing tests live in `Packages/BreakdownCore`.

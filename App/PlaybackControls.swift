@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (fewer rows over the table on a phone: play and pause sit in the
 //          scrub row, speed is a small menu instead of four segments, and the scrub row steps aside while aiming).
 // PURPOSE: The playback controls, built from standard parts: system buttons in Liquid Glass, SF Symbols with the
@@ -125,7 +126,7 @@ struct SpeedPicker: View {
                 Menu {
                     picker.pickerStyle(.inline)
                 } label: {
-                    Text(model.chosenRate.map(PlaybackSpeed.label) ?? "Auto")
+                    Text(model.chosenRate.map(PlaybackSpeed.label) ?? String(localized: "Auto"))
                         .lineLimit(1)
                         .monospacedDigit()
                 }
@@ -135,7 +136,7 @@ struct SpeedPicker: View {
             }
         }
         .accessibilityLabel("Playback speed")
-        .accessibilityValue(model.chosenRate.map(PlaybackSpeed.label) ?? "Automatic")
+        .accessibilityValue(model.chosenRate.map(PlaybackSpeed.label) ?? String(localized: "Automatic"))
     }
 }
 

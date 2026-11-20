@@ -8,6 +8,16 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.3] - 20-November-2026
+
+Author: Claude Haiku 5.5 High
+
+- What: Breakdown is localized. Every line the player reads (menus, buttons, tips, the how-to steps, options, the shot panel, playback, the Mac menus and tooltips, the shot captions and the retry comparison) now has a translation into the same eleven languages the dog game ships in: Spanish, French, German, Italian, Portuguese, Brazilian Portuguese, Japanese, Korean, Simplified Chinese, Russian and Arabic. English stays the source.
+- Why: The Boss wants the next build to ship in the same languages as the dog game, and wants all new player text written so it can be translated from the start.
+- How: All translations live in one Apple String Catalog in the App folder. Text built in ordinary code (captions, the retry comparison, stage titles, the how-to steps, the tip words) is wrapped in the catalog's own lookup so whole sentences reach translators and can be reordered. Numbers are placeholders and are formatted with the player's own decimal style. Translation was done by six subagents, two languages each, and each translation must keep the same placeholders as its English line. The project lists the eleven languages as known regions. The rule for future work is written into the coding standards as section 13. Build number moves to 8 for the next TestFlight upload.
+- Checked: Not compiled or tested in this session, by the Boss's instruction; the TestFlight session builds and checks the Mac and iPhone targets and the physics package tests.
+- Not checked: Arabic needs a right-to-left check on the phone; the drawn labels in the Lens colour key and the table text are drawn in code and may need a look in each language.
+
 ## [0.5.2] - 20-November-2026
 
 Author: Claude Opus 5.5 High

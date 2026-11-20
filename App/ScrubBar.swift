@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // PURPOSE: The scrub bar: a custom control (the impact ticks are the point of it) that behaves like a standard one.
 //          It has a 44 point tall hit area, a thumb that grows under the pointer, a light haptic tick each time the
 //          playhead crosses a recorded impact while you drag, and full VoiceOver support (a name, a spoken value,
@@ -124,7 +125,7 @@ struct ScrubBar: View {
     private func impact(before t: Double) -> Double? { impactTimes.last { $0 < t - 0.001 } }
 
     private var spokenValue: String {
-        String(format: "%.1f of %.1f seconds", model.time, model.duration)
+        String(localized: "\(String(format: "%.1f", locale: Locale.current, model.time)) of \(String(format: "%.1f", locale: Locale.current, model.duration)) seconds")
     }
 }
 

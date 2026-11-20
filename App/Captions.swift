@@ -1,10 +1,11 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (jaw and knuckle hits get their own caption: "Off the jaw" or "Clipped the point").
+// Edited: Claude Haiku 5.5 High, 20-November-2026 (every sentence is a whole localized string, so translators can reorder it; numbers are formatted for the player's language).
 // PURPOSE: Turns solver events into the plain-language captions and equations the Physics Lens shows. Every
 //          number in a caption is read from the recorded event (pillar one: nothing is drawn that the solver
 //          did not compute). Captions are thinned to the most important event per quarter second so slow motion
-//          stays readable.
+//          stays readable. Words the player reads go through String(localized:) so they land in the string catalog.
 // SRP/DRY check: Pass - caption selection and wording only; display lives in the view.
 import BreakdownLensModel
 import BreakdownTimeline
@@ -39,18 +40,26 @@ enum CaptionEngine {
         return best.values.sorted { $0.time < $1.time }
     }
 
-    private static func name(_ ball: Int) -> String { ball == 0 ? "the cue ball" : "the \(ball) ball" }
-    private static func f(_ x: Double, _ digits: Int = 1) -> String { String(format: "%.\(digits)f", x) }
+    /// A ball's name as a player would say it. Each form is a whole phrase, so a translator can reorder it.
+    private static func name(_ ball: Int) -> String {
+        ball == 0 ? String(localized: "the cue ball") : String(localized: "the \(ball) ball")
+    }
+
+    /// A number with the decimal places asked for, written the way the player's language writes numbers.
+    private static func f(_ x: Double, _ digits: Int = 1) -> String {
+        String(format: "%.\(digits)f", locale: Locale.current, x)
+    }
 
     private static func caption(for e: LensEvent, id: Int) -> Caption? {
         switch e.kind {
         case .cueStrike:
             let b = e.balls[0]
             let spin = b.omegaAfter.length
+            let speed = f(b.velocityAfter.length)
             let detail = spin > 20
-                ? "The cue sends the ball off at \(f(b.velocityAfter.length)) metres per second. Hitting below centre adds backspin, which the ball carries with it."
-                : "The cue sends the ball off at \(f(b.velocityAfter.length)) metres per second. Its momentum is mass times speed."
-            return Caption(id: id, time: e.time, title: "The cue hands over its speed", detail: detail,
+                ? String(localized: "The cue sends the ball off at \(speed) metres per second. Hitting below centre adds backspin, which the ball carries with it.")
+                : String(localized: "The cue sends the ball off at \(speed) metres per second. Its momentum is mass times speed.")
+            return Caption(id: id, time: e.time, title: String(localized: "The cue hands over its speed"), detail: detail,
                            equation: "p = m · v", accent: .strike, importance: 1e9)
         case .ballBall:
             guard e.balls.count == 2 else { return nil }
@@ -60,39 +69,39 @@ enum CaptionEngine {
             guard mover.velocityBefore.length > 0.8, before > 0 else { return nil }
             let share = (other.energyAfter / before) * 100
             let keep = (mover.energyAfter / before) * 100
-            let detail = "\(name(mover.ball).capitalizedFirst) was moving at \(f(mover.velocityBefore.length)) m/s. "
-                + "Energy handed off: \(f(share, 0)) percent goes to \(name(other.ball)), \(f(keep, 0)) percent stays, "
-                + "and the rest is lost as heat and sound."
-            return Caption(id: id, time: e.time, title: "Energy handed off", detail: detail,
+            let detail = String(localized: "\(name(mover.ball).capitalizedFirst) was moving at \(f(mover.velocityBefore.length)) m/s. Energy handed off: \(f(share, 0)) percent goes to \(name(other.ball)), \(f(keep, 0)) percent stays, and the rest is lost as heat and sound.")
+            return Caption(id: id, time: e.time, title: String(localized: "Energy handed off"), detail: detail,
                            equation: "J = (1 + e) · m · v⊥ / 2", accent: .impact, importance: e.normalImpulse)
         case .cushion where e.edge != .rail:
             // A pocket jaw or knuckle: the ball reached the mouth and was turned away (or rattled). Worth saying even
             // when slow, because it is the answer to "why didn't that go in?".
             let b = e.balls[0]
-            let part = e.edge == .knuckle ? "the point of the pocket" : "the pocket's jaw"
-            return Caption(id: id, time: e.time, title: e.edge == .knuckle ? "Clipped the point" : "Off the jaw",
-                           detail: "\(name(b.ball).capitalizedFirst) catches \(part) at \(f(b.velocityBefore.length)) m/s and is turned away from the hole. A little more to the middle of the pocket and it drops.",
+            let part = e.edge == .knuckle ? String(localized: "the point of the pocket") : String(localized: "the pocket's jaw")
+            let title = e.edge == .knuckle ? String(localized: "Clipped the point") : String(localized: "Off the jaw")
+            return Caption(id: id, time: e.time, title: title,
+                           detail: String(localized: "\(name(b.ball).capitalizedFirst) catches \(part) at \(f(b.velocityBefore.length)) m/s and is turned away from the hole. A little more to the middle of the pocket and it drops."),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse + 0.5)
         case .cushion:
             let b = e.balls[0]
             let vin = b.velocityBefore.length
             guard vin > 1.2 else { return nil }
             let kept = (b.velocityAfter.dot(e.normal) / max(1e-9, -b.velocityBefore.dot(e.normal))) * 100
-            return Caption(id: id, time: e.time, title: "The cushion pushes back",
-                           detail: "\(name(b.ball).capitalizedFirst) hits the rail at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into the rail. Sideways speed is trimmed by friction.",
+            return Caption(id: id, time: e.time, title: String(localized: "The cushion pushes back"),
+                           detail: String(localized: "\(name(b.ball).capitalizedFirst) hits the rail at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into the rail. Sideways speed is trimmed by friction."),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse)
         case .phaseTransition:
             guard e.phaseFrom == .sliding, e.phaseTo == .rolling else { return nil }
             let b = e.balls[0]
             let v = b.velocityAfter.length
             guard v > 1.0 else { return nil }
-            return Caption(id: id, time: e.time, title: "Skid turns into roll",
-                           detail: "Friction with the cloth slowed \(name(b.ball)) and spun it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.",
-                           equation: "v_roll = 5/7 · v (no spin)", accent: .friction, importance: v * 0.12)
+            let noSpin = String(localized: "(no spin)")
+            return Caption(id: id, time: e.time, title: String(localized: "Skid turns into roll"),
+                           detail: String(localized: "Friction with the cloth slowed \(name(b.ball)) and spun it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s."),
+                           equation: "v_roll = 5/7 · v \(noSpin)", accent: .friction, importance: v * 0.12)
         case .pocket:
             let b = e.balls[0]
-            return Caption(id: id, time: e.time, title: "Pocketed",
-                           detail: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s.",
+            return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),
+                           detail: String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s."),
                            equation: "ΔKE → 0", accent: .pocket, importance: 3)
         }
     }
