@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Watch it now turns the Ride camera on through model.setRide).
 // PURPOSE: Trick-shot mode: the game's main purpose. Holds which trick shot is on the table and walks the player through
 //          it: Ready (the table set up at the shot's start, a card with the hook) > Watching (the authored solution plays
 //          at full speed) > Explaining (it replays slowly in the Physics Lens while the card gives the one idea behind
@@ -256,8 +257,7 @@ final class TrickShotMode {
 
     /// The ride camera: the view from behind the cue ball as it travels, for watching the answer.
     private func ride(_ on: Bool) {
-        // TODO(integrator, ride camera): when the camera work lands its ride API on ShowpieceModel, call it here,
-        // for example model.setRide(on). Until then the answer plays on the normal table camera.
-        _ = on
+        // Watching the answer rides behind the cue ball; the player's own turn goes back to the table camera.
+        model.setRide(on)
     }
 }

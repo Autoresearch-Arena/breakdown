@@ -18,6 +18,13 @@ Author: Claude Haiku 5.5 High
 - Checked: Not compiled or tested in this session, by the Boss's instruction; the TestFlight session builds and checks the Mac and iPhone targets and the physics package tests.
 - Not checked: Arabic needs a right-to-left check on the phone; the drawn labels in the Lens colour key and the table text are drawn in code and may need a look in each language.
 
+- Also in 0.5.3 (Claude Opus 5.5 High, trick-shot pass):
+  - Trick shots are now what the game is for. Trick shots is the first choice on the menu and opens a list: Stop Dead, The Long Bridge Draw (played off the mechanical bridge), Follow-Through Train, Two-Rail Kick, Cross-Side Bank and Combination Chain are playable; The Massé and Jump the Blocker show as coming next. Each shot has Watch it (the answer, replayed) and Your turn (the same table, your own aim and spin); a miss gets one line on what to change, a make gets a glow and a tick that stays. Every answer was found with the physics solver and still works within a small window of aim, power and spin, so it can be learned, not lucked.
+  - Ride the shot: a Ride camera sits low behind the cue ball, follows it into the first ball it hits, then rides the struck ball toward the pocket before rising to the full table, easing into slow motion around the contact. Watch it uses it; a Ride toggle sits in the playback controls (Command-E on the Mac). Scrubbing gives the same camera for the same moment. Under Reduce Motion it cuts instead of flying.
+  - The table fills the screen: no reserved explanation box (the card floats over the top edge only while there is something to say), the colour key is a small chip beside the back button, the warm table is framed lower and closer, and the rails may tuck under the glass controls.
+  - Raised-cue physics: a strike can come from a raised cue, so the cue ball can curve (massé) or leave the cloth, fly, bounce and land (jump), clearing a ball in its way; a ball that flies off the table is out. Level shots are exactly as before.
+  - Not yet: The Called Break and Throw It In are not authored, and the massé and jump trick shots are waiting on their settings; they come in the next build. New screen text from this pass is not yet translated.
+
 ## [0.5.2] - 20-November-2026
 
 Author: Claude Opus 5.5 High
