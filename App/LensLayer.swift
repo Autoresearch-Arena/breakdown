@@ -1,7 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the colour legend left the 3D scene: it is a SwiftUI glass chip in
+//          the title row now (LensLegendChip in CaptionViews), which follows Dynamic Type and VoiceOver and costs the
+//          table no room).
 // PURPOSE: The cold Physics Lens layer. Owns the grid under the Lens, the glowing trails coloured by motion phase,
-//          the impact rings, the velocity arrows, the colour legend, and the player's aim line, plus their materials
+//          the impact rings, the velocity arrows and the player's aim line, plus their materials
 //          and their per-frame logic. Anything about how the Lens LOOKS or when its parts appear belongs here.
 //          Does NOT belong here: the warm table and balls (TableBuilder.swift), the camera (TableCamera.swift), the
 //          pictures themselves (LensTextures.swift, BallTextures.gridTexture), or moving the balls (TableScene.apply).
@@ -25,7 +28,7 @@
 //          curve under a smoothstep) to a faint floor by four seconds of age, and the line also narrows with age (the picture
 //          is thinner for older time), so a late-break frame shows bold fresh lines over dim hairlines instead of a scribble.
 //          Both curves are functions of age alone, baked into the one picture, so the clock-only exactness is untouched.
-//          Draw order is fixed with sort groups: grid, then trails, then rings, then arrows, then the legend.
+//          Draw order is fixed with sort groups: grid, then trails, then rings, then arrows.
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -85,8 +88,6 @@ final class LensLayer {
 
     /// Parent of every Lens entity; fades as a whole with the melt value.
     let root = Entity()
-    /// The colour legend. The coordinator parents it to the camera's HUD anchor (one unit is one point).
-    let legend = ModelEntity()
     private let trailRoot = Entity()
     private let ringRoot = Entity()
     private let arrowRoot = Entity()
@@ -108,9 +109,6 @@ final class LensLayer {
     private(set) var bloomActive = false
     private let sortGroup = ModelSortGroup(depthPass: nil)
 
-    // Legend life: shown with full prominence the first time trails appear, then left quietly in place.
-    private var legendStart: TimeInterval?
-    private var legendMaterial = UnlitMaterial()
 
     private static func clampSampler() -> MaterialParameters.Texture.Sampler {
         let d = MTLSamplerDescriptor()
@@ -157,16 +155,6 @@ final class LensLayer {
         var core = UnlitMaterial(color: rgba(1.0, 0.96, 0.78))
         core.faceCulling = .none
         arrowMaterial = core
-
-        if let tex = LensTextures.legend(amber: amber, cyan: cyan) {
-            legendMaterial = Self.glow(tex)
-            legend.model = ModelComponent(mesh: .generatePlane(width: Float(CameraFraming.legendSize.width),
-                                                               height: Float(CameraFraming.legendSize.height)),
-                                          materials: [legendMaterial])
-        }
-        legend.components.set(OpacityComponent(opacity: 0))
-        legend.isEnabled = false
-        legend.components.set(ModelSortGroupComponent(group: sortGroup, order: 40))
 
         root.addChild(gridEntity)
         root.addChild(trailRoot)
@@ -373,7 +361,7 @@ final class LensLayer {
 
     /// Fade the layer with the melt, slide the trail pictures to the clock, expand the rings, steer the arrows and
     /// the aim line. `ballVisible` says which balls are currently shown (the coordinator decides that).
-    /// Everything here is a function of (t, melt, timeline) only, apart from the legend, which is on-screen chrome.
+    /// Everything here is a function of (t, melt, timeline) only.
     func apply(time t: Double, melt: Double, aim: AimPreview?,
                timeline: Timeline, frame: TableFrame, ballVisible: [Bool]) {
         let R = frame.ballRadius
@@ -436,22 +424,6 @@ final class LensLayer {
         } else {
             aimLine.isEnabled = false
         }
-
-        updateLegend(time: t, melt: m)
-    }
-
-    /// The legend: fades in the first time the Lens is up and trails exist, holds at full strength for a few
-    /// seconds, then settles to a quieter version that stays while the Lens is on. Wall-clock chrome, not scene state.
-    private func updateLegend(time t: Double, melt m: Float) {
-        let now = ProcessInfo.processInfo.systemUptime
-        if legendStart == nil, m > 0.7, t > 0.1 { legendStart = now }
-        guard let start = legendStart, legend.model != nil else { legend.isEnabled = false; return }
-        let age = now - start
-        let fadeIn = Float(min(1, age / 0.5))
-        let settle = Float(min(1, max(0, (age - 7) / 1.2)))
-        let level = fadeIn * (1 - 0.5 * settle) * m
-        legend.isEnabled = level > 0.01
-        legend.components.set(OpacityComponent(opacity: level))
     }
 
     // MARK: Self-check (launch with -lensSelfTest)

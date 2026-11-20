@@ -1,18 +1,29 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (legend size shrunk to the two-colour card).
-// PURPOSE: The pure maths of framing the table. Given the size of the 3D view, the real positions of the title row, the
-//          caption slot and the control strip (measured from the laid-out SwiftUI views, never guessed), and the angle the
-//          camera looks from, it answers three questions with no RealityKit in sight: "which rectangle of the view is
-//          free for the table?", "where must the camera sit so the whole table (rails included) lands inside that
-//          rectangle, as large as it can be, and centred?", and "how much does the break's push-in and settle move the
-//          camera, and when?". Kept free of RealityKit and UIKit on purpose so a scratch harness can compile this one file
-//          with swiftc and sweep hundreds of window shapes, angles and margins, projecting the table corners with a separate
-//          matrix and asserting each lands inside the rectangle (see the glow-up plan, Open items).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the table fills the screen: two-tier framing. The playing area
+//          (cloth plus the pocket holes) must stay clear of the title row and the control strip, but the wooden rails
+//          around it may tuck under that floating glass, so only the rail outline has to stay inside the safe area.
+//          No caption slot and no legend band any more: captions float over the top edge and the legend lives in the
+//          title row, so neither costs the table any height. Gutters and gaps are smaller. New: the warm view's angle
+//          is chosen per screen shape so a tall phone is filled top to bottom, not just side to side.)
+// PURPOSE: The pure maths of framing the table. Given the size of the 3D view, the real positions of the title row and
+//          the control strip (measured from the laid-out SwiftUI views, never guessed), and the angle the camera looks
+//          from, it answers: "which part of the view must the playing area stay inside, and which part must the whole
+//          table (rails included) stay inside?" (framing), "where must the camera sit so the table is as large as it
+//          can be, centred, with both of those true?" (pose), "how steep should the warm view be on this screen shape
+//          so the table fills the height as well as the width?" (warmElevation), and "how much does the break's
+//          push-in and settle move the camera, and when?". Kept free of RealityKit and UIKit on purpose so a scratch
+//          harness can compile this one file with swiftc and sweep window shapes, angles and margins, projecting the
+//          table corners with a separate matrix (project) and checking them.
+//          THE INVARIANT a sweep should check (changed 20-Nov-2026): the playing-area corners land inside
+//          Framing.inner and the rail-outline corners land inside Framing.outer, and at least one of them touches its
+//          edge (as large as it can be). The rail outline is now ALLOWED to run under the title row and the controls.
 //          Used by TableCamera.swift only. Does NOT belong here: reading the views or the window (TableStage measures,
-//          TableCamera applies), the Lens drawing.
+//          TableCamera applies), the Lens drawing, any camera mode other than the table-framing one.
 //          History: package 2 wrote the exact-fit pose; package 4 (0.4.0) replaced the guessed margins with measured ones,
-//          added the caption slot, the legend-only-if-needed rule and the push-in curve.
+//          added the caption slot, the legend-only-if-needed rule and the push-in curve; 20-Nov-2026 removed the caption
+//          slot and legend band and added the two-tier fit and the warm angle.
 // SRP/DRY check: Pass - framing maths only; replaces the older single-formula framing that lived in TableCamera.
 import CoreGraphics
 import Foundation
@@ -36,6 +47,12 @@ struct FramingRect: Equatable {
     var height: Double { bottom - top }
     var centerX: Double { (left + right) * 0.5 }
     var centerY: Double { (top + bottom) * 0.5 }
+
+    /// Moves every edge a share `a` (0...1) of the way toward `to`; used to ease layout changes.
+    func eased(to: FramingRect, by a: Double) -> FramingRect {
+        func e(_ x: Double, _ y: Double) -> Double { x + (y - x) * a }
+        return FramingRect(left: e(left, to.left), top: e(top, to.top), right: e(right, to.right), bottom: e(bottom, to.bottom))
+    }
 }
 
 /// What the screen measured, in the 3D view's OWN coordinates (points, origin at the view's top-left corner; the view
@@ -43,67 +60,64 @@ struct FramingRect: Equatable {
 struct FramingRequest: Equatable {
     var size: CGSize
     var safe: FramingInsets
-    /// Bottom edge of the title row (wordmark and status label).
+    /// Bottom edge of the title row (back button, legend chip, status label).
     var headerBottom: Double
-    /// Bottom edge of the caption slot on a phone held upright; equal to `headerBottom` where captions sit in a side column.
-    var captionBottom: Double
     /// Top edge of the control strip, or nil when the controls are somewhere else (the side column) and the table may
     /// run down to the bottom safe area.
     var controlsTop: Double?
 }
 
-enum CameraFraming {
-    /// Size in points of the colour legend the Lens shows the first time trails appear (LensLayer draws it at this size).
-    static let legendSize = CGSize(width: 174, height: 26)
-    /// Gap in points kept between the legend, the title row and the table.
-    static let legendGap: Double = 6
-    /// Breathing room kept between the table and the sides of the view, in points.
-    static let gutter: Double = 10
-    /// Breathing room between the table and the title row, caption slot or controls it sits between.
-    static let chromeGap: Double = 8
+/// The two rectangles the table is fitted to. `inner` holds the playing area, `outer` the whole table with its rails.
+struct Framing: Equatable {
+    var inner: FramingRect
+    var outer: FramingRect
 
-    /// How the free rectangle is cut down for the current moment.
-    /// - captionShare: 0 (warm table, no captions) to 1 (Lens, caption slot reserved in full).
-    static func freeRect(_ q: FramingRequest, captionShare: Double) -> FramingRect {
-        let h = Double(q.size.height)
-        let withCaption = rect(q, captionShare: captionShare)
-        // At the largest text sizes the controls and the caption slot together can eat the whole screen. A table
-        // squeezed to a sliver is worse than a caption that overlaps it, so when less than 30% of the height is left
-        // the caption slot stops reserving room (the card then floats over the table, as it did before the slot).
-        if captionShare > 0, withCaption.height < 0.3 * h { return rect(q, captionShare: 0) }
-        return withCaption
+    func eased(to: Framing, by a: Double) -> Framing {
+        Framing(inner: inner.eased(to: to.inner, by: a), outer: outer.eased(to: to.outer, by: a))
     }
+}
 
-    private static func rect(_ q: FramingRequest, captionShare: Double) -> FramingRect {
+/// The table's size for framing, in metres, as half extents along world x (long side) and z (short side).
+struct TableExtents: Equatable {
+    /// Outer outline: rails and corner blocks included.
+    var halfX: Float
+    var halfZ: Float
+    /// Rail top height above the cloth, so the near rail's top edge is framed too.
+    var rimHeight: Float
+    /// Playing area: the cloth plus the pocket holes, which must never sit under the controls.
+    var playX: Float
+    var playZ: Float
+}
+
+enum CameraFraming {
+    /// Breathing room between the table and the sides of the view, in points. Small: on a phone upright every point of
+    /// width is table size.
+    static let gutter: Double = 4
+    /// Gap between the playing area and the title row or controls it sits between.
+    static let chromeGap: Double = 4
+    /// Gap between the rail outline and the safe-area edges (status bar, home indicator).
+    static let outerGap: Double = 2
+
+    /// The rectangles for this screen. Sides: the safe area less a gutter for both (nothing floats at the sides).
+    /// Top and bottom: the playing area stays between the title row and the controls; the rails may run on under that
+    /// glass as far as the safe area.
+    static func framing(_ q: FramingRequest) -> Framing {
         let w = Double(q.size.width), h = Double(q.size.height)
-        let share = min(1, max(0, captionShare))
-        let topEdge = q.headerBottom + max(0, q.captionBottom - q.headerBottom) * share
         var left = q.safe.left + gutter
         var right = w - q.safe.right - gutter
-        let top = max(q.safe.top, topEdge) + chromeGap
-        let bottom = (q.controlsTop ?? (h - q.safe.bottom)) - (q.controlsTop == nil ? gutter : chromeGap)
         // Never hand back an inside-out rectangle on a tiny window: keep at least a sliver to frame into.
         if right - left < 40 { let c = (left + right) * 0.5; left = c - 20; right = c + 20 }
-        return FramingRect(left: left, top: top, right: right, bottom: max(bottom, top + 40))
-    }
 
-    /// Where the legend goes: centred across the free rectangle, along its top edge.
-    static func legendCenter(in free: FramingRect) -> CGPoint {
-        CGPoint(x: free.centerX, y: free.top + Double(legendSize.height) * 0.5)
-    }
-
-    /// True when the legend would sit on the table, so the table must give up its height. When the table is width-limited
-    /// (a wide window, a phone on its side) there is empty room above it and the legend lives there for free.
-    static func legendNeedsRoom(free: FramingRect, size: CGSize, yaw: Float, elevation: Float, halfX: Float, halfZ: Float,
-                                rimHeight: Float, fovDegrees: Float) -> Bool {
-        let p = pose(size: size, rect: free, yaw: yaw, elevation: elevation, halfX: halfX, halfZ: halfZ,
-                     rimHeight: rimHeight, fovDegrees: fovDegrees)
-        var minY = Double.infinity
-        for sx: Float in [-1, 1] { for sz: Float in [-1, 1] { for y in [Float(0), rimHeight] {
-            let pt = project(SIMD3(sx * halfX, y, sz * halfZ), position: p.position, target: p.target, size: size, fovDegrees: fovDegrees)
-            minY = min(minY, Double(pt.y))
-        } } }
-        return minY - free.top < Double(legendSize.height) + legendGap
+        let safeTop = q.safe.top + outerGap
+        let safeBottom = h - q.safe.bottom - (q.controlsTop == nil ? gutter : outerGap)
+        let innerTop = max(safeTop, q.headerBottom + chromeGap)
+        var innerBottom = min(safeBottom, q.controlsTop.map { $0 - chromeGap } ?? safeBottom)
+        // At the largest text sizes the title row and controls can meet; keep a sliver so the fit stays defined.
+        innerBottom = max(innerBottom, innerTop + 40)
+        let inner = FramingRect(left: left, top: innerTop, right: right, bottom: innerBottom)
+        // The outer rectangle always contains the inner one, even when the sliver rule pushed the inner one past it.
+        let outer = FramingRect(left: left, top: min(safeTop, innerTop), right: right, bottom: max(safeBottom, innerBottom))
+        return Framing(inner: inner, outer: outer)
     }
 
     // MARK: Break push-in and settle
@@ -139,22 +153,27 @@ enum CameraFraming {
         var target: SIMD3<Float>
         /// Distance from the table centre along the view direction; handy for tests.
         var distance: Float
+        /// True when the sides decided the size (there is spare height); false when the top and bottom did.
+        var widthLimited: Bool
     }
 
-    /// The camera position that fits the whole table, as large as possible, centred in `rect`.
+    /// The camera position that fits the table as large as possible, centred, with the playing area inside
+    /// `framing.inner` and the rail outline inside `framing.outer`.
     /// - yaw: angle round the vertical axis the camera sits at (0 looks along the long side, pi/2 along the short).
     /// - elevation: radians above the table plane (pi/2 is straight down; clamped just short so "up" stays defined).
-    /// - halfX, halfZ: half the outer size of the table (rails included) along world x and z, in metres.
-    /// - rimHeight: height of the rail tops above the cloth, so the near rail's top edge is also kept in frame.
     /// - distanceScale: multiplies the fitted distance (see `distanceScale(push:intro:motionAllowed:)`); 1 is the exact fit.
-    static func pose(size: CGSize, rect: FramingRect, yaw: Float, elevation: Float, halfX: Float, halfZ: Float,
-                     rimHeight: Float, fovDegrees: Float, distanceScale: Float = 1) -> Pose {
+    static func pose(size: CGSize, framing: Framing, yaw: Float, elevation: Float, table: TableExtents,
+                     fovDegrees: Float, distanceScale: Float = 1) -> Pose {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let kY = tan(fovDegrees * .pi / 360)
         let kX = kY * (w / h)
-        // View rectangle in normalised device coordinates (x right, y up, both -1 to 1).
-        let nx0 = Float(rect.left) / w * 2 - 1, nx1 = Float(rect.right) / w * 2 - 1
-        let ny0 = 1 - Float(rect.bottom) / h * 2, ny1 = 1 - Float(rect.top) / h * 2
+        // A rectangle of the view in normalised device coordinates (x right, y up, both -1 to 1).
+        struct Box { var x0, x1, y0, y1: Float }
+        func ndc(_ r: FramingRect) -> Box {
+            Box(x0: Float(r.left) / w * 2 - 1, x1: Float(r.right) / w * 2 - 1,
+                y0: 1 - Float(r.bottom) / h * 2, y1: 1 - Float(r.top) / h * 2)
+        }
+        let inner = ndc(framing.inner), outer = ndc(framing.outer)
 
         let el = min(elevation, 89.5 * .pi / 180)
         let out = SIMD3<Float>(sin(yaw) * cos(el), sin(el), cos(yaw) * cos(el))   // table centre to camera
@@ -162,40 +181,76 @@ enum CameraFraming {
         let r = simd_normalize(simd_cross(f, SIMD3(0, 1, 0)))
         let u = simd_cross(r, f)
 
-        // The outer table corners at cloth level and at rail height, in camera axes (X right, Y up, Z ahead).
-        var pts: [SIMD3<Float>] = []
-        for sx: Float in [-1, 1] { for sz: Float in [-1, 1] { for y in [Float(0), rimHeight] {
-            let p = SIMD3<Float>(sx * halfX, y, sz * halfZ)
-            pts.append(SIMD3(simd_dot(p, r), simd_dot(p, u), simd_dot(p, f)))
-        } } }
+        // Every corner that must be kept in view, in camera axes (X right, Y up, Z ahead), with the box it must stay
+        // in: the rail outline at cloth level and at rail height inside the outer box, the playing area's corners at
+        // cloth level inside the inner box.
+        var bounds: [(p: SIMD3<Float>, box: Box)] = []
+        func add(_ p: SIMD3<Float>, _ box: Box) { bounds.append((SIMD3(simd_dot(p, r), simd_dot(p, u), simd_dot(p, f)), box)) }
+        for sx: Float in [-1, 1] { for sz: Float in [-1, 1] {
+            add(SIMD3(sx * table.halfX, 0, sz * table.halfZ), outer)
+            add(SIMD3(sx * table.halfX, table.rimHeight, sz * table.halfZ), outer)
+            add(SIMD3(sx * table.playX, 0, sz * table.playZ), inner)
+        } }
 
         // Slide the camera sideways by (a, b) in its own right/up axes and back by s. A corner then projects to
         //   x = (X - a) / ((Z + s) * kX),  y = (Y - b) / ((Z + s) * kY).
-        // Keeping x within [nx0, nx1] gives an interval for a; likewise b. The intervals widen as s grows, so
-        // bisect for the smallest s where both are non-empty: the closest camera that still fits everything.
-        func interval(_ s: Float, axis: Int, lo: Float, hi: Float, k: Float) -> (Float, Float) {
+        // Keeping x within its box gives an interval for a; likewise b. The intervals widen as s grows, so bisect
+        // for the smallest s where both are non-empty: the closest camera that still fits everything. Each corner
+        // brings its own box, which is how the rails can run under the chrome while the cloth cannot.
+        func interval(_ s: Float, vertical: Bool) -> (Float, Float) {
             var a0 = -Float.infinity, a1 = Float.infinity
-            for p in pts {
-                let c = axis == 0 ? p.x : p.y
+            for (p, box) in bounds {
+                let c = vertical ? p.y : p.x, k = vertical ? kY : kX
+                let lo = vertical ? box.y0 : box.x0, hi = vertical ? box.y1 : box.x1
                 let depth = p.z + s
                 a0 = max(a0, c - hi * k * depth)
                 a1 = min(a1, c - lo * k * depth)
             }
             return (a0, a1)
         }
-        let minZ = pts.map(\.z).min() ?? 0
+        let minZ = bounds.map(\.p.z).min() ?? 0
         var sLo = max(0.3, -minZ + 0.3), sHi: Float = 200
         for _ in 0..<60 {
             let s = (sLo + sHi) * 0.5
-            let ix = interval(s, axis: 0, lo: nx0, hi: nx1, k: kX), iy = interval(s, axis: 1, lo: ny0, hi: ny1, k: kY)
+            let ix = interval(s, vertical: false), iy = interval(s, vertical: true)
             if ix.0 <= ix.1 && iy.0 <= iy.1 { sHi = s } else { sLo = s }
         }
         let s = sHi
-        let ix = interval(s, axis: 0, lo: nx0, hi: nx1, k: kX), iy = interval(s, axis: 1, lo: ny0, hi: ny1, k: kY)
+        let ix = interval(s, vertical: false), iy = interval(s, vertical: true)
         let a = (ix.0 + ix.1) * 0.5, b = (iy.0 + iy.1) * 0.5
+        // Which pair of edges decided the size: the one with no slack left. Slack is compared in screen units
+        // (divided by the focal factor) so a tall and a wide view are judged alike.
+        let widthLimited = (ix.1 - ix.0) / kX <= (iy.1 - iy.0) / kY
         // The push-in and the launch pull-back scale the fitted distance; 1 is the exact fit and never clips.
         let position = r * a + u * b - f * (s * distanceScale)
-        return Pose(position: position, target: position + f, distance: s * distanceScale)
+        return Pose(position: position, target: position + f, distance: s * distanceScale, widthLimited: widthLimited)
+    }
+
+    // MARK: Warm view angle
+
+    /// The warm view's usual angle above the table, and the steepest it may go to fill a tall screen, in degrees.
+    static let warmElevationBase: Float = 48
+    static let warmElevationMax: Float = 74
+
+    /// The warm view's angle for this screen shape. A low three-quarter view foreshortens the table's depth, so on a
+    /// tall screen (a phone upright) the table fills the width and leaves empty height above and below it. Tilting the
+    /// camera steeper makes the table taller on screen without making it narrower, so this finds the lowest angle
+    /// (from 48 up to 74 degrees) at which the height is used up too. On a wide screen the height already decides the
+    /// size at 48 degrees, so the angle stays 48. Continuous in the layout, so an eased layout change eases the angle.
+    static func warmElevation(size: CGSize, framing: Framing, yaw: Float, table: TableExtents, fovDegrees: Float) -> Float {
+        let lo0 = warmElevationBase * .pi / 180, hi0 = warmElevationMax * .pi / 180
+        func spareHeight(_ el: Float) -> Bool {
+            pose(size: size, framing: framing, yaw: yaw, elevation: el, table: table, fovDegrees: fovDegrees).widthLimited
+        }
+        guard spareHeight(lo0) else { return lo0 }
+        guard !spareHeight(hi0) else { return hi0 }
+        var lo = lo0, hi = hi0
+        // Fourteen halvings of a 26-degree span is under a five-hundredth of a degree: far below anything visible.
+        for _ in 0..<14 {
+            let mid = (lo + hi) * 0.5
+            if spareHeight(mid) { lo = mid } else { hi = mid }
+        }
+        return (lo + hi) * 0.5
     }
 
     /// Projects a world point to view points (origin top left) for a camera at `position` looking toward `target`
