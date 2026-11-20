@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Vec3 gains a cross product and a negation, for the cue-strike
+//          spin axis and the three-dimensional ball-ball contact of a ball in the air.)
 // PURPOSE: Tiny vector types shared by every module. Only add, subtract, multiply, divide and square root
 //          are used, so the physics module can depend on this file without breaking the no-libm rule.
 // SRP/DRY check: Pass - the one place 2D and 3D vector arithmetic lives.
@@ -34,7 +36,10 @@ public struct Vec3: Sendable, Equatable, Hashable {
     public static func + (a: Vec3, b: Vec3) -> Vec3 { Vec3(a.x + b.x, a.y + b.y, a.z + b.z) }
     public static func - (a: Vec3, b: Vec3) -> Vec3 { Vec3(a.x - b.x, a.y - b.y, a.z - b.z) }
     public static func * (a: Vec3, s: Double) -> Vec3 { Vec3(a.x * s, a.y * s, a.z * s) }
+    public static prefix func - (a: Vec3) -> Vec3 { Vec3(-a.x, -a.y, -a.z) }
     public func dot(_ b: Vec3) -> Double { x * b.x + y * b.y + z * b.z }
+    /// Right-handed cross product (self x b).
+    public func cross(_ b: Vec3) -> Vec3 { Vec3(y * b.z - z * b.y, z * b.x - x * b.z, x * b.y - y * b.x) }
     public var lengthSquared: Double { dot(self) }
     public var length: Double { lengthSquared.squareRoot() }
 }

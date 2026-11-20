@@ -1,13 +1,27 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (cushion events say whether they hit the rail, a pocket jaw or a knuckle).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (jump shots: a new motion phase, airborne, and a flight mark on
+//          events. Take-off, landing and flying off the table are phase-transition events carrying a FlightMark and the
+//          vertical speeds, rather than new event kinds, so every existing switch over LensEventKind keeps compiling and
+//          keeps its meaning. Events without a flight carry .none and hash exactly as before.)
 // PURPOSE: The engine-agnostic event stream the Physics Lens reads. Each event names its producer so the
 //          Lens knows how far to trust a number (pool solver numbers are exact; scanned-scene numbers
 //          will be labelled estimates later). Also holds the stable 64-bit hasher used for replay equality.
 // SRP/DRY check: Pass - data definitions only, no behaviour beyond hashing.
 
 public enum MotionPhase: UInt8, Sendable {
-    case sliding, rolling, spinning, stationary
+    /// `airborne`: the ball is off the cloth (after a jump strike or a bounce), flying a parabola under gravity
+    /// with its spin carried unchanged. Added last so the raw values of the older phases (hashed) never move.
+    case sliding, rolling, spinning, stationary, airborne
+}
+
+/// What a phase-transition event means for a ball's flight. `takeOff`: the ball leaves the cloth (a jump strike, or
+/// a hit from above that bounces it off the slate). `landing`: it comes down on the slate; `phaseTo` says whether it
+/// bounces again (`airborne`) or stays down (sliding or rolling). `offTable`: it flew over a cushion and left the
+/// table; like a pocketed ball it stops there and is taken off for the next shot.
+public enum FlightMark: UInt8, Sendable {
+    case none, takeOff, landing, offTable
 }
 
 public enum LensEventKind: UInt8, Sendable {
@@ -72,16 +86,27 @@ public struct LensEvent: Sendable, Equatable {
     public var pocket: Int
     /// For cushion events: which part of the cushion was hit.
     public var edge: CushionEdge
+    /// For phase-transition events: take-off, landing or leaving the table; `.none` for everything else.
+    public var flight: FlightMark
+    /// Vertical speeds for flight events, metres per second, both positive: the speed coming down onto the slate just
+    /// before a landing, and the speed going up just after a take-off or a bounce. Zero when they do not apply.
+    public var verticalSpeedDown: Double
+    public var verticalSpeedUp: Double
+    /// Height of the ball's lowest point above the cloth when the event happened (metres); zero on the cloth.
+    public var height: Double
 
     public init(time: Double, kind: LensEventKind, point: Vec2, normal: Vec2, normalImpulse: Double = 0,
                 frictionImpulse: Double = 0, slipSpeed: Double = 0, balls: [ImpactBall],
                 phaseFrom: MotionPhase? = nil, phaseTo: MotionPhase? = nil, pocket: Int = -1,
-                edge: CushionEdge = .rail, producer: LensProducer = .poolSolver) {
+                edge: CushionEdge = .rail, flight: FlightMark = .none, verticalSpeedDown: Double = 0,
+                verticalSpeedUp: Double = 0, height: Double = 0, producer: LensProducer = .poolSolver) {
         self.time = time; self.kind = kind; self.producer = producer
         self.point = point; self.normal = normal
         self.normalImpulse = normalImpulse; self.frictionImpulse = frictionImpulse; self.slipSpeed = slipSpeed
         self.balls = balls; self.phaseFrom = phaseFrom; self.phaseTo = phaseTo; self.pocket = pocket
         self.edge = edge
+        self.flight = flight; self.verticalSpeedDown = verticalSpeedDown; self.verticalSpeedUp = verticalSpeedUp
+        self.height = height
     }
 }
 

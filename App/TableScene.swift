@@ -16,6 +16,10 @@
 //          Package 4 (13-Nov-2026): the camera now takes the measured free space (a FramingRequest) and the clock, so it can
 //          frame between the title, caption slot and controls and push in on the break; nothing else here changed.
 //          Edit the file for the job you are doing; do not add Lens or table detail back into this one.
+// Edited: Claude Opus 5.5 High, 20-November-2026 (jump shots: a ball is drawn at its recorded height above the cloth,
+//          so a jumping cue ball leaves the table surface on screen; on the cloth the height is zero and nothing moves.
+//          A ball that flew off the table keeps flying its last arc past the rail and then vanishes, instead of the
+//          pocket's sink, which would pull it down through the rail.)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -37,6 +41,8 @@ final class TableScene {
     private var frame: TableFrame
     private var timeline: Timeline
     private var loadedVersion = -1
+    /// Per ball: true when it left the table by flying over a cushion (worked out once per recorded shot).
+    private var flewOff: [Bool] = []
     private var tourFrame = 0
     /// The clock the last apply() used (after any test pinning), so the camera pushes in on exactly the frame drawn.
     private var lastClock = 0.0
@@ -45,6 +51,7 @@ final class TableScene {
     init(timeline: Timeline) {
         self.timeline = timeline
         frame = TableFrame(timeline.table)
+        flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table)
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
         root.addChild(tableGroup)
@@ -70,6 +77,7 @@ final class TableScene {
         loadedVersion = version
         self.timeline = timeline
         frame = TableFrame(timeline.table)
+        flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         lens.rebuild(timeline: timeline, frame: frame)
         for b in 0..<balls.count {
             balls[b].isEnabled = true
@@ -96,10 +104,19 @@ final class TableScene {
         var visibility: [Bool] = []
         for b in 0..<balls.count {
             let s = timeline.state(ball: b, at: t)
-            var pos = frame.world(s.position, height: R)
+            // The centre sits one radius above the ball's lowest point, which is s.height above the cloth (a jump).
+            var pos = frame.world(s.position, height: R + Float(s.height))
             var scale: Float = 1
             var visible = true
-            if s.pocketed, let tp = timeline.pocketTime[b] {
+            if s.pocketed, let tp = timeline.pocketTime[b], b < flewOff.count, flewOff[b],
+               timeline.segments[b].count >= 2 {
+                // Flew over the rail: carry on along the last flight's closed-form arc (the segment before the parked
+                // one, evaluated past its end), then vanish once it is well clear of the table.
+                let flight = timeline.segments[b][timeline.segments[b].count - 2]
+                let k = flight.kinematics(at: t)
+                pos = frame.world(k.position, height: R + Float(k.height))
+                visible = (t - tp) < 0.6
+            } else if s.pocketed, let tp = timeline.pocketTime[b] {
                 let k = Float(min(1, (t - tp) / 0.22))
                 pos.y -= 0.09 * k
                 scale = 1 - 0.7 * k
