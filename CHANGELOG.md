@@ -8,6 +8,16 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.6.0] - 20-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Try again and compare. Once a shot of yours (or your own break) has played out, a Try again button sits beside Shoot. It puts every ball back exactly where that shot started, with the same aim, power and spin, so you can change one thing and shoot again. Your last try stays on the table as a faint dashed path for the cue ball and the first ball it hit, with a "Last try" ring where the cue ball stopped; it shows while you line up, while the retry plays, and in the Physics Lens. When the retry finishes, a short card says what you changed and what happened differently ("You changed the spin from draw to follow. This time the cue ball stayed out of the pocket."). On the Mac it is also in the Playback menu (Command-T).
+- Why: This is the moment the game is built around: rewind your own miss, change the spin, and see exactly why the cue ball now goes where you wanted. The Boss asked to start the polish toward an Apple Design Award for Interaction with it.
+- How: New ShotAttempt file (one attempt: start layout, settings, recording; the plain-words comparison; the ghost paths, sampled once per attempt so they never depend on the playback clock) and GhostOverlay file (the faint paths, projected through the live camera, and the comparison card). The model keeps the attempt on screen and the one being retried; a retry of a shot reloads its start as a still table, a retry of the break re-racks the identical rack. Launch flag -retryDemo runs a shot, an identical retry, then a retry with the spin changed, and logs both comparisons.
+- Checked: iPhone simulator and Mac builds succeed, the physics tests pass. On an iPhone simulator the scripted retry showed the ghost while aiming, during the retry and with the comparison card at the end; a retry with identical settings produced an identical recording (same motion fingerprint), and the comparison said so.
+- Not checked: real touches and a real device, iPad and Mac windows by eye, the largest text size with the card showing, VoiceOver reading of the card.
+
 ## [0.5.0] - 20-November-2026
 
 Author: Claude Opus 5.5 Low (title screen by Claude Haiku 5.5 Medium, 18-November-2026)

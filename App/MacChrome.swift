@@ -1,9 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Playback menu: Try Again, Command-T).
 // PURPOSE: What makes the Mac build feel like a Mac app, and what iPad gains with a hardware keyboard: a real window
 //          toolbar (play, speed, Lens, replay, Your shot), a Playback menu with keyboard shortcuts (space plays or
 //          pauses, Command-R replays, Command-L toggles the Lens, Command-1 to 4 pick the speed, Command-Y opens the
-//          shot panel), and the plumbing that lets menu items reach the window's model. The toolbar reuses the play,
+//          shot panel, Command-T tries the last shot again), and the plumbing that lets menu items reach the window's model. The toolbar reuses the play,
 //          replay and speed controls from PlaybackControls and uses the system's own toggle buttons for Lens and
 //          Your shot, which draw their pressed state natively in a Mac toolbar. Writes to the model only through its
 //          public methods.
@@ -42,6 +43,10 @@ struct PlaybackCommands: Commands {
             Divider()
             Button("Your Shot") { shotPanelOpen?.wrappedValue.toggle() }
                 .keyboardShortcut("y", modifiers: .command)
+            // Same as the Try again button in the shot panel; opens the panel so the restored aim can be changed.
+            Button("Try Again") { model?.tryAgain(); shotPanelOpen?.wrappedValue = true }
+                .keyboardShortcut("t", modifiers: .command)
+                .disabled(!(model?.canTryAgain ?? false))
         }
     }
 }

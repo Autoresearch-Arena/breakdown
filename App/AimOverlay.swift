@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (test script "retry", also started by -retryDemo: a shot, Try again,
+//          a change of spin, the same shot again, ending on the comparison).
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -275,8 +277,10 @@ struct AimOverlay: View {
 private enum TestScript {
     static func run(on o: AimOverlay) async {
         let args = ProcessInfo.processInfo.arguments
-        guard let i = args.firstIndex(of: "-aimScript"), i + 1 < args.count else { return }
-        let scenario = args[i + 1]
+        let scenario: String
+        if args.contains("-retryDemo") { scenario = "retry" }
+        else if let i = args.firstIndex(of: "-aimScript"), i + 1 < args.count { scenario = args[i + 1] }
+        else { return }
         try? await Task.sleep(for: .seconds(3.5))
         let model = o.model
         switch scenario {
@@ -302,6 +306,35 @@ private enum TestScript {
             await settle(model)
             NSLog("AIMSCRIPT scratch: cue ball now at (%.3f, %.3f), on table = %@", model.aimOrigin.x, model.aimOrigin.y,
                   NextShot.isOnTable(model.aimOrigin) ? "yes" : "NO")
+        case "retry":
+            // One shot at the farthest visible ball with draw, then Try again, switch to follow, and shoot again.
+            let t = model.timeline.table
+            var best: (Double, Vec2)?
+            for b in 1..<16 where NextShot.isOnTable(model.layout[b]) {
+                let delta = model.layout[b] - model.aimOrigin
+                let seen = AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin, direction: delta.normalized, radius: t.ballRadius)
+                if seen?.ball == b, best == nil || delta.length > best!.0 { best = (delta.length, model.layout[b]) }
+            }
+            guard let ball = best?.1 else { return }
+            await aim(o, toward: ball + (ball - model.aimOrigin).normalized.perp * t.ballRadius * 0.4)
+            await pull(o, fraction: 0.6, hold: 1)
+            model.activeTipUp = -0.012
+            _ = model.fire()
+            await settle(model)
+            await hold(1)
+            // Same settings first: the recordings must match exactly (the model logs both hashes).
+            model.tryAgain()
+            await hold(1)
+            _ = model.fire()
+            await settle(model)
+            model.tryAgain()
+            await hold(1)
+            model.activeTipUp = 0.012
+            NSLog("AIMSCRIPT retry: ghost on screen, spin changed to follow")
+            await hold(4)
+            _ = model.fire()
+            await settle(model)
+            NSLog("AIMSCRIPT retry: compared -> %@", model.comparison ?? "none")
         default: // shots
             for shot in 1...2 {
                 let t = model.timeline.table

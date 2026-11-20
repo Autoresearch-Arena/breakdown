@@ -21,7 +21,7 @@ struct TitleScreen: View {
     /// -noTitle is there for anyone who wants the cold open straight away.
     static var launchSkipsTitle: Bool {
         let args = ProcessInfo.processInfo.arguments
-        let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack"]
+        let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo"]
         return switches.contains { args.contains($0) }
     }
 

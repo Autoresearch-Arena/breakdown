@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (a Try again button beside Shoot once a shot of yours has played out:
+//          the balls go back where it started with the same settings, and the last try stays on the table as a ghost).
 // PURPOSE: The player's panel, now small enough to leave the table alone. The aiming itself happens on the table
 //          (AimOverlay: drag to swing the line, pull back from the cue ball to set power). This panel is only what has
 //          to sit beside it: a picture of the cue ball to touch for tip placement (TipPicker), the power gauge
@@ -46,6 +48,7 @@ struct ShotPanel: View {
         HStack(spacing: 10) {
             TipPicker(model: model)
             PowerGauge(model: model).frame(minWidth: 84)
+            tryAgainButton
             fireButton
             moreMenu
         }
@@ -60,6 +63,7 @@ struct ShotPanel: View {
             HStack(spacing: 10) {
                 moreMenu
                 Spacer(minLength: 0)
+                tryAgainButton
                 fireButton
             }
         }
@@ -74,6 +78,7 @@ struct ShotPanel: View {
             }
             HStack(spacing: 10) {
                 moreMenu
+                tryAgainButton
                 fireButton.frame(maxWidth: .infinity)
             }
         }
@@ -97,6 +102,26 @@ struct ShotPanel: View {
         // While the last shot is still playing the guide is hidden; touching the table jumps to its end.
         .disabled(!model.aimReady)
         .accessibilityHint(model.racked ? "Plays your own break" : "Plays your shot")
+    }
+
+    /// Back to where the last shot started, same settings, with the last try kept as a ghost to compare against.
+    /// Only there once a shot of the player's own has played out, so it never jumps in mid-shot.
+    @ViewBuilder private var tryAgainButton: some View {
+        if model.canTryAgain {
+            Button {
+                hintSeen = true
+                model.tryAgain()
+            } label: {
+                Label("Try again", systemImage: "arrow.uturn.backward")
+                    .font(.headline)
+                    .lineLimit(1)
+                    .frame(minHeight: Self.buttonHeight)
+            }
+            .buttonStyle(.glass)
+            .controlSize(.regular)
+            .accessibilityHint("Puts the balls back where your last shot started, with the same aim, power and spin")
+            .transition(.opacity)
+        }
     }
 
     private var moreMenu: some View {

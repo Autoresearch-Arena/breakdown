@@ -1,6 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 Medium, 18-November-2026 (the opening title is now the TitleScreen file, shown until Start is tapped; the old title card was removed).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: the "last try" ghost is laid over the table
+//          under the aiming layer, the comparison card sits above the controls or at the top of the side column, and
+//          -retryDemo opens the aiming panel like -aimDemo and runs the scripted retry).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title, the status
 //          label, the controls, and the caption and shot panel arranged for the screen at hand. On a phone held upright
 //          the caption sits under the title and the shot panel above the controls, all floating over the table. On
@@ -59,7 +62,8 @@ struct ShowpieceView: View {
                 // Test hook: -yourShotDemo opens the shot panel and plays a follow-up shot from the break's layout.
                 if ProcessInfo.processInfo.arguments.contains("-yourShotDemo") { showShotPanel = true; model.shootNow() }
                 // Test hooks for the aiming layer: skip the cold open, open "Your shot", optionally on a fresh rack.
-                if ProcessInfo.processInfo.arguments.contains("-aimDemo") || ProcessInfo.processInfo.arguments.contains("-aimDemoRack") {
+                let args = ProcessInfo.processInfo.arguments
+                if args.contains("-aimDemo") || args.contains("-aimDemoRack") || args.contains("-retryDemo") {
                     model.skipToResult(); model.setLens(false); showShotPanel = true
                     if ProcessInfo.processInfo.arguments.contains("-aimDemoRack") { model.rerack() }
                 }
@@ -86,6 +90,8 @@ struct ShowpieceView: View {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, chrome: chrome)
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
+            // The previous attempt, faint, while a shot is being retried. Never takes touches.
+            if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
             if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
             VStack(spacing: 10) {
                 ScreenHeader(model: model)
@@ -113,6 +119,7 @@ struct ShowpieceView: View {
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
         FittingScroll(maxHeight: geo.size.height * 0.62) {
             VStack(spacing: 10) {
+                if !wide { ComparisonCard(model: model) }
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
@@ -121,6 +128,7 @@ struct ShowpieceView: View {
             }
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
+        .animation(reduceMotion ? nil : .snappy, value: model.comparisonReady)
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
@@ -132,6 +140,7 @@ struct ShowpieceView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 12) {
+                    ComparisonCard(model: model)
                     CaptionArea(model: model, leader: leader, showsPlaceholder: true, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()

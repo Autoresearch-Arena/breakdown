@@ -1,6 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 Medium, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: every player shot and break is kept as a
+//          ShotAttempt; tryAgain() puts the balls back where it started with the same settings, keeps it as the ghost,
+//          and the retry's comparison is worked out from the two recordings).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -64,6 +67,18 @@ final class ShowpieceModel {
     var shotTipSide = 0.0        // metres to the right (+) or left (-) of centre: side spin
     private(set) var shotSerial = 0
 
+    // Try again and compare.
+    /// The player's shot or break now on screen; nil for the opening showpiece break and for a reset table.
+    private(set) var currentAttempt: ShotAttempt?
+    /// The attempt being retried: drawn faintly under the live shot so both outcomes show from the same start.
+    private(set) var ghost: ShotAttempt?
+    /// Bumped whenever the ghost changes, so the overlay rebuilds its sampled paths once, not every frame.
+    private(set) var ghostVersion = 0
+    /// What the retry changed and what happened differently; shown once the retry has played out.
+    private(set) var comparison: String?
+    /// Set by tryAgain() so the next shot keeps the ghost and is compared with it.
+    private var retryPending = false
+
     private var stageTime = 0.0
     private let freezeTime: Double
     private let sound = SoundBoard()
@@ -112,9 +127,15 @@ final class ShowpieceModel {
         var p = PoolParameters()
         p.version = 1
         breakSerial += 1
-        let input = Rack.breakShot(parameters: p, seed: UInt64(10 + breakSerial), aimOffset: aimOffset,
+        let seed = UInt64(10 + breakSerial)
+        let input = Rack.breakShot(parameters: p, seed: seed, aimOffset: aimOffset,
                                    speed: power, tipUp: tipHeight, tipSide: breakTipSide)
+        // Recorded before load(), which re-aims the follow-up shot and would otherwise change nothing here, but the
+        // attempt must hold exactly what was struck.
+        let settings = (aim: aimOffset, power: power, up: tipHeight, side: breakTipSide, range: powerRange)
         load(PoolSolver.simulate(input))
+        record(ShotAttempt(isBreak: true, breakSeed: seed, start: input.positions, timeline: timeline, aim: settings.aim,
+                           power: settings.power, powerRange: settings.range, tipUp: settings.up, tipSide: settings.side))
         startColdOpen()
         stage = .normalBreak
     }
@@ -129,6 +150,7 @@ final class ShowpieceModel {
         load(PoolSolver.simulate(Rack.breakShot(parameters: p, seed: seed, aimOffset: 0, speed: 0)))
         layout = Rack.positions(parameters: p, seed: seed)
         racked = true
+        clearAttempts()
         stage = .explore; time = 0; playing = false; chosenRate = nil
     }
 
@@ -141,7 +163,10 @@ final class ShowpieceModel {
         let a = aimDegrees * Double.pi / 180
         let input = NextShot.shot(from: layout, direction: Vec2(cos(a), sin(a)), speed: shotPower,
                                   tipUp: shotTipUp, tipSide: shotTipSide, seed: UInt64(1000 + shotSerial))
+        let settings = (aim: aimDegrees, power: shotPower, up: shotTipUp, side: shotTipSide, range: powerRange)
         load(PoolSolver.simulate(input))
+        record(ShotAttempt(isBreak: false, breakSeed: 0, start: input.positions, timeline: timeline, aim: settings.aim,
+                           power: settings.power, powerRange: settings.range, tipUp: settings.up, tipSide: settings.side))
         stage = .explore; stageTime = 0; time = 0; playing = true
         chosenRate = 1; displayRate = 1
         meltTarget = melt > 0.5 ? 1 : nil
@@ -152,6 +177,72 @@ final class ShowpieceModel {
         let a = aimDegrees * Double.pi / 180
         return Vec2(cos(a), sin(a))
     }
+
+    // MARK: Try again and compare
+
+    /// Try again is offered once a shot the player took has played out (the balls on screen are its result).
+    var canTryAgain: Bool { currentAttempt != nil && aimReady }
+
+    /// The comparison card shows once the retry has finished playing, so it never talks over the shot.
+    var comparisonReady: Bool { comparison != nil && stage == .explore && time >= duration - 1e-6 }
+
+    /// Put every ball back where the last shot started, with the same aim, power and spin, and keep that shot as the
+    /// ghost. Change one thing and shoot again to see the difference. For the break this re-racks the identical rack.
+    func tryAgain() {
+        guard let attempt = currentAttempt, aimReady else { return }
+        if attempt.isBreak {
+            // rerack() lays out the rack for seed 10 + breakSerial + 1, and breakNow() breaks seed 10 + breakSerial
+            // after adding one: stepping the serial back one makes both the identical rack the attempt broke.
+            breakSerial = Int(attempt.breakSeed) - 11
+            rerack()
+            aimOffset = attempt.aim; power = attempt.power; tipHeight = attempt.tipUp; breakTipSide = attempt.tipSide
+        } else {
+            // A zero-speed strike records a still table: the quickest way to put the starting layout on screen.
+            load(PoolSolver.simulate(NextShot.shot(from: attempt.start, direction: Vec2(1, 0), speed: 0, tipUp: 0,
+                                                   tipSide: 0, seed: 0)))
+            layout = attempt.start
+            racked = false
+            clearAttempts()
+            aimDegrees = attempt.aim; shotPower = attempt.power; shotTipUp = attempt.tipUp; shotTipSide = attempt.tipSide
+            stage = .explore; time = 0; playing = false; chosenRate = nil
+        }
+        ghost = attempt
+        ghostVersion += 1
+        retryPending = true
+    }
+
+    /// Put the comparison card away; the ghost stays until the next fresh shot.
+    func dismissComparison() { comparison = nil }
+
+    /// A new player attempt is on screen. A retry is compared with the ghost; any other shot starts afresh.
+    private func record(_ attempt: ShotAttempt) {
+        if retryPending, let previous = ghost {
+            comparison = ShotComparison.describe(previous: previous, current: attempt)
+            // Same start, same settings: the recordings must match exactly. Logged for the -retryDemo check.
+            if Self.logRetry {
+                NSLog("RETRY compare: previous motion %llu, this motion %llu, same settings %@ -> %@",
+                      previous.motionHash, attempt.motionHash,
+                      Self.sameSettings(previous, attempt) ? "yes" : "no", comparison ?? "")
+            }
+        } else {
+            if ghost != nil { ghostVersion += 1 }
+            ghost = nil; comparison = nil
+        }
+        retryPending = false
+        currentAttempt = attempt
+    }
+
+    private func clearAttempts() {
+        currentAttempt = nil
+        if ghost != nil { ghostVersion += 1 }
+        ghost = nil; comparison = nil; retryPending = false
+    }
+
+    static func sameSettings(_ a: ShotAttempt, _ b: ShotAttempt) -> Bool {
+        a.aim == b.aim && a.power == b.power && a.tipUp == b.tipUp && a.tipSide == b.tipSide && a.start == b.start
+    }
+
+    private static let logRetry = ProcessInfo.processInfo.arguments.contains("-retryDemo")
 
     // MARK: Aim by touch
 
