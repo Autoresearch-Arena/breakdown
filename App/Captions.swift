@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (jaw and knuckle hits get their own caption: "Off the jaw" or "Clipped the point").
 // PURPOSE: Turns solver events into the plain-language captions and equations the Physics Lens shows. Every
 //          number in a caption is read from the recorded event (pillar one: nothing is drawn that the solver
 //          did not compute). Captions are thinned to the most important event per quarter second so slow motion
@@ -64,6 +65,14 @@ enum CaptionEngine {
                 + "and the rest is lost as heat and sound."
             return Caption(id: id, time: e.time, title: "Energy handed off", detail: detail,
                            equation: "J = (1 + e) · m · v⊥ / 2", accent: .impact, importance: e.normalImpulse)
+        case .cushion where e.edge != .rail:
+            // A pocket jaw or knuckle: the ball reached the mouth and was turned away (or rattled). Worth saying even
+            // when slow, because it is the answer to "why didn't that go in?".
+            let b = e.balls[0]
+            let part = e.edge == .knuckle ? "the point of the pocket" : "the pocket's jaw"
+            return Caption(id: id, time: e.time, title: e.edge == .knuckle ? "Clipped the point" : "Off the jaw",
+                           detail: "\(name(b.ball).capitalizedFirst) catches \(part) at \(f(b.velocityBefore.length)) m/s and is turned away from the hole. A little more to the middle of the pocket and it drops.",
+                           equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse + 0.5)
         case .cushion:
             let b = e.balls[0]
             let vin = b.velocityBefore.length

@@ -45,7 +45,7 @@ final class TableScene {
     init(timeline: Timeline) {
         self.timeline = timeline
         frame = TableFrame(timeline.table)
-        tableGroup = TableBuilder.makeTable(frame: frame, pockets: timeline.table.pockets)
+        tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table)
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
         root.addChild(tableGroup)
         root.addChild(lens.root)

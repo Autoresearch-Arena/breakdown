@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (real pocket mouths: the straight cushions stop at the knuckles,
+//          and two new contact kinds join the cushion rank: a jaw face (a straight segment, contact when the ball's
+//          centre is one radius off it and inside the segment's length) and a knuckle (a point, contact when the centre
+//          is one radius from it, an exact quartic root like every other event). Both reuse Impacts.cushion with
+//          the face's own normal, so a ball that clips the mouth rebounds and can rattle between the jaws.)
 // PURPOSE: The event-driven billiards solver. A shot is a list of closed-form segments per ball (sliding,
 //          rolling, spinning, stationary) plus exact events. The loop repeatedly finds the earliest next
 //          event among: a ball's phase ending, a pocket capture, a cushion hit and a ball-ball contact,
@@ -33,6 +38,16 @@ private struct Wall {
     var ranges: [(Double, Double)]
 }
 
+/// A pocket jaw face as the solver sees it: a segment from the knuckle back into the pocket, and the unit normal
+/// pointing to the side balls are on.
+private struct Jaw {
+    var start: Vec2
+    var direction: Vec2       // unit, from the knuckle into the pocket
+    var length: Double
+    var normal: Vec2          // unit, toward the playing side
+    var pocket: Int
+}
+
 private struct Body {
     var segment: BallSegment
     var closed: [BallSegment] = []
@@ -59,6 +74,9 @@ private struct Simulation {
     var pocketTime: [Double?]
     var now = 0.0
     let walls: [Wall]
+    let jaws: [Jaw]
+    /// The knuckles: the start point of every jaw, where the cushion nose turns into the pocket.
+    let knuckles: [(point: Vec2, pocket: Int)]
     let pockets: [Vec2]
     let captureRadii: [Double]
 
@@ -69,13 +87,29 @@ private struct Simulation {
         captureRadii = P.pocketCaptureRadii
         pocketTime = [Double?](repeating: nil, count: input.positions.count)
         let r = P.ballRadius, L = P.tableLength, W = P.tableWidth
-        let cg = P.cornerGap, sg = P.sideGap
+        // The straight cushion noses run between knuckles. Past a knuckle the ball meets the knuckle or the jaw.
+        let a = P.cornerKnuckleOffset, h = P.sideMouth * 0.5
         walls = [
-            Wall(normal: Vec2(1, 0), offset: r, alongX: false, ranges: [(cg, W - cg)]),
-            Wall(normal: Vec2(-1, 0), offset: -(L - r), alongX: false, ranges: [(cg, W - cg)]),
-            Wall(normal: Vec2(0, 1), offset: r, alongX: true, ranges: [(cg, L * 0.5 - sg), (L * 0.5 + sg, L - cg)]),
-            Wall(normal: Vec2(0, -1), offset: -(W - r), alongX: true, ranges: [(cg, L * 0.5 - sg), (L * 0.5 + sg, L - cg)]),
+            Wall(normal: Vec2(1, 0), offset: r, alongX: false, ranges: [(a, W - a)]),
+            Wall(normal: Vec2(-1, 0), offset: -(L - r), alongX: false, ranges: [(a, W - a)]),
+            Wall(normal: Vec2(0, 1), offset: r, alongX: true, ranges: [(a, L * 0.5 - h), (L * 0.5 + h, L - a)]),
+            Wall(normal: Vec2(0, -1), offset: -(W - r), alongX: true, ranges: [(a, L * 0.5 - h), (L * 0.5 + h, L - a)]),
         ]
+        var jawList: [Jaw] = []
+        for j in P.jaws {
+            let d = j.end - j.start
+            let len = d.length
+            let dir = d * (1 / len)
+            // Of the two perpendiculars, the playing side is the one facing the pocket's mouth centre, which lies
+            // between this knuckle and its partner on the other side of the mouth.
+            let partner = P.jaws.first { $0.pocket == j.pocket && $0.start != j.start }!.start
+            let mid = (j.start + partner) * 0.5
+            var n = dir.perp
+            if n.dot(mid - j.start) < 0 { n = n * -1 }
+            jawList.append(Jaw(start: j.start, direction: dir, length: len, normal: n, pocket: j.pocket))
+        }
+        jaws = jawList
+        knuckles = P.jaws.map { ($0.start, $0.pocket) }
         for p in input.positions {
             bodies.append(Body(segment: Self.makeSegment(P, t0: 0, position: p, velocity: .zero, omega: .zero, orientation: .identity)))
         }
@@ -207,6 +241,39 @@ private struct Simulation {
                     consider(Candidate(time: now + tt, rank: .cushion, a: i, b: w))
                 }
             }
+            // Jaw faces: the same distance-to-a-line test as a cushion, limited to the face's length. Indices follow
+            // the walls, so the tie-break order stays fixed.
+            for (k, jaw) in jaws.enumerated() {
+                let rel = s.position - jaw.start
+                let poly = [jaw.normal.dot(rel) - P.ballRadius, jaw.normal.dot(s.velocity), 0.5 * jaw.normal.dot(a)]
+                var tau: Double?
+                if poly[0] <= 0 {
+                    // Already touching (or a hair inside after rounding): only an approaching ball counts, and only
+                    // if it is really beside the face rather than behind the knuckle.
+                    if poly[1] < 0 { tau = 0 }
+                } else {
+                    tau = RootFinder.firstDownCrossing(poly, limit: window)
+                }
+                guard let tt = tau else { continue }
+                let p = s.position + s.velocity * tt + a * (0.5 * tt * tt)
+                let along = (p - jaw.start).dot(jaw.direction)
+                if along >= 0 && along <= jaw.length && (p - jaw.start).dot(jaw.normal) > -P.ballRadius {
+                    consider(Candidate(time: now + tt, rank: .cushion, a: i, b: walls.count + k))
+                }
+            }
+            // Knuckles: a ball's centre may not come closer than one radius to the point where nose meets jaw.
+            for (k, knuckle) in knuckles.enumerated() {
+                let rel = s.position - knuckle.point
+                let r2 = P.ballRadius * P.ballRadius
+                if rel.lengthSquared <= r2 {
+                    if rel.dot(s.velocity) < 0 { consider(Candidate(time: now, rank: .cushion, a: i, b: walls.count + jaws.count + k)) }
+                    continue
+                }
+                let poly = quarticCoefficients(rel, s.velocity, a * 0.5, minus: r2)
+                if let tau = RootFinder.firstDownCrossing(poly, limit: window) {
+                    consider(Candidate(time: now + tau, rank: .cushion, a: i, b: walls.count + jaws.count + k))
+                }
+            }
         }
         // Ball against ball
         for i in 0..<n where bodies[i].active {
@@ -285,6 +352,8 @@ private struct Simulation {
     }
 
     private mutating func applyCushion(_ i: Int, _ w: Int) {
+        if w >= walls.count + jaws.count { applyKnuckle(i, w - walls.count - jaws.count); return }
+        if w >= walls.count { applyJaw(i, w - walls.count); return }
         let wall = walls[w]
         let before = bodyState(i, at: now)
         var res = Impacts.cushion(before, normal: wall.normal, P)
@@ -296,6 +365,35 @@ private struct Simulation {
                                 normal: wall.normal, normalImpulse: res.normalImpulse,
                                 frictionImpulse: res.frictionImpulse, slipSpeed: res.slipSpeed,
                                 balls: [impactBall(i, before, res.states[0])]))
+    }
+
+    private mutating func applyJaw(_ i: Int, _ k: Int) {
+        let jaw = jaws[k]
+        let before = bodyState(i, at: now)
+        var res = Impacts.cushion(before, normal: jaw.normal, P)
+        // Put the ball exactly one radius off the face so rounding cannot leave it inside the rubber.
+        let pen = P.ballRadius - jaw.normal.dot(res.states[0].position - jaw.start)
+        if pen > 0 { res.states[0].position = res.states[0].position + jaw.normal * pen }
+        restart(i, at: now, with: res.states[0])
+        events.append(LensEvent(time: now, kind: .cushion, point: before.position - jaw.normal * P.ballRadius,
+                                normal: jaw.normal, normalImpulse: res.normalImpulse,
+                                frictionImpulse: res.frictionImpulse, slipSpeed: res.slipSpeed,
+                                balls: [impactBall(i, before, res.states[0])], pocket: jaw.pocket, edge: .jaw))
+    }
+
+    private mutating func applyKnuckle(_ i: Int, _ k: Int) {
+        let knuckle = knuckles[k]
+        let before = bodyState(i, at: now)
+        // The knuckle pushes straight out from its point: the normal is the line from the point to the ball's centre.
+        let n = (before.position - knuckle.point).normalized
+        var res = Impacts.cushion(before, normal: n, P)
+        let dist = (res.states[0].position - knuckle.point).length
+        if dist < P.ballRadius { res.states[0].position = knuckle.point + n * P.ballRadius }
+        restart(i, at: now, with: res.states[0])
+        events.append(LensEvent(time: now, kind: .cushion, point: knuckle.point, normal: n,
+                                normalImpulse: res.normalImpulse, frictionImpulse: res.frictionImpulse,
+                                slipSpeed: res.slipSpeed, balls: [impactBall(i, before, res.states[0])],
+                                pocket: knuckle.pocket, edge: .knuckle))
     }
 
     private mutating func applyBallBall(_ i: Int, _ j: Int) {

@@ -1,20 +1,35 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (TableSpec carries the pocket jaws, so the drawn table and the Lens use the solver's own geometry).
 // PURPOSE: The recorded shot. Holds every ball's segments, the Lens events, the table description, and a
 //          content hash for replay equality. Playback, slow motion, scrubbing, the Lens and sound all read
 //          this and never re-simulate. Doubles are hashed by bit pattern.
 // SRP/DRY check: Pass - storage and lookup only; the solver produces it, nothing else mutates it.
 import BreakdownLensModel
 
+/// One pocket jaw: the straight cushion face that runs from a knuckle (where the cushion nose turns into the pocket)
+/// back into the pocket. `start` is the knuckle on the cushion nose line, `end` is where the face meets the pocket
+/// hole. Table metres. The playing side of the face is the side the pocket's mouth is on.
+public struct JawSpec: Sendable, Equatable {
+    public var pocket: Int
+    public var start: Vec2
+    public var end: Vec2
+    public init(pocket: Int, start: Vec2, end: Vec2) { self.pocket = pocket; self.start = start; self.end = end }
+}
+
 public struct TableSpec: Sendable, Equatable {
     public var length: Double
     public var width: Double
     public var ballRadius: Double
+    /// Centre of each pocket's hole, corners then sides, and the radius a ball's centre must reach to drop.
     public var pockets: [Vec2]
     public var pocketCaptureRadius: [Double]
-    public init(length: Double, width: Double, ballRadius: Double, pockets: [Vec2], pocketCaptureRadius: [Double]) {
+    /// Two jaws per pocket, in pocket order. Empty for tables recorded before pockets had jaws.
+    public var jaws: [JawSpec]
+    public init(length: Double, width: Double, ballRadius: Double, pockets: [Vec2], pocketCaptureRadius: [Double],
+                jaws: [JawSpec] = []) {
         self.length = length; self.width = width; self.ballRadius = ballRadius
-        self.pockets = pockets; self.pocketCaptureRadius = pocketCaptureRadius
+        self.pockets = pockets; self.pocketCaptureRadius = pocketCaptureRadius; self.jaws = jaws
     }
 }
 

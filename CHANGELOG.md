@@ -8,6 +8,16 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.2] - 20-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Real pocket edges. Every pocket now has a mouth between two rounded knuckles where the cushion ends, and two angled jaw faces leading back into the hole. A ball that clips a knuckle or a jaw bounces off it instead of being swallowed, so near misses rattle and spit out the way they do on a real table, and only balls that really get into the throat drop. The table you see is built from exactly the same numbers: the cushions stop at the knuckles, their ends are cut along the jaw lines, and the holes are sized to the drop circles. When a ball is turned away by the pocket, the explanation says "Off the jaw" or "Clipped the point" instead of calling it a cushion.
+- Why: The Boss asked for the pocket edges next. Before this a pocket was only a circle that swallowed anything touching it, so players could not trust what the Lens taught them about a near miss.
+- How: Pocket model version two in the physics package: corner mouths a little under five inches between knuckles with jaws cut at 142 degrees to the cushion, side mouths a little over five inches with jaws at 104 degrees (regulation nine-foot practice), drop circles centred on the cushion lines. Jaw faces are straight contact segments and knuckles are rounded points, both exact events like every other contact and both using the existing cushion impact. Cushion events now say whether they hit the rail, a jaw or a knuckle. The table description carries the jaws, so the drawn table and the Lens read the solver's own geometry; the old hard-coded pocket sizes are gone.
+- Checked: physics tests all pass, including new ones: slow straight balls drop in all six pockets; a ball that clips a corner knuckle hits the knuckle first and stays out; firm off-centre shots rattle between the jaws; a seeded sweep of about three thousand random shots ends with no impossible state (nothing inside rubber, nothing off the table unless dropped, no cushion contact adding energy) and repeats exactly. The opening break still drops balls. iPhone simulator and Mac builds succeed; close-ups of a corner and a side pocket on an iPhone 17 Pro simulator show the jaws leading into the hole.
+- Not checked: a real device; the side pocket looks a little lopsided from the low camera angle; how often real players now see rattles in normal play.
+
 ## [0.5.1] - 20-November-2026
 
 Author: Claude Opus 5.5 High

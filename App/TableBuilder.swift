@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 20-November-2026 (pockets drawn from the solver's own geometry: cushion runs stop at its knuckles with ends cut along its jaw lines, and each hole is the capture circle grown just enough to fill the throat; the hard-coded pocket radii are gone).
 // PURPOSE: Builds the STATIC warm table and everything that sits on it, as one group that fades out when the Lens
 //          melts in: cloth that stops exactly at the cushion noses, cushions with a sloped rounded nose and jaw-cut
 //          ends, a walnut rail frame with a rounded edge and an apron, real pocket wells (a wall that drops below the
@@ -46,11 +47,6 @@ enum TableBuilder {
     /// Rounded top edge of the rail, and the apron that hangs below it.
     nonisolated static let railFillet: Float = 0.016
     nonisolated static let apronBottom: Float = -0.17
-    /// Pocket mouth radii, equal to the solver's CAPTURE radii (a ball whose centre gets this close is taken). The
-    /// cloth hole, the rail opening, the well and the cushion jaws all use them, so a ball captured at the very edge is
-    /// never cut by cloth that is still there. (Before 0.4.1 the mouth was 5 mm smaller than the capture radius.)
-    nonisolated static let cornerPocketRadius: Float = 0.095
-    nonisolated static let sidePocketRadius: Float = 0.08
     nonisolated static let pocketDepth: Float = 0.12
     nonisolated static let floorHeight: Float = -0.80
 
@@ -80,16 +76,40 @@ enum TableBuilder {
     /// Felt, cushions, rails, pocket wells, diamond sights, spots, legs and the room floor, all under one group so the
     /// whole warm table (and the floor it stands on) fades out as the Lens melts in. Nothing here may be added outside
     /// the group, or it would stay visible in the Lens.
-    static func makeTable(frame: TableFrame, pockets: [Vec2]) -> Entity {
+    static func makeTable(frame: TableFrame, table: TableSpec) -> Entity {
         StartupLog.mark("makeTable begin")
         defer { StartupLog.mark("makeTable end") }
         let tableGroup = Entity()
         let L = frame.length, W = frame.width
         let a = L * 0.5, b = W * 0.5
         let c = cushionDepth
-        let cuts: [Outline.Cut] = pockets.enumerated().map { k, p in
-            let w = frame.world(p)
-            return Outline.Cut(center: SIMD2(w.x, w.z), radius: k < 4 ? cornerPocketRadius : sidePocketRadius)
+        // Everything about the pockets comes from the solver's table description (pocket model version 2): the hole
+        // centres, the capture radii and the jaws. Each hole is drawn at least as big as the capture radius (so a ball
+        // that drops is never cut by cloth) and big enough to fill the throat between the two jaws right back to the
+        // rail, so there is no gap between a jaw face and the well.
+        func plan(_ v: Vec2) -> SIMD2<Float> { let w = frame.world(v); return SIMD2(w.x, w.z) }
+        func planDir(_ v: Vec2) -> SIMD2<Float> { let d = frame.direction(v); return simd_normalize(SIMD2(d.x, d.z)) }
+        let cuts: [Outline.Cut] = table.pockets.enumerated().map { k, hole in
+            // The drawn hole sits a little behind the solver's hole centre, out toward the rail, so it bites less into
+            // the playing surface; it stays inside the cloth outline (whose tuck is 14 mm), which the outline code needs,
+            // and it is grown below to still contain the whole capture circle.
+            let solverCentre = plan(hole)
+            let shift: Float = 0.011
+            let out = SIMD2<Float>(k < 4 ? (solverCentre.x < 0 ? -1 : 1) : 0, solverCentre.y < 0 ? -1 : 1)
+            let centre = solverCentre + out * shift
+            var reach = Float(table.pocketCaptureRadius[k]) + simd_length(out * shift)
+            var backs: [SIMD2<Float>] = []
+            for j in table.jaws where j.pocket == k {
+                let start = plan(j.start), dir = planDir(j.end - j.start)
+                // Where the jaw line meets the back of the cushion strip, cushionDepth out from its own nose line.
+                let onLong = abs(abs(start.y) - b) < 1e-4
+                let outward = onLong ? SIMD2<Float>(0, start.y < 0 ? -1 : 1) : SIMD2<Float>(start.x < 0 ? -1 : 1, 0)
+                backs.append(start + dir * (c / max(0.1, simd_dot(dir, outward))))
+            }
+            // For a corner, the corner of the cushion zone between the two jaw backs must be inside the hole too.
+            if k < 4, backs.count == 2 { backs.append(SIMD2(centre.x + (centre.x < 0 ? -c : c), centre.y + (centre.y < 0 ? -c : c))) }
+            for p in backs { reach = max(reach, simd_length(p - centre) + 0.003) }
+            return Outline.Cut(center: centre, radius: reach)
         }
 
         // Materials. The cloth carries its weave in the colour picture and a soft sheen at grazing angles.
@@ -121,20 +141,29 @@ enum TableBuilder {
         let section: [(d: Float, y: Float)] = [(0.014, 0), (0.0020, 0.0265), (0.0, 0.0325), (0.0030, 0.0375), (0.020, 0.0395), (c, 0.040), (c, 0)]
         let sectionSmooth = [false, true, true, true, true, false, false]
         var cushions = MeshBuilder()
-        // Long sides run along x (z = +/-b); short sides along z (x = +/-a). Each run ends on the circle of the pocket
-        // beside it (centre and mouth radius), so the jaw meets the pocket wall exactly.
-        let corner = cornerPocketRadius, side = sidePocketRadius
+        // Long sides run along x (z = +/-b); short sides along z (x = +/-a). Each run stops at the solver's knuckles and
+        // its ends are cut along the solver's jaw lines, so what you see is exactly what the balls bounce off.
+        let jawPlan = table.jaws.map { (knuckle: plan($0.start), direction: planDir($0.end - $0.start)) }
+        /// The jaw whose knuckle is on this nose line (outward distance zero) nearest to `near`.
+        func jaw(onLine origin: SIMD2<Float>, outward: SIMD2<Float>, near: SIMD2<Float>) -> (knuckle: SIMD2<Float>, direction: SIMD2<Float>) {
+            jawPlan.filter { abs(simd_dot($0.knuckle - origin, outward)) < 1e-4 }
+                .min { simd_length($0.knuckle - near) < simd_length($1.knuckle - near) }!
+        }
         for sign: Float in [1, -1] {
-            let cornerL = SIMD2(-a, sign * b), cornerR = SIMD2(a, sign * b), middle = SIMD2(0, sign * b)
-            let longRuns: [((SIMD2<Float>, Float), (SIMD2<Float>, Float))] = [((cornerL, corner), (middle, side)),
-                                                                              ((middle, side), (cornerR, corner))]
-            for (j0, j1) in longRuns {
-                cushions.addSweep(section: section, smooth: sectionSmooth, origin: SIMD2(0, sign * b), along: SIMD2(1, 0),
-                                  outward: SIMD2(0, sign), jaw0: j0, jaw1: j1, uv: clothUV)
+            let origin = SIMD2<Float>(0, sign * b), outward = SIMD2<Float>(0, sign)
+            let cornerL = SIMD2(-a, sign * b), cornerR = SIMD2(a, sign * b)
+            // Each long rail is two runs: corner to side pocket and side pocket to corner. The side pocket's two
+            // knuckles sit either side of the middle, so "nearest to a point just left / right of the middle" picks them.
+            let runs = [(jaw(onLine: origin, outward: outward, near: cornerL), jaw(onLine: origin, outward: outward, near: SIMD2(-0.03, sign * b))),
+                        (jaw(onLine: origin, outward: outward, near: SIMD2(0.03, sign * b)), jaw(onLine: origin, outward: outward, near: cornerR))]
+            for (j0, j1) in runs {
+                cushions.addSweep(section: section, smooth: sectionSmooth, origin: origin, along: SIMD2(1, 0),
+                                  outward: outward, jaw0: j0, jaw1: j1, uv: clothUV)
             }
-            let endNear = SIMD2(sign * a, -b), endFar = SIMD2(sign * a, b)
-            cushions.addSweep(section: section, smooth: sectionSmooth, origin: SIMD2(sign * a, 0), along: SIMD2(0, 1),
-                              outward: SIMD2(sign, 0), jaw0: (endNear, corner), jaw1: (endFar, corner), uv: clothUV)
+            let shortOrigin = SIMD2<Float>(sign * a, 0), shortOut = SIMD2<Float>(sign, 0)
+            cushions.addSweep(section: section, smooth: sectionSmooth, origin: shortOrigin, along: SIMD2(0, 1),
+                              outward: shortOut, jaw0: jaw(onLine: shortOrigin, outward: shortOut, near: SIMD2(sign * a, -b)),
+                              jaw1: jaw(onLine: shortOrigin, outward: shortOut, near: SIMD2(sign * a, b)), uv: clothUV)
         }
         if let e = part(cushions, feltMat, "cushions") { tableGroup.addChild(e) }
 
