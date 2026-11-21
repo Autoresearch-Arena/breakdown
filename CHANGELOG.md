@@ -16,6 +16,7 @@ Author: Claude Opus 5.5 High
 - Why: The Boss asked for ten trick shots including a trick break, the jump and where you strike the ball.
 - How: Each answer was found with the physics solver and kept only if it still works within a measured window of aim, power and spin; the throw, massé and jump were also kept only if they fail without the thing they teach (no side spin or no ball friction; a level cue). The search tool now uses at most three threads (it once took every core of the shared Mac). Trick settings carry the cue elevation as the solver's sine, and the table takes it from the shot.
 - Checked: the iPhone build succeeds. Not checked: anything on a device or simulator (the Boss tests it himself), the Mac build and package tests this round, translations for the four new shots' text (wrapped, awaiting the next translation pass).
+- Also (Claude Opus 5.5 Low): Breakdown now ships itself to TestFlight. Every push to main that changes the app is built on the Mac Mini's own build runner and uploaded; older builds are retired so testers only see the newest, the new one joins the public link's group with its "What to Test" note taken from the newest changelog entry, and Apple's beta review is requested. Pushes that only touch notes or docs do not build. The repo is public, so the build runs only on pushes to main, and outside pull requests need approval before any workflow runs. Files: scripts/testflight.py and .github/workflows/testflight.yml.
 
 ## [0.5.3] - 20-November-2026
 
