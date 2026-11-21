@@ -31,6 +31,8 @@
 //          records it as solvedSurface and load() hands it to CaptionEngine, so setSurface's re-solve re-makes the
 //          captions with the new surface's numbers. Checked for long shots (the Moon runs about six times longer): the
 //          freeze point, the cold open and guided pacing all work from the timeline's own duration and events.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the chosen surface now applies in trick shots too, instead of
+//          silently staying on cloth, which made the Surface menu look broken).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -639,10 +641,10 @@ final class ShowpieceModel {
 
     // MARK: Playing surface (PlaySurface) - added by Claude Opus 5.5 High, 21-November-2026
 
-    /// The surface the solver actually uses now. Trick shots stay on cloth whatever the player chose: every one was
-    /// authored and checked on cloth (its solution only works there), so on ice the answer would miss. Free play, the
-    /// showpiece opening and the demos use the chosen surface.
-    var physicsSurface: PlaySurface { trickModeStorage?.current != nil ? .cloth : surface }
+    /// The surface the solver actually uses now: always the chosen one. Trick shots too: each answer was authored on
+    /// the standard cloth, so on ice or worn felt it may well miss, and seeing why is the point (the Boss found the
+    /// menu looked broken when trick shots silently stayed on cloth, 21-Nov-2026).
+    var physicsSurface: PlaySurface { surface }
 
     /// Where the cold open freezes: the usual point, but never past the end of the break. A surface that stops the
     /// balls quickly (sand) can make the whole break shorter than the usual freeze point, and a clock clamped to the
@@ -667,8 +669,6 @@ final class ShowpieceModel {
         surface = s
         UserDefaults.standard.set(s.rawValue, forKey: PlaySurface.storageKey)
         surfaceVersion += 1
-        // In trick-shot mode the solver stays on cloth, so the shot on screen (and its ghost) are unchanged.
-        guard trickModeStorage?.current == nil else { return }
         if ghost != nil { ghostVersion += 1 }
         ghost = nil; comparison = nil; retryPending = false
         // A still table (a fresh rack, a retry's start, nothing struck yet) is the same on every surface: nothing to
