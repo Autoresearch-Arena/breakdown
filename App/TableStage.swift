@@ -47,6 +47,8 @@ final class SceneBridge {
     var table: TableScene?
     /// Show the guide line from the cue ball while the shot panel is open.
     var showAim = false
+    /// Show the 3D cue (and bridge) at the aim while the shot panel is open, even though the Lens aim line is off.
+    var showCue = false
     /// The measured title and control edges, for the camera.
     var chrome = StageChrome()
     /// The size of the 3D view itself, which the camera frames the table to.
@@ -74,6 +76,8 @@ struct TableStage: View {
     let bridge: SceneBridge
     let leader: LeaderState
     let showAim: Bool
+    /// True while "Your shot" is open: the 3D cue lies at the aim.
+    var showCue = false
     let chrome: StageChrome
 
     var body: some View {
@@ -92,8 +96,10 @@ struct TableStage: View {
             table.subscriptions.append(content.subscribe(to: SceneEvents.Update.self) { event in
                 MainActor.assumeIsolated {
                     model.advance(event.deltaTime)
-                    let aim: AimPreview? = bridge.showAim ? Self.aim(for: model) : nil
-                    table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim,
+                    let preview: AimPreview? = (bridge.showAim || bridge.showCue) ? Self.aim(for: model) : nil
+                    let aim = bridge.showAim ? preview : nil
+                    let cueAim = bridge.showCue ? preview : nil
+                    table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim, cueAim: cueAim,
                                 stroke: Self.stroke(for: model), ride: model.rideActive)
                     table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
@@ -128,6 +134,7 @@ struct TableStage: View {
         }
         #endif
         .onChange(of: showAim, initial: true) { _, new in bridge.showAim = new }
+        .onChange(of: showCue, initial: true) { _, new in bridge.showCue = new }
         .onChange(of: chrome, initial: true) { _, new in bridge.chrome = new }
         // Also here, so a surface change reaches the scene even if the update closure above is not re-run for it.
         .onChange(of: model.physicsSurface) { _, new in bridge.table?.setSurface(new) }

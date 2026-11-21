@@ -49,6 +49,8 @@ final class CueRig {
 
     /// How far behind the cue ball's centre the bridge head stands, metres (the old flat bridge used the same).
     static let bridgeSetback: Float = 0.30
+    /// The least the cue's butt is raised, radians (about 4 degrees): enough to clear the rail behind a ball near it.
+    static let restingPitch: Float = 0.07
     /// Height of the bottom of the bridge's centre notch above the cloth, metres (from the Bridge model's contract).
     static let notchBottom: Float = 0.0215
     /// The cue's radius where it rests in the notch, metres. The notch is 0.05 to 0.25 m from the tip depending on the
@@ -86,14 +88,16 @@ final class CueRig {
     }
 
     private func loadModels() async {
-        if let cue = try? await Entity(named: "Cue", in: Bundle.main) {
+        do {
+            let cue = try await Entity(named: "Cue", in: Bundle.main)
             Self.dress(cue, Self.cueMaterials())
             cueHolder.addChild(cue)
-        }
-        if let bridge = try? await Entity(named: "Bridge", in: Bundle.main) {
+        } catch { NSLog("CueRig: the cue model did not load: %@", String(describing: error)) }
+        do {
+            let bridge = try await Entity(named: "Bridge", in: Bundle.main)
             Self.dress(bridge, Self.bridgeMaterials())
             bridgeHolder.addChild(bridge)
-        }
+        } catch { NSLog("CueRig: the bridge model did not load: %@", String(describing: error)) }
         // TableBuilder.installEnvironment walks the tree once; parts that arrive after it would miss the reflection.
         if let light = lightSource { Self.receiveLight(root, from: light) }
     }
@@ -159,7 +163,8 @@ final class CueRig {
         // The cue's pitch, butt up. Normally the shot's own elevation; on the bridge, whatever makes the axis pass
         // through the contact point and rest in the notch 0.30 m back (never below level, or the butt would dig into
         // the cloth on a follow shot; then the cue simply floats a hair over the notch).
-        var pitch = asin(min(max(elevation, 0), 0.995))
+        // A player always lifts the butt a little to clear the rail, so a level shot still shows a slight rise.
+        var pitch = max(asin(min(max(elevation, 0), 0.995)), Self.restingPitch)
         if bridge {
             let contactHeight = R + tipUp
             let restHeight = Self.notchBottom + Self.cueRadiusAtBridge
@@ -229,7 +234,7 @@ final class CueRig {
 
     private static func bridgeMaterials() -> [String: PhysicallyBasedMaterial] {
         [
-            "BridgeHead": pbr(rgba(0.93, 0.93, 0.95), rough: 0.10, metal: 1),                       // polished chrome
+            "BridgeHead": pbr(rgba(0.90, 0.91, 0.94), rough: 0.30, metal: 0.75),                     // satin chrome: a mirror finish only reflects the dark room
             "BridgeFerrule": brass,
             "BridgeHandle": pbr(rgba(0.80, 0.62, 0.40), rough: 0.40, coat: 0.7, coatRough: 0.15),   // varnished wood
             "BridgeFeet": rubber,

@@ -24,6 +24,7 @@
 //          status label, opens a menu of playing surfaces; picking one re-solves and replays the shot on it).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (each surface in that menu shows a one-line note under its name
 //          saying what its friction and gravity do to the balls, so picking one also explains it).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (starts the opening music, TitleMusic, while the main menu is up and fades it when play starts or Sound is switched off).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
@@ -49,6 +50,7 @@ import SwiftUI
 struct ShowpieceView: View {
     @State private var model = ShowpieceModel()
     @State private var bridge = SceneBridge()
+    @AppStorage(GameSettings.soundKey) private var soundOption = true
     @State private var leader = LeaderState()
     @State private var showShotPanel = false
     /// Real laid-out edges in StageSpace, measured from the views themselves, for the camera (see StageChrome).
@@ -91,6 +93,11 @@ struct ShowpieceView: View {
                 }
             }
             .onChange(of: geo.size) { _, new in model.viewSize = new }
+            // The opening music plays under the main menu once per launch and fades when play starts.
+            .onChange(of: model.menuOpen, initial: true) { _, open in
+                if open { TitleMusic.shared.start() } else { TitleMusic.shared.stop() }
+            }
+            .onChange(of: soundOption) { _, on in if !on { TitleMusic.shared.stop() } }
         }
         .focusedSceneValue(\.showpieceModel, model)
         .focusedSceneValue(\.shotPanelOpen, $showShotPanel)
@@ -109,7 +116,7 @@ struct ShowpieceView: View {
                                  headerBottom: headerBottom, controlsTop: controlsInColumn ? nil : controlsTop)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
-            TableStage(model: model, bridge: bridge, leader: leader, showAim: false, chrome: chrome)
+            TableStage(model: model, bridge: bridge, leader: leader, showAim: false, showCue: showShotPanel, chrome: chrome)
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }

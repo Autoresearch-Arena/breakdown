@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.11] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: The approved opening music, Pool Table Take, plays under the main menu, and the 3D cue and bridge now actually appear while aiming (in 0.5.10 they never showed).
+- Why: The other session delivered the music for this build; and testing 0.5.10 in the simulator showed the cue and bridge were loaded but never placed, because the scene was not told when the shot panel was open.
+- How: TitleMusic plays an unchanged copy of docs/audio/pool-table-take.mp3 once per launch while the menu is up, only with Sound on, never looping, and fades it when the menu closes or Sound is switched off. The shot panel's open state now reaches the scene (SceneBridge.showCue) so CueRig gets the aim. The cue keeps a slight rise so it clears the rail; the bridge head is satin chrome so it no longer reads as black; the Bridge label moved clear of the head.
+- Checked: in the simulator, the Long Bridge Draw shows the cue resting in the bridge notch, Jump the Blocker shows the raised cue and its follow-through, the break shows the cue behind the cue ball, and the music starts on the menu and fades when Free play starts. The iPhone and Mac builds pass, with the music and both models in each app.
+
 ## [0.5.10] - 21-November-2026
 
 Author: Claude Opus 5.5 High

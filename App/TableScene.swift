@@ -125,7 +125,7 @@ final class TableScene {
 
     /// - stroke: how the shot on screen was struck, for the cue's follow-through at the start of the clock.
     /// - ride: true while the Ride camera may fly (ShowpieceModel.rideActive); the follow-through hides then.
-    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?, stroke: CueStroke? = nil, ride: Bool = false) {
+    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?, cueAim: AimPreview? = nil, stroke: CueStroke? = nil, ride: Bool = false) {
         // Test hooks (launch flags): pin the clock and/or the melt so a screenshot shows one exact frame.
         var t = Self.launchValue("-lensDebugTime") ?? rawT
         // -lensDebugTour a,b,c: before settling on the pinned time, visit these clock times, one per frame, forward
@@ -172,7 +172,7 @@ final class TableScene {
         }
 
         lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
-        cueRig.update(aim: aim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
+        cueRig.update(aim: cueAim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
     }
 
     /// Frames the whole table in the measured free space, swings from a low three-quarter view to straight down as the

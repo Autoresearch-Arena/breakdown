@@ -261,7 +261,7 @@ struct AimOverlay: View {
         let side = dir.perp
         let head = origin - dir * 0.30
         let halfWidth = 0.06
-        guard let at = proj.screen(head - side * (halfWidth + 0.03), height: 0.002) else { return }
+        guard let at = proj.screen(head + side * (halfWidth + 0.10), height: 0.002) else { return }
         let label = ctx.resolve(Text("Bridge").font(.caption2.weight(.semibold)).foregroundStyle(Color.white))
         let m = label.measure(in: size)
         let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y - m.height / 2 - 2, width: m.width + 12, height: m.height + 4)
