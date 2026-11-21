@@ -8,17 +8,20 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the mechanical bridge: for a trick shot that needs it, the bridge's
 //          head is drawn on the cloth under the cue a little behind the ball, its notch carrying the cue, with its long
 //          handle running back beside the cue and a small "Bridge" label, so the player sees why the shot is reachable).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the cue stick and the bridge are real 3D models on the table now
+//          (CueRig); this layer no longer strokes a flat cue or draws a flat bridge, and keeps only the small "Bridge"
+//          label beside the bridge head).
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
 //          starts on the cue ball is a pull-back, and how far you pull behind the aim line sets the power, shown live
 //          in the power gauge and as a percentage by the ball; letting go keeps the power. On a Mac the pointer does the
 //          same, and the arrow keys fine-tune: left and right turn the aim a quarter degree (shift: a degree), up and
-//          down change the power, Return takes the shot. (2) Drawing: the cue stick (drawn back as far as the
-//          power), a glowing aim line to the first ball it will hit, the "ghost ball" where the cue ball will be at that
+//          down change the power, Return takes the shot. (2) Drawing: a glowing aim line to the first ball it will hit, the "ghost ball" where the cue ball will be at that
 //          moment, the ball it hits ringed, where that ball and the cue ball will head afterwards, or the line to the
 //          cushion when it misses everything. All of it is drawn in screen space from the live camera, so it also
-//          follows the camera's swing into the Physics Lens.
+//          follows the camera's swing into the Physics Lens. The cue itself (drawn back as far as the power) and the
+//          mechanical bridge are 3D models placed by CueRig; for a bridge shot this layer only labels the bridge.
 //          TEST HOOK: launching with -aimScript <break|shots|scratch> makes the layer drive itself through the same
 //          drag handlers a finger uses (aim drag, pull-back, release, Break or Shoot, second shot, or a shot straight at a
 //          pocket) and log what it did with the prefix AIMSCRIPT, so the flow can be checked and photographed without
@@ -193,21 +196,9 @@ struct AimOverlay: View {
         let reach = contact.map { ($0.ghost - origin).length } ?? (aimGuide ? cushion : min(0.35, cushion))
         let accent = palette.accent, amber = palette.slide, paper = palette.paper
 
-        // The mechanical bridge under the cue, for the trick shots that are out of reach without it. Drawn first so
-        // the cue lies on top of it.
-        if model.trickMode.showsBridge { drawBridge(&ctx, proj, origin: origin, dir: dir, radius: radius, size: size) }
-
-        // The cue stick, behind the ball, pulled back as far as the power says.
-        let gap = radius * 1.7 + model.powerFraction * 0.35
-        if let a = proj.screen(origin - dir * gap), let b = proj.screen(origin - dir * (gap + 0.7)) {
-            var stick = Path(); stick.move(to: a); stick.addLine(to: b)
-            // The far end fades out so the stick never runs off the table onto the floor and under the controls.
-            ctx.stroke(stick, with: .linearGradient(Gradient(colors: [.black.opacity(0.5), .black.opacity(0)]), startPoint: a, endPoint: b),
-                       style: StrokeStyle(lineWidth: 8, lineCap: .round))
-            ctx.stroke(stick, with: .linearGradient(Gradient(colors: [Color(red: 0.93, green: 0.80, blue: 0.58), Color(red: 0.55, green: 0.34, blue: 0.16).opacity(0)]),
-                                                    startPoint: a, endPoint: b),
-                       style: StrokeStyle(lineWidth: 5, lineCap: .round))
-        }
+        // The cue and the mechanical bridge are 3D models (CueRig); for the trick shots that need the bridge, a small
+        // label names it beside its head.
+        if model.trickMode.showsBridge { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
 
         // The aim line: a soft wide halo under a thin bright core, from the ball's edge to where the cue ball stops.
         if let a = proj.screen(origin + dir * radius), let b = proj.screen(origin + dir * reach) {
@@ -263,47 +254,19 @@ struct AimOverlay: View {
         }
     }
 
-    /// The mechanical bridge (the "rest" or "spider"): a flat metal head standing on the cloth across the cue's line,
-    /// with a raised notch in the middle where the cue slides, and a long handle running back from it a little to one
-    /// side of the cue. It stays put while the power pull draws the cue back over it, as a real one does. Table metres:
-    /// the head sits 0.30 m behind the ball and is 0.12 m wide; the handle is 1.1 m long.
-    private func drawBridge(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, dir: Vec2, radius: Double, size: CGSize) {
+    /// A small label so a first-time player knows what the new shape on the cloth is: the mechanical bridge (the
+    /// "rest" or "spider"), whose 3D head CueRig stands 0.30 m behind the cue ball. The label sits on the cloth just
+    /// past the right-hand end of the head (it is 0.12 m wide), where the old flat bridge put it.
+    private func drawBridgeLabel(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, dir: Vec2, size: CGSize) {
         let side = dir.perp
         let head = origin - dir * 0.30
-        let halfWidth = 0.06, depth = 0.025, notch = 0.012
-        // The head's outline: a low plate with a notch rising in the middle, at the height of the cue.
-        let outline: [(Vec2, Float)] = [
-            (head - side * halfWidth, 0.002), (head - side * halfWidth - dir * depth, 0.002),
-            (head + side * halfWidth - dir * depth, 0.002), (head + side * halfWidth, 0.002),
-            (head + side * notch, 0.002), (head + side * notch * 0.5, Float(radius)), (head - side * notch * 0.5, Float(radius)),
-            (head - side * notch, 0.002),
-        ]
-        var plate = Path()
-        for (i, point) in outline.enumerated() {
-            guard let s = proj.screen(point.0, height: point.1) else { return }
-            if i == 0 { plate.move(to: s) } else { plate.addLine(to: s) }
-        }
-        plate.closeSubpath()
-        let metal = Color(red: 0.78, green: 0.80, blue: 0.84)
-        // The handle: from the back of the head, angled a few degrees off the cue so the two never overlap on screen.
-        let handleDir = (dir * 0.995 + side * 0.1).normalized
-        if let a = proj.screen(head - dir * depth + side * 0.02, height: 0.01),
-           let b = proj.screen(head - dir * depth + side * 0.02 - handleDir * 1.1, height: 0.06) {
-            var handle = Path(); handle.move(to: a); handle.addLine(to: b)
-            ctx.stroke(handle, with: .linearGradient(Gradient(colors: [Color(red: 0.36, green: 0.22, blue: 0.12), Color(red: 0.36, green: 0.22, blue: 0.12).opacity(0)]),
-                                                     startPoint: a, endPoint: b),
-                       style: StrokeStyle(lineWidth: 6, lineCap: .round))
-        }
-        ctx.fill(plate, with: .color(metal.opacity(0.92)))
-        ctx.stroke(plate, with: .color(.black.opacity(0.45)), lineWidth: 1)
-        // A small label so a first-time player knows what the new shape is.
-        if let at = proj.screen(head - side * (halfWidth + 0.03), height: 0.002) {
-            let label = ctx.resolve(Text("Bridge").font(.caption2.weight(.semibold)).foregroundStyle(Color.white))
-            let m = label.measure(in: size)
-            let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y - m.height / 2 - 2, width: m.width + 12, height: m.height + 4)
-            ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(.black.opacity(0.55)))
-            ctx.draw(label, at: CGPoint(x: box.midX, y: box.midY))
-        }
+        let halfWidth = 0.06
+        guard let at = proj.screen(head - side * (halfWidth + 0.03), height: 0.002) else { return }
+        let label = ctx.resolve(Text("Bridge").font(.caption2.weight(.semibold)).foregroundStyle(Color.white))
+        let m = label.measure(in: size)
+        let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y - m.height / 2 - 2, width: m.width + 12, height: m.height + 4)
+        ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(.black.opacity(0.55)))
+        ctx.draw(label, at: CGPoint(x: box.midX, y: box.midY))
     }
 
     /// A circle lying on the cloth at the ball's height, as a closed screen path (a squashed oval from a low camera).

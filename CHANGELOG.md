@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.10] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: The cue and the mechanical bridge are real 3D objects on the table: a pro cue (blue tip, ivory ferrule, maple shaft, steel joint, ebony forearm, linen wrap) that pulls back with the power, tilts up for the massé and the jump, and follows through when the shot is played; and a chrome bridge whose notch carries the cue on the Long Bridge Draw.
+- Why: The Boss asked for the cue and bridge in 3D, so the jump and massé show the raised cue and the bridge shot shows the rest it needs.
+- How: Both are modelled in Blender by scripts in Tools/blender (make_cue.py, make_bridge.py) that export geometry-only USDZ files to App/Models and check them on read-back; CueRig.swift loads them, paints them with materials in the table's style and places them from the aim (power, tip offsets, elevation, bridge) and, for the first half second of a replay, from the cue ball's recorded start. The flat 2D stick and bridge in the aim layer are gone; the "Bridge" label stays.
+- Checked: the iPhone and Mac builds pass; both models are in the app bundle.
+
 ## [0.5.9] - 21-November-2026
 
 Author: Claude Opus 5.5 High

@@ -26,6 +26,9 @@
 //          pocket's sink, which would pull it down through the rail.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: the table is built in the chosen surface, and
 //          setSurface swaps only the bed's material on the existing table when it changes, picture drawn in the background).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the 3D cue and bridge: owns a CueRig inside the table group, so it
+//          fades with the table in the Lens, and hands it the aim, the CueStroke of the shot on screen, the clock and
+//          whether Ride is on in apply()).
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -43,6 +46,8 @@ final class TableScene {
     private let camera = TableCamera()
     /// The Ride camera (see ShotCamera): follows the cue ball and the ball it hits during a replay when Ride is on.
     private let shotCamera = ShotCamera()
+    /// The 3D cue and mechanical bridge (see CueRig), a child of the table group.
+    private let cueRig: CueRig
     private var balls: [Entity] = []
     private var bodies: [ModelEntity] = []
     private var markers: [ModelEntity] = []
@@ -66,6 +71,8 @@ final class TableScene {
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table, surface: surface)
         bed = tableGroup.findEntity(named: "felt") as? ModelEntity
+        cueRig = CueRig(lightSource: root)
+        tableGroup.addChild(cueRig.root)
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
         root.addChild(tableGroup)
         root.addChild(lens.root)
@@ -116,7 +123,9 @@ final class TableScene {
 
     // MARK: Per frame
 
-    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?) {
+    /// - stroke: how the shot on screen was struck, for the cue's follow-through at the start of the clock.
+    /// - ride: true while the Ride camera may fly (ShowpieceModel.rideActive); the follow-through hides then.
+    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?, stroke: CueStroke? = nil, ride: Bool = false) {
         // Test hooks (launch flags): pin the clock and/or the melt so a screenshot shows one exact frame.
         var t = Self.launchValue("-lensDebugTime") ?? rawT
         // -lensDebugTour a,b,c: before settling on the pinned time, visit these clock times, one per frame, forward
@@ -163,6 +172,7 @@ final class TableScene {
         }
 
         lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
+        cueRig.update(aim: aim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
     }
 
     /// Frames the whole table in the measured free space, swings from a low three-quarter view to straight down as the

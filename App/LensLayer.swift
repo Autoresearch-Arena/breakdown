@@ -8,6 +8,8 @@
 //          ball slide), with an arrowhead on top showing which way the top of the ball turns, and a flat blue ring on
 //          the cloth with an arrow for side spin (english). Both fade with the amount and are read from the recorded
 //          timeline at the clock, so scrubbing shows the same markers either way.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (AimPreview also carries what the 3D cue needs: whether it may show,
+//          power, elevation, tip offsets and the bridge; the Lens does not read them).
 // PURPOSE: The cold Physics Lens layer. Owns the grid under the Lens, the glowing trails coloured by motion phase,
 //          the impact rings, the velocity arrows and the player's aim line, plus their materials
 //          and their per-frame logic. Anything about how the Lens LOOKS or when its parts appear belongs here.
@@ -56,6 +58,19 @@ struct AimPreview {
     var direction: Vec2
     var length: Double
     var always: Bool
+    // For the 3D cue (CueRig); the Lens itself ignores these. Appended with defaults so existing callers still compile.
+    /// True when the cue may be drawn: the shot on screen has played out and the cue ball is on the table. The aim
+    /// line above keeps showing without it.
+    var showsCue = false
+    /// Power 0 to 1: how far the cue is drawn back.
+    var powerFraction = 0.0
+    /// Sine of the cue's raise above the table (only the massé and the jump use it).
+    var elevation = 0.0
+    /// Tip contact offsets on the cue ball, metres: up is follow, right (as the player sees it) is side spin.
+    var tipUp = 0.0
+    var tipSide = 0.0
+    /// The cue rests on the mechanical bridge.
+    var usesBridge = false
 }
 
 @MainActor

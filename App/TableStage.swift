@@ -15,6 +15,10 @@
 //          Edited: Claude Opus 5.5 High, 20-November-2026 (one line: the camera update also passes whether Ride is on).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: the scene is built on the surface the shot is
 //          solved on, and each update hands it over so the bed changes with it).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the 3D cue: the aim preview also carries power, elevation, tip
+//          offsets, the bridge and whether the cue may show (the old flat cue's rule: the shot has played out and the cue
+//          ball is on the table); each frame also hands the scene the CueStroke of the shot on screen and whether Ride
+//          is on, for the follow-through).
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -89,7 +93,8 @@ struct TableStage: View {
                 MainActor.assumeIsolated {
                     model.advance(event.deltaTime)
                     let aim: AimPreview? = bridge.showAim ? Self.aim(for: model) : nil
-                    table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim)
+                    table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim,
+                                stroke: Self.stroke(for: model), ride: model.rideActive)
                     table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.
@@ -134,13 +139,34 @@ struct TableStage: View {
     }
 
     static func aim(for model: ShowpieceModel) -> AimPreview {
+        var preview: AimPreview
         // After the first shot the guide line follows the aim slider from the cue ball's resting spot.
         if !model.racked, model.layout.count == 16 {
-            return AimPreview(from: model.layout[0], direction: model.shotAimDirection, length: 1.4, always: true)
+            preview = AimPreview(from: model.layout[0], direction: model.shotAimDirection, length: 1.4, always: true)
+        } else {
+            let positions = Rack.positions(parameters: PoolParameters(), seed: UInt64(10 + model.breakSerial + 1))
+            let target = positions[1] + Vec2(0, model.aimOffset)
+            let dir = (target - positions[0]).normalized
+            preview = AimPreview(from: positions[0], direction: dir, length: 1.2, always: true)
         }
-        let positions = Rack.positions(parameters: PoolParameters(), seed: UInt64(10 + model.breakSerial + 1))
-        let target = positions[1] + Vec2(0, model.aimOffset)
-        let dir = (target - positions[0]).normalized
-        return AimPreview(from: positions[0], direction: dir, length: 1.2, always: true)
+        // The 3D cue: shown on the same rule the old flat cue used (the balls on screen are the ones the next shot
+        // starts from, and the cue ball is on the table); the aim line itself keeps showing either way.
+        preview.showsCue = model.aimReady && model.layout.count == 16 && NextShot.isOnTable(model.aimOrigin)
+        preview.powerFraction = model.powerFraction
+        preview.elevation = model.racked ? 0 : model.shotElevation
+        preview.tipUp = model.activeTipUp
+        preview.tipSide = model.activeTipSide
+        preview.usesBridge = model.trickMode.showsBridge
+        return preview
+    }
+
+    /// How the shot on screen was struck, for the cue's follow-through. The player's shots and breaks are recorded as
+    /// attempts with their exact tip offsets; a raise and the bridge only ever belong to a shot (trick shots set them).
+    /// The opening showpiece break has no attempt: a level cue through the centre.
+    static func stroke(for model: ShowpieceModel) -> CueStroke {
+        guard let shot = model.currentAttempt else { return CueStroke() }
+        if shot.isBreak { return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide) }
+        return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide, elevation: model.shotElevation,
+                         usesBridge: model.trickMode.current?.usesBridge == true)
     }
 }
