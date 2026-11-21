@@ -110,7 +110,7 @@ static var startLayout: [Vec2] {
 }
 ```
 
-Put the source of every real dimension (rule book, manufacturer, federation) in a comment next to it.
+State every real dimension plainly in a comment next to it; no sources or names.
 
 ## 5. Props: how to build and name them
 

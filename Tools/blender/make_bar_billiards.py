@@ -13,8 +13,8 @@
 #                                  (55 mm) is above the top of a ball (47.6 mm); top at SKITTLE_H (76 mm).
 #          Swift clones this part three times (two white, one black) into the "pin-<k>" holders and paints each one;
 #          the file carries no materials, cameras or lights.
-#          Sizes: the hobby table page (michaelcross.me.uk/billiards) gives 3 inch (76 mm) wooden mushrooms; the
-#          3-D-printed league-scale table (github.com/AidanJones/pocket_bar_billiards) uses an 80 mm skittle whose cap
+#          Sizes: wooden mushrooms are 3 inch (76 mm); a
+#          league-scale table uses an 80 mm skittle whose cap
 #          rim sits at 74 percent of its height, so a ball passes under the cap. Real turned mushrooms vary by maker.
 #          After export the file is read back with pxr (OpenUSD, shipped inside Blender) and every contract number is
 #          checked; the script exits non-zero if any check fails.

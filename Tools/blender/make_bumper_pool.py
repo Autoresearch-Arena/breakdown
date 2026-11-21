@@ -13,7 +13,7 @@
 #                              ball-centre height of a 2-1/8 in ball, so the drawn contact matches the solved one.
 #            BumperPoolCap   - domed chrome cap; its top is POST_H, the solver's post height.
 #            BumperPoolCupLiner - plastic sleeve, inner radius 2.188 in / 2, outer 2.488 in / 2 (replacement bumper pool
-#                              hole liner sizes, PoolCueMart BPHL / Billiard Evolution), 3/4 in deep, with a lip that
+#                              hole liner sizes), 3/4 in deep, with a lip that
 #                              stands LINER_LIP above the cloth. Its outer radius equals the solver's bed-hole radius.
 #          Geometry only: no materials, cameras or lights; Swift assigns materials by part name. After export the file is
 #          read back with pxr and every contract number is checked; the script exits non-zero if any check fails.

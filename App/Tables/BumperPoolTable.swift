@@ -8,22 +8,13 @@
 //          arm in line with the cups, an open middle just wide enough for a ball). Each side has five balls; the marked
 //          one starts directly in front of the cup at its end, two more either side of that cup, and all five are
 //          played toward the cup at the far end. Only the place to play is built here; scoring comes later.
-//          Sources (no governing body publishes a dimensioned bumper pool table; these are the best published numbers):
-//            - Layout, ball sets and the start: Wikipedia "Bumper pool" (two bumpers flank each pocket, the rest form a
-//              cross in the centre, most tables eight in the cross; 5 red + 5 white, one of each marked; marked ball
-//              directly in front of the pocket); BCA rules via cuesight.com "Rules for Bumper Pool" (spotted cue balls
-//              in front of the scoring holes; opening shot banks off the shooter's right-hand cushion);
-//              gametablesonline.com bumper pool rules (two balls either side of the cup on the marks).
-//            - Playing surface 45.5 x 30 in: Hathaway Renegade 54 in bumper pool table spec (Lowe's, Pool Warehouse
-//              spec sheet); Legacy Billiards Ella lists 45 x 30 in.
-//            - Bumpers: "2 in rubber bumpers", twelve per table (Atomic Classic bumper pool table listing).
-//            - Balls: 2-1/8 in (54 mm) bumper pool balls (Wikipedia "Bumper pool"; Aramith BPSS and Schmelke BB62
-//              sets); mass scaled from a 170 g, 2-1/4 in pool ball by volume (about 143 g).
-//            - Cups: replacement bumper pool hole liners, 2.488 in outside, 2.178 to 2.188 in inside, 3/4 in deep
-//              (PoolCueMart BPHL, Billiard Evolution liners).
-//            - NOT published anywhere we found, so estimated from product photos and named as such below: the cup's
-//              distance from the end cushion, the bumper spacing in the cross and beside the cups, the start spots
-//              and the bumper height.
+//          Facts: two bumpers flank each cup and eight form the centre cross; five red and five white balls, one of each
+//            marked; the marked ball starts directly in front of its cup, two more either side of the cup on the marks;
+//            the opening shot banks off the shooter's right-hand cushion. Playing surface 45.5 x 30 in. Twelve 2 in
+//            rubber bumpers. Balls 2-1/8 in (54 mm), mass scaled from a 170 g, 2-1/4 in pool ball by volume (about
+//            143 g). Cup liners 2.488 in outside, 2.178 to 2.188 in inside, 3/4 in deep.
+//            Estimates (named as such below): the cup's distance from the end cushion, the bumper spacing in the
+//            cross and beside the cups, the start spots and the bumper height.
 //          Props: Tools/blender/make_bumper_pool.py makes App/Models/BumperPool.usdz (one bumper in three parts and one
 //          cup liner, each at its own origin); makeProps clones them onto the solved posts and holes. Plain code-built
 //          posts stand in until the model loads (or if it is missing).
@@ -40,9 +31,9 @@ import RealityKit
 enum BumperPoolTable: TableDefinition {
     private static let inch = 0.0254
 
-    /// Playing surface between the cushion noses: 45.5 x 30 in (Hathaway Renegade 54 in spec sheet).
+    /// Playing surface between the cushion noses: 45.5 x 30 in.
     static let tableSize = (length: 45.5 * inch, width: 30.0 * inch)
-    /// 2-1/8 in bumper pool balls (Wikipedia; Aramith and Schmelke bumper pool sets).
+    /// 2-1/8 in bumper pool balls.
     static let ballRadius = 2.125 * inch / 2
     /// A 2-1/4 in, 170 g pool ball scaled by volume to 2-1/8 in: 170 g * (2.125 / 2.25)^3 = 143 g.
     static let ballMass = 0.143
@@ -51,7 +42,7 @@ enum BumperPoolTable: TableDefinition {
 
     // MARK: Bumpers (posts)
 
-    /// 2 in rubber ring (Atomic listing "2 in rubber bumpers"): the contact radius is the ring's outer radius.
+    /// 2 in rubber ring: the contact radius is the ring's outer radius.
     /// Equal to RING_R in make_bumper_pool.py.
     static let bumperRadius = 1.0 * inch
     /// Top of the chrome cap above the cloth, estimated (about 1.9 in); equal to POST_H in make_bumper_pool.py.
@@ -63,14 +54,14 @@ enum BumperPoolTable: TableDefinition {
 
     /// Middle of the table.
     private static var middle: Vec2 { Vec2(tableSize.length / 2, tableSize.width / 2) }
-    /// Cross arm spacing from the middle (estimated from photos). One arm lies on the cups' line, so a straight
+    /// Cross arm spacing from the middle (estimate). One arm lies on the cups' line, so a straight
     /// shot down the middle meets a bumper; the open middle is reached between neighbouring inner bumpers on the
     /// diagonals, whose rubber is 2 * (0.082 / sqrt 2 - 0.0254) = 65 mm apart against a 54 mm ball ("just large
     /// enough to allow a ball to pass through"). The outer four sit about 4 in further out on each arm.
     private static let crossInner = 0.082
     private static let crossOuter = 0.180
     /// The two bumpers flanking each cup: offset across from the cup's line and a little toward the middle, so they
-    /// guard its mouth but leave room to roll in (estimated from photos).
+    /// guard its mouth but leave room to roll in (estimate).
     private static let guardAcross = 0.075
     private static let guardToward = 0.020
 
@@ -99,9 +90,9 @@ enum BumperPoolTable: TableDefinition {
 
     // MARK: Cups (bed holes)
 
-    /// Cup centre from the end cushion nose, on the table's long centre line (estimated from photos, about 5.5 in).
+    /// Cup centre from the end cushion nose, on the table's long centre line (estimate, about 5.5 in).
     private static let cupInset = 0.140
-    /// The hole cut in the bed: the liner's outside, 2.488 in (PoolCueMart BPHL); equal to LINER_OUTER_R in
+    /// The hole cut in the bed: the liner's outside, 2.488 in; equal to LINER_OUTER_R in
     /// make_bumper_pool.py.
     static let cupRadius = 2.488 * inch / 2
     /// The liner's opening is only 2.188 in for a 2.125 in ball, so the ball has to be nearly centred over the cup
@@ -120,7 +111,7 @@ enum BumperPoolTable: TableDefinition {
     /// Five balls a side, each set racked around the cup at its own end and played toward the far cup:
     ///   near end (x = 0): ball 0 the marked ball (the cue ball) directly in front of cup 0, balls 1 to 4 two either
     ///   side of that cup; far end: ball 9 the marked ball in front of cup 1, balls 10 to 13 either side of it.
-    /// Balls 5 to 8, 14 and 15 are off the table. The spots are estimated from photos (no published measurements).
+    /// Balls 5 to 8, 14 and 15 are off the table. The spots are estimates.
     static var startLayout: [Vec2] {
         var l = [Vec2](repeating: NextShot.offTable, count: 16)
         let L = tableSize.length, midY = tableSize.width / 2

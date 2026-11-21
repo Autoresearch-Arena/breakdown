@@ -6,9 +6,9 @@
 //          numbers from.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (two real cloths either side of the standard one: Tournament cloth,
 //          new clean worsted, and Dive-bar felt, old dirty napped felt with dead cushions. Their numbers are the ends of
-//          the measured ranges Dr. Dave Alciatore lists (drdavepoolinfo.com/?p=2349): sliding friction 0.15 to 0.4,
+//          the measured ranges: sliding friction 0.15 to 0.4,
 //          rolling resistance 0.005 to 0.015, spin deceleration 5 to 15 rad/s squared, ball-rail restitution 0.6 to 0.9;
-//          his cloth-condition notes (drdavepoolinfo.com/?p=2596) say new clean cloth is slick and fast and old dirty
+//          new clean cloth is slick and fast and old dirty
 //          cloth is sticky, so draw wears off sooner, and plays slower. These two are the first surfaces that change the
 //          cushions too, because worn bar tables have dead rails as well as slow cloth.)
 // PURPOSE: The playing surfaces the same physics can be watched on: standard cloth, ice, glass, rubber, cork, carpet,
@@ -118,7 +118,7 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
             // 0.3 grabs the ball, so a skid (and with it draw) is over in two thirds of the standard time; rolling 0.015
             // makes it half again as slow, so the same speed goes two thirds as far; spin dies fast (14). The rubber is
             // old and hard: 0.65 of the speed comes back off a rail instead of 0.85, and the dirty cloth on the nose
-            // grips the ball more (cushion friction 0.22), so side spin takes harder off the rail, as Dr. Dave notes.
+            // grips the ball more (cushion friction 0.22), so side spin takes harder off the rail.
             p.slidingFriction = 0.3
             p.rollingResistance = 0.015
             p.spinDecay = 14.0

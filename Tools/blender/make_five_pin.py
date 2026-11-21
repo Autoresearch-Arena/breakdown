@@ -5,9 +5,9 @@
 #              /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python Tools/blender/make_five_pin.py
 #          Optional extra args after "--": "--preview <png path>" renders a quick look with throwaway materials
 #          (never exported). Deterministic: same code, same file.
-#          Shape: the regulation pin of CEB Rules of the Game B/7 (5 Pins), Article 1001 (edition 01-09-2026): round,
-#          25 mm high, 7 mm across at the base and at the head, 10 mm at the widest part (the belly); the drawing there
-#          (and scheme H of B/8) also shows a 5 mm neck. Heights of the belly, neck and head are read off that drawing.
+#          Shape: the regulation pin: round,
+#          25 mm high, 7 mm across at the base and at the head, 10 mm at the widest part (the belly); it also has a
+#          5 mm neck. Heights of the belly, neck and head are read off the regulation drawing.
 #          Output contract (App/Tables/README.md and App/Tables/FivePinTable.swift):
 #            FivePinPinWhite - one white pin, base centre at the origin on y = 0, standing along +Y, 0.025 m tall.
 #            FivePinPinRed   - the same pin for the red centre pin (same geometry, its own name so Swift paints it red).
@@ -32,7 +32,7 @@ REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 OUT_PATH = os.path.join(REPO, "App", "Models", "FivePin.usdz")
 
 # ---------------------------------------------------------------- contract numbers (metres)
-PIN_HEIGHT = 0.025          # CEB B/7 Art. 1001
+PIN_HEIGHT = 0.025          # regulation height
 BASE_R = 0.0035             # 7 mm base
 BELLY_R = 0.005             # 10 mm at the largest part
 NECK_R = 0.0025             # 5 mm neck (drawing in Art. 1001)
@@ -40,7 +40,7 @@ HEAD_R = 0.0035             # 7 mm head
 BELLY_Y = 0.0058            # heights read off the Art. 1001 drawing (25 mm = full height)
 NECK_Y = 0.0168
 HEAD_Y = 0.0223
-BALL_R = 0.03075            # 61.5 mm carom ball (FIBiS / UMB), for the contact-radius check
+BALL_R = 0.03075            # 61.5 mm carom ball, for the contact-radius check
 SWIFT_CONTACT_R = 0.0024    # the number FivePinTable.swift gives Pin.radius; must match contact_radius()
 SEGMENTS = 28
 PARTS = ("FivePinPinWhite", "FivePinPinRed")

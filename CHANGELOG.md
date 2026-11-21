@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.6.0] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Three new tables in the Surface menu, under Tables: bumper pool (a small table with rubber posts and a cup at each end), five-pin billiards (no pockets, five small pins in the middle that fall when hit) and bar billiards (holes in the bed and pegs that must not fall). Each has its real size, ball size and layout, an opening shot, and props modelled in Blender. Also the Behind the 8-Ball design is in docs.
+- Why: The Boss asked for these games as new tables, built in parallel and shipped as one bundle at version 0.6.
+- How: The solver gained fixed round posts, pins that are knocked down once (with an unequal-mass impulse and a "pin down" event), holes anywhere in the bed, and a no-pockets table; pool-table recordings are unchanged. TableKind picks the table; each table fills its own file in App/Tables; the scene rebuilds the table when it changes, draws bed holes and topples pins as a pure function of the clock; the Lens has captions for post rebounds and falling pins. Trick shots stay on the pool table.
+- Checked: package tests pass; iPhone and Mac builds pass; in the simulator all three tables draw, the five-pin opening knocks over three pins, the bumper-pool shot banks off the posts and the bar-billiards shot drops into a 50 hole.
+
 ## [0.5.13] - 21-November-2026
 
 Author: Claude Opus 5.5 High
@@ -23,7 +32,7 @@ Author: Claude Opus 5.5 High
 
 - What: Two real pool cloths join the Surface menu: Tournament cloth (new worsted cloth in tournament blue, slick and fast, with lively cushions) and Dive-bar felt (old napped felt, faded with a bald break lane and faint chalk, grabby and slow, with dead cushions).
 - Why: The Boss wanted regulation cloth compared with worn bar felt, with the real friction numbers, as groundwork for the Behind the Eight Ball mode.
-- How: Each is a set of PoolParameters at the ends of the measured ranges Dr. Dave Alciatore lists (sliding friction 0.15 and 0.3, rolling resistance 0.005 and 0.015, spin deceleration 5 and 14, cushion restitution 0.9 and 0.65, bar cushion friction 0.22); their pictures are drawn in code; their cushions wear the same cloth as the bed; the strike caption also says how much speed their rails give back. The felt is worn but not damaged: no burns or stains that would look like bumps.
+- How: Each is a set of PoolParameters at the ends of the measured ranges (sliding friction 0.15 and 0.3, rolling resistance 0.005 and 0.015, spin deceleration 5 and 14, cushion restitution 0.9 and 0.65, bar cushion friction 0.22); their pictures are drawn in code; their cushions wear the same cloth as the bed; the strike caption also says how much speed their rails give back. The felt is worn but not damaged: no burns or stains that would look like bumps.
 - Checked: both surfaces seen in the simulator; iPhone and Mac builds pass; the new strings are translated in all eleven languages.
 
 ## [0.5.11] - 21-November-2026

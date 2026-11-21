@@ -3,29 +3,23 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (filled in from the groundwork stub: the regulation carom table with no
 //          pockets, 61.5 mm balls, the five-pin castle at 66 mm, the regulation start, an opening two-cushion shot and
 //          the Blender-made pins.)
-// PURPOSE: Five-pin billiards (Italian "cinque birilli", the CEB/UMB "5 pins" discipline): a carom table with no
+// PURPOSE: Five-pin billiards (Italian "cinque birilli"): a carom table with no
 //          pockets, five small turned pins standing in a cross (the "castle") on the centre spot, four white and the
 //          red one in the middle, two cue balls (white and yellow) and a red object ball. A player strikes their own
 //          ball onto the opponent's ball, which should then topple pins. Only the place to play is built here; the
 //          scoring comes later.
-//          Sources:
-//            - Table: playing surface 2.84 x 1.42 m (plus or minus 5 mm), cushion nose to cushion nose, on a standard
-//              match carom table: UMB World Rules of Carom Billiard (1997) Art. 11, as quoted by Wikipedia
-//              "Five-pin billiards".
-//            - Pins: round, 25 mm high, 7 mm across at the base and at the head, 10 mm at the widest part; four of one
-//              colour and a different-coloured centre pin: CEB Rules of the Game B/7 "5 Pins", Art. 1001 (edition
-//              01-09-2026, eurobillard.org). Four white and one red: UMB 1997 Art. 12 via Wikipedia.
+//          Facts:
+//            - Table: playing surface 2.84 x 1.42 m (plus or minus 5 mm), cushion nose to cushion nose.
+//            - Pins: round, 25 mm high, 7 mm across at the base and at the head, 10 mm at the widest part; four white
+//              and a red centre pin.
 //            - Castle: the red pin on the centre spot, the four white pins 66 mm from it, two along the long string and
-//              two across it ("between two pins there is the space of a ball"): Federation Francaise de Billard,
-//              "Jeu du 5 quilles, regles simplifiees" (ffbillard.com, published by the CEB members' corner), whose
-//              castle drawing gives 66 mm both ways.
-//            - Balls: 61.5 mm, 205 to 220 g (FIBiS 5-birilli technical rules; Wikipedia "Five-pin billiards").
-//              The cue ball is white, the opponent's yellow, the object ball red (CEB B/7 Art. 2004).
+//              two across it (the space of a ball between two pins).
+//            - Balls: 61.5 mm, 205 to 220 g. The cue ball is white, the opponent's yellow, the object ball red.
 //            - Start: the red ball on the "mouche mi-haute" (the spot in the middle of the upper half, three quarters
 //              of the way up), the opponent's yellow on the "mouche haute" 10 cm from the upper short cushion, the
-//              starting player's white placed freely, entirely inside the lower half (CEB B/7 Art. 2004; FFB sheet).
-//            - NOT published anywhere we found, so estimated and named as such below: the pins' mass (from the
-//              Blender model's volume, 1.07 cm3, in turned hardwood or plastic, about 1 g) and their bounce.
+//              starting player's white placed freely, entirely inside the lower half.
+//            - Estimates (named as such below): the pins' mass (from the Blender model's volume, 1.07 cm3, in turned
+//              hardwood or plastic, about 1 g) and their bounce.
 //          Pin contact radius: the solver treats a pin as an upright cylinder of radius r that a ball touches when its
 //          centre is R + r from the pin's axis. A 61.5 mm ball's centre (30.75 mm up) is ABOVE the 25 mm pin, so the
 //          first touch is between the ball's lower surface and the pin's head; worked through the real profile in
@@ -52,11 +46,11 @@ import Foundation
 import RealityKit
 
 enum FivePinTable: TableDefinition {
-    /// Playing surface between the cushion noses: 2.84 x 1.42 m (UMB 1997 Art. 11).
+    /// Playing surface between the cushion noses: 2.84 x 1.42 m.
     static let tableSize = (length: 2.84, width: 1.42)
-    /// 61.5 mm carom balls (FIBiS; Wikipedia "Five-pin billiards").
+    /// 61.5 mm carom balls.
     static let ballRadius = 0.0615 / 2
-    /// 205 to 220 g (FIBiS): the middle of the range.
+    /// 205 to 220 g: the middle of the range.
     static let ballMass = 0.210
     /// A carom table: no pockets, the cushions run every side.
     static let pocketsEnabled = false
@@ -65,7 +59,7 @@ enum FivePinTable: TableDefinition {
 
     // MARK: Pins
 
-    /// 25 mm tall (CEB B/7 Art. 1001); equal to PIN_HEIGHT in make_five_pin.py. A ball whose lowest point is higher
+    /// 25 mm tall; equal to PIN_HEIGHT in make_five_pin.py. A ball whose lowest point is higher
     /// than this passes over.
     static let pinHeight = 0.025
     /// The effective contact radius against a 61.5 mm ball (see the header); equal to SWIFT_CONTACT_R in
@@ -73,7 +67,7 @@ enum FivePinTable: TableDefinition {
     static let pinContactRadius = 0.0024
     /// Estimated: 1.07 cm3 (the model's volume) of turned hardwood or plastic, about 1 g.
     static let pinMass = 0.001
-    /// Centre-to-centre distance from the red pin to each white pin (FFB castle drawing: 66 mm).
+    /// Centre-to-centre distance from the red pin to each white pin: 66 mm.
     static let pinSpacing = 0.066
     /// The red pin is pin 0, on the centre spot; the white pins are 1 to 4.
     static let redPinIndex = 0
@@ -96,12 +90,12 @@ enum FivePinTable: TableDefinition {
     static let opponentBallIndex = 1
     static let redBallIndex = 3
 
-    /// "Mouche mi-haute": the red ball's spot, in the middle of the upper half (CEB B/7 Art. 2004; FFB sheet).
+    /// "Mouche mi-haute": the red ball's spot, in the middle of the upper half.
     static var redSpot: Vec2 { Vec2(tableSize.length * 0.75, tableSize.width / 2) }
-    /// "Mouche haute": the yellow's spot on the long string, 10 cm from the upper short cushion (FFB sheet).
+    /// "Mouche haute": the yellow's spot on the long string, 10 cm from the upper short cushion.
     static var opponentSpot: Vec2 { Vec2(tableSize.length - 0.10, tableSize.width / 2) }
     /// The white is placed freely, wholly inside the lower half: here at the half's edge, 20 cm from the near long
-    /// cushion, where the opening shot below plays from (the FFB sheet draws it about there).
+    /// cushion, where the opening shot below plays from.
     static var cueStart: Vec2 { Vec2(tableSize.length / 2 - 0.04, 0.20) }
 
     /// Sixteen positions, index 0 the cue ball, unused balls at NextShot.offTable.

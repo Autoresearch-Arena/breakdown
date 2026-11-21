@@ -18,27 +18,16 @@
 //          Plan frame (App/Tables/README.md): x along the length from the player's cushion (0) to the far cushion (L),
 //          y across. Bed hole j is pocket 6 + j, in the order of `bedHoles` below. Pin k is "pin-<k>": 0 black, 1 and 2
 //          white.
-//          Sources (no single published full specification exists; positions vary a little between makers):
-//          - Wikipedia, "Bar billiards" (en.wikipedia.org/wiki/Bar_billiards): playing surface about 32 inches (81 cm)
-//            wide; nine holes worth 10 to 200; three pegs, two white either side of the 100 hole and one black in
-//            front of the 200; seven white balls and one red; a white on the D and the red on the spot in front of it.
-//          - Grokipedia, "Bar billiards" (grokipedia.com/page/Bar_billiards), citing the All England Bar Billiards
-//            Association: minimum playing area 78.7 cm by 138.4 to 143.5 cm inside the cushions; balls 1 7/8 inch
-//            (47.6 mm); white skittles level with the 100 hole, 17.8 cm (7 in) from its centre; the black skittle's
-//            back edge 0.6 cm from the 200 hole's front edge.
-//          - Hamilton Billiards, "What is bar billiards" (hamiltonbilliards.com/blog/what-is-bar-billiards): five holes
-//            in a row across the far end scoring 30, 20, 10, 20, 30; a diamond of four nearer the player with the 200
-//            closest to the front, the 50s at the sides and the 100 at the back.
-//          - AidanJones/pocket_bar_billiards (github.com, table.py): a league-scale layout of about 800 x 1420 mm with
-//            47.6 mm balls and hole centres measured from the far cushion (row at 90 mm, 100 at 330, 50s at 520 and
-//            250 mm off centre, 200 at 700; row holes 150 and 300 mm off centre), D centre 300 mm from the front
-//            cushion, red spot 229 mm in front of that. These are the positions used here.
-//          - Masters of Games, bar-billiards spares (mastersofgames.com/cat/pub/bar-billiards.htm): replacement hole
-//            lining rings with a 55 mm inner diameter, the drawn hole size used here.
-//          - Michael Cross's table page (michaelcross.me.uk/billiards): 3 inch wooden mushrooms. The skittle model is
-//            76 mm tall with a 9 mm stalk under a 19.5 mm domed cap that clears the top of a ball.
-//          Estimates (no published figure found): ball mass from a pool ball's phenolic density at 47.6 mm (about
-//          98 g); a turned beech skittle of this shape weighs about 25 g.
+//          Facts: playing area about 80 cm by 138 to 144 cm inside the cushions (this layout: 1.42 x 0.80 m); nine holes
+//          worth 10 to 200, a far row of 30, 20, 10, 20, 30 and a diamond with the 200 nearest the player, the 50s at
+//          the sides and the 100 at the back; balls 1 7/8 inch (47.6 mm), seven white and one red; white skittles level
+//          with the 100 hole, 17.8 cm (7 in) from its centre; the black skittle's back edge 0.6 cm from the 200 hole's
+//          front edge. Hole centres from the far cushion: row at 90 mm, 100 at 330, 50s at 520 and 250 mm off centre,
+//          200 at 700; row holes 150 and 300 mm off centre. D centre 300 mm from the front cushion, red spot 229 mm in
+//          front of that. Hole lining rings 55 mm inside. Skittles 3 inch (76 mm) tall with a 9 mm stalk under a
+//          19.5 mm domed cap that clears the top of a ball. Positions vary a little between makers.
+//          Estimates: ball mass from a pool ball's phenolic density at 47.6 mm (about 98 g); a turned beech skittle of
+//          this shape weighs about 25 g.
 // SRP/DRY check: Pass - this table's data and props only; the solver features (posts, pins, bed holes, pockets off)
 //          live in BreakdownCore, the dispatch in TableKind.swift, shared prop helpers (plainPin, loadModel, dress) in
 //          TableProps.swift, which this file reuses rather than copying.
@@ -49,10 +38,10 @@ import Foundation
 import RealityKit
 
 enum BarBilliardsTable: TableDefinition {
-    /// Playing surface between the cushion noses: 1.42 m by 0.80 m (league layout, AidanJones/pocket_bar_billiards;
-    /// inside the AEBBA minimum of 78.7 cm by 138.4 to 143.5 cm; Wikipedia gives about 81 cm wide).
+    /// Playing surface between the cushion noses: 1.42 m by 0.80 m (league layout,
+    /// inside the minimum of 78.7 cm by 138.4 to 143.5 cm).
     static let tableSize = (length: 1.42, width: 0.80)
-    /// 1 7/8 inch (47.625 mm) balls (AEBBA, via Grokipedia; 47.6 mm in the league-scale model).
+    /// 1 7/8 inch (47.625 mm) balls (47.6 mm in the league-scale layout).
     static let ballRadius: Double = 0.0238125
     /// Estimate: a 57.15 mm, 170 g pool ball's density at 47.625 mm, 0.170 x (47.625 / 57.15)^3.
     static let ballMass: Double = 0.170 * pow(47.625 / 57.15, 3.0)
@@ -63,7 +52,7 @@ enum BarBilliardsTable: TableDefinition {
 
     // MARK: Holes
 
-    /// Drawn hole radius: the 55 mm inner diameter of a hole lining ring (Masters of Games spares).
+    /// Drawn hole radius: the 55 mm inner diameter of a hole lining ring.
     private static let holeRadius = 0.0275
     /// A ball drops once its centre is 22 mm inside the hole's centre: well over the hole, not just touching the rim
     /// (a ball's own radius is 23.8 mm, the hole's 27.5 mm).
@@ -100,7 +89,7 @@ enum BarBilliardsTable: TableDefinition {
     private static let skittleRadius = 0.009
     /// The cap's radius in the model, used to keep the black skittle's cap clear of the 200 hole.
     private static let skittleCapRadius = 0.0195
-    /// 3 inch mushroom (Michael Cross's table page); a ball flying higher than this passes over.
+    /// 3 inch mushroom; a ball flying higher than this passes over.
     private static let skittleHeight = 0.076
     /// Estimate for turned beech of this shape.
     private static let skittleMass = 0.025
@@ -113,7 +102,7 @@ enum BarBilliardsTable: TableDefinition {
         Pin(center: c, radius: skittleRadius, mass: skittleMass, restitution: skittleRestitution, height: skittleHeight)
     }
 
-    /// 0: black, in front of the 200 hole with its back edge 6 mm from the hole's front edge (AEBBA, via Grokipedia).
+    /// 0: black, in front of the 200 hole with its back edge 6 mm from the hole's front edge.
     /// 1 and 2: white, level with the 100 hole, 178 mm (7 in) either side of its centre.
     static let pins: [Pin] = [
         skittle(Vec2(bedHoles[0].center.x - holeRadius - 0.006 - skittleCapRadius, W / 2)),
