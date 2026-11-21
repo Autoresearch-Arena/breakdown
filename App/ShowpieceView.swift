@@ -183,6 +183,9 @@ struct ShowpieceView: View {
             // The main menu, over everything, until the player picks something (and again from the back button).
             if model.menuOpen && menuOnStage { TitleScreen(model: model, onPlay: { showShotPanel = true }) }
         }
+        // With the menu on the other panel of a folding phone nothing covers the table, so the table panel stops
+        // taking touches itself: no aiming, and no tapping the hidden title-row buttons, behind an open menu.
+        .allowsHitTesting(menuOnStage || !model.menuOpen)
         // The menu comes and goes with the system's smooth motion, not a cut.
         .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
     }
