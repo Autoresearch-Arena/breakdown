@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Author: Claude Opus 5.5 High
+Date: 21-November-2026
+PURPOSE: The app's privacy manifest, which the App Store requires. It says Breakdown does no tracking, contacts no
+         tracking domains and collects no data, and declares the two "required reason" system interfaces the app uses:
+         - Saved settings (UserDefaults, through @AppStorage and UserDefaults.standard): sound, haptics, explanations,
+           the aim guide, the chosen surface and table, trick-shot progress and eight-ball best scores. Reason CA92.1:
+           the app reads and writes only its own settings.
+         - System uptime (ProcessInfo.systemUptime in TableCamera and ShotCamera): measures the time between frames to
+           ease the camera and the Ride switch. Reason 35F9.1: elapsed time between events inside the app.
+         It sits in the App folder, which Xcode's synchronized group puts in the app bundle as a resource.
+         Add an entry here in the same change as any code that starts using another required-reason interface (file
+         timestamps, disk space, active keyboards) or that sends anything off the device.
+SRP/DRY check: Pass - the only privacy manifest in the project; the package code uses none of these interfaces.
+-->
+<plist version="1.0">
+<dict>
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>CA92.1</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSPrivacyAccessedAPIType</key>
+			<string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+			<key>NSPrivacyAccessedAPITypeReasons</key>
+			<array>
+				<string>35F9.1</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

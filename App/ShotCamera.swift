@@ -2,6 +2,8 @@
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a chase view of the cue ball for the whole shot, as the Boss asked:
 //          higher and further back, no hand-over to the struck ball, a crane up after the first contact).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (release stream: selfTest also returns what it measured as a RideCheck,
+//          so the app's unit tests assert on the same check the -rideSelfTest flag logs; the check itself is unchanged).
 // PURPOSE: Ride the shot: a chase view of the cue ball. When Ride is on, the camera sits behind and above the cue
 //          ball, looks the way it is travelling and follows it for the whole shot (it never hands over to the ball it
 //          hits). After the first contact it cranes up and back so the rack opening, or the struck ball's run to its
@@ -362,10 +364,17 @@ final class ShotCamera {
     /// backward, then shuffled with unrelated jumps in between, and checks the ride pose is bit-identical each time.
     /// Then steps through the whole shot in 1/240 s steps and records the biggest turn of the look direction and the
     /// biggest jump of the eye per step, the lowest eye height, and whether the view ever pointed up.
-    func selfTest(size: CGSize) {
-        guard let tl = timeline, let frame else { return }
+    /// Returns what it measured (nil before any timeline is loaded), so the unit tests (BreakdownTests/RideCheckTests)
+    /// assert on the same check the launch flag logs.
+    @discardableResult
+    func selfTest(size: CGSize) -> RideCheck? {
+        guard let tl = timeline, let frame else { return nil }
         let free = FramingRect(left: 0, top: 0, right: Double(size.width), bottom: Double(size.height))
-        guard let tracks else { NSLog("RIDE-SELFTEST rideable=no (nothing to ride) -> PASS"); return }
+        guard let tracks else {
+            NSLog("RIDE-SELFTEST rideable=no (nothing to ride) -> PASS")
+            return RideCheck(rideable: false, mismatches: 0, maxTurnPerStep: 0, maxTurnAt: 0, maxEyeStep: 0, minEye: 0,
+                             upward: false, passed: true)
+        }
         func pose(_ t: Double) -> CameraShot {
             Self.ridePose(at: t, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
                           reduceMotion: false)
@@ -400,7 +409,23 @@ final class ShotCamera {
               plan.objectBall.map(String.init) ?? "none", plan.objectBall.flatMap { tl.pocketTime[$0] } != nil ? "yes" : "no",
               plan.riseStart, d, mismatches, maxTurn, maxTurnAt, maxJump, minEye,
               upward ? "YES" : "no", pass ? "PASS" : "FAIL")
+        return RideCheck(rideable: plan.rideable, mismatches: mismatches, maxTurnPerStep: maxTurn, maxTurnAt: maxTurnAt,
+                         maxEyeStep: maxJump, minEye: minEye, upward: upward, passed: pass)
     }
+}
+
+/// What the ride self-test measured (ShotCamera.selfTest): scrub mismatches (must be 0), the biggest turn of the look
+/// direction per 1/240 s step in degrees (must stay under 4), the biggest eye move per step and the lowest eye height
+/// in metres (must stay above two ball radii), whether the view ever pointed up (must not), and the verdict.
+struct RideCheck: Equatable {
+    var rideable: Bool
+    var mismatches: Int
+    var maxTurnPerStep: Float
+    var maxTurnAt: Double
+    var maxEyeStep: Float
+    var minEye: Float
+    var upward: Bool
+    var passed: Bool
 }
 
 // MARK: Heading tracks
