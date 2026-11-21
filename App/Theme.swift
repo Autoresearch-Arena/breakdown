@@ -1,9 +1,15 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 Medium, 18-November-2026 (added the section-title and running-text styles for the title screen).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 5, a decision: the game is always dark. The room
+//          is a dim pool hall with one lamp over the table, the 3D scene is lit for that, and BreakdownApp forces the
+//          dark appearance on the whole window, so the light values the palette carried were never shown. They are
+//          removed rather than kept half-supported: each colour now has its normal and Increase Contrast values only,
+//          and the palette is resolved from the contrast setting alone.)
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
-//          with light, dark and high-contrast values and resolved from the reader's appearance and Increase Contrast
-//          settings, then handed down the view tree through the environment (see PaletteProvider). (2) The font
+//          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
+//          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
+//          Palette). (2) The font
 //          choices: all of them are system text styles, so everything scales with Dynamic Type and Bold Text; there
 //          are no typed-in point sizes. (3) The raw colour triples the 3D scene reads (LensLayer), kept here so the
 //          screen and the scene never drift apart. Text on glass uses the system's primary and secondary styles and is
@@ -46,27 +52,24 @@ enum Theme {
 
 // MARK: - Palette
 
-/// One colour in its four appearances. `dark` and `light` are the normal values; the `High` variants are what the
-/// reader gets when Increase Contrast is on (brighter on dark, darker on light, and a little more saturated).
+/// One colour on the dark ground: its normal value and what the reader gets when Increase Contrast is on (brighter,
+/// and a little more saturated).
 private struct Tone {
     struct RGBA { let r, g, b: Double; let a: Double
         init(_ r: Double, _ g: Double, _ b: Double, _ a: Double = 1) { self.r = r; self.g = g; self.b = b; self.a = a }
     }
-    let dark: RGBA, darkHigh: RGBA, light: RGBA, lightHigh: RGBA
+    let normal: RGBA, high: RGBA
 
-    func resolve(_ scheme: ColorScheme, _ contrast: ColorSchemeContrast) -> Color {
-        let v: RGBA
-        switch (scheme, contrast) {
-        case (.dark, .increased): v = darkHigh
-        case (.dark, _): v = dark
-        case (_, .increased): v = lightHigh
-        default: v = light
-        }
+    func resolve(_ contrast: ColorSchemeContrast) -> Color {
+        let v = contrast == .increased ? high : normal
         return Color(red: v.r, green: v.g, blue: v.b).opacity(v.a)
     }
 }
 
 /// Every hand-drawn colour in the app. Read it with `@Environment(\.palette)`.
+/// The game is always dark, on purpose: it is played in a dim room under one lamp, the 3D table and the Lens are lit and
+/// coloured for a dark surround, and BreakdownApp sets the dark appearance on the window whatever the system uses. So
+/// there are no light-appearance colours here; a light appearance would need the scene relit as well, not just these.
 struct Palette {
     /// Tint for controls and the playhead; the Lens's rolling colour.
     let accent: Color
@@ -91,24 +94,24 @@ struct Palette {
         }
     }
 
-    init(scheme: ColorScheme, contrast: ColorSchemeContrast) {
+    init(contrast: ColorSchemeContrast) {
         typealias C = Tone.RGBA
-        func tone(_ d: C, _ dh: C, _ l: C, _ lh: C) -> Color { Tone(dark: d, darkHigh: dh, light: l, lightHigh: lh).resolve(scheme, contrast) }
-        accent = tone(C(0.30, 0.88, 1.0), C(0.55, 0.95, 1.0), C(0.0, 0.46, 0.60), C(0.0, 0.32, 0.45))
-        slide = tone(C(1.0, 0.62, 0.20), C(1.0, 0.76, 0.42), C(0.78, 0.38, 0.0), C(0.58, 0.26, 0.0))
-        paper = tone(C(0.92, 0.96, 1.0), C(1, 1, 1), C(0.05, 0.07, 0.10), C(0, 0, 0))
-        ground = tone(C(0.02, 0.03, 0.05), C(0, 0, 0), C(0.95, 0.96, 0.98), C(1, 1, 1))
-        track = tone(C(1, 1, 1, 0.18), C(1, 1, 1, 0.38), C(0, 0, 0, 0.14), C(0, 0, 0, 0.35))
-        strike = tone(C(1.0, 0.93, 0.55), C(1.0, 0.97, 0.75), C(0.62, 0.50, 0.0), C(0.45, 0.36, 0.0))
-        impact = tone(C(1.0, 0.85, 0.55), C(1.0, 0.92, 0.72), C(0.70, 0.42, 0.0), C(0.50, 0.30, 0.0))
-        cushion = tone(C(0.55, 0.72, 1.0), C(0.72, 0.84, 1.0), C(0.10, 0.30, 0.80), C(0.05, 0.20, 0.62))
-        friction = tone(C(1.0, 0.62, 0.25), C(1.0, 0.76, 0.45), C(0.78, 0.36, 0.0), C(0.58, 0.25, 0.0))
-        pocket = tone(C(1.0, 0.82, 0.25), C(1.0, 0.90, 0.50), C(0.66, 0.48, 0.0), C(0.48, 0.34, 0.0))
+        func tone(_ n: C, _ h: C) -> Color { Tone(normal: n, high: h).resolve(contrast) }
+        accent = tone(C(0.30, 0.88, 1.0), C(0.55, 0.95, 1.0))
+        slide = tone(C(1.0, 0.62, 0.20), C(1.0, 0.76, 0.42))
+        paper = tone(C(0.92, 0.96, 1.0), C(1, 1, 1))
+        ground = tone(C(0.02, 0.03, 0.05), C(0, 0, 0))
+        track = tone(C(1, 1, 1, 0.18), C(1, 1, 1, 0.38))
+        strike = tone(C(1.0, 0.93, 0.55), C(1.0, 0.97, 0.75))
+        impact = tone(C(1.0, 0.85, 0.55), C(1.0, 0.92, 0.72))
+        cushion = tone(C(0.55, 0.72, 1.0), C(0.72, 0.84, 1.0))
+        friction = tone(C(1.0, 0.62, 0.25), C(1.0, 0.76, 0.45))
+        pocket = tone(C(1.0, 0.82, 0.25), C(1.0, 0.90, 0.50))
     }
 }
 
 private struct PaletteKey: EnvironmentKey {
-    static let defaultValue = Palette(scheme: .dark, contrast: .standard)
+    static let defaultValue = Palette(contrast: .standard)
 }
 
 extension EnvironmentValues {
@@ -118,15 +121,14 @@ extension EnvironmentValues {
     }
 }
 
-/// Resolves the palette from the current appearance and contrast setting and hands it down the environment. Apply
-/// once, at the root of the window. Controls take the accent where it means something (the playhead, a switched-on
+/// Resolves the palette from the contrast setting and hands it down the environment. Apply once, at the root of the
+/// window (always dark, see Palette). Controls take the accent where it means something (the playhead, a switched-on
 /// toggle, sliders, the main action); everything else stays neutral glass.
 struct PaletteProvider: ViewModifier {
-    @Environment(\.colorScheme) private var scheme
     @Environment(\.colorSchemeContrast) private var contrast
 
     func body(content: Content) -> some View {
-        let palette = Palette(scheme: scheme, contrast: contrast)
+        let palette = Palette(contrast: contrast)
         content.environment(\.palette, palette)
     }
 }

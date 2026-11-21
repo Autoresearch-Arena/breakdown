@@ -23,6 +23,9 @@
 //          is on, for the follow-through).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: the scene is built and reloaded with the table kind the
 //          shot was solved on, so it redraws the table when that changes).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan, two hooks: the table takes the pinch, two-finger pan and
+//          double tap of TableZoomGestures; each frame the caption leader is told where the title row ends, so its
+//          on-table label keeps clear of the top controls in the Lens.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -110,6 +113,9 @@ struct TableStage: View {
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.
                     // (Projecting straight into the named space came back offset by twice the top safe-area inset in
                     // the iOS 27.2 simulator, so the shift is done here, where it can be checked.)
+                    // The caption chip keeps below the title row (look plan package 5: Lens labels clear of the top controls).
+                    let top = CGFloat(bridge.chrome.headerBottom ?? 0)
+                    if leader.topClear != top { leader.topClear = top }
                     leader.refresh(model: model) { world in
                         guard let local = projector.project(point: world, to: .local) else { return nil }
                         return CGPoint(x: local.x + bridge.viewOrigin.x, y: local.y + bridge.viewOrigin.y)
@@ -128,6 +134,8 @@ struct TableStage: View {
             bridge.viewSize = $0.size
             bridge.viewOrigin = $0.origin
         }
+        // Pinch to zoom, two fingers to pan, double tap a ball to centre on it (see TableZoom).
+        .modifier(TableZoomGestures(model: model, bridge: bridge))
         #if os(iOS)
         // Test hook: -forceLandscape turns the app sideways at launch so landscape can be checked on a simulator that
         // has no rotate command here. No effect without the flag.

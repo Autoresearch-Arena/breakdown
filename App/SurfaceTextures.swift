@@ -7,16 +7,22 @@
 //          retoned from near-white to a pale blue-grey so the lamp's light no longer washes it out).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the two real cloths: new tournament-blue worsted, and worn dive-bar felt
 //          with a bald break lane and faint chalk smudges; worn, never damaged).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan packages 1, 2 and 5: very faint chalk marks on the standard
+//          cloth and more on the dive-bar felt; a fine nap-and-fibre normal map for the cloth that only shows up close
+//          (clothDetailNormalImage); the floor now reaches the room's walls instead of fading to nothing; soft round
+//          shadow picture (softSpotImage) for the balls' contact shadows, the cue's shadow and the strips where the
+//          cushions meet the bed).
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
-//          nap and faint wear, walnut wood grain with pores, the dark floor that fades to nothing at its edge, the
+//          nap and faint wear, walnut wood grain with pores, the dark floor that runs to the room's walls, the
 //          pocket-wall gradient that makes a well read as deep, and the other playing beds of the Surface menu.
 //          Each function returns a plain CGImage (or nil if the system refuses), built from a byte array and safe to make
 //          on any thread: StartupAssets runs them all in parallel in the background at launch, and TableBuilder turns the
 //          finished pictures into textures. The same code runs on iPhone and Mac. Nothing here
 //          runs per frame. Ball and Lens-grid pictures stay in BallTextures.swift.
-//          Cost note: the cloth is the biggest picture. It is kept at a size that builds in a fraction of a second
-//          even in a debug build, and the weave is drawn into the colour (a separate normal map would need a second
-//          texture scale, which one material cannot give).
+//          Cost note: the cloth colour is kept at a size that builds in a fraction of a second even in a debug build,
+//          and the weave is drawn into the colour. The close-up detail is a separate, larger normal map
+//          (clothDetailNormalImage) that StartupAssets draws on its own background task AFTER the launch pictures, so it
+//          never delays the first frame; the bed simply gains it a moment later.
 // SRP/DRY check: Pass - pictures only. Checked BallTextures (ball faces and Lens grid, different content) and
 //          TableBuilder (which only places the results); no overlap.
 import CoreGraphics
@@ -107,7 +113,12 @@ enum SurfaceTextures {
                 let shade = 1 + 0.035 * (thread - 0.6) + 0.05 * threadTone + 0.05 * grain + 0.22 * nap + 0.16 * wear
                 // Worn patches shift slightly toward a paler, greyer green; fresh cloth is richer.
                 let pale = max(0, wear) * 0.5
-                r.set(x, y, (base.0 + pale * 0.10) * shade, (base.1 + pale * 0.06) * shade, (base.2 + pale * 0.05) * shade)
+                var c: (Float, Float, Float) = ((base.0 + pale * 0.10) * shade, (base.1 + pale * 0.06) * shade, (base.2 + pale * 0.05) * shade)
+                // Very faint chalk marks (look plan package 2): a cloth that has been played on carries a few blue
+                // smudges where cues were chalked over it. Kept to a quarter of the dive-bar felt's strength so it
+                // reads as "used", not "dirty", and only shows up close.
+                c = chalkMarks(c, x, y, w, h, count: 5, strength: 0.09, seed: 211)
+                r.set(x, y, c.0, c.1, c.2)
             }
         }
         return r.image()
@@ -146,7 +157,8 @@ enum SurfaceTextures {
         let chalk: (Float, Float, Float) = (0.20, 0.38, 0.62)
         let fw = Float(w), fh = Float(h)
         // Chalk smudges (centre, radius in pixels), mostly around the head of the table where people break and lean.
-        let smudges: [(x: Float, y: Float, r: Float)] = (0..<9).map { k in
+        // Fourteen of them (look plan package 2: the dive bar gets more wear than the standard cloth).
+        let smudges: [(x: Float, y: Float, r: Float)] = (0..<14).map { k in
             (40 + hash(k, 1, 151) * (fw * 0.5), 30 + hash(k, 2, 151) * (fh - 60), 6 + hash(k, 3, 151) * 14)
         }
         for y in 0..<h {
@@ -191,6 +203,26 @@ enum SurfaceTextures {
     private static func lerp3(_ a: (Float, Float, Float), _ b: (Float, Float, Float), _ t: Float) -> (Float, Float, Float) {
         let k = max(0, min(1, t))
         return (a.0 + (b.0 - a.0) * k, a.1 + (b.1 - a.1) * k, a.2 + (b.2 - a.2) * k)
+    }
+
+    /// Blends faint blue chalk smudges into a cloth colour at pixel (x, y): `count` soft, broken blots spread over the
+    /// picture (repeatable from `seed`), each mixed in at most `strength`. Used by the standard cloth; the dive-bar
+    /// felt draws its own, heavier ones.
+    private static func chalkMarks(_ c: (Float, Float, Float), _ x: Int, _ y: Int, _ w: Int, _ h: Int, count: Int,
+                                   strength: Float, seed: Int) -> (Float, Float, Float) {
+        let chalk: (Float, Float, Float) = (0.22, 0.40, 0.66)
+        var out = c
+        for k in 0..<count {
+            let mx = 30 + hash(k, 1, seed) * Float(w - 60), my = 24 + hash(k, 2, seed) * Float(h - 48)
+            let mr = 5 + hash(k, 3, seed) * 9
+            let dx = Float(x) - mx, dy = Float(y) - my
+            let d = (dx * dx + dy * dy).squareRoot() / mr
+            guard d < 1.4 else { continue }
+            // Broken up by pixel noise so a mark is a dusting, not a painted disc.
+            let dust = 0.5 + 0.5 * hash(x, y, seed + 7)
+            out = lerp3(out, chalk, max(0, 1 - d) * strength * dust)
+        }
+        return out
     }
 
     /// Ice: pale blue-grey with soft cloudy depth, long faint skate scratches, and frost built up along the cushions.
@@ -421,15 +453,20 @@ enum SurfaceTextures {
     // MARK: Floor
 
     /// The room floor, painted with its own light: a warm pool of lamplight under the table, a soft dark shadow of
-    /// the table body in the middle of it, and a fade to fully transparent at the edge so no border shows against the
-    /// dark. It is drawn as finished colour (and shown with an unlit material) so it looks the same however the scene
-    /// lights change. `planeSize` is the square's side in metres; `tableHalf` is half the table's outer length and width.
-    static func roomFloorImage(size s: Int = 512, planeSize: Float = 16, tableHalf: SIMD2<Float>) -> CGImage? {
+    /// the table body in the middle of it, and dark oiled boards that run all the way to the room's walls (look plan
+    /// package 1: the old floor faded to nothing a few metres out, so a low camera saw it end in black). Away from the
+    /// lamp the boards keep a low, even level, the light the walls and ceiling bounce back, and they darken a little
+    /// right against the walls, where that bounce cannot reach. It is drawn as finished colour (and shown with an unlit
+    /// material) so it looks the same however the scene lights change. `planeSize` is the square's side in metres (by
+    /// default the room's floor, TableBuilder.roomFloorSide); `tableHalf` is half the table's outer length and width.
+    static func roomFloorImage(size s: Int = 512, planeSize: Float? = nil, tableHalf: SIMD2<Float>) -> CGImage? {
         var r = Raster(s, s)
+        let side = planeSize ?? TableBuilder.roomFloorSide(tableHalf: tableHalf)
+        let room = TableBuilder.roomHalfExtent(tableHalf: tableHalf)
         for y in 0..<s {
             for x in 0..<s {
                 // World position of this pixel on the floor, in metres from the table's centre.
-                let wx = ((Float(x) + 0.5) / Float(s) - 0.5) * planeSize, wz = ((Float(y) + 0.5) / Float(s) - 0.5) * planeSize
+                let wx = ((Float(x) + 0.5) / Float(s) - 0.5) * side, wz = ((Float(y) + 0.5) / Float(s) - 0.5) * side
                 let dist = (wx * wx + wz * wz).squareRoot()
                 // Pool of light: bright near the middle, falling off smoothly.
                 let pool = exp(-pow(dist / 2.6, 2))
@@ -438,14 +475,75 @@ enum SurfaceTextures {
                 let outside = (ox * ox + oz * oz).squareRoot()
                 let shadowMask = max(0, min(1, 1 - outside / 0.55))
                 let shade = 1 - 0.9 * shadowMask * shadowMask * (3 - 2 * shadowMask)
-                // Dark oiled boards: faint plank lines and grain, lit only where the pool reaches.
+                // Dark oiled boards: faint plank lines and grain.
                 let plank = (Int((wx + 20) / 0.19) % 2 == 0) ? 0.0 : -0.12
                 let grain = (fbm(Float(x) / 60, Float(y) / 3, px: 16, py: 340, octaves: 3, seed: 41) - 0.5) * 0.35
                 let tone = max(0, 1 + Float(plank) + grain)
-                let v = 0.20 * pool * shade * tone
-                let fall = max(0, min(1, (6.2 - dist) / 3.4))
-                let alpha = fall * fall * (3 - 2 * fall)
-                r.set(x, y, v * 1.00 + 0.004, v * 0.74 + 0.004, v * 0.52 + 0.005, alpha)
+                // Bounce light from the walls and ceiling: about a sixth of the pool's peak, so the boards stay
+                // readable to the walls without competing with the lit table.
+                let ambient: Float = 0.032
+                // Within 0.6 m of a wall the floor darkens to a little over half (the corner where wall meets floor).
+                let toWall = max(0, min(room.x - abs(wx), room.y - abs(wz)))
+                let k = min(1, toWall / 0.6)
+                let nearWall = 0.55 + 0.45 * k * k * (3 - 2 * k)
+                let v = (0.20 * pool * shade + ambient * shade) * tone * nearWall
+                r.set(x, y, v * 1.00 + 0.004, v * 0.74 + 0.004, v * 0.52 + 0.005)
+            }
+        }
+        return r.image()
+    }
+
+    // MARK: Close-up cloth detail
+
+    /// A normal map of the cloth's fine surface for the playing bed and the cushions (look plan package 2). The colour
+    /// picture is about three millimetres a pixel, which is a smooth green blur when the Ride camera drops to the
+    /// cloth; this is about 1.2 mm a pixel and carries what a close look at real cloth shows: a fuzz of loose fibre,
+    /// the nap brushed along the table's length, and a speckle of single fibres catching the lamp. From the normal
+    /// overhead view mipmapping averages it back to a flat surface, so the cloth looks exactly as before there.
+    /// Encoded the usual way (x and y of the tilt in red and green around one half, z in blue). Mapped once over the
+    /// bed corner to corner, like the colour picture, so no second texture scale is needed.
+    static func clothDetailNormalImage(width w: Int = 2048, height h: Int = 1024) -> CGImage? {
+        // 1. A height field: fuzz + nap streaks (long along x) + single-fibre speckle.
+        var height = [Float](repeating: 0, count: w * h)
+        for y in 0..<h {
+            for x in 0..<w {
+                let fx = Float(x), fy = Float(y)
+                let fuzz = vnoise(fx / 2.5, fy / 2.5, px: 820, py: 410, seed: 301)
+                let nap = vnoise(fx / 22, fy / 1.6, px: 94, py: 640, seed: 303)
+                let fibre = hash(x, y, 305)
+                height[y * w + x] = 0.45 * fuzz + 0.40 * nap + 0.15 * fibre
+            }
+        }
+        // 2. Normals from the slope. `bump` sets how far the surface tilts; kept low so the cloth gains texture up
+        //    close without looking like a rough carpet.
+        var r = Raster(w, h)
+        let bump: Float = 1.6
+        for y in 0..<h {
+            for x in 0..<w {
+                let xl = height[y * w + max(0, x - 1)], xr = height[y * w + min(w - 1, x + 1)]
+                let yu = height[max(0, y - 1) * w + x], yd = height[min(h - 1, y + 1) * w + x]
+                var n = SIMD3<Float>(-(xr - xl) * bump, -(yd - yu) * bump, 1)
+                n = simd_normalize(n)
+                r.set(x, y, n.x * 0.5 + 0.5, n.y * 0.5 + 0.5, n.z * 0.5 + 0.5)
+            }
+        }
+        return r.image()
+    }
+
+    // MARK: Soft shadows
+
+    /// A soft round shadow: black, fully dark in the middle and fading to nothing at the picture's edge, with a
+    /// squared fall-off so it has no visible rim. Shown with an unlit see-through material under each ball (its contact
+    /// shadow), stretched long under the cue while aiming, and sampled from centre to edge for the soft strips along
+    /// the cushions (where the cushion meets the bed, and where its top folds against the rail).
+    static func softSpotImage(size n: Int = 64) -> CGImage? {
+        var r = Raster(n, n)
+        for y in 0..<n {
+            for x in 0..<n {
+                let dx = (Float(x) + 0.5) / Float(n) * 2 - 1, dy = (Float(y) + 0.5) / Float(n) * 2 - 1
+                let d = min(1, (dx * dx + dy * dy).squareRoot())
+                let a = (1 - d) * (1 - d)
+                r.set(x, y, 0, 0, 0, a)
             }
         }
         return r.image()

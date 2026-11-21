@@ -23,6 +23,10 @@
 //          4 (0.4.0) replaced the window read with measured chrome, added the legend-only-if-needed rule and the motion.
 //          Edited: Claude Opus 5.5 High, 20-November-2026 (Ride the shot: update takes an optional ShotCamera, which may
 //          replace the pose, field of view and near plane for a replay; the HUD anchor now uses the field of view in use).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 3: update takes the hand zoom (TableZoom), applied
+//          to the fitted pose as one more distance multiplier and a look-point offset, before Ride; after each update
+//          the camera reports where its eye is and how many screen points a metre of table spans at the look point,
+//          which TableDetail reads to fade the lamp shade and to pick the ball pictures for small balls).
 // SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame;
 //          the ride camera's own logic is in ShotCamera, this file only applies its answer.
 import CoreGraphics
@@ -67,6 +71,12 @@ final class TableCamera {
         #endif
     }
 
+    /// Where the camera's eye was put by the last update (world metres), for the lamp shade's fade (TableDetail).
+    private(set) var eye = SIMD3<Float>(0, 3, 0)
+    /// Screen points spanned by one metre of table at the camera's look point after the last update: the view height
+    /// over the height the field of view covers at that distance. A ball's on-screen diameter is 2R times this.
+    private(set) var pointsPerMetre: Float = 100
+
     /// Wall-clock moment of the first camera update, for the launch pull-back.
     private var introStart: TimeInterval?
     /// The framing rectangles as last used, and when, for the easing in `update`.
@@ -82,8 +92,9 @@ final class TableCamera {
     /// - clock, duration: the playback clock and the length of the recorded shot, for the push-in and settle.
     /// - request: the measured free space (see FramingRequest); in the view's own coordinates.
     /// - ride: the Ride camera (ShotCamera), which takes over during a replay when Ride is on; nil leaves the camera alone.
+    /// - zoom: the hand zoom (pinch, pan, double tap); applied to the fitted pose, under Ride.
     func update(melt: Double, clock: Double, duration: Double, request q: FramingRequest, frame: TableFrame,
-                ride: ShotCamera? = nil) {
+                ride: ShotCamera? = nil, zoom: TableZoom? = nil) {
         let size = q.size
         let reduce = Self.reduceMotion
         let m = Float(melt)
@@ -130,13 +141,28 @@ final class TableCamera {
         }
         let pose = CameraFraming.pose(size: size, framing: free, yaw: yaw, elevation: elevation, table: table,
                                       fovDegrees: Self.fov, distanceScale: scale)
+        // The hand zoom (TableZoom): closer to, and moved across, the fitted view; the look point stays on the cloth.
+        var position = pose.position, target = pose.target
+        if let zoom {
+            let zoomed = zoom.apply(position: position, target: target,
+                                    tableHalf: SIMD2(frame.length * 0.5, frame.width * 0.5), reduceMotion: reduce)
+            position = zoomed.position
+            target = zoomed.target
+        }
         // Ride the shot: ShotCamera returns this overhead pose untouched unless Ride is on for the replay.
-        let shot = ride?.override(position: pose.position, target: pose.target, fov: Self.fov, free: freeNow, size: size,
+        let shot = ride?.override(position: position, target: target, fov: Self.fov, free: freeNow, size: size,
                                   reduceMotion: reduce)
-            ?? CameraShot(position: pose.position, target: pose.target, fov: Self.fov, near: ShotCamera.overheadNear)
+            ?? CameraShot(position: position, target: target, fov: Self.fov, near: ShotCamera.overheadNear)
         if camera.camera.fieldOfViewInDegrees != shot.fov { camera.camera.fieldOfViewInDegrees = shot.fov }
         if camera.camera.near != shot.near { camera.camera.near = shot.near }
         camera.look(at: shot.target, from: shot.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
+        eye = shot.position
+        // How large the table looks where the camera is looking: where the line of sight meets the cloth (or the look
+        // target itself for a view that does not look down), and the field of view's height at that distance.
+        let sight = simd_normalize(shot.target - shot.position)
+        let reach = sight.y < -1e-3 ? -shot.position.y / sight.y : simd_length(shot.target - shot.position)
+        let span = 2 * tan(shot.fov * .pi / 360) * max(0.05, reach)
+        pointsPerMetre = Float(size.height) / span
         if Self.frameDebug { logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation) }
     }
 

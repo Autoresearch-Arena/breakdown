@@ -3,6 +3,10 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (playing beds for the Surface menu: each surface's picture is drawn
 //          only when it is chosen, in the background, and kept; the surface saved from last time is started with the
 //          launch pictures so a table that opens on ice does not wait for it).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan: two pictures that the first frame does not need, the
+//          cloth's close-up normal map and the sixteen high-contrast "compact" ball pictures, are drawn on a second
+//          background pass that starts only after the launch pictures are finished, so they add nothing to launch time;
+//          the table asks for them with async calls and puts them on when they arrive).
 // PURPOSE: Makes every generated picture the table needs (cloth, wood, floor, pocket wall, sixteen ball faces, the
 //          Lens grid, and the lamp-and-room reflection) on background threads, all at once, starting the moment the app
 //          launches, so the main thread no longer spends a second or two in a debug build drawing pixels before the
@@ -68,6 +72,10 @@ final class StartupAssets: @unchecked Sendable {
     /// Playing-bed pictures for surfaces other than cloth, kept once drawn (the cloth is `cloth` above).
     private var beds: [PlaySurface: CGImage] = [:]
     private var environmentTask: Task<EnvironmentResource?, Never>?
+    /// The second pass (see the header): finished when `later` is left. Written under `lock` like everything else.
+    private let later = DispatchGroup()
+    private var clothDetail: CGImage?
+    private var compactBalls = [CGImage?](repeating: nil, count: 16)
 
     private func locked<T>(_ body: () -> T) -> T { lock.lock(); defer { lock.unlock() }; return body() }
 
@@ -108,11 +116,46 @@ final class StartupAssets: @unchecked Sendable {
         let all = jobs
 
         done.enter()
+        later.enter()
         DispatchQueue.global(qos: .userInitiated).async {
             DispatchQueue.concurrentPerform(iterations: all.count) { all[$0]() }
             StartupLog.mark("prewarm pictures finished")
             self.done.leave()
+            // The second pass, at a lower priority, once the launch pictures are in: nothing waits on it to start.
+            DispatchQueue.global(qos: .utility).async {
+                var second: [@Sendable () -> Void] = [
+                    { let v = SurfaceTextures.clothDetailNormalImage(); self.locked { self.clothDetail = v } },
+                ]
+                for n in 0..<16 { second.append { let v = BallTextures.ballImage(number: n, compact: true); self.locked { self.compactBalls[n] = v } } }
+                let jobs = second
+                DispatchQueue.concurrentPerform(iterations: jobs.count) { jobs[$0]() }
+                StartupLog.mark("second-pass pictures finished")
+                self.later.leave()
+            }
         }
+    }
+
+    /// Waits (without blocking the main thread) until the second pass is finished.
+    @MainActor private func laterReady() async {
+        prewarm()
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in
+            later.notify(queue: .main) { c.resume() }
+        }
+    }
+
+    /// The cloth's close-up normal map (SurfaceTextures.clothDetailNormalImage), once the second pass has drawn it.
+    @MainActor func clothDetailNormal() async -> CGImage? {
+        await laterReady()
+        return locked { clothDetail }
+    }
+
+    /// The same picture, only if it is already drawn (nil otherwise); for building a material without waiting.
+    @MainActor func clothDetailNormalIfReady() -> CGImage? { locked { clothDetail } }
+
+    /// The sixteen high-contrast ball pictures for balls that are small on screen, once the second pass has drawn them.
+    @MainActor func compactBallImages() async -> [CGImage?] {
+        await laterReady()
+        return locked { compactBalls }
     }
 
     /// Blocks until the background jobs are finished (instant when they already are). If `prewarm()` was never called,
@@ -181,8 +224,9 @@ final class StartupAssets: @unchecked Sendable {
     }
 
     /// Turns a finished picture into a RealityKit texture with mipmaps (so distant balls and cloth do not shimmer).
-    @MainActor static func texture(_ image: CGImage?) -> TextureResource? {
+    /// `semantic` is .color for pictures and .normal for a normal map (read as directions, not colours).
+    @MainActor static func texture(_ image: CGImage?, semantic: TextureResource.Semantic = .color) -> TextureResource? {
         guard let image else { return nil }
-        return try? TextureResource(image: image, options: .init(semantic: .color, mipmapsMode: .allocateAndGenerateAll))
+        return try? TextureResource(image: image, options: .init(semantic: semantic, mipmapsMode: .allocateAndGenerateAll))
     }
 }

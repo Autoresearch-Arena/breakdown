@@ -21,6 +21,10 @@
 //          PlayTableLayer); the arrow keys move it a ball radius in the direction they point on screen and Return
 //          puts it down; the aim drawing steps aside meanwhile. The retry test log reads the model's RetryComparison.
 //          The spoken route for placement is the ball-in-hand card (FreePlayViews), not this layer's Aim element.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan, small hooks: the aim line fades out as it reaches the first
+//          ball it will hit instead of running on (with the guide off, too, it now stops at that ball); the target-ball
+//          badge (TargetBallBadge) sits in this layer; the table's pinch, two-finger pan and double tap
+//          (TableZoomGestures) work through it, and a one-finger aim drag is ignored while a pinch or pan is on.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -79,10 +83,12 @@ struct AimOverlay: View {
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(dragGesture)
+                .modifier(TableZoomGestures(model: model, bridge: bridge))
             TimelineView(.animation) { _ in
                 Canvas { ctx, size in draw(&ctx, size: size) }
             }
             .allowsHitTesting(false)
+            TargetBallBadge(model: model, bridge: bridge)
         }
         .ignoresSafeArea()
         .onGeometryChange(for: CGSize.self) { $0.size } action: { viewSize = $0 }
@@ -145,6 +151,8 @@ struct AimOverlay: View {
         }
         // Touching the table while the last shot is still playing takes over: jump to where the balls came to rest.
         if !model.aimReady { model.skipToResult() }
+        // Two fingers on the table are zooming or panning it (TableZoomGestures), not aiming.
+        if bridge.table?.zoom.isGesturing == true { return }
         guard model.layout.count == 16, let proj = projector(size: viewSize) else { return }
         if mode == nil {
             // Decided once, at the first touch: on the cue ball is a pull, anywhere else is aiming.
@@ -242,10 +250,13 @@ struct AimOverlay: View {
         let dir = AimGeometry.launchDirection(for: model)
         guard dir.lengthSquared > 0.5, let cueScreen = proj.screen(origin) else { return }
 
-        // Without the guide: no contact prediction, and the line stops a short way out instead of at the first ball.
-        let contact = aimGuide ? AimGeometry.firstContact(layout: model.layout, from: origin, direction: dir, radius: radius) : nil
+        // Without the guide: no contact prediction drawn, and the line stops a short way out; it still never runs on
+        // through the first ball in its way (it fades out there, look plan package 5).
+        let firstHit = AimGeometry.firstContact(layout: model.layout, from: origin, direction: dir, radius: radius)
+        let contact = aimGuide ? firstHit : nil
         let cushion = AimGeometry.cushionDistance(from: origin, direction: dir, table: table)
-        let reach = contact.map { ($0.ghost - origin).length } ?? (aimGuide ? cushion : min(0.35, cushion))
+        let toHit = firstHit.map { ($0.ghost - origin).length }
+        let reach = aimGuide ? (toHit ?? cushion) : min(0.35, cushion, toHit ?? .greatestFiniteMagnitude)
         let accent = palette.accent, amber = palette.slide, paper = palette.paper
 
         // The cue and the mechanical bridge are 3D models (CueRig); for the trick shots that need the bridge, a small
@@ -253,10 +264,18 @@ struct AimOverlay: View {
         if model.showsBridge { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
 
         // The aim line: a soft wide halo under a thin bright core, from the ball's edge to where the cue ball stops.
+        // When that is a ball, the last third of the line fades out into the contact, so the line reads as ending
+        // there rather than running on; a line that ends at the cushion or a short way out stays solid.
         if let a = proj.screen(origin + dir * radius), let b = proj.screen(origin + dir * reach) {
             var line = Path(); line.move(to: a); line.addLine(to: b)
-            ctx.stroke(line, with: .color(accent.opacity(0.28)), style: StrokeStyle(lineWidth: 9, lineCap: .round))
-            ctx.stroke(line, with: .color(paper.opacity(0.95)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+            let fades = toHit.map { reach >= $0 - 1e-6 } ?? false
+            func shade(_ c: Color, _ o: Double) -> GraphicsContext.Shading {
+                fades ? .linearGradient(Gradient(stops: [.init(color: c.opacity(o), location: 0), .init(color: c.opacity(o), location: 0.66),
+                                                          .init(color: c.opacity(o * 0.12), location: 1)]), startPoint: a, endPoint: b)
+                      : .color(c.opacity(o))
+            }
+            ctx.stroke(line, with: shade(accent, 0.28), style: StrokeStyle(lineWidth: 9, lineCap: .round))
+            ctx.stroke(line, with: shade(paper, 0.95), style: StrokeStyle(lineWidth: 2, lineCap: .round))
         }
 
         if let hit = contact {

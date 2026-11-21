@@ -7,6 +7,15 @@
 //          with no edge pockets (no jaws) each cushion runs its whole side with mitred corners and no wells or cuts are
 //          made; holes in the bed (TableSpec.bedHoles) are bitten out of the cloth and get a well wall and a black floor
 //          like a pocket's. Posts, pins and every other prop are the table kind's own (App/Tables), added by TableScene.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan packages 1, 2 and 5: the room round the table, the lamp
+//          shade and the props (TableRoom.swift, called from makeTable, which replaces the old fading floor); moulded
+//          pocket liners from Blender in every pocket (TableRoom.addPocketLiners, placed on the same cut circles, now
+//          worked out by pocketCuts so TableScene can drop a pocketed ball into the right hole); a rounder cushion nose
+//          whose top profile is read from the one section; a soft contact shadow where each cushion meets the bed in
+//          place of the dark seam, and a soft fold shadow along the cushion top against the rail; the cloth's close-up
+//          normal map on the bed and cushions (bedMaterial, when the picture is ready); a crisper ball coat and the ball
+//          material shared with the small-on-screen pictures (ballMaterial); the reflection picture redrawn from the
+//          room as it now is. makeTable takes the scene's light source so models that load later still reflect it.)
 // PURPOSE: Builds the STATIC warm table and everything that sits on it, as one group that fades out when the Lens
 //          melts in: cloth that stops exactly at the cushion noses, cushions with a sloped rounded nose and jaw-cut
 //          ends, a walnut rail frame with a rounded edge and an apron, real pocket wells (a wall that drops below the
@@ -79,25 +88,18 @@ enum TableBuilder {
 
     // MARK: Table
 
-    /// Felt, cushions, rails, pocket wells, diamond sights, spots, legs and the room floor, all under one group so the
-    /// whole warm table (and the floor it stands on) fades out as the Lens melts in. Nothing here may be added outside
-    /// the group, or it would stay visible in the Lens.
-    /// - surface: the playing surface the bed is drawn in (see PlaySurfaceLook). The bed is the entity named
-    ///   "felt", which TableScene looks up to swap its material when the surface changes.
-    static func makeTable(frame: TableFrame, table: TableSpec, surface: PlaySurface = .cloth) -> Entity {
-        StartupLog.mark("makeTable begin")
-        defer { StartupLog.mark("makeTable end") }
-        let tableGroup = Entity()
-        let L = frame.length, W = frame.width
-        let a = L * 0.5, b = W * 0.5
+    /// The circle each edge pocket's hole is drawn with, in plan (world x, world z), one per TableSpec pocket.
+    /// Everything about the pockets comes from the solver's table description (pocket model version 2): the hole
+    /// centres, the capture radii and the jaws. Each hole is drawn at least as big as the capture radius (so a ball
+    /// that drops is never cut by cloth) and big enough to fill the throat between the two jaws right back to the
+    /// rail, so there is no gap between a jaw face and the well. Used for the cloth, the rail opening, the wells, the
+    /// moulded liners, and by TableScene to drop a pocketed ball into the middle of its hole.
+    static func pocketCuts(frame: TableFrame, table: TableSpec) -> [Outline.Cut] {
+        let b = frame.width * 0.5
         let c = cushionDepth
-        // Everything about the pockets comes from the solver's table description (pocket model version 2): the hole
-        // centres, the capture radii and the jaws. Each hole is drawn at least as big as the capture radius (so a ball
-        // that drops is never cut by cloth) and big enough to fill the throat between the two jaws right back to the
-        // rail, so there is no gap between a jaw face and the well.
         func plan(_ v: Vec2) -> SIMD2<Float> { let w = frame.world(v); return SIMD2(w.x, w.z) }
         func planDir(_ v: Vec2) -> SIMD2<Float> { let d = frame.direction(v); return simd_normalize(SIMD2(d.x, d.z)) }
-        let cuts: [Outline.Cut] = table.pockets.enumerated().map { k, hole in
+        return table.pockets.enumerated().map { k, hole in
             // The drawn hole sits a little behind the solver's hole centre, out toward the rail, so it bites less into
             // the playing surface; it stays inside the cloth outline (whose tuck is 14 mm), which the outline code needs,
             // and it is grown below to still contain the whole capture circle.
@@ -119,6 +121,41 @@ enum TableBuilder {
             for p in backs { reach = max(reach, simd_length(p - centre) + 0.003) }
             return Outline.Cut(center: centre, radius: reach)
         }
+    }
+
+    /// The cushion's cross-section, (distance outward from the playing edge, height), closed round from the cloth under
+    /// the nose, up the nose, across the top to the rail and down. The nose is a near-round bull-nose (look plan package
+    /// 2: the old three-point nose read as a sharp ridge up close): points on a curve of about 6 mm radius either side
+    /// of the playing edge at (0, 32.5 mm), where the solver's cushion contact is. The top then runs nearly flat to the
+    /// rail at 40 mm.
+    private static let cushionSection: [(d: Float, y: Float)] = [
+        (0.014, 0), (0.0042, 0.0222), (0.0013, 0.0276), (0.0, 0.0325), (0.0012, 0.0362), (0.0045, 0.0386),
+        (0.010, 0.0397), (0.020, 0.0400), (cushionDepth, 0.0400), (cushionDepth, 0),
+    ]
+    /// Which section points get smooth (shared) normals: all of the nose and top, not the corners at the back.
+    private static let cushionSmooth = [false, true, true, true, true, true, true, true, false, false]
+    /// The rising part of the section, from the nose (d = 0) back to the rail: what a well wall must meet.
+    private static var cushionTopProfile: [(d: Float, y: Float)] {
+        cushionSection.filter { $0.y >= 0.0325 }.sorted { $0.d < $1.d }
+    }
+
+    /// Felt, cushions, rails, pocket wells, diamond sights, spots, legs and the room (floor, walls, lamp, props), all
+    /// under one group so the whole warm table and the room it stands in fade out as the Lens melts in. Nothing here
+    /// may be added outside the group, or it would stay visible in the Lens.
+    /// - surface: the playing surface the bed is drawn in (see PlaySurfaceLook). The bed is the entity named
+    ///   "felt", which TableScene looks up to swap its material when the surface changes.
+    /// - lightSource: the scene root carrying the lamp reflection, so the models that load after the table is built
+    ///   (pocket liners, lamp shade, props) still reflect it; nil when there is none yet.
+    static func makeTable(frame: TableFrame, table: TableSpec, surface: PlaySurface = .cloth, lightSource: Entity? = nil) -> Entity {
+        StartupLog.mark("makeTable begin")
+        defer { StartupLog.mark("makeTable end") }
+        let tableGroup = Entity()
+        let L = frame.length, W = frame.width
+        let a = L * 0.5, b = W * 0.5
+        let c = cushionDepth
+        func plan(_ v: Vec2) -> SIMD2<Float> { let w = frame.world(v); return SIMD2(w.x, w.z) }
+        func planDir(_ v: Vec2) -> SIMD2<Float> { let d = frame.direction(v); return simd_normalize(SIMD2(d.x, d.z)) }
+        let cuts = pocketCuts(frame: frame, table: table)
 
         // Materials. The cloth carries its weave in the colour picture and a soft sheen at grazing angles. The cushions
         // always wear the cloth: a cushion is the rail's rubber wrapped in cloth, whatever the bed is made of. Only the
@@ -156,10 +193,44 @@ enum TableBuilder {
         felt.addFlat(feltOutline, y: 0, normal: SIMD3(0, 1, 0)) { p, _ in SIMD2(p.x / L + 0.5, p.y / W + 0.5) }
         if let e = part(felt, bedMat, "felt") { tableGroup.addChild(e) }
 
-        // 2. Cushions: a sloped, rounded nose swept along each run between pockets, with the end cut toward the pocket.
-        let section: [(d: Float, y: Float)] = [(0.014, 0), (0.0020, 0.0265), (0.0, 0.0325), (0.0030, 0.0375), (0.020, 0.0395), (c, 0.040), (c, 0)]
-        let sectionSmooth = [false, true, true, true, true, false, false]
+        // 2. Cushions: a rounded bull-nose swept along each run between pockets, with the end cut toward the pocket.
+        //    Each run also lays two soft shadows (look plan package 2): one on the bed along the cushion's foot, where
+        //    the nose overhangs the cloth (it used to show as a hard dark seam), and one along the back of the cushion
+        //    top, where the cloth folds down against the wooden rail, so the cushion top reads as its own cloth with an
+        //    edge. Both are see-through black (the soft spot picture), so they work over any bed or cushion cloth.
         var cushions = MeshBuilder()
+        var shades = MeshBuilder()
+        /// One cushion run: the swept cushion, then its two shadow strips. A strip's ends follow the jaw lines (the
+        /// same lean as the cushion's cut ends), so they never reach over a pocket hole.
+        func cushionRun(origin: SIMD2<Float>, along: SIMD2<Float>, outward: SIMD2<Float>,
+                        _ j0: (knuckle: SIMD2<Float>, direction: SIMD2<Float>), _ j1: (knuckle: SIMD2<Float>, direction: SIMD2<Float>)) {
+            cushions.addSweep(section: cushionSection, smooth: cushionSmooth, origin: origin, along: along, outward: outward,
+                              jaw0: j0, jaw1: j1, uv: clothUV)
+            /// Distance along the run where the jaw line of `j` is `d` out from the nose line.
+            func endAlong(_ j: (knuckle: SIMD2<Float>, direction: SIMD2<Float>), _ d: Float) -> Float {
+                simd_dot(j.knuckle - origin, along) + simd_dot(j.direction, along) * d / max(1e-4, simd_dot(j.direction, outward))
+            }
+            /// A flat strip at height y, darkest along outward distance d0 and clear along d1; along the run it spans
+            /// s0 to s1 on the d0 edge and t0 to t1 on the d1 edge.
+            func strip(_ d0: Float, _ d1: Float, y: Float, s0: Float, s1: Float, t0: Float, t1: Float) {
+                let n = SIMD3<Float>(0, 1, 0)
+                func p(_ s: Float, _ d: Float) -> SIMD3<Float> { let q = origin + along * s + outward * d; return SIMD3(q.x, y, q.y) }
+                // The soft spot picture is sampled from its centre (darkest) out to its edge (clear) down the middle
+                // column. A round picture is used on purpose: whichever way the system orients texture rows, the centre
+                // stays the centre and the edge stays the edge, so the shadow can never come out reversed.
+                let dark = SIMD2<Float>(0.5, 0.5), clear = SIMD2<Float>(0.5, 1.0)
+                let v0 = shades.vertex(p(s0, d0), n, dark), v1 = shades.vertex(p(s1, d0), n, dark)
+                let v2 = shades.vertex(p(t1, d1), n, clear), v3 = shades.vertex(p(t0, d1), n, clear)
+                shades.quad(v0, v1, v2, v3)
+            }
+            // Contact shadow on the bed: darkest 12 mm under the nose (where the cushion's foot meets the cloth), clear
+            // 30 mm out into the bed. Stopped 2 cm short of each knuckle, where the bed is cut away for the pocket.
+            let s0 = simd_dot(j0.knuckle - origin, along) + 0.02, s1 = simd_dot(j1.knuckle - origin, along) - 0.02
+            if s1 > s0 { strip(0.012, -0.030, y: 0.0006, s0: s0, s1: s1, t0: s0, t1: s1) }
+            // Fold shadow on the cushion top: darkest at the rail (d = cushionDepth), clear 15 mm in, just above the top.
+            let foldIn: Float = c - 0.015
+            strip(c, foldIn, y: 0.0403, s0: endAlong(j0, c), s1: endAlong(j1, c), t0: endAlong(j0, foldIn), t1: endAlong(j1, foldIn))
+        }
         // Long sides run along x (z = +/-b); short sides along z (x = +/-a). Each run stops at the solver's knuckles and
         // its ends are cut along the solver's jaw lines, so what you see is exactly what the balls bounce off.
         let jawPlan = table.jaws.map { (knuckle: plan($0.start), direction: planDir($0.end - $0.start)) }
@@ -174,13 +245,11 @@ enum TableBuilder {
             for sign: Float in [1, -1] {
                 let origin = SIMD2<Float>(0, sign * b), outward = SIMD2<Float>(0, sign)
                 let m = Float(0.5).squareRoot()
-                cushions.addSweep(section: section, smooth: sectionSmooth, origin: origin, along: SIMD2(1, 0), outward: outward,
-                                  jaw0: (SIMD2(-a, sign * b), SIMD2(-m, sign * m)), jaw1: (SIMD2(a, sign * b), SIMD2(m, sign * m)),
-                                  uv: clothUV)
+                cushionRun(origin: origin, along: SIMD2(1, 0), outward: outward,
+                           (SIMD2(-a, sign * b), SIMD2(-m, sign * m)), (SIMD2(a, sign * b), SIMD2(m, sign * m)))
                 let shortOrigin = SIMD2<Float>(sign * a, 0), shortOut = SIMD2<Float>(sign, 0)
-                cushions.addSweep(section: section, smooth: sectionSmooth, origin: shortOrigin, along: SIMD2(0, 1), outward: shortOut,
-                                  jaw0: (SIMD2(sign * a, -b), SIMD2(sign * m, -m)), jaw1: (SIMD2(sign * a, b), SIMD2(sign * m, m)),
-                                  uv: clothUV)
+                cushionRun(origin: shortOrigin, along: SIMD2(0, 1), outward: shortOut,
+                           (SIMD2(sign * a, -b), SIMD2(sign * m, -m)), (SIMD2(sign * a, b), SIMD2(sign * m, m)))
             }
         }
         for sign: Float in [1, -1] where !table.jaws.isEmpty {
@@ -191,15 +260,15 @@ enum TableBuilder {
             let runs = [(jaw(onLine: origin, outward: outward, near: cornerL), jaw(onLine: origin, outward: outward, near: SIMD2(-0.03, sign * b))),
                         (jaw(onLine: origin, outward: outward, near: SIMD2(0.03, sign * b)), jaw(onLine: origin, outward: outward, near: cornerR))]
             for (j0, j1) in runs {
-                cushions.addSweep(section: section, smooth: sectionSmooth, origin: origin, along: SIMD2(1, 0),
-                                  outward: outward, jaw0: j0, jaw1: j1, uv: clothUV)
+                cushionRun(origin: origin, along: SIMD2(1, 0), outward: outward, j0, j1)
             }
             let shortOrigin = SIMD2<Float>(sign * a, 0), shortOut = SIMD2<Float>(sign, 0)
-            cushions.addSweep(section: section, smooth: sectionSmooth, origin: shortOrigin, along: SIMD2(0, 1),
-                              outward: shortOut, jaw0: jaw(onLine: shortOrigin, outward: shortOut, near: SIMD2(sign * a, -b)),
-                              jaw1: jaw(onLine: shortOrigin, outward: shortOut, near: SIMD2(sign * a, b)), uv: clothUV)
+            cushionRun(origin: shortOrigin, along: SIMD2(0, 1), outward: shortOut,
+                       jaw(onLine: shortOrigin, outward: shortOut, near: SIMD2(sign * a, -b)),
+                       jaw(onLine: shortOrigin, outward: shortOut, near: SIMD2(sign * a, b)))
         }
         if let e = part(cushions, feltMat, "cushions") { tableGroup.addChild(e) }
+        if let e = part(shades, shadowMaterial(opacity: 0.55), "cushion-shadows") { tableGroup.addChild(e) }
 
         // 3. Rail frame: a flat top with the pocket openings cut through it, a rounded outer edge, and the apron.
         let A = a + c + railWidth, B = b + c + railWidth
@@ -254,11 +323,12 @@ enum TableBuilder {
         //    and a full metal rim all the way round the mouth.
         /// Height of the table's top surface at a plan point: cloth level inside the playing area, the cushion's own
         /// profile beside it (so a well wall meets the cushion exactly), rail height under the frame.
+        let topProfile = cushionTopProfile
         func surfaceHeight(_ p: SIMD2<Float>) -> Float {
             let ex = abs(p.x) - a, ez = abs(p.y) - b
             func cushionTop(_ d: Float) -> Float {
-                // Rising part of the section from the nose (d = 0) back to the rail.
-                let pts: [(d: Float, y: Float)] = [(0, 0.0325), (0.003, 0.0375), (0.020, 0.0395), (c, 0.040)]
+                // Rising part of the section from the nose (d = 0) back to the rail, read from the one section.
+                let pts = topProfile
                 for k in 0..<(pts.count - 1) where d <= pts[k + 1].d {
                     let t = (d - pts[k].d) / (pts[k + 1].d - pts[k].d)
                     return pts[k].y + (pts[k + 1].y - pts[k].y) * max(0, t)
@@ -309,6 +379,9 @@ enum TableBuilder {
         }
         if let e = part(wells, wellMat, "wells") { tableGroup.addChild(e) }
         if let e = part(plates, plateMat, "pocket-plates") { tableGroup.addChild(e) }
+        // The moulded cup and rolled lip in each pocket (TableRoom): the wall and floor above stay as the fallback while
+        // the model loads, and the cup sits just inside them, so a dropping ball goes behind the lip into the cup.
+        addPocketLiners(cuts: cuts, to: tableGroup, lightSource: lightSource)
 
         // 5. Diamond sights on the rail tops: three between each corner pocket and side pocket, three on each end.
         var diamonds = MeshBuilder()
@@ -339,7 +412,8 @@ enum TableBuilder {
         }
         if let e = part(spots, spotMat, "spots") { tableGroup.addChild(e) }
 
-        // 7. Four legs under the apron, and the room floor with the table's pool of light on it.
+        // 7. Four legs under the apron, and the room: the floor with the table's pool of light on it, the walls, the
+        //    lamp shade and the props (TableRoom).
         let legSize: Float = 0.13
         let legH = apronBottom - floorHeight
         for sx: Float in [-1, 1] {
@@ -349,15 +423,24 @@ enum TableBuilder {
                 tableGroup.addChild(leg)
             }
         }
-        // The floor paints its own pool of lamplight and table shadow, so it uses an unlit material (see SurfaceTextures).
-        var floorMat = UnlitMaterial(color: .white)
-        if let t = StartupAssets.texture(StartupAssets.shared.roomFloorImage(tableHalf: SIMD2(A, B))) { floorMat.color = .init(tint: .white, texture: .init(t)) }
-        floorMat.blending = .transparent(opacity: .init(floatLiteral: 1.0))
-        let floor = ModelEntity(mesh: .generatePlane(width: 16, depth: 16), materials: [floorMat])
-        floor.position = SIMD3(0, floorHeight, 0)
-        floor.name = "floor"
-        tableGroup.addChild(floor)
+        tableGroup.addChild(makeRoom(frame: frame, tableHalf: SIMD2(A, B), wood: woodMat, lightSource: lightSource))
         return tableGroup
+    }
+
+    // MARK: Soft shadows
+
+    /// The soft round shadow picture as a texture, made once (it is tiny) and shared by every shadow.
+    private static var softSpot: TextureResource?
+
+    /// A see-through black material wearing the soft round shadow picture (SurfaceTextures.softSpotImage), at most
+    /// `opacity` dark in the middle. Unlit, so the shadow is the same darkness whatever the lights do. Used for the
+    /// cushion strips here, and by TableDetail (each ball's contact shadow) and CueRig (the cue's shadow).
+    static func shadowMaterial(opacity: Float) -> UnlitMaterial {
+        if softSpot == nil { softSpot = StartupAssets.texture(SurfaceTextures.softSpotImage()) }
+        var m = UnlitMaterial(color: .black)
+        if let t = softSpot { m.color = .init(tint: .black, texture: .init(t)) }
+        m.blending = .transparent(opacity: .init(floatLiteral: opacity))
+        return m
     }
 
     // MARK: Playing bed
@@ -374,7 +457,22 @@ enum TableBuilder {
             m.clearcoatRoughness = .init(floatLiteral: finish.clearcoatRoughness)
         }
         if let sheen = finish.sheen { m.sheen = .init(tint: rgba(Double(sheen.x), Double(sheen.y), Double(sheen.z))) }
+        // The three real cloths gain the close-up fibre detail (look plan package 2) once its picture has been drawn
+        // (StartupAssets' second pass); TableScene rebuilds the bed's material when it arrives. Ice, glass, sand and the
+        // rest are not woven, so they never wear it.
+        if [PlaySurface.cloth, .tournament, .diveBar].contains(surface), let n = clothDetailTexture() {
+            m.normal = .init(texture: .init(n))
+        }
         return m
+    }
+
+    /// The cloth's close-up normal map as a texture, made once when the picture is ready; nil until then.
+    private static var clothDetail: TextureResource?
+    private static func clothDetailTexture() -> TextureResource? {
+        if clothDetail == nil, let image = StartupAssets.shared.clothDetailNormalIfReady() {
+            clothDetail = StartupAssets.texture(image, semantic: .normal)
+        }
+        return clothDetail
     }
 
     // MARK: Balls
@@ -383,11 +481,7 @@ enum TableBuilder {
     static func makeBall(number n: Int, radius R: Float, parent: Entity) -> BallParts {
         defer { if n == 0 || n == 15 { StartupLog.mark("ball \(n) done") } }
         let ball = Entity()
-        var m = PhysicallyBasedMaterial()
-        if let tex = StartupAssets.texture(StartupAssets.shared.ballImage(number: n)) { m.baseColor = .init(texture: .init(tex)) }
-        m.roughness = .init(floatLiteral: 0.14)
-        m.clearcoat = .init(floatLiteral: 1.0)
-        m.clearcoatRoughness = .init(floatLiteral: 0.05)
+        let m = ballMaterial(image: StartupAssets.shared.ballImage(number: n))
         let body = ModelEntity(mesh: .generateSphere(radius: R), materials: [m])
         body.components.set(OpacityComponent(opacity: 1))
         ball.addChild(body)
@@ -398,6 +492,19 @@ enum TableBuilder {
         ball.addChild(marker)
         parent.addChild(ball)
         return BallParts(ball: ball, body: body, marker: marker)
+    }
+
+    /// A ball's finish around one of its pictures: phenolic resin under a clear, polished coat. The coat's roughness
+    /// is 0.03 (it was 0.05), which keeps the lamp's three bulbs (in the reflection picture) as small, sharp
+    /// highlights on every ball, as on a freshly polished set. Shared by the normal pictures (makeBall) and the
+    /// high-contrast small-on-screen pictures (TableDetail swaps between them).
+    static func ballMaterial(image: CGImage?) -> PhysicallyBasedMaterial {
+        var m = PhysicallyBasedMaterial()
+        if let tex = StartupAssets.texture(image) { m.baseColor = .init(texture: .init(tex)) }
+        m.roughness = .init(floatLiteral: 0.14)
+        m.clearcoat = .init(floatLiteral: 1.0)
+        m.clearcoatRoughness = .init(floatLiteral: 0.03)
+        return m
     }
 
     // MARK: Lights
@@ -425,34 +532,90 @@ enum TableBuilder {
 
     // MARK: Reflections
 
-    /// A small sideways-panorama picture of a dark room with one warm rectangular lamp overhead and a faint cool
-    /// strip to one side. It is only ever seen as a reflection on the balls and rails, which is what makes them
-    /// look glossy instead of like plastic. Drawn in code so no image file ships.
+    /// A sideways-panorama picture of the room as a ball in the middle of the table sees it (look plan package 1: the
+    /// balls reflect what is actually there). It lights the glossy parts and is what makes the balls and rails look
+    /// glossy instead of like plastic. Drawn in code so no image file ships. Layout: x runs once round the horizon,
+    /// y from straight up (top row) to straight down (bottom row); elevations below are in degrees.
+    ///   - Overhead, the open bottom of the lamp shade: a long glowing window (the shade's opening is 1.30 by 0.36 m,
+    ///     0.86 m above the cloth, see TableRoom), with three small white-hot bulb cores along its length, which give
+    ///     each ball a sharp highlight, and a dark green rim where the enamel shade is seen edge-on.
+    ///   - The ceiling, nearly black, above about 35 degrees.
+    ///   - The walls: dark green-grey plaster, a little warmer low down where the lamp's spill reaches, the wooden
+    ///     waist rail as a thin brown line just above the horizon (it is 0.2 m above the cloth and about three metres
+    ///     away), and the dark wainscot below it; on one side the cue rack's board and the pale line of its cues.
+    ///   - Just below the horizon the table's own wooden rails, and below them the dim green of the cloth, which
+    ///     tints the underside of every ball as real cloth does.
+    /// The shade's long side is drawn along the picture's x = 0 and x = half (taken to be the world's x axis, the
+    /// table's length); if the system maps them elsewhere, the window simply turns on the balls.
     nonisolated static func lampEnvironmentImage() -> CGImage? {
         let w = 1024, h = 512
-        guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
-                                  space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                  bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-        // Top of the image is straight up. Warm dark brown overhead fading to near black below the horizon.
-        let colors = [CGColor(red: 0.10, green: 0.07, blue: 0.05, alpha: 1), CGColor(red: 0.06, green: 0.05, blue: 0.045, alpha: 1),
-                      CGColor(red: 0.015, green: 0.015, blue: 0.02, alpha: 1)] as CFArray
-        let grad = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: colors, locations: [0, 0.5, 1])!
-        ctx.drawLinearGradient(grad, start: CGPoint(x: 0, y: CGFloat(h)), end: CGPoint(x: 0, y: 0), options: [])
-        // CoreGraphics counts y upward from the bottom, so large y is high elevation.
-        func lamp(x: Double, y: Double, width: Double, height: Double, _ c: (Double, Double, Double), _ glow: Double) {
-            let rect = CGRect(x: x, y: y, width: width, height: height)
-            ctx.saveGState()
-            ctx.setShadow(offset: .zero, blur: glow, color: CGColor(red: c.0, green: c.1, blue: c.2, alpha: 0.9))
-            ctx.setFillColor(CGColor(red: c.0, green: c.1, blue: c.2, alpha: 1))
-            ctx.fill(rect)
-            ctx.restoreGState()
+        var px = [UInt8](repeating: 255, count: w * h * 4)
+        func smooth(_ e0: Double, _ e1: Double, _ x: Double) -> Double {
+            let t = max(0, min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t)
         }
-        // The main lamp, high and slightly left of the camera, and a thin cool strip low on the other side.
-        lamp(x: 280, y: 372, width: 340, height: 84, (1.0, 0.91, 0.74), 56)
-        lamp(x: 760, y: 270, width: 40, height: 150, (0.55, 0.72, 1.0), 26)
-        // A dim warm bounce from the floor and a faint wall strip, so the lower half of a ball is not dead black.
-        lamp(x: 0, y: 150, width: 1024, height: 22, (0.20, 0.13, 0.08), 30)
-        return ctx.makeImage()
+        func mix(_ a: (Double, Double, Double), _ b: (Double, Double, Double), _ t: Double) -> (Double, Double, Double) {
+            (a.0 + (b.0 - a.0) * t, a.1 + (b.1 - a.1) * t, a.2 + (b.2 - a.2) * t)
+        }
+        let cloth = (0.020, 0.070, 0.052), rail = (0.090, 0.050, 0.030), wainscot = (0.050, 0.035, 0.025)
+        let waist = (0.110, 0.065, 0.035), plaster = (0.060, 0.066, 0.060), ceiling = (0.030, 0.028, 0.026)
+        let glow = (1.0, 0.90, 0.72), enamel = (0.03, 0.09, 0.06), bulb = (1.0, 1.0, 0.97)
+        // The shade's opening (half length, half width) and its height above a ball's centre, metres.
+        let shadeHalfLength = 0.65, shadeHalfWidth = 0.18
+        let shadeUp = Double(shadeBottom) - 0.028
+        let bulbUp = shadeUp + 0.105
+        for row in 0..<h {
+            // Row 0 is the top of the picture: straight up.
+            let elev = 90 - (Double(row) + 0.5) / Double(h) * 180
+            let elevRad = elev * Double.pi / 180
+            for col in 0..<w {
+                let lon = (Double(col) + 0.5) / Double(w) * 2 * Double.pi
+                var c: (Double, Double, Double)
+                // Below the horizon: cloth, then the table's rails right at the horizon, then the walls.
+                if elev < -3 { c = cloth }
+                else if elev < 1 { c = mix(cloth, rail, smooth(-3, -1.5, elev)) }
+                else if elev < 3.2 { c = mix(rail, wainscot, smooth(1, 1.8, elev)) }
+                else if elev < 4.6 { c = waist }
+                else if elev < 35 {
+                    // Plaster, a little brighter low down where the lamp's spill lands on the walls.
+                    let spill = 1 + 0.5 * (1 - smooth(5, 30, elev))
+                    c = (plaster.0 * spill, plaster.1 * spill, plaster.2 * spill)
+                } else { c = mix(plaster, ceiling, smooth(35, 42, elev)) }
+                // The cue rack on one wall: a dark board with pale cues standing in it.
+                let rackLon = 1.5 * Double.pi
+                let dl = atan2(sin(lon - rackLon), cos(lon - rackLon))
+                if abs(dl) < 0.09, elev > -1, elev < 22 {
+                    c = mix(c, (0.035, 0.020, 0.012), 0.8)
+                    if elev > 2, elev < 20, Int((dl + 0.09) / 0.036) % 2 == 0 { c = mix(c, (0.30, 0.22, 0.14), 0.5) }
+                }
+                // Overhead: the shade's opening as seen from below. Along direction `lon` the opening's edge is
+                // `reach` metres out, so the window starts at elevation atan(shadeUp / reach).
+                let reach = min(shadeHalfLength / max(1e-6, abs(cos(lon))), shadeHalfWidth / max(1e-6, abs(sin(lon))))
+                let edge = atan(shadeUp / reach) * 180 / Double.pi
+                if elev > edge - 4 {
+                    // A dark enamel rim, then the warm glowing reflector inside it.
+                    c = mix(c, enamel, smooth(edge - 4, edge - 2.5, elev))
+                    c = mix(c, glow, smooth(edge - 1, edge + 1.5, elev))
+                    // The three bulbs: 0.40 m either side of the middle and in the middle, 0.105 m up inside the shade.
+                    let x = cos(elevRad) * cos(lon), y = sin(elevRad), z = cos(elevRad) * sin(lon)
+                    for bx in [-0.40, 0.0, 0.40] {
+                        let len = (bx * bx + bulbUp * bulbUp).squareRoot()
+                        let cosAngle = (x * bx + y * bulbUp + z * 0) / len
+                        let angle = acos(max(-1, min(1, cosAngle))) * 180 / Double.pi
+                        // About four degrees across with a soft edge: small enough for a crisp highlight on a ball.
+                        c = mix(c, bulb, 1 - smooth(1.4, 2.4, angle))
+                    }
+                }
+                let i = (row * w + col) * 4
+                px[i] = UInt8(max(0, min(255, c.0 * 255 + 0.5)))
+                px[i + 1] = UInt8(max(0, min(255, c.1 * 255 + 0.5)))
+                px[i + 2] = UInt8(max(0, min(255, c.2 * 255 + 0.5)))
+            }
+        }
+        guard let provider = CGDataProvider(data: Data(px) as CFData) else { return nil }
+        return CGImage(width: w, height: h, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: w * 4,
+                       space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                       bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue),
+                       provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
     }
 
     /// Light the scene with the lamp picture and let every model under `root` reflect it. If the picture cannot be

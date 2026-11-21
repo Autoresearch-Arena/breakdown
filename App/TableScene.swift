@@ -37,6 +37,12 @@
 //          Lens grid is redrawn for the new table and the balls are scaled to the new ball size. Each frame, a prop named
 //          "pin-<k>" topples flat over 0.15 s from the moment the timeline says pin k went down, along the direction it
 //          was pushed: a pure function of the clock, so scrubbing either way is exact.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan, wiring only: owns the hand zoom (TableZoom, sprung back
+//          on every new shot and handed to the camera) and a TableDetail (ball contact shadows, the lamp shade's fade,
+//          the small-ball pictures), fed each frame; a pocketed ball now slides into the middle of its own drawn hole
+//          as it drops into the moulded cup, so it goes behind the lip instead of through the pocket's edge; balls are
+//          drawn 8% larger in the Lens; the bed is redressed once the cloth's close-up normal map has been drawn; the
+//          table is built with the scene root as its light source, for the models that load later.)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -86,6 +92,12 @@ final class TableScene {
     private var props: Entity?
     private var pins: [(entity: Entity, position: SIMD3<Float>, orientation: simd_quatf)?] = []
     var subscriptions: [EventSubscription] = []
+    /// The hand zoom (pinch, two-finger pan, double tap on a ball), read by TableZoomGestures and the camera.
+    let zoom = TableZoom()
+    /// Contact shadows, the lamp shade's fade and the small-ball pictures (see TableDetail); made once the balls are.
+    private var detail: TableDetail?
+    /// Per ball: the plan point (world x, z) of the hole it drops into in this shot, nil if it stays up.
+    private var dropHole: [SIMD2<Float>?] = []
 
     init(timeline: Timeline, surface: PlaySurface, table kind: TableKind = .standard) {
         self.timeline = timeline
@@ -108,15 +120,53 @@ final class TableScene {
             let parts = TableBuilder.makeBall(number: n, radius: frame.ballRadius, parent: root)
             balls.append(parts.ball); bodies.append(parts.body); markers.append(parts.marker)
         }
+        detail = TableDetail(bodies: bodies)
+        detail?.attach(to: tableGroup)
+        dropHole = Self.dropHoles(timeline, frame: frame, table: builtTable)
         TableBuilder.addLights(to: root)
         if surface.coversCushions { dress(surface) }
+        // The cloth's close-up normal map is drawn after launch; when it arrives, the bed and cushions put it on.
+        if StartupAssets.shared.clothDetailNormalIfReady() == nil {
+            Task { [weak self] in
+                _ = await StartupAssets.shared.clothDetailNormal()
+                self?.clothDetailArrived()
+            }
+        }
+    }
+
+    /// Rebuild the cushions' standard cloth and the bed's material now that the close-up detail exists
+    /// (TableBuilder.bedMaterial adds it to the real cloths).
+    private func clothDetailArrived() {
+        let cloth = TableBuilder.bedMaterial(for: .cloth, image: StartupAssets.shared.clothImage())
+        standardCushionMaterials = [cloth]
+        if !surface.coversCushions { cushions?.model?.materials = standardCushionMaterials }
+        dress(surface)
+    }
+
+    /// For each ball that drops in this shot, the middle of the hole it drops into, in world plan (x, z): an edge
+    /// pocket's drawn circle (TableBuilder.pocketCuts) or a bed hole's centre. Read from the shot's pocket events.
+    private static func dropHoles(_ timeline: Timeline, frame: TableFrame, table: TableSpec) -> [SIMD2<Float>?] {
+        let cuts = TableBuilder.pocketCuts(frame: frame, table: table)
+        var holes = [SIMD2<Float>?](repeating: nil, count: timeline.ballCount)
+        for event in timeline.events where event.kind == .pocket {
+            for hit in event.balls where hit.ball < holes.count && holes[hit.ball] == nil {
+                let k = event.pocket
+                if k >= 0, k < cuts.count {
+                    holes[hit.ball] = cuts[k].center
+                } else if k >= TableSpec.edgePocketCount, k - TableSpec.edgePocketCount < table.bedHoles.count {
+                    let w = frame.world(table.bedHoles[k - TableSpec.edgePocketCount].center)
+                    holes[hit.ball] = SIMD2(w.x, w.z)
+                }
+            }
+        }
+        return holes
     }
 
     /// Build the warm table for the current timeline's table and kind (replacing any earlier one), with the kind's
     /// props and the cue rig inside it. Not per frame: only when the table changes.
     private func buildTable() {
         tableGroup.removeFromParent()
-        tableGroup = TableBuilder.makeTable(frame: frame, table: builtTable, surface: surface)
+        tableGroup = TableBuilder.makeTable(frame: frame, table: builtTable, surface: surface, lightSource: root)
         bed = tableGroup.findEntity(named: "felt") as? ModelEntity
         cushions = tableGroup.findEntity(named: "cushions") as? ModelEntity
         standardCushionMaterials = cushions?.model?.materials ?? []
@@ -124,6 +174,7 @@ final class TableScene {
         if let props { tableGroup.addChild(props) }
         pins = [(entity: Entity, position: SIMD3<Float>, orientation: simd_quatf)?](repeating: nil, count: builtTable.pins.count)
         tableGroup.addChild(cueRig.root)
+        detail?.attach(to: tableGroup)
         tableHolder.addChild(tableGroup)
         // A rebuilt table misses the one-time reflection hookup (installEnvironment), so it is done here once lit.
         if root.components.has(ImageBasedLightComponent.self) { TableProps.receiveLight(tableGroup, from: root) }
@@ -155,6 +206,9 @@ final class TableScene {
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         lens.rebuild(timeline: timeline, frame: frame)
         shotCamera.load(timeline, frame: frame)
+        dropHole = Self.dropHoles(timeline, frame: frame, table: builtTable)
+        // Every new shot is watched from the normal view: a hand zoom springs back.
+        zoom.springBack()
         for b in 0..<balls.count {
             balls[b].isEnabled = true
         }
@@ -203,11 +257,16 @@ final class TableScene {
 
         // Another table's balls are another size: the entities were made once, so they are scaled to it.
         let ballScale = builtBallRadius > 0 ? R / builtBallRadius : 1
+        // In the Lens the balls are drawn 8% larger (look plan package 5): seen straight down at the Lens's distance a
+        // racked ball is small beside the glowing trails; 8% keeps touching balls from visibly overlapping.
+        let lensScale = 1 + 0.08 * m
+        let tableHalf = SIMD2(frame.length * 0.5, frame.width * 0.5)
         var visibility: [Bool] = []
         for b in 0..<balls.count {
             let s = timeline.state(ball: b, at: t)
             // The centre sits one radius above the ball's lowest point, which is s.height above the cloth (a jump).
             var pos = frame.world(s.position, height: R + Float(s.height))
+            var lift = Float(s.height)
             var scale: Float = 1
             var visible = true
             if s.pocketed, let tp = timeline.pocketTime[b], b < flewOff.count, flewOff[b],
@@ -217,11 +276,21 @@ final class TableScene {
                 let flight = timeline.segments[b][timeline.segments[b].count - 2]
                 let k = flight.kinematics(at: t)
                 pos = frame.world(k.position, height: R + Float(k.height))
+                lift = Float(k.height)
                 visible = (t - tp) < 0.6
             } else if s.pocketed, let tp = timeline.pocketTime[b] {
+                // Into the hole, not through its edge: over 0.22 s the ball slides to the middle of its drawn hole as it
+                // drops 10 cm into the moulded cup, so the lip and the cup hide it; then it shrinks away in the cup's
+                // bottom by 0.35 s (from straight above the cup's floor would otherwise show it sitting there).
                 let k = Float(min(1, (t - tp) / 0.22))
-                pos.y -= 0.09 * k
-                scale = 1 - 0.7 * k
+                if b < dropHole.count, let hole = dropHole[b] {
+                    let ease = k * k * (3 - 2 * k)
+                    pos.x += (hole.x - pos.x) * ease
+                    pos.z += (hole.y - pos.z) * ease
+                }
+                pos.y -= 0.10 * k
+                let gone = Float(min(1, max(0, (t - tp - 0.22) / 0.13)))
+                scale = (1 - 0.15 * k) * (1 - gone)
                 visible = (t - tp) < 0.35
             }
             // A ball parked off the table (pocketed in an earlier shot) never shows.
@@ -229,7 +298,8 @@ final class TableScene {
             balls[b].isEnabled = visible
             balls[b].position = pos
             balls[b].orientation = frame.orientation(s.orientation)
-            balls[b].scale = SIMD3(repeating: scale * ballScale)
+            balls[b].scale = SIMD3(repeating: scale * ballScale * lensScale)
+            detail?.ball(b, centre: pos, lift: lift, radius: R, onCloth: visible && !s.pocketed, tableHalf: tableHalf)
             bodies[b].components.set(OpacityComponent(opacity: 1 - 0.55 * m))
             markers[b].components.set(OpacityComponent(opacity: m))
             visibility.append(visible)
@@ -276,7 +346,9 @@ final class TableScene {
         shotCamera.clock = lastClock
         shotCamera.active = ride
         camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
-                      request: request, frame: frame, ride: shotCamera)
+                      request: request, frame: frame, ride: shotCamera, zoom: zoom)
+        // With the camera placed: the lamp shade's fade and the ball pictures for the size a ball now is on screen.
+        detail?.view(eye: camera.eye, ballDiameter: 2 * frame.ballRadius * camera.pointsPerMetre)
     }
 
     // MARK: Test hooks

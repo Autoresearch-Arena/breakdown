@@ -19,6 +19,9 @@
 //          the strip and under the side-column card; the highlighted ball gets its caption's short title as a glass
 //          chip beside the ring, flipped to stay on screen; the leader line is drawn only where the card is beside the
 //          table; LensLegendChip is headed "Physics Lens" so the blueprint view is always named. No new strings.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 5: LeaderState.topClear, the bottom of the title
+//          row, which TableStage sets every frame; the on-table chip is kept below it, so near the top pockets in the
+//          Lens it no longer crowds the top controls.)
 // PURPOSE: The caption and equation card, the fixed-height caption strip, the Continue button for guided pacing, the
 //          Physics Lens key chip, and the highlight ring, on-table title chip and thin leader line that tie the words to
 //          the ball they describe. On a phone held upright the words sit in CaptionStrip under the table (ShowpieceView
@@ -296,6 +299,8 @@ final class LeaderState {
     /// The current caption's short title, drawn as a chip beside the ring (already localized by Captions.swift).
     var title: String?
     var card: CGRect = .zero
+    /// Bottom edge of the title row (StageSpace); the chip beside the ring stays below it.
+    var topClear: CGFloat = 0
 
     /// Called by the 3D view every frame. Finds the ball the current caption is about, asks the view to project it
     /// to the screen, and keeps the previous point when the move is under half a point (so a still frame costs nothing).
@@ -369,7 +374,8 @@ struct CaptionLeader: View {
         }
         var c = fits(right) || !fits(left) ? right : left
         c.x = min(max(c.x, gap + w / 2), max(gap + w / 2, size.width - gap - w / 2))
-        c.y = min(max(c.y, gap + h / 2), max(gap + h / 2, size.height - gap - h / 2))
+        let top = max(gap, leader.topClear + gap) + h / 2
+        c.y = min(max(c.y, top), max(top, size.height - gap - h / 2))
         return c
     }
 
