@@ -132,4 +132,9 @@ main menu. Bar billiards is left out of the video because its opening shot is ov
 
 ## Uploading
 
-Nothing is uploaded. The frames go to App Store Connect only after the Boss signs off on them.
+`scripts/store-upload.py` puts a device's frames into App Store Connect for every language (it needs the team key in
+`~/.appstoreconnect/`). The Duo is one display type (APP_IPHONE_DUO) that takes either screen's size, but Apple allows
+only ten screenshots per language in it, so the ten are a choice: edit `PICKS` in the script. On 21-November-2026 the ten
+open-screen frames went up for all twelve languages (the closed-screen frames exist but are not uploaded); marketing is
+to pick a better mix of open and closed ones and run the script again (it replaces what the set holds).
+The iPhone, iPad and Mac frames are not uploaded yet.
