@@ -120,8 +120,9 @@ final class EightBallMode {
     func medal(_ s: EightBallSituation) -> EightBallMedal? { medals[s.id] }
     /// The running total over every situation's best.
     var runningTotal: Int { bestScores.values.reduce(0, +) }
-    /// The try the next shot will be (above EightBallVerdict.maxTries it is practice).
-    var nextTry: Int { tries + 1 }
+    /// The try the next shot will be (above EightBallVerdict.maxTries it is practice). While scoring, the try being
+    /// scored: it is already counted, and the card should not jump ahead before its verdict shows.
+    var nextTry: Int { phase == .scoring ? tries : tries + 1 }
     /// True once an escape was watched in this visit: style is capped at 2 here.
     var hintTaken: Bool { current.map { hintWatched.contains($0.id) } ?? false }
 

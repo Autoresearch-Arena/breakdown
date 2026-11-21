@@ -125,7 +125,8 @@ enum EightBallJudge {
     /// events. A steep jump that lands the cue ball wedged against a ball can instead spin out to the solver's
     /// 60,000-event guard (about five seconds each in Release, seen on point-blank's jump), and such a solve is cut
     /// off a fraction of a second into the shot, so it was never a make: with this budget every authored escape
-    /// scores exactly as it did without it.
+    /// scores exactly as it did without it. The margin is wide on both sides (normal solves measured at about 10 to
+    /// 60 events, the jam at the full 60,000), so this number is not delicate.
     static let sweepEventBudget = 2_000
     /// The stroke is "near the edge" when it sits within this share of the half-window from a failing edge.
     static let edgeShare = 0.25
