@@ -220,8 +220,8 @@ final class MatchMode {
         // The shot's first showing is the replay moving past anything already seen of this shot.
         let newGround = phase == .shooting && model.time > shotSeenUpTo
         if phase == .shooting { shotSeenUpTo = max(shotSeenUpTo, model.time) }
-        let moment = MatchClock.Moment(hasClock: true, isOver: state.isOver, phase: phase, lensOn: model.lensOn,
-                                       isSolving: model.isSolving, tableAtRest: model.aimReady,
+        let moment = MatchClock.Moment(hasClock: true, isOver: state.isOver, stage: MatchClock.Stage(phase),
+                                       lensOn: model.lensOn, isSolving: model.isSolving, tableAtRest: model.aimReady,
                                        playingNewGround: newGround)
         guard MatchClock.runs(moment) else { return }
         let exact = MatchClock.ticked(clockExact ?? shown, by: MatchClock.seconds(forFrame: realSeconds))

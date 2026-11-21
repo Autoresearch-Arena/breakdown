@@ -51,12 +51,32 @@ extension MatchKind {
 // MARK: The game clock
 
 enum MatchClock {
+    /// Where the match's turn loop is, as far as the clock cares. Its own small enum, not MatchMode.Phase, so this
+    /// rule stays a plain value that needs nothing from the main actor.
+    enum Stage: Equatable {
+        /// Lining up the next shot.
+        case aiming
+        /// A shot being solved or played.
+        case shooting
+        /// A ruling or hand-over card, or the game over.
+        case betweenShots
+
+        /// The clock's stage for a turn-loop phase (MatchMode calls this on the main actor, where its phase lives).
+        @MainActor init(_ phase: MatchMode.Phase) {
+            switch phase {
+            case .aiming: self = .aiming
+            case .shooting: self = .shooting
+            case .ruling, .handOver, .over: self = .betweenShots
+            }
+        }
+    }
+
     /// What the clock needs to know about one frame.
     struct Moment: Equatable {
         /// The game has a clock at all (bar billiards).
         var hasClock: Bool
         var isOver: Bool
-        var phase: MatchMode.Phase
+        var stage: Stage
         /// The Physics Lens is up (ShowpieceModel.lensOn).
         var lensOn: Bool
         /// A shot is being solved on a background task; the computer's time is not the players'.
@@ -72,12 +92,12 @@ enum MatchClock {
     /// True when the clock counts down this frame.
     static func runs(_ m: Moment) -> Bool {
         guard m.hasClock, !m.isOver, !m.lensOn, !m.isSolving else { return false }
-        switch m.phase {
+        switch m.stage {
         case .aiming: return m.tableAtRest
         case .shooting: return m.playingNewGround
         // A ruling or hand-over card is the app talking, and handing the device over is something a real table
         // never needs; neither is playing time.
-        case .ruling, .handOver, .over: return false
+        case .betweenShots: return false
         }
     }
 

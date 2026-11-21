@@ -12,8 +12,8 @@ import XCTest
 
 final class MatchClockTests: XCTestCase {
     /// A live moment in which the clock runs: aiming at a table at rest, nothing else going on.
-    private func live(_ phase: MatchMode.Phase = .aiming) -> MatchClock.Moment {
-        MatchClock.Moment(hasClock: true, isOver: false, phase: phase, lensOn: false, isSolving: false,
+    private func live(_ stage: MatchClock.Stage = .aiming) -> MatchClock.Moment {
+        MatchClock.Moment(hasClock: true, isOver: false, stage: stage, lensOn: false, isSolving: false,
                           tableAtRest: true, playingNewGround: true)
     }
 
@@ -31,7 +31,7 @@ final class MatchClockTests: XCTestCase {
         var m = live()
         m.lensOn = true
         XCTAssertFalse(MatchClock.runs(m))
-        m.phase = .shooting
+        m.stage = .shooting
         XCTAssertFalse(MatchClock.runs(m), "the Lens stops it during a shot too")
     }
 
@@ -49,12 +49,20 @@ final class MatchClockTests: XCTestCase {
     }
 
     func testStopsForCardsAndAtTheEnd() {
-        for phase in [MatchMode.Phase.ruling, .handOver, .over] {
-            XCTAssertFalse(MatchClock.runs(live(phase)), "\(phase) is not playing time")
-        }
+        XCTAssertFalse(MatchClock.runs(live(.betweenShots)), "a ruling or hand-over card is not playing time")
         var over = live()
         over.isOver = true
         XCTAssertFalse(MatchClock.runs(over))
+    }
+
+    /// Every turn-loop phase maps to the clock's stage: only aiming and shooting can ever run.
+    @MainActor
+    func testEveryPhaseMapsToAStage() {
+        XCTAssertEqual(MatchClock.Stage(.aiming), .aiming)
+        XCTAssertEqual(MatchClock.Stage(.shooting), .shooting)
+        for phase in [MatchMode.Phase.ruling, .handOver, .over] {
+            XCTAssertEqual(MatchClock.Stage(phase), .betweenShots)
+        }
     }
 
     func testGamesWithoutAClockNeverRun() {
