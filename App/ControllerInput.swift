@@ -21,7 +21,6 @@
 // SRP/DRY check: Pass - checked AimOverlay.handleKey (the keyboard route) and AimGauges (tip and power); this file
 //          writes the same model values through the same methods (nudgeAim, powerFraction, activeTipUp/Side, fire,
 //          scrub, setLens), so every input route agrees. Replay stepping reuses ShotNarration.step.
-import BreakdownLensModel
 import Foundation
 import GameController
 

@@ -49,7 +49,7 @@
 //          a sliding path is built as dashes and a rolling path stays solid, so the two phases differ in shape, not
 //          only in amber against cyan; the trails are rebuilt when the setting changes. The dashes are cut from the
 //          geometry at build time, so the clock-only exactness of the picture is untouched. Package 5: the
-//          generation-two events now leave a visible mark like the others: a red ring where the cue MISCUED (the
+//          generation-two events now leave a visible mark like the others: a red double ring where the cue MISCUED (the
 //          one place a sound alone would carry it), a pocket-coloured ring where a ball skipped over a hole, and an
 //          impact ring where a jam was brought to rest.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
@@ -374,14 +374,19 @@ final class LensLayer {
             let strength = (isMiscue || e.kind == .rimSkip) ? Self.markerStrength : recorded
             let radius = 0.022 + 0.034 * strength
             guard let mat = isMiscue ? miscueMaterial : ringMaterials[e.kind] else { continue }
-            let ring = ModelEntity(mesh: ringMesh, materials: [mat])
-            ring.scale = SIMD3(radius, 1, radius)
-            ring.position = frame.world(e.point, height: 0.008)
-            ring.isEnabled = false
-            ring.components.set(OpacityComponent(opacity: 0))
-            ring.components.set(ModelSortGroupComponent(group: sortGroup, order: 20))
-            ringRoot.addChild(ring)
-            rings.append((ring, e, radius))
+            // A miscue is drawn as two rings, one inside the other, so its shape (not only its red) sets it apart
+            // from every impact ring; the inner one is 0.6 of the outer, a gap wider than the ring's own band.
+            let sizes: [Float] = isMiscue ? [radius, radius * 0.6] : [radius]
+            for size in sizes {
+                let ring = ModelEntity(mesh: ringMesh, materials: [mat])
+                ring.scale = SIMD3(size, 1, size)
+                ring.position = frame.world(e.point, height: 0.008)
+                ring.isEnabled = false
+                ring.components.set(OpacityComponent(opacity: 0))
+                ring.components.set(ModelSortGroupComponent(group: sortGroup, order: 20))
+                ringRoot.addChild(ring)
+                rings.append((ring, e, size))
+            }
         }
     }
 
