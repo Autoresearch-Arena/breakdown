@@ -1,4 +1,5 @@
 // Author: Claude Opus 5.5 High
+// Edited: GPT 6.2 Astra High, 21-November-2026, shared higher player launch-speed limits.
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the judge builder's pass: the skeleton's neutral verdict replaced by the
 //          whole of design sections 1 and 2, the success-window sweep, the named style points, the "On a real table"
@@ -120,7 +121,6 @@ enum EightBallJudge {
     /// Window sweep: how far each input may be pushed. Aim in degrees either side; speed is the shot panel's range;
     /// the tip must stay on the ball (ShowpieceModel.tipLimit); elevation is a sine.
     static let aimLimit = 4.0
-    static let speedRange = 0.5...8.0
     static let tipLimit = 0.02
     static let elevationRange = 0.01...0.95
     /// The first nudge of each input, then each nudge is growth times the last (or, when the first already fails,
@@ -751,7 +751,7 @@ enum EightBallJudge {
         let range: ClosedRange<Double>
         switch input {
         case .aim: range = (v - aimLimit)...(v + aimLimit)
-        case .speed: range = speedRange
+        case .speed: range = PlayerShotSpeed.ordinary
         case .side:
             let r = max(tipLimit * tipLimit - s.tipUp * s.tipUp, 0).squareRoot()
             range = -r...r

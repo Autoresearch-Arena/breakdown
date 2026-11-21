@@ -1,4 +1,5 @@
 // Author: Claude Opus 5.5 High
+// Edited: GPT 6.2 Sol, 21-November-2026 (draw-massé carom lesson).
 // Date: 20-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (every line of advice is a String(localized:) key; a scratch adds its
 //          sentence as one placeholder line, not by joining two strings)
@@ -40,11 +41,17 @@ enum TrickShotJudge {
     }
 
     /// What part of the goal failed first, or nil when it all held.
-    enum Failure: Equatable { case scratch, missedFirstBall, notBanked, ballStayedUp(Int), wrongPocket(Int), cueZone }
+    enum Failure: Equatable { case scratch, missedFirstBall, missedCarom, notBanked, ballStayedUp(Int), wrongPocket(Int), cueZone }
 
     static func failure(_ goal: TrickGoal, _ attempt: ShotAttempt) -> Failure? {
         let tl = attempt.timeline
         if let first = goal.firstHit, attempt.firstStruck != first { return .missedFirstBall }
+        if let second = goal.secondHit {
+            let contacts = tl.events.lazy
+                .filter { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
+                .compactMap { $0.balls.first { $0.ball != 0 }?.ball }
+            guard contacts.dropFirst().first == second else { return .missedCarom }
+        }
         for d in goal.drops {
             guard let k = pocket(of: d.ball, in: tl) else { return .ballStayedUp(d.ball) }
             if let want = d.pocket, want != k { return .wrongPocket(d.ball) }
@@ -88,6 +95,9 @@ enum TrickShotJudge {
         ]
         if win.tipSide > 0 { errors.append(("tipSide", abs(a.tipSide - sol.tipSide) / win.tipSide, a.tipSide - sol.tipSide)) }
         let worst = errors.max { $0.size < $1.size }!
+        if fail == .missedCarom && worst.size <= 1 {
+            return String(localized: "You hit the 4. Raise the cue and keep the low, off-centre hit to bend back toward the 9.")
+        }
         guard worst.size > 1 else {
             return note(String(localized: "So close. Every setting is nearly there: same again, a fraction more care on the aim."))
         }
