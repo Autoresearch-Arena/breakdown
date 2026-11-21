@@ -10,6 +10,8 @@ All notable changes to this project are listed here, newest first. Versions foll
 
 ## [Unreleased]
 
+- Players can now hit an ordinary shot at up to 13 m/s and a rack break at up to 16 m/s. Try the same layout at two powers to see how the cue ball finishes. The puzzle judge uses the full selectable speed range. — GPT 6.2 Astra High
+
 Author: Claude Sonnet 5.5 Medium
 
 - What: The opening music is now one of three takes chosen at random each launch: the Pool Table Take, or one of two new thirty-second jazz-funk clips (electric piano, and wah guitar with organ), each opening on a pool break with ball clacks through it.

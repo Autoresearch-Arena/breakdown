@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: GPT 6.2 Astra High, 21-November-2026, shared higher player launch-speed limits.
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 High, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: every player shot and break is kept as a
@@ -451,7 +452,7 @@ final class ShowpieceModel {
     }
 
     /// Launch speed for the next strike, metres per second, and the range it may take.
-    var powerRange: ClosedRange<Double> { racked ? 7...13 : 0.5...8 }
+    var powerRange: ClosedRange<Double> { racked ? PlayerShotSpeed.rackBreak : PlayerShotSpeed.ordinary }
     var activePower: Double {
         get { racked ? power : shotPower }
         set { let v = min(max(newValue, powerRange.lowerBound), powerRange.upperBound); if racked { power = v } else { shotPower = v } }
@@ -776,7 +777,7 @@ final class ShowpieceModel {
         clearAttempts()
         let shot = physicsTable.defaultShot
         aimDegrees = shot.aimDegrees
-        shotPower = min(max(shot.power, 0.5), 8)
+        activePower = shot.power
         shotTipUp = 0; shotTipSide = 0; shotElevation = 0
         stage = .explore; stageTime = 0; time = 0; playing = false; chosenRate = nil
     }

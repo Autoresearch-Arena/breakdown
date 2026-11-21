@@ -1,4 +1,5 @@
 // Author: Claude Opus 5.5 High
+// Edited: GPT 6.2 Astra High, 21-November-2026, shared higher player launch-speed limits.
 // Date: 21-November-2026
 // PURPOSE: Which table the game is played on: the standard nine-foot pool table, bumper pool, Italian five-pin
 //          billiards (cinque birilli) or bar billiards. Picked from the Surface menu's "Tables" section and kept in
@@ -34,7 +35,7 @@ protocol TableDefinition {
     /// Exactly sixteen positions: index 0 is the cue ball, balls the game does not use are NextShot.offTable.
     static var startLayout: [Vec2] { get }
     /// The shot the aim starts on, and the shot "Watch the break" plays on this table: aim in degrees counter-clockwise
-    /// from the +x (length) axis, power as launch speed in m/s (free play allows 0.5 to 8).
+    /// from the +x (length) axis, power as launch speed in m/s, clamped to the player’s shot range when loaded.
     static var defaultShot: (aimDegrees: Double, power: Double) { get }
     /// Material for each named part of the props (the names the props builder and the Blender model use).
     static var partLooks: [String: TablePartLook] { get }
