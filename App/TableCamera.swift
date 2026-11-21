@@ -137,6 +137,8 @@ final class TableCamera {
         if camera.camera.fieldOfViewInDegrees != shot.fov { camera.camera.fieldOfViewInDegrees = shot.fov }
         if camera.camera.near != shot.near { camera.camera.near = shot.near }
         camera.look(at: shot.target, from: shot.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
+        // Sound stream hook (21-Nov-2026): tell the sound which way screen-right runs across the table, for panning.
+        SoundStage.listen(frame: frame, cameraRight: camera.orientation(relativeTo: nil).act(SIMD3<Float>(1, 0, 0)))
         if Self.frameDebug { logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation) }
     }
 
