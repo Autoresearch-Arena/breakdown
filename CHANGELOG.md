@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.9] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: The app has its new icon: the cue ball driving into the red ball, the struck balls' arrows, and the momentum equation p = m·v on the blueprint cloth.
+- Why: The Boss approved this artwork (added to the repo by the other assistant) and asked for it to be the icon.
+- How: The approved 1024-pixel artwork replaces the old icon picture in the app icon set; it has no transparency, as the App Store requires.
+- Checked: the iPhone build passes.
+
 ## [0.5.8] - 21-November-2026
 
 Author: Claude Opus 5.5 High
