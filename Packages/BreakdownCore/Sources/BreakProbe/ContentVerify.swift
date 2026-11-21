@@ -1,12 +1,14 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the draw-massé carom joins the list; a carom goal checks the cue
+//          ball's second contact as the app's judge does).
 // PURPOSE: "BreakProbe verify [generation]": plays every authored trick shot and every Behind the 8-Ball escape the app
 //          carries, exactly as authored, on the chosen physics generation (default: the solver's default, the one the
 //          app ships), and prints one PASS or FAIL line each, with the reason for a failure. Returns whether all passed;
 //          main.swift turns that into the exit status, so scripts/testflight.py can stop an upload when a physics change
 //          breaks authored content (plans/21-Nov-2026-release-safety-plan.md package 1 step 2). With 2 it lists what
 //          the generation-two physics breaks, which is the size of the proof plan's package 4 re-authoring step.
-//          Trick shots: the ten answers below are COPIED from App/TrickShots.swift (layout, aim, power, tip, elevation
+//          Trick shots: the answers below are COPIED from App/TrickShots.swift (layout, aim, power, tip, elevation
 //          and goal), because the app's files cannot be imported here. KEEP IN STEP: when a shot there is re-authored,
 //          change its line here in the same commit. Judged with TrickSearch's passes(), the test they were authored
 //          against (the app's TrickShotJudge applies the same goal). Seed 1, as when they were authored.
@@ -29,7 +31,7 @@ struct AuthoredTrick: Sendable {
     var goal: Goal
 }
 
-/// The ten shots of App/TrickShots.swift (TrickShots.all), in its order, copied number for number.
+/// The shots of App/TrickShots.swift (its authored list), in authored order, copied number for number.
 let authoredTricks: [AuthoredTrick] = [
     AuthoredTrick(id: "called-break",
                   layout: layoutOf([0: Vec2(0.6350, 0.4350), 1: Vec2(1.9050, 0.6350), 2: Vec2(1.9549, 0.6638),
@@ -75,6 +77,10 @@ let authoredTricks: [AuthoredTrick] = [
                   layout: layoutOf([0: Vec2(1.3708, 0.6854), 6: Vec2(1.6392, 0.8196), 11: Vec2(2.2270, 1.1135)]),
                   strike: Strike(aim: 27.02, power: 4.55, tipUp: -0.005, tipSide: 0, elevation: 0.55),
                   goal: Goal(drops: [(11, 3)], firstHit: 11)),
+    AuthoredTrick(id: "draw-masse-carom",
+                  layout: layoutOf([0: Vec2(0.9, 0.61), 4: Vec2(1.06, 0.61), 9: Vec2(0.93, 0.219)]),
+                  strike: Strike(aim: 354, power: 2, tipUp: -0.012, tipSide: 0.010, elevation: 0.55),
+                  goal: Goal(drops: [], firstHit: 4, secondHit: 9)),
 ]
 
 /// Which part of a trick's goal failed, in the order TrickSearch.passes checks them; nil when it all held.
@@ -88,6 +94,13 @@ func trickFailure(_ goal: Goal, _ tl: Timeline) -> String? {
     if let first = goal.firstHit, firstStruck(tl) != first {
         let struck = firstStruck(tl).map(String.init) ?? "no ball"
         return "the cue ball hit \(struck) first, not the \(first)"
+    }
+    if let second = goal.secondHit {
+        // The app's TrickShotJudge: the cue ball's second ball contact must be this ball.
+        let contacts = tl.events.filter { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
+            .compactMap { $0.balls.first { $0.ball != 0 }?.ball }
+        if contacts.dropFirst().first != second { return "the cue ball's second contact was not the \(second)" }
+        if goal.drops.isEmpty && goal.cueZone == nil && goal.bank == nil { return nil }
     }
     if !passes(goal, tl) { return goal.bank != nil ? "the banked ball missed its cushion" : "the cue ball stopped out of its zone" }
     return nil

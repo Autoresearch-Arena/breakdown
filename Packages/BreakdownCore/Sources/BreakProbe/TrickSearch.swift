@@ -52,6 +52,8 @@ struct Goal: Sendable {
     var firstHit: Int? = nil
     /// A ball that must touch a cushion before it drops (a bank shot), if any.
     var bank: Int? = nil
+    /// For a carom, the ball the cue ball must touch on its second ball contact (the app's TrickGoal.secondHit).
+    var secondHit: Int? = nil
 }
 
 func layoutOf(_ placed: [Int: Vec2]) -> [Vec2] {
