@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [Unreleased]
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The opening music is now one of three takes chosen at random each launch: the Pool Table Take, or one of two new thirty-second jazz-funk clips (electric piano, and wah guitar with organ), each opening on a pool break with ball clacks through it.
+- Why: The Boss did not like the old opening track and approved these two new ones as alternatives.
+- How: The clips are Google Lyria clips made 21-November-2026 and stored beside the original in App/Audio; TitleMusic picks one per launch. All other rules are unchanged: once per launch, Sound setting honoured, faded out when play starts.
+- Checked: the iPhone build passes and all three tracks are inside the built app; not yet listened to in the app.
+
 ## [0.6.4] - 21-November-2026
 
 Author: Claude Opus 5.5 Medium
