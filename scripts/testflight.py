@@ -113,7 +113,8 @@ def main():
            "-authenticationKeyID", CFG["key_id"], "-authenticationKeyIssuerID", CFG["issuer_id"]]
     run(["xcodebuild", "-project", "Breakdown.xcodeproj", "-scheme", "Breakdown", "-configuration", "Release",
          "-destination", "generic/platform=iOS", "-archivePath", str(archive),
-         "-derivedDataPath", str(OUT / "dd"), "-jobs", "4", f"DEVELOPMENT_TEAM={TEAM}",
+         # The app's entitlements need a development identity at archive time; export re-signs it for the App Store.
+         "-derivedDataPath", str(OUT / "dd"), "-jobs", "4", f"DEVELOPMENT_TEAM={TEAM}", "CODE_SIGN_IDENTITY=Apple Development",
          f"CURRENT_PROJECT_VERSION={build}", "archive"] + key, work / "archive.log")
 
     options = work / "Upload.plist"
