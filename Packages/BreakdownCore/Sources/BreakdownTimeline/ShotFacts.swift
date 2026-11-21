@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - appended ballContacts: every ball-to-ball contact
+//          of the shot, in time order, and touched(_:_:), because five-pin scores the opponent's ball hitting the red,
+//          which is not a contact of the cue ball. Additive only: no existing field changes.
 // PURPOSE: One shared reading of a recorded shot: "what happened", with no rules attached, for every set of rules
 //          (the Behind the 8-Ball judge, eight-ball, nine-ball and the other tables' games). Built from a Timeline and
 //          the layout the shot started from; it never re-solves anything. It reports:
@@ -77,6 +80,16 @@ public struct ShotFacts: Sendable, Equatable {
         }
     }
 
+    /// Two balls touching: the first and second ball as the event lists them, and when.
+    public struct BallPair: Sendable, Equatable {
+        public var first: Int
+        public var second: Int
+        public var time: Double
+        public init(first: Int, second: Int, time: Double) { self.first = first; self.second = second; self.time = time }
+        /// True when this contact is between `a` and `b`, in either order.
+        public func involves(_ a: Int, _ b: Int) -> Bool { (first == a && second == b) || (first == b && second == a) }
+    }
+
     /// A ball touching a fixed post: which post (index in TableSpec.posts), which ball, when.
     public struct PostTouch: Sendable, Equatable {
         public var post: Int
@@ -123,6 +136,8 @@ public struct ShotFacts: Sendable, Equatable {
     public let postsTouched: [PostTouch]
     /// Balls that crossed a hole too fast to drop (generation two only), in time order.
     public let rimSkips: [Drop]
+    /// Every ball-to-ball contact of the shot (not only the cue ball's), in time order.
+    public let ballContacts: [BallPair]
 
     /// Reads a recorded shot.
     /// - timeline: the recording.
@@ -150,10 +165,12 @@ public struct ShotFacts: Sendable, Equatable {
         }
 
         // Drops, in event (time) order; bed holes listed again with their hole number.
-        var drops: [Drop] = [], skips: [Drop] = [], posts: [PostTouch] = []
+        var drops: [Drop] = [], skips: [Drop] = [], posts: [PostTouch] = [], pairs: [BallPair] = []
         for e in tl.events {
             guard let b = e.balls.first?.ball else { continue }
             switch e.kind {
+            case .ballBall where e.balls.count >= 2:
+                pairs.append(BallPair(first: b, second: e.balls[1].ball, time: e.time))
             case .pocket: drops.append(Drop(ball: b, pocket: e.pocket, time: e.time, entry: e.entry))
             case .rimSkip: skips.append(Drop(ball: b, pocket: e.pocket, time: e.time, entry: e.entry))
             case .cushion where e.edge == .post: posts.append(PostTouch(post: e.feature, ball: b, time: e.time))
@@ -162,6 +179,7 @@ public struct ShotFacts: Sendable, Equatable {
         }
         pocketed = drops
         rimSkips = skips
+        ballContacts = pairs
         postsTouched = posts
         holeDrops = drops.filter(\.isBedHole).map {
             HoleDrop(ball: $0.ball, hole: $0.pocket - TableSpec.edgePocketCount, time: $0.time)
@@ -236,6 +254,9 @@ public struct ShotFacts: Sendable, Equatable {
 
     /// Object balls pocketed, in order (the cue ball left out).
     public var objectBallsPocketed: [Drop] { pocketed.filter { $0.ball != cueBall } }
+
+    /// True when balls `a` and `b` touched each other at any time in the shot.
+    public func touched(_ a: Int, _ b: Int) -> Bool { ballContacts.contains { $0.involves(a, b) } }
 
     /// Where `ball` dropped, if it did (its first drop; a ball drops at most once in a shot).
     public func pocket(of ball: Int) -> Int? { pocketed.first { $0.ball == ball }?.pocket }
