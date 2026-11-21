@@ -99,11 +99,18 @@ public struct EightBallRules: MatchRules {
     /// Loss of game on the 8, one explicit table checked top to bottom; the first row that applies is the loss. Off
     /// the table comes first, then a foul (a scratch included), then too early, then the wrong pocket. A safety, or a
     /// call of any other ball, that drops the 8 is the wrong pocket: the 8 was not called there.
-    static let lossOnTheEight: [(loss: EightBallLoss, applies: @Sendable (EightShot) -> Bool)] = [
-        (.eightOffTable, { $0.offTable }),
-        (.eightOnFoul, { $0.pocket != nil && $0.fouled }),
-        (.eightEarly, { $0.pocket != nil && !$0.onTheEight }),
-        (.eightWrongPocket, { s in s.pocket != nil && !(s.call?.ball == 8 && s.call?.pocket?.rawValue == s.pocket) }),
+    struct LossRow: Sendable {
+        let loss: EightBallLoss
+        let applies: @Sendable (EightShot) -> Bool
+    }
+
+    static let lossOnTheEight: [LossRow] = [
+        LossRow(loss: .eightOffTable, applies: { s in s.offTable }),
+        LossRow(loss: .eightOnFoul, applies: { s in s.pocket != nil && s.fouled }),
+        LossRow(loss: .eightEarly, applies: { s in s.pocket != nil && !s.onTheEight }),
+        LossRow(loss: .eightWrongPocket, applies: { s in
+            s.pocket != nil && !(s.call?.ball == 8 && s.call?.pocket?.rawValue == s.pocket)
+        }),
     ]
 
     /// The loss on the 8 for one shot, if any (the first row of lossOnTheEight that applies).

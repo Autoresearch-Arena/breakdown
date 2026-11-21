@@ -83,7 +83,7 @@ final class RackAndPlacementTests: XCTestCase {
             // Every ball 1 to 9 sits on its own place of the diamond.
             var used = Set<Int>()
             for b in 1...9 {
-                let k = places.indices.min { (pos[b] - places[$0]).length < (pos[b] - places[$1]).length }!
+                let k = places.indices.min { i, j in (pos[b] - places[i]).length < (pos[b] - places[j]).length }!
                 XCTAssertLessThan((pos[b] - places[k]).length, slack, "ball \(b) on a place")
                 used.insert(k)
             }
@@ -92,8 +92,9 @@ final class RackAndPlacementTests: XCTestCase {
             for a in 1...8 {
                 for b in (a + 1)...9 { XCTAssertGreaterThan((pos[a] - pos[b]).length, 2 * r) }
             }
-            orders.insert((1...9).map { b in places.indices.min { (pos[b] - places[$0]).length
-                                                                 < (pos[b] - places[$1]).length }! })
+            orders.insert((1...9).map { ball in
+                places.indices.min { i, j in (pos[ball] - places[i]).length < (pos[ball] - places[j]).length }!
+            })
         }
         XCTAssertGreaterThan(orders.count, 1, "the seed changes where the 2 to 8 go")
     }
