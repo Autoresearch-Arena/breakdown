@@ -1,0 +1,1854 @@
+{
+ "keys": [
+  "House cue",
+  "%@ · swing %@ m/s",
+  "%@ · ball %@ m/s",
+  "%@, swing %@ metres per second, ball %@ metres per second",
+  "past the calm zone",
+  "Full power: the tip slid off the ball.",
+  "Full power: the tip landed left of where you aimed.",
+  "Full power: the tip landed right of where you aimed.",
+  "Swinging hard: the tip slid off the ball.",
+  "Swinging hard: the tip landed left of where you aimed.",
+  "Swinging hard: the tip landed right of where you aimed.",
+  "Your stroke was straighter this time.",
+  "Your stroke wandered more this time.",
+  "Your stroke was straighter this time, and %@.",
+  "Your stroke wandered more this time, and %@.",
+  "Same settings, but the stroke was not quite the same, and %@.",
+  "Back within %@ of the cue line: dead straight.",
+  "Back within %@ of the cue line: straight.",
+  "It came back %@ off the cue line.",
+  "It stopped %@ off the cue line before coming all the way back.",
+  "Not hard enough to reach the far rail.",
+  "The cue ball dropped in a pocket.",
+  "Straight stroke",
+  "Your best yet.",
+  "Your stroke, with its sideways wander drawn four times larger.",
+  "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+  "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+  "Again",
+  "Puts the cue ball back on the head spot",
+  "Best: %@ off the line",
+  "Dead straight strokes: %lld",
+  "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+  "Send the cue ball up the table and back. Does it return to the cue?"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "House cue",
+   "text": "Taco de la casa"
+  },
+  {
+   "culture": "fr",
+   "key": "House cue",
+   "text": "Queue de la maison"
+  },
+  {
+   "culture": "de",
+   "key": "House cue",
+   "text": "Hausqueue"
+  },
+  {
+   "culture": "it",
+   "key": "House cue",
+   "text": "Stecca del locale"
+  },
+  {
+   "culture": "pt",
+   "key": "House cue",
+   "text": "Taco da casa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "House cue",
+   "text": "Taco da casa"
+  },
+  {
+   "culture": "ja",
+   "key": "House cue",
+   "text": "店のキュー"
+  },
+  {
+   "culture": "ko",
+   "key": "House cue",
+   "text": "하우스 큐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "House cue",
+   "text": "公用球杆"
+  },
+  {
+   "culture": "ru",
+   "key": "House cue",
+   "text": "Клубный кий"
+  },
+  {
+   "culture": "ar",
+   "key": "House cue",
+   "text": "عصا النادي"
+  },
+  {
+   "culture": "es",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · golpe %@ m/s"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · élan %@ m/s"
+  },
+  {
+   "culture": "de",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · Schwung %@ m/s"
+  },
+  {
+   "culture": "it",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · colpo %@ m/s"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · tacada %@ m/s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · tacada %@ m/s"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · スイング %@ m/s"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · 스윙 %@ m/s"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · 出杆 %@ 米/秒"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · замах %@ м/с"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ · swing %@ m/s",
+   "text": "%@ · ضربة %@ م/ث"
+  },
+  {
+   "culture": "es",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · bola %@ m/s"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · bille %@ m/s"
+  },
+  {
+   "culture": "de",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · Kugel %@ m/s"
+  },
+  {
+   "culture": "it",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · bilia %@ m/s"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · bola %@ m/s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · bola %@ m/s"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · 球 %@ m/s"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · 공 %@ m/s"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · 球 %@ 米/秒"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · шар %@ м/с"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ · ball %@ m/s",
+   "text": "%@ · الكرة %@ م/ث"
+  },
+  {
+   "culture": "es",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, golpe a %@ metros por segundo, bola a %@ metros por segundo"
+  },
+  {
+   "culture": "fr",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, élan à %@ mètres par seconde, bille à %@ mètres par seconde"
+  },
+  {
+   "culture": "de",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, Schwung %@ Meter pro Sekunde, Kugel %@ Meter pro Sekunde"
+  },
+  {
+   "culture": "it",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, colpo a %@ metri al secondo, bilia a %@ metri al secondo"
+  },
+  {
+   "culture": "pt",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, tacada a %@ metros por segundo, bola a %@ metros por segundo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, tacada a %@ metros por segundo, bola a %@ metros por segundo"
+  },
+  {
+   "culture": "ja",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@、スイング毎秒%@メートル、球は毎秒%@メートル"
+  },
+  {
+   "culture": "ko",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, 스윙 초속 %@미터, 공 초속 %@미터"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@，出杆每秒 %@ 米，球每秒 %@ 米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@, замах %@ метра в секунду, шар %@ метра в секунду"
+  },
+  {
+   "culture": "ar",
+   "key": "%@, swing %@ metres per second, ball %@ metres per second",
+   "text": "%@، الضربة %@ متر في الثانية، الكرة %@ متر في الثانية"
+  },
+  {
+   "culture": "es",
+   "key": "past the calm zone",
+   "text": "más allá de la zona tranquila"
+  },
+  {
+   "culture": "fr",
+   "key": "past the calm zone",
+   "text": "au-delà de la zone calme"
+  },
+  {
+   "culture": "de",
+   "key": "past the calm zone",
+   "text": "jenseits der ruhigen Zone"
+  },
+  {
+   "culture": "it",
+   "key": "past the calm zone",
+   "text": "oltre la zona tranquilla"
+  },
+  {
+   "culture": "pt",
+   "key": "past the calm zone",
+   "text": "para lá da zona calma"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "past the calm zone",
+   "text": "além da zona calma"
+  },
+  {
+   "culture": "ja",
+   "key": "past the calm zone",
+   "text": "落ち着いた範囲の外"
+  },
+  {
+   "culture": "ko",
+   "key": "past the calm zone",
+   "text": "안정 구간을 넘음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "past the calm zone",
+   "text": "超出平稳区"
+  },
+  {
+   "culture": "ru",
+   "key": "past the calm zone",
+   "text": "за пределами спокойной зоны"
+  },
+  {
+   "culture": "ar",
+   "key": "past the calm zone",
+   "text": "بعد المنطقة الهادئة"
+  },
+  {
+   "culture": "es",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "A toda potencia: la suela resbaló de la bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "À pleine puissance : le procédé a glissé sur la bille."
+  },
+  {
+   "culture": "de",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "Volle Kraft: Die Pomeranze ist von der Kugel abgerutscht."
+  },
+  {
+   "culture": "it",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "A tutta potenza: il cuoio è scivolato sulla bilia."
+  },
+  {
+   "culture": "pt",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "Força máxima: a sola escorregou na bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "Força máxima: o couro escorregou na bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "全力:タップが球の上で滑った。"
+  },
+  {
+   "culture": "ko",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "최대 세기: 팁이 공에서 미끄러졌어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "全力:杆头从球上滑脱了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "Полная сила: наклейка соскользнула с шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Full power: the tip slid off the ball.",
+   "text": "بكامل القوة: انزلق رأس العصا عن الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "A toda potencia: la suela dio a la izquierda de donde apuntaste."
+  },
+  {
+   "culture": "fr",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "À pleine puissance : le procédé a touché à gauche de l’endroit visé."
+  },
+  {
+   "culture": "de",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "Volle Kraft: Die Pomeranze traf links von der Stelle, auf die du gezielt hast."
+  },
+  {
+   "culture": "it",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "A tutta potenza: il cuoio ha colpito a sinistra del punto mirato."
+  },
+  {
+   "culture": "pt",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "Força máxima: a sola bateu à esquerda de onde apontaste."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "Força máxima: o couro bateu à esquerda de onde você mirou."
+  },
+  {
+   "culture": "ja",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "全力:タップが狙った位置より左に当たった。"
+  },
+  {
+   "culture": "ko",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "최대 세기: 팁이 겨냥한 곳보다 왼쪽에 맞았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "全力:杆头击在了瞄准点的左边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "Полная сила: наклейка попала левее, чем вы целились."
+  },
+  {
+   "culture": "ar",
+   "key": "Full power: the tip landed left of where you aimed.",
+   "text": "بكامل القوة: أصاب رأس العصا يسار المكان الذي صوّبت إليه."
+  },
+  {
+   "culture": "es",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "A toda potencia: la suela dio a la derecha de donde apuntaste."
+  },
+  {
+   "culture": "fr",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "À pleine puissance : le procédé a touché à droite de l’endroit visé."
+  },
+  {
+   "culture": "de",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "Volle Kraft: Die Pomeranze traf rechts von der Stelle, auf die du gezielt hast."
+  },
+  {
+   "culture": "it",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "A tutta potenza: il cuoio ha colpito a destra del punto mirato."
+  },
+  {
+   "culture": "pt",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "Força máxima: a sola bateu à direita de onde apontaste."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "Força máxima: o couro bateu à direita de onde você mirou."
+  },
+  {
+   "culture": "ja",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "全力:タップが狙った位置より右に当たった。"
+  },
+  {
+   "culture": "ko",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "최대 세기: 팁이 겨냥한 곳보다 오른쪽에 맞았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "全力:杆头击在了瞄准点的右边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "Полная сила: наклейка попала правее, чем вы целились."
+  },
+  {
+   "culture": "ar",
+   "key": "Full power: the tip landed right of where you aimed.",
+   "text": "بكامل القوة: أصاب رأس العصا يمين المكان الذي صوّبت إليه."
+  },
+  {
+   "culture": "es",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Con un golpe fuerte: la suela resbaló de la bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Avec un élan fort : le procédé a glissé sur la bille."
+  },
+  {
+   "culture": "de",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Mit viel Schwung: Die Pomeranze ist von der Kugel abgerutscht."
+  },
+  {
+   "culture": "it",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Con un colpo forte: il cuoio è scivolato sulla bilia."
+  },
+  {
+   "culture": "pt",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Com uma tacada forte: a sola escorregou na bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Com uma tacada forte: o couro escorregou na bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "強いスイング:タップが球の上で滑った。"
+  },
+  {
+   "culture": "ko",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "세게 휘두름: 팁이 공에서 미끄러졌어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "大力出杆:杆头从球上滑脱了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "Сильный замах: наклейка соскользнула с шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Swinging hard: the tip slid off the ball.",
+   "text": "ضربة قوية: انزلق رأس العصا عن الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Con un golpe fuerte: la suela dio a la izquierda de donde apuntaste."
+  },
+  {
+   "culture": "fr",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Avec un élan fort : le procédé a touché à gauche de l’endroit visé."
+  },
+  {
+   "culture": "de",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Mit viel Schwung: Die Pomeranze traf links von der Stelle, auf die du gezielt hast."
+  },
+  {
+   "culture": "it",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Con un colpo forte: il cuoio ha colpito a sinistra del punto mirato."
+  },
+  {
+   "culture": "pt",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Com uma tacada forte: a sola bateu à esquerda de onde apontaste."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Com uma tacada forte: o couro bateu à esquerda de onde você mirou."
+  },
+  {
+   "culture": "ja",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "強いスイング:タップが狙った位置より左に当たった。"
+  },
+  {
+   "culture": "ko",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "세게 휘두름: 팁이 겨냥한 곳보다 왼쪽에 맞았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "大力出杆:杆头击在了瞄准点的左边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "Сильный замах: наклейка попала левее, чем вы целились."
+  },
+  {
+   "culture": "ar",
+   "key": "Swinging hard: the tip landed left of where you aimed.",
+   "text": "ضربة قوية: أصاب رأس العصا يسار المكان الذي صوّبت إليه."
+  },
+  {
+   "culture": "es",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Con un golpe fuerte: la suela dio a la derecha de donde apuntaste."
+  },
+  {
+   "culture": "fr",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Avec un élan fort : le procédé a touché à droite de l’endroit visé."
+  },
+  {
+   "culture": "de",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Mit viel Schwung: Die Pomeranze traf rechts von der Stelle, auf die du gezielt hast."
+  },
+  {
+   "culture": "it",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Con un colpo forte: il cuoio ha colpito a destra del punto mirato."
+  },
+  {
+   "culture": "pt",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Com uma tacada forte: a sola bateu à direita de onde apontaste."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Com uma tacada forte: o couro bateu à direita de onde você mirou."
+  },
+  {
+   "culture": "ja",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "強いスイング:タップが狙った位置より右に当たった。"
+  },
+  {
+   "culture": "ko",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "세게 휘두름: 팁이 겨냥한 곳보다 오른쪽에 맞았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "大力出杆:杆头击在了瞄准点的右边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "Сильный замах: наклейка попала правее, чем вы целились."
+  },
+  {
+   "culture": "ar",
+   "key": "Swinging hard: the tip landed right of where you aimed.",
+   "text": "ضربة قوية: أصاب رأس العصا يمين المكان الذي صوّبت إليه."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke was straighter this time.",
+   "text": "Esta vez tu golpe fue más recto."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke was straighter this time.",
+   "text": "Cette fois, ton coup était plus droit."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke was straighter this time.",
+   "text": "Diesmal war dein Stoß gerader."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke was straighter this time.",
+   "text": "Questa volta il tuo colpo era più dritto."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke was straighter this time.",
+   "text": "Desta vez a tua tacada foi mais direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke was straighter this time.",
+   "text": "Desta vez sua tacada foi mais reta."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke was straighter this time.",
+   "text": "今回はストロークがまっすぐだった。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke was straighter this time.",
+   "text": "이번에는 스트로크가 더 곧았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke was straighter this time.",
+   "text": "这次你的出杆更直了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke was straighter this time.",
+   "text": "На этот раз удар был прямее."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke was straighter this time.",
+   "text": "كانت ضربتك أكثر استقامة هذه المرة."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke wandered more this time.",
+   "text": "Esta vez tu golpe se desvió más."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke wandered more this time.",
+   "text": "Cette fois, ton coup a plus dévié."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke wandered more this time.",
+   "text": "Diesmal ist dein Stoß mehr abgewichen."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke wandered more this time.",
+   "text": "Questa volta il tuo colpo ha deviato di più."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke wandered more this time.",
+   "text": "Desta vez a tua tacada desviou-se mais."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke wandered more this time.",
+   "text": "Desta vez sua tacada desviou mais."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke wandered more this time.",
+   "text": "今回はストロークがよりぶれた。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke wandered more this time.",
+   "text": "이번에는 스트로크가 더 흔들렸어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke wandered more this time.",
+   "text": "这次你的出杆偏得更多。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke wandered more this time.",
+   "text": "На этот раз удар ушёл в сторону сильнее."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke wandered more this time.",
+   "text": "انحرفت ضربتك أكثر هذه المرة."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "Esta vez tu golpe fue más recto, y %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "Cette fois, ton coup était plus droit, et %@."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "Diesmal war dein Stoß gerader, und %@."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "Questa volta il tuo colpo era più dritto, e %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "Desta vez a tua tacada foi mais direita, e %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "Desta vez sua tacada foi mais reta, e %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "今回はストロークがまっすぐで、%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "이번에는 스트로크가 더 곧았고, %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "这次你的出杆更直了，%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "На этот раз удар был прямее, и %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke was straighter this time, and %@.",
+   "text": "كانت ضربتك أكثر استقامة هذه المرة، و%@."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "Esta vez tu golpe se desvió más, y %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "Cette fois, ton coup a plus dévié, et %@."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "Diesmal ist dein Stoß mehr abgewichen, und %@."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "Questa volta il tuo colpo ha deviato di più, e %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "Desta vez a tua tacada desviou-se mais, e %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "Desta vez sua tacada desviou mais, e %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "今回はストロークがよりぶれて、%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "이번에는 스트로크가 더 흔들렸고, %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "这次你的出杆偏得更多，%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "На этот раз удар ушёл в сторону сильнее, и %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke wandered more this time, and %@.",
+   "text": "انحرفت ضربتك أكثر هذه المرة، و%@."
+  },
+  {
+   "culture": "es",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "Los mismos ajustes, pero el golpe no fue igual del todo, y %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "Mêmes réglages, mais le coup n’était pas tout à fait le même, et %@."
+  },
+  {
+   "culture": "de",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "Gleiche Einstellungen, aber der Stoß war nicht ganz derselbe, und %@."
+  },
+  {
+   "culture": "it",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "Stesse impostazioni, ma il colpo non era proprio uguale, e %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "As mesmas definições, mas a tacada não foi bem igual, e %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "As mesmas configurações, mas a tacada não foi bem igual, e %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "設定は同じでも、ストロークが少し違い、%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "설정은 같았지만 스트로크가 조금 달랐고, %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "设置相同，但出杆不完全一样，%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "Настройки те же, но удар был немного другим, и %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Same settings, but the stroke was not quite the same, and %@.",
+   "text": "الإعدادات نفسها، لكن الضربة لم تكن مماثلة تمامًا، و%@."
+  },
+  {
+   "culture": "es",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Volvió a menos de %@ de la línea del taco: totalmente recto."
+  },
+  {
+   "culture": "fr",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Revenue à moins de %@ de la ligne de queue : parfaitement droit."
+  },
+  {
+   "culture": "de",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Bis auf %@ an die Queuelinie zurück: schnurgerade."
+  },
+  {
+   "culture": "it",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Tornata entro %@ dalla linea della stecca: perfettamente dritto."
+  },
+  {
+   "culture": "pt",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Voltou a menos de %@ da linha do taco: perfeitamente direito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Voltou a menos de %@ da linha do taco: perfeitamente reto."
+  },
+  {
+   "culture": "ja",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "キューのラインから%@以内に戻った:完璧にまっすぐ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "큐 라인에서 %@ 안으로 돌아왔어요: 완벽하게 곧아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "回到距球杆线 %@ 以内:笔直。"
+  },
+  {
+   "culture": "ru",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "Вернулся в пределах %@ от линии кия: идеально прямо."
+  },
+  {
+   "culture": "ar",
+   "key": "Back within %@ of the cue line: dead straight.",
+   "text": "عادت ضمن %@ من خط العصا: مستقيمة تمامًا."
+  },
+  {
+   "culture": "es",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Volvió a menos de %@ de la línea del taco: recto."
+  },
+  {
+   "culture": "fr",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Revenue à moins de %@ de la ligne de queue : droit."
+  },
+  {
+   "culture": "de",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Bis auf %@ an die Queuelinie zurück: gerade."
+  },
+  {
+   "culture": "it",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Tornata entro %@ dalla linea della stecca: dritto."
+  },
+  {
+   "culture": "pt",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Voltou a menos de %@ da linha do taco: direito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Voltou a menos de %@ da linha do taco: reto."
+  },
+  {
+   "culture": "ja",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "キューのラインから%@以内に戻った:まっすぐ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "큐 라인에서 %@ 안으로 돌아왔어요: 곧아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "回到距球杆线 %@ 以内:直。"
+  },
+  {
+   "culture": "ru",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "Вернулся в пределах %@ от линии кия: прямо."
+  },
+  {
+   "culture": "ar",
+   "key": "Back within %@ of the cue line: straight.",
+   "text": "عادت ضمن %@ من خط العصا: مستقيمة."
+  },
+  {
+   "culture": "es",
+   "key": "It came back %@ off the cue line.",
+   "text": "Volvió a %@ de la línea del taco."
+  },
+  {
+   "culture": "fr",
+   "key": "It came back %@ off the cue line.",
+   "text": "Elle est revenue à %@ de la ligne de queue."
+  },
+  {
+   "culture": "de",
+   "key": "It came back %@ off the cue line.",
+   "text": "Sie kam %@ neben der Queuelinie zurück."
+  },
+  {
+   "culture": "it",
+   "key": "It came back %@ off the cue line.",
+   "text": "È tornata a %@ dalla linea della stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "It came back %@ off the cue line.",
+   "text": "Voltou a %@ da linha do taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It came back %@ off the cue line.",
+   "text": "Voltou a %@ da linha do taco."
+  },
+  {
+   "culture": "ja",
+   "key": "It came back %@ off the cue line.",
+   "text": "キューのラインから%@ずれて戻った。"
+  },
+  {
+   "culture": "ko",
+   "key": "It came back %@ off the cue line.",
+   "text": "큐 라인에서 %@ 벗어나 돌아왔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It came back %@ off the cue line.",
+   "text": "回来时偏离球杆线 %@。"
+  },
+  {
+   "culture": "ru",
+   "key": "It came back %@ off the cue line.",
+   "text": "Шар вернулся в %@ от линии кия."
+  },
+  {
+   "culture": "ar",
+   "key": "It came back %@ off the cue line.",
+   "text": "عادت على بعد %@ من خط العصا."
+  },
+  {
+   "culture": "es",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Se paró a %@ de la línea del taco antes de volver del todo."
+  },
+  {
+   "culture": "fr",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Elle s’est arrêtée à %@ de la ligne de queue avant d’être revenue."
+  },
+  {
+   "culture": "de",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Sie blieb %@ neben der Queuelinie liegen, bevor sie ganz zurück war."
+  },
+  {
+   "culture": "it",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Si è fermata a %@ dalla linea della stecca prima di tornare del tutto."
+  },
+  {
+   "culture": "pt",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Parou a %@ da linha do taco antes de voltar por completo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Parou a %@ da linha do taco antes de voltar por completo."
+  },
+  {
+   "culture": "ja",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "戻りきる前に、キューのラインから%@ずれて止まった。"
+  },
+  {
+   "culture": "ko",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "끝까지 돌아오기 전에 큐 라인에서 %@ 벗어나 멈췄어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "还没完全回来就停在了偏离球杆线 %@ 的地方。"
+  },
+  {
+   "culture": "ru",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "Шар остановился в %@ от линии кия, не вернувшись до конца."
+  },
+  {
+   "culture": "ar",
+   "key": "It stopped %@ off the cue line before coming all the way back.",
+   "text": "توقفت على بعد %@ من خط العصا قبل أن تعود تمامًا."
+  },
+  {
+   "culture": "es",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "No fue lo bastante fuerte para llegar a la banda del fondo."
+  },
+  {
+   "culture": "fr",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "Pas assez fort pour atteindre la bande du fond."
+  },
+  {
+   "culture": "de",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "Nicht fest genug, um die hintere Bande zu erreichen."
+  },
+  {
+   "culture": "it",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "Non abbastanza forte per arrivare alla sponda di fondo."
+  },
+  {
+   "culture": "pt",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "Não foi forte o suficiente para chegar à tabela do fundo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "Não foi forte o suficiente para chegar à tabela do fundo."
+  },
+  {
+   "culture": "ja",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "奥のクッションまで届く強さがなかった。"
+  },
+  {
+   "culture": "ko",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "반대편 쿠션까지 닿을 만큼 세지 않았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "力度不够，没碰到远端库边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "Не хватило силы, чтобы дойти до дальнего борта."
+  },
+  {
+   "culture": "ar",
+   "key": "Not hard enough to reach the far rail.",
+   "text": "لم تكن قوية بما يكفي لتصل إلى الحافة البعيدة."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "La bola blanca cayó en una tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "La bille blanche est tombée dans une poche."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "Die weiße Kugel ist in eine Tasche gefallen."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "La bilia battente è finita in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "A bola branca caiu num buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "A bola branca caiu na caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "手球がポケットに落ちた。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "수구가 포켓에 빠졌어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "母球落袋了。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "Биток упал в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball dropped in a pocket.",
+   "text": "سقطت الكرة البيضاء في جيب."
+  },
+  {
+   "culture": "es",
+   "key": "Straight stroke",
+   "text": "Golpe recto"
+  },
+  {
+   "culture": "fr",
+   "key": "Straight stroke",
+   "text": "Coup droit"
+  },
+  {
+   "culture": "de",
+   "key": "Straight stroke",
+   "text": "Gerader Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Straight stroke",
+   "text": "Colpo dritto"
+  },
+  {
+   "culture": "pt",
+   "key": "Straight stroke",
+   "text": "Tacada direita"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Straight stroke",
+   "text": "Tacada reta"
+  },
+  {
+   "culture": "ja",
+   "key": "Straight stroke",
+   "text": "まっすぐなストローク"
+  },
+  {
+   "culture": "ko",
+   "key": "Straight stroke",
+   "text": "곧은 스트로크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Straight stroke",
+   "text": "直线出杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Straight stroke",
+   "text": "Прямой удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Straight stroke",
+   "text": "ضربة مستقيمة"
+  },
+  {
+   "culture": "es",
+   "key": "Your best yet.",
+   "text": "Tu mejor marca."
+  },
+  {
+   "culture": "fr",
+   "key": "Your best yet.",
+   "text": "Ton meilleur résultat."
+  },
+  {
+   "culture": "de",
+   "key": "Your best yet.",
+   "text": "Dein bisher bester."
+  },
+  {
+   "culture": "it",
+   "key": "Your best yet.",
+   "text": "Il tuo migliore finora."
+  },
+  {
+   "culture": "pt",
+   "key": "Your best yet.",
+   "text": "O teu melhor até agora."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your best yet.",
+   "text": "Seu melhor até agora."
+  },
+  {
+   "culture": "ja",
+   "key": "Your best yet.",
+   "text": "これまでで最高。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your best yet.",
+   "text": "지금까지 최고예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your best yet.",
+   "text": "你目前的最好成绩。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your best yet.",
+   "text": "Ваш лучший результат."
+  },
+  {
+   "culture": "ar",
+   "key": "Your best yet.",
+   "text": "أفضل نتيجة لك حتى الآن."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "Tu golpe, con su desvío lateral dibujado cuatro veces más grande."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "Ton coup, avec son écart latéral dessiné quatre fois plus grand."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "Dein Stoß, die seitliche Abweichung viermal größer gezeichnet."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "Il tuo colpo, con la deviazione laterale disegnata quattro volte più grande."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "A tua tacada, com o desvio lateral desenhado quatro vezes maior."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "Sua tacada, com o desvio lateral desenhado quatro vezes maior."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "あなたのストローク。横のぶれは4倍に拡大して描いています。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "내 스트로크예요. 옆으로 흔들린 정도는 네 배로 크게 그렸어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "你的出杆，横向偏移放大四倍显示。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "Ваш удар; отклонение в сторону показано в четыре раза крупнее."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke, with its sideways wander drawn four times larger.",
+   "text": "ضربتك، مع رسم انحرافها الجانبي أكبر بأربع مرات."
+  },
+  {
+   "culture": "es",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Golpea la bola blanca hasta la banda del fondo. Un golpe recto la trae de vuelta por la línea del taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Envoie la bille blanche jusqu’à la bande du fond. Un coup droit la ramène sur la ligne de queue."
+  },
+  {
+   "culture": "de",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Stoß die weiße Kugel bis zur hinteren Bande. Ein gerader Stoß bringt sie auf der Queuelinie zurück."
+  },
+  {
+   "culture": "it",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Manda la bilia battente fino alla sponda di fondo. Un colpo dritto la riporta lungo la linea della stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Manda a bola branca até à tabela do fundo. Uma tacada direita trá-la de volta pela linha do taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Mande a bola branca até a tabela do fundo. Uma tacada reta a traz de volta pela linha do taco."
+  },
+  {
+   "culture": "ja",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "手球を奥のクッションまで突こう。まっすぐなストロークなら、キューのラインに沿って戻ってくる。"
+  },
+  {
+   "culture": "ko",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "수구를 반대편 쿠션까지 보내세요. 곧은 스트로크면 큐 라인을 따라 돌아와요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "把母球打到远端库边。出杆够直，它会沿着球杆线回来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "Пошлите биток к дальнему борту. При прямом ударе он вернётся по линии кия."
+  },
+  {
+   "culture": "ar",
+   "key": "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line.",
+   "text": "اضرب الكرة البيضاء حتى الحافة البعيدة. الضربة المستقيمة تعيدها على خط العصا."
+  },
+  {
+   "culture": "es",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Luego pruébalo fuerte: más allá de la zona tranquila de la barra de potencia, la línea se desvía más."
+  },
+  {
+   "culture": "fr",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Puis essaie fort : au-delà de la zone calme de la barre de puissance, la ligne dévie davantage."
+  },
+  {
+   "culture": "de",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Dann versuch es fest: jenseits der ruhigen Zone auf dem Kraftbalken weicht die Linie stärker ab."
+  },
+  {
+   "culture": "it",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Poi prova forte: oltre la zona tranquilla della barra di potenza, la linea devia di più."
+  },
+  {
+   "culture": "pt",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Depois experimenta com força: para lá da zona calma da barra de força, a linha desvia-se mais."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Depois tente com força: além da zona calma da barra de força, a linha desvia mais."
+  },
+  {
+   "culture": "ja",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "次は強く打ってみよう。強さのバーの落ち着いた範囲を超えると、ラインがよりぶれる。"
+  },
+  {
+   "culture": "ko",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "그다음엔 세게 쳐 보세요. 세기 막대의 안정 구간을 넘으면 선이 더 흔들려요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "再试试大力：力度条超出平稳区后，线路偏得更多。"
+  },
+  {
+   "culture": "ru",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "Потом попробуйте сильно: за пределами спокойной зоны на шкале силы линия уходит сильнее."
+  },
+  {
+   "culture": "ar",
+   "key": "Then try it hard: past the calm zone on the power bar, the line wanders more.",
+   "text": "ثم جرّبها بقوة: بعد المنطقة الهادئة في شريط القوة، ينحرف الخط أكثر."
+  },
+  {
+   "culture": "es",
+   "key": "Again",
+   "text": "Otra vez"
+  },
+  {
+   "culture": "fr",
+   "key": "Again",
+   "text": "Encore"
+  },
+  {
+   "culture": "de",
+   "key": "Again",
+   "text": "Noch mal"
+  },
+  {
+   "culture": "it",
+   "key": "Again",
+   "text": "Ancora"
+  },
+  {
+   "culture": "pt",
+   "key": "Again",
+   "text": "Outra vez"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Again",
+   "text": "De novo"
+  },
+  {
+   "culture": "ja",
+   "key": "Again",
+   "text": "もう一度"
+  },
+  {
+   "culture": "ko",
+   "key": "Again",
+   "text": "다시"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Again",
+   "text": "再来"
+  },
+  {
+   "culture": "ru",
+   "key": "Again",
+   "text": "Ещё раз"
+  },
+  {
+   "culture": "ar",
+   "key": "Again",
+   "text": "مرة أخرى"
+  },
+  {
+   "culture": "es",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Vuelve a poner la bola blanca en el punto de salida"
+  },
+  {
+   "culture": "fr",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Remet la bille blanche sur la mouche de départ"
+  },
+  {
+   "culture": "de",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Legt die weiße Kugel zurück auf den Kopfpunkt"
+  },
+  {
+   "culture": "it",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Rimette la bilia battente sul punto di battuta"
+  },
+  {
+   "culture": "pt",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Volta a pôr a bola branca na marca de saída"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Coloca a bola branca de volta na marca de saída"
+  },
+  {
+   "culture": "ja",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "手球をヘッドスポットに戻します"
+  },
+  {
+   "culture": "ko",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "수구를 헤드 스폿에 다시 놓아요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "把母球放回开球点"
+  },
+  {
+   "culture": "ru",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "Возвращает биток на точку начала"
+  },
+  {
+   "culture": "ar",
+   "key": "Puts the cue ball back on the head spot",
+   "text": "تعيد الكرة البيضاء إلى نقطة البداية"
+  },
+  {
+   "culture": "es",
+   "key": "Best: %@ off the line",
+   "text": "Mejor: a %@ de la línea"
+  },
+  {
+   "culture": "fr",
+   "key": "Best: %@ off the line",
+   "text": "Meilleur : à %@ de la ligne"
+  },
+  {
+   "culture": "de",
+   "key": "Best: %@ off the line",
+   "text": "Bestwert: %@ neben der Linie"
+  },
+  {
+   "culture": "it",
+   "key": "Best: %@ off the line",
+   "text": "Migliore: a %@ dalla linea"
+  },
+  {
+   "culture": "pt",
+   "key": "Best: %@ off the line",
+   "text": "Melhor: a %@ da linha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Best: %@ off the line",
+   "text": "Melhor: a %@ da linha"
+  },
+  {
+   "culture": "ja",
+   "key": "Best: %@ off the line",
+   "text": "ベスト:ラインから%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Best: %@ off the line",
+   "text": "최고 기록: 선에서 %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Best: %@ off the line",
+   "text": "最佳：偏离线路 %@"
+  },
+  {
+   "culture": "ru",
+   "key": "Best: %@ off the line",
+   "text": "Лучший: %@ от линии"
+  },
+  {
+   "culture": "ar",
+   "key": "Best: %@ off the line",
+   "text": "الأفضل: على بعد %@ من الخط"
+  },
+  {
+   "culture": "es",
+   "key": "Dead straight strokes: %lld",
+   "text": "Golpes totalmente rectos: %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Dead straight strokes: %lld",
+   "text": "Coups parfaitement droits : %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Dead straight strokes: %lld",
+   "text": "Schnurgerade Stöße: %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Dead straight strokes: %lld",
+   "text": "Colpi perfettamente dritti: %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Dead straight strokes: %lld",
+   "text": "Tacadas perfeitamente direitas: %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Dead straight strokes: %lld",
+   "text": "Tacadas perfeitamente retas: %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Dead straight strokes: %lld",
+   "text": "完璧にまっすぐなストローク:%lld"
+  },
+  {
+   "culture": "ko",
+   "key": "Dead straight strokes: %lld",
+   "text": "완벽하게 곧은 스트로크: %lld"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Dead straight strokes: %lld",
+   "text": "笔直出杆：%lld"
+  },
+  {
+   "culture": "ru",
+   "key": "Dead straight strokes: %lld",
+   "text": "Идеально прямых ударов: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Dead straight strokes: %lld",
+   "text": "ضربات مستقيمة تمامًا: %lld"
+  },
+  {
+   "culture": "es",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Taco: %@. Tira hacia atrás desde la bola blanca en la mesa, o arrastra aquí."
+  },
+  {
+   "culture": "fr",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Queue : %@. Tire en arrière depuis la bille blanche sur la table, ou fais glisser ici."
+  },
+  {
+   "culture": "de",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Queue: %@. Zieh auf dem Tisch von der weißen Kugel zurück oder zieh hier."
+  },
+  {
+   "culture": "it",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Stecca: %@. Tira indietro dalla bilia battente sul tavolo, oppure trascina qui."
+  },
+  {
+   "culture": "pt",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Taco: %@. Puxa para trás a partir da bola branca na mesa, ou arrasta aqui."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Taco: %@. Puxe para trás a partir da bola branca na mesa, ou arraste aqui."
+  },
+  {
+   "culture": "ja",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "キュー:%@。テーブルの手球から引くか、ここをドラッグ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "큐: %@. 테이블의 수구에서 뒤로 당기거나 여기를 드래그하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "球杆：%@。在球台上从母球往后拉，或在这里拖动。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "Кий: %@. Оттяните назад от битка на столе или проведите здесь."
+  },
+  {
+   "culture": "ar",
+   "key": "Cue: %@. Pull back from the cue ball on the table, or drag here.",
+   "text": "العصا: %@. اسحب للخلف من الكرة البيضاء على الطاولة، أو اسحب هنا."
+  },
+  {
+   "culture": "es",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Manda la bola blanca hasta el fondo y de vuelta. ¿Vuelve al taco?"
+  },
+  {
+   "culture": "fr",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Envoie la bille blanche au fond et retour. Revient-elle à la queue ?"
+  },
+  {
+   "culture": "de",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Schick die weiße Kugel den Tisch hinauf und zurück. Kommt sie zum Queue zurück?"
+  },
+  {
+   "culture": "it",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Manda la bilia battente in fondo al tavolo e indietro. Torna alla stecca?"
+  },
+  {
+   "culture": "pt",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Manda a bola branca ao fundo da mesa e de volta. Volta ao taco?"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Mande a bola branca ao fundo da mesa e de volta. Ela volta ao taco?"
+  },
+  {
+   "culture": "ja",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "手球を奥まで送って戻そう。キューのところへ戻ってくる?"
+  },
+  {
+   "culture": "ko",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "수구를 테이블 끝까지 보냈다가 돌아오게 하세요. 큐로 돌아오나요?"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "把母球打到台尾再弹回来。它能回到球杆前吗？"
+  },
+  {
+   "culture": "ru",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "Пошлите биток вдоль стола и обратно. Вернётся ли он к кию?"
+  },
+  {
+   "culture": "ar",
+   "key": "Send the cue ball up the table and back. Does it return to the cue?",
+   "text": "أرسل الكرة البيضاء إلى آخر الطاولة وعودتها. هل تعود إلى العصا؟"
+  }
+ ]
+}

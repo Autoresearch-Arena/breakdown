@@ -9,6 +9,11 @@
 //          write its own. "Same shot, same result" is only said when the inputs are identical AND the recorded motion
 //          and events match, vertical travel included; a change too small to describe gets a modest sentence; several
 //          changed controls are listed without naming one as the cause; a try that touched no ball says so.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: an attempt keeps the stroke's delivery (StrokeDelivery:
+//          the drift it put on the strike and the finger stroke it came from), and its `input` is the delivered,
+//          drifted strike. The comparison gains one fact, `stroke`: whether the retry's stroke was straighter or
+//          wandered more, judged from the two deliveries' aim drift, outside the controls so no setting is reported
+//          as changed by it. The words add the stroke's sentence.)
 // PURPOSE: Try again and compare. One player shot (or the player's own break) recorded as an attempt: where every ball
 //          started, the exact settings used, and the recorded timeline it produced. Two attempts from the same start
 //          are compared as facts (RetryComparison) and then in plain words (ShotComparison): what the player changed
@@ -56,6 +61,9 @@ struct ShotAttempt {
     let surface: PlaySurface
     let table: TableKind
     let generation: Int
+    /// The drift the player's stroke put on the strike, and the stroke it came from; nil for a scripted strike or a
+    /// demonstration. `input` above already holds the drifted strike (the effective input).
+    var stroke: StrokeDelivery? = nil
 
     /// The ball the cue struck (0, the pool cue ball, except on tables where each player has their own).
     var cueBall: Int { input.strike.ballIndex }
@@ -127,7 +135,7 @@ struct ShotAttempt {
     func resolved(on newTimeline: Timeline, surface newSurface: PlaySurface) -> ShotAttempt {
         ShotAttempt(isBreak: isBreak, breakSeed: breakSeed, start: start, timeline: newTimeline, aim: aim, power: power,
                     powerRange: powerRange, tipUp: tipUp, tipSide: tipSide, elevation: elevation, seed: seed,
-                    input: input, surface: newSurface, table: table, generation: generation)
+                    input: input, surface: newSurface, table: table, generation: generation, stroke: stroke)
     }
 
     // MARK: Ghost paths
@@ -181,6 +189,11 @@ struct RetryComparison: Equatable {
     let pottedBefore: [Int]
     let pottedNow: [Int]
     let key: Key
+    /// How the retry's stroke compared with the last try's (nil when either had no stroke drift, or the two were too
+    /// close to tell apart). Not a control: it never appears in inputChanges, so no setting is reported as changed.
+    var stroke: StrokeChange? = nil
+
+    enum StrokeChange: Equatable { case straighter, wilder }
 }
 
 extension RetryComparison {
@@ -223,7 +236,21 @@ extension RetryComparison {
             }
         }
         return RetryComparison(inputChanges: changes, cueBallFinishShift: shift, pottedBefore: pottedA,
-                               pottedNow: pottedB, key: key)
+                               pottedNow: pottedB, key: key, stroke: strokeChange(a.stroke, b.stroke))
+    }
+
+    /// Two strokes' aim drifts this far apart are worth a sentence, radians: a third of the 0.15 degrees the aim's own
+    /// "aimed a little to the left" needs (ShotComparison.isDescribable), because the drift is felt twice, in the aim
+    /// and in the tip's side.
+    static let strokeWorthSaying = 0.05 * Double.pi / 180
+
+    /// Straighter or wilder, from the two deliveries' aim drift (the tip's drift moves with it, so one measure serves).
+    static func strokeChange(_ a: StrokeDelivery?, _ b: StrokeDelivery?) -> StrokeChange? {
+        guard let a, let b else { return nil }
+        let before = abs(a.aimError), after = abs(b.aimError)
+        if before - after >= strokeWorthSaying { return .straighter }
+        if after - before >= strokeWorthSaying { return .wilder }
+        return nil
     }
 }
 
@@ -255,19 +282,23 @@ enum ShotComparison {
         case .exactRepeat:
             return String(localized: "Same shot, same result. The physics is exact, so nothing changes unless you do.")
         case .missedEverything:
-            return join([settingsChange(c, a), String(localized: "This time the cue ball did not touch any ball.")])
+            return join([settingsChange(c, a), StrokeWords.comparison(c.stroke),
+                         String(localized: "This time the cue ball did not touch any ball.")])
         case .sameSpot:
             let slight = c.inputChanges.count == 1 ? slightly(c.inputChanges[0].control) : nil
-            return join([slight, nearSentence])
+            return join([slight, StrokeWords.comparison(c.stroke), nearSentence])
         case .oneChange(let control):
             let said = settingsChange(c, a) ?? slightly(control)
-            return join([said, outcomeChange(a, b) ?? (near ? nearSentence : nil)])
+            return join([said, StrokeWords.comparison(c.stroke), outcomeChange(a, b) ?? (near ? nearSentence : nil)])
         case .severalChanges:
             if c.inputChanges.isEmpty {
-                return join([String(localized: "The settings were the same, but the shot did not play out exactly the same."),
+                // Same settings, different motion: only the stroke can have changed it.
+                return join([StrokeWords.comparison(c.stroke)
+                                ?? String(localized: "The settings were the same, but the shot did not play out exactly the same."),
                              outcomeChange(a, b)])
             }
-            return join([settingsChange(c, a), outcomeChange(a, b) ?? (near ? nearSentence : nil),
+            return join([settingsChange(c, a), StrokeWords.comparison(c.stroke),
+                         outcomeChange(a, b) ?? (near ? nearSentence : nil),
                          String(localized: "More than one thing changed, so the replay is the place to see which one mattered.")])
         }
     }

@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: strokeHold, set while a stroke is drawn on the cue
+//          ball (StrokeGesture), keeps pinch and two-finger pan still, so a bridge finger resting on the cloth beside a
+//          moving stroke finger is not read as a zoom or a pan.)
 // PURPOSE: Zooming into the table by hand (look plan package 3: on a phone held upright the camera fits the whole
 //          table, so the balls are a few millimetres across). Two parts:
 //          (1) TableZoom, the state: one more distance multiplier and a sideways offset of the camera's look point,
@@ -57,6 +60,9 @@ final class TableZoom {
     private(set) var focusedBall: Int?
     /// True while fingers are on a pinch or a two-finger drag: the aiming layer ignores its own drag meanwhile.
     var isGesturing = false
+    /// True while the player strokes the cue ball (StrokeGesture): a second finger then is the bridge hand, so pinches
+    /// and two-finger drags are ignored until the stroke ends.
+    var strokeHold = false
 
     /// True when the hand has zoomed or moved the view away from the fitted one.
     var isZoomed: Bool { goalScale < 0.999 || simd_length(goalOffset) > 0.002 }
@@ -73,6 +79,7 @@ final class TableZoom {
     /// A pinch moved: `magnification` is relative to its start (above 1 spreads the fingers, zooming in). `anchor`, the
     /// table point under the fingers when the pinch began (world plan), stays under them as the view scales about it.
     func pinchChanged(magnification: CGFloat, anchor: SIMD2<Float>?) {
+        guard !strokeHold else { return }
         isGesturing = true
         if pinchStart == nil { pinchStart = (goalScale, goalOffset) }
         guard let start = pinchStart else { return }
@@ -94,6 +101,7 @@ final class TableZoom {
 
     /// A two-finger drag moved by `delta` (world plan metres, the way the table under the fingers moved).
     func panChanged(by delta: SIMD2<Float>) {
+        guard !strokeHold else { return }
         isGesturing = true
         if panStart == nil { panStart = goalOffset }
         guard let start = panStart else { return }

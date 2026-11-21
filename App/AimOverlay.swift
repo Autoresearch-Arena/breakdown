@@ -33,6 +33,11 @@
 //          does the same for one-finger play: tap a ball and the line snaps to its centre, tap a pocket and it aims
 //          the ball in line (or the easiest ball) into that pocket. A game controller's A button fires while this
 //          layer is up, and the controller turns the aim the way the arrow keys do on this camera.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hooks: the pull on the cue ball is now the measured
+//          stroke (StrokeGestures, App/Stroke/StrokeGesture.swift), added to this layer as one modifier; while it tracks
+//          a stroke this file's own pull defers to it (power is set in one place), the rest of a touch that has played
+//          its shot by a push through the ball is ignored (so it does not jump the new shot to its end), and the
+//          groove and the finger's trace are drawn from this Canvas with one call. Scripted drags are unchanged.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -74,6 +79,8 @@ struct AimOverlay: View {
     @State private var cameraBox = AimProjector.CameraBox()
     @State private var mode: DragMode?
     @State private var pulling = false
+    /// The stroke being drawn on the cue ball (StrokeGesture), shared with the drawing below.
+    @State private var stroke = StrokeSession()
     /// True while a finger (or pointer) is carrying the lifted cue ball; letting go puts it down.
     @State private var placingDrag = false
     @State private var viewSize = CGSize(width: 400, height: 800)
@@ -98,6 +105,8 @@ struct AimOverlay: View {
             Color.clear
                 .contentShape(Rectangle())
                 .gesture(dragGesture)
+                // The pull on the cue ball as a measured stroke: groove, wander, bridge finger, Pencil, a push to play.
+                .strokeGestures(model: model, bridge: bridge, session: stroke, isOpen: $isOpen)
                 .modifier(TableZoomGestures(model: model, bridge: bridge))
                 .accessibilityHidden(true)
             TimelineView(.animation) { _ in
@@ -335,6 +344,9 @@ struct AimOverlay: View {
             placingDrag = true
             return
         }
+        // A stroke that has just played its shot by a push through the ball: the rest of that touch is not a new
+        // gesture (it would jump the new shot to its end).
+        if stroke.spent { return }
         // Touching the table while the last shot is still playing takes over: jump to where the balls came to rest.
         if !model.aimReady { model.skipToResult() }
         // Two fingers on the table are zooming or panning it (TableZoomGestures), not aiming.
@@ -351,6 +363,11 @@ struct AimOverlay: View {
         case .aim:
             model.aim(toward: spot)
         case .pull:
+            // A measured stroke sets the power itself (StrokeGestures); this only shows the pull is on.
+            if stroke.isTracking {
+                pulling = hypot(location.x - start.x, location.y - start.y) > pullSlop
+                return
+            }
             guard hypot(location.x - start.x, location.y - start.y) > pullSlop else { return }
             // How far the finger is behind the cue ball, measured along the aim line, on the table itself.
             let behind = (model.aimOrigin - spot).dot(model.aimDirection)
@@ -507,6 +524,9 @@ struct AimOverlay: View {
             // Nothing in the way: the cue ball finishes at the cushion.
             ctx.stroke(end, with: .color(paper.opacity(0.7)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
         }
+
+        // The stroke's groove on the cloth and the finger's trace, while a stroke is drawn on the cue ball.
+        StrokeDrawing.draw(&ctx, session: stroke, paper: paper, accent: accent)
 
         // The pull handle around the cue ball, and the live power read-out while pulling.
         let ringRadius = max(24, handleRadius(proj, origin, radius))

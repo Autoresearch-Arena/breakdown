@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: a finished shot's summary is followed by the
+//          stroke's result line when a hard swing's drift mattered, the same words the screen shows (StrokeWords).)
 // PURPOSE: The table as VoiceOver and Switch Control find it (accessibility plan, packages 1 and 3).
 //          TableAccessLayer lays one invisible accessibility element over each ball and each pocket of the 3D table,
 //          at the place the ball or pocket really is on screen, so touch exploration finds a ball where it sits and
@@ -70,6 +72,7 @@ enum ShotNarration {
         let version = model.timelineVersion
         guard bridge.narratedVersion != version, model.aimReady, NotebookStory.hasShot(model) else { return }
         var text = summary(of: model)
+        if let line = StrokeWords.resultLine(model.currentAttempt?.stroke) { text += " " + line }
         if let match = model.match {
             // The ruling is still being made while the shot is out: wait for it, then say both together.
             if match.phase == .shooting { return }

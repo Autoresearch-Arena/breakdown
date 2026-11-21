@@ -74,6 +74,9 @@
 //          (NotebookPage), so the Help menu reaches How to play in any layout: a page of the panel in the notebook, a
 //          sheet otherwise. The aiming layer gains pointer, scroll and Pencil-hover aiming (PointerAim), and the title
 //          row's round buttons brighten under the pointer.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hooks: the stroke's faint trace over the table during
+//          the replay (StrokeTraceOverlay), and the stroke's cards (the result line, the straight-stroke drill) beside
+//          the other cards in the phone's bottom stack and the side column.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -218,6 +221,8 @@ struct ShowpieceView: View {
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
+            // The stroke that played the shot, faint on the cloth while it replays. Never takes touches.
+            if model.currentAttempt?.stroke?.trace.isEmpty == false { StrokeTraceOverlay(model: model, bridge: bridge) }
             // Trick shots: rings on the shot's balls and pockets, the success glow, the list sheet, launch flags.
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Behind the 8-Ball: the called ball and pocket, the list sheet, launch flags (EightBallViews).
@@ -275,6 +280,8 @@ struct ShowpieceView: View {
                 if !wide { EightBallCard(model: model) }
                 // Free play and matches: ball in hand, table cleared, the match card (FreePlayViews, MatchViews).
                 if !wide { PlayCards(model: model) }
+                // The stroke: the hard shot's result line and the straight-stroke drill.
+                if !wide { StrokeCards(model: model) }
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
@@ -333,6 +340,7 @@ struct ShowpieceView: View {
                     TrickShotCard(model: model)
                     EightBallCard(model: model)
                     PlayCards(model: model)
+                    StrokeCards(model: model)
                     CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()

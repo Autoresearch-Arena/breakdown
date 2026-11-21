@@ -28,6 +28,8 @@
 //          Continue match when a saved one exists, Practice (free play), Eight-ball and Nine-ball. "Watch the break" is
 //          now "Watch the intro". How to play gains a Rules section with a page each for eight-ball and nine-ball, in
 //          our own plain words.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: "Straight stroke" in the Play list's practice
+//          options, the drill that judges how straight the player strokes (StrokeDrill).)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
 //          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
@@ -229,6 +231,10 @@ struct TitleScreen: View {
             MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle",
                     prominent: !model.hasSavedMatch) {
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
+            }
+            MenuRow(title: "Straight stroke", line: "Send the cue ball up the table and back. Does it return to the cue?",
+                    symbol: "arrow.up.and.down") {
+                model.strokeDrill.begin(); onPlay()
             }
             MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
                     symbol: "8.circle") { start(.eightBall) }

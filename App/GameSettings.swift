@@ -4,6 +4,8 @@
 //          seenOpeningKey, set once the first-launch opening has played through, and freePlayRackKey, the rack free play
 //          lays out: fifteen-ball triangle, nine-ball diamond or place balls. Kept here so every stored key lives in one
 //          list.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: the straight-stroke drill's two remembered numbers,
+//          strokeDrillBestKey and strokeDrillStraightKey, read and written by StrokeDrill.)
 // PURPOSE: The player's options, stored on the device: sound, vibration, shot explanations (the caption card in the
 //          Physics Lens), the aim guide (ghost ball and where the balls head after contact), and whether the
 //          explanation card shows its maths. One key per option, read by the views with @AppStorage and by the sound
@@ -26,6 +28,10 @@ enum GameSettings {
     static let seenOpeningKey = "seenOpening"
     /// The rack free play lays out (FreePlayRack's raw value). Read and written by ShowpieceModel.
     static let freePlayRackKey = "optionFreePlayRack"
+    /// The straight-stroke drill's best return, metres off the cue line (StrokeDrill).
+    static let strokeDrillBestKey = "strokeDrillBest"
+    /// How many dead-straight strokes the drill has seen (StrokeDrill).
+    static let strokeDrillStraightKey = "strokeDrillStraight"
 
     /// Options default to on; reading a missing key as "on" keeps a fresh install fully featured.
     private static func flag(_ key: String) -> Bool { UserDefaults.standard.object(forKey: key) as? Bool ?? true }

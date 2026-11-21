@@ -63,6 +63,15 @@
 //          fresh rack, plays the player's first break and only then opens the menu (openingStage, hasSeenOpening).
 //          The tip's travel and the miscue ring are now per mode (tipLimit, miscueLimit). Launch flag -retryCases runs
 //          the plan's retry cases and logs each result.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream, plans/21-Nov-2026-stroke-and-power-plan.md: power is
+//          how hard the player swings; the launch speed goes through CueProfile.selected (the house cue returns the
+//          power untouched, so every solve is as before). A shot or break the player fires (fire(), never a
+//          demonstration or a scripted strike) gets its delivery drift (StrokeModel) applied to the strike before
+//          solving: from the finger's stroke when one set this power (pendingStroke), otherwise the fixed drift of the
+//          swing alone. The attempt keeps the delivery and its stroke; a retry restores the stroke so an untouched
+//          retry repeats exactly. strokeBridge is the bridge finger's length for the power bar's calm zone. The
+//          straight-stroke drill (StrokeDrill) is made on first use, holds the pool table while it is up, is told of
+//          every attempt, and is ended by every other menu choice; the table-cleared card stays away during it.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -352,6 +361,7 @@ final class ShowpieceModel {
     /// Play: a fresh rack, ready for the player's own break. The view opens the aiming controls. The cue keeps the
     /// elevation the player last set: free play allows a raised cue (rules-games plan package 2 step 4).
     func startGame() {
+        strokeDrillStorage?.end()
         leaveMatch()
         menuOpen = false
         gameInProgress = true
@@ -361,6 +371,7 @@ final class ShowpieceModel {
 
     /// Watch the break: the showpiece opening, with the slow-motion Physics Lens replay, from the start.
     func watchBreak() {
+        strokeDrillStorage?.end()
         cancelPendingSolve()
         leaveMatch()
         endPlacement(); ballInHand = .none; undoStep = nil
@@ -404,24 +415,30 @@ final class ShowpieceModel {
         breakSerial = Int(seed) - 10
         // The untouched racks go through Rack's own helpers, exactly as every authored break was made; a rack whose
         // cue ball was placed by hand is the same strike from the layout (aim at the apex ball, nudged by aimOffset).
-        let input: ShotInput
+        // The ball's launch speed for this swing with the cue in hand (exactly `power` with the house cue).
+        let launch = CueProfile.selected.launchSpeed(forPower: power)
+        var input: ShotInput
         if choice == .nineBall, start == Rack.nineBallPositions(parameters: p, seed: seed) {
-            input = Rack.nineBallBreakShot(parameters: p, seed: seed, aimOffset: aimOffset, speed: power,
+            input = Rack.nineBallBreakShot(parameters: p, seed: seed, aimOffset: aimOffset, speed: launch,
                                            tipUp: tipHeight, tipSide: breakTipSide)
         } else if choice == .fifteen, start == Rack.positions(parameters: p, seed: seed) {
-            input = Rack.breakShot(parameters: p, seed: seed, aimOffset: aimOffset, speed: power, tipUp: tipHeight,
+            input = Rack.breakShot(parameters: p, seed: seed, aimOffset: aimOffset, speed: launch, tipUp: tipHeight,
                                    tipSide: breakTipSide)
         } else {
             let direction = (start[1] + Vec2(0, aimOffset) - start[0]).normalized
             input = ShotInput(parameters: p, positions: start,
-                              strike: CueStrike(direction: direction, speed: power, tipUp: tipHeight, tipSide: breakTipSide,
+                              strike: CueStrike(direction: direction, speed: launch, tipUp: tipHeight, tipSide: breakTipSide,
                                                 ballIndex: strikeBall),
                               seed: seed)
         }
+        // The player's stroke drifts the strike before it is solved (nothing for a scripted break or a calm keyboard one).
+        let delivery = strokeDue ? strokeDelivery(chosenUp: tipHeight, chosenSide: breakTipSide) : nil
+        delivery?.apply(to: &input.strike, ballRadius: p.ballRadius)
         if openingStage == .handOver { openingStage = .firstBreak }
         // Recorded as struck: the attempt must hold exactly what was used, whatever load() re-aims afterwards.
         let settings = StruckSettings(isBreak: true, breakSeed: seed, seed: seed, aim: aimOffset, power: power,
-                                      range: powerRange, up: tipHeight, side: breakTipSide, elevation: 0)
+                                      range: powerRange, up: tipHeight, side: breakTipSide, elevation: 0,
+                                      stroke: delivery)
         strike(input, settings, undo: undo)
     }
 
@@ -505,11 +522,17 @@ final class ShowpieceModel {
         retrySeed = nil
         // Trig lives here in the app; the solver only ever sees a unit vector.
         let a = aimDegrees * Double.pi / 180
-        let input = NextShot.shot(from: layout, direction: Vec2(cos(a), sin(a)), speed: shotPower,
+        // The launch speed for this swing with the cue in hand: exactly shotPower with the house cue.
+        var input = NextShot.shot(from: layout, direction: Vec2(cos(a), sin(a)),
+                                  speed: CueProfile.selected.launchSpeed(forPower: shotPower),
                                   tipUp: shotTipUp, tipSide: shotTipSide, seed: seed,
                                   elevation: shotElevation, ballIndex: strikeBall)
+        // The player's stroke drifts the strike before it is solved; a demonstration or scripted shot is struck clean.
+        let delivery = strokeDue ? strokeDelivery(chosenUp: shotTipUp, chosenSide: shotTipSide) : nil
+        delivery?.apply(to: &input.strike, ballRadius: physicsTable.parameters.ballRadius)
         let settings = StruckSettings(isBreak: false, breakSeed: 0, seed: seed, aim: aimDegrees, power: shotPower,
-                                      range: powerRange, up: shotTipUp, side: shotTipSide, elevation: shotElevation)
+                                      range: powerRange, up: shotTipUp, side: shotTipSide, elevation: shotElevation,
+                                      stroke: delivery)
         strike(input, settings, undo: undo)
     }
 
@@ -532,6 +555,8 @@ final class ShowpieceModel {
         let up: Double
         let side: Double
         let elevation: Double
+        /// The drift the player's stroke put on the strike (nil for a scripted strike or a demonstration).
+        var stroke: StrokeDelivery? = nil
     }
 
     /// A shot ready for the solver: the input as built (kept for a surface re-solve and the attempt), the copy with the
@@ -574,6 +599,9 @@ final class ShowpieceModel {
     private func strike(_ input: ShotInput, _ settings: StruckSettings, undo: UndoStep?) {
         // Ball in hand is used up by the stroke; the shot's outcome (a scratch, a match's ruling) sets it again.
         ballInHand = BallInHand.none
+        // The stroke measured for this strike, and its bridge, are used up; the next one is measured afresh.
+        pendingStroke = nil
+        strokeBridge = nil
         match?.shotFired()
         let prepared = prepare(input)
         guard solvesInBackground else {
@@ -621,7 +649,7 @@ final class ShowpieceModel {
         record(ShotAttempt(isBreak: s.isBreak, breakSeed: s.breakSeed, start: prepared.input.positions, timeline: tl,
                            aim: s.aim, power: s.power, powerRange: s.range, tipUp: s.up, tipSide: s.side,
                            elevation: s.elevation, seed: s.seed, input: prepared.input, surface: prepared.surface,
-                           table: prepared.table, generation: prepared.generation))
+                           table: prepared.table, generation: prepared.generation, stroke: s.stroke))
         if s.isBreak {
             startColdOpen()
             stage = .normalBreak
@@ -723,6 +751,9 @@ final class ShowpieceModel {
             shotElevation = attempt.elevation
             retrySeed = attempt.seed
         }
+        // The stroke that played it comes back too, so Shoot with nothing touched repeats the shot exactly; a new
+        // stroke on the cue ball replaces it.
+        pendingStroke = attempt.stroke?.record
         ghost = attempt
         ghostVersion += 1
         retryPending = true
@@ -751,6 +782,7 @@ final class ShowpieceModel {
         }
         retryPending = false
         currentAttempt = attempt
+        strokeDrillStorage?.attemptRecorded(attempt)
     }
 
     private func clearAttempts() {
@@ -891,6 +923,9 @@ final class ShowpieceModel {
         guard !isSolving else { return false }
         if placingCueBall, !confirmCueBallPlacement() { return false }
         if let m = match, !m.readyToShoot { return false }
+        // The player's own stroke: the strike it starts is delivered with the stroke's drift (StrokeModel).
+        strokeDue = true
+        defer { strokeDue = false }
         if racked { breakNow(); return true }
         shootNow()
         return false
@@ -1061,7 +1096,8 @@ final class ShowpieceModel {
 
     /// Free play with every object ball gone and the balls at rest: the table-cleared card shows.
     var tableCleared: Bool {
-        guard match == nil, !authoredModeUp, !racked, shotsThisRack > 0, aimReady, layout.count == 16 else { return false }
+        guard match == nil, !authoredModeUp, !racked, shotsThisRack > 0, aimReady, layout.count == 16,
+              strokeDrillStorage?.isActive != true else { return false }
         return layout.indices.allSatisfy { $0 == strikeBall || !NextShot.isOnTable(layout[$0]) }
     }
 
@@ -1096,6 +1132,7 @@ final class ShowpieceModel {
 
     /// Start a match of `kind` from the menu: any trick shot or situation ends, the menu closes, the rack goes on.
     func startMatch(_ kind: MatchKind) {
+        strokeDrillStorage?.end()
         cancelPendingSolve()
         trickMode.end()
         eightBallMode.end()
@@ -1115,6 +1152,7 @@ final class ShowpieceModel {
     func continueSavedMatch() {
         if match != nil { closeMenu(); return }
         guard let saved = MatchMode.loadSaved() else { savedMatchExists = false; return }
+        strokeDrillStorage?.end()
         cancelPendingSolve()
         trickMode.end()
         eightBallMode.end()
@@ -1550,7 +1588,9 @@ final class ShowpieceModel {
 
     /// True while something that only makes sense on the pool table is up: an authored mode, or an eight-ball or
     /// nine-ball match.
-    private var onPoolTableOnly: Bool { authoredModeUp || match?.isPoolGame == true }
+    private var onPoolTableOnly: Bool {
+        authoredModeUp || match?.isPoolGame == true || strokeDrillStorage?.isActive == true
+    }
 
     /// Change the table: store it, then put its start layout on the table, still, with its default shot ready (the
     /// pool table gets a fresh rack instead). The ghost, the comparison and the shot on screen belong to the old table,
@@ -1569,6 +1609,7 @@ final class ShowpieceModel {
     /// layout on screen, ready to shoot. Always re-racks, even for the table already chosen, because the table on screen
     /// may be the pool table of a mode. The cue keeps its elevation: free play allows a raised cue.
     func playTable(_ k: TableKind) {
+        strokeDrillStorage?.end()
         trickMode.end()
         eightBallMode.end()
         leaveMatch()
@@ -1610,6 +1651,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a trick shot: the menu closes and Continue will come back here. A match in
     /// progress is left (it stays saved).
     func enterTrickTable() {
+        strokeDrillStorage?.end()
         leaveMatch()
         cancelPendingSolve()
         endPlacement(); ballInHand = .none; undoStep = nil
@@ -1640,6 +1682,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a situation: the menu closes, any trick shot ends, Continue comes back here. A
     /// match in progress is left (it stays saved).
     func enterEightBallTable() {
+        strokeDrillStorage?.end()
         leaveMatch()
         cancelPendingSolve()
         endPlacement(); ballInHand = .none; undoStep = nil
@@ -1669,6 +1712,67 @@ final class ShowpieceModel {
         breakSerial = Int(seed) - 11
         rerack()
         self.aimOffset = aimOffset; self.power = power; tipHeight = tipUp; breakTipSide = tipSide
+    }
+
+    // MARK: The stroke (StrokeModel, StrokeGesture, StrokeDrill) - added by Claude Opus 5.5 High, 21-November-2026
+
+    /// The finger's stroke for the next strike, kept up to date while it is drawn (StrokeGesture), so whichever route
+    /// fires plays it. Used only if it set the power now in force; used up by every strike. Restored by tryAgain.
+    @ObservationIgnored var pendingStroke: StrokeRecord?
+    /// True only while fire() is striking: the player's own stroke, which drifts. Demonstrations, hints and scripted
+    /// strikes call shootNow and breakNow directly and are struck clean.
+    @ObservationIgnored private var strokeDue = false
+    /// The bridge finger's length, metres, while it rests on the cloth (nil: the automatic bridge). Observed, so the
+    /// power bar's calm zone moves with it.
+    var strokeBridge: Double?
+
+    /// The bridge the next strike is played off: the mechanical bridge when the shot needs it, else the finger's or the
+    /// automatic one.
+    var strokeBridgeLength: Double {
+        StrokeModel.bridgeLength(finger: strokeBridge, mechanical: showsBridge)
+    }
+
+    /// The calm and warm zones of the power bar now, for the cue in hand and the bridge.
+    var strokeZones: StrokeZones { StrokeModel.zones(cue: CueProfile.selected, bridge: strokeBridgeLength) }
+
+    /// The drift for the strike being fired. The finger's stroke counts only when it set the power now in force (a
+    /// later change by the bar, a slider, the keys or a controller means the stroke is not the one being played), with
+    /// its own bridge finger, else the current bridge. Without one, the fixed drift of the swing alone. Marks a drift
+    /// that carried a tip inside the grip past it on the new physics (the stroke made the miscue).
+    private func strokeDelivery(chosenUp: Double, chosenSide: Double) -> StrokeDelivery {
+        let record = pendingStroke.flatMap { $0.power == activePower ? $0 : nil }
+        let bridge = StrokeModel.bridgeLength(finger: record?.bridge ?? strokeBridge, mechanical: showsBridge)
+        var d = StrokeModel.delivery(power: activePower, fraction: powerFraction, record: record, bridge: bridge,
+                                     cue: CueProfile.selected, authored: authoredModeUp)
+        if activeModelGeneration >= 2 {
+            let limit = physicsTable.parameters.miscueOffsetLimit
+            let side = chosenSide + d.tipSideError
+            let before = (chosenUp * chosenUp + chosenSide * chosenSide).squareRoot()
+            let after = (chosenUp * chosenUp + side * side).squareRoot()
+            d.pushedPastGrip = before <= limit && after > limit
+        }
+        return d
+    }
+
+    /// The straight-stroke drill, made on first use and kept out of observation, as the trick mode is.
+    @ObservationIgnored private var strokeDrillStorage: StrokeDrill?
+    var strokeDrill: StrokeDrill {
+        if let d = strokeDrillStorage { return d }
+        let d = StrokeDrill(model: self)
+        strokeDrillStorage = d
+        return d
+    }
+
+    /// Onto the table from the Play list for the drill: anything else on the table ends, the menu closes. The drill
+    /// then puts its cue ball down (StrokeDrill.begin).
+    func enterStrokeDrill() {
+        trickModeStorage?.end()
+        eightBallModeStorage?.end()
+        leaveMatch()
+        cancelPendingSolve()
+        endPlacement(); ballInHand = .none; undoStep = nil
+        menuOpen = false
+        gameInProgress = true
     }
 
     // MARK: Guided pacing

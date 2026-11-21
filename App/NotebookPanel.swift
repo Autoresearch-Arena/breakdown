@@ -9,6 +9,9 @@
 //          lower edge, above the playback controls, so on a big screen one hand aims on the table while the other
 //          thumb sets tip and power. Without a hinge the panel's reading text steps up a size (notebookRoomy), for
 //          arm's length on an iPad and desk distance on a Mac. In a match the top bar names the game.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: the stroke's cards (the hard shot's result line
+//          and the straight-stroke drill) among the mode's cards, so the drill is a card of the notebook beside the
+//          table and nothing covers it.)
 // PURPOSE: The notebook: the side of the screen that is not the table, on the open folding phone (across the hinge) and
 //          on every screen big enough for the table plus a readable column (an iPad either way up, a large iPad split or
 //          Stage Manager window, a Mac window). The table fills the other side and nothing is drawn over it: no title
@@ -161,6 +164,7 @@ struct NotebookPanel: View {
             TrickShotCard(model: model)
             EightBallCard(model: model)
             PlayCards(model: model)
+            StrokeCards(model: model)
             NotebookDossier(model: model)
         }
     }
