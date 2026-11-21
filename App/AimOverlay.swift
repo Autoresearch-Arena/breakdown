@@ -13,6 +13,8 @@
 //          label beside the bridge head).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the bridge label follows model.showsBridge, so Behind the 8-Ball
 //          situations that need the bridge get it too).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (one line: the guide is drawn along AimGeometry.launchDirection, so it
+//          bends with side spin on the new physics generation; the solver stream's hook, everything else unchanged).
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -189,7 +191,8 @@ struct AimOverlay: View {
         let table = model.timeline.table
         let radius = table.ballRadius
         let origin = model.aimOrigin
-        let dir = model.aimDirection
+        // Where the ball really goes: the aim, bent by side spin on the new physics (AimGeometry.launchDirection).
+        let dir = AimGeometry.launchDirection(for: model)
         guard dir.lengthSquared > 0.5, let cueScreen = proj.screen(origin) else { return }
 
         // Without the guide: no contact prediction, and the line stops a short way out instead of at the first ball.

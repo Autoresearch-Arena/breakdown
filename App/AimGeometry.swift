@@ -13,6 +13,10 @@
 //          no copy of the framing numbers to drift out of date. The ray goes from the camera through the touch and is
 //          cut by the plane at ball-centre height.
 //          Used by AimOverlay (gesture and drawing) and by nothing else.
+//          (3) launchDirection: where the struck ball really goes once side spin has pushed it off the cue's line, read
+//          from the solver's own launch function, so the drawn guide bends exactly as the physics will.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (launchDirection, so the guide line bends with side spin on the new
+//          physics generation; the overlay draws from it instead of from the bare aim).
 // SRP/DRY check: Pass - checked TableStage and TableCamera, which project world points to the screen for the caption
 //          ring; that goes one way only and lives in a closure inside the 3D view, so the other way (screen to table)
 //          is done here from the camera entity itself. Table/world conversion stays in TableFrame.
@@ -68,6 +72,27 @@ enum AimGeometry {
         let cut = min(1, side.length)
         return AimContact(ghost: ghost, ball: hit.ball, target: target, objectDirection: normal,
                           cueDirection: cut > 0.04 ? side.normalized : nil, cut: cut)
+    }
+
+    /// The direction the struck ball will really leave in, so the guide line bends with side spin the way the ball will
+    /// (cue-strike plan, step 6). It asks the solver's own function (PoolSolver.launchDirection), so guide and physics
+    /// cannot disagree: on generation 1 it is the aim itself; on generation 2 side spin turns it away from the struck
+    /// side by about two and a half degrees at a half-radius offset. A miscue's turn is random and unknowable before the
+    /// shot, so past the grip limit the guide shows the cue's own line.
+    static func launchDirection(aim: Vec2, tipUp: Double, tipSide: Double,
+                                parameters: PoolParameters = PoolParameters()) -> Vec2 {
+        PoolSolver.launchDirection(for: CueStrike(direction: aim, speed: 1, tipUp: tipUp, tipSide: tipSide),
+                                   parameters: parameters)
+    }
+
+    /// The same for the model's next shot: its aim and tip, on the table it is played on (ball size and mass set how
+    /// far side spin pushes the ball) and the physics generation the next solve will use.
+    @MainActor
+    static func launchDirection(for model: ShowpieceModel) -> Vec2 {
+        var p = model.physicsTable.parameters
+        p.modelGeneration = model.activeModelGeneration
+        return launchDirection(aim: model.aimDirection, tipUp: model.activeTipUp, tipSide: model.activeTipSide,
+                               parameters: p)
     }
 
     /// Distance the cue ball's centre can travel from `from` along `direction` before it reaches a cushion.

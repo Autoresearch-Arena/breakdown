@@ -139,7 +139,7 @@ enum Impacts {
         let u = v + a.omega.cross(rc)
         let ut = u - normal * u.dot(normal)
         let slipMag = ut.length
-        let energyBefore = kineticEnergy(a, p)
+        let energyBefore = Impacts.kineticEnergy(a, p)
 
         func resolve(_ frictionScale: Double) -> (state: BodyState, friction: Double, bed: Double) {
             var jf = 0.0
@@ -163,7 +163,7 @@ enum Impacts {
                 if st.vz < 0 {
                     var q = p
                     q.slateRestitution = 0
-                    let hit = slate(st, q)
+                    let hit = Impacts.slate(st, q)
                     st = hit.states[0]
                     bed = hit.normalImpulse
                 }
@@ -175,7 +175,7 @@ enum Impacts {
 
         var best = resolve(1)
         for scale in [0.5, 0.25, 0.0] {
-            if kineticEnergy(best.state, p) <= energyBefore * (1 + 1e-12) { break }
+            if Impacts.kineticEnergy(best.state, p) <= energyBefore * (1 + 1e-12) { break }
             best = resolve(scale)
         }
         return ImpactResult(states: [best.state], normalImpulse: jn, frictionImpulse: best.friction, slipSpeed: slipMag,
