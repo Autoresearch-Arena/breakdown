@@ -13,6 +13,8 @@
 //          checks now read the shared ShotFacts (BreakdownTimeline) with the same tie window and rail threshold, so
 //          the judge and the match rules read a shot one way; verdicts are unchanged. The eight-ball group, pocket,
 //          call, foul and loss types moved to the BreakdownRules module, hence its import.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the clear-path test and the first-ball ray scan moved to
+//          App/TableLines.swift, shared with the spoken table; the two private helpers here now call it. Same numbers.)
 // PURPOSE: Judges one Behind the 8-Ball attempt (docs/2026-11-21-behind-the-eight-ball-design.md, sections 1 and 2)
 //          from its recording, the stroke as struck and the situation's start, and nothing else.
 //          - Fouls (1.3): scratch (pocketed or off the table), wrong ball first (a tie inside sameInstant counts the
@@ -942,16 +944,10 @@ enum EightBallJudge {
         return false
     }
 
-    /// No ball's centre within a ball's width of the segment from a to b.
+    /// No ball's centre within a ball's width of the segment from a to b. The test itself now lives in TableLines,
+    /// shared with the spoken table and the aim actions.
     private static func clear(_ a: Vec2, _ b: Vec2, past balls: [Int], in rest: [Vec2]) -> Bool {
-        let seg = b - a
-        let len2 = seg.lengthSquared
-        for o in balls {
-            let rel = rest[o] - a
-            let t = len2 > 0 ? min(max(rel.dot(seg) / len2, 0), 1) : 0
-            if (rest[o] - (a + seg * t)).length < 2 * ballRadius { return false }
-        }
-        return true
+        TableLines.clear(from: a, to: b, past: balls, in: rest, radius: ballRadius)
     }
 
     // MARK: Safety (design 2.6)
@@ -967,22 +963,13 @@ enum EightBallJudge {
     }
 
     private static func hasStraightLine(from cue: Vec2, to targets: Set<Int>, in rest: [Vec2]) -> Bool {
-        let r = ballRadius
         let balls = (1..<rest.count).filter { NextShot.isOnTable(rest[$0]) }
         for i in 0..<safetyDirections {
             let a = Double(i) * 2 * Double.pi / Double(safetyDirections)
             let d = Vec2(cos(a), sin(a))
-            var nearest: (distance: Double, ball: Int)?
-            for b in balls {
-                let rel = rest[b] - cue
-                let along = rel.dot(d)
-                guard along > 0 else { continue }
-                let off = abs(rel.x * d.y - rel.y * d.x)
-                guard off < 2 * r else { continue }
-                let hit = along - (4 * r * r - off * off).squareRoot()
-                if nearest == nil || hit < nearest!.distance { nearest = (hit, b) }
-            }
-            if let n = nearest, targets.contains(n.ball) { return true }
+            // The first ball along this direction (shared ray scan in TableLines).
+            if let n = TableLines.firstBall(from: cue, direction: d, among: balls, in: rest, radius: ballRadius),
+               targets.contains(n.ball) { return true }
         }
         return false
     }

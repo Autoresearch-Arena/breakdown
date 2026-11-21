@@ -45,6 +45,13 @@
 //          opacity change.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Lens grid is built by buildGrid, which TableScene calls again
 //          when the table changes; it also marks the holes in another table's bed).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 4: with Differentiate Without Colour on,
+//          a sliding path is built as dashes and a rolling path stays solid, so the two phases differ in shape, not
+//          only in amber against cyan; the trails are rebuilt when the setting changes. The dashes are cut from the
+//          geometry at build time, so the clock-only exactness of the picture is untouched. Package 5: the
+//          generation-two events now leave a visible mark like the others: a red double ring where the cue MISCUED (the
+//          one place a sound alone would carry it), a pocket-coloured ring where a ball skipped over a hole, and an
+//          impact ring where a jam was brought to rest.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -96,6 +103,16 @@ final class LensLayer {
     static let sideFade = (lo: 0.02, mid: 0.12, full: 0.6)
     /// Clock seconds over which a pocketed ball's markers fade out (the ball itself sinks away in about 0.22 s).
     static let spinPocketFade = 0.2
+    /// Dashed sliding trails (Differentiate Without Colour): length of each dash and of each gap, metres along the
+    /// path. A fresh line is up to about 5 cm wide (two half-widths of `half(speed)` at break speed), so a 6 cm dash
+    /// is longer than the line is wide and reads as a dash, and a 4 cm gap is wide enough to see at a slow roll.
+    static let dashLength = 0.06
+    static let dashGap = 0.04
+    /// Ring strength (the impulse scale used for impact rings) for events that record no impulse of their own: a
+    /// miscue and a rim skip get a full-size ring because each is a single, decisive moment worth seeing.
+    static let markerStrength: Float = 1.0
+    /// Miscue ring colour: the warm red that ends the power bar (AimGauges), the app's one "too far" colour.
+    static let miscueRGB: (Double, Double, Double) = (1.0, 0.30, 0.25)
 
     /// Smooth 0-to-1 ramp between `a` and `b`.
     private static func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
@@ -149,6 +166,13 @@ final class LensLayer {
     private var trailMaterials: [MotionPhase: UnlitMaterial] = [:]
     private var trailOffsets: [MotionPhase: Float] = [:]
     private var ringMaterials: [LensEventKind: UnlitMaterial] = [:]
+    /// The ring for a miscue (a cue strike whose tip slid off), separate from the ordinary strike ring.
+    private var miscueMaterial: UnlitMaterial?
+    /// The last recording and frame the trails were built from, so a change of the colour setting can rebuild them.
+    private var lastBuild: (timeline: Timeline, frame: TableFrame)?
+    /// Whether the current trails were built dashed.
+    private var builtDashed = false
+    private var settingObserver: NSObjectProtocol?
     private var arrowMaterial = UnlitMaterial()
     private var arrowGlowMaterial = UnlitMaterial()
     /// Spin markers: per ball, the slip belt around the ball and the side-spin ring on the cloth.
@@ -199,7 +223,11 @@ final class LensLayer {
         if let ringTex = LensTextures.softLine(peak: 0.85, haloGain: haloGain) {
             func ring(_ r: Double, _ g: Double, _ b: Double) -> UnlitMaterial { Self.glow(ringTex, tint: rgba(r, g, b)) }
             ringMaterials = [.ballBall: ring(1.0, 0.97, 0.80), .cushion: ring(0.45, 0.70, 1.0),
-                             .pocket: ring(1.0, 0.82, 0.25), .cueStrike: ring(1.0, 0.97, 0.80), .phaseTransition: ring(1, 1, 1)]
+                             .pocket: ring(1.0, 0.82, 0.25), .cueStrike: ring(1.0, 0.97, 0.80), .phaseTransition: ring(1, 1, 1),
+                             // A skip over a hole wears the pocket colour; a jam brought to rest the impact colour.
+                             .rimSkip: ring(1.0, 0.82, 0.25), .settledInContact: ring(1.0, 0.97, 0.80)]
+            let red = Self.miscueRGB
+            miscueMaterial = ring(red.0, red.1, red.2)
         }
         if let lineTex = LensTextures.softLine(peak: 0.5, haloGain: haloGain) {
             arrowGlowMaterial = Self.glow(lineTex, tint: rgba(1.0, 0.93, 0.55))
@@ -217,6 +245,18 @@ final class LensLayer {
         root.addChild(spinRoot)
         root.addChild(arrowRoot)
         root.addChild(aimLine)
+
+        // Differentiate Without Colour switched while the app runs: rebuild the trails dashed or solid at once.
+        let change = LensTextures.differentiateWithoutColorChanged
+        settingObserver = change.center.addObserver(forName: change.name, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.rebuildIfSettingChanged() }
+        }
+    }
+
+    /// Rebuild the current trails when the dashed setting no longer matches how they were built.
+    private func rebuildIfSettingChanged() {
+        guard LensTextures.differentiateWithoutColor != builtDashed, let last = lastBuild else { return }
+        rebuild(timeline: last.timeline, frame: last.frame)
     }
 
     /// Switches on the system bloom for everything under `root`, where the system has it. Returns whether it is on.
@@ -308,10 +348,14 @@ final class LensLayer {
         for child in Array(trailRoot.children) { child.removeFromParent() }
         for child in Array(ringRoot.children) { child.removeFromParent() }
         trailEntities = [:]; trailOffsets = [:]; rings = []
+        lastBuild = (timeline, frame)
+        builtDashed = LensTextures.differentiateWithoutColor
 
         // Gather every ball's ribbons into one mesh per colour.
         var builders: [MotionPhase: RibbonBuilder] = [.sliding: RibbonBuilder(), .rolling: RibbonBuilder()]
-        for b in 0..<timeline.ballCount { addTrails(for: b, timeline: timeline, frame: frame, into: &builders) }
+        for b in 0..<timeline.ballCount {
+            addTrails(for: b, timeline: timeline, frame: frame, dashSliding: builtDashed, into: &builders)
+        }
         for (phase, builder) in builders {
             guard let mesh = builder.mesh(), let mat = trailMaterials[phase] else { continue }
             let e = ModelEntity(mesh: mesh, materials: [mat])
@@ -320,18 +364,29 @@ final class LensLayer {
             trailEntities[phase] = e
         }
 
-        for e in timeline.events where e.kind == .ballBall || e.kind == .cushion || e.kind == .pocket {
-            let strength = Float(min(1.5, max(0.1, e.normalImpulse)))
+        for e in timeline.events {
+            // Which events leave a ring: every impact and drop as before, plus the generation-two moments (a jam
+            // brought to rest, a skip over a hole) and a miscue, which a player could otherwise only hear.
+            let isMiscue = e.kind == .cueStrike && e.miscue == true
+            let ringed: Set<LensEventKind> = [.ballBall, .cushion, .pocket, .rimSkip, .settledInContact]
+            guard ringed.contains(e.kind) || isMiscue else { continue }
+            let recorded = Float(min(1.5, max(0.1, e.normalImpulse)))
+            let strength = (isMiscue || e.kind == .rimSkip) ? Self.markerStrength : recorded
             let radius = 0.022 + 0.034 * strength
-            guard let mat = ringMaterials[e.kind] else { continue }
-            let ring = ModelEntity(mesh: ringMesh, materials: [mat])
-            ring.scale = SIMD3(radius, 1, radius)
-            ring.position = frame.world(e.point, height: 0.008)
-            ring.isEnabled = false
-            ring.components.set(OpacityComponent(opacity: 0))
-            ring.components.set(ModelSortGroupComponent(group: sortGroup, order: 20))
-            ringRoot.addChild(ring)
-            rings.append((ring, e, radius))
+            guard let mat = isMiscue ? miscueMaterial : ringMaterials[e.kind] else { continue }
+            // A miscue is drawn as two rings, one inside the other, so its shape (not only its red) sets it apart
+            // from every impact ring; the inner one is 0.6 of the outer, a gap wider than the ring's own band.
+            let sizes: [Float] = isMiscue ? [radius, radius * 0.6] : [radius]
+            for size in sizes {
+                let ring = ModelEntity(mesh: ringMesh, materials: [mat])
+                ring.scale = SIMD3(size, 1, size)
+                ring.position = frame.world(e.point, height: 0.008)
+                ring.isEnabled = false
+                ring.components.set(OpacityComponent(opacity: 0))
+                ring.components.set(ModelSortGroupComponent(group: sortGroup, order: 20))
+                ringRoot.addChild(ring)
+                rings.append((ring, e, size))
+            }
         }
     }
 
@@ -373,7 +428,45 @@ final class LensLayer {
         }
     }
 
-    private func addTrails(for ball: Int, timeline: Timeline, frame: TableFrame, into builders: inout [MotionPhase: RibbonBuilder]) {
+    /// Cuts one strip into dashes `on` metres long separated by `off`-metre gaps, measured along the path, so the
+    /// pattern is even whatever the point spacing. Each cut point is placed by straight interpolation between its two
+    /// neighbours, with its time and half-width interpolated the same way, so every dash still carries the exact
+    /// times the trail picture fades by. The pattern restarts at the start of each strip.
+    static func dashes(_ pts: [SIMD3<Float>], times: [Double], halves: [Float], on: Double, off: Double)
+        -> [(pts: [SIMD3<Float>], times: [Double], halves: [Float])] {
+        guard pts.count >= 2, on > 0, off > 0 else { return [] }
+        var out: [(pts: [SIMD3<Float>], times: [Double], halves: [Float])] = []
+        var current: (pts: [SIMD3<Float>], times: [Double], halves: [Float]) = ([pts[0]], [times[0]], [halves[0]])
+        var drawing = true
+        var phase = 0.0                     // distance into the current dash or gap
+        for i in 1..<pts.count {
+            let a = pts[i - 1], b = pts[i]
+            let length = Double(simd_distance(a, b))
+            var used = 0.0                  // distance already walked along this piece
+            while length - used > 1e-9 {
+                let room = (drawing ? on : off) - phase
+                let step = min(room, length - used)
+                used += step
+                phase += step
+                let k = Float(used / length)
+                let p = a + (b - a) * k
+                let t = times[i - 1] + (times[i] - times[i - 1]) * Double(k)
+                let h = halves[i - 1] + (halves[i] - halves[i - 1]) * k
+                if drawing { current.pts.append(p); current.times.append(t); current.halves.append(h) }
+                if phase >= (drawing ? on : off) - 1e-9 {
+                    // End of a dash: keep it; end of a gap: start the next dash at this point.
+                    if drawing { if current.pts.count >= 2 { out.append(current) } } else { current = ([p], [t], [h]) }
+                    drawing.toggle()
+                    phase = 0
+                }
+            }
+        }
+        if drawing, current.pts.count >= 2 { out.append(current) }
+        return out
+    }
+
+    private func addTrails(for ball: Int, timeline: Timeline, frame: TableFrame, dashSliding: Bool,
+                           into builders: inout [MotionPhase: RibbonBuilder]) {
         let segs = timeline.segments[ball]
         let tLimit = min(timeline.duration, timeline.pocketTime[ball] ?? .infinity)
         // The line is wider where the ball is faster, so a still frame shows speed. Half-width of the whole
@@ -401,7 +494,14 @@ final class LensLayer {
                 t = min(tEnd, t + dt)
                 add(t)
             }
-            builders[seg.phase]?.addStrip(pts, times: times, halves: halves)
+            if dashSliding && seg.phase == .sliding {
+                // Differentiate Without Colour: sliding is dashed, rolling solid (the legend chip matches).
+                for dash in Self.dashes(pts, times: times, halves: halves, on: Self.dashLength, off: Self.dashGap) {
+                    builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
+                }
+            } else {
+                builders[seg.phase]?.addStrip(pts, times: times, halves: halves)
+            }
         }
     }
 

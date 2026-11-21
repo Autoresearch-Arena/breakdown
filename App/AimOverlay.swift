@@ -25,6 +25,14 @@
 //          ball it will hit instead of running on (with the guide off, too, it now stops at that ball); the target-ball
 //          badge (TargetBallBadge) sits in this layer; the table's pinch, two-finger pan and double tap
 //          (TableZoomGestures) work through it, and a one-finger aim drag is ignored while a pinch or pan is on.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, packages 2 and 5: the aim is spoken as a target,
+//          not degrees ("Hits the 3 ball with a half-ball hit, cutting it to the left. It goes into the foot-left
+//          corner pocket.", TableWords.aim); the Aim element gains the actions Aim at next ball, Aim to pot in nearest
+//          pocket, Finer and Coarser; the layer is now a container that also holds an element over every ball and
+//          pocket (TableAccessLayer): double-tap a ball to aim straight at it, a pocket to aim the pot. A plain tap
+//          does the same for one-finger play: tap a ball and the line snaps to its centre, tap a pocket and it aims
+//          the ball in line (or the easiest ball) into that pocket. A game controller's A button fires while this
+//          layer is up, and the controller turns the aim the way the arrow keys do on this camera.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -41,13 +49,15 @@
 //          pocket) and log what it did with the prefix AIMSCRIPT, so the flow can be checked and photographed without
 //          anyone at the screen. It does not go through UIKit touch delivery; real touches were checked separately.
 //          Reads and writes the model only through its aim, power and fire methods; the layer is only in the view
-//          tree while the panel is open, so it costs nothing otherwise. For VoiceOver the whole layer is one adjustable
-//          "Aim" element; the sliders in the fine-controls sheet remain the complete accessible route.
+//          tree while the panel is open, so it costs nothing otherwise. For VoiceOver the layer is a container: one
+//          adjustable "Aim" element spoken as a target, plus an element over each ball and pocket; the sliders in the
+//          fine-controls sheet remain the complete slider route.
 // SRP/DRY check: Pass - checked CaptionViews (a Canvas overlay that projects model points; same pattern, but one-way
 //          and for the caption ring) and ShotPanel (the sliders, kept as the fallback). Ray casting and camera maths
 //          live in AimGeometry; the gauges in AimGauges; this file is only gesture, keys and drawing.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import RealityKit
 import SwiftUI
@@ -68,6 +78,11 @@ struct AimOverlay: View {
     @State private var placingDrag = false
     @State private var viewSize = CGSize(width: 400, height: 800)
     @FocusState private var focused: Bool
+    /// The VoiceOver adjust step for the aim, in the model's nudge units (a quarter degree for a shot, a millimetre
+    /// at the lead ball for the break). Finer and Coarser walk through `aimSteps`.
+    @State private var aimStep = 4.0
+    /// A quarter degree for the last hair, a degree (the old fixed step), five degrees to swing round the table.
+    private static let aimSteps: [Double] = [1, 4, 20]
 
     private enum DragMode { case aim, pull }
 
@@ -84,11 +99,18 @@ struct AimOverlay: View {
                 .contentShape(Rectangle())
                 .gesture(dragGesture)
                 .modifier(TableZoomGestures(model: model, bridge: bridge))
+                .accessibilityHidden(true)
             TimelineView(.animation) { _ in
                 Canvas { ctx, size in draw(&ctx, size: size) }
             }
             .allowsHitTesting(false)
+            .accessibilityHidden(true)
             TargetBallBadge(model: model, bridge: bridge)
+            // VoiceOver and Switch Control: the Aim element under everything (touching bare cloth finds it), and
+            // an element over every ball and pocket on top (touching a ball finds the ball).
+            aimElement
+            TableAccessLayer(model: model, bridge: bridge, onBall: { aimAtBall($0) }, onPocket: { aimToPot(pocket: $0) },
+                             showsTableElement: false)
         }
         .ignoresSafeArea()
         .onGeometryChange(for: CGSize.self) { $0.size } action: { viewSize = $0 }
@@ -96,22 +118,180 @@ struct AimOverlay: View {
         .focusable()
         .focused($focused)
         .focusEffectDisabled()
-        .onAppear { focused = true }
+        .onAppear {
+            focused = true
+            // A game controller fires and turns the aim through this layer while it is up (GameControllerInput).
+            GameControllerInput.shared.shoot = { [model] in
+                hintSeen = true
+                if model.fire() { isOpen = false }
+            }
+            GameControllerInput.shared.turnSign = { screenSign() }
+        }
+        .onDisappear {
+            GameControllerInput.shared.shoot = nil
+            GameControllerInput.shared.turnSign = { 1 }
+        }
         .task { await TestScript.run(on: self) }
         .onKeyPress(keys: [.leftArrow, .rightArrow, .upArrow, .downArrow, .return], phases: [.down, .repeat], action: handleKey)
         .sensoryFeedback(.selection, trigger: pullBucket)
-        // VoiceOver: one adjustable element; the sliders in the sheet do the rest.
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Aim")
-        .accessibilityValue(spokenAim)
-        .accessibilityHint("Swipe up or down to turn the aim. Use the more menu for the sliders.")
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: model.nudgeAim(4)
-            case .decrement: model.nudgeAim(-4)
-            @unknown default: break
+        .accessibilityElement(children: .contain)
+    }
+
+    // MARK: Accessibility
+
+    /// The adjustable Aim element: spoken as a target (TableWords.aim), turned by swiping up and down in steps the
+    /// player can make finer or coarser, with actions that aim at a ball or set up a pot. The fine-controls sheet
+    /// remains the complete slider route.
+    private var aimElement: some View {
+        Rectangle()
+            .fill(Color.white.opacity(0.001))
+            .allowsHitTesting(false)
+            .accessibilityElement()
+            .accessibilityLabel("Aim")
+            .accessibilityValue(spokenAim)
+            .accessibilityHint("Swipe up or down to turn the aim. Use the more menu for the sliders.")
+            .accessibilitySortPriority(20_000)
+            .accessibilityAdjustableAction { direction in
+                switch direction {
+                case .increment: model.nudgeAim(aimStep)
+                case .decrement: model.nudgeAim(-aimStep)
+                @unknown default: break
+                }
+            }
+            .accessibilityActions {
+                // Aiming at a ball or a pocket only means something after the break; the break aims at the rack.
+                if !model.racked {
+                    Button(String(localized: "Aim at next ball")) { aimAtNextBall() }
+                    Button(String(localized: "Aim to pot in nearest pocket")) { aimToPotNearest() }
+                }
+                Button(String(localized: "Finer")) { changeStep(finer: true) }
+                Button(String(localized: "Coarser")) { changeStep(finer: false) }
+            }
+    }
+
+    /// Walk the adjust step one size smaller or larger and say what a step now does.
+    private func changeStep(finer: Bool) {
+        let steps = Self.aimSteps
+        let i = steps.firstIndex(of: aimStep) ?? 1
+        aimStep = steps[finer ? max(0, i - 1) : min(steps.count - 1, i + 1)]
+        let size: String
+        if model.racked {
+            size = String(localized: "Each step moves the aim \(TableWords.amount(aimStep)) millimetres.")
+        } else {
+            // A nudge step is a quarter of a degree (ShowpieceModel.nudgeAim).
+            let degrees = (aimStep * 0.25).formatted(.number.precision(.fractionLength(0...2)))
+            size = String(localized: "Each step turns the aim \(degrees) degrees.")
+        }
+        ShotNarration.announce(size)
+    }
+
+    /// Object balls the cue ball can hit straight on (its line to the ball's centre meets that ball first). In a
+    /// match, the balls the shooter may play when there are any, so "next ball" skips the opponent's.
+    private func hittableBalls() -> [Int] {
+        let layout = model.layout
+        guard layout.count > 1, NextShot.isOnTable(model.aimOrigin) else { return [] }
+        let o = model.aimOrigin, r = model.timeline.table.ballRadius
+        let all = (1..<layout.count).filter { b in
+            guard NextShot.isOnTable(layout[b]) else { return false }
+            let d = (layout[b] - o).normalized
+            return AimGeometry.firstContact(layout: layout, from: o, direction: d, radius: r)?.ball == b
+        }
+        if let match = model.match {
+            let legal = all.filter { match.rules.mayCall($0, in: match.state) }
+            if !legal.isEmpty { return legal }
+        }
+        return all
+    }
+
+    /// The ball the aim line meets first now, if any.
+    private var ballInLine: Int? {
+        AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin, direction: model.aimDirection,
+                                 radius: model.timeline.table.ballRadius)?.ball
+    }
+
+    /// Aim straight through a ball's centre (a full hit), and say the new aim.
+    private func aimAtBall(_ ball: Int) {
+        guard model.layout.indices.contains(ball), NextShot.isOnTable(model.layout[ball]) else { return }
+        model.aim(toward: model.layout[ball])
+        ShotNarration.announce(spokenAim)
+    }
+
+    /// Cycle through the balls that can be hit, by number, starting after the one in line now.
+    private func aimAtNextBall() {
+        let balls = hittableBalls()
+        guard let first = balls.first else {
+            ShotNarration.announce(String(localized: "No ball can be hit in a straight line."))
+            return
+        }
+        let current = ballInLine ?? 0
+        aimAtBall(balls.first { $0 > current } ?? first)
+    }
+
+    /// Aim the ghost-ball pot of `ball` into `pocket`, and say the new aim (which names the pocket, or what blocks it).
+    private func aimPot(_ pot: TableLines.PotAim) {
+        model.aim(toward: pot.ghost)
+        ShotNarration.announce(spokenAim)
+    }
+
+    /// Tap or double-tap on a pocket: pot the ball in line into it; with no ball in line, the ball that is easiest
+    /// to pot there (clear lines first, then the smallest cut).
+    private func aimToPot(pocket: Int) {
+        guard !model.racked else { return }
+        let table = model.timeline.table, layout = model.layout
+        if let b = ballInLine, let pot = TableLines.potAim(ball: b, pocket: pocket, in: layout, table: table) {
+            aimPot(pot); return
+        }
+        let options = (1..<max(1, layout.count)).compactMap { TableLines.potAim(ball: $0, pocket: pocket, in: layout, table: table) }
+        guard let pot = options.filter(\.clear).min(by: { $0.cutSine < $1.cutSine }) ?? options.min(by: { $0.cutSine < $1.cutSine })
+        else {
+            ShotNarration.announce(String(localized: "No ball can be potted in that pocket from here."))
+            return
+        }
+        aimPot(pot)
+    }
+
+    /// "Aim to pot in nearest pocket": the ball in line (or the nearest ball that can be hit) into the nearest pocket
+    /// it can reach with both lines clear; when none is clear, the easiest pot there is.
+    private func aimToPotNearest() {
+        let table = model.timeline.table, layout = model.layout
+        let o = model.aimOrigin
+        guard let ball = ballInLine ?? hittableBalls().min(by: { (layout[$0] - o).length < (layout[$1] - o).length }) else {
+            ShotNarration.announce(String(localized: "No ball can be hit in a straight line."))
+            return
+        }
+        let pots = (0..<min(TableSpec.edgePocketCount, table.pockets.count)).compactMap {
+            TableLines.potAim(ball: ball, pocket: $0, in: layout, table: table)
+        }
+        let nearest = pots.filter(\.clear).min { (table.pockets[$0.pocket] - layout[ball]).length < (table.pockets[$1.pocket] - layout[ball]).length }
+        guard let pot = nearest ?? TableLines.bestPot(ball: ball, in: layout, table: table) else {
+            ShotNarration.announce(String(localized: "No ball can be potted in that pocket from here."))
+            return
+        }
+        aimPot(pot)
+    }
+
+    /// A tap (a touch that did not move) on the table while aiming: on an object ball, aim straight at it; on a
+    /// pocket, aim the pot into it. Anything else keeps the plain aim-through-the-spot the drag already made.
+    fileprivate func tapped(at point: CGPoint) {
+        guard model.aimReady, !model.racked, let proj = projector(size: viewSize) else { return }
+        let layout = model.layout, table = model.timeline.table
+        // Generous on purpose: a finger covers more than a ball does from the overhead camera.
+        let ballReach: CGFloat = 26, pocketReach: CGFloat = 34
+        var best: (distance: CGFloat, ball: Int?, pocket: Int?)?
+        for b in 1..<max(1, layout.count) where NextShot.isOnTable(layout[b]) {
+            guard let s = proj.screen(layout[b]) else { continue }
+            let d = hypot(s.x - point.x, s.y - point.y)
+            if d <= ballReach, best == nil || d < best!.distance { best = (d, b, nil) }
+        }
+        if table.pocketsEnabled {
+            for (k, hole) in table.pockets.enumerated() where k < TableSpec.edgePocketCount {
+                guard let s = proj.screen(hole, height: 0.002) else { continue }
+                let d = hypot(s.x - point.x, s.y - point.y)
+                if d <= pocketReach, best == nil || d < best!.distance { best = (d, nil, k) }
             }
         }
+        if let ball = best?.ball { model.aim(toward: layout[ball]) }
+        else if let pocket = best?.pocket { aimToPot(pocket: pocket) }
     }
 
     // MARK: Gestures
@@ -119,7 +299,13 @@ struct AimOverlay: View {
     private var dragGesture: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
             .onChanged { v in drag(from: v.startLocation, to: v.location) }
-            .onEnded { _ in endDrag() }
+            .onEnded { v in
+                // A touch that never moved is a tap: one finger, no drag (accessibility plan, package 5).
+                if mode == .aim, hypot(v.location.x - v.startLocation.x, v.location.y - v.startLocation.y) <= pullSlop {
+                    tapped(at: v.location)
+                }
+                endDrag()
+            }
     }
 
     fileprivate func projectorForScript() -> AimProjector? { projector(size: viewSize) }
@@ -233,10 +419,21 @@ struct AimOverlay: View {
         return cross < 0 ? 1 : -1
     }
 
+    /// The aim as VoiceOver says it. The break keeps its offset from the lead ball (the rack is the target); a shot
+    /// says what it will hit and where that ball goes (TableWords.aim), with the angle last for anyone who wants it.
+    /// The target sentence is spoken even with the Aim guide option off: that option hides drawing for sighted
+    /// players who want to judge the angle, and for a player who cannot see the table these words are the only view.
     private var spokenAim: String {
-        model.racked
-            ? String(localized: "\(String(format: "%+.0f", locale: Locale.current, model.aimOffset * 1000)) millimetres from the lead ball")
-            : String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees")
+        if model.racked {
+            return String(localized: "\(String(format: "%+.0f", locale: Locale.current, model.aimOffset * 1000)) millimetres from the lead ball")
+        }
+        guard NextShot.isOnTable(model.aimOrigin), model.layout.count > 1 else {
+            return String(localized: "The cue ball is off the table.")
+        }
+        let target = TableWords.aim(layout: model.layout, from: model.aimOrigin, direction: model.aimDirection,
+                                    table: model.timeline.table)
+        let degrees = String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees")
+        return target + " " + degrees
     }
 
     // MARK: Drawing
