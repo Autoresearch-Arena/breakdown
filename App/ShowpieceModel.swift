@@ -17,6 +17,11 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (trick shots: a marked "Trick shots" section near the end holds the
 //          trick-shot mode for this table and three small loaders it uses: an authored layout with given settings, an
 //          authored rack with its own seed and settings, and a way onto the table from the menu without a fresh rack).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (guided pacing: the Lens replay is paced by events, not the clock.
+//          PacePlan picks the beats; playback eases down into each one, HOLDS there (a separate state with its own
+//          real-time counter, never a zero speed) until the caption has had time to be read, then moves on, quick through
+//          quiet stretches. guided, holding and nextBeat() are what the views read and call; autoRate is gone. Picking a
+//          fixed speed turns guided pacing off; Replay with the Lens is now guided instead of a flat quarter speed.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -47,6 +52,8 @@ final class ShowpieceModel {
     /// Bumped whenever a new timeline is loaded so the scene knows to rebuild its Lens layer.
     private(set) var timelineVersion = 0
     private(set) var captions: [Caption] = []
+    /// The beats the guided Lens replay stops on, and its speed between them. Worked out once per shot.
+    private(set) var pacePlan = PacePlan.none
 
     var time = 0.0
     var playing = true
@@ -103,6 +110,18 @@ final class ShowpieceModel {
     /// The key moments the ride and its slow motion read: first contact, struck ball, rise. Worked out once per shot.
     private(set) var ridePlan = RidePlan.none
 
+    // Guided pacing (see PacePlan). Only which beat is being held, and for how long, is stored; the next beat is always
+    // found from the clock itself, so the many places that set `time` directly never leave a stale "next beat" behind.
+    /// The beat (index into pacePlan.beats) the clock is stopped on for reading; nil when not holding.
+    private var heldBeat: Int?
+    /// Real seconds spent on the held beat so far, and how long it is to be held. Only counted while playing.
+    /// Not observed: it changes every frame of a hold and no view reads it (views read `holding`).
+    @ObservationIgnored private var holdElapsed = 0.0
+    @ObservationIgnored private var holdDwell = 0.0
+    /// The beat whose hold has just finished while the clock still sits exactly on it (so it is not held again, and a
+    /// simultaneous beat after it is). Ignored as soon as the clock has moved off that time.
+    private var passedBeat: Int?
+
     private var stageTime = 0.0
     private let freezeTime: Double
     private let sound = SoundBoard()
@@ -113,6 +132,7 @@ final class ShowpieceModel {
         timeline = tl
         freezeTime = min(2.2, tl.duration * 0.4)
         captions = CaptionEngine.make(from: tl)
+        pacePlan = PacePlan(captions: captions, timeline: tl)
         timelineVersion = 1
         ridePlan = RidePlan(tl)
         adoptLayout(after: tl)
@@ -158,6 +178,7 @@ final class ShowpieceModel {
     func startColdOpen() {
         stage = .lead; stageTime = 0; time = 0; melt = 0; meltTarget = nil
         playing = true; chosenRate = nil
+        resetPacing()
     }
 
     // MARK: Menu
@@ -261,6 +282,7 @@ final class ShowpieceModel {
         if on, stage == .explore, ridePlan.rideable, time >= duration - 1e-6 {
             time = 0
             playing = true
+            resetPacing()
         }
     }
 
@@ -429,6 +451,7 @@ final class ShowpieceModel {
         finishColdOpen()
         playing = false
         time = duration
+        resetPacing()
     }
 
     /// Break or shoot, whichever is next. Returns true when it was the break (the cue ball's cold open takes over the
@@ -457,8 +480,10 @@ final class ShowpieceModel {
         adoptLayout(after: tl)
         timeline = tl
         captions = CaptionEngine.make(from: tl)
+        pacePlan = PacePlan(captions: captions, timeline: tl)
         ridePlan = RidePlan(tl)
         timelineVersion += 1
+        resetPacing()
     }
 
     // MARK: Player controls
@@ -467,17 +492,21 @@ final class ShowpieceModel {
         finishColdOpen()
         playing = false
         time = min(max(0, t), duration)
+        resetPacing()
     }
 
     func togglePlay() {
         finishColdOpen()
-        if time >= duration - 1e-6 { time = 0 }
+        if time >= duration - 1e-6 { time = 0; resetPacing() }
         playing.toggle()
     }
 
+    /// A fixed speed from the speed menu. A chosen speed turns guided pacing off (guided needs chosenRate == nil),
+    /// and any hold in progress is let go so the clock moves at once.
     func setRate(_ r: Double) {
         finishColdOpen()
         chosenRate = r
+        resetPacing()
         if !playing { playing = true }
     }
 
@@ -490,7 +519,9 @@ final class ShowpieceModel {
         finishColdOpen()
         time = 0; playing = true
         meltTarget = withLens ? 1 : 0
-        chosenRate = withLens ? 0.25 : 1
+        // With the Lens the replay is guided (no fixed speed: it stops on each beat to be read); without, real speed.
+        chosenRate = withLens ? nil : 1
+        resetPacing()
     }
 
     /// Jump to the hand-over state: Lens on, clock where it is.
@@ -526,32 +557,34 @@ final class ShowpieceModel {
             stageTime += dt
             let x = min(1, stageTime / 1.0)
             time = freezeTime * (1 - x * x * (3 - 2 * x))
-            if x >= 1 { time = 0; stage = .slowReplay; stageTime = 0 }
+            if x >= 1 { time = 0; stage = .slowReplay; stageTime = 0; resetPacing() }
         case .slowReplay:
-            displayRate = chosenRate ?? Self.autoRate(at: time)
-            step(dt)
-            if time >= duration { stage = .explore; playing = false; chosenRate = nil }
+            if guided {
+                stepGuided(dt)
+            } else {
+                displayRate = chosenRate ?? 1
+                step(dt)
+            }
+            // Not while a beat is being held: a beat stamped at the very end still gets its reading time.
+            if time >= duration, !holding { stage = .explore; playing = false; chosenRate = nil }
         case .explore:
-            // With Ride on, playback eases into slow motion around the first contact and back out; the curve is a
-            // function of the clock, so it plays the same however the clock got there. Any speed the player picked
-            // still applies: the curve multiplies it.
-            displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
-            if playing { step(dt) }
+            if guided {
+                // Paused, the hold's counter does not run: pausing on a beat keeps the full reading time.
+                if playing { stepGuided(dt) }
+            } else {
+                // A hold left over from guided pacing (the Lens turned off, Ride turned on) is let go.
+                if heldBeat != nil { resetPacing() }
+                // With Ride on, playback eases into slow motion around the first contact and back out; the curve is a
+                // function of the clock, so it plays the same however the clock got there. Any speed the player picked
+                // still applies: the curve multiplies it.
+                displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
+                if playing { step(dt) }
+            }
             if let target = meltTarget {
                 let speed = 1.8
                 if melt < target { melt = min(target, melt + dt * speed) } else { melt = max(target, melt - dt * speed) }
                 if melt == target { meltTarget = nil }
             }
-        }
-    }
-
-    /// Slow motion that breathes: very slow through the rack, easing back to real time.
-    static func autoRate(at t: Double) -> Double {
-        switch t {
-        case ..<0.30: return 0.05
-        case ..<0.80: return 0.12
-        case ..<1.60: return 0.30
-        default: return 0.8
         }
     }
 
@@ -613,14 +646,135 @@ final class ShowpieceModel {
         self.aimOffset = aimOffset; self.power = power; tipHeight = tipUp; breakTipSide = tipSide
     }
 
+    // MARK: Guided pacing
+
+    /// True while guided pacing drives the clock: the cold open's slow replay, or a Lens replay the player is watching
+    /// (Lens on or turning on, no fixed speed picked, Ride off: Ride keeps its own slow-motion curve, and the two do
+    /// not mix). A still table has no beats and is never guided. It stays true while paused, so the caption on a held
+    /// beat does not change when the player pauses on it.
+    var guided: Bool {
+        guard chosenRate == nil, pacePlan.hasBeats else { return false }
+        switch stage {
+        case .slowReplay: return true
+        case .explore: return (meltTarget ?? melt) > 0.5 && !rideActive
+        default: return false
+        }
+    }
+
+    /// True while the clock is stopped on a beat so its caption can be read. Worked out from stored state, so it is
+    /// false at once if guided pacing ends or the clock is moved off the beat (a scrub, a replay).
+    var holding: Bool {
+        guard guided, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return false }
+        return abs(pacePlan.beats[h].time - time) <= Self.beatTolerance
+    }
+
+    /// Continue: end the current hold now; or, when not holding, jump straight to the next beat and hold there. The
+    /// jump sets the clock directly, like a scrub, so the events skipped over make no sound. Does nothing unless guided.
+    func nextBeat() {
+        guard guided else { return }
+        if holding, let h = heldBeat {
+            finishHold(h)
+            return
+        }
+        guard let i = upcomingBeat() else { return }
+        time = pacePlan.beats[i].time
+        beginHold(i)
+    }
+
+    /// Two clock times this close count as the same moment (a held beat, a clock sitting on it).
+    private static let beatTolerance = 1e-9
+
+    /// The next beat the clock will stop on: the first at or after the clock, skipping a beat already held at exactly
+    /// this time (and any held before it at the same time). Nil when no beat is left.
+    private func upcomingBeat() -> Int? {
+        let beats = pacePlan.beats
+        var i = pacePlan.firstBeat(atOrAfter: time - Self.beatTolerance)
+        if let p = passedBeat, beats.indices.contains(p), abs(beats[p].time - time) <= Self.beatTolerance {
+            i = max(i, p + 1)
+        }
+        return i < beats.count ? i : nil
+    }
+
+    private func beginHold(_ i: Int) {
+        heldBeat = i
+        holdElapsed = 0
+        // With Explanations off there is nothing to read, so the stop is only a short pause that lets the hit land.
+        // An option never set reads as on (its default), hence the object lookup rather than bool(forKey:).
+        let explanations = UserDefaults.standard.object(forKey: GameSettings.explanationsKey) as? Bool ?? true
+        holdDwell = explanations ? pacePlan.beats[i].dwell : 0.6
+    }
+
+    private func finishHold(_ i: Int) {
+        heldBeat = nil
+        holdElapsed = 0
+        passedBeat = i
+    }
+
+    /// Forget any hold: called wherever the clock is set by hand or a new shot is loaded.
+    private func resetPacing() {
+        heldBeat = nil
+        holdElapsed = 0
+        passedBeat = nil
+    }
+
+    /// One frame of guided playback. Holding: count real time until the dwell is up (the clock stands still). Moving:
+    /// step at the plan's speed for this clock time, and if that would carry the clock past the next beat, stop exactly
+    /// on it and start holding. The speed has a floor above zero, so the clock always reaches the next beat; and the
+    /// hold always ends because it counts real time, not clock time.
+    private func stepGuided(_ dt: Double) {
+        if heldBeat != nil {
+            guard holding, let h = heldBeat else { resetPacing(); return }
+            holdElapsed += dt
+            if holdElapsed >= holdDwell { finishHold(h) }
+            return
+        }
+        // Forget a finished beat once the clock has moved off it.
+        if let p = passedBeat, !pacePlan.beats.indices.contains(p) || abs(pacePlan.beats[p].time - time) > Self.beatTolerance {
+            passedBeat = nil
+        }
+        displayRate = pacePlan.rate(at: time)
+        let old = time
+        var target = min(duration, time + dt * displayRate)
+        var hold: Int?
+        if let i = upcomingBeat(), pacePlan.beats[i].time <= target {
+            target = max(old, pacePlan.beats[i].time)
+            hold = i
+        }
+        time = target
+        if let hold { beginHold(hold) }
+        if time >= duration, stage == .explore, hold == nil { playing = false }
+        // Sound and touch for everything crossed on the way in, the beat's own event included, so the hit is heard
+        // as the clock stops on it.
+        fireSounds(from: old, to: time)
+    }
+
     // MARK: Captions
 
+    /// The caption on screen now. Guided: the caption of the beat being held, or of the most recent beat, kept up
+    /// until the next beat replaces it (none once the shot has finished). Otherwise: the latest captioned event,
+    /// shown for a short while after it that depends on the playback speed.
     func activeCaption() -> Caption? {
-        let hold = playing || stage != .explore ? max(0.4, 3.4 * displayRate) : 3.0
-        var found: Caption?
-        for c in captions where c.time <= time {
-            if time - c.time <= hold { found = c }
+        let beats = pacePlan.beats
+        if guided {
+            if let h = heldBeat, holding { return beats[h].caption }
+            guard time < duration - 1e-6 else { return nil }
+            if let p = passedBeat, beats.indices.contains(p), abs(beats[p].time - time) <= Self.beatTolerance {
+                return beats[p].caption
+            }
+            // The last beat at or before the clock.
+            let after = pacePlan.firstBeat(atOrAfter: time + Self.beatTolerance)
+            return after > 0 ? beats[after - 1].caption : nil
         }
-        return found
+        let hold = playing || stage != .explore ? max(0.4, 3.4 * displayRate) : 3.0
+        // Captions are sorted by time, so the latest one at or before the clock is found by a binary search; it is the
+        // closest, so if it has timed out every earlier one has too.
+        var lo = 0, hi = captions.count
+        while lo < hi {
+            let mid = (lo + hi) / 2
+            if captions[mid].time <= time { lo = mid + 1 } else { hi = mid }
+        }
+        guard lo > 0 else { return nil }
+        let c = captions[lo - 1]
+        return time - c.time <= hold ? c : nil
     }
 }

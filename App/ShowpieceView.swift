@@ -16,10 +16,14 @@
 //          pockets, the success glow, the list sheet and the -trick launch flags) sits over the table under the aiming
 //          layer, and the trick-shot card sits above the controls on a phone held upright or at the top of the side
 //          column; marked "Trick shots" where they sit).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (nothing covers the table: on a phone held upright the explanation
+//          moved from over the table's top edge into a fixed-height CaptionStrip directly above the controls, inside the
+//          measured bottom stack, so the camera frames the table above it and the table moves only when the Lens comes
+//          up or goes; the leader line to the card is drawn only in the wide layout, the ring and title chip everywhere).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
-//          Lens colour key, status label), the controls, and the caption and shot panel arranged for the screen at
-//          hand. On a phone held upright the caption floats over the table's top edge under the title row and the shot
-//          panel sits above the controls, all floating over the table. On
+//          Physics Lens key, status label), the controls, and the caption and shot panel arranged for the screen at
+//          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
+//          and the shot panel sit above the controls, measured so the camera frames the table above them. On
 //          the Mac, on iPad and in landscape the screen splits: the table on the left with the controls under it, and
 //          a side column on the right for the caption and the shot panel, so nothing covers the action. The camera is
 //          told how much room the controls take (measured, so large text pushes the table up instead of hiding it).
@@ -48,7 +52,7 @@ struct ShowpieceView: View {
     @State private var controlsTop: Double?
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var typeSize
+    @AppStorage(GameSettings.explanationsKey) private var explanations = true
     @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
 
     var body: some View {
@@ -65,7 +69,8 @@ struct ShowpieceView: View {
                 } else {
                     stage(geo: geo, wide: false, controlsInColumn: false)
                 }
-                CaptionLeader(leader: leader)
+                // The line to the card only where the card is beside the table; upright, the card is a strip far below.
+                CaptionLeader(leader: leader, showLine: wide)
             }
             .coordinateSpace(name: StageSpace.name)
             .onAppear {
@@ -110,15 +115,6 @@ struct ShowpieceView: View {
             VStack(spacing: 6) {
                 ScreenHeader(model: model)
                     .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
-                if !wide {
-                    // The explanation floats over the table's top edge. It is deliberately NOT measured for the camera:
-                    // the Spacer below absorbs its height, so it comes and goes without moving the table or the controls.
-                    // It takes no touches (aiming drags start anywhere on the table) except at the accessibility text
-                    // sizes, where a long card may need to scroll.
-                    CaptionArea(model: model, leader: leader, maxHeight: geo.size.height * 0.28)
-                        .frame(maxWidth: 560)
-                        .allowsHitTesting(typeSize.isAccessibilitySize)
-                }
                 Spacer(minLength: 0)
                 // Hidden (but still measured, so the table does not jump) while the menu is up.
                 if !controlsInColumn {
@@ -150,12 +146,21 @@ struct ShowpieceView: View {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
                 }
+                // Phone held upright: the explanation, directly above the controls and measured with them, so nothing
+                // covers the table. Its height is reserved (see CaptionStrip), so the table moves once when the Lens
+                // comes up and never between captions. Not gated on the menu: the whole stack is already hidden while
+                // the menu is up, and keeping it measured stops the table jumping behind the menu.
+                if !wide && model.lensOn && explanations {
+                    CaptionStrip(model: model, maxHeight: geo.size.height * 0.28)
+                        .transition(.opacity)
+                }
                 PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
             }
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: model.comparisonReady)
         .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: model.lensOn)
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 

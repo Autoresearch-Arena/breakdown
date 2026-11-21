@@ -22,7 +22,7 @@
 //          (position, look target, field of view, near plane). Trig and exp live here in the app; the physics package
 //          is only read.
 // SRP/DRY check: Pass - the ride camera only. Checked TableCamera (overhead framing, push-in), CameraFraming (framing
-//          maths), TableFrame (table-to-world conversion, reused here) and ShowpieceModel.autoRate (the cold open's own
+//          maths), TableFrame (table-to-world conversion, reused here) and PacePlan (the guided replay's own
 //          slow motion, left untouched); none of them follow a ball.
 import BreakdownLensModel
 import BreakdownPhysics

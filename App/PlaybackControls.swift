@@ -5,6 +5,9 @@
 //          scrub row, speed is a small menu instead of four segments, and the scrub row steps aside while aiming).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (a Ride toggle beside the Lens: the replay camera rides behind the
 //          cue ball and the ball it hits; in every layout, including the largest text sizes).
+// Edited: Claude Opus 5.5 High, 20-November-2026 (the Lens is named clearly: its button reads "Physics Lens" wherever
+//          that fits and falls back to "Lens", decided by the same one measurement that picks one row or two; VoiceOver
+//          always says "Physics Lens". Existing strings only.)
 // PURPOSE: The playback controls, built from standard parts: system buttons in Liquid Glass, SF Symbols with the
 //          standard replace and bounce symbol effects, a segmented picker for speed (a menu at the largest text
 //          sizes), and two toggle-style buttons (Lens, Your shot) whose label never changes, so nothing beside them
@@ -180,8 +183,15 @@ struct PlaybackControls: View {
 
     // MARK: Buttons (iPhone and iPad)
 
-    private var lens: some View {
-        ToggleButton(title: "Lens", symbol: "viewfinder", isOn: model.lensOn) { model.setLens(!model.lensOn) }
+    /// The Lens toggle. `full` picks the clear name "Physics Lens"; the short "Lens" is the fallback for tight rows.
+    /// Not a ViewThatFits of its own: inside a row it would always be offered the whole width (the Spacer gives way)
+    /// and pick the long name, which would make the outer ViewThatFits think one row fits when it does not. Instead
+    /// `buttons` lists long and short versions of each layout and one measurement chooses.
+    private func lens(full: Bool, fill: Bool = false) -> some View {
+        ToggleButton(title: full ? "Physics Lens" : "Lens", symbol: "viewfinder", isOn: model.lensOn, fill: fill) {
+            model.setLens(!model.lensOn)
+        }
+        .accessibilityLabel("Physics Lens")
     }
 
     /// Ride: the replay camera follows the balls at table height. Named "Ride" on the button and spoken in full.
@@ -201,10 +211,12 @@ struct PlaybackControls: View {
                 if typeSize.isAccessibilitySize {
                     stacked
                 } else {
+                    // Widest first: the full Lens name on one row, the short name on one row, then the same on two.
                     ViewThatFits(in: .horizontal) {
-                        oneRow
-                        twoRows
-                        threeRows
+                        oneRow(fullLens: true)
+                        oneRow(fullLens: false)
+                        twoRows(fullLens: true)
+                        twoRows(fullLens: false)
                     }
                 }
             }
@@ -213,21 +225,22 @@ struct PlaybackControls: View {
         }
     }
 
-    private var oneRow: some View {
+    private func oneRow(fullLens: Bool) -> some View {
         HStack(spacing: 8) {
             Spacer(minLength: 0)
-            lens
+            lens(full: fullLens)
             ride()
             ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
             shot
         }
     }
 
-    private var twoRows: some View {
+    /// Narrow columns (a phone turned sideways, a small window) and narrow phones.
+    private func twoRows(fullLens: Bool) -> some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
                 Spacer(minLength: 0)
-                lens
+                lens(full: fullLens)
                 ride()
                 ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
             }
@@ -235,13 +248,14 @@ struct PlaybackControls: View {
         }
     }
 
-    /// Narrow columns (a phone turned sideways, a small window) use the same two rows.
-    private var threeRows: some View { twoRows }
-
     /// Largest text sizes: everything full width, one control per row, with words on every button.
     private var stacked: some View {
         VStack(spacing: 8) {
-            ToggleButton(title: "Lens", symbol: "viewfinder", isOn: model.lensOn, fill: true) { model.setLens(!model.lensOn) }
+            // A full-width row: the long name nearly always fits; the short one is the fallback at the very largest sizes.
+            ViewThatFits(in: .horizontal) {
+                lens(full: true, fill: true)
+                lens(full: false, fill: true)
+            }
             ride(fill: true)
             ReplayButton(model: model, fill: true)
             ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen, fill: true) { shotPanelOpen.toggle() }

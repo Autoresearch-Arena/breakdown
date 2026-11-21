@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.5] - 20-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: The break replay now stops at each important moment of the break, starting with the cue ball hitting the rack and the energy running through it, and holds there long enough to read before moving on. It speeds through the quiet stretches. A Continue button skips ahead. On a phone held upright the explanation sits in a fixed strip below the table instead of over it. On the table, a short label by the ball names what is happening. The Lens is now named the Physics Lens on its button and its colour key.
+- Why: The Boss found the opening rushed past the interesting physics, and the explanation card covered the top of the table. He also found the Lens unclear.
+- How: Every caption is now kept (before, all but one per quarter second were dropped, which threw away most of the rack). A new pace plan picks the moments worth stopping on from the shot's own events and sets a reading pause for each. The pause is a real-time hold, not a slowed clock. Guided pacing runs on the slow replay and whenever the Lens is up with the speed left on Auto; picking a speed or riding the shot turns it off. The strip keeps one height from caption to caption, so the table does not jump. No new text to translate: the labels reuse caption titles, and the button reuses "Continue" and "Physics Lens".
+- Checked: the iPhone build, the Mac build and the physics package tests pass. Not checked: anything on a device (the Boss tests it himself).
+
 ## [0.5.4] - 20-November-2026
 
 Author: Claude Opus 5.5 High
