@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: a match can seat the computer (Player.computer, a
+//          ComputerLevel). MatchOpponent (App/Match/MatchOpponent.swift) is held here and run from update() while the
+//          match is aiming; computerSeatToAct says whose decision is due, and the person's taps (readyToShoot, setCall,
+//          answer, and the model's cue-ball placement) are refused on the computer's turn unless the computer itself
+//          is acting (computerActing). Against the computer there is no hand-over: the device stays with the person.
+//          Rematch keeps who is the computer. Every ruling plays its moment (SoundBoard.play: win, foul, turn change),
+//          and a game the rules finish is counted in the on-device record (MatchRecord).)
 // PURPOSE: A match for two on one device (plans/21-Nov-2026-rules-games-plan.md package 3 steps 4, 7 and 8, package 4
 //          step 3, model side). MatchMode owns the MatchState and one `any MatchRules` (EightBallRules, NineBallRules,
 //          or a table's rules from the BreakdownRules module) and runs the turn loop:
@@ -73,16 +80,28 @@ final class MatchMode {
     @ObservationIgnored private var shotVersion: Int?
     @ObservationIgnored private var firstBreaker: PlayerID
 
-    /// A new match of `kind`, not yet on the table (start() puts it there).
-    init(model: ShowpieceModel, kind: MatchKind) {
+    /// The computer player, when one sits at this match; nil for a match between people.
+    private(set) var opponent: MatchOpponent?
+    /// True only while the computer itself is taking its turn (MatchOpponent.perform): the one time the guards below
+    /// let a stroke, call, answer or cue-ball placement through on the computer's turn.
+    @ObservationIgnored var computerActing = false
+
+    /// A new match of `kind`, not yet on the table (start() puts it there). With `computer` set, the second seat is
+    /// the computer at that level; the person sits first and breaks the first game.
+    init(model: ShowpieceModel, kind: MatchKind, computer: ComputerLevel? = nil) {
         self.model = model
         let r = Self.rules(for: kind)
         rules = r
         table = Self.table(for: kind)
-        let fresh = r.initialState(playerNames: Self.defaultNames(count: Self.seats(for: r)))
+        var fresh = r.initialState(playerNames: Self.defaultNames(count: Self.seats(for: r)))
+        if let level = computer, fresh.players.count > 1 {
+            fresh.players[1].computer = level
+            fresh.players[1].name = OpponentWords.name(level)
+        }
         state = fresh
         firstBreaker = fresh.turn
         setup = MatchTableSetup(layout: [], racked: false, rackSeed: 0)
+        if fresh.players.contains(where: \.isComputer) { opponent = MatchOpponent() }
     }
 
     /// A saved match, not yet on the table (resume() puts it there).
@@ -93,6 +112,7 @@ final class MatchMode {
         state = saved.state
         firstBreaker = saved.firstBreaker
         setup = saved.setup
+        if saved.state.players.contains(where: \.isComputer) { opponent = MatchOpponent() }
     }
 
     // MARK: What the views read
@@ -108,10 +128,32 @@ final class MatchMode {
         case .tableLayout: return false
         }
     }
-    /// True when the next shot may be struck: aiming, no choice waiting, and a call made where one is needed.
+    /// True when the next shot may be struck: aiming, no choice waiting, and a call made where one is needed. On the
+    /// computer's turn only the computer may strike.
     var readyToShoot: Bool {
         phase == .aiming && state.pendingChoice == nil && !state.isOver && (!mustCall || currentCall != nil)
+            && personMayAct
     }
+
+    /// True when the computer plays this seat.
+    func isComputer(_ player: PlayerID) -> Bool {
+        state.players.indices.contains(player.index) && state.players[player.index].isComputer
+    }
+
+    /// The computer seat whose decision is due now: the chooser of a pending choice, otherwise the shooter. Nil when
+    /// the decision is a person's (or nothing is due).
+    var computerSeatToAct: PlayerID? {
+        guard phase == .aiming, !state.isOver else { return nil }
+        if let pending = state.pendingChoice { return isComputer(pending.chooser) ? pending.chooser : nil }
+        return isComputer(state.turn) ? state.turn : nil
+    }
+
+    /// False while it is the computer's decision and the computer is not the one acting: the person's taps on the
+    /// table, the call control and the choice buttons are then ignored.
+    var personMayAct: Bool { computerSeatToAct == nil || computerActing }
+
+    /// True when the computer plays one of the seats (no hand-over between turns: the device stays with the person).
+    var hasComputer: Bool { state.players.contains(where: \.isComputer) }
 
     // MARK: Turn loop
 
@@ -130,7 +172,7 @@ final class MatchMode {
     }
 
     func setCall(_ call: EightBallCall?) {
-        guard phase == .aiming else { return }
+        guard phase == .aiming, personMayAct else { return }
         if let ball = call?.ball, !rules.mayCall(ball, in: state) { return }
         currentCall = call
     }
@@ -156,6 +198,8 @@ final class MatchMode {
 
     /// Called every frame by the model. Rules on the shot once its replay has played out (or been skipped).
     func update() {
+        // The computer thinks and plays while the match is aiming; it does nothing on a person's turn.
+        if phase == .aiming { opponent?.update(self); return }
         guard phase == .shooting, let v = shotVersion, model.timelineVersion == v, model.aimReady else { return }
         rule()
     }
@@ -174,7 +218,22 @@ final class MatchMode {
         lastRuling = ruling
         currentCall = nil
         phase = .ruling
+        Self.playMoment(for: ruling)
+        if state.isOver { MatchRecord.noteFinished(state) }
         save()
+    }
+
+    /// The match moment a ruling sounds and is felt (SoundBoard.play plays its voice and its haptic together): a win
+    /// for the end of the game, a foul, a turn change; nothing when the shooter simply carries on.
+    static func moment(for r: Ruling) -> GameMoment? {
+        if r.result != nil { return .win }
+        if r.fouled { return .foul }
+        if r.turnPasses { return .turnChange }
+        return nil
+    }
+
+    private static func playMoment(for r: Ruling) {
+        if let m = moment(for: r) { SoundBoard.play(m) }
     }
 
     /// The ruling card was dismissed (from .ruling), or the next player has the device (from .handOver).
@@ -186,7 +245,8 @@ final class MatchMode {
             if state.isOver { phase = .over; return }
             let shooter = lastRuling?.shooter ?? state.turn
             let chooserIsOther = state.pendingChoice.map { $0.chooser != shooter } ?? false
-            if lastRuling?.turnPasses == true || chooserIsOther { phase = .handOver } else { beginTurn() }
+            // Against the computer the device never changes hands, so there is no hand-over.
+            if (lastRuling?.turnPasses == true || chooserIsOther) && !hasComputer { phase = .handOver } else { beginTurn() }
         case .handOver:
             beginTurn()
         default:
@@ -196,7 +256,14 @@ final class MatchMode {
 
     /// Answer a pending choice (accept the table, spot the 8, or re-rack).
     func answer(_ answer: MatchChoiceAnswer) {
-        guard phase == .aiming, let pending = state.pendingChoice, pending.choice.answers.contains(answer) else { return }
+        guard phase == .aiming || phase == .ruling, personMayAct, let pending = state.pendingChoice,
+              pending.choice.answers.contains(answer) else { return }
+        // The ruling card offers the choice itself (MatchViews), so an answer can arrive before the card is dismissed:
+        // the table the ruling left goes on screen first, so spotting reads the right layout.
+        if phase == .ruling {
+            if let s = nextSetup { show(s) }
+            nextSetup = nil
+        }
         let before = state
         let ruling = rules.ruling(answering: answer, in: before)
         let after = rules.applying(ruling, facts: nil, to: before)
@@ -211,10 +278,12 @@ final class MatchMode {
         state = after
         lastRuling = ruling
         show(s)
+        Self.playMoment(for: ruling)
+        if state.isOver { MatchRecord.noteFinished(state) }
         save()
         if state.isOver {
             phase = .over
-        } else if ruling.nextShooter != pending.chooser {
+        } else if ruling.nextShooter != pending.chooser && !hasComputer {
             phase = .handOver
         } else {
             beginTurn()
@@ -224,8 +293,12 @@ final class MatchMode {
     /// The next game with the same players; the other player breaks.
     func rematch() {
         let names = playerNames
+        let computers = state.players.map(\.computer)
         firstBreaker = firstBreaker.next(among: names.count)
         var fresh = rules.initialState(playerNames: names)
+        // The same seats: whoever was the computer stays the computer, at the same level.
+        for i in fresh.players.indices where computers.indices.contains(i) { fresh.players[i].computer = computers[i] }
+        opponent?.cancel()
         fresh.turn = firstBreaker
         state = fresh
         lastRuling = nil

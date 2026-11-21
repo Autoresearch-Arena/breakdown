@@ -63,6 +63,11 @@
 //          fresh rack, plays the player's first break and only then opens the menu (openingStage, hasSeenOpening).
 //          The tip's travel and the miscue ring are now per mode (tipLimit, miscueLimit). Launch flag -retryCases runs
 //          the plan's retry cases and logs each result.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: startMatch takes an optional computer level;
+//          matchSolveParameters gives the computer's planner the very parameters a match shot is solved with;
+//          playComputerStroke places the cue ball, sets the stroke and strikes for the computer (the person's own power,
+//          tip and cue elevation are put back afterwards); a lifted cue ball on the computer's turn is the computer's
+//          alone (canPlaceCueBall).)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -962,7 +967,8 @@ final class ShowpieceModel {
     /// play at any time; never in a trick shot or puzzle (their layouts are authored).
     var canPlaceCueBall: Bool {
         guard aimReady, !menuOpen, layout.count == 16 else { return false }
-        if let m = match { return m.phase == .aiming && m.state.ballInHand != .none }
+        // On the computer's turn only the computer places its cue ball (MatchMode.personMayAct).
+        if let m = match { return m.phase == .aiming && m.state.ballInHand != .none && m.personMayAct }
         return !authoredModeUp
     }
 
@@ -1095,14 +1101,15 @@ final class ShowpieceModel {
     // MARK: Matches (MatchMode)
 
     /// Start a match of `kind` from the menu: any trick shot or situation ends, the menu closes, the rack goes on.
-    func startMatch(_ kind: MatchKind) {
+    /// With `computer` set, the second seat is the computer at that level.
+    func startMatch(_ kind: MatchKind, computer: ComputerLevel? = nil) {
         cancelPendingSolve()
         trickMode.end()
         eightBallMode.end()
         menuOpen = false
         gameInProgress = true
         endPlacement(); ballInHand = .none; undoStep = nil
-        let m = MatchMode(model: self, kind: kind)
+        let m = MatchMode(model: self, kind: kind, computer: computer)
         match = m
         m.start()
         setLens(false)
@@ -1145,6 +1152,53 @@ final class ShowpieceModel {
 
     /// MatchMode reports whether a save exists after each write or removal.
     func noteMatchSave(exists: Bool) { savedMatchExists = exists }
+
+    /// The parameters a match shot is solved with right now, exactly as prepare(_:) builds them for a NextShot input
+    /// (default parameters, then the table, then the surface, then the physics generation). The computer opponent
+    /// plans on these, so its trial solves and the real stroke agree.
+    var matchSolveParameters: PoolParameters {
+        var p = PoolParameters()
+        physicsTable.apply(to: &p)
+        physicsSurface.apply(to: &p)
+        p.modelGeneration = activeModelGeneration
+        return p
+    }
+
+    /// The computer's stroke (MatchOpponent): put the cue ball on `placement` first when it has ball in hand (if that
+    /// spot is no longer legal the ball stays where it lies), then break or shoot with the given settings (a break
+    /// takes `breakAimOffset`, metres off the apex ball; a shot takes `aimDegrees`). The person's own power, tip and
+    /// cue elevation are put back once the stroke is struck, so their controls are as they left them. Returns whether
+    /// the stroke was struck. Only while the match says the computer is acting.
+    @discardableResult
+    func playComputerStroke(placement: Vec2?, aimDegrees aim: Double, breakAimOffset: Double, power: Double,
+                            tipUp: Double, tipSide: Double) -> Bool {
+        guard let m = match, m.computerActing, aimReady, !isSolving, !menuOpen, layout.count == 16 else { return false }
+        if let spot = placement {
+            if !placingCueBall { beginPlacingCueBall() }
+            if placingCueBall {
+                moveCueBallCandidate(to: spot)
+                if !confirmCueBallPlacement() { cancelPlacement() }
+            }
+        } else if placingCueBall {
+            cancelPlacement()
+        }
+        if racked {
+            let kept = (power: self.power, up: tipHeight, side: breakTipSide)
+            aimOffset = min(max(breakAimOffset, -Self.breakAimLimit), Self.breakAimLimit)
+            self.power = min(max(power, PlayerShotSpeed.rackBreak.lowerBound), PlayerShotSpeed.rackBreak.upperBound)
+            tipHeight = tipUp; breakTipSide = tipSide
+            breakNow()
+            self.power = kept.power; tipHeight = kept.up; breakTipSide = kept.side
+        } else {
+            let kept = (power: shotPower, up: shotTipUp, side: shotTipSide, elevation: shotElevation)
+            aimDegrees = aim
+            shotPower = min(max(power, PlayerShotSpeed.ordinary.lowerBound), PlayerShotSpeed.ordinary.upperBound)
+            shotTipUp = tipUp; shotTipSide = tipSide; shotElevation = 0
+            shootNow()
+            shotPower = kept.power; shotTipUp = kept.up; shotTipSide = kept.side; shotElevation = kept.elevation
+        }
+        return m.phase == .shooting
+    }
 
     /// The table a match rack starts from (positions from Rack, or the table's own start layout).
     func matchSetup(for rack: MatchRack, seed: UInt64) -> MatchTableSetup {
