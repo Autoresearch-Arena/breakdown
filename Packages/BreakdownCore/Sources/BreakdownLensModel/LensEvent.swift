@@ -9,6 +9,14 @@
 //          (CushionEdge.post), and a new kind, pinDown, records a standing pin knocked over. Both name their post or pin
 //          in the new `feature` field (-1 everywhere else). The new cases are appended, so no raw value moves and every
 //          recording without posts or pins hashes exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (shapes for the generation-two physics; the solver fills them in
+//          later and only above generation 1. Two new kinds, appended so no raw value moves: rimSkip (a ball crossed a
+//          hole too fast and carried on) and settledInContact (the jam guard brought a wedged group of balls to rest).
+//          New optional fields, nil at generation 1: entry (speed and angle into a pocket, on pocket and rim-skip
+//          events), miscue and deflectionSine (cue-strike events), bedImpulse (rail events: the push down into the
+//          cloth from a rail nose above the ball's centre) and energyRemoved (settled-in-contact events).
+//          Timeline.contentHash folds each one in only when it is set, so every recording without them hashes
+//          exactly as before.)
 // PURPOSE: The engine-agnostic event stream the Physics Lens reads. Each event names its producer so the
 //          Lens knows how far to trust a number (pool solver numbers are exact; scanned-scene numbers
 //          will be labelled estimates later). Also holds the stable 64-bit hasher used for replay equality.
@@ -30,8 +38,29 @@ public enum FlightMark: UInt8, Sendable {
 
 /// `pinDown` (added last, so older raw values never move): a ball touched a standing pin and knocked it over; the
 /// event's `feature` is the pin's index in TableSpec.pins and its first ball is the ball that hit it.
+/// `rimSkip` (21-Nov-2026, generation two only): a ball crossed a hole too fast to fall in and carried on. `pocket` is
+/// the hole (an edge pocket 0 to 5 or a bed hole 6 + j, as on a pocket event), `balls[0]` is the ball with its speed
+/// before and after (it pays PoolParameters.rimSkipSpeedLoss), and `entry` holds the speed and angle it came in at.
+/// `settledInContact` (21-Nov-2026, the jam guard): a group of wedged balls that were bouncing in a storm of tiny
+/// impacts was brought to rest touching. `balls` lists EVERY ball in the group (two or more, each with its state
+/// before and after), `energyRemoved` is the energy taken out, joules, so the energy ledger still closes.
 public enum LensEventKind: UInt8, Sendable {
-    case cueStrike, phaseTransition, ballBall, cushion, pocket, pinDown
+    case cueStrike, phaseTransition, ballBall, cushion, pocket, pinDown, rimSkip, settledInContact
+}
+
+/// How a ball came into a pocket or a bed hole (pocket and rim-skip events, generation two). `speed` is its speed
+/// across the cloth, metres per second. The angle is between the ball's path and the pocket's centre line, given as a
+/// sine and cosine (the solver has no trigonometry): the centre line points from the mouth into the pocket (for a
+/// corner pocket along its diagonal, for a side pocket straight out across the rail; a bed hole has no mouth, so its
+/// centre line runs from the point the ball entered the capture circle through the hole's centre). `cosine` 1 is
+/// dead centre; `sine` is positive when the path is turned counter-clockwise from the centre line (table plan).
+public struct PocketEntry: Sendable, Equatable {
+    public var speed: Double
+    public var sine: Double
+    public var cosine: Double
+    public init(speed: Double, sine: Double, cosine: Double) {
+        self.speed = speed; self.sine = sine; self.cosine = cosine
+    }
 }
 
 /// Which part of the cushion a cushion event hit: the long straight nose, a pocket jaw face, or the rounded knuckle
@@ -103,12 +132,27 @@ public struct LensEvent: Sendable, Equatable {
     public var height: Double
     /// For a post hit (edge .post) the post's index, for a pinDown event the pin's index; -1 for everything else.
     public var feature: Int
+    // Generation-two fields (21-Nov-2026). Every one is nil at generation 1 and on recordings made before them.
+    /// Pocket and rim-skip events: the speed and angle the ball came in at.
+    public var entry: PocketEntry?
+    /// Cue-strike events: true when the tip slipped off the ball (the offset passed the tip-grip limit).
+    public var miscue: Bool?
+    /// Cue-strike events: the sine of the angle the cue ball's launch direction turned away from the aim (positive is
+    /// counter-clockwise in the table plan); side spin pushes the ball off line, a miscue by a seeded random amount.
+    public var deflectionSine: Double?
+    /// Cushion events on a rail nose (edge .rail, .jaw or .knuckle): the impulse that pushed the ball down into the
+    /// cloth, newton-seconds, because the nose touches the ball above its centre. Nil for flat (generation-1) rails.
+    public var bedImpulse: Double?
+    /// Settled-in-contact events: the energy the jam guard took out of the group, joules (before minus after).
+    public var energyRemoved: Double?
 
     public init(time: Double, kind: LensEventKind, point: Vec2, normal: Vec2, normalImpulse: Double = 0,
                 frictionImpulse: Double = 0, slipSpeed: Double = 0, balls: [ImpactBall],
                 phaseFrom: MotionPhase? = nil, phaseTo: MotionPhase? = nil, pocket: Int = -1,
                 edge: CushionEdge = .rail, flight: FlightMark = .none, verticalSpeedDown: Double = 0,
                 verticalSpeedUp: Double = 0, height: Double = 0, feature: Int = -1,
+                entry: PocketEntry? = nil, miscue: Bool? = nil, deflectionSine: Double? = nil,
+                bedImpulse: Double? = nil, energyRemoved: Double? = nil,
                 producer: LensProducer = .poolSolver) {
         self.time = time; self.kind = kind; self.producer = producer
         self.point = point; self.normal = normal
@@ -118,6 +162,8 @@ public struct LensEvent: Sendable, Equatable {
         self.flight = flight; self.verticalSpeedDown = verticalSpeedDown; self.verticalSpeedUp = verticalSpeedUp
         self.height = height
         self.feature = feature
+        self.entry = entry; self.miscue = miscue; self.deflectionSine = deflectionSine
+        self.bedImpulse = bedImpulse; self.energyRemoved = energyRemoved
     }
 }
 

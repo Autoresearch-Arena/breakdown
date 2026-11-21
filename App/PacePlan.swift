@@ -11,6 +11,8 @@
 //          ShowpieceModel runs with its own real-time counter, so the clock can never stall forever.
 //          Everything is read from the recorded event times; nothing is tuned to the showpiece rack.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: a post rebound paces like a rail, a pin knocked down like an impact).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the two generation-two event kinds: a rim skip paces like a jaw hit,
+//          a jam brought to rest like an impact).
 // SRP/DRY check: Pass - choosing beats and the between-beats speed only; the hold itself and the clock live in
 //          ShowpieceModel, the words in CaptionEngine.
 import BreakdownLensModel
@@ -67,6 +69,10 @@ struct PacePlan: Equatable {
             case .pinDown: return .impact
             case .phaseTransition: return .roll
             case .pocket: return .pocket
+            // Generation-two kinds: a ball skipping over a hole is a near miss at the pocket, like a jaw rattle; a
+            // jam brought to rest is a contact between balls.
+            case .rimSkip: return .jaw
+            case .settledInContact: return .impact
             }
         }
         let kinds = captions.map(kind)

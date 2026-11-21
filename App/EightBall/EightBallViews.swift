@@ -9,6 +9,8 @@
 //          and -eightRealTable test flags; the -eightJudgeCheck launch flag writes the acceptance check to the log and
 //          Documents.)
 // Edited: Claude Opus 5.5 Medium, 21-November-2026 (the card's light "Scoring…" state while the judge works.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (imports BreakdownRules, where the eight-ball group, pocket, call,
+//          foul and loss types now live; nothing else changed.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -36,6 +38,7 @@
 //          two cards look and behave the same; they are private there, so they are repeated here rather than shared.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import SwiftUI
 
 // MARK: Shared small pieces

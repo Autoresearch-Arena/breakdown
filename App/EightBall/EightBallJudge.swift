@@ -9,6 +9,10 @@
 //          the sweep's solves carry an event budget, so a steep jump that jams the cue ball against a ball fails in a
 //          fraction of a second instead of grinding to the solver's guard for five; the escape check prints each
 //          judgement's time.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the scratch, first-contact, rail-after-contact and ball-off-the-table
+//          checks now read the shared ShotFacts (BreakdownTimeline) with the same tie window and rail threshold, so
+//          the judge and the match rules read a shot one way; verdicts are unchanged. The eight-ball group, pocket,
+//          call, foul and loss types moved to the BreakdownRules module, hence its import.)
 // PURPOSE: Judges one Behind the 8-Ball attempt (docs/2026-11-21-behind-the-eight-ball-design.md, sections 1 and 2)
 //          from its recording, the stroke as struck and the situation's start, and nothing else.
 //          - Fouls (1.3): scratch (pocketed or off the table), wrong ball first (a tie inside sameInstant counts the
@@ -51,6 +55,7 @@
 //          nothing else in the app judges a stroke against the balls behind it.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import Foundation
 
@@ -62,10 +67,12 @@ enum EightBallJudge {
 
     /// Two first contacts of the cue ball closer in time than this are "at the same instant": the legal ball counts
     /// as first (design 1.3 rule 2; the solver has exact times, so this stands in for "one solver step").
-    static let sameInstant = 1e-5
+    /// The value lives in ShotFacts (1e-5 seconds), the shared reading of a shot, so the match rules use the same one.
+    static let sameInstant = ShotFacts.sameInstant
     /// A cushion contact counts as "reaching a rail" only if the ball has moved at least this far from where it
-    /// started (a ball frozen on a rail that is pushed into it has not left the rail and come back).
-    static let railMoveMinimum = 0.002
+    /// started (a ball frozen on a rail that is pushed into it has not left the rail and come back). 0.002 m, kept in
+    /// ShotFacts for the same reason.
+    static let railMoveMinimum = ShotFacts.railMoveMinimum
 
     /// Double hit. After the strike the cue tip carries on at this share of the cue ball's launch speed (a cue about
     /// three times the ball's mass and a lively tip give roughly 0.44), for followThrough metres, and then stays put
@@ -304,15 +311,18 @@ enum EightBallJudge {
         let legal = Set(s.legalBalls)
         var found = Set<EightBallFoul>()
 
-        if tl.pocketTime[0] != nil || tl.flewOffTable(0) { found.insert(.scratch) }
-        let first = firstContact(tl, legal: legal)
+        // The plain facts (scratch, first contact, rail after contact, balls off the table) come from the shared
+        // reading of a shot, ShotFacts, with this judge's own tie window and rail threshold.
+        let facts = shotFacts(tl, start: start)
+        if facts.cueBallScratched { found.insert(.scratch) }
+        let first = firstContact(facts, legal: legal)
         if let f = first {
             if !legal.contains(f.ball) { found.insert(.wrongBallFirst) }
-            if !railAfterContact(tl, start: start, after: f.time) { found.insert(.noRailAfterContact) }
+            if !facts.railOrPocketAfterContact { found.insert(.noRailAfterContact) }
         } else {
             found.insert(.noBallHit)
         }
-        for b in 1..<16 where NextShot.isOnTable(start[b]) && tl.flewOffTable(b) { found.insert(.objectBallOffTable) }
+        if !facts.objectBallsOffTable.isEmpty { found.insert(.objectBallOffTable) }
         if cueOrBridgeTouches(start: start, settings: settings, bridge: s.usesBridge) {
             found.insert(.cueOrBridgeTouchedBall)
         }
@@ -343,36 +353,17 @@ enum EightBallJudge {
         return o
     }
 
-    /// The object ball the cue ball reached first, and when. Contacts within sameInstant of the first are a tie, and a
-    /// legal ball among them counts as first (the rules' answer when the order cannot be told).
-    private static func firstContact(_ tl: Timeline, legal: Set<Int>) -> (ball: Int, time: Double)? {
-        let hits = tl.events
-            .filter { e in e.kind == .ballBall && e.balls.contains { $0.ball == 0 } }
-            .sorted { $0.time < $1.time }
-        guard let t0 = hits.first?.time else { return nil }
-        let tied = hits.prefix { $0.time <= t0 + sameInstant }.compactMap { e in e.balls.first { $0.ball != 0 }?.ball }
-        guard let ball = tied.first(where: { legal.contains($0) }) ?? tied.first else { return nil }
-        return (ball, t0)
+    /// The shared reading of this recording (BreakdownTimeline/ShotFacts.swift), with the cue ball as ball 0 and this
+    /// judge's tie window and rail threshold (the same numbers ShotFacts uses by default).
+    private static func shotFacts(_ tl: Timeline, start: [Vec2]) -> ShotFacts {
+        ShotFacts(timeline: tl, start: start, cueBall: 0, sameInstant: sameInstant, railMoveMinimum: railMoveMinimum)
     }
 
-    /// After the first contact some ball reached a rail (and had moved to get there), or dropped, or left the table.
-    private static func railAfterContact(_ tl: Timeline, start: [Vec2], after t: Double) -> Bool {
-        for e in tl.events where e.time >= t - sameInstant {
-            switch e.kind {
-            case .pocket:
-                return true
-            case .cushion:
-                guard e.edge != .post, let b = e.balls.first?.ball, b < start.count else { continue }
-                let at = tl.state(ball: b, at: e.time).position
-                if NextShot.isOnTable(start[b]), (at - start[b]).length < railMoveMinimum { continue }
-                return true
-            case .phaseTransition:
-                if e.flight == .offTable { return true }
-            default:
-                continue
-            }
-        }
-        return false
+    /// The object ball the cue ball reached first, and when. Contacts within sameInstant of the first are a tie, and a
+    /// legal ball among them counts as first (the rules' answer when the order cannot be told). ShotFacts does the
+    /// reading; this keeps the tuple the double-hit and scoop checks take.
+    private static func firstContact(_ facts: ShotFacts, legal: Set<Int>) -> (ball: Int, time: Double)? {
+        facts.firstContact(preferring: legal).map { (ball: $0.ball, time: $0.time) }
     }
 
     /// The cue's own frame for a stroke: the solver's (Simulation.applyRaisedStrike): d the aim on the table, e and c
@@ -489,7 +480,7 @@ enum EightBallJudge {
                                 legal: Set<Int>) -> Factors {
         var f = Factors()
         let r = ballRadius
-        let first = firstContact(tl, legal: legal)
+        let first = firstContact(shotFacts(tl, start: start), legal: legal)
         f.firstContact = first?.ball
         let cueEnd = first?.time ?? tl.duration
         f.railsBeforeContact = tl.events.filter { e in

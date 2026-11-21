@@ -10,9 +10,17 @@
 //          6 + j), and pocketsEnabled (false removes the six edge pockets and their jaws, so the cushions run the full
 //          length of every side). Like the jump numbers they join the hash only when set, behind their own marker, so the
 //          default parameters, and every recording made before them, hash exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the physics switch: modelGeneration, read by the solver, picks the
+//          physics model. Generation one is today's solver exactly; generation two gathers the planned rails, cue
+//          strike and pocket changes, whose numbers are declared here with their starting values and reasons. The
+//          generation and every generation-two number join the hash only when the generation is not one, behind their
+//          own marker, so the default parameters and every recording made before them hash exactly as before.
+//          CueStrike gains ballIndex, the ball the cue strikes (default 0, the cue ball; not hashed, see its note).)
 // PURPOSE: Every tunable number of the pool solver in one versioned value that is hashed into each recorded
 //          shot. Values follow the spec section 3.4; anything marked "calibrate" there is a first guess to
-//          tune later against the validation suite. No Foundation import anywhere in this module (no libm).
+//          tune later against the validation suite. modelGeneration picks the physics model (1 is today's solver;
+//          the generation-two numbers below it are used only above 1). Also the cue strike (CueStrike) and the shot
+//          input (ShotInput) the solver takes. No Foundation import anywhere in this module (no libm).
 // SRP/DRY check: Pass - the single source of physical constants and table geometry.
 import BreakdownLensModel
 import BreakdownTimeline
@@ -80,6 +88,66 @@ public struct PoolParameters: Sendable {
     public var bedHoles: [BedHole] = []
     public var rackGap = 1e-6                   // one micrometre between rack neighbours
     public var rackJitter = 2e-7                // seeded jitter amplitude per axis, metres; stays under a quarter of the gap so no pair starts overlapping
+
+    // MARK: The physics switch (21-Nov-2026, plans/21-Nov-2026-physics-proof-plan.md package 1)
+
+    /// Which physics model the solver runs. Unlike `version` (a label stamped on recordings), the solver READS this.
+    /// Generation 1 is the solver as it was on 21 November 2026, bit for bit: every trick shot and puzzle was authored
+    /// on it, so it stays the default until the proof plan's package 4 re-authors them and flips it. Generation 2
+    /// gathers the planned changes (real rails, a real cue strike, pockets that can refuse a ball); each of them checks
+    /// this number and takes the old path at generation 1 (the rule is written at the top of Simulation.swift).
+    public var modelGeneration = 1
+    /// The newest generation the solver knows. The app's developer flag (-newPhysics) plays on this one.
+    public static let newestGeneration = 2
+    /// True when the generation-two changes are on.
+    public var usesGenerationTwo: Bool { modelGeneration >= 2 }
+
+    // Generation-two numbers. They do nothing at generation 1 and join the hash only above it. Every one is a starting
+    // value to be tuned against the real-table checks (proof plan, package 4); each says where it came from.
+
+    /// Rails (plans/21-Nov-2026-rails-plan.md). The rail's restitution falls with the ball's speed into the rail:
+    /// e(v) = max(railRestitutionFloor, cushionRestitution - railRestitutionSlope * v), v the normal speed in m/s.
+    /// At walking pace that is about today's cushionRestitution (0.85). The floor is reached at break speed: the break
+    /// range is 8 to 13 m/s of cue-ball speed (spec 3.4), so take 10 m/s, and pick a floor of 0.6, whose energy share
+    /// 0.6 squared = 0.36 is "proportionally less" than the just-under-half the proof plan's case 6 expects at
+    /// medium speed. Slope = (0.85 - 0.6) / 10 m/s = 0.025 per m/s.
+    public var railRestitutionSlope = 0.025
+    public var railRestitutionFloor = 0.6
+    /// Cue strike (plans/21-Nov-2026-cue-strike-plan.md). The cue's mass, kilograms (spec 3.4: 0.54 kg). An off-centre
+    /// hit launches the ball at the centre-hit speed times (M + m) / (M + m + 5/2 * M * offset^2 / R^2).
+    public var cueMass = 0.54
+    /// Effective mass of the end of the shaft, kilograms: it sets how far side spin pushes the cue ball off line. The
+    /// deflection obeys tan(angle) = 5/2 * x * sqrt(1 - x^2) / (1 + m / Me + 5/2 * x^2), x = side offset / R. The spec
+    /// asks for 2 to 3 degrees at half-radius side offset. At x = 0.5 the numerator is 1.25 * 0.866025 = 1.082532 and
+    /// 5/2 * x^2 = 0.625, so for 2.5 degrees (tan = 0.043661) the denominator must be 1.082532 / 0.043661 = 24.794,
+    /// giving m / Me = 24.794 - 1.625 = 23.169 and Me = 0.170 / 23.169 = 0.00734 kg. Rounded to 0.0073 kg: m / Me =
+    /// 23.288, denominator 24.913, tan = 0.043453, about 2.49 degrees (2 degrees would need 0.0058 kg, 3 degrees
+    /// 0.0089 kg). A few grams is the right size for the end of a shaft against a 0.54 kg cue.
+    public var shaftEndMass = 0.0073
+    /// Tip grip, the tip-to-ball friction coefficient (spec 3.3: mu_tip about 0.58). A strike miscues when the offset
+    /// from centre exceeds R * tipGrip / sqrt(1 + tipGrip^2) = R * 0.58 / 1.156028 = 0.5017 R, about half the radius.
+    public var tipGrip = 0.58
+    /// A miscue launches the ball at this share of the centre-hit speed. Reason: a tip that slips carries on past the
+    /// ball, so the ball gets roughly the part of the impulse along the contact normal at the point the tip slid to;
+    /// near the edge of the tip's travel that normal is about 60 degrees off the cue, and cos 60 degrees = 0.5.
+    public var miscueSpeedFraction = 0.5
+    /// A miscue's direction is turned by a seeded random amount up to this, as a tangent (sideways over forward; the
+    /// solver has no trig). 0.0875 is tan 5 degrees: twice the 2.5-degree push of the largest legal side hit, so a
+    /// miscue flies visibly off line while staying on the aimed side of the table.
+    public var miscueMaxDeflection = 0.0875
+    /// Pockets (plans/21-Nov-2026-pockets-and-jams-plan.md, part A). A ball crossing a hole is captured when it falls
+    /// at least this share of its radius before its centre leaves the far side (the plan's starting value, one third).
+    public var pocketCaptureFallFraction = 1.0 / 3.0
+    /// A ball that skips over a hole loses this share of its speed. Reason: it may dip up to a third of its radius
+    /// (0.0095 m) and must climb back out; that costs 2 * g * 0.0095 = 0.19 m^2/s^2 of speed squared, about 2.4
+    /// percent of the speed at 2 m/s, and the knock on the far edge costs about as much again: 5 percent to start.
+    public var rimSkipSpeedLoss = 0.05
+
+    /// Every generation-two number, in hash order. Appending is safe; reordering would change generation-two hashes.
+    private var generationTwoNumbers: [Double] {
+        [railRestitutionSlope, railRestitutionFloor, cueMass, shaftEndMass, tipGrip, miscueSpeedFraction,
+         miscueMaxDeflection, pocketCaptureFallFraction, rimSkipSpeedLoss]
+    }
 
     public init() {}
 
@@ -165,6 +233,14 @@ public struct PoolParameters: Sendable {
             h.combine(bedHoles.count)
             for b in bedHoles { h.combine(b.center); h.combine(b.radius); h.combine(b.captureRadius) }
         }
+        // The physics switch, likewise only when it is off its default, behind its own marker: generation 1 (today's
+        // solver) hashes exactly as before it existed. The generation-two numbers do nothing at generation 1, so
+        // they are hashed only above it.
+        if modelGeneration != 1 {
+            h.combine(UInt64(0x4745_4E52))   // "GENR"
+            h.combine(modelGeneration)
+            if modelGeneration > 1 { for d in generationTwoNumbers { h.combine(d) } }
+        }
         return h.value
     }
 }
@@ -177,15 +253,22 @@ public struct PoolParameters: Sendable {
 /// the caller does the trig, as with the direction. A raised cue sends part of the speed down into the cloth (the
 /// slate bounces it back up: a jump once the rise is at least PoolParameters.minimumHop) and tilts the side-spin axis,
 /// which makes the path curve while the ball slides (masse: a left offset curves left, a right offset right).
+/// `ballIndex` (21-Nov-2026) is the ball the cue strikes: 0, the default, is the pool cue ball; on tables where each
+/// player has their own cue ball (five-pin, bumper pool) it is that player's ball. The solver's use of it belongs to
+/// the solver work (plans/21-Nov-2026-other-tables-games-plan.md package 1 step 3). CueStrike is not part of any hash
+/// and is not encoded anywhere (recordings hash their segments and events), so the default changes nothing recorded.
 public struct CueStrike: Sendable {
     public var direction: Vec2
     public var speed: Double
     public var tipUp: Double
     public var tipSide: Double
     public var elevation: Double
-    public init(direction: Vec2, speed: Double, tipUp: Double = 0, tipSide: Double = 0, elevation: Double = 0) {
+    public var ballIndex: Int
+    public init(direction: Vec2, speed: Double, tipUp: Double = 0, tipSide: Double = 0, elevation: Double = 0,
+                ballIndex: Int = 0) {
         self.direction = direction.normalized; self.speed = speed; self.tipUp = tipUp; self.tipSide = tipSide
         self.elevation = elevation < 0 ? 0 : (elevation > 0.995 ? 0.995 : elevation)
+        self.ballIndex = ballIndex
     }
 }
 

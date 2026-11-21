@@ -2,6 +2,8 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the twelve situations authored and checked in the solver with the
 //          new "BreakProbe eightball" search; every escape below passes there with its call and no foul).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (imports BreakdownRules, where the eight-ball group, pocket and call
+//          types now live; nothing else changed.)
 // PURPOSE: The Behind the 8-Ball library: data only. The twelve situations of the design (section 3), each a full
 //          eight-ball table in progress (both groups and the 8, the rest pocketed), written in diamonds through
 //          EightBallTable.layout and stored in metres, with the authored escapes (stroke, call, bridge, rating,
@@ -25,6 +27,7 @@
 //          dev tool and copies nothing from here; it holds the same diamonds and strokes as its evidence.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 
 enum EightBallSituations {
     static func situation(id: String) -> EightBallSituation? { all.first { $0.id == id } }

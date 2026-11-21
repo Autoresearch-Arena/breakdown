@@ -8,6 +8,8 @@
 //          no elevation control); Reset after a shot taken with no call).
 // Edited: Claude Opus 5.5 Medium, 21-November-2026 (the judgement runs on a background task: a new Scoring phase holds
 //          the card while it works, and a verdict that arrives after the player has moved on is dropped.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (imports BreakdownRules, where the eight-ball group, pocket, call,
+//          foul and loss types now live; nothing else changed.)
 // PURPOSE: Behind the 8-Ball flow, modelled on TrickShotMode. Holds which situation is on the table and walks the
 //          player through it: Looking (the table set up, the story card) > Calling (tap a ball, then a pocket, or tap
 //          Safety) > Aiming (the shot panel open, the player's own settings, never the answer) > Playing (the shot is
@@ -31,6 +33,7 @@
 //          is driven through ShowpieceModel's existing trick-shot methods, not copies of them.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import Foundation
 import Observation
 

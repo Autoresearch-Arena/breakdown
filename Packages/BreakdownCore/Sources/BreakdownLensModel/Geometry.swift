@@ -2,11 +2,13 @@
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Vec3 gains a cross product and a negation, for the cue-strike
 //          spin axis and the three-dimensional ball-ball contact of a ball in the air.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Vec2 is Codable, so a saved match can store its layout. Encoding
+//          is the standard library's synthesized x / y pair; nothing in the solver or the hashes uses it.)
 // PURPOSE: Tiny vector types shared by every module. Only add, subtract, multiply, divide and square root
 //          are used, so the physics module can depend on this file without breaking the no-libm rule.
 // SRP/DRY check: Pass - the one place 2D and 3D vector arithmetic lives.
 
-public struct Vec2: Sendable, Equatable, Hashable {
+public struct Vec2: Sendable, Equatable, Hashable, Codable {
     public var x: Double
     public var y: Double
     public init(_ x: Double, _ y: Double) { self.x = x; self.y = y }

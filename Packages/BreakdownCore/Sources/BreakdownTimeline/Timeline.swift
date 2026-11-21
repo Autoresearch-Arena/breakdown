@@ -10,6 +10,9 @@
 //          finds either). The Timeline lists the pins knocked down (pinFalls, pinDownTime) from the pinDown events, so
 //          the app can topple them as a pure function of the clock. contentHash folds an event's feature index only
 //          where one is set, so every recording without posts or pins hashes exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (contentHash folds the new generation-two event fields (pocket entry,
+//          miscue, deflection, bed impulse, energy removed) only where they are set, each behind its own marker, so
+//          every recording without them hashes exactly as before.)
 // PURPOSE: The recorded shot. Holds every ball's segments, the Lens events, the table description, and a
 //          content hash for replay equality. Playback, slow motion, scrubbing, the Lens and sound all read
 //          this and never re-simulate. Doubles are hashed by bit pattern.
@@ -168,6 +171,16 @@ public struct Timeline: Sendable {
                 h.combine(Int(e.flight.rawValue)); h.combine(e.verticalSpeedDown); h.combine(e.verticalSpeedUp)
                 h.combine(e.height)
             }
+            // Generation-two fields, each only where set and behind its own marker (all nil at generation 1 and on
+            // older recordings, which therefore hash exactly as before).
+            if let en = e.entry {
+                h.combine(UInt64(0x454E_5452))   // "ENTR"
+                h.combine(en.speed); h.combine(en.sine); h.combine(en.cosine)
+            }
+            if let m = e.miscue { h.combine(UInt64(0x4D49_5343)); h.combine(m ? 1 : 0) }        // "MISC"
+            if let s = e.deflectionSine { h.combine(UInt64(0x4445_464C)); h.combine(s) }      // "DEFL"
+            if let b = e.bedImpulse { h.combine(UInt64(0x4245_4449)); h.combine(b) }          // "BEDI"
+            if let x = e.energyRemoved { h.combine(UInt64(0x4A41_4D53)); h.combine(x) }       // "JAMS"
         }
         return h.value
     }

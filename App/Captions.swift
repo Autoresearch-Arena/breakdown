@@ -20,6 +20,8 @@
 //          solver was given, and every ratio is worked out from them, never typed in.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: captions for a ball thrown back by a post and for a pin
 //          knocked down, both with the speeds read from the event).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the two generation-two event kinds, rim skip and settled in
+//          contact, are named in the switch and get no caption yet; the solver work that records them adds the words.)
 // SRP/DRY check: Pass - caption selection and wording only; display lives in the view.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -199,6 +201,11 @@ enum CaptionEngine {
             return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),
                            detail: String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s."),
                            equation: "ΔKE → 0", accent: .pocket, importance: 3)
+        case .rimSkip, .settledInContact:
+            // Generation-two events (a ball skipping over a hole, a jam brought to rest). No generation-1 recording
+            // has them; their words come with the solver work that records them (pockets-and-jams plan), so until
+            // then they get no caption rather than a sentence nobody has translated.
+            return nil
         }
     }
 }

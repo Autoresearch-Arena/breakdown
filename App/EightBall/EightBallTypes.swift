@@ -1,11 +1,13 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (EightBallGroup, EightBallPocket, EightBallCall, EightBallFoul and
+//          EightBallLoss moved to the BreakdownRules package module, unchanged in name and raw value, so the match
+//          rules share them; their player-facing titles stay here as extensions so the string catalog keeps them.)
 // PURPOSE: The data types of Behind the 8-Ball (docs/2026-11-21-behind-the-eight-ball-design.md), shared by the
 //          situations (EightBallSituations), the judge (EightBallJudge), the flow (EightBallMode) and the views
 //          (EightBallViews). Data and small derived values only:
-//          EightBallGroup - solids or stripes, and the balls in each.
-//          EightBallPocket - the six pockets by the names the design uses, raw value = the solver's pocket index.
-//          EightBallCall - one ball in one pocket, or Safety.
+//          EightBallGroup, EightBallPocket, EightBallCall, EightBallFoul, EightBallLoss - defined in BreakdownRules
+//            (Packages/BreakdownCore/Sources/BreakdownRules/EightBallTypes.swift); here only their titles.
 //          EightBallTable - the authoring helper: diamonds (across 0-4, along 0-8) to the solver's metres, and a
 //            16-ball layout from diamond positions. Situations are always STORED in metres.
 //          EightBallEscape / EightBallEscapeKind - an authored way out: the technique, the stroke (TrickSettings,
@@ -13,7 +15,6 @@
 //            "On a real table" card (RealTableCard, with RealTableNumbers built from the stroke and the surface).
 //          EightBallSituation - one full eight-ball table in progress: id, number, title, story, the 16 positions,
 //            your group, the surface it is set on, the escapes, the lesson and the trick shots that teach it.
-//          EightBallFoul / EightBallLoss - what the judge can find wrong.
 //          EightBallStylePoint - the five named style points.
 //          EightBallVerdict - the judge's result: made as called, fouls, loss of game, difficulty, style with reasons,
 //            the retry penalty, and the total and medal worked out from those (never stored separately, so they
@@ -24,46 +25,25 @@
 //          NextShot.offTable as the trick shots do.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import Foundation
 
 // MARK: Groups, pockets, the call
+//
+// The types themselves (EightBallGroup, EightBallPocket, EightBallCall, EightBallFoul, EightBallLoss) live in the
+// BreakdownRules package module, shared with the match rules. Their names a player reads stay here, as extensions,
+// because the app's string catalog only collects String(localized:) calls written in the app's own code.
 
-enum EightBallGroup: String, CaseIterable, Sendable {
-    case solids, stripes
-
-    /// The object balls in this group (the 8 is in neither).
-    var balls: [Int] {
-        switch self {
-        case .solids: return Array(1...7)
-        case .stripes: return Array(9...15)
-        }
-    }
-
-    var other: EightBallGroup { self == .solids ? .stripes : .solids }
-
+extension EightBallGroup {
     var title: String {
         switch self {
         case .solids: return String(localized: "Solids")
         case .stripes: return String(localized: "Stripes")
         }
     }
-
-    static func of(ball: Int) -> EightBallGroup? {
-        switch ball {
-        case 1...7: return .solids
-        case 9...15: return .stripes
-        default: return nil
-        }
-    }
 }
 
-/// The six pockets by the design's names. The player stands at the head end (solver x = 0) looking toward the foot
-/// (x = 2.54). Counter-clockwise on the solver's plan is the shooter's left (the same convention as TrickShotJudge),
-/// so the LEFT long rail is y = 1.27 and the RIGHT long rail is y = 0. The raw value is the solver's pocket index:
-/// 0 (0,0), 1 (2.54,0), 2 (0,1.27), 3 (2.54,1.27) corners; 4 (1.27,0), 5 (1.27,1.27) sides (TrickShots.swift header).
-enum EightBallPocket: Int, CaseIterable, Sendable {
-    case headRight = 0, footRight = 1, headLeft = 2, footLeft = 3, rightSide = 4, leftSide = 5
-
+extension EightBallPocket {
     var title: String {
         switch self {
         case .headLeft: return String(localized: "Head-left corner")
@@ -74,15 +54,6 @@ enum EightBallPocket: Int, CaseIterable, Sendable {
         case .footRight: return String(localized: "Foot-right corner")
         }
     }
-}
-
-/// One call per shot, no hedging: a ball and a pocket, or Safety. Rails, kisses and the route are never called.
-enum EightBallCall: Equatable, Sendable {
-    case ball(Int, pocket: EightBallPocket)
-    case safety
-
-    var ball: Int? { if case .ball(let b, _) = self { return b } else { return nil } }
-    var pocket: EightBallPocket? { if case .ball(_, let p) = self { return p } else { return nil } }
 }
 
 // MARK: Authoring in diamonds
@@ -235,11 +206,8 @@ struct EightBallSituation: Identifiable, Equatable {
 
 // MARK: What the judge finds
 
-/// A foul scores zero for the attempt (design 1.3).
-enum EightBallFoul: String, CaseIterable, Sendable {
-    case scratch, wrongBallFirst, noBallHit, noRailAfterContact, objectBallOffTable, cueOrBridgeTouchedBall, doubleHit,
-         illegalJump
-
+/// A foul scores zero for the attempt (design 1.3). The type is in BreakdownRules; its words are here.
+extension EightBallFoul {
     var title: String {
         switch self {
         case .scratch: return String(localized: "Scratch")
@@ -254,10 +222,8 @@ enum EightBallFoul: String, CaseIterable, Sendable {
     }
 }
 
-/// Loss of game on the 8: the challenge is failed and scores zero (design 1.4).
-enum EightBallLoss: String, CaseIterable, Sendable {
-    case eightOnFoul, eightEarly, eightWrongPocket, eightOffTable
-
+/// Loss of game on the 8: the challenge is failed and scores zero (design 1.4). The type is in BreakdownRules.
+extension EightBallLoss {
     var title: String {
         switch self {
         case .eightOnFoul: return String(localized: "You pocketed the 8 on a foul")

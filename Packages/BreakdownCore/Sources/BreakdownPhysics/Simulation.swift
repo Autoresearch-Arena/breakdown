@@ -26,6 +26,19 @@
 // Edited: Claude Opus 5.5 Medium, 21-November-2026 (simulate(_:eventBudget:): the same solve with a smaller event
 //          limit that returns nil when the limit is used up, for callers that solve many variations of a shot. The
 //          normal solve is unchanged.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the physics switch: the generation rule below. No solver behaviour
+//          changes in this edit.)
+//
+// THE GENERATION RULE (plans/21-Nov-2026-physics-proof-plan.md, package 1). PoolParameters.modelGeneration picks the
+// physics model. Generation 1 is this solver exactly as it was on 21 November 2026, and every trick shot and Behind
+// the 8-Ball puzzle was authored on it. So EVERY physics change (rails, cue strike, pockets, anything later) must:
+//   1. check P.modelGeneration (or P.usesGenerationTwo) and take the old code path, line for line, at generation 1;
+//   2. leave generation-1 events, segments and their order bit for bit as they were (the new LensEvent fields stay nil
+//      or at their defaults at generation 1, because Timeline.contentHash folds them in whenever they are set);
+//   3. keep JumpTests.testLevelStrikesAreBitForBitUnchanged and PhysicsSwitchTests passing unchanged.
+// The only change allowed at every generation is the jam guard (pockets-and-jams plan, part B), because it only
+// alters shots that today run into the event limit; its tests must show no normal shot changes.
+//
 // PURPOSE: The event-driven billiards solver. A shot is a list of closed-form segments per ball (sliding,
 //          rolling, spinning, stationary) plus exact events. The loop repeatedly finds the earliest next
 //          event among: a ball's phase ending, a pocket capture, a cushion hit and a ball-ball contact,
