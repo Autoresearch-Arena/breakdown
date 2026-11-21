@@ -23,6 +23,10 @@
 //          Integration: TableScene owns one rig, parents it to the table group, and calls update() from apply() with
 //          the aim preview (TableStage builds it, with the cue's gate in AimPreview.showsCue), the CueStroke of the
 //          shot on screen, the clock, the timeline and whether Ride is on.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 5: a soft shadow on the cloth under the cue, a long
+//          soft see-through ellipse under the front of the cue, paler the higher the cue rides above the cloth (a raised
+//          cue throws a weaker shadow); it comes and goes with the cue, so it shows while aiming and through the
+//          follow-through. The material is TableBuilder.shadowMaterial, shared with the balls' contact shadows.)
 // SRP/DRY check: Pass - checked AimOverlay (now only labels the bridge), TableBuilder (its pbr() helper is private to
 //          the table; the small one here mirrors it with clearcoat added), ShotCamera (reads the same first segment of
 //          the cue ball for its start) and StartupAssets (pictures only; the models load here, once, in the
@@ -74,6 +78,11 @@ final class CueRig {
     let root = Entity()
     private let cueHolder = Entity()
     private let bridgeHolder = Entity()
+    /// The cue's soft shadow on the cloth (a unit plane, scaled and turned under the cue each frame).
+    private let shadow = ModelEntity(mesh: .generatePlane(width: 1, depth: 1), materials: [TableBuilder.shadowMaterial(opacity: 0.45)])
+    /// Length of the shadow along the cue, metres: the front of the cue, the part close enough to the cloth to throw a
+    /// visible soft shadow under an overhead lamp (further back the cue is high enough for its shadow to wash out).
+    static let shadowLength: Float = 0.80
     /// The scene root that carries the lamp reflection (ImageBasedLightComponent); the loaded parts point at it.
     private weak var lightSource: Entity?
 
@@ -82,6 +91,7 @@ final class CueRig {
         root.name = "CueRig"
         root.addChild(cueHolder)
         root.addChild(bridgeHolder)
+        root.addChild(shadow)
         root.isEnabled = false
         // Load in the background of the main actor; the table shows at once and the cue appears when it is ready.
         Task { [weak self] in await self?.loadModels() }
@@ -178,6 +188,7 @@ final class CueRig {
 
         cueHolder.position = contact + back * tipDistance
         cueHolder.orientation = Self.facing(back)
+        placeShadow(tip: cueHolder.position, back: back, frame: frame)
 
         bridgeHolder.isEnabled = bridge
         if bridge {
@@ -187,6 +198,23 @@ final class CueRig {
             bridgeHolder.position = head
             bridgeHolder.orientation = Self.facing(-along)
         }
+    }
+
+    /// Lay the soft shadow on the cloth under the front of the cue: centred under the middle of its first
+    /// `shadowLength`, as wide as a cue near the tip plus the lamp's soft spread, and paler the higher that stretch of
+    /// cue rides above the cloth (a raised cue throws a weaker, broader shadow).
+    private func placeShadow(tip: SIMD3<Float>, back: SIMD3<Float>, frame: TableFrame) {
+        var flat = SIMD3<Float>(back.x, 0, back.z)
+        guard simd_length(flat) > 1e-4 else { shadow.isEnabled = false; return }
+        flat = simd_normalize(flat)
+        shadow.isEnabled = true
+        let middle = tip + back * (Self.shadowLength * 0.5)
+        shadow.position = SIMD3(middle.x, 0.0009, middle.z)
+        shadow.orientation = Self.facing(flat)
+        // 3.5 cm wide: the cue's 13 mm plus the soft spread either side under a broad lamp.
+        shadow.scale = SIMD3(0.035, 1, Self.shadowLength)
+        let height = max(0, middle.y)
+        shadow.components.set(OpacityComponent(opacity: 1 / (1 + height / 0.06)))
     }
 
     /// The rotation that turns a model's +Z to `back` while keeping its +Y as close to world up as possible. Built from

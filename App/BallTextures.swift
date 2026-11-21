@@ -9,6 +9,10 @@
 //          CGImages and touch nothing shared, so StartupAssets can draw all of them on background threads at launch.
 //          Only gridTexture (a thin main-thread wrapper the Lens still calls) makes a RealityKit texture.
 //          The cloth, wood and floor pictures live in SurfaceTextures.swift.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 3: a second, high-contrast set of ball pictures for
+//          when a ball is small on screen (ballImage(number:compact:)): a wider stripe, a larger number disc, a heavier
+//          numeral, a darker ring and deeper colours, so stripes and numbers still read on a phone held upright;
+//          TableDetail swaps to them below a measured on-screen size. Also colour(of:) for the aiming badge.)
 // SRP/DRY check: Pass - ball and Lens-grid drawing only; table surfaces are in SurfaceTextures.swift and the
 //          timing of it all is in StartupAssets.swift.
 import CoreGraphics
@@ -23,6 +27,13 @@ enum BallTextures {
         (0.96, 0.78, 0.12), (0.10, 0.30, 0.78), (0.86, 0.16, 0.14), (0.42, 0.16, 0.62),
         (0.95, 0.46, 0.10), (0.06, 0.52, 0.28), (0.52, 0.10, 0.14), (0.05, 0.05, 0.06),
     ]
+
+    /// A ball's main colour (the solid's colour, or a stripe's band), red, green and blue 0 to 1; ivory for the cue
+    /// ball. Read by the aiming badge (TargetBallBadge) so its number chip matches the ball on the table.
+    static func colour(of number: Int) -> (Double, Double, Double) {
+        guard number > 0 else { return (0.96, 0.94, 0.88) }
+        return palette[number <= 8 ? number - 1 : number - 9]
+    }
 
     // MARK: Balls
 
@@ -45,14 +56,15 @@ enum BallTextures {
     }()
 
     /// The number as a 256 by 256 coverage picture (255 = ink), drawn in Apple's bold system font and centred.
-    private static func glyph(_ text: String) -> [UInt8] {
+    /// `scale` grows the numeral inside the disc (the compact pictures use a bigger, heavier one).
+    private static func glyph(_ text: String, scale: CGFloat = 1) -> [UInt8] {
         let n = 256
         var pixels = [UInt8](repeating: 0, count: n * n)
         pixels.withUnsafeMutableBytes { raw in
             guard let ctx = CGContext(data: raw.baseAddress, width: n, height: n, bitsPerComponent: 8, bytesPerRow: n,
                                       space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue) else { return }
             // Two-digit numbers are squeezed a little so both digits fit inside the disc.
-            let size: CGFloat = text.count > 1 ? 150 : 190
+            let size: CGFloat = (text.count > 1 ? 150 : 190) * scale
             let font = CTFontCreateUIFontForLanguage(.emphasizedSystem, size, nil) ?? CTFontCreateWithName("Helvetica-Bold" as CFString, size, nil)
             let attrs: [NSAttributedString.Key: Any] = [
                 NSAttributedString.Key(kCTFontAttributeName as String): font,
@@ -76,7 +88,13 @@ enum BallTextures {
     /// carry an ivory number disc at each end of the line through the band's middle, exactly as a real ball does,
     /// sized like the real one (a bit over half the ball's width). The disc is tilted toward the camera and turned a
     /// little differently for each ball, so in the resting rack most numbers face the viewer, as in a real rack.
-    static func ballImage(number: Int) -> CGImage? {
+    /// - compact: the high-contrast picture for a ball that is small on screen. Why each change: at about twenty
+    ///   points across, the real proportions blur into a muddy ball. A stripe band of half-width 0.62 instead of 0.50
+    ///   (as sin of the angle from the band's middle) still leaves clear ivory caps but reads as striped from any side;
+    ///   a disc of 0.70 rad instead of 0.59 makes the numeral about a fifth larger; the numeral itself is drawn 8% larger
+    ///   inside the disc, the ring round the disc is fully dark instead of half, and the colours are pushed about 15%
+    ///   deeper (toward their own saturated hue) so yellow, orange and red separate from the ivory.
+    static func ballImage(number: Int, compact: Bool = false) -> CGImage? {
         let w = ballW, h = ballH
         var raster = [UInt8](repeating: 255, count: w * h * 4)
         func rgb(_ c: (Double, Double, Double)) -> SIMD3<Float> { SIMD3(Float(c.0), Float(c.1), Float(c.2)) }
@@ -91,9 +109,14 @@ enum BallTextures {
             for i in 0..<(w * h) { put(i, ivory) }
             return makeImage(raster: raster, w: w, h: h)
         }
-        let base = rgb(palette[number <= 8 ? number - 1 : number - 9])
+        var base = rgb(palette[number <= 8 ? number - 1 : number - 9])
+        if compact {
+            // Deeper colour: pull each channel away from the colour's own grey level.
+            let grey = (base.x + base.y + base.z) / 3
+            base = simd_clamp(base + (base - SIMD3(repeating: grey)) * 0.15 - SIMD3(repeating: 0.03), .zero, SIMD3(repeating: 1))
+        }
         let stripe = number > 8
-        let text = glyph("\(number)")
+        let text = glyph("\(number)", scale: compact ? 1.08 : 1)
 
         // Disc axis B: tilted from straight up toward the camera side (about 40 degrees), then turned by a per-ball angle.
         let seed = Float(number)
@@ -109,9 +132,10 @@ enum BallTextures {
         let A = ref * cos(roll) + ref2 * sin(roll)
         let T1 = simd_cross(A, B)          // sideways on the disc
         let T2 = A                         // along the band's axis: digits read upright along the line of the band
-        let discAngle: Float = 0.59        // disc radius as an angle round the ball (a real disc is 0.555 of the radius wide)
+        let discAngle: Float = compact ? 0.70 : 0.59   // disc radius as an angle round the ball (a real disc is 0.555 of the radius wide)
         let discSin = sin(discAngle)
-        let bandHalf: Float = 0.50         // stripe half-width as sin(angle) from the band's middle
+        let bandHalf: Float = compact ? 0.62 : 0.50    // stripe half-width as sin(angle) from the band's middle
+        let ringStrength: Float = compact ? 1.0 : 0.5  // how dark the thin ring round the disc is
 
         for i in 0..<(w * h) {
             let d = directionTable[i]
@@ -134,7 +158,7 @@ enum BallTextures {
             if along > 0 {
                 let discMask = 1 - smooth(discSin - 0.012, discSin + 0.008, off)
                 let ringMask = ring - discMask
-                if ringMask > 0 { c = c + (ink - c) * (ringMask * 0.5) }
+                if ringMask > 0 { c = c + (ink - c) * (ringMask * ringStrength) }
                 if discMask > 0 {
                     // Coordinates in the disc, -1 to 1 across it; the far-side disc is seen from the other direction.
                     let s = -simd_dot(d, T1) * sgn / discSin, t = simd_dot(d, T2) / discSin
