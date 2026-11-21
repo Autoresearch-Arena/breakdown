@@ -635,7 +635,10 @@ final class ShowpieceModel {
             undoStep = undo
             // A scratch: the cue ball is NOT put back for the player. layout[0] holds the head spot as a starting
             // place; once the shot has played out the ball is lifted for them to place anywhere legal.
-            if shotFacts?.cueBallScratched == true {
+            // Not when that shot cleared the table: there is nothing left to shoot at, and the table-cleared card
+            // (Rack again) is the next thing the player sees, not a lifted cue ball.
+            let objectBallsLeft = layout.indices.contains { $0 != strikeBall && NextShot.isOnTable(layout[$0]) }
+            if shotFacts?.cueBallScratched == true, objectBallsLeft {
                 ballInHand = .anywhere
                 placementDue = true
             }
