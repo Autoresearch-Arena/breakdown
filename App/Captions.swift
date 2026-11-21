@@ -22,6 +22,12 @@
 //          knocked down, both with the speeds read from the event).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the two generation-two event kinds, rim skip and settled in
 //          contact, are named in the switch and get no caption yet; the solver work that records them adds the words.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the solver's new physics gets its words: "Too fast for the pocket"
+//          on a rim skip, "Wedged and settled" when the jam guard brings a group to rest, "The rail pushes it into the
+//          cloth" on a generation-two rail hit (its bed impulse), and three cue-strike captions on generation two:
+//          a miscue, "Side spin pushes the cue ball off line" and "Off-centre hits are slower". Every number is read
+//          from the event; the off-centre share and the speed lost are worked out from the event's own spin, speed and
+//          impulse with the same formula the solver used, and shown only where those numbers are a level strike's.)
 // SRP/DRY check: Pass - caption selection and wording only; display lives in the view.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -117,9 +123,56 @@ enum CaptionEngine {
         return t - seg.t0
     }
 
+    /// Degrees from a sine (the solver records turns as sines; it has no trigonometry, the app does).
+    private static func degrees(fromSine s: Double) -> Double {
+        asin(min(1, max(-1, abs(s)))) * 180 / Double.pi
+    }
+
+    /// The generation-two cue-strike captions, or nil when none applies (generation 1, or a plain centre hit), in which
+    /// case the usual strike caption is used. One caption per strike, in this order: a miscue, a visible push off line
+    /// from side spin (half a degree or more), a noticeably slower off-centre hit (tip 15 percent of the radius or more
+    /// out, which costs about four percent of the speed).
+    private static func strikeCaption(for e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts) -> Caption? {
+        guard let sine = e.deflectionSine else { return nil }       // generation 1 records no deflection
+        let b = e.balls[0]
+        let speed = b.velocityAfter.length
+        let turn = degrees(fromSine: sine)
+        if e.miscue == true {
+            let mu = facts.p.tipGrip
+            let limit = mu / (1 + mu * mu).squareRoot() * 100
+            return Caption(id: id, time: e.time, title: String(localized: "Miscue"),
+                           detail: String(localized: "The tip met the ball more than \(f(limit, 0)) percent of its radius from the centre, past where the tip can grip, and slid off. The ball leaves at only \(f(speed)) m/s, \(f(turn)) degrees off the line of the cue."),
+                           equation: "b / R > μ / √(1 + μ²)", accent: .strike, importance: 1e9)
+        }
+        if turn >= 0.5 {
+            // Positive sine: turned counter-clockwise, to the left of the cue, which is what a hit right of centre does.
+            let detail = sine > 0
+                ? String(localized: "Hit right of centre, the ball is pushed to the left, away from the side the tip struck: it leaves \(f(turn)) degrees off the line of the cue, at \(f(speed)) m/s. Side spin always costs a little aim.")
+                : String(localized: "Hit left of centre, the ball is pushed to the right, away from the side the tip struck: it leaves \(f(turn)) degrees off the line of the cue, at \(f(speed)) m/s. Side spin always costs a little aim.")
+            return Caption(id: id, time: e.time, title: String(localized: "Side spin pushes the cue ball off line"),
+                           detail: detail, equation: "tan α = (5/2)·x·√(1 − x²) / (1 + m/mₑ + (5/2)·x²)",
+                           accent: .strike, importance: 1e9)
+        }
+        // A level strike launches at exactly the recorded speed with impulse m * speed, and its spin is
+        // 5/2 * speed * b / R^2 (Simulation.applyStrike), so b / R = spin * R / (5/2 * speed). A raised strike's
+        // recorded velocity is after the slate, so its implied mass would not be the ball's: then no caption.
+        guard speed > 0.05 else { return nil }
+        let m = facts.p.ballMass
+        guard abs(e.normalImpulse / speed - m) <= 1e-6 * m else { return nil }
+        let R = timeline.table.ballRadius
+        let x = b.omegaAfter.length * R / (2.5 * speed)
+        guard x >= 0.15 else { return nil }
+        let M = facts.p.cueMass
+        let factor = (M + m) / (M + m + 2.5 * M * x * x)
+        return Caption(id: id, time: e.time, title: String(localized: "Off-centre hits are slower"),
+                       detail: String(localized: "The tip met the ball \(f(x * 100, 0)) percent of its radius from the centre, so part of the cue's push went into spin instead of speed. It leaves at \(f(speed)) m/s, \(f((1 - factor) * 100, 0)) percent slower than a centre hit with the same stroke."),
+                       equation: "v = v₀ · (M + m) / (M + m + (5/2)·M·(b/R)²)", accent: .strike, importance: 1e9)
+    }
+
     private static func caption(for e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts) -> Caption? {
         switch e.kind {
         case .cueStrike:
+            if let special = strikeCaption(for: e, id: id, timeline: timeline, facts: facts) { return special }
             let b = e.balls[0]
             let spin = b.omegaAfter.length
             let speed = f(b.velocityAfter.length)
@@ -172,6 +225,13 @@ enum CaptionEngine {
             let vin = b.velocityBefore.length
             guard vin > 0.8 else { return nil }
             let kept = (b.velocityAfter.dot(e.normal) / max(1e-9, -b.velocityBefore.dot(e.normal))) * 100
+            if let bed = e.bedImpulse, bed > 0 {
+                // Generation 2: the nose meets the ball above its centre (sine of the tilt (h - R) / R), so part of
+                // the rail's push goes down into the cloth; the event carries the impulse the cloth took.
+                return Caption(id: id, time: e.time, title: String(localized: "The rail pushes it into the cloth"),
+                               detail: String(localized: "\(name(b.ball).capitalizedFirst) hits the rail at \(f(vin)) m/s. The rail's nose is above the ball's centre, so it pushes down as well as back: the cloth takes \(f(bed * 1000, 0)) millinewton-seconds of that push, and its grip changes the spin the ball carries away. It keeps \(f(kept, 0)) percent of its speed straight into the rail."),
+                               equation: "sin θ = (h − R) / R", accent: .cushion, importance: e.normalImpulse)
+            }
             return Caption(id: id, time: e.time, title: String(localized: "The cushion pushes back"),
                            detail: String(localized: "\(name(b.ball).capitalizedFirst) hits the rail at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into the rail. Sideways speed is trimmed by friction."),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse)
@@ -201,11 +261,24 @@ enum CaptionEngine {
             return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),
                            detail: String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s."),
                            equation: "ΔKE → 0", accent: .pocket, importance: 3)
-        case .rimSkip, .settledInContact:
-            // Generation-two events (a ball skipping over a hole, a jam brought to rest). No generation-1 recording
-            // has them; their words come with the solver work that records them (pockets-and-jams plan), so until
-            // then they get no caption rather than a sentence nobody has translated.
-            return nil
+        case .rimSkip:
+            // Generation 2: the ball crossed the hole too fast to fall far enough to catch the far edge (the solver's
+            // test: the fall g t^2 / 2 during the crossing time t was under a third of the radius).
+            let b = e.balls[0]
+            let vin = e.entry?.speed ?? b.velocityBefore.length
+            return Caption(id: id, time: e.time, title: String(localized: "Too fast for the pocket"),
+                           detail: String(localized: "\(name(b.ball).capitalizedFirst) reaches the hole at \(f(vin)) m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at \(f(b.velocityAfter.length)) m/s."),
+                           equation: "h = g · t² / 2", accent: .pocket, importance: 2.5)
+        case .settledInContact:
+            // The jam guard (any generation): wedged balls chattering in bounces too small to see were brought to rest
+            // touching; the event carries the energy taken out. One ball means it chattered between rubber faces.
+            guard let first = e.balls.first else { return nil }
+            let mj = f((e.energyRemoved ?? 0) * 1000, 1)
+            let detail = e.balls.count == 1
+                ? String(localized: "\(name(first.ball).capitalizedFirst) was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the \(mj) millijoules those bounces would have turned into heat are taken out at once.")
+                : String(localized: "\(e.balls.count) balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the \(mj) millijoules those bounces would have turned into heat are taken out at once.")
+            return Caption(id: id, time: e.time, title: String(localized: "Wedged and settled"), detail: detail,
+                           equation: "ΔE = E_before − E_after", accent: .impact, importance: 1)
         }
     }
 }

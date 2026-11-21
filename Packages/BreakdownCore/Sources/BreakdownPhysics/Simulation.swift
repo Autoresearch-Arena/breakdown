@@ -28,6 +28,18 @@
 //          normal solve is unchanged.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the physics switch: the generation rule below. No solver behaviour
 //          changes in this edit.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (generation two built, and the jam guard at every generation.
+//          JAM GUARD (pockets-and-jams plan part B, spec 3.5 "Zeno guards"): every impact gentler than stormSpeed is
+//          counted per ball inside a one-millisecond window; a ball past stormImpacts in one window is in a storm of
+//          tiny bounces, and it and every touching ball that took part are brought to rest touching, with one
+//          settledInContact event carrying the energy removed. The hard event limit drops from 60,000 to 10,000, and
+//          reaching it is logged and stops what is still moving instead of leaving a cut-off recording.
+//          The strike now hits CueStrike.ballIndex (every generation; 0 is ball 0 exactly as before).
+//          GENERATION TWO only: the cue strike (cueLaunch: slower off-centre hits, side-spin deflection, miscues;
+//          launchDirection for the aim guide); the Level A rail (Impacts.rail) on rails, jaws and knuckles, at the
+//          contact distance R * cos(tilt), posts keeping the flat model; pockets that can refuse a ball (the
+//          fall-across-the-hole test, the back wall of edge pockets, rim-skip events, entry speed and angle on every
+//          pocket event), and a ball resting over a hole drops.)
 //
 // THE GENERATION RULE (plans/21-Nov-2026-physics-proof-plan.md, package 1). PoolParameters.modelGeneration picks the
 // physics model. Generation 1 is this solver exactly as it was on 21 November 2026, and every trick shot and Behind
@@ -51,8 +63,9 @@ import BreakdownLensModel
 import BreakdownTimeline
 
 /// Tie-break order for events at the same instant. offTable is last and new, so older orderings never change.
-/// pin (21-Nov-2026) is newer still and comes after offTable for the same reason.
-private enum EventRank: Int { case transition = 0, pocket = 1, cushion = 2, ballBall = 3, offTable = 4, pin = 5 }
+/// pin (21-Nov-2026) is newer still and comes after offTable for the same reason. rimSkip (generation two: a ball
+/// leaving a hole it crossed too fast to fall into) is newest and last, so no older ordering changes.
+private enum EventRank: Int { case transition = 0, pocket = 1, cushion = 2, ballBall = 3, offTable = 4, pin = 5, rimSkip = 6 }
 
 private struct Candidate {
     var time: Double
@@ -90,24 +103,142 @@ private struct Body {
     var active = true
 }
 
+/// What a solve cost and whether a guard stepped in (BreakProbe's jam sweep reads it; the app does not need it).
+public struct SolveReport: Sendable, Equatable {
+    /// Events the loop applied (a hole crossing decided without a drop counts, though it records no event).
+    public let events: Int
+    /// How many storms the jam guard brought to rest (one settledInContact event each).
+    public let jamsSettled: Int
+    /// True when the solve reached PoolSolver.maxEvents: logged, and everything still moving was stopped where it was.
+    public let hitEventLimit: Bool
+}
+
 public enum PoolSolver {
-    /// Largest number of events before the loop gives up (a guard, logged as a truncated timeline).
-    static let maxEvents = 60_000
+    /// Largest number of events before the loop gives up. With the jam guard in place no real shot comes near it:
+    /// ordinary shots take tens of events and a full break a few hundred (EightBallJudge measured escapes at 10 to 60),
+    /// and the jam guard settles a storm within a few hundred more (pockets-and-jams plan: every jam fixture under two
+    /// thousand). Ten thousand is five times that two-thousand promise, so reaching it means something new is wrong;
+    /// it is logged and the shot is stopped (see haltAtLimit) rather than spinning for seconds as 60,000 did. It also
+    /// stays well above the eight-ball judge's 2,000-event sweep budget, which simulate(_:eventBudget:) clamps to it.
+    static let maxEvents = 10_000
     static let maxTime = 90.0
 
+    // The jam guard's numbers (spec 3.5 "cap events per ball per millisecond"; pockets-and-jams plan part B). They are
+    // solver constants, not parameters: they decide nothing in a real shot, only when a storm is cut short, so they do
+    // not belong in the hashed physics numbers.
+    /// The window, seconds of game time: the spec's millisecond.
+    static let stormWindow = 0.001
+    /// Only impacts gentler than this count toward a storm, metres per second of approach (the normal speed into the
+    /// other ball, the rubber or the slate). A ball at 5 mm/s moves 5 micrometres in the window, far below anything
+    /// a player can see, while every impact that matters to a shot (a break, a kiss, a rail) is hundreds of times
+    /// faster. This keeps the rack's micrometre-gap cascade, whose contacts run at metres per second, from ever
+    /// counting, so the guard cannot touch a normal shot.
+    static let stormSpeed = 0.005
+    /// More gentle impacts than this on one ball inside one window is a storm. Normal shots take 10 to 60 events in
+    /// TOTAL (EightBallJudge's measurement), so two hundred gentle impacts on one ball in a single millisecond cannot
+    /// happen in one; a chatter, whose gaps shrink geometrically (each rebound keeps 0.95 of the approach speed), passes
+    /// it within a few hundred events, which keeps every jam inside the plan's two-thousand-event promise.
+    static let stormImpacts = 200
+
     public static func simulate(_ input: ShotInput) -> Timeline {
+        simulateWithReport(input).timeline
+    }
+
+    /// The same solve plus what it cost. A solve that reaches maxEvents prints one line (the log the spec asks for)
+    /// and stops every ball still moving where it is, so the recording still ends at rest.
+    public static func simulateWithReport(_ input: ShotInput) -> (timeline: Timeline, report: SolveReport) {
         var sim = Simulation(input: input)
-        sim.run()
-        return sim.timeline()
+        let finished = sim.run()
+        if !finished {
+            sim.haltAtLimit()
+            print("PoolSolver: event limit \(maxEvents) reached at t = \(sim.now) s (seed \(input.seed)); stopped the balls still moving")
+        }
+        return (sim.timeline(), SolveReport(events: sim.eventsUsed, jamsSettled: sim.jamsSettled, hitEventLimit: !finished))
     }
 
     /// The same solve with a smaller event budget, for callers that solve many variations of a shot and only need
-    /// its outcome (the Behind the 8-Ball judge's window sweep). Nil when the budget ran out first: a ball wedged in
-    /// a jam can take tens of thousands of tiny events, seconds of work, to reach maxEvents. A solve that finishes
-    /// within the budget is exactly the one simulate(_:) returns.
+    /// its outcome (the Behind the 8-Ball judge's window sweep). Nil when the budget ran out first. A solve that
+    /// finishes within the budget is exactly the one simulate(_:) returns.
     public static func simulate(_ input: ShotInput, eventBudget: Int) -> Timeline? {
         var sim = Simulation(input: input)
         return sim.run(limit: min(eventBudget, maxEvents)) ? sim.timeline() : nil
+    }
+
+    // MARK: The cue strike, generation two (plans/21-Nov-2026-cue-strike-plan.md, spec 3.3)
+
+    /// What the cue really gives the ball.
+    struct CueLaunch: Equatable {
+        /// Unit direction of travel in the table plane (the aim, turned by side spin or by a miscue).
+        var direction: Vec2
+        /// Launch speed along the cue's line (for a raised cue, before the slate takes its vertical part).
+        var speed: Double
+        /// The offsets the spin is made from: the struck ones, or for a miscue the point on the tip's grip limit where
+        /// the tip slid off.
+        var tipUp: Double
+        var tipSide: Double
+        var miscue: Bool
+        /// Sine of the turn from the aim, counter-clockwise positive (LensEvent.deflectionSine).
+        var deflectionSine: Double
+    }
+
+    /// The tangent of the side-spin deflection ("squirt") for a side offset `tipSide` (metres, right positive), as a
+    /// signed sideways-over-forward ratio: positive turns the ball to the LEFT of the aim, which is what a hit on the
+    /// right side does (the ball is pushed away from the struck side). Spec 3.3 and PoolParameters.shaftEndMass:
+    /// tan = 5/2 x sqrt(1 - x^2) / (1 + m / Me + 5/2 x^2), x = tipSide / R. Top and bottom offsets do not deflect.
+    static func squirtTangent(tipSide: Double, _ p: PoolParameters) -> Double {
+        var x = tipSide / p.ballRadius
+        if x > 1 { x = 1 }
+        if x < -1 { x = -1 }
+        return 2.5 * x * (1 - x * x).squareRoot() / (1 + p.ballMass / p.shaftEndMass + 2.5 * x * x)
+    }
+
+    /// The aim `d` turned by a sideways-over-forward ratio `t` (positive: counter-clockwise), renormalised with a square
+    /// root, no trigonometry. Returns the new unit direction and the sine of the turn.
+    static func turned(_ d: Vec2, by t: Double) -> (direction: Vec2, sine: Double) {
+        let norm = (1 + t * t).squareRoot()
+        return ((d + d.perp * t) * (1 / norm), t / norm)
+    }
+
+    /// The one place a CueStrike becomes a launch at generation 2 (both strike functions call it). With `seed` nil it
+    /// gives the miscue no random turn, which is what the aim guide wants (it cannot know a slip's direction).
+    /// - Speed: a centre hit launches at strike.speed; an off-centre one at
+    ///   strike.speed * (M + m) / (M + m + 5/2 M b^2 / R^2), b^2 = tipUp^2 + tipSide^2 (spec 3.3's strike formula
+    ///   divided by its centre-hit value, so "speed" keeps meaning the centre-hit launch speed).
+    /// - Direction: turned away from the struck side by squirtTangent; only the side offset deflects.
+    /// - Miscue: an offset past PoolParameters.miscueOffsetLimit slips. The ball leaves at miscueSpeedFraction of the
+    ///   centre-hit speed, turned by a seeded random ratio within +-miscueMaxDeflection (the shot's own seed through the
+    ///   seeded generator, mixed with a fixed word so it is not the rack's jitter stream), and the spin is what the tip
+    ///   could still give at the grip limit it slid from: the offsets scaled back onto the limit, at the reduced speed.
+    static func cueLaunch(_ strike: CueStrike, _ p: PoolParameters, seed: UInt64?) -> CueLaunch {
+        let r2 = p.ballRadius * p.ballRadius
+        let offset2 = strike.tipUp * strike.tipUp + strike.tipSide * strike.tipSide
+        let limit = p.miscueOffsetLimit
+        if offset2 > limit * limit {
+            let back = (limit * limit / offset2).squareRoot()
+            var t = 0.0
+            if let seed {
+                var rng = SeededGenerator(seed: seed ^ 0x4D49_5343_5545)     // "MISCUE"
+                t = rng.signedUnit() * p.miscueMaxDeflection
+            }
+            let turn = turned(strike.direction, by: t)
+            return CueLaunch(direction: turn.direction, speed: strike.speed * p.miscueSpeedFraction,
+                             tipUp: strike.tipUp * back, tipSide: strike.tipSide * back, miscue: true,
+                             deflectionSine: turn.sine)
+        }
+        let big = p.cueMass + p.ballMass
+        let factor = big / (big + 2.5 * p.cueMass * offset2 / r2)
+        let turn = turned(strike.direction, by: squirtTangent(tipSide: strike.tipSide, p))
+        return CueLaunch(direction: turn.direction, speed: strike.speed * factor, tipUp: strike.tipUp,
+                         tipSide: strike.tipSide, miscue: false, deflectionSine: turn.sine)
+    }
+
+    /// The direction the struck ball really leaves in, for the aim guide (so the drawn line bends with side spin the
+    /// way the ball will). At generation 1 it is the aim itself. At generation 2 it is the aim turned by side spin; a
+    /// miscue's random turn cannot be known before the shot, so for an offset past the grip limit it is the aim.
+    /// Pure: the same function the solver uses, with no randomness.
+    public static func launchDirection(for strike: CueStrike, parameters p: PoolParameters) -> Vec2 {
+        guard p.usesGenerationTwo else { return strike.direction }
+        return cueLaunch(strike, p, seed: nil).direction
     }
 }
 
@@ -132,6 +263,28 @@ private struct Simulation {
     let posts: [Post]
     let pins: [Pin]
     var pinDown: [Bool]
+    /// How far a ball's centre is from a rail nose, jaw face or knuckle when they touch: R at generation 1, R * cos(tilt)
+    /// at generation 2 (PoolParameters.railContactDistance). Posts keep R + their radius at every generation.
+    let railContact: Double
+    /// Generation two, edge pockets only (indexed like `pockets`; nil for a bed hole): the middle of the mouth (between
+    /// the pocket's two knuckles) and the unit normal of the mouth line pointing into the table. The pocket's centre
+    /// line runs the other way, into the pocket; a ball whose path across the hole ends beyond the mouth line meets
+    /// the pocket's back and always drops.
+    let mouths: [(mid: Vec2, inward: Vec2)?]
+    /// Generation two: a ball crossing a hole it is too fast to fall into. `exited` false while it is still over the
+    /// hole (its rim-skip event comes when it leaves), true after; the hole is then ignored for that ball until an event
+    /// finds it outside the hole's circle. Always nil at generation 1.
+    struct HoleSkip { var hole: Int; var exited: Bool }
+    var skip: [HoleSkip?]
+    /// How the crossing ball came in, recorded on its rim-skip event.
+    var skipEntry: [PocketEntry?]
+    /// The jam guard (every generation): per ball, the start of its current one-millisecond window and how many gentle
+    /// impacts it has taken in it; a ball that passed PoolSolver.stormImpacts waits here to be settled.
+    var stormStart: [Double]
+    var stormCount: [Int]
+    var stormBall: Int?
+    var jamsSettled = 0
+    var eventsUsed = 0
 
     init(input: ShotInput) {
         self.input = input
@@ -145,7 +298,25 @@ private struct Simulation {
         pins = P.pins
         pinDown = [Bool](repeating: false, count: P.pins.count)
         pocketTime = [Double?](repeating: nil, count: input.positions.count)
-        let r = P.ballRadius, L = P.tableLength, W = P.tableWidth
+        let count = input.positions.count
+        skip = [HoleSkip?](repeating: nil, count: count)
+        skipEntry = [PocketEntry?](repeating: nil, count: count)
+        stormStart = [Double](repeating: -1, count: count)
+        stormCount = [Int](repeating: 0, count: count)
+        railContact = P.railContactDistance
+        // The mouth of each edge pocket, from its two knuckles (the start of its two jaws).
+        var mouthList: [(mid: Vec2, inward: Vec2)?] = []
+        let middle = Vec2(P.tableLength * 0.5, P.tableWidth * 0.5)
+        for k in 0..<pockets.count {
+            let knuckleStarts = P.jaws.filter { $0.pocket == k }.map(\.start)
+            guard k < edge.count, knuckleStarts.count == 2 else { mouthList.append(nil); continue }
+            let mid = (knuckleStarts[0] + knuckleStarts[1]) * 0.5
+            var inward = (knuckleStarts[1] - knuckleStarts[0]).normalized.perp
+            if inward.dot(middle - mid) < 0 { inward = inward * -1 }
+            mouthList.append((mid, inward))
+        }
+        mouths = mouthList
+        let r = railContact, L = P.tableLength, W = P.tableWidth
         // The straight cushion noses run between knuckles. Past a knuckle the ball meets the knuckle or the jaw.
         let a = P.cornerKnuckleOffset, h = P.sideMouth * 0.5
         if P.pocketsEnabled {
@@ -254,8 +425,13 @@ private struct Simulation {
 
     private func isAirborne(_ i: Int) -> Bool { bodies[i].segment.phase == .airborne }
 
-    /// Close the ball's current segment at `t` and start a new one from `state`.
+    /// Close the ball's current segment at `t` and start a new one from `state`. Generation 2: a ball that skipped a
+    /// hole is free to meet that hole again once an event finds it outside the hole's circle.
     private mutating func restart(_ i: Int, at t: Double, with state: BodyState) {
+        if let mark = skip[i], mark.exited {
+            let rel = state.position - pockets[mark.hole]
+            if rel.lengthSquared > captureRadii[mark.hole] * captureRadii[mark.hole] { skip[i] = nil }
+        }
         var old = bodies[i].segment
         let q = old.orientation(at: t)
         old.t1 = t
@@ -281,19 +457,34 @@ private struct Simulation {
 
     // MARK: Cue strike
 
+    /// The ball the cue strikes: CueStrike.ballIndex, or ball 0 if that names no ball in this shot (a caller's slip
+    /// should not crash a solve). With the default 0 every line below is the old one.
+    private var struckBall: Int {
+        let b = input.strike.ballIndex
+        return b >= 0 && b < bodies.count ? b : 0
+    }
+
     private mutating func applyStrike() {
         let s = input.strike
         if s.elevation > 0 { applyRaisedStrike(); return }
+        let ball = struckBall
         let d = s.direction
-        let k = 2.5 * s.speed / (P.ballRadius * P.ballRadius)       // m * speed / I
+        // Generation 1: the old lines exactly (full speed, straight along the cue, no flags on the event). Generation 2:
+        // the same spin formula, but with the launch the cue really gives (PoolSolver.cueLaunch): slower off centre,
+        // turned by side spin, or a miscue. The spin is made in the cue's frame (d), the velocity goes along the launch.
+        let launch: PoolSolver.CueLaunch? = P.usesGenerationTwo ? PoolSolver.cueLaunch(s, P, seed: input.seed) : nil
+        let speed = launch?.speed ?? s.speed
+        let tipUp = launch?.tipUp ?? s.tipUp, tipSide = launch?.tipSide ?? s.tipSide
+        let k = 2.5 * speed / (P.ballRadius * P.ballRadius)         // m * speed / I
         // Contact offsets: up (a) lifts spin about the axis perpendicular to d, side (b) spins about vertical.
-        let omega = Vec3(-d.y * k * s.tipUp, d.x * k * s.tipUp, k * s.tipSide)
-        let before = BodyState(position: input.positions[0], velocity: .zero, omega: .zero)
-        let after = BodyState(position: input.positions[0], velocity: d * s.speed, omega: omega)
-        bodies[0].segment = Self.makeSegment(P, t0: 0, position: after.position, velocity: after.velocity,
-                                             omega: after.omega, orientation: .identity)
+        let omega = Vec3(-d.y * k * tipUp, d.x * k * tipUp, k * tipSide)
+        let before = BodyState(position: input.positions[ball], velocity: .zero, omega: .zero)
+        let after = BodyState(position: input.positions[ball], velocity: (launch?.direction ?? d) * speed, omega: omega)
+        bodies[ball].segment = Self.makeSegment(P, t0: 0, position: after.position, velocity: after.velocity,
+                                                omega: after.omega, orientation: .identity)
         events.append(LensEvent(time: 0, kind: .cueStrike, point: after.position, normal: d,
-                                normalImpulse: P.ballMass * s.speed, balls: [impactBall(0, before, after)]))
+                                normalImpulse: P.ballMass * speed, balls: [impactBall(ball, before, after)],
+                                miscue: launch?.miscue, deflectionSine: launch?.deflectionSine))
     }
 
     /// A strike with the cue raised. The cue runs along c = (cos e * d, -sin e); the impulse m * speed acts along c
@@ -301,28 +492,37 @@ private struct Simulation {
     /// leans back with the cue). The spin is (r x c) * m * speed / I = k * (tipSide * u - tipUp * s): raising the cue
     /// tilts the side-spin axis toward the line of travel, which is what bends a masse. The downward part drives the
     /// ball into the slate at once, and the slate bounce (with friction) decides whether it leaves the cloth.
+    /// At generation 2 the same launch as a level hit (PoolSolver.cueLaunch: the offsets are measured across the cue,
+    /// so the speed factor and the miscue rule are the same), its turn applied in the table plane only: the horizontal
+    /// part of the launch goes along the turned direction, the vertical part is unchanged, and the spin is made in the
+    /// cue's own frame.
     private mutating func applyRaisedStrike() {
         let s = input.strike
+        let ball = struckBall
         let d = s.direction
         let e = s.elevation
+        let launch: PoolSolver.CueLaunch? = P.usesGenerationTwo ? PoolSolver.cueLaunch(s, P, seed: input.seed) : nil
+        let speed = launch?.speed ?? s.speed
+        let tipUp = launch?.tipUp ?? s.tipUp, tipSide = launch?.tipSide ?? s.tipSide
         let c = (1 - e * e).squareRoot()                             // cosine of the elevation
-        let k = 2.5 * s.speed / (P.ballRadius * P.ballRadius)       // m * speed / I
+        let k = 2.5 * speed / (P.ballRadius * P.ballRadius)         // m * speed / I
         let right = Vec3(d.y, -d.x, 0)
         let up = Vec3(e * d.x, e * d.y, c)
-        let omega = (up * s.tipSide - right * s.tipUp) * k
-        let before = BodyState(position: input.positions[0], velocity: .zero, omega: .zero)
-        let struck = BodyState(position: input.positions[0], velocity: d * (s.speed * c), omega: omega,
-                               height: 0, vz: -s.speed * e)
+        let omega = (up * tipSide - right * tipUp) * k
+        let before = BodyState(position: input.positions[ball], velocity: .zero, omega: .zero)
+        let struck = BodyState(position: input.positions[ball], velocity: (launch?.direction ?? d) * (speed * c),
+                               omega: omega, height: 0, vz: -speed * e)
         let (after, slate) = settleVertical(struck)
-        bodies[0].segment = Self.makeSegment(P, t0: 0, position: after.position, velocity: after.velocity,
-                                             omega: after.omega, orientation: .identity, height: after.height,
-                                             vz: after.vz)
+        bodies[ball].segment = Self.makeSegment(P, t0: 0, position: after.position, velocity: after.velocity,
+                                                omega: after.omega, orientation: .identity, height: after.height,
+                                                vz: after.vz)
         events.append(LensEvent(time: 0, kind: .cueStrike, point: after.position, normal: d,
-                                normalImpulse: P.ballMass * s.speed, balls: [impactBall(0, before, after)]))
+                                normalImpulse: P.ballMass * speed, balls: [impactBall(ball, before, after)],
+                                miscue: launch?.miscue, deflectionSine: launch?.deflectionSine))
         if let slate, after.vz > 0 {
             events.append(LensEvent(time: 0, kind: .phaseTransition, point: after.position, normal: .zero,
                                     normalImpulse: slate.normalImpulse, frictionImpulse: slate.frictionImpulse,
-                                    slipSpeed: slate.slipSpeed, balls: [impactBall(0, struck, after)],
+                                    slipSpeed: slate.slipSpeed, balls: [impactBall(ball, struck, after)],
                                     phaseFrom: .sliding, phaseTo: .airborne, flight: .takeOff,
                                     verticalSpeedDown: -struck.vz, verticalSpeedUp: after.vz))
         }
@@ -346,7 +546,22 @@ private struct Simulation {
             let seg = bodies[i].segment
             let s = states[i]!
             if seg.t1.isFinite { consider(Candidate(time: seg.t1 < now ? now : seg.t1, rank: .transition, a: i, b: 0)) }
-            if seg.phase == .stationary || seg.phase == .spinning { continue }
+            if seg.phase == .stationary || seg.phase == .spinning {
+                // Generation 2: a ball that comes to rest over a hole (it was crossing and something stopped it there,
+                // or the jam guard settled it there) falls in. At generation 1 a moving ball never reaches a hole
+                // without dropping, so the old rule (a still ball is never tested) is kept exactly. Any skip marker is
+                // ignored here: a ball at rest is crossing nothing, and one that skipped this hole and rolled back to
+                // rest inside it must still fall.
+                if P.usesGenerationTwo {
+                    for (k, c) in pockets.enumerated() {
+                        if (s.position - c).lengthSquared <= captureRadii[k] * captureRadii[k] {
+                            consider(Candidate(time: now, rank: .pocket, a: i, b: k))
+                            break
+                        }
+                    }
+                }
+                continue
+            }
             if seg.phase == .airborne {
                 for c in airborneCandidates(i, seg, s) { consider(c) }
                 continue
@@ -357,6 +572,25 @@ private struct Simulation {
             for (k, c) in pockets.enumerated() {
                 let r = captureRadii[k]
                 let rel = s.position - c
+                if let mark = skip[i], mark.hole == k {
+                    // Generation 2 only (the marker is never set at generation 1). After the rim skip the hole is
+                    // ignored until the ball is seen outside it. While it is still crossing, the event is the moment
+                    // its centre leaves the circle: an up-crossing of |rel|^2 - r^2, so the root finder is given the
+                    // negated polynomial. Right at the entry the value is zero (or a rounding hair either side), so the
+                    // factor t is divided out and the exit is where the rest of the polynomial turns positive.
+                    if mark.exited { continue }
+                    let poly = quarticCoefficients(rel, s.velocity, a * 0.5, minus: r * r)
+                    var tau: Double?
+                    if poly[0] < 0 {
+                        tau = RootFinder.firstDownCrossing(poly.map { -$0 }, limit: window)
+                    } else if poly[1] < 0 {
+                        tau = RootFinder.firstDownCrossing(poly.dropFirst().map { -$0 }, limit: window)
+                    } else {
+                        tau = 0                                  // on the rim and already moving out
+                    }
+                    if let tau { consider(Candidate(time: now + tau, rank: .rimSkip, a: i, b: k)) }
+                    continue
+                }
                 if rel.lengthSquared <= r * r { consider(Candidate(time: now, rank: .pocket, a: i, b: k)); continue }
                 let poly = quarticCoefficients(rel, s.velocity, a * 0.5, minus: r * r)
                 if let tau = RootFinder.firstDownCrossing(poly, limit: window) {
@@ -383,7 +617,7 @@ private struct Simulation {
             // the walls, so the tie-break order stays fixed.
             for (k, jaw) in jaws.enumerated() {
                 let rel = s.position - jaw.start
-                let poly = [jaw.normal.dot(rel) - P.ballRadius, jaw.normal.dot(s.velocity), 0.5 * jaw.normal.dot(a)]
+                let poly = [jaw.normal.dot(rel) - railContact, jaw.normal.dot(s.velocity), 0.5 * jaw.normal.dot(a)]
                 var tau: Double?
                 if poly[0] <= 0 {
                     // Already touching (or a hair inside after rounding): only an approaching ball counts, and only
@@ -399,10 +633,11 @@ private struct Simulation {
                     consider(Candidate(time: now + tt, rank: .cushion, a: i, b: walls.count + k))
                 }
             }
-            // Knuckles: a ball's centre may not come closer than one radius to the point where nose meets jaw.
+            // Knuckles: a ball's centre may not come closer than one radius (generation 2: the rail contact distance,
+            // the knuckle being the end of the same nose) to the point where nose meets jaw.
             for (k, knuckle) in knuckles.enumerated() {
                 let rel = s.position - knuckle.point
-                let r2 = P.ballRadius * P.ballRadius
+                let r2 = railContact * railContact
                 if rel.lengthSquared <= r2 {
                     if rel.dot(s.velocity) < 0 { consider(Candidate(time: now, rank: .cushion, a: i, b: walls.count + jaws.count + k)) }
                     continue
@@ -515,7 +750,7 @@ private struct Simulation {
         // Jaw faces and knuckles, as on the cloth, but only while the ball is below the nose.
         for (k, jaw) in jaws.enumerated() {
             let rel = s.position - jaw.start
-            let poly = [jaw.normal.dot(rel) - r, jaw.normal.dot(s.velocity)]
+            let poly = [jaw.normal.dot(rel) - railContact, jaw.normal.dot(s.velocity)]
             var tau: Double?
             if poly[0] <= 0 {
                 if poly[1] < 0 { tau = 0 }
@@ -531,7 +766,7 @@ private struct Simulation {
         }
         for (k, knuckle) in knuckles.enumerated() {
             let rel = s.position - knuckle.point
-            let r2 = r * r
+            let r2 = railContact * railContact
             let index = walls.count + jaws.count + k
             if rel.lengthSquared <= r2 {
                 if rel.dot(s.velocity) < 0 && low(0) { out.append(Candidate(time: now, rank: .cushion, a: i, b: index)) }
@@ -585,8 +820,7 @@ private struct Simulation {
     /// true when the shot settled or reached maxTime.
     @discardableResult
     mutating func run(limit: Int = PoolSolver.maxEvents) -> Bool {
-        var count = 0
-        while count < limit {
+        while eventsUsed < limit {
             guard let c = nextEvent(), c.time <= PoolSolver.maxTime else { return true }
             now = c.time
             switch c.rank {
@@ -596,10 +830,162 @@ private struct Simulation {
             case .ballBall: applyBallBall(c.a, c.b)
             case .offTable: applyOffTable(c.a, c.b)
             case .pin: applyPin(c.a, c.b)
+            case .rimSkip: applyRimSkip(c.a, c.b)
             }
-            count += 1
+            eventsUsed += 1
+            // The jam guard: an impact just pushed a ball past the storm count, so settle its group now (one more event).
+            if let storm = stormBall {
+                stormBall = nil
+                settleJam(around: storm)
+                eventsUsed += 1
+            }
         }
         return false
+    }
+
+    // MARK: The jam guard (every generation; pockets-and-jams plan part B, spec 3.5)
+
+    /// Count an impact on ball `i` whose approach speed was `approach` (m/s). Only gentle ones count (stormSpeed); a ball
+    /// past stormImpacts of them inside one stormWindow is flagged for settleJam. Counting changes nothing in the shot,
+    /// so a shot that never storms records exactly what it did before the guard existed.
+    private mutating func noteImpact(_ i: Int, approach: Double) {
+        if approach >= PoolSolver.stormSpeed { return }
+        if stormCount[i] == 0 || now - stormStart[i] > PoolSolver.stormWindow {
+            stormStart[i] = now
+            stormCount[i] = 0
+        }
+        stormCount[i] += 1
+        if stormCount[i] > PoolSolver.stormImpacts { stormBall = i }
+    }
+
+    /// True when ball `j` took a gentle impact inside its current window (so it is part of whatever storm it touches).
+    private func inStorm(_ j: Int) -> Bool {
+        stormCount[j] > 0 && now - stormStart[j] <= PoolSolver.stormWindow
+    }
+
+    /// Bring a storm to rest. The group is the storm ball plus every ball touching it (centres within 2R plus ten
+    /// micrometres: chattering balls sit nanometres to micrometres apart, while resting rack neighbours, a micrometre
+    /// apart, only join if they are chattering too) that is itself in the storm, and so on through the touching chain.
+    /// Every ball in the group stops: no velocity, no vertical motion, spin about the vertical axis kept (it moves
+    /// nothing and fades on its own). Positions are then fixed up so no ball overlaps another or sits in rubber, one
+    /// settledInContact event records every ball before and after and the energy taken out (before minus after, never
+    /// negative because only motion is removed), and a ball that came to rest over a hole drops into it.
+    private mutating func settleJam(around storm: Int) {
+        let reach = 2 * P.ballRadius + 1e-5
+        var group = [storm]
+        var k = 0
+        while k < group.count {
+            let g = group[k]
+            let pg = bodyState(g, at: now).position
+            for j in 0..<bodies.count where bodies[j].active && !group.contains(j) && inStorm(j) {
+                if (bodyState(j, at: now).position - pg).lengthSquared <= reach * reach { group.append(j) }
+            }
+            k += 1
+        }
+        group.sort()
+        var before: [Int: BodyState] = [:]
+        var after: [Int: BodyState] = [:]
+        for g in group {
+            let b = bodyState(g, at: now)
+            before[g] = b
+            after[g] = BodyState(position: b.position, velocity: .zero, omega: Vec3(0, 0, b.omega.z), height: 0, vz: 0)
+        }
+        separate(group, &after)
+        var removed = 0.0
+        var balls: [ImpactBall] = []
+        var centre = Vec2.zero
+        for g in group {
+            let b = before[g]!, a = after[g]!
+            restart(g, at: now, with: a)
+            let ib = impactBall(g, b, a)
+            removed += ib.energyBefore - ib.energyAfter
+            balls.append(ib)
+            centre = centre + a.position * (1 / Double(group.count))
+            stormCount[g] = 0
+        }
+        events.append(LensEvent(time: now, kind: .settledInContact, point: centre, normal: .zero, balls: balls,
+                                energyRemoved: removed > 0 ? removed : 0))
+        jamsSettled += 1
+        for g in group {
+            let p = after[g]!.position
+            if let k = pockets.indices.first(where: { (p - pockets[$0]).lengthSquared <= captureRadii[$0] * captureRadii[$0] }) {
+                applyPocket(g, k)
+            }
+        }
+    }
+
+    /// Push the settled balls apart and out of the rubber, a few passes at most. A settled ball moves away from any ball
+    /// it overlaps (half each when both are settling; all of it when the other ball is not part of the jam), then out of
+    /// any rail, jaw, knuckle or post it sits inside, using the same contact distances the solver tests. The overlaps
+    /// being undone are rounding-sized, so one or two passes do it; the cap of 32 only bounds the loop.
+    private func separate(_ group: [Int], _ after: inout [Int: BodyState]) {
+        let touch = 2 * P.ballRadius * (1 + 1e-9)
+        for _ in 0..<32 {
+            var moved = false
+            for g in group {
+                for j in 0..<bodies.count where j != g && bodies[j].active {
+                    let pj = after[j]?.position ?? bodyState(j, at: now).position
+                    let pg = after[g]!.position
+                    let d = pg - pj
+                    let dist = d.length
+                    if dist >= touch { continue }
+                    let dir = dist > 1e-15 ? d * (1 / dist) : Vec2(1, 0)
+                    if after[j] != nil {
+                        after[g]!.position = pg + dir * ((touch - dist) * 0.5)
+                        after[j]!.position = pj - dir * ((touch - dist) * 0.5)
+                    } else {
+                        after[g]!.position = pg + dir * (touch - dist)
+                    }
+                    moved = true
+                }
+                let fixed = outOfRubber(after[g]!.position)
+                if fixed != after[g]!.position { after[g]!.position = fixed; moved = true }
+            }
+            if !moved { return }
+        }
+    }
+
+    /// The nearest place to `p` that is not inside a rail, jaw, knuckle or post, by the solver's own contact rules.
+    private func outOfRubber(_ p0: Vec2) -> Vec2 {
+        var p = p0
+        for wall in walls {
+            let along = wall.alongX ? p.x : p.y
+            let depth = wall.offset - wall.normal.dot(p)
+            if depth > 0 && wall.ranges.contains(where: { along >= $0.0 && along <= $0.1 }) { p = p + wall.normal * depth }
+        }
+        for jaw in jaws {
+            let rel = p - jaw.start
+            let along = rel.dot(jaw.direction), off = rel.dot(jaw.normal)
+            if along >= 0 && along <= jaw.length && off > -P.ballRadius && off < railContact {
+                p = p + jaw.normal * (railContact - off)
+            }
+        }
+        for knuckle in knuckles {
+            let d = p - knuckle.point
+            let dist = d.length
+            if dist < railContact && dist > 1e-15 { p = knuckle.point + d * (railContact / dist) }
+        }
+        for post in posts {
+            let d = p - post.center
+            let dist = d.length, reach = P.ballRadius + post.radius
+            if dist < reach && dist > 1e-15 { p = post.center + d * (reach / dist) }
+        }
+        return p
+    }
+
+    /// The hard event limit was reached (logged by the caller). Every ball still moving stops where it is (spin about
+    /// the vertical axis kept), each with a phase-transition event, so the recording ends at rest instead of being cut
+    /// off with balls in mid-flight. A spinning-in-place ball is left to finish on its own.
+    mutating func haltAtLimit() {
+        for i in 0..<bodies.count where bodies[i].active {
+            let from = bodies[i].segment.phase
+            guard from == .sliding || from == .rolling || from == .airborne else { continue }
+            let b = bodyState(i, at: now)
+            let a = BodyState(position: b.position, velocity: .zero, omega: Vec3(0, 0, b.omega.z), height: 0, vz: 0)
+            restart(i, at: now, with: a)
+            events.append(LensEvent(time: now, kind: .phaseTransition, point: b.position, normal: .zero,
+                                    balls: [impactBall(i, b, a)], phaseFrom: from, phaseTo: bodies[i].segment.phase))
+        }
     }
 
     private mutating func applyTransition(_ i: Int) {
@@ -622,6 +1008,7 @@ private struct Simulation {
     private mutating func applyLanding(_ i: Int) {
         var before = bodyState(i, at: now)
         before.height = 0                                    // exactly on the cloth (the root, not a rounded value)
+        noteImpact(i, approach: before.vz < 0 ? -before.vz : 0)
         let (after, slate) = settleVertical(before)
         restart(i, at: now, with: after)
         let to = bodies[i].segment.phase
@@ -654,14 +1041,92 @@ private struct Simulation {
                                         orientation0: old.orientation(at: now), height0: st.height)
     }
 
+    // MARK: Holes, generation two (pockets-and-jams plan part A)
+
+    /// The pocket's centre line at this ball (a unit vector into the hole): for an edge pocket straight in through the
+    /// middle of its mouth (a corner along its diagonal, a side straight out across the rail); for a bed hole, which has
+    /// no mouth, from where the ball is through the hole's centre (LensEvent's PocketEntry note).
+    private func centreLine(_ k: Int, at p: Vec2, moving v: Vec2) -> Vec2 {
+        if let mouth = mouths[k] { return mouth.inward * -1 }
+        let toCentre = (pockets[k] - p).normalized
+        return toCentre == .zero ? v.normalized : toCentre
+    }
+
+    /// How a ball comes into hole k: its speed across the cloth and the angle between its path and the centre line,
+    /// as a sine (counter-clockwise from the centre line is positive) and a cosine (1 is dead centre).
+    private func entry(_ k: Int, _ st: BodyState) -> PocketEntry {
+        let speed = st.velocity.length
+        guard speed > 1e-12 else { return PocketEntry(speed: 0, sine: 0, cosine: 1) }
+        let along = st.velocity * (1 / speed)
+        let line = centreLine(k, at: st.position, moving: st.velocity)
+        return PocketEntry(speed: speed, sine: line.x * along.y - line.y * along.x, cosine: line.dot(along))
+    }
+
+    /// The fall-across-the-hole test. A ball over a hole starts to fall; it is caught if, before its centre leaves the
+    /// far side of the capture circle, it has dropped at least pocketCaptureFallFraction of its radius. In closed form:
+    /// the rest of its path across the circle is a chord of length d (the far root of |p + u s - c| = r along the unit
+    /// direction u, one square root), it crosses in T = d / v (friction ignored for this instant), and falls g T^2 / 2;
+    /// so it is caught when g d^2 >= 2 f R v^2, squares only. An edge pocket has a back wall: if the far end of the
+    /// chord lies beyond the mouth line (inside the pocket), the ball meets the back and drops whatever its speed, so
+    /// only a ball whose path leaves the circle on the table side (a fast ball across the mouth) can skip. A bed hole
+    /// has no back: the test applies fully. A ball at rest over a hole drops.
+    private func captures(_ k: Int, _ st: BodyState) -> Bool {
+        let v2 = st.velocity.lengthSquared
+        guard v2 > 1e-24 else { return true }
+        let speed = v2.squareRoot()
+        let rel = st.position - pockets[k]
+        let along = rel.dot(st.velocity) / speed                     // negative while heading in
+        let rr = captureRadii[k] * captureRadii[k]
+        var disc = along * along + rr - rel.lengthSquared
+        if disc < 0 { disc = 0 }
+        var chord = -along + disc.squareRoot()                       // distance to the far side of the circle
+        if chord < 0 { chord = 0 }
+        if let mouth = mouths[k] {
+            let exit = st.position + st.velocity * (chord / speed)
+            if (exit - mouth.mid).dot(mouth.inward) <= 0 { return true }
+        }
+        return P.gravity * chord * chord >= 2 * P.pocketCaptureFallFraction * P.ballRadius * v2
+    }
+
+    /// The crossing ball leaves the hole's circle: the rim skip. It pays rimSkipSpeedLoss of its speed (its velocity and
+    /// its rolling spin both scale down, so a rolling ball stays rolling; spin about the vertical is kept) and carries
+    /// on. The event records how it came in. The hole is then ignored for this ball until it is seen outside it.
+    private mutating func applyRimSkip(_ i: Int, _ k: Int) {
+        let before = bodyState(i, at: now)
+        let keep = 1 - P.rimSkipSpeedLoss
+        var after = before
+        after.velocity = before.velocity * keep
+        after.omega = Vec3(before.omega.x * keep, before.omega.y * keep, before.omega.z)
+        restart(i, at: now, with: after)
+        skip[i] = HoleSkip(hole: k, exited: true)
+        events.append(LensEvent(time: now, kind: .rimSkip, point: before.position,
+                                normal: centreLine(k, at: before.position, moving: before.velocity),
+                                balls: [impactBall(i, before, after)], pocket: pocketIndex[k],
+                                entry: skipEntry[i] ?? entry(k, before)))
+        skipEntry[i] = nil
+    }
+
     private mutating func applyPocket(_ i: Int, _ k: Int) {
         let st = bodyState(i, at: now)
+        // Generation 2: every pocket event says how the ball came in, and a ball on the cloth that is too fast to fall
+        // into the hole starts a crossing instead (no event yet: its rim skip is recorded when it leaves the circle).
+        // A ball in the air is caught as before: it is already falling.
+        var how: PocketEntry?
+        if P.usesGenerationTwo {
+            let e = entry(k, st)
+            if st.height <= 0 && !captures(k, st) {
+                skip[i] = HoleSkip(hole: k, exited: false)
+                skipEntry[i] = e
+                return
+            }
+            how = e
+        }
         let (tb, rb) = energy(st)
         let ib = ImpactBall(ball: i, velocityBefore: st.velocity, velocityAfter: .zero, omegaBefore: st.omega,
                             omegaAfter: .zero, translationalBefore: tb, rotationalBefore: rb,
                             translationalAfter: 0, rotationalAfter: 0)
         events.append(LensEvent(time: now, kind: .pocket, point: st.position, normal: (pockets[k] - st.position).normalized,
-                                balls: [ib], pocket: pocketIndex[k]))
+                                balls: [ib], pocket: pocketIndex[k], entry: how))
         var old = bodies[i].segment
         old.t1 = now
         bodies[i].closed.append(old)
@@ -680,50 +1145,86 @@ private struct Simulation {
         }
     }
 
+    /// The impact with a rail nose (a straight rail, a jaw face or a knuckle) whose horizontal inward normal is `n`:
+    /// the flat cushion at generation 1, exactly as before; the Level A rail at generation 2 (Impacts.rail), whose
+    /// result carries the push into the cloth. Also counts the hit for the jam guard.
+    private mutating func noseImpact(_ i: Int, _ before: BodyState, normal n: Vec2) -> ImpactResult {
+        let into = before.velocity.dot(n)
+        noteImpact(i, approach: into < 0 ? -into : 0)
+        return P.usesGenerationTwo ? Impacts.rail(before, normal: n, P) : Impacts.cushion(before, normal: n, P)
+    }
+
+    /// Generation 2: after a rail hit a ball on the cloth has no vertical speed (the bed took it) unless the rail's
+    /// friction lifted it; settle that like any other (a lift under the minimum hop is absorbed) and, if the ball really
+    /// leaves the cloth, record its take-off right after the rail event, as a hit from above does. Generation 1: the
+    /// flat cushion never changes the vertical, so this is never called.
+    private mutating func railTakeOff(_ i: Int, _ state: BodyState, from phase: MotionPhase) -> BodyState {
+        guard state.height <= 0, state.vz > 0 else { return state }
+        let (settled, _) = settleVertical(state)
+        if settled.vz > 0 {
+            events.append(LensEvent(time: now, kind: .phaseTransition, point: settled.position, normal: .zero,
+                                    balls: [impactBall(i, state, settled)], phaseFrom: phase, phaseTo: .airborne,
+                                    flight: .takeOff, verticalSpeedUp: settled.vz))
+        }
+        return settled
+    }
+
     private mutating func applyCushion(_ i: Int, _ w: Int) {
         if w >= firstPost { applyPost(i, w - firstPost); return }
         if w >= walls.count + jaws.count { applyKnuckle(i, w - walls.count - jaws.count); return }
         if w >= walls.count { applyJaw(i, w - walls.count); return }
         let wall = walls[w]
         let before = bodyState(i, at: now)
-        var res = Impacts.cushion(before, normal: wall.normal, P)
-        // Put the ball exactly on its contact line so rounding cannot leave it inside the cushion.
+        let phase = bodies[i].segment.phase
+        var res = noseImpact(i, before, normal: wall.normal)
+        // Put the ball exactly on its contact line so rounding cannot leave it inside the cushion. The line is the
+        // wall's offset, which is the rail contact distance at either generation.
         let pen = wall.offset - wall.normal.dot(res.states[0].position)
         if pen > 0 { res.states[0].position = res.states[0].position + wall.normal * pen }
-        restart(i, at: now, with: res.states[0])
-        events.append(LensEvent(time: now, kind: .cushion, point: before.position - wall.normal * P.ballRadius,
+        let gen2 = P.usesGenerationTwo
+        events.append(LensEvent(time: now, kind: .cushion, point: before.position - wall.normal * railContact,
                                 normal: wall.normal, normalImpulse: res.normalImpulse,
                                 frictionImpulse: res.frictionImpulse, slipSpeed: res.slipSpeed,
-                                balls: [impactBall(i, before, res.states[0])]))
+                                balls: [impactBall(i, before, res.states[0])],
+                                bedImpulse: gen2 ? res.bedImpulse : nil))
+        let final = gen2 ? railTakeOff(i, res.states[0], from: phase) : res.states[0]
+        restart(i, at: now, with: final)
     }
 
     private mutating func applyJaw(_ i: Int, _ k: Int) {
         let jaw = jaws[k]
         let before = bodyState(i, at: now)
-        var res = Impacts.cushion(before, normal: jaw.normal, P)
-        // Put the ball exactly one radius off the face so rounding cannot leave it inside the rubber.
-        let pen = P.ballRadius - jaw.normal.dot(res.states[0].position - jaw.start)
+        let phase = bodies[i].segment.phase
+        var res = noseImpact(i, before, normal: jaw.normal)
+        // Put the ball exactly its contact distance off the face so rounding cannot leave it inside the rubber.
+        let pen = railContact - jaw.normal.dot(res.states[0].position - jaw.start)
         if pen > 0 { res.states[0].position = res.states[0].position + jaw.normal * pen }
-        restart(i, at: now, with: res.states[0])
-        events.append(LensEvent(time: now, kind: .cushion, point: before.position - jaw.normal * P.ballRadius,
+        let gen2 = P.usesGenerationTwo
+        events.append(LensEvent(time: now, kind: .cushion, point: before.position - jaw.normal * railContact,
                                 normal: jaw.normal, normalImpulse: res.normalImpulse,
                                 frictionImpulse: res.frictionImpulse, slipSpeed: res.slipSpeed,
-                                balls: [impactBall(i, before, res.states[0])], pocket: jaw.pocket, edge: .jaw))
+                                balls: [impactBall(i, before, res.states[0])], pocket: jaw.pocket, edge: .jaw,
+                                bedImpulse: gen2 ? res.bedImpulse : nil))
+        let final = gen2 ? railTakeOff(i, res.states[0], from: phase) : res.states[0]
+        restart(i, at: now, with: final)
     }
 
     private mutating func applyKnuckle(_ i: Int, _ k: Int) {
         let knuckle = knuckles[k]
         let before = bodyState(i, at: now)
+        let phase = bodies[i].segment.phase
         // The knuckle pushes straight out from its point: the normal is the line from the point to the ball's centre.
         let n = (before.position - knuckle.point).normalized
-        var res = Impacts.cushion(before, normal: n, P)
+        var res = noseImpact(i, before, normal: n)
         let dist = (res.states[0].position - knuckle.point).length
-        if dist < P.ballRadius { res.states[0].position = knuckle.point + n * P.ballRadius }
-        restart(i, at: now, with: res.states[0])
+        if dist < railContact { res.states[0].position = knuckle.point + n * railContact }
+        let gen2 = P.usesGenerationTwo
         events.append(LensEvent(time: now, kind: .cushion, point: knuckle.point, normal: n,
                                 normalImpulse: res.normalImpulse, frictionImpulse: res.frictionImpulse,
                                 slipSpeed: res.slipSpeed, balls: [impactBall(i, before, res.states[0])],
-                                pocket: knuckle.pocket, edge: .knuckle))
+                                pocket: knuckle.pocket, edge: .knuckle, bedImpulse: gen2 ? res.bedImpulse : nil))
+        let final = gen2 ? railTakeOff(i, res.states[0], from: phase) : res.states[0]
+        restart(i, at: now, with: final)
     }
 
     /// A fixed round post: the knuckle's response (the normal runs from the post's centre to the ball's), but with the
@@ -732,6 +1233,10 @@ private struct Simulation {
         let post = posts[k]
         let before = bodyState(i, at: now)
         let n = (before.position - post.center).normalized
+        let into = before.velocity.dot(n)
+        noteImpact(i, approach: into < 0 ? -into : 0)
+        // Posts keep the flat model at every generation: a post is a rubber cylinder standing on the bed, so it meets
+        // the ball at the height of its centre and pushes straight out, with no nose above the ball to drive it down.
         var q = P
         q.cushionRestitution = post.restitution
         q.cushionFriction = post.friction
@@ -769,6 +1274,9 @@ private struct Simulation {
         var res = Impacts.ballBall(a, b, P)
         // Nudge apart by a tiny fixed amount if rounding left them closer than two radii.
         let n = (b.position - a.position).normalized
+        let approach = (a.velocity - b.velocity).dot(n)
+        noteImpact(i, approach: approach > 0 ? approach : 0)
+        noteImpact(j, approach: approach > 0 ? approach : 0)
         let dist = (b.position - a.position).length
         let gap = 2 * P.ballRadius * (1 + 1e-12) - dist
         if gap > 0 {
@@ -794,6 +1302,9 @@ private struct Simulation {
         let d = Vec3(b.position.x - a.position.x, b.position.y - a.position.y, b.height - a.height)
         let dist = d.length
         let n = dist > 1e-300 ? d * (1 / dist) : Vec3(1, 0, 0)
+        let approach = Vec3(a.velocity.x - b.velocity.x, a.velocity.y - b.velocity.y, a.vz - b.vz).dot(n)
+        noteImpact(i, approach: approach > 0 ? approach : 0)
+        noteImpact(j, approach: approach > 0 ? approach : 0)
         // Nudge apart by a tiny fixed amount if rounding left them closer than two radii. Heights never go below the
         // cloth; a ball on the cloth only moves sideways.
         let gap = 2 * P.ballRadius * (1 + 1e-12) - dist
