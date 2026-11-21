@@ -12,6 +12,10 @@
 //          picture for tip height, down it for side, a rectangle for both, and a stretch of the power bar. A locked
 //          control is dimmed, shows a lock and tells VoiceOver "Locked for this step" (lockedForStep, shared with the
 //          shot panel's sliders and the cue-angle menu). The model refuses the change anyway; this is what is seen.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: the power bar shows the swing ("firm · swing 2.6 m/s",
+//          StrokeWords) with the ball's speed spoken and in the help; a calm zone and a warm zone on the bar, a mark at
+//          the calm zone's top (model.strokeZones, which moves with the bridge finger) and the warm part tinted, so
+//          the player sees where a harder swing starts to cost control.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -147,11 +151,13 @@ struct PowerGauge: View {
 
     var body: some View {
         let fraction = model.powerFraction
+        let calm = calmFraction
+        let warm = model.activePower > model.strokeZones.calmTopPower
         VStack(spacing: 6) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Power").font(Theme.label).foregroundStyle(.secondary)
                 Spacer(minLength: 4)
-                Text(PowerWords.readout(speed: model.activePower, racked: model.racked))
+                Text(StrokeWords.readout(power: model.activePower, racked: model.racked))
                     .font(Theme.number)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
@@ -178,6 +184,20 @@ struct PowerGauge: View {
                                 .offset(x: geo.size.width * lo)
                                 .allowsHitTesting(false)
                         }
+                        // The warm zone: past the calm top a faint warm wash over the track, and a thin mark where the
+                        // calm zone ends (the stroke plan: past it, a harder swing drifts more).
+                        if calm < 1 {
+                            Capsule()
+                                .fill(Self.hot.opacity(0.16))
+                                .frame(width: geo.size.width * (1 - calm))
+                                .offset(x: geo.size.width * calm)
+                                .allowsHitTesting(false)
+                            Rectangle()
+                                .fill(palette.paper.opacity(0.75))
+                                .frame(width: 2, height: barHeight + 6)
+                                .offset(x: geo.size.width * calm - 1)
+                                .allowsHitTesting(false)
+                        }
                     }
                     .contentShape(Rectangle().inset(by: -16))
                     .gesture(DragGesture(minimumDistance: 0).onChanged { value in
@@ -193,7 +213,7 @@ struct PowerGauge: View {
         .frame(minHeight: 44)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
-        .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(PowerWords.spoken(speed: model.activePower, racked: model.racked))"))
+        .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm))"))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: model.powerFraction += 0.1
@@ -201,7 +221,8 @@ struct PowerGauge: View {
             @unknown default: break
             }
         }
-        .help("Strike power. Pull back from the cue ball on the table, or drag here.")
+        .help(Text(verbatim: StrokeWords.ballReadout(power: model.activePower, racked: model.racked) + " · "
+                   + String(localized: "Cue: \(CueProfile.selected.name). Pull back from the cue ball on the table, or drag here.")))
         .disabled(!open.contains(.power))
         .lockedForStep(!open.contains(.power))
     }
@@ -210,6 +231,13 @@ struct PowerGauge: View {
     private func powerFraction(_ speed: Double) -> CGFloat {
         let r = model.powerRange
         return CGFloat(min(max((speed - r.lowerBound) / (r.upperBound - r.lowerBound), 0), 1))
+    }
+
+    /// Where the calm zone ends on the bar, 0 to 1 (1: the whole bar is calm, so no mark is drawn).
+    private var calmFraction: Double {
+        let range = model.powerRange
+        let top = model.strokeZones.calmTopPower
+        return min(1, max(0, (top - range.lowerBound) / (range.upperBound - range.lowerBound)))
     }
 
     /// The hard end of the bar: a warm red that still reads on glass.

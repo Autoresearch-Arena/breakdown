@@ -12,6 +12,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream, hook lines: the lesson list is a page of the panel,
 //          the lesson card is one of its cards, a lesson counts as a mode on the table (its details replace the numbers)
 //          and the top bar says Lessons while one is up.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: the stroke's cards (the hard shot's result line
+//          and the straight-stroke drill) among the mode's cards, so the drill is a card of the notebook beside the
+//          table and nothing covers it.)
 // PURPOSE: The notebook: the side of the screen that is not the table, on the open folding phone (across the hinge) and
 //          on every screen big enough for the table plus a readable column (an iPad either way up, a large iPad split or
 //          Stage Manager window, a Mac window). The table fills the other side and nothing is drawn over it: no title
@@ -168,6 +171,7 @@ struct NotebookPanel: View {
             LessonCard(model: model)
             EightBallCard(model: model)
             PlayCards(model: model)
+            StrokeCards(model: model)
             NotebookDossier(model: model)
         }
     }

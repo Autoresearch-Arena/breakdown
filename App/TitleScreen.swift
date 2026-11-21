@@ -38,6 +38,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream: Learn, the six lessons (LessonList), is the first entry
 //          after Continue, with its progress mark (lessons passed); it is the highlighted entry for a player with nothing
 //          in progress and no lesson passed yet. Practice and Watch the intro end a lesson through the model.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: "Straight stroke" in the Play list's practice
+//          options, the drill that judges how straight the player strokes (StrokeDrill).)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
 //          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
@@ -260,6 +262,10 @@ struct TitleScreen: View {
             MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle",
                     prominent: !model.hasSavedMatch) {
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
+            }
+            MenuRow(title: "Straight stroke", line: "Send the cue ball up the table and back. Does it return to the cue?",
+                    symbol: "arrow.up.and.down") {
+                model.strokeDrill.begin(); onPlay()
             }
             MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
                     symbol: "8.circle", mark: recordMark(.eightBall)) { start(.eightBall) }

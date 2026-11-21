@@ -29,6 +29,8 @@
 //          target bands (ShotControls, LessonZones) to the tip picture, the power gauge and the cue-angle menu; a
 //          locked control is dimmed with a lock mark and VoiceOver hears "Locked for this step"; Aim at nearest ball
 //          and the fine-control sliders respect the same locks; the free-play items stay out of a lesson.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: the fine-controls power slider reads the ball's speed,
+//          "firm · ball 3.4 m/s" (StrokeWords.ballReadout), beside the power bar's swing, so the number is on hand.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -302,7 +304,7 @@ private struct FineControls: View {
                         aimRow.disabled(!open.contains(.aim)).lockedForStep(!open.contains(.aim))
                     }
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
-                              range: model.powerRange, readout: PowerWords.readout(speed: model.activePower, racked: model.racked))
+                              range: model.powerRange, readout: StrokeWords.ballReadout(power: model.activePower, racked: model.racked))
                         .disabled(!open.contains(.power)).lockedForStep(!open.contains(.power))
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
                               range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))

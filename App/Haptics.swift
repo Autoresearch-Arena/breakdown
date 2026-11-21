@@ -6,6 +6,9 @@
 //          landing, ball off the table, rim skip, miscue, balls settling, pocket knocks, foul, turn change, win); the
 //          pocket's settling taps are now the separate knock cues timed from the entry speed, exactly as heard; cue
 //          delays stretch in slow motion as the sound's do (SoundStage.stretch).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: the stroke's own feel, strokeTexture while the finger
+//          runs along the groove and strokeContact when a pushed stroke plays the shot; outside the feel-cue list
+//          because they follow the finger, not the recording.)
 // PURPOSE: Core Haptics for the break. Takes the same feel cues that drive sound (FeelMapping) and plays a
 //          short pattern per cue: a sharp hit with a low rumble for the break crack, light taps for ball
 //          contacts, a duller thump for the rail, a thud with a rattle for a pocket. Strength scales intensity.
@@ -50,6 +53,34 @@ final class Haptics {
         var events: [CHHapticEvent] = []
         for cue in cues { events += Self.events(for: cue) }
         guard !events.isEmpty else { return }
+        do {
+            try engine.start()
+            let pattern = try CHHapticPattern(events: events, parameters: [])
+            let player = try engine.makePlayer(with: pattern)
+            try player.start(atTime: CHHapticTimeImmediate)
+        } catch {
+            // Haptics are a flourish; a failure must never reach the player.
+        }
+    }
+
+    // MARK: The stroke (plans/21-Nov-2026-stroke-and-power-plan.md)
+
+    /// One tick of the groove's texture as the finger strokes along it. `roughness` 0 is on the groove: a faint, dull
+    /// tick, like a cue sliding through a smooth bridge. Toward 1, off the groove: stronger and crisper, a cue grating
+    /// on a rough bridge, so the player feels the stroke wander before seeing it.
+    func strokeTexture(roughness: Double) {
+        let r = min(1, max(0, roughness))
+        playEvents([Self.tap(0.08 + 0.32 * r, 0.15 + 0.7 * r, at: 0)])
+    }
+
+    /// The tip meeting the ball when a pushed stroke plays the shot: one firm, crisp click.
+    func strokeContact() {
+        playEvents([Self.tap(0.85, 0.8, at: 0)])
+    }
+
+    /// Play prepared events, honouring the Vibration option as every cue does. Cheap no-op without an engine.
+    private func playEvents(_ events: [CHHapticEvent]) {
+        guard let engine, !events.isEmpty, GameSettings.hapticsOn else { return }
         do {
             try engine.start()
             let pattern = try CHHapticPattern(events: events, parameters: [])

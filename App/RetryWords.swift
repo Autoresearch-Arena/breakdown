@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: when only the stroke changed (no setting moved) the
+//          sentence says so, "Your stroke was straighter this time, and ..."; when settings moved too, the stroke's
+//          sentence follows the card's own (StrokeWords).)
 // PURPOSE: Learn from a retry (plans/21-Nov-2026-learn-from-a-retry-plan.md, section 3), the view side.
 //          RetryWords   - the one sentence a result card shows after a retry, written from the facts the model
 //                         records (RetryComparison: which controls moved and which way, how far apart the two cue
@@ -26,6 +29,16 @@ enum RetryWords {
 
     /// The card's one sentence.
     static func sentence(_ c: RetryComparison) -> String {
+        // No setting moved, yet the shot played differently: the stroke is the only thing that changed.
+        if c.inputChanges.isEmpty, c.key == .severalChanges || c.key == .sameSpot {
+            return StrokeWords.strokeOnly(c.stroke, outcome: outcome(c))
+        }
+        let stroke = c.key == .exactRepeat ? nil : StrokeWords.comparison(c.stroke)
+        return [mainSentence(c), stroke].compactMap { $0 }.joined(separator: " ")
+    }
+
+    /// The card's sentence from the settings and the outcome (the stroke's sentence, if any, follows it).
+    private static func mainSentence(_ c: RetryComparison) -> String {
         switch c.key {
         case .exactRepeat:
             return String(localized: "Same shot, same result. The physics is exact, so nothing changes unless you do.")
