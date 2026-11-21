@@ -14,6 +14,8 @@
 #          Writes: archives and logs under /Volumes/Team 4TB/breakdown-build/ci/ (big data stays off the internal drive);
 #          refuses to run when that drive is not mounted.
 #          Needs: Xcode, and PyJWT (run with ~/.appstoreconnect/venv/bin/python, which has it).
+# Edited: Claude Opus 5.5 Medium, 21-November-2026 (the "What to Test" note is now updated when Apple has already made
+#          an empty one for the build; before, the second note was refused every run and testers saw no note).
 # SRP/DRY check: Pass - the only release script in this repo. It talks to App Store Connect on its own (a few calls)
 #          instead of importing the dog game's helper, so this repo does not depend on another checkout.
 import json
@@ -87,6 +89,22 @@ def whats_new(version):
     return note[:3900]
 
 
+def set_whats_new(build_id, note):
+    """Put the tester note on a build. Apple often makes an empty en-US note for a new build by itself, and a second
+    one for the same language is refused, so an existing note is updated and a new one made only when there is none."""
+    existing = [loc for loc in call("GET", f"/v1/builds/{build_id}/betaBuildLocalizations").get("data", [])
+                if loc["attributes"].get("locale") == "en-US"]
+    if existing:
+        call("PATCH", f"/v1/betaBuildLocalizations/{existing[0]['id']}",
+             {"data": {"type": "betaBuildLocalizations", "id": existing[0]["id"], "attributes": {"whatsNew": note}}},
+             soft=True)
+    else:
+        call("POST", "/v1/betaBuildLocalizations",
+             {"data": {"type": "betaBuildLocalizations", "attributes": {"locale": "en-US", "whatsNew": note},
+                       "relationships": {"build": {"data": {"type": "builds", "id": build_id}}}}}, soft=True)
+    say("Set the What to Test note")
+
+
 def run(command, log):
     say("$ " + " ".join(command))
     with open(log, "w") as handle:
@@ -151,9 +169,7 @@ def main():
                  {"data": {"type": "builds", "id": old["id"], "attributes": {"expired": True}}}, soft=True)
             say(f"Retired build {old['attributes']['version']}")
 
-    call("POST", "/v1/betaBuildLocalizations",
-         {"data": {"type": "betaBuildLocalizations", "attributes": {"locale": "en-US", "whatsNew": whats_new(version)},
-                   "relationships": {"build": {"data": {"type": "builds", "id": new["id"]}}}}}, soft=True)
+    set_whats_new(new["id"], whats_new(version))
     call("POST", f"/v1/betaGroups/{PUBLIC_GROUP}/relationships/builds",
          {"data": [{"type": "builds", "id": new["id"]}]})
     review = call("POST", "/v1/betaAppReviewSubmissions",
