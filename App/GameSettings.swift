@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (two keys the model stores that are not Options toggles:
+//          seenOpeningKey, set once the first-launch opening has played through, and freePlayRackKey, the rack free play
+//          lays out: fifteen-ball triangle, nine-ball diamond or place balls. Kept here so every stored key lives in one
+//          list.)
 // PURPOSE: The player's options, stored on the device: sound, vibration, shot explanations (the caption card in the
 //          Physics Lens), the aim guide (ghost ball and where the balls head after contact), and whether the
 //          explanation card shows its maths. One key per option, read by the views with @AppStorage and by the sound
@@ -15,6 +19,11 @@ enum GameSettings {
     static let explanationsKey = "optionExplanations"
     static let aimGuideKey = "optionAimGuide"
     static let mathsKey = "optionShowMaths"
+    /// True once the first-launch opening (break, Lens, hand-over, the player's first break) has been seen; later
+    /// launches open on the menu. Read and written by ShowpieceModel.
+    static let seenOpeningKey = "seenOpening"
+    /// The rack free play lays out (FreePlayRack's raw value). Read and written by ShowpieceModel.
+    static let freePlayRackKey = "optionFreePlayRack"
 
     /// Options default to on; reading a missing key as "on" keeps a fresh install fully featured.
     private static func flag(_ key: String) -> Bool { UserDefaults.standard.object(forKey: key) as? Bool ?? true }
