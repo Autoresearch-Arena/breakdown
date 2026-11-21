@@ -79,7 +79,7 @@ final class CueRig {
     private let cueHolder = Entity()
     private let bridgeHolder = Entity()
     /// The cue's soft shadow on the cloth (a unit plane, scaled and turned under the cue each frame).
-    private let shadow = ModelEntity(mesh: .generatePlane(width: 1, depth: 1), materials: [TableBuilder.shadowMaterial(opacity: 0.45)])
+    private let shadow: ModelEntity
     /// Length of the shadow along the cue, metres: the front of the cue, the part close enough to the cloth to throw a
     /// visible soft shadow under an overhead lamp (further back the cue is high enough for its shadow to wash out).
     static let shadowLength: Float = 0.80
@@ -88,6 +88,7 @@ final class CueRig {
 
     init(lightSource: Entity) {
         self.lightSource = lightSource
+        shadow = ModelEntity(mesh: .generatePlane(width: 1, depth: 1), materials: [TableBuilder.shadowMaterial(opacity: 0.45)])
         root.name = "CueRig"
         root.addChild(cueHolder)
         root.addChild(bridgeHolder)

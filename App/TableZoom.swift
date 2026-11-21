@@ -120,6 +120,17 @@ final class TableZoom {
         pinchStart = nil; panStart = nil; isGesturing = false
     }
 
+    /// When the last double tap was taken (system uptime, seconds).
+    private var lastTap: TimeInterval = -1
+    /// True for a double tap that should act. The gestures are attached both to the table and to the aiming layer over
+    /// it, so one double tap could reach two handlers; a second one within a fifth of a second (shorter than any two
+    /// real double taps can follow each other) is the same tap and is ignored, so it cannot undo the zoom it just made.
+    func takeDoubleTap() -> Bool {
+        let now = ProcessInfo.processInfo.systemUptime
+        defer { lastTap = now }
+        return now - lastTap > 0.2
+    }
+
     /// Applies the zoom to a camera pose. The pose's look point on the cloth (where its line of sight meets y = 0) is
     /// moved by the offset, and the camera is brought toward it by the scale. Called by TableCamera every frame.
     /// - tableHalf: half the playing surface, metres; the look point is kept inside it.
@@ -192,7 +203,7 @@ struct TableZoomGestures: ViewModifier {
     /// Double tap a ball: centre and zoom on it. Double tap it again, or anywhere off a ball, to come back.
     private var doubleTap: some Gesture {
         SpatialTapGesture(count: 2).onEnded { value in
-            guard let zoom = zoom, let proj = projector() else { return }
+            guard let zoom = zoom, zoom.takeDoubleTap(), let proj = projector() else { return }
             let timeline = model.timeline
             let radius = timeline.table.ballRadius
             var best: (ball: Int, distance: CGFloat, at: Vec2)?
