@@ -31,9 +31,10 @@
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
-//          and the shot panel sit above the controls, measured so the camera frames the table above them. On
-//          the Mac, on iPad and in landscape the screen splits: the table on the left with the controls under it, and
-//          a side column on the right for the caption and the shot panel, so nothing covers the action. The camera is
+//          and the shot panel sit above the controls, measured so the camera frames the table above them. A phone
+//          turned sideways (or a window too small for the notebook but wider than tall) splits: the table on the left
+//          and a side column on the right for the caption and the shot panel, so nothing covers the action. iPad, Mac
+//          and the open folding phone get the notebook (NotebookPanel) instead: see the 21-November edits. The camera is
 //          told how much room the controls take (measured, so large text pushes the table up instead of hiding it).
 //          Owns the model, the shot-panel switch and the leader state; every control lives in its own file.
 //          Package 4 (0.4.0, Claude Sonnet 5.5 High): the screen now MEASURES where its title row, caption slot and control
@@ -56,6 +57,16 @@
 //          commentary, the numbers and the controls; the main menu, the lists and the option pages are pages of that
 //          panel instead of sheets or overlays, so nothing ever covers the table. The environment value inlinePages
 //          tells the sheet-hosting views so. MenuBackButton and SurfaceMenuButton are shared with the panel's top bar.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the notebook on every big screen: any window big enough for the table
+//          plus a readable column (an iPad either way up, an iPad in a large split or Stage Manager window, a Mac
+//          window) splits the same way the folding phone does, chosen from the window's size alone
+//          (ScreenLayout.notebook): beside the table when the window is wider than tall, under it when taller. The hinge,
+//          where there is one, still wins. Smaller windows (phones, a third of an iPad, a small Mac window) keep the
+//          phone layouts exactly as before. The View menu can put the panel away, which gives the table the whole window
+//          with the phone-style controls under it. How to play, Options and Tables are one page switch owned here
+//          (NotebookPage), so the Help menu reaches How to play in any layout: a page of the panel in the notebook, a
+//          sheet otherwise. The aiming layer gains pointer, scroll and Pencil-hover aiming (PointerAim), and the title
+//          row's round buttons brighten under the pointer.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -75,33 +86,50 @@ struct ShowpieceView: View {
     @Environment(\.layoutDirection) private var layoutDirection
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// The page shown in place of play: How to play, Options or Tables. In the notebook it is a page of the panel; in
+    /// the phone layouts a sheet. Owned here so the Help menu can open How to play whichever layout is on screen.
+    @State private var page: NotebookPage?
+    /// The View menu's "Show Notebook": off gives the table the whole window on a screen that would have the notebook.
+    @AppStorage(NotebookPanel.shownKey) private var panelShown = true
 
     var body: some View {
         GeometryReader { geo in
             let wide = ScreenLayout.isWide(geo.size)
             let short = ScreenLayout.isShort(geo.size)
             let fold = ScreenLayout.fold(in: geo)
-            // A hinge running down the screen (opened like a book) or across it (propped like a laptop).
-            let bookFold = fold.flatMap { $0.height > $0.width ? $0 : nil }
-            let laptopFold = fold.flatMap { $0.height > $0.width ? nil : $0 }
-            let split = wide || fold != nil
-            let controlsInColumn = fold != nil || short
+            // The notebook for a window big enough for it (nil on phones and small windows: their layouts are untouched).
+            let notebookFits = ScreenLayout.notebook(for: geo.size, largeText: typeSize.isAccessibilitySize)
+            let notebook = fold == nil && panelShown ? notebookFits : nil
+            // The panel put away on a big screen: the table takes the whole window, controls under it, no side column.
+            let tableOnly = fold == nil && !panelShown && notebookFits != nil
+            // Where the table ends and the panel begins: the folding phone's hinge, or the notebook's split line (a
+            // rectangle of no thickness, so the two sides simply meet on it).
+            let division = fold ?? notebook?.division(in: geo.size)
+            // A division running down the screen (opened like a book, or the panel beside the table) or across it
+            // (propped like a laptop, or the panel under the table).
+            let bookFold = division.flatMap { $0.height > $0.width ? $0 : nil }
+            let laptopFold = division.flatMap { $0.height > $0.width ? nil : $0 }
+            let split = (wide && !tableOnly) || division != nil
+            let controlsInColumn = division != nil || short
             ZStack {
                 palette.ground.ignoresSafeArea()
                 // One container for every layout, so the table keeps its identity (and its built 3D scene) when the
                 // phone turns, folds or unfolds; only its frame and its neighbours change. The hinge itself stays empty.
                 (laptopFold != nil ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))) {
                     stage(geo: geo, wide: split, controlsInColumn: controlsInColumn,
-                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil), menuOnStage: fold == nil,
-                          header: fold == nil)
-                        // Folding phone: the table owns the whole panel before the hinge.
+                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil), menuOnStage: division == nil,
+                          header: division == nil)
+                        // Folding phone or notebook: the table owns the whole side before the division.
                         .frame(width: bookFold.map { max(0, $0.minX) }, height: laptopFold.map { max(0, $0.minY) })
-                    if let fold {
-                        Color.clear.frame(width: bookFold == nil ? nil : fold.width, height: laptopFold == nil ? nil : fold.height)
+                    if let division {
+                        Color.clear.frame(width: bookFold == nil ? nil : division.width,
+                                          height: laptopFold == nil ? nil : division.height)
                     }
-                    if fold != nil {
-                        // The other panel of a folding phone: the whole notebook, menus and lists included.
-                        DuoPanel(model: model, leader: leader, showShotPanel: $showShotPanel)
+                    if division != nil {
+                        // The other side: the whole notebook, menus and lists included.
+                        NotebookPanel(model: model, leader: leader, showShotPanel: $showShotPanel, page: $page,
+                                      onHinge: fold != nil)
                             .frame(width: bookFold.map { max(0, geo.size.width - $0.maxX) },
                                    height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
                             .overlay(alignment: laptopFold != nil ? .top : .leading) { panelHairline(top: laptopFold != nil) }
@@ -111,12 +139,17 @@ struct ShowpieceView: View {
                                    width: min(columnWidth, geo.size.width * 0.45), divider: .leading)
                     }
                 }
-                // Lists, menus and option sheets stay out of sheets on a folding phone: they are pages of its panel.
-                .environment(\.inlinePages, fold != nil)
+                // Lists, menus and option sheets stay out of sheets in the notebook: they are pages of its panel.
+                .environment(\.inlinePages, division != nil)
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
                 CaptionLeader(leader: leader, showLine: split)
             }
             .coordinateSpace(name: StageSpace.name)
+            // How to play, Options and Tables outside the notebook (the Help menu, or a page left open when the window
+            // shrank below the notebook): a sheet, as the main menu opens them on a phone.
+            .sheet(item: Binding(get: { division == nil ? page : nil }, set: { page = $0 })) { shown in
+                pageSheet(shown)
+            }
             .onAppear {
                 model.viewSize = geo.size
                 // Test hook: launch with -yourBreakDemo to run the player's own break without tapping.
@@ -146,8 +179,10 @@ struct ShowpieceView: View {
         }
         .focusedSceneValue(\.showpieceModel, model)
         .focusedSceneValue(\.shotPanelOpen, $showShotPanel)
+        .focusedSceneValue(\.notebookPage, $page)
+        .focusedSceneValue(\.notebookShown, $panelShown)
         #if os(macOS)
-        .toolbar { ShowpieceToolbar(model: model, shotPanelOpen: $showShotPanel) }
+        .toolbar { ShowpieceToolbar(model: model, shotPanelOpen: $showShotPanel, notebookShown: $panelShown) }
         #endif
     }
 
@@ -180,7 +215,12 @@ struct ShowpieceView: View {
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Behind the 8-Ball: the called ball and pocket, the list sheet, launch flags (EightBallViews).
             EightBallTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
-            if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
+            if showShotPanel {
+                AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel)
+                    // Mac and iPad: the aim follows a hovering pointer or Pencil, scrolling fine-tunes it, and letting go
+                    // of a pointer pull-back takes the shot (PointerAim). A finger plays exactly as before.
+                    .pointerAim(model: model, bridge: bridge, isOpen: $showShotPanel)
+            }
             VStack(spacing: 6) {
                 if header {
                     ScreenHeader(model: model)
@@ -243,7 +283,17 @@ struct ShowpieceView: View {
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
-    // MARK: Side column (Mac, iPad, landscape)
+    /// How to play, Options or Tables as a sheet, for the layouts without the notebook panel.
+    @ViewBuilder private func pageSheet(_ shown: NotebookPage) -> some View {
+        let isOpen = Binding(get: { page != nil }, set: { if !$0 { page = nil } })
+        switch shown {
+        case .howTo: HowToPlaySheet(isOpen: isOpen)
+        case .options: OptionsSheet(isOpen: isOpen)
+        case .tables: TableList(model: model, onChosen: { showShotPanel = true }, onClose: { page = nil })
+        }
+    }
+
+    // MARK: Side column (a phone turned sideways, and windows too small for the notebook)
 
     /// On a phone turned sideways there is no room under the table for the controls, so they join the column and the
     /// table gets the full height.
@@ -335,7 +385,7 @@ private struct ScreenHeader: View {
 }
 
 /// The round glass back button that pauses the game and opens the main menu; shared by the title row over the table
-/// and the Duo panel's top bar.
+/// and the notebook panel's top bar.
 struct MenuBackButton: View {
     let model: ShowpieceModel
 
@@ -351,6 +401,7 @@ struct MenuBackButton: View {
         .controlSize(.regular)
         // Escape opens the menu on the Mac and with a hardware keyboard.
         .keyboardShortcut(.cancelAction)
+        .hoverHighlight()
         .accessibilityLabel("Menu")
         .accessibilityHint("Pauses the game and opens the main menu")
     }
@@ -392,6 +443,7 @@ struct SurfaceMenuButton: View {
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
         .controlSize(.regular)
+        .hoverHighlight()
         .accessibilityLabel("Surface")
         .accessibilityValue(model.surface.title)
     }

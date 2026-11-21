@@ -10,6 +10,10 @@
 //          and later: on a folding phone the hinge, so the table can fill one panel and everything else the other).
 // Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (WrappingRow: a right-aligned row that wraps onto a second line, so
 //          the trick-shot and 8-ball card buttons use two rows rather than one row each when they do not fit.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (ScreenLayout.notebook: any window big enough for the table plus a
+//          readable column (an iPad, a Mac window, an iPad in a large split) gets the notebook layout the folding phone
+//          had, chosen from the window's size alone (the maths is NotebookGeometry); ScreenLayout.panelColumns says when
+//          the notebook panel splits into two columns. isWide, isShort and fold are unchanged, so phones lay out as before.)
 // SRP/DRY check: Pass - checked the old view file, which repeated the panel background three times; they all use
 //          glassCard now. No other file builds surfaces.
 import SwiftUI
@@ -50,6 +54,18 @@ struct FittingScroll<Content: View>: View {
 }
 
 enum ScreenLayout {
+    /// The notebook split for this window (the table on one side, NotebookPanel on the other), or nil when the window is
+    /// too small and one of the phone layouts below applies. Read from the window's size only, so split view, Stage
+    /// Manager and a resized Mac window all follow it live. A folding phone's hinge, where there is one, wins over this.
+    static func notebook(for size: CGSize, largeText: Bool) -> NotebookGeometry.Split? {
+        NotebookGeometry.split(for: size, largeText: largeText)
+    }
+
+    /// How many columns the notebook panel uses at its own size; `onHinge` keeps the folding phone's original rule.
+    static func panelColumns(for size: CGSize, onHinge: Bool) -> Int {
+        NotebookGeometry.panelColumns(width: Double(size.width), height: Double(size.height), onHinge: onHinge)
+    }
+
     /// Wide layout (a side column for captions and the shot panel) on the Mac, on iPad, and on any screen that is
     /// wider than it is tall. Phone portrait keeps the caption under the title.
     static func isWide(_ size: CGSize) -> Bool {

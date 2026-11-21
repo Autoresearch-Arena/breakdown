@@ -1,6 +1,11 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
-// PURPOSE: The iPhone Duo's live commentary: every explained moment of the shot on screen, in clock order, as a list
+// Edited: Claude Opus 5.5 High, 21-November-2026 (renamed NotebookStory (it was DuoStory): it is the notebook's
+//          commentary on every big screen now, not only across a folding phone's hinge. On a big screen
+//          (notebookRoomy) each sentence is set a size larger for reading at arm's length or at a desk; rows brighten
+//          under a pointer; and the Mac and an iPad keyboard can step to the next or previous moment from the Playback
+//          menu (MacChrome), which moves the lit row here like a tap.)
+// PURPOSE: The notebook's live commentary: every explained moment of the shot on screen, in clock order, as a list
 //          that fills the side panel. Each row is a caption (title, the whole sentence, and the equation when Show the
 //          maths is on) with the time it happens; the one for the moment on the table is lit and kept in view, the
 //          rest are dimmed, and tapping a row jumps the replay to that moment. The lit row also gives the thin leader
@@ -14,13 +19,14 @@
 import BreakdownLensModel
 import SwiftUI
 
-struct DuoStory: View {
+struct NotebookStory: View {
     let model: ShowpieceModel
     let leader: LeaderState
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(GameSettings.mathsKey) private var maths = false
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
+    @Environment(\.notebookRoomy) private var roomy
     /// The caption lit now: the one the table is showing, or the one just tapped.
     @State private var activeID: Int?
 
@@ -47,7 +53,7 @@ struct DuoStory: View {
                                 .font(Theme.body)
                                 .foregroundStyle(.secondary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            DuoSurfaceCard(model: model, detailed: true)
+                            NotebookSurfaceCard(model: model, detailed: true)
                         }
                     }
                     .scrollBounceBehavior(.basedOnSize)
@@ -123,7 +129,8 @@ struct DuoStory: View {
                             .foregroundStyle(.secondary)
                     }
                     Text(verbatim: caption.detail)
-                        .font(Theme.body)
+                        // A size up on a big screen, read from further away than a phone; the folding phone keeps its own.
+                        .font(roomy ? Theme.copy : Theme.body)
                         .foregroundStyle(lit ? Color.primary : Color.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     if maths {
@@ -140,6 +147,8 @@ struct DuoStory: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        // A plain row has no shape of its own, so under a pointer it gets a faint fill to show it can be clicked.
+        .hoverHighlight(.fill(cornerRadius: 12))
         // The lit row is where the leader line starts, in the stage's own coordinates (the line crosses the fold).
         .background {
             if lit {

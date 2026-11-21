@@ -1,0 +1,1462 @@
+{
+ "keys": [
+  "Eight-ball",
+  "Nine-ball",
+  "New %@ Game",
+  "New Free Game",
+  "Game",
+  "Shot",
+  "Trick Shots…",
+  "Behind the 8-Ball…",
+  "Watch the Break",
+  "Main Menu",
+  "Aim Anticlockwise",
+  "Aim Clockwise",
+  "More Power",
+  "Less Power",
+  "Tip Higher (Follow)",
+  "Tip Lower (Draw)",
+  "Tip Left",
+  "Tip Right",
+  "Centre the Tip",
+  "Call Pocket",
+  "Show Notebook",
+  "Next Explained Moment",
+  "Previous Explained Moment",
+  "How to Play",
+  "Notebook",
+  "Show or hide the notebook beside the table (Option-Command-I)"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Eight-ball",
+   "text": "Bola 8"
+  },
+  {
+   "culture": "fr",
+   "key": "Eight-ball",
+   "text": "Billard à 8 billes"
+  },
+  {
+   "culture": "de",
+   "key": "Eight-ball",
+   "text": "8-Ball"
+  },
+  {
+   "culture": "it",
+   "key": "Eight-ball",
+   "text": "Palla 8"
+  },
+  {
+   "culture": "pt",
+   "key": "Eight-ball",
+   "text": "Bola 8"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Eight-ball",
+   "text": "Bola 8"
+  },
+  {
+   "culture": "ja",
+   "key": "Eight-ball",
+   "text": "エイトボール"
+  },
+  {
+   "culture": "ko",
+   "key": "Eight-ball",
+   "text": "에이트볼"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Eight-ball",
+   "text": "八球"
+  },
+  {
+   "culture": "ru",
+   "key": "Eight-ball",
+   "text": "Восьмёрка"
+  },
+  {
+   "culture": "ar",
+   "key": "Eight-ball",
+   "text": "كرة الثمانية"
+  },
+  {
+   "culture": "es",
+   "key": "Nine-ball",
+   "text": "Bola 9"
+  },
+  {
+   "culture": "fr",
+   "key": "Nine-ball",
+   "text": "Billard à 9 billes"
+  },
+  {
+   "culture": "de",
+   "key": "Nine-ball",
+   "text": "9-Ball"
+  },
+  {
+   "culture": "it",
+   "key": "Nine-ball",
+   "text": "Palla 9"
+  },
+  {
+   "culture": "pt",
+   "key": "Nine-ball",
+   "text": "Bola 9"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Nine-ball",
+   "text": "Bola 9"
+  },
+  {
+   "culture": "ja",
+   "key": "Nine-ball",
+   "text": "ナインボール"
+  },
+  {
+   "culture": "ko",
+   "key": "Nine-ball",
+   "text": "나인볼"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Nine-ball",
+   "text": "九球"
+  },
+  {
+   "culture": "ru",
+   "key": "Nine-ball",
+   "text": "Девятка"
+  },
+  {
+   "culture": "ar",
+   "key": "Nine-ball",
+   "text": "كرة التسعة"
+  },
+  {
+   "culture": "es",
+   "key": "New %@ Game",
+   "text": "Nueva partida de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "New %@ Game",
+   "text": "Nouvelle partie de %@"
+  },
+  {
+   "culture": "de",
+   "key": "New %@ Game",
+   "text": "Neues Spiel: %@"
+  },
+  {
+   "culture": "it",
+   "key": "New %@ Game",
+   "text": "Nuova partita a %@"
+  },
+  {
+   "culture": "pt",
+   "key": "New %@ Game",
+   "text": "Novo jogo de %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "New %@ Game",
+   "text": "Novo jogo de %@"
+  },
+  {
+   "culture": "ja",
+   "key": "New %@ Game",
+   "text": "%@ の新しいゲーム"
+  },
+  {
+   "culture": "ko",
+   "key": "New %@ Game",
+   "text": "새 %@ 게임"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "New %@ Game",
+   "text": "新的%@对局"
+  },
+  {
+   "culture": "ru",
+   "key": "New %@ Game",
+   "text": "Новая игра: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "New %@ Game",
+   "text": "لعبة %@ جديدة"
+  },
+  {
+   "culture": "es",
+   "key": "New Free Game",
+   "text": "Nueva partida libre"
+  },
+  {
+   "culture": "fr",
+   "key": "New Free Game",
+   "text": "Nouvelle partie libre"
+  },
+  {
+   "culture": "de",
+   "key": "New Free Game",
+   "text": "Neues freies Spiel"
+  },
+  {
+   "culture": "it",
+   "key": "New Free Game",
+   "text": "Nuova partita libera"
+  },
+  {
+   "culture": "pt",
+   "key": "New Free Game",
+   "text": "Novo jogo livre"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "New Free Game",
+   "text": "Novo jogo livre"
+  },
+  {
+   "culture": "ja",
+   "key": "New Free Game",
+   "text": "新しいフリーゲーム"
+  },
+  {
+   "culture": "ko",
+   "key": "New Free Game",
+   "text": "새 자유 게임"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "New Free Game",
+   "text": "新的自由游戏"
+  },
+  {
+   "culture": "ru",
+   "key": "New Free Game",
+   "text": "Новая свободная игра"
+  },
+  {
+   "culture": "ar",
+   "key": "New Free Game",
+   "text": "لعبة حرة جديدة"
+  },
+  {
+   "culture": "es",
+   "key": "Game",
+   "text": "Partida"
+  },
+  {
+   "culture": "fr",
+   "key": "Game",
+   "text": "Partie"
+  },
+  {
+   "culture": "de",
+   "key": "Game",
+   "text": "Spiel"
+  },
+  {
+   "culture": "it",
+   "key": "Game",
+   "text": "Partita"
+  },
+  {
+   "culture": "pt",
+   "key": "Game",
+   "text": "Jogo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Game",
+   "text": "Jogo"
+  },
+  {
+   "culture": "ja",
+   "key": "Game",
+   "text": "ゲーム"
+  },
+  {
+   "culture": "ko",
+   "key": "Game",
+   "text": "게임"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Game",
+   "text": "游戏"
+  },
+  {
+   "culture": "ru",
+   "key": "Game",
+   "text": "Игра"
+  },
+  {
+   "culture": "ar",
+   "key": "Game",
+   "text": "اللعبة"
+  },
+  {
+   "culture": "es",
+   "key": "Shot",
+   "text": "Tiro"
+  },
+  {
+   "culture": "fr",
+   "key": "Shot",
+   "text": "Coup"
+  },
+  {
+   "culture": "de",
+   "key": "Shot",
+   "text": "Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Shot",
+   "text": "Tiro"
+  },
+  {
+   "culture": "pt",
+   "key": "Shot",
+   "text": "Tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shot",
+   "text": "Tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Shot",
+   "text": "ショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Shot",
+   "text": "샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shot",
+   "text": "击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Shot",
+   "text": "Удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Shot",
+   "text": "الضربة"
+  },
+  {
+   "culture": "es",
+   "key": "Trick Shots…",
+   "text": "Tiros de truco…"
+  },
+  {
+   "culture": "fr",
+   "key": "Trick Shots…",
+   "text": "Coups spectaculaires…"
+  },
+  {
+   "culture": "de",
+   "key": "Trick Shots…",
+   "text": "Trickstöße…"
+  },
+  {
+   "culture": "it",
+   "key": "Trick Shots…",
+   "text": "Colpi spettacolari…"
+  },
+  {
+   "culture": "pt",
+   "key": "Trick Shots…",
+   "text": "Jogadas de efeito…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Trick Shots…",
+   "text": "Tacadas de efeito…"
+  },
+  {
+   "culture": "ja",
+   "key": "Trick Shots…",
+   "text": "トリックショット…"
+  },
+  {
+   "culture": "ko",
+   "key": "Trick Shots…",
+   "text": "트릭 샷…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Trick Shots…",
+   "text": "花式球…"
+  },
+  {
+   "culture": "ru",
+   "key": "Trick Shots…",
+   "text": "Трюковые удары…"
+  },
+  {
+   "culture": "ar",
+   "key": "Trick Shots…",
+   "text": "ضربات الخدع…"
+  },
+  {
+   "culture": "es",
+   "key": "Behind the 8-Ball…",
+   "text": "Detrás de la 8…"
+  },
+  {
+   "culture": "fr",
+   "key": "Behind the 8-Ball…",
+   "text": "Derrière la 8…"
+  },
+  {
+   "culture": "de",
+   "key": "Behind the 8-Ball…",
+   "text": "Hinter der 8…"
+  },
+  {
+   "culture": "it",
+   "key": "Behind the 8-Ball…",
+   "text": "Dietro la 8…"
+  },
+  {
+   "culture": "pt",
+   "key": "Behind the 8-Ball…",
+   "text": "Atrás da 8…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Behind the 8-Ball…",
+   "text": "Atrás da 8…"
+  },
+  {
+   "culture": "ja",
+   "key": "Behind the 8-Ball…",
+   "text": "8番の陰で…"
+  },
+  {
+   "culture": "ko",
+   "key": "Behind the 8-Ball…",
+   "text": "8번 뒤에서…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Behind the 8-Ball…",
+   "text": "8 号球后面…"
+  },
+  {
+   "culture": "ru",
+   "key": "Behind the 8-Ball…",
+   "text": "За восьмёркой…"
+  },
+  {
+   "culture": "ar",
+   "key": "Behind the 8-Ball…",
+   "text": "خلف الكرة 8…"
+  },
+  {
+   "culture": "es",
+   "key": "Watch the Break",
+   "text": "Mirar el saque"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch the Break",
+   "text": "Regarder la casse"
+  },
+  {
+   "culture": "de",
+   "key": "Watch the Break",
+   "text": "Den Break ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch the Break",
+   "text": "Guarda il break"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch the Break",
+   "text": "Ver a abertura"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch the Break",
+   "text": "Ver a abertura"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch the Break",
+   "text": "ブレイクを見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch the Break",
+   "text": "브레이크 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch the Break",
+   "text": "观看开球"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch the Break",
+   "text": "Смотреть разбивку"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch the Break",
+   "text": "شاهد الافتتاح"
+  },
+  {
+   "culture": "es",
+   "key": "Main Menu",
+   "text": "Menú principal"
+  },
+  {
+   "culture": "fr",
+   "key": "Main Menu",
+   "text": "Menu principal"
+  },
+  {
+   "culture": "de",
+   "key": "Main Menu",
+   "text": "Hauptmenü"
+  },
+  {
+   "culture": "it",
+   "key": "Main Menu",
+   "text": "Menu principale"
+  },
+  {
+   "culture": "pt",
+   "key": "Main Menu",
+   "text": "Menu principal"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Main Menu",
+   "text": "Menu principal"
+  },
+  {
+   "culture": "ja",
+   "key": "Main Menu",
+   "text": "メインメニュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Main Menu",
+   "text": "메인 메뉴"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Main Menu",
+   "text": "主菜单"
+  },
+  {
+   "culture": "ru",
+   "key": "Main Menu",
+   "text": "Главное меню"
+  },
+  {
+   "culture": "ar",
+   "key": "Main Menu",
+   "text": "القائمة الرئيسية"
+  },
+  {
+   "culture": "es",
+   "key": "Aim Anticlockwise",
+   "text": "Apuntar en sentido antihorario"
+  },
+  {
+   "culture": "fr",
+   "key": "Aim Anticlockwise",
+   "text": "Viser dans le sens antihoraire"
+  },
+  {
+   "culture": "de",
+   "key": "Aim Anticlockwise",
+   "text": "Gegen den Uhrzeigersinn zielen"
+  },
+  {
+   "culture": "it",
+   "key": "Aim Anticlockwise",
+   "text": "Mira in senso antiorario"
+  },
+  {
+   "culture": "pt",
+   "key": "Aim Anticlockwise",
+   "text": "Apontar no sentido anti-horário"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aim Anticlockwise",
+   "text": "Mirar no sentido anti-horário"
+  },
+  {
+   "culture": "ja",
+   "key": "Aim Anticlockwise",
+   "text": "狙いを左回りに"
+  },
+  {
+   "culture": "ko",
+   "key": "Aim Anticlockwise",
+   "text": "시계 반대 방향으로 조준"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aim Anticlockwise",
+   "text": "逆时针调整瞄准"
+  },
+  {
+   "culture": "ru",
+   "key": "Aim Anticlockwise",
+   "text": "Прицел против часовой"
+  },
+  {
+   "culture": "ar",
+   "key": "Aim Anticlockwise",
+   "text": "التصويب عكس عقارب الساعة"
+  },
+  {
+   "culture": "es",
+   "key": "Aim Clockwise",
+   "text": "Apuntar en sentido horario"
+  },
+  {
+   "culture": "fr",
+   "key": "Aim Clockwise",
+   "text": "Viser dans le sens horaire"
+  },
+  {
+   "culture": "de",
+   "key": "Aim Clockwise",
+   "text": "Im Uhrzeigersinn zielen"
+  },
+  {
+   "culture": "it",
+   "key": "Aim Clockwise",
+   "text": "Mira in senso orario"
+  },
+  {
+   "culture": "pt",
+   "key": "Aim Clockwise",
+   "text": "Apontar no sentido horário"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aim Clockwise",
+   "text": "Mirar no sentido horário"
+  },
+  {
+   "culture": "ja",
+   "key": "Aim Clockwise",
+   "text": "狙いを右回りに"
+  },
+  {
+   "culture": "ko",
+   "key": "Aim Clockwise",
+   "text": "시계 방향으로 조준"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aim Clockwise",
+   "text": "顺时针调整瞄准"
+  },
+  {
+   "culture": "ru",
+   "key": "Aim Clockwise",
+   "text": "Прицел по часовой"
+  },
+  {
+   "culture": "ar",
+   "key": "Aim Clockwise",
+   "text": "التصويب مع عقارب الساعة"
+  },
+  {
+   "culture": "es",
+   "key": "More Power",
+   "text": "Más fuerza"
+  },
+  {
+   "culture": "fr",
+   "key": "More Power",
+   "text": "Plus de puissance"
+  },
+  {
+   "culture": "de",
+   "key": "More Power",
+   "text": "Mehr Kraft"
+  },
+  {
+   "culture": "it",
+   "key": "More Power",
+   "text": "Più potenza"
+  },
+  {
+   "culture": "pt",
+   "key": "More Power",
+   "text": "Mais força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "More Power",
+   "text": "Mais força"
+  },
+  {
+   "culture": "ja",
+   "key": "More Power",
+   "text": "パワーを上げる"
+  },
+  {
+   "culture": "ko",
+   "key": "More Power",
+   "text": "힘 올리기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "More Power",
+   "text": "加大力度"
+  },
+  {
+   "culture": "ru",
+   "key": "More Power",
+   "text": "Сильнее"
+  },
+  {
+   "culture": "ar",
+   "key": "More Power",
+   "text": "قوة أكبر"
+  },
+  {
+   "culture": "es",
+   "key": "Less Power",
+   "text": "Menos fuerza"
+  },
+  {
+   "culture": "fr",
+   "key": "Less Power",
+   "text": "Moins de puissance"
+  },
+  {
+   "culture": "de",
+   "key": "Less Power",
+   "text": "Weniger Kraft"
+  },
+  {
+   "culture": "it",
+   "key": "Less Power",
+   "text": "Meno potenza"
+  },
+  {
+   "culture": "pt",
+   "key": "Less Power",
+   "text": "Menos força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Less Power",
+   "text": "Menos força"
+  },
+  {
+   "culture": "ja",
+   "key": "Less Power",
+   "text": "パワーを下げる"
+  },
+  {
+   "culture": "ko",
+   "key": "Less Power",
+   "text": "힘 줄이기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Less Power",
+   "text": "减小力度"
+  },
+  {
+   "culture": "ru",
+   "key": "Less Power",
+   "text": "Слабее"
+  },
+  {
+   "culture": "ar",
+   "key": "Less Power",
+   "text": "قوة أقل"
+  },
+  {
+   "culture": "es",
+   "key": "Tip Higher (Follow)",
+   "text": "Taco más arriba (efecto alto)"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip Higher (Follow)",
+   "text": "Procédé plus haut (coulé)"
+  },
+  {
+   "culture": "de",
+   "key": "Tip Higher (Follow)",
+   "text": "Queue höher (Nachläufer)"
+  },
+  {
+   "culture": "it",
+   "key": "Tip Higher (Follow)",
+   "text": "Stecca più in alto (avanti)"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip Higher (Follow)",
+   "text": "Taco mais acima (efeito de seguimento)"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip Higher (Follow)",
+   "text": "Taco mais acima (efeito para frente)"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip Higher (Follow)",
+   "text": "タップを上に（フォロー）"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip Higher (Follow)",
+   "text": "팁 위로 (밀어치기)"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip Higher (Follow)",
+   "text": "杆头上移（跟进）"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip Higher (Follow)",
+   "text": "Наклейку выше (накат)"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip Higher (Follow)",
+   "text": "طرف العصا أعلى (متابعة)"
+  },
+  {
+   "culture": "es",
+   "key": "Tip Lower (Draw)",
+   "text": "Taco más abajo (efecto bajo)"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip Lower (Draw)",
+   "text": "Procédé plus bas (rétro)"
+  },
+  {
+   "culture": "de",
+   "key": "Tip Lower (Draw)",
+   "text": "Queue tiefer (Rückläufer)"
+  },
+  {
+   "culture": "it",
+   "key": "Tip Lower (Draw)",
+   "text": "Stecca più in basso (indietro)"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip Lower (Draw)",
+   "text": "Taco mais abaixo (efeito de recuo)"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip Lower (Draw)",
+   "text": "Taco mais abaixo (efeito para trás)"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip Lower (Draw)",
+   "text": "タップを下に（ドロー）"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip Lower (Draw)",
+   "text": "팁 아래로 (끌어치기)"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip Lower (Draw)",
+   "text": "杆头下移（缩杆）"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip Lower (Draw)",
+   "text": "Наклейку ниже (оттяжка)"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip Lower (Draw)",
+   "text": "طرف العصا أسفل (سحب)"
+  },
+  {
+   "culture": "es",
+   "key": "Tip Left",
+   "text": "Taco a la izquierda"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip Left",
+   "text": "Procédé à gauche"
+  },
+  {
+   "culture": "de",
+   "key": "Tip Left",
+   "text": "Queue nach links"
+  },
+  {
+   "culture": "it",
+   "key": "Tip Left",
+   "text": "Stecca a sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip Left",
+   "text": "Taco à esquerda"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip Left",
+   "text": "Taco à esquerda"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip Left",
+   "text": "タップを左に"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip Left",
+   "text": "팁 왼쪽으로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip Left",
+   "text": "杆头左移"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip Left",
+   "text": "Наклейку влево"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip Left",
+   "text": "طرف العصا لليسار"
+  },
+  {
+   "culture": "es",
+   "key": "Tip Right",
+   "text": "Taco a la derecha"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip Right",
+   "text": "Procédé à droite"
+  },
+  {
+   "culture": "de",
+   "key": "Tip Right",
+   "text": "Queue nach rechts"
+  },
+  {
+   "culture": "it",
+   "key": "Tip Right",
+   "text": "Stecca a destra"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip Right",
+   "text": "Taco à direita"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip Right",
+   "text": "Taco à direita"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip Right",
+   "text": "タップを右に"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip Right",
+   "text": "팁 오른쪽으로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip Right",
+   "text": "杆头右移"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip Right",
+   "text": "Наклейку вправо"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip Right",
+   "text": "طرف العصا لليمين"
+  },
+  {
+   "culture": "es",
+   "key": "Centre the Tip",
+   "text": "Centrar el taco"
+  },
+  {
+   "culture": "fr",
+   "key": "Centre the Tip",
+   "text": "Centrer le procédé"
+  },
+  {
+   "culture": "de",
+   "key": "Centre the Tip",
+   "text": "Queue mittig"
+  },
+  {
+   "culture": "it",
+   "key": "Centre the Tip",
+   "text": "Stecca al centro"
+  },
+  {
+   "culture": "pt",
+   "key": "Centre the Tip",
+   "text": "Centrar o taco"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Centre the Tip",
+   "text": "Centralizar o taco"
+  },
+  {
+   "culture": "ja",
+   "key": "Centre the Tip",
+   "text": "タップを中央に"
+  },
+  {
+   "culture": "ko",
+   "key": "Centre the Tip",
+   "text": "팁 가운데로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Centre the Tip",
+   "text": "杆头回中"
+  },
+  {
+   "culture": "ru",
+   "key": "Centre the Tip",
+   "text": "Наклейку в центр"
+  },
+  {
+   "culture": "ar",
+   "key": "Centre the Tip",
+   "text": "توسيط طرف العصا"
+  },
+  {
+   "culture": "es",
+   "key": "Call Pocket",
+   "text": "Cantar tronera"
+  },
+  {
+   "culture": "fr",
+   "key": "Call Pocket",
+   "text": "Annoncer la poche"
+  },
+  {
+   "culture": "de",
+   "key": "Call Pocket",
+   "text": "Tasche ansagen"
+  },
+  {
+   "culture": "it",
+   "key": "Call Pocket",
+   "text": "Chiama la buca"
+  },
+  {
+   "culture": "pt",
+   "key": "Call Pocket",
+   "text": "Anunciar caçapa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Call Pocket",
+   "text": "Cantar caçapa"
+  },
+  {
+   "culture": "ja",
+   "key": "Call Pocket",
+   "text": "ポケットをコール"
+  },
+  {
+   "culture": "ko",
+   "key": "Call Pocket",
+   "text": "포켓 지정"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Call Pocket",
+   "text": "指定袋口"
+  },
+  {
+   "culture": "ru",
+   "key": "Call Pocket",
+   "text": "Заказать лузу"
+  },
+  {
+   "culture": "ar",
+   "key": "Call Pocket",
+   "text": "تسمية الجيب"
+  },
+  {
+   "culture": "es",
+   "key": "Show Notebook",
+   "text": "Mostrar cuaderno"
+  },
+  {
+   "culture": "fr",
+   "key": "Show Notebook",
+   "text": "Afficher le carnet"
+  },
+  {
+   "culture": "de",
+   "key": "Show Notebook",
+   "text": "Notizbuch anzeigen"
+  },
+  {
+   "culture": "it",
+   "key": "Show Notebook",
+   "text": "Mostra il quaderno"
+  },
+  {
+   "culture": "pt",
+   "key": "Show Notebook",
+   "text": "Mostrar caderno"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Show Notebook",
+   "text": "Mostrar caderno"
+  },
+  {
+   "culture": "ja",
+   "key": "Show Notebook",
+   "text": "ノートを表示"
+  },
+  {
+   "culture": "ko",
+   "key": "Show Notebook",
+   "text": "노트 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Show Notebook",
+   "text": "显示笔记本"
+  },
+  {
+   "culture": "ru",
+   "key": "Show Notebook",
+   "text": "Показать блокнот"
+  },
+  {
+   "culture": "ar",
+   "key": "Show Notebook",
+   "text": "إظهار الدفتر"
+  },
+  {
+   "culture": "es",
+   "key": "Next Explained Moment",
+   "text": "Siguiente momento explicado"
+  },
+  {
+   "culture": "fr",
+   "key": "Next Explained Moment",
+   "text": "Moment expliqué suivant"
+  },
+  {
+   "culture": "de",
+   "key": "Next Explained Moment",
+   "text": "Nächster erklärter Moment"
+  },
+  {
+   "culture": "it",
+   "key": "Next Explained Moment",
+   "text": "Momento spiegato successivo"
+  },
+  {
+   "culture": "pt",
+   "key": "Next Explained Moment",
+   "text": "Momento explicado seguinte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Next Explained Moment",
+   "text": "Próximo momento explicado"
+  },
+  {
+   "culture": "ja",
+   "key": "Next Explained Moment",
+   "text": "次の解説ポイント"
+  },
+  {
+   "culture": "ko",
+   "key": "Next Explained Moment",
+   "text": "다음 설명 장면"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Next Explained Moment",
+   "text": "下一个讲解时刻"
+  },
+  {
+   "culture": "ru",
+   "key": "Next Explained Moment",
+   "text": "Следующий разобранный момент"
+  },
+  {
+   "culture": "ar",
+   "key": "Next Explained Moment",
+   "text": "اللحظة المشروحة التالية"
+  },
+  {
+   "culture": "es",
+   "key": "Previous Explained Moment",
+   "text": "Momento explicado anterior"
+  },
+  {
+   "culture": "fr",
+   "key": "Previous Explained Moment",
+   "text": "Moment expliqué précédent"
+  },
+  {
+   "culture": "de",
+   "key": "Previous Explained Moment",
+   "text": "Vorheriger erklärter Moment"
+  },
+  {
+   "culture": "it",
+   "key": "Previous Explained Moment",
+   "text": "Momento spiegato precedente"
+  },
+  {
+   "culture": "pt",
+   "key": "Previous Explained Moment",
+   "text": "Momento explicado anterior"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Previous Explained Moment",
+   "text": "Momento explicado anterior"
+  },
+  {
+   "culture": "ja",
+   "key": "Previous Explained Moment",
+   "text": "前の解説ポイント"
+  },
+  {
+   "culture": "ko",
+   "key": "Previous Explained Moment",
+   "text": "이전 설명 장면"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Previous Explained Moment",
+   "text": "上一个讲解时刻"
+  },
+  {
+   "culture": "ru",
+   "key": "Previous Explained Moment",
+   "text": "Предыдущий разобранный момент"
+  },
+  {
+   "culture": "ar",
+   "key": "Previous Explained Moment",
+   "text": "اللحظة المشروحة السابقة"
+  },
+  {
+   "culture": "es",
+   "key": "How to Play",
+   "text": "Cómo jugar"
+  },
+  {
+   "culture": "fr",
+   "key": "How to Play",
+   "text": "Comment jouer"
+  },
+  {
+   "culture": "de",
+   "key": "How to Play",
+   "text": "So wird gespielt"
+  },
+  {
+   "culture": "it",
+   "key": "How to Play",
+   "text": "Come si gioca"
+  },
+  {
+   "culture": "pt",
+   "key": "How to Play",
+   "text": "Como jogar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "How to Play",
+   "text": "Como jogar"
+  },
+  {
+   "culture": "ja",
+   "key": "How to Play",
+   "text": "遊び方"
+  },
+  {
+   "culture": "ko",
+   "key": "How to Play",
+   "text": "게임 방법"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "How to Play",
+   "text": "玩法说明"
+  },
+  {
+   "culture": "ru",
+   "key": "How to Play",
+   "text": "Как играть"
+  },
+  {
+   "culture": "ar",
+   "key": "How to Play",
+   "text": "كيف تلعب"
+  },
+  {
+   "culture": "es",
+   "key": "Notebook",
+   "text": "Cuaderno"
+  },
+  {
+   "culture": "fr",
+   "key": "Notebook",
+   "text": "Carnet"
+  },
+  {
+   "culture": "de",
+   "key": "Notebook",
+   "text": "Notizbuch"
+  },
+  {
+   "culture": "it",
+   "key": "Notebook",
+   "text": "Quaderno"
+  },
+  {
+   "culture": "pt",
+   "key": "Notebook",
+   "text": "Caderno"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Notebook",
+   "text": "Caderno"
+  },
+  {
+   "culture": "ja",
+   "key": "Notebook",
+   "text": "ノート"
+  },
+  {
+   "culture": "ko",
+   "key": "Notebook",
+   "text": "노트"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Notebook",
+   "text": "笔记本"
+  },
+  {
+   "culture": "ru",
+   "key": "Notebook",
+   "text": "Блокнот"
+  },
+  {
+   "culture": "ar",
+   "key": "Notebook",
+   "text": "الدفتر"
+  },
+  {
+   "culture": "es",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Mostrar u ocultar el cuaderno junto a la mesa (Opción-Comando-I)"
+  },
+  {
+   "culture": "fr",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Afficher ou masquer le carnet à côté du billard (Option-Commande-I)"
+  },
+  {
+   "culture": "de",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Notizbuch neben dem Tisch ein- oder ausblenden (Wahl-Befehl-I)"
+  },
+  {
+   "culture": "it",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Mostra o nascondi il quaderno accanto al tavolo (Opzione-Comando-I)"
+  },
+  {
+   "culture": "pt",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Mostrar ou ocultar o caderno ao lado da mesa (Opção-Comando-I)"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Mostrar ou ocultar o caderno ao lado da mesa (Opção-Comando-I)"
+  },
+  {
+   "culture": "ja",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "テーブル横のノートを表示または非表示（Option-Command-I）"
+  },
+  {
+   "culture": "ko",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "테이블 옆 노트 보기 또는 가리기 (Option-Command-I)"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "显示或隐藏球台旁的笔记本（Option-Command-I）"
+  },
+  {
+   "culture": "ru",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "Показать или скрыть блокнот рядом со столом (Option-Command-I)"
+  },
+  {
+   "culture": "ar",
+   "key": "Show or hide the notebook beside the table (Option-Command-I)",
+   "text": "إظهار الدفتر بجانب الطاولة أو إخفاؤه (Option-Command-I)"
+  }
+ ]
+}

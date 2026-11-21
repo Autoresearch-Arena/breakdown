@@ -1,12 +1,17 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
-// PURPOSE: The two information strips of the iPhone Duo's side panel (DuoPanel):
-//          DuoNumbers - the shot at a glance, in tiles (the cue's launch speed, how many ball hits, rail hits and
+// Edited: Claude Opus 5.5 High, 21-November-2026 (renamed for the notebook layout it now serves on every big screen:
+//          NotebookNumbers, NotebookSurfaceCard and NotebookDossier (they were DuoNumbers, DuoSurfaceCard, DuoDossier).
+//          On a big screen (notebookRoomy) the number tiles' labels follow the reader's text size instead of a fixed
+//          10 points; the folding phone keeps the size its narrow tiles were laid out for.)
+// PURPOSE: The two information strips of the notebook panel (NotebookPanel), on the open folding phone and on iPad and
+//          Mac windows:
+//          NotebookNumbers - the shot at a glance, in tiles (the cue's launch speed, how many ball hits, rail hits and
 //            pocketed balls the recording holds), and the surface and table it was played on with the four numbers
 //            that decide how a ball moves (sliding friction, rolling resistance, the cushions' bounce, gravity).
 //            Every figure is counted or read from the recorded timeline or the surface's own parameters, the values the
 //            solver was given; none is typed in.
-//          DuoDossier - what the mode on the table has to say beyond its card. Trick shots: the idea and its equation
+//          NotebookDossier - what the mode on the table has to say beyond its card. Trick shots: the idea and its equation
 //            once the answer has been shown, and how forgiving the shot is (how far aim, power and cue-tip height can
 //            stray and still work). Behind the 8-Ball: your group and the balls you may hit first, and after the shot
 //            the lesson and the trick shots that teach it.
@@ -18,9 +23,10 @@ import SwiftUI
 
 // MARK: Numbers
 
-struct DuoNumbers: View {
+struct NotebookNumbers: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
+    @Environment(\.notebookRoomy) private var roomy
 
     /// What the recording holds, counted once per redraw (the timeline changes only when a shot does).
     private struct Facts {
@@ -52,7 +58,7 @@ struct DuoNumbers: View {
                 tile(facts.railHits.formatted(), "Rail hits")
                 tile(facts.pocketed.formatted(), "Pocketed")
             }
-            DuoSurfaceCard(model: model)
+            NotebookSurfaceCard(model: model)
         }
     }
 
@@ -64,7 +70,9 @@ struct DuoNumbers: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             Text(label)
-                .font(.system(size: 10, weight: .semibold))
+                // On a big screen the label follows the reader's text size (it is read from further away); across the
+                // folding phone's hinge the narrow tiles keep the fixed small size they were laid out for.
+                .font(roomy ? Theme.label : .system(size: 10, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
@@ -89,7 +97,7 @@ struct DuoNumbers: View {
 /// The surface (and the table) the next shot is played on, with the four numbers that decide how a ball moves on it. With
 /// `detailed`, each also says in a sentence what it does to the balls (the same lines the surface picker shows), so before
 /// any shot has been played the panel still has something worth reading, and nothing that gives an answer away.
-struct DuoSurfaceCard: View {
+struct NotebookSurfaceCard: View {
     let model: ShowpieceModel
     var detailed = false
     @Environment(\.palette) private var palette
@@ -152,7 +160,7 @@ struct DuoSurfaceCard: View {
 
 // MARK: Dossier
 
-struct DuoDossier: View {
+struct NotebookDossier: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
 
