@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: on the computer's turn the card shows "Thinking..."
+//          instead of the call control and the choice buttons (the person cannot act for it); after the computer's
+//          stroke the ruling card offers "Why that shot", which opens its plain-words reasons in the card itself (so it
+//          is part of the notebook panel on the open Duo, iPad and Mac, never a sheet). The ruling's tap moved to the
+//          match itself: MatchMode plays each ruling's moment through SoundBoard.play, which sounds it and plays its
+//          haptic together, so the card no longer adds a second tap of its own.)
 // PURPOSE: Everything the player sees of a match (eight-ball and nine-ball for two on one device; the other tables'
 //          games use the same card), as ONE glass card whose content follows MatchMode.phase:
 //            aiming   - the turn banner: who shoots (or breaks), the game, each player's group with their balls left
@@ -12,9 +18,9 @@
 //                       then the choice, or Continue.
 //            handOver - "Pass the device to Sam." and Ready.
 //            over     - who won and why, the running scores, Rematch and Menu.
-//          Feedback hooks (rules plan, package 6): a warning tap for a foul, a light tick when the turn passes, a
-//          success tap for a win (only with Vibration on), and the ruling spoken to VoiceOver as it appears. Sounds are
-//          the sound stream's (FeelMapping, SoundBoard); this file only adds the view-side hooks.
+//          Feedback (rules plan, package 6): the sound and haptic of a foul, a turn change and a win are played by
+//          MatchMode through SoundBoard.play (only felt with Vibration on); this card speaks the ruling to VoiceOver as
+//          it appears.
 //          Hosted by PlayCards (FreePlayViews.swift) next to the other mode cards, so it sits above the controls on a
 //          phone, at the top of the side column on iPad and Mac, and in the notebook panel on the open Duo; it never
 //          opens a sheet, so on the Duo nothing covers the table.
@@ -35,6 +41,8 @@ struct MatchCard: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
     @State private var editingNames = false
+    /// The ruling card's "Why that shot" is open.
+    @State private var showingWhy = false
 
     var body: some View {
         if let match = model.match {
@@ -45,9 +53,10 @@ struct MatchCard: View {
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: match.phase)
-            // One tap per ruling, read at the moment it fires so the Vibration option is always current.
-            .sensoryFeedback(trigger: match.lastRuling) { _, ruling in Self.feedback(for: ruling) }
-            .onChange(of: match.phase) { _, phase in announce(phase, match) }
+            .onChange(of: match.phase) { _, phase in
+                showingWhy = false
+                announce(phase, match)
+            }
             .transition(.opacity)
         }
     }
@@ -57,7 +66,11 @@ struct MatchCard: View {
         switch match.phase {
         case .aiming:
             TurnBanner(match: match, editingNames: $editingNames)
-            if let choice = match.state.pendingChoice {
+            if match.computerSeatToAct != nil {
+                // The computer's decision: its choice prompt (if any) and that it is thinking; nothing to tap.
+                if let choice = match.state.pendingChoice { line(MatchWords.choicePrompt(choice, names: match.playerNames)) }
+                thinkingLine
+            } else if let choice = match.state.pendingChoice {
                 choiceSection(choice, match)
             } else if match.mustCall {
                 MatchCallControl(model: model, match: match)
@@ -69,7 +82,11 @@ struct MatchCard: View {
             if let r = match.lastRuling {
                 rulingHeader(r)
                 ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
-                if let choice = match.state.pendingChoice {
+                if let shot = match.opponent?.lastShot, shot.seat == r.shooter, !r.reasons.contains(.choiceAnswered) {
+                    whySection(shot)
+                }
+                // A choice the computer makes is made after Continue, on its turn; a person's is answered here.
+                if let choice = match.state.pendingChoice, !match.isComputer(choice.chooser) {
                     choiceSection(choice, match)
                 } else {
                     buttons { continueButton(match) }
@@ -122,6 +139,34 @@ struct MatchCard: View {
             if ids.contains(cueBall) { return ids.first { $0 != cueBall } }
         }
         return nil
+    }
+
+    // MARK: The computer
+
+    /// "Thinking..." with a small spinner, while the computer works out its stroke (or its answer).
+    private var thinkingLine: some View {
+        HStack(spacing: 8) {
+            ProgressView().controlSize(.small).accessibilityHidden(true)
+            Text(OpponentWords.thinking).font(Theme.body).foregroundStyle(palette.paper.opacity(0.9))
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    /// "Why that shot": a button that opens the computer's reasons, in plain words, inside the card.
+    @ViewBuilder
+    private func whySection(_ shot: OpponentShot) -> some View {
+        Button {
+            showingWhy.toggle()
+        } label: {
+            Label(OpponentWords.whyThatShot, systemImage: showingWhy ? "chevron.up" : "questionmark.bubble")
+                .font(.headline).lineLimit(1)
+                .frame(minHeight: CallMetrics.buttonHeight)
+        }
+        .buttonStyle(.glass)
+        .accessibilityValue(showingWhy ? String(localized: "Open") : String(localized: "Closed"))
+        if showingWhy {
+            ForEach(Array(OpponentWords.why(shot).enumerated()), id: \.offset) { _, s in line(s) }
+        }
     }
 
     private func continueButton(_ match: MatchMode) -> some View {
@@ -212,16 +257,6 @@ struct MatchCard: View {
     }
 
     // MARK: Feedback
-
-    /// The tap a ruling earns: success for the end of the game, a warning for a foul, a light tick when the turn
-    /// passes; nothing when the shooter simply carries on. Nil whenever Vibration is off in Options.
-    static func feedback(for r: Ruling?) -> SensoryFeedback? {
-        guard GameSettings.hapticsOn, let r else { return nil }
-        if r.result != nil { return .success }
-        if r.fouled { return .warning }
-        if r.turnPasses { return .selection }
-        return nil
-    }
 
     /// VoiceOver hears each ruling, the hand-over and the result as they arrive, without hunting for the card.
     private func announce(_ phase: MatchMode.Phase, _ match: MatchMode) {

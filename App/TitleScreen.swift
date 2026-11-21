@@ -28,6 +28,11 @@
 //          Continue match when a saved one exists, Practice (free play), Eight-ball and Nine-ball. "Watch the break" is
 //          now "Watch the intro". How to play gains a Rules section with a page each for eight-ball and nine-ball, in
 //          our own plain words.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: the Play list gains "Against the computer", which
+//          opens a third list in the same card: a level choice (Easy, Medium, Hard) with that level's record, then
+//          Eight-ball and Nine-ball against the computer. Eight-ball and Nine-ball carry a small mark of games won out
+//          of games played on this device (MatchRecord). Inline in the card, so it works as the notebook panel's menu
+//          page on the open Duo, iPad and Mac.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
 //          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
@@ -65,6 +70,10 @@ struct TitleScreen: View {
     @State private var tablesOpen = false
     /// The Play list (Practice, Eight-ball, Nine-ball) replaces the main list inside the same card.
     @State private var playListOpen = false
+    /// The against-the-computer list replaces the Play list inside the same card.
+    @State private var computerListOpen = false
+    /// The level picked for a game against the computer (kept while the app runs).
+    @State private var computerLevel: ComputerLevel = .medium
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
     /// -noTitle is there for anyone who wants the table straight away.
@@ -101,7 +110,7 @@ struct TitleScreen: View {
             withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true }
         }
         // Back to the main list whenever the menu is opened again.
-        .onDisappear { playListOpen = false }
+        .onDisappear { playListOpen = false; computerListOpen = false }
         .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen) }
         .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
         .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
@@ -132,10 +141,11 @@ struct TitleScreen: View {
             }
 
             Group {
-                if playListOpen { playList } else { mainList }
+                if computerListOpen { computerList } else if playListOpen { playList } else { mainList }
             }
             .transition(.opacity)
             .animation(reduceMotion ? nil : .snappy, value: playListOpen)
+            .animation(reduceMotion ? nil : .snappy, value: computerListOpen)
         }
         .padding(28)
         .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
@@ -159,7 +169,7 @@ struct TitleScreen: View {
                     .keyboardShortcut(.defaultAction)
             }
             // Learn goes here, first after Continue, once the six lessons exist (first-minute plan, package 3).
-            MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend.",
+            MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
                     symbol: "circle.grid.cross", prominent: !resumable) { playListOpen = true }
                 .keyboardShortcut(resumable ? nil : KeyboardShortcut.defaultAction)
             MenuRow(title: "Trick shots", line: "Shots that make people stare, easiest first.", symbol: "wand.and.sparkles",
@@ -231,17 +241,68 @@ struct TitleScreen: View {
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
             }
             MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
-                    symbol: "8.circle") { start(.eightBall) }
+                    symbol: "8.circle", mark: recordMark(.eightBall)) { start(.eightBall) }
             MenuRow(title: "Nine-ball", line: "Two players. Always hit the lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle") { start(.nineBall) }
+                    symbol: "9.circle", mark: recordMark(.nineBall)) { start(.nineBall) }
+            MenuRow(title: "Against the computer", line: "Eight-ball or nine-ball against a computer player of your level.",
+                    symbol: "cpu") { computerListOpen = true }
+        }
+    }
+
+    /// Games won out of games played of one kind on this device; no mark before the first finished game.
+    private func recordMark(_ kind: MatchKind) -> MenuRow.Mark? {
+        let t = MatchRecord.load().tally(kind)
+        guard t.played > 0 else { return nil }
+        return MenuRow.Mark(symbol: "trophy.fill", text: String(localized: "\(t.won)/\(t.played)"),
+                            spoken: OpponentWords.recordSpoken(t))
+    }
+
+    // MARK: Against the computer
+
+    private var computerList: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Button { computerListOpen = false } label: {
+                    Label("Back", systemImage: "chevron.backward")
+                        .font(.body.weight(.semibold))
+                }
+                .buttonStyle(.glass)
+                .controlSize(.regular)
+                Spacer(minLength: 0)
+                Text("Against the computer")
+                    .font(Theme.sectionTitle)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 0)
+                // Balances the Back button so the title sits in the middle.
+                Color.clear.frame(width: 44, height: 1).accessibilityHidden(true)
+            }
+            Picker(String(localized: "Level"), selection: $computerLevel) {
+                ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
+            }
+            .pickerStyle(.segmented)
+            Text(computerLevel.line)
+                .font(Theme.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(OpponentWords.levelRecord(MatchRecord.load().tally(computerLevel), level: computerLevel))
+                .font(Theme.label)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            MenuRow(title: "Eight-ball", line: "You against the computer. Claim a group, clear it, sink the 8.",
+                    symbol: "8.circle", prominent: true) { start(.eightBall, computer: computerLevel) }
+            MenuRow(title: "Nine-ball", line: "You against the computer. Lowest ball first; sink the 9 to win.",
+                    symbol: "9.circle") { start(.nineBall, computer: computerLevel) }
         }
     }
 
     /// A new match of the given kind. The model racks it and closes the menu; closing it here as well is harmless and
     /// keeps the table in view whatever the model does first.
-    private func start(_ kind: MatchKind) {
+    private func start(_ kind: MatchKind, computer: ComputerLevel? = nil) {
         model.trickMode.end(); model.eightBallMode.end()
-        model.startMatch(kind)
+        model.startMatch(kind, computer: computer)
         model.closeMenu()
         onPlay()
     }

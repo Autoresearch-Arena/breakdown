@@ -3,6 +3,10 @@
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - appended MatchState.breakPoints (optional, nil for
 //          every game but bar billiards), the points of the break in progress, which a white peg down takes away.
 //          Optional, so a match saved before it decodes unchanged.
+// Edited: 21-November-2026 by Claude Opus 5.5 High (opponent) - appended ComputerLevel and Player.computer (optional,
+//          nil for a person): the seat the computer plays and how well (App/Match/MatchOpponent.swift turns the level
+//          into seeded aim, speed and tip noise). Optional with a default, so every Player(id:name:) call and every
+//          match saved before it decode unchanged.
 // PURPOSE: The data of a match, shared by every game's rules (this module), the app's match flow (App/Match/MatchMode,
 //          which owns a MatchState, asks the rules for a Ruling after each shot and saves the state) and the match
 //          screens (App/Match/MatchViews, which turn the codes below into words). Plain values, no rule logic, no
@@ -44,11 +48,25 @@ public struct PlayerID: Hashable, Comparable, Codable, Sendable {
     public static func < (a: PlayerID, b: PlayerID) -> Bool { a.index < b.index }
 }
 
+/// How well a computer player plays. The level is physical, not a handicap on its choices: every level searches for
+/// the same shot, and the level only sets how much seeded noise is added to its aim, speed and tip before the strike
+/// (App/Match/MatchOpponent.swift). Raw values are saved with a match; append new levels at the end.
+public enum ComputerLevel: String, CaseIterable, Codable, Sendable {
+    case easy, medium, hard
+}
+
 public struct Player: Hashable, Codable, Sendable {
     public var id: PlayerID
     /// The name shown in the turn banner; the app fills in a translated default ("Player 1") and lets it be edited.
     public var name: String
-    public init(id: PlayerID, name: String) { self.id = id; self.name = name }
+    /// Set when the computer plays this seat, at this level; nil for a person. Optional with a default, so a match
+    /// saved before it existed decodes (synthesized decoding skips a missing optional key) as two people.
+    public var computer: ComputerLevel? = nil
+    public init(id: PlayerID, name: String, computer: ComputerLevel? = nil) {
+        self.id = id; self.name = name; self.computer = computer
+    }
+    /// True when the computer plays this seat.
+    public var isComputer: Bool { computer != nil }
 }
 
 /// Where the incoming player may put the cue ball before shooting.

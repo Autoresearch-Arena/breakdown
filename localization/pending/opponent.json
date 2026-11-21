@@ -1,0 +1,1630 @@
+{
+  "keys": [
+    "A shaky cue: it often misses anything but the easy ones.",
+    "A steady club player who makes the open shots.",
+    "Rarely misses, and plays safe when it has nothing.",
+    "Computer (%@)",
+    "Thinking…",
+    "Why that shot",
+    "The break: hard and straight at the front ball, to spread the rack.",
+    "It placed the cue ball first, behind the easiest pot it could find.",
+    "It went for the %lld: %@.",
+    "Straight in, no cushion.",
+    "Off one cushion first, then into the pocket.",
+    "Its aim could have been off by %@ degrees either way and still sunk it.",
+    "It also played for the cue ball to stop with a clear shot at its next ball.",
+    "It placed the cue ball first.",
+    "No pot was wide enough for its aim, so it played safe.",
+    "It hit the %lld softly to hide the cue ball from your balls.",
+    "It meant to leave you no clear pot at all.",
+    "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+    "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+    "%lld won of %lld played",
+    "No games against %@ yet.",
+    "Against %@: won %lld of %lld.",
+    "Open",
+    "Closed",
+    "Against the computer",
+    "Eight-ball or nine-ball against a computer player of your level.",
+    "You against the computer. Claim a group, clear it, sink the 8.",
+    "You against the computer. Lowest ball first; sink the 9 to win.",
+    "Practise on your own, or play eight-ball or nine-ball with a friend or the computer."
+  ],
+  "translations": [
+    {
+      "culture": "es",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Un taco tembloroso: suele fallar todo menos las fáciles."
+    },
+    {
+      "culture": "es",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Un jugador de club constante que mete los tiros abiertos."
+    },
+    {
+      "culture": "es",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Casi nunca falla y juega a la defensiva cuando no tiene nada."
+    },
+    {
+      "culture": "es",
+      "key": "Computer (%@)",
+      "text": "Ordenador (%@)"
+    },
+    {
+      "culture": "es",
+      "key": "Thinking…",
+      "text": "Pensando…"
+    },
+    {
+      "culture": "es",
+      "key": "Why that shot",
+      "text": "Por qué ese tiro"
+    },
+    {
+      "culture": "es",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "La salida: fuerte y recta a la bola delantera, para abrir el triángulo."
+    },
+    {
+      "culture": "es",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Primero colocó la bola blanca detrás de la tirada más fácil que encontró."
+    },
+    {
+      "culture": "es",
+      "key": "It went for the %lld: %@.",
+      "text": "Fue a por la %lld: %@."
+    },
+    {
+      "culture": "es",
+      "key": "Straight in, no cushion.",
+      "text": "Directa, sin banda."
+    },
+    {
+      "culture": "es",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "Primero a una banda y luego a la tronera."
+    },
+    {
+      "culture": "es",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "Su puntería podía desviarse %@ grados hacia cualquier lado y aun así entraba."
+    },
+    {
+      "culture": "es",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "También buscó que la blanca quedara con tiro limpio a su siguiente bola."
+    },
+    {
+      "culture": "es",
+      "key": "It placed the cue ball first.",
+      "text": "Primero colocó la bola blanca."
+    },
+    {
+      "culture": "es",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Ninguna tirada era lo bastante fácil para su puntería, así que jugó a la defensiva."
+    },
+    {
+      "culture": "es",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Tocó la %lld suave para esconder la blanca de tus bolas."
+    },
+    {
+      "culture": "es",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Quería dejarte sin ninguna tirada limpia."
+    },
+    {
+      "culture": "es",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Quería dejarte como mucho %@ grados de margen a cada lado en tu mejor tirada."
+    },
+    {
+      "culture": "es",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "Al golpear, su puntería se desvió %1$@ grados y su velocidad un %2$@ por ciento (nivel %3$@)."
+    },
+    {
+      "culture": "es",
+      "key": "%lld won of %lld played",
+      "text": "%1$lld ganadas de %2$lld jugadas"
+    },
+    {
+      "culture": "es",
+      "key": "No games against %@ yet.",
+      "text": "Aún no hay partidas contra %@."
+    },
+    {
+      "culture": "es",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Contra %1$@: ganadas %2$lld de %3$lld."
+    },
+    {
+      "culture": "es",
+      "key": "Open",
+      "text": "Abierto"
+    },
+    {
+      "culture": "es",
+      "key": "Closed",
+      "text": "Cerrado"
+    },
+    {
+      "culture": "es",
+      "key": "Against the computer",
+      "text": "Contra el ordenador"
+    },
+    {
+      "culture": "es",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "Bola 8 o bola 9 contra un rival del ordenador a tu nivel."
+    },
+    {
+      "culture": "es",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Tú contra el ordenador. Elige un grupo, límpialo y mete la 8."
+    },
+    {
+      "culture": "es",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Tú contra el ordenador. Siempre la bola más baja primero; mete la 9 para ganar."
+    },
+    {
+      "culture": "es",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Practica solo, o juega a bola 8 o bola 9 con un amigo o contra el ordenador."
+    },
+    {
+      "culture": "fr",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Une queue tremblante : elle rate souvent tout sauf les coups faciles."
+    },
+    {
+      "culture": "fr",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Un joueur de club régulier qui rentre les coups ouverts."
+    },
+    {
+      "culture": "fr",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Rate rarement, et joue la sécurité quand il n'a rien."
+    },
+    {
+      "culture": "fr",
+      "key": "Computer (%@)",
+      "text": "Ordinateur (%@)"
+    },
+    {
+      "culture": "fr",
+      "key": "Thinking…",
+      "text": "Réflexion…"
+    },
+    {
+      "culture": "fr",
+      "key": "Why that shot",
+      "text": "Pourquoi ce coup"
+    },
+    {
+      "culture": "fr",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "La casse : fort et droit sur la bille de tête, pour ouvrir le triangle."
+    },
+    {
+      "culture": "fr",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Il a d'abord placé la bille blanche derrière le coup le plus facile qu'il a trouvé."
+    },
+    {
+      "culture": "fr",
+      "key": "It went for the %lld: %@.",
+      "text": "Il a visé la %lld : %@."
+    },
+    {
+      "culture": "fr",
+      "key": "Straight in, no cushion.",
+      "text": "Droit dans la poche, sans bande."
+    },
+    {
+      "culture": "fr",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "D'abord une bande, puis dans la poche."
+    },
+    {
+      "culture": "fr",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "Sa visée pouvait dévier de %@ degrés d'un côté ou de l'autre et la bille rentrait quand même."
+    },
+    {
+      "culture": "fr",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "Il a aussi joué pour que la blanche s'arrête avec un coup dégagé sur sa bille suivante."
+    },
+    {
+      "culture": "fr",
+      "key": "It placed the cue ball first.",
+      "text": "Il a d'abord placé la bille blanche."
+    },
+    {
+      "culture": "fr",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Aucun coup n'était assez large pour sa visée, alors il a joué la sécurité."
+    },
+    {
+      "culture": "fr",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Il a touché la %lld doucement pour cacher la blanche de vos billes."
+    },
+    {
+      "culture": "fr",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Il voulait ne vous laisser aucun coup dégagé."
+    },
+    {
+      "culture": "fr",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Il voulait vous laisser au plus %@ degrés de marge de chaque côté sur votre meilleur coup."
+    },
+    {
+      "culture": "fr",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "Au coup, sa visée a dévié de %1$@ degrés et sa vitesse de %2$@ pour cent (niveau %3$@)."
+    },
+    {
+      "culture": "fr",
+      "key": "%lld won of %lld played",
+      "text": "%1$lld gagnées sur %2$lld jouées"
+    },
+    {
+      "culture": "fr",
+      "key": "No games against %@ yet.",
+      "text": "Aucune partie contre %@ pour l'instant."
+    },
+    {
+      "culture": "fr",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Contre %1$@ : %2$lld gagnées sur %3$lld."
+    },
+    {
+      "culture": "fr",
+      "key": "Open",
+      "text": "Ouvert"
+    },
+    {
+      "culture": "fr",
+      "key": "Closed",
+      "text": "Fermé"
+    },
+    {
+      "culture": "fr",
+      "key": "Against the computer",
+      "text": "Contre l'ordinateur"
+    },
+    {
+      "culture": "fr",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "La 8 ou la 9 contre un adversaire informatique à votre niveau."
+    },
+    {
+      "culture": "fr",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Vous contre l'ordinateur. Prenez un groupe, videz-le, rentrez la 8."
+    },
+    {
+      "culture": "fr",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Vous contre l'ordinateur. Toujours la plus petite bille d'abord ; rentrez la 9 pour gagner."
+    },
+    {
+      "culture": "fr",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Entraînez-vous seul, ou jouez à la 8 ou à la 9 avec un ami ou contre l'ordinateur."
+    },
+    {
+      "culture": "de",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Ein zittriges Queue: Es verfehlt oft alles außer den leichten Bällen."
+    },
+    {
+      "culture": "de",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Ein solider Vereinsspieler, der die offenen Bälle versenkt."
+    },
+    {
+      "culture": "de",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Verfehlt selten und spielt sicher, wenn nichts geht."
+    },
+    {
+      "culture": "de",
+      "key": "Computer (%@)",
+      "text": "Computer (%@)"
+    },
+    {
+      "culture": "de",
+      "key": "Thinking…",
+      "text": "Überlegt…"
+    },
+    {
+      "culture": "de",
+      "key": "Why that shot",
+      "text": "Warum dieser Stoß"
+    },
+    {
+      "culture": "de",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "Der Anstoß: hart und gerade auf die vordere Kugel, um das Dreieck zu öffnen."
+    },
+    {
+      "culture": "de",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Er legte zuerst die weiße Kugel hinter den leichtesten Ball, den er finden konnte."
+    },
+    {
+      "culture": "de",
+      "key": "It went for the %lld: %@.",
+      "text": "Er spielte die %lld: %@."
+    },
+    {
+      "culture": "de",
+      "key": "Straight in, no cushion.",
+      "text": "Direkt, ohne Bande."
+    },
+    {
+      "culture": "de",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "Erst über eine Bande, dann ins Loch."
+    },
+    {
+      "culture": "de",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "Sein Zielen hätte um %@ Grad nach jeder Seite abweichen können, und der Ball wäre trotzdem gefallen."
+    },
+    {
+      "culture": "de",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "Er spielte auch so, dass die Weiße mit freiem Weg zur nächsten Kugel liegen bleibt."
+    },
+    {
+      "culture": "de",
+      "key": "It placed the cue ball first.",
+      "text": "Er legte zuerst die weiße Kugel."
+    },
+    {
+      "culture": "de",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Kein Ball war für sein Zielen breit genug, also spielte er sicher."
+    },
+    {
+      "culture": "de",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Er spielte die %lld sanft an, um die Weiße vor deinen Kugeln zu verstecken."
+    },
+    {
+      "culture": "de",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Er wollte dir keinen freien Ball lassen."
+    },
+    {
+      "culture": "de",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Er wollte dir bei deinem besten Ball höchstens %@ Grad Spielraum nach jeder Seite lassen."
+    },
+    {
+      "culture": "de",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "Beim Stoß wich sein Zielen um %1$@ Grad und sein Tempo um %2$@ Prozent ab (Stufe %3$@)."
+    },
+    {
+      "culture": "de",
+      "key": "%lld won of %lld played",
+      "text": "%1$lld von %2$lld gewonnen"
+    },
+    {
+      "culture": "de",
+      "key": "No games against %@ yet.",
+      "text": "Noch keine Spiele gegen %@."
+    },
+    {
+      "culture": "de",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Gegen %1$@: %2$lld von %3$lld gewonnen."
+    },
+    {
+      "culture": "de",
+      "key": "Open",
+      "text": "Geöffnet"
+    },
+    {
+      "culture": "de",
+      "key": "Closed",
+      "text": "Geschlossen"
+    },
+    {
+      "culture": "de",
+      "key": "Against the computer",
+      "text": "Gegen den Computer"
+    },
+    {
+      "culture": "de",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "8-Ball oder 9-Ball gegen einen Computergegner auf deinem Niveau."
+    },
+    {
+      "culture": "de",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Du gegen den Computer. Sichere dir eine Gruppe, räum sie ab, versenk die 8."
+    },
+    {
+      "culture": "de",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Du gegen den Computer. Immer zuerst die niedrigste Kugel; versenk die 9 zum Sieg."
+    },
+    {
+      "culture": "de",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Übe allein oder spiele 8-Ball oder 9-Ball mit Freunden oder gegen den Computer."
+    },
+    {
+      "culture": "it",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Una stecca tremolante: sbaglia spesso tutto tranne i tiri facili."
+    },
+    {
+      "culture": "it",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Un giocatore da circolo costante che imbuca i tiri liberi."
+    },
+    {
+      "culture": "it",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Sbaglia di rado e gioca in difesa quando non ha nulla."
+    },
+    {
+      "culture": "it",
+      "key": "Computer (%@)",
+      "text": "Computer (%@)"
+    },
+    {
+      "culture": "it",
+      "key": "Thinking…",
+      "text": "Sta pensando…"
+    },
+    {
+      "culture": "it",
+      "key": "Why that shot",
+      "text": "Perché quel tiro"
+    },
+    {
+      "culture": "it",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "L'apertura: forte e dritta sulla palla davanti, per aprire il triangolo."
+    },
+    {
+      "culture": "it",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Ha prima posizionato la bianca dietro il tiro più facile che ha trovato."
+    },
+    {
+      "culture": "it",
+      "key": "It went for the %lld: %@.",
+      "text": "Ha puntato la %lld: %@."
+    },
+    {
+      "culture": "it",
+      "key": "Straight in, no cushion.",
+      "text": "Diretta, senza sponda."
+    },
+    {
+      "culture": "it",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "Prima una sponda, poi in buca."
+    },
+    {
+      "culture": "it",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "La mira poteva sbagliare di %@ gradi da entrambi i lati e la palla entrava lo stesso."
+    },
+    {
+      "culture": "it",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "Ha anche giocato perché la bianca si fermasse con un tiro libero sulla palla successiva."
+    },
+    {
+      "culture": "it",
+      "key": "It placed the cue ball first.",
+      "text": "Ha prima posizionato la bianca."
+    },
+    {
+      "culture": "it",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Nessun tiro era abbastanza largo per la sua mira, così ha giocato in difesa."
+    },
+    {
+      "culture": "it",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Ha colpito la %lld piano per nascondere la bianca dalle tue palle."
+    },
+    {
+      "culture": "it",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Voleva lasciarti senza alcun tiro libero."
+    },
+    {
+      "culture": "it",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Voleva lasciarti al massimo %@ gradi di margine per lato sul tuo tiro migliore."
+    },
+    {
+      "culture": "it",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "Nel colpo la mira è scivolata di %1$@ gradi e la velocità del %2$@ per cento (livello %3$@)."
+    },
+    {
+      "culture": "it",
+      "key": "%lld won of %lld played",
+      "text": "%1$lld vinte su %2$lld giocate"
+    },
+    {
+      "culture": "it",
+      "key": "No games against %@ yet.",
+      "text": "Ancora nessuna partita contro %@."
+    },
+    {
+      "culture": "it",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Contro %1$@: vinte %2$lld su %3$lld."
+    },
+    {
+      "culture": "it",
+      "key": "Open",
+      "text": "Aperto"
+    },
+    {
+      "culture": "it",
+      "key": "Closed",
+      "text": "Chiuso"
+    },
+    {
+      "culture": "it",
+      "key": "Against the computer",
+      "text": "Contro il computer"
+    },
+    {
+      "culture": "it",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "Palla 8 o palla 9 contro un avversario computer al tuo livello."
+    },
+    {
+      "culture": "it",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Tu contro il computer. Prendi un gruppo, liberalo, imbuca la 8."
+    },
+    {
+      "culture": "it",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Tu contro il computer. Sempre prima la palla più bassa; imbuca la 9 per vincere."
+    },
+    {
+      "culture": "it",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Allenati da solo, oppure gioca a palla 8 o palla 9 con un amico o contro il computer."
+    },
+    {
+      "culture": "pt",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Um taco trémulo: falha muitas vezes tudo menos as fáceis."
+    },
+    {
+      "culture": "pt",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Um jogador de clube consistente que mete as bolas livres."
+    },
+    {
+      "culture": "pt",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Raramente falha e joga à defesa quando não tem nada."
+    },
+    {
+      "culture": "pt",
+      "key": "Computer (%@)",
+      "text": "Computador (%@)"
+    },
+    {
+      "culture": "pt",
+      "key": "Thinking…",
+      "text": "A pensar…"
+    },
+    {
+      "culture": "pt",
+      "key": "Why that shot",
+      "text": "Porquê essa jogada"
+    },
+    {
+      "culture": "pt",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "A abertura: forte e a direito à bola da frente, para espalhar o triângulo."
+    },
+    {
+      "culture": "pt",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Primeiro colocou a bola branca atrás da jogada mais fácil que encontrou."
+    },
+    {
+      "culture": "pt",
+      "key": "It went for the %lld: %@.",
+      "text": "Foi à %lld: %@."
+    },
+    {
+      "culture": "pt",
+      "key": "Straight in, no cushion.",
+      "text": "Direta, sem tabela."
+    },
+    {
+      "culture": "pt",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "Primeiro uma tabela, depois para a caçapa."
+    },
+    {
+      "culture": "pt",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "A pontaria podia desviar-se %@ graus para qualquer lado e mesmo assim entrava."
+    },
+    {
+      "culture": "pt",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "Também jogou para a branca parar com jogada limpa à bola seguinte."
+    },
+    {
+      "culture": "pt",
+      "key": "It placed the cue ball first.",
+      "text": "Primeiro colocou a bola branca."
+    },
+    {
+      "culture": "pt",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Nenhuma jogada tinha margem suficiente para a sua pontaria, por isso jogou à defesa."
+    },
+    {
+      "culture": "pt",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Tocou a %lld com suavidade para esconder a branca das tuas bolas."
+    },
+    {
+      "culture": "pt",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Queria deixar-te sem nenhuma jogada limpa."
+    },
+    {
+      "culture": "pt",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Queria deixar-te no máximo %@ graus de margem para cada lado na tua melhor jogada."
+    },
+    {
+      "culture": "pt",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "Na tacada, a pontaria desviou-se %1$@ graus e a velocidade %2$@ por cento (nível %3$@)."
+    },
+    {
+      "culture": "pt",
+      "key": "%lld won of %lld played",
+      "text": "%1$lld ganhos de %2$lld jogados"
+    },
+    {
+      "culture": "pt",
+      "key": "No games against %@ yet.",
+      "text": "Ainda sem jogos contra %@."
+    },
+    {
+      "culture": "pt",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Contra %1$@: ganhos %2$lld de %3$lld."
+    },
+    {
+      "culture": "pt",
+      "key": "Open",
+      "text": "Aberto"
+    },
+    {
+      "culture": "pt",
+      "key": "Closed",
+      "text": "Fechado"
+    },
+    {
+      "culture": "pt",
+      "key": "Against the computer",
+      "text": "Contra o computador"
+    },
+    {
+      "culture": "pt",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "Bola 8 ou bola 9 contra um adversário do computador ao teu nível."
+    },
+    {
+      "culture": "pt",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Tu contra o computador. Fica com um grupo, limpa-o e mete a 8."
+    },
+    {
+      "culture": "pt",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Tu contra o computador. Primeiro a bola mais baixa; mete a 9 para ganhar."
+    },
+    {
+      "culture": "pt",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Treina sozinho, ou joga bola 8 ou bola 9 com um amigo ou contra o computador."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Um taco trêmulo: erra muitas vezes tudo menos as fáceis."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Um jogador de clube consistente que encaçapa as bolas livres."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Raramente erra e joga na defesa quando não tem nada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Computer (%@)",
+      "text": "Computador (%@)"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Thinking…",
+      "text": "Pensando…"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Why that shot",
+      "text": "Por que essa jogada"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "A abertura: forte e reta na bola da frente, para espalhar o triângulo."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Primeiro colocou a bola branca atrás da jogada mais fácil que encontrou."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It went for the %lld: %@.",
+      "text": "Foi na %lld: %@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Straight in, no cushion.",
+      "text": "Direta, sem tabela."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "Primeiro uma tabela, depois na caçapa."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "A mira podia desviar %@ graus para qualquer lado e mesmo assim entrava."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "Também jogou para a branca parar com jogada livre na bola seguinte."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It placed the cue ball first.",
+      "text": "Primeiro colocou a bola branca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Nenhuma jogada tinha margem suficiente para a mira dele, então jogou na defesa."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Tocou a %lld de leve para esconder a branca das suas bolas."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Queria deixar você sem nenhuma jogada livre."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Queria deixar você com no máximo %@ graus de margem para cada lado na sua melhor jogada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "Na tacada, a mira desviou %1$@ graus e a velocidade %2$@ por cento (nível %3$@)."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%lld won of %lld played",
+      "text": "%1$lld vitórias em %2$lld jogos"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "No games against %@ yet.",
+      "text": "Ainda sem jogos contra %@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Contra %1$@: %2$lld vitórias em %3$lld."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Open",
+      "text": "Aberto"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Closed",
+      "text": "Fechado"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Against the computer",
+      "text": "Contra o computador"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "Bola 8 ou bola 9 contra um adversário do computador no seu nível."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Você contra o computador. Pegue um grupo, limpe-o e encaçape a 8."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Você contra o computador. Primeiro a bola mais baixa; encaçape a 9 para vencer."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Treine sozinho, ou jogue bola 8 ou bola 9 com um amigo ou contra o computador."
+    },
+    {
+      "culture": "ja",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "手元が不安定。簡単な球以外はよく外します。"
+    },
+    {
+      "culture": "ja",
+      "key": "A steady club player who makes the open shots.",
+      "text": "安定したクラブプレーヤー。狙いやすい球は確実に入れます。"
+    },
+    {
+      "culture": "ja",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "めったに外さず、狙える球がなければセーフティを打ちます。"
+    },
+    {
+      "culture": "ja",
+      "key": "Computer (%@)",
+      "text": "コンピューター（%@）"
+    },
+    {
+      "culture": "ja",
+      "key": "Thinking…",
+      "text": "考え中…"
+    },
+    {
+      "culture": "ja",
+      "key": "Why that shot",
+      "text": "その一打の理由"
+    },
+    {
+      "culture": "ja",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "ブレイク：先頭の球へまっすぐ強く撞いて、ラックを散らします。"
+    },
+    {
+      "culture": "ja",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "まず、見つけた中で一番簡単な球の後ろに手球を置きました。"
+    },
+    {
+      "culture": "ja",
+      "key": "It went for the %lld: %@.",
+      "text": "%lld番を狙いました：%@。"
+    },
+    {
+      "culture": "ja",
+      "key": "Straight in, no cushion.",
+      "text": "クッションなしのまっすぐな球です。"
+    },
+    {
+      "culture": "ja",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "まずクッションに一度当ててからポケットへ。"
+    },
+    {
+      "culture": "ja",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "狙いが左右どちらに %@ 度ずれても入っていました。"
+    },
+    {
+      "culture": "ja",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "次の球を狙いやすい位置に手球を止めることも考えていました。"
+    },
+    {
+      "culture": "ja",
+      "key": "It placed the cue ball first.",
+      "text": "まず手球を置きました。"
+    },
+    {
+      "culture": "ja",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "狙いの精度に見合う球がなかったので、セーフティを打ちました。"
+    },
+    {
+      "culture": "ja",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "%lld番をそっと当てて、手球をあなたの球から隠しました。"
+    },
+    {
+      "culture": "ja",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "あなたに狙える球をまったく残さないつもりでした。"
+    },
+    {
+      "culture": "ja",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "あなたの一番狙いやすい球でも、左右 %@ 度までの余裕しか残さないつもりでした。"
+    },
+    {
+      "culture": "ja",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "撞いた瞬間、狙いは %1$@ 度、速さは %2$@ パーセントずれました（レベル：%3$@）。"
+    },
+    {
+      "culture": "ja",
+      "key": "%lld won of %lld played",
+      "text": "%2$lld戦中%1$lld勝"
+    },
+    {
+      "culture": "ja",
+      "key": "No games against %@ yet.",
+      "text": "%@ との対戦はまだありません。"
+    },
+    {
+      "culture": "ja",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "%1$@ との対戦：%3$lld戦中%2$lld勝。"
+    },
+    {
+      "culture": "ja",
+      "key": "Open",
+      "text": "開いています"
+    },
+    {
+      "culture": "ja",
+      "key": "Closed",
+      "text": "閉じています"
+    },
+    {
+      "culture": "ja",
+      "key": "Against the computer",
+      "text": "コンピューターと対戦"
+    },
+    {
+      "culture": "ja",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "エイトボールかナインボールを、あなたのレベルに合ったコンピューターと。"
+    },
+    {
+      "culture": "ja",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "あなた対コンピューター。グループを取り、全部落として8番を沈めます。"
+    },
+    {
+      "culture": "ja",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "あなた対コンピューター。いつも一番小さい番号から。9番を沈めれば勝ち。"
+    },
+    {
+      "culture": "ja",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "ひとりで練習するか、友だちやコンピューターとエイトボールやナインボールを。"
+    },
+    {
+      "culture": "ko",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "흔들리는 큐: 쉬운 공 말고는 자주 놓칩니다."
+    },
+    {
+      "culture": "ko",
+      "key": "A steady club player who makes the open shots.",
+      "text": "꾸준한 동호회 실력자로, 열린 샷은 넣습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "거의 놓치지 않고, 칠 공이 없으면 수비를 합니다."
+    },
+    {
+      "culture": "ko",
+      "key": "Computer (%@)",
+      "text": "컴퓨터 (%@)"
+    },
+    {
+      "culture": "ko",
+      "key": "Thinking…",
+      "text": "생각 중…"
+    },
+    {
+      "culture": "ko",
+      "key": "Why that shot",
+      "text": "왜 그 샷을"
+    },
+    {
+      "culture": "ko",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "브레이크: 맨 앞 공을 세고 곧게 쳐서 랙을 흩뜨립니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "먼저 찾은 것 중 가장 쉬운 샷 뒤에 수구를 놓았습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It went for the %lld: %@.",
+      "text": "%lld번 공을 노렸습니다: %@."
+    },
+    {
+      "culture": "ko",
+      "key": "Straight in, no cushion.",
+      "text": "쿠션 없이 바로 넣는 샷입니다."
+    },
+    {
+      "culture": "ko",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "먼저 쿠션 하나를 맞고 포켓으로 들어갑니다."
+    },
+    {
+      "culture": "ko",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "조준이 어느 쪽으로든 %@도 벗어나도 들어갔을 것입니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "다음 공을 깨끗하게 칠 수 있는 자리에 수구를 세우려고도 했습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It placed the cue ball first.",
+      "text": "먼저 수구를 놓았습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "조준 실력에 맞는 넉넉한 샷이 없어서 수비를 했습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "%lld번 공을 살살 맞혀 수구를 당신의 공들로부터 숨겼습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "당신에게 깨끗한 샷을 하나도 남기지 않으려 했습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "당신의 가장 좋은 샷에도 좌우 %@도 이하의 여유만 남기려 했습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "샷을 칠 때 조준은 %1$@도, 속도는 %2$@퍼센트 어긋났습니다 (%3$@ 레벨)."
+    },
+    {
+      "culture": "ko",
+      "key": "%lld won of %lld played",
+      "text": "%2$lld판 중 %1$lld승"
+    },
+    {
+      "culture": "ko",
+      "key": "No games against %@ yet.",
+      "text": "아직 %@ 상대로 한 게임이 없습니다."
+    },
+    {
+      "culture": "ko",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "%1$@ 상대: %3$lld판 중 %2$lld승."
+    },
+    {
+      "culture": "ko",
+      "key": "Open",
+      "text": "열림"
+    },
+    {
+      "culture": "ko",
+      "key": "Closed",
+      "text": "닫힘"
+    },
+    {
+      "culture": "ko",
+      "key": "Against the computer",
+      "text": "컴퓨터와 대전"
+    },
+    {
+      "culture": "ko",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "당신 수준에 맞는 컴퓨터 상대와 에잇볼이나 나인볼을."
+    },
+    {
+      "culture": "ko",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "당신 대 컴퓨터. 그룹을 정해 다 넣고 8번을 넣으세요."
+    },
+    {
+      "culture": "ko",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "당신 대 컴퓨터. 항상 가장 낮은 번호부터; 9번을 넣으면 승리."
+    },
+    {
+      "culture": "ko",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "혼자 연습하거나, 친구나 컴퓨터와 에잇볼이나 나인볼을 하세요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "出杆不稳：除了简单球，经常失手。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "A steady club player who makes the open shots.",
+      "text": "稳定的俱乐部球手，空档球都能打进。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "很少失手，没有机会时会打防守。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Computer (%@)",
+      "text": "电脑（%@）"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Thinking…",
+      "text": "思考中…"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Why that shot",
+      "text": "为什么这样打"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "开球：大力直击最前面的球，把球堆打散。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "它先把母球放在能找到的最容易进球的位置后面。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It went for the %lld: %@.",
+      "text": "它打的是 %lld 号球：%@。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Straight in, no cushion.",
+      "text": "直接进袋，不吃库。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "先吃一库，再进袋。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "瞄准向任意一侧偏差 %@ 度也仍能进球。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "它还打算让母球停在能清楚打下一颗球的位置。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It placed the cue ball first.",
+      "text": "它先摆好了母球。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "没有容错足够大的进球线路，所以它打了防守。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "它轻碰 %lld 号球，让母球躲开你的球。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "它想让你没有任何清楚的进球机会。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "它想让你最好的进球线路左右最多只有 %@ 度的余地。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "出杆时，瞄准偏了 %1$@ 度，速度偏了百分之 %2$@（%3$@ 难度）。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%lld won of %lld played",
+      "text": "已玩 %2$lld 局，赢 %1$lld 局"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "No games against %@ yet.",
+      "text": "还没有和%@对战过。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "对阵%1$@：%3$lld 局赢 %2$lld 局。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Open",
+      "text": "已展开"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Closed",
+      "text": "已收起"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Against the computer",
+      "text": "对战电脑"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "与适合你水平的电脑对手打八球或九球。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "你对战电脑。拿下一组球，清完后打进8号球。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "你对战电脑。先打号码最小的球；打进9号球获胜。"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "独自练习，或与朋友或电脑打八球、九球。"
+    },
+    {
+      "culture": "ru",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "Дрожащий кий: часто мажет всё, кроме лёгких шаров."
+    },
+    {
+      "culture": "ru",
+      "key": "A steady club player who makes the open shots.",
+      "text": "Уверенный клубный игрок, забивает открытые шары."
+    },
+    {
+      "culture": "ru",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "Редко мажет, а когда бить нечего, играет отыгрыш."
+    },
+    {
+      "culture": "ru",
+      "key": "Computer (%@)",
+      "text": "Компьютер (%@)"
+    },
+    {
+      "culture": "ru",
+      "key": "Thinking…",
+      "text": "Думает…"
+    },
+    {
+      "culture": "ru",
+      "key": "Why that shot",
+      "text": "Почему этот удар"
+    },
+    {
+      "culture": "ru",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "Разбой: сильно и прямо в передний шар, чтобы разбить пирамиду."
+    },
+    {
+      "culture": "ru",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "Сначала он поставил биток за самым лёгким шаром, какой нашёл."
+    },
+    {
+      "culture": "ru",
+      "key": "It went for the %lld: %@.",
+      "text": "Он играл %lld-й: %@."
+    },
+    {
+      "culture": "ru",
+      "key": "Straight in, no cushion.",
+      "text": "Прямой, без борта."
+    },
+    {
+      "culture": "ru",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "Сначала от одного борта, потом в лузу."
+    },
+    {
+      "culture": "ru",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "Прицел мог уйти на %@ градуса в любую сторону, и шар всё равно бы упал."
+    },
+    {
+      "culture": "ru",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "Он ещё играл на то, чтобы биток встал с чистым ударом по следующему шару."
+    },
+    {
+      "culture": "ru",
+      "key": "It placed the cue ball first.",
+      "text": "Сначала он поставил биток."
+    },
+    {
+      "culture": "ru",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "Ни один шар не давал его прицелу запаса, поэтому он сыграл отыгрыш."
+    },
+    {
+      "culture": "ru",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "Он мягко сыграл %lld-й, чтобы спрятать биток от ваших шаров."
+    },
+    {
+      "culture": "ru",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "Он хотел не оставить вам ни одного чистого удара."
+    },
+    {
+      "culture": "ru",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "Он хотел оставить вам на лучшем ударе не больше %@ градуса запаса в каждую сторону."
+    },
+    {
+      "culture": "ru",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "При ударе прицел ушёл на %1$@ градуса, а скорость на %2$@ процента (уровень: %3$@)."
+    },
+    {
+      "culture": "ru",
+      "key": "%lld won of %lld played",
+      "text": "Выиграно %1$lld из %2$lld"
+    },
+    {
+      "culture": "ru",
+      "key": "No games against %@ yet.",
+      "text": "Игр против уровня %@ пока нет."
+    },
+    {
+      "culture": "ru",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "Против уровня %1$@: выиграно %2$lld из %3$lld."
+    },
+    {
+      "culture": "ru",
+      "key": "Open",
+      "text": "Открыто"
+    },
+    {
+      "culture": "ru",
+      "key": "Closed",
+      "text": "Закрыто"
+    },
+    {
+      "culture": "ru",
+      "key": "Against the computer",
+      "text": "Против компьютера"
+    },
+    {
+      "culture": "ru",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "Восьмёрка или девятка против компьютера вашего уровня."
+    },
+    {
+      "culture": "ru",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "Вы против компьютера. Возьмите группу, очистите её, забейте восьмёрку."
+    },
+    {
+      "culture": "ru",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "Вы против компьютера. Сначала младший шар; забейте девятку, чтобы выиграть."
+    },
+    {
+      "culture": "ru",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "Тренируйтесь сами или играйте в восьмёрку или девятку с другом или против компьютера."
+    },
+    {
+      "culture": "ar",
+      "key": "A shaky cue: it often misses anything but the easy ones.",
+      "text": "عصا مرتجفة: كثيرًا ما تخطئ إلا في الضربات السهلة."
+    },
+    {
+      "culture": "ar",
+      "key": "A steady club player who makes the open shots.",
+      "text": "لاعب نادٍ ثابت يُدخل الضربات المكشوفة."
+    },
+    {
+      "culture": "ar",
+      "key": "Rarely misses, and plays safe when it has nothing.",
+      "text": "نادرًا ما يخطئ، ويلعب دفاعيًا حين لا يجد ضربة."
+    },
+    {
+      "culture": "ar",
+      "key": "Computer (%@)",
+      "text": "الكمبيوتر (%@)"
+    },
+    {
+      "culture": "ar",
+      "key": "Thinking…",
+      "text": "يفكّر…"
+    },
+    {
+      "culture": "ar",
+      "key": "Why that shot",
+      "text": "لماذا تلك الضربة"
+    },
+    {
+      "culture": "ar",
+      "key": "The break: hard and straight at the front ball, to spread the rack.",
+      "text": "الكسرة: ضربة قوية مستقيمة على الكرة الأمامية لتفريق المثلث."
+    },
+    {
+      "culture": "ar",
+      "key": "It placed the cue ball first, behind the easiest pot it could find.",
+      "text": "وضع الكرة البيضاء أولًا خلف أسهل ضربة وجدها."
+    },
+    {
+      "culture": "ar",
+      "key": "It went for the %lld: %@.",
+      "text": "استهدف الكرة %lld: %@."
+    },
+    {
+      "culture": "ar",
+      "key": "Straight in, no cushion.",
+      "text": "مباشرة، بلا ارتداد عن الحافة."
+    },
+    {
+      "culture": "ar",
+      "key": "Off one cushion first, then into the pocket.",
+      "text": "ترتد عن حافة واحدة أولًا ثم إلى الجيب."
+    },
+    {
+      "culture": "ar",
+      "key": "Its aim could have been off by %@ degrees either way and still sunk it.",
+      "text": "كان يمكن أن ينحرف تصويبه %@ درجة في أي اتجاه وتدخل الكرة مع ذلك."
+    },
+    {
+      "culture": "ar",
+      "key": "It also played for the cue ball to stop with a clear shot at its next ball.",
+      "text": "وخطّط أيضًا لتتوقف الكرة البيضاء في موضع يتيح ضربة واضحة على كرته التالية."
+    },
+    {
+      "culture": "ar",
+      "key": "It placed the cue ball first.",
+      "text": "وضع الكرة البيضاء أولًا."
+    },
+    {
+      "culture": "ar",
+      "key": "No pot was wide enough for its aim, so it played safe.",
+      "text": "لم تكن أي ضربة واسعة بما يكفي لتصويبه، فلعب دفاعيًا."
+    },
+    {
+      "culture": "ar",
+      "key": "It hit the %lld softly to hide the cue ball from your balls.",
+      "text": "لمس الكرة %lld بلطف ليخفي الكرة البيضاء عن كراتك."
+    },
+    {
+      "culture": "ar",
+      "key": "It meant to leave you no clear pot at all.",
+      "text": "أراد ألا يترك لك أي ضربة واضحة على الإطلاق."
+    },
+    {
+      "culture": "ar",
+      "key": "It meant to leave you at most %@ degrees of aim either way on your best pot.",
+      "text": "أراد ألا يترك لك في أفضل ضرباتك أكثر من %@ درجة من هامش التصويب في كل اتجاه."
+    },
+    {
+      "culture": "ar",
+      "key": "On the stroke its aim drifted %@ degrees and its speed %@ percent (%@ level).",
+      "text": "عند الضرب انحرف تصويبه %1$@ درجة وسرعته %2$@ بالمئة (المستوى: %3$@)."
+    },
+    {
+      "culture": "ar",
+      "key": "%lld won of %lld played",
+      "text": "فاز في %1$lld من %2$lld"
+    },
+    {
+      "culture": "ar",
+      "key": "No games against %@ yet.",
+      "text": "لا توجد مباريات ضد %@ بعد."
+    },
+    {
+      "culture": "ar",
+      "key": "Against %@: won %lld of %lld.",
+      "text": "ضد %1$@: فاز في %2$lld من %3$lld."
+    },
+    {
+      "culture": "ar",
+      "key": "Open",
+      "text": "مفتوح"
+    },
+    {
+      "culture": "ar",
+      "key": "Closed",
+      "text": "مغلق"
+    },
+    {
+      "culture": "ar",
+      "key": "Against the computer",
+      "text": "ضد الكمبيوتر"
+    },
+    {
+      "culture": "ar",
+      "key": "Eight-ball or nine-ball against a computer player of your level.",
+      "text": "الكرة ٨ أو الكرة ٩ ضد خصم من الكمبيوتر بمستواك."
+    },
+    {
+      "culture": "ar",
+      "key": "You against the computer. Claim a group, clear it, sink the 8.",
+      "text": "أنت ضد الكمبيوتر. اختر مجموعة وأنهِها ثم أدخل الكرة ٨."
+    },
+    {
+      "culture": "ar",
+      "key": "You against the computer. Lowest ball first; sink the 9 to win.",
+      "text": "أنت ضد الكمبيوتر. الكرة الأصغر رقمًا أولًا؛ أدخل الكرة ٩ لتفوز."
+    },
+    {
+      "culture": "ar",
+      "key": "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+      "text": "تدرّب وحدك، أو العب الكرة ٨ أو الكرة ٩ مع صديق أو ضد الكمبيوتر."
+    }
+  ]
+}
