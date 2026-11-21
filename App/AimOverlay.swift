@@ -11,6 +11,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the cue stick and the bridge are real 3D models on the table now
 //          (CueRig); this layer no longer strokes a flat cue or draws a flat bridge, and keeps only the small "Bridge"
 //          label beside the bridge head).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the bridge label follows model.showsBridge, so Behind the 8-Ball
+//          situations that need the bridge get it too).
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -198,7 +200,7 @@ struct AimOverlay: View {
 
         // The cue and the mechanical bridge are 3D models (CueRig); for the trick shots that need the bridge, a small
         // label names it beside its head.
-        if model.trickMode.showsBridge { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
+        if model.showsBridge { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
 
         // The aim line: a soft wide halo under a thin bright core, from the ball's edge to where the cue ball stops.
         if let a = proj.screen(origin + dir * radius), let b = proj.screen(origin + dir * reach) {

@@ -39,6 +39,10 @@
 //          default shot, and a scratched cue ball is re-spotted on that table's own head spot.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the chosen surface now applies in trick shots too, instead of
 //          silently staying on cloth, which made the Surface menu look broken).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Behind the 8-Ball: a marked section after the trick shots holds the
+//          EightBallMode (made on first use, like the trick mode) and enterEightBallTable(); entering either mode ends
+//          the other; physicsTable and setTable treat a situation on the table like a trick shot (the pool table);
+//          showsBridge and strokeUsesBridge answer for both modes, for the 3D cue and the bridge label).
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -718,7 +722,10 @@ final class ShowpieceModel {
     /// The table the solver uses now: the pool table while a trick shot is up (every one was authored there), the
     /// player's chosen table otherwise. A future mode that only makes sense on a pool table (Behind the 8-ball) must
     /// be added to this same check.
-    var physicsTable: TableKind { trickModeStorage?.current != nil ? .standard : tableKind }
+    var physicsTable: TableKind { onPoolTableOnly ? .standard : tableKind }
+
+    /// True while a mode that was authored on the pool table is up: a trick shot or a Behind the 8-Ball situation.
+    private var onPoolTableOnly: Bool { trickModeStorage?.current != nil || eightBallModeStorage?.current != nil }
 
     /// Change the table: store it, then put its start layout on the table, still, with its default shot ready (the
     /// pool table gets a fresh rack instead). The ghost, the comparison and the shot on screen belong to the old table,
@@ -727,7 +734,7 @@ final class ShowpieceModel {
         guard k != tableKind else { return }
         tableKind = k
         UserDefaults.standard.set(k.rawValue, forKey: TableKind.storageKey)
-        guard trickModeStorage?.current == nil else { return }
+        guard !onPoolTableOnly else { return }
         rerack()
     }
 
@@ -762,6 +769,33 @@ final class ShowpieceModel {
     func enterTrickTable() {
         menuOpen = false
         gameInProgress = true
+        eightBallModeStorage?.end()
+    }
+
+    /// The mechanical bridge is drawn while the player lines up a trick shot or a situation that needs it.
+    var showsBridge: Bool { trickMode.showsBridge || eightBallMode.showsBridge }
+
+    /// The shot on screen was struck off the bridge (for the cue's follow-through).
+    var strokeUsesBridge: Bool {
+        trickMode.current?.usesBridge == true || eightBallMode.current?.usesBridge == true
+    }
+
+    // MARK: Behind the 8-Ball (EightBallMode) - added by Claude Opus 5.5 High, 21-November-2026
+
+    /// The Behind the 8-Ball mode, made on first use and kept out of observation, exactly as trickMode is.
+    @ObservationIgnored private var eightBallModeStorage: EightBallMode?
+    var eightBallMode: EightBallMode {
+        if let m = eightBallModeStorage { return m }
+        let m = EightBallMode(model: self)
+        eightBallModeStorage = m
+        return m
+    }
+
+    /// Onto the table from the menu for a situation: the menu closes, any trick shot ends, Continue comes back here.
+    func enterEightBallTable() {
+        menuOpen = false
+        gameInProgress = true
+        trickModeStorage?.end()
     }
 
     /// Put an authored layout on the table, still, with the given aim (degrees), power, tip height and side ready for

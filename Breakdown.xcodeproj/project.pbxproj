@@ -6,7 +6,7 @@
 	objects = {
 		B1000001 /* Breakdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000002 /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B1000020); path = App; sourceTree = "<group>"; };
-		B1000020 /* Exceptions for "App" folder in "Breakdown" target */ = {isa = PBXFileSystemSynchronizedBuildFileExceptionSet; membershipExceptions = (Tables/README.md); target = B1000008 /* Breakdown */; };
+		B1000020 /* Exceptions for "App" folder in "Breakdown" target */ = {isa = PBXFileSystemSynchronizedBuildFileExceptionSet; membershipExceptions = (EightBall/README.md, Tables/README.md); target = B1000008 /* Breakdown */; };
 		B1000003 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (B1000012); runOnlyForDeploymentPostprocessing = 0; };
 		B1000004 = {isa = PBXGroup; children = (B1000002, B1000005); sourceTree = "<group>"; };
 		B1000005 /* Products */ = {isa = PBXGroup; children = (B1000001); name = Products; sourceTree = "<group>"; };
@@ -56,7 +56,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
 			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = "Breakdown-Info.plist";
 			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; MARKETING_VERSION = 0.6.0; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; MARKETING_VERSION = 0.6.1; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 			SWIFT_EMIT_LOC_STRINGS = YES; LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;
@@ -67,7 +67,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
 			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = "Breakdown-Info.plist";
 			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; MARKETING_VERSION = 0.6.0; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; MARKETING_VERSION = 0.6.1; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 			SWIFT_EMIT_LOC_STRINGS = YES; LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;

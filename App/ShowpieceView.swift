@@ -25,6 +25,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (each surface in that menu shows a one-line note under its name
 //          saying what its friction and gravity do to the balls, so picking one also explains it).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (starts the opening music, TitleMusic, while the main menu is up and fades it when play starts or Sound is switched off).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Behind the 8-Ball: EightBallTableLayer sits beside the trick-shot
+//          layer and EightBallCard beside the trick-shot card, in both layouts).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
@@ -123,6 +125,8 @@ struct ShowpieceView: View {
             if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
             // Trick shots: rings on the shot's balls and pockets, the success glow, the list sheet, launch flags.
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
+            // Behind the 8-Ball: the called ball and pocket, the list sheet, launch flags (EightBallViews).
+            EightBallTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
             VStack(spacing: 6) {
                 ScreenHeader(model: model)
@@ -154,6 +158,7 @@ struct ShowpieceView: View {
                 if !wide { ComparisonCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
                 if !wide { TrickShotCard(model: model) }
+                if !wide { EightBallCard(model: model) }
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
@@ -172,6 +177,7 @@ struct ShowpieceView: View {
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: model.comparisonReady)
         .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
+        .animation(reduceMotion ? nil : .snappy, value: model.eightBallMode.isActive)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: model.lensOn)
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
@@ -187,6 +193,7 @@ struct ShowpieceView: View {
                     ComparisonCard(model: model)
                     // Trick shots: the shot's card at the top of the column.
                     TrickShotCard(model: model)
+                    EightBallCard(model: model)
                     CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()

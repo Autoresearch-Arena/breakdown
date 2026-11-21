@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.6.1] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Behind the 8-Ball, a new mode under Trick shots. Twelve real eight-ball spots where you are hooked, each on a full table: call your ball and pocket (tap them on the table or on the card) or call Safety, then get out with a kick, bank, jump, massé, swerve, combination or a shot off the bridge. The scorecard gives 5 for making it as called, up to 5 for difficulty and up to 5 for style, with bronze, silver and gold medals and a running total. After each shot "On a real table" gives the aim in diamonds, the cue angle, the speed, the tip and the common miss in plain words beside the solver's numbers, plus the cloth's friction and cushion numbers when it is not standard cloth. Watching a way out is there as a hint and caps style at 2. Every string is in all eleven languages.
+- Why: The Boss wanted real game situations that show off the trick shots, so a player feels they could step up to a table and make them, with the numbers kept as part of the appeal.
+- How: App/EightBall holds the types, the twelve situations (each escape found and checked with the physics solver, in BreakProbe's eightball command), the judge (fouls, made as called, difficulty from how wide the window of working strokes is, named style points) and the screens. A jump or massé stroke is treated as a short punch, so the judge does not call the authored jumps double hits. The -eightJudgeCheck launch flag runs the judge's own checks and judges every authored escape; -eightPlay plays one escape as a scored try.
+- Checked: in the app every authored escape is made as called with no foul and all the judge's checks pass; in the simulator the list, calling by tap, the hint, a foul, a made kick (silver), a made massé on tournament cloth (gold) and both real-table cards work; package tests and the iPhone and Mac builds pass.
+
 ## [0.6.0] - 21-November-2026
 
 Author: Claude Opus 5.5 High

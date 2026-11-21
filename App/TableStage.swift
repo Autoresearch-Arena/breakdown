@@ -2,6 +2,8 @@
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no caption slot any more: captions float over the table's top edge
 //          and cost it nothing, so StageChrome and the camera request no longer carry a caption edge).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the bridge on the 3D cue now follows model.showsBridge and
+//          model.strokeUsesBridge, which cover trick shots and Behind the 8-Ball alike).
 // PURPOSE: Hosts the 3D table inside SwiftUI. Builds the TableScene once, runs the per-frame step (advance the
 //          model's clock, place everything for that time, aim the camera, and project the caption's ball to the
 //          screen for the leader ring), and reloads the Lens when a new shot is recorded. Anything that changes
@@ -165,7 +167,7 @@ struct TableStage: View {
         preview.elevation = model.racked ? 0 : model.shotElevation
         preview.tipUp = model.activeTipUp
         preview.tipSide = model.activeTipSide
-        preview.usesBridge = model.trickMode.showsBridge
+        preview.usesBridge = model.showsBridge
         return preview
     }
 
@@ -176,6 +178,6 @@ struct TableStage: View {
         guard let shot = model.currentAttempt else { return CueStroke() }
         if shot.isBreak { return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide) }
         return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide, elevation: model.shotElevation,
-                         usesBridge: model.trickMode.current?.usesBridge == true)
+                         usesBridge: model.strokeUsesBridge)
     }
 }

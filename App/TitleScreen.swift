@@ -10,6 +10,8 @@
 //          and primary choice and opens the list of shots (TrickShotList, hosted by the table layer so a launch flag can
 //          open it too); Continue, Free play and Watch the break follow. Free play and Watch the break leave trick-shot
 //          mode. The one-line description and the first How to play step now say what the game is for.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 ("Behind the 8-Ball" under Trick shots in both menus opens its list
+//          (EightBallList, hosted by EightBallTableLayer); Free play, New free game and Watch the break end it too).
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
 //          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
@@ -97,20 +99,22 @@ struct TitleScreen: View {
                 // The game's purpose first: the list of trick shots, in a sheet over the menu.
                 if model.gameInProgress {
                     menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
+                    menuButton("Behind the 8-Ball", symbol: "8.circle.fill", prominent: false) { model.eightBallMode.listOpen = true }
                     menuButton("Continue", symbol: "play.fill", prominent: false) { model.closeMenu() }
                         // Return continues on the Mac and with a hardware keyboard.
                         .keyboardShortcut(.defaultAction)
                     menuButton("New free game", symbol: "triangle", prominent: false) {
-                        model.trickMode.end(); model.startGame(); onPlay()
+                        model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
                     }
                 } else {
                     menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
                         .keyboardShortcut(.defaultAction)
+                    menuButton("Behind the 8-Ball", symbol: "8.circle.fill", prominent: false) { model.eightBallMode.listOpen = true }
                     menuButton("Free play", symbol: "play.fill", prominent: false) {
-                        model.trickMode.end(); model.startGame(); onPlay()
+                        model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
                     }
                 }
-                menuButton("Watch the break", symbol: "sparkles", prominent: false) { model.trickMode.end(); model.watchBreak() }
+                menuButton("Watch the break", symbol: "sparkles", prominent: false) { model.trickMode.end(); model.eightBallMode.end(); model.watchBreak() }
                 HStack(spacing: 12) {
                     menuButton("How to play", symbol: "questionmark.circle", prominent: false) { howToOpen = true }
                     menuButton("Options", symbol: "gearshape", prominent: false) { optionsOpen = true }

@@ -2,10 +2,13 @@
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 ("tricks" runs the trick-shot authoring search; with no argument it
 //          still runs the original break sweep).
+// Edited: Claude Opus 5.5 High, 21-November-2026 ("eightball [id ...]" authors the Behind the 8-Ball situations).
 // PURPOSE: Dev tool. With no argument: sweeps candidate breaks (aim offset, speed, tip height) and prints the ones that
 //          drop at least two object balls while keeping the cue ball, so the showpiece break is chosen with evidence.
 //          With "tricks [id ...]": authors the app's trick shots (TrickAuthoring) and prints each one's layout, strike
 //          and measured skill windows, ready to copy into the app's TrickShots file.
+//          With "eightball [id ...]": authors the Behind the 8-Ball situations (EightBallAuthoring); "eightball verify"
+//          re-checks the strokes the app carries.
 // SRP/DRY check: Pass - single-purpose command line probe, not shipped in the app.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -34,6 +37,8 @@ if args.first == "timing" {
     }
 } else if args.first == "tricks" {
     runTrickAuthoring(only: Set(args.dropFirst()))
+} else if args.first == "eightball" {
+    runEightBallAuthoring(only: Set(args.dropFirst()))
 } else {
     var shown = 0
     for speed in [8.0, 9.0, 10.0, 11.0, 12.0] {
