@@ -163,6 +163,9 @@ final class TableCamera {
         let reach = sight.y < -1e-3 ? -shot.position.y / sight.y : simd_length(shot.target - shot.position)
         let span = 2 * tan(shot.fov * .pi / 360) * max(0.05, reach)
         pointsPerMetre = Float(size.height) / span
+        // Sound stream hook (21-Nov-2026): tell the sound which way screen-right runs across the table, for panning.
+        // Screen-right is the view direction crossed with world up (SoundStage normalises it).
+        SoundStage.listen(frame: frame, cameraRight: simd_cross(shot.target - shot.position, SIMD3<Float>(0, 1, 0)))
         if Self.frameDebug { logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation) }
     }
 

@@ -1,6 +1,11 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (honours the Vibration option).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (sound plan package 4: one shared engine (Haptics.shared), so a match
+//          moment played through SoundBoard.play(_:) is felt too; a pattern for every new feel cue (pin, post, jump
+//          landing, ball off the table, rim skip, miscue, balls settling, pocket knocks, foul, turn change, win); the
+//          pocket's settling taps are now the separate knock cues timed from the entry speed, exactly as heard; cue
+//          delays stretch in slow motion as the sound's do (SoundStage.stretch).)
 // PURPOSE: Core Haptics for the break. Takes the same feel cues that drive sound (FeelMapping) and plays a
 //          short pattern per cue: a sharp hit with a low rumble for the break crack, light taps for ball
 //          contacts, a duller thump for the rail, a thud with a rattle for a pocket. Strength scales intensity.
@@ -15,11 +20,14 @@ import Foundation
 
 @MainActor
 final class Haptics {
+    /// The one haptics engine, shared by the shot playback and the match moments.
+    static let shared = Haptics()
+
     private var engine: CHHapticEngine?
     /// False on hardware without a haptics engine; every play call checks it first.
     var isAvailable: Bool { engine != nil }
 
-    init() {
+    private init() {
         // Silent testing switch shared with sound, so a shared machine never buzzes.
         if ProcessInfo.processInfo.arguments.contains("-muteSound") { return }
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
@@ -59,9 +67,11 @@ final class Haptics {
         ], relativeTime: t)
     }
 
-    /// Strength to touch: sharpness says how crisp (glass-like) or dull (rubber-like) the tap feels.
+    /// Strength to touch: sharpness says how crisp (glass-like) or dull (rubber-like) the tap feels. Intensity
+    /// comes from the cue's strength, the same number that sets the sound's layer and volume; the delay is stretched
+    /// in slow motion exactly as the sound's is, so a tap lands with its sound.
     static func events(for cue: FeelCue) -> [CHHapticEvent] {
-        let s = cue.strength, d = cue.delay
+        let s = cue.strength, d = SoundStage.stretch(cue.delay)
         switch cue.kind {
         case .crack:
             // A hard, crisp hit, then a short low rumble that fades, like the rack bursting.
@@ -79,13 +89,43 @@ final class Haptics {
         case .cushion:
             return [tap(0.2 + 0.7 * s, 0.25, at: d)]
         case .pocket:
-            // The drop, then three little taps closer together each time, the ball settling in the pocket.
+            // The drop itself: a dull thud. The settling taps come as their own knock cues, timed from the entry speed.
+            return [tap(0.4 + 0.5 * s, 0.2, at: d)]
+        case .knock:
+            return [tap(0.1 + 0.5 * s, 0.5, at: d)]
+        case .pin:
+            // The clack of the pin, then a softer tap as it lands on the bed (the voice's second hit, a tenth later).
+            return [tap(0.2 + 0.6 * s, 0.6, at: d), tap(0.1 + 0.3 * s, 0.35, at: d + SoundStage.stretch(0.11))]
+        case .post:
+            // Firmer and crisper than a rail: the post does not give.
+            return [tap(0.25 + 0.6 * s, 0.45, at: d)]
+        case .landing:
+            return [tap(0.3 + 0.7 * s, 0.3, at: d)]
+        case .offTable:
+            // The floor thud (the delay already holds the fall), dull and heavy.
+            return [tap(0.3 + 0.6 * s, 0.15, at: d)]
+        case .rimSkip:
+            // Two quick crisp taps: the near edge and the far edge of the hole (the voice's two clatters).
+            return [tap(0.2 + 0.5 * s, 0.7, at: d), tap(0.15 + 0.35 * s, 0.7, at: d + SoundStage.stretch(0.035))]
+        case .miscue:
+            // A crisp slip and a thin scrape after it.
             return [
-                tap(0.4 + 0.5 * s, 0.2, at: d),
-                tap(0.3 * s + 0.15, 0.5, at: d + 0.09),
-                tap(0.22 * s + 0.1, 0.5, at: d + 0.16),
-                tap(0.15 * s + 0.08, 0.5, at: d + 0.21),
+                tap(0.25 + 0.5 * s, 0.95, at: d),
+                CHHapticEvent(eventType: .hapticContinuous, parameters: [
+                    CHHapticEventParameter(parameterID: .hapticIntensity, value: Float(0.15 + 0.25 * s)),
+                    CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.9),
+                ], relativeTime: d + 0.01, duration: 0.06),
             ]
+        case .settle:
+            return [tap(0.1 + 0.3 * s, 0.3, at: d)]
+        case .foul:
+            // Two dull taps, the second softer, in step with the two falling notes.
+            return [tap(0.3 + 0.4 * s, 0.2, at: d), tap(0.2 + 0.3 * s, 0.15, at: d + 0.18)]
+        case .turnChange:
+            return [tap(0.15 + 0.35 * s, 0.4, at: d), tap(0.1 + 0.3 * s, 0.4, at: d + 0.09)]
+        case .win:
+            // Four rising taps, one per note of the arpeggio, each a little crisper.
+            return (0..<4).map { i in tap(0.3 + 0.5 * s, 0.4 + 0.15 * Double(i), at: d + 0.1 * Double(i)) }
         }
     }
 }

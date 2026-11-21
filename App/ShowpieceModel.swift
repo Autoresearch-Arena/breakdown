@@ -260,8 +260,9 @@ final class ShowpieceModel {
 
     private var stageTime = 0.0
     private let freezeTime: Double
-    private let sound = SoundBoard()
-    private let haptics = Haptics()
+    // The one shared sound board and haptics engine (sound stream, 21-Nov-2026), so match screens play through them too.
+    private let sound = SoundBoard.shared
+    private let haptics = Haptics.shared
 
     init() {
         // Not through solve(_:): self is not fully initialised yet. Same steps: the stored table, then the stored
@@ -1370,6 +1371,9 @@ final class ShowpieceModel {
 
     func advance(_ rawDt: Double) {
         let dt = min(rawDt, 1.0 / 20.0)
+        // Sound stream hook (21-Nov-2026): every frame, menu or not, the rolling voices follow the clock; they sound
+        // only while it moves forward at playback pace, so a pause, a scrub, a rewind or the menu silences them.
+        defer { sound.follow(timeline, clock: time, rate: displayRate, playing: playing && !menuOpen, surface: physicsSurface) }
         // The menu freezes the table behind it, whatever stage it is in.
         if menuOpen { return }
         defer {
