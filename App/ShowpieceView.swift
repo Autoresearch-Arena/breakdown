@@ -51,6 +51,11 @@
 //          other panel holds everything else: the cards, captions, shot panel, the playback controls and the main
 //          menu. A hinge running across (the phone propped like a laptop) puts the table on the top panel and the rest
 //          on the bottom one. Nothing sits on the fold itself.)
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo: on a hinge the table panel carries nothing but the
+//          table (no title row), and the other panel is DuoPanel, a full-height notebook with the mode's cards, the live
+//          commentary, the numbers and the controls; the main menu, the lists and the option pages are pages of that
+//          panel instead of sheets or overlays, so nothing ever covers the table. The environment value inlinePages
+//          tells the sheet-hosting views so. MenuBackButton and SurfaceMenuButton are shared with the panel's top bar.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -86,22 +91,27 @@ struct ShowpieceView: View {
                 // phone turns, folds or unfolds; only its frame and its neighbours change. The hinge itself stays empty.
                 (laptopFold != nil ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))) {
                     stage(geo: geo, wide: split, controlsInColumn: controlsInColumn,
-                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil), menuOnStage: fold == nil)
+                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil), menuOnStage: fold == nil,
+                          header: fold == nil)
                         // Folding phone: the table owns the whole panel before the hinge.
                         .frame(width: bookFold.map { max(0, $0.minX) }, height: laptopFold.map { max(0, $0.minY) })
                     if let fold {
                         Color.clear.frame(width: bookFold == nil ? nil : fold.width, height: laptopFold == nil ? nil : fold.height)
                     }
-                    if split {
-                        // Every word and button on the other panel of a folding phone, or in the side column.
+                    if fold != nil {
+                        // The other panel of a folding phone: the whole notebook, menus and lists included.
+                        DuoPanel(model: model, leader: leader, showShotPanel: $showShotPanel)
+                            .frame(width: bookFold.map { max(0, geo.size.width - $0.maxX) },
+                                   height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
+                            .overlay(alignment: laptopFold != nil ? .top : .leading) { panelHairline(top: laptopFold != nil) }
+                    } else if split {
+                        // The side column beside the table (Mac, iPad, a phone turned sideways).
                         sideColumn(geo: geo, controlsInColumn: controlsInColumn,
-                                   width: laptopFold != nil ? nil
-                                       : bookFold.map { max(0, geo.size.width - $0.maxX) } ?? min(columnWidth, geo.size.width * 0.45),
-                                   divider: laptopFold != nil ? .top : .leading)
-                            .frame(height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
-                            .overlay { if fold != nil { foldMenu } }
+                                   width: min(columnWidth, geo.size.width * 0.45), divider: .leading)
                     }
                 }
+                // Lists, menus and option sheets stay out of sheets on a folding phone: they are pages of its panel.
+                .environment(\.inlinePages, fold != nil)
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
                 CaptionLeader(leader: leader, showLine: split)
             }
@@ -143,15 +153,17 @@ struct ShowpieceView: View {
     // MARK: The table and what floats over it
 
     /// `columnEdge` is the side where the column (or the other panel of a folding phone) meets the table, if any.
-    /// `menuOnStage` is false when the main menu is shown on the other panel of a folding phone instead.
-    private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool, columnEdge: Edge?, menuOnStage: Bool) -> some View {
+    /// `menuOnStage` is false when the main menu is shown on the other panel of a folding phone instead; `header` is false
+    /// there too, since the panel's top bar carries the buttons and the table has nothing over it.
+    private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool, columnEdge: Edge?, menuOnStage: Bool,
+                       header: Bool = true) -> some View {
         // The 3D view is full-bleed; the camera is told the safe areas and the measured edges of what floats over it.
         // Where the table's view stops at the column or the fold it has no safe inset on that side.
         let i = geo.safeAreaInsets
         let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading,
                                                      bottom: columnEdge == .bottom ? 0 : i.bottom,
                                                      right: columnEdge == .trailing ? 0 : i.trailing),
-                                 headerBottom: headerBottom, controlsTop: controlsInColumn ? nil : controlsTop)
+                                 headerBottom: header ? headerBottom : nil, controlsTop: controlsInColumn ? nil : controlsTop)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, showCue: showShotPanel, chrome: chrome)
@@ -164,8 +176,10 @@ struct ShowpieceView: View {
             EightBallTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
             VStack(spacing: 6) {
-                ScreenHeader(model: model)
-                    .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
+                if header {
+                    ScreenHeader(model: model)
+                        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
+                }
                 Spacer(minLength: 0)
                 // Hidden (but still measured, so the table does not jump) while the menu is up.
                 if !controlsInColumn {
@@ -224,11 +238,12 @@ struct ShowpieceView: View {
 
     /// On a phone turned sideways there is no room under the table for the controls, so they join the column and the
     /// table gets the full height.
-    /// On a folding phone the main menu sits on the panel opposite the table, so the whole table stays in view beside it.
-    @ViewBuilder private var foldMenu: some View {
-        if model.menuOpen {
-            TitleScreen(model: model, onPlay: { showShotPanel = true })
-                .background(palette.ground)
+    /// The thin line where a panel meets the table (the top edge when the phone is propped like a laptop).
+    @ViewBuilder private func panelHairline(top: Bool) -> some View {
+        if top {
+            Rectangle().fill(palette.track).frame(height: 1)
+        } else {
+            Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea()
         }
     }
 
@@ -285,19 +300,7 @@ private struct ScreenHeader: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            Button { model.openMenu() } label: {
-                Label("Menu", systemImage: "chevron.backward")
-                    .labelStyle(.iconOnly)
-                    .font(.body.weight(.semibold))
-                    .frame(width: 22, height: 22)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .controlSize(.regular)
-            // Escape opens the menu on the Mac and with a hardware keyboard.
-            .keyboardShortcut(.cancelAction)
-            .accessibilityLabel("Menu")
-            .accessibilityHint("Pauses the game and opens the main menu")
+            MenuBackButton(model: model)
             if model.lensOn {
                 LensLegendChip().transition(.opacity)
             }
@@ -322,11 +325,33 @@ private struct ScreenHeader: View {
     }
 }
 
+/// The round glass back button that pauses the game and opens the main menu; shared by the title row over the table
+/// and the Duo panel's top bar.
+struct MenuBackButton: View {
+    let model: ShowpieceModel
+
+    var body: some View {
+        Button { model.openMenu() } label: {
+            Label("Menu", systemImage: "chevron.backward")
+                .labelStyle(.iconOnly)
+                .font(.body.weight(.semibold))
+                .frame(width: 22, height: 22)
+        }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+        .controlSize(.regular)
+        // Escape opens the menu on the Mac and with a hardware keyboard.
+        .keyboardShortcut(.cancelAction)
+        .accessibilityLabel("Menu")
+        .accessibilityHint("Pauses the game and opens the main menu")
+    }
+}
+
 /// The playing-surface picker: a round glass button the size of the back button, showing the current surface's symbol,
 /// that opens a menu of every surface with a check beside the chosen one. Picking one re-solves the shot on screen on
 /// that surface and replays it (ShowpieceModel.setSurface). It lives in the title row because that row is there anyway
 /// and its right side is empty in play, so the picker costs the table nothing.
-private struct SurfaceMenuButton: View {
+struct SurfaceMenuButton: View {
     let model: ShowpieceModel
 
     var body: some View {

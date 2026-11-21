@@ -13,6 +13,8 @@
 //          The sliders did not go away: "Fine controls" opens them in a sheet, labelled and with spoken values, so
 //          VoiceOver, keyboard and switch users have a complete route that does not need the picture of the table.
 //          Break and Shoot call the same model methods as before.
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo: the fine controls open inside the side panel instead of
+//          in a sheet, so nothing covers the table.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -23,6 +25,7 @@ struct ShotPanel: View {
     @Binding var isOpen: Bool
     @AppStorage("aimHintSeen") private var hintSeen = false
     @State private var slidersOpen = false
+    @Environment(\.inlinePages) private var inlinePages
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -34,11 +37,17 @@ struct ShotPanel: View {
             } else {
                 ViewThatFits(in: .horizontal) { oneRow; twoRows }
             }
+            if slidersOpen && inlinePages {
+                FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
+                    .frame(height: 340)
+                    .transition(.opacity)
+            }
         }
         .tint(palette.accent)
         // Test hook: launch with -aimDemoSheet to open the fine controls straight away.
         .onAppear { if ProcessInfo.processInfo.arguments.contains("-aimDemoSheet") { slidersOpen = true } }
-        .sheet(isPresented: $slidersOpen) {
+        // On a folding phone the sliders open inside the panel (below), so no sheet covers the table.
+        .sheet(isPresented: Binding(get: { slidersOpen && !inlinePages }, set: { slidersOpen = $0 })) {
             FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
         }
     }

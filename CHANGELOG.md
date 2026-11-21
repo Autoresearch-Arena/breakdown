@@ -17,6 +17,15 @@ Author: Claude Sonnet 5.5 Medium
 - How: The clips are Google Lyria clips made 21-November-2026 and stored beside the original in App/Audio; TitleMusic picks one per launch. All other rules are unchanged: once per launch, Sound setting honoured, faded out when play starts.
 - Checked: the iPhone build passes and all three tracks are inside the built app; not yet listened to in the app.
 
+## [0.6.5] - 21-November-2026
+
+Author: Claude Sonnet 5.5 Medium
+
+- What: The open iPhone Duo has its own layout now. The table fills one whole half with nothing over it, and the other half is a full-height notebook: the shot's explanation runs live as a list of every explained moment (the one on the table lit, a thin line from it to the ball, tap any row to jump the replay there), under the cards for what you are playing, with the numbers of the shot (cue speed, ball hits, rail hits, pocketed), the surface and its four constants, and the controls. Trick shots show how forgiving each shot is (how far aim, power and tip can stray) and, once you have seen the answer, the idea and its equation; Behind the 8-Ball shows your balls and, after a shot, the lesson and the trick shots that teach it. The main menu, the trick-shot and 8-ball lists, How to play, Options and the fine controls are pages of that panel instead of sheets, so nothing ever covers the table. Propped open like a laptop, the table goes on top and the notebook splits in two columns beneath it. Everything else (iPhone, iPad, Mac, the closed Duo) looks as before, apart from card buttons that no longer fit on one row now wrapping onto two rows instead of one each.
+- Why: The Boss, looking at the first Duo layout, wanted the whole right side used for rich text and full information, no menu or sheet covering the table, and a layout special to the Duo.
+- How: New files DuoPanel (the panel, its pages and top bar), DuoStory (the live commentary, built from the same captions the Physics Lens uses, with a probe so the list redraws only when the lit caption changes), DuoInfo (the numbers and the mode details); ShowpieceView lays the screen out as the table panel plus DuoPanel on a hinge, and tells the sheet-hosting views, through a new environment value, to stay out of sheets. TitleScreen takes optional How to play and Options hooks, ShotPanel opens its fine controls inside the panel, PlaybackControls has a compact size, and a new WrappingRow wraps the trick-shot and 8-ball card buttons. Nine new strings in all eleven other languages.
+- Checked: on the Duo simulator open, upright (propped like a laptop) and closed: free play with the Lens, a trick shot at each stage, an 8-ball situation before and after a shot, the menu, the trick-shot list, a shot picked from it, and Arabic (mirrored, table on the right), German and Russian; the iPhone, iPad-width and Mac builds pass.
+
 ## [0.6.4] - 21-November-2026
 
 Author: Claude Opus 5.5 Medium

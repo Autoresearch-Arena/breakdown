@@ -18,6 +18,7 @@
 //          system's own toggle buttons). PlaybackControls lays them out at the bottom of the screen, or in the side
 //          column on a phone turned sideways; on the Mac it shows only the scrub bar because the toolbar has the buttons.
 //          Writes to the model only through its own play, rate, Lens and replay methods.
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (compact: regular-size buttons for a narrow column, used by the iPhone Duo's panel.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
 //          ToggleButton now serves both iPhone and iPad toggles.
 import SwiftUI
@@ -152,6 +153,8 @@ struct SpeedPicker: View {
 struct PlaybackControls: View {
     let model: ShowpieceModel
     @Binding var shotPanelOpen: Bool
+    /// Regular-size buttons, so Lens, Ride and Your shot share one row in a narrow column (the iPhone Duo's panel).
+    var compact = false
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
@@ -226,7 +229,7 @@ struct PlaybackControls: View {
                 }
             }
             .buttonStyle(.glass)
-            .controlSize(.large)
+            .controlSize(compact ? .regular : .large)
         }
     }
 

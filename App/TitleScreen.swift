@@ -17,6 +17,8 @@
 //          off with an ellipsis, the card is centred by the scroll view rather than forced to the screen's height, and
 //          How to play and Options stack when there is no room for them side by side, as on a folding phone's outer
 //          screen).
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo: onHowTo and onOptions let the Duo panel show the menu as
+//          one of its own pages, with no dimming veil and no sheets over the table.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
 //          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
@@ -34,6 +36,11 @@ struct TitleScreen: View {
     let model: ShowpieceModel
     /// Play opens the aiming controls on the fresh rack; the screen owns that switch, so it is handed in.
     let onPlay: () -> Void
+    /// On a folding phone the menu is a page of the side panel, which has its own pages for How to play and Options; the
+    /// panel hands these in, and the menu then neither dims the screen nor opens sheets over the table.
+    var onHowTo: (() -> Void)? = nil
+    var onOptions: (() -> Void)? = nil
+    private var inline: Bool { onHowTo != nil }
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
@@ -56,8 +63,9 @@ struct TitleScreen: View {
 
     var body: some View {
         ZStack {
-            // A dimmed veil over the table so the menu reads clearly and the room is still there behind it.
-            palette.ground.opacity(0.62).ignoresSafeArea()
+            // A dimmed veil over the table so the menu reads clearly and the room is still there behind it. Inline the
+            // menu has its own panel and the table beside it stays bright.
+            if !inline { palette.ground.opacity(0.62).ignoresSafeArea() }
             ScrollView {
                 card
                     .padding(.horizontal, 16)
@@ -138,8 +146,8 @@ struct TitleScreen: View {
 
     @ViewBuilder
     private var secondaryButtons: some View {
-        menuButton("How to play", symbol: "questionmark.circle", prominent: false) { howToOpen = true }
-        menuButton("Options", symbol: "gearshape", prominent: false) { optionsOpen = true }
+        menuButton("How to play", symbol: "questionmark.circle", prominent: false) { if let onHowTo { onHowTo() } else { howToOpen = true } }
+        menuButton("Options", symbol: "gearshape", prominent: false) { if let onOptions { onOptions() } else { optionsOpen = true } }
     }
 
     @ViewBuilder

@@ -8,6 +8,8 @@
 //          split along it.
 // Edited: Claude Opus 5.5 Medium, 21-November-2026 (ScreenLayout.fold reads the system's division region on iOS 27.1
 //          and later: on a folding phone the hinge, so the table can fill one panel and everything else the other).
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (WrappingRow: a right-aligned row that wraps onto a second line, so
+//          the trick-shot and 8-ball card buttons use two rows rather than one row each when they do not fit.)
 // SRP/DRY check: Pass - checked the old view file, which repeated the panel background three times; they all use
 //          glassCard now. No other file builds surfaces.
 import SwiftUI
@@ -80,5 +82,48 @@ enum ScreenLayout {
         }
         #endif
         return nil
+    }
+}
+
+/// A row of controls aligned to the trailing edge that wraps onto further lines when it does not fit, in reading order
+/// (the first controls on the first line). The cards' button rows use it as their fallback, so a narrow column gets two
+/// rows instead of every button on a row of its own.
+struct WrappingRow: Layout {
+    var spacing: CGFloat = 8
+
+    private struct Line { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
+
+    private func lines(width: CGFloat, subviews: Subviews) -> [Line] {
+        var all = [Line()]
+        for i in subviews.indices {
+            let size = subviews[i].sizeThatFits(.unspecified)
+            let last = all.count - 1
+            let needed = all[last].indices.isEmpty ? size.width : all[last].width + spacing + size.width
+            if needed > width, !all[last].indices.isEmpty { all.append(Line()) }
+            let at = all.count - 1
+            all[at].width = all[at].indices.isEmpty ? size.width : all[at].width + spacing + size.width
+            all[at].height = max(all[at].height, size.height)
+            all[at].indices.append(i)
+        }
+        return all
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let all = lines(width: proposal.width ?? .infinity, subviews: subviews)
+        let height = all.reduce(0) { $0 + $1.height } + spacing * CGFloat(max(0, all.count - 1))
+        return CGSize(width: all.map(\.width).max() ?? 0, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for line in lines(width: bounds.width, subviews: subviews) {
+            var x = bounds.maxX - line.width
+            for i in line.indices {
+                let size = subviews[i].sizeThatFits(.unspecified)
+                subviews[i].place(at: CGPoint(x: x, y: y + (line.height - size.height) / 2), proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += line.height + spacing
+        }
     }
 }

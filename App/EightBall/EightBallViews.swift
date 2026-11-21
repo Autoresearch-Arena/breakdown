@@ -653,7 +653,7 @@ struct EightBallCard: View {
             } else {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) { Spacer(minLength: 0); row }
-                    VStack(alignment: .trailing, spacing: 8) { row }.frame(maxWidth: .infinity, alignment: .trailing)
+                    WrappingRow { row }.frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
         }
@@ -733,6 +733,7 @@ struct EightBallTableLayer: View {
     let model: ShowpieceModel
     let bridge: SceneBridge
     @Binding var shotPanelOpen: Bool
+    @Environment(\.inlinePages) private var inlinePages
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var cameraBox = AimProjector.CameraBox()
@@ -770,7 +771,8 @@ struct EightBallTableLayer: View {
         }
         .ignoresSafeArea()
         .accessibilityHidden(true)
-        .sheet(isPresented: $mode.listOpen) { EightBallList(mode: mode) }
+        // On a folding phone the list is a page of the side panel (inlinePages), so the table is never covered.
+        .sheet(isPresented: Binding(get: { mode.listOpen && !inlinePages }, set: { mode.listOpen = $0 })) { EightBallList(mode: mode) }
         .onAppear(perform: handleLaunchFlags)
         // The mode learns that a shot finished from these two; it ignores anything that is not its business.
         .onChange(of: model.aimReady) { _, _ in mode.update() }
