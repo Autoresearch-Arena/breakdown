@@ -3,6 +3,11 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the colour legend left the 3D scene: it is a SwiftUI glass chip in
 //          the title row now (LensLegendChip in CaptionViews), which follows Dynamic Type and VoiceOver and costs the
 //          table no room).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (spin markers: every moving or spinning ball in the Lens now carries
+//          an amber belt showing the part of its spin that is NOT natural rolling (draw, follow, the slip that makes a
+//          ball slide), with an arrowhead on top showing which way the top of the ball turns, and a flat blue ring on
+//          the cloth with an arrow for side spin (english). Both fade with the amount and are read from the recorded
+//          timeline at the clock, so scrubbing shows the same markers either way.)
 // PURPOSE: The cold Physics Lens layer. Owns the grid under the Lens, the glowing trails coloured by motion phase,
 //          the impact rings, the velocity arrows and the player's aim line, plus their materials
 //          and their per-frame logic. Anything about how the Lens LOOKS or when its parts appear belongs here.
@@ -28,7 +33,14 @@
 //          curve under a smoothstep) to a faint floor by four seconds of age, and the line also narrows with age (the picture
 //          is thinner for older time), so a late-break frame shows bold fresh lines over dim hairlines instead of a scribble.
 //          Both curves are functions of age alone, baked into the one picture, so the clock-only exactness is untouched.
-//          Draw order is fixed with sort groups: grid, then trails, then rings, then arrows.
+//          Draw order is fixed with sort groups: grid, then trails, then rings, then spin markers, then arrows.
+//
+//          SPIN MARKERS (21-Nov-2026). Rolling spin is not interesting on its own: it just follows the velocity. What
+//          makes draw, follow and swerve happen is the DIFFERENCE between the ball's spin and natural roll, so that is
+//          what the amber belt shows (amber because that difference is exactly what makes a ball slide). The vertical
+//          part of the spin, english, gets its own flat ring on the cloth in the cushion blue, since cushions are where
+//          side spin shows itself. Each ball owns one belt and one ring built once; per frame only their pose and
+//          opacity change.
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -61,6 +73,24 @@ final class LensLayer {
     static let trailOldWidth = 0.42
     /// Clock seconds an impact ring takes to expand and fade. Fixed in clock time so it depends on the clock alone.
     static let ringSpan = 0.4
+    /// Spin marker fades, as speeds in m/s at the ball's surface (spin times radius), so they read the same on any
+    /// table size. Below `lo` a marker is hidden; it reaches its base strength by `mid` and full brightness by `full`.
+    static let slipFade = (lo: 0.04, mid: 0.25, full: 1.2)
+    static let sideFade = (lo: 0.02, mid: 0.12, full: 0.6)
+    /// Clock seconds over which a pocketed ball's markers fade out (the ball itself sinks away in about 0.22 s).
+    static let spinPocketFade = 0.2
+
+    /// Smooth 0-to-1 ramp between `a` and `b`.
+    private static func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
+        let s = min(1, max(0, (x - a) / (b - a)))
+        return s * s * (3 - 2 * s)
+    }
+
+    /// Opacity of a spin marker for a surface speed `x`: zero below `lo`, eased in to a base of 0.5 by `mid`, then
+    /// growing to full by `full`, so a stronger spin glows brighter and nothing ever pops in or out.
+    static func spinOpacity(_ x: Double, _ f: (lo: Double, mid: Double, full: Double)) -> Double {
+        smoothstep(f.lo, f.mid, x) * (0.5 + 0.5 * smoothstep(f.mid, f.full, x))
+    }
 
     /// Fraction 0 (fresh) to 1 (fully faded) of the way through the fade at `age` seconds behind the ball, eased at
     /// both ends so there is no visible kink where the hold ends or the trace begins.
@@ -104,6 +134,11 @@ final class LensLayer {
     private var ringMaterials: [LensEventKind: UnlitMaterial] = [:]
     private var arrowMaterial = UnlitMaterial()
     private var arrowGlowMaterial = UnlitMaterial()
+    /// Spin markers: per ball, the slip belt around the ball and the side-spin ring on the cloth.
+    private let spinRoot = Entity()
+    private var spinMarkers: [(slip: ModelEntity, side: ModelEntity)] = []
+    private var slipMaterial = UnlitMaterial()
+    private var sideMaterial = UnlitMaterial()
 
     /// True when the system bloom pass is on for the Lens (iOS 27 / macOS 27 and not turned off by -noBloom).
     private(set) var bloomActive = false
@@ -151,6 +186,9 @@ final class LensLayer {
         }
         if let lineTex = LensTextures.softLine(peak: 0.5, haloGain: haloGain) {
             arrowGlowMaterial = Self.glow(lineTex, tint: rgba(1.0, 0.93, 0.55))
+            // Slip is sliding, so it wears the sliding amber; side spin wears the cushion-ring blue used above.
+            slipMaterial = Self.glow(lineTex, tint: rgba(amber.0, amber.1, amber.2))
+            sideMaterial = Self.glow(lineTex, tint: rgba(0.45, 0.70, 1.0))
         }
         var core = UnlitMaterial(color: rgba(1.0, 0.96, 0.78))
         core.faceCulling = .none
@@ -159,6 +197,7 @@ final class LensLayer {
         root.addChild(gridEntity)
         root.addChild(trailRoot)
         root.addChild(ringRoot)
+        root.addChild(spinRoot)
         root.addChild(arrowRoot)
         root.addChild(aimLine)
     }
@@ -205,6 +244,22 @@ final class LensLayer {
             arrow.addChild(shaftHolder); arrow.addChild(headHolder)
             arrowRoot.addChild(arrow)
             arrows.append((arrow, shaftHolder, headHolder, glow))
+        }
+
+        // Spin markers, one pair per ball, sharing two meshes. Both are unit-radius arcs scaled per frame.
+        let beltMesh = LensLayer.spinArc(flat: false, halfWidth: 0.13, headLength: 0.46, headHalfWidth: 0.24)
+        let flatMesh = LensLayer.spinArc(flat: true, halfWidth: 0.09, headLength: 0.40, headHalfWidth: 0.20)
+        for _ in 0..<ballCount {
+            let slip = ModelEntity(mesh: beltMesh, materials: [slipMaterial])
+            slip.components.set(ModelSortGroupComponent(group: sortGroup, order: 25))
+            slip.components.set(OpacityComponent(opacity: 0))
+            slip.isEnabled = false
+            let side = ModelEntity(mesh: flatMesh, materials: [sideMaterial])
+            side.components.set(ModelSortGroupComponent(group: sortGroup, order: 24))
+            side.components.set(OpacityComponent(opacity: 0))
+            side.isEnabled = false
+            spinRoot.addChild(slip); spinRoot.addChild(side)
+            spinMarkers.append((slip, side))
         }
 
         // Grid under the Lens, with the cushion line, the rail outline and the pockets drawn into it.
@@ -357,6 +412,46 @@ final class LensLayer {
         return try! MeshResource.generate(from: [d])
     }
 
+    /// A unit-radius arc with an arrowhead, for the spin markers. The arc runs round the local +y axis through 288
+    /// degrees, as p(a) = (cos a, 0, -sin a) for a from -sweep up to 0, so travelling along it (towards the head) is a
+    /// right-handed turn about +y: lay local +y along a spin vector and the arrow turns the way the ball turns.
+    /// The head sits at local (1, 0, 0) pointing along -z, the arc's direction of travel there.
+    /// - flat: true makes a washer-like strip lying in the arc's own plane (the side-spin ring on the cloth); false
+    ///   makes a belt whose width runs along the axis (the slip belt round the ball), with the head lying flat on
+    ///   the belt, so with local +x pointing up the head lies level on top of the ball where the camera sees it.
+    /// UV v runs across the strip (0 to 1) so the soft line picture puts its bright core down the middle.
+    private static func spinArc(flat: Bool, halfWidth: Float, headLength: Float, headHalfWidth: Float) -> MeshResource {
+        let segments = 56
+        let sweep = Float.pi * 1.6
+        var positions: [SIMD3<Float>] = []
+        var uvs: [SIMD2<Float>] = []
+        var indices: [UInt32] = []
+        for i in 0...segments {
+            let a = -sweep + sweep * Float(i) / Float(segments)
+            let c = SIMD3<Float>(cos(a), 0, -sin(a))
+            let across = flat ? c : SIMD3<Float>(0, 1, 0)
+            positions.append(c + across * halfWidth); uvs.append(SIMD2(0.5, 0))
+            positions.append(c - across * halfWidth); uvs.append(SIMD2(0.5, 1))
+        }
+        for i in 0..<segments {
+            let k = UInt32(i * 2)
+            indices += [k, k + 1, k + 2, k + 1, k + 3, k + 2]
+        }
+        // Arrowhead: base across the strip at the arc's end, tip ahead along the direction of travel. Its picture
+        // coordinates sit on the line's bright core, so the head reads as solid.
+        let base = UInt32(positions.count)
+        let end = SIMD3<Float>(1, 0, 0)
+        let across = flat ? end : SIMD3<Float>(0, 1, 0)
+        positions += [end + across * headHalfWidth, end - across * headHalfWidth, SIMD3(1, 0, -headLength)]
+        uvs += [SIMD2(0.5, 0.5), SIMD2(0.5, 0.5), SIMD2(0.5, 0.5)]
+        indices += [base, base + 1, base + 2]
+        var d = MeshDescriptor(name: flat ? "sideSpin" : "slipSpin")
+        d.positions = MeshBuffers.Positions(positions)
+        d.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
+        d.primitives = .triangles(indices)
+        return try! MeshResource.generate(from: [d])
+    }
+
     // MARK: Per frame
 
     /// Fade the layer with the melt, slide the trail pictures to the clock, expand the rings, steer the arrows and
@@ -384,6 +479,10 @@ final class LensLayer {
                 arrow.root.orientation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
                 arrow.shaft.scale = SIMD3(len, 1, 1)
                 arrow.head.position = SIMD3(len + 0.012, 0, 0)
+            }
+            // Spin markers reuse the state just read, so the Lens still asks the timeline once per ball per frame.
+            if b < spinMarkers.count {
+                applySpin(ball: b, state: s, time: t, melt: m, timeline: timeline, frame: frame, visible: ballVisible[b])
             }
         }
 
@@ -426,6 +525,75 @@ final class LensLayer {
         }
     }
 
+    /// Poses and fades one ball's spin markers for clock `t`. A function of the clock and the recorded timeline only.
+    private func applySpin(ball b: Int, state: BallState, time t: Double, melt m: Float,
+                           timeline: Timeline, frame: TableFrame, visible: Bool) {
+        let marker = spinMarkers[b]
+        func hide() {
+            if marker.slip.isEnabled { marker.slip.isEnabled = false }
+            if marker.side.isEnabled { marker.side.isEnabled = false }
+        }
+        guard visible, m > 0.02 else { hide(); return }
+
+        // A pocketed ball's recorded state freezes with zero velocity at the capture, which would read as pure slip.
+        // Instead show the spin it carried into the pocket and fade it out over a short span of clock time, so the
+        // marker leaves with the ball rather than popping.
+        var s = state
+        var fade = 1.0
+        if s.pocketed, let tp = timeline.pocketTime[b] {
+            fade = max(0, 1 - (t - tp) / Self.spinPocketFade)
+            guard fade > 0 else { hide(); return }
+            s = timeline.state(ball: b, at: max(0, tp - 1e-6))
+        }
+
+        let R = Double(frame.ballRadius)
+        let Rf = frame.ballRadius
+        let w = s.omega, v = s.velocity
+        // Natural roll in the solver's convention (BallSegment, rolling phase): omega = (-vy / R, vx / R). The slip is
+        // what is left of the horizontal spin after taking that away; zero for a cleanly rolling ball.
+        let slipX = w.x + v.y / R, slipY = w.y - v.x / R
+        let slipMag = (slipX * slipX + slipY * slipY).squareRoot()
+        let slipOpacity = Self.spinOpacity(R * slipMag, Self.slipFade) * fade
+        let lift = Float(s.height)
+
+        if slipOpacity > 0.004 {
+            let strength = Float(Self.smoothstep(Self.slipFade.mid, Self.slipFade.full, R * slipMag))
+            // Table (x, y, up) maps to scene (x, up, -y) by a proper rotation, so a spin vector maps the same way.
+            let axis = simd_normalize(SIMD3<Float>(Float(slipX), 0, -Float(slipY)))
+            // Local frame of the belt: +y along the slip axis, +x straight up (so the arrowhead lies on top of the
+            // ball, facing the camera), +z completing a right-handed set.
+            let up = SIMD3<Float>(0, 1, 0)
+            let basis = simd_float3x3(columns: (up, axis, simd_cross(up, axis)))
+            let r = Rf * (1.30 + 0.10 * strength)
+            marker.slip.isEnabled = true
+            marker.slip.position = frame.world(s.position, height: Rf + lift)
+            marker.slip.orientation = simd_quatf(basis)
+            // The belt also grows wider (local y) with the amount, so a hard draw shot looks heavier than a trace.
+            marker.slip.scale = SIMD3(r, r * (0.75 + 0.6 * strength), r)
+            marker.slip.components.set(OpacityComponent(opacity: Float(slipOpacity)))
+        } else if marker.slip.isEnabled {
+            marker.slip.isEnabled = false
+        }
+
+        // Side spin (english): the vertical spin component. Positive is anticlockwise seen from above.
+        let wz = w.z
+        let sideAmount = R * abs(wz)
+        let sideOpacity = Self.spinOpacity(sideAmount, Self.sideFade) * fade
+        if sideOpacity > 0.004 {
+            let strength = Float(Self.smoothstep(Self.sideFade.mid, Self.sideFade.full, sideAmount))
+            let r = Rf * (1.55 + 0.15 * strength)
+            marker.side.isEnabled = true
+            marker.side.position = frame.world(s.position, height: 0.006 + lift)
+            // The ring's arrow turns about local +y; for clockwise spin flip it upside down (half turn about x).
+            marker.side.orientation = wz >= 0 ? simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0))
+                                               : simd_quatf(angle: Float.pi, axis: SIMD3<Float>(1, 0, 0))
+            marker.side.scale = SIMD3(repeating: r)
+            marker.side.components.set(OpacityComponent(opacity: Float(sideOpacity)))
+        } else if marker.side.isEnabled {
+            marker.side.isEnabled = false
+        }
+    }
+
     // MARK: Self-check (launch with -lensSelfTest)
 
     /// A fingerprint of everything the Lens shows that depends on the clock: the trail picture offsets, every ring,
@@ -445,6 +613,15 @@ final class LensLayer {
             guard a.root.isEnabled else { continue }
             h.combine(Double(a.root.position.x)); h.combine(Double(a.root.position.z))
             h.combine(Double(a.root.orientation.angle)); h.combine(Double(a.shaft.scale.x))
+        }
+        for marker in spinMarkers {
+            for e in [marker.slip, marker.side] {
+                h.combine(e.isEnabled ? 1 : 0)
+                guard e.isEnabled else { continue }
+                h.combine(Double(e.position.x)); h.combine(Double(e.position.z)); h.combine(Double(e.scale.x))
+                h.combine(Double(e.orientation.vector.x)); h.combine(Double(e.orientation.vector.y))
+                h.combine(Double(e.components[OpacityComponent.self]?.opacity ?? -1))
+            }
         }
         h.combine(Double(root.components[OpacityComponent.self]?.opacity ?? -1))
         return h.value

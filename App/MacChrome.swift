@@ -4,6 +4,7 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Ride camera: a Playback menu item, Command-E, and a toolbar toggle).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the toolbar's Lens toggle is labelled "Physics Lens", an existing
 //          string, so the blueprint view is named clearly on the Mac too).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Playback menu: a Surface submenu to pick the playing surface).
 // PURPOSE: What makes the Mac build feel like a Mac app, and what iPad gains with a hardware keyboard: a real window
 //          toolbar (play, speed, Lens, replay, Your shot), a Playback menu with keyboard shortcuts (space plays or
 //          pauses, Command-R replays, Command-L toggles the Lens, Command-1 to 4 pick the speed, Command-Y opens the
@@ -40,6 +41,13 @@ struct PlaybackCommands: Commands {
             Toggle("Ride Camera", isOn: Binding(get: { model?.rideOn ?? false }, set: { model?.setRide($0) }))
                 .keyboardShortcut("e", modifiers: .command)
                 .disabled(model == nil)
+            // Playing surface: the same choice as the round glass button in the title row; shows as a submenu.
+            Picker("Surface", selection: Binding(get: { model?.surface ?? .cloth }, set: { model?.setSurface($0) })) {
+                ForEach(PlaySurface.allCases) { surface in
+                    Label(surface.title, systemImage: surface.symbol).tag(surface)
+                }
+            }
+            .disabled(model == nil)
             Divider()
             Menu("Speed") {
                 ForEach(Array(PlaybackSpeed.rates.enumerated()), id: \.offset) { index, rate in

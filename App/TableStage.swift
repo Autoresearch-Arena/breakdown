@@ -13,6 +13,8 @@
 //          own coordinates (a FramingRequest) every frame, so the camera frames the table in exactly the space that is
 //          left, in portrait, landscape, on iPad and on the Mac. Before, a guessed fraction of the height was passed.
 //          Edited: Claude Opus 5.5 High, 20-November-2026 (one line: the camera update also passes whether Ride is on).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: the scene is built on the surface the shot is
+//          solved on, and each update hands it over so the bed changes with it).
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -75,7 +77,7 @@ struct TableStage: View {
             #if os(iOS)
             content.camera = .virtual
             #endif
-            let table = TableScene(timeline: model.timeline)
+            let table = TableScene(timeline: model.timeline, surface: model.physicsSurface)
             content.add(table.root)
             bridge.table = table
             table.load(model.timeline, version: model.timelineVersion)
@@ -103,6 +105,9 @@ struct TableStage: View {
             if let table = bridge.table, model.timelineVersion >= 0 {
                 table.load(model.timeline, version: model.timelineVersion)
             }
+            // The bed shows the surface the shot is actually solved on: the chosen one, or cloth while a trick shot is
+            // up (trick shots are always played on cloth). Reading it here makes the view update when it changes.
+            bridge.table?.setSurface(model.physicsSurface)
         }
         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: {
             bridge.viewSize = $0.size
@@ -119,6 +124,8 @@ struct TableStage: View {
         #endif
         .onChange(of: showAim, initial: true) { _, new in bridge.showAim = new }
         .onChange(of: chrome, initial: true) { _, new in bridge.chrome = new }
+        // Also here, so a surface change reaches the scene even if the update closure above is not re-run for it.
+        .onChange(of: model.physicsSurface) { _, new in bridge.table?.setSurface(new) }
         .ignoresSafeArea()
         // The scene is a picture of the table; VoiceOver users drive it through the controls and captions.
         .accessibilityElement(children: .ignore)

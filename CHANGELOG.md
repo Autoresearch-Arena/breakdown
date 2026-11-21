@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.7] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Play on different surfaces. A new round glass button at the top right picks the playing surface: Cloth, Ice, Glass, Sand, Carpet or Rubber. The shot on screen replays on the new surface right away. On ice the break skids everywhere and keeps rolling; on sand the balls plough to a stop near the rack; rubber grabs, so a skid turns to a roll almost at once. The Physics Lens now shows spin: an amber band round a ball that is skidding (spin that does not match rolling, such as draw or follow), and a blue ring on the cloth for side spin, both fading with how much there is.
+- Why: The Boss asked to see the physics on ice, glass and other crazy surfaces, and asked about ball rotation and spin.
+- How: Each surface sets the solver's own friction, rolling, spin-decay and bounce numbers; cushions, ball contact and gravity stay the same. Each bed is drawn in code and made only when it is picked; only the bed changes, because the cushion is the rail rubber. Trick shots always play on cloth, since they were worked out on cloth. The spin markers read the recorded spin at the playback time, so scrubbing shows the same thing either way. New words: Surface and the six surface names, translated into all eleven languages.
+- Checked: the iPhone and Mac builds pass; the break was watched on ice and one frame on each other surface in the iPhone 17 Pro Max simulator, and the spin band seen on the struck ball over the Lens. Not checked: how long the longest ice shot runs; the caption wording still says "cloth" on other surfaces.
+
 ## [0.5.6] - 21-November-2026
 
 Author: Claude Opus 5.5 High

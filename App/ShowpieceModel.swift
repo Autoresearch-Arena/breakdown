@@ -22,6 +22,11 @@
 //          real-time counter, never a zero speed) until the caption has had time to be read, then moves on, quick through
 //          quiet stretches. guided, holding and nextBeat() are what the views read and call; autoRate is gone. Picking a
 //          fixed speed turns guided pacing off; Replay with the Lens is now guided instead of a flat quarter speed.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: every shot is solved through solve(_:), which writes
+//          the chosen PlaySurface's friction and bounce numbers into its parameters (cloth while a trick shot is on the
+//          table) and keeps the shot's surface-free input; setSurface(_:) stores a new surface and re-solves and replays
+//          the shot on screen from its same start. The cold open's freeze point now never lies past the end of a short
+//          break, which a fast-stopping surface such as sand can produce.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -122,18 +127,34 @@ final class ShowpieceModel {
     /// simultaneous beat after it is). Ignored as soon as the clock has moved off that time.
     private var passedBeat: Int?
 
+    // Playing surface (see PlaySurface).
+    /// The surface the player chose: every shot outside trick-shot mode is solved on it. Stored in UserDefaults.
+    private(set) var surface: PlaySurface = PlaySurface.stored
+    /// Bumped on every surface change, so the scene rebuilds the table's surface look.
+    private(set) var surfaceVersion = 0
+    /// The last shot handed to the solver, as built, BEFORE any surface numbers were written into it. Kept so a
+    /// surface change can solve the very same shot again: re-applying a surface on top of another surface's numbers
+    /// would leave the old ones wherever the new surface keeps the defaults (cloth changes nothing).
+    @ObservationIgnored private var lastInput: ShotInput?
+
     private var stageTime = 0.0
     private let freezeTime: Double
     private let sound = SoundBoard()
     private let haptics = Haptics()
 
     init() {
-        let tl = PoolSolver.simulate(Rack.showpieceBreak())
+        // Not through solve(_:): self is not fully initialised yet. Same steps: the stored surface applied to a copy.
+        let input = Rack.showpieceBreak()
+        var onSurface = input
+        PlaySurface.stored.apply(to: &onSurface.parameters)
+        let tl = PoolSolver.simulate(onSurface)
         timeline = tl
-        freezeTime = min(2.2, tl.duration * 0.4)
+        // The usual freeze point; freezeAt shortens it for a break that is over sooner (whatever shot is on screen).
+        freezeTime = 2.2
         captions = CaptionEngine.make(from: tl)
         pacePlan = PacePlan(captions: captions, timeline: tl)
         timelineVersion = 1
+        lastInput = input
         ridePlan = RidePlan(tl)
         adoptLayout(after: tl)
         startRideDemoIfAsked()
@@ -153,7 +174,7 @@ final class ShowpieceModel {
         shotElevation = 0.6
         let input = NextShot.shot(from: start, direction: Vec2(1, 0), speed: 4.0, tipUp: 0, tipSide: 0,
                                   seed: 2026, elevation: shotElevation)
-        load(PoolSolver.simulate(input))
+        load(solve(input))
         clearAttempts()
         stage = .explore; stageTime = 0; time = 0; playing = true
         chosenRate = 0.25; displayRate = 0.25
@@ -205,7 +226,7 @@ final class ShowpieceModel {
     func watchBreak() {
         menuOpen = false
         gameInProgress = true
-        load(PoolSolver.simulate(Rack.showpieceBreak()))
+        load(solve(Rack.showpieceBreak()))
         clearAttempts()
         startColdOpen()
         stage = .normalBreak
@@ -222,7 +243,7 @@ final class ShowpieceModel {
         // Recorded before load(), which re-aims the follow-up shot and would otherwise change nothing here, but the
         // attempt must hold exactly what was struck.
         let settings = (aim: aimOffset, power: power, up: tipHeight, side: breakTipSide, range: powerRange)
-        load(PoolSolver.simulate(input))
+        load(solve(input))
         record(ShotAttempt(isBreak: true, breakSeed: seed, start: input.positions, timeline: timeline, aim: settings.aim,
                            power: settings.power, powerRange: settings.range, tipUp: settings.up, tipSide: settings.side))
         startColdOpen()
@@ -236,7 +257,7 @@ final class ShowpieceModel {
         var p = PoolParameters()
         p.version = 1
         // A zero-speed strike records a table where nothing moves: the quickest way to put the rack on screen.
-        load(PoolSolver.simulate(Rack.breakShot(parameters: p, seed: seed, aimOffset: 0, speed: 0)))
+        load(solve(Rack.breakShot(parameters: p, seed: seed, aimOffset: 0, speed: 0)))
         layout = Rack.positions(parameters: p, seed: seed)
         racked = true
         clearAttempts()
@@ -254,7 +275,7 @@ final class ShowpieceModel {
                                   tipUp: shotTipUp, tipSide: shotTipSide, seed: UInt64(1000 + shotSerial),
                                   elevation: shotElevation)
         let settings = (aim: aimDegrees, power: shotPower, up: shotTipUp, side: shotTipSide, range: powerRange)
-        load(PoolSolver.simulate(input))
+        load(solve(input))
         record(ShotAttempt(isBreak: false, breakSeed: 0, start: input.positions, timeline: timeline, aim: settings.aim,
                            power: settings.power, powerRange: settings.range, tipUp: settings.up, tipSide: settings.side))
         stage = .explore; stageTime = 0; time = 0; playing = true
@@ -294,7 +315,7 @@ final class ShowpieceModel {
         rideOn = true
         let option = i + 1 < args.count ? args[i + 1] : ""
         guard option != "break" else { return }       // the cold open runs as usual and rides its slow replay
-        load(PoolSolver.simulate(RideDemo.straightPot()))
+        load(solve(RideDemo.straightPot()))
         stage = .explore; time = 0; playing = false; chosenRate = nil
         if option == "lens" { melt = 1 }
         // Start after a beat, once the dark launch cover has faded, so the strike is seen.
@@ -324,8 +345,8 @@ final class ShowpieceModel {
             aimOffset = attempt.aim; power = attempt.power; tipHeight = attempt.tipUp; breakTipSide = attempt.tipSide
         } else {
             // A zero-speed strike records a still table: the quickest way to put the starting layout on screen.
-            load(PoolSolver.simulate(NextShot.shot(from: attempt.start, direction: Vec2(1, 0), speed: 0, tipUp: 0,
-                                                   tipSide: 0, seed: 0)))
+            load(solve(NextShot.shot(from: attempt.start, direction: Vec2(1, 0), speed: 0, tipUp: 0,
+                                     tipSide: 0, seed: 0)))
             layout = attempt.start
             racked = false
             clearAttempts()
@@ -544,7 +565,7 @@ final class ShowpieceModel {
         case .normalBreak:
             displayRate = 1
             step(dt)
-            if time >= freezeTime { time = freezeTime; stage = .freeze; stageTime = 0 }
+            if time >= freezeAt { time = freezeAt; stage = .freeze; stageTime = 0 }
         case .freeze:
             stageTime += dt
             if stageTime > 0.6 { stage = .melt; stageTime = 0 }
@@ -556,7 +577,7 @@ final class ShowpieceModel {
         case .rewind:
             stageTime += dt
             let x = min(1, stageTime / 1.0)
-            time = freezeTime * (1 - x * x * (3 - 2 * x))
+            time = freezeAt * (1 - x * x * (3 - 2 * x))
             if x >= 1 { time = 0; stage = .slowReplay; stageTime = 0; resetPacing() }
         case .slowReplay:
             if guided {
@@ -607,6 +628,58 @@ final class ShowpieceModel {
         haptics.play(cues)
     }
 
+    // MARK: Playing surface (PlaySurface) - added by Claude Opus 5.5 High, 21-November-2026
+
+    /// The surface the solver actually uses now. Trick shots stay on cloth whatever the player chose: every one was
+    /// authored and checked on cloth (its solution only works there), so on ice the answer would miss. Free play, the
+    /// showpiece opening and the demos use the chosen surface.
+    var physicsSurface: PlaySurface { trickModeStorage?.current != nil ? .cloth : surface }
+
+    /// Where the cold open freezes: the usual point, but never past the end of the break. A surface that stops the
+    /// balls quickly (sand) can make the whole break shorter than the usual freeze point, and a clock clamped to the
+    /// end would then never reach it.
+    private var freezeAt: Double { min(freezeTime, duration * 0.4) }
+
+    /// Every shot goes through here: remember it as built, write the surface's numbers into a copy, and solve that.
+    private func solve(_ input: ShotInput) -> Timeline {
+        lastInput = input
+        var onSurface = input
+        physicsSurface.apply(to: &onSurface.parameters)
+        return PoolSolver.simulate(onSurface)
+    }
+
+    /// Change the playing surface: store it, then solve the shot on screen again from its same start and settings on
+    /// the new surface and play it from the beginning (the Lens and Ride stay as they are; the cold open starts over).
+    /// The ghost and the retry comparison are dropped, since they were played on the old surface; the shot on screen
+    /// stays the player's current attempt, now with the new recording, so Try again still works.
+    func setSurface(_ s: PlaySurface) {
+        guard s != surface else { return }
+        surface = s
+        UserDefaults.standard.set(s.rawValue, forKey: PlaySurface.storageKey)
+        surfaceVersion += 1
+        // In trick-shot mode the solver stays on cloth, so the shot on screen (and its ghost) are unchanged.
+        guard trickModeStorage?.current == nil else { return }
+        if ghost != nil { ghostVersion += 1 }
+        ghost = nil; comparison = nil; retryPending = false
+        // A still table (a fresh rack, a retry's start, nothing struck yet) is the same on every surface: nothing to
+        // solve again. Re-solving it would also undo the rack state (load re-reads the layout and clears `racked`).
+        guard let input = lastInput, input.strike.speed > 0 else { return }
+        let attempt = currentAttempt
+        let inColdOpen = stage != .explore
+        load(solve(input))
+        if let a = attempt {
+            currentAttempt = ShotAttempt(isBreak: a.isBreak, breakSeed: a.breakSeed, start: a.start, timeline: timeline,
+                                         aim: a.aim, power: a.power, powerRange: a.powerRange, tipUp: a.tipUp,
+                                         tipSide: a.tipSide)
+        }
+        if inColdOpen {
+            startColdOpen()
+            stage = .normalBreak
+        } else {
+            stageTime = 0; time = 0; playing = true
+        }
+    }
+
     // MARK: Trick shots (TrickShotMode) - added by Claude Opus 5.5 High, 20-November-2026
 
     /// The trick-shot mode for this table, made on first use. Kept out of observation: the mode is observable itself,
@@ -629,7 +702,7 @@ final class ShowpieceModel {
     /// the next shot. The same zero-speed trick tryAgain() uses; the settings are set after load(), which re-aims.
     /// `elevation` raises the cue (sine of its angle) for the massé and the jump; every other shot is level.
     func loadTrickLayout(_ positions: [Vec2], aim: Double, power: Double, tipUp: Double, tipSide: Double, elevation: Double = 0) {
-        load(PoolSolver.simulate(NextShot.shot(from: positions, direction: Vec2(1, 0), speed: 0, tipUp: 0, tipSide: 0, seed: 0)))
+        load(solve(NextShot.shot(from: positions, direction: Vec2(1, 0), speed: 0, tipUp: 0, tipSide: 0, seed: 0)))
         layout = positions
         racked = false
         clearAttempts()

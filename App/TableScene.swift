@@ -24,6 +24,8 @@
 //          so a jumping cue ball leaves the table surface on screen; on the cloth the height is zero and nothing moves.
 //          A ball that flew off the table keeps flying its last arc past the rail and then vanishes, instead of the
 //          pocket's sink, which would pull it down through the rail.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: the table is built in the chosen surface, and
+//          setSurface swaps only the bed's material on the existing table when it changes, picture drawn in the background).
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -52,13 +54,18 @@ final class TableScene {
     private var tourFrame = 0
     /// The clock the last apply() used (after any test pinning), so the camera pushes in on exactly the frame drawn.
     private var lastClock = 0.0
+    /// The playing bed (the entity TableBuilder names "felt") and the surface it was last asked to wear.
+    private let bed: ModelEntity?
+    private var surface: PlaySurface
     var subscriptions: [EventSubscription] = []
 
-    init(timeline: Timeline) {
+    init(timeline: Timeline, surface: PlaySurface) {
         self.timeline = timeline
+        self.surface = surface
         frame = TableFrame(timeline.table)
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
-        tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table)
+        tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table, surface: surface)
+        bed = tableGroup.findEntity(named: "felt") as? ModelEntity
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
         root.addChild(tableGroup)
         root.addChild(lens.root)
@@ -91,6 +98,20 @@ final class TableScene {
         }
         if Self.launchFlag("-lensSelfTest") { runSelfTest() }
         if Self.launchFlag("-rideSelfTest") { shotCamera.selfTest(size: CGSize(width: 402, height: 874)) }
+    }
+
+    /// Dress the playing bed in another surface, without rebuilding the table: only the bed's material changes (the
+    /// cushions keep their cloth). A picture not made yet is drawn in the background and put on when it is ready; if
+    /// the surface changes again meanwhile, the late picture is dropped. Cheap to call every update (same surface:
+    /// nothing happens).
+    func setSurface(_ s: PlaySurface) {
+        guard s != surface else { return }
+        surface = s
+        Task { [weak self] in
+            let image = await StartupAssets.shared.bedImage(for: s)
+            guard let self, self.surface == s, let bed = self.bed else { return }
+            bed.model?.materials = [TableBuilder.bedMaterial(for: s, image: image)]
+        }
     }
 
     // MARK: Per frame

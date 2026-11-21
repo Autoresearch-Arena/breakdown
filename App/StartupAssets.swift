@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (playing beds for the Surface menu: each surface's picture is drawn
+//          only when it is chosen, in the background, and kept; the surface saved from last time is started with the
+//          launch pictures so a table that opens on ice does not wait for it).
 // PURPOSE: Makes every generated picture the table needs (cloth, wood, floor, pocket wall, sixteen ball faces, the
 //          Lens grid, and the lamp-and-room reflection) on background threads, all at once, starting the moment the app
 //          launches, so the main thread no longer spends a second or two in a debug build drawing pixels before the
@@ -62,6 +65,8 @@ final class StartupAssets: @unchecked Sendable {
     private var floor: (half: SIMD2<Float>, image: CGImage?)?
     private var balls = [CGImage?](repeating: nil, count: 16)
     private var grid: (key: GridKey, image: CGImage?)?
+    /// Playing-bed pictures for surfaces other than cloth, kept once drawn (the cloth is `cloth` above).
+    private var beds: [PlaySurface: CGImage] = [:]
     private var environmentTask: Task<EnvironmentResource?, Never>?
 
     private func locked<T>(_ body: () -> T) -> T { lock.lock(); defer { lock.unlock() }; return body() }
@@ -95,6 +100,11 @@ final class StartupAssets: @unchecked Sendable {
             { let v = BallTextures.gridImage(length: length, width: width, pockets: pockets, boost: boost); self.locked { self.grid = (gridKey, v) } },
         ]
         for n in 0..<16 { jobs.append { let v = BallTextures.ballImage(number: n); self.locked { self.balls[n] = v } } }
+        // Only the surface the table will open on is drawn now; the others wait until someone picks them.
+        let surface = PlaySurface.stored
+        if surface != .cloth {
+            jobs.append { if let v = surface.makeBedImage() { self.locked { self.beds[surface] = v } } }
+        }
         let all = jobs
 
         done.enter()
@@ -118,6 +128,31 @@ final class StartupAssets: @unchecked Sendable {
     @MainActor func woodImage() -> CGImage? { ready(); return locked { wood } }
     @MainActor func pocketWallImage() -> CGImage? { ready(); return locked { wall } }
     @MainActor func ballImage(number n: Int) -> CGImage? { ready(); return locked { balls[n] } }
+
+    /// The playing bed's picture for a surface, now, for building the table. Normally already made (the saved surface
+    /// is drawn with the launch pictures); if not, it is drawn on the spot and kept.
+    @MainActor func bedImageNow(for surface: PlaySurface) -> CGImage? {
+        if surface == .cloth { return clothImage() }
+        ready()
+        if let image = locked({ beds[surface] }) { return image }
+        // Drawn outside the lock (the lock is not re-entrant and drawing takes a while), then stored.
+        let image = surface.makeBedImage()
+        if let image { locked { beds[surface] = image } }
+        return image
+    }
+
+    /// The playing bed's picture for a surface just picked from the menu: drawn on a background thread if it has not
+    /// been made yet, so the screen keeps moving while it is drawn. Two quick picks of the same new surface may draw it
+    /// twice; the second simply replaces the first, which is harmless.
+    @MainActor func bedImage(for surface: PlaySurface) async -> CGImage? {
+        if surface == .cloth { return clothImage() }
+        if let image = locked({ beds[surface] }) { return image }
+        // The background job stores the picture itself and hands nothing back across threads.
+        await Task.detached(priority: .userInitiated) {
+            if let v = surface.makeBedImage() { self.locked { self.beds[surface] = v } }
+        }.value
+        return locked { beds[surface] }
+    }
 
     /// The floor picture is shaped by the table's outer size; a table of another size gets a fresh one.
     @MainActor func roomFloorImage(tableHalf: SIMD2<Float>) -> CGImage? {

@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the other playing beds for the Surface menu: ice with skate
+//          scratches and frost at the cushions, dark smoked glass, sand with grains and ripples, a red-and-gold patterned
+//          carpet, and stippled rubber; each the cloth's size and drawn only when that surface is chosen).
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that fades to nothing at its edge, the
 //          pocket-wall gradient that makes a well read as deep, and the small soft blob used under the lamp pool.
@@ -101,6 +104,171 @@ enum SurfaceTextures {
                 // Worn patches shift slightly toward a paler, greyer green; fresh cloth is richer.
                 let pale = max(0, wear) * 0.5
                 r.set(x, y, (base.0 + pale * 0.10) * shade, (base.1 + pale * 0.06) * shade, (base.2 + pale * 0.05) * shade)
+            }
+        }
+        return r.image()
+    }
+
+    // MARK: Other playing beds (chosen from the Surface menu; PlaySurfaceLook picks which one)
+    //
+    // Each is one picture mapped once over the playing bed, corner to corner, at the cloth's 2:1 size, so one pixel is
+    // about three millimetres of table. They are drawn only when that surface is chosen and StartupAssets keeps the
+    // result. The outermost few pixels tuck under the cushion noses, so nothing important is drawn right at the edge.
+
+    /// 1 at the picture's edge, fading toward 0 about `reach` pixels in. Frost and the green of a glass edge gather
+    /// where the bed meets the cushions.
+    private static func edgeGlow(_ x: Int, _ y: Int, _ w: Int, _ h: Int, reach: Float) -> Float {
+        let d = Float(min(min(x, w - 1 - x), min(y, h - 1 - y)))
+        return exp(-d / reach)
+    }
+
+    /// Mixes one colour toward another by `t` (0 keeps `a`, 1 gives `b`).
+    private static func lerp3(_ a: (Float, Float, Float), _ b: (Float, Float, Float), _ t: Float) -> (Float, Float, Float) {
+        let k = max(0, min(1, t))
+        return (a.0 + (b.0 - a.0) * k, a.1 + (b.1 - a.1) * k, a.2 + (b.2 - a.2) * k)
+    }
+
+    /// Ice: pale blue-white with soft cloudy depth, long faint skate scratches, and frost built up along the cushions.
+    static func iceImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        // Scratches go into their own brightness buffer first. Each is a stretch of a big circle (a skate blade
+        // carves a shallow arc), walked half a pixel at a time, fading in and out along its length like a blade that
+        // touches down and lifts. A big radius gives a nearly straight scratch.
+        var scratch = [Float](repeating: 0, count: w * h)
+        for k in 0..<70 {
+            let sx = hash(k, 1, 51) * Float(w), sy = hash(k, 2, 51) * Float(h)
+            let radius = 120 + hash(k, 3, 51) * 700
+            let start = hash(k, 4, 51) * 2 * .pi
+            let length = 40 + hash(k, 5, 51) * 260
+            let strength = 0.10 + 0.25 * hash(k, 6, 51)
+            // The circle's centre is one radius back from the start point, so angle `start` lands on (sx, sy).
+            let ox = sx - radius * cos(start), oy = sy - radius * sin(start)
+            let steps = Int(length * 2)
+            for s in 0...steps {
+                let angle = start + Float(s) * 0.5 / radius
+                let x = Int(ox + radius * cos(angle)), y = Int(oy + radius * sin(angle))
+                guard x >= 0, x < w, y >= 0, y < h else { continue }
+                let fade = sin(.pi * Float(s) / Float(steps))
+                scratch[y * w + x] = max(scratch[y * w + x], strength * fade)
+            }
+        }
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.70, 0.80, 0.88)
+        let white: (Float, Float, Float) = (0.95, 0.97, 1.0)
+        for y in 0..<h {
+            for x in 0..<w {
+                let cloud = fbm(Float(x) / 90, Float(y) / 90, px: 9, py: 5, octaves: 4, seed: 61) - 0.5
+                let grain = hash(x, y, 63) - 0.5
+                // Frost: thick at the cushions, broken up by fine noise so it reads as crystals, not a painted band.
+                let crystals = fbm(Float(x) / 6, Float(y) / 6, px: 128, py: 64, octaves: 3, seed: 67)
+                let frost = edgeGlow(x, y, w, h, reach: 14) * (0.4 + 0.9 * crystals)
+                let shade = 1 + 0.10 * cloud + 0.02 * grain
+                let c = lerp3((base.0 * shade, base.1 * shade, base.2 * shade), white, frost * 0.85 + scratch[y * w + x])
+                r.set(x, y, c.0, c.1, c.2)
+            }
+        }
+        return r.image()
+    }
+
+    /// Glass: dark smoked glass, nearly black, with faint smoky depth, two soft diagonal bands like a window's
+    /// reflection lying in it, and the green tint glass shows at its edge. The real reflections come from the material
+    /// (glossy, with a clear coat) catching the lamp picture; these bands only hint at them where the lamp is not.
+    static func glassImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.030, 0.038, 0.042)
+        for y in 0..<h {
+            for x in 0..<w {
+                let fx = Float(x) / Float(w), fy = Float(y) / Float(h)
+                let smoke = fbm(Float(x) / 140, Float(y) / 140, px: 6, py: 3, octaves: 3, seed: 91) - 0.5
+                let diag: Float = fx * 0.9 + fy * 0.45
+                let wide: Float = exp(-pow((diag - 0.38) / 0.05, 2))
+                let thin: Float = exp(-pow((diag - 0.52) / 0.02, 2))
+                let band: Float = 0.6 * wide + 0.4 * thin
+                let edge = edgeGlow(x, y, w, h, reach: 10)
+                let k: Float = 1 + 0.3 * smoke
+                let red: Float = base.0 * k + 0.050 * band
+                let green: Float = base.1 * k + 0.055 * band + 0.06 * edge
+                let blue: Float = base.2 * k + 0.060 * band + 0.045 * edge
+                r.set(x, y, red, green, blue)
+            }
+        }
+        return r.image()
+    }
+
+    /// Sand: warm tan with coarse grains, the odd dark or bright grain, slow dunes and wind ripples across the table.
+    static func sandImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.74, 0.60, 0.40)
+        for y in 0..<h {
+            for x in 0..<w {
+                let fx = Float(x), fy = Float(y)
+                // Ripples run across the table, bent by slow noise so they wander like wind marks.
+                let ripple = sin(fx * 0.11 + 9 * fbm(fx / 150, fy / 150, px: 6, py: 3, octaves: 2, seed: 75))
+                let dune = fbm(fx / 200, fy / 200, px: 4, py: 2, octaves: 3, seed: 77) - 0.5
+                let grain = hash(x, y, 71) - 0.5
+                let speck = hash(x, y, 73)
+                var shade = 1 + 0.06 * ripple + 0.18 * dune + 0.22 * grain
+                if speck > 0.985 { shade *= 0.55 } else if speck < 0.012 { shade *= 1.25 }
+                // Darker sand is also a little redder, as damp or iron-stained grains are.
+                let red: Float = shade < 1 ? (1 - shade) * 0.04 : 0
+                r.set(x, y, base.0 * shade + red, base.1 * shade, base.2 * shade - red)
+            }
+        }
+        return r.image()
+    }
+
+    /// Carpet: a bold rug, deep red with a gold diamond lattice and navy centres in the field, and a navy border with
+    /// gold stripes and a gold zigzag. Every line is drawn with a soft one-pixel edge (`line` below) so the pattern
+    /// stays clean at a distance instead of crawling. The pile adds fine noise and some worn patches.
+    static func carpetImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let red: (Float, Float, Float) = (0.42, 0.045, 0.06)
+        let gold: (Float, Float, Float) = (0.78, 0.58, 0.20)
+        let navy: (Float, Float, Float) = (0.05, 0.07, 0.20)
+        let tile: Float = 48   // 768 and 384 are whole numbers of tiles, and the table's centre is a tile corner
+        /// 1 within `half` pixels of the line, fading to 0 over the next pixel.
+        func line(_ d: Float, _ half: Float) -> Float { max(0, min(1, half + 1 - abs(d))) }
+        for y in 0..<h {
+            for x in 0..<w {
+                let e = Float(min(min(x, w - 1 - x), min(y, h - 1 - y)))   // pixels in from the nearest edge
+                var c: (Float, Float, Float)
+                if e < 34 {
+                    // Border. `along` runs parallel to the nearest edge, so the zigzag follows it round the rug.
+                    let along = min(y, h - 1 - y) < min(x, w - 1 - x) ? Float(x) : Float(y)
+                    let zig = abs(along.truncatingRemainder(dividingBy: 16) - 8)   // 0...8 and back, every 16 pixels
+                    c = lerp3(navy, gold, max(line(e - 8, 1.2), line(e - 30, 1.2), line(e - (15 + zig * 0.9), 0.8)))
+                } else {
+                    // Field: diamonds centred on each tile. m is 0 at a tile's centre and 48 at its corners.
+                    let u = Float(x) + 0.5 - Float(w) / 2, v = Float(y) + 0.5 - Float(h) / 2
+                    let lu = u - tile * (u / tile).rounded(), lv = v - tile * (v / tile).rounded()
+                    let m = abs(lu) + abs(lv)
+                    c = red
+                    c = lerp3(c, navy, max(0, min(1, 7.5 - m)))          // small navy diamond in the middle
+                    c = lerp3(c, gold, max(line(m - 17, 1.3), max(0, min(1, 2.5 - m)), max(0, min(1, m - 44))))
+                }
+                let pile = (hash(x, y, 101) - 0.5) * 0.10
+                let wear = (fbm(Float(x) / 110, Float(y) / 110, px: 7, py: 4, octaves: 3, seed: 103) - 0.5) * 0.22
+                let shade = 1 + pile + wear
+                r.set(x, y, c.0 * shade, c.1 * shade, c.2 * shade)
+            }
+        }
+        return r.image()
+    }
+
+    /// Rubber: dark charcoal with a fine raised stipple. Each dot is nudged off its grid point at random, because an
+    /// exact grid shimmers on screen at a distance; mipmaps then blend the dots into a soft even texture far away.
+    static func rubberImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.075, 0.075, 0.082)
+        let pitch = 4
+        for y in 0..<h {
+            for x in 0..<w {
+                let cx = x / pitch, cy = y / pitch
+                let dx = Float(x) + 0.5 - (Float(cx * pitch) + 1 + 2 * hash(cx, cy, 81))
+                let dy = Float(y) + 0.5 - (Float(cy * pitch) + 1 + 2 * hash(cx, cy, 82))
+                let dot = exp(-(dx * dx + dy * dy) / 1.2)
+                let mottle = fbm(Float(x) / 80, Float(y) / 80, px: 10, py: 5, octaves: 3, seed: 85) - 0.5
+                let shade = 1 + 0.35 * dot + 0.08 * (hash(x, y, 83) - 0.5) + 0.10 * mottle
+                r.set(x, y, base.0 * shade, base.1 * shade, base.2 * shade)
             }
         }
         return r.image()

@@ -1,6 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (pockets drawn from the solver's own geometry: cushion runs stop at its knuckles with ends cut along its jaw lines, and each hole is the capture circle grown just enough to fill the throat; the hard-coded pocket radii are gone).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: the bed is built in the chosen surface's look by
+//          bedMaterial, which TableScene also uses to swap the bed alone when the surface changes; the cushions stay cloth).
 // PURPOSE: Builds the STATIC warm table and everything that sits on it, as one group that fades out when the Lens
 //          melts in: cloth that stops exactly at the cushion noses, cushions with a sloped rounded nose and jaw-cut
 //          ends, a walnut rail frame with a rounded edge and an apron, real pocket wells (a wall that drops below the
@@ -76,7 +78,9 @@ enum TableBuilder {
     /// Felt, cushions, rails, pocket wells, diamond sights, spots, legs and the room floor, all under one group so the
     /// whole warm table (and the floor it stands on) fades out as the Lens melts in. Nothing here may be added outside
     /// the group, or it would stay visible in the Lens.
-    static func makeTable(frame: TableFrame, table: TableSpec) -> Entity {
+    /// - surface: the playing surface the bed is drawn in (see PlaySurfaceLook). The bed is the entity named
+    ///   "felt", which TableScene looks up to swap its material when the surface changes.
+    static func makeTable(frame: TableFrame, table: TableSpec, surface: PlaySurface = .cloth) -> Entity {
         StartupLog.mark("makeTable begin")
         defer { StartupLog.mark("makeTable end") }
         let tableGroup = Entity()
@@ -112,10 +116,11 @@ enum TableBuilder {
             return Outline.Cut(center: centre, radius: reach)
         }
 
-        // Materials. The cloth carries its weave in the colour picture and a soft sheen at grazing angles.
-        var feltMat = pbr(rgba(1, 1, 1), rough: 0.93)
-        if let t = StartupAssets.texture(StartupAssets.shared.clothImage()) { feltMat.baseColor = .init(tint: .white, texture: .init(t)) }
-        feltMat.sheen = .init(tint: rgba(0.35, 0.75, 0.62))
+        // Materials. The cloth carries its weave in the colour picture and a soft sheen at grazing angles. The cushions
+        // always wear the cloth: a cushion is the rail's rubber wrapped in cloth, whatever the bed is made of. Only the
+        // playing bed takes the chosen surface's look.
+        let feltMat = bedMaterial(for: .cloth, image: StartupAssets.shared.clothImage())
+        let bedMat = surface == .cloth ? feltMat : bedMaterial(for: surface, image: StartupAssets.shared.bedImageNow(for: surface))
         var woodMat = pbr(rgba(1, 1, 1), rough: 0.50)
         if let t = StartupAssets.texture(StartupAssets.shared.woodImage()) { woodMat.baseColor = .init(tint: .white, texture: .init(t)) }
         woodMat.clearcoat = .init(floatLiteral: 0.5)
@@ -135,7 +140,7 @@ enum TableBuilder {
         var felt = MeshBuilder()
         let feltOutline = Outline.rectWithCuts(hx: a + tuck, hz: b + tuck, cuts: cuts, arcsOutside: false).points
         felt.addFlat(feltOutline, y: 0, normal: SIMD3(0, 1, 0)) { p, _ in SIMD2(p.x / L + 0.5, p.y / W + 0.5) }
-        if let e = part(felt, feltMat, "felt") { tableGroup.addChild(e) }
+        if let e = part(felt, bedMat, "felt") { tableGroup.addChild(e) }
 
         // 2. Cushions: a sloped, rounded nose swept along each run between pockets, with the end cut toward the pocket.
         let section: [(d: Float, y: Float)] = [(0.014, 0), (0.0020, 0.0265), (0.0, 0.0325), (0.0030, 0.0375), (0.020, 0.0395), (c, 0.040), (c, 0)]
@@ -318,6 +323,23 @@ enum TableBuilder {
         floor.name = "floor"
         tableGroup.addChild(floor)
         return tableGroup
+    }
+
+    // MARK: Playing bed
+
+    /// The playing bed's material for a surface: its picture plus its finish (PlaySurfaceLook). Used for the bed when
+    /// the table is built and again by TableScene when the surface changes, and for the cushions' cloth.
+    static func bedMaterial(for surface: PlaySurface, image: CGImage?) -> PhysicallyBasedMaterial {
+        let finish = surface.bedFinish
+        var m = pbr(rgba(1, 1, 1), rough: finish.roughness)
+        if let t = StartupAssets.texture(image) { m.baseColor = .init(tint: .white, texture: .init(t)) }
+        if let specular = finish.specular { m.specular = .init(floatLiteral: specular) }
+        if finish.clearcoat > 0 {
+            m.clearcoat = .init(floatLiteral: finish.clearcoat)
+            m.clearcoatRoughness = .init(floatLiteral: finish.clearcoatRoughness)
+        }
+        if let sheen = finish.sheen { m.sheen = .init(tint: rgba(Double(sheen.x), Double(sheen.y), Double(sheen.z))) }
+        return m
     }
 
     // MARK: Balls

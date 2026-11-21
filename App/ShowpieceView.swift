@@ -20,8 +20,10 @@
 //          moved from over the table's top edge into a fixed-height CaptionStrip directly above the controls, inside the
 //          measured bottom stack, so the camera frames the table above it and the table moves only when the Lens comes
 //          up or goes; the leader line to the card is drawn only in the wide layout, the ring and title chip everywhere).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (a round glass Surface button in the title row, right side before the
+//          status label, opens a menu of playing surfaces; picking one re-solves and replays the shot on it).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
-//          Physics Lens key, status label), the controls, and the caption and shot panel arranged for the screen at
+//          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
 //          and the shot panel sit above the controls, measured so the camera frames the table above them. On
 //          the Mac, on iPad and in landscape the screen splits: the table on the left with the controls under it, and
@@ -228,6 +230,7 @@ private struct ScreenHeader: View {
                 LensLegendChip().transition(.opacity)
             }
             Spacer(minLength: 0)
+            SurfaceMenuButton(model: model)
             if model.stage != .explore && model.stage != .lead {
                 Text(model.stageTitle)
                     .font(Theme.label)
@@ -244,5 +247,37 @@ private struct ScreenHeader: View {
         .accessibilityHidden(model.menuOpen)
         .animation(.easeOut(duration: 0.25), value: model.stage)
         .animation(.easeOut(duration: 0.25), value: model.lensOn)
+    }
+}
+
+/// The playing-surface picker: a round glass button the size of the back button, showing the current surface's symbol,
+/// that opens a menu of every surface with a check beside the chosen one. Picking one re-solves the shot on screen on
+/// that surface and replays it (ShowpieceModel.setSurface). It lives in the title row because that row is there anyway
+/// and its right side is empty in play, so the picker costs the table nothing.
+private struct SurfaceMenuButton: View {
+    let model: ShowpieceModel
+
+    var body: some View {
+        Menu {
+            // Inline, so the surfaces are rows of this menu with a check mark, not a further submenu.
+            Picker("Surface", selection: Binding(get: { model.surface }, set: { model.setSurface($0) })) {
+                ForEach(PlaySurface.allCases) { surface in
+                    // The title is already translated (PlaySurface.title), so it is passed as plain text.
+                    Label(surface.title, systemImage: surface.symbol).tag(surface)
+                }
+            }
+            .pickerStyle(.inline)
+        } label: {
+            Label("Surface", systemImage: model.surface.symbol)
+                .labelStyle(.iconOnly)
+                .font(.body.weight(.semibold))
+                .frame(width: 22, height: 22)
+        }
+        .menuIndicator(.hidden)
+        .buttonStyle(.glass)
+        .buttonBorderShape(.circle)
+        .controlSize(.regular)
+        .accessibilityLabel("Surface")
+        .accessibilityValue(model.surface.title)
     }
 }
