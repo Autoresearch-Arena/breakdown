@@ -17,6 +17,12 @@
 //          in a sheet, so nothing covers the table.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the power slider's readout says the power in a word beside the number,
 //          from PowerWords.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (free play finished, rules plan package 2: the cue-angle control
+//          (CueAngleMenu, the one the Behind the 8-Ball card uses) sits in the panel wherever the model opens the
+//          raised cue (free play and matches), with a matching slider in the fine controls; the More menu gains Move
+//          cue ball, Undo last shot and the rack choice in free play; Shoot waits while the cue ball is lifted, while a
+//          shot is being solved, and in a match until the call is made; the tip sliders use the model's own tip
+//          travel (model.tipLimit) instead of the old fixed value.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -60,6 +66,7 @@ struct ShotPanel: View {
         HStack(spacing: 10) {
             TipPicker(model: model)
             PowerGauge(model: model).frame(minWidth: 84)
+            cueAngle
             tryAgainButton
             fireButton
             moreMenu
@@ -74,6 +81,7 @@ struct ShotPanel: View {
             }
             HStack(spacing: 10) {
                 moreMenu
+                cueAngle
                 Spacer(minLength: 0)
                 tryAgainButton
                 fireButton
@@ -90,6 +98,7 @@ struct ShotPanel: View {
             }
             HStack(spacing: 10) {
                 moreMenu
+                cueAngle
                 tryAgainButton
                 fireButton.frame(maxWidth: .infinity)
             }
@@ -112,8 +121,38 @@ struct ShotPanel: View {
         .foregroundStyle(palette.ground)   // dark text: white on bright cyan is too faint
         .controlSize(.regular)
         // While the last shot is still playing the guide is hidden; touching the table jumps to its end.
-        .disabled(!model.aimReady)
-        .accessibilityHint(model.racked ? "Plays your own break" : "Plays your shot")
+        .disabled(!canFire)
+        .accessibilityHint(needsCall ? String(localized: "Make your call first")
+                                     : (model.racked ? String(localized: "Plays your own break") : String(localized: "Plays your shot")))
+    }
+
+    /// A match that wants a call (eight-ball after the break) and has none yet.
+    private var needsCall: Bool { (model.match?.mustCall ?? false) && model.match?.currentCall == nil }
+
+    /// Shoot is offered once the balls on screen are where the next shot starts, the cue ball is not lifted, no shot
+    /// is being solved, and any call the match wants has been made.
+    private var canFire: Bool { model.aimReady && !model.placingCueBall && !model.isSolving && !needsCall }
+
+    /// True in plain free play: no match, no trick shot, no Behind the 8-Ball situation on the table.
+    private var freePlay: Bool {
+        model.match == nil && !model.trickMode.isActive && !model.eightBallMode.isActive
+    }
+
+    /// The raised cue, where the model allows it (free play and matches) and for a shot rather than the break.
+    @ViewBuilder private var cueAngle: some View {
+        if model.elevationAllowed && !model.racked {
+            CueAngleMenu(sine: $model.shotElevation, minHeight: Self.buttonHeight)
+                .controlSize(.regular)
+        }
+    }
+
+    /// The words for each free-play rack.
+    static func rackName(_ rack: FreePlayRack) -> String {
+        switch rack {
+        case .fifteen: return String(localized: "Fifteen-ball triangle")
+        case .nineBall: return String(localized: "Nine-ball diamond")
+        case .placeBalls: return String(localized: "No rack: place the balls")
+        }
     }
 
     /// Back to where the last shot started, same settings, with the last try kept as a ghost to compare against.
@@ -141,7 +180,23 @@ struct ShotPanel: View {
             Button { slidersOpen = true } label: { Label("Fine controls", systemImage: "slider.horizontal.3") }
             if !model.racked {
                 Button { model.aimAtNearestBall() } label: { Label("Aim at nearest ball", systemImage: "scope") }
-                Button { model.rerack() } label: { Label("Re-rack for a break", systemImage: "triangle") }
+            }
+            if freePlay {
+                // Practice players move the cue ball all the time: the same placement state as ball in hand.
+                Button { model.beginPlacingCueBall() } label: { Label("Move cue ball", systemImage: "hand.raised") }
+                    .disabled(!model.aimReady || model.placingCueBall)
+                Button { model.undoLastShot() } label: { Label("Undo last shot", systemImage: "arrow.uturn.backward.circle") }
+                    .disabled(!model.canUndo)
+                    .keyboardShortcut("z", modifiers: .command)
+                Picker(selection: Binding(get: { model.freePlayRack }, set: { model.setFreePlayRack($0) })) {
+                    ForEach(FreePlayRack.allCases, id: \.self) { rack in Text(ShotPanel.rackName(rack)).tag(rack) }
+                } label: {
+                    Label("Rack", systemImage: "triangle")
+                }
+                .pickerStyle(.menu)
+                if !model.racked {
+                    Button { model.rerack() } label: { Label("Re-rack for a break", systemImage: "triangle") }
+                }
             }
             if hintSeen {
                 Button { hintSeen = false } label: { Label("Show the hint again", systemImage: "questionmark.circle") }
@@ -233,9 +288,18 @@ private struct FineControls: View {
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
                               range: model.powerRange, readout: PowerWords.readout(speed: model.activePower, racked: model.racked))
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
-                              range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
+                              range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
                     SliderRow(label: "Side", value: Binding(get: { model.activeTipSide }, set: { model.activeTipSide = $0 }),
-                              range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.shownWord(ShotPanel.sideWord(model.activeTipSide)))
+                              range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.sideWord(model.activeTipSide)))
+                    if model.elevationAllowed && !model.racked {
+                        // Degrees on the slider, the sine in the model (the solver's unit). The top is the last angle
+                        // the cue-angle menu offers, short of where the cue rig stops pitching the cue.
+                        SliderRow(label: "Cue angle",
+                                  value: Binding(get: { asin(min(max(model.shotElevation, 0), 0.995)) * 180 / .pi },
+                                                 set: { model.shotElevation = $0 < 0.5 ? 0 : sin($0 * .pi / 180) }),
+                                  range: 0...Double(CueAngleMenu.angles.last ?? 80),
+                                  readout: CueAngleMenu.words(degrees: asin(min(max(model.shotElevation, 0), 0.995)) * 180 / .pi))
+                    }
                     Button {
                         sheetOpen = false
                         if model.fire() { isOpen = false }
@@ -245,7 +309,7 @@ private struct FineControls: View {
                     .buttonStyle(.glassProminent)
                     .foregroundStyle(palette.ground)
                     .controlSize(.large)
-                    .disabled(!model.aimReady)
+                    .disabled(!model.aimReady || model.placingCueBall || model.isSolving)
                     .padding(.top, 12)
                 }
                 .padding(16)

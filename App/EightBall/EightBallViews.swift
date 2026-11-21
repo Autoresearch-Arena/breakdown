@@ -11,6 +11,10 @@
 // Edited: Claude Opus 5.5 Medium, 21-November-2026 (the card's light "Scoring…" state while the judge works.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (imports BreakdownRules, where the eight-ball group, pocket, call,
 //          foul and loss types now live; nothing else changed.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the call control and the cue-angle menu moved to shared files so the
+//          match and free play reuse them: the ball chips, pocket menu and Safety button are CallBallChips,
+//          CallPocketMenu and CallSafetyButton (App/Match/CallControl.swift), the cue angle is CueAngleMenu
+//          (App/CueAngleControl.swift). This card drives them exactly as before.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -19,7 +23,7 @@
 //            landscape), hosted beside TrickShotCard. Looking: the story, Make your call, Watch an escape (the hint,
 //            which caps style at 2). Calling: the prompt, your callable balls and the six pockets as buttons (the
 //            complete route for VoiceOver; tapping the table is the quick route), Safety, Back. Aiming: the call, the
-//            cue angle (for jumps and masses; the shot panel has no elevation control), the bridge line. Scored: the
+//            cue angle (for jumps and masses; CueAngleMenu, shared with the shot panel), the bridge line. Scored: the
 //            result, the sum (5 made + difficulty + style - retry = total) with each style point named, the medal,
 //            then Physics Lens replay, Watch an escape, On a real table, Try again or Next. The "On a real table" card
 //            replaces the score while it is open: where to aim, how to hold the cue, how hard, the commonest miss, with
@@ -64,10 +68,8 @@ private enum EightBallFormat {
     static func degrees(_ x: Double) -> String { String(localized: "\(decimal(x, 1))°") }
     static func speed(_ x: Double) -> String { String(localized: "\(decimal(x, 1)) m/s") }
 
-    /// The cue's angle as words: level, or the angle above level.
-    static func cueAngle(_ degrees: Double) -> String {
-        degrees < 0.5 ? String(localized: "Level") : String(localized: "\(decimal(degrees, 0))° up")
-    }
+    /// The cue angle as words: level, or the angle above level (shared with the cue-angle menu).
+    static func cueAngle(_ degrees: Double) -> String { CueAngleMenu.words(degrees: degrees) }
 
     /// Tip offsets in millimetres, "centre" when both are zero.
     static func tip(up: Double, side: Double) -> String {
@@ -244,14 +246,10 @@ struct EightBallCard: View {
             header(s)
             line(callPrompt(s))
             if let n = mode.callNote { note(n, warning: true) }
-            ballChips(s)
+            CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
             buttons {
-                if mode.pendingBall != nil { pocketMenu }
-                styled(Button { mode.callSafety() } label: {
-                    Label("Safety", systemImage: "shield").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: false)
-                .accessibilityHint(String(localized: "Calls a safety: no ball, just a legal hit that leaves your opponent hooked"))
+                if mode.pendingBall != nil { CallPocketMenu(picked: nil) { mode.pick(pocket: $0) } }
+                CallSafetyButton { mode.callSafety() }
                 Button { mode.cancelCalling() } label: {
                     Label("Back", systemImage: "xmark").labelStyle(.iconOnly)
                         .frame(minWidth: 30, minHeight: Self.buttonHeight)
@@ -319,44 +317,6 @@ struct EightBallCard: View {
             : String(localized: "Tap one of your balls (\(s.group.title)), then the pocket you call. Or call Safety.")
     }
 
-    /// The callable balls as buttons: the same pick a tap on the table makes, and the route VoiceOver uses.
-    @ViewBuilder
-    private func ballChips(_ s: EightBallSituation) -> some View {
-        let balls = mode.callableBalls
-        if !balls.isEmpty {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(balls, id: \.self) { b in
-                        let picked = mode.pendingBall == b
-                        styled(Button { mode.pick(ball: b) } label: {
-                            Text("\(b)").font(.headline.monospacedDigit())
-                                .frame(minWidth: 30, minHeight: Self.buttonHeight)
-                        }, prominent: picked)
-                        .buttonBorderShape(.circle)
-                        .accessibilityLabel(String(localized: "Ball \(b)"))
-                        .accessibilityAddTraits(picked ? .isSelected : [])
-                    }
-                }
-                .padding(.vertical, 2)
-            }
-            .scrollIndicators(.hidden)
-        }
-    }
-
-    private var pocketMenu: some View {
-        Menu {
-            ForEach(EightBallPocket.allCases, id: \.self) { p in
-                Button(p.title) { mode.pick(pocket: p) }
-            }
-        } label: {
-            Label("Pocket", systemImage: "circle.dashed").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glassProminent)
-        .foregroundStyle(palette.ground)
-        .accessibilityLabel(String(localized: "Pick the pocket"))
-    }
-
     /// "You called the 3 in the foot-left corner." or "You called Safety."
     private var callLine: String {
         switch mode.call {
@@ -368,24 +328,11 @@ struct EightBallCard: View {
 
     // MARK: Aiming
 
-    /// The cue angle: level for most shots, raised for a jump, steep for a massé.
+    /// The cue angle: level for most shots, raised for a jump, steep for a massé. The shared control writes the sine
+    /// into the model's next shot, exactly what EightBallMode.cueAngle's setter does.
     private var cueAngleMenu: some View {
-        let angle = mode.cueAngle
-        return Menu {
-            Picker(String(localized: "Cue angle"), selection: Binding(get: { mode.cueAngle },
-                                                                       set: { mode.cueAngle = $0 })) {
-                ForEach(EightBallMode.cueAngles, id: \.self) { a in
-                    Text(EightBallFormat.cueAngle(Double(a))).tag(a)
-                }
-            }
-        } label: {
-            Label(EightBallFormat.cueAngle(Double(angle)), systemImage: "angle").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glass)
-        .accessibilityLabel(String(localized: "Cue angle"))
-        .accessibilityValue(EightBallFormat.cueAngle(Double(angle)))
-        .accessibilityHint(String(localized: "Raise the cue to jump or curve the cue ball"))
+        CueAngleMenu(sine: Binding(get: { model.shotElevation }, set: { model.shotElevation = $0 }),
+                     minHeight: Self.buttonHeight)
     }
 
     // MARK: Scored

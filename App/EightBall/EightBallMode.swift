@@ -10,6 +10,8 @@
 //          the card while it works, and a verdict that arrives after the player has moved on is dropped.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (imports BreakdownRules, where the eight-ball group, pocket, call,
 //          foul and loss types now live; nothing else changed.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (no longer dismisses the model's retry comparison: the general
+//          comparison card hides by itself while a situation is up, so the facts stay for the views to read.)
 // PURPOSE: Behind the 8-Ball flow, modelled on TrickShotMode. Holds which situation is on the table and walks the
 //          player through it: Looking (the table set up, the story card) > Calling (tap a ball, then a pocket, or tap
 //          Safety) > Aiming (the shot panel open, the player's own settings, never the answer) > Playing (the shot is
@@ -311,7 +313,6 @@ final class EightBallMode {
         if model.canTryAgain, let a = model.currentAttempt, !a.isBreak, a.start == s.setup,
            model.timelineVersion != hintVersion {
             model.tryAgain()
-            model.dismissComparison()
         } else {
             loadStart(with: playerSettings[s.id] ?? Self.defaultSettings)
         }
@@ -429,7 +430,6 @@ final class EightBallMode {
         guard token == judgeToken, phase == .scoring, current?.id == s.id else { return }
         var verdict = judged
         if capped { verdict = verdict.cappingStyle(at: EightBallVerdict.hintStyleCap) }
-        model.dismissComparison()
         lastVerdict = verdict
         showingRealTable = false
         phase = .scored(verdict)

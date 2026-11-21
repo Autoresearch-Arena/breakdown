@@ -3,6 +3,8 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (passes the shot's cue elevation to the table, so the massé and the jump are struck with a raised cue).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Watch it now turns the Ride camera on through model.setRide).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (lineUpAnswer, for the -trickAim store-screenshot flag.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (no longer dismisses the model's retry comparison: the trick card
+//          shows its sentence itself and the general card hides while a trick shot is up.)
 // PURPOSE: Trick-shot mode: the game's main purpose. Holds which trick shot is on the table and walks the player through
 //          it: Ready (the table set up at the shot's start, a card with the hook) > Watching (the authored solution plays
 //          at full speed) > Explaining (it replays slowly in the Physics Lens while the card gives the one idea behind
@@ -159,7 +161,6 @@ final class TrickShotMode {
         guard current != nil else { return }
         if model.canTryAgain, let attempt = model.currentAttempt, startsAtTrick(attempt) {
             model.tryAgain()
-            model.dismissComparison()
             phase = .aiming
             requestAiming(true)
         } else {
@@ -206,8 +207,9 @@ final class TrickShotMode {
             playerSettings[shot.id] = TrickSettings(aim: attempt.aim, power: attempt.power, tipUp: attempt.tipUp,
                                                     tipSide: attempt.tipSide)
             let verdict = TrickShotJudge.verdict(for: shot, attempt: attempt)
-            // The trick card already says what to change; the retry comparison card would repeat it over the table.
-            model.dismissComparison()
+            // The trick card is the one result card: it carries the retry's one-sentence difference itself, and the
+            // general comparison card hides while this mode is active (ComparisonCard), so the facts are kept, not
+            // dismissed, for the card to read.
             phase = .judged(verdict)
             // The card offers Try again; the panel closes so the table has the room while the verdict is read.
             requestAiming(false)

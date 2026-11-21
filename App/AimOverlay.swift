@@ -15,6 +15,12 @@
 //          situations that need the bridge get it too).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (one line: the guide is drawn along AimGeometry.launchDirection, so it
 //          bends with side spin on the new physics generation; the solver stream's hook, everything else unchanged).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (ball in hand, play-views stream: while the model has the cue ball
+//          lifted (placingCueBall) a drag anywhere on the table carries it to the finger (moveCueBallCandidate) and
+//          letting go puts it down (confirmCueBallPlacement; an illegal spot keeps it lifted, tinted red by
+//          PlayTableLayer); the arrow keys move it a ball radius in the direction they point on screen and Return
+//          puts it down; the aim drawing steps aside meanwhile. The retry test log reads the model's RetryComparison.
+//          The spoken route for placement is the ball-in-hand card (FreePlayViews), not this layer's Aim element.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -54,6 +60,8 @@ struct AimOverlay: View {
     @State private var cameraBox = AimProjector.CameraBox()
     @State private var mode: DragMode?
     @State private var pulling = false
+    /// True while a finger (or pointer) is carrying the lifted cue ball; letting go puts it down.
+    @State private var placingDrag = false
     @State private var viewSize = CGSize(width: 400, height: 800)
     @FocusState private var focused: Bool
 
@@ -111,6 +119,13 @@ struct AimOverlay: View {
     fileprivate func projectorForScript() -> AimProjector? { projector(size: viewSize) }
 
     fileprivate func endDrag() {
+        // Ball in hand: letting go puts the ball down. On an illegal spot the model keeps it lifted (and the table
+        // layer tints it red), so the player simply drags again.
+        if placingDrag {
+            placingDrag = false
+            model.confirmCueBallPlacement()
+            return
+        }
         if mode == .pull { hintSeen = true }
         mode = nil; pulling = false
     }
@@ -121,6 +136,13 @@ struct AimOverlay: View {
     }
 
     fileprivate func drag(from start: CGPoint, to location: CGPoint) {
+        // Ball in hand: the lifted cue ball follows the finger wherever the drag started; nothing is aimed.
+        if model.placingCueBall {
+            guard let proj = projector(size: viewSize), let spot = proj.table(at: location) else { return }
+            model.moveCueBallCandidate(to: spot)
+            placingDrag = true
+            return
+        }
         // Touching the table while the last shot is still playing takes over: jump to where the balls came to rest.
         if !model.aimReady { model.skipToResult() }
         guard model.layout.count == 16, let proj = projector(size: viewSize) else { return }
@@ -149,6 +171,7 @@ struct AimOverlay: View {
     private var pullBucket: Int { pulling && !Self.muted ? Int(model.powerFraction * 10) : -1 }
 
     private func handleKey(_ press: KeyPress) -> KeyPress.Result {
+        if model.placingCueBall { return placementKey(press) }
         guard model.aimReady else { return .ignored }
         let big = press.modifiers.contains(.shift)
         switch press.key {
@@ -162,6 +185,30 @@ struct AimOverlay: View {
             return .handled
         default: return .ignored
         }
+    }
+
+    /// Ball in hand from the keyboard: each arrow moves the lifted ball one ball radius the way the arrow points on
+    /// the screen (found by projecting a short screen step back onto the table, so it holds from any camera angle);
+    /// Return puts it down.
+    private func placementKey(_ press: KeyPress) -> KeyPress.Result {
+        let step: CGPoint
+        switch press.key {
+        case .leftArrow: step = CGPoint(x: -20, y: 0)
+        case .rightArrow: step = CGPoint(x: 20, y: 0)
+        case .upArrow: step = CGPoint(x: 0, y: -20)
+        case .downArrow: step = CGPoint(x: 0, y: 20)
+        case .return:
+            model.confirmCueBallPlacement()
+            return .handled
+        default: return .ignored
+        }
+        let at = CueBallPlacement.spot(model)
+        guard let proj = projector(size: viewSize), let s = proj.screen(at),
+              let there = proj.table(at: CGPoint(x: s.x + step.x, y: s.y + step.y)) else { return .ignored }
+        let d = there - at
+        guard d.lengthSquared > 1e-12 else { return .ignored }
+        model.moveCueBallCandidate(to: at + d.normalized * model.timeline.table.ballRadius)
+        return .handled
     }
 
     /// +1 when turning the aim counter-clockwise on the table plan also turns the line counter-clockwise on the
@@ -187,7 +234,7 @@ struct AimOverlay: View {
     // MARK: Drawing
 
     private func draw(_ ctx: inout GraphicsContext, size: CGSize) {
-        guard model.aimReady, model.layout.count == 16, NextShot.isOnTable(model.aimOrigin), let proj = projector(size: size) else { return }
+        guard model.aimReady, !model.placingCueBall, model.layout.count == 16, NextShot.isOnTable(model.aimOrigin), let proj = projector(size: size) else { return }
         let table = model.timeline.table
         let radius = table.ballRadius
         let origin = model.aimOrigin
@@ -359,7 +406,7 @@ private enum TestScript {
             await hold(4)
             _ = model.fire()
             await settle(model)
-            NSLog("AIMSCRIPT retry: compared -> %@", model.comparison ?? "none")
+            NSLog("AIMSCRIPT retry: compared -> %@", model.retryComparison.map { RetryWords.sentence($0) } ?? "none")
         default: // shots
             for shot in 1...2 {
                 let t = model.timeline.table

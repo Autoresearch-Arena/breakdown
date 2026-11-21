@@ -5,6 +5,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the -trickAim store-screenshot flag.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the list shows each shot's place in the easiest-first order,
 //          TrickShots.listNumber, instead of its authored number)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (learn from a retry: the Made it / Missed card also says the one
+//          difference from the last try (RetryWords) and offers See the contact (ContactButton), so a shot such as
+//          Stop Dead can be taken back to the contact from the card the player is already reading.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -178,7 +181,12 @@ struct TrickShotCard: View {
             }
             .accessibilityElement(children: .combine)
             line(verdict.line)
+            // After a retry, the one difference between the two tries, here on the one result card (the general
+            // comparison card steps aside while this card is up).
+            if let c = model.retryComparison { line(RetryWords.sentence(c)) }
             buttons {
+                // Back to the moment of contact, with the last try's trail beside it (shown when a ball was touched).
+                ContactButton(model: model)
                 if verdict.made {
                     tryAgainButton(prominent: false)
                     Button { mode.next() } label: {
