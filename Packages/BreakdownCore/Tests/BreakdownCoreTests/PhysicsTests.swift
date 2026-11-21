@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (the event-budget solve: within budget it is the normal solve,
+//          over budget it says so).
 // PURPOSE: Checks the solver against results that can be derived by hand (spec section 9.1): the five-sevenths
 //          rule, the ninety-degree rule, cushion mirror angles, rolling stop distance, momentum and energy
 //          accounting at every event, continuity of every ball's path, repeatability and the no-libm rule.
@@ -22,6 +24,15 @@ private func scene(_ cue: Vec2, others: [Vec2] = [], strike: CueStrike, _ p: Poo
 final class PhysicsTests: XCTestCase {
 
     // Test 1: a centre hit on a lone cue ball slides, then rolls at five sevenths of its launch speed.
+    // A budgeted solve that finishes is the very same timeline; one that runs out of events returns nil.
+    func testEventBudget() {
+        let input = Rack.breakShot(seed: 3, aimOffset: 0.004, speed: 9)
+        let full = PoolSolver.simulate(input)
+        let roomy = PoolSolver.simulate(input, eventBudget: PoolSolver.maxEvents)
+        XCTAssertEqual(roomy?.contentHash, full.contentHash)
+        XCTAssertNil(PoolSolver.simulate(input, eventBudget: 5))
+    }
+
     func testSlidingBecomesRollingAtFiveSevenths() {
         let tl = PoolSolver.simulate(scene(Vec2(0.5, 0.6), strike: CueStrike(direction: Vec2(1, 0), speed: 2.0)))
         let transition = tl.events.first { $0.kind == .phaseTransition && $0.phaseFrom == .sliding && $0.phaseTo == .rolling }

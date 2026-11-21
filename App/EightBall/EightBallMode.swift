@@ -6,11 +6,13 @@
 //          same call; the hint returns to aiming when a call is already made; the Physics Lens replay of your shot; the
 //          "On a real table" switch and the escape it describes; the cue angle for jumps and masses (the shot panel has
 //          no elevation control); Reset after a shot taken with no call).
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (the judgement runs on a background task: a new Scoring phase holds
+//          the card while it works, and a verdict that arrives after the player has moved on is dropped.)
 // PURPOSE: Behind the 8-Ball flow, modelled on TrickShotMode. Holds which situation is on the table and walks the
 //          player through it: Looking (the table set up, the story card) > Calling (tap a ball, then a pocket, or tap
 //          Safety) > Aiming (the shot panel open, the player's own settings, never the answer) > Playing (the shot is
-//          rolling) > Scored (the verdict from EightBallJudge: made as called, difficulty, named style points, total,
-//          medal, then the "On a real table" card). Watching is the optional hint: the authored escape plays, and that
+//          rolling) > Scoring (the judge works on a background task) > Scored (the verdict from EightBallJudge:
+//          made as called, difficulty, named style points, total, medal, then the "On a real table" card). Watching is the optional hint: the authored escape plays, and that
 //          situation's style is then capped at 2 (design decision 6).
 //          Tries: the first three scored tries of a visit count (each retry costs a point, applied by the verdict);
 //          after that the shot is practice and is not stored.
@@ -57,6 +59,8 @@ final class EightBallMode {
         case aiming
         /// The player's shot is rolling.
         case playing
+        /// The shot has stopped; the judge is working on a background task and the card says "Scoring…".
+        case scoring
         /// The attempt is over and scored.
         case scored(EightBallVerdict)
     }
@@ -94,6 +98,8 @@ final class EightBallMode {
     @ObservationIgnored private var playerSettings: [String: TrickSettings] = [:]
     @ObservationIgnored private var judgedVersion = -1
     @ObservationIgnored private var hintVersion = -1
+    /// Bumped for every judgement started; a verdict whose number is no longer the latest is thrown away.
+    @ObservationIgnored private var judgeToken = 0
     /// The player's own surface from before the mode, put back by end(): setSurface stores the choice, and a situation
     /// set on dive-bar felt must not leave the player on it after they leave.
     @ObservationIgnored private var surfaceBefore: PlaySurface?
@@ -144,7 +150,7 @@ final class EightBallMode {
                 return EightBallMarks(balls: [b], faintPockets: EightBallPocket.allCases.map(\.rawValue))
             }
             return EightBallMarks(faintBalls: callableBalls)
-        case .aiming, .scored:
+        case .aiming, .scoring, .scored:
             if let call, case .ball(let b, let p) = call { return EightBallMarks(balls: [b], pockets: [p.rawValue]) }
             return nil
         default:
@@ -386,22 +392,46 @@ final class EightBallMode {
                                          tipSide: attempt.tipSide,
                                          elevation: model.shotElevation > 0 ? model.shotElevation : nil)
             playerSettings[s.id] = settings
+            // The try is counted now, for the shot that was taken, even if the player moves on before the verdict.
             tries += 1
-            var verdict = EightBallJudge.judge(timeline: attempt.timeline, call: call, situation: s,
-                                               settings: settings, surface: model.physicsSurface, attempt: tries)
-            if hintWatched.contains(s.id) { verdict = verdict.cappingStyle(at: EightBallVerdict.hintStyleCap) }
-            model.dismissComparison()
-            lastVerdict = verdict
-            showingRealTable = false
-            phase = .scored(verdict)
+            judgeToken += 1
+            let token = judgeToken
+            // Captured now: a hint watched while the judge works must not cap a shot taken before it.
+            let capped = hintWatched.contains(s.id)
+            phase = .scoring
             requestAiming(false)
-            record(verdict, for: s)
+            // The judge re-solves the shot many times (the success windows, the matched escape, the safety check),
+            // which took seconds on the main actor and froze the screen. It is a pure function of these values, so
+            // it runs on a background task and the verdict is applied back here.
+            let timeline = attempt.timeline, surface = model.physicsSurface, tryNumber = tries
+            Task { [weak self] in
+                let verdict = await Task.detached(priority: .userInitiated) {
+                    EightBallJudge.judge(timeline: timeline, call: call, situation: s, settings: settings,
+                                         surface: surface, attempt: tryNumber)
+                }.value
+                self?.finishJudging(verdict, token: token, situation: s, capped: capped)
+            }
         default:
             break
         }
     }
 
     // MARK: Pieces
+
+    /// The verdict is back. It is used only if the player is still waiting on this same judgement: Try again, Next,
+    /// another situation or leaving the mode all move the phase on (or start a newer judgement), so a late verdict
+    /// is dropped rather than shown over whatever came next.
+    private func finishJudging(_ judged: EightBallVerdict, token: Int, situation s: EightBallSituation, capped: Bool) {
+        guard token == judgeToken, phase == .scoring, current?.id == s.id else { return }
+        var verdict = judged
+        if capped { verdict = verdict.cappingStyle(at: EightBallVerdict.hintStyleCap) }
+        model.dismissComparison()
+        lastVerdict = verdict
+        showingRealTable = false
+        phase = .scored(verdict)
+        requestAiming(false)
+        record(verdict, for: s)
+    }
 
     /// A medium level stroke through the middle; the aim is then pointed at the nearest ball.
     private static let defaultSettings = TrickSettings(aim: 0, power: 3, tipUp: 0, tipSide: 0)

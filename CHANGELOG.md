@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.6.3] - 21-November-2026
+
+Author: Claude Opus 5.5 Medium
+
+- What: Behind the 8-Ball no longer freezes after a shot. When the balls stop, the card says "Scoring…" while the judge works, and the scorecard follows; the table and buttons stay live meanwhile. A verdict that arrives after the player has already moved on (Try again, Next, another situation, leaving the mode) is dropped instead of covering what came next. Scoring is also much quicker on point-blank's steep jump, which took about five seconds even in a Release build.
+- Why: Recording the App Store video showed the screen frozen for several seconds before each scorecard: the judge re-solves the shot many times on the main thread.
+- How: EightBallMode starts the judgement on a background task in a new Scoring phase, counts the try at once, and applies the verdict only if it is still the latest judgement for the same situation and the card is still waiting for it. The judge was already a pure function with lock-guarded caches. Its window sweep now solves with an event budget (a new PoolSolver.simulate(_:eventBudget:) in the package; the normal solve is unchanged): in a narrow band of speeds point-blank's jump wedges the cue ball against a ball and the solver ground through its full event guard, so such a solve now counts as a miss after a small budget. It was never a make, so no score changes. The escape check prints each judgement's time.
+- Checked: the escape check passes every line with every escape scoring exactly as before; the slowest Release judgement is now under a fifth of a second (was about five seconds); package tests (with a new event-budget test) and the iPhone and Mac builds pass; in the simulator the massé escape played as a try shows "Scoring…" and then its scorecard with no freeze.
+
 ## [0.6.2] - 21-November-2026
 
 Author: Claude Opus 5.5 High

@@ -5,6 +5,10 @@
 //          lines and the DEBUG self checks.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a raised jump or massé stroke is a punch that stops at the strike, so
 //          the authored jumps are no longer called double hits; the self checks run from -eightJudgeCheck in any build.)
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (the judge now runs on a background task, called by EightBallMode;
+//          the sweep's solves carry an event budget, so a steep jump that jams the cue ball against a ball fails in a
+//          fraction of a second instead of grinding to the solver's guard for five; the escape check prints each
+//          judgement's time.)
 // PURPOSE: Judges one Behind the 8-Ball attempt (docs/2026-11-21-behind-the-eight-ball-design.md, sections 1 and 2)
 //          from its recording, the stroke as struck and the situation's start, and nothing else.
 //          - Fouls (1.3): scratch (pocketed or off the table), wrong ball first (a tie inside sameInstant counts the
@@ -19,8 +23,8 @@
 //            elevation nudged one at a time outward from the player's own value; each window is the unbroken range
 //            that still makes it legally. Tightness is how many halvings separate each window from the same window of
 //            the reference shot (a slow straight-in corner shot, object ball halfway), summed; the bands give 1-5. The
-//            sides of every window are searched in parallel (DispatchQueue.concurrentPerform) because the judge is
-//            called synchronously on the main actor; the reference windows are solved once per surface and cached.
+//            sides of every window are searched in parallel (DispatchQueue.concurrentPerform) to keep the verdict
+//            quick, and each sweep solve stops at sweepEventBudget events (a jam counts as a miss); the reference windows are solved once per surface and cached.
 //            Caps, in this order: measured, then within one of the matched escape's authored rating (or at most the
 //            situation's top rating for a route nobody authored) only when the live surface is the situation's own,
 //            then minus one in the outer part of a window, then 1...5, then a fluke forces 1.
@@ -38,7 +42,8 @@
 //            surface is not plain cloth) into label / words / number rows the views lay out side by side;
 //            cardEscape(for:in:) picks which escape the card describes.
 //          Every threshold is a named constant at the top so the situations can be tuned against it.
-//          Called by EightBallMode once per attempt that started from the situation's own setup.
+//          Called by EightBallMode once per attempt that started from the situation's own setup, on a background
+//          task: it reads nothing on the main actor, and its caches are behind a lock.
 // SRP/DRY check: Pass - judging only. Reads pockets through TrickShotJudge.pocket(of:in:), re-solves exactly as
 //          ShowpieceModel.solve does (TableKind.standard.apply, then PlaySurface.apply, then PoolSolver.simulate on a
 //          NextShot.shot input), reads the cloth numbers through RealTableNumbers / PlaySurface.parameters, and leaves
@@ -116,6 +121,12 @@ enum EightBallJudge {
     static let growth = 2.5
     static let maxNudges = 7
     static let bisections = 3
+    /// A sweep solve that needs more events than this is counted as a miss. An escape shot settles in tens of
+    /// events. A steep jump that lands the cue ball wedged against a ball can instead spin out to the solver's
+    /// 60,000-event guard (about five seconds each in Release, seen on point-blank's jump), and such a solve is cut
+    /// off a fraction of a second into the shot, so it was never a make: with this budget every authored escape
+    /// scores exactly as it did without it.
+    static let sweepEventBudget = 2_000
     /// The stroke is "near the edge" when it sits within this share of the half-window from a failing edge.
     static let edgeShare = 0.25
     /// The reference shot has no elevation window; a raised stroke's elevation window is measured against this width.
@@ -665,13 +676,21 @@ enum EightBallJudge {
     /// The same solve the app does (ShowpieceModel.solve): the standard table's numbers, then the surface's, written
     /// into the parameters of a NextShot.shot from the start. The seed only matters for a rack, so any fixed one does.
     static func solve(_ start: [Vec2], _ s: TrickSettings, on surface: PlaySurface) -> Timeline {
+        PoolSolver.simulate(shotInput(start, s, on: surface))
+    }
+
+    /// A sweep solve: the same solve within sweepEventBudget events, nil when a jam used the budget up.
+    private static func sweepSolve(_ start: [Vec2], _ s: TrickSettings, on surface: PlaySurface) -> Timeline? {
+        PoolSolver.simulate(shotInput(start, s, on: surface), eventBudget: sweepEventBudget)
+    }
+
+    private static func shotInput(_ start: [Vec2], _ s: TrickSettings, on surface: PlaySurface) -> ShotInput {
         var p = PoolParameters()
         TableKind.standard.apply(to: &p)
         surface.apply(to: &p)
         let a = s.aim * Double.pi / 180
-        let input = NextShot.shot(from: start, direction: Vec2(cos(a), sin(a)), speed: s.power, tipUp: s.tipUp,
-                                  tipSide: s.tipSide, seed: 1, parameters: p, elevation: s.elevation ?? 0)
-        return PoolSolver.simulate(input)
+        return NextShot.shot(from: start, direction: Vec2(cos(a), sin(a)), speed: s.power, tipUp: s.tipUp,
+                             tipSide: s.tipSide, seed: 1, parameters: p, elevation: s.elevation ?? 0)
     }
 
     /// The player's windows, plus whether each passing solve of the sweep also left shape.
@@ -679,7 +698,7 @@ enum EightBallJudge {
                                       situation: EightBallSituation, surface: PlaySurface)
         -> (windows: [Window], shapes: [Bool]) {
         let passes: @Sendable (TrickSettings) -> (Bool, Bool?) = { t in
-            let tl = solve(situation.setup, t, on: surface)
+            guard let tl = sweepSolve(situation.setup, t, on: surface) else { return (false, nil) }
             guard outcome(tl, call: call, situation: situation, settings: t).made else { return (false, nil) }
             return (true, leavesShape(after: tl, situation: situation))
         }
@@ -704,7 +723,7 @@ enum EightBallJudge {
         let ref = referenceSituation
         let call = EightBallCall.ball(1, pocket: .footRight)
         let passes: @Sendable (TrickSettings) -> (Bool, Bool?) = { t in
-            let tl = solve(ref.situation.setup, t, on: surface)
+            guard let tl = sweepSolve(ref.situation.setup, t, on: surface) else { return (false, nil) }
             return (outcome(tl, call: call, situation: ref.situation, settings: t).made, nil)
         }
         let w = windows([.aim, .speed, .side], around: ref.settings, passes: passes).windows
@@ -1169,7 +1188,7 @@ enum EightBallJudge {
         }
     }
 
-    /// Shared, lock-guarded caches. The judge runs on the main actor but its sweep solves run on worker threads.
+    /// Shared, lock-guarded caches. The judge runs on a background task and its sweep solves on worker threads.
     private final class Memo: @unchecked Sendable {
         private let lock = NSLock()
         private var referenceBySurface: [PlaySurface: [Window]] = [:]
@@ -1370,15 +1389,17 @@ extension EightBallJudge {
         for s in EightBallSituations.all {
             for e in s.escapes {
                 let tl = solve(s.setup, e.settings, on: s.surface)
+                let t0 = Date()
                 let v = judge(timeline: tl, call: e.call, situation: s, settings: e.settings, surface: s.surface,
                               attempt: 1)
+                let ms = Int(Date().timeIntervalSince(t0) * 1000)
                 let ok = v.legal && (e.call == .safety || v.madeAsCalled)
                 let tight = analysis(for: tl)?.tightness.map { String(format: "%.1f", $0) } ?? "-"
                 out.append((ok ? "PASS " : "FAIL ") + "\(s.id) \(e.id): fouls \(v.fouls.map(\.rawValue)) loss "
                            + "\(v.loss?.rawValue ?? "none") made \(v.madeAsCalled) matched \(v.matchedEscape ?? "none") "
                            + "difficulty \(v.difficulty) (authored \(e.rating), tightness \(tight)) "
                            + "style \(v.style.map(\.rawValue)) "
-                           + "total \(v.total) near edge \(v.nearEdge) fluke \(v.fluke)")
+                           + "total \(v.total) near edge \(v.nearEdge) fluke \(v.fluke) judged in \(ms) ms")
             }
         }
         return out

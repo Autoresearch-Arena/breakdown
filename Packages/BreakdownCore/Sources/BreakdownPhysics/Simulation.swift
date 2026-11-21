@@ -23,6 +23,9 @@
 //          than a post's or pin's height passes over it. Bed holes join the capture list after the edge pockets and are
 //          recorded as pocket 6 + j. With pocketsEnabled false the edge pockets, jaws and knuckles are gone and each
 //          cushion runs its whole side. A pool table has none of these, so its events and their order are unchanged.)
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (simulate(_:eventBudget:): the same solve with a smaller event
+//          limit that returns nil when the limit is used up, for callers that solve many variations of a shot. The
+//          normal solve is unchanged.)
 // PURPOSE: The event-driven billiards solver. A shot is a list of closed-form segments per ball (sliding,
 //          rolling, spinning, stationary) plus exact events. The loop repeatedly finds the earliest next
 //          event among: a ball's phase ending, a pocket capture, a cushion hit and a ball-ball contact,
@@ -83,6 +86,15 @@ public enum PoolSolver {
         var sim = Simulation(input: input)
         sim.run()
         return sim.timeline()
+    }
+
+    /// The same solve with a smaller event budget, for callers that solve many variations of a shot and only need
+    /// its outcome (the Behind the 8-Ball judge's window sweep). Nil when the budget ran out first: a ball wedged in
+    /// a jam can take tens of thousands of tiny events, seconds of work, to reach maxEvents. A solve that finishes
+    /// within the budget is exactly the one simulate(_:) returns.
+    public static func simulate(_ input: ShotInput, eventBudget: Int) -> Timeline? {
+        var sim = Simulation(input: input)
+        return sim.run(limit: min(eventBudget, maxEvents)) ? sim.timeline() : nil
     }
 }
 
@@ -556,10 +568,13 @@ private struct Simulation {
 
     // MARK: Loop
 
-    mutating func run() {
+    /// Runs the event loop. Returns false when it stopped because `limit` events were used up (a cut-off shot),
+    /// true when the shot settled or reached maxTime.
+    @discardableResult
+    mutating func run(limit: Int = PoolSolver.maxEvents) -> Bool {
         var count = 0
-        while count < PoolSolver.maxEvents {
-            guard let c = nextEvent(), c.time <= PoolSolver.maxTime else { break }
+        while count < limit {
+            guard let c = nextEvent(), c.time <= PoolSolver.maxTime else { return true }
             now = c.time
             switch c.rank {
             case .transition: applyTransition(c.a)
@@ -571,6 +586,7 @@ private struct Simulation {
             }
             count += 1
         }
+        return false
     }
 
     private mutating func applyTransition(_ i: Int) {

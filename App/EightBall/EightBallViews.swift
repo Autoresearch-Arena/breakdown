@@ -8,6 +8,7 @@
 //          scorecard says each result once and keeps its buttons on one row; the -eightPlay, -eightRide, -eightAim, -eightWatch
 //          and -eightRealTable test flags; the -eightJudgeCheck launch flag writes the acceptance check to the log and
 //          Documents.)
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (the card's light "Scoring…" state while the judge works.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -283,6 +284,15 @@ struct EightBallCard: View {
         case .playing:
             header(s)
             line(callLine)
+        case .scoring:
+            // The judge is working on a background task; the table stays live and the card says so.
+            header(s)
+            line(callLine)
+            HStack(spacing: 8) {
+                ProgressView().controlSize(.small)
+                Text("Scoring…").font(.subheadline).foregroundStyle(.secondary)
+            }
+            .accessibilityElement(children: .combine)
         case .scored(let v):
             if mode.showingRealTable {
                 realTable(s, verdict: v)
