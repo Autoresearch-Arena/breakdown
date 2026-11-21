@@ -4,6 +4,13 @@
 //          friction under the Moon's gravity so gravity is the one thing that changes. Every surface now has a summary,
 //          the one-line explanation shown under its name in the picker, and a parameters value the captions read their
 //          numbers from.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (two real cloths either side of the standard one: Tournament cloth,
+//          new clean worsted, and Dive-bar felt, old dirty napped felt with dead cushions. Their numbers are the ends of
+//          the measured ranges Dr. Dave Alciatore lists (drdavepoolinfo.com/?p=2349): sliding friction 0.15 to 0.4,
+//          rolling resistance 0.005 to 0.015, spin deceleration 5 to 15 rad/s squared, ball-rail restitution 0.6 to 0.9;
+//          his cloth-condition notes (drdavepoolinfo.com/?p=2596) say new clean cloth is slick and fast and old dirty
+//          cloth is sticky, so draw wears off sooner, and plays slower. These two are the first surfaces that change the
+//          cushions too, because worn bar tables have dead rails as well as slow cloth.)
 // PURPOSE: The playing surfaces the same physics can be watched on: standard cloth, ice, glass, rubber, cork, carpet,
 //          sand and the Moon. Each surface is only a set of numbers written into PoolParameters before a shot is solved
 //          (the solver already takes every one of them from there): friction and bounce numbers for most, gravity for
@@ -20,7 +27,8 @@ import Foundation
 
 enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
     // Menu order: from slippery to grippy, then the Moon on its own (it changes gravity, not friction).
-    case cloth, ice, glass, rubber, cork, carpet, sand, moon
+    // The real cloths come first, fastest to slowest (tournament, standard, dive bar), then the other materials.
+    case cloth, tournament, diveBar, ice, glass, rubber, cork, carpet, sand, moon
 
     var id: String { rawValue }
 
@@ -28,6 +36,8 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .cloth: return String(localized: "Cloth")
+        case .tournament: return String(localized: "Tournament cloth")
+        case .diveBar: return String(localized: "Dive-bar felt")
         case .ice: return String(localized: "Ice")
         case .glass: return String(localized: "Glass")
         case .sand: return String(localized: "Sand")
@@ -44,6 +54,8 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
     var summary: String {
         switch self {
         case .cloth: return String(localized: "The standard table: a struck ball skids briefly, then rolls and slows steadily.")
+        case .tournament: return String(localized: "New, clean worsted cloth as at a pro event: slick, so spin lasts and draw comes back far, fast, so balls roll a long way, and lively cushions.")
+        case .diveBar: return String(localized: "Old, dirty, napped felt on a bar table: it grabs the ball, so draw dies early, it is slow, so you hit harder, and the cushions are dead.")
         case .ice: return String(localized: "Almost no grip: balls skid far before rolling, then roll for ages.")
         case .glass: return String(localized: "Smooth and hard: long skids, long rolls, and jumps bounce back up.")
         case .rubber: return String(localized: "Very grippy: a skid turns into a roll almost at once, and jumps bounce high.")
@@ -58,6 +70,8 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
     var symbol: String {
         switch self {
         case .cloth: return "square.grid.3x3.fill"
+        case .tournament: return "trophy.fill"
+        case .diveBar: return "mug.fill"
         case .ice: return "snowflake"
         case .glass: return "sparkles"
         case .sand: return "aqi.medium"
@@ -77,8 +91,8 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
     }
 
     /// Write this surface's numbers into the parameters. Cloth leaves the defaults untouched (so a cloth shot hashes
-    /// exactly as it always did). Only the surface-contact numbers change, plus gravity on the Moon: the cushions,
-    /// ball-ball contact and table geometry are the same everywhere.
+    /// exactly as it always did). Only the surface-contact numbers change, plus gravity on the Moon and the cushions
+    /// on the two real cloths (tournament and dive bar); ball-ball contact and table geometry are the same everywhere.
     ///
     /// How the numbers act in the solver (Simulation.makeSegment): a sliding ball slows at slidingFriction * g and turns
     /// to rolling after 2 * slip / (7 * slidingFriction * g) seconds; a rolling ball slows at rollingResistance * g and
@@ -90,6 +104,26 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .cloth:
             break   // defaults: sliding 0.2, rolling 0.01, spin decay 9, slate bounce 0.5, slate friction 0.2, g 9.81
+        case .tournament:
+            // New worsted cloth (a tight napless weave), clean and dry: the slick, fast end of every measured range.
+            // Sliding 0.15 means a skid lasts a third longer than on the standard cloth, so draw and follow "take" late
+            // and come back far; rolling 0.005 means a ball rolls twice as far; spin 5 rad/s squared means side spin
+            // lives nearly twice as long; fresh cushions return 0.9 of the speed into them.
+            p.slidingFriction = 0.15
+            p.rollingResistance = 0.005
+            p.spinDecay = 5.0
+            p.cushionRestitution = 0.9
+        case .diveBar:
+            // Old woollen felt, napped, chalky and dirty, in a humid room: the sticky, slow end of the ranges. Sliding
+            // 0.3 grabs the ball, so a skid (and with it draw) is over in two thirds of the standard time; rolling 0.015
+            // makes it half again as slow, so the same speed goes two thirds as far; spin dies fast (14). The rubber is
+            // old and hard: 0.65 of the speed comes back off a rail instead of 0.85, and the dirty cloth on the nose
+            // grips the ball more (cushion friction 0.22), so side spin takes harder off the rail, as Dr. Dave notes.
+            p.slidingFriction = 0.3
+            p.rollingResistance = 0.015
+            p.spinDecay = 14.0
+            p.cushionRestitution = 0.65
+            p.cushionFriction = 0.22
         case .ice:
             // A phenolic ball on smooth ice: almost no grip, so a struck ball skids a long way before it rolls.
             // Rolling resistance 0.002 is the top of the plausible range on purpose: a ball still rolling at 0.5 m/s
@@ -152,6 +186,10 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
             p.gravity = 1.62
         }
     }
+
+    /// True for the two other real cloths, whose cushions are covered in the same cloth as the bed (the standard cloth's
+    /// cushions already are; every other surface keeps standard cloth on its rails).
+    var coversCushions: Bool { self == .tournament || self == .diveBar }
 
     static let storageKey = "optionSurface"
 

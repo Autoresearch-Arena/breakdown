@@ -29,6 +29,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the 3D cue and bridge: owns a CueRig inside the table group, so it
 //          fades with the table in the Lens, and hands it the aim, the CueStroke of the shot on screen, the clock and
 //          whether Ride is on in apply()).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the cushions wear the bed's cloth on tournament cloth and dive-bar
+//          felt, as a real table's do; every other surface keeps the standard cushion cloth).
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -61,6 +63,10 @@ final class TableScene {
     private var lastClock = 0.0
     /// The playing bed (the entity TableBuilder names "felt") and the surface it was last asked to wear.
     private let bed: ModelEntity?
+    /// The cushions (TableBuilder names them "cushions") and the cloth they were built in. On the two other real cloths
+    /// (tournament and dive bar) the cushions are covered in the same cloth as the bed, as on a real table.
+    private let cushions: ModelEntity?
+    private let standardCushionMaterials: [any Material]
     private var surface: PlaySurface
     var subscriptions: [EventSubscription] = []
 
@@ -71,6 +77,8 @@ final class TableScene {
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table, surface: surface)
         bed = tableGroup.findEntity(named: "felt") as? ModelEntity
+        cushions = tableGroup.findEntity(named: "cushions") as? ModelEntity
+        standardCushionMaterials = cushions?.model?.materials ?? []
         cueRig = CueRig(lightSource: root)
         tableGroup.addChild(cueRig.root)
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
@@ -84,6 +92,7 @@ final class TableScene {
             balls.append(parts.ball); bodies.append(parts.body); markers.append(parts.marker)
         }
         TableBuilder.addLights(to: root)
+        if surface.coversCushions { dress(surface) }
     }
 
     /// Light the scene with the generated lamp picture so the glossy parts have something to reflect.
@@ -114,10 +123,17 @@ final class TableScene {
     func setSurface(_ s: PlaySurface) {
         guard s != surface else { return }
         surface = s
+        dress(s)
+    }
+
+    /// Put the surface's picture on the bed (and on the cushions for the real cloths) once it is drawn.
+    private func dress(_ s: PlaySurface) {
         Task { [weak self] in
             let image = await StartupAssets.shared.bedImage(for: s)
-            guard let self, self.surface == s, let bed = self.bed else { return }
-            bed.model?.materials = [TableBuilder.bedMaterial(for: s, image: image)]
+            guard let self, self.surface == s else { return }
+            let material = TableBuilder.bedMaterial(for: s, image: image)
+            self.bed?.model?.materials = [material]
+            self.cushions?.model?.materials = s.coversCushions ? [material] : self.standardCushionMaterials
         }
     }
 

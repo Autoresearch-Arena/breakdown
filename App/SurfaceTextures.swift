@@ -5,6 +5,8 @@
 //          carpet, and stippled rubber; each the cloth's size and drawn only when that surface is chosen).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Moon regolith with soft craters and pebbles, and a cork board; ice
 //          retoned from near-white to a pale blue-grey so the lamp's light no longer washes it out).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the two real cloths: new tournament-blue worsted, and worn dive-bar felt
+//          with a bald break lane and faint chalk smudges; worn, never damaged).
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that fades to nothing at its edge, the
 //          pocket-wall gradient that makes a well read as deep, and the other playing beds of the Surface menu.
@@ -106,6 +108,67 @@ enum SurfaceTextures {
                 // Worn patches shift slightly toward a paler, greyer green; fresh cloth is richer.
                 let pale = max(0, wear) * 0.5
                 r.set(x, y, (base.0 + pale * 0.10) * shade, (base.1 + pale * 0.06) * shade, (base.2 + pale * 0.05) * shade)
+            }
+        }
+        return r.image()
+    }
+
+    /// Tournament cloth: new worsted cloth in the blue used at televised events. A finer, tighter weave than the standard
+    /// cloth (two-pixel threads), a faint even brushing and no worn patches at all: it was stretched this week.
+    static func tournamentClothImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.06, 0.26, 0.50)
+        let pitch = 2
+        for y in 0..<h {
+            for x in 0..<w {
+                let cx = x / pitch, cy = y / pitch
+                let tx = Float(x % pitch) + 0.5, ty = Float(y % pitch) + 0.5
+                let over = ((cx + cy) & 1) == 0
+                let ridge = over ? sin(.pi * ty / Float(pitch)) : sin(.pi * tx / Float(pitch))
+                // Kept faint for the same reason as the standard cloth: a strong regular weave shimmers on screen.
+                let thread = 0.5 + 0.5 * ridge
+                let brushing = fbm(Float(x) / 160, Float(y) / 3, px: 7, py: 160, octaves: 2, seed: 141) - 0.5
+                let grain = hash(x, y, 143) - 0.5
+                let shade = 1 + 0.025 * (thread - 0.6) + 0.03 * grain + 0.08 * brushing
+                r.set(x, y, base.0 * shade, base.1 * shade, base.2 * shade)
+            }
+        }
+        return r.image()
+    }
+
+    /// Dive-bar felt: cheap napped woollen felt that has been played on for years. A faded, greyed green with a heavy
+    /// blotchy nap and pilling; a bald, paler lane down the middle where every break has gone; and faint blue chalk
+    /// smudges. Nothing that would look like a bump the ball has to roll over (no burns or stains): worn, not damaged. Picture x runs along the table's length, y across it.
+    static func diveBarFeltImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.10, 0.31, 0.22)
+        let bald: (Float, Float, Float) = (0.30, 0.40, 0.31)
+        let chalk: (Float, Float, Float) = (0.20, 0.38, 0.62)
+        let fw = Float(w), fh = Float(h)
+        // Chalk smudges (centre, radius in pixels), mostly around the head of the table where people break and lean.
+        let smudges: [(x: Float, y: Float, r: Float)] = (0..<9).map { k in
+            (40 + hash(k, 1, 151) * (fw * 0.5), 30 + hash(k, 2, 151) * (fh - 60), 6 + hash(k, 3, 151) * 14)
+        }
+        for y in 0..<h {
+            for x in 0..<w {
+                let fx = Float(x), fy = Float(y)
+                // The nap: big soft blotches where the fibres lie different ways, plus fuzzy fine noise.
+                let blotch = fbm(fx / 60, fy / 45, px: 13, py: 9, octaves: 4, seed: 153) - 0.5
+                let fuzz = fbm(fx / 4, fy / 4, px: 192, py: 96, octaves: 2, seed: 155) - 0.5
+                // The break lane: centred across the table, strongest between the head string and the foot spot.
+                let across = (fy - fh * 0.5) / (fh * 0.16)
+                let along = max(0, 1 - pow((fx - fw * 0.5) / (fw * 0.36), 4))
+                let lane = exp(-across * across) * along * (0.55 + 0.3 * (fbm(fx / 30, fy / 30, px: 26, py: 13, octaves: 2, seed: 157)))
+                var c = lerp3(base, bald, lane)
+                for m in smudges {
+                    let dx = fx - m.x, dy = fy - m.y
+                    let d = (dx * dx + dy * dy).squareRoot() / m.r
+                    if d < 1.5 { c = lerp3(c, chalk, max(0, 1 - d) * 0.35 * (0.6 + 0.4 * hash(x / 2, y / 2, 159))) }
+                }
+                // Pilling: small balls of fibre, slightly lighter.
+                let pill: Float = hash(x / 2, y / 2, 161) > 0.985 ? 1.12 : 1
+                let shade = (1 + 0.30 * blotch + 0.12 * fuzz + 0.06 * (hash(x, y, 163) - 0.5)) * pill
+                r.set(x, y, c.0 * shade, c.1 * shade, c.2 * shade)
             }
         }
         return r.image()

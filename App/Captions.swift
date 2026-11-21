@@ -5,6 +5,7 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no more thinning to one caption per quarter second: every
 //          captioned event is kept, so the rack explosion's dozen hits survive for PacePlan to choose beats from;
 //          speed gates lowered so second-wave rack hits are captioned while dribbles still are not).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (off the standard cloth, when a surface also changes the cushions, the strike caption adds how much speed its rails give back).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: make(from:surface:) takes the surface the shot was
 //          solved on. Off cloth, the cue-strike caption adds a sentence comparing that surface's friction (or, on the
 //          Moon, its gravity) with cloth's and saying how much farther or shorter a ball skids and rolls; the
@@ -94,7 +95,11 @@ enum CaptionEngine {
             // the weight is mass times g, so both distances grow by the same ratio of gravities.
             return String(localized: "On the Moon the friction numbers are the same as on cloth, but gravity is \(f(s.p.gravity)) m/s² instead of \(f(s.cloth.gravity)). Friction pushes back with the friction number times the ball's weight, and weight is mass times gravity, so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")
         }
-        return String(localized: "On \(s.surface.title) the sliding friction is \(coefficient(s.p.slidingFriction)) and the rolling resistance \(coefficient(s.p.rollingResistance)) (cloth: \(coefficient(s.cloth.slidingFriction)) and \(coefficient(s.cloth.rollingResistance))), so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")
+        let friction = String(localized: "On \(s.surface.title) the sliding friction is \(coefficient(s.p.slidingFriction)) and the rolling resistance \(coefficient(s.p.rollingResistance)) (cloth: \(coefficient(s.cloth.slidingFriction)) and \(coefficient(s.cloth.rollingResistance))), so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")
+        // The real cloths also change the rails (fresh rubber on the tournament table, dead rubber in the bar).
+        guard s.p.cushionRestitution != s.cloth.cushionRestitution else { return friction }
+        let rails = String(localized: "The cushions give back \(coefficient(s.p.cushionRestitution)) of the speed driven into them (standard table: \(coefficient(s.cloth.cushionRestitution))).")
+        return friction + " " + rails
     }
 
     /// How long the ball skidded before this sliding-to-rolling event: the sliding segment the solver closed at the

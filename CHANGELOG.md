@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.12] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Two real pool cloths join the Surface menu: Tournament cloth (new worsted cloth in tournament blue, slick and fast, with lively cushions) and Dive-bar felt (old napped felt, faded with a bald break lane and faint chalk, grabby and slow, with dead cushions).
+- Why: The Boss wanted regulation cloth compared with worn bar felt, with the real friction numbers, as groundwork for the Behind the Eight Ball mode.
+- How: Each is a set of PoolParameters at the ends of the measured ranges Dr. Dave Alciatore lists (sliding friction 0.15 and 0.3, rolling resistance 0.005 and 0.015, spin deceleration 5 and 14, cushion restitution 0.9 and 0.65, bar cushion friction 0.22); their pictures are drawn in code; their cushions wear the same cloth as the bed; the strike caption also says how much speed their rails give back. The felt is worn but not damaged: no burns or stains that would look like bumps.
+- Checked: both surfaces seen in the simulator; iPhone and Mac builds pass; the new strings are translated in all eleven languages.
+
 ## [0.5.11] - 21-November-2026
 
 Author: Claude Opus 5.5 High

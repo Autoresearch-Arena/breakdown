@@ -42,6 +42,10 @@ extension PlaySurface {
     var bedFinish: BedFinish {
         switch self {
         case .cloth: BedFinish(roughness: 0.93, sheen: SIMD3(0.35, 0.75, 0.62))
+        // Worsted cloth has a tighter, flatter face than the standard cloth: a little less rough, a cool blue sheen.
+        case .tournament: BedFinish(roughness: 0.88, sheen: SIMD3(0.35, 0.55, 0.85))
+        // Napped felt is fuzzy and dull: fully rough, with a weak, greyed sheen.
+        case .diveBar: BedFinish(roughness: 0.97, specular: 0.3, sheen: SIMD3(0.30, 0.38, 0.28))
         case .ice: BedFinish(roughness: 0.32, clearcoat: 0.45, clearcoatRoughness: 0.38, specular: 0.25)
         // Glass: the lamp is one small, very bright spot light, so a near-mirror finish turned it into a blown-out disc
         // (seen in the simulator after the ice fix). A little more roughness and a softer, weaker coat spread it into a
@@ -62,6 +66,8 @@ extension PlaySurface {
     func makeBedImage() -> CGImage? {
         switch self {
         case .cloth: SurfaceTextures.clothImage()
+        case .tournament: SurfaceTextures.tournamentClothImage()
+        case .diveBar: SurfaceTextures.diveBarFeltImage()
         case .ice: SurfaceTextures.iceImage()
         case .glass: SurfaceTextures.glassImage()
         case .sand: SurfaceTextures.sandImage()
