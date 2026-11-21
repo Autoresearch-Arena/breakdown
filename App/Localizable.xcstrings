@@ -1040,7 +1040,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Борт отражает шар примерно под тем же углом, под каким тот пришёл, поэтому каждый борт — это зеркало. Цельтесь в отражение 5-го, а боковое вращение исказит этот угол."
+            "value": "Борт отражает шар примерно под тем же углом, под каким тот пришёл, поэтому каждый борт — это зеркало. Целься в отражение 5-го, а боковое вращение исказит этот угол."
           }
         },
         "zh-Hans": {
@@ -1168,7 +1168,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Um jogo de bilhar que mostra o seu raciocínio. Dê uma tacada e depois veja a física por trás dela."
+            "value": "Um jogo de bilhar que mostra o seu raciocínio. Dá uma tacada e depois vê a física por trás dela."
           }
         },
         "pt-BR": {
@@ -1180,7 +1180,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бильярдная игра, которая показывает, как всё устроено. Сделайте удар и посмотрите на физику, стоящую за ним."
+            "value": "Бильярдная игра, которая показывает, как всё устроено. Сделай удар и посмотри на физику, стоящую за ним."
           }
         },
         "zh-Hans": {
@@ -1658,7 +1658,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mire na imagem espelhada da caçapa: a sua distância atrás da tabela é igual à distância da caçapa real à frente."
+            "value": "Mira na imagem espelhada da caçapa: a sua distância atrás da tabela é igual à distância da caçapa real à frente."
           }
         },
         "pt-BR": {
@@ -1957,6 +1957,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "瞄准中"
+          }
+        }
+      }
+    },
+    "All trick shots": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كل ضربات الخدع"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Trickstöße"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos los tiros de truco"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tous les coups spectaculaires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti i colpi spettacolari"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すべてのトリックショット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 트릭 샷"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas as jogadas de efeito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas as tacadas de efeito"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Все трюковые удары"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部花式球"
           }
         }
       }
@@ -2288,7 +2358,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 5 pela tabela do fundo na caçapa lateral marcada."
+            "value": "Encaçapa a 5 pela tabela do fundo na caçapa lateral marcada."
           }
         },
         "pt-BR": {
@@ -2300,7 +2370,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отыграйте 5-й от дальнего борта в нужную боковую лузу."
+            "value": "Отыграй 5-й от дальнего борта в нужную боковую лузу."
           }
         },
         "zh-Hans": {
@@ -2358,7 +2428,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dobrou à volta."
+            "value": "Dobraste à volta."
           }
         },
         "pt-BR": {
@@ -2428,7 +2498,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fez a curva. Isso é um massé."
+            "value": "Fizeste a curva. Isso é um massé."
           }
         },
         "pt-BR": {
@@ -2544,7 +2614,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cassez et rentrez la 3 dans le coin en haut à droite."
+            "value": "Casse et rentre la 3 dans le coin en haut à droite."
           }
         },
         "it": {
@@ -2568,7 +2638,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quebre e encaçape a 3 no canto superior direito."
+            "value": "Quebra e encaçapa a 3 no canto superior direito."
           }
         },
         "pt-BR": {
@@ -2580,7 +2650,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Разбейте и загоните 3 в правый верхний угол."
+            "value": "Разбей и загони 3 в правый верхний угол."
           }
         },
         "zh-Hans": {
@@ -2661,6 +2731,76 @@
         }
       }
     },
+    "Bridge": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الجسر"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brücke"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chevalet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponte"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリッジ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리지"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponte"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponte"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мост"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "架杆"
+          }
+        }
+      }
+    },
     "Call it before you hit it: break the rack and send the 3 into the top-right corner.": {
       "localizations": {
         "ar": {
@@ -2684,7 +2824,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Annoncez-la avant de frapper : cassez le triangle et envoyez la 3 dans le coin en haut à droite."
+            "value": "Annonce-la avant de frapper : casse le triangle et envoie la 3 dans le coin en haut à droite."
           }
         },
         "it": {
@@ -2708,7 +2848,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anuncie antes de jogar: quebre o triângulo e mande a 3 para o canto superior direito."
+            "value": "Anuncia antes de jogar: quebra o triângulo e manda a 3 para o canto superior direito."
           }
         },
         "pt-BR": {
@@ -2720,7 +2860,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Объявите до удара: разбейте треугольник и пошлите 3 в правый верхний угол."
+            "value": "Объяви до удара: разбей треугольник и пошли 3 в правый верхний угол."
           }
         },
         "zh-Hans": {
@@ -2778,7 +2918,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anunciou, e entrou. Essa é uma abertura de efeito."
+            "value": "Anunciaste, e entrou. Essa é uma abertura de efeito."
           }
         },
         "pt-BR": {
@@ -3007,6 +3147,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "擦到袋口尖角"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "إغلاق"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schließen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fermer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiudi"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "닫기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fechar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fechar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Закрыть"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭"
           }
         }
       }
@@ -3548,7 +3758,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ponta do taco: arraste para escolher avanço, recuo ou lateral"
+            "value": "Ponta do taco: arrasta para escolher avanço, recuo ou lateral"
           }
         },
         "pt-BR": {
@@ -3560,7 +3770,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кончик кия: перетащите, чтобы выбрать накат, оттяжку или боковое вращение"
+            "value": "Кончик кия: перетащи, чтобы выбрать накат, оттяжку или боковое вращение"
           }
         },
         "zh-Hans": {
@@ -3594,7 +3804,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Contournez la 4 et rentrez la 9 dans le coin en haut à droite."
+            "value": "Contourne la 4 et rentre la 9 dans le coin en haut à droite."
           }
         },
         "it": {
@@ -3618,7 +3828,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faça a curva em volta da 4 e encaçape a 9 no canto superior direito."
+            "value": "Faz a curva em volta da 4 e encaçapa a 9 no canto superior direito."
           }
         },
         "pt-BR": {
@@ -3630,7 +3840,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Обогните 4 и загоните 9 в правый верхний угол."
+            "value": "Обогни 4 и загони 9 в правый верхний угол."
           }
         },
         "zh-Hans": {
@@ -3688,7 +3898,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faça a bola branca fazer a curva à volta do bloqueio para encaçapar a bola-alvo."
+            "value": "Faz a bola branca fazer a curva à volta do bloqueio para encaçapar a bola-alvo."
           }
         },
         "pt-BR": {
@@ -3700,7 +3910,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Закрутите белый шар вокруг помехи и забейте цель."
+            "value": "Закрути белый шар вокруг помехи и забей цель."
           }
         },
         "zh-Hans": {
@@ -3968,7 +4178,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arraste na bola para posicionar a ponta. Ou use as ações."
+            "value": "Arrasta na bola para posicionar a ponta. Ou usa as ações."
           }
         },
         "pt-BR": {
@@ -3980,7 +4190,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перетащите по шару, чтобы поставить кончик. Или используйте кнопки действий."
+            "value": "Перетащи по шару, чтобы поставить кончик. Или используй кнопки действий."
           }
         },
         "zh-Hans": {
@@ -4038,7 +4248,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arraste na mesa para mirar. Puxe para trás a partir da bola branca para definir a força, depois clique em %@. As setas do teclado ajustam com precisão."
+            "value": "Arrasta na mesa para mirar. Puxa para trás a partir da bola branca para definir a força, depois clica em %@. As setas do teclado ajustam com precisão."
           }
         },
         "pt-BR": {
@@ -4050,7 +4260,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перетащите по столу, чтобы прицелиться. Оттяните от белого шара, чтобы задать силу, затем нажмите «%@». Стрелки для точной настройки."
+            "value": "Перетащи по столу, чтобы прицелиться. Оттяни от белого шара, чтобы задать силу, затем нажми «%@». Стрелки для точной настройки."
           }
         },
         "zh-Hans": {
@@ -4108,7 +4318,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arraste na mesa para mirar. Puxe para trás a partir da bola branca para definir a força, depois toque em %@."
+            "value": "Arrasta na mesa para mirar. Puxa para trás a partir da bola branca para definir a força, depois toca em %@."
           }
         },
         "pt-BR": {
@@ -4120,7 +4330,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перетащите по столу, чтобы прицелиться. Оттяните от белого шара, чтобы задать силу, затем коснитесь «%@»."
+            "value": "Перетащи по столу, чтобы прицелиться. Оттяни от белого шара, чтобы задать силу, затем коснись «%@»."
           }
         },
         "zh-Hans": {
@@ -4201,6 +4411,76 @@
         }
       }
     },
+    "During a replay the camera rides behind the cue ball and the ball it hits, in slow motion at the contact": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أثناء الإعادة تسير الكاميرا خلف الكرة البيضاء والكرة التي تصطدم بها، بحركة بطيئة عند التلامس"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Während einer Wiederholung fährt die Kamera hinter der Spielkugel und der getroffenen Kugel mit, in Zeitlupe beim Kontakt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante una repetición, la cámara va detrás de la bola blanca y de la bola que golpea, en cámara lenta en el contacto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pendant un replay, la caméra suit derrière la blanche et la bille qu'elle touche, au ralenti au moment du contact"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante un replay la camera segue dietro la bianca e la palla che colpisce, al rallentatore nel momento del contatto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リプレイ中、カメラは手球とそれが当たる球の後ろをついていき、接触の瞬間はスローモーションになります"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "리플레이 중 카메라가 흰 공과 맞는 공의 뒤를 따라가며, 접촉 순간에는 슬로 모션이 됩니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante uma repetição, a câmara acompanha por trás a bola branca e a bola que ela acerta, em câmara lenta no contacto"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante um replay, a câmera acompanha por trás a bola branca e a bola que ela acerta, em câmera lenta no contato"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Во время повтора камера движется за битой и за шаром, в который она попадает, а в момент касания замедляется"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回放时，镜头跟在母球和被击中的球后面，接触瞬间会放慢"
+          }
+        }
+      }
+    },
     "Each ball can only push the next one along the line through their two centres, so the last contact, not your first, decides where the 7 goes.": {
       "localizations": {
         "ar": {
@@ -4260,7 +4540,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Каждый шар может толкнуть следующий только вдоль линии, соединяющей их центры, поэтому куда пойдёт 7-й, решает последнее касание, а не ваш первый удар."
+            "value": "Каждый шар может толкнуть следующий только вдоль линии, соединяющей их центры, поэтому куда пойдёт 7-й, решает последнее касание, а не твой первый удар."
           }
         },
         "zh-Hans": {
@@ -4971,6 +5251,76 @@
         }
       }
     },
+    "Free play": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لعب حر"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freies Spiel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Juego libre"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeu libre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gioco libero"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フリープレイ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자유 플레이"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jogo livre"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jogo livre"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свободная игра"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自由游戏"
+          }
+        }
+      }
+    },
     "Friction with the cloth slowed %@ and spun it up until the bottom of the ball stopped slipping. It now rolls at %@ m/s.": {
       "localizations": {
         "ar": {
@@ -5228,7 +5578,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bata de cima para baixo na bola branca e ela salta limpa por cima de uma bola no caminho."
+            "value": "Bate de cima para baixo na bola branca e ela salta limpa por cima de uma bola no caminho."
           }
         },
         "pt-BR": {
@@ -5240,7 +5590,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ударьте сверху вниз по белому шару, и он перескочит через шар на пути."
+            "value": "Ударь сверху вниз по белому шару, и он перескочит через шар на пути."
           }
         },
         "zh-Hans": {
@@ -5274,7 +5624,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Frappez la 2 et faites rentrer la 8 dans le coin en bas à gauche."
+            "value": "Frappe la 2 et fais rentrer la 8 dans le coin en bas à gauche."
           }
         },
         "it": {
@@ -5298,7 +5648,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bata na 2 e leve a 8 para o canto inferior esquerdo."
+            "value": "Bate na 2 e leva a 8 para o canto inferior esquerdo."
           }
         },
         "pt-BR": {
@@ -5310,7 +5660,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ударьте по 2 и загоните 8 в левый нижний угол."
+            "value": "Ударь по 2 и загони 8 в левый нижний угол."
           }
         },
         "zh-Hans": {
@@ -5368,7 +5718,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bata primeiro na 3. A 7 tem de cair."
+            "value": "Bate primeiro na 3. A 7 tem de cair."
           }
         },
         "pt-BR": {
@@ -5380,7 +5730,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сначала ударьте 3-й. 7-й должен упасть."
+            "value": "Сначала ударь 3-й. 7-й должен упасть."
           }
         },
         "zh-Hans": {
@@ -5438,7 +5788,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bata na 3, que bate na 4, que encaçapa a 7. Um empurrão ao longo de uma fila de bolas."
+            "value": "Bate na 3, que bate na 4, que encaçapa a 7. Um empurrão ao longo de uma fila de bolas."
           }
         },
         "pt-BR": {
@@ -5450,7 +5800,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ударьте 3-й, он заденет 4-й, а тот загонит 7-й в лузу. Один толчок вдоль ряда шаров."
+            "value": "Ударь 3-й, он заденет 4-й, а тот загонит 7-й в лузу. Один толчок вдоль ряда шаров."
           }
         },
         "zh-Hans": {
@@ -5578,7 +5928,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aguarde"
+            "value": "Espera"
           }
         },
         "pt-BR": {
@@ -5590,7 +5940,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Подождите"
+            "value": "Подожди"
           }
         },
         "zh-Hans": {
@@ -5694,7 +6044,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sautez la 6 et rentrez la 11 dans le coin en haut à droite."
+            "value": "Saute la 6 et rentre la 11 dans le coin en haut à droite."
           }
         },
         "it": {
@@ -5718,7 +6068,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salte a 6 e encaçape a 11 no canto superior direito."
+            "value": "Salta a 6 e encaçapa a 11 no canto superior direito."
           }
         },
         "pt-BR": {
@@ -5730,7 +6080,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перепрыгните 6 и загоните 11 в правый верхний угол."
+            "value": "Перепрыгни 6 и загони 11 в правый верхний угол."
           }
         },
         "zh-Hans": {
@@ -5858,7 +6208,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salte o bloqueio e encaçape a bola-alvo."
+            "value": "Salta o bloqueio e encaçapa a bola-alvo."
           }
         },
         "pt-BR": {
@@ -5870,7 +6220,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перепрыгните помеху и забейте цель."
+            "value": "Перепрыгни помеху и забей цель."
           }
         },
         "zh-Hans": {
@@ -6091,6 +6441,76 @@
         }
       }
     },
+    "Learn trick shots that make people stop and stare, and see the physics that makes each one work.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعلّم ضربات الخدع التي توقف الناس ليتفرجوا، وشاهد الفيزياء التي تجعل كل واحدة تنجح."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lerne Trickstöße, bei denen alle staunen, und sieh die Physik, die jeden einzelnen möglich macht."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprende tiros de truco que dejan a todos boquiabiertos y mira la física que hace funcionar cada uno."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apprends des coups spectaculaires qui font s'arrêter les gens, et découvre la physique qui fait marcher chacun."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impara colpi spettacolari che fanno fermare tutti a guardare, e scopri la fisica che fa funzionare ognuno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "みんなが思わず見入るトリックショットを覚えて、それぞれを成り立たせる物理を見てみよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사람들이 걸음을 멈추고 지켜보게 만드는 트릭 샷을 배우고, 각각이 성립하는 물리를 확인해 보세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprende jogadas de efeito que fazem toda a gente parar a olhar, e vê a física que faz cada uma funcionar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprenda tacadas de efeito que fazem todo mundo parar para olhar, e veja a física que faz cada uma funcionar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Учись трюковым ударам, от которых все замирают, и смотри, какая физика за каждым стоит."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学会让人驻足围观的花式球，看看每一杆背后的物理原理。"
+          }
+        }
+      }
+    },
     "Left spin": {
       "localizations": {
         "ar": {
@@ -6227,6 +6647,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "透镜"
+          }
+        }
+      }
+    },
+    "Lens colours: amber lines show a ball sliding, cyan lines a ball rolling": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ألوان العدسة: الخطوط العنبرية تُظهر كرة تنزلق، والخطوط السماوية تُظهر كرة تتدحرج"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lens-Farben: Bernsteinfarbene Linien zeigen eine rutschende Kugel, türkise Linien eine rollende Kugel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colores de la lente: las líneas ámbar muestran una bola deslizando, las cian una bola rodando"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couleurs de la lentille : les lignes ambre montrent une bille qui glisse, les lignes cyan une bille qui roule"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colori della lente: le linee ambra mostrano una palla che scivola, quelle ciano una palla che rotola"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レンズの色: 琥珀色の線は滑っている球、シアンの線は転がっている球を表します"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "렌즈 색상: 호박색 선은 미끄러지는 공, 청록색 선은 구르는 공을 나타냅니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cores da lente: as linhas âmbar mostram uma bola a deslizar, as ciano uma bola a rolar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cores da lente: as linhas âmbar mostram uma bola deslizando, as ciano uma bola rolando"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Цвета линзы: янтарные линии — шар скользит, голубые — шар катится"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "镜片颜色：琥珀色线条表示球在滑动，青色线条表示球在滚动"
           }
         }
       }
@@ -6418,7 +6908,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Errou? Toque em Tentar outra vez. As bolas voltam ao lugar onde estavam, com a mesma mira e força. Mude uma coisa, dê a tacada, e a sua última tentativa fica na mesa para comparar."
+            "value": "Erraste? Toca em Tentar outra vez. As bolas voltam ao lugar onde estavam, com a mesma mira e força. Muda uma coisa, dá a tacada, e a tua última tentativa fica na mesa para comparar."
           }
         },
         "pt-BR": {
@@ -6430,7 +6920,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Не попали? Нажмите «Попробовать снова». Шары вернутся на места, с тем же прицелом и силой. Измените что-то одно, ударьте, и прошлая попытка останется на столе для сравнения."
+            "value": "Промах? Нажми «Попробовать снова». Шары вернутся на места, с тем же прицелом и силой. Измени что-то одно, ударь, и прошлая попытка останется на столе для сравнения."
           }
         },
         "zh-Hans": {
@@ -6507,6 +6997,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "更多击球选项"
+          }
+        }
+      }
+    },
+    "New free game": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لعبة حرة جديدة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neues freies Spiel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva partida libre"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvelle partie libre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova partita libera"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しいフリーゲーム"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새 자유 게임"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novo jogo livre"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novo jogo livre"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новая свободная игра"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新的自由游戏"
           }
         }
       }
@@ -6651,6 +7211,76 @@
         }
       }
     },
+    "Next shot": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الضربة التالية"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nächster Stoß"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siguiente tiro"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coup suivant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpo successivo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次のショット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음 샷"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próxima jogada"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próxima tacada"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следующий удар"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下一杆"
+          }
+        }
+      }
+    },
     "Not enough %@ side. Strike further to the %@ of the cue ball.": {
       "localizations": {
         "ar": {
@@ -6698,7 +7328,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falta efeito lateral %@. Bata mais para o lado %@ da bola branca."
+            "value": "Falta efeito lateral %@. Bate mais para o lado %@ da bola branca."
           }
         },
         "pt-BR": {
@@ -6710,7 +7340,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Недостаточно %@ бокового вращения. Бейте дальше к %@ стороне белого шара."
+            "value": "Недостаточно %@ бокового вращения. Бей дальше к %@ стороне белого шара."
           }
         },
         "zh-Hans": {
@@ -6768,7 +7398,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falta recuo. Bata mais abaixo na bola branca."
+            "value": "Falta recuo. Bate mais abaixo na bola branca."
           }
         },
         "pt-BR": {
@@ -6780,7 +7410,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Недостаточно оттяжки. Бейте по белому шару ниже."
+            "value": "Недостаточно оттяжки. Бей по белому шару ниже."
           }
         },
         "zh-Hans": {
@@ -6838,7 +7468,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falta avanço. Bata mais acima na bola branca."
+            "value": "Falta avanço. Bate mais acima na bola branca."
           }
         },
         "pt-BR": {
@@ -6850,7 +7480,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Недостаточно наката. Бейте по белому шару выше."
+            "value": "Недостаточно наката. Бей по белому шару выше."
           }
         },
         "zh-Hans": {
@@ -6908,7 +7538,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falta força. Puxe mais para trás para bater mais forte."
+            "value": "Falta força. Puxa mais para trás para bater mais forte."
           }
         },
         "pt-BR": {
@@ -6920,7 +7550,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Не хватает силы. Оттяните дальше, чтобы ударить сильнее."
+            "value": "Не хватает силы. Оттяни дальше, чтобы ударить сильнее."
           }
         },
         "zh-Hans": {
@@ -6978,7 +7608,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Não é bem a linha certa. Mire %@ %@."
+            "value": "Não é bem a linha certa. Mira %@ %@."
           }
         },
         "pt-BR": {
@@ -7048,7 +7678,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Agora veja o que a mesa está a fazer"
+            "value": "Agora vê o que a mesa está a fazer"
           }
         },
         "pt-BR": {
@@ -7060,7 +7690,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Теперь посмотрите, что происходит на столе"
+            "value": "Теперь посмотри, что происходит на столе"
           }
         },
         "zh-Hans": {
@@ -7328,7 +7958,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Em duas tabelas, bata primeiro na 5 e encaçape-a."
+            "value": "Em duas tabelas, bate primeiro na 5 e encaçapa-a."
           }
         },
         "pt-BR": {
@@ -7340,7 +7970,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Через два борта: сначала ударьте по 5-му и забейте его."
+            "value": "Через два борта: сначала ударь по 5-му и забей его."
           }
         },
         "zh-Hans": {
@@ -7771,6 +8401,76 @@
         }
       }
     },
+    "Pick a trick shot": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اختر ضربة خدعة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen Trickstoß"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige un tiro de truco"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choisis un coup spectaculaire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli un colpo spettacolare"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トリックショットを選ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "트릭 샷 고르기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolhe uma jogada de efeito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escolha uma tacada de efeito"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбери трюковой удар"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选一个花式球"
+          }
+        }
+      }
+    },
     "Picture the pocket's reflection behind the far cushion and send the 5 at that. The cushion turns it back on the mirror line, into the real pocket.": {
       "localizations": {
         "ar": {
@@ -7818,7 +8518,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Imagine o reflexo da caçapa atrás da tabela do fundo e mande a 5 para lá. A tabela devolve-a na linha do espelho, para dentro da caçapa real."
+            "value": "Imagina o reflexo da caçapa atrás da tabela do fundo e manda a 5 para lá. A tabela devolve-a na linha do espelho, para dentro da caçapa real."
           }
         },
         "pt-BR": {
@@ -7830,7 +8530,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Представьте отражение лузы за дальним бортом и бейте 5-й в него. Борт отразит шар по линии зеркала в настоящую лузу."
+            "value": "Представь отражение лузы за дальним бортом и бей 5-й в него. Борт отразит шар по линии зеркала в настоящую лузу."
           }
         },
         "zh-Hans": {
@@ -8331,6 +9031,76 @@
         }
       }
     },
+    "Plays the answer, then explains it in the Physics Lens": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يعرض الحل ثم يشرحه في عدسة الفيزياء"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spielt die Lösung ab und erklärt sie dann in der Physik-Lens"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reproduce la solución y luego la explica en la Lente de física"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Montre la solution, puis l'explique dans la lentille physique"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra la soluzione, poi la spiega nella lente fisica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "答えを再生してから、物理レンズで解説します"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정답을 재생한 다음 물리 렌즈로 설명합니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra a solução e depois explica-a na lente de física"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra a solução e depois a explica na lente de física"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показывает решение, затем объясняет его в физической линзе"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "播放答案，然后在物理镜片中讲解"
+          }
+        }
+      }
+    },
     "Plays your own break": {
       "localizations": {
         "ar": {
@@ -8378,7 +9148,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Joga a sua própria abertura"
+            "value": "Joga a tua própria abertura"
           }
         },
         "pt-BR": {
@@ -8390,7 +9160,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Воспроизвести вашу разбивку"
+            "value": "Воспроизвести твою разбивку"
           }
         },
         "zh-Hans": {
@@ -8448,7 +9218,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Joga a sua tacada"
+            "value": "Joga a tua tacada"
           }
         },
         "pt-BR": {
@@ -8460,7 +9230,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Воспроизвести ваш удар"
+            "value": "Воспроизвести твой удар"
           }
         },
         "zh-Hans": {
@@ -8658,7 +9428,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 1 na caçapa de canto e depois a 2 na caçapa lateral."
+            "value": "Encaçapa a 1 na caçapa de canto e depois a 2 na caçapa lateral."
           }
         },
         "pt-BR": {
@@ -8670,7 +9440,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте 1-й в угловую лузу, затем 2-й в боковую."
+            "value": "Забей 1-й в угловую лузу, затем 2-й в боковую."
           }
         },
         "zh-Hans": {
@@ -8728,7 +9498,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 1 e deixe o efeito de avanço levar a bola branca até encaçapar também a 2."
+            "value": "Encaçapa a 1 e deixa o efeito de avanço levar a bola branca até encaçapar também a 2."
           }
         },
         "pt-BR": {
@@ -8740,7 +9510,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте 1-й, а верхнее вращение доведёт белый шар и до 2-го."
+            "value": "Забей 1-й, а верхнее вращение доведёт белый шар и до 2-го."
           }
         },
         "zh-Hans": {
@@ -8798,7 +9568,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 3 e faça a bola branca parar exatamente no ponto onde bateu."
+            "value": "Encaçapa a 3 e faz a bola branca parar exatamente no ponto onde bateu."
           }
         },
         "pt-BR": {
@@ -8810,7 +9580,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте 3-й, и белый шар замрёт на том самом месте, где ударил."
+            "value": "Забей 3-й, и белый шар замрёт на том самом месте, где ударил."
           }
         },
         "zh-Hans": {
@@ -8868,7 +9638,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 3. A bola branca tem de parar onde bateu."
+            "value": "Encaçapa a 3. A bola branca tem de parar onde bateu."
           }
         },
         "pt-BR": {
@@ -8880,7 +9650,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте 3-й. Белый шар должен остановиться там, где ударил."
+            "value": "Забей 3-й. Белый шар должен остановиться там, где ударил."
           }
         },
         "zh-Hans": {
@@ -8938,7 +9708,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 6 e depois recue para encaçapar a 2."
+            "value": "Encaçapa a 6 e depois recua para encaçapar a 2."
           }
         },
         "pt-BR": {
@@ -8950,7 +9720,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте 6-й, затем оттяжкой заберите 2-й."
+            "value": "Забей 6-й, затем оттяжкой забери 2-й."
           }
         },
         "zh-Hans": {
@@ -9008,7 +9778,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçape a 6 e depois puxe a bola branca de volta por todo o comprimento da mesa para encaçapar a 2 no fundo."
+            "value": "Encaçapa a 6 e depois puxa a bola branca de volta por todo o comprimento da mesa para encaçapar a 2 no fundo."
           }
         },
         "pt-BR": {
@@ -9020,7 +9790,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте 6-й, затем оттяните белый шар назад через весь стол, чтобы забить 2-й у дальнего конца."
+            "value": "Забей 6-й, затем оттяни белый шар назад через весь стол, чтобы забить 2-й у дальнего конца."
           }
         },
         "zh-Hans": {
@@ -9171,6 +9941,146 @@
         }
       }
     },
+    "Puts the balls back and opens the aiming controls": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يعيد الكرات إلى مكانها ويفتح أدوات التصويب"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt die Kugeln zurück und öffnet die Zielsteuerung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devuelve las bolas a su sitio y abre los controles de puntería"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remet les billes en place et ouvre les commandes de visée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimette a posto le palle e apre i controlli di mira"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球を元に戻し、狙いの操作を開きます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공을 제자리에 되돌리고 조준 컨트롤을 엽니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repõe as bolas e abre os controlos de pontaria"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recoloca as bolas e abre os controles de mira"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Возвращает шары на место и открывает управление прицелом"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把球放回原位并打开瞄准控制"
+          }
+        }
+      }
+    },
+    "Puts the balls back where the shot started, with your last aim, power and spin": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يعيد الكرات إلى حيث بدأت الضربة، مع تصويبك وقوتك ودورانك الأخيرة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt die Kugeln dorthin zurück, wo der Stoß begann, mit deinem letzten Ziel, deiner Kraft und deinem Effet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devuelve las bolas a donde empezó el tiro, con tu última puntería, potencia y efecto"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remet les billes là où le coup a commencé, avec ta dernière visée, ta puissance et ton effet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimette le palle dove è iniziato il colpo, con la tua ultima mira, potenza ed effetto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショットの開始位置に球を戻し、前回の狙い・強さ・回転を引き継ぎます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "샷이 시작된 자리로 공을 되돌리고, 마지막 조준·힘·회전을 유지합니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repõe as bolas onde a jogada começou, com a tua última pontaria, força e efeito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recoloca as bolas onde a tacada começou, com a sua última mira, força e efeito"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Возвращает шары туда, где начался удар, с твоим прошлым прицелом, силой и вращением"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把球放回这一杆开始的位置，保留你上次的瞄准、力度和旋转"
+          }
+        }
+      }
+    },
     "Puts the balls back where your last shot started, with the same aim, power and spin": {
       "localizations": {
         "ar": {
@@ -9218,7 +10128,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Coloca as bolas de volta onde começou a sua última tacada, com a mesma mira, força e efeito"
+            "value": "Coloca as bolas de volta onde começou a tua última tacada, com a mesma mira, força e efeito"
           }
         },
         "pt-BR": {
@@ -9230,7 +10140,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Возвращает шары туда, где начался ваш прошлый удар, с тем же прицелом, силой и вращением"
+            "value": "Возвращает шары туда, где начался твой прошлый удар, с тем же прицелом, силой и вращением"
           }
         },
         "zh-Hans": {
@@ -9288,7 +10198,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Levante o taco quase na vertical e a bola branca faz uma curva à volta de uma bola que esteja no caminho."
+            "value": "Levanta o taco quase na vertical e a bola branca faz uma curva à volta de uma bola que esteja no caminho."
           }
         },
         "pt-BR": {
@@ -9300,7 +10210,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поднимите кий почти вертикально, и белый шар обогнёт шар, мешающий на пути."
+            "value": "Подними кий почти вертикально, и белый шар обогнёт шар, мешающий на пути."
           }
         },
         "zh-Hans": {
@@ -9428,7 +10338,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leia a Lente"
+            "value": "Lê a Lente"
           }
         },
         "pt-BR": {
@@ -9731,6 +10641,286 @@
         }
       }
     },
+    "Ride": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرافقة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitfahren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suivre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segui"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "라이드"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguir"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguir"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следовать"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随"
+          }
+        }
+      }
+    },
+    "Ride Camera": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا المرافقة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitfahr-Kamera"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara de seguimiento"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caméra embarquée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera al seguito"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライドカメラ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "라이드 카메라"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câmara de acompanhamento"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câmera de acompanhamento"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Камера сопровождения"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随镜头"
+          }
+        }
+      }
+    },
+    "Ride camera": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا المرافقة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitfahr-Kamera"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara de seguimiento"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caméra embarquée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera al seguito"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライドカメラ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "라이드 카메라"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câmara de acompanhamento"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câmera de acompanhamento"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Камера сопровождения"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随镜头"
+          }
+        }
+      }
+    },
+    "Ride camera: the replay follows the balls at table height (Command-E)": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاميرا المرافقة: تتبع الإعادة الكرات على مستوى الطاولة (Command-E)"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitfahr-Kamera: Die Wiederholung folgt den Kugeln in Tischhöhe (Befehl-E)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cámara de seguimiento: la repetición sigue las bolas a la altura de la mesa (Comando-E)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caméra embarquée : le replay suit les billes à hauteur de table (Commande-E)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera al seguito: il replay segue le palle all'altezza del tavolo (Comando-E)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライドカメラ: リプレイがテーブルの高さで球を追いかけます(Command-E)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "라이드 카메라: 리플레이가 테이블 높이에서 공을 따라갑니다(Command-E)"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câmara de acompanhamento: a repetição segue as bolas à altura da mesa (Comando-E)"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Câmera de acompanhamento: o replay segue as bolas na altura da mesa (Command-E)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Камера сопровождения: повтор следует за шарами на высоте стола (Command-E)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随镜头：回放以台面高度跟随球移动（Command-E）"
+          }
+        }
+      }
+    },
     "Right spin": {
       "localizations": {
         "ar": {
@@ -9988,7 +11178,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mesma tacada, mesmo resultado. A física é exata, por isso nada muda a não ser que você mude."
+            "value": "Mesma tacada, mesmo resultado. A física é exata, por isso nada muda a não ser que mudes."
           }
         },
         "pt-BR": {
@@ -10000,7 +11190,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тот же удар, тот же результат. Физика точна, поэтому ничего не меняется, пока вы сами что-то не измените."
+            "value": "Тот же удар, тот же результат. Физика точна, поэтому ничего не меняется, пока ты сам что-то не изменишь."
           }
         },
         "zh-Hans": {
@@ -10058,7 +11248,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mande a 5 para longe da caçapa, na tabela do fundo, e de volta pela mesa até à caçapa lateral."
+            "value": "Manda a 5 para longe da caçapa, na tabela do fundo, e de volta pela mesa até à caçapa lateral."
           }
         },
         "pt-BR": {
@@ -10070,7 +11260,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отправьте 5-й подальше от лузы, в дальний борт, и обратно через стол в боковую лузу."
+            "value": "Отправь 5-й подальше от лузы, в дальний борт, и обратно через стол в боковую лузу."
           }
         },
         "zh-Hans": {
@@ -10968,7 +12158,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tão perto. Todas as definições estão quase lá: repita, com um pouco mais de cuidado na mira."
+            "value": "Tão perto. Todas as definições estão quase lá: repete, com um pouco mais de cuidado na mira."
           }
         },
         "pt-BR": {
@@ -10980,7 +12170,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Почти! Все настройки почти на месте: повторите и чуть аккуратнее прицельтесь."
+            "value": "Почти! Все настройки почти на месте: повтори и чуть аккуратнее прицелься."
           }
         },
         "zh-Hans": {
@@ -11458,7 +12648,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bata logo abaixo do centro para que o efeito de recuo já tenha passado exatamente quando a bola branca chega. Sem efeito, passa toda a sua velocidade à 3 e para de vez."
+            "value": "Bate logo abaixo do centro para que o efeito de recuo já tenha passado exatamente quando a bola branca chega. Sem efeito, passa toda a sua velocidade à 3 e para de vez."
           }
         },
         "pt-BR": {
@@ -11470,7 +12660,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте чуть ниже центра, чтобы обратное вращение спало как раз к моменту прихода белого шара. Без вращения он отдаст всю скорость 3-му и остановится."
+            "value": "Бей чуть ниже центра, чтобы обратное вращение спало как раз к моменту прихода белого шара. Без вращения он отдаст всю скорость 3-му и остановится."
           }
         },
         "zh-Hans": {
@@ -11528,7 +12718,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bata mais perto do centro da bola branca."
+            "value": "Bate mais perto do centro da bola branca."
           }
         },
         "pt-BR": {
@@ -11540,7 +12730,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте ближе к центру белого шара."
+            "value": "Бей ближе к центру белого шара."
           }
         },
         "zh-Hans": {
@@ -11598,7 +12788,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Força da tacada. Puxe para trás a partir da bola branca na mesa, ou arraste aqui."
+            "value": "Força da tacada. Puxa para trás a partir da bola branca na mesa, ou arrasta aqui."
           }
         },
         "pt-BR": {
@@ -11610,7 +12800,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сила удара. Оттяните от белого шара на столе или перетащите здесь."
+            "value": "Сила удара. Оттяни от белого шара на столе или перетащи здесь."
           }
         },
         "zh-Hans": {
@@ -11668,7 +12858,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deslize para cima ou para baixo para girar a mira. Use o menu Mais para as barras."
+            "value": "Desliza para cima ou para baixo para girar a mira. Usa o menu Mais para as barras."
           }
         },
         "pt-BR": {
@@ -11680,7 +12870,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Проведите вверх или вниз, чтобы повернуть прицел. Ползунки в меню «Ещё»."
+            "value": "Проведи вверх или вниз, чтобы повернуть прицел. Ползунки в меню «Ещё»."
           }
         },
         "zh-Hans": {
@@ -11878,7 +13068,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faça a sua tacada (Comando-Y)"
+            "value": "Faz a tua tacada (Comando-Y)"
           }
         },
         "pt-BR": {
@@ -11948,7 +13138,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toque em Lente para ver a física: os trajetos âmbar são bolas a deslizar, os ciano são bolas a rolar, quanto mais grosso mais rápido. Arraste a barra para percorrer a tacada nos dois sentidos."
+            "value": "Toca em Lente para ver a física: os trajetos âmbar são bolas a deslizar, os ciano são bolas a rolar, quanto mais grosso mais rápido. Arrasta a barra para percorrer a tacada nos dois sentidos."
           }
         },
         "pt-BR": {
@@ -11960,7 +13150,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нажмите «Линза», чтобы увидеть физику: янтарные линии означают скользящие шары, голубые катящиеся, чем толще линия, тем быстрее. Перетащите полосу, чтобы просмотреть удар в любом направлении."
+            "value": "Нажми «Линза», чтобы увидеть физику: янтарные линии означают скользящие шары, голубые катящиеся, чем толще линия, тем быстрее. Перетащи полосу, чтобы просмотреть удар в любом направлении."
           }
         },
         "zh-Hans": {
@@ -12018,7 +13208,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toque em Jogar. Arraste na mesa para mirar, puxe para trás a partir da bola branca para definir a força, toque na pequena imagem da bola branca para dar efeito, e toque em Abertura ou Tacar."
+            "value": "Toca em Jogar. Arrasta na mesa para mirar, puxa para trás a partir da bola branca para definir a força, toca na pequena imagem da bola branca para dar efeito, e toca em Abertura ou Tacar."
           }
         },
         "pt-BR": {
@@ -12030,13 +13220,83 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нажмите «Играть». Перетащите по столу, чтобы прицелиться, оттяните от белого шара, чтобы задать силу, коснитесь маленького значка белого шара, чтобы добавить вращение, и нажмите «Разбить» или «Ударить»."
+            "value": "Нажми «Играть». Перетащи по столу, чтобы прицелиться, оттяни от белого шара, чтобы задать силу, коснись маленького значка белого шара, чтобы добавить вращение, и нажми «Разбить» или «Ударить»."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "点击“开始”。在球桌上拖动以瞄准，从白球处往后拉以设定力度，点击小小的白球图标以添加旋转，然后点击“开球”或“击球”。"
+          }
+        }
+      }
+    },
+    "Tap Trick shots and choose one. Watch it, then tap Your turn: drag on the table to aim, pull back from the white ball to set the power, touch the small cue-ball picture to add spin, and tap Shoot.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضغط على ضربات الخدع واختر واحدة. شاهدها ثم اضغط على دورك: اسحب على الطاولة لتصويب الضربة، واسحب للخلف من الكرة البيضاء لضبط القوة، والمس صورة الكرة البيضاء الصغيرة لإضافة الدوران، ثم اضغط على اضرب."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippe auf Trickstöße und wähle einen. Sieh ihn dir an, tippe dann auf Du bist dran: Zieh auf dem Tisch, um zu zielen, zieh von der weißen Kugel zurück, um die Kraft einzustellen, tippe auf das kleine Spielkugel-Bild für Effet und tippe auf Stoßen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Tiros de truco y elige uno. Míralo y luego toca Tu turno: arrastra sobre la mesa para apuntar, tira hacia atrás desde la bola blanca para fijar la potencia, toca la imagen pequeña de la bola blanca para añadir efecto y toca Tirar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touche Coups spectaculaires et choisis-en un. Regarde-le, puis touche À toi : fais glisser sur la table pour viser, tire en arrière depuis la bille blanche pour régler la puissance, touche la petite image de la blanche pour ajouter de l'effet, puis touche Tirer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca Colpi spettacolari e scegline uno. Guardalo, poi tocca Tocca a te: trascina sul tavolo per mirare, tira indietro dalla bianca per impostare la potenza, tocca la piccola immagine della bianca per aggiungere effetto e tocca Tira."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「トリックショット」をタップして1つ選びます。見てから「あなたの番」をタップ。テーブルをドラッグして狙いを定め、白球から引いて強さを決め、小さな手球の絵をタッチして回転を加え、「ショット」をタップします。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "트릭 샷을 탭해서 하나를 고르세요. 구경한 뒤 내 차례를 탭합니다. 테이블을 드래그해 조준하고, 흰 공에서 뒤로 당겨 힘을 정하고, 작은 흰 공 그림을 터치해 회전을 더한 다음 샷을 탭하세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca em Jogadas de efeito e escolhe uma. Vê-a e depois toca em A tua vez: arrasta na mesa para apontar, puxa para trás a partir da bola branca para definir a força, toca na imagem pequena da branca para dar efeito e toca em Jogar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque em Tacadas de efeito e escolha uma. Assista e depois toque em Sua vez: arraste na mesa para mirar, puxe para trás a partir da bola branca para definir a força, toque na imagem pequena da branca para dar efeito e toque em Tacar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажми «Трюковые удары» и выбери один. Посмотри его, затем нажми «Твой ход»: проведи по столу, чтобы прицелиться, потяни от белого шара, чтобы задать силу, коснись маленькой картинки с битой, чтобы добавить вращение, и нажми «Ударить»."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点按“花式球”并选一个。先看示范，再点按“轮到你”：在台面上拖动来瞄准，从白球向后拉来设定力度，触碰小小的母球图来加旋转，然后点按“击球”。"
           }
         }
       }
@@ -12204,7 +13464,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La 4 bloque le chemin vers la 9. Relevez la queue, frappez le côté de la blanche, et elle contourne."
+            "value": "La 4 bloque le chemin vers la 9. Relève la queue, frappe le côté de la blanche, et elle contourne."
           }
         },
         "it": {
@@ -12228,7 +13488,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A 4 bloqueia o caminho até a 9. Levante o taco, bata na lateral da branca, e ela faz a curva."
+            "value": "A 4 bloqueia o caminho até a 9. Levanta o taco, bate na lateral da branca, e ela faz a curva."
           }
         },
         "pt-BR": {
@@ -12240,7 +13500,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Четвёрка перекрывает путь к девятке. Поднимите кий, ударьте в бок биты, и она обогнёт препятствие."
+            "value": "Четвёрка перекрывает путь к девятке. Подними кий, ударь в бок биты, и она обогнёт препятствие."
           }
         },
         "zh-Hans": {
@@ -12298,7 +13558,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A 5 está escondida atrás de duas bolas. Mande a bola branca pelo caminho mais longo, em duas tabelas, e encaçape-a mesmo assim."
+            "value": "A 5 está escondida atrás de duas bolas. Manda a bola branca pelo caminho mais longo, em duas tabelas, e encaçapa-a mesmo assim."
           }
         },
         "pt-BR": {
@@ -12310,7 +13570,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "5-й шар спрятан за двумя шарами. Отправьте белый шар в обход, через два борта, и всё равно забейте его."
+            "value": "5-й шар спрятан за двумя шарами. Отправь белый шар в обход, через два борта, и всё равно забей его."
           }
         },
         "zh-Hans": {
@@ -12344,7 +13604,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La 6 est juste sur le chemin. Frappez vers le bas la blanche, et elle saute proprement par-dessus pour rentrer la 11."
+            "value": "La 6 est juste sur le chemin. Frappe vers le bas la blanche, et elle saute proprement par-dessus pour rentrer la 11."
           }
         },
         "it": {
@@ -12368,7 +13628,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A 6 está bem no caminho. Bata por cima da branca e ela pula limpa por cima para encaçapar a 11."
+            "value": "A 6 está bem no caminho. Bate por cima da branca e ela pula limpa por cima para encaçapar a 11."
           }
         },
         "pt-BR": {
@@ -12380,7 +13640,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Шестёрка стоит прямо на пути. Ударьте по бите сверху, и она чисто перепрыгнет и загонит 11."
+            "value": "Шестёрка стоит прямо на пути. Ударь по бите сверху, и она чисто перепрыгнет и загонит 11."
           }
         },
         "zh-Hans": {
@@ -12858,7 +14118,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A bola branca voltou. Bata um pouco mais acima, mais perto do centro."
+            "value": "A bola branca voltou. Bate um pouco mais acima, mais perto do centro."
           }
         },
         "pt-BR": {
@@ -12870,7 +14130,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Белый шар пошёл назад. Бейте чуть выше, ближе к центру."
+            "value": "Белый шар пошёл назад. Бей чуть выше, ближе к центру."
           }
         },
         "zh-Hans": {
@@ -12998,7 +14258,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A bola branca tem de atingir a %lld primeiro. Mire %@ %@."
+            "value": "A bola branca tem de atingir a %lld primeiro. Mira %@ %@."
           }
         },
         "pt-BR": {
@@ -13068,7 +14328,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A bola branca continuou a rolar depois da tacada. Bata um pouco mais abaixo."
+            "value": "A bola branca continuou a rolar depois da tacada. Bate um pouco mais abaixo."
           }
         },
         "pt-BR": {
@@ -13080,7 +14340,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "После удара белый шар покатился дальше. Бейте чуть ниже."
+            "value": "После удара белый шар покатился дальше. Бей чуть ниже."
           }
         },
         "zh-Hans": {
@@ -13488,7 +14748,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A guia mostra a primeira bola que você vai atingir e para onde as duas bolas seguem depois. Desligue-a para avaliar o ângulo por si."
+            "value": "A guia mostra a primeira bola que vais atingir e para onde as duas bolas seguem depois. Desliga-a para avaliar o ângulo por ti."
           }
         },
         "pt-BR": {
@@ -13500,7 +14760,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Направляющая показывает первый шар, в который вы попадёте, и куда дальше пойдут оба шара. Выключите её, чтобы самостоятельно оценить угол."
+            "value": "Направляющая показывает первый шар, в который ты попадёшь, и куда дальше пойдут оба шара. Выключи её, чтобы самостоятельно оценить угол."
           }
         },
         "zh-Hans": {
@@ -13581,6 +14841,146 @@
         }
       }
     },
+    "The idea": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الفكرة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Idee"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La idea"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'idée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'idea"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "考え方"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "핵심 아이디어"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A ideia"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A ideia"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Идея"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原理"
+          }
+        }
+      }
+    },
+    "The maths: %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الرياضيات: %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Mathematik: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La matemática: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les maths : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La matematica: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数式: %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "수식: %@"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A matemática: %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A matemática: %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Математика: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数学表达：%@"
+          }
+        }
+      }
+    },
     "The side spin bent it off line. Strike through the middle of the cue ball.": {
       "localizations": {
         "ar": {
@@ -13628,7 +15028,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "O efeito lateral desviou-a da linha. Bata pelo centro da bola branca."
+            "value": "O efeito lateral desviou-a da linha. Bate pelo centro da bola branca."
           }
         },
         "pt-BR": {
@@ -13640,7 +15040,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Боковое вращение увело шар с линии. Бейте точно по центру белого шара."
+            "value": "Боковое вращение увело шар с линии. Бей точно по центру белого шара."
           }
         },
         "zh-Hans": {
@@ -14398,7 +15798,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Recuo a mais. Bata um pouco mais acima."
+            "value": "Recuo a mais. Bate um pouco mais acima."
           }
         },
         "pt-BR": {
@@ -14410,7 +15810,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Оттяжки слишком много. Бейте чуть выше."
+            "value": "Оттяжки слишком много. Бей чуть выше."
           }
         },
         "zh-Hans": {
@@ -14468,7 +15868,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avanço a mais. Bata um pouco mais abaixo."
+            "value": "Avanço a mais. Bate um pouco mais abaixo."
           }
         },
         "pt-BR": {
@@ -14480,7 +15880,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Накат слишком сильный. Бейте чуть ниже."
+            "value": "Накат слишком сильный. Бей чуть ниже."
           }
         },
         "zh-Hans": {
@@ -14538,7 +15938,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Força a mais. Puxe menos para trás para bater mais leve."
+            "value": "Força a mais. Puxa menos para trás para bater mais leve."
           }
         },
         "pt-BR": {
@@ -14550,7 +15950,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Слишком много силы. Оттяните меньше, чтобы ударить мягче."
+            "value": "Слишком много силы. Оттяни меньше, чтобы ударить мягче."
           }
         },
         "zh-Hans": {
@@ -14608,7 +16008,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Efeito lateral a mais. Bata um pouco mais perto do centro."
+            "value": "Efeito lateral a mais. Bate um pouco mais perto do centro."
           }
         },
         "pt-BR": {
@@ -14620,7 +16020,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Боковое вращение слишком сильное. Бейте чуть ближе к центру."
+            "value": "Боковое вращение слишком сильное. Бей чуть ближе к центру."
           }
         },
         "zh-Hans": {
@@ -14767,6 +16167,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "相互接触的球分开时会摩擦。母球的左旋使2号球转动，2号球与8号球之间的摩擦把8号球带离原来的路线送进袋口。"
+          }
+        }
+      }
+    },
+    "Trick shots": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضربات الخدع"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trickstöße"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiros de truco"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coups spectaculaires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpi spettacolari"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トリックショット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "트릭 샷"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jogadas de efeito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tacadas de efeito"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Трюковые удары"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "花式球"
           }
         }
       }
@@ -15121,6 +16591,146 @@
         }
       }
     },
+    "Vibration": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الاهتزاز"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibration"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibración"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibration"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibrazione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "振動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "진동"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibração"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibração"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вибрация"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "振动"
+          }
+        }
+      }
+    },
+    "Watch each shot, see the physics behind it in the Lens, then make it yourself.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد كل ضربة، وتعرّف على الفيزياء وراءها في العدسة، ثم نفّذها بنفسك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieh dir jeden Stoß an, entdecke die Physik dahinter in der Lens und mach ihn dann selbst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira cada tiro, descubre su física en la Lente y luego hazlo tú."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regarde chaque coup, découvre sa physique dans la lentille, puis réussis-le toi-même."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda ogni colpo, scopri la fisica che lo regge nella lente, poi fallo tu."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショットを見て、レンズでその裏にある物理を確かめ、自分でも決めてみよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "각 샷을 보고, 렌즈로 그 뒤의 물리를 확인한 다음, 직접 성공시켜 보세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vê cada jogada, descobre a física por trás dela na lente e depois faz tu."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assista a cada tacada, veja a física por trás dela na lente e depois faça você mesmo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Посмотри каждый удар, увидь физику за ним в линзе, а затем повтори сам."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "观看每一杆，用镜片看清背后的物理原理，然后亲自打出来。"
+          }
+        }
+      }
+    },
     "Watch the answer. %@": {
       "localizations": {
         "ar": {
@@ -15168,7 +16778,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Veja a resposta. %@"
+            "value": "Vê a resposta. %@"
           }
         },
         "pt-BR": {
@@ -15180,7 +16790,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Смотрите ответ. %@"
+            "value": "Смотри ответ. %@"
           }
         },
         "zh-Hans": {
@@ -15238,7 +16848,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Veja a abertura"
+            "value": "Vê a abertura"
           }
         },
         "pt-BR": {
@@ -15284,13 +16894,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le point d'impact sur la bille de tête décide du chemin de l'énergie dans le triangle. Frappez-la un peu décentrée, et la poussée parcourt une ligne de billes, jusqu'à la 3, puis dans le coin."
+            "value": "Le point d'impact sur la bille de tête décide du chemin de l'énergie dans le triangle. Frappe-la un peu décentrée, et la poussée parcourt une ligne de billes, jusqu'à la 3, puis dans le coin."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dove colpisci la palla di testa decide dove va l'energia nel triangolo. Colpitela un po' decentrata e la spinta corre lungo una fila di palle, arriva alla 3 e finisce nell'angolo."
+            "value": "Dove colpisci la palla di testa decide dove va l'energia nel triangolo. Colpiscila un po' decentrata e la spinta corre lungo una fila di palle, arriva alla 3 e finisce nell'angolo."
           }
         },
         "ja": {
@@ -15308,7 +16918,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Onde você bate na bola da frente decide por onde a energia corre pelo triângulo. Bata um pouco fora do centro e o empurrão segue por uma fila de bolas, chega à 3 e vai para o canto."
+            "value": "Onde bates na bola da frente decide por onde a energia corre pelo triângulo. Bate um pouco fora do centro e o empurrão segue por uma fila de bolas, chega à 3 e vai para o canto."
           }
         },
         "pt-BR": {
@@ -15320,7 +16930,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Точка удара по передний шар определяет, куда пойдёт энергия через треугольник. Ударьте чуть мимо центра, и толчок пройдёт по ряду шаров, дойдёт до 3 и загонит её в угол."
+            "value": "Точка удара по передний шар определяет, куда пойдёт энергия через треугольник. Ударь чуть мимо центра, и толчок пройдёт по ряду шаров, дойдёт до 3 и загонит её в угол."
           }
         },
         "zh-Hans": {
@@ -15378,7 +16988,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Você %@."
+            "value": "Tu %@."
           }
         },
         "pt-BR": {
@@ -15390,7 +17000,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы %@."
+            "value": "Ты %@."
           }
         },
         "zh-Hans": {
@@ -15448,7 +17058,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bateu com corte demasiado %@. Mire %@ %@."
+            "value": "Bateste com corte demasiado %@. Mira %@ %@."
           }
         },
         "pt-BR": {
@@ -15518,7 +17128,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A sua tacada"
+            "value": "A tua tacada"
           }
         },
         "pt-BR": {
@@ -15530,7 +17140,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш удар"
+            "value": "Твой удар"
           }
         },
         "zh-Hans": {
@@ -15588,7 +17198,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A sua tacada"
+            "value": "A tua tacada"
           }
         },
         "pt-BR": {
@@ -15600,13 +17210,83 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш удар"
+            "value": "Твой удар"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "你的击球"
+          }
+        }
+      }
+    },
+    "Your turn": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دورك"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist dran"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu turno"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À toi"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca a te"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたの番"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내 차례"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A tua vez"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sua vez"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Твой ход"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轮到你"
           }
         }
       }
@@ -15798,7 +17478,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "mirou um pouco para a esquerda"
+            "value": "miraste um pouco para a esquerda"
           }
         },
         "pt-BR": {
@@ -15868,7 +17548,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "mirou um pouco para a direita"
+            "value": "miraste um pouco para a direita"
           }
         },
         "pt-BR": {
@@ -16148,7 +17828,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "mudou o efeito de %@ para %@"
+            "value": "mudaste o efeito de %@ para %@"
           }
         },
         "pt-BR": {
@@ -16778,7 +18458,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "bateu mais acima na bola branca"
+            "value": "bateste mais acima na bola branca"
           }
         },
         "pt-BR": {
@@ -16848,7 +18528,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "bateu com mais força"
+            "value": "bateste com mais força"
           }
         },
         "pt-BR": {
@@ -16918,7 +18598,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "bateu com menos força"
+            "value": "bateste com menos força"
           }
         },
         "pt-BR": {
@@ -16988,7 +18668,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "bateu mais abaixo na bola branca"
+            "value": "bateste mais abaixo na bola branca"
           }
         },
         "pt-BR": {
@@ -17968,7 +19648,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "aplicou efeito lateral %@"
+            "value": "aplicaste efeito lateral %@"
           }
         },
         "pt-BR": {
@@ -18808,7 +20488,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "tirou o efeito lateral"
+            "value": "tiraste o efeito lateral"
           }
         },
         "pt-BR": {
@@ -18890,7 +20570,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Смотрите, как работает физика"
+            "value": "Смотри, как работает физика"
           }
         },
         "zh-Hans": {
