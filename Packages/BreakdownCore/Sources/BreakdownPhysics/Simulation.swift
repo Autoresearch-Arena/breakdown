@@ -549,9 +549,11 @@ private struct Simulation {
             if seg.phase == .stationary || seg.phase == .spinning {
                 // Generation 2: a ball that comes to rest over a hole (it was crossing and something stopped it there,
                 // or the jam guard settled it there) falls in. At generation 1 a moving ball never reaches a hole
-                // without dropping, so the old rule (a still ball is never tested) is kept exactly.
+                // without dropping, so the old rule (a still ball is never tested) is kept exactly. Any skip marker is
+                // ignored here: a ball at rest is crossing nothing, and one that skipped this hole and rolled back to
+                // rest inside it must still fall.
                 if P.usesGenerationTwo {
-                    for (k, c) in pockets.enumerated() where skip[i].map({ !($0.hole == k && $0.exited) }) ?? true {
+                    for (k, c) in pockets.enumerated() {
                         if (s.position - c).lengthSquared <= captureRadii[k] * captureRadii[k] {
                             consider(Candidate(time: now, rank: .pocket, a: i, b: k))
                             break

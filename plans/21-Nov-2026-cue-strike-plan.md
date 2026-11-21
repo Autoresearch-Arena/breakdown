@@ -123,5 +123,6 @@ Skill windows that reach past the limit: several measured windows extend the tip
 window is 19.5 mm, Two-Rail Kick's and Point-Blank B's height windows reach 14 to 19.5 mm). On the new physics the edges
 of those windows are miscues, so every window must be measured again in the re-authoring pass, not copied.
 
-Every rail-using shot also changes with the new rails (rails plan), so package 4 of the proof plan re-runs the whole
+Every authored solution in both files was checked for side and for a total offset past the limit; the shots above are
+all of them. Every rail-using shot also changes with the new rails (rails plan), so package 4 of the proof plan re-runs the whole
 TrickAuthoring and EightBallAuthoring check anyway; this list says which shots need more than a nudge of aim and speed.
