@@ -1,6 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
-// Edited: Claude Opus 5.5 High, 21-November-2026 (renamed for the notebook layout it now serves on every big screen:
+// Edited: Claude Opus 5.5 High, 21-November-2026 (renamed, file NotebookInfo.swift (it was DuoInfo.swift), for the notebook layout it now serves on every big screen:
 //          NotebookNumbers, NotebookSurfaceCard and NotebookDossier (they were DuoNumbers, DuoSurfaceCard, DuoDossier).
 //          On a big screen (notebookRoomy) the number tiles' labels follow the reader's text size instead of a fixed
 //          10 points; the folding phone keeps the size its narrow tiles were laid out for.)

@@ -1,6 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
-// Edited: Claude Opus 5.5 High, 21-November-2026 (renamed NotebookStory (it was DuoStory): it is the notebook's
+// Edited: Claude Opus 5.5 High, 21-November-2026 (renamed NotebookStory, file NotebookStory.swift (it was DuoStory, DuoStory.swift): it is the notebook's
 //          commentary on every big screen now, not only across a folding phone's hinge. On a big screen
 //          (notebookRoomy) each sentence is set a size larger for reading at arm's length or at a desk; rows brighten
 //          under a pointer; and the Mac and an iPad keyboard can step to the next or previous moment from the Playback

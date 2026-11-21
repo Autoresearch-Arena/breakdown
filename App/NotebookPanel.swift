@@ -1,7 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the folding phone's panel becomes the notebook of every big screen:
-//          renamed NotebookPanel (it was DuoPanel), shown beside or under the table on iPad and Mac windows as well as
+//          renamed NotebookPanel in NotebookPanel.swift (it was DuoPanel in DuoPanel.swift), shown beside or under the table on iPad and Mac windows as well as
 //          across the hinge. The page switch (How to play, Options, Tables) is handed in by ShowpieceView so the Help
 //          menu can open it; on the Mac the main menu's Options opens the Settings window instead of a page. The column
 //          rule is ScreenLayout.panelColumns: a hinge keeps its original rule, a wide window's panel gets two columns
