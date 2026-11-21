@@ -5,6 +5,8 @@ PURPOSE: Plan for turning the three extra tables (bumper pool, five-pin billiard
          only knock balls around on into games with turns, scores and an ending. Written for junior developers.
 SRP/DRY check: Pass - checked App/Tables (the three table files and README), TableKind.swift and the rules-games plan.
          This plan reuses that plan's match engine; it adds only each table's own rules.
+Edited: 21-November-2026 by Claude Opus 5.5 High - added the three rule sheets (one simple, widely played version of
+         each game) that BreakdownRules/Tables builds exactly.
 -->
 # The other tables become games
 
@@ -84,3 +86,54 @@ for the tables (store/screenshots/README.md) to show a score on screen.
 
 Each of the three can be played from first shot to a result card, with its rules page, in every language, on
 iPhone, Mac and the open Duo, and each game's rules have package tests.
+
+## The rule sheets (what the code builds)
+
+Written 21-Nov-2026 by Claude Opus 5.5 High. One simple, widely played version of each game. Each sheet is what
+`Packages/BreakdownCore/Sources/BreakdownRules/Tables/` builds, rule for rule; the app shows the same rules on each
+table's "How to play" page and says it is one common version.
+
+### Bumper pool
+
+1. Two players. Each has five balls: the first player the five that start round the near cup, the second player the
+   five round the far cup. One ball of each five is marked.
+2. You play your balls toward the cup at the far end from where they started.
+3. You always strike one of your own balls: your marked ball while it is on the table, then your other balls one at a
+   time, lowest number first. (Real tables let you choose; one fixed order keeps the controls simple.)
+4. Sink one of your own balls in your cup and you shoot again. Otherwise the turn passes.
+5. An opponent's ball knocked into their own cup stays down and counts for them.
+6. Foul: any ball in the wrong cup, or any ball knocked off the table. That ball comes back to its starting spot (or
+   the nearest free place) and the turn passes, even if you also sank one of your own.
+7. The first side with all five balls in its cup wins, whoever sank the last one.
+
+### Five-pin billiards
+
+1. Two players. The first plays the white ball, the second the yellow. The red ball and the five pins are shared:
+   four white pins and a red pin in the middle.
+2. Turns alternate after every shot. Every ball is played where it lies.
+3. Strike your own ball so that it hits the other player's ball first. Points come from what the other player's ball
+   and the red do after that:
+   - each white pin knocked down: 2 points;
+   - the red pin: 4 points, or 10 if it is the only pin to fall;
+   - the other player's ball hitting the red ball: 3 points.
+4. Foul: your ball misses the other player's ball, hits the red first, knocks down a pin itself, or any ball leaves
+   the table. Every point the shot made goes to the other player, and never less than 2 (one white pin).
+5. Pins are stood up again after every shot. A ball resting where a pin stands, or knocked off the table, goes back
+   to its spot (or the nearest free place).
+6. First to 60 points wins.
+
+### Bar billiards
+
+1. One or two players, against a clock (fifteen minutes). Two players take breaks in turn and the higher score at the
+   end wins; one player plays for a high score.
+2. Every shot is played with a white ball from the tray, placed on the spot in the D. The red starts on its spot.
+3. Your ball must hit another ball first. Each ball that then drops scores its hole: 200, 100, two 50s, and 30, 20,
+   10, 20, 30 along the far row. The red scores double.
+4. Your break goes on while every shot drops at least one ball. A shot that drops nothing ends it. A shot that hits
+   no ball scores nothing, ends the break, and the ball goes back to the tray.
+5. Knock down a white peg and the break ends and its points are lost. Knock down the black peg and the break ends
+   and your whole score is lost.
+6. Balls that drop come back to the tray; the red goes back on its spot. If every white is on the table, they all
+   come back to the tray.
+7. When time is up a bar drops: balls that drop stay down. Play goes on until no white is left to play; then the
+   game ends.

@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - appended MatchState.breakPoints (optional, nil for
+//          every game but bar billiards), the points of the break in progress, which a white peg down takes away.
+//          Optional, so a match saved before it decodes unchanged.
 // PURPOSE: The data of a match, shared by every game's rules (this module), the app's match flow (App/Match/MatchMode,
 //          which owns a MatchState, asks the rules for a Ruling after each shot and saves the state) and the match
 //          screens (App/Match/MatchViews, which turn the codes below into words). Plain values, no rule logic, no
@@ -287,6 +290,9 @@ public struct MatchState: Equatable, Codable, Sendable {
     public var clockRemaining: Double?
     /// Set when the game is over.
     public var result: MatchResult?
+    /// Points scored so far in the break in progress (bar billiards, where a white peg down loses them); nil for games
+    /// that do not track a break. Optional so older saved matches decode (synthesized decoding skips a missing key).
+    public var breakPoints: Int? = nil
 
     /// A fresh match: everyone on zero, the first player to break.
     public init(kind: MatchKind, playerNames: [String], ballsLeft: [Int], ballInHand: BallInHand = .none,

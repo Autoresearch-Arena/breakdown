@@ -4,6 +4,9 @@
 //          groundwork's placeholder stub): league playing area, nine bed holes, three skittles, the 1 7/8 inch balls,
 //          the start from the D with the red on its spot, a default shot into a 50 hole, and the turned-wood skittles
 //          from Tools/blender/make_bar_billiards.py.
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - the hole values, the red ball's number and the
+//          black skittle's number now come from BarBilliardsRules (BreakdownRules), which scores the game, so the
+//          table and the scoring read one copy.
 // PURPOSE: Bar billiards (the English pub game) as a place to play and watch the physics. No edge pockets: the
 //          cushions run round all four sides, and nine scoring holes are cut into the bed. Seen from the player's end
 //          (plan x = 0, where the D is): a diamond of four holes in the middle (200 nearest the player, a 50 each
@@ -33,6 +36,7 @@
 //          TableProps.swift, which this file reuses rather than copying.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import Foundation
 import RealityKit
@@ -67,7 +71,7 @@ enum BarBilliardsTable: TableDefinition {
     }
 
     /// Order (bed hole j is pocket 6 + j): 0 = 200, 1 = 100, 2 and 3 = the 50s, 4 to 8 = the far row 30, 20, 10, 20, 30.
-    /// Hole values for the later scoring step: [200, 100, 50, 50, 30, 20, 10, 20, 30].
+    /// Hole values (BarBilliardsRules.holeValues): [200, 100, 50, 50, 30, 20, 10, 20, 30].
     static let bedHoles: [BedHole] = [
         hole(fromFar: 0.700, across: 0),          // 200, nearest the player, behind the black skittle
         hole(fromFar: 0.330, across: 0),          // 100, back of the diamond, between the white skittles
@@ -79,8 +83,8 @@ enum BarBilliardsTable: TableDefinition {
         hole(fromFar: 0.090, across: 0.150),      // 20
         hole(fromFar: 0.090, across: 0.300),      // 30
     ]
-    /// The points each hole scores, in `bedHoles` order (for the scoring step; nothing reads it yet).
-    static let holeValues = [200, 100, 50, 50, 30, 20, 10, 20, 30]
+    /// The points each hole scores, in `bedHoles` order; owned by the rules that score them.
+    static let holeValues = BarBilliardsRules.holeValues
 
     // MARK: Skittles
 
@@ -96,7 +100,7 @@ enum BarBilliardsTable: TableDefinition {
     /// Wood on phenolic, a little softer than the default pin knock.
     private static let skittleRestitution = 0.7
     /// Pin index of the black skittle (the others are white).
-    static let blackPin = 0
+    static let blackPin = BarBilliardsRules.blackPeg
 
     private static func skittle(_ c: Vec2) -> Pin {
         Pin(center: c, radius: skittleRadius, mass: skittleMass, restitution: skittleRestitution, height: skittleHeight)
@@ -117,7 +121,7 @@ enum BarBilliardsTable: TableDefinition {
     private static let dSpot = Vec2(0.300, W / 2)
     private static let redSpot = Vec2(0.300 + 0.229, W / 2)
     /// Ball 3 is drawn solid red; it stands in for the game's one red ball.
-    static let redBall = 3
+    static let redBall = BarBilliardsRules.redBall
 
     /// Sixteen positions: a white (index 0, the cue ball) on the D spot and the red on its spot; the other six whites
     /// are in the return tray, so off the table, as at the start of a real break.

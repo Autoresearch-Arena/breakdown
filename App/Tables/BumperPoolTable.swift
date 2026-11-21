@@ -3,6 +3,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (filled in from the groundwork stub: real table size, 2-1/8 in balls,
 //          no edge pockets, two cups in the bed, twelve rubber bumpers, the five-and-five start, an opening bank shot and
 //          the Blender-made bumpers and cup liners.)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - the start layout takes each side's ball numbers
+//          from BumperPoolRules.sides (BreakdownRules), which plays the game, so the rack and the rules agree.
 // PURPOSE: Bumper pool: a small rectangular table with no edge pockets; one cup (a hole in the bed) near the middle of
 //          each end, two rubber bumpers flanking each cup and a cross of eight bumpers in the centre (two per arm, one
 //          arm in line with the cups, an open middle just wide enough for a ball). Each side has five balls; the marked
@@ -24,6 +26,7 @@
 //          LINER_OUTER_R must equal bumperRadius, bumperHeight and cupRadius here.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import Foundation
 import RealityKit
@@ -117,11 +120,13 @@ enum BumperPoolTable: TableDefinition {
         let L = tableSize.length, midY = tableSize.width / 2
         let markedX = cupInset + 0.080          // in front of the cup, toward the middle
         let sideOffsets = [-0.260, -0.170, 0.170, 0.260]
-        l[0] = Vec2(markedX, midY)
-        l[9] = Vec2(L - markedX, midY)
+        // BumperPoolRules.sides: each side's marked ball first, then its other four.
+        let near = BumperPoolRules.sides[0], far = BumperPoolRules.sides[1]
+        l[near[0]] = Vec2(markedX, midY)
+        l[far[0]] = Vec2(L - markedX, midY)
         for (i, dy) in sideOffsets.enumerated() {
-            l[1 + i] = Vec2(cupInset, midY + dy)
-            l[10 + i] = Vec2(L - cupInset, midY + dy)
+            l[near[1 + i]] = Vec2(cupInset, midY + dy)
+            l[far[1 + i]] = Vec2(L - cupInset, midY + dy)
         }
         return l
     }

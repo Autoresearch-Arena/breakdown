@@ -3,6 +3,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (filled in from the groundwork stub: the regulation carom table with no
 //          pockets, 61.5 mm balls, the five-pin castle at 66 mm, the regulation start, an opening two-cushion shot and
 //          the Blender-made pins.)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - the red pin's, the yellow's and the red ball's
+//          numbers now come from FivePinRules (BreakdownRules), which scores the game, so the two cannot disagree.
 // PURPOSE: Five-pin billiards (Italian "cinque birilli"): a carom table with no
 //          pockets, five small turned pins standing in a cross (the "castle") on the centre spot, four white and the
 //          red one in the middle, two cue balls (white and yellow) and a red object ball. A player strikes their own
@@ -41,6 +43,7 @@
 //          pinContactRadius here.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import Foundation
 import RealityKit
@@ -70,7 +73,7 @@ enum FivePinTable: TableDefinition {
     /// Centre-to-centre distance from the red pin to each white pin: 66 mm.
     static let pinSpacing = 0.066
     /// The red pin is pin 0, on the centre spot; the white pins are 1 to 4.
-    static let redPinIndex = 0
+    static let redPinIndex = FivePinRules.redPin
 
     /// The centre spot, where the red pin stands.
     static var castleCentre: Vec2 { Vec2(tableSize.length / 2, tableSize.width / 2) }
@@ -87,8 +90,8 @@ enum FivePinTable: TableDefinition {
 
     /// Ball slots: 0 is the white cue ball (drawn ivory), 1 the opponent's yellow (drawn yellow), 3 the red object
     /// ball (drawn red). The lower half (x < L/2) is the white's half; the upper end (x = L) is the yellow's.
-    static let opponentBallIndex = 1
-    static let redBallIndex = 3
+    static let opponentBallIndex = FivePinRules.playerBalls[1]
+    static let redBallIndex = FivePinRules.redBall
 
     /// "Mouche mi-haute": the red ball's spot, in the middle of the upper half.
     static var redSpot: Vec2 { Vec2(tableSize.length * 0.75, tableSize.width / 2) }
