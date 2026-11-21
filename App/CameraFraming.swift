@@ -24,6 +24,10 @@
 //          History: package 2 wrote the exact-fit pose; package 4 (0.4.0) replaced the guessed margins with measured ones,
 //          added the caption slot, the legend-only-if-needed rule and the push-in curve; 20-Nov-2026 removed the caption
 //          slot and legend band and added the two-tier fit and the warm angle.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (iPad and Mac: tableYaw names the rule for which way the table lies
+//          (along the long side of the space it is given, upright when that space is taller than wide), and
+//          checkedWindows plus fitProblems hold the window shapes and the invariant check that Tools/framing-check runs
+//          for every iPad and Mac shape, so a unit-test target can call the same check later).
 // SRP/DRY check: Pass - framing maths only; replaces the older single-formula framing that lived in TableCamera.
 import CoreGraphics
 import Foundation
@@ -253,6 +257,95 @@ enum CameraFraming {
             if spareHeight(mid) { lo = mid } else { hi = mid }
         }
         return (lo + hi) * 0.5
+    }
+
+    // MARK: Which way the table lies
+
+    /// The table's orientation for the space it is given: lying with its long side across the space (yaw 0) when that
+    /// space is at least as wide as it is tall, standing upright (yaw pi/2) when it is taller. `size` is the 3D view's
+    /// own size, which is the table's side of the screen only (ShowpieceView sizes the view to the table's half of a
+    /// notebook split, or to the panel before a folding phone's hinge), so the table follows the space it really has,
+    /// never the device or the window. TableCamera applies the same rule each frame.
+    static func tableYaw(for size: CGSize) -> Float {
+        size.width < size.height ? .pi / 2 : 0
+    }
+
+    // MARK: Checking the fit (Tools/framing-check, and the app's unit tests once that target exists)
+
+    /// A window shape the fit is checked on: the whole window's size in points and its safe-area insets. The checker
+    /// works out the table's side of it with NotebookGeometry, the way the screen does.
+    struct CheckedWindow {
+        var name: String
+        var size: CGSize
+        var safe: FramingInsets
+    }
+
+    /// The iPad and Mac window shapes every framing change is checked on (sizes in points as the systems report them):
+    /// each iPad held both ways, in split view and in Stage Manager, and Mac windows from the smallest the app allows to
+    /// full screen on a large display. Phones are listed too, to prove their layouts did not move.
+    static let checkedWindows: [CheckedWindow] = [
+        CheckedWindow(name: "iPhone upright", size: CGSize(width: 402, height: 874), safe: FramingInsets(top: 62, bottom: 34)),
+        CheckedWindow(name: "iPhone sideways", size: CGSize(width: 874, height: 402), safe: FramingInsets(left: 62, bottom: 21, right: 62)),
+        CheckedWindow(name: "Large iPhone sideways", size: CGSize(width: 956, height: 440), safe: FramingInsets(left: 62, bottom: 21, right: 62)),
+        CheckedWindow(name: "iPad mini upright", size: CGSize(width: 744, height: 1133), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "iPad mini sideways", size: CGSize(width: 1133, height: 744), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "11-inch iPad upright", size: CGSize(width: 820, height: 1180), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "11-inch iPad sideways", size: CGSize(width: 1180, height: 820), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "13-inch iPad upright", size: CGSize(width: 1032, height: 1376), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "13-inch iPad sideways", size: CGSize(width: 1376, height: 1032), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "13-inch iPad split, a third", size: CGSize(width: 375, height: 1032), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "13-inch iPad split, a half", size: CGSize(width: 683, height: 1032), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "13-inch iPad split, two thirds", size: CGSize(width: 995, height: 1032), safe: FramingInsets(top: 24, bottom: 20)),
+        CheckedWindow(name: "iPad Stage Manager small", size: CGSize(width: 700, height: 600), safe: FramingInsets(top: 30)),
+        CheckedWindow(name: "iPad Stage Manager medium", size: CGSize(width: 960, height: 720), safe: FramingInsets(top: 30)),
+        CheckedWindow(name: "Mac smallest window", size: CGSize(width: 480, height: 520), safe: FramingInsets(top: 52)),
+        CheckedWindow(name: "Mac default window", size: CGSize(width: 1120, height: 760), safe: FramingInsets(top: 52)),
+        CheckedWindow(name: "Mac tall window", size: CGSize(width: 800, height: 1100), safe: FramingInsets(top: 52)),
+        CheckedWindow(name: "Mac 14-inch full screen", size: CGSize(width: 1512, height: 982), safe: FramingInsets(top: 52)),
+        CheckedWindow(name: "Mac 16-inch full screen", size: CGSize(width: 1728, height: 1117), safe: FramingInsets(top: 52)),
+        CheckedWindow(name: "Mac large display full screen", size: CGSize(width: 2560, height: 1440), safe: FramingInsets(top: 52)),
+    ]
+
+    /// Checks THE INVARIANT (top of this file) for one 3D view: at the warm angle chosen for its shape, at the Lens
+    /// angle and between, with the yaw from tableYaw, every playing-area corner lands inside `framing.inner` and every
+    /// rail-outline corner inside `framing.outer` (projected through `project`, the independent matrix), and the fit is
+    /// tight on at least one axis. Returns one line per broken case; empty means it passed.
+    static func fitProblems(name: String, size: CGSize, framing: Framing, table: TableExtents, fovDegrees: Float) -> [String] {
+        var problems: [String] = []
+        let yaw = tableYaw(for: size)
+        let warm = warmElevation(size: size, framing: framing, yaw: yaw, table: table, fovDegrees: fovDegrees)
+        // Half a point of slack for float rounding; a point and a half to count as "touching" an edge.
+        let slack = 0.5, touch = 1.5
+        let radian = Float.pi / 180
+        for elevation in [warm, 60 * radian, 80 * radian, 89 * radian] {
+            let p = pose(size: size, framing: framing, yaw: yaw, elevation: elevation, table: table, fovDegrees: fovDegrees)
+            func box(_ hx: Float, _ hz: Float, _ heights: [Float]) -> FramingRect {
+                var r = FramingRect(left: .infinity, top: .infinity, right: -.infinity, bottom: -.infinity)
+                for sx: Float in [-1, 1] { for sz: Float in [-1, 1] { for y in heights {
+                    let q = project(SIMD3(sx * hx, y, sz * hz), position: p.position, target: p.target, size: size, fovDegrees: fovDegrees)
+                    r = FramingRect(left: min(r.left, Double(q.x)), top: min(r.top, Double(q.y)),
+                                    right: max(r.right, Double(q.x)), bottom: max(r.bottom, Double(q.y)))
+                } } }
+                return r
+            }
+            let play = box(table.playX, table.playZ, [0])
+            let rails = box(table.halfX, table.halfZ, [0, table.rimHeight])
+            func inside(_ a: FramingRect, _ b: FramingRect) -> Bool {
+                a.left >= b.left - slack && a.right <= b.right + slack && a.top >= b.top - slack && a.bottom <= b.bottom + slack
+            }
+            let degrees = Int((Double(elevation) * 180 / .pi).rounded())
+            if !inside(play, framing.inner) { problems.append("\(name) at \(degrees) degrees: playing area \(play) outside \(framing.inner)") }
+            if !inside(rails, framing.outer) { problems.append("\(name) at \(degrees) degrees: rails \(rails) outside \(framing.outer)") }
+            // The camera is pulled in until something meets an edge; which edge depends on the shape (the playing area
+            // against the title row, the rails against a side), so any one edge touched counts.
+            func touches(_ a: FramingRect, _ b: FramingRect) -> Bool {
+                abs(a.left - b.left) < touch || abs(a.right - b.right) < touch || abs(a.top - b.top) < touch || abs(a.bottom - b.bottom) < touch
+            }
+            if !touches(play, framing.inner) && !touches(rails, framing.outer) {
+                problems.append("\(name) at \(degrees) degrees: not as large as it could be (no edge touched)")
+            }
+        }
+        return problems
     }
 
     /// Projects a world point to view points (origin top left) for a camera at `position` looking toward `target`

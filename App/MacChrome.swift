@@ -5,26 +5,254 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the toolbar's Lens toggle is labelled "Physics Lens", an existing
 //          string, so the blueprint view is named clearly on the Mac too).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Playback menu: a Surface submenu to pick the playing surface).
-// PURPOSE: What makes the Mac build feel like a Mac app, and what iPad gains with a hardware keyboard: a real window
-//          toolbar (play, speed, Lens, replay, Your shot), a Playback menu with keyboard shortcuts (space plays or
-//          pauses, Command-R replays, Command-L toggles the Lens, Command-1 to 4 pick the speed, Command-Y opens the
-//          shot panel, Command-T tries the last shot again), and the plumbing that lets menu items reach the window's model. The toolbar reuses the play,
-//          replay and speed controls from PlaybackControls and uses the system's own toggle buttons for Lens and
-//          Your shot, which draw their pressed state natively in a Mac toolbar. Writes to the model only through its
-//          public methods.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Surface submenu gains a Tables section: pool table, bumper pool,
 //          five-pin billiards, bar billiards).
-// SRP/DRY check: Pass - menu and toolbar only; checked PlaybackControls, whose play, replay and speed pieces are reused here.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the Mac as a Mac, and the iPad's hardware keyboard with it: a Game
+//          menu (a new game of every kind, the trick-shot and Behind the 8-Ball lists, watch the break, the main menu,
+//          tables and surfaces), a Shot menu (Your shot, Shoot, aim, power, the cue tip and calling a pocket, each with a
+//          key), the View menu's Physics Lens, Ride camera and notebook switch, Playback (play, replay, speed, the next
+//          and previous explained moment, try again), and Help opening How to play. File's New Window is gone: the Mac
+//          has exactly one game window (a Window scene, set in BreakdownApp), which remembers its size and place
+//          (WindowFrameMemory) and never turns into tabs. Options open in the Mac's own Settings window
+//          (SettingsWindowContent). The toolbar gains a notebook switch.)
+// PURPOSE: What makes the Mac build feel like a Mac app, and what an iPad gains with a hardware keyboard (the same menus
+//          appear in the iPad's menu bar and keyboard shortcut list, so the two share this code):
+//            - the menus and their shortcuts. Game: New Free Game (Command-N), a new match of each kind, Trick Shots,
+//              Behind the 8-Ball, Watch the Break, Main Menu, Tables, Surface. Shot: Your Shot (Command-Y), Shoot or
+//              Break (Command-Return), aim a quarter degree either way (Command-Left and Right), power (Command-Up and
+//              Down), the cue tip (Option and the arrows, Option-0 to centre it), Call Pocket (Option-1 to 6, Option-S for
+//              a safety) when the game asks for a call. View: Physics Lens (Command-L), Ride Camera (Command-E), Show
+//              Notebook (Option-Command-I). Playback: Play or Pause (space), Replay with Lens (Command-R), the four
+//              speeds (Command-1 to 4), Next and Previous Explained Moment (Command-] and Command-[), Try Again
+//              (Command-T). Help: How to Play (Command-?).
+//            - the Mac window toolbar (play, speed, replay, Lens, Ride, Your shot, the notebook), reusing the play, replay
+//              and speed controls from PlaybackControls and the system's own toggle buttons;
+//            - the Mac window's single-window rule and its remembered frame, and the Settings window's content;
+//            - the plumbing that lets menu items reach the front window's model, shot-panel switch, page switch and
+//              notebook switch (focused values set by ShowpieceView).
+//          Writes to the model only through its public methods and the contract's match methods.
+//          Haptics check (plan package 2, item 6): everything a vibration says is also seen or heard. Ball, rail and
+//          pocket taps play with their sounds from the same cues (FeelMapping feeds SoundBoard and Haptics alike); the
+//          scrub bar's tick as it crosses an impact is the tick mark under the thumb; the power ticks while pulling are
+//          the live percentage and the gauge; a trick shot's success buzz is the success glow and card. Nothing relies
+//          on a vibration alone, so the Mac (no vibration) loses nothing.
+// SRP/DRY check: Pass - menus, toolbar and window plumbing only. The actions are the model's; the shot words (Break,
+//          Shoot, the pocket names, the game names in NotebookWords) are reused, not repeated.
+import BreakdownLensModel
+import BreakdownRules
+import BreakdownTimeline
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 // MARK: Plumbing: menu commands find the front window's model through focused values.
 
 extension FocusedValues {
     @Entry var showpieceModel: ShowpieceModel?
     @Entry var shotPanelOpen: Binding<Bool>?
+    /// How to play, Options or Tables (ShowpieceView's page switch), for the Help menu.
+    @Entry var notebookPage: Binding<NotebookPage?>?
+    /// The View menu's notebook switch.
+    @Entry var notebookShown: Binding<Bool>?
 }
 
-// MARK: Menu commands
+// MARK: Shared shot keys
+
+/// The keyboard's shot controls, shared by the Shot menu (Mac menu bar, iPad keyboard). Each first makes sure the aim is
+/// open to change, the same way touching the table does: a shot still playing jumps to where the balls stopped, and the
+/// shot panel opens so the player sees what the key changed.
+@MainActor
+private enum ShotKeys {
+    /// A twentieth of the power range per key press: the gauge moves a visible notch, twenty presses cover it all.
+    static let powerStep = 0.05
+    /// A tenth of the tip's travel per key press, so ten presses go from the centre to the edge of the safe zone.
+    static let tipSteps = 10.0
+
+    static func prepare(_ model: ShowpieceModel, _ panel: Binding<Bool>?) {
+        if !model.aimReady { model.skipToResult() }
+        panel?.wrappedValue = true
+    }
+
+    /// Moves the cue tip by one step up (+1) or down (-1), right (+1) or left (-1), and keeps it inside the circle the
+    /// model allows (tipLimit), scaling the point back along its own direction when a step would leave it.
+    static func moveTip(_ model: ShowpieceModel, up: Double, side: Double) {
+        let limit = model.tipLimit
+        let step = limit / tipSteps
+        var u = model.activeTipUp + up * step
+        var s = model.activeTipSide + side * step
+        let r = (u * u + s * s).squareRoot()
+        if r > limit { u *= limit / r; s *= limit / r }
+        model.activeTipUp = u
+        model.activeTipSide = s
+    }
+
+    /// The ball a call would name: the first ball on the aim line, when the game wants a call and allows that ball.
+    static func callableBall(_ model: ShowpieceModel) -> Int? {
+        guard let match = model.match, match.mustCall, model.aimReady, model.layout.count > 1 else { return nil }
+        let radius = model.timeline.table.ballRadius
+        guard let hit = AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin, direction: model.aimDirection,
+                                                 radius: radius),
+              match.rules.mayCall(hit.ball, in: match.state) else { return nil }
+        return hit.ball
+    }
+}
+
+// MARK: Game menu
+
+struct GameCommands: Commands {
+    @FocusedValue(\.showpieceModel) private var model
+    @FocusedValue(\.shotPanelOpen) private var shotPanelOpen
+
+    var body: some Commands {
+        // No second window: the game window is the only one (see BreakdownApp), so File's New Window goes.
+        CommandGroup(replacing: .newItem) {}
+        CommandMenu("Game") {
+            Button("New Free Game") {
+                guard let model else { return }
+                if model.match != nil { model.endMatch() }
+                model.trickMode.end(); model.eightBallMode.end(); model.startGame()
+                shotPanelOpen?.wrappedValue = true
+            }
+            .keyboardShortcut("n", modifiers: .command)
+            .disabled(model == nil)
+            ForEach(MatchKind.allCases, id: \.self) { kind in
+                Button(String(localized: "New \(NotebookWords.gameName(kind)) Game")) {
+                    guard let model else { return }
+                    model.trickMode.end(); model.eightBallMode.end()
+                    model.startMatch(kind)
+                }
+                .disabled(model == nil)
+            }
+            Divider()
+            Button("Trick Shots…") { model?.trickMode.listOpen = true }
+                .disabled(model == nil)
+            Button("Behind the 8-Ball…") { model?.eightBallMode.listOpen = true }
+                .disabled(model == nil)
+            Button("Watch the Break") {
+                guard let model else { return }
+                model.trickMode.end(); model.eightBallMode.end(); model.watchBreak()
+            }
+            .disabled(model == nil)
+            // The back button's Escape opens the main menu too; this is the same thing, findable in the menu bar.
+            Button("Main Menu") { model?.openMenu() }
+                .disabled(model == nil || (model?.menuOpen ?? false))
+            Divider()
+            // A table is a different game; a surface changes what the bed is made of. The same choices as the main
+            // menu's Tables page and the round Surface button.
+            Picker(String(localized: "Tables"), selection: Binding(get: { model?.tableKind ?? .standard }, set: { model?.playTable($0) })) {
+                ForEach(TableKind.allCases) { kind in
+                    Label(kind.title, systemImage: kind.symbol).tag(kind)
+                }
+            }
+            .disabled(model == nil)
+            Picker("Surface", selection: Binding(get: { model?.surface ?? .cloth }, set: { model?.setSurface($0) })) {
+                ForEach(PlaySurface.allCases) { surface in
+                    Label(surface.title, systemImage: surface.symbol).tag(surface)
+                }
+            }
+            .disabled(model == nil)
+        }
+    }
+}
+
+// MARK: Shot menu
+
+struct ShotCommands: Commands {
+    @FocusedValue(\.showpieceModel) private var model
+    @FocusedValue(\.shotPanelOpen) private var shotPanelOpen
+
+    var body: some Commands {
+        CommandMenu("Shot") {
+            Button("Your Shot") { shotPanelOpen?.wrappedValue.toggle() }
+                .keyboardShortcut("y", modifiers: .command)
+                .disabled(shotPanelOpen == nil)
+            Button((model?.racked ?? false) ? "Break" : "Shoot") {
+                guard let model, model.aimReady else { return }
+                // The break hands the screen to its slow-motion opening, so the panel closes, as with the Break button.
+                if model.fire() { shotPanelOpen?.wrappedValue = false }
+            }
+            .keyboardShortcut(.return, modifiers: .command)
+            .disabled(!(model?.aimReady ?? false))
+            Divider()
+            Button("Aim Anticlockwise") { act { $0.nudgeAim(1) } }
+                .keyboardShortcut(.leftArrow, modifiers: .command)
+            Button("Aim Clockwise") { act { $0.nudgeAim(-1) } }
+                .keyboardShortcut(.rightArrow, modifiers: .command)
+            Button("More Power") { act { $0.powerFraction += ShotKeys.powerStep } }
+                .keyboardShortcut(.upArrow, modifiers: .command)
+            Button("Less Power") { act { $0.powerFraction -= ShotKeys.powerStep } }
+                .keyboardShortcut(.downArrow, modifiers: .command)
+            Divider()
+            Button("Tip Higher (Follow)") { act { ShotKeys.moveTip($0, up: 1, side: 0) } }
+                .keyboardShortcut(.upArrow, modifiers: .option)
+            Button("Tip Lower (Draw)") { act { ShotKeys.moveTip($0, up: -1, side: 0) } }
+                .keyboardShortcut(.downArrow, modifiers: .option)
+            Button("Tip Left") { act { ShotKeys.moveTip($0, up: 0, side: -1) } }
+                .keyboardShortcut(.leftArrow, modifiers: .option)
+            Button("Tip Right") { act { ShotKeys.moveTip($0, up: 0, side: 1) } }
+                .keyboardShortcut(.rightArrow, modifiers: .option)
+            Button("Centre the Tip") { act { $0.activeTipUp = 0; $0.activeTipSide = 0 } }
+                .keyboardShortcut("0", modifiers: .option)
+            Divider()
+            callMenu
+        }
+    }
+
+    /// Calling a pocket for the ball the aim line meets first, in games that ask for a call. Disabled otherwise.
+    private var callMenu: some View {
+        let ball = model.flatMap { ShotKeys.callableBall($0) }
+        let mustCall = model?.match?.mustCall ?? false
+        return Menu("Call Pocket") {
+            ForEach(Array(EightBallPocket.allCases.enumerated()), id: \.element) { index, pocket in
+                Button(pocket.title) {
+                    guard let ball else { return }
+                    model?.match?.setCall(.ball(ball, pocket: pocket))
+                }
+                .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .option)
+                .disabled(ball == nil)
+            }
+            Divider()
+            Button("Safety") { model?.match?.setCall(.safety) }
+                .keyboardShortcut("s", modifiers: .option)
+        }
+        .disabled(!mustCall)
+    }
+
+    /// Runs a shot key on the model after opening the aim to change (ShotKeys.prepare).
+    private func act(_ change: (ShowpieceModel) -> Void) {
+        guard let model else { return }
+        ShotKeys.prepare(model, shotPanelOpen)
+        change(model)
+    }
+}
+
+// MARK: View menu
+
+struct ViewCommands: Commands {
+    @FocusedValue(\.showpieceModel) private var model
+    @FocusedValue(\.notebookShown) private var notebookShown
+
+    var body: some Commands {
+        CommandGroup(before: .toolbar) {
+            Toggle("Physics Lens", isOn: Binding(get: { model?.lensOn ?? false }, set: { model?.setLens($0) }))
+                .keyboardShortcut("l", modifiers: .command)
+                .disabled(model == nil)
+            // Ride: the replay camera follows the cue ball and the ball it hits at table height.
+            Toggle("Ride Camera", isOn: Binding(get: { model?.rideOn ?? false }, set: { model?.setRide($0) }))
+                .keyboardShortcut("e", modifiers: .command)
+                .disabled(model == nil)
+            // The notebook beside or under the table on a big window; off gives the table the whole window.
+            Toggle("Show Notebook", isOn: Binding(get: { notebookShown?.wrappedValue ?? true },
+                                                  set: { notebookShown?.wrappedValue = $0 }))
+                .keyboardShortcut("i", modifiers: [.command, .option])
+                .disabled(notebookShown == nil)
+            Divider()
+        }
+    }
+}
+
+// MARK: Playback menu
 
 struct PlaybackCommands: Commands {
     @FocusedValue(\.showpieceModel) private var model
@@ -37,31 +265,6 @@ struct PlaybackCommands: Commands {
                 .keyboardShortcut(.space, modifiers: [])
             Button("Replay with Lens") { model?.replay(withLens: true) }
                 .keyboardShortcut("r", modifiers: .command)
-            Button((model?.lensOn ?? false) ? "Hide Lens" : "Show Lens") { model?.setLens(!(model?.lensOn ?? false)) }
-                .keyboardShortcut("l", modifiers: .command)
-            // Ride: the replay camera follows the cue ball and the ball it hits at table height.
-            Toggle("Ride Camera", isOn: Binding(get: { model?.rideOn ?? false }, set: { model?.setRide($0) }))
-                .keyboardShortcut("e", modifiers: .command)
-                .disabled(model == nil)
-            // Playing surface and table: the same choices as the round glass button in the title row, as one submenu with
-            // the surfaces first and the tables under their own heading.
-            Menu("Surface") {
-                Picker("Surface", selection: Binding(get: { model?.surface ?? .cloth }, set: { model?.setSurface($0) })) {
-                    ForEach(PlaySurface.allCases) { surface in
-                        Label(surface.title, systemImage: surface.symbol).tag(surface)
-                    }
-                }
-                .pickerStyle(.inline)
-                .labelsHidden()
-                Picker(String(localized: "Tables"), selection: Binding(get: { model?.tableKind ?? .standard }, set: { model?.playTable($0) })) {
-                    ForEach(TableKind.allCases) { kind in
-                        Label(kind.title, systemImage: kind.symbol).tag(kind)
-                    }
-                }
-                .pickerStyle(.inline)
-            }
-            .disabled(model == nil)
-            Divider()
             Menu("Speed") {
                 ForEach(Array(PlaybackSpeed.rates.enumerated()), id: \.offset) { index, rate in
                     Button(PlaybackSpeed.label(rate)) { model?.setRate(rate) }
@@ -69,12 +272,48 @@ struct PlaybackCommands: Commands {
                 }
             }
             Divider()
-            Button("Your Shot") { shotPanelOpen?.wrappedValue.toggle() }
-                .keyboardShortcut("y", modifiers: .command)
+            // The explained moments are the Lens captions; stepping to one pauses the replay there and lights it in
+            // the notebook's story, as clicking its row does.
+            Button("Next Explained Moment") { step(forward: true) }
+                .keyboardShortcut("]", modifiers: .command)
+                .disabled(moment(forward: true) == nil)
+            Button("Previous Explained Moment") { step(forward: false) }
+                .keyboardShortcut("[", modifiers: .command)
+                .disabled(moment(forward: false) == nil)
+            Divider()
             // Same as the Try again button in the shot panel; opens the panel so the restored aim can be changed.
             Button("Try Again") { model?.tryAgain(); shotPanelOpen?.wrappedValue = true }
                 .keyboardShortcut("t", modifiers: .command)
                 .disabled(!(model?.canTryAgain ?? false))
+        }
+    }
+
+    /// The clock time of the next (or previous) caption from the playback clock, or nil when there is none that way.
+    /// A small margin keeps a moment just stepped to from being found again.
+    private func moment(forward: Bool) -> Double? {
+        guard let model else { return nil }
+        let now = model.time, margin = 1e-3
+        let times = model.captions.map(\.time)
+        return forward ? times.filter { $0 > now + margin }.min() : times.filter { $0 < now - margin }.max()
+    }
+
+    private func step(forward: Bool) {
+        guard let model, let t = moment(forward: forward) else { return }
+        model.scrub(to: t)
+    }
+}
+
+// MARK: Help menu
+
+struct HelpCommands: Commands {
+    @FocusedValue(\.notebookPage) private var page
+
+    var body: some Commands {
+        CommandGroup(replacing: .help) {
+            // A page of the notebook on a big screen, a sheet on a small one (ShowpieceView decides).
+            Button("How to Play") { page?.wrappedValue = .howTo }
+                .keyboardShortcut("?", modifiers: .command)
+                .disabled(page == nil)
         }
     }
 }
@@ -85,6 +324,8 @@ struct PlaybackCommands: Commands {
 struct ShowpieceToolbar: ToolbarContent {
     let model: ShowpieceModel
     @Binding var shotPanelOpen: Bool
+    /// The notebook switch, the same one the View menu's Show Notebook flips.
+    @Binding var notebookShown: Bool
 
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .navigation) {
@@ -109,7 +350,47 @@ struct ShowpieceToolbar: ToolbarContent {
             Toggle(isOn: $shotPanelOpen) { Label("Your shot", systemImage: "target") }
                 .toggleStyle(.button)
                 .help("Take your own shot (Command-Y)")
+            Toggle(isOn: $notebookShown) { Label("Notebook", systemImage: "sidebar.trailing") }
+                .toggleStyle(.button)
+                .help("Show or hide the notebook beside the table (Option-Command-I)")
         }
+    }
+}
+
+// MARK: The one game window (Mac)
+
+/// Keeps the game window where and how big the player left it, across launches, and stops it from turning into tabs
+/// (which would be a second game window by another route). AppKit stores the frame under a fixed name in the app's
+/// defaults: the saved frame is applied when the window first appears, then every move and resize is saved. The
+/// system's own window restoration is not relied on because it is off whenever "Close windows when quitting an
+/// application" is on, which is the Mac's default.
+struct WindowFrameMemory: NSViewRepresentable {
+    static let frameName = "BreakdownGameWindow"
+
+    func makeNSView(context: Context) -> NSView { FrameMemoryView() }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    final class FrameMemoryView: NSView {
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            guard let window else { return }
+            NSWindow.allowsAutomaticWindowTabbing = false
+            window.tabbingMode = .disallowed
+            // Apply the saved frame first (false when there is none yet: the scene's default size stands), then start
+            // saving under the same name.
+            _ = window.setFrameUsingName(WindowFrameMemory.frameName)
+            _ = window.setFrameAutosaveName(WindowFrameMemory.frameName)
+        }
+    }
+}
+
+/// The Mac's Settings window (the app menu's Settings, Command-comma): the same Options form the main menu shows on a
+/// phone. Its Done button closes the Settings window, so it does what it says here too.
+struct SettingsWindowContent: View {
+    var body: some View {
+        OptionsSheet(isOpen: Binding(get: { true }, set: { open in
+            if !open { NSApplication.shared.keyWindow?.performClose(nil) }
+        }))
     }
 }
 #endif

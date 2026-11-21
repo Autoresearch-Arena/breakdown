@@ -8,6 +8,9 @@
 //          dark colour over the window that fades away once the scene reports it is built. The launch screen is the
 //          same dark colour (see the project's launch background setting), so there is no white flash and no pop: the
 //          dark room simply lights up. With Reduce Motion the cover is removed with no fade.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the Mac as a Mac: one game window (a Window scene) that remembers its
+//          size and place and can be made as small as the phone layout, a Settings window for Options, and the Game,
+//          Shot, View, Playback and Help menus from MacChrome on both the Mac and the iPad's keyboard menu bar.)
 // SRP/DRY check: Pass - shell only. Note SwiftUI.Scene is qualified because RealityKit also defines Scene.
 //          The colours come from Theme (palette.ground) and the timing from StartupAssets; nothing is repeated here.
 import SwiftUI
@@ -21,21 +24,55 @@ struct BreakdownApp: App {
     }
 
     var body: some SwiftUI.Scene {
-        WindowGroup {
-            ShowpieceView()
-                .modifier(LaunchCurtain())
-                .modifier(PaletteProvider())
-                .preferredColorScheme(.dark)
-                #if os(macOS)
-                // Wide enough for the table plus the caption column, tall enough for the table plus the scrub bar.
-                .frame(minWidth: 760, minHeight: 560)
-                #endif
-        }
         #if os(macOS)
+        // The Mac has exactly one game window: a Window scene cannot be opened twice, File's New Window is removed
+        // (GameCommands), and the window never turns into tabs (WindowFrameMemory). Closing it quits the game.
+        Window(Text(verbatim: "Breakdown"), id: "game") {
+            root
+                // Small enough to reach the phone layout (a phone-width column with the controls under the table), so
+                // dragging the window from its smallest to full screen passes through phone, notebook and two-column
+                // notebook (NotebookGeometry); tall enough for the table above the controls.
+                .frame(minWidth: 480, minHeight: 520)
+                // Remembers the window's size and place between launches.
+                .background(WindowFrameMemory())
+        }
         .defaultSize(width: 1120, height: 760)
         .windowResizability(.contentMinSize)
+        .commands {
+            GameCommands()
+            ShotCommands()
+            ViewCommands()
+            PlaybackCommands()
+            HelpCommands()
+        }
+        // Options as the Mac's own Settings window, from the app menu with Command-comma.
+        Settings {
+            SettingsWindowContent()
+                .modifier(PaletteProvider())
+                .preferredColorScheme(.dark)
+        }
+        #else
+        // iPhone and iPad. On iPad each window the system opens is its own game with its own model; the menus below
+        // also fill the iPad's menu bar and hardware keyboard shortcut list.
+        WindowGroup {
+            root
+        }
+        .commands {
+            GameCommands()
+            ShotCommands()
+            ViewCommands()
+            PlaybackCommands()
+            HelpCommands()
+        }
         #endif
-        .commands { PlaybackCommands() }
+    }
+
+    /// The game screen with its launch cover, colours and dark room, the same in every window.
+    private var root: some View {
+        ShowpieceView()
+            .modifier(LaunchCurtain())
+            .modifier(PaletteProvider())
+            .preferredColorScheme(.dark)
     }
 }
 
