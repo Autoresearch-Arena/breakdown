@@ -31,6 +31,13 @@
 //          records it as solvedSurface and load() hands it to CaptionEngine, so setSurface's re-solve re-makes the
 //          captions with the new surface's numbers. Checked for long shots (the Moon runs about six times longer): the
 //          freeze point, the cold open and guided pacing all work from the timeline's own duration and events.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: tableKind is the table the player chose (TableKind,
+//          stored under "optionTable"), physicsTable the one the solver uses (the pool table while a trick shot is up,
+//          as physicsSurface keeps cloth), solvedTable the one the shot on screen was solved on, which the scene draws.
+//          solve(_:) writes the table into the parameters before the surface. setTable(_:) stores a new table and puts
+//          its start layout on the table, still, with its default shot ready (the pool table re-racks). On a table other
+//          than the pool table, Play lays out the table's start instead of a rack, Watch the break plays the table's
+//          default shot, and a scratched cue ball is re-spotted on that table's own head spot.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -143,6 +150,11 @@ final class ShowpieceModel {
     /// The surface the timeline on screen was solved on, set by solve(_:) next to the solve itself, so the captions
     /// explain the numbers the solver actually used (a trick shot is solved on cloth whatever `surface` says).
     @ObservationIgnored private var solvedSurface: PlaySurface = PlaySurface.stored
+    /// The table the player chose (see TableKind and setTable). Stored in UserDefaults.
+    private(set) var tableKind: TableKind = .standard
+    /// The table the timeline on screen was solved on: the scene draws this one, so the drawn table always matches the
+    /// recording (a trick shot is on the pool table whatever `tableKind` says).
+    private(set) var solvedTable: TableKind = .standard
 
     private var stageTime = 0.0
     private let freezeTime: Double
@@ -150,16 +162,21 @@ final class ShowpieceModel {
     private let haptics = Haptics()
 
     init() {
-        // Not through solve(_:): self is not fully initialised yet. Same steps: the stored surface applied to a copy.
-        let input = Rack.showpieceBreak()
+        // Not through solve(_:): self is not fully initialised yet. Same steps: the stored table, then the stored
+        // surface, applied to a copy.
+        let startTable = TableKind.stored
+        let input = startTable.openingShot
         let startSurface = PlaySurface.stored      // read once: the solve and the captions must agree
         var onSurface = input
+        startTable.apply(to: &onSurface.parameters)
         startSurface.apply(to: &onSurface.parameters)
         let tl = PoolSolver.simulate(onSurface)
         timeline = tl
         // The usual freeze point; freezeAt shortens it for a break that is over sooner (whatever shot is on screen).
         freezeTime = 2.2
         solvedSurface = startSurface
+        tableKind = startTable
+        solvedTable = startTable
         captions = CaptionEngine.make(from: tl, surface: startSurface)
         pacePlan = PacePlan(captions: captions, timeline: tl)
         timelineVersion = 1
@@ -235,7 +252,8 @@ final class ShowpieceModel {
     func watchBreak() {
         menuOpen = false
         gameInProgress = true
-        load(solve(Rack.showpieceBreak()))
+        // The showpiece break on the pool table; on another table, that table's default shot from its start layout.
+        load(solve(physicsTable.openingShot))
         clearAttempts()
         startColdOpen()
         stage = .normalBreak
@@ -261,6 +279,8 @@ final class ShowpieceModel {
 
     /// Fresh rack, ready for a new break (the panel's break sliders drive it).
     func rerack() {
+        // Another table has no rack: its own start layout goes on the table instead, ready to shoot.
+        if physicsTable != .standard { loadTableStart(); return }
         // Same seed the next break will use, so the rack on screen is exactly the one that gets broken.
         let seed = UInt64(10 + breakSerial + 1)
         var p = PoolParameters()
@@ -501,7 +521,8 @@ final class ShowpieceModel {
 
     /// Record where everything stopped so the next shot starts from there.
     private func adoptLayout(after tl: Timeline) {
-        layout = NextShot.layout(after: tl)
+        // A scratched cue ball goes back on the head spot of the table the shot was solved on.
+        layout = NextShot.layout(after: tl, parameters: solvedTable.parameters)
         racked = false
         aimAtNearestBall()
     }
@@ -649,11 +670,14 @@ final class ShowpieceModel {
     /// end would then never reach it.
     private var freezeAt: Double { min(freezeTime, duration * 0.4) }
 
-    /// Every shot goes through here: remember it as built, write the surface's numbers into a copy, and solve that.
+    /// Every shot goes through here: remember it as built, write the table and then the surface's numbers into a
+    /// copy, and solve that. The kept input has neither, so a table or surface change can solve it again cleanly.
     private func solve(_ input: ShotInput) -> Timeline {
         lastInput = input
         solvedSurface = physicsSurface
+        solvedTable = physicsTable
         var onSurface = input
+        solvedTable.apply(to: &onSurface.parameters)
         solvedSurface.apply(to: &onSurface.parameters)
         return PoolSolver.simulate(onSurface)
     }
@@ -688,6 +712,39 @@ final class ShowpieceModel {
         } else {
             stageTime = 0; time = 0; playing = true
         }
+    }
+
+    // MARK: Tables (TableKind) - added by Claude Opus 5.5 High, 21-November-2026
+
+    /// The table the solver uses now: the pool table while a trick shot is up (every one was authored there), the
+    /// player's chosen table otherwise. A future mode that only makes sense on a pool table (Behind the 8-ball) must
+    /// be added to this same check.
+    var physicsTable: TableKind { trickModeStorage?.current != nil ? .standard : tableKind }
+
+    /// Change the table: store it, then put its start layout on the table, still, with its default shot ready (the
+    /// pool table gets a fresh rack instead). The ghost, the comparison and the shot on screen belong to the old table,
+    /// so they go. While a trick shot is up nothing on screen changes (it stays on the pool table).
+    func setTable(_ k: TableKind) {
+        guard k != tableKind else { return }
+        tableKind = k
+        UserDefaults.standard.set(k.rawValue, forKey: TableKind.storageKey)
+        guard trickModeStorage?.current == nil else { return }
+        rerack()
+    }
+
+    /// The chosen table's start layout, still, with the aim and power of its default shot. The same zero-speed trick
+    /// loadTrickLayout uses; the settings are set after load(), which re-aims.
+    private func loadTableStart() {
+        guard let start = physicsTable.startLayout else { return }
+        load(solve(NextShot.shot(from: start, direction: Vec2(1, 0), speed: 0, tipUp: 0, tipSide: 0, seed: 0)))
+        layout = start
+        racked = false
+        clearAttempts()
+        let shot = physicsTable.defaultShot
+        aimDegrees = shot.aimDegrees
+        shotPower = min(max(shot.power, 0.5), 8)
+        shotTipUp = 0; shotTipSide = 0; shotElevation = 0
+        stage = .explore; stageTime = 0; time = 0; playing = false; chosenRate = nil
     }
 
     // MARK: Trick shots (TrickShotMode) - added by Claude Opus 5.5 High, 20-November-2026

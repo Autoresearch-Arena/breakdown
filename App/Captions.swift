@@ -18,6 +18,8 @@
 //          ones the replay stops on is PacePlan's job. Words the player reads go through String(localized:) so they
 //          land in the string catalog. Surface numbers are read from PlaySurface.parameters, the same values the
 //          solver was given, and every ratio is worked out from them, never typed in.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: captions for a ball thrown back by a post and for a pin
+//          knocked down, both with the speeds read from the event).
 // SRP/DRY check: Pass - caption selection and wording only; display lives in the view.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -139,6 +141,21 @@ enum CaptionEngine {
             let detail = String(localized: "\(name(mover.ball).capitalizedFirst) was moving at \(f(mover.velocityBefore.length)) m/s. Energy handed off: \(f(share, 0)) percent goes to \(name(other.ball)), \(f(keep, 0)) percent stays, and the rest is lost as heat and sound.")
             return Caption(id: id, time: e.time, title: String(localized: "Energy handed off"), detail: detail,
                            equation: "J = (1 + e) · m · v⊥ / 2", accent: .impact, importance: e.normalImpulse)
+        case .cushion where e.edge == .post:
+            // A post on another table (a bumper): it throws the ball back like a cushion, with its own bounce.
+            let b = e.balls[0]
+            let vin = b.velocityBefore.length
+            guard vin > 0.5 else { return nil }
+            let kept = (b.velocityAfter.dot(e.normal) / max(1e-9, -b.velocityBefore.dot(e.normal))) * 100
+            return Caption(id: id, time: e.time, title: String(localized: "The post throws it back"),
+                           detail: String(localized: "\(name(b.ball).capitalizedFirst) hits the post at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into it."),
+                           equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse)
+        case .pinDown:
+            // A standing pin knocked over: the ball pays a little speed for it.
+            let b = e.balls[0]
+            return Caption(id: id, time: e.time, title: String(localized: "Pin down"),
+                           detail: String(localized: "\(name(b.ball).capitalizedFirst) knocks the pin over at \(f(b.velocityBefore.length)) m/s and rolls on at \(f(b.velocityAfter.length)) m/s."),
+                           equation: "J = (1 + e) · m·mₚ / (m + mₚ) · v⊥", accent: .impact, importance: e.normalImpulse + 1)
         case .cushion where e.edge != .rail:
             // A pocket jaw or knuckle: the ball reached the mouth and was turned away (or rattled). Worth saying even
             // when slow, because it is the answer to "why didn't that go in?".

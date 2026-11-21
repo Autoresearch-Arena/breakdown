@@ -31,6 +31,12 @@
 //          whether Ride is on in apply()).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the cushions wear the bed's cloth on tournament cloth and dive-bar
 //          felt, as a real table's do; every other surface keeps the standard cushion cloth).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: load() takes the TableKind the shot was solved on and
+//          rebuilds the warm table whenever the recorded table (size, pockets, posts, pins, bed holes) or the kind
+//          changes, adding that kind's props (TableKind.makeProps) under the table group so they fade with it; the
+//          Lens grid is redrawn for the new table and the balls are scaled to the new ball size. Each frame, a prop named
+//          "pin-<k>" topples flat over 0.15 s from the moment the timeline says pin k went down, along the direction it
+//          was pushed: a pure function of the clock, so scrubbing either way is exact.)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -43,7 +49,9 @@ import simd
 @MainActor
 final class TableScene {
     let root = Entity()
-    private let tableGroup: Entity
+    /// Holds the warm table group, so the table can be rebuilt for another table kind without changing child order.
+    private let tableHolder = Entity()
+    private var tableGroup: Entity
     private let lens = LensLayer()
     private let camera = TableCamera()
     /// The Ride camera (see ShotCamera): follows the cue ball and the ball it hits during a replay when Ride is on.
@@ -62,27 +70,36 @@ final class TableScene {
     /// The clock the last apply() used (after any test pinning), so the camera pushes in on exactly the frame drawn.
     private var lastClock = 0.0
     /// The playing bed (the entity TableBuilder names "felt") and the surface it was last asked to wear.
-    private let bed: ModelEntity?
+    private var bed: ModelEntity?
     /// The cushions (TableBuilder names them "cushions") and the cloth they were built in. On the two other real cloths
     /// (tournament and dive bar) the cushions are covered in the same cloth as the bed, as on a real table.
-    private let cushions: ModelEntity?
-    private let standardCushionMaterials: [any Material]
+    private var cushions: ModelEntity?
+    private var standardCushionMaterials: [any Material] = []
     private var surface: PlaySurface
+    /// The table the warm table was last built for (the recorded TableSpec and the kind), and the ball radius the ball
+    /// entities were made with (another table's balls are drawn by scaling them).
+    private var builtTable: TableSpec
+    private var builtKind: TableKind
+    private let builtBallRadius: Float
+    /// The kind's props (nil on the pool table), and per pin the prop named "pin-<k>" with its resting transform, found
+    /// once it exists (a props model may load after the table is built).
+    private var props: Entity?
+    private var pins: [(entity: Entity, position: SIMD3<Float>, orientation: simd_quatf)?] = []
     var subscriptions: [EventSubscription] = []
 
-    init(timeline: Timeline, surface: PlaySurface) {
+    init(timeline: Timeline, surface: PlaySurface, table kind: TableKind = .standard) {
         self.timeline = timeline
         self.surface = surface
         frame = TableFrame(timeline.table)
+        builtTable = timeline.table
+        builtKind = kind
+        builtBallRadius = Float(timeline.table.ballRadius)
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
-        tableGroup = TableBuilder.makeTable(frame: frame, table: timeline.table, surface: surface)
-        bed = tableGroup.findEntity(named: "felt") as? ModelEntity
-        cushions = tableGroup.findEntity(named: "cushions") as? ModelEntity
-        standardCushionMaterials = cushions?.model?.materials ?? []
+        tableGroup = Entity()
         cueRig = CueRig(lightSource: root)
-        tableGroup.addChild(cueRig.root)
+        buildTable()
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
-        root.addChild(tableGroup)
+        root.addChild(tableHolder)
         root.addChild(lens.root)
         root.addChild(camera.rig)
         lens.buildStatic(ballCount: timeline.ballCount, frame: frame, table: timeline.table)
@@ -95,17 +112,46 @@ final class TableScene {
         if surface.coversCushions { dress(surface) }
     }
 
+    /// Build the warm table for the current timeline's table and kind (replacing any earlier one), with the kind's
+    /// props and the cue rig inside it. Not per frame: only when the table changes.
+    private func buildTable() {
+        tableGroup.removeFromParent()
+        tableGroup = TableBuilder.makeTable(frame: frame, table: builtTable, surface: surface)
+        bed = tableGroup.findEntity(named: "felt") as? ModelEntity
+        cushions = tableGroup.findEntity(named: "cushions") as? ModelEntity
+        standardCushionMaterials = cushions?.model?.materials ?? []
+        props = builtKind.makeProps(TablePropsContext(frame: frame, table: builtTable, lightSource: root))
+        if let props { tableGroup.addChild(props) }
+        pins = [(entity: Entity, position: SIMD3<Float>, orientation: simd_quatf)?](repeating: nil, count: builtTable.pins.count)
+        tableGroup.addChild(cueRig.root)
+        tableHolder.addChild(tableGroup)
+        // A rebuilt table misses the one-time reflection hookup (installEnvironment), so it is done here once lit.
+        if root.components.has(ImageBasedLightComponent.self) { TableProps.receiveLight(tableGroup, from: root) }
+    }
+
+    /// Rebuild the table, the Lens grid and the ball size when the recorded table or the kind changed.
+    private func syncTable(_ kind: TableKind) {
+        guard timeline.table != builtTable || kind != builtKind else { return }
+        builtTable = timeline.table
+        builtKind = kind
+        buildTable()
+        lens.buildGrid(frame: frame, table: builtTable)
+        if surface.coversCushions { dress(surface) }
+    }
+
     /// Light the scene with the generated lamp picture so the glossy parts have something to reflect.
     func installEnvironment() async {
         await TableBuilder.installEnvironment(on: root)
     }
 
     /// Rebuild the Lens trails and rings for a new recorded shot.
-    func load(_ timeline: Timeline, version: Int) {
+    /// - kind: the table the timeline was solved on (ShowpieceModel.solvedTable); a change rebuilds the warm table.
+    func load(_ timeline: Timeline, version: Int, kind: TableKind = .standard) {
         guard version != loadedVersion else { return }
         loadedVersion = version
         self.timeline = timeline
         frame = TableFrame(timeline.table)
+        syncTable(kind)
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         lens.rebuild(timeline: timeline, frame: frame)
         shotCamera.load(timeline, frame: frame)
@@ -155,6 +201,8 @@ final class TableScene {
         tableGroup.components.set(OpacityComponent(opacity: tableOpacity))
         tableGroup.isEnabled = tableOpacity > 0.01
 
+        // Another table's balls are another size: the entities were made once, so they are scaled to it.
+        let ballScale = builtBallRadius > 0 ? R / builtBallRadius : 1
         var visibility: [Bool] = []
         for b in 0..<balls.count {
             let s = timeline.state(ball: b, at: t)
@@ -181,14 +229,43 @@ final class TableScene {
             balls[b].isEnabled = visible
             balls[b].position = pos
             balls[b].orientation = frame.orientation(s.orientation)
-            balls[b].scale = SIMD3(repeating: scale)
+            balls[b].scale = SIMD3(repeating: scale * ballScale)
             bodies[b].components.set(OpacityComponent(opacity: 1 - 0.55 * m))
             markers[b].components.set(OpacityComponent(opacity: m))
             visibility.append(visible)
         }
 
+        applyPins(t)
         lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
         cueRig.update(aim: cueAim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
+    }
+
+    /// Topple every pin prop the timeline says is down by clock time t: a quarter turn about its base over 0.15 s, along
+    /// the direction the ball pushed it, lifted by its radius as it lies down so it rests on the cloth rather than in it.
+    /// A pure function of the clock; a pin not down yet stands at its resting transform.
+    private func applyPins(_ t: Double) {
+        guard !pins.isEmpty, let props else { return }
+        for k in pins.indices {
+            if pins[k] == nil, let e = props.findEntity(named: "pin-\(k)") {
+                pins[k] = (e, e.position, e.orientation)
+            }
+            guard let pin = pins[k] else { continue }
+            guard k < timeline.pinDownTime.count, let down = timeline.pinDownTime[k], t >= down,
+                  let fall = timeline.pinFalls.first(where: { $0.pin == k }) else {
+                pin.entity.position = pin.position
+                pin.entity.orientation = pin.orientation
+                continue
+            }
+            let x = Float(min(1, (t - down) / 0.15))
+            let angle = x * .pi / 2
+            var d = frame.direction(fall.direction)
+            d = simd_length(d) > 1e-6 ? simd_normalize(d) : SIMD3(1, 0, 0)
+            // Turning about up x d by +angle takes the pin's +Y axis over toward d.
+            let axis = simd_normalize(simd_cross(SIMD3<Float>(0, 1, 0), d))
+            pin.entity.orientation = simd_quatf(angle: angle, axis: axis) * pin.orientation
+            let lift = k < builtTable.pins.count ? Float(builtTable.pins[k].radius) : 0
+            pin.entity.position = pin.position + SIMD3(0, lift * sin(angle), 0)
+        }
     }
 
     /// Frames the whole table in the measured free space, swings from a low three-quarter view to straight down as the

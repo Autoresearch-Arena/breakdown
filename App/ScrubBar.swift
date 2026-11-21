@@ -6,6 +6,7 @@
 //          playhead crosses a recorded impact while you drag, and full VoiceOver support (a name, a spoken value,
 //          swipe up and down to step, and "next impact" and "previous impact" actions). Reads the model's clock and
 //          the recorded events; the only thing it writes is ShowpieceModel.scrub(to:).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (a pin knocked down on another table ticks like an impact).
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -95,7 +96,7 @@ struct ScrubBar: View {
                 var color: Color
                 var h: CGFloat = 8
                 switch e.kind {
-                case .ballBall: color = palette.impact
+                case .ballBall, .pinDown: color = palette.impact
                 case .cushion: color = palette.cushion
                 case .pocket: color = palette.pocket; h = 14
                 case .cueStrike: color = palette.strike; h = 14

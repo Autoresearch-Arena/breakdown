@@ -15,6 +15,8 @@
 //          centre and radius for each end) with smooth jaw-facing normals, replacing the flat slanted end block.
 //          Triangle winding is fixed automatically by comparing the geometric normal with the supplied vertex
 //          normals, so callers only have to supply correct normals, never think about winding.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Outline.withHoles: one outline for a face with round holes in it,
+//          for another table's bed holes).
 // SRP/DRY check: Pass - geometry only; no materials, no textures, no scene state. Checked TableScene and
 //          LensLayer: the Lens builds its own ribbons and shares nothing with this file.
 import Foundation
@@ -130,6 +132,41 @@ enum Outline {
         for k in 0...o.count { result.append(o[(oi + k) % o.count]) }   // back to the start
         for k in 0...h.count { result.append(h[(hi + k) % h.count]) }   // round the hole and back to its start
         return result
+    }
+
+    /// One outline for a face with holes in it (another table's bed holes cut through the cloth). Each hole is joined
+    /// to the outline by a two-way bridge, the standard way to let ear clipping fill a polygon with holes: holes are
+    /// taken rightmost first, and each is joined from its rightmost point straight along +x to the nearest edge of the
+    /// outline built so far. Every hole further right is already part of that outline and every hole not yet joined
+    /// lies wholly to the left, so a bridge never crosses anything. Holes must lie inside `outer` and not overlap.
+    static func withHoles(outer: [SIMD2<Float>], holes: [[SIMD2<Float>]]) -> [SIMD2<Float>] {
+        var poly = outer
+        if signedArea(poly) < 0 { poly.reverse() }
+        let ordered = holes.filter { $0.count >= 3 }.sorted { ($0.map(\.x).max() ?? 0) > ($1.map(\.x).max() ?? 0) }
+        for hole0 in ordered {
+            var hole = hole0
+            if signedArea(hole) > 0 { hole.reverse() }   // the hole runs the other way round
+            let mi = hole.indices.max { hole[$0].x < hole[$1].x }!
+            let m = hole[mi]
+            // Nearest crossing of the ray from m along +x with an edge of the outline so far (half-open in y, so a
+            // vertex on the ray is counted once).
+            var best: (x: Float, edge: Int)?
+            for i in poly.indices {
+                let p = poly[i], q = poly[(i + 1) % poly.count]
+                guard (p.y <= m.y && m.y < q.y) || (q.y <= m.y && m.y < p.y) else { continue }
+                let x = p.x + (m.y - p.y) / (q.y - p.y) * (q.x - p.x)
+                if x > m.x, best == nil || x < best!.x { best = (x, i) }
+            }
+            guard let hit = best else { continue }      // outside the outline: skipped rather than drawn wrong
+            let pt = SIMD2<Float>(hit.x, m.y)
+            var joined = Array(poly[0...hit.edge])
+            joined.append(pt)
+            for k in 0...hole.count { joined.append(hole[(mi + k) % hole.count]) }   // round the hole and back to m
+            joined.append(pt)
+            if hit.edge + 1 < poly.count { joined += poly[(hit.edge + 1)...] }
+            poly = joined
+        }
+        return poly
     }
 
     /// Points on a circular arc from angle `a0` to `a1` (radians), inclusive, going the short way implied by sign.

@@ -19,6 +19,8 @@
 //          offsets, the bridge and whether the cue may show (the old flat cue's rule: the shot has played out and the cue
 //          ball is on the table); each frame also hands the scene the CueStroke of the shot on screen and whether Ride
 //          is on, for the follow-through).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: the scene is built and reloaded with the table kind the
+//          shot was solved on, so it redraws the table when that changes).
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -85,10 +87,10 @@ struct TableStage: View {
             #if os(iOS)
             content.camera = .virtual
             #endif
-            let table = TableScene(timeline: model.timeline, surface: model.physicsSurface)
+            let table = TableScene(timeline: model.timeline, surface: model.physicsSurface, table: model.solvedTable)
             content.add(table.root)
             bridge.table = table
-            table.load(model.timeline, version: model.timelineVersion)
+            table.load(model.timeline, version: model.timelineVersion, kind: model.solvedTable)
             // Reflections: lights the glossy parts from a generated lamp picture.
             await table.installEnvironment()
             // A copy of the content that the per-frame closure may keep: it is only used to project points to the screen.
@@ -114,7 +116,7 @@ struct TableStage: View {
             })
         } update: { _ in
             if let table = bridge.table, model.timelineVersion >= 0 {
-                table.load(model.timeline, version: model.timelineVersion)
+                table.load(model.timeline, version: model.timelineVersion, kind: model.solvedTable)
             }
             // The bed shows the surface the shot is actually solved on: the chosen one, or cloth while a trick shot is
             // up (trick shots are always played on cloth). Reading it here makes the view update when it changes.

@@ -5,7 +5,8 @@
 	objectVersion = 77;
 	objects = {
 		B1000001 /* Breakdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B1000002 /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; path = App; sourceTree = "<group>"; };
+		B1000002 /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B1000020); path = App; sourceTree = "<group>"; };
+		B1000020 /* Exceptions for "App" folder in "Breakdown" target */ = {isa = PBXFileSystemSynchronizedBuildFileExceptionSet; membershipExceptions = (Tables/README.md); target = B1000008 /* Breakdown */; };
 		B1000003 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (B1000012); runOnlyForDeploymentPostprocessing = 0; };
 		B1000004 = {isa = PBXGroup; children = (B1000002, B1000005); sourceTree = "<group>"; };
 		B1000005 /* Products */ = {isa = PBXGroup; children = (B1000001); name = Products; sourceTree = "<group>"; };

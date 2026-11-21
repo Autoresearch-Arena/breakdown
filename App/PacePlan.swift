@@ -10,6 +10,7 @@
 //          stretches. That speed never reaches zero; the stop itself is not a speed but a separate hold that
 //          ShowpieceModel runs with its own real-time counter, so the clock can never stall forever.
 //          Everything is read from the recorded event times; nothing is tuned to the showpiece rack.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: a post rebound paces like a rail, a pin knocked down like an impact).
 // SRP/DRY check: Pass - choosing beats and the between-beats speed only; the hold itself and the clock live in
 //          ShowpieceModel, the words in CaptionEngine.
 import BreakdownLensModel
@@ -62,7 +63,8 @@ struct PacePlan: Equatable {
             switch e.kind {
             case .cueStrike: return .strike
             case .ballBall: return .impact
-            case .cushion: return e.edge == .rail ? .rail : .jaw
+            case .cushion: return e.edge == .rail || e.edge == .post ? .rail : .jaw
+            case .pinDown: return .impact
             case .phaseTransition: return .roll
             case .pocket: return .pocket
             }

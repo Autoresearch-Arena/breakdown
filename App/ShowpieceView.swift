@@ -42,6 +42,7 @@
 //          aim line (the overlay draws a better one that stops at the first ball). Launch flags -aimDemo (skip the cold
 //          open and open the aiming panel on the break's resting balls) and -aimDemoRack (same, on a fresh rack ready for
 //          a break) put the screen in the aiming state for screenshots without tapping through.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the Surface menu gains a Tables section listing the four tables).
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -284,6 +285,22 @@ private struct SurfaceMenuButton: View {
                     }
                 }
                 .accessibilityAddTraits(surface == model.surface ? .isSelected : [])
+            }
+            // The tables, under their own heading: picking one puts that table's start layout on screen.
+            Section(String(localized: "Tables")) {
+                ForEach(TableKind.allCases) { kind in
+                    Button {
+                        model.setTable(kind)
+                    } label: {
+                        Label {
+                            Text(verbatim: kind.title)
+                            Text(verbatim: kind.summary)
+                        } icon: {
+                            Image(systemName: kind == model.tableKind ? "checkmark" : kind.symbol)
+                        }
+                    }
+                    .accessibilityAddTraits(kind == model.tableKind ? .isSelected : [])
+                }
             }
         } label: {
             Label("Surface", systemImage: model.surface.symbol)

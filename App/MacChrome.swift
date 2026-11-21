@@ -12,6 +12,8 @@
 //          replay and speed controls from PlaybackControls and uses the system's own toggle buttons for Lens and
 //          Your shot, which draw their pressed state natively in a Mac toolbar. Writes to the model only through its
 //          public methods.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the Surface submenu gains a Tables section: pool table, bumper pool,
+//          five-pin billiards, bar billiards).
 // SRP/DRY check: Pass - menu and toolbar only; checked PlaybackControls, whose play, replay and speed pieces are reused here.
 import SwiftUI
 
@@ -41,11 +43,22 @@ struct PlaybackCommands: Commands {
             Toggle("Ride Camera", isOn: Binding(get: { model?.rideOn ?? false }, set: { model?.setRide($0) }))
                 .keyboardShortcut("e", modifiers: .command)
                 .disabled(model == nil)
-            // Playing surface: the same choice as the round glass button in the title row; shows as a submenu.
-            Picker("Surface", selection: Binding(get: { model?.surface ?? .cloth }, set: { model?.setSurface($0) })) {
-                ForEach(PlaySurface.allCases) { surface in
-                    Label(surface.title, systemImage: surface.symbol).tag(surface)
+            // Playing surface and table: the same choices as the round glass button in the title row, as one submenu with
+            // the surfaces first and the tables under their own heading.
+            Menu("Surface") {
+                Picker("Surface", selection: Binding(get: { model?.surface ?? .cloth }, set: { model?.setSurface($0) })) {
+                    ForEach(PlaySurface.allCases) { surface in
+                        Label(surface.title, systemImage: surface.symbol).tag(surface)
+                    }
                 }
+                .pickerStyle(.inline)
+                .labelsHidden()
+                Picker(String(localized: "Tables"), selection: Binding(get: { model?.tableKind ?? .standard }, set: { model?.setTable($0) })) {
+                    ForEach(TableKind.allCases) { kind in
+                        Label(kind.title, systemImage: kind.symbol).tag(kind)
+                    }
+                }
+                .pickerStyle(.inline)
             }
             .disabled(model == nil)
             Divider()

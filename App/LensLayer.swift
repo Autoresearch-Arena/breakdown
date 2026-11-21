@@ -43,6 +43,8 @@
 //          part of the spin, english, gets its own flat ring on the cloth in the cushion blue, since cushions are where
 //          side spin shows itself. Each ball owns one belt and one ring built once; per frame only their pose and
 //          opacity change.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the Lens grid is built by buildGrid, which TableScene calls again
+//          when the table changes; it also marks the holes in another table's bed).
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -277,20 +279,26 @@ final class LensLayer {
             spinMarkers.append((slip, side))
         }
 
-        // Grid under the Lens, with the cushion line, the rail outline and the pockets drawn into it.
+        buildGrid(frame: frame, table: table)
+
+        // Aim line for the player's own break.
+        aimLine.model = ModelComponent(mesh: .generateBox(width: 1, height: 0.002, depth: 0.004),
+                                       materials: [UnlitMaterial(color: rgba(1, 1, 1, 0.8))])
+        aimLine.isEnabled = false
+    }
+
+    /// Grid under the Lens, with the cushion line, the rail outline and the pockets drawn into it (the edge pockets the
+    /// table has, and any holes in its bed). Called again by TableScene when the table changes.
+    func buildGrid(frame: TableFrame, table: TableSpec) {
         let L = frame.length, W = frame.width
         let pockets = zip(table.pockets, table.pocketCaptureRadius).map { (x: $0.0.x, y: $0.0.y, radius: $0.1) }
+            + table.bedHoles.map { (x: $0.center.x, y: $0.center.y, radius: $0.captureRadius) }
         if let tex = BallTextures.gridTexture(length: Double(L), width: Double(W), pockets: pockets) {
             let m = Float(BallTextures.gridMargin)
             gridEntity.model = ModelComponent(mesh: .generatePlane(width: L + 2 * m, depth: W + 2 * m), materials: [Self.glow(tex)])
             gridEntity.position = SIMD3(0, 0.0004, 0)
             gridEntity.components.set(ModelSortGroupComponent(group: sortGroup, order: 0))
         }
-
-        // Aim line for the player's own break.
-        aimLine.model = ModelComponent(mesh: .generateBox(width: 1, height: 0.002, depth: 0.004),
-                                       materials: [UnlitMaterial(color: rgba(1, 1, 1, 0.8))])
-        aimLine.isEnabled = false
     }
 
     // MARK: Timeline-dependent parts

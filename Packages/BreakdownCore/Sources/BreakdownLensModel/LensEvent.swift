@@ -5,6 +5,10 @@
 //          events. Take-off, landing and flying off the table are phase-transition events carrying a FlightMark and the
 //          vertical speeds, rather than new event kinds, so every existing switch over LensEventKind keeps compiling and
 //          keeps its meaning. Events without a flight carry .none and hash exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: a cushion event can come off a fixed round post
+//          (CushionEdge.post), and a new kind, pinDown, records a standing pin knocked over. Both name their post or pin
+//          in the new `feature` field (-1 everywhere else). The new cases are appended, so no raw value moves and every
+//          recording without posts or pins hashes exactly as before.)
 // PURPOSE: The engine-agnostic event stream the Physics Lens reads. Each event names its producer so the
 //          Lens knows how far to trust a number (pool solver numbers are exact; scanned-scene numbers
 //          will be labelled estimates later). Also holds the stable 64-bit hasher used for replay equality.
@@ -24,14 +28,17 @@ public enum FlightMark: UInt8, Sendable {
     case none, takeOff, landing, offTable
 }
 
+/// `pinDown` (added last, so older raw values never move): a ball touched a standing pin and knocked it over; the
+/// event's `feature` is the pin's index in TableSpec.pins and its first ball is the ball that hit it.
 public enum LensEventKind: UInt8, Sendable {
-    case cueStrike, phaseTransition, ballBall, cushion, pocket
+    case cueStrike, phaseTransition, ballBall, cushion, pocket, pinDown
 }
 
 /// Which part of the cushion a cushion event hit: the long straight nose, a pocket jaw face, or the rounded knuckle
-/// where the nose turns into the jaw. Jaw and knuckle hits carry the pocket index in `pocket`.
+/// where the nose turns into the jaw. Jaw and knuckle hits carry the pocket index in `pocket`. `post`: a fixed round
+/// post standing on the bed (another table's bumper); the event's `feature` is its index in TableSpec.posts.
 public enum CushionEdge: UInt8, Sendable {
-    case rail, jaw, knuckle
+    case rail, jaw, knuckle, post
 }
 
 public enum LensProducer: String, Sendable {
@@ -94,12 +101,15 @@ public struct LensEvent: Sendable, Equatable {
     public var verticalSpeedUp: Double
     /// Height of the ball's lowest point above the cloth when the event happened (metres); zero on the cloth.
     public var height: Double
+    /// For a post hit (edge .post) the post's index, for a pinDown event the pin's index; -1 for everything else.
+    public var feature: Int
 
     public init(time: Double, kind: LensEventKind, point: Vec2, normal: Vec2, normalImpulse: Double = 0,
                 frictionImpulse: Double = 0, slipSpeed: Double = 0, balls: [ImpactBall],
                 phaseFrom: MotionPhase? = nil, phaseTo: MotionPhase? = nil, pocket: Int = -1,
                 edge: CushionEdge = .rail, flight: FlightMark = .none, verticalSpeedDown: Double = 0,
-                verticalSpeedUp: Double = 0, height: Double = 0, producer: LensProducer = .poolSolver) {
+                verticalSpeedUp: Double = 0, height: Double = 0, feature: Int = -1,
+                producer: LensProducer = .poolSolver) {
         self.time = time; self.kind = kind; self.producer = producer
         self.point = point; self.normal = normal
         self.normalImpulse = normalImpulse; self.frictionImpulse = frictionImpulse; self.slipSpeed = slipSpeed
@@ -107,6 +117,7 @@ public struct LensEvent: Sendable, Equatable {
         self.edge = edge
         self.flight = flight; self.verticalSpeedDown = verticalSpeedDown; self.verticalSpeedUp = verticalSpeedUp
         self.height = height
+        self.feature = feature
     }
 }
 

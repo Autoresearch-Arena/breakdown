@@ -4,6 +4,12 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (jump shots: BallState carries the ball's height above the cloth;
 //          contentHash folds in the height terms of airborne segments and the flight fields of flight events only, so
 //          every recording without a jump hashes bit for bit as before; flewOffTable says which balls left the table.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: TableSpec also carries the posts, pins and bed holes
+//          and whether the six edge pockets exist, so the app draws exactly what the solver used; edge pockets keep
+//          indices 0 to 5 and bed hole j is pocket 6 + j whether or not the edge pockets exist (holeCenter(pocket:)
+//          finds either). The Timeline lists the pins knocked down (pinFalls, pinDownTime) from the pinDown events, so
+//          the app can topple them as a pure function of the clock. contentHash folds an event's feature index only
+//          where one is set, so every recording without posts or pins hashes exactly as before.)
 // PURPOSE: The recorded shot. Holds every ball's segments, the Lens events, the table description, and a
 //          content hash for replay equality. Playback, slow motion, scrubbing, the Lens and sound all read
 //          this and never re-simulate. Doubles are hashed by bit pattern.
@@ -21,18 +27,37 @@ public struct JawSpec: Sendable, Equatable {
 }
 
 public struct TableSpec: Sendable, Equatable {
+    /// How many edge pockets a pocketed table has (four corners, two sides). Bed hole j is pocket edgePocketCount + j.
+    public static let edgePocketCount = 6
+
     public var length: Double
     public var width: Double
     public var ballRadius: Double
-    /// Centre of each pocket's hole, corners then sides, and the radius a ball's centre must reach to drop.
+    /// Centre of each edge pocket's hole, corners then sides, and the radius a ball's centre must reach to drop.
+    /// Empty when the table has no edge pockets (pocketsEnabled false).
     public var pockets: [Vec2]
     public var pocketCaptureRadius: [Double]
-    /// Two jaws per pocket, in pocket order. Empty for tables recorded before pockets had jaws.
+    /// Two jaws per pocket, in pocket order. Empty for tables recorded before pockets had jaws, and with no pockets.
     public var jaws: [JawSpec]
+    /// False for a table with no edge pockets (five-pin): the cushions run the full length of every side.
+    public var pocketsEnabled: Bool
+    /// Fixed round posts, standing pins and holes in the bed (see TableFeatures.swift). Empty on a pool table.
+    public var posts: [Post]
+    public var pins: [Pin]
+    public var bedHoles: [BedHole]
     public init(length: Double, width: Double, ballRadius: Double, pockets: [Vec2], pocketCaptureRadius: [Double],
-                jaws: [JawSpec] = []) {
+                jaws: [JawSpec] = [], pocketsEnabled: Bool = true, posts: [Post] = [], pins: [Pin] = [],
+                bedHoles: [BedHole] = []) {
         self.length = length; self.width = width; self.ballRadius = ballRadius
         self.pockets = pockets; self.pocketCaptureRadius = pocketCaptureRadius; self.jaws = jaws
+        self.pocketsEnabled = pocketsEnabled; self.posts = posts; self.pins = pins; self.bedHoles = bedHoles
+    }
+
+    /// Centre of the hole a pocket event names: an edge pocket (0 to 5) or a bed hole (6 and up). Nil if no such hole.
+    public func holeCenter(pocket k: Int) -> Vec2? {
+        if k >= 0 && k < TableSpec.edgePocketCount { return pocketsEnabled && k < pockets.count ? pockets[k] : nil }
+        let j = k - TableSpec.edgePocketCount
+        return j >= 0 && j < bedHoles.count ? bedHoles[j].center : nil
     }
 }
 
@@ -61,12 +86,31 @@ public struct Timeline: Sendable {
     public let pocketTime: [Double?]
     /// Time of the last event; after this nothing moves.
     public let duration: Double
+    /// Every pin knocked down in this shot, in time order (from the pinDown events). Empty without pins.
+    public let pinFalls: [PinFall]
+    /// Per pin in table.pins: when it was knocked down, nil if it stood all shot.
+    public let pinDownTime: [Double?]
 
     public init(table: TableSpec, seed: UInt64, parameterHash: UInt64, segments: [[BallSegment]],
                 events: [LensEvent], pocketTime: [Double?], duration: Double) {
         self.table = table; self.seed = seed; self.parameterHash = parameterHash
         self.ballCount = segments.count
         self.segments = segments; self.events = events; self.pocketTime = pocketTime; self.duration = duration
+        var falls: [PinFall] = []
+        var down = [Double?](repeating: nil, count: table.pins.count)
+        for e in events where e.kind == .pinDown {
+            guard let b = e.balls.first else { continue }
+            falls.append(PinFall(pin: e.feature, time: e.time, ball: b.ball, direction: e.normal))
+            if down.indices.contains(e.feature), down[e.feature] == nil { down[e.feature] = e.time }
+        }
+        pinFalls = falls
+        pinDownTime = down
+    }
+
+    /// True once pin `pin` has been knocked down at clock time `t` (from its exact recorded time on).
+    public func pinIsDown(_ pin: Int, at t: Double) -> Bool {
+        guard pinDownTime.indices.contains(pin), let d = pinDownTime[pin] else { return false }
+        return t >= d
     }
 
     public func segmentIndex(ball: Int, at t: Double) -> Int {
@@ -118,6 +162,8 @@ public struct Timeline: Sendable {
         for e in events {
             h.combine(e.time); h.combine(Int(e.kind.rawValue)); h.combine(e.point); h.combine(e.normalImpulse)
             h.combine(e.balls.count)
+            // Post and pin indices only where set (-1 elsewhere), so older recordings hash bit for bit as before.
+            if e.feature >= 0 { h.combine(e.feature) }
             if e.flight != .none {
                 h.combine(Int(e.flight.rawValue)); h.combine(e.verticalSpeedDown); h.combine(e.verticalSpeedUp)
                 h.combine(e.height)

@@ -14,6 +14,15 @@
 //          holes only count while the ball's lowest point is below the cushion nose; above it, crossing a cushion line
 //          means it flew off the table (a pocket-like outcome, event flight offTable) or, over a hole, into the pocket.
 //          A level strike (elevation zero) takes exactly the old code path, so old recordings are bit-for-bit equal.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables. Posts: a fixed round obstacle is a point contact at
+//          ballRadius + post radius, the knuckle test generalised, in the cushion rank after the knuckles, answered by
+//          Impacts.cushion with the post's own restitution and friction and recorded as a cushion event with edge .post.
+//          Pins: the same contact test against each standing pin (a new rank, pin, last in the tie-break so no older
+//          ordering changes); the first touch knocks the pin down (a pinDown event), takes a ball-ball style impulse
+//          with the pin's mass off the ball, and the pin plays no further part in the shot. A ball in the air higher
+//          than a post's or pin's height passes over it. Bed holes join the capture list after the edge pockets and are
+//          recorded as pocket 6 + j. With pocketsEnabled false the edge pockets, jaws and knuckles are gone and each
+//          cushion runs its whole side. A pool table has none of these, so its events and their order are unchanged.)
 // PURPOSE: The event-driven billiards solver. A shot is a list of closed-form segments per ball (sliding,
 //          rolling, spinning, stationary) plus exact events. The loop repeatedly finds the earliest next
 //          event among: a ball's phase ending, a pocket capture, a cushion hit and a ball-ball contact,
@@ -26,7 +35,8 @@ import BreakdownLensModel
 import BreakdownTimeline
 
 /// Tie-break order for events at the same instant. offTable is last and new, so older orderings never change.
-private enum EventRank: Int { case transition = 0, pocket = 1, cushion = 2, ballBall = 3, offTable = 4 }
+/// pin (21-Nov-2026) is newer still and comes after offTable for the same reason.
+private enum EventRank: Int { case transition = 0, pocket = 1, cushion = 2, ballBall = 3, offTable = 4, pin = 5 }
 
 private struct Candidate {
     var time: Double
@@ -87,24 +97,49 @@ private struct Simulation {
     let jaws: [Jaw]
     /// The knuckles: the start point of every jaw, where the cushion nose turns into the pocket.
     let knuckles: [(point: Vec2, pocket: Int)]
+    /// Every capture hole the solver checks, in this order: the six edge pockets (if the table has them), then the
+    /// bed holes. `pocketIndex` turns a position in this list into the pocket number recorded on the event: 0 to 5 for
+    /// the edge pockets, 6 + j for bed hole j, whether or not the edge pockets exist.
     let pockets: [Vec2]
     let captureRadii: [Double]
+    let pocketIndex: [Int]
+    /// Fixed round posts and standing pins (empty on a pool table). A pin that has been knocked down is out of play.
+    let posts: [Post]
+    let pins: [Pin]
+    var pinDown: [Bool]
 
     init(input: ShotInput) {
         self.input = input
         P = input.parameters
-        pockets = P.pocketCenters
-        captureRadii = P.pocketCaptureRadii
+        let edge = P.pocketsEnabled ? Array(P.pocketCenters.prefix(TableSpec.edgePocketCount)) : []
+        let edgeRadii = P.pocketsEnabled ? Array(P.pocketCaptureRadii.prefix(TableSpec.edgePocketCount)) : []
+        pockets = edge + P.bedHoles.map(\.center)
+        captureRadii = edgeRadii + P.bedHoles.map(\.captureRadius)
+        pocketIndex = Array(0..<edge.count) + P.bedHoles.indices.map { TableSpec.edgePocketCount + $0 }
+        posts = P.posts
+        pins = P.pins
+        pinDown = [Bool](repeating: false, count: P.pins.count)
         pocketTime = [Double?](repeating: nil, count: input.positions.count)
         let r = P.ballRadius, L = P.tableLength, W = P.tableWidth
         // The straight cushion noses run between knuckles. Past a knuckle the ball meets the knuckle or the jaw.
         let a = P.cornerKnuckleOffset, h = P.sideMouth * 0.5
-        walls = [
-            Wall(normal: Vec2(1, 0), offset: r, alongX: false, ranges: [(a, W - a)]),
-            Wall(normal: Vec2(-1, 0), offset: -(L - r), alongX: false, ranges: [(a, W - a)]),
-            Wall(normal: Vec2(0, 1), offset: r, alongX: true, ranges: [(a, L * 0.5 - h), (L * 0.5 + h, L - a)]),
-            Wall(normal: Vec2(0, -1), offset: -(W - r), alongX: true, ranges: [(a, L * 0.5 - h), (L * 0.5 + h, L - a)]),
-        ]
+        if P.pocketsEnabled {
+            walls = [
+                Wall(normal: Vec2(1, 0), offset: r, alongX: false, ranges: [(a, W - a)]),
+                Wall(normal: Vec2(-1, 0), offset: -(L - r), alongX: false, ranges: [(a, W - a)]),
+                Wall(normal: Vec2(0, 1), offset: r, alongX: true, ranges: [(a, L * 0.5 - h), (L * 0.5 + h, L - a)]),
+                Wall(normal: Vec2(0, -1), offset: -(W - r), alongX: true, ranges: [(a, L * 0.5 - h), (L * 0.5 + h, L - a)]),
+            ]
+        } else {
+            // No pockets: every cushion runs its whole side, corner to corner (a ball reaching a corner meets the two
+            // cushions one after the other, each an exact event).
+            walls = [
+                Wall(normal: Vec2(1, 0), offset: r, alongX: false, ranges: [(0, W)]),
+                Wall(normal: Vec2(-1, 0), offset: -(L - r), alongX: false, ranges: [(0, W)]),
+                Wall(normal: Vec2(0, 1), offset: r, alongX: true, ranges: [(0, L)]),
+                Wall(normal: Vec2(0, -1), offset: -(W - r), alongX: true, ranges: [(0, L)]),
+            ]
+        }
         var jawList: [Jaw] = []
         for j in P.jaws {
             let d = j.end - j.start
@@ -352,6 +387,9 @@ private struct Simulation {
                     consider(Candidate(time: now + tau, rank: .cushion, a: i, b: walls.count + jaws.count + k))
                 }
             }
+            // Posts and standing pins: the knuckle's point contact, at ballRadius plus their own radius. A ball on the
+            // cloth meets anything that stands above the cloth.
+            for c in roundCandidates(i, s, acceleration: a, window: window, airborne: false) { consider(c) }
         }
         // Ball against ball
         for i in 0..<n where bodies[i].active {
@@ -479,6 +517,40 @@ private struct Simulation {
                 out.append(Candidate(time: now + tau, rank: .cushion, a: i, b: index))
             }
         }
+        out += roundCandidates(i, s, acceleration: .zero, window: window, airborne: true)
+        return out
+    }
+
+    /// Index of the first post in the cushion rank's numbering (walls, then jaws, then knuckles, then posts).
+    private var firstPost: Int { walls.count + jaws.count + knuckles.count }
+
+    /// Contacts with the round posts and the pins still standing: the ball's centre reaching ballRadius + radius from
+    /// the feature's centre, an exact quartic root as for a knuckle. A ball in the air only meets a post or pin whose
+    /// top is above the ball's lowest point at that moment (for one on the cloth that is any feature with a height).
+    private func roundCandidates(_ i: Int, _ s: BodyState, acceleration a: Vec2, window: Double, airborne: Bool) -> [Candidate] {
+        if posts.isEmpty && pins.isEmpty { return [] }
+        var out: [Candidate] = []
+        let g = P.gravity
+        func below(_ top: Double, _ tau: Double) -> Bool {
+            if !airborne { return top > 0 }
+            return s.height + s.vz * tau - 0.5 * g * tau * tau < top
+        }
+        func contact(_ c: Vec2, _ radius: Double, _ top: Double, rank: EventRank, index: Int) {
+            let rel = s.position - c
+            let reach = P.ballRadius + radius
+            let r2 = reach * reach
+            if rel.lengthSquared <= r2 {
+                // Already touching (rounding after the last contact): only an approaching ball counts.
+                if rel.dot(s.velocity) < 0 && below(top, 0) { out.append(Candidate(time: now, rank: rank, a: i, b: index)) }
+                return
+            }
+            let poly = quarticCoefficients(rel, s.velocity, a * 0.5, minus: r2)
+            if let tau = RootFinder.firstDownCrossing(poly, limit: window), below(top, tau) {
+                out.append(Candidate(time: now + tau, rank: rank, a: i, b: index))
+            }
+        }
+        for (k, post) in posts.enumerated() { contact(post.center, post.radius, post.height, rank: .cushion, index: firstPost + k) }
+        for (k, pin) in pins.enumerated() where !pinDown[k] { contact(pin.center, pin.radius, pin.height, rank: .pin, index: k) }
         return out
     }
 
@@ -495,6 +567,7 @@ private struct Simulation {
             case .cushion: applyCushion(c.a, c.b)
             case .ballBall: applyBallBall(c.a, c.b)
             case .offTable: applyOffTable(c.a, c.b)
+            case .pin: applyPin(c.a, c.b)
             }
             count += 1
         }
@@ -559,7 +632,7 @@ private struct Simulation {
                             omegaAfter: .zero, translationalBefore: tb, rotationalBefore: rb,
                             translationalAfter: 0, rotationalAfter: 0)
         events.append(LensEvent(time: now, kind: .pocket, point: st.position, normal: (pockets[k] - st.position).normalized,
-                                balls: [ib], pocket: k))
+                                balls: [ib], pocket: pocketIndex[k]))
         var old = bodies[i].segment
         old.t1 = now
         bodies[i].closed.append(old)
@@ -579,6 +652,7 @@ private struct Simulation {
     }
 
     private mutating func applyCushion(_ i: Int, _ w: Int) {
+        if w >= firstPost { applyPost(i, w - firstPost); return }
         if w >= walls.count + jaws.count { applyKnuckle(i, w - walls.count - jaws.count); return }
         if w >= walls.count { applyJaw(i, w - walls.count); return }
         let wall = walls[w]
@@ -621,6 +695,43 @@ private struct Simulation {
                                 normalImpulse: res.normalImpulse, frictionImpulse: res.frictionImpulse,
                                 slipSpeed: res.slipSpeed, balls: [impactBall(i, before, res.states[0])],
                                 pocket: knuckle.pocket, edge: .knuckle))
+    }
+
+    /// A fixed round post: the knuckle's response (the normal runs from the post's centre to the ball's), but with the
+    /// post's own restitution and friction in place of the cushion's.
+    private mutating func applyPost(_ i: Int, _ k: Int) {
+        let post = posts[k]
+        let before = bodyState(i, at: now)
+        let n = (before.position - post.center).normalized
+        var q = P
+        q.cushionRestitution = post.restitution
+        q.cushionFriction = post.friction
+        var res = Impacts.cushion(before, normal: n, q)
+        let reach = P.ballRadius + post.radius
+        if (res.states[0].position - post.center).length < reach { res.states[0].position = post.center + n * reach }
+        restart(i, at: now, with: res.states[0])
+        events.append(LensEvent(time: now, kind: .cushion, point: post.center + n * post.radius, normal: n,
+                                normalImpulse: res.normalImpulse, frictionImpulse: res.frictionImpulse,
+                                slipSpeed: res.slipSpeed, balls: [impactBall(i, before, res.states[0])],
+                                edge: .post, feature: k))
+    }
+
+    /// A ball touches a standing pin and knocks it down. The pin is a free body at rest with its own (small) mass:
+    /// along the line of centres the ball loses (1 + e) * v_n * m_pin / (m + m_pin), the ball-ball impulse for unequal
+    /// masses; nothing else about the ball changes (no friction with a falling pin). The pin is then out of play.
+    private mutating func applyPin(_ i: Int, _ k: Int) {
+        let pin = pins[k]
+        let before = bodyState(i, at: now)
+        let n = (pin.center - before.position).normalized
+        let vn = before.velocity.dot(n)
+        let m = P.ballMass, mp = pin.mass
+        let jn = vn > 0 ? (1 + pin.restitution) * vn * m * mp / (m + mp) : 0
+        var after = before
+        after.velocity = before.velocity - n * (jn / m)
+        pinDown[k] = true
+        restart(i, at: now, with: after)
+        events.append(LensEvent(time: now, kind: .pinDown, point: pin.center, normal: n, normalImpulse: jn,
+                                balls: [impactBall(i, before, after)], height: before.height, feature: k))
     }
 
     private mutating func applyBallBall(_ i: Int, _ j: Int) {

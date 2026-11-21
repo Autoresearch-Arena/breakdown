@@ -351,6 +351,76 @@
         }
       }
     },
+    "%@ hits the post at %@ m/s and keeps %@ percent of its speed straight into it.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ يصطدم بالعمود بسرعة %2$@ m/s ويحتفظ بـ%3$@ في المئة من سرعته متجهاً مباشرةً نحوه."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ trifft den Pfosten mit %2$@ m/s und behält %3$@ Prozent seines Tempos in Richtung Pfosten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ toca el poste a %2$@ m/s y conserva el %3$@ por ciento de su velocidad en línea recta contra él."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ touche le plot à %2$@ m/s et garde %3$@ pour cent de sa vitesse en ligne droite contre lui."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ colpisce il respingente a %2$@ m/s e mantiene il %3$@ per cento della sua velocità verso di esso."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@は%2$@ m/sでポストに当たり、速さの%3$@%を保ったまま真っすぐ跳ね返ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@이(가) %2$@ m/s로 기둥에 맞고, 기둥 쪽 속도의 %3$@퍼센트를 유지해."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ bate no pino a %2$@ m/s e mantém %3$@ por cento da sua velocidade em linha reta contra ele."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ bate no pino a %2$@ m/s e mantém %3$@ por cento da sua velocidade em linha reta contra ele."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ ударяется о столбик на скорости %2$@ м/с и сохраняет %3$@ процентов скорости, направленной прямо в него."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@以%2$@ m/s撞上挡柱，正对挡柱方向的速度保留%3$@%。"
+          }
+        }
+      }
+    },
     "%@ hits the rail at %@ m/s and keeps %@ percent of its speed straight into the rail. Sideways speed is trimmed by friction.": {
       "localizations": {
         "ar": {
@@ -417,6 +487,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ 以 %@ m/s 的速度撞上库边，沿库边方向保留了百分之%@的速度。侧向速度被摩擦力削减。"
+          }
+        }
+      }
+    },
+    "%@ knocks the pin over at %@ m/s and rolls on at %@ m/s.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ يُسقط الوتد بسرعة %2$@ m/s ويواصل التدحرج بسرعة %3$@ m/s."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ wirft den Kegel mit %2$@ m/s um und rollt mit %3$@ m/s weiter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ derriba el bolo a %2$@ m/s y sigue rodando a %3$@ m/s."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ renverse la quille à %2$@ m/s et continue à rouler à %3$@ m/s."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ abbatte il birillo a %2$@ m/s e continua a rotolare a %3$@ m/s."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@は%2$@ m/sでピンを倒し、%3$@ m/sで転がり続けます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@이(가) %2$@ m/s로 핀을 쓰러뜨리고 %3$@ m/s로 계속 굴러가."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ derruba o pino a %2$@ m/s e continua a rolar a %3$@ m/s."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ derruba o pino a %2$@ m/s e continua rolando a %3$@ m/s."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ сбивает кеглю на скорости %2$@ м/с и катится дальше со скоростью %3$@ м/с."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@以%2$@ m/s撞倒小柱，并以%3$@ m/s继续滚动。"
           }
         }
       }
@@ -1397,6 +1537,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "滚动的白球以半球切入目标球，最终会偏离原来路线约30度。"
+          }
+        }
+      }
+    },
+    "A small table with rubber bumpers and a cup at each end.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طاولة صغيرة بمصدّات مطاطية وحفرة في كل طرف."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein kleiner Tisch mit Gummipfosten und einem Loch an jedem Ende."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una mesa pequeña con topes de goma y un hoyo en cada extremo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une petite table avec des plots en caoutchouc et un trou à chaque bout."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tavolo piccolo con respingenti di gomma e una buca a ogni estremità."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ゴムのバンパーが並び、両端にカップがある小さなテーブル。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고무 범퍼가 있고 양 끝에 컵이 있는 작은 테이블."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma mesa pequena com pinos de borracha e um buraco em cada ponta."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma mesa pequena com pinos de borracha e um buraco em cada ponta."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Небольшой стол с резиновыми столбиками и лункой на каждом конце."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一张小球台，有橡胶挡柱，两端各有一个球洞。"
           }
         }
       }
@@ -2521,6 +2731,76 @@
         }
       }
     },
+    "Bar billiards": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلياردو الحانة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bar-Billard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bar billiards"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billard de bar"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bar billiards"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バービリヤード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "바 빌리어드"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bar billiards"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bar billiards"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бар-бильярд"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "酒吧台球"
+          }
+        }
+      }
+    },
     "Bent it round.": {
       "localizations": {
         "ar": {
@@ -2937,6 +3217,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "架杆"
+          }
+        }
+      }
+    },
+    "Bumper pool": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلياردو المصدّات"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bumper Pool"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bumper pool"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bumper pool"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bumper pool"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バンパープール"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "범퍼 풀"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bumper pool"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bumper pool"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бампер-пул"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "障碍台球"
           }
         }
       }
@@ -5601,6 +5951,76 @@
         }
       }
     },
+    "Five-pin billiards": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلياردو الأوتاد الخمسة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fünf-Kegel-Billard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billar a cinco bolos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billard à cinq quilles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biliardo all'italiana (5 birilli)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイブピン・ビリヤード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파이브 핀 당구"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilhar de cinco pinos"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilhar de cinco pinos"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бильярд с пятью кеглями"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "五柱台球"
+          }
+        }
+      }
+    },
     "Follow": {
       "localizations": {
         "ar": {
@@ -6507,6 +6927,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "请稍候"
+          }
+        }
+      }
+    },
+    "Holes in the bed, and pegs that must not fall.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ثقوب في سطح الطاولة، وأوتاد يجب ألّا تسقط."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Löcher im Tischbett und Pilze, die nicht fallen dürfen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agujeros en el tapete y setas que no deben caer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Des trous dans le tapis, et des champignons à ne pas faire tomber."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buche nel piano e funghi che non devono cadere."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "台面に穴があり、倒してはいけないペグが立つ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "바닥에 구멍이 있고, 쓰러뜨리면 안 되는 페그가 있어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buracos no pano e pinos que não podem cair."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buracos no pano e pinos que não podem cair."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Лунки в поле и грибки, которые нельзя ронять."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "台面上有洞，还有不能碰倒的小柱。"
           }
         }
       }
@@ -8121,6 +8611,76 @@
         }
       }
     },
+    "No pockets: knock down the little pins in the middle.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلا جيوب: أسقِط الأوتاد الصغيرة في الوسط."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Taschen: Wirf die kleinen Kegel in der Mitte um."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin troneras: derriba los bolos pequeños del centro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pas de poches : fais tomber les petites quilles au centre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente buche: abbatti i birilli al centro."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ポケットなし：中央の小さなピンを倒そう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포켓 없음: 가운데 작은 핀을 쓰러뜨려 봐."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem bolsos: derruba os pinos pequenos no meio."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem caçapas: derrube os pinos pequenos no meio."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Без луз: сбей маленькие кегли в центре."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有袋口：击倒中间的小柱。"
+          }
+        }
+      }
+    },
     "Not enough %@ side. Strike further to the %@ of the cue ball.": {
       "localizations": {
         "ar": {
@@ -9727,6 +10287,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "想象袋口的镜像位于远端库边之后，把5号球朝它击出。库边会把球沿镜线弹回，送进真正的袋口。"
+          }
+        }
+      }
+    },
+    "Pin down": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سقط الوتد"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kegel gefallen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bolo derribado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quille tombée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Birillo abbattuto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ピンが倒れた"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "핀이 쓰러졌다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pino derrubado"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pino derrubado"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кегля сбита"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "柱倒了"
           }
         }
       }
@@ -14561,6 +15191,76 @@
         }
       }
     },
+    "Tables": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الطاولات"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tische"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tables"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tavoli"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テーブル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테이블"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesas"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesas"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Столы"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球台"
+          }
+        }
+      }
+    },
     "Take your own shot (Command-Y)": {
       "localizations": {
         "ar": {
@@ -16587,6 +17287,146 @@
           "stringUnit": {
             "state": "translated",
             "value": "数学表达：%@"
+          }
+        }
+      }
+    },
+    "The nine-foot table with six pockets.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الطاولة ذات التسعة أقدام والجيوب الستة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Neun-Fuß-Tisch mit sechs Taschen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La mesa de nueve pies con seis troneras."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La table de neuf pieds à six poches."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tavolo da nove piedi con sei buche."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6つのポケットがある9フィートのテーブル。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포켓 여섯 개가 있는 9피트 테이블."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mesa de nove pés com seis bolsos."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mesa de nove pés com seis caçapas."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Девятифутовый стол с шестью лузами."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有六个袋口的九英尺球台。"
+          }
+        }
+      }
+    },
+    "The post throws it back": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العمود يردّها"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Pfosten wirft ihn zurück"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El poste la devuelve"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le plot la renvoie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il respingente la rimanda indietro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ポストが跳ね返す"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기둥이 튕겨 낸다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O pino devolve-a"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O pino devolve a bola"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Столбик отбрасывает его назад"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挡柱把球弹回"
           }
         }
       }

@@ -3,6 +3,10 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (pockets drawn from the solver's own geometry: cushion runs stop at its knuckles with ends cut along its jaw lines, and each hole is the capture circle grown just enough to fill the throat; the hard-coded pocket radii are gone).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: the bed is built in the chosen surface's look by
 //          bedMaterial, which TableScene also uses to swap the bed alone when the surface changes; the cushions stay cloth).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: the table is drawn at whatever size the TableSpec gives;
+//          with no edge pockets (no jaws) each cushion runs its whole side with mitred corners and no wells or cuts are
+//          made; holes in the bed (TableSpec.bedHoles) are bitten out of the cloth and get a well wall and a black floor
+//          like a pocket's. Posts, pins and every other prop are the table kind's own (App/Tables), added by TableScene.)
 // PURPOSE: Builds the STATIC warm table and everything that sits on it, as one group that fades out when the Lens
 //          melts in: cloth that stops exactly at the cushion noses, cushions with a sloped rounded nose and jaw-cut
 //          ends, a walnut rail frame with a rounded edge and an apron, real pocket wells (a wall that drops below the
@@ -138,7 +142,17 @@ enum TableBuilder {
         //    hole bitten out at each pocket. Nothing overhangs the rails.
         let tuck: Float = 0.014
         var felt = MeshBuilder()
-        let feltOutline = Outline.rectWithCuts(hx: a + tuck, hz: b + tuck, cuts: cuts, arcsOutside: false).points
+        var feltOutline = Outline.rectWithCuts(hx: a + tuck, hz: b + tuck, cuts: cuts, arcsOutside: false).points
+        // Holes in the bed (another table's scoring holes or cups): round holes cut right through the cloth, each joined
+        // to the outline by a bridge so one outline still describes the whole cloth. The same circles shape the wells.
+        let bedHoleRims: [(center: SIMD2<Float>, points: [SIMD2<Float>])] = table.bedHoles.map { hole in
+            let centre = plan(hole.center)
+            // Started a little off angle zero, so a hole's rightmost point never lines up exactly with another's.
+            let pts = Array(Outline.arc(center: centre, radius: Float(hole.radius), from: 0.0137, to: 0.0137 + 2 * .pi,
+                                        stepDegrees: 15).dropLast())
+            return (centre, pts)
+        }
+        if !bedHoleRims.isEmpty { feltOutline = Outline.withHoles(outer: feltOutline, holes: bedHoleRims.map(\.points)) }
         felt.addFlat(feltOutline, y: 0, normal: SIMD3(0, 1, 0)) { p, _ in SIMD2(p.x / L + 0.5, p.y / W + 0.5) }
         if let e = part(felt, bedMat, "felt") { tableGroup.addChild(e) }
 
@@ -154,7 +168,22 @@ enum TableBuilder {
             jawPlan.filter { abs(simd_dot($0.knuckle - origin, outward)) < 1e-4 }
                 .min { simd_length($0.knuckle - near) < simd_length($1.knuckle - near) }!
         }
-        for sign: Float in [1, -1] {
+        // No pockets (no jaws): each side is one run from corner to corner, its ends mitred at 45 degrees so the four
+        // cushions meet in the corners.
+        if table.jaws.isEmpty {
+            for sign: Float in [1, -1] {
+                let origin = SIMD2<Float>(0, sign * b), outward = SIMD2<Float>(0, sign)
+                let m = Float(0.5).squareRoot()
+                cushions.addSweep(section: section, smooth: sectionSmooth, origin: origin, along: SIMD2(1, 0), outward: outward,
+                                  jaw0: (SIMD2(-a, sign * b), SIMD2(-m, sign * m)), jaw1: (SIMD2(a, sign * b), SIMD2(m, sign * m)),
+                                  uv: clothUV)
+                let shortOrigin = SIMD2<Float>(sign * a, 0), shortOut = SIMD2<Float>(sign, 0)
+                cushions.addSweep(section: section, smooth: sectionSmooth, origin: shortOrigin, along: SIMD2(0, 1), outward: shortOut,
+                                  jaw0: (SIMD2(sign * a, -b), SIMD2(sign * m, -m)), jaw1: (SIMD2(sign * a, b), SIMD2(sign * m, m)),
+                                  uv: clothUV)
+            }
+        }
+        for sign: Float in [1, -1] where !table.jaws.isEmpty {
             let origin = SIMD2<Float>(0, sign * b), outward = SIMD2<Float>(0, sign)
             let cornerL = SIMD2(-a, sign * b), cornerR = SIMD2(a, sign * b)
             // Each long rail is two runs: corner to side pocket and side pocket to corner. The side pocket's two
@@ -271,6 +300,12 @@ enum TableBuilder {
             // Black floor of the well, a little smaller so it never pokes through the wall.
             let disc = Outline.arc(center: cut.center, radius: cut.radius * 0.98, from: 0, to: 2 * .pi, stepDegrees: 10).dropLast()
             wells.addFlat(Array(disc), y: -pocketDepth, normal: SIMD3(0, 1, 0)) { _, _ in SIMD2(0, 1) }
+        }
+        // Bed holes: a wall straight down from the cloth round the hole's own outline, and a black floor.
+        for rim in bedHoleRims {
+            let inward = rim.points.map { simd_normalize(rim.center - $0) }
+            wells.addWall(rim.points, outward: inward, top: rim.points.map { _ in 0 }, bottom: -pocketDepth, closed: true, uvScale: 1)
+            wells.addFlat(rim.points.map { rim.center + ($0 - rim.center) * 0.98 }, y: -pocketDepth, normal: SIMD3(0, 1, 0)) { _, _ in SIMD2(0, 1) }
         }
         if let e = part(wells, wellMat, "wells") { tableGroup.addChild(e) }
         if let e = part(plates, plateMat, "pocket-plates") { tableGroup.addChild(e) }

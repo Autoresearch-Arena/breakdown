@@ -5,6 +5,11 @@
 //          that leaves the cloth and the cushion nose height, and CueStrike gains the cue's elevation as a sine. The new
 //          numbers join the parameter hash only when they differ from their defaults, so every recording made before
 //          them keeps its hash; a level strike takes exactly the old code path.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: optional layout features, all empty on a pool table:
+//          fixed round posts, standing pins that a ball knocks down, holes anywhere in the bed (bed hole j is pocket
+//          6 + j), and pocketsEnabled (false removes the six edge pockets and their jaws, so the cushions run the full
+//          length of every side). Like the jump numbers they join the hash only when set, behind their own marker, so the
+//          default parameters, and every recording made before them, hash exactly as before.)
 // PURPOSE: Every tunable number of the pool solver in one versioned value that is hashed into each recorded
 //          shot. Values follow the spec section 3.4; anything marked "calibrate" there is a first guess to
 //          tune later against the validation suite. No Foundation import anywhere in this module (no libm).
@@ -66,6 +71,13 @@ public struct PoolParameters: Sendable {
     /// the air whose lowest point is below this meets the cushion like a ball on the cloth; one above it sails over
     /// the cushion and off the table.
     public var cushionNoseHeight = 0.0363
+    /// Other tables (21-Nov-2026; see BreakdownTimeline/TableFeatures.swift). A pool table has none of these.
+    /// pocketsEnabled false removes the six edge pockets, their jaws and knuckles: each cushion runs its full side.
+    public var pocketsEnabled = true
+    public var posts: [Post] = []
+    public var pins: [Pin] = []
+    /// Holes in the bed, captured like pockets. Bed hole j is pocket index 6 + j, with or without the edge pockets.
+    public var bedHoles: [BedHole] = []
     public var rackGap = 1e-6                   // one micrometre between rack neighbours
     public var rackJitter = 2e-7                // seeded jitter amplitude per axis, metres; stays under a quarter of the gap so no pair starts overlapping
 
@@ -83,7 +95,9 @@ public struct PoolParameters: Sendable {
     public var cornerKnuckleOffset: Double { cornerMouth * 0.7071067811865476 }
 
     /// Two jaws per pocket, in pocket order, built from the mouth sizes and jaw directions by sign flips only.
+    /// None when the table has no edge pockets.
     public var jaws: [JawSpec] {
+        guard pocketsEnabled else { return [] }
         let L = tableLength, W = tableWidth, a = cornerKnuckleOffset, h = sideMouth * 0.5
         var out: [JawSpec] = []
         let corners = [Vec2(0, 0), Vec2(L, 0), Vec2(0, W), Vec2(L, W)]
@@ -111,7 +125,8 @@ public struct PoolParameters: Sendable {
 
     public var tableSpec: TableSpec {
         TableSpec(length: tableLength, width: tableWidth, ballRadius: ballRadius,
-                  pockets: pocketCenters, pocketCaptureRadius: pocketCaptureRadii, jaws: jaws)
+                  pockets: pocketsEnabled ? pocketCenters : [], pocketCaptureRadius: pocketsEnabled ? pocketCaptureRadii : [],
+                  jaws: jaws, pocketsEnabled: pocketsEnabled, posts: posts, pins: pins, bedHoles: bedHoles)
     }
 
     /// Ball-ball friction coefficient at a slip speed, using exp(-x) ~ 1 / (1 + x + x^2/2 + x^3/6 + x^4/24).
@@ -138,6 +153,17 @@ public struct PoolParameters: Sendable {
         if jump != PoolParameters.defaultJump {
             h.combine(UInt64(0x4A55_4D50))   // "JUMP"
             for d in jump { h.combine(d) }
+        }
+        // The other tables' features, likewise only when present (a pool table has none, so its hash is unchanged).
+        if !pocketsEnabled || !posts.isEmpty || !pins.isEmpty || !bedHoles.isEmpty {
+            h.combine(UInt64(0x5441_424C))   // "TABL"
+            h.combine(pocketsEnabled ? 1 : 0)
+            h.combine(posts.count)
+            for p in posts { h.combine(p.center); h.combine(p.radius); h.combine(p.restitution); h.combine(p.friction); h.combine(p.height) }
+            h.combine(pins.count)
+            for p in pins { h.combine(p.center); h.combine(p.radius); h.combine(p.mass); h.combine(p.restitution); h.combine(p.height) }
+            h.combine(bedHoles.count)
+            for b in bedHoles { h.combine(b.center); h.combine(b.radius); h.combine(b.captureRadius) }
         }
         return h.value
     }
