@@ -772,7 +772,7 @@ struct EightBallTableLayer: View {
         .ignoresSafeArea()
         .accessibilityHidden(true)
         // On a folding phone the list is a page of the side panel (inlinePages), so the table is never covered.
-        .sheet(isPresented: Binding(get: { mode.listOpen && !inlinePages }, set: { mode.listOpen = $0 })) { EightBallList(mode: mode) }
+        .sheet(isPresented: Binding(get: { mode.listOpen && !inlinePages }, set: { if !inlinePages { mode.listOpen = $0 } })) { EightBallList(mode: mode) }
         .onAppear(perform: handleLaunchFlags)
         // The mode learns that a shot finished from these two; it ignores anything that is not its business.
         .onChange(of: model.aimReady) { _, _ in mode.update() }
@@ -792,7 +792,13 @@ struct EightBallTableLayer: View {
         let args = ProcessInfo.processInfo.arguments
         if let i = args.firstIndex(of: "-eight"), i + 1 < args.count { mode.begin(id: args[i + 1]) }
         // After begin, which closes the list, so -eight <id> -eightList shows the list over that situation's table.
-        if args.contains("-eightList") { mode.listOpen = true }
+        // A moment late, for the same reason as -trickList: on a folding phone the layout changes a beat after launch.
+        if args.contains("-eightList") {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1.2))
+                mode.listOpen = true
+            }
+        }
         // Store-screenshot routes, after -eight: -eightAim lines an escape up with its call made; -eightWatch plays it as
         // the hint, with the ride camera.
         for flag in ["-eightAim", "-eightWatch"] {

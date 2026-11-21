@@ -40,12 +40,17 @@ struct DuoStory: View {
             VStack(alignment: .leading, spacing: 8) {
                 header
                 if captions.isEmpty {
-                    Text("Once the balls move, every hit is explained here.")
-                        .font(Theme.body)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 4)
-                    Spacer(minLength: 0)
+                    // Before any shot: what is coming, and the surface and table it will be played on.
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Once the balls move, every hit is explained here.")
+                                .font(Theme.body)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            DuoSurfaceCard(model: model, detailed: true)
+                        }
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
                 } else {
                     list
                 }

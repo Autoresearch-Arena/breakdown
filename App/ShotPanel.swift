@@ -47,7 +47,7 @@ struct ShotPanel: View {
         // Test hook: launch with -aimDemoSheet to open the fine controls straight away.
         .onAppear { if ProcessInfo.processInfo.arguments.contains("-aimDemoSheet") { slidersOpen = true } }
         // On a folding phone the sliders open inside the panel (below), so no sheet covers the table.
-        .sheet(isPresented: Binding(get: { slidersOpen && !inlinePages }, set: { slidersOpen = $0 })) {
+        .sheet(isPresented: Binding(get: { slidersOpen && !inlinePages }, set: { if !inlinePages { slidersOpen = $0 } })) {
             FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
         }
     }

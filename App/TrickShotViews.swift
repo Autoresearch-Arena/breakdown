@@ -318,8 +318,9 @@ struct TrickTableLayer: View {
         .allowsHitTesting(false)
         .ignoresSafeArea()
         .accessibilityHidden(true)
-        // On a folding phone the list is a page of the side panel (inlinePages), so the table is never covered.
-        .sheet(isPresented: Binding(get: { mode.listOpen && !inlinePages }, set: { mode.listOpen = $0 })) { TrickShotList(mode: mode) }
+        // On a folding phone the list is a page of the side panel (inlinePages), so the table is never covered. The setter
+        // ignores the dismissal SwiftUI sends when the screen turns into that layout just after launch; it would close the list.
+        .sheet(isPresented: Binding(get: { mode.listOpen && !inlinePages }, set: { if !inlinePages { mode.listOpen = $0 } })) { TrickShotList(mode: mode) }
         .onAppear(perform: handleLaunchFlags)
         // The mode learns that a shot finished from these two; it ignores anything that is not its business.
         .onChange(of: model.aimReady) { _, _ in mode.update() }
@@ -346,7 +347,14 @@ struct TrickTableLayer: View {
         if let id = value(after: "-trickPlay") { mode.begin(id: id); mode.watch() }
         if let id = value(after: "-trickAim") { mode.begin(id: id); mode.lineUpAnswer() }
         // Last, so -trick <id> -trickList shows the list over that shot's table (begin closes the list).
-        if args.contains("-trickList") { mode.listOpen = true }
+        // A moment late: on a folding phone the screen first lays out as an ordinary one and turns into the fold layout a
+        // beat later, and a list opened in the first beat is closed again by that change.
+        if args.contains("-trickList") {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1.2))
+                mode.listOpen = true
+            }
+        }
     }
 
     /// Rings on the balls the shot names (where they rest now) and on the pockets they must drop in.

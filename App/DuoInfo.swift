@@ -52,7 +52,7 @@ struct DuoNumbers: View {
                 tile(facts.railHits.formatted(), "Rail hits")
                 tile(facts.pocketed.formatted(), "Pocketed")
             }
-            surfaceCard
+            DuoSurfaceCard(model: model)
         }
     }
 
@@ -77,18 +77,40 @@ struct DuoNumbers: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// The surface (and the table, when it is not the standard one) with the numbers that make it play the way it does.
-    private var surfaceCard: some View {
+    private static func speedText(_ v: Double) -> String {
+        Measurement(value: v, unit: UnitSpeed.metersPerSecond)
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided,
+                                    numberFormatStyle: .number.precision(.fractionLength(1))))
+    }
+}
+
+// MARK: Surface
+
+/// The surface (and the table) the next shot is played on, with the four numbers that decide how a ball moves on it. With
+/// `detailed`, each also says in a sentence what it does to the balls (the same lines the surface picker shows), so before
+/// any shot has been played the panel still has something worth reading, and nothing that gives an answer away.
+struct DuoSurfaceCard: View {
+    let model: ShowpieceModel
+    var detailed = false
+    @Environment(\.palette) private var palette
+
+    var body: some View {
         let p = model.physicsSurface.parameters
-        return VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Image(systemName: model.surface.symbol).foregroundStyle(palette.accent).accessibilityHidden(true)
                 Text(verbatim: model.surface.title).font(Theme.heading).lineLimit(1)
-                if model.tableKind != .standard {
+                if !detailed && model.tableKind != .standard {
                     Text(verbatim: "·").foregroundStyle(.secondary)
                     Text(verbatim: model.tableKind.title).font(Theme.body).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer(minLength: 0)
+            }
+            if detailed {
+                Text(verbatim: model.surface.summary)
+                    .font(Theme.body)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             HStack(spacing: 0) {
                 constant("μ", p.slidingFriction)
@@ -96,15 +118,27 @@ struct DuoNumbers: View {
                 constant("e", p.cushionRestitution)
                 constant("g", p.gravity)
             }
+            if detailed {
+                HStack(spacing: 8) {
+                    Image(systemName: model.tableKind.symbol).foregroundStyle(palette.accent).accessibilityHidden(true)
+                    Text(verbatim: model.tableKind.title).font(Theme.heading).lineLimit(1)
+                    Spacer(minLength: 0)
+                }
+                .padding(.top, 4)
+                Text(verbatim: model.tableKind.summary)
+                    .font(Theme.body)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 12)
-        .padding(.vertical, 9)
+        .padding(.vertical, detailed ? 12 : 9)
         .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 
-    /// One physical constant: its symbol (the one the equations use) and its value to two significant figures.
+    /// One physical constant: its symbol (the one the equations use) and its value to three significant figures.
     private func constant(_ symbol: String, _ value: Double) -> some View {
         HStack(spacing: 4) {
             Text(verbatim: symbol).font(Theme.equation).foregroundStyle(palette.slide)
@@ -112,12 +146,6 @@ struct DuoNumbers: View {
                 .font(Theme.number)
         }
         .frame(maxWidth: .infinity)
-    }
-
-    private static func speedText(_ v: Double) -> String {
-        Measurement(value: v, unit: UnitSpeed.metersPerSecond)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided,
-                                    numberFormatStyle: .number.precision(.fractionLength(1))))
     }
 }
 
