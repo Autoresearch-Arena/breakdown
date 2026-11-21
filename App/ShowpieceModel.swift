@@ -27,6 +27,10 @@
 //          table) and keeps the shot's surface-free input; setSurface(_:) stores a new surface and re-solves and replays
 //          the shot on screen from its same start. The cold open's freeze point now never lies past the end of a short
 //          break, which a fast-stopping surface such as sand can produce.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (captions are made for the surface the shot was solved on: solve(_:)
+//          records it as solvedSurface and load() hands it to CaptionEngine, so setSurface's re-solve re-makes the
+//          captions with the new surface's numbers. Checked for long shots (the Moon runs about six times longer): the
+//          freeze point, the cold open and guided pacing all work from the timeline's own duration and events.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -136,6 +140,9 @@ final class ShowpieceModel {
     /// surface change can solve the very same shot again: re-applying a surface on top of another surface's numbers
     /// would leave the old ones wherever the new surface keeps the defaults (cloth changes nothing).
     @ObservationIgnored private var lastInput: ShotInput?
+    /// The surface the timeline on screen was solved on, set by solve(_:) next to the solve itself, so the captions
+    /// explain the numbers the solver actually used (a trick shot is solved on cloth whatever `surface` says).
+    @ObservationIgnored private var solvedSurface: PlaySurface = PlaySurface.stored
 
     private var stageTime = 0.0
     private let freezeTime: Double
@@ -145,13 +152,15 @@ final class ShowpieceModel {
     init() {
         // Not through solve(_:): self is not fully initialised yet. Same steps: the stored surface applied to a copy.
         let input = Rack.showpieceBreak()
+        let startSurface = PlaySurface.stored      // read once: the solve and the captions must agree
         var onSurface = input
-        PlaySurface.stored.apply(to: &onSurface.parameters)
+        startSurface.apply(to: &onSurface.parameters)
         let tl = PoolSolver.simulate(onSurface)
         timeline = tl
         // The usual freeze point; freezeAt shortens it for a break that is over sooner (whatever shot is on screen).
         freezeTime = 2.2
-        captions = CaptionEngine.make(from: tl)
+        solvedSurface = startSurface
+        captions = CaptionEngine.make(from: tl, surface: startSurface)
         pacePlan = PacePlan(captions: captions, timeline: tl)
         timelineVersion = 1
         lastInput = input
@@ -500,7 +509,7 @@ final class ShowpieceModel {
     private func load(_ tl: Timeline) {
         adoptLayout(after: tl)
         timeline = tl
-        captions = CaptionEngine.make(from: tl)
+        captions = CaptionEngine.make(from: tl, surface: solvedSurface)
         pacePlan = PacePlan(captions: captions, timeline: tl)
         ridePlan = RidePlan(tl)
         timelineVersion += 1
@@ -643,8 +652,9 @@ final class ShowpieceModel {
     /// Every shot goes through here: remember it as built, write the surface's numbers into a copy, and solve that.
     private func solve(_ input: ShotInput) -> Timeline {
         lastInput = input
+        solvedSurface = physicsSurface
         var onSurface = input
-        physicsSurface.apply(to: &onSurface.parameters)
+        solvedSurface.apply(to: &onSurface.parameters)
         return PoolSolver.simulate(onSurface)
     }
 

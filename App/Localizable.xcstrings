@@ -2031,6 +2031,76 @@
         }
       }
     },
+    "Almost no grip: balls skid far before rolling, then roll for ages.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لا تماسك تقريبًا: تنزلق الكرات مسافة طويلة قبل أن تتدحرج، ثم تتدحرج طويلًا جدًا."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast kein Halt: Die Kugeln rutschen weit, bevor sie rollen, und rollen dann ewig."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Casi sin agarre: las bolas se deslizan mucho antes de rodar y luego ruedan sin parar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Presque aucune adhérence : les billes glissent loin avant de rouler, puis roulent une éternité."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quasi nessuna aderenza: le palle strisciano a lungo prima di rotolare, poi rotolano all'infinito."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ほとんどグリップがありません。球は長く滑ってから転がり始め、いつまでも転がり続けます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "거의 잡아 주는 힘이 없습니다: 공은 한참 미끄러진 뒤에야 구르고, 그 뒤로도 끝없이 굴러갑니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quase nenhuma aderência: as bolas deslizam muito antes de rolar e depois rolam uma eternidade."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quase nenhuma aderência: as bolas deslizam muito antes de rolar e depois rolam por um tempão."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Почти никакого сцепления: шары долго скользят, прежде чем покатиться, а потом катятся целую вечность."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "几乎没有抓地力：球要滑很远才开始滚动，然后滚个没完。"
+          }
+        }
+      }
+    },
     "At each contact a ball passes on its speed times the cosine of the angle between its path and the line through the two centres.": {
       "localizations": {
         "ar": {
@@ -2307,6 +2377,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "BREAKDOWN"
+          }
+        }
+      }
+    },
+    "Balls plough a furrow: a roll dies within a second or two, and jumps sink in.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تحفر الكرات أخدودًا: يخمد التدحرج خلال ثانية أو ثانيتين، وتغوص القفزات."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kugeln ziehen eine Furche: Ein Rollen erstirbt binnen ein, zwei Sekunden, und Sprünge sinken ein."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las bolas abren un surco: una rodada se apaga en uno o dos segundos, y los saltos se hunden."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les billes creusent un sillon : un roulement s'éteint en une ou deux secondes, et les sauts s'enfoncent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le palle scavano un solco: una rotolata si spegne in un secondo o due, e i salti sprofondano."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球が溝を掘るように進みます。転がりは一、二秒で止まり、ジャンプした球はめり込みます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공이 고랑을 파며 나아갑니다: 구름은 1~2초 안에 멈추고, 점프한 공은 파묻힙니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As bolas abrem um sulco: um rolamento morre em um ou dois segundos, e os saltos afundam."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As bolas abrem um sulco: uma rolagem morre em um ou dois segundos, e os saltos afundam."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шары пропахивают борозду: качение затухает за секунду-другую, а прыжки увязают."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球会犁出一道沟：滚动一两秒内就停下，跳球会陷进去。"
           }
         }
       }
@@ -3361,6 +3501,76 @@
         }
       }
     },
+    "Cloth, but one sixth of Earth's gravity: everything slides and rolls six times farther, and jumps fly high.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جوخ، لكن بسدس جاذبية الأرض: كل شيء ينزلق ويتدحرج أبعد بست مرات، والقفزات تطير عاليًا."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tuch, aber mit einem Sechstel der Erdschwerkraft: Alles rutscht und rollt sechsmal so weit, und Sprünge fliegen hoch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paño, pero con un sexto de la gravedad de la Tierra: todo se desliza y rueda seis veces más lejos, y los saltos vuelan alto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le tapis, mais avec un sixième de la gravité terrestre : tout glisse et roule six fois plus loin, et les sauts montent haut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panno, ma con un sesto della gravità terrestre: tutto striscia e rotola sei volte più lontano, e i salti volano alti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ラシャですが、重力は地球の六分の一。何もかもが六倍遠くまで滑って転がり、ジャンプは高く飛びます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당구천이지만 중력은 지구의 6분의 1입니다: 모든 것이 여섯 배 멀리 미끄러지고 구르며, 점프는 높이 날아오릅니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pano, mas com um sexto da gravidade da Terra: tudo desliza e rola seis vezes mais longe, e os saltos voam alto."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pano, mas com um sexto da gravidade da Terra: tudo desliza e rola seis vezes mais longe, e os saltos voam alto."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сукно, но при одной шестой земной силы тяжести: всё скользит и катится в шесть раз дальше, а прыжки взлетают высоко."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "台呢，但只有地球重力的六分之一：一切都滑得、滚得远六倍，跳球飞得很高。"
+          }
+        }
+      }
+    },
     "Combination Chain": {
       "localizations": {
         "ar": {
@@ -3637,6 +3847,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "继续"
+          }
+        }
+      }
+    },
+    "Cork": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "فلين"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kork"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corcho"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liège"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sughero"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コルク"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코르크"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cortiça"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cortiça"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пробка"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "软木"
           }
         }
       }
@@ -7001,6 +7281,76 @@
         }
       }
     },
+    "Like a thick, slow cloth: shorter skids, and balls stop much sooner.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مثل جوخ سميك وبطيء: انزلاق أقصر، والكرات تتوقف أبكر بكثير."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie ein dickes, langsames Tuch: kürzeres Rutschen, und die Kugeln bleiben viel früher liegen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como un paño grueso y lento: deslizamientos más cortos, y las bolas se paran mucho antes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comme un tapis épais et lent : des glissades plus courtes, et les billes s'arrêtent bien plus tôt."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come un panno spesso e lento: strisciate più brevi, e le palle si fermano molto prima."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "厚くて遅いラシャのような面。滑りは短く、球はずっと早く止まります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "두껍고 느린 당구천 같습니다: 미끄러짐이 더 짧고, 공이 훨씬 빨리 멈춥니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como um pano grosso e lento: deslizes mais curtos, e as bolas param muito mais cedo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como um pano grosso e lento: deslizes mais curtos, e as bolas param bem mais cedo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Как толстое медленное сукно: скольжение короче, а шары останавливаются гораздо раньше."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "像一块又厚又慢的台呢：滑动更短，球停得早得多。"
+          }
+        }
+      }
+    },
     "Medium": {
       "localizations": {
         "ar": {
@@ -7207,6 +7557,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "没打中？点击“再试一次”。球会回到原位，瞄准和力度保持不变。改动一处再击球，上一次的尝试会留在球桌上供对比。"
+          }
+        }
+      }
+    },
+    "Moon": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "القمر"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mond"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luna"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lune"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luna"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "月面"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "달"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lua"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lua"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Луна"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "月球"
           }
         }
       }
@@ -8327,6 +8747,286 @@
           "stringUnit": {
             "state": "translated",
             "value": "开"
+          }
+        }
+      }
+    },
+    "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls and rolls about %@ times as far.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "على سطح «%1$@» يبلغ احتكاك الانزلاق %2$@ ومقاومة التدحرج %3$@ (الجوخ: %4$@ و%5$@)، لذلك تنزلق الكرة قبل أن تتدحرج مسافة تعادل نحو %6$@ مرة مسافتها على الجوخ، وتتدحرج مسافة تعادل نحو %7$@ مرة مسافتها على الجوخ."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf %1$@ beträgt die Gleitreibung %2$@ und der Rollwiderstand %3$@ (Tuch: %4$@ und %5$@), also rutscht eine Kugel etwa %6$@-mal so weit, bevor sie rollt, und rollt etwa %7$@-mal so weit."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la superficie %1$@ la fricción de deslizamiento es %2$@ y la resistencia a la rodadura %3$@ (paño: %4$@ y %5$@), así que una bola se desliza unas %6$@ veces la distancia del paño antes de rodar y rueda unas %7$@ veces la distancia del paño."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur la surface %1$@, la friction de glissement vaut %2$@ et la résistance au roulement %3$@ (tapis : %4$@ et %5$@), donc une bille glisse sur environ %6$@ fois la distance du tapis avant de rouler, et roule sur environ %7$@ fois la distance du tapis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sulla superficie %1$@ l'attrito radente è %2$@ e la resistenza al rotolamento %3$@ (panno: %4$@ e %5$@), quindi una palla striscia per circa %6$@ volte la distanza sul panno prima di rotolare, e rotola per circa %7$@ volte la distanza sul panno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@では滑り摩擦が%2$@、転がり抵抗が%3$@（ラシャは%4$@と%5$@）なので、球が転がり始めるまでに滑る距離はラシャの約%6$@倍、転がる距離は約%7$@倍になります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@에서는 미끄럼 마찰 %2$@, 구름 저항 %3$@입니다(당구천: %4$@, %5$@). 그래서 공이 구르기 전까지 미끄러지는 거리는 당구천의 약 %6$@배, 구르는 거리는 약 %7$@배입니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na superfície %1$@ o atrito de deslizamento é %2$@ e a resistência ao rolamento %3$@ (pano: %4$@ e %5$@), por isso uma bola desliza cerca de %6$@ vezes a distância do pano antes de rolar e rola cerca de %7$@ vezes a distância do pano."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na superfície %1$@ o atrito de deslizamento é %2$@ e a resistência ao rolamento %3$@ (pano: %4$@ e %5$@), então uma bola desliza cerca de %6$@ vezes a distância do pano antes de rolar e rola cerca de %7$@ vezes a distância do pano."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На поверхности «%1$@» трение скольжения равно %2$@, а сопротивление качению %3$@ (сукно: %4$@ и %5$@), поэтому по сравнению с сукном шар скользит до начала качения примерно в %6$@ раза дальше, а катится примерно в %7$@ раза дальше."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在%1$@上，滑动摩擦系数是 %2$@，滚动阻力是 %3$@（台呢：%4$@ 和 %5$@），所以球在开始滚动前的滑动距离约为台呢上的 %6$@ 倍，滚动距离约为 %7$@ 倍。"
+          }
+        }
+      }
+    },
+    "On %@, sliding friction of %@ under gravity of %@ m/s² took %@ seconds to slow %@ and spin it up until the bottom of the ball stopped slipping. It now rolls at %@ m/s.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "على سطح «%1$@»، استغرق احتكاك انزلاق قدره %2$@ تحت جاذبية %3$@ m/s² مدة %4$@ ثانية لإبطاء %5$@ وتدويرها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %6$@ m/s."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf %1$@ brauchte eine Gleitreibung von %2$@ bei einer Schwerkraft von %3$@ m/s² %4$@ Sekunden, um %5$@ zu bremsen und anzudrehen, bis die Unterseite der Kugel nicht mehr rutschte. Sie rollt jetzt mit %6$@ m/s."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la superficie %1$@, una fricción de deslizamiento de %2$@ con una gravedad de %3$@ m/s² tardó %4$@ segundos en frenar a %5$@ y hacerla girar hasta que la parte inferior de la bola dejó de deslizarse. Ahora rueda a %6$@ m/s."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur la surface %1$@, une friction de glissement de %2$@ sous une gravité de %3$@ m/s² a mis %4$@ secondes à ralentir %5$@ et à la faire tourner jusqu'à ce que le bas de la bille cesse de glisser. Elle roule maintenant à %6$@ m/s."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sulla superficie %1$@, un attrito radente di %2$@ con una gravità di %3$@ m/s² ha impiegato %4$@ secondi per rallentare %5$@ e metterla in rotazione finché la parte inferiore della palla non ha più strisciato. Ora rotola a %6$@ m/s."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@では、滑り摩擦%2$@、重力%3$@ m/s²のもとで、%5$@を減速させ、球の下側が滑らなくなるまで回転を上げるのに%4$@秒かかりました。今は%6$@ m/sで転がっています。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@에서는 미끄럼 마찰 %2$@, 중력 %3$@ m/s² 아래에서 %5$@ 속도를 줄이고 공 아래쪽이 미끄러지지 않을 때까지 회전을 붙이는 데 %4$@초가 걸렸습니다. 이제 %6$@ m/s로 구릅니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na superfície %1$@, um atrito de deslizamento de %2$@ com uma gravidade de %3$@ m/s² levou %4$@ segundos a abrandar %5$@ e a pô-la a girar até a parte de baixo da bola deixar de deslizar. Agora rola a %6$@ m/s."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na superfície %1$@, um atrito de deslizamento de %2$@ com gravidade de %3$@ m/s² levou %4$@ segundos para desacelerar %5$@ e fazê-la girar até a parte de baixo da bola parar de deslizar. Agora ela rola a %6$@ m/s."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На поверхности «%1$@» при трении скольжения %2$@ и силе тяжести %3$@ m/s² понадобилось %4$@ с, чтобы замедлить %5$@ и раскрутить его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %6$@ m/s."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在%1$@上，滑动摩擦系数 %2$@、重力 %3$@ m/s² 的条件下，用了 %4$@ 秒才让%5$@减速并转动起来，直到球底不再打滑。现在它以 %6$@ m/s 的速度滚动。"
+          }
+        }
+      }
+    },
+    "On the Moon the friction numbers are the same as on cloth, but gravity is %@ m/s² instead of %@. Friction pushes back with the friction number times the ball's weight, and weight is mass times gravity, so a ball skids about %@ times as far before it rolls and rolls about %@ times as far.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "على القمر معاملات الاحتكاك هي نفسها على الجوخ، لكن الجاذبية %1$@ m/s² بدلًا من %2$@. يدفع الاحتكاك بمقدار معامل الاحتكاك مضروبًا في وزن الكرة، والوزن هو الكتلة مضروبة في الجاذبية، لذلك تنزلق الكرة أبعد بنحو %3$@ مرة قبل أن تتدحرج، وتتدحرج أبعد بنحو %4$@ مرة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf dem Mond sind die Reibungszahlen dieselben wie auf dem Tuch, aber die Schwerkraft beträgt %1$@ m/s² statt %2$@. Die Reibung bremst mit der Reibungszahl mal dem Gewicht der Kugel, und das Gewicht ist Masse mal Schwerkraft, also rutscht eine Kugel etwa %3$@-mal so weit, bevor sie rollt, und rollt etwa %4$@-mal so weit."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la Luna los coeficientes de fricción son los mismos que en el paño, pero la gravedad es %1$@ m/s² en lugar de %2$@. La fricción frena con el coeficiente de fricción multiplicado por el peso de la bola, y el peso es la masa por la gravedad, así que una bola se desliza unas %3$@ veces más lejos antes de rodar y rueda unas %4$@ veces más lejos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur la Lune, les coefficients de friction sont les mêmes que sur le tapis, mais la gravité vaut %1$@ m/s² au lieu de %2$@. La friction freine avec le coefficient de friction multiplié par le poids de la bille, et le poids est la masse fois la gravité, donc une bille glisse environ %3$@ fois plus loin avant de rouler et roule environ %4$@ fois plus loin."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sulla Luna i coefficienti di attrito sono gli stessi del panno, ma la gravità è %1$@ m/s² invece di %2$@. L'attrito frena con il coefficiente di attrito per il peso della palla, e il peso è massa per gravità, quindi una palla striscia circa %3$@ volte più lontano prima di rotolare e rotola circa %4$@ volte più lontano."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "月面の摩擦係数はラシャと同じですが、重力は%2$@ではなく%1$@ m/s²です。摩擦が押し戻す力は摩擦係数×球の重さで、重さは質量×重力なので、球は転がり始めるまでに約%3$@倍遠くまで滑り、転がる距離も約%4$@倍になります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "달에서는 마찰 계수가 당구천과 같지만, 중력은 %2$@ 대신 %1$@ m/s²입니다. 마찰이 밀어내는 힘은 마찰 계수 곱하기 공의 무게이고, 무게는 질량 곱하기 중력이므로, 공은 구르기 전까지 약 %3$@배 멀리 미끄러지고 약 %4$@배 멀리 굴러갑니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na Lua os coeficientes de atrito são os mesmos do pano, mas a gravidade é %1$@ m/s² em vez de %2$@. O atrito trava com o coeficiente de atrito vezes o peso da bola, e o peso é massa vezes gravidade, por isso uma bola desliza cerca de %3$@ vezes mais longe antes de rolar e rola cerca de %4$@ vezes mais longe."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na Lua os coeficientes de atrito são os mesmos do pano, mas a gravidade é %1$@ m/s² em vez de %2$@. O atrito freia com o coeficiente de atrito vezes o peso da bola, e o peso é massa vezes gravidade, então uma bola desliza cerca de %3$@ vezes mais longe antes de rolar e rola cerca de %4$@ vezes mais longe."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На Луне коэффициенты трения такие же, как на сукне, но сила тяжести %1$@ m/s² вместо %2$@. Трение тормозит с силой, равной коэффициенту трения, умноженному на вес шара, а вес — это масса, умноженная на силу тяжести, поэтому шар скользит примерно в %3$@ раза дальше, прежде чем покатиться, и катится примерно в %4$@ раза дальше."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "月球上的摩擦系数和台呢上一样，但重力是 %1$@ m/s²，而不是 %2$@。摩擦力的大小是摩擦系数乘以球的重量，而重量是质量乘以重力，所以球在开始滚动前大约滑出 %3$@ 倍远，滚动距离也大约是 %4$@ 倍。"
+          }
+        }
+      }
+    },
+    "On the Moon, the same sliding friction as cloth (%@) under only %@ m/s² of gravity took %@ seconds to slow %@ and spin it up until the bottom of the ball stopped slipping. It now rolls at %@ m/s.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "على القمر، استغرق احتكاك الانزلاق نفسه الذي على الجوخ (%1$@)، تحت جاذبية لا تتجاوز %2$@ m/s²، مدة %3$@ ثانية لإبطاء %4$@ وتدويرها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %5$@ m/s."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf dem Mond brauchte dieselbe Gleitreibung wie auf dem Tuch (%1$@) bei nur %2$@ m/s² Schwerkraft %3$@ Sekunden, um %4$@ zu bremsen und anzudrehen, bis die Unterseite der Kugel nicht mehr rutschte. Sie rollt jetzt mit %5$@ m/s."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la Luna, la misma fricción de deslizamiento que en el paño (%1$@), con solo %2$@ m/s² de gravedad, tardó %3$@ segundos en frenar a %4$@ y hacerla girar hasta que la parte inferior de la bola dejó de deslizarse. Ahora rueda a %5$@ m/s."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sur la Lune, la même friction de glissement que sur le tapis (%1$@), sous seulement %2$@ m/s² de gravité, a mis %3$@ secondes à ralentir %4$@ et à la faire tourner jusqu'à ce que le bas de la bille cesse de glisser. Elle roule maintenant à %5$@ m/s."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sulla Luna, lo stesso attrito radente del panno (%1$@) con soli %2$@ m/s² di gravità ha impiegato %3$@ secondi per rallentare %4$@ e metterla in rotazione finché la parte inferiore della palla non ha più strisciato. Ora rotola a %5$@ m/s."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "月面では、ラシャと同じ滑り摩擦（%1$@）でも重力がわずか%2$@ m/s²なので、%4$@を減速させ、球の下側が滑らなくなるまで回転を上げるのに%3$@秒かかりました。今は%5$@ m/sで転がっています。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "달에서는 당구천과 같은 미끄럼 마찰(%1$@)이라도 중력이 %2$@ m/s²밖에 되지 않아, %4$@ 속도를 줄이고 공 아래쪽이 미끄러지지 않을 때까지 회전을 붙이는 데 %3$@초가 걸렸습니다. 이제 %5$@ m/s로 구릅니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na Lua, o mesmo atrito de deslizamento do pano (%1$@), com apenas %2$@ m/s² de gravidade, levou %3$@ segundos a abrandar %4$@ e a pô-la a girar até a parte de baixo da bola deixar de deslizar. Agora rola a %5$@ m/s."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na Lua, o mesmo atrito de deslizamento do pano (%1$@), com só %2$@ m/s² de gravidade, levou %3$@ segundos para desacelerar %4$@ e fazê-la girar até a parte de baixo da bola parar de deslizar. Agora ela rola a %5$@ m/s."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На Луне при таком же трении скольжения, как на сукне (%1$@), и силе тяжести всего %2$@ m/s² понадобилось %3$@ с, чтобы замедлить %4$@ и раскрутить его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %5$@ m/s."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在月球上，与台呢相同的滑动摩擦系数（%1$@）在只有 %2$@ m/s² 的重力下，用了 %3$@ 秒才让%4$@减速并转动起来，直到球底不再打滑。现在它以 %5$@ m/s 的速度滚动。"
           }
         }
       }
@@ -12531,6 +13231,76 @@
         }
       }
     },
+    "Smooth and hard: long skids, long rolls, and jumps bounce back up.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أملس وصلب: انزلاق طويل وتدحرج طويل، والقفزات ترتد إلى الأعلى."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glatt und hart: lange Rutschphasen, lange Rollphasen, und Sprünge prallen wieder hoch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liso y duro: deslizamientos largos, rodadas largas, y los saltos rebotan hacia arriba."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lisse et dur : longues glissades, longs roulements, et les sauts rebondissent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liscio e duro: strisciate lunghe, rotolate lunghe, e i salti rimbalzano verso l'alto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "なめらかで硬い面。滑りも転がりも長く、ジャンプした球は跳ね返ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매끄럽고 단단합니다: 미끄러짐도 구름도 길고, 점프한 공은 다시 튀어 오릅니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liso e duro: deslizes longos, rolamentos longos, e os saltos voltam a ressaltar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liso e duro: deslizes longos, rolagens longas, e os saltos quicam de volta para cima."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Гладко и твёрдо: долгое скольжение, долгое качение, а прыгнувшие шары отскакивают вверх."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "光滑坚硬：滑得远，滚得远，跳球落下后会再弹起来。"
+          }
+        }
+      }
+    },
     "So close. Every setting is nearly there: same again, a fraction more care on the aim.": {
       "localizations": {
         "ar": {
@@ -12597,6 +13367,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "很接近了。各项设置几乎都到位：再来一次，瞄准时稍加留心即可。"
+          }
+        }
+      }
+    },
+    "Soft and grippy: skids end quickly, rolls die early, and jumps land with little bounce.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ليّن ومتماسك: ينتهي الانزلاق سريعًا، ويخمد التدحرج مبكرًا، وتهبط القفزات بارتداد ضئيل."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weich und griffig: Das Rutschen endet schnell, das Rollen erstirbt früh, und Sprünge landen fast ohne Abprall."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blando y con agarre: los deslizamientos acaban pronto, las rodadas se apagan enseguida y los saltos apenas rebotan al caer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mou et adhérent : les glissades s'arrêtent vite, les roulements s'éteignent tôt, et les sauts retombent presque sans rebondir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morbido e aderente: le strisciate finiscono presto, le rotolate si spengono in fretta e i salti atterrano quasi senza rimbalzo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "柔らかくグリップが強い面。滑りはすぐ終わり、転がりも早く止まり、ジャンプした球はほとんど跳ねずに着地します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "부드럽고 접지력이 강합니다: 미끄러짐이 금방 끝나고, 구름도 일찍 멈추며, 점프한 공은 거의 튀지 않고 내려앉습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Macio e aderente: os deslizes acabam depressa, os rolamentos morrem cedo e os saltos aterram quase sem ressalto."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Macio e aderente: os deslizes acabam rápido, as rolagens morrem cedo e os saltos caem quase sem quicar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мягко и цепко: скольжение быстро заканчивается, качение рано затухает, а прыжки приземляются почти без отскока."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "柔软且抓地：滑动很快结束，滚动早早停下，跳球落地几乎不反弹。"
           }
         }
       }
@@ -15611,6 +16451,76 @@
         }
       }
     },
+    "The standard table: a struck ball skids briefly, then rolls and slows steadily.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الطاولة القياسية: الكرة المضروبة تنزلق قليلًا، ثم تتدحرج وتتباطأ بثبات."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Standardtisch: Eine gestoßene Kugel rutscht kurz, dann rollt sie und wird gleichmäßig langsamer."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La mesa estándar: una bola golpeada se desliza un instante, luego rueda y frena poco a poco."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La table standard : une bille frappée glisse brièvement, puis roule et ralentit régulièrement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tavolo standard: una palla colpita striscia per poco, poi rotola e rallenta in modo costante."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準のテーブル。打たれた球は少しだけ滑り、その後転がって一定のペースで減速します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "표준 테이블: 맞은 공은 잠깐 미끄러진 뒤 굴러가며 꾸준히 느려집니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mesa normal: uma bola atingida desliza por um instante, depois rola e abranda de forma constante."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mesa padrão: uma bola tacada desliza por um instante, depois rola e desacelera aos poucos."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обычный стол: после удара шар недолго скользит, затем катится и равномерно замедляется."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标准球台：被击中的球先短暂滑动，然后滚动并稳定减速。"
+          }
+        }
+      }
+    },
     "The throw angle grows with the friction between the balls and how fast their surfaces slip past each other.": {
       "localizations": {
         "ar": {
@@ -17077,6 +17987,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "版本"
+          }
+        }
+      }
+    },
+    "Very grippy: a skid turns into a roll almost at once, and jumps bounce high.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تماسك شديد: يتحول الانزلاق إلى تدحرج على الفور تقريبًا، والقفزات ترتد عاليًا."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sehr griffig: Aus dem Rutschen wird fast sofort ein Rollen, und Sprünge prallen hoch ab."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mucho agarre: el deslizamiento se convierte en rodada casi al instante, y los saltos rebotan alto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Très adhérent : une glissade se change en roulement presque aussitôt, et les sauts rebondissent haut."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Molto aderente: la strisciata diventa rotolamento quasi subito, e i salti rimbalzano in alto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グリップが非常に強い面。滑りはほぼすぐに転がりへ変わり、ジャンプした球は高く跳ねます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접지력이 아주 강합니다: 미끄러짐이 거의 바로 구름으로 바뀌고, 점프한 공은 높이 튑니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muito aderente: um deslize passa a rolamento quase de imediato, e os saltos ressaltam alto."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muito aderente: o deslize vira rolagem quase na hora, e os saltos quicam alto."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Очень цепко: скольжение почти сразу переходит в качение, а прыжки отскакивают высоко."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "抓地力很强：滑动几乎立刻变成滚动，跳球弹得很高。"
           }
         }
       }

@@ -22,6 +22,8 @@
 //          up or goes; the leader line to the card is drawn only in the wide layout, the ring and title chip everywhere).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a round glass Surface button in the title row, right side before the
 //          status label, opens a menu of playing surfaces; picking one re-solves and replays the shot on it).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (each surface in that menu shows a one-line note under its name
+//          saying what its friction and gravity do to the balls, so picking one also explains it).
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
@@ -259,14 +261,23 @@ private struct SurfaceMenuButton: View {
 
     var body: some View {
         Menu {
-            // Inline, so the surfaces are rows of this menu with a check mark, not a further submenu.
-            Picker("Surface", selection: Binding(get: { model.surface }, set: { model.setSurface($0) })) {
-                ForEach(PlaySurface.allCases) { surface in
-                    // The title is already translated (PlaySurface.title), so it is passed as plain text.
-                    Label(surface.title, systemImage: surface.symbol).tag(surface)
+            // One button per surface rather than an inline Picker: a menu row draws a second Text in its label as a
+            // smaller subtitle under the title, and that is where each surface explains itself (PlaySurface.summary,
+            // e.g. how far balls skid on ice). A Picker row would drop the subtitle. The chosen surface shows a check
+            // in place of its symbol. Title and summary are already translated, so they are passed as plain text.
+            ForEach(PlaySurface.allCases) { surface in
+                Button {
+                    model.setSurface(surface)
+                } label: {
+                    Label {
+                        Text(verbatim: surface.title)
+                        Text(verbatim: surface.summary)
+                    } icon: {
+                        Image(systemName: surface == model.surface ? "checkmark" : surface.symbol)
+                    }
                 }
+                .accessibilityAddTraits(surface == model.surface ? .isSelected : [])
             }
-            .pickerStyle(.inline)
         } label: {
             Label("Surface", systemImage: model.surface.symbol)
                 .labelStyle(.iconOnly)

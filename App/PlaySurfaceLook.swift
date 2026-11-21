@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Moon and cork beds; ice and glass refinished so the lamp no longer
+//          shows on them as a hard, blown-out white disc, see the note on bedFinish).
 // PURPOSE: How each playing surface LOOKS on the warm table: which generated picture its playing bed wears and the
 //          finish of that bed (how rough or glossy it is, whether it has a clear coat, a fabric sheen, how strong its
 //          highlights are). The physics of each surface (friction, bounce) lives with the enum itself in
@@ -29,14 +31,29 @@ extension PlaySurface {
         var sheen: SIMD3<Float>? = nil
     }
 
+    /// Why ice used to show a big round white blob: the lamp over the table is a single bright spot light (a point
+    /// source) and the room picture it reflects holds one glowing rectangle. On a near-mirror finish (a full clear
+    /// coat at clear-coat roughness 0.08, and glass at 0.02) each of those is mirrored as a small, hard, very bright
+    /// patch, so the spot light became a sharp round disc off-centre where the lamp's reflection lands. Ice also had a
+    /// near-white picture, so the plain lit area around it was nearly white too and the two ran together. The fix is
+    /// in the beds alone (the lamp and room picture are untouched, so cloth, rails and balls look exactly as before):
+    /// ice has a pale blue-grey picture and a softer, half-strength clear coat with blurred reflections, so the lamp
+    /// reads as a broad sheen; glass keeps its dark mirror look but with enough blur that the lamp is a soft glow.
     var bedFinish: BedFinish {
         switch self {
         case .cloth: BedFinish(roughness: 0.93, sheen: SIMD3(0.35, 0.75, 0.62))
-        case .ice: BedFinish(roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, specular: 0.6)
-        case .glass: BedFinish(roughness: 0.05, clearcoat: 1, clearcoatRoughness: 0.02, specular: 0.9)
+        case .ice: BedFinish(roughness: 0.32, clearcoat: 0.45, clearcoatRoughness: 0.38, specular: 0.25)
+        // Glass: the lamp is one small, very bright spot light, so a near-mirror finish turned it into a blown-out disc
+        // (seen in the simulator after the ice fix). A little more roughness and a softer, weaker coat spread it into a
+        // broad sheen that still reads as polished dark glass.
+        case .glass: BedFinish(roughness: 0.3, clearcoat: 0.4, clearcoatRoughness: 0.32, specular: 0.22)
         case .sand: BedFinish(roughness: 1.0, specular: 0.15)
         case .carpet: BedFinish(roughness: 0.95, specular: 0.2, sheen: SIMD3(0.55, 0.25, 0.20))
         case .rubber: BedFinish(roughness: 0.82, specular: 0.3)
+        // Lunar dust scatters light every way and has no shine at all.
+        case .moon: BedFinish(roughness: 1.0, specular: 0.08)
+        // Cork board: matte, with only a faint waxy sheen on the granules.
+        case .cork: BedFinish(roughness: 0.78, specular: 0.28)
         }
     }
 
@@ -50,6 +67,8 @@ extension PlaySurface {
         case .sand: SurfaceTextures.sandImage()
         case .carpet: SurfaceTextures.carpetImage()
         case .rubber: SurfaceTextures.rubberImage()
+        case .moon: SurfaceTextures.moonImage()
+        case .cork: SurfaceTextures.corkImage()
         }
     }
 }

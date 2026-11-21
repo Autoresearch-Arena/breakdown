@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.8] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Two new surfaces, Moon and Cork, and the surfaces now explain themselves. The Moon keeps the cloth's friction but has one sixth of Earth's gravity, so everything skids and rolls about six times farther and jumps fly high. Cork is soft and grippy. Off cloth, the opening explanation names the surface, gives its sliding friction and rolling resistance next to cloth's, and says how many times farther a ball skids and rolls because of them; the skid-to-roll explanation gives the surface's friction, the gravity and how long that skid really took. Each surface in the picker has a one-line description under its name. Ice and glass no longer show a blown-out white disc from the lamp: ice is pale blue-grey with a soft sheen, glass a soft polished reflection.
+- Why: The Boss asked for a Moon surface with low gravity and a cork board, asked that the effect of each surface's friction be really explained when it is shown, and found the light on the ice reflected very weirdly.
+- How: Every number in the new sentences is read from the surface's own solver settings and the recorded shot (a skid's time is the length of the ball's recorded sliding stretch). Friction pushes back with the friction number times the ball's weight, so skid and roll distances scale with one over friction times gravity, which is how the "times as far" figures are worked out. The glare came from a near-mirror finish reflecting the one small, very bright lamp; a little roughness and a softer coat spread it. New text is translated into all eleven languages.
+- Checked: the iPhone and Mac builds pass; ice, glass, cork and moon were looked at in the iPhone 17 Pro Max simulator, and the Moon explanation read on screen. Not checked: how long a full Moon break takes to watch (roughly six times a cloth break).
+
 ## [0.5.7] - 21-November-2026
 
 Author: Claude Opus 5.5 High

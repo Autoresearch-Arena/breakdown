@@ -5,13 +5,21 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no more thinning to one caption per quarter second: every
 //          captioned event is kept, so the rack explosion's dozen hits survive for PacePlan to choose beats from;
 //          speed gates lowered so second-wave rack hits are captioned while dribbles still are not).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (playing surfaces: make(from:surface:) takes the surface the shot was
+//          solved on. Off cloth, the cue-strike caption adds a sentence comparing that surface's friction (or, on the
+//          Moon, its gravity) with cloth's and saying how much farther or shorter a ball skids and rolls; the
+//          skid-turns-into-roll caption names the surface, its sliding friction and gravity, and the skid's real length
+//          in seconds read from the timeline. On cloth the wording is unchanged; that caption's equation is now the
+//          skid-time formula on every surface.)
 // PURPOSE: Turns solver events into the plain-language captions and equations the Physics Lens shows. Every
 //          number in a caption is read from the recorded event (pillar one: nothing is drawn that the solver
 //          did not compute). Every event that clears its speed gate gets a caption, sorted by time; choosing which
 //          ones the replay stops on is PacePlan's job. Words the player reads go through String(localized:) so they
-//          land in the string catalog.
+//          land in the string catalog. Surface numbers are read from PlaySurface.parameters, the same values the
+//          solver was given, and every ratio is worked out from them, never typed in.
 // SRP/DRY check: Pass - caption selection and wording only; display lives in the view.
 import BreakdownLensModel
+import BreakdownPhysics
 import BreakdownTimeline
 import Foundation
 
@@ -28,10 +36,25 @@ struct Caption: Identifiable, Equatable {
 }
 
 enum CaptionEngine {
-    static func make(from timeline: Timeline) -> [Caption] {
+    /// The numbers a caption needs about the surface the shot was solved on, next to cloth's for comparison.
+    private struct SurfaceFacts {
+        let surface: PlaySurface
+        let p: PoolParameters
+        let cloth: PoolParameters
+        /// The Moon (or any surface) with cloth's friction and a different gravity: gravity is the whole story.
+        var gravityOnly: Bool {
+            p.gravity != cloth.gravity && p.slidingFriction == cloth.slidingFriction
+                && p.rollingResistance == cloth.rollingResistance
+        }
+    }
+
+    /// `surface` is the one the timeline was solved on (ShowpieceModel.physicsSurface), so the numbers explained are
+    /// the numbers used.
+    static func make(from timeline: Timeline, surface: PlaySurface) -> [Caption] {
+        let facts = SurfaceFacts(surface: surface, p: surface.parameters, cloth: PlaySurface.cloth.parameters)
         var all: [Caption] = []
         for (index, e) in timeline.events.enumerated() {
-            if let c = caption(for: e, id: index) { all.append(c) }
+            if let c = caption(for: e, id: index, timeline: timeline, facts: facts) { all.append(c) }
         }
         // All of them, in clock order. Events arrive sorted already; the explicit sort with the event index as the
         // tie-break keeps simultaneous rack hits in one fixed order whatever the solver's ordering guarantees.
@@ -49,15 +72,53 @@ enum CaptionEngine {
         String(format: "%.\(digits)f", locale: Locale.current, x)
     }
 
-    private static func caption(for e: LensEvent, id: Int) -> Caption? {
+    /// A friction number with its meaningful digits (0.2, 0.025, 0.0025), in the player's number style.
+    private static func coefficient(_ x: Double) -> String {
+        x.formatted(.number.precision(.significantDigits(1...2)))
+    }
+
+    /// A "times as far" ratio: one decimal below 10 (8, 6.1, 0.4), whole numbers above (12).
+    private static func ratio(_ x: Double) -> String {
+        x < 10 ? x.formatted(.number.precision(.fractionLength(0...1))) : x.formatted(.number.precision(.fractionLength(0)))
+    }
+
+    /// The extra sentence on the cue-strike caption off cloth. Skid distance goes as 1 / (sliding friction * g) and
+    /// roll distance as 1 / (rolling resistance * g) (Simulation.makeSegment: the decelerations are mu * g and c_r * g),
+    /// so the ratios to cloth are worked out from the solver's own numbers. Nil on cloth.
+    private static func surfaceSentence(_ s: SurfaceFacts) -> String? {
+        guard s.surface != .cloth else { return nil }
+        let skid = (s.cloth.slidingFriction * s.cloth.gravity) / (s.p.slidingFriction * s.p.gravity)
+        let roll = (s.cloth.rollingResistance * s.cloth.gravity) / (s.p.rollingResistance * s.p.gravity)
+        if s.gravityOnly {
+            // Same friction numbers, weaker gravity: the friction force is the friction number times the weight, and
+            // the weight is mass times g, so both distances grow by the same ratio of gravities.
+            return String(localized: "On the Moon the friction numbers are the same as on cloth, but gravity is \(f(s.p.gravity)) m/s² instead of \(f(s.cloth.gravity)). Friction pushes back with the friction number times the ball's weight, and weight is mass times gravity, so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")
+        }
+        return String(localized: "On \(s.surface.title) the sliding friction is \(coefficient(s.p.slidingFriction)) and the rolling resistance \(coefficient(s.p.rollingResistance)) (cloth: \(coefficient(s.cloth.slidingFriction)) and \(coefficient(s.cloth.rollingResistance))), so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")
+    }
+
+    /// How long the ball skidded before this sliding-to-rolling event: the sliding segment the solver closed at the
+    /// event's time (Simulation.restart sets its end to exactly that time), from its start. Its start is the strike or
+    /// the last impact that set the ball skidding again. Nil if no such segment is recorded.
+    private static func skidDuration(ball: Int, endingAt t: Double, in timeline: Timeline) -> Double? {
+        guard timeline.segments.indices.contains(ball) else { return nil }
+        guard let seg = timeline.segments[ball].last(where: { $0.phase == .sliding && abs($0.t1 - t) < 1e-9 }) else {
+            return nil
+        }
+        return t - seg.t0
+    }
+
+    private static func caption(for e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts) -> Caption? {
         switch e.kind {
         case .cueStrike:
             let b = e.balls[0]
             let spin = b.omegaAfter.length
             let speed = f(b.velocityAfter.length)
-            let detail = spin > 20
+            let base = spin > 20
                 ? String(localized: "The cue sends the ball off at \(speed) metres per second. Hitting below centre adds backspin, which the ball carries with it.")
                 : String(localized: "The cue sends the ball off at \(speed) metres per second. Its momentum is mass times speed.")
+            // Off cloth, one more sentence: what this surface's numbers do to the skid and the roll that follow.
+            let detail = surfaceSentence(facts).map { base + " " + $0 } ?? base
             return Caption(id: id, time: e.time, title: String(localized: "The cue hands over its speed"), detail: detail,
                            equation: "p = m · v", accent: .strike, importance: 1e9)
         case .ballBall:
@@ -95,10 +156,22 @@ enum CaptionEngine {
             let b = e.balls[0]
             let v = b.velocityAfter.length
             guard v > 0.7 else { return nil }
-            let noSpin = String(localized: "(no spin)")
-            return Caption(id: id, time: e.time, title: String(localized: "Skid turns into roll"),
-                           detail: String(localized: "Friction with the cloth slowed \(name(b.ball)) and spun it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s."),
-                           equation: "v_roll = 5/7 · v \(noSpin)", accent: .friction, importance: v * 0.12)
+            let detail: String
+            if facts.surface == .cloth {
+                detail = String(localized: "Friction with the cloth slowed \(name(b.ball)) and spun it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.")
+            } else {
+                // The skid's real length, from the recording. The solver always closes the sliding segment at this
+                // event, so the nil case should not happen; if it did, no caption beats a made-up number.
+                guard let skid = skidDuration(ball: b.ball, endingAt: e.time, in: timeline) else { return nil }
+                let secs = f(skid, skid < 1 ? 2 : 1)
+                let mu = coefficient(facts.p.slidingFriction), g = f(facts.p.gravity)
+                detail = facts.gravityOnly
+                    ? String(localized: "On the Moon, the same sliding friction as cloth (\(mu)) under only \(g) m/s² of gravity took \(secs) seconds to slow \(name(b.ball)) and spin it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.")
+                    : String(localized: "On \(facts.surface.title), sliding friction of \(mu) under gravity of \(g) m/s² took \(secs) seconds to slow \(name(b.ball)) and spin it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.")
+            }
+            // Skid time: the slip at the contact point closes at 7/2 * mu * g, so it is gone after 2 * slip / (7 mu g).
+            return Caption(id: id, time: e.time, title: String(localized: "Skid turns into roll"), detail: detail,
+                           equation: "t = 2·Δv / (7·μ·g)", accent: .friction, importance: v * 0.12)
         case .pocket:
             let b = e.balls[0]
             return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),

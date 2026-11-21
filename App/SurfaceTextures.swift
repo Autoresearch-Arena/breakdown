@@ -3,9 +3,11 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the other playing beds for the Surface menu: ice with skate
 //          scratches and frost at the cushions, dark smoked glass, sand with grains and ripples, a red-and-gold patterned
 //          carpet, and stippled rubber; each the cloth's size and drawn only when that surface is chosen).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Moon regolith with soft craters and pebbles, and a cork board; ice
+//          retoned from near-white to a pale blue-grey so the lamp's light no longer washes it out).
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that fades to nothing at its edge, the
-//          pocket-wall gradient that makes a well read as deep, and the small soft blob used under the lamp pool.
+//          pocket-wall gradient that makes a well read as deep, and the other playing beds of the Surface menu.
 //          Each function returns a plain CGImage (or nil if the system refuses), built from a byte array and safe to make
 //          on any thread: StartupAssets runs them all in parallel in the background at launch, and TableBuilder turns the
 //          finished pictures into textures. The same code runs on iPhone and Mac. Nothing here
@@ -128,7 +130,9 @@ enum SurfaceTextures {
         return (a.0 + (b.0 - a.0) * k, a.1 + (b.1 - a.1) * k, a.2 + (b.2 - a.2) * k)
     }
 
-    /// Ice: pale blue-white with soft cloudy depth, long faint skate scratches, and frost built up along the cushions.
+    /// Ice: pale blue-grey with soft cloudy depth, long faint skate scratches, and frost built up along the cushions.
+    /// The base is kept well below white on purpose: under the bright lamp a near-white bed (as it first was) washes
+    /// out to plain white, and ice only reads as ice when its colour and the lamp's soft sheen on it can both be seen.
     static func iceImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
         // Scratches go into their own brightness buffer first. Each is a stretch of a big circle (a skate blade
         // carves a shallow arc), walked half a pixel at a time, fading in and out along its length like a blade that
@@ -152,8 +156,9 @@ enum SurfaceTextures {
             }
         }
         var r = Raster(w, h)
-        let base: (Float, Float, Float) = (0.70, 0.80, 0.88)
-        let white: (Float, Float, Float) = (0.95, 0.97, 1.0)
+        let base: (Float, Float, Float) = (0.42, 0.52, 0.60)
+        // Frost and scratches lighten toward this, a pale frosty blue, never all the way to white.
+        let white: (Float, Float, Float) = (0.74, 0.80, 0.86)
         for y in 0..<h {
             for x in 0..<w {
                 let cloud = fbm(Float(x) / 90, Float(y) / 90, px: 9, py: 5, octaves: 4, seed: 61) - 0.5
@@ -162,7 +167,7 @@ enum SurfaceTextures {
                 let crystals = fbm(Float(x) / 6, Float(y) / 6, px: 128, py: 64, octaves: 3, seed: 67)
                 let frost = edgeGlow(x, y, w, h, reach: 14) * (0.4 + 0.9 * crystals)
                 let shade = 1 + 0.10 * cloud + 0.02 * grain
-                let c = lerp3((base.0 * shade, base.1 * shade, base.2 * shade), white, frost * 0.85 + scratch[y * w + x])
+                let c = lerp3((base.0 * shade, base.1 * shade, base.2 * shade), white, frost * 0.75 + scratch[y * w + x])
                 r.set(x, y, c.0, c.1, c.2)
             }
         }
@@ -269,6 +274,81 @@ enum SurfaceTextures {
                 let mottle = fbm(Float(x) / 80, Float(y) / 80, px: 10, py: 5, octaves: 3, seed: 85) - 0.5
                 let shade = 1 + 0.35 * dot + 0.08 * (hash(x, y, 83) - 0.5) + 0.10 * mottle
                 r.set(x, y, base.0 * shade, base.1 * shade, base.2 * shade)
+            }
+        }
+        return r.image()
+    }
+
+    /// Moon: cool grey lunar dust (regolith). Fine grain and slow patches of lighter and darker dust, a few small
+    /// craters (a dark soft-edged bowl with a slightly brighter raised rim, lit evenly so the lamp decides the shading)
+    /// and scattered pebbles. Fully matte; PlaySurfaceLook gives it no shine.
+    static func moonImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let base: (Float, Float, Float) = (0.40, 0.405, 0.42)
+        // Craters: centre and radius in pixels. Kept small (a ball is about 19 pixels across) and away from the edge.
+        let craters: [(x: Float, y: Float, radius: Float)] = (0..<18).map { k in
+            (24 + hash(k, 1, 111) * Float(w - 48), 24 + hash(k, 2, 111) * Float(h - 48), 5 + pow(hash(k, 3, 111), 2) * 22)
+        }
+        for y in 0..<h {
+            for x in 0..<w {
+                let fx = Float(x), fy = Float(y)
+                let patches = fbm(fx / 120, fy / 120, px: 6, py: 3, octaves: 4, seed: 113) - 0.5
+                let dust = fbm(fx / 9, fy / 9, px: 85, py: 42, octaves: 2, seed: 115) - 0.5
+                let grain = hash(x, y, 117) - 0.5
+                var shade = 1 + 0.22 * patches + 0.10 * dust + 0.10 * grain
+                for c in craters {
+                    // d is distance from the crater's centre in radii: dark inside (deepest in the middle), a bright
+                    // ring just past the edge, fading out by about one and a half radii. Smooth, so no hard outline.
+                    let dx = fx - c.x, dy = fy - c.y
+                    let d = (dx * dx + dy * dy).squareRoot() / c.radius
+                    if d > 1.6 { continue }
+                    let bowl = max(0, 1 - d * d) * 0.30
+                    let rim = exp(-pow((d - 1.05) / 0.18, 2)) * 0.16
+                    shade *= 1 - bowl + rim
+                }
+                // Pebbles: a few single soft dots, darker or lighter than the dust.
+                let p = hash(x / 3, y / 3, 119)
+                if p > 0.992 { shade *= 0.72 } else if p < 0.004 { shade *= 1.22 }
+                r.set(x, y, base.0 * shade, base.1 * shade, base.2 * shade)
+            }
+        }
+        return r.image()
+    }
+
+    /// Cork board: warm tan granules of different shades packed together, with darker brown flecks between them.
+    /// Each pixel takes the tone of the nearest granule centre (one jittered centre per 5-pixel cell), which gives the
+    /// pressed-crumb look of cork; the fine noise on top keeps the granules from looking flat.
+    static func corkImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
+        var r = Raster(w, h)
+        let light: (Float, Float, Float) = (0.72, 0.53, 0.33)
+        let dark: (Float, Float, Float) = (0.42, 0.26, 0.14)
+        let cell = 5
+        for y in 0..<h {
+            for x in 0..<w {
+                let cx = x / cell, cy = y / cell
+                var nearest: Float = .greatestFiniteMagnitude, second: Float = .greatestFiniteMagnitude
+                var tone: Float = 0
+                // The nearest centre is always in this cell or one of its eight neighbours.
+                for j in -1...1 {
+                    for i in -1...1 {
+                        let gx = cx + i, gy = cy + j
+                        let px = Float(gx * cell) + Float(cell) * hash(gx, gy, 121)
+                        let py = Float(gy * cell) + Float(cell) * hash(gx, gy, 122)
+                        let dx = Float(x) + 0.5 - px, dy = Float(y) + 0.5 - py
+                        let d = dx * dx + dy * dy
+                        if d < nearest { second = nearest; nearest = d; tone = hash(gx, gy, 123) }
+                        else if d < second { second = d }
+                    }
+                }
+                // Near the border between two granules (the two nearest centres almost equally close) the cork
+                // darkens a little: the small gaps between crumbs.
+                let gap = max(0, 1 - (second.squareRoot() - nearest.squareRoot()) / 1.2)
+                var c = lerp3(dark, light, 0.35 + 0.65 * tone)
+                let fleck = hash(x, y, 125)
+                if fleck > 0.985 { c = lerp3(c, (0.22, 0.12, 0.06), 0.7) }
+                let mottle = fbm(Float(x) / 70, Float(y) / 70, px: 11, py: 5, octaves: 3, seed: 127) - 0.5
+                let shade = (1 - 0.25 * gap) * (1 + 0.12 * mottle + 0.06 * (hash(x, y, 129) - 0.5))
+                r.set(x, y, c.0 * shade, c.1 * shade, c.2 * shade)
             }
         }
         return r.image()
