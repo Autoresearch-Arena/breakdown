@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.13] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: The Surface menu now works in trick shots: the chosen surface is the one the shot is played on.
+- Why: The Boss could not switch surfaces in his build. Trick shots silently stayed on cloth while the menu showed the new choice, so it looked broken.
+- How: ShowpieceModel.physicsSurface is always the chosen surface, and setSurface re-solves the shot on screen in trick-shot mode too. A trick's answer was authored on cloth, so on other surfaces it may miss, and the Physics Lens explains why.
+- Checked: in the simulator, Stop Dead switched to ice and to dive-bar felt and played on them, with the friction and cushion numbers in the caption; free play switching still works.
+
 ## [0.5.12] - 21-November-2026
 
 Author: Claude Opus 5.5 High
