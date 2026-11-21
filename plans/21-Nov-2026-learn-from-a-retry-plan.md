@@ -10,6 +10,15 @@ Suppose a beginner pots the 3 but the cue ball rolls too far. They open the Phys
 
 The [lesson plan](21-Nov-2026-first-minute-and-lessons-plan.md) takes a player from watching a shot to passing it unaided. The [physics plan](21-Nov-2026-physics-proof-plan.md) checks that the ball behaves correctly. A player could pass both teams’ finished work by remembering a slider position. Use one stop shot to find out what the player understood while it is still cheap to change the other five lessons.
 
+## How two developers can start today
+
+| Owner | Work on their branch | Handoff |
+|---|---|---|
+| GPT 6.2 Astra High | Section 2 and the recorded facts for section 3. Own ShotAttempt, the retry and seek actions in ShowpieceModel, and the BreakProbe checks for the two layouts. | Supply the comparison facts, an optional first-contact time from the current shot and an action that pauses there. When the current shot misses every ball, the contact time is absent. |
+| Other developer | Section 3’s result card, contact button, ghost, VoiceOver and translations. Prepare the second exercise and the questions in section 4. Own the views, lesson flow and string catalog. | Use Stop Dead as the first entry point while the lesson is being written. Show the contact action when its time exists. Use the same view in the lesson. |
+
+Agree on the names and types of those few values first. Each developer can then implement and push independently. The [work order](21-Nov-2026-award-gaps-order-plan.md) describes the single final build. The observations in sections 1 and 4 are playtest work. Either can use an available build and a willing player. Development can start immediately.
+
 ## 1. Try the experiment on the build we have
 
 Start in order 1, alongside the opening work. Use the existing **Stop Dead** trick shot on tournament cloth. Before the session, play it through and pick a repeatable miss that pots the object ball and sends the cue ball past its target. Save the settings and build number in the session notes so the next developer can reproduce it.
@@ -30,7 +39,7 @@ There is a concrete error to cover before relying on the feedback. The app passe
 
 ## 3. Explain one difference at the table
 
-Build the stop-shot example with the first lesson once the new physics becomes the default. Keep the retry fixes independent of that date.
+Build the interaction around the existing Stop Dead shot now. Tune the final pair of shots on the chosen physics settings and connect the same interaction to the first lesson.
 
 1. Pick two tries from the same straight-on layout where the object ball drops both times. Keep aim and speed fixed and vary tip height. Use the recorded cue-ball motion just before and after object-ball contact to select a pair where it clearly runs forward on one try and stops close to contact on the other. Check both with the existing shot-authoring tool.
 2. Give the player a way to revisit that contact from the existing result card. Seek the current recording to the event. Use the last-try trail and finish marker to show where the earlier ball went. If the earlier contact needs a measurement, read it at that recording’s own contact time. Describe the difference in one sentence supported by the recordings. A miss that never touches the object ball gets its own literal outcome.

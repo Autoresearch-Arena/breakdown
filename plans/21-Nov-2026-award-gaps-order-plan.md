@@ -1,6 +1,6 @@
 <!--
 Author: Claude Fable 5.2 High
-Edited: GPT 6.2 Astra High, 21-November-2026, added the retry and learning check to the order of work.
+Edited: GPT 6.2 Astra High, 21-November-2026, added the retry plan and the two-developer, one-build workflow.
 Date: 21-November-2026
 PURPOSE: The front page for the twelve gap plans written on 21 November 2026 after a critical review of Breakdown
          against Apple Design Award standards. Says honestly where the game stands, what the gaps are, which plan
@@ -79,14 +79,15 @@ Rows with the same order number can be worked at the same time by different peop
   pages; building it late means building those screens twice.
 - The lessons wait for the new physics, like the trick shots, so they are authored once.
 
-## Who may touch what at the same time
+## Two developers, one build at the end
 
-- Physics people work only in Packages/BreakdownCore, plus the captions and Lens event files named in their plan.
-- Rules-games people work in App/Match, App/EightBall and the menu.
-- ShowpieceModel.swift, the string catalog, CHANGELOG.md and the project version are shared. One person merges at a
-  time; say in the team channel before you start on any of them.
-- Nobody compiles the app in parallel. One iPhone build, one Mac build and the package tests after each merge, with
-  build output on the Team 4TB drive.
+For this batch, the order numbers describe dependencies between changes. Developers can commit and push at any point. The following build instruction applies across the linked plans, including packages that originally called for a build or release after each merge.
+
+- **GPT 6.2 Astra High owns the simulation and recorded shot.** Take physics proof, rails, cue strike, pockets and jams, the shared reading of a shot, the pure match rules and opponent, and the solver side of the extra tables. Own BreakProbe and tuning of authored solutions. In Plan 14, own the retry inputs, comparison facts and contact time. Own the shared ShowpieceModel integration so each change to the model has one writer.
+- **The other developer owns the experience at the table.** Take the opening, lessons, menus, match and extra-table screens, table art, sound, accessibility, iPad and Mac layouts. Own the ghost and result card, all player-facing wording and its translations. Start with the current table, replay and trick-shot views. For rules or events still under development, agree on the values the screen consumes and use those names from the start.
+- **Exchange the small interfaces first.** For matches, agree on the ruling, next shooter, ball-in-hand state and final layout. For Plan 14, the model supplies the comparison facts, the current shot’s optional first-contact time and an action to pause the replay there. The view owns the words and controls. Both developers can pull a pushed commit from the other branch when they need it.
+- **Push one combined change to main.** Each developer works on a separate branch off the same main commit. Use ordinary branch pushes, diff review and checks that read source files while writing. Leave compilation, including package tests and authoring commands that would compile Swift, until the work is together. GPT 6.2 Astra High combines the two branches locally and reconciles their interfaces. Run required physics tests and shot-authoring checks serially on that combined source, fold in the resulting shot settings, and finish the version and changelog. One push of that combined history to main triggers the existing iOS TestFlight archive. Skip per-package builds and manual workflow runs. The final archive produces the iPhone/iPad app. Mac runtime observations require a separate Mac build and can be collected in a later pass.
+- **Use the finished build for hands-on work.** Device measurements, listening, and testing with new players belong here. If a compatible BreakProbe executable is already available it can run without compiling. Checks that depend on changed physics need a probe built from the combined source. Record any outstanding checks as such.
 
 ## Decisions waiting for the Boss
 
