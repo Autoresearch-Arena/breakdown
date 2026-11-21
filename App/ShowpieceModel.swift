@@ -750,6 +750,22 @@ final class ShowpieceModel {
         rerack()
     }
 
+    /// Play a table as the game: leave any trick shot or Behind the 8-Ball situation (they are authored on the pool table,
+    /// so while one is up a table change would be stored but never shown, which is why choosing bumper pool or bar
+    /// billiards used to do nothing), store the table, close the menu and put its start layout on screen, ready to shoot.
+    /// Always re-racks, even for the table already chosen, because the table on screen may be the pool table of a mode.
+    func playTable(_ k: TableKind) {
+        trickMode.end()
+        eightBallMode.end()
+        tableKind = k
+        UserDefaults.standard.set(k.rawValue, forKey: TableKind.storageKey)
+        shotElevation = 0
+        menuOpen = false
+        gameInProgress = true
+        rerack()
+        setLens(false)
+    }
+
     /// The chosen table's start layout, still, with the aim and power of its default shot. The same zero-speed trick
     /// loadTrickLayout uses; the settings are set after load(), which re-aims.
     private func loadTableStart() {

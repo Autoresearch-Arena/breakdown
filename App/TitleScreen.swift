@@ -19,6 +19,8 @@
 //          screen).
 // Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo: onHowTo and onOptions let the Duo panel show the menu as
 //          one of its own pages, with no dimming veil and no sheets over the table.)
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (a Tables button opens TableList: a table is a game of its own, no longer a
+//          section of the Surface menu).
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
 //          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
@@ -40,6 +42,7 @@ struct TitleScreen: View {
     /// panel hands these in, and the menu then neither dims the screen nor opens sheets over the table.
     var onHowTo: (() -> Void)? = nil
     var onOptions: (() -> Void)? = nil
+    var onTables: (() -> Void)? = nil
     private var inline: Bool { onHowTo != nil }
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -48,6 +51,7 @@ struct TitleScreen: View {
     @State private var shown = false
     @State private var howToOpen = false
     @State private var optionsOpen = false
+    @State private var tablesOpen = false
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
     /// -noTitle is there for anyone who wants the table straight away.
@@ -85,6 +89,7 @@ struct TitleScreen: View {
         }
         .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen) }
         .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
+        .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
     }
 
     private var card: some View {
@@ -116,6 +121,7 @@ struct TitleScreen: View {
                 if model.gameInProgress {
                     menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
                     menuButton("Behind the 8-Ball", symbol: "8.circle.fill", prominent: false) { model.eightBallMode.listOpen = true }
+                    menuButton("Tables", symbol: "square.grid.2x2", prominent: false) { if let onTables { onTables() } else { tablesOpen = true } }
                     menuButton("Continue", symbol: "play.fill", prominent: false) { model.closeMenu() }
                         // Return continues on the Mac and with a hardware keyboard.
                         .keyboardShortcut(.defaultAction)
@@ -126,6 +132,7 @@ struct TitleScreen: View {
                     menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
                         .keyboardShortcut(.defaultAction)
                     menuButton("Behind the 8-Ball", symbol: "8.circle.fill", prominent: false) { model.eightBallMode.listOpen = true }
+                    menuButton("Tables", symbol: "square.grid.2x2", prominent: false) { if let onTables { onTables() } else { tablesOpen = true } }
                     menuButton("Free play", symbol: "play.fill", prominent: false) {
                         model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
                     }

@@ -19,6 +19,8 @@ Author: Claude Sonnet 5.5 Medium
 
 ## [0.6.5] - 21-November-2026
 
+Tables (build 30), Claude Sonnet 5.5 Medium: choosing bumper pool, five-pin or bar billiards now really changes the game. The cause was that a table change was stored but not shown while a trick shot or Behind the 8-Ball situation was up (those are always on the pool table), so it looked like nothing happened. Tables are now their own button on the main menu ("Tables", a list with the pool table, bumper pool, five-pin billiards and bar billiards); choosing one ends any trick shot, changes the table and puts its start layout on screen. The Surface button now holds only surfaces. On the open Duo the list is a page of the side panel. The Moon is a plain grey bed, with no craters or pebbles. This also fixes the build, which the earlier polish change broke (a missing return in the bottom stack).
+
 Polish (build 29), Claude Sonnet 5.5 Medium: the Duo commentary shows each explanation in full with soft fades at the edges instead of cutting it off; the numbers tiles keep their labels on whole words (German and Russian shortened); the lower cards of the closed Duo have more room; and on right-to-left languages the status badges stay clear of the table.
 
 Author: Claude Sonnet 5.5 Medium

@@ -53,7 +53,7 @@ struct PlaybackCommands: Commands {
                 }
                 .pickerStyle(.inline)
                 .labelsHidden()
-                Picker(String(localized: "Tables"), selection: Binding(get: { model?.tableKind ?? .standard }, set: { model?.setTable($0) })) {
+                Picker(String(localized: "Tables"), selection: Binding(get: { model?.tableKind ?? .standard }, set: { model?.playTable($0) })) {
                     ForEach(TableKind.allCases) { kind in
                         Label(kind.title, systemImage: kind.symbol).tag(kind)
                     }

@@ -41,7 +41,7 @@ struct DuoPanel: View {
     @State private var numbersMeasured: CGFloat = 0
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
-    private enum InfoPage { case howTo, options }
+    private enum InfoPage { case howTo, options, tables }
 
     var body: some View {
         GeometryReader { geo in
@@ -54,7 +54,7 @@ struct DuoPanel: View {
 
     /// Which page shows, for the cross-fade between them.
     private var pageKey: String {
-        if let infoPage { return infoPage == .howTo ? "howTo" : "options" }
+        if let infoPage { return "info-\(infoPage)" }
         if model.trickMode.listOpen { return "trickList" }
         if model.eightBallMode.listOpen { return "eightList" }
         return model.menuOpen ? "menu" : "play"
@@ -72,6 +72,7 @@ struct DuoPanel: View {
             switch infoPage {
             case .howTo: HowToPlaySheet(isOpen: infoBinding)
             case .options: OptionsSheet(isOpen: infoBinding)
+            case .tables: TableList(model: model, onChosen: { showShotPanel = true }, onClose: { self.infoPage = nil })
             }
         } else if model.trickMode.listOpen {
             TrickShotList(mode: model.trickMode)
@@ -79,7 +80,8 @@ struct DuoPanel: View {
             EightBallList(mode: model.eightBallMode)
         } else if model.menuOpen {
             TitleScreen(model: model, onPlay: { showShotPanel = true },
-                        onHowTo: { infoPage = .howTo }, onOptions: { infoPage = .options })
+                        onHowTo: { infoPage = .howTo }, onOptions: { infoPage = .options },
+                        onTables: { infoPage = .tables })
         } else {
             play(size: size)
         }

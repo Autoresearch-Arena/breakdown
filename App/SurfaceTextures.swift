@@ -342,38 +342,13 @@ enum SurfaceTextures {
         return r.image()
     }
 
-    /// Moon: cool grey lunar dust (regolith). Fine grain and slow patches of lighter and darker dust, a few small
-    /// craters (a dark soft-edged bowl with a slightly brighter raised rim, lit evenly so the lamp decides the shading)
-    /// and scattered pebbles. Fully matte; PlaySurfaceLook gives it no shine.
+    /// Moon: a plain, even cool grey. No craters, pebbles or patches (they read as fake); the surface is the Moon only
+    /// because of its gravity, and the bed just needs to look like flat grey felt-free dust. Fully matte; PlaySurfaceLook
+    /// gives it no shine.
     static func moonImage(width w: Int = 768, height h: Int = 384) -> CGImage? {
         var r = Raster(w, h)
-        let base: (Float, Float, Float) = (0.40, 0.405, 0.42)
-        // Craters: centre and radius in pixels. Kept small (a ball is about 19 pixels across) and away from the edge.
-        let craters: [(x: Float, y: Float, radius: Float)] = (0..<18).map { k in
-            (24 + hash(k, 1, 111) * Float(w - 48), 24 + hash(k, 2, 111) * Float(h - 48), 5 + pow(hash(k, 3, 111), 2) * 22)
-        }
         for y in 0..<h {
-            for x in 0..<w {
-                let fx = Float(x), fy = Float(y)
-                let patches = fbm(fx / 120, fy / 120, px: 6, py: 3, octaves: 4, seed: 113) - 0.5
-                let dust = fbm(fx / 9, fy / 9, px: 85, py: 42, octaves: 2, seed: 115) - 0.5
-                let grain = hash(x, y, 117) - 0.5
-                var shade = 1 + 0.22 * patches + 0.10 * dust + 0.10 * grain
-                for c in craters {
-                    // d is distance from the crater's centre in radii: dark inside (deepest in the middle), a bright
-                    // ring just past the edge, fading out by about one and a half radii. Smooth, so no hard outline.
-                    let dx = fx - c.x, dy = fy - c.y
-                    let d = (dx * dx + dy * dy).squareRoot() / c.radius
-                    if d > 1.6 { continue }
-                    let bowl = max(0, 1 - d * d) * 0.30
-                    let rim = exp(-pow((d - 1.05) / 0.18, 2)) * 0.16
-                    shade *= 1 - bowl + rim
-                }
-                // Pebbles: a few single soft dots, darker or lighter than the dust.
-                let p = hash(x / 3, y / 3, 119)
-                if p > 0.992 { shade *= 0.72 } else if p < 0.004 { shade *= 1.22 }
-                r.set(x, y, base.0 * shade, base.1 * shade, base.2 * shade)
-            }
+            for x in 0..<w { r.set(x, y, 0.38, 0.40, 0.44) }
         }
         return r.image()
     }

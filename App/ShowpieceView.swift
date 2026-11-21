@@ -214,7 +214,7 @@ struct ShowpieceView: View {
         // A phone this wide for its height (the closed Duo: nearly two thirds as wide as tall) has no height to spare for the
         // table anyway, and a taller stack keeps a scorecard and its controls from being cut at the bottom.
         let squarish = geo.size.width / max(1, geo.size.height) > 0.65
-        FittingScroll(maxHeight: geo.size.height * (squarish ? 0.74 : 0.62)) {
+        return FittingScroll(maxHeight: geo.size.height * (squarish ? 0.74 : 0.62)) {
             VStack(spacing: 10) {
                 if !wide { ComparisonCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
@@ -357,7 +357,7 @@ struct MenuBackButton: View {
 }
 
 /// The playing-surface picker: a round glass button the size of the back button, showing the current surface's symbol,
-/// that opens a menu of every surface with a check beside the chosen one. Picking one re-solves the shot on screen on
+/// that opens a menu of every surface with a check beside the chosen one. Tables are not here: a table is a different game, chosen from the main menu (TableList). Picking one re-solves the shot on screen on
 /// that surface and replays it (ShowpieceModel.setSurface). It lives in the title row because that row is there anyway
 /// and its right side is empty in play, so the picker costs the table nothing.
 struct SurfaceMenuButton: View {
@@ -381,22 +381,6 @@ struct SurfaceMenuButton: View {
                     }
                 }
                 .accessibilityAddTraits(surface == model.surface ? .isSelected : [])
-            }
-            // The tables, under their own heading: picking one puts that table's start layout on screen.
-            Section(String(localized: "Tables")) {
-                ForEach(TableKind.allCases) { kind in
-                    Button {
-                        model.setTable(kind)
-                    } label: {
-                        Label {
-                            Text(verbatim: kind.title)
-                            Text(verbatim: kind.summary)
-                        } icon: {
-                            Image(systemName: kind == model.tableKind ? "checkmark" : kind.symbol)
-                        }
-                    }
-                    .accessibilityAddTraits(kind == model.tableKind ? .isSelected : [])
-                }
             }
         } label: {
             Label("Surface", systemImage: model.surface.symbol)
