@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons: optional target band and lock. The angles inside a lesson's
+//          band (LessonZones.cueAngles) carry a target mark in the menu, and the label shows the mark while the chosen
+//          angle is inside it; a locked menu is disabled and marked "Locked for this step". Defaults leave every other
+//          caller exactly as before.)
 // PURPOSE: The cue-angle control, shared. A small glass menu button that shows how far the cue is raised ("Level",
 //          "30° up") and offers the angles a player picks from: level for nearly every shot, a little raised for a
 //          jump, steep for a massé. It reads and writes the solver's own unit, the SINE of the cue's angle above the
@@ -18,6 +22,12 @@ struct CueAngleMenu: View {
     @Binding var sine: Double
     /// Height of the label: the cards pass their own button height so the row lines up.
     var minHeight: CGFloat = 0
+    /// A lesson's target band, degrees: the offered angles inside it are marked. Nil outside a lesson's guided tries.
+    var zone: ClosedRange<Int>? = nil
+    /// How strongly the band is marked (1 in try 2, faint in try 3): below a half, only the menu items are marked.
+    var zoneStrength: Double = 1
+    /// True while a lesson has locked the cue angle for this step.
+    var locked: Bool = false
 
     /// The angles offered, in degrees above level. The same steps the Behind the 8-Ball card has always offered (the
     /// list EightBallMode.cueAngles snaps to; written out here so this control does not reach into a puzzle mode):
@@ -49,14 +59,23 @@ struct CueAngleMenu: View {
                    selection: Binding(get: { Self.nearestAngle(toSine: sine) },
                                       set: { sine = Self.sine(forAngle: $0) })) {
                 ForEach(Self.angles, id: \.self) { a in
-                    Text(Self.words(degrees: Double(a))).tag(a)
+                    if zone?.contains(a) == true {
+                        Label(Self.words(degrees: Double(a)), systemImage: "scope").tag(a)
+                    } else {
+                        Text(Self.words(degrees: Double(a))).tag(a)
+                    }
                 }
             }
         } label: {
-            Label(Self.words(degrees: Double(angle)), systemImage: "angle").font(.headline).lineLimit(1)
+            // In a lesson's band the label wears the band's target mark, so the player sees they have landed in it.
+            Label(Self.words(degrees: Double(angle)),
+                  systemImage: zone?.contains(angle) == true && zoneStrength >= 0.5 ? "scope" : "angle")
+                .font(.headline).lineLimit(1)
                 .frame(minHeight: minHeight)
         }
         .buttonStyle(.glass)
+        .disabled(locked)
+        .lockedForStep(locked)
         .accessibilityLabel(String(localized: "Cue angle"))
         .accessibilityValue(Self.words(degrees: Double(angle)))
         .accessibilityHint(String(localized: "Raise the cue to jump or curve the cue ball"))

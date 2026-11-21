@@ -74,6 +74,9 @@
 //          (NotebookPage), so the Help menu reaches How to play in any layout: a page of the panel in the notebook, a
 //          sheet otherwise. The aiming layer gains pointer, scroll and Pencil-hover aiming (PointerAim), and the title
 //          row's round buttons brighten under the pointer.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream, hook lines: LessonTableLayer beside the trick-shot
+//          layer, LessonCard beside the trick-shot card in both layouts, and the aiming layer is handed the lesson's
+//          open controls and target bands.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -220,12 +223,15 @@ struct ShowpieceView: View {
             if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
             // Trick shots: rings on the shot's balls and pockets, the success glow, the list sheet, launch flags.
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
+            // Lessons: rings, the finish circle, the pass glow, the list sheet, and the Watch beat's stop (LessonViews).
+            LessonTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Behind the 8-Ball: the called ball and pocket, the list sheet, launch flags (EightBallViews).
             EightBallTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Free play and matches: the lifted cue ball's tint, the head line, nine-ball's ball to hit first.
             PlayTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             if showShotPanel {
-                AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel)
+                AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel, open: model.openControls,
+                           zones: model.lessonZones)
                     // Mac and iPad: the aim follows a hovering pointer or Pencil, scrolling fine-tunes it, and letting go
                     // of a pointer pull-back takes the shot (PointerAim). A finger plays exactly as before.
                     .pointerAim(model: model, bridge: bridge, isOpen: $showShotPanel)
@@ -272,6 +278,7 @@ struct ShowpieceView: View {
                 if !wide { OpeningCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
                 if !wide { TrickShotCard(model: model) }
+                if !wide { LessonCard(model: model) }
                 if !wide { EightBallCard(model: model) }
                 // Free play and matches: ball in hand, table cleared, the match card (FreePlayViews, MatchViews).
                 if !wide { PlayCards(model: model) }
@@ -293,6 +300,7 @@ struct ShowpieceView: View {
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: model.retryComparison)
         .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
+        .animation(reduceMotion ? nil : .snappy, value: model.lessonMode.isActive)
         .animation(reduceMotion ? nil : .snappy, value: model.eightBallMode.isActive)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: model.lensOn)
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
@@ -331,6 +339,7 @@ struct ShowpieceView: View {
                     OpeningCard(model: model)
                     // Trick shots: the shot's card at the top of the column.
                     TrickShotCard(model: model)
+                    LessonCard(model: model)
                     EightBallCard(model: model)
                     PlayCards(model: model)
                     CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)

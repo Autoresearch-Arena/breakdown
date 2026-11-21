@@ -1,0 +1,3702 @@
+{
+ "keys": [
+  "Locked for this step",
+  "A new distance",
+  "Same line, the cue ball further back.",
+  "Stop shot",
+  "Pot the ball and make the cue ball stop dead where it hits.",
+  "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+  "It stopped dead. All of its speed went into the 3.",
+  "Strike above centre and the cue ball rolls on after the ball it pots.",
+  "Pot the 3 and roll on into the marked circle.",
+  "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+  "Rolled on. The topspin carried it through.",
+  "Strike below centre and the cue ball comes back toward you after the pot.",
+  "Pot the 3 and bring the cue ball back into the marked circle.",
+  "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+  "Drawn back. The backspin did the pulling.",
+  "Cut and throw",
+  "Hit the ball off-centre to send it off at an angle into the pocket.",
+  "Cut the 3 into the top-right corner.",
+  "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+  "Cut in. You allowed for the throw.",
+  "Curve",
+  "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+  "Curve round the 4 and touch the 9 first.",
+  "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+  "Bent round the 4. That is a curve.",
+  "Raise the cue steeply and the cue ball hops over a ball in its way.",
+  "Jump the 6 and touch the 11 first.",
+  "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+  "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+  "Raise the cue more. A level cue cannot do this one.",
+  "The cue is too steep. Lower it a little.",
+  "Sets up the lesson on the table",
+  "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+  "Lessons",
+  "passed",
+  "not passed yet",
+  "Lesson %lld, %@, %@. %@",
+  "Plays a perfect example, then slows it down in the Physics Lens",
+  "Watch a perfect example. %@",
+  "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+  "Lesson passed",
+  "The trick shot %@ is built on this idea.",
+  "The same pot with the cue ball further back",
+  "Try the trick shot",
+  "Next lesson",
+  "Next step",
+  "Goes on to the next try, with less help",
+  "Try 1 of 3",
+  "Try 2 of 3",
+  "Try 3 of 3",
+  "Pass shot",
+  "Everything is set for you and locked. Just shoot and watch it work.",
+  "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+  "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+  "Only the aim is open. Swing the line into the marked fan.",
+  "Only the power is open. Set it inside the marked part of the bar.",
+  "Only the cue angle is open. Pick one of the marked angles.",
+  "Every control is open now, and the marks are faint.",
+  "No marks and nothing locked. Make it on your own to pass.",
+  "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+  "Lesson %lld: %@",
+  "All lessons",
+  "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+  "Learn",
+  "Six short lessons: stop, follow, draw, cut, curve and jump.",
+  "%lld of %lld passed"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Locked for this step",
+   "text": "Bloqueado en este paso"
+  },
+  {
+   "culture": "fr",
+   "key": "Locked for this step",
+   "text": "Verrouillé pour cette étape"
+  },
+  {
+   "culture": "de",
+   "key": "Locked for this step",
+   "text": "Für diesen Schritt gesperrt"
+  },
+  {
+   "culture": "it",
+   "key": "Locked for this step",
+   "text": "Bloccato per questo passo"
+  },
+  {
+   "culture": "pt",
+   "key": "Locked for this step",
+   "text": "Bloqueado neste passo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Locked for this step",
+   "text": "Bloqueado nesta etapa"
+  },
+  {
+   "culture": "ja",
+   "key": "Locked for this step",
+   "text": "このステップではロック中"
+  },
+  {
+   "culture": "ko",
+   "key": "Locked for this step",
+   "text": "이번 단계에서는 잠겨 있어요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Locked for this step",
+   "text": "此步骤已锁定"
+  },
+  {
+   "culture": "ru",
+   "key": "Locked for this step",
+   "text": "Заблокировано на этом шаге"
+  },
+  {
+   "culture": "ar",
+   "key": "Locked for this step",
+   "text": "مقفل في هذه الخطوة"
+  },
+  {
+   "culture": "es",
+   "key": "A new distance",
+   "text": "Una nueva distancia"
+  },
+  {
+   "culture": "fr",
+   "key": "A new distance",
+   "text": "Une nouvelle distance"
+  },
+  {
+   "culture": "de",
+   "key": "A new distance",
+   "text": "Eine neue Entfernung"
+  },
+  {
+   "culture": "it",
+   "key": "A new distance",
+   "text": "Una nuova distanza"
+  },
+  {
+   "culture": "pt",
+   "key": "A new distance",
+   "text": "Uma nova distância"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A new distance",
+   "text": "Uma nova distância"
+  },
+  {
+   "culture": "ja",
+   "key": "A new distance",
+   "text": "新しい距離"
+  },
+  {
+   "culture": "ko",
+   "key": "A new distance",
+   "text": "새로운 거리"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A new distance",
+   "text": "换个距离"
+  },
+  {
+   "culture": "ru",
+   "key": "A new distance",
+   "text": "Новое расстояние"
+  },
+  {
+   "culture": "ar",
+   "key": "A new distance",
+   "text": "مسافة جديدة"
+  },
+  {
+   "culture": "es",
+   "key": "Same line, the cue ball further back.",
+   "text": "La misma línea, con la bola blanca más atrás."
+  },
+  {
+   "culture": "fr",
+   "key": "Same line, the cue ball further back.",
+   "text": "Même ligne, la bille blanche plus en arrière."
+  },
+  {
+   "culture": "de",
+   "key": "Same line, the cue ball further back.",
+   "text": "Dieselbe Linie, die weiße Kugel weiter hinten."
+  },
+  {
+   "culture": "it",
+   "key": "Same line, the cue ball further back.",
+   "text": "Stessa linea, con la palla bianca più indietro."
+  },
+  {
+   "culture": "pt",
+   "key": "Same line, the cue ball further back.",
+   "text": "A mesma linha, com a bola branca mais atrás."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same line, the cue ball further back.",
+   "text": "A mesma linha, com a bola branca mais atrás."
+  },
+  {
+   "culture": "ja",
+   "key": "Same line, the cue ball further back.",
+   "text": "同じライン、手球はもっと後ろ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same line, the cue ball further back.",
+   "text": "같은 선, 큐볼은 더 뒤에."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same line, the cue ball further back.",
+   "text": "同一条线，白球再往后一些。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same line, the cue ball further back.",
+   "text": "Та же линия, белый шар дальше."
+  },
+  {
+   "culture": "ar",
+   "key": "Same line, the cue ball further back.",
+   "text": "الخط نفسه، والكرة البيضاء أبعد إلى الخلف."
+  },
+  {
+   "culture": "es",
+   "key": "Stop shot",
+   "text": "Golpe de parada"
+  },
+  {
+   "culture": "fr",
+   "key": "Stop shot",
+   "text": "Coup d'arrêt"
+  },
+  {
+   "culture": "de",
+   "key": "Stop shot",
+   "text": "Stoppball"
+  },
+  {
+   "culture": "it",
+   "key": "Stop shot",
+   "text": "Colpo fermo"
+  },
+  {
+   "culture": "pt",
+   "key": "Stop shot",
+   "text": "Tacada de paragem"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stop shot",
+   "text": "Tacada de parada"
+  },
+  {
+   "culture": "ja",
+   "key": "Stop shot",
+   "text": "ストップショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Stop shot",
+   "text": "스톱 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stop shot",
+   "text": "定杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Stop shot",
+   "text": "Удар с остановкой"
+  },
+  {
+   "culture": "ar",
+   "key": "Stop shot",
+   "text": "ضربة التوقف"
+  },
+  {
+   "culture": "es",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Mete la bola y haz que la blanca se pare en seco donde golpea."
+  },
+  {
+   "culture": "fr",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Empoche la bille et fais s'arrêter net la blanche là où elle frappe."
+  },
+  {
+   "culture": "de",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Versenke die Kugel und lass die weiße genau dort stehen, wo sie trifft."
+  },
+  {
+   "culture": "it",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Imbuca la palla e fai fermare la bianca proprio dove colpisce."
+  },
+  {
+   "culture": "pt",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Mete a bola e faz a branca parar logo onde bate."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Encaçape a bola e faça a branca parar bem onde bate."
+  },
+  {
+   "culture": "ja",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "的球を沈め、手球を当たった場所でピタッと止めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "공을 넣고 큐볼을 맞힌 자리에 딱 멈추게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "把目标球打进，让白球停在击中的地方。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "Забей шар и останови белый прямо там, где он ударил."
+  },
+  {
+   "culture": "ar",
+   "key": "Pot the ball and make the cue ball stop dead where it hits.",
+   "text": "أدخل الكرة واجعل الكرة البيضاء تتوقف تمامًا حيث تضرب."
+  },
+  {
+   "culture": "es",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Golpeada un poco por debajo del centro, la blanca llega justo cuando se le acaba el efecto. Sin efecto, le pasa toda su velocidad a la 3 y se para."
+  },
+  {
+   "culture": "fr",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Frappée un peu sous le centre, la blanche arrive juste quand son effet s'est épuisé. Sans effet, elle donne toute sa vitesse à la 3 et s'arrête."
+  },
+  {
+   "culture": "de",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Etwas unter der Mitte getroffen, kommt die weiße Kugel gerade an, wenn ihr Effet aufgebraucht ist. Ohne Effet gibt sie ihr ganzes Tempo an die 3 ab und bleibt stehen."
+  },
+  {
+   "culture": "it",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Colpita un po' sotto il centro, la bianca arriva proprio quando il suo effetto si è esaurito. Senza effetto, cede tutta la sua velocità alla 3 e si ferma."
+  },
+  {
+   "culture": "pt",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Batida um pouco abaixo do centro, a branca chega quando o efeito acabou de se gastar. Sem efeito, passa toda a velocidade à 3 e para."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Batida um pouco abaixo do centro, a branca chega quando o efeito acabou de se gastar. Sem efeito, passa toda a velocidade para a 3 e para."
+  },
+  {
+   "culture": "ja",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "中心の少し下を撞くと、手球は回転がちょうど消えたところで当たります。回転がなければ、速さをすべて3番に渡して止まります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "중심보다 약간 아래를 치면 큐볼은 회전이 막 사라질 때 도착해요. 회전이 없으니 속도를 전부 3번에 넘기고 멈춰요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "击打中心稍下方，白球到达时旋转刚好消失。没有旋转，它就把全部速度交给3号球并停住。"
+  },
+  {
+   "culture": "ru",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "Удар чуть ниже центра: белый шар доходит, когда вращение как раз иссякло. Без вращения он отдаёт всю скорость шару 3 и останавливается."
+  },
+  {
+   "culture": "ar",
+   "key": "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops.",
+   "text": "عند ضربها أسفل المركز بقليل، تصل الكرة البيضاء وقد زال دورانها للتو. ومن دون دوران، تعطي كل سرعتها للكرة 3 وتتوقف."
+  },
+  {
+   "culture": "es",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Se paró en seco. Toda su velocidad pasó a la 3."
+  },
+  {
+   "culture": "fr",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Arrêt net. Toute sa vitesse est passée dans la 3."
+  },
+  {
+   "culture": "de",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Sie blieb sofort stehen. Ihr ganzes Tempo ging in die 3."
+  },
+  {
+   "culture": "it",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Si è fermata di colpo. Tutta la sua velocità è passata alla 3."
+  },
+  {
+   "culture": "pt",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Parou de vez. Toda a velocidade passou para a 3."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Parou na hora. Toda a velocidade passou para a 3."
+  },
+  {
+   "culture": "ja",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "ピタッと止まった。速さはすべて3番へ。"
+  },
+  {
+   "culture": "ko",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "딱 멈췄어요. 속도가 모두 3번으로 갔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "完全停住了。它的速度全给了3号球。"
+  },
+  {
+   "culture": "ru",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "Встал как вкопанный. Вся скорость ушла в шар 3."
+  },
+  {
+   "culture": "ar",
+   "key": "It stopped dead. All of its speed went into the 3.",
+   "text": "توقفت تمامًا. ذهبت كل سرعتها إلى الكرة 3."
+  },
+  {
+   "culture": "es",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Golpea por encima del centro y la blanca sigue rodando tras la bola que mete."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Frappe au-dessus du centre et la blanche continue de rouler après la bille qu'elle empoche."
+  },
+  {
+   "culture": "de",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Triff über der Mitte, und die weiße Kugel rollt der versenkten Kugel hinterher."
+  },
+  {
+   "culture": "it",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Colpisci sopra il centro e la bianca continua a rotolare dopo la palla che imbuca."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Bate acima do centro e a branca continua a rolar atrás da bola que mete."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Bata acima do centro e a branca segue rolando atrás da bola que encaçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "中心より上を撞くと、手球は的球を沈めたあとも転がり続けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "중심보다 위를 치면 큐볼이 넣은 공을 따라 계속 굴러가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "击打中心上方，白球会在打进目标球后继续向前滚。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "Бей выше центра, и белый шар покатится дальше вслед за забитым."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike above centre and the cue ball rolls on after the ball it pots.",
+   "text": "اضرب فوق المركز فتواصل الكرة البيضاء التدحرج بعد الكرة التي تدخلها."
+  },
+  {
+   "culture": "es",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Mete la 3 y sigue rodando hasta el círculo marcado."
+  },
+  {
+   "culture": "fr",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Empoche la 3 et roule jusque dans le cercle marqué."
+  },
+  {
+   "culture": "de",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Versenke die 3 und rolle weiter in den markierten Kreis."
+  },
+  {
+   "culture": "it",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Imbuca la 3 e rotola fino al cerchio segnato."
+  },
+  {
+   "culture": "pt",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Mete a 3 e rola até ao círculo marcado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Encaçape a 3 e role até o círculo marcado."
+  },
+  {
+   "culture": "ja",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "3番を沈め、印の円まで転がそう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "3번을 넣고 표시된 원까지 굴러가세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "打进3号球，再滚进标出的圆圈。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "Забей 3 и докати белый до отмеченного круга."
+  },
+  {
+   "culture": "ar",
+   "key": "Pot the 3 and roll on into the marked circle.",
+   "text": "أدخل الكرة 3 وتابع التدحرج إلى الدائرة المحددة."
+  },
+  {
+   "culture": "es",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "En el golpe la blanca se para un instante, pero su efecto alto sigue girando. El efecto se agarra al paño y la empuja hacia delante hasta que rueda."
+  },
+  {
+   "culture": "fr",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "Au choc, la blanche s'arrête un instant, mais son effet haut tourne encore. L'effet accroche le tapis et la pousse en avant jusqu'à ce qu'elle roule."
+  },
+  {
+   "culture": "de",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "Beim Treffer steht die weiße Kugel einen Augenblick still, doch ihr Vorwärtseffet dreht noch. Der Effet greift ins Tuch und treibt sie vorwärts, bis sie rollt."
+  },
+  {
+   "culture": "it",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "All'urto la bianca si ferma per un istante, ma il suo effetto in avanti gira ancora. L'effetto fa presa sul panno e la spinge avanti finché rotola."
+  },
+  {
+   "culture": "pt",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "No impacto a branca para por um instante, mas o efeito de cima ainda gira. O efeito agarra o pano e empurra-a para a frente até rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "No impacto a branca para por um instante, mas o efeito de cima ainda gira. O efeito agarra no pano e a empurra para a frente até rolar."
+  },
+  {
+   "culture": "ja",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "当たった瞬間、手球は一瞬止まりますが、順回転はまだ続いています。その回転がクロスをつかみ、転がりになるまで前へ押し出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "맞는 순간 큐볼은 잠깐 멈추지만, 윗회전은 아직 돌고 있어요. 그 회전이 천을 붙잡아 구를 때까지 앞으로 밀어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "撞击时白球停顿一瞬，但上旋还在转。旋转抓住台呢，把它向前推，直到滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "При ударе белый шар на миг замирает, но верхнее вращение ещё крутится. Вращение цепляется за сукно и толкает его вперёд, пока он не покатится."
+  },
+  {
+   "culture": "ar",
+   "key": "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls.",
+   "text": "عند الضربة تتوقف الكرة البيضاء لحظة، لكن دورانها العلوي لا يزال مستمرًا. يمسك الدوران بالقماش ويدفعها إلى الأمام حتى تتدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "Siguió rodando. El efecto alto la llevó."
+  },
+  {
+   "culture": "fr",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "Elle a continué. L'effet haut l'a emportée."
+  },
+  {
+   "culture": "de",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "Weitergerollt. Der Vorwärtseffet hat sie getragen."
+  },
+  {
+   "culture": "it",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "È andata avanti. L'effetto in avanti l'ha portata."
+  },
+  {
+   "culture": "pt",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "Seguiu em frente. O efeito de cima levou-a."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "Seguiu em frente. O efeito de cima a levou."
+  },
+  {
+   "culture": "ja",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "転がり続けた。順回転が運んでくれた。"
+  },
+  {
+   "culture": "ko",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "계속 굴러갔어요. 윗회전이 밀어 줬어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "继续向前滚了。是上旋带着它走。"
+  },
+  {
+   "culture": "ru",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "Покатился дальше. Его пронесло верхнее вращение."
+  },
+  {
+   "culture": "ar",
+   "key": "Rolled on. The topspin carried it through.",
+   "text": "تابعت التدحرج. حملها الدوران العلوي."
+  },
+  {
+   "culture": "es",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Golpea por debajo del centro y la blanca vuelve hacia ti tras meter la bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Frappe sous le centre et la blanche revient vers toi après l'empochage."
+  },
+  {
+   "culture": "de",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Triff unter der Mitte, und die weiße Kugel kommt nach dem Versenken zu dir zurück."
+  },
+  {
+   "culture": "it",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Colpisci sotto il centro e la bianca torna verso di te dopo l'imbucata."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Bate abaixo do centro e a branca volta para ti depois de meter a bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Bata abaixo do centro e a branca volta na sua direção depois de encaçapar."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "中心より下を撞くと、的球を沈めたあと手球が手前に戻ってきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "중심보다 아래를 치면 공을 넣은 뒤 큐볼이 내 쪽으로 돌아와요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "击打中心下方，打进后白球会朝你退回来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "Бей ниже центра, и после забитого шара белый вернётся к тебе."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike below centre and the cue ball comes back toward you after the pot.",
+   "text": "اضرب أسفل المركز فتعود الكرة البيضاء نحوك بعد إدخال الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Mete la 3 y trae la blanca de vuelta al círculo marcado."
+  },
+  {
+   "culture": "fr",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Empoche la 3 et ramène la blanche dans le cercle marqué."
+  },
+  {
+   "culture": "de",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Versenke die 3 und hole die weiße Kugel in den markierten Kreis zurück."
+  },
+  {
+   "culture": "it",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Imbuca la 3 e riporta la bianca nel cerchio segnato."
+  },
+  {
+   "culture": "pt",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Mete a 3 e traz a branca de volta ao círculo marcado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Encaçape a 3 e traga a branca de volta ao círculo marcado."
+  },
+  {
+   "culture": "ja",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "3番を沈め、手球を印の円まで戻そう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "3번을 넣고 큐볼을 표시된 원으로 되돌리세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "打进3号球，把白球拉回标出的圆圈。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "Забей 3 и верни белый шар в отмеченный круг."
+  },
+  {
+   "culture": "ar",
+   "key": "Pot the 3 and bring the cue ball back into the marked circle.",
+   "text": "أدخل الكرة 3 وأعد الكرة البيضاء إلى الدائرة المحددة."
+  },
+  {
+   "culture": "es",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "Golpeada abajo, la blanca aún lleva efecto de retroceso al golpear. Se para un instante y luego el efecto se agarra al paño y la hace volver hasta que rueda."
+  },
+  {
+   "culture": "fr",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "Frappée bas, la blanche porte encore de l'effet rétro au moment du choc. Elle s'arrête un instant, puis l'effet accroche le tapis et la ramène jusqu'à ce qu'elle roule."
+  },
+  {
+   "culture": "de",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "Unten getroffen, hat die weiße Kugel beim Treffer noch Rückwärtseffet. Sie steht einen Augenblick, dann greift der Effet ins Tuch und zieht sie zurück, bis sie rollt."
+  },
+  {
+   "culture": "it",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "Colpita in basso, la bianca porta ancora effetto indietro all'urto. Si ferma per un istante, poi l'effetto fa presa sul panno e la tira indietro finché rotola."
+  },
+  {
+   "culture": "pt",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "Batida em baixo, a branca ainda leva efeito de recuo quando bate. Para por um instante e depois o efeito agarra o pano e puxa-a para trás até rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "Batida embaixo, a branca ainda leva efeito de recuo quando bate. Para por um instante e então o efeito agarra no pano e a puxa de volta até rolar."
+  },
+  {
+   "culture": "ja",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "下を撞くと、手球は当たる時もまだ逆回転を持っています。一瞬止まったあと、逆回転がクロスをつかみ、転がりになるまで手前へ引き戻します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "아래를 치면 큐볼은 맞을 때도 아직 백스핀을 갖고 있어요. 잠깐 멈췄다가 백스핀이 천을 붙잡아 구를 때까지 뒤로 끌어당겨요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "击打下方，白球撞击时仍带着下旋。它停顿一瞬，然后下旋抓住台呢，把它往回拉，直到滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "После удара внизу белый шар при столкновении ещё несёт обратное вращение. Он на миг замирает, потом вращение цепляется за сукно и тянет его назад, пока он не покатится."
+  },
+  {
+   "culture": "ar",
+   "key": "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls.",
+   "text": "عند ضربها من الأسفل، تظل الكرة البيضاء تحمل دورانًا خلفيًا عند الاصطدام. تتوقف لحظة، ثم يمسك الدوران بالقماش ويسحبها إلى الخلف حتى تتدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Volvió. El retroceso hizo el trabajo."
+  },
+  {
+   "culture": "fr",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Revenue. L'effet rétro l'a tirée."
+  },
+  {
+   "culture": "de",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Zurückgezogen. Der Rückwärtseffet hat gezogen."
+  },
+  {
+   "culture": "it",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Tornata indietro. L'effetto indietro l'ha tirata."
+  },
+  {
+   "culture": "pt",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Voltou. O efeito de recuo puxou-a."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Voltou. O efeito de recuo a puxou."
+  },
+  {
+   "culture": "ja",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "戻ってきた。逆回転が引き戻した。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "돌아왔어요. 백스핀이 끌어당겼어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "拉回来了。是下旋在拉。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "Вернулся. Его потянуло обратное вращение."
+  },
+  {
+   "culture": "ar",
+   "key": "Drawn back. The backspin did the pulling.",
+   "text": "عادت. الدوران الخلفي هو الذي سحبها."
+  },
+  {
+   "culture": "es",
+   "key": "Cut and throw",
+   "text": "Corte y arrastre"
+  },
+  {
+   "culture": "fr",
+   "key": "Cut and throw",
+   "text": "Coupe et effet de jet"
+  },
+  {
+   "culture": "de",
+   "key": "Cut and throw",
+   "text": "Schnitt und Mitnahme"
+  },
+  {
+   "culture": "it",
+   "key": "Cut and throw",
+   "text": "Taglio e trascinamento"
+  },
+  {
+   "culture": "pt",
+   "key": "Cut and throw",
+   "text": "Corte e arrasto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut and throw",
+   "text": "Corte e arrasto"
+  },
+  {
+   "culture": "ja",
+   "key": "Cut and throw",
+   "text": "カットとスロー"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut and throw",
+   "text": "컷과 스로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut and throw",
+   "text": "切球与偏移"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut and throw",
+   "text": "Срез и увод"
+  },
+  {
+   "culture": "ar",
+   "key": "Cut and throw",
+   "text": "القطع والانحراف"
+  },
+  {
+   "culture": "es",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Golpea la bola fuera del centro para mandarla en ángulo a la tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Touche la bille sur le côté pour l'envoyer en biais dans la poche."
+  },
+  {
+   "culture": "de",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Triff die Kugel seitlich, um sie schräg ins Loch zu schicken."
+  },
+  {
+   "culture": "it",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Colpisci la palla di lato per mandarla in buca con un angolo."
+  },
+  {
+   "culture": "pt",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Bate na bola fora do centro para a mandar em ângulo para o buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Acerte a bola fora do centro para mandá-la em ângulo para a caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "的球の中心を外して当て、角度をつけてポケットへ送ろう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "공의 중심을 비껴 맞혀 비스듬히 포켓에 보내세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "偏离中心击打目标球，让它斜着进袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "Ударь шар не по центру, чтобы отправить его в лузу под углом."
+  },
+  {
+   "culture": "ar",
+   "key": "Hit the ball off-centre to send it off at an angle into the pocket.",
+   "text": "اضرب الكرة بعيدًا عن مركزها لترسلها بزاوية إلى الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Corta la 3 a la esquina superior derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Coupe la 3 dans le coin en haut à droite."
+  },
+  {
+   "culture": "de",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Schneide die 3 ins Eckloch oben rechts."
+  },
+  {
+   "culture": "it",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Taglia la 3 nell'angolo in alto a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Corta a 3 para o canto superior direito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Corte a 3 para o canto superior direito."
+  },
+  {
+   "culture": "ja",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "3番を右上のコーナーへカットしよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "3번을 오른쪽 위 코너로 컷하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "把3号球切进右上角袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "Срежь шар 3 в правую верхнюю угловую лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "Cut the 3 into the top-right corner.",
+   "text": "اقطع الكرة 3 إلى الزاوية العلوية اليمنى."
+  },
+  {
+   "culture": "es",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "La 3 sale por la línea que une los dos centros en el contacto. El roce allí la arrastra un poco en la dirección de la blanca, así que corta un pelo más fino de lo que dice la línea."
+  },
+  {
+   "culture": "fr",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "La 3 part selon la ligne qui joint les deux centres au contact. Le frottement l'entraîne un peu dans le sens de la blanche, donc coupe un poil plus fin que ce que dit la ligne."
+  },
+  {
+   "culture": "de",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "Die 3 läuft entlang der Linie durch beide Mittelpunkte beim Kontakt. Die Reibung dort zieht sie ein wenig in die Laufrichtung der weißen Kugel, also schneide einen Hauch dünner, als die Linie sagt."
+  },
+  {
+   "culture": "it",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "La 3 parte lungo la linea che unisce i due centri al contatto. L'attrito la trascina un po' nella direzione della bianca, quindi taglia un filo più sottile di quanto dice la linea."
+  },
+  {
+   "culture": "pt",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "A 3 sai pela linha que une os dois centros no contacto. O atrito arrasta-a um pouco no sentido da branca, por isso corta um pouco mais fino do que a linha diz."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "A 3 sai pela linha que une os dois centros no contato. O atrito a arrasta um pouco no sentido da branca, então corte um pouco mais fino do que a linha diz."
+  },
+  {
+   "culture": "ja",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "3番は当たった瞬間の2つの中心を結ぶ線に沿って出ていきます。そこでの摩擦が手球の進む向きへ少し引きずるので、線が示すより少し薄めにカットしよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "3번은 맞는 순간 두 공의 중심을 잇는 선을 따라 나가요. 거기서 생기는 마찰이 큐볼이 가는 쪽으로 조금 끌고 가니, 선보다 살짝 더 얇게 컷하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "3号球沿接触时两球中心的连线出去。那里的摩擦会把它向白球前进的方向带偏一点，所以要比连线所示切得薄一点。"
+  },
+  {
+   "culture": "ru",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "Шар 3 уходит по линии через оба центра в момент касания. Трение там немного тянет его по ходу белого, поэтому режь чуть тоньше, чем показывает линия."
+  },
+  {
+   "culture": "ar",
+   "key": "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says.",
+   "text": "تنطلق الكرة 3 على الخط الواصل بين المركزين لحظة التلامس. يسحبها الاحتكاك هناك قليلًا في اتجاه مسار الكرة البيضاء، لذا اقطع أرفع قليلًا مما يقوله الخط."
+  },
+  {
+   "culture": "es",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Dentro con corte. Contaste con el arrastre."
+  },
+  {
+   "culture": "fr",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Coupée et empochée. Tu as compté avec l'effet de jet."
+  },
+  {
+   "culture": "de",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Geschnitten und drin. Du hast die Mitnahme eingerechnet."
+  },
+  {
+   "culture": "it",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Tagliata e dentro. Hai tenuto conto del trascinamento."
+  },
+  {
+   "culture": "pt",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Cortada e dentro. Contaste com o arrasto."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Cortada e dentro. Você contou com o arrasto."
+  },
+  {
+   "culture": "ja",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "カットで沈めた。スローを見込めていた。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "컷으로 넣었어요. 스로까지 계산했어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "切进了。你算上了偏移。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "Срезал в лузу. Ты учёл увод."
+  },
+  {
+   "culture": "ar",
+   "key": "Cut in. You allowed for the throw.",
+   "text": "دخلت بالقطع. لقد حسبت حساب الانحراف."
+  },
+  {
+   "culture": "es",
+   "key": "Curve",
+   "text": "Curva"
+  },
+  {
+   "culture": "fr",
+   "key": "Curve",
+   "text": "Courbe"
+  },
+  {
+   "culture": "de",
+   "key": "Curve",
+   "text": "Kurve"
+  },
+  {
+   "culture": "it",
+   "key": "Curve",
+   "text": "Curva"
+  },
+  {
+   "culture": "pt",
+   "key": "Curve",
+   "text": "Curva"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Curve",
+   "text": "Curva"
+  },
+  {
+   "culture": "ja",
+   "key": "Curve",
+   "text": "カーブ"
+  },
+  {
+   "culture": "ko",
+   "key": "Curve",
+   "text": "커브"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Curve",
+   "text": "弧线"
+  },
+  {
+   "culture": "ru",
+   "key": "Curve",
+   "text": "Кривая"
+  },
+  {
+   "culture": "ar",
+   "key": "Curve",
+   "text": "المنحنى"
+  },
+  {
+   "culture": "es",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Levanta el taco y golpea de lado: la blanca se curva alrededor de una bola que le estorba."
+  },
+  {
+   "culture": "fr",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Lève la queue et frappe sur le côté : la blanche contourne en courbe une bille qui la gêne."
+  },
+  {
+   "culture": "de",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Heb das Queue und triff seitlich: Die weiße Kugel biegt um eine Kugel im Weg herum."
+  },
+  {
+   "culture": "it",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Alza la stecca e colpisci di lato: la bianca curva attorno a una palla che la blocca."
+  },
+  {
+   "culture": "pt",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Levanta o taco e bate de lado: a branca curva à volta de uma bola no caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Levante o taco e bata de lado: a branca faz a curva em volta de uma bola no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "キューを立てて横を撞くと、手球は邪魔な球をよけて曲がります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "큐를 세우고 옆을 치면 큐볼이 길을 막은 공을 돌아 휘어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "抬起球杆击打一侧，白球会绕过挡路的球拐弯。"
+  },
+  {
+   "culture": "ru",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "Подними кий и ударь сбоку: белый шар обогнёт шар на пути."
+  },
+  {
+   "culture": "ar",
+   "key": "Raise the cue and hit to one side: the cue ball bends round a ball in its way.",
+   "text": "ارفع العصا واضرب من جانب: تنحني الكرة البيضاء حول كرة تعترض طريقها."
+  },
+  {
+   "culture": "es",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Curva alrededor de la 4 y toca primero la 9."
+  },
+  {
+   "culture": "fr",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Contourne la 4 et touche d'abord la 9."
+  },
+  {
+   "culture": "de",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Biege um die 4 herum und triff zuerst die 9."
+  },
+  {
+   "culture": "it",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Curva attorno alla 4 e tocca per prima la 9."
+  },
+  {
+   "culture": "pt",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Curva à volta da 4 e toca primeiro na 9."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Faça a curva em volta da 4 e toque primeiro na 9."
+  },
+  {
+   "culture": "ja",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "4番をよけて曲げ、最初に9番に当てよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "4번을 돌아 휘어서 9번을 먼저 맞히세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "绕过4号球，先碰到9号球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "Обогни шар 4 и первым коснись шара 9."
+  },
+  {
+   "culture": "ar",
+   "key": "Curve round the 4 and touch the 9 first.",
+   "text": "انحنِ حول الكرة 4 والمس الكرة 9 أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Con el taco levantado y golpeando a la derecha del centro, la blanca gira sobre un eje inclinado. Mientras desliza, el paño empuja de lado ese giro y la trayectoria se curva. En cuanto rueda, va recta."
+  },
+  {
+   "culture": "fr",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Queue levée et frappée à droite du centre, la blanche tourne sur un axe incliné. Tant qu'elle glisse, le tapis pousse de côté sur cette rotation et la trajectoire se courbe. Dès qu'elle roule, elle va droit."
+  },
+  {
+   "culture": "de",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Mit gehobenem Queue rechts der Mitte getroffen, dreht sich die weiße Kugel um eine schräge Achse. Solange sie rutscht, drückt das Tuch seitlich gegen diesen Drall und die Bahn biegt sich. Sobald sie rollt, läuft sie gerade."
+  },
+  {
+   "culture": "it",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Con la stecca alzata e colpita a destra del centro, la bianca gira su un asse inclinato. Mentre scivola, il panno spinge di lato su quella rotazione e la traiettoria curva. Appena rotola, va dritta."
+  },
+  {
+   "culture": "pt",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Com o taco levantado e batida à direita do centro, a branca gira num eixo inclinado. Enquanto desliza, o pano empurra de lado esse giro e a trajetória curva. Assim que rola, segue a direito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Com o taco levantado e batida à direita do centro, a branca gira num eixo inclinado. Enquanto desliza, o pano empurra de lado esse giro e a trajetória faz curva. Assim que rola, segue reta."
+  },
+  {
+   "culture": "ja",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "キューを立てて中心の右を撞くと、手球は傾いた軸で回ります。滑っている間、クロスがその回転を横に押して進路が曲がります。転がり始めるとまっすぐ進みます。"
+  },
+  {
+   "culture": "ko",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "큐를 세우고 중심 오른쪽을 치면 큐볼이 기울어진 축으로 돌아요. 미끄러지는 동안 천이 그 회전을 옆으로 밀어 길이 휘고, 구르기 시작하면 곧게 가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "抬杆击打中心右侧，白球绕倾斜的轴旋转。滑动时，台呢从侧面推这个旋转，路线就弯了。一旦滚动，它就走直线。"
+  },
+  {
+   "culture": "ru",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "Поднятый кий и удар правее центра закручивают белый шар вокруг наклонной оси. Пока он скользит, сукно толкает это вращение вбок, и путь изгибается. Как только он катится, идёт прямо."
+  },
+  {
+   "culture": "ar",
+   "key": "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight.",
+   "text": "العصا المرفوعة عند الضرب يمين المركز تدير الكرة البيضاء حول محور مائل. وما دامت تنزلق، يدفع القماش هذا الدوران جانبًا فينحني المسار. وحين تتدحرج، تسير مستقيمة."
+  },
+  {
+   "culture": "es",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Curvada alrededor de la 4. Eso es una curva."
+  },
+  {
+   "culture": "fr",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Contournée autour de la 4. Voilà une courbe."
+  },
+  {
+   "culture": "de",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Um die 4 gebogen. Das ist eine Kurve."
+  },
+  {
+   "culture": "it",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Curvata attorno alla 4. Questa è una curva."
+  },
+  {
+   "culture": "pt",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Curvou à volta da 4. Isso é uma curva."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Fez a curva em volta da 4. Isso é uma curva."
+  },
+  {
+   "culture": "ja",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "4番をよけて曲がった。これがカーブだ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "4번을 돌아 휘었어요. 이게 커브예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "绕过了4号球。这就是弧线。"
+  },
+  {
+   "culture": "ru",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "Обогнул шар 4. Вот это кривая."
+  },
+  {
+   "culture": "ar",
+   "key": "Bent round the 4. That is a curve.",
+   "text": "انحنت حول الكرة 4. هذا هو المنحنى."
+  },
+  {
+   "culture": "es",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Levanta mucho el taco y la blanca salta por encima de una bola que le estorba."
+  },
+  {
+   "culture": "fr",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Lève franchement la queue et la blanche saute par-dessus une bille qui la gêne."
+  },
+  {
+   "culture": "de",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Heb das Queue steil an, und die weiße Kugel hüpft über eine Kugel im Weg."
+  },
+  {
+   "culture": "it",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Alza molto la stecca e la bianca salta sopra una palla che la blocca."
+  },
+  {
+   "culture": "pt",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Levanta bem o taco e a branca salta por cima de uma bola no caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Levante bem o taco e a branca pula por cima de uma bola no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "キューを大きく立てると、手球は邪魔な球を飛び越えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "큐를 높이 세우면 큐볼이 길을 막은 공을 뛰어넘어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "把球杆抬得很陡，白球就会跳过挡路的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "Подними кий круто, и белый шар перепрыгнет шар на пути."
+  },
+  {
+   "culture": "ar",
+   "key": "Raise the cue steeply and the cue ball hops over a ball in its way.",
+   "text": "ارفع العصا بزاوية حادة فتقفز الكرة البيضاء فوق كرة تعترض طريقها."
+  },
+  {
+   "culture": "es",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Salta la 6 y toca primero la 11."
+  },
+  {
+   "culture": "fr",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Saute la 6 et touche d'abord la 11."
+  },
+  {
+   "culture": "de",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Spring über die 6 und triff zuerst die 11."
+  },
+  {
+   "culture": "it",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Salta la 6 e tocca per prima la 11."
+  },
+  {
+   "culture": "pt",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Salta a 6 e toca primeiro na 11."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Pule a 6 e toque primeiro na 11."
+  },
+  {
+   "culture": "ja",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "6番を飛び越え、最初に11番に当てよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "6번을 뛰어넘어 11번을 먼저 맞히세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "跳过6号球，先碰到11号球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "Перепрыгни шар 6 и первым коснись шара 11."
+  },
+  {
+   "culture": "ar",
+   "key": "Jump the 6 and touch the 11 first.",
+   "text": "اقفز فوق الكرة 6 والمس الكرة 11 أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "El taco levantado clava la blanca contra la pizarra, y la pizarra la lanza hacia arriba. Vuela sobre la 6 y cae al otro lado."
+  },
+  {
+   "culture": "fr",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "La queue levée enfonce la blanche dans l'ardoise, et l'ardoise la renvoie vers le haut. Elle vole au-dessus de la 6 et retombe derrière."
+  },
+  {
+   "culture": "de",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "Das gehobene Queue drückt die weiße Kugel in die Schieferplatte, und die Platte wirft sie hoch. Sie fliegt über die 6 und landet dahinter."
+  },
+  {
+   "culture": "it",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "La stecca alzata spinge la bianca contro l'ardesia, e l'ardesia la lancia in alto. Vola sopra la 6 e atterra oltre."
+  },
+  {
+   "culture": "pt",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "O taco levantado empurra a branca contra a ardósia, e a ardósia atira-a para cima. Voa por cima da 6 e cai do outro lado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "O taco levantado empurra a branca contra a ardósia, e a ardósia a lança para cima. Ela voa sobre a 6 e cai do outro lado."
+  },
+  {
+   "culture": "ja",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "立てたキューが手球をスレートに押しつけ、スレートが手球を跳ね上げます。6番の上を飛び越え、その先に着地します。"
+  },
+  {
+   "culture": "ko",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "세운 큐가 큐볼을 슬레이트로 내리누르면 슬레이트가 공을 튀어 올려요. 6번 위를 날아 넘어가 그 너머에 떨어져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "抬起的球杆把白球压向石板，石板再把它弹起。它飞过6号球，落在后面。"
+  },
+  {
+   "culture": "ru",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "Поднятый кий вдавливает белый шар в плиту, и плита подбрасывает его. Он перелетает шар 6 и приземляется за ним."
+  },
+  {
+   "culture": "ar",
+   "key": "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it.",
+   "text": "العصا المرفوعة تدفع الكرة البيضاء نحو اللوح الحجري، فيقذفها اللوح إلى الأعلى. تطير فوق الكرة 6 وتهبط بعدها."
+  },
+  {
+   "culture": "es",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Parada en seco desde más atrás. Cambiaste la altura del golpe en vez de copiar la lección."
+  },
+  {
+   "culture": "fr",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Arrêt net de plus loin. Tu as changé la hauteur de frappe au lieu de copier la leçon."
+  },
+  {
+   "culture": "de",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Gestoppt aus größerer Entfernung. Du hast die Treffhöhe geändert, statt die Lektion zu kopieren."
+  },
+  {
+   "culture": "it",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Fermata di colpo da più lontano. Hai cambiato l'altezza del colpo invece di copiare la lezione."
+  },
+  {
+   "culture": "pt",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Parou de vez mais de trás. Mudaste a altura da tacada em vez de copiar a lição."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Parou na hora mais de trás. Você mudou a altura da tacada em vez de copiar a lição."
+  },
+  {
+   "culture": "ja",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "もっと後ろからでもピタッと止めた。レッスンをまねるのではなく、撞く高さを変えたね。"
+  },
+  {
+   "culture": "ko",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "더 뒤에서도 딱 멈췄어요. 레슨을 따라 하지 않고 치는 높이를 바꿨어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "从更远处也停住了。你改变了击球高度，而不是照搬课程。"
+  },
+  {
+   "culture": "ru",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "Остановил и с большего расстояния. Ты изменил высоту удара, а не скопировал урок."
+  },
+  {
+   "culture": "ar",
+   "key": "Stopped dead from further back. You changed the tip height instead of copying the lesson.",
+   "text": "توقفت تمامًا من مسافة أبعد. غيّرت ارتفاع الضربة بدل نسخ الدرس."
+  },
+  {
+   "culture": "es",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Levanta más el taco. Con el taco plano no se puede."
+  },
+  {
+   "culture": "fr",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Lève davantage la queue. Avec une queue à plat, c'est impossible."
+  },
+  {
+   "culture": "de",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Heb das Queue höher. Mit flachem Queue geht das nicht."
+  },
+  {
+   "culture": "it",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Alza di più la stecca. Con la stecca piatta non si può."
+  },
+  {
+   "culture": "pt",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Levanta mais o taco. Com o taco nivelado não dá."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Levante mais o taco. Com o taco nivelado não dá."
+  },
+  {
+   "culture": "ja",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "キューをもっと立てよう。水平のキューではできません。"
+  },
+  {
+   "culture": "ko",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "큐를 더 세우세요. 수평 큐로는 안 돼요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "把球杆再抬高些。平杆做不到。"
+  },
+  {
+   "culture": "ru",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "Подними кий выше. Ровным кием так не выйдет."
+  },
+  {
+   "culture": "ar",
+   "key": "Raise the cue more. A level cue cannot do this one.",
+   "text": "ارفع العصا أكثر. العصا الأفقية لا تقدر على هذه."
+  },
+  {
+   "culture": "es",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "El taco está demasiado inclinado. Bájalo un poco."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "La queue est trop inclinée. Baisse-la un peu."
+  },
+  {
+   "culture": "de",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "Das Queue ist zu steil. Senk es ein wenig."
+  },
+  {
+   "culture": "it",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "La stecca è troppo inclinata. Abbassala un po'."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "O taco está inclinado demais. Baixa-o um pouco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "O taco está inclinado demais. Abaixe um pouco."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "キューが立ちすぎ。少し下げよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "큐가 너무 가팔라요. 조금 낮추세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "球杆太陡了。放低一点。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "Кий слишком крутой. Опусти его немного."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue is too steep. Lower it a little.",
+   "text": "العصا مائلة أكثر من اللازم. اخفضها قليلًا."
+  },
+  {
+   "culture": "es",
+   "key": "Sets up the lesson on the table",
+   "text": "Prepara la lección en la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Sets up the lesson on the table",
+   "text": "Installe la leçon sur la table"
+  },
+  {
+   "culture": "de",
+   "key": "Sets up the lesson on the table",
+   "text": "Baut die Lektion auf dem Tisch auf"
+  },
+  {
+   "culture": "it",
+   "key": "Sets up the lesson on the table",
+   "text": "Prepara la lezione sul tavolo"
+  },
+  {
+   "culture": "pt",
+   "key": "Sets up the lesson on the table",
+   "text": "Prepara a lição na mesa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Sets up the lesson on the table",
+   "text": "Prepara a lição na mesa"
+  },
+  {
+   "culture": "ja",
+   "key": "Sets up the lesson on the table",
+   "text": "レッスンを台に並べます"
+  },
+  {
+   "culture": "ko",
+   "key": "Sets up the lesson on the table",
+   "text": "테이블에 레슨을 준비해요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Sets up the lesson on the table",
+   "text": "在球台上摆好这节课"
+  },
+  {
+   "culture": "ru",
+   "key": "Sets up the lesson on the table",
+   "text": "Расставляет урок на столе"
+  },
+  {
+   "culture": "ar",
+   "key": "Sets up the lesson on the table",
+   "text": "يجهّز الدرس على الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Mira cada lección, pruébala tres veces con menos ayuda cada vez y luego apruébala tú solo."
+  },
+  {
+   "culture": "fr",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Regarde chaque leçon, essaie-la trois fois avec de moins en moins d'aide, puis réussis-la seul."
+  },
+  {
+   "culture": "de",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Sieh dir jede Lektion an, versuch sie dreimal mit jedes Mal weniger Hilfe und besteh sie dann allein."
+  },
+  {
+   "culture": "it",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Guarda ogni lezione, provala tre volte con sempre meno aiuto, poi superala da solo."
+  },
+  {
+   "culture": "pt",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Vê cada lição, experimenta-a três vezes com cada vez menos ajuda e depois passa-a sozinho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Veja cada lição, tente três vezes com cada vez menos ajuda e depois passe nela sozinho."
+  },
+  {
+   "culture": "ja",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "各レッスンを見て、手助けを減らしながら3回試し、最後は自分だけで合格しよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "레슨마다 보고, 도움을 줄여 가며 세 번 해 본 다음, 혼자 통과하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "先看每节课，在帮助逐次减少的情况下试三次，然后独立通过。"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "Посмотри каждый урок, попробуй его трижды, каждый раз с меньшей помощью, а потом сдай сам."
+  },
+  {
+   "culture": "ar",
+   "key": "Watch each lesson, try it three times with less help each time, then pass it on your own.",
+   "text": "شاهد كل درس، وجرّبه ثلاث مرات بمساعدة أقل في كل مرة، ثم اجتزه بنفسك."
+  },
+  {
+   "culture": "es",
+   "key": "Lessons",
+   "text": "Lecciones"
+  },
+  {
+   "culture": "fr",
+   "key": "Lessons",
+   "text": "Leçons"
+  },
+  {
+   "culture": "de",
+   "key": "Lessons",
+   "text": "Lektionen"
+  },
+  {
+   "culture": "it",
+   "key": "Lessons",
+   "text": "Lezioni"
+  },
+  {
+   "culture": "pt",
+   "key": "Lessons",
+   "text": "Lições"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lessons",
+   "text": "Lições"
+  },
+  {
+   "culture": "ja",
+   "key": "Lessons",
+   "text": "レッスン"
+  },
+  {
+   "culture": "ko",
+   "key": "Lessons",
+   "text": "레슨"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lessons",
+   "text": "课程"
+  },
+  {
+   "culture": "ru",
+   "key": "Lessons",
+   "text": "Уроки"
+  },
+  {
+   "culture": "ar",
+   "key": "Lessons",
+   "text": "الدروس"
+  },
+  {
+   "culture": "es",
+   "key": "passed",
+   "text": "aprobada"
+  },
+  {
+   "culture": "fr",
+   "key": "passed",
+   "text": "réussie"
+  },
+  {
+   "culture": "de",
+   "key": "passed",
+   "text": "bestanden"
+  },
+  {
+   "culture": "it",
+   "key": "passed",
+   "text": "superata"
+  },
+  {
+   "culture": "pt",
+   "key": "passed",
+   "text": "concluída"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "passed",
+   "text": "concluída"
+  },
+  {
+   "culture": "ja",
+   "key": "passed",
+   "text": "合格"
+  },
+  {
+   "culture": "ko",
+   "key": "passed",
+   "text": "통과"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "passed",
+   "text": "已通过"
+  },
+  {
+   "culture": "ru",
+   "key": "passed",
+   "text": "пройден"
+  },
+  {
+   "culture": "ar",
+   "key": "passed",
+   "text": "مجتاز"
+  },
+  {
+   "culture": "es",
+   "key": "not passed yet",
+   "text": "aún no aprobada"
+  },
+  {
+   "culture": "fr",
+   "key": "not passed yet",
+   "text": "pas encore réussie"
+  },
+  {
+   "culture": "de",
+   "key": "not passed yet",
+   "text": "noch nicht bestanden"
+  },
+  {
+   "culture": "it",
+   "key": "not passed yet",
+   "text": "non ancora superata"
+  },
+  {
+   "culture": "pt",
+   "key": "not passed yet",
+   "text": "ainda não concluída"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "not passed yet",
+   "text": "ainda não concluída"
+  },
+  {
+   "culture": "ja",
+   "key": "not passed yet",
+   "text": "まだ合格していない"
+  },
+  {
+   "culture": "ko",
+   "key": "not passed yet",
+   "text": "아직 통과 못 함"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "not passed yet",
+   "text": "尚未通过"
+  },
+  {
+   "culture": "ru",
+   "key": "not passed yet",
+   "text": "ещё не пройден"
+  },
+  {
+   "culture": "ar",
+   "key": "not passed yet",
+   "text": "لم يُجتز بعد"
+  },
+  {
+   "culture": "es",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Lección %lld, %@, %@. %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Leçon %lld, %@, %@. %@"
+  },
+  {
+   "culture": "de",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Lektion %lld, %@, %@. %@"
+  },
+  {
+   "culture": "it",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Lezione %lld, %@, %@. %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Lição %lld, %@, %@. %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Lição %lld, %@, %@. %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "レッスン%lld、%@、%@。%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "레슨 %lld, %@, %@. %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "第%lld课，%@，%@。%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "Урок %lld, %@, %@. %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Lesson %lld, %@, %@. %@",
+   "text": "الدرس %lld، %@، %@. %@"
+  },
+  {
+   "culture": "es",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Muestra un ejemplo perfecto y luego lo ralentiza en la Lente de física"
+  },
+  {
+   "culture": "fr",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Joue un exemple parfait, puis le ralentit dans la Lentille physique"
+  },
+  {
+   "culture": "de",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Spielt ein perfektes Beispiel und zeigt es dann verlangsamt in der Physik-Lens"
+  },
+  {
+   "culture": "it",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Mostra un esempio perfetto, poi lo rallenta nella Lens di fisica"
+  },
+  {
+   "culture": "pt",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Mostra um exemplo perfeito e depois abranda-o na Lente de Física"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Mostra um exemplo perfeito e depois o desacelera na Lente de Física"
+  },
+  {
+   "culture": "ja",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "お手本を見せ、そのあと物理レンズでスローにします"
+  },
+  {
+   "culture": "ko",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "완벽한 예시를 보여 준 뒤 물리 렌즈에서 느리게 보여 줘요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "播放一个完美示范，然后在物理透镜里放慢"
+  },
+  {
+   "culture": "ru",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "Показывает идеальный пример, затем замедляет его в Физической линзе"
+  },
+  {
+   "culture": "ar",
+   "key": "Plays a perfect example, then slows it down in the Physics Lens",
+   "text": "يعرض مثالًا مثاليًا، ثم يبطئه في عدسة الفيزياء"
+  },
+  {
+   "culture": "es",
+   "key": "Watch a perfect example. %@",
+   "text": "Mira un ejemplo perfecto. %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch a perfect example. %@",
+   "text": "Regarde un exemple parfait. %@"
+  },
+  {
+   "culture": "de",
+   "key": "Watch a perfect example. %@",
+   "text": "Sieh dir ein perfektes Beispiel an. %@"
+  },
+  {
+   "culture": "it",
+   "key": "Watch a perfect example. %@",
+   "text": "Guarda un esempio perfetto. %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch a perfect example. %@",
+   "text": "Vê um exemplo perfeito. %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch a perfect example. %@",
+   "text": "Veja um exemplo perfeito. %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch a perfect example. %@",
+   "text": "お手本を見よう。%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch a perfect example. %@",
+   "text": "완벽한 예시를 보세요. %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch a perfect example. %@",
+   "text": "看一个完美示范。%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch a perfect example. %@",
+   "text": "Посмотри идеальный пример. %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch a perfect example. %@",
+   "text": "شاهد مثالًا مثاليًا. %@"
+  },
+  {
+   "culture": "es",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Ahora a cámara lenta en la Lente de física. Se detiene en el momento clave."
+  },
+  {
+   "culture": "fr",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Maintenant ralenti dans la Lentille physique. Il s'arrête sur le moment qui compte."
+  },
+  {
+   "culture": "de",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Jetzt verlangsamt in der Physik-Lens. Es hält im entscheidenden Moment an."
+  },
+  {
+   "culture": "it",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Ora rallentato nella Lens di fisica. Si ferma sul momento che conta."
+  },
+  {
+   "culture": "pt",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Agora em câmara lenta na Lente de Física. Para no momento que interessa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Agora em câmera lenta na Lente de Física. Para no momento que importa."
+  },
+  {
+   "culture": "ja",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "今度は物理レンズでスロー再生。大事な瞬間で止まります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "이제 물리 렌즈에서 느리게 봐요. 중요한 순간에 멈춰요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "现在在物理透镜中慢放。它会停在关键时刻。"
+  },
+  {
+   "culture": "ru",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "Теперь замедленно в Физической линзе. Остановится в главный момент."
+  },
+  {
+   "culture": "ar",
+   "key": "Now slowed down in the Physics Lens. It stops on the moment that matters.",
+   "text": "الآن بالحركة البطيئة في عدسة الفيزياء. سيتوقف عند اللحظة المهمة."
+  },
+  {
+   "culture": "es",
+   "key": "Lesson passed",
+   "text": "Lección aprobada"
+  },
+  {
+   "culture": "fr",
+   "key": "Lesson passed",
+   "text": "Leçon réussie"
+  },
+  {
+   "culture": "de",
+   "key": "Lesson passed",
+   "text": "Lektion bestanden"
+  },
+  {
+   "culture": "it",
+   "key": "Lesson passed",
+   "text": "Lezione superata"
+  },
+  {
+   "culture": "pt",
+   "key": "Lesson passed",
+   "text": "Lição concluída"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lesson passed",
+   "text": "Lição concluída"
+  },
+  {
+   "culture": "ja",
+   "key": "Lesson passed",
+   "text": "レッスン合格"
+  },
+  {
+   "culture": "ko",
+   "key": "Lesson passed",
+   "text": "레슨 통과"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lesson passed",
+   "text": "课程通过"
+  },
+  {
+   "culture": "ru",
+   "key": "Lesson passed",
+   "text": "Урок пройден"
+  },
+  {
+   "culture": "ar",
+   "key": "Lesson passed",
+   "text": "اجتزت الدرس"
+  },
+  {
+   "culture": "es",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "El tiro de truco %@ se basa en esta idea."
+  },
+  {
+   "culture": "fr",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "Le coup spectaculaire %@ repose sur cette idée."
+  },
+  {
+   "culture": "de",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "Der Trickstoß %@ baut auf dieser Idee auf."
+  },
+  {
+   "culture": "it",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "Il colpo spettacolare %@ si basa su questa idea."
+  },
+  {
+   "culture": "pt",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "A jogada de efeito %@ assenta nesta ideia."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "A tacada de efeito %@ se baseia nesta ideia."
+  },
+  {
+   "culture": "ja",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "トリックショット「%@」はこの考え方でできています。"
+  },
+  {
+   "culture": "ko",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "트릭 샷 '%@'은 이 원리로 만들어졌어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "花式球“%@”就建立在这个道理上。"
+  },
+  {
+   "culture": "ru",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "Трюковой удар «%@» построен на этой идее."
+  },
+  {
+   "culture": "ar",
+   "key": "The trick shot %@ is built on this idea.",
+   "text": "ضربة الخدعة «%@» مبنية على هذه الفكرة."
+  },
+  {
+   "culture": "es",
+   "key": "The same pot with the cue ball further back",
+   "text": "La misma bola con la blanca más atrás"
+  },
+  {
+   "culture": "fr",
+   "key": "The same pot with the cue ball further back",
+   "text": "La même bille avec la blanche plus en arrière"
+  },
+  {
+   "culture": "de",
+   "key": "The same pot with the cue ball further back",
+   "text": "Derselbe Stoß mit der weißen Kugel weiter hinten"
+  },
+  {
+   "culture": "it",
+   "key": "The same pot with the cue ball further back",
+   "text": "Lo stesso tiro con la bianca più indietro"
+  },
+  {
+   "culture": "pt",
+   "key": "The same pot with the cue ball further back",
+   "text": "A mesma bola com a branca mais atrás"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The same pot with the cue ball further back",
+   "text": "A mesma bola com a branca mais atrás"
+  },
+  {
+   "culture": "ja",
+   "key": "The same pot with the cue ball further back",
+   "text": "手球をもっと後ろに置いた同じショット"
+  },
+  {
+   "culture": "ko",
+   "key": "The same pot with the cue ball further back",
+   "text": "큐볼을 더 뒤에 둔 같은 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The same pot with the cue ball further back",
+   "text": "同样的进球，白球放得更远"
+  },
+  {
+   "culture": "ru",
+   "key": "The same pot with the cue ball further back",
+   "text": "Тот же удар, белый шар дальше"
+  },
+  {
+   "culture": "ar",
+   "key": "The same pot with the cue ball further back",
+   "text": "الضربة نفسها والكرة البيضاء أبعد إلى الخلف"
+  },
+  {
+   "culture": "es",
+   "key": "Try the trick shot",
+   "text": "Prueba el tiro de truco"
+  },
+  {
+   "culture": "fr",
+   "key": "Try the trick shot",
+   "text": "Essaie le coup spectaculaire"
+  },
+  {
+   "culture": "de",
+   "key": "Try the trick shot",
+   "text": "Versuch den Trickstoß"
+  },
+  {
+   "culture": "it",
+   "key": "Try the trick shot",
+   "text": "Prova il colpo spettacolare"
+  },
+  {
+   "culture": "pt",
+   "key": "Try the trick shot",
+   "text": "Experimenta a jogada de efeito"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Try the trick shot",
+   "text": "Tente a tacada de efeito"
+  },
+  {
+   "culture": "ja",
+   "key": "Try the trick shot",
+   "text": "トリックショットに挑戦"
+  },
+  {
+   "culture": "ko",
+   "key": "Try the trick shot",
+   "text": "트릭 샷 해 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Try the trick shot",
+   "text": "试试这个花式球"
+  },
+  {
+   "culture": "ru",
+   "key": "Try the trick shot",
+   "text": "Попробуй трюковой удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Try the trick shot",
+   "text": "جرّب ضربة الخدعة"
+  },
+  {
+   "culture": "es",
+   "key": "Next lesson",
+   "text": "Siguiente lección"
+  },
+  {
+   "culture": "fr",
+   "key": "Next lesson",
+   "text": "Leçon suivante"
+  },
+  {
+   "culture": "de",
+   "key": "Next lesson",
+   "text": "Nächste Lektion"
+  },
+  {
+   "culture": "it",
+   "key": "Next lesson",
+   "text": "Lezione successiva"
+  },
+  {
+   "culture": "pt",
+   "key": "Next lesson",
+   "text": "Lição seguinte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Next lesson",
+   "text": "Próxima lição"
+  },
+  {
+   "culture": "ja",
+   "key": "Next lesson",
+   "text": "次のレッスン"
+  },
+  {
+   "culture": "ko",
+   "key": "Next lesson",
+   "text": "다음 레슨"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Next lesson",
+   "text": "下一课"
+  },
+  {
+   "culture": "ru",
+   "key": "Next lesson",
+   "text": "Следующий урок"
+  },
+  {
+   "culture": "ar",
+   "key": "Next lesson",
+   "text": "الدرس التالي"
+  },
+  {
+   "culture": "es",
+   "key": "Next step",
+   "text": "Siguiente paso"
+  },
+  {
+   "culture": "fr",
+   "key": "Next step",
+   "text": "Étape suivante"
+  },
+  {
+   "culture": "de",
+   "key": "Next step",
+   "text": "Nächster Schritt"
+  },
+  {
+   "culture": "it",
+   "key": "Next step",
+   "text": "Passo successivo"
+  },
+  {
+   "culture": "pt",
+   "key": "Next step",
+   "text": "Passo seguinte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Next step",
+   "text": "Próxima etapa"
+  },
+  {
+   "culture": "ja",
+   "key": "Next step",
+   "text": "次のステップ"
+  },
+  {
+   "culture": "ko",
+   "key": "Next step",
+   "text": "다음 단계"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Next step",
+   "text": "下一步"
+  },
+  {
+   "culture": "ru",
+   "key": "Next step",
+   "text": "Следующий шаг"
+  },
+  {
+   "culture": "ar",
+   "key": "Next step",
+   "text": "الخطوة التالية"
+  },
+  {
+   "culture": "es",
+   "key": "Goes on to the next try, with less help",
+   "text": "Pasa al siguiente intento, con menos ayuda"
+  },
+  {
+   "culture": "fr",
+   "key": "Goes on to the next try, with less help",
+   "text": "Passe à l'essai suivant, avec moins d'aide"
+  },
+  {
+   "culture": "de",
+   "key": "Goes on to the next try, with less help",
+   "text": "Weiter zum nächsten Versuch, mit weniger Hilfe"
+  },
+  {
+   "culture": "it",
+   "key": "Goes on to the next try, with less help",
+   "text": "Passa al tentativo successivo, con meno aiuto"
+  },
+  {
+   "culture": "pt",
+   "key": "Goes on to the next try, with less help",
+   "text": "Passa à tentativa seguinte, com menos ajuda"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Goes on to the next try, with less help",
+   "text": "Vai para a próxima tentativa, com menos ajuda"
+  },
+  {
+   "culture": "ja",
+   "key": "Goes on to the next try, with less help",
+   "text": "手助けを減らして次の挑戦へ進みます"
+  },
+  {
+   "culture": "ko",
+   "key": "Goes on to the next try, with less help",
+   "text": "도움을 줄이고 다음 시도로 넘어가요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Goes on to the next try, with less help",
+   "text": "进入下一次尝试，帮助更少"
+  },
+  {
+   "culture": "ru",
+   "key": "Goes on to the next try, with less help",
+   "text": "Переходит к следующей попытке, с меньшей помощью"
+  },
+  {
+   "culture": "ar",
+   "key": "Goes on to the next try, with less help",
+   "text": "ينتقل إلى المحاولة التالية بمساعدة أقل"
+  },
+  {
+   "culture": "es",
+   "key": "Try 1 of 3",
+   "text": "Intento 1 de 3"
+  },
+  {
+   "culture": "fr",
+   "key": "Try 1 of 3",
+   "text": "Essai 1 sur 3"
+  },
+  {
+   "culture": "de",
+   "key": "Try 1 of 3",
+   "text": "Versuch 1 von 3"
+  },
+  {
+   "culture": "it",
+   "key": "Try 1 of 3",
+   "text": "Tentativo 1 di 3"
+  },
+  {
+   "culture": "pt",
+   "key": "Try 1 of 3",
+   "text": "Tentativa 1 de 3"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Try 1 of 3",
+   "text": "Tentativa 1 de 3"
+  },
+  {
+   "culture": "ja",
+   "key": "Try 1 of 3",
+   "text": "挑戦 1/3"
+  },
+  {
+   "culture": "ko",
+   "key": "Try 1 of 3",
+   "text": "시도 1/3"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Try 1 of 3",
+   "text": "第1次，共3次"
+  },
+  {
+   "culture": "ru",
+   "key": "Try 1 of 3",
+   "text": "Попытка 1 из 3"
+  },
+  {
+   "culture": "ar",
+   "key": "Try 1 of 3",
+   "text": "المحاولة 1 من 3"
+  },
+  {
+   "culture": "es",
+   "key": "Try 2 of 3",
+   "text": "Intento 2 de 3"
+  },
+  {
+   "culture": "fr",
+   "key": "Try 2 of 3",
+   "text": "Essai 2 sur 3"
+  },
+  {
+   "culture": "de",
+   "key": "Try 2 of 3",
+   "text": "Versuch 2 von 3"
+  },
+  {
+   "culture": "it",
+   "key": "Try 2 of 3",
+   "text": "Tentativo 2 di 3"
+  },
+  {
+   "culture": "pt",
+   "key": "Try 2 of 3",
+   "text": "Tentativa 2 de 3"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Try 2 of 3",
+   "text": "Tentativa 2 de 3"
+  },
+  {
+   "culture": "ja",
+   "key": "Try 2 of 3",
+   "text": "挑戦 2/3"
+  },
+  {
+   "culture": "ko",
+   "key": "Try 2 of 3",
+   "text": "시도 2/3"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Try 2 of 3",
+   "text": "第2次，共3次"
+  },
+  {
+   "culture": "ru",
+   "key": "Try 2 of 3",
+   "text": "Попытка 2 из 3"
+  },
+  {
+   "culture": "ar",
+   "key": "Try 2 of 3",
+   "text": "المحاولة 2 من 3"
+  },
+  {
+   "culture": "es",
+   "key": "Try 3 of 3",
+   "text": "Intento 3 de 3"
+  },
+  {
+   "culture": "fr",
+   "key": "Try 3 of 3",
+   "text": "Essai 3 sur 3"
+  },
+  {
+   "culture": "de",
+   "key": "Try 3 of 3",
+   "text": "Versuch 3 von 3"
+  },
+  {
+   "culture": "it",
+   "key": "Try 3 of 3",
+   "text": "Tentativo 3 di 3"
+  },
+  {
+   "culture": "pt",
+   "key": "Try 3 of 3",
+   "text": "Tentativa 3 de 3"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Try 3 of 3",
+   "text": "Tentativa 3 de 3"
+  },
+  {
+   "culture": "ja",
+   "key": "Try 3 of 3",
+   "text": "挑戦 3/3"
+  },
+  {
+   "culture": "ko",
+   "key": "Try 3 of 3",
+   "text": "시도 3/3"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Try 3 of 3",
+   "text": "第3次，共3次"
+  },
+  {
+   "culture": "ru",
+   "key": "Try 3 of 3",
+   "text": "Попытка 3 из 3"
+  },
+  {
+   "culture": "ar",
+   "key": "Try 3 of 3",
+   "text": "المحاولة 3 من 3"
+  },
+  {
+   "culture": "es",
+   "key": "Pass shot",
+   "text": "Tiro final"
+  },
+  {
+   "culture": "fr",
+   "key": "Pass shot",
+   "text": "Coup final"
+  },
+  {
+   "culture": "de",
+   "key": "Pass shot",
+   "text": "Prüfungsstoß"
+  },
+  {
+   "culture": "it",
+   "key": "Pass shot",
+   "text": "Colpo finale"
+  },
+  {
+   "culture": "pt",
+   "key": "Pass shot",
+   "text": "Tacada final"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pass shot",
+   "text": "Tacada final"
+  },
+  {
+   "culture": "ja",
+   "key": "Pass shot",
+   "text": "合格ショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Pass shot",
+   "text": "통과 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pass shot",
+   "text": "过关一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Pass shot",
+   "text": "Зачётный удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Pass shot",
+   "text": "ضربة الاجتياز"
+  },
+  {
+   "culture": "es",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Todo está ajustado por ti y bloqueado. Solo tira y mira cómo funciona."
+  },
+  {
+   "culture": "fr",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Tout est réglé pour toi et verrouillé. Tire simplement et regarde le résultat."
+  },
+  {
+   "culture": "de",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Alles ist für dich eingestellt und gesperrt. Stoß einfach und sieh zu, wie es klappt."
+  },
+  {
+   "culture": "it",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Tutto è impostato per te e bloccato. Tira e guarda come funziona."
+  },
+  {
+   "culture": "pt",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Está tudo ajustado por ti e bloqueado. É só tacar e ver a funcionar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Está tudo ajustado para você e bloqueado. É só tacar e ver funcionar."
+  },
+  {
+   "culture": "ja",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "すべて設定済みでロックされています。撞いて、うまくいくのを見よう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "모든 게 맞춰져 있고 잠겨 있어요. 그냥 쳐서 되는 걸 보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "一切都替你设好并锁定了。只管击球，看它成功。"
+  },
+  {
+   "culture": "ru",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "Всё настроено за тебя и заблокировано. Просто ударь и посмотри, как это работает."
+  },
+  {
+   "culture": "ar",
+   "key": "Everything is set for you and locked. Just shoot and watch it work.",
+   "text": "كل شيء مضبوط لك ومقفل. اضرب فقط وشاهده ينجح."
+  },
+  {
+   "culture": "es",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "Solo está libre la altura del golpe. Lleva el punto de la bola blanca a la franja marcada."
+  },
+  {
+   "culture": "fr",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "Seule la hauteur de frappe est libre. Place le point sur la blanche dans la bande marquée."
+  },
+  {
+   "culture": "de",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "Nur die Treffhöhe ist frei. Schieb den Punkt auf der weißen Kugel in den markierten Streifen."
+  },
+  {
+   "culture": "it",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "È libera solo l'altezza del colpo. Porta il punto sulla bianca nella fascia segnata."
+  },
+  {
+   "culture": "pt",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "Só a altura da tacada está livre. Leva o ponto da bola branca para a faixa marcada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "Só a altura da tacada está livre. Leve o ponto da bola branca para a faixa marcada."
+  },
+  {
+   "culture": "ja",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "撞く高さだけが動かせます。手球の点を印の帯の中へ動かそう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "치는 높이만 바꿀 수 있어요. 큐볼의 점을 표시된 띠 안으로 옮기세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "只有击球高度可调。把白球上的点移进标出的区域。"
+  },
+  {
+   "culture": "ru",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "Открыта только высота удара. Передвинь точку на белом шаре в отмеченную полосу."
+  },
+  {
+   "culture": "ar",
+   "key": "Only the tip height is open. Move the dot on the cue ball into the marked band.",
+   "text": "ارتفاع الضربة وحده مفتوح. حرّك النقطة على الكرة البيضاء إلى الشريط المحدد."
+  },
+  {
+   "culture": "es",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "Solo está libre el efecto lateral. Lleva el punto de la bola blanca a la franja marcada."
+  },
+  {
+   "culture": "fr",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "Seul l'effet latéral est libre. Place le point sur la blanche dans la bande marquée."
+  },
+  {
+   "culture": "de",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "Nur der Seiteneffet ist frei. Schieb den Punkt auf der weißen Kugel in den markierten Streifen."
+  },
+  {
+   "culture": "it",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "È libero solo l'effetto laterale. Porta il punto sulla bianca nella fascia segnata."
+  },
+  {
+   "culture": "pt",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "Só o efeito lateral está livre. Leva o ponto da bola branca para a faixa marcada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "Só o efeito lateral está livre. Leve o ponto da bola branca para a faixa marcada."
+  },
+  {
+   "culture": "ja",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "横回転だけが動かせます。手球の点を印の帯の中へ動かそう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "옆회전만 바꿀 수 있어요. 큐볼의 점을 표시된 띠 안으로 옮기세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "只有侧旋可调。把白球上的点移进标出的区域。"
+  },
+  {
+   "culture": "ru",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "Открыто только боковое вращение. Передвинь точку на белом шаре в отмеченную полосу."
+  },
+  {
+   "culture": "ar",
+   "key": "Only the side spin is open. Move the dot on the cue ball into the marked band.",
+   "text": "الدوران الجانبي وحده مفتوح. حرّك النقطة على الكرة البيضاء إلى الشريط المحدد."
+  },
+  {
+   "culture": "es",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "Solo está libre el apunte. Gira la línea hasta el abanico marcado."
+  },
+  {
+   "culture": "fr",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "Seule la visée est libre. Fais pivoter la ligne dans l'éventail marqué."
+  },
+  {
+   "culture": "de",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "Nur das Zielen ist frei. Schwenk die Linie in den markierten Fächer."
+  },
+  {
+   "culture": "it",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "È libera solo la mira. Ruota la linea dentro il ventaglio segnato."
+  },
+  {
+   "culture": "pt",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "Só a mira está livre. Roda a linha para dentro do leque marcado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "Só a mira está livre. Gire a linha para dentro do leque marcado."
+  },
+  {
+   "culture": "ja",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "狙いだけが動かせます。線を印の扇形の中へ振ろう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "조준만 바꿀 수 있어요. 선을 표시된 부채꼴 안으로 돌리세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "只有瞄准可调。把线转进标出的扇形里。"
+  },
+  {
+   "culture": "ru",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "Открыто только прицеливание. Поверни линию в отмеченный веер."
+  },
+  {
+   "culture": "ar",
+   "key": "Only the aim is open. Swing the line into the marked fan.",
+   "text": "التصويب وحده مفتوح. أدِر الخط إلى داخل المروحة المحددة."
+  },
+  {
+   "culture": "es",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "Solo está libre la fuerza. Ponla dentro de la parte marcada de la barra."
+  },
+  {
+   "culture": "fr",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "Seule la puissance est libre. Règle-la dans la partie marquée de la barre."
+  },
+  {
+   "culture": "de",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "Nur die Stärke ist frei. Stell sie im markierten Teil des Balkens ein."
+  },
+  {
+   "culture": "it",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "È libera solo la potenza. Impostala dentro la parte segnata della barra."
+  },
+  {
+   "culture": "pt",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "Só a força está livre. Põe-na dentro da parte marcada da barra."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "Só a força está livre. Coloque dentro da parte marcada da barra."
+  },
+  {
+   "culture": "ja",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "強さだけが動かせます。バーの印の範囲に合わせよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "세기만 바꿀 수 있어요. 막대의 표시된 부분 안에 맞추세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "只有力度可调。把它设在力度条的标记范围内。"
+  },
+  {
+   "culture": "ru",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "Открыта только сила. Установи её в отмеченной части полосы."
+  },
+  {
+   "culture": "ar",
+   "key": "Only the power is open. Set it inside the marked part of the bar.",
+   "text": "القوة وحدها مفتوحة. اضبطها داخل الجزء المحدد من الشريط."
+  },
+  {
+   "culture": "es",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "Solo está libre el ángulo del taco. Elige uno de los ángulos marcados."
+  },
+  {
+   "culture": "fr",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "Seul l'angle de la queue est libre. Choisis l'un des angles marqués."
+  },
+  {
+   "culture": "de",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "Nur der Queuewinkel ist frei. Wähl einen der markierten Winkel."
+  },
+  {
+   "culture": "it",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "È libero solo l'angolo della stecca. Scegli uno degli angoli segnati."
+  },
+  {
+   "culture": "pt",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "Só o ângulo do taco está livre. Escolhe um dos ângulos marcados."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "Só o ângulo do taco está livre. Escolha um dos ângulos marcados."
+  },
+  {
+   "culture": "ja",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "キューの角度だけが動かせます。印のついた角度を選ぼう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "큐 각도만 바꿀 수 있어요. 표시된 각도 중 하나를 고르세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "只有球杆角度可调。选一个标出的角度。"
+  },
+  {
+   "culture": "ru",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "Открыт только угол кия. Выбери один из отмеченных углов."
+  },
+  {
+   "culture": "ar",
+   "key": "Only the cue angle is open. Pick one of the marked angles.",
+   "text": "زاوية العصا وحدها مفتوحة. اختر إحدى الزوايا المحددة."
+  },
+  {
+   "culture": "es",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Ahora todos los controles están libres y las marcas son tenues."
+  },
+  {
+   "culture": "fr",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Toutes les commandes sont libres maintenant, et les repères sont pâles."
+  },
+  {
+   "culture": "de",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Jetzt sind alle Regler frei, und die Markierungen sind blass."
+  },
+  {
+   "culture": "it",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Ora tutti i comandi sono liberi e i segni sono tenui."
+  },
+  {
+   "culture": "pt",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Agora todos os controlos estão livres e as marcas são ténues."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Agora todos os controles estão livres e as marcas estão fracas."
+  },
+  {
+   "culture": "ja",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "すべての操作が自由になり、印は薄くなりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "이제 모든 조작이 열려 있고 표시는 흐려졌어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "现在所有控制都可调，标记变淡了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "Теперь открыты все настройки, а отметки бледные."
+  },
+  {
+   "culture": "ar",
+   "key": "Every control is open now, and the marks are faint.",
+   "text": "كل أدوات التحكم مفتوحة الآن، والعلامات باهتة."
+  },
+  {
+   "culture": "es",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Sin marcas y sin bloqueos. Consíguelo tú solo para aprobar."
+  },
+  {
+   "culture": "fr",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Pas de repères, rien de verrouillé. Réussis-le seul pour valider."
+  },
+  {
+   "culture": "de",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Keine Markierungen, nichts gesperrt. Schaff es allein, um zu bestehen."
+  },
+  {
+   "culture": "it",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Nessun segno e niente bloccato. Riuscici da solo per superarla."
+  },
+  {
+   "culture": "pt",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Sem marcas e nada bloqueado. Consegue sozinho para passar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Sem marcas e nada bloqueado. Acerte sozinho para passar."
+  },
+  {
+   "culture": "ja",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "印もロックもありません。自分だけで決めて合格しよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "표시도 잠금도 없어요. 혼자 성공해서 통과하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "没有标记，也不锁定。独立打成就能过关。"
+  },
+  {
+   "culture": "ru",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "Ни отметок, ни блокировок. Сделай сам, чтобы сдать."
+  },
+  {
+   "culture": "ar",
+   "key": "No marks and nothing locked. Make it on your own to pass.",
+   "text": "لا علامات ولا شيء مقفل. نفّذها بنفسك لتجتاز."
+  },
+  {
+   "culture": "es",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "La misma línea, la blanca más atrás y tu golpe de la lección preparado. Antes de tirar, di adónde irá la blanca. Luego cambia solo la altura del golpe para pararla en seco."
+  },
+  {
+   "culture": "fr",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "Même ligne, la blanche plus en arrière, ton coup de la leçon préparé. Avant de tirer, dis où ira la blanche. Puis change seulement la hauteur de frappe pour l'arrêter net."
+  },
+  {
+   "culture": "de",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "Dieselbe Linie, die weiße Kugel weiter hinten, dein Stoß aus der Lektion eingestellt. Sag vor dem Stoß, wohin die weiße Kugel laufen wird. Ändere dann nur die Treffhöhe, um sie zu stoppen."
+  },
+  {
+   "culture": "it",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "Stessa linea, la bianca più indietro, il tuo colpo della lezione pronto. Prima di tirare, di' dove andrà la bianca. Poi cambia solo l'altezza del colpo per fermarla."
+  },
+  {
+   "culture": "pt",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "A mesma linha, a branca mais atrás e a tua tacada da lição preparada. Antes de tacar, diz para onde irá a branca. Depois muda só a altura da tacada para a parar de vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "A mesma linha, a branca mais atrás e a sua tacada da lição preparada. Antes de tacar, diga para onde a branca vai. Depois mude só a altura da tacada para pará-la na hora."
+  },
+  {
+   "culture": "ja",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "同じライン、手球はもっと後ろ、レッスンの撞き方がセットされています。撞く前に、手球がどこへ行くか言ってみよう。それから撞く高さだけを変えて、ピタッと止めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "같은 선, 큐볼은 더 뒤에, 레슨에서 친 그대로 준비돼 있어요. 치기 전에 큐볼이 어디로 갈지 말해 보세요. 그다음 치는 높이만 바꿔서 딱 멈추게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "同一条线，白球更靠后，已按课上的击球设好。击球前，先说说白球会去哪里。然后只改变击球高度，让它停住。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "Та же линия, белый шар дальше, твой удар из урока настроен. Прежде чем бить, скажи, куда пойдёт белый шар. Затем измени только высоту удара, чтобы он встал на месте."
+  },
+  {
+   "culture": "ar",
+   "key": "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.",
+   "text": "الخط نفسه، والكرة البيضاء أبعد، وضربتك من الدرس مجهزة. قبل أن تضرب، قل إلى أين ستذهب الكرة البيضاء. ثم غيّر ارتفاع الضربة فقط لتوقفها تمامًا."
+  },
+  {
+   "culture": "es",
+   "key": "Lesson %lld: %@",
+   "text": "Lección %lld: %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Lesson %lld: %@",
+   "text": "Leçon %lld : %@"
+  },
+  {
+   "culture": "de",
+   "key": "Lesson %lld: %@",
+   "text": "Lektion %lld: %@"
+  },
+  {
+   "culture": "it",
+   "key": "Lesson %lld: %@",
+   "text": "Lezione %lld: %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Lesson %lld: %@",
+   "text": "Lição %lld: %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lesson %lld: %@",
+   "text": "Lição %lld: %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Lesson %lld: %@",
+   "text": "レッスン%lld：%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Lesson %lld: %@",
+   "text": "레슨 %lld: %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lesson %lld: %@",
+   "text": "第%lld课：%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Lesson %lld: %@",
+   "text": "Урок %lld: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Lesson %lld: %@",
+   "text": "الدرس %lld: %@"
+  },
+  {
+   "culture": "es",
+   "key": "All lessons",
+   "text": "Todas las lecciones"
+  },
+  {
+   "culture": "fr",
+   "key": "All lessons",
+   "text": "Toutes les leçons"
+  },
+  {
+   "culture": "de",
+   "key": "All lessons",
+   "text": "Alle Lektionen"
+  },
+  {
+   "culture": "it",
+   "key": "All lessons",
+   "text": "Tutte le lezioni"
+  },
+  {
+   "culture": "pt",
+   "key": "All lessons",
+   "text": "Todas as lições"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "All lessons",
+   "text": "Todas as lições"
+  },
+  {
+   "culture": "ja",
+   "key": "All lessons",
+   "text": "すべてのレッスン"
+  },
+  {
+   "culture": "ko",
+   "key": "All lessons",
+   "text": "모든 레슨"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "All lessons",
+   "text": "全部课程"
+  },
+  {
+   "culture": "ru",
+   "key": "All lessons",
+   "text": "Все уроки"
+  },
+  {
+   "culture": "ar",
+   "key": "All lessons",
+   "text": "كل الدروس"
+  },
+  {
+   "culture": "es",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Ese tiro empezó donde se pararon las bolas. Reintentar las vuelve a colocar para la lección."
+  },
+  {
+   "culture": "fr",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Ce coup est parti de là où les billes s'étaient arrêtées. Réessayer les remet en place pour la leçon."
+  },
+  {
+   "culture": "de",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Dieser Stoß begann dort, wo die Kugeln liegen geblieben waren. Nochmal legt sie für die Lektion zurück."
+  },
+  {
+   "culture": "it",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Quel tiro è partito da dove si erano fermate le palle. Riprova le rimette a posto per la lezione."
+  },
+  {
+   "culture": "pt",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Essa tacada partiu de onde as bolas pararam. Tentar de novo volta a pô-las no sítio para a lição."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Essa tacada partiu de onde as bolas pararam. Tentar de novo coloca as bolas de volta para a lição."
+  },
+  {
+   "culture": "ja",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "今のショットは球が止まった場所から撞きました。「もう一度」でレッスンの配置に戻ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "방금 샷은 공이 멈춘 자리에서 쳤어요. 다시 하기를 누르면 레슨 위치로 되돌려요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "这一杆是从球停下的位置打的。点“再试一次”会把球摆回课程位置。"
+  },
+  {
+   "culture": "ru",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "Этот удар был с того места, где остановились шары. «Ещё раз» вернёт их для урока."
+  },
+  {
+   "culture": "ar",
+   "key": "That shot started from where the balls stopped. Try again puts them back for the lesson.",
+   "text": "بدأت تلك الضربة من حيث توقفت الكرات. «حاول مجددًا» يعيدها إلى أماكنها للدرس."
+  },
+  {
+   "culture": "es",
+   "key": "Learn",
+   "text": "Aprender"
+  },
+  {
+   "culture": "fr",
+   "key": "Learn",
+   "text": "Apprendre"
+  },
+  {
+   "culture": "de",
+   "key": "Learn",
+   "text": "Lernen"
+  },
+  {
+   "culture": "it",
+   "key": "Learn",
+   "text": "Impara"
+  },
+  {
+   "culture": "pt",
+   "key": "Learn",
+   "text": "Aprender"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Learn",
+   "text": "Aprender"
+  },
+  {
+   "culture": "ja",
+   "key": "Learn",
+   "text": "学ぶ"
+  },
+  {
+   "culture": "ko",
+   "key": "Learn",
+   "text": "배우기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Learn",
+   "text": "学习"
+  },
+  {
+   "culture": "ru",
+   "key": "Learn",
+   "text": "Учиться"
+  },
+  {
+   "culture": "ar",
+   "key": "Learn",
+   "text": "تعلّم"
+  },
+  {
+   "culture": "es",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Seis lecciones cortas: parada, seguimiento, retroceso, corte, curva y salto."
+  },
+  {
+   "culture": "fr",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Six courtes leçons : arrêt, suivi, rétro, coupe, courbe et saut."
+  },
+  {
+   "culture": "de",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Sechs kurze Lektionen: Stopp, Nachlauf, Rückzug, Schnitt, Kurve und Sprung."
+  },
+  {
+   "culture": "it",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Sei brevi lezioni: fermo, avanti, indietro, taglio, curva e salto."
+  },
+  {
+   "culture": "pt",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Seis lições curtas: paragem, avanço, recuo, corte, curva e salto."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Seis lições curtas: parada, avanço, recuo, corte, curva e salto."
+  },
+  {
+   "culture": "ja",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "6つの短いレッスン：ストップ、フォロー、ドロー、カット、カーブ、ジャンプ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "짧은 레슨 여섯 개: 스톱, 밀어치기, 끌어치기, 컷, 커브, 점프."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "六节短课：定杆、高杆、低杆、切球、弧线和跳球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "Шесть коротких уроков: остановка, накат, оттяжка, срез, кривая и прыжок."
+  },
+  {
+   "culture": "ar",
+   "key": "Six short lessons: stop, follow, draw, cut, curve and jump.",
+   "text": "ستة دروس قصيرة: التوقف، والدفع، والسحب، والقطع، والمنحنى، والقفز."
+  },
+  {
+   "culture": "es",
+   "key": "%lld of %lld passed",
+   "text": "%lld de %lld aprobadas"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld of %lld passed",
+   "text": "%lld sur %lld réussies"
+  },
+  {
+   "culture": "de",
+   "key": "%lld of %lld passed",
+   "text": "%lld von %lld bestanden"
+  },
+  {
+   "culture": "it",
+   "key": "%lld of %lld passed",
+   "text": "%lld di %lld superate"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld of %lld passed",
+   "text": "%lld de %lld concluídas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld of %lld passed",
+   "text": "%lld de %lld concluídas"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld of %lld passed",
+   "text": "%lld/%lld 合格"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld of %lld passed",
+   "text": "%2$lld개 중 %1$lld개 통과"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld of %lld passed",
+   "text": "已通过 %lld/%lld"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld of %lld passed",
+   "text": "Пройдено %lld из %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld of %lld passed",
+   "text": "تم اجتياز %lld من %lld"
+  }
+ ]
+}
