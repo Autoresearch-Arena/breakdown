@@ -15,6 +15,8 @@
 //          beside them. The environment value inlinePages tells those views to stay out of sheets on this screen.
 //          When the phone is propped like a laptop the panel is short and wide, and the play page splits into two
 //          columns (controls and cards on one side, the commentary and numbers on the other).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (play-views hooks: PlayCards (ball in hand, table cleared, the match
+//          card) join the mode cards, and the top bar names the match's game while one is on.)
 // SRP/DRY check: Pass - layout and page switching only. The words are in DuoStory and DuoDossier, the numbers in
 //          DuoNumbers; every card, list and menu is the same view the other screens use, embedded.
 import SwiftUI
@@ -107,6 +109,7 @@ struct DuoPanel: View {
             ComparisonCard(model: model)
             TrickShotCard(model: model)
             EightBallCard(model: model)
+            PlayCards(model: model)
             if showShotPanel {
                 ShotPanel(model: model, isOpen: $showShotPanel).glassCard().transition(.opacity)
             }
@@ -191,6 +194,7 @@ private struct DuoTopBar: View {
         if model.stage != .explore && model.stage != .lead { return model.stageTitle }
         if model.trickMode.isActive { return String(localized: "Trick shots") }
         if model.eightBallMode.isActive { return String(localized: "Behind the 8-Ball") }
+        if let match = model.match { return MatchWords.title(match.state.kind) }
         return String(localized: "Free play")
     }
 

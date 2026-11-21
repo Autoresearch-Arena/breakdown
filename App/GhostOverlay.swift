@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (learn from a retry, view side: the ghost also marks where the last
+//          try's cue ball first touched a ball, a small hollow ring with a dot, so pausing the live replay at its own
+//          contact (See the contact) shows both contacts side by side; the comparison card now words the model's
+//          RetryComparison facts through RetryWords, offers See the contact, stays up while the replay is paused there,
+//          keeps its dismissal to itself, and steps aside while a trick-shot, 8-ball or match card is the result card.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
@@ -20,6 +25,8 @@ struct GhostOverlay: View {
     @Environment(\.palette) private var palette
     @State private var cameraBox = AimProjector.CameraBox()
     @State private var paths: (version: Int, cue: [Vec2], object: [Vec2], rest: Vec2?) = (-1, [], [], nil)
+    /// Where the last try's cue ball was at its first touch of another ball; nil when it touched none.
+    @State private var contact: Vec2?
 
     var body: some View {
         TimelineView(.animation) { _ in
@@ -30,9 +37,12 @@ struct GhostOverlay: View {
         .accessibilityHidden(true)
         .onChange(of: model.ghostVersion, initial: true) { _, version in
             // Sampled once per ghost; the per-frame work is only projecting the points.
-            guard let g = model.ghost else { paths = (version, [], [], nil); return }
+            guard let g = model.ghost else { paths = (version, [], [], nil); contact = nil; return }
             let p = g.ghostPaths()
             paths = (version, p.cue, p.object, g.cueBallScratched ? nil : g.cueRest)
+            // Read at that recording's own contact time (plan 14, section 3), from its first cue-ball collision.
+            contact = g.timeline.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
+                .map { g.timeline.state(ball: 0, at: $0.time).position }
         }
     }
 
@@ -60,6 +70,20 @@ struct GhostOverlay: View {
             ctx.stroke(cue, with: .color(paper.opacity(0.6)),
                        style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round, dash: [7, 5]))
         }
+        // Where the last try's cue ball first touched a ball: a small dashed ring with a dot in it.
+        if let at = contact {
+            var mark = Path()
+            for i in 0..<24 {
+                let a = Double(i) / 24 * 2 * Double.pi
+                guard let s = proj.screen(at + Vec2(cos(a), sin(a)) * radius * 0.6, height: 0.001) else { mark = Path(); break }
+                if i == 0 { mark.move(to: s) } else { mark.addLine(to: s) }
+            }
+            mark.closeSubpath()
+            ctx.stroke(mark, with: .color(paper.opacity(0.75)), style: StrokeStyle(lineWidth: 1.2, dash: [2, 2]))
+            if let c = proj.screen(at, height: 0.001) {
+                ctx.fill(Path(ellipseIn: CGRect(x: c.x - 2, y: c.y - 2, width: 4, height: 4)), with: .color(paper.opacity(0.85)))
+            }
+        }
         guard let rest = paths.rest else { return }
         // The hollow ring where the ghost cue ball stopped, and its label.
         var ring = Path()
@@ -80,13 +104,28 @@ struct GhostOverlay: View {
     }
 }
 
-/// The comparison after a retry: what the player changed and what happened differently, in a sentence or two.
+/// The comparison after a retry, in one sentence from RetryWords, with See the contact beside it. Free play only: a
+/// trick shot, a Behind the 8-Ball situation and a match each have their own result card, and only one result card is
+/// ever up (plan 14, "one result card"); the trick-shot card carries this same sentence itself.
 struct ComparisonCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
+    /// The recording whose comparison was put away. Kept here rather than in the model, so the card needs nothing
+    /// from the model but the facts; a new recording (a new timelineVersion) brings the card back.
+    @State private var dismissedVersion = -1
+    /// The recording the player paused at its contact: the card stays up while the replay sits there.
+    @State private var seekedVersion = -1
+
+    private var visible: Bool {
+        guard model.retryComparison != nil, dismissedVersion != model.timelineVersion,
+              !model.trickMode.isActive, !model.eightBallMode.isActive, model.match == nil else { return false }
+        // Only once the retry has played out, so it never talks over the shot; or while paused at the contact.
+        return model.aimReady || seekedVersion == model.timelineVersion
+    }
 
     var body: some View {
-        if model.comparisonReady, let text = model.comparison {
+        if visible, let c = model.retryComparison {
+            let text = RetryWords.sentence(c)
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: "arrow.left.arrow.right")
                     .font(.headline)
@@ -98,7 +137,8 @@ struct ComparisonCard: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityLabel("Compared with your last try. \(text)")
-                Button { model.dismissComparison() } label: {
+                ContactButton(model: model) { seekedVersion = model.timelineVersion }
+                Button { dismissedVersion = model.timelineVersion } label: {
                     Image(systemName: "xmark").frame(width: 30, height: 30)
                 }
                 .buttonStyle(.bordered)

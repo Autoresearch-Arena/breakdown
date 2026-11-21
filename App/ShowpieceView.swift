@@ -28,6 +28,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Behind the 8-Ball: EightBallTableLayer sits beside the trick-shot
 //          layer and EightBallCard beside the trick-shot card, in both layouts).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the -rackShoot test flag, for the store video.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (play-views hooks: PlayTableLayer (lifted cue ball, nine-ball
+//          hit-first ring) beside the 8-ball layer, and PlayCards (ball in hand, table cleared, the match card) beside
+//          the 8-ball card in both layouts; the bottom stack animates on the model's retryComparison.)
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
@@ -180,6 +183,8 @@ struct ShowpieceView: View {
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Behind the 8-Ball: the called ball and pocket, the list sheet, launch flags (EightBallViews).
             EightBallTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
+            // Free play and matches: the lifted cue ball's tint, the head line, nine-ball's ball to hit first.
+            PlayTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             if showShotPanel { AimOverlay(model: model, bridge: bridge, isOpen: $showShotPanel) }
             VStack(spacing: 6) {
                 if header {
@@ -220,6 +225,8 @@ struct ShowpieceView: View {
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
                 if !wide { TrickShotCard(model: model) }
                 if !wide { EightBallCard(model: model) }
+                // Free play and matches: ball in hand, table cleared, the match card (FreePlayViews, MatchViews).
+                if !wide { PlayCards(model: model) }
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
@@ -236,7 +243,7 @@ struct ShowpieceView: View {
             }
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
-        .animation(reduceMotion ? nil : .snappy, value: model.comparisonReady)
+        .animation(reduceMotion ? nil : .snappy, value: model.retryComparison)
         .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
         .animation(reduceMotion ? nil : .snappy, value: model.eightBallMode.isActive)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: model.lensOn)
@@ -266,6 +273,7 @@ struct ShowpieceView: View {
                     // Trick shots: the shot's card at the top of the column.
                     TrickShotCard(model: model)
                     EightBallCard(model: model)
+                    PlayCards(model: model)
                     CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()

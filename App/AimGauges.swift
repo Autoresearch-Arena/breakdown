@@ -1,6 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the tip travel is the model's own model.tipLimit, an instance value
+//          per mode, in place of the old fixed ShowpieceModel.tipLimit.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -28,8 +30,8 @@ struct TipPicker: View {
         let size = min(max(44, side), 72)
         let radius = size / 2
         let limit = radius * reach
-        let up = model.activeTipUp / ShowpieceModel.tipLimit
-        let across = model.activeTipSide / ShowpieceModel.tipLimit
+        let up = model.activeTipUp / model.tipLimit
+        let across = model.activeTipSide / model.tipLimit
         ZStack {
             Circle()
                 .fill(RadialGradient(colors: [Color(white: 1.0), Color(white: 0.80)], center: .init(x: 0.38, y: 0.32),
@@ -60,18 +62,18 @@ struct TipPicker: View {
             if len > 1 { x /= len; y /= len }
             // A tiny region around the middle snaps to exactly centre so "centre" is easy to hit.
             if len < 0.12 { x = 0; y = 0 }
-            model.activeTipSide = x * ShowpieceModel.tipLimit
-            model.activeTipUp = y * ShowpieceModel.tipLimit
+            model.activeTipSide = x * model.tipLimit
+            model.activeTipUp = y * model.tipLimit
         })
         .accessibilityElement()
         .accessibilityLabel("Cue tip position")
         .accessibilityValue(Self.spoken(up: model.activeTipUp, side: model.activeTipSide))
         .accessibilityHint("Drag on the ball to place the tip. Or use the actions.")
         .accessibilityAddTraits(.allowsDirectInteraction)
-        .accessibilityAction(named: "Follow") { model.activeTipUp = ShowpieceModel.tipLimit * 0.6 }
-        .accessibilityAction(named: "Draw") { model.activeTipUp = -ShowpieceModel.tipLimit * 0.6 }
-        .accessibilityAction(named: "Left spin") { model.activeTipSide = -ShowpieceModel.tipLimit * 0.6 }
-        .accessibilityAction(named: "Right spin") { model.activeTipSide = ShowpieceModel.tipLimit * 0.6 }
+        .accessibilityAction(named: "Follow") { model.activeTipUp = model.tipLimit * 0.6 }
+        .accessibilityAction(named: "Draw") { model.activeTipUp = -model.tipLimit * 0.6 }
+        .accessibilityAction(named: "Left spin") { model.activeTipSide = -model.tipLimit * 0.6 }
+        .accessibilityAction(named: "Right spin") { model.activeTipSide = model.tipLimit * 0.6 }
         .accessibilityAction(named: "Centre") { model.activeTipUp = 0; model.activeTipSide = 0 }
         .help("Cue tip: drag to choose follow, draw or side")
     }

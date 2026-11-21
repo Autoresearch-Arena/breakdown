@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (swatch(number:): a ball's main colour for the flat ball icons in the
+//          match banner, read from the same palette the 3D balls use, so the two never disagree.)
 // PURPOSE: Draws the ball surfaces (solid colours, stripes, number discs) and the Lens grid with CoreGraphics,
 //          so the same code makes pictures on iPhone and Mac and no image assets have to be shipped.
 //          13-Nov-2026 (glow-up package 1): ball pictures are twice as sharp, with larger number discs, bolder
@@ -23,6 +25,14 @@ enum BallTextures {
         (0.96, 0.78, 0.12), (0.10, 0.30, 0.78), (0.86, 0.16, 0.14), (0.42, 0.16, 0.62),
         (0.95, 0.46, 0.10), (0.06, 0.52, 0.28), (0.52, 0.10, 0.14), (0.05, 0.05, 0.06),
     ]
+
+    /// A ball's main colour, red-green-blue from 0 to 1: the solid's colour, or the stripe's band (9 to 15 reuse 1 to
+    /// 7, as the pictures do); ball 0 is the cue ball's ivory. For small flat icons outside the 3D scene.
+    static func swatch(number: Int) -> (Double, Double, Double) {
+        guard number > 0 else { return (0.96, 0.94, 0.88) }
+        let i = number <= 8 ? number - 1 : number - 9
+        return palette[max(0, min(i, palette.count - 1))]
+    }
 
     // MARK: Balls
 
