@@ -9,6 +9,9 @@
 //          lower edge, above the playback controls, so on a big screen one hand aims on the table while the other
 //          thumb sets tip and power. Without a hinge the panel's reading text steps up a size (notebookRoomy), for
 //          arm's length on an iPad and desk distance on a Mac. In a match the top bar names the game.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream, hook lines: the lesson list is a page of the panel,
+//          the lesson card is one of its cards, a lesson counts as a mode on the table (its details replace the numbers)
+//          and the top bar says Lessons while one is up.)
 // PURPOSE: The notebook: the side of the screen that is not the table, on the open folding phone (across the hinge) and
 //          on every screen big enough for the table plus a readable column (an iPad either way up, a large iPad split or
 //          Stage Manager window, a Mac window). The table fills the other side and nothing is drawn over it: no title
@@ -98,6 +101,7 @@ struct NotebookPanel: View {
     private var pageKey: String {
         if let page { return "info-\(page.rawValue)" }
         if model.trickMode.listOpen { return "trickList" }
+        if model.lessonMode.listOpen { return "lessonList" }
         if model.eightBallMode.listOpen { return "eightList" }
         return model.menuOpen ? "menu" : "play"
     }
@@ -118,6 +122,8 @@ struct NotebookPanel: View {
             }
         } else if model.trickMode.listOpen {
             TrickShotList(mode: model.trickMode)
+        } else if model.lessonMode.listOpen {
+            LessonList(mode: model.lessonMode)
         } else if model.eightBallMode.listOpen {
             EightBallList(mode: model.eightBallMode)
         } else if model.menuOpen {
@@ -140,7 +146,7 @@ struct NotebookPanel: View {
 
     /// True while a trick shot or a Behind the 8-Ball situation is on the table: its details replace the numbers.
     private var modeActive: Bool {
-        model.trickMode.isActive || model.eightBallMode.isActive
+        model.trickMode.isActive || model.eightBallMode.isActive || model.lessonMode.isActive
     }
 
     @ViewBuilder
@@ -159,6 +165,7 @@ struct NotebookPanel: View {
             OpeningCard(model: model)
             LensCalloutCard(model: model)
             TrickShotCard(model: model)
+            LessonCard(model: model)
             EightBallCard(model: model)
             PlayCards(model: model)
             NotebookDossier(model: model)
@@ -262,6 +269,7 @@ private struct NotebookTopBar: View {
         if model.stage != .explore && model.stage != .lead { return model.stageTitle }
         if let match = model.match { return NotebookWords.gameName(match.rules.kind) }
         if model.trickMode.isActive { return String(localized: "Trick shots") }
+        if model.lessonMode.isActive { return String(localized: "Lessons") }
         if model.eightBallMode.isActive { return String(localized: "Behind the 8-Ball") }
         return String(localized: "Free play")
     }

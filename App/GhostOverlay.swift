@@ -5,6 +5,8 @@
 //          contact (See the contact) shows both contacts side by side; the comparison card now words the model's
 //          RetryComparison facts through RetryWords, offers See the contact, stays up while the replay is paused there,
 //          keeps its dismissal to itself, and steps aside while a trick-shot, 8-ball or match card is the result card.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream, one line: the comparison card also steps aside while a
+//          lesson is up, because the lesson card is then the one result card and carries the sentence itself.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
@@ -118,7 +120,8 @@ struct ComparisonCard: View {
 
     private var visible: Bool {
         guard model.retryComparison != nil, dismissedVersion != model.timelineVersion,
-              !model.trickMode.isActive, !model.eightBallMode.isActive, model.match == nil else { return false }
+              !model.trickMode.isActive, !model.eightBallMode.isActive, !model.lessonMode.isActive,
+              model.match == nil else { return false }
         // Only once the retry has played out, so it never talks over the shot; or while paused at the contact.
         return model.aimReady || seekedVersion == model.timelineVersion
     }

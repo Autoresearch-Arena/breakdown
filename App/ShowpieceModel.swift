@@ -70,6 +70,12 @@
 //          alone (canPlaceCueBall).)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, two hooks: startMatch takes how many play, so bar
 //          billiards can start alone; advance feeds the match's real-time game clock every live frame, tickClock.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream, hook edits: a marked "Lessons" section holds the
+//          LessonMode (made on first use, like the trick mode), enterLessonTable() and openControls; a lesson counts as
+//          an authored mode (generation one, the pool table, solved directly, no undo or ball in hand); entering a
+//          trick shot, a situation, a match, a table, Play or the intro ends it; and aim(toward:), nudgeAim and the
+//          active power and tip setters refuse a change to a control the lesson has locked for this step, so every
+//          input route (touch, pointer, keys, controller, VoiceOver) respects the lock.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -359,6 +365,7 @@ final class ShowpieceModel {
     /// Play: a fresh rack, ready for the player's own break. The view opens the aiming controls. The cue keeps the
     /// elevation the player last set: free play allows a raised cue (rules-games plan package 2 step 4).
     func startGame() {
+        lessonModeStorage?.end()
         leaveMatch()
         menuOpen = false
         gameInProgress = true
@@ -369,6 +376,7 @@ final class ShowpieceModel {
     /// Watch the break: the showpiece opening, with the slow-motion Physics Lens replay, from the start.
     func watchBreak() {
         cancelPendingSolve()
+        lessonModeStorage?.end()
         leaveMatch()
         endPlacement(); ballInHand = .none; undoStep = nil
         menuOpen = false
@@ -833,7 +841,10 @@ final class ShowpieceModel {
     var powerRange: ClosedRange<Double> { racked ? PlayerShotSpeed.rackBreak : PlayerShotSpeed.ordinary }
     var activePower: Double {
         get { racked ? power : shotPower }
-        set { let v = min(max(newValue, powerRange.lowerBound), powerRange.upperBound); if racked { power = v } else { shotPower = v } }
+        set {
+            guard openControls.contains(.power) else { return }
+            let v = min(max(newValue, powerRange.lowerBound), powerRange.upperBound); if racked { power = v } else { shotPower = v }
+        }
     }
     /// Power as 0 (softest) to 1 (hardest), for the gauge and the pull-back.
     var powerFraction: Double {
@@ -844,17 +855,17 @@ final class ShowpieceModel {
     /// Cue-tip contact point on the cue ball, metres: up is follow, down is draw, right and left are side spin.
     var activeTipUp: Double {
         get { racked ? tipHeight : shotTipUp }
-        set { if racked { tipHeight = newValue } else { shotTipUp = newValue } }
+        set { guard openControls.contains(.tipUp) else { return }; if racked { tipHeight = newValue } else { shotTipUp = newValue } }
     }
     var activeTipSide: Double {
         get { racked ? breakTipSide : shotTipSide }
-        set { if racked { breakTipSide = newValue } else { shotTipSide = newValue } }
+        set { guard openControls.contains(.tipSide) else { return }; if racked { breakTipSide = newValue } else { shotTipSide = newValue } }
     }
 
     /// Aim so the cue travels through a spot on the table. For a shot that is any direction; for the break the
     /// strike is always at the rack, so the spot only chooses how far off the apex ball to hit.
     func aim(toward point: Vec2) {
-        guard layout.count == 16 else { return }
+        guard layout.count == 16, openControls.contains(.aim) else { return }
         let from = aimOrigin
         let d = (point - from).normalized
         if d.lengthSquared < 0.5 { return }       // finger on the cue ball itself: no direction to read
@@ -872,6 +883,7 @@ final class ShowpieceModel {
     /// Turn the aim by a small step: positive is counter-clockwise on the table plan. Steps are quarter degrees for a
     /// shot and a millimetre at the apex ball for the break.
     func nudgeAim(_ steps: Double) {
+        guard openControls.contains(.aim) else { return }
         if racked {
             aimOffset = min(max(aimOffset + steps * 0.001, -Self.breakAimLimit), Self.breakAimLimit)
         } else {
@@ -1107,6 +1119,7 @@ final class ShowpieceModel {
     /// is the computer at that level.
     func startMatch(_ kind: MatchKind, players: Int? = nil, computer: ComputerLevel? = nil) {
         cancelPendingSolve()
+        lessonModeStorage?.end()
         trickMode.end()
         eightBallMode.end()
         menuOpen = false
@@ -1126,6 +1139,7 @@ final class ShowpieceModel {
         if match != nil { closeMenu(); return }
         guard let saved = MatchMode.loadSaved() else { savedMatchExists = false; return }
         cancelPendingSolve()
+        lessonModeStorage?.end()
         trickMode.end()
         eightBallMode.end()
         menuOpen = false
@@ -1606,7 +1620,9 @@ final class ShowpieceModel {
     }
 
     /// True while a mode that was authored on the pool table is up: a trick shot or a Behind the 8-Ball situation.
-    private var authoredModeUp: Bool { trickModeStorage?.current != nil || eightBallModeStorage?.current != nil }
+    private var authoredModeUp: Bool {
+        trickModeStorage?.current != nil || eightBallModeStorage?.current != nil || lessonModeStorage?.current != nil
+    }
 
     /// True while something that only makes sense on the pool table is up: an authored mode, or an eight-ball or
     /// nine-ball match.
@@ -1629,6 +1645,7 @@ final class ShowpieceModel {
     /// layout on screen, ready to shoot. Always re-racks, even for the table already chosen, because the table on screen
     /// may be the pool table of a mode. The cue keeps its elevation: free play allows a raised cue.
     func playTable(_ k: TableKind) {
+        lessonModeStorage?.end()
         trickMode.end()
         eightBallMode.end()
         leaveMatch()
@@ -1676,6 +1693,7 @@ final class ShowpieceModel {
         menuOpen = false
         gameInProgress = true
         eightBallModeStorage?.end()
+        lessonModeStorage?.end()
     }
 
     /// The mechanical bridge is drawn while the player lines up a trick shot or a situation that needs it.
@@ -1706,6 +1724,7 @@ final class ShowpieceModel {
         menuOpen = false
         gameInProgress = true
         trickModeStorage?.end()
+        lessonModeStorage?.end()
     }
 
     /// Put an authored layout on the table, still, with the given aim (degrees), power, tip height and side ready for
@@ -1730,6 +1749,36 @@ final class ShowpieceModel {
         rerack()
         self.aimOffset = aimOffset; self.power = power; tipHeight = tipUp; breakTipSide = tipSide
     }
+
+    // MARK: Lessons (LessonMode) - added by Claude Opus 5.5 High, 21-November-2026
+
+    /// The lesson mode, made on first use and kept out of observation, exactly as trickMode is.
+    @ObservationIgnored private var lessonModeStorage: LessonMode?
+    var lessonMode: LessonMode {
+        if let m = lessonModeStorage { return m }
+        let m = LessonMode(model: self)
+        lessonModeStorage = m
+        return m
+    }
+
+    /// Onto the table from the menu for a lesson: the menu closes, any trick shot or situation ends, Continue comes back
+    /// here. A match in progress is left (it stays saved).
+    func enterLessonTable() {
+        leaveMatch()
+        cancelPendingSolve()
+        endPlacement(); ballInHand = .none; undoStep = nil
+        menuOpen = false
+        gameInProgress = true
+        trickModeStorage?.end()
+        eightBallModeStorage?.end()
+    }
+
+    /// Which shot controls the player may change now: all of them, except in a lesson's guided tries (LessonMode).
+    /// Read through lessonMode (not the optional storage) so a view that reads it is observing the mode from the start.
+    var openControls: ShotControls { lessonMode.openControls }
+
+    /// The target bands a lesson draws on the controls now, if any.
+    var lessonZones: LessonZones? { lessonMode.zones }
 
     // MARK: Guided pacing
 

@@ -35,12 +35,15 @@
 //          page on the open Duo, iPad and Mac.)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens: How to play's Rules section also links the rules
 //          of bumper pool, five-pin and bar billiards, TableRulesPage.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream: Learn, the six lessons (LessonList), is the first entry
+//          after Continue, with its progress mark (lessons passed); it is the highlighted entry for a player with nothing
+//          in progress and no lesson passed yet. Practice and Watch the intro end a lesson through the model.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
 //          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
 //          Behind the 8-Ball, Tables, Watch the intro (the showpiece opening with the slow-motion Physics Lens), How to
-//          play (the three steps and the rules, in a sheet) and Options (a sheet). The lessons will head the list as
-//          Learn once they are built; the place is marked in the code.
+//          play (the three steps and the rules, in a sheet) and Options (a sheet). Learn (the lessons) comes first after
+//          Continue.
 //          It changes the model only through its menu methods (closeMenu, startGame, watchBreak, playTable via
 //          TableList) and the match methods of the model contract (startMatch, continueSavedMatch), and the modes'
 //          list switches and end(). Launch switches that open a specific screen for testing skip it, so the
@@ -170,10 +173,14 @@ struct TitleScreen: View {
                         symbol: "play.fill", prominent: true) { continueMatch() }
                     .keyboardShortcut(.defaultAction)
             }
-            // Learn goes here, first after Continue, once the six lessons exist (first-minute plan, package 3).
+            // Learn: first after Continue (first-minute plan, package 3). For a newcomer with nothing to continue and no
+            // lesson passed it is the highlighted entry; once a lesson is passed, Play takes that place again.
+            MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
+                    symbol: "graduationcap", prominent: learnFirst, mark: lessonMark) { model.lessonMode.listOpen = true }
+                .keyboardShortcut(learnFirst ? KeyboardShortcut.defaultAction : nil)
             MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
-                    symbol: "circle.grid.cross", prominent: !resumable) { playListOpen = true }
-                .keyboardShortcut(resumable ? nil : KeyboardShortcut.defaultAction)
+                    symbol: "circle.grid.cross", prominent: !resumable && !learnFirst) { playListOpen = true }
+                .keyboardShortcut(resumable || learnFirst ? nil : KeyboardShortcut.defaultAction)
             MenuRow(title: "Trick shots", line: "Shots that make people stare, easiest first.", symbol: "wand.and.sparkles",
                     mark: trickMark) { model.trickMode.listOpen = true }
             MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
@@ -193,6 +200,18 @@ struct TitleScreen: View {
                 if let onOptions { onOptions() } else { optionsOpen = true }
             }
         }
+    }
+
+    /// Learn is the highlighted entry for a newcomer: nothing to continue and no lesson passed yet.
+    private var learnFirst: Bool { !resumable && model.lessonMode.passedCount == 0 }
+
+    /// Lessons passed out of the six.
+    private var lessonMark: MenuRow.Mark {
+        let passed = model.lessonMode.passedCount
+        let total = Lessons.all.count
+        return MenuRow.Mark(symbol: "checkmark.circle.fill",
+                            text: String(localized: "\(passed)/\(total)"),
+                            spoken: String(localized: "\(passed) of \(total) passed"))
     }
 
     /// Trick shots made out of the ones that can be played.

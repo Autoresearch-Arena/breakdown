@@ -7,6 +7,11 @@
 //          per mode, in place of the old fixed ShowpieceModel.tipLimit.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 5: minus and plus buttons beside the
 //          power bar, so power can be set with single taps instead of a drag or a pull-back.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons: both gauges take the open controls and the lesson's target
+//          bands (ShotControls, LessonZones from Lessons.swift). A band is drawn where the shot works: across the cue-ball
+//          picture for tip height, down it for side, a rectangle for both, and a stretch of the power bar. A locked
+//          control is dimmed, shows a lock and tells VoiceOver "Locked for this step" (lockedForStep, shared with the
+//          shot panel's sliders and the cue-angle menu). The model refuses the change anyway; this is what is seen.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -23,6 +28,10 @@ import SwiftUI
 
 struct TipPicker: View {
     let model: ShowpieceModel
+    /// Which controls are open (a lesson's guided tries close some); tip height and side are this picture's two.
+    var open: ShotControls = .all
+    /// The lesson's target bands, if any: tip height across, side down.
+    var zones: LessonZones? = nil
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var side: CGFloat = 52
 
@@ -49,6 +58,14 @@ struct TipPicker: View {
             .stroke(.black.opacity(0.18), lineWidth: 1)
             Circle().strokeBorder(.black.opacity(0.28), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
                 .frame(width: limit * 2, height: limit * 2)
+            // A lesson's target band: where on the cue ball the shot works, clipped to the reachable disc.
+            if let band = tipBand(radius: radius, limit: limit) {
+                Path(band)
+                    .fill(palette.accent.opacity(0.30 * (zones?.strength ?? 1)))
+                    .overlay { Path(band).stroke(palette.accent.opacity(0.9 * (zones?.strength ?? 1)), lineWidth: 1) }
+                    .clipShape(Circle().inset(by: radius - limit))
+                    .allowsHitTesting(false)
+            }
             // The chalked tip. Drawn dark with a pale rim so it reads on the white ball in every appearance.
             Circle()
                 .fill(palette.accent)
@@ -59,6 +76,8 @@ struct TipPicker: View {
         .frame(width: size, height: size)
         .contentShape(Circle())
         .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local).onChanged { value in
+            // Locked in this lesson step: the touch does nothing (the model would refuse the change too).
+            guard tipOpen else { return }
             // Touch position relative to the middle, as a fraction of the reachable disc, then clamped to the disc.
             var x = Double((value.location.x - radius) / limit)
             var y = Double(-(value.location.y - radius) / limit)
@@ -66,8 +85,9 @@ struct TipPicker: View {
             if len > 1 { x /= len; y /= len }
             // A tiny region around the middle snaps to exactly centre so "centre" is easy to hit.
             if len < 0.12 { x = 0; y = 0 }
-            model.activeTipSide = x * model.tipLimit
-            model.activeTipUp = y * model.tipLimit
+            // Only the open one of the two moves when a lesson has opened just one: the other stays where it was set.
+            if open.contains(.tipSide) { model.activeTipSide = x * model.tipLimit }
+            if open.contains(.tipUp) { model.activeTipUp = y * model.tipLimit }
         })
         .accessibilityElement()
         .accessibilityLabel("Cue tip position")
@@ -80,6 +100,25 @@ struct TipPicker: View {
         .accessibilityAction(named: "Right spin") { model.activeTipSide = model.tipLimit * 0.6 }
         .accessibilityAction(named: "Centre") { model.activeTipUp = 0; model.activeTipSide = 0 }
         .help("Cue tip: drag to choose follow, draw or side")
+        .lockedForStep(!tipOpen)
+    }
+
+    /// True when at least one of the picture's two values may change in this step.
+    private var tipOpen: Bool { open.contains(.tipUp) || open.contains(.tipSide) }
+
+    /// The band to draw, in the picture's own points: the marked tip-height range across the whole ball, the marked
+    /// side range down it, or the rectangle where both meet. Nil when nothing is marked.
+    private func tipBand(radius: CGFloat, limit: CGFloat) -> CGRect? {
+        guard let z = zones, z.tipUp != nil || z.tipSide != nil else { return nil }
+        let travel = model.tipLimit
+        // Metres to points: the dot moves `limit` points for `travel` metres; up is toward the top of the picture.
+        func x(_ m: Double) -> CGFloat { radius + CGFloat(min(max(m / travel, -1), 1)) * limit }
+        func y(_ m: Double) -> CGFloat { radius - CGFloat(min(max(m / travel, -1), 1)) * limit }
+        let left = z.tipSide.map { x($0.lowerBound) } ?? 0
+        let right = z.tipSide.map { x($0.upperBound) } ?? radius * 2
+        let top = z.tipUp.map { y($0.upperBound) } ?? 0
+        let bottom = z.tipUp.map { y($0.lowerBound) } ?? radius * 2
+        return CGRect(x: left, y: top, width: max(1, right - left), height: max(1, bottom - top))
     }
 
     /// "follow, left" and so on; "centre" when the tip is in the middle.
@@ -99,6 +138,10 @@ struct TipPicker: View {
 
 struct PowerGauge: View {
     let model: ShowpieceModel
+    /// Which controls are open (a lesson's guided tries close some).
+    var open: ShotControls = .all
+    /// The lesson's target bands, if any: the power band is drawn over the bar.
+    var zones: LessonZones? = nil
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 12
 
@@ -125,9 +168,20 @@ struct PowerGauge: View {
                         Capsule()
                             .fill(LinearGradient(colors: [palette.accent, palette.slide, Self.hot], startPoint: .leading, endPoint: .trailing))
                             .mask(alignment: .leading) { Capsule().frame(width: max(barHeight, geo.size.width * fraction)) }
+                        // A lesson's target band: the stretch of the bar where the shot works.
+                        if let band = zones?.power {
+                            let lo = powerFraction(band.lowerBound), hi = powerFraction(band.upperBound)
+                            RoundedRectangle(cornerRadius: 3)
+                                .strokeBorder(palette.paper.opacity(0.95 * (zones?.strength ?? 1)), lineWidth: 1.5)
+                                .background(RoundedRectangle(cornerRadius: 3).fill(palette.paper.opacity(0.25 * (zones?.strength ?? 1))))
+                                .frame(width: max(4, geo.size.width * (hi - lo)), height: barHeight + 6)
+                                .offset(x: geo.size.width * lo)
+                                .allowsHitTesting(false)
+                        }
                     }
                     .contentShape(Rectangle().inset(by: -16))
                     .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                        guard open.contains(.power) else { return }
                         model.powerFraction = Double(value.location.x / max(1, geo.size.width))
                     })
                 }
@@ -148,6 +202,14 @@ struct PowerGauge: View {
             }
         }
         .help("Strike power. Pull back from the cue ball on the table, or drag here.")
+        .disabled(!open.contains(.power))
+        .lockedForStep(!open.contains(.power))
+    }
+
+    /// A launch speed as a share of the bar, 0 at its soft end, 1 at its hard end (the gauge's own fraction).
+    private func powerFraction(_ speed: Double) -> CGFloat {
+        let r = model.powerRange
+        return CGFloat(min(max((speed - r.lowerBound) / (r.upperBound - r.lowerBound), 0), 1))
     }
 
     /// The hard end of the bar: a warm red that still reads on glass.
@@ -168,5 +230,23 @@ struct PowerGauge: View {
         .help(Text(label))
         // The whole gauge is one adjustable element for VoiceOver already; these are for touch and pointer.
         .accessibilityHidden(true)
+    }
+}
+
+// MARK: Locked for this step
+
+extension View {
+    /// A shot control a lesson has locked for this step: dimmed, a small lock at its corner, and VoiceOver told why it
+    /// does not respond. Used by the gauges here, the shot panel's sliders and the cue-angle menu.
+    @ViewBuilder func lockedForStep(_ locked: Bool) -> some View {
+        if locked {
+            self.opacity(0.45)
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "lock.fill").font(.caption2).foregroundStyle(.secondary).accessibilityHidden(true)
+                }
+                .accessibilityHint(String(localized: "Locked for this step"))
+        } else {
+            self
+        }
     }
 }

@@ -35,6 +35,11 @@
 //          layer is up, and the controller turns the aim the way the arrow keys do on this camera.)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, one hook in the drawing: the guide stops at the
 //          first bumper, standing pin or hole on a small table, AimGeometry.obstacleDistance, as it does at a ball.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons: the layer takes the open controls and the lesson's target
+//          bands. While a lesson has locked the aim, a drag on the table no longer swings the line and the Aim element
+//          tells VoiceOver "Locked for this step" (the model refuses the change from every route anyway); a locked power
+//          ignores the pull-back. A lesson's aim band is drawn as a faint fan from the cue ball, so the cut lesson's
+//          try 2 shows where the line has to go.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -69,6 +74,10 @@ struct AimOverlay: View {
     let bridge: SceneBridge
     /// Closed by the break: the cold open takes over the screen.
     @Binding var isOpen: Bool
+    /// Which controls are open (a lesson's guided tries close some): aim and power are this layer's.
+    var open: ShotControls = .all
+    /// The lesson's target bands, if any; this layer draws the aim band.
+    var zones: LessonZones? = nil
 
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
@@ -151,7 +160,8 @@ struct AimOverlay: View {
             .accessibilityElement()
             .accessibilityLabel("Aim")
             .accessibilityValue(spokenAim)
-            .accessibilityHint("Swipe up or down to turn the aim. Use the more menu for the sliders.")
+            .accessibilityHint(open.contains(.aim) ? String(localized: "Swipe up or down to turn the aim. Use the more menu for the sliders.")
+                                                   : String(localized: "Locked for this step"))
             .accessibilitySortPriority(20_000)
             .accessibilityAdjustableAction { direction in
                 switch direction {
@@ -351,9 +361,11 @@ struct AimOverlay: View {
         guard let spot = proj.table(at: location) else { return }
         switch mode {
         case .aim:
+            // A lesson step with the aim locked: the line stays where the lesson set it.
+            guard open.contains(.aim) else { return }
             model.aim(toward: spot)
         case .pull:
-            guard hypot(location.x - start.x, location.y - start.y) > pullSlop else { return }
+            guard open.contains(.power), hypot(location.x - start.x, location.y - start.y) > pullSlop else { return }
             // How far the finger is behind the cue ball, measured along the aim line, on the table itself.
             let behind = (model.aimOrigin - spot).dot(model.aimDirection)
             model.powerFraction = behind / ShowpieceModel.pullReach
@@ -467,6 +479,10 @@ struct AimOverlay: View {
         // label names it beside its head.
         if model.showsBridge { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
 
+        // A lesson's aim band: a faint fan from the cue ball between the two edge aims of the window, as far as the
+        // first ball the middle of the band meets (or half a metre), so the line can be swung into it.
+        if let band = zones?.aim { drawAimBand(&ctx, proj, origin: origin, band: band, radius: radius) }
+
         // The aim line: a soft wide halo under a thin bright core, from the ball's edge to where the cue ball stops.
         // When that is a ball, the last third of the line fades out into the contact, so the line reads as ending
         // there rather than running on; a line that ends at the cushion or a short way out stays solid.
@@ -527,6 +543,28 @@ struct AimOverlay: View {
             ctx.fill(Path(roundedRect: badge, cornerRadius: badge.height / 2), with: .color(.black.opacity(0.65)))
             ctx.draw(text, at: CGPoint(x: badge.midX, y: badge.midY))
         }
+    }
+
+    /// The fan for a lesson's aim band (degrees on the table plan), filled faintly and edged, lying on the cloth.
+    private func drawAimBand(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, band: ClosedRange<Double>,
+                             radius: Double) {
+        func unitAt(_ deg: Double) -> Vec2 { Vec2(cos(deg * Double.pi / 180), sin(deg * Double.pi / 180)) }
+        let mid = unitAt((band.lowerBound + band.upperBound) / 2)
+        let reach = AimGeometry.firstContact(layout: model.layout, from: origin, direction: mid, radius: radius)
+            .map { ($0.ghost - origin).length } ?? 0.5
+        let steps = 12
+        var fan = Path()
+        guard let o = proj.screen(origin + mid * radius, height: 0.001) else { return }
+        fan.move(to: o)
+        for i in 0...steps {
+            let a = band.lowerBound + (band.upperBound - band.lowerBound) * Double(i) / Double(steps)
+            guard let p = proj.screen(origin + unitAt(a) * reach, height: 0.001) else { return }
+            fan.addLine(to: p)
+        }
+        fan.closeSubpath()
+        let strength = zones?.strength ?? 1
+        ctx.fill(fan, with: .color(palette.paper.opacity(0.16 * strength)))
+        ctx.stroke(fan, with: .color(palette.paper.opacity(0.7 * strength)), style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
     }
 
     /// A small label so a first-time player knows what the new shape on the cloth is: the mechanical bridge (the

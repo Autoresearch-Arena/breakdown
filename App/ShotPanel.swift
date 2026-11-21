@@ -25,6 +25,10 @@
 //          travel (model.tipLimit) instead of the old fixed value.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the gesture hint no longer caps the text size; it scrolls inside its
 //          own height at the largest sizes instead.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lessons: the panel hands the model's open controls and the lesson's
+//          target bands (ShotControls, LessonZones) to the tip picture, the power gauge and the cue-angle menu; a
+//          locked control is dimmed with a lock mark and VoiceOver hears "Locked for this step"; Aim at nearest ball
+//          and the fine-control sliders respect the same locks; the free-play items stay out of a lesson.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -66,8 +70,8 @@ struct ShotPanel: View {
 
     private var oneRow: some View {
         HStack(spacing: 10) {
-            TipPicker(model: model)
-            PowerGauge(model: model).frame(minWidth: 84)
+            TipPicker(model: model, open: open, zones: zones)
+            PowerGauge(model: model, open: open, zones: zones).frame(minWidth: 84)
             cueAngle
             tryAgainButton
             fireButton
@@ -78,8 +82,8 @@ struct ShotPanel: View {
     private var twoRows: some View {
         VStack(spacing: 6) {
             HStack(spacing: 12) {
-                TipPicker(model: model)
-                PowerGauge(model: model)
+                TipPicker(model: model, open: open, zones: zones)
+                PowerGauge(model: model, open: open, zones: zones)
             }
             HStack(spacing: 10) {
                 moreMenu
@@ -95,8 +99,8 @@ struct ShotPanel: View {
     private var stacked: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
-                TipPicker(model: model)
-                PowerGauge(model: model)
+                TipPicker(model: model, open: open, zones: zones)
+                PowerGauge(model: model, open: open, zones: zones)
             }
             HStack(spacing: 10) {
                 moreMenu
@@ -108,6 +112,11 @@ struct ShotPanel: View {
     }
 
     // MARK: Pieces
+
+    /// Which controls are open now and the lesson's target bands, if any (everything open, nothing marked, outside a
+    /// lesson's guided tries). Handed to each control so it can dim itself and draw its band.
+    private var open: ShotControls { model.openControls }
+    private var zones: LessonZones? { model.lessonZones }
 
     private var fireButton: some View {
         Button {
@@ -137,13 +146,14 @@ struct ShotPanel: View {
 
     /// True in plain free play: no match, no trick shot, no Behind the 8-Ball situation on the table.
     private var freePlay: Bool {
-        model.match == nil && !model.trickMode.isActive && !model.eightBallMode.isActive
+        model.match == nil && !model.trickMode.isActive && !model.eightBallMode.isActive && !model.lessonMode.isActive
     }
 
     /// The raised cue, where the model allows it (free play and matches) and for a shot rather than the break.
     @ViewBuilder private var cueAngle: some View {
         if model.elevationAllowed && !model.racked {
-            CueAngleMenu(sine: $model.shotElevation, minHeight: Self.buttonHeight)
+            CueAngleMenu(sine: $model.shotElevation, minHeight: Self.buttonHeight, zone: zones?.cueAngles,
+                         zoneStrength: zones?.strength ?? 1, locked: !open.contains(.elevation))
                 .controlSize(.regular)
         }
     }
@@ -182,6 +192,7 @@ struct ShotPanel: View {
             Button { slidersOpen = true } label: { Label("Fine controls", systemImage: "slider.horizontal.3") }
             if !model.racked {
                 Button { model.aimAtNearestBall() } label: { Label("Aim at nearest ball", systemImage: "scope") }
+                    .disabled(!open.contains(.aim))
             }
             if freePlay {
                 // Practice players move the cue ball all the time: the same placement state as ball in hand.
@@ -282,18 +293,23 @@ private struct FineControls: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 4) {
+                    // A lesson's locked controls are greyed out here too (the model refuses the change anyway).
+                    let open = model.openControls
                     if model.racked {
                         SliderRow(label: "Aim", value: $model.aimOffset, range: -ShowpieceModel.breakAimLimit...ShowpieceModel.breakAimLimit,
                                   readout: String(format: "%+.0f mm", model.aimOffset * 1000))
                     } else {
-                        aimRow
+                        aimRow.disabled(!open.contains(.aim)).lockedForStep(!open.contains(.aim))
                     }
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
                               range: model.powerRange, readout: PowerWords.readout(speed: model.activePower, racked: model.racked))
+                        .disabled(!open.contains(.power)).lockedForStep(!open.contains(.power))
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
                               range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
+                        .disabled(!open.contains(.tipUp)).lockedForStep(!open.contains(.tipUp))
                     SliderRow(label: "Side", value: Binding(get: { model.activeTipSide }, set: { model.activeTipSide = $0 }),
                               range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.sideWord(model.activeTipSide)))
+                        .disabled(!open.contains(.tipSide)).lockedForStep(!open.contains(.tipSide))
                     if model.elevationAllowed && !model.racked {
                         // Degrees on the slider, the sine in the model (the solver's unit). The top is the last angle
                         // the cue-angle menu offers, short of where the cue rig stops pitching the cue.
@@ -302,6 +318,7 @@ private struct FineControls: View {
                                                  set: { model.shotElevation = $0 < 0.5 ? 0 : sin($0 * .pi / 180) }),
                                   range: 0...Double(CueAngleMenu.angles.last ?? 80),
                                   readout: CueAngleMenu.words(degrees: asin(min(max(model.shotElevation, 0), 0.995)) * 180 / .pi))
+                        .disabled(!open.contains(.elevation)).lockedForStep(!open.contains(.elevation))
                     }
                     Button {
                         sheetOpen = false
