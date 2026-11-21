@@ -1,29 +1,37 @@
 <!--
 Author: GPT-6.1 Sol (inherited reasoning)
 Date: 10-November-2026
-PURPOSE: Show unfinished game work and concrete completion checks, grounded in existing design milestones.
-SRP/DRY check: Pass — checked existing README, specification and history; links retain one source for detailed design.
+Edited: Claude Opus 5.5 High, 21-November-2026 (replaced with a pointer to the order-of-work plan of 21 November, per
+        plans/21-Nov-2026-release-safety-plan.md package 4; the items that are done (pocket jaws and knuckles, spin and
+        elevation controls, trick shots, replay comparison) are removed rather than repeated here).
+PURPOSE: Say in one place where the list of unfinished work lives and what is next, without duplicating the plans.
+SRP/DRY check: Pass - the plans folder holds the steps; this page only points at them and names the order.
 -->
 # Roadmap
 
-Breakdown has a running pool prototype. The work below extends that game; it is not a promise that every feature is underway or a declaration of hours committed to a program.
+The work still to do is planned in the plans folder, and its front page says what comes first and why:
+[plans/21-Nov-2026-award-gaps-order-plan.md](plans/21-Nov-2026-award-gaps-order-plan.md). That page is the roadmap;
+this one only summarises it.
 
-## Next playable milestone
+## Next, in order
 
-- Complete pocket jaws and knuckles. Slow centered shots should drop, while near-jaw shots should rebound or rattle with the events visible in replay.
-- Extend aim, cue-tip offset and elevation controls beyond the current break. Verify follow, draw and side-spin shots through recorded outcomes, not only visual effects.
-- Check the game on a physical iPhone and Mac: sound, touch and pointer controls, window resizing and readable Lens captions. Capture and inspect the key opening/replay states.
+1. **Prove the physics.** Finish the spec's test list, check the physics against real-table behaviour, and put every
+   physics change behind a switch so authored shots keep working (physics proof plan). The tests run before every
+   upload (release safety plan).
+2. **Make it real.** Real rails, a real cue strike with miscues, pockets that can refuse a fast ball, and a guard
+   against wedged balls (rails, cue-strike, and pockets-and-jams plans).
+3. **Play a real game.** Eight-ball and nine-ball for two players with turns, fouls, ball in hand and a winner (rules
+   and games plan), then a computer opponent.
+4. **Tune once, re-author once.** Tune the guessed numbers against the real-table checks, re-author every trick shot
+   and puzzle on the new physics, and make it the default (physics proof plan, package 4).
+5. **Finish the rest.** The opening for a first-time player and lessons, the look of the table up close, iPad and Mac
+   as themselves, the table spoken aloud for blind players, sound, and scores on the other three tables (their plans
+   in the same folder).
 
-## Explain and teach
+## Later
 
-- Add spin rings, what-if ghost shots and captions selected from recorded physics events. Scrubbing must show the same event state in either direction.
-- Build guided lessons for stun, follow, draw and throw, with a clear debrief explaining the outcome.
-- Add trick-shot and prediction challenges. Before sharing deterministic daily seeds, verify repeatability across the supported devices.
-
-## Polish and later engine work
-
-- Improve accessibility and Reduced Motion, controller support and recorded clip export.
-- The [engine decision](docs/2026-11-03-duo-research.md#engine-decision-updated-boss-11-november-2026-native-for-pool-unreal-kept-for-smashing) ships the pool launch natively in Swift for iPhone Duo and keeps Unreal for the later smashing phase. If smashing moves to Unreal, a port must preserve the Lens event model and verify the solver against the reference tests. No Unreal project is committed yet.
-- Scan-and-smash remains a later design exploration, not current functionality. Device-specific claims in the older research notes need primary-source verification before implementation. Its potential camera/depth data and machine-learning scope require a separate program eligibility review; do not describe this repository as permanently free of such plans.
-
-The [full specification](docs/2026-11-02-breakdown-spec.md#10-milestones) retains the detailed design and acceptance lists. The current submission candidate is ordinary game/physics development; do not silently change the stated scope or claim reviewer approval.
+Scan-and-smash (the Physics Lens pointed at a scanned room) remains a later design idea, not current work. Its design
+is in the spec, section 12; nothing of it is built. Device claims in the older research notes need checking before any
+of it is started. The [engine decision](docs/2026-11-03-duo-research.md) ships pool natively in Swift and keeps Unreal
+for that later phase; no Unreal project is committed. Its possible camera, depth and machine-learning scope would need
+its own program eligibility review, so do not describe this repository as permanently free of such plans.

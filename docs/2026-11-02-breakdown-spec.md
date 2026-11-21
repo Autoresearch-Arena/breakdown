@@ -5,6 +5,53 @@ Date: 02-November-2026
 PURPOSE: This document decides what "Breakdown" is and how we build it. Part One is the short plain-language pitch for the Boss. Part Two is the build spec for whoever writes the code: pillars, architecture, physics design, the Physics Lens, controls, modes, feel, platform setup, tests, milestones, risks, and the later scan-and-smash phase. It merges four research notes (billiards physics, Apple platform verification, game and Lens design, scan-to-smash) and settles every conflict between them.
 Status: final draft for the Boss
 Reviewed: API check against local SDKs, physics check, Boss-fit check
+Edited: Claude Opus 5.5 High, 21-November-2026 (the status note below, per plans/21-Nov-2026-release-safety-plan.md
+package 4; the spec itself is unchanged and stays the design record).
+
+## Status note, 21 November 2026: what is built, what is planned, what is dropped
+
+The spec below is the design record and is not rewritten. This note says where each part stands, so nobody mistakes a
+design for a feature. "Planned" names the plan in the plans folder that builds it; the order of the plans is on
+[the front page](../plans/21-Nov-2026-award-gaps-order-plan.md).
+
+Built:
+
+- Architecture (section 2): the native Swift app and the local package, with the event model, the recorded timeline,
+  the solver, and now a fourth module for the rules of match games.
+- Physics model and events (3.1, 3.2): sliding, rolling, spinning in place, at rest and in the air, with exact event
+  times; ball-ball impacts with friction (3.3); pockets with jaws and knuckles that rattle and reject a clipped ball;
+  cue elevation, massé and jump; the numerics and determinism rules of 3.5 on one machine.
+- The Physics Lens (section 4), controls and camera on iPhone and Mac (section 5), sound and haptics (section 7), and
+  the iPhone Duo layout (section 14).
+- Game modes (section 6): the cold open, free play, and authored trick-shot challenges (ten shots), plus a mode the
+  spec did not have, Behind the 8-Ball (twelve escape puzzles). Also beyond the spec: three more tables (bumper pool,
+  five-pin, bar billiards), ten playing surfaces and twelve languages.
+- Tests (9.1): every item has a test or a written reason (the list is at the top of
+  Packages/BreakdownCore/Tests/BreakdownCoreTests/SpecItemTests.swift), except 3b, 4 and 12, which are written with
+  the rails and cue-strike work. The validation suite (9.1b) exists as RealWorldTests: eleven real-table checks with
+  stated bands, the ones waiting on that work marked as expected failures. All of them run before every upload.
+
+Planned:
+
+- Physics switch, finished tests, real-table checks, then tuning every number marked "calibrate" and re-authoring the
+  content once: plans/21-Nov-2026-physics-proof-plan.md.
+- The Level A cushion as specified in 3.3 (nose above the ball's centre, speed-dependent bounce; today's rail is a flat
+  wall): plans/21-Nov-2026-rails-plan.md.
+- The cue strike's speed loss with offset, squirt and miscue (3.3; today side spin is free):
+  plans/21-Nov-2026-cue-strike-plan.md.
+- Pocket capture that can refuse a fast ball, entry speed and angle on the event (3.2, 3.3), and the jam guard of 3.5:
+  plans/21-Nov-2026-pockets-and-jams-plan.md.
+- Eight-ball and nine-ball for two, then a computer opponent (section 6): plans/21-Nov-2026-rules-games-plan.md.
+- The lesson path (section 6, milestone 4): plans/21-Nov-2026-first-minute-and-lessons-plan.md.
+- Accessibility and controller support (milestone 6): plans/21-Nov-2026-accessibility-plan.md. Mac and iPad as
+  themselves: plans/21-Nov-2026-ipad-and-mac-plan.md. Sound beyond today's: plans/21-Nov-2026-sound-plan.md.
+
+Not built and not planned yet: the eight- and seven-foot tables (3.4), predict-the-shot, the break challenge, the
+daily seeded challenge and the cross-device determinism it needs (milestone 5), rewards and the Physics Journal,
+clip export and challenge links, and scan-and-smash (section 12), which stays a later phase.
+
+Dropped: the Level B cushion model (3.3). The rails plan builds Level A and says not to start Level B; tuned, Level A
+is what good simulators ship.
 
 ---
 
