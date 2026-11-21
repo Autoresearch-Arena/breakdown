@@ -50,12 +50,20 @@ enum TestShots {
         EightBallJudge.solve(start, s, on: surface)
     }
 
-    /// The attempt ShowpieceModel.record would keep for this shot. The power range is the shot panel's (the same
-    /// 0.5...8 m/s the eight-ball judge sweeps), used only for "harder" and "softer" in comparisons.
+    /// The attempt ShowpieceModel.record would keep for this shot. The power range is the player's shot range
+    /// (PlayerShotSpeed.ordinary, the same range the eight-ball judge sweeps), used only for "harder" and "softer".
+    /// The effective input is rebuilt the way the judge builds it (standard table, the surface, seed 1), so a retry
+    /// with the same settings has the same input, as the model's own attempts do.
     static func attempt(start: [Vec2], timeline: Timeline, _ s: TrickSettings, isBreak: Bool = false,
-                        breakSeed: UInt64 = 0) -> ShotAttempt {
-        ShotAttempt(isBreak: isBreak, breakSeed: breakSeed, start: start, timeline: timeline, aim: s.aim, power: s.power,
-                    powerRange: EightBallJudge.speedRange, tipUp: s.tipUp, tipSide: s.tipSide)
+                        breakSeed: UInt64 = 0, on surface: PlaySurface = .cloth) -> ShotAttempt {
+        let a = s.aim * Double.pi / 180
+        let input = NextShot.shot(from: start, direction: Vec2(cos(a), sin(a)), speed: s.power, tipUp: s.tipUp,
+                                  tipSide: s.tipSide, seed: 1, parameters: parameters(on: surface),
+                                  elevation: s.elevation ?? 0)
+        return ShotAttempt(isBreak: isBreak, breakSeed: breakSeed, start: start, timeline: timeline, aim: s.aim,
+                           power: s.power, powerRange: PlayerShotSpeed.ordinary, tipUp: s.tipUp, tipSide: s.tipSide,
+                           elevation: s.elevation ?? 0, seed: isBreak ? breakSeed : 1, input: input, surface: surface,
+                           table: .standard, generation: input.parameters.modelGeneration)
     }
 
     // MARK: Hand-made recordings

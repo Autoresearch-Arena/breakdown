@@ -86,7 +86,7 @@ final class SelfCheckTests: XCTestCase {
         let again = TestShots.attempt(start: input.positions, timeline: TestShots.shot(from: input.positions, s), s)
         XCTAssertTrue(ShowpieceModel.sameSettings(first, again))
         XCTAssertEqual(first.motionHash, again.motionHash, "the same shot played twice moved differently")
-        XCTAssertEqual(ShotComparison.describe(previous: first, current: again),
+        XCTAssertEqual(ShotComparison.describe(RetryComparison.between(first, again), previous: first, current: again),
                        String(localized: "Same shot, same result. The physics is exact, so nothing changes unless you do."))
 
         // Follow instead of draw: a different shot, and the comparison says what changed.
@@ -96,7 +96,7 @@ final class SelfCheckTests: XCTestCase {
                                         follow)
         XCTAssertFalse(ShowpieceModel.sameSettings(first, changed))
         XCTAssertNotEqual(first.motionHash, changed.motionHash)
-        XCTAssertNotEqual(ShotComparison.describe(previous: first, current: changed),
+        XCTAssertNotEqual(ShotComparison.describe(RetryComparison.between(first, changed), previous: first, current: changed),
                           String(localized: "Same shot, same result. The physics is exact, so nothing changes unless you do."))
     }
 

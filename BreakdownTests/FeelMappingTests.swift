@@ -105,9 +105,11 @@ final class FeelMappingTests: XCTestCase {
         XCTAssertEqual(FeelMapping.pocketStrength(drop(speed: 1.2)), 0.6, accuracy: 1e-12)
         XCTAssertEqual(FeelMapping.pocketStrength(drop(speed: 3)), 1, accuracy: 1e-12)
         let cues = FeelMapping.cues(for: [drop(speed: 0.5), drop(speed: 1.6), drop(speed: 1.0)])
-        XCTAssertEqual(cues.count, 1, "several drops in one frame are one rattle")
-        XCTAssertEqual(cues.first?.kind, .pocket)
-        XCTAssertEqual(cues.first?.strength ?? 0, 0.8, accuracy: 1e-12, "the fastest arrival decides")
+        // One pocket cue, then the settling knocks the sound stream added (timed from that same fastest drop).
+        let drops = cues.filter { $0.kind == .pocket }
+        XCTAssertEqual(drops.count, 1, "several drops in one frame are one rattle")
+        XCTAssertEqual(drops.first?.strength ?? 0, 0.8, accuracy: 1e-12, "the fastest arrival decides")
+        XCTAssertTrue(cues.allSatisfy { $0.kind == .pocket || $0.kind == .knock }, "only the drop and its knocks")
     }
 
     func testARealBreakNeverFloodsAFrame() {

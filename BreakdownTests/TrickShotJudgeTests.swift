@@ -42,11 +42,11 @@ final class TrickShotJudgeTests: XCTestCase {
     func testAFarTooSoftStrokeIsAMissWithAdvice() {
         for shot in TrickShots.all where !shot.pending {
             var soft = shot.solution
-            // A fifth of the authored speed: several power windows outside every measured one (the widest power
-            // half-width in the library is well under half the answer's speed), so no goal can still be met.
-            soft.power *= 0.2
+            // A tenth of the authored speed, so no goal can still be met. (A fifth was tried first: Throw It In still
+            // dropped its ball at a fifth, which is honest physics, since throw grows as the hit gets softer.)
+            soft.power *= 0.1
             let verdict = TrickShotJudge.verdict(for: shot, attempt: play(shot, soft))
-            XCTAssertFalse(verdict.made, "\(shot.id): a fifth of the speed still made it")
+            XCTAssertFalse(verdict.made, "\(shot.id): a tenth of the speed still made it")
             XCTAssertFalse(verdict.line.isEmpty, shot.id)
             XCTAssertNotEqual(verdict.line, shot.praise, shot.id)
             // With aim and tip exactly on the answer, power is the only setting off, so the advice must name it,

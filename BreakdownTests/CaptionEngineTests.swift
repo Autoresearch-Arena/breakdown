@@ -142,14 +142,15 @@ final class CaptionEngineTests: XCTestCase {
         let pin = LensEvent(time: 1, kind: .pinDown, point: .zero, normal: Vec2(1, 0), balls: [TestShots.ball(1, before: 0.3, after: 0.25)],
                             feature: 0)
         XCTAssertEqual(captions([pin]).count, 1)
-        // Generation-two kinds have no words yet: they must never borrow another template's.
+        // The newer kinds have their own words: a rim skip is never captioned as a drop, a jam has its own line.
         let skip = LensEvent(time: 1, kind: .rimSkip, point: .zero, normal: Vec2(1, 0),
                              balls: [TestShots.ball(1, before: 3, after: 2.85)], pocket: 3,
                              entry: PocketEntry(speed: 3, sine: 0.1, cosine: 0.995))
         let jam = LensEvent(time: 1, kind: .settledInContact, point: .zero, normal: Vec2(1, 0),
                             balls: [TestShots.ball(1, before: 0.01, after: 0), TestShots.ball(2, before: 0.01, after: 0)],
                             energyRemoved: 0.0001)
-        XCTAssertTrue(captions([skip, jam]).isEmpty)
+        XCTAssertEqual(captions([skip]).map(\.title), [String(localized: "Too fast for the pocket")])
+        XCTAssertEqual(captions([jam]).map(\.title), [String(localized: "Wedged and settled")])
     }
 
     func testCaptionsKeepTheEventIndexAndClockOrder() {
