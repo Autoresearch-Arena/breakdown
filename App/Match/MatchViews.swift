@@ -106,7 +106,11 @@ struct MatchCard: View {
     private func rulingSentences(_ r: Ruling, _ match: MatchMode) -> [String] {
         let cueBall = match.rules.cueBall(for: r.shooter, in: match.state)
         let tl = model.timeline
-        let pocketed = (0..<tl.ballCount).filter { $0 != cueBall && tl.pocketTime[$0] != nil }
+        // Only balls that started this shot on the table: a ball pocketed on an earlier shot sits at the parking spot
+        // from the start of the recording and must not be named again.
+        let pocketed = (0..<tl.ballCount).filter {
+            $0 != cueBall && tl.pocketTime[$0] != nil && NextShot.isOnTable(tl.state(ball: $0, at: 0).position)
+        }
         return MatchWords.sentences(for: r, names: match.playerNames, pocketed: pocketed,
                                     firstBall: Self.firstBall(hitBy: cueBall, in: tl))
     }
@@ -408,7 +412,7 @@ struct BallIcon: View {
             Circle().fill(number > 8 ? ivory : colour)
             if number > 8 {
                 // The band: the middle half of the ball's height, as on the real ball.
-                Rectangle().fill(colour).frame(height: size * 0.5).clipShape(Circle())
+                Rectangle().fill(colour).frame(height: size * 0.5)
             }
             Circle().fill(ivory).frame(width: size * 0.58, height: size * 0.58)
             Text("\(number)")

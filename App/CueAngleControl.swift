@@ -19,10 +19,11 @@ struct CueAngleMenu: View {
     /// Height of the label: the cards pass their own button height so the row lines up.
     var minHeight: CGFloat = 0
 
-    /// The angles offered, in degrees above level. The same list the Behind the 8-Ball card always offered
-    /// (EightBallMode.cueAngles): fine steps up to 30 degrees, where jumps live, then coarser ones for the massé, up to
-    /// 80 degrees, short of the 84 degrees (sine 0.995) where the cue rig stops pitching the cue.
-    static let angles: [Int] = EightBallMode.cueAngles
+    /// The angles offered, in degrees above level. The same steps the Behind the 8-Ball card has always offered (the
+    /// list EightBallMode.cueAngles snaps to; written out here so this control does not reach into a puzzle mode):
+    /// fine steps up to 30 degrees, where jumps live, then coarser ones for the massé, up to 80 degrees, short of the
+    /// 84 degrees (sine 0.995) where the cue rig stops pitching the cue.
+    nonisolated static let angles: [Int] = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80]
 
     /// The offered angle nearest to a sine. Clamped to the rig's limit so a stray value can never ask for asin of more
     /// than one.
