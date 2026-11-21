@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Author: Claude Haiku 5.5 High
 # Date: 20-November-2026
+# Edited: Claude Opus 5.5 High, 21-November-2026 (positional placeholders such as %2$@ are accepted: a language may
+#          reorder the arguments, so only the kinds are compared, as scripts/translation-check.py already does).
 # PURPOSE: Merges translated Breakdown strings into App/Localizable.xcstrings, the String Catalog Xcode reads.
 #          Input: a JSON file holding {"translations": [{"culture", "key", "text"}, ...]}, which is the output of the
 #          translation step (one translator per language pair). Output: the catalog, with every English key present
@@ -20,13 +22,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "App" / "Localizable.xcstrings"
-PLACEHOLDER = re.compile(r"%(?:lld|@)")
+PLACEHOLDER = re.compile(r"%(?:\d+\$)?(lld|@)")
 ALL_LANGS = ["es", "fr", "de", "it", "pt", "pt-BR", "ja", "ko", "zh-Hans", "ru", "ar"]
 
 
 def placeholders(text):
     """The placeholders in a line, as a sorted list, so the English and the translation can be compared exactly."""
-    return sorted(PLACEHOLDER.findall(text))
+    # A positional placeholder (%2$@) lets a language put the arguments in its own order; only the kinds must match,
+    # so the position is dropped before comparing.
+    return sorted("%" + kind for kind in PLACEHOLDER.findall(text))
 
 
 def main(argv):

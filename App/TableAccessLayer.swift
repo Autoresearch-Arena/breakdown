@@ -16,7 +16,7 @@
 // SRP/DRY check: Pass - checked CaptionViews.LeaderState (projects one ball per frame through the RealityView's own
 //          projector for the caption ring) and AimOverlay (projects through AimProjector); this layer reuses
 //          AimProjector rather than adding work to the per-frame scene closure. The words are TableWords; the caption
-//          list for stepping is the model's (the same list DuoStory shows).
+//          list for stepping is the model's (the same list NotebookStory shows).
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
@@ -68,7 +68,7 @@ enum ShotNarration {
             bridge.matchStartSpoken = false
         }
         let version = model.timelineVersion
-        guard bridge.narratedVersion != version, model.aimReady, DuoStory.hasShot(model) else { return }
+        guard bridge.narratedVersion != version, model.aimReady, NotebookStory.hasShot(model) else { return }
         var text = summary(of: model)
         if let match = model.match {
             // The ruling is still being made while the shot is out: wait for it, then say both together.
@@ -82,7 +82,7 @@ enum ShotNarration {
     }
 
     /// True when the recording holds a real strike worth stepping through (not just balls at rest).
-    static func canStep(_ model: ShowpieceModel) -> Bool { DuoStory.hasShot(model) && !model.captions.isEmpty }
+    static func canStep(_ model: ShowpieceModel) -> Bool { NotebookStory.hasShot(model) && !model.captions.isEmpty }
 
     /// Move the replay to the next (or previous) explained moment and read its caption. Past the last one the replay
     /// goes to the end of the shot (where aiming is offered again) and says so.
@@ -165,7 +165,7 @@ struct TableAccessLayer: View {
                     Button(String(localized: "Step through the shot")) { ShotNarration.step(model, forward: true) }
                     Button(String(localized: "Step back through the shot")) { ShotNarration.step(model, forward: false) }
                 }
-                if DuoStory.hasShot(model) {
+                if NotebookStory.hasShot(model) {
                     Button(String(localized: "Say what happened")) { ShotNarration.announce(ShotNarration.summary(of: model)) }
                 }
             }

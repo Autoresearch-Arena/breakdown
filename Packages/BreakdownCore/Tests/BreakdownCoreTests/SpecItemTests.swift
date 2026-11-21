@@ -524,8 +524,9 @@ final class SpecItemTests: XCTestCase {
     // Contact times come from the same polynomials either way (swapping which ball is "first" only negates the
     // vectors, whose squares and products are unchanged), and the impact formulas are symmetric, so the outcome is
     // the same. The documented exception (spec 3.5) is a tie: two events at the very same instant are taken in ball
-    // order, and relabelling can change that order. So a hand-built shot with no ties, then thirty seeded random
-    // layouts, skipping any whose recording has two events at the same instant.
+    // order, and relabelling can change that order. So a hand-built shot with no ties, then sixty seeded random
+    // layouts, skipping any whose recording has two events at the same instant (about four in ten have one: a ball
+    // stopping and another settling share an instant often enough, measured on the first package run).
     func testItem23RelabelledBallsGiveTheSameOutcome() {
         func swapped(_ pos: [Vec2], _ i: Int, _ j: Int) -> [Vec2] { var q = pos; q.swapAt(i, j); return q }
         func compare(_ pos: [Vec2], _ i: Int, _ j: Int, dir: Vec2, speed: Double, up: Double, side: Double,
@@ -550,7 +551,7 @@ final class SpecItemTests: XCTestCase {
         func unit() -> Double { (rng.signedUnit() + 1) * 0.5 }
         let r = p.ballRadius, L = p.tableLength, W = p.tableWidth
         var compared = 0
-        for n in 0..<30 {
+        for n in 0..<60 {
             var pos = [Vec2](repeating: NextShot.offTable, count: 16)
             var placed: [Vec2] = []
             while placed.count < 5 {
