@@ -15,6 +15,8 @@
 //          Break and Shoot call the same model methods as before.
 // Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo: the fine controls open inside the side panel instead of
 //          in a sheet, so nothing covers the table.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the gesture hint no longer caps the text size; it scrolls inside its
+//          own height at the largest sizes instead.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -175,9 +177,10 @@ struct ShotPanel: View {
             .buttonBorderShape(.circle)
             .accessibilityLabel("Dismiss hint")
         }
-        // The hint is a one-off aid, not content: capped below the accessibility sizes so it cannot push the table
-        // off the screen. VoiceOver and the sliders still carry the full explanation.
-        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+        // The hint follows every text size, the largest included; past a few lines it scrolls inside its own height
+        // instead of pushing the table off the screen (accessibility plan, package 5; was a text-size cap). 150 points
+        // is about three lines of body text at the largest accessibility size, the most the panel can give it.
+        .scrollsWhenTaller(than: 150)
     }
 
     /// Height of the main buttons: the glass button adds padding, so this lands on 44 points or more on a touch screen.

@@ -23,6 +23,12 @@
 //          is on, for the follow-through).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (other tables: the scene is built and reloaded with the table kind the
 //          shot was solved on, so it redraws the table when that changes).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, packages 1, 3 and 5: the 3D picture is no longer
+//          one silent "Pool table" element. TableAccessLayer lays an element over every ball and pocket where it really
+//          is, plus a table element with "Step through the shot"; it steps aside while the shot panel is open, when
+//          the aiming layer carries the same elements. Each frame the update also reads a game controller
+//          (GameControllerInput) and lets ShotNarration speak a finished shot (and a match ruling) once; the bridge
+//          carries whether a screen reader is on and what has been said, so nothing here reads the clock in a body.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -59,6 +65,12 @@ final class SceneBridge {
     var viewSize = CGSize(width: 800, height: 600)
     /// Where the 3D view's top-left corner sits in StageSpace (negative when it extends under the safe areas).
     var viewOrigin = CGPoint.zero
+    /// VoiceOver is running, so a finished shot is spoken (ShotNarration.frame). Set from the view's environment.
+    var speaks = false
+    /// The recording (model.timelineVersion) whose summary has been spoken, so each shot is said once.
+    var narratedVersion = -1
+    /// "Ana to break" has been said for the match on the table.
+    var matchStartSpoken = false
 
     /// The free-space request for the camera, in the 3D view's own coordinates. Edges not measured yet (the first
     /// frame) fall back to the safe area plus a typical title row, which is replaced as soon as the real one arrives.
@@ -84,6 +96,8 @@ struct TableStage: View {
     var showCue = false
     let chrome: StageChrome
 
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
+
     var body: some View {
         RealityView { content in
             #if os(iOS)
@@ -99,7 +113,11 @@ struct TableStage: View {
             let projector = content
             table.subscriptions.append(content.subscribe(to: SceneEvents.Update.self) { event in
                 MainActor.assumeIsolated {
+                    // A game controller's sticks and triggers move the aim, power and tip before the frame is drawn.
+                    GameControllerInput.shared.step(event.deltaTime, model: model)
                     model.advance(event.deltaTime)
+                    // Speak a shot that has just played out (only with VoiceOver on; once per recording).
+                    ShotNarration.frame(model: model, bridge: bridge)
                     let preview: AimPreview? = (bridge.showAim || bridge.showCue) ? Self.aim(for: model) : nil
                     let aim = bridge.showAim ? preview : nil
                     let cueAim = bridge.showCue ? preview : nil
@@ -143,10 +161,16 @@ struct TableStage: View {
         // Also here, so a surface change reaches the scene even if the update closure above is not re-run for it.
         .onChange(of: model.physicsSurface) { _, new in bridge.table?.setSurface(new) }
         .ignoresSafeArea()
-        // The scene is a picture of the table; VoiceOver users drive it through the controls and captions.
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Pool table")
-        .accessibilityValue(model.lensOn ? "Physics Lens view" : "Table view")
+        // The rendered picture itself says nothing; the layer laid over it (same frame, so its projection lines up)
+        // names every ball and pocket where it is on screen and carries the table's own element. While the shot panel
+        // is open the aiming layer carries those elements instead (with double-tap to aim), so this copy is hidden.
+        .accessibilityHidden(true)
+        .overlay {
+            TableAccessLayer(model: model, bridge: bridge)
+                .accessibilityHidden(showCue)
+        }
+        .onChange(of: voiceOver, initial: true) { _, on in bridge.speaks = on }
+        .onAppear { GameControllerInput.shared.start(model: model) }
     }
 
     static func aim(for model: ShowpieceModel) -> AimPreview {

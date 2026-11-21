@@ -19,6 +19,8 @@
 //          the strip and under the side-column card; the highlighted ball gets its caption's short title as a glass
 //          chip beside the ring, flipped to stay on screen; the leader line is drawn only where the card is beside the
 //          table; LensLegendChip is headed "Physics Lens" so the blueprint view is always named. No new strings.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 4: with Differentiate Without Colour on,
+//          the Lens key draws sliding as a dashed line and rolling as a solid one, matching the trails, and says so.)
 // PURPOSE: The caption and equation card, the fixed-height caption strip, the Continue button for guided pacing, the
 //          Physics Lens key chip, and the highlight ring, on-table title chip and thin leader line that tie the words to
 //          the ball they describe. On a phone held upright the words sit in CaptionStrip under the table (ShowpieceView
@@ -246,11 +248,22 @@ struct CaptionStrip: View {
 /// as a last resort the heading drops so the row is never squeezed. Spoken as one sentence (label unchanged).
 struct LensLegendChip: View {
     @Environment(\.palette) private var palette
+    /// With Differentiate Without Colour on, the Lens draws sliding dashed and rolling solid; the key shows the same.
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
 
-    private func entry(_ name: LocalizedStringKey, _ color: Color) -> some View {
+    /// `dashed`: the sliding entry when shape must carry the meaning (Differentiate Without Colour).
+    private func entry(_ name: LocalizedStringKey, _ color: Color, dashed: Bool = false) -> some View {
         HStack(spacing: 6) {
-            // A short glowing line, like the trail it stands for.
-            Capsule().fill(color).frame(width: 16, height: 3).shadow(color: color.opacity(0.8), radius: 3)
+            // A short glowing line, like the trail it stands for: three dashes or one solid stroke.
+            Group {
+                if dashed {
+                    HStack(spacing: 2) { ForEach(0..<3, id: \.self) { _ in Capsule().fill(color).frame(width: 4, height: 3) } }
+                        .frame(width: 16)
+                } else {
+                    Capsule().fill(color).frame(width: 16, height: 3)
+                }
+            }
+            .shadow(color: color.opacity(0.8), radius: 3)
             Text(name).font(Theme.label).lineLimit(1)
         }
     }
@@ -263,22 +276,24 @@ struct LensLegendChip: View {
     }
 
     private var entries: some View {
-        HStack(spacing: 12) { entry("Sliding", palette.slide); entry("Rolling", palette.accent) }
+        HStack(spacing: 12) { entry("Sliding", palette.slide, dashed: withoutColour); entry("Rolling", palette.accent) }
     }
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 12) { heading; entries }
             VStack(alignment: .leading, spacing: 4) { heading; entries }
-            VStack(alignment: .leading, spacing: 4) { heading; entry("Sliding", palette.slide); entry("Rolling", palette.accent) }
-            VStack(alignment: .leading, spacing: 4) { entry("Sliding", palette.slide); entry("Rolling", palette.accent) }
+            VStack(alignment: .leading, spacing: 4) { heading; entry("Sliding", palette.slide, dashed: withoutColour); entry("Rolling", palette.accent) }
+            VStack(alignment: .leading, spacing: 4) { entry("Sliding", palette.slide, dashed: withoutColour); entry("Rolling", palette.accent) }
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Lens colours: amber lines show a ball sliding, cyan lines a ball rolling")
+        .accessibilityLabel(withoutColour
+            ? Text("Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling")
+            : Text("Lens colours: amber lines show a ball sliding, cyan lines a ball rolling"))
     }
 }
 

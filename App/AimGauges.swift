@@ -1,6 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 5: minus and plus buttons beside the
+//          power bar, so power can be set with single taps instead of a drag or a pull-back.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -106,21 +108,26 @@ struct PowerGauge: View {
                     .font(Theme.number)
                     .foregroundStyle(.primary)
             }
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(palette.track)
-                    // The gradient spans the whole bar and a capsule-shaped mask reveals the part below the power
-                    // level, so the fill gets warmer as power rises instead of squashing the colours into the fill.
-                    Capsule()
-                        .fill(LinearGradient(colors: [palette.accent, palette.slide, Self.hot], startPoint: .leading, endPoint: .trailing))
-                        .mask(alignment: .leading) { Capsule().frame(width: max(barHeight, geo.size.width * fraction)) }
+            HStack(spacing: 6) {
+                // One-finger power without a drag: a tap a step down, a tap a step up (accessibility plan, package 5).
+                stepButton(-Self.tapStep, systemImage: "minus", label: "Less power")
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(palette.track)
+                        // The gradient spans the whole bar and a capsule-shaped mask reveals the part below the power
+                        // level, so the fill gets warmer as power rises instead of squashing the colours into the fill.
+                        Capsule()
+                            .fill(LinearGradient(colors: [palette.accent, palette.slide, Self.hot], startPoint: .leading, endPoint: .trailing))
+                            .mask(alignment: .leading) { Capsule().frame(width: max(barHeight, geo.size.width * fraction)) }
+                    }
+                    .contentShape(Rectangle().inset(by: -16))
+                    .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                        model.powerFraction = Double(value.location.x / max(1, geo.size.width))
+                    })
                 }
-                .contentShape(Rectangle().inset(by: -16))
-                .gesture(DragGesture(minimumDistance: 0).onChanged { value in
-                    model.powerFraction = Double(value.location.x / max(1, geo.size.width))
-                })
+                .frame(height: barHeight)
+                stepButton(Self.tapStep, systemImage: "plus", label: "More power")
             }
-            .frame(height: barHeight)
         }
         .padding(.vertical, 6)
         .frame(minHeight: 44)
@@ -139,4 +146,21 @@ struct PowerGauge: View {
 
     /// The hard end of the bar: a warm red that still reads on glass.
     private static let hot = Color(red: 1.0, green: 0.30, blue: 0.25)
+
+    /// Power change per tap of the step buttons: a twentieth of the range, fine enough to set a soft roll by
+    /// tapping and coarse enough to cross the bar in a handful of taps. (VoiceOver's adjust keeps its tenth.)
+    private static let tapStep = 0.05
+
+    /// A small round minus or plus button beside the bar. Each tap is one step; nothing repeats while held.
+    private func stepButton(_ step: Double, systemImage: String, label: LocalizedStringKey) -> some View {
+        Button { model.powerFraction += step } label: {
+            Image(systemName: systemImage).font(Theme.label).frame(width: 30, height: 30)
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.circle)
+        .controlSize(.regular)   // 30 points plus the bordered circle lands on 44 or more (as ShotPanel's nudge buttons)
+        .help(Text(label))
+        // The whole gauge is one adjustable element for VoiceOver already; these are for touch and pointer.
+        .accessibilityHidden(true)
+    }
 }

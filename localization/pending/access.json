@@ -1,0 +1,4374 @@
+{
+ "keys": [
+  "Cue ball",
+  "%lld ball",
+  "%lld ball, solid",
+  "%lld ball, stripe",
+  "the head-left corner pocket",
+  "the head-right corner pocket",
+  "the foot-left corner pocket",
+  "the foot-right corner pocket",
+  "the left side pocket",
+  "the right side pocket",
+  "a hole in the bed",
+  "the head rail",
+  "the foot rail",
+  "the right rail",
+  "the left rail",
+  "in the jaws of %@",
+  "about %@ ball-widths from %@",
+  "against %@, %@ diamonds from %@",
+  "%@ diamonds from %@ and %@ diamonds from %@",
+  "%@ is in the way from the cue ball.",
+  "%lld balls on the table besides the cue ball",
+  "The cue ball hits no ball and runs to %@.",
+  "The cue ball hits no ball.",
+  "Hits %@ full.",
+  "three-quarter-ball hit",
+  "half-ball hit",
+  "quarter-ball hit",
+  "thin hit",
+  "Hits %@ with a %@, cutting it to the left.",
+  "Hits %@ with a %@, cutting it to the right.",
+  "It heads for %@.",
+  "It heads for %@, but %@ is in the way.",
+  "It goes into %@.",
+  "It just misses %@.",
+  "It misses %@ by about %@ ball-widths.",
+  "Miscue: the tip slid off the cue ball.",
+  "The cue ball hit %@ first.",
+  "The cue ball hit no ball.",
+  "%lld balls dropped: %@.",
+  "%@ dropped in %@.",
+  "%lld pins down.",
+  "The cue ball went in %@.",
+  "The cue ball left the table.",
+  "The cue ball came to rest %@.",
+  "%@ takes the solids.",
+  "%@ takes the stripes.",
+  "%@ scores %lld.",
+  "%@ wins the game.",
+  "The game is over.",
+  "%@ may play the table as it lies or have it re-racked.",
+  "%@ may spot the 8 or re-rack.",
+  "Ball in hand anywhere on the table.",
+  "Ball in hand behind the head line.",
+  "%@ to shoot.",
+  "Into the wrong cup",
+  "Own ball knocked the pins",
+  "%@ to break.",
+  "End of the shot.",
+  "Start of the shot.",
+  "Step through the shot",
+  "Step back through the shot",
+  "Say what happened",
+  "No clear pot",
+  "Clear pot for %@",
+  "Aims to pot the ball in line into this pocket",
+  "Aims straight at this ball",
+  "Aim at next ball",
+  "Aim to pot in nearest pocket",
+  "Finer",
+  "Coarser",
+  "Each step moves the aim %@ millimetres.",
+  "Each step turns the aim %@ degrees.",
+  "No ball can be hit in a straight line.",
+  "No ball can be potted in that pocket from here.",
+  "The cue ball is off the table.",
+  "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+  "Less power",
+  "More power"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Cue ball",
+   "text": "Bola blanca"
+  },
+  {
+   "culture": "fr",
+   "key": "Cue ball",
+   "text": "Bille blanche"
+  },
+  {
+   "culture": "de",
+   "key": "Cue ball",
+   "text": "Weiße Kugel"
+  },
+  {
+   "culture": "it",
+   "key": "Cue ball",
+   "text": "Palla bianca"
+  },
+  {
+   "culture": "pt",
+   "key": "Cue ball",
+   "text": "Bola branca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cue ball",
+   "text": "Bola branca"
+  },
+  {
+   "culture": "ja",
+   "key": "Cue ball",
+   "text": "手球"
+  },
+  {
+   "culture": "ko",
+   "key": "Cue ball",
+   "text": "큐볼"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cue ball",
+   "text": "白球"
+  },
+  {
+   "culture": "ru",
+   "key": "Cue ball",
+   "text": "Белый шар"
+  },
+  {
+   "culture": "ar",
+   "key": "Cue ball",
+   "text": "الكرة البيضاء"
+  },
+  {
+   "culture": "es",
+   "key": "%lld ball",
+   "text": "Bola %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld ball",
+   "text": "Bille %lld"
+  },
+  {
+   "culture": "de",
+   "key": "%lld ball",
+   "text": "%lld-Kugel"
+  },
+  {
+   "culture": "it",
+   "key": "%lld ball",
+   "text": "Palla %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld ball",
+   "text": "Bola %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld ball",
+   "text": "Bola %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld ball",
+   "text": "%lld番の球"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld ball",
+   "text": "%lld번 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld ball",
+   "text": "%lld号球"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld ball",
+   "text": "Шар %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld ball",
+   "text": "الكرة رقم %lld"
+  },
+  {
+   "culture": "es",
+   "key": "%lld ball, solid",
+   "text": "Bola %lld, lisa"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld ball, solid",
+   "text": "Bille %lld, pleine"
+  },
+  {
+   "culture": "de",
+   "key": "%lld ball, solid",
+   "text": "%lld-Kugel, volle"
+  },
+  {
+   "culture": "it",
+   "key": "%lld ball, solid",
+   "text": "Palla %lld, piena"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld ball, solid",
+   "text": "Bola %lld, lisa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld ball, solid",
+   "text": "Bola %lld, lisa"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld ball, solid",
+   "text": "%lld番の球、ソリッド"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld ball, solid",
+   "text": "%lld번 공, 솔리드"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld ball, solid",
+   "text": "%lld号球，全色球"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld ball, solid",
+   "text": "Шар %lld, сплошной"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld ball, solid",
+   "text": "الكرة رقم %lld، مصمتة"
+  },
+  {
+   "culture": "es",
+   "key": "%lld ball, stripe",
+   "text": "Bola %lld, rayada"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld ball, stripe",
+   "text": "Bille %lld, rayée"
+  },
+  {
+   "culture": "de",
+   "key": "%lld ball, stripe",
+   "text": "%lld-Kugel, halbe"
+  },
+  {
+   "culture": "it",
+   "key": "%lld ball, stripe",
+   "text": "Palla %lld, rigata"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld ball, stripe",
+   "text": "Bola %lld, listrada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld ball, stripe",
+   "text": "Bola %lld, listrada"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld ball, stripe",
+   "text": "%lld番の球、ストライプ"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld ball, stripe",
+   "text": "%lld번 공, 스트라이프"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld ball, stripe",
+   "text": "%lld号球，花色球"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld ball, stripe",
+   "text": "Шар %lld, полосатый"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld ball, stripe",
+   "text": "الكرة رقم %lld، مخططة"
+  },
+  {
+   "culture": "es",
+   "key": "the head-left corner pocket",
+   "text": "la tronera de esquina izquierda de cabecera"
+  },
+  {
+   "culture": "fr",
+   "key": "the head-left corner pocket",
+   "text": "la poche d'angle gauche de tête"
+  },
+  {
+   "culture": "de",
+   "key": "the head-left corner pocket",
+   "text": "Ecktasche Kopf links"
+  },
+  {
+   "culture": "it",
+   "key": "the head-left corner pocket",
+   "text": "buca d'angolo di testa a sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "the head-left corner pocket",
+   "text": "caçapa de canto esquerda da cabeceira"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the head-left corner pocket",
+   "text": "caçapa de canto esquerda da cabeceira"
+  },
+  {
+   "culture": "ja",
+   "key": "the head-left corner pocket",
+   "text": "ヘッド左コーナーポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "the head-left corner pocket",
+   "text": "헤드 왼쪽 코너 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the head-left corner pocket",
+   "text": "头端左角袋"
+  },
+  {
+   "culture": "ru",
+   "key": "the head-left corner pocket",
+   "text": "левая угловая луза у головы"
+  },
+  {
+   "culture": "ar",
+   "key": "the head-left corner pocket",
+   "text": "جيب زاوية الرأس الأيسر"
+  },
+  {
+   "culture": "es",
+   "key": "the head-right corner pocket",
+   "text": "la tronera de esquina derecha de cabecera"
+  },
+  {
+   "culture": "fr",
+   "key": "the head-right corner pocket",
+   "text": "la poche d'angle droite de tête"
+  },
+  {
+   "culture": "de",
+   "key": "the head-right corner pocket",
+   "text": "Ecktasche Kopf rechts"
+  },
+  {
+   "culture": "it",
+   "key": "the head-right corner pocket",
+   "text": "buca d'angolo di testa a destra"
+  },
+  {
+   "culture": "pt",
+   "key": "the head-right corner pocket",
+   "text": "caçapa de canto direita da cabeceira"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the head-right corner pocket",
+   "text": "caçapa de canto direita da cabeceira"
+  },
+  {
+   "culture": "ja",
+   "key": "the head-right corner pocket",
+   "text": "ヘッド右コーナーポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "the head-right corner pocket",
+   "text": "헤드 오른쪽 코너 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the head-right corner pocket",
+   "text": "头端右角袋"
+  },
+  {
+   "culture": "ru",
+   "key": "the head-right corner pocket",
+   "text": "правая угловая луза у головы"
+  },
+  {
+   "culture": "ar",
+   "key": "the head-right corner pocket",
+   "text": "جيب زاوية الرأس الأيمن"
+  },
+  {
+   "culture": "es",
+   "key": "the foot-left corner pocket",
+   "text": "la tronera de esquina izquierda del pie"
+  },
+  {
+   "culture": "fr",
+   "key": "the foot-left corner pocket",
+   "text": "la poche d'angle gauche du pied"
+  },
+  {
+   "culture": "de",
+   "key": "the foot-left corner pocket",
+   "text": "Ecktasche Fuß links"
+  },
+  {
+   "culture": "it",
+   "key": "the foot-left corner pocket",
+   "text": "buca d'angolo di fondo a sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "the foot-left corner pocket",
+   "text": "caçapa de canto esquerda do pé"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the foot-left corner pocket",
+   "text": "caçapa de canto esquerda do pé"
+  },
+  {
+   "culture": "ja",
+   "key": "the foot-left corner pocket",
+   "text": "フット左コーナーポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "the foot-left corner pocket",
+   "text": "풋 왼쪽 코너 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the foot-left corner pocket",
+   "text": "脚端左角袋"
+  },
+  {
+   "culture": "ru",
+   "key": "the foot-left corner pocket",
+   "text": "левая угловая луза у ног"
+  },
+  {
+   "culture": "ar",
+   "key": "the foot-left corner pocket",
+   "text": "جيب زاوية القدم الأيسر"
+  },
+  {
+   "culture": "es",
+   "key": "the foot-right corner pocket",
+   "text": "la tronera de esquina derecha del pie"
+  },
+  {
+   "culture": "fr",
+   "key": "the foot-right corner pocket",
+   "text": "la poche d'angle droite du pied"
+  },
+  {
+   "culture": "de",
+   "key": "the foot-right corner pocket",
+   "text": "Ecktasche Fuß rechts"
+  },
+  {
+   "culture": "it",
+   "key": "the foot-right corner pocket",
+   "text": "buca d'angolo di fondo a destra"
+  },
+  {
+   "culture": "pt",
+   "key": "the foot-right corner pocket",
+   "text": "caçapa de canto direita do pé"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the foot-right corner pocket",
+   "text": "caçapa de canto direita do pé"
+  },
+  {
+   "culture": "ja",
+   "key": "the foot-right corner pocket",
+   "text": "フット右コーナーポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "the foot-right corner pocket",
+   "text": "풋 오른쪽 코너 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the foot-right corner pocket",
+   "text": "脚端右角袋"
+  },
+  {
+   "culture": "ru",
+   "key": "the foot-right corner pocket",
+   "text": "правая угловая луза у ног"
+  },
+  {
+   "culture": "ar",
+   "key": "the foot-right corner pocket",
+   "text": "جيب زاوية القدم الأيمن"
+  },
+  {
+   "culture": "es",
+   "key": "the left side pocket",
+   "text": "la tronera lateral izquierda"
+  },
+  {
+   "culture": "fr",
+   "key": "the left side pocket",
+   "text": "la poche du milieu gauche"
+  },
+  {
+   "culture": "de",
+   "key": "the left side pocket",
+   "text": "Mitteltasche links"
+  },
+  {
+   "culture": "it",
+   "key": "the left side pocket",
+   "text": "buca centrale sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "the left side pocket",
+   "text": "caçapa lateral esquerda"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the left side pocket",
+   "text": "caçapa lateral esquerda"
+  },
+  {
+   "culture": "ja",
+   "key": "the left side pocket",
+   "text": "左サイドポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "the left side pocket",
+   "text": "왼쪽 사이드 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the left side pocket",
+   "text": "左侧中袋"
+  },
+  {
+   "culture": "ru",
+   "key": "the left side pocket",
+   "text": "левая средняя луза"
+  },
+  {
+   "culture": "ar",
+   "key": "the left side pocket",
+   "text": "الجيب الجانبي الأيسر"
+  },
+  {
+   "culture": "es",
+   "key": "the right side pocket",
+   "text": "la tronera lateral derecha"
+  },
+  {
+   "culture": "fr",
+   "key": "the right side pocket",
+   "text": "la poche du milieu droite"
+  },
+  {
+   "culture": "de",
+   "key": "the right side pocket",
+   "text": "Mitteltasche rechts"
+  },
+  {
+   "culture": "it",
+   "key": "the right side pocket",
+   "text": "buca centrale destra"
+  },
+  {
+   "culture": "pt",
+   "key": "the right side pocket",
+   "text": "caçapa lateral direita"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the right side pocket",
+   "text": "caçapa lateral direita"
+  },
+  {
+   "culture": "ja",
+   "key": "the right side pocket",
+   "text": "右サイドポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "the right side pocket",
+   "text": "오른쪽 사이드 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the right side pocket",
+   "text": "右侧中袋"
+  },
+  {
+   "culture": "ru",
+   "key": "the right side pocket",
+   "text": "правая средняя луза"
+  },
+  {
+   "culture": "ar",
+   "key": "the right side pocket",
+   "text": "الجيب الجانبي الأيمن"
+  },
+  {
+   "culture": "es",
+   "key": "a hole in the bed",
+   "text": "un agujero de la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "a hole in the bed",
+   "text": "un trou du plateau"
+  },
+  {
+   "culture": "de",
+   "key": "a hole in the bed",
+   "text": "Öffnung im Spielfeld"
+  },
+  {
+   "culture": "it",
+   "key": "a hole in the bed",
+   "text": "buca nel piano"
+  },
+  {
+   "culture": "pt",
+   "key": "a hole in the bed",
+   "text": "abertura no tampo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "a hole in the bed",
+   "text": "abertura no tampo"
+  },
+  {
+   "culture": "ja",
+   "key": "a hole in the bed",
+   "text": "台の穴"
+  },
+  {
+   "culture": "ko",
+   "key": "a hole in the bed",
+   "text": "테이블 바닥의 구멍"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "a hole in the bed",
+   "text": "台面上的洞"
+  },
+  {
+   "culture": "ru",
+   "key": "a hole in the bed",
+   "text": "отверстие в столе"
+  },
+  {
+   "culture": "ar",
+   "key": "a hole in the bed",
+   "text": "فتحة في سطح الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "the head rail",
+   "text": "la banda de cabecera"
+  },
+  {
+   "culture": "fr",
+   "key": "the head rail",
+   "text": "la bande de tête"
+  },
+  {
+   "culture": "de",
+   "key": "the head rail",
+   "text": "Kopfbande"
+  },
+  {
+   "culture": "it",
+   "key": "the head rail",
+   "text": "sponda di testa"
+  },
+  {
+   "culture": "pt",
+   "key": "the head rail",
+   "text": "tabela da cabeceira"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the head rail",
+   "text": "tabela da cabeceira"
+  },
+  {
+   "culture": "ja",
+   "key": "the head rail",
+   "text": "ヘッドレール"
+  },
+  {
+   "culture": "ko",
+   "key": "the head rail",
+   "text": "헤드 레일"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the head rail",
+   "text": "头端库边"
+  },
+  {
+   "culture": "ru",
+   "key": "the head rail",
+   "text": "головной борт"
+  },
+  {
+   "culture": "ar",
+   "key": "the head rail",
+   "text": "حافة الرأس"
+  },
+  {
+   "culture": "es",
+   "key": "the foot rail",
+   "text": "la banda del pie"
+  },
+  {
+   "culture": "fr",
+   "key": "the foot rail",
+   "text": "la bande du pied"
+  },
+  {
+   "culture": "de",
+   "key": "the foot rail",
+   "text": "Fußbande"
+  },
+  {
+   "culture": "it",
+   "key": "the foot rail",
+   "text": "sponda di fondo"
+  },
+  {
+   "culture": "pt",
+   "key": "the foot rail",
+   "text": "tabela do pé"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the foot rail",
+   "text": "tabela do pé"
+  },
+  {
+   "culture": "ja",
+   "key": "the foot rail",
+   "text": "フットレール"
+  },
+  {
+   "culture": "ko",
+   "key": "the foot rail",
+   "text": "풋 레일"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the foot rail",
+   "text": "脚端库边"
+  },
+  {
+   "culture": "ru",
+   "key": "the foot rail",
+   "text": "нижний борт"
+  },
+  {
+   "culture": "ar",
+   "key": "the foot rail",
+   "text": "حافة القدم"
+  },
+  {
+   "culture": "es",
+   "key": "the right rail",
+   "text": "la banda derecha"
+  },
+  {
+   "culture": "fr",
+   "key": "the right rail",
+   "text": "la bande droite"
+  },
+  {
+   "culture": "de",
+   "key": "the right rail",
+   "text": "Bande rechts"
+  },
+  {
+   "culture": "it",
+   "key": "the right rail",
+   "text": "sponda destra"
+  },
+  {
+   "culture": "pt",
+   "key": "the right rail",
+   "text": "tabela direita"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the right rail",
+   "text": "tabela direita"
+  },
+  {
+   "culture": "ja",
+   "key": "the right rail",
+   "text": "右レール"
+  },
+  {
+   "culture": "ko",
+   "key": "the right rail",
+   "text": "오른쪽 레일"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the right rail",
+   "text": "右侧库边"
+  },
+  {
+   "culture": "ru",
+   "key": "the right rail",
+   "text": "правый борт"
+  },
+  {
+   "culture": "ar",
+   "key": "the right rail",
+   "text": "الحافة اليمنى"
+  },
+  {
+   "culture": "es",
+   "key": "the left rail",
+   "text": "la banda izquierda"
+  },
+  {
+   "culture": "fr",
+   "key": "the left rail",
+   "text": "la bande gauche"
+  },
+  {
+   "culture": "de",
+   "key": "the left rail",
+   "text": "Bande links"
+  },
+  {
+   "culture": "it",
+   "key": "the left rail",
+   "text": "sponda sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "the left rail",
+   "text": "tabela esquerda"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the left rail",
+   "text": "tabela esquerda"
+  },
+  {
+   "culture": "ja",
+   "key": "the left rail",
+   "text": "左レール"
+  },
+  {
+   "culture": "ko",
+   "key": "the left rail",
+   "text": "왼쪽 레일"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the left rail",
+   "text": "左侧库边"
+  },
+  {
+   "culture": "ru",
+   "key": "the left rail",
+   "text": "левый борт"
+  },
+  {
+   "culture": "ar",
+   "key": "the left rail",
+   "text": "الحافة اليسرى"
+  },
+  {
+   "culture": "es",
+   "key": "in the jaws of %@",
+   "text": "en la boca de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "in the jaws of %@",
+   "text": "dans l'entrée de %@"
+  },
+  {
+   "culture": "de",
+   "key": "in the jaws of %@",
+   "text": "im Eingang der %@"
+  },
+  {
+   "culture": "it",
+   "key": "in the jaws of %@",
+   "text": "all'imbocco della %@"
+  },
+  {
+   "culture": "pt",
+   "key": "in the jaws of %@",
+   "text": "na boca da %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "in the jaws of %@",
+   "text": "na boca da %@"
+  },
+  {
+   "culture": "ja",
+   "key": "in the jaws of %@",
+   "text": "%@の入口"
+  },
+  {
+   "culture": "ko",
+   "key": "in the jaws of %@",
+   "text": "%@ 입구"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "in the jaws of %@",
+   "text": "在%@袋口"
+  },
+  {
+   "culture": "ru",
+   "key": "in the jaws of %@",
+   "text": "в створе: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "in the jaws of %@",
+   "text": "عند فتحة %@"
+  },
+  {
+   "culture": "es",
+   "key": "about %@ ball-widths from %@",
+   "text": "a unas %@ bolas de distancia de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "about %@ ball-widths from %@",
+   "text": "à environ %@ largeurs de bille de %@"
+  },
+  {
+   "culture": "de",
+   "key": "about %@ ball-widths from %@",
+   "text": "etwa %@ Kugelbreiten von der %@"
+  },
+  {
+   "culture": "it",
+   "key": "about %@ ball-widths from %@",
+   "text": "a circa %@ palle di distanza dalla %@"
+  },
+  {
+   "culture": "pt",
+   "key": "about %@ ball-widths from %@",
+   "text": "a cerca de %@ bolas de distância da %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "about %@ ball-widths from %@",
+   "text": "a cerca de %@ bolas de distância da %@"
+  },
+  {
+   "culture": "ja",
+   "key": "about %@ ball-widths from %@",
+   "text": "%2$@から約%1$@球分"
+  },
+  {
+   "culture": "ko",
+   "key": "about %@ ball-widths from %@",
+   "text": "%2$@에서 약 공 %1$@개 거리"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "about %@ ball-widths from %@",
+   "text": "距%2$@约%1$@个球宽"
+  },
+  {
+   "culture": "ru",
+   "key": "about %@ ball-widths from %@",
+   "text": "примерно в %@ шарах от лузы (%@)"
+  },
+  {
+   "culture": "ar",
+   "key": "about %@ ball-widths from %@",
+   "text": "على بعد نحو %@ عرض كرة من %@"
+  },
+  {
+   "culture": "es",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "contra %@, a %@ diamantes de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "contre %@, à %@ mouches de %@"
+  },
+  {
+   "culture": "de",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "an der %@, %@ Diamanten von der %@"
+  },
+  {
+   "culture": "it",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "contro la %@, a %@ diamanti dalla %@"
+  },
+  {
+   "culture": "pt",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "encostada à %@, a %@ diamantes da %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "encostada na %@, a %@ diamantes da %@"
+  },
+  {
+   "culture": "ja",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "%1$@に接して、%3$@から%2$@ダイヤモンド"
+  },
+  {
+   "culture": "ko",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "%1$@에 붙어 있음, %3$@에서 다이아몬드 %2$@개"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "贴着%1$@，距%3$@%2$@个菱形点"
+  },
+  {
+   "culture": "ru",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "у борта (%@), в %@ ромбах от борта (%@)"
+  },
+  {
+   "culture": "ar",
+   "key": "against %@, %@ diamonds from %@",
+   "text": "ملاصقة لـ%@، على بعد %@ ماسات من %@"
+  },
+  {
+   "culture": "es",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "a %@ diamantes de %@ y a %@ diamantes de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "à %@ mouches de %@ et à %@ mouches de %@"
+  },
+  {
+   "culture": "de",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "%@ Diamanten von der %@ und %@ Diamanten von der %@"
+  },
+  {
+   "culture": "it",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "a %@ diamanti dalla %@ e a %@ diamanti dalla %@"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "a %@ diamantes da %@ e a %@ diamantes da %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "a %@ diamantes da %@ e a %@ diamantes da %@"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "%2$@から%1$@ダイヤモンド、%4$@から%3$@ダイヤモンド"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "%2$@에서 다이아몬드 %1$@개, %4$@에서 다이아몬드 %3$@개"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "距%2$@%1$@个菱形点，距%4$@%3$@个菱形点"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "в %@ ромбах от борта (%@) и в %@ ромбах от борта (%@)"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ diamonds from %@ and %@ diamonds from %@",
+   "text": "على بعد %@ ماسات من %@ و%@ ماسات من %@"
+  },
+  {
+   "culture": "es",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ se interpone desde la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ gêne depuis la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ steht im Weg zur weißen Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ è d'intralcio dalla palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ está no caminho da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ está no caminho da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@が手球からの邪魔になっています。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@이(가) 큐볼에서 가는 길을 막고 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@挡住了白球的路线。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ мешает от белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ is in the way from the cue ball.",
+   "text": "%@ تعترض الطريق من الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld bolas en la mesa además de la blanca"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld billes sur la table en plus de la blanche"
+  },
+  {
+   "culture": "de",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld Kugeln auf dem Tisch außer der weißen"
+  },
+  {
+   "culture": "it",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld palle sul tavolo oltre alla bianca"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld bolas na mesa além da branca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld bolas na mesa além da branca"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "手球のほかに%lld個の球"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "큐볼 외에 테이블 위 공 %lld개"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "除白球外台面上有%lld颗球"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "Шаров на столе, кроме белого: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld balls on the table besides the cue ball",
+   "text": "%lld كرات على الطاولة غير الكرة البيضاء"
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "La bola blanca no toca ninguna bola y llega a %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "La bille blanche ne touche aucune bille et file vers %@."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "Die weiße Kugel trifft keine Kugel und läuft zur %@."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "La palla bianca non tocca nessuna palla e arriva alla %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "A bola branca não toca em nenhuma bola e vai até à %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "A bola branca não toca em nenhuma bola e vai até a %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "手球はどの球にも当たらず%@へ進みます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "큐볼은 어떤 공도 맞히지 않고 %@까지 갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "白球不碰任何球，滚向%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "Белый шар не задевает ни одного шара и идёт к борту (%@)."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball hits no ball and runs to %@.",
+   "text": "لا تصيب الكرة البيضاء أي كرة وتصل إلى %@."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball hits no ball.",
+   "text": "La bola blanca no toca ninguna bola."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball hits no ball.",
+   "text": "La bille blanche ne touche aucune bille."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball hits no ball.",
+   "text": "Die weiße Kugel trifft keine Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball hits no ball.",
+   "text": "La palla bianca non tocca nessuna palla."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball hits no ball.",
+   "text": "A bola branca não toca em nenhuma bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball hits no ball.",
+   "text": "A bola branca não toca em nenhuma bola."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball hits no ball.",
+   "text": "手球はどの球にも当たりません。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball hits no ball.",
+   "text": "큐볼은 어떤 공도 맞히지 않습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball hits no ball.",
+   "text": "白球不碰任何球。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball hits no ball.",
+   "text": "Белый шар не задевает ни одного шара."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball hits no ball.",
+   "text": "لا تصيب الكرة البيضاء أي كرة."
+  },
+  {
+   "culture": "es",
+   "key": "Hits %@ full.",
+   "text": "Golpea %@ de lleno."
+  },
+  {
+   "culture": "fr",
+   "key": "Hits %@ full.",
+   "text": "Touche %@ pleine bille."
+  },
+  {
+   "culture": "de",
+   "key": "Hits %@ full.",
+   "text": "Trifft %@ voll."
+  },
+  {
+   "culture": "it",
+   "key": "Hits %@ full.",
+   "text": "Colpisce %@ piena."
+  },
+  {
+   "culture": "pt",
+   "key": "Hits %@ full.",
+   "text": "Acerta %@ em cheio."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hits %@ full.",
+   "text": "Acerta %@ em cheio."
+  },
+  {
+   "culture": "ja",
+   "key": "Hits %@ full.",
+   "text": "%@に厚く当たります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hits %@ full.",
+   "text": "%@을(를) 정면으로 맞힙니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hits %@ full.",
+   "text": "正面击中%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hits %@ full.",
+   "text": "Бьёт %@ в лоб."
+  },
+  {
+   "culture": "ar",
+   "key": "Hits %@ full.",
+   "text": "تصيب %@ إصابة كاملة."
+  },
+  {
+   "culture": "es",
+   "key": "three-quarter-ball hit",
+   "text": "toque de tres cuartos"
+  },
+  {
+   "culture": "fr",
+   "key": "three-quarter-ball hit",
+   "text": "coup aux trois quarts"
+  },
+  {
+   "culture": "de",
+   "key": "three-quarter-ball hit",
+   "text": "Dreiviertel-Treffer"
+  },
+  {
+   "culture": "it",
+   "key": "three-quarter-ball hit",
+   "text": "colpo a tre quarti"
+  },
+  {
+   "culture": "pt",
+   "key": "three-quarter-ball hit",
+   "text": "toque de três quartos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "three-quarter-ball hit",
+   "text": "toque de três quartos"
+  },
+  {
+   "culture": "ja",
+   "key": "three-quarter-ball hit",
+   "text": "4分の3の厚み"
+  },
+  {
+   "culture": "ko",
+   "key": "three-quarter-ball hit",
+   "text": "4분의 3 두께"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "three-quarter-ball hit",
+   "text": "四分之三厚度"
+  },
+  {
+   "culture": "ru",
+   "key": "three-quarter-ball hit",
+   "text": "удар на три четверти"
+  },
+  {
+   "culture": "ar",
+   "key": "three-quarter-ball hit",
+   "text": "إصابة بثلاثة أرباع الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "half-ball hit",
+   "text": "toque de media bola"
+  },
+  {
+   "culture": "fr",
+   "key": "half-ball hit",
+   "text": "coup demi-bille"
+  },
+  {
+   "culture": "de",
+   "key": "half-ball hit",
+   "text": "Halbkugel-Treffer"
+  },
+  {
+   "culture": "it",
+   "key": "half-ball hit",
+   "text": "colpo a mezza palla"
+  },
+  {
+   "culture": "pt",
+   "key": "half-ball hit",
+   "text": "toque de meia bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "half-ball hit",
+   "text": "toque de meia bola"
+  },
+  {
+   "culture": "ja",
+   "key": "half-ball hit",
+   "text": "2分の1の厚み"
+  },
+  {
+   "culture": "ko",
+   "key": "half-ball hit",
+   "text": "2분의 1 두께"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "half-ball hit",
+   "text": "半球厚度"
+  },
+  {
+   "culture": "ru",
+   "key": "half-ball hit",
+   "text": "удар в полшара"
+  },
+  {
+   "culture": "ar",
+   "key": "half-ball hit",
+   "text": "إصابة بنصف الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "quarter-ball hit",
+   "text": "toque de un cuarto"
+  },
+  {
+   "culture": "fr",
+   "key": "quarter-ball hit",
+   "text": "coup au quart"
+  },
+  {
+   "culture": "de",
+   "key": "quarter-ball hit",
+   "text": "Viertel-Treffer"
+  },
+  {
+   "culture": "it",
+   "key": "quarter-ball hit",
+   "text": "colpo a un quarto"
+  },
+  {
+   "culture": "pt",
+   "key": "quarter-ball hit",
+   "text": "toque de um quarto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "quarter-ball hit",
+   "text": "toque de um quarto"
+  },
+  {
+   "culture": "ja",
+   "key": "quarter-ball hit",
+   "text": "4分の1の厚み"
+  },
+  {
+   "culture": "ko",
+   "key": "quarter-ball hit",
+   "text": "4분의 1 두께"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "quarter-ball hit",
+   "text": "四分之一厚度"
+  },
+  {
+   "culture": "ru",
+   "key": "quarter-ball hit",
+   "text": "удар на четверть"
+  },
+  {
+   "culture": "ar",
+   "key": "quarter-ball hit",
+   "text": "إصابة بربع الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "thin hit",
+   "text": "toque fino"
+  },
+  {
+   "culture": "fr",
+   "key": "thin hit",
+   "text": "coup fin"
+  },
+  {
+   "culture": "de",
+   "key": "thin hit",
+   "text": "dünner Treffer"
+  },
+  {
+   "culture": "it",
+   "key": "thin hit",
+   "text": "colpo sottile"
+  },
+  {
+   "culture": "pt",
+   "key": "thin hit",
+   "text": "toque fino"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "thin hit",
+   "text": "toque fino"
+  },
+  {
+   "culture": "ja",
+   "key": "thin hit",
+   "text": "薄い当たり"
+  },
+  {
+   "culture": "ko",
+   "key": "thin hit",
+   "text": "얇은 두께"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "thin hit",
+   "text": "薄球"
+  },
+  {
+   "culture": "ru",
+   "key": "thin hit",
+   "text": "тонкий удар"
+  },
+  {
+   "culture": "ar",
+   "key": "thin hit",
+   "text": "إصابة رقيقة"
+  },
+  {
+   "culture": "es",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Golpea %@ con un %@ y la corta hacia la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Touche %@ avec un %@, en la coupant vers la gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Trifft %@ mit einem %@ und schneidet sie nach links."
+  },
+  {
+   "culture": "it",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Colpisce %@ con un %@, tagliandola a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Acerta %@ com um %@, cortando-a para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Acerta %@ com um %@, cortando-a para a esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "%@に%@で当たり、左へカットします。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "%@을(를) %@로 맞혀 왼쪽으로 깎습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "以%2$@击中%1$@，将它切向左边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "Бьёт %@: %@, срезая влево."
+  },
+  {
+   "culture": "ar",
+   "key": "Hits %@ with a %@, cutting it to the left.",
+   "text": "تصيب %@ بـ%@، وتقطعها إلى اليسار."
+  },
+  {
+   "culture": "es",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Golpea %@ con un %@ y la corta hacia la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Touche %@ avec un %@, en la coupant vers la droite."
+  },
+  {
+   "culture": "de",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Trifft %@ mit einem %@ und schneidet sie nach rechts."
+  },
+  {
+   "culture": "it",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Colpisce %@ con un %@, tagliandola a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Acerta %@ com um %@, cortando-a para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Acerta %@ com um %@, cortando-a para a direita."
+  },
+  {
+   "culture": "ja",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "%@に%@で当たり、右へカットします。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "%@을(를) %@로 맞혀 오른쪽으로 깎습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "以%2$@击中%1$@，将它切向右边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "Бьёт %@: %@, срезая вправо."
+  },
+  {
+   "culture": "ar",
+   "key": "Hits %@ with a %@, cutting it to the right.",
+   "text": "تصيب %@ بـ%@، وتقطعها إلى اليمين."
+  },
+  {
+   "culture": "es",
+   "key": "It heads for %@.",
+   "text": "Va hacia %@."
+  },
+  {
+   "culture": "fr",
+   "key": "It heads for %@.",
+   "text": "Elle part vers %@."
+  },
+  {
+   "culture": "de",
+   "key": "It heads for %@.",
+   "text": "Sie läuft zur %@."
+  },
+  {
+   "culture": "it",
+   "key": "It heads for %@.",
+   "text": "Va verso la %@."
+  },
+  {
+   "culture": "pt",
+   "key": "It heads for %@.",
+   "text": "Segue para a %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It heads for %@.",
+   "text": "Segue para a %@."
+  },
+  {
+   "culture": "ja",
+   "key": "It heads for %@.",
+   "text": "%@へ向かいます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It heads for %@.",
+   "text": "%@ 쪽으로 갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It heads for %@.",
+   "text": "它滚向%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "It heads for %@.",
+   "text": "Он идёт к борту (%@)."
+  },
+  {
+   "culture": "ar",
+   "key": "It heads for %@.",
+   "text": "تتجه نحو %@."
+  },
+  {
+   "culture": "es",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Va hacia %@, pero %@ se interpone."
+  },
+  {
+   "culture": "fr",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Elle part vers %@, mais %@ gêne."
+  },
+  {
+   "culture": "de",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Sie läuft zur %@, aber %@ steht im Weg."
+  },
+  {
+   "culture": "it",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Va verso la %@, ma %@ è d'intralcio."
+  },
+  {
+   "culture": "pt",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Segue para a %@, mas %@ está no caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Segue para a %@, mas %@ está no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "%@へ向かいますが、%@が邪魔です。"
+  },
+  {
+   "culture": "ko",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "%@ 쪽으로 가지만 %@이(가) 막고 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "它滚向%@，但%@挡在路上。"
+  },
+  {
+   "culture": "ru",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "Он идёт к лузе (%@), но мешает %@."
+  },
+  {
+   "culture": "ar",
+   "key": "It heads for %@, but %@ is in the way.",
+   "text": "تتجه نحو %@، لكن %@ تعترض الطريق."
+  },
+  {
+   "culture": "es",
+   "key": "It goes into %@.",
+   "text": "Entra en %@."
+  },
+  {
+   "culture": "fr",
+   "key": "It goes into %@.",
+   "text": "Elle entre dans %@."
+  },
+  {
+   "culture": "de",
+   "key": "It goes into %@.",
+   "text": "Sie fällt in die %@."
+  },
+  {
+   "culture": "it",
+   "key": "It goes into %@.",
+   "text": "Entra nella %@."
+  },
+  {
+   "culture": "pt",
+   "key": "It goes into %@.",
+   "text": "Entra na %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It goes into %@.",
+   "text": "Entra na %@."
+  },
+  {
+   "culture": "ja",
+   "key": "It goes into %@.",
+   "text": "%@に入ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "It goes into %@.",
+   "text": "%@에 들어갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It goes into %@.",
+   "text": "它落入%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "It goes into %@.",
+   "text": "Он попадает в лузу: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "It goes into %@.",
+   "text": "تدخل في %@."
+  },
+  {
+   "culture": "es",
+   "key": "It just misses %@.",
+   "text": "Roza %@ sin entrar."
+  },
+  {
+   "culture": "fr",
+   "key": "It just misses %@.",
+   "text": "Elle manque de peu %@."
+  },
+  {
+   "culture": "de",
+   "key": "It just misses %@.",
+   "text": "Sie verfehlt die %@ knapp."
+  },
+  {
+   "culture": "it",
+   "key": "It just misses %@.",
+   "text": "Manca di poco la %@."
+  },
+  {
+   "culture": "pt",
+   "key": "It just misses %@.",
+   "text": "Falha a %@ por pouco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It just misses %@.",
+   "text": "Erra a %@ por pouco."
+  },
+  {
+   "culture": "ja",
+   "key": "It just misses %@.",
+   "text": "%@をわずかに外れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It just misses %@.",
+   "text": "%@을(를) 아슬아슬하게 빗나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It just misses %@.",
+   "text": "它险些落入%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "It just misses %@.",
+   "text": "Он едва не попадает в лузу: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "It just misses %@.",
+   "text": "تخطئ %@ بفارق ضئيل."
+  },
+  {
+   "culture": "es",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Falla %@ por unas %@ bolas."
+  },
+  {
+   "culture": "fr",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Elle manque %@ d'environ %@ largeurs de bille."
+  },
+  {
+   "culture": "de",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Sie verfehlt die %@ um etwa %@ Kugelbreiten."
+  },
+  {
+   "culture": "it",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Manca la %@ di circa %@ palle."
+  },
+  {
+   "culture": "pt",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Falha a %@ por cerca de %@ bolas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Erra a %@ por cerca de %@ bolas."
+  },
+  {
+   "culture": "ja",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "%@を約%@球分外れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "%@을(를) 공 약 %@개만큼 빗나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "它偏离%@约%@个球宽。"
+  },
+  {
+   "culture": "ru",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "Он проходит мимо лузы (%@) примерно на %@ шара."
+  },
+  {
+   "culture": "ar",
+   "key": "It misses %@ by about %@ ball-widths.",
+   "text": "تخطئ %@ بنحو %@ عرض كرة."
+  },
+  {
+   "culture": "es",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Pifia: la suela resbaló sobre la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Fausse queue : le procédé a glissé sur la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Kicks: Die Pomeranze ist von der weißen Kugel abgerutscht."
+  },
+  {
+   "culture": "it",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Stecca: il cuoio è scivolato sulla palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Falha de taco: a sola escorregou na bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Falha de taco: a sola escorregou na bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "ミスキュー：タップが手球の上を滑りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "미스큐: 팁이 큐볼에서 미끄러졌습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "滑杆：杆头从白球上滑开了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "Кикс: наклейка соскользнула с белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Miscue: the tip slid off the cue ball.",
+   "text": "زلّة عصا: انزلق رأس العصا عن الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball hit %@ first.",
+   "text": "La bola blanca golpeó primero %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball hit %@ first.",
+   "text": "La bille blanche a touché %@ en premier."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball hit %@ first.",
+   "text": "Die weiße Kugel traf zuerst %@."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball hit %@ first.",
+   "text": "La palla bianca ha colpito prima %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball hit %@ first.",
+   "text": "A bola branca acertou primeiro %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball hit %@ first.",
+   "text": "A bola branca acertou primeiro %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball hit %@ first.",
+   "text": "手球は最初に%@に当たりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball hit %@ first.",
+   "text": "큐볼이 먼저 %@을(를) 맞혔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball hit %@ first.",
+   "text": "白球先击中了%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball hit %@ first.",
+   "text": "Белый шар первым коснулся: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball hit %@ first.",
+   "text": "أصابت الكرة البيضاء %@ أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball hit no ball.",
+   "text": "La bola blanca no tocó ninguna bola."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball hit no ball.",
+   "text": "La bille blanche n'a touché aucune bille."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball hit no ball.",
+   "text": "Die weiße Kugel traf keine Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball hit no ball.",
+   "text": "La palla bianca non ha toccato nessuna palla."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball hit no ball.",
+   "text": "A bola branca não tocou em nenhuma bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball hit no ball.",
+   "text": "A bola branca não tocou em nenhuma bola."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball hit no ball.",
+   "text": "手球はどの球にも当たりませんでした。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball hit no ball.",
+   "text": "큐볼이 어떤 공도 맞히지 못했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball hit no ball.",
+   "text": "白球没有碰到任何球。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball hit no ball.",
+   "text": "Белый шар не задел ни одного шара."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball hit no ball.",
+   "text": "لم تصب الكرة البيضاء أي كرة."
+  },
+  {
+   "culture": "es",
+   "key": "%lld balls dropped: %@.",
+   "text": "Entraron %lld bolas: %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%lld balls dropped: %@.",
+   "text": "%lld billes sont entrées : %@."
+  },
+  {
+   "culture": "de",
+   "key": "%lld balls dropped: %@.",
+   "text": "%lld Kugeln gefallen: %@."
+  },
+  {
+   "culture": "it",
+   "key": "%lld balls dropped: %@.",
+   "text": "Sono entrate %lld palle: %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%lld balls dropped: %@.",
+   "text": "Entraram %lld bolas: %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld balls dropped: %@.",
+   "text": "Entraram %lld bolas: %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%lld balls dropped: %@.",
+   "text": "%lld個の球が入りました：%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld balls dropped: %@.",
+   "text": "공 %lld개가 들어갔습니다: %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld balls dropped: %@.",
+   "text": "%lld颗球落袋：%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld balls dropped: %@.",
+   "text": "Забито шаров: %lld (%@)."
+  },
+  {
+   "culture": "ar",
+   "key": "%lld balls dropped: %@.",
+   "text": "سقطت %lld كرات: %@."
+  },
+  {
+   "culture": "es",
+   "key": "%@ dropped in %@.",
+   "text": "%@ entró en %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ dropped in %@.",
+   "text": "%@ est entrée dans %@."
+  },
+  {
+   "culture": "de",
+   "key": "%@ dropped in %@.",
+   "text": "%@ fiel in die %@."
+  },
+  {
+   "culture": "it",
+   "key": "%@ dropped in %@.",
+   "text": "%@ è entrata nella %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ dropped in %@.",
+   "text": "%@ entrou na %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ dropped in %@.",
+   "text": "%@ entrou na %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ dropped in %@.",
+   "text": "%@が%@に入りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ dropped in %@.",
+   "text": "%@이(가) %@에 들어갔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ dropped in %@.",
+   "text": "%@落入%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ dropped in %@.",
+   "text": "%@ — в лузе: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ dropped in %@.",
+   "text": "سقطت %@ في %@."
+  },
+  {
+   "culture": "es",
+   "key": "%lld pins down.",
+   "text": "%lld bolos derribados."
+  },
+  {
+   "culture": "fr",
+   "key": "%lld pins down.",
+   "text": "%lld quilles tombées."
+  },
+  {
+   "culture": "de",
+   "key": "%lld pins down.",
+   "text": "%lld Kegel gefallen."
+  },
+  {
+   "culture": "it",
+   "key": "%lld pins down.",
+   "text": "%lld birilli abbattuti."
+  },
+  {
+   "culture": "pt",
+   "key": "%lld pins down.",
+   "text": "%lld pinos derrubados."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld pins down.",
+   "text": "%lld pinos derrubados."
+  },
+  {
+   "culture": "ja",
+   "key": "%lld pins down.",
+   "text": "ピンが%lld本倒れました。"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld pins down.",
+   "text": "핀 %lld개가 쓰러졌습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld pins down.",
+   "text": "击倒%lld个柱。"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld pins down.",
+   "text": "Сбито кеглей: %lld."
+  },
+  {
+   "culture": "ar",
+   "key": "%lld pins down.",
+   "text": "سقط %lld من الأوتاد."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball went in %@.",
+   "text": "La bola blanca entró en %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball went in %@.",
+   "text": "La bille blanche est entrée dans %@."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball went in %@.",
+   "text": "Die weiße Kugel fiel in die %@."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball went in %@.",
+   "text": "La palla bianca è entrata nella %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball went in %@.",
+   "text": "A bola branca entrou na %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball went in %@.",
+   "text": "A bola branca entrou na %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball went in %@.",
+   "text": "手球が%@に入りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball went in %@.",
+   "text": "큐볼이 %@에 들어갔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball went in %@.",
+   "text": "白球落入%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball went in %@.",
+   "text": "Белый шар упал в лузу: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball went in %@.",
+   "text": "دخلت الكرة البيضاء في %@."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball left the table.",
+   "text": "La bola blanca salió de la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball left the table.",
+   "text": "La bille blanche est sortie de la table."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball left the table.",
+   "text": "Die weiße Kugel ist vom Tisch gesprungen."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball left the table.",
+   "text": "La palla bianca è uscita dal tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball left the table.",
+   "text": "A bola branca saiu da mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball left the table.",
+   "text": "A bola branca saiu da mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball left the table.",
+   "text": "手球が台の外に出ました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball left the table.",
+   "text": "큐볼이 테이블 밖으로 나갔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball left the table.",
+   "text": "白球飞出了球台。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball left the table.",
+   "text": "Белый шар вылетел со стола."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball left the table.",
+   "text": "خرجت الكرة البيضاء من الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball came to rest %@.",
+   "text": "La bola blanca se detuvo %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball came to rest %@.",
+   "text": "La bille blanche s'est arrêtée %@."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball came to rest %@.",
+   "text": "Die weiße Kugel liegt jetzt %@."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball came to rest %@.",
+   "text": "La palla bianca si è fermata %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball came to rest %@.",
+   "text": "A bola branca parou %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball came to rest %@.",
+   "text": "A bola branca parou %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball came to rest %@.",
+   "text": "手球は%@で止まりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball came to rest %@.",
+   "text": "큐볼은 %@에서 멈췄습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball came to rest %@.",
+   "text": "白球停在%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball came to rest %@.",
+   "text": "Белый шар остановился: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball came to rest %@.",
+   "text": "توقفت الكرة البيضاء %@."
+  },
+  {
+   "culture": "es",
+   "key": "%@ takes the solids.",
+   "text": "%@ se queda con las lisas."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ takes the solids.",
+   "text": "%@ prend les pleines."
+  },
+  {
+   "culture": "de",
+   "key": "%@ takes the solids.",
+   "text": "%@ spielt die Vollen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ takes the solids.",
+   "text": "%@ prende le piene."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ takes the solids.",
+   "text": "%@ fica com as lisas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ takes the solids.",
+   "text": "%@ fica com as lisas."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ takes the solids.",
+   "text": "%@はソリッドです。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ takes the solids.",
+   "text": "%@은(는) 솔리드입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ takes the solids.",
+   "text": "%@打全色球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ takes the solids.",
+   "text": "%@ играет сплошными."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ takes the solids.",
+   "text": "%@ يأخذ الكرات المصمتة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ takes the stripes.",
+   "text": "%@ se queda con las rayadas."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ takes the stripes.",
+   "text": "%@ prend les rayées."
+  },
+  {
+   "culture": "de",
+   "key": "%@ takes the stripes.",
+   "text": "%@ spielt die Halben."
+  },
+  {
+   "culture": "it",
+   "key": "%@ takes the stripes.",
+   "text": "%@ prende le rigate."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ takes the stripes.",
+   "text": "%@ fica com as listradas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ takes the stripes.",
+   "text": "%@ fica com as listradas."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ takes the stripes.",
+   "text": "%@はストライプです。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ takes the stripes.",
+   "text": "%@은(는) 스트라이프입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ takes the stripes.",
+   "text": "%@打花色球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ takes the stripes.",
+   "text": "%@ играет полосатыми."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ takes the stripes.",
+   "text": "%@ يأخذ الكرات المخططة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ scores %lld.",
+   "text": "%@ suma %lld."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ scores %lld.",
+   "text": "%@ marque %lld."
+  },
+  {
+   "culture": "de",
+   "key": "%@ scores %lld.",
+   "text": "%@ erzielt %lld."
+  },
+  {
+   "culture": "it",
+   "key": "%@ scores %lld.",
+   "text": "%@ segna %lld."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ scores %lld.",
+   "text": "%@ marca %lld."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ scores %lld.",
+   "text": "%@ marca %lld."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ scores %lld.",
+   "text": "%@が%lld点。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ scores %lld.",
+   "text": "%@ %lld점 득점."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ scores %lld.",
+   "text": "%@得%lld分。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ scores %lld.",
+   "text": "%@ получает очков: %lld."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ scores %lld.",
+   "text": "%@ يسجل %lld."
+  },
+  {
+   "culture": "es",
+   "key": "%@ wins the game.",
+   "text": "%@ gana la partida."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ wins the game.",
+   "text": "%@ gagne la partie."
+  },
+  {
+   "culture": "de",
+   "key": "%@ wins the game.",
+   "text": "%@ gewinnt das Spiel."
+  },
+  {
+   "culture": "it",
+   "key": "%@ wins the game.",
+   "text": "%@ vince la partita."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ wins the game.",
+   "text": "%@ ganha o jogo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ wins the game.",
+   "text": "%@ vence o jogo."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ wins the game.",
+   "text": "%@の勝ちです。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ wins the game.",
+   "text": "%@ 승리."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ wins the game.",
+   "text": "%@赢得本局。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ wins the game.",
+   "text": "%@ выигрывает партию."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ wins the game.",
+   "text": "%@ يفوز بالمباراة."
+  },
+  {
+   "culture": "es",
+   "key": "The game is over.",
+   "text": "La partida ha terminado."
+  },
+  {
+   "culture": "fr",
+   "key": "The game is over.",
+   "text": "La partie est terminée."
+  },
+  {
+   "culture": "de",
+   "key": "The game is over.",
+   "text": "Das Spiel ist vorbei."
+  },
+  {
+   "culture": "it",
+   "key": "The game is over.",
+   "text": "La partita è finita."
+  },
+  {
+   "culture": "pt",
+   "key": "The game is over.",
+   "text": "O jogo terminou."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The game is over.",
+   "text": "O jogo acabou."
+  },
+  {
+   "culture": "ja",
+   "key": "The game is over.",
+   "text": "ゲーム終了です。"
+  },
+  {
+   "culture": "ko",
+   "key": "The game is over.",
+   "text": "게임이 끝났습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The game is over.",
+   "text": "本局结束。"
+  },
+  {
+   "culture": "ru",
+   "key": "The game is over.",
+   "text": "Партия окончена."
+  },
+  {
+   "culture": "ar",
+   "key": "The game is over.",
+   "text": "انتهت المباراة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ puede jugar la mesa como está o pedir que se vuelva a colocar."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ peut jouer la table telle quelle ou faire remettre les billes en place."
+  },
+  {
+   "culture": "de",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ darf vom Tisch weiterspielen oder neu aufbauen lassen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ può giocare il tavolo così com'è o far ricomporre il triangolo."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ pode jogar a mesa como está ou pedir nova arrumação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ pode jogar a mesa como está ou pedir para arrumar de novo."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@はこのまま続けるか、ラックし直すかを選べます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@은(는) 이대로 치거나 다시 랙을 짜게 할 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@可以按现状继续，或要求重新摆球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "%@ может играть с текущей позиции или попросить перестановку."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ may play the table as it lies or have it re-racked.",
+   "text": "يمكن لـ%@ اللعب على الوضع الحالي أو طلب إعادة الترتيب."
+  },
+  {
+   "culture": "es",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ puede reponer la 8 o volver a colocar."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ peut replacer la 8 ou remettre les billes en place."
+  },
+  {
+   "culture": "de",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ darf die 8 aufsetzen oder neu aufbauen lassen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ può rimettere l'8 sul punto o ricomporre il triangolo."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ pode recolocar a 8 ou pedir nova arrumação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ pode recolocar a 8 ou pedir para arrumar de novo."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@は8番を戻すか、ラックし直すかを選べます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@은(는) 8번 공을 다시 놓거나 랙을 다시 짤 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@可以把8号球放回点位，或重新摆球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "%@ может вернуть восьмёрку на точку или попросить перестановку."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ may spot the 8 or re-rack.",
+   "text": "يمكن لـ%@ إعادة الكرة 8 إلى مكانها أو إعادة الترتيب."
+  },
+  {
+   "culture": "es",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Bola en mano en cualquier lugar de la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Bille en main, n'importe où sur la table."
+  },
+  {
+   "culture": "de",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Ball in Hand, überall auf dem Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Palla in mano, ovunque sul tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Bola na mão, em qualquer lugar da mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Bola na mão, em qualquer lugar da mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "フリーボール：台のどこにでも置けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "프리볼: 테이블 어디에나 놓을 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "自由球：可放在台面任意位置。"
+  },
+  {
+   "culture": "ru",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "Шар с руки, в любое место стола."
+  },
+  {
+   "culture": "ar",
+   "key": "Ball in hand anywhere on the table.",
+   "text": "الكرة في اليد، في أي مكان على الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "Ball in hand behind the head line.",
+   "text": "Bola en mano detrás de la línea de cabecera."
+  },
+  {
+   "culture": "fr",
+   "key": "Ball in hand behind the head line.",
+   "text": "Bille en main, derrière la ligne de tête."
+  },
+  {
+   "culture": "de",
+   "key": "Ball in hand behind the head line.",
+   "text": "Ball in Hand, hinter der Kopflinie."
+  },
+  {
+   "culture": "it",
+   "key": "Ball in hand behind the head line.",
+   "text": "Palla in mano, dietro la linea di testa."
+  },
+  {
+   "culture": "pt",
+   "key": "Ball in hand behind the head line.",
+   "text": "Bola na mão, atrás da linha de cabeceira."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Ball in hand behind the head line.",
+   "text": "Bola na mão, atrás da linha de cabeceira."
+  },
+  {
+   "culture": "ja",
+   "key": "Ball in hand behind the head line.",
+   "text": "フリーボール：ヘッドラインの後ろに置けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Ball in hand behind the head line.",
+   "text": "프리볼: 헤드 라인 뒤에 놓을 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Ball in hand behind the head line.",
+   "text": "自由球：放在开球线后方。"
+  },
+  {
+   "culture": "ru",
+   "key": "Ball in hand behind the head line.",
+   "text": "Шар с руки, за линией дома."
+  },
+  {
+   "culture": "ar",
+   "key": "Ball in hand behind the head line.",
+   "text": "الكرة في اليد، خلف خط الرأس."
+  },
+  {
+   "culture": "es",
+   "key": "%@ to shoot.",
+   "text": "Tira %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ to shoot.",
+   "text": "À %@ de jouer."
+  },
+  {
+   "culture": "de",
+   "key": "%@ to shoot.",
+   "text": "%@ ist am Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@ to shoot.",
+   "text": "Tocca a %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ to shoot.",
+   "text": "Joga %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ to shoot.",
+   "text": "Vez de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ to shoot.",
+   "text": "%@の番です。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ to shoot.",
+   "text": "%@ 차례입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ to shoot.",
+   "text": "轮到%@击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ to shoot.",
+   "text": "Бьёт %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ to shoot.",
+   "text": "الدور على %@."
+  },
+  {
+   "culture": "es",
+   "key": "Into the wrong cup",
+   "text": "En la copa equivocada"
+  },
+  {
+   "culture": "fr",
+   "key": "Into the wrong cup",
+   "text": "Dans le mauvais trou"
+  },
+  {
+   "culture": "de",
+   "key": "Into the wrong cup",
+   "text": "In den falschen Becher"
+  },
+  {
+   "culture": "it",
+   "key": "Into the wrong cup",
+   "text": "Nella coppa sbagliata"
+  },
+  {
+   "culture": "pt",
+   "key": "Into the wrong cup",
+   "text": "Na taça errada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Into the wrong cup",
+   "text": "Na caçapa errada"
+  },
+  {
+   "culture": "ja",
+   "key": "Into the wrong cup",
+   "text": "違うカップに入った"
+  },
+  {
+   "culture": "ko",
+   "key": "Into the wrong cup",
+   "text": "다른 컵에 들어감"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Into the wrong cup",
+   "text": "进错了杯"
+  },
+  {
+   "culture": "ru",
+   "key": "Into the wrong cup",
+   "text": "Не в ту лунку"
+  },
+  {
+   "culture": "ar",
+   "key": "Into the wrong cup",
+   "text": "في الكأس الخطأ"
+  },
+  {
+   "culture": "es",
+   "key": "Own ball knocked the pins",
+   "text": "La propia bola derribó los bolos"
+  },
+  {
+   "culture": "fr",
+   "key": "Own ball knocked the pins",
+   "text": "Sa propre bille a renversé les quilles"
+  },
+  {
+   "culture": "de",
+   "key": "Own ball knocked the pins",
+   "text": "Eigene Kugel hat Kegel umgeworfen"
+  },
+  {
+   "culture": "it",
+   "key": "Own ball knocked the pins",
+   "text": "La propria palla ha abbattuto i birilli"
+  },
+  {
+   "culture": "pt",
+   "key": "Own ball knocked the pins",
+   "text": "A própria bola derrubou os pinos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Own ball knocked the pins",
+   "text": "A própria bola derrubou os pinos"
+  },
+  {
+   "culture": "ja",
+   "key": "Own ball knocked the pins",
+   "text": "自分の球がピンを倒した"
+  },
+  {
+   "culture": "ko",
+   "key": "Own ball knocked the pins",
+   "text": "자기 공이 핀을 쓰러뜨림"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Own ball knocked the pins",
+   "text": "自己的球击倒了柱"
+  },
+  {
+   "culture": "ru",
+   "key": "Own ball knocked the pins",
+   "text": "Свой шар сбил кегли"
+  },
+  {
+   "culture": "ar",
+   "key": "Own ball knocked the pins",
+   "text": "كرتك أسقطت الأوتاد"
+  },
+  {
+   "culture": "es",
+   "key": "%@ to break.",
+   "text": "Rompe %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ to break.",
+   "text": "À %@ de casser."
+  },
+  {
+   "culture": "de",
+   "key": "%@ to break.",
+   "text": "%@ hat den Anstoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@ to break.",
+   "text": "Spacca %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ to break.",
+   "text": "Abre %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ to break.",
+   "text": "%@ abre a mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ to break.",
+   "text": "%@がブレイクします。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ to break.",
+   "text": "%@ 브레이크 차례입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ to break.",
+   "text": "由%@开球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ to break.",
+   "text": "Разбивает %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ to break.",
+   "text": "يبدأ %@ بالكسر."
+  },
+  {
+   "culture": "es",
+   "key": "End of the shot.",
+   "text": "Fin del tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "End of the shot.",
+   "text": "Fin du coup."
+  },
+  {
+   "culture": "de",
+   "key": "End of the shot.",
+   "text": "Ende des Stoßes."
+  },
+  {
+   "culture": "it",
+   "key": "End of the shot.",
+   "text": "Fine del colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "End of the shot.",
+   "text": "Fim da tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "End of the shot.",
+   "text": "Fim da tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "End of the shot.",
+   "text": "ショットの終わりです。"
+  },
+  {
+   "culture": "ko",
+   "key": "End of the shot.",
+   "text": "샷이 끝났습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "End of the shot.",
+   "text": "击球结束。"
+  },
+  {
+   "culture": "ru",
+   "key": "End of the shot.",
+   "text": "Конец удара."
+  },
+  {
+   "culture": "ar",
+   "key": "End of the shot.",
+   "text": "نهاية الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "Start of the shot.",
+   "text": "Inicio del tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Start of the shot.",
+   "text": "Début du coup."
+  },
+  {
+   "culture": "de",
+   "key": "Start of the shot.",
+   "text": "Anfang des Stoßes."
+  },
+  {
+   "culture": "it",
+   "key": "Start of the shot.",
+   "text": "Inizio del colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "Start of the shot.",
+   "text": "Início da tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Start of the shot.",
+   "text": "Início da tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Start of the shot.",
+   "text": "ショットの始まりです。"
+  },
+  {
+   "culture": "ko",
+   "key": "Start of the shot.",
+   "text": "샷의 시작입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Start of the shot.",
+   "text": "击球开始。"
+  },
+  {
+   "culture": "ru",
+   "key": "Start of the shot.",
+   "text": "Начало удара."
+  },
+  {
+   "culture": "ar",
+   "key": "Start of the shot.",
+   "text": "بداية الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "Step through the shot",
+   "text": "Recorrer el tiro paso a paso"
+  },
+  {
+   "culture": "fr",
+   "key": "Step through the shot",
+   "text": "Parcourir le coup pas à pas"
+  },
+  {
+   "culture": "de",
+   "key": "Step through the shot",
+   "text": "Stoß Schritt für Schritt"
+  },
+  {
+   "culture": "it",
+   "key": "Step through the shot",
+   "text": "Scorri il colpo passo per passo"
+  },
+  {
+   "culture": "pt",
+   "key": "Step through the shot",
+   "text": "Percorrer a tacada passo a passo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Step through the shot",
+   "text": "Percorrer a tacada passo a passo"
+  },
+  {
+   "culture": "ja",
+   "key": "Step through the shot",
+   "text": "ショットを順に見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Step through the shot",
+   "text": "샷을 단계별로 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Step through the shot",
+   "text": "逐步查看击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Step through the shot",
+   "text": "Пройти удар по шагам"
+  },
+  {
+   "culture": "ar",
+   "key": "Step through the shot",
+   "text": "استعراض الضربة خطوة بخطوة"
+  },
+  {
+   "culture": "es",
+   "key": "Step back through the shot",
+   "text": "Retroceder en el tiro"
+  },
+  {
+   "culture": "fr",
+   "key": "Step back through the shot",
+   "text": "Revenir en arrière dans le coup"
+  },
+  {
+   "culture": "de",
+   "key": "Step back through the shot",
+   "text": "Im Stoß zurückgehen"
+  },
+  {
+   "culture": "it",
+   "key": "Step back through the shot",
+   "text": "Torna indietro nel colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "Step back through the shot",
+   "text": "Recuar na tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Step back through the shot",
+   "text": "Voltar na tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Step back through the shot",
+   "text": "ショットを一つ戻る"
+  },
+  {
+   "culture": "ko",
+   "key": "Step back through the shot",
+   "text": "샷에서 한 단계 뒤로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Step back through the shot",
+   "text": "在击球中后退一步"
+  },
+  {
+   "culture": "ru",
+   "key": "Step back through the shot",
+   "text": "Шаг назад по удару"
+  },
+  {
+   "culture": "ar",
+   "key": "Step back through the shot",
+   "text": "الرجوع خطوة في الضربة"
+  },
+  {
+   "culture": "es",
+   "key": "Say what happened",
+   "text": "Decir qué pasó"
+  },
+  {
+   "culture": "fr",
+   "key": "Say what happened",
+   "text": "Dire ce qui s'est passé"
+  },
+  {
+   "culture": "de",
+   "key": "Say what happened",
+   "text": "Sagen, was passiert ist"
+  },
+  {
+   "culture": "it",
+   "key": "Say what happened",
+   "text": "Di' cosa è successo"
+  },
+  {
+   "culture": "pt",
+   "key": "Say what happened",
+   "text": "Dizer o que aconteceu"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Say what happened",
+   "text": "Dizer o que aconteceu"
+  },
+  {
+   "culture": "ja",
+   "key": "Say what happened",
+   "text": "何が起きたかを読み上げる"
+  },
+  {
+   "culture": "ko",
+   "key": "Say what happened",
+   "text": "무슨 일이 있었는지 읽기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Say what happened",
+   "text": "说出发生了什么"
+  },
+  {
+   "culture": "ru",
+   "key": "Say what happened",
+   "text": "Рассказать, что произошло"
+  },
+  {
+   "culture": "ar",
+   "key": "Say what happened",
+   "text": "قل ما حدث"
+  },
+  {
+   "culture": "es",
+   "key": "No clear pot",
+   "text": "Ninguna bola entra limpia"
+  },
+  {
+   "culture": "fr",
+   "key": "No clear pot",
+   "text": "Aucune bille ne rentre proprement"
+  },
+  {
+   "culture": "de",
+   "key": "No clear pot",
+   "text": "Keine Kugel frei zu versenken"
+  },
+  {
+   "culture": "it",
+   "key": "No clear pot",
+   "text": "Nessuna palla da imbucare libera"
+  },
+  {
+   "culture": "pt",
+   "key": "No clear pot",
+   "text": "Nenhuma bola entra livre"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No clear pot",
+   "text": "Nenhuma bola entra livre"
+  },
+  {
+   "culture": "ja",
+   "key": "No clear pot",
+   "text": "きれいに入る球はありません"
+  },
+  {
+   "culture": "ko",
+   "key": "No clear pot",
+   "text": "깨끗하게 넣을 공 없음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No clear pot",
+   "text": "没有可直接打进的球"
+  },
+  {
+   "culture": "ru",
+   "key": "No clear pot",
+   "text": "Чистого удара в лузу нет"
+  },
+  {
+   "culture": "ar",
+   "key": "No clear pot",
+   "text": "لا توجد كرة يمكن إدخالها بوضوح"
+  },
+  {
+   "culture": "es",
+   "key": "Clear pot for %@",
+   "text": "Entrada limpia para %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Clear pot for %@",
+   "text": "%@ peut rentrer proprement"
+  },
+  {
+   "culture": "de",
+   "key": "Clear pot for %@",
+   "text": "%@ ist frei zu versenken"
+  },
+  {
+   "culture": "it",
+   "key": "Clear pot for %@",
+   "text": "%@ si può imbucare liberamente"
+  },
+  {
+   "culture": "pt",
+   "key": "Clear pot for %@",
+   "text": "%@ pode entrar livre"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Clear pot for %@",
+   "text": "%@ pode entrar livre"
+  },
+  {
+   "culture": "ja",
+   "key": "Clear pot for %@",
+   "text": "%@がきれいに入ります"
+  },
+  {
+   "culture": "ko",
+   "key": "Clear pot for %@",
+   "text": "%@을(를) 깨끗하게 넣을 수 있음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Clear pot for %@",
+   "text": "%@可直接打进"
+  },
+  {
+   "culture": "ru",
+   "key": "Clear pot for %@",
+   "text": "Можно чисто забить: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Clear pot for %@",
+   "text": "يمكن إدخال %@ بوضوح"
+  },
+  {
+   "culture": "es",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Apunta para meter en esta tronera la bola en línea"
+  },
+  {
+   "culture": "fr",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Vise pour rentrer la bille alignée dans cette poche"
+  },
+  {
+   "culture": "de",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Zielt so, dass die Kugel in der Linie in diese Tasche fällt"
+  },
+  {
+   "culture": "it",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Mira per mandare in questa buca la palla in linea"
+  },
+  {
+   "culture": "pt",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Aponta para encaçapar aqui a bola na linha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Mira para encaçapar aqui a bola na linha"
+  },
+  {
+   "culture": "ja",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "狙いの球をこのポケットに入れるよう狙います"
+  },
+  {
+   "culture": "ko",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "조준선의 공을 이 포켓에 넣도록 조준합니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "瞄准把线路上的球打进这个袋"
+  },
+  {
+   "culture": "ru",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "Целится, чтобы забить шар на линии в эту лузу"
+  },
+  {
+   "culture": "ar",
+   "key": "Aims to pot the ball in line into this pocket",
+   "text": "يصوّب لإدخال الكرة الموجودة على الخط في هذا الجيب"
+  },
+  {
+   "culture": "es",
+   "key": "Aims straight at this ball",
+   "text": "Apunta directo a esta bola"
+  },
+  {
+   "culture": "fr",
+   "key": "Aims straight at this ball",
+   "text": "Vise droit sur cette bille"
+  },
+  {
+   "culture": "de",
+   "key": "Aims straight at this ball",
+   "text": "Zielt direkt auf diese Kugel"
+  },
+  {
+   "culture": "it",
+   "key": "Aims straight at this ball",
+   "text": "Mira dritto a questa palla"
+  },
+  {
+   "culture": "pt",
+   "key": "Aims straight at this ball",
+   "text": "Aponta direto a esta bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aims straight at this ball",
+   "text": "Mira direto nesta bola"
+  },
+  {
+   "culture": "ja",
+   "key": "Aims straight at this ball",
+   "text": "この球をまっすぐ狙います"
+  },
+  {
+   "culture": "ko",
+   "key": "Aims straight at this ball",
+   "text": "이 공을 정면으로 조준합니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aims straight at this ball",
+   "text": "正对这颗球瞄准"
+  },
+  {
+   "culture": "ru",
+   "key": "Aims straight at this ball",
+   "text": "Целится прямо в этот шар"
+  },
+  {
+   "culture": "ar",
+   "key": "Aims straight at this ball",
+   "text": "يصوّب مباشرة على هذه الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "Aim at next ball",
+   "text": "Apuntar a la siguiente bola"
+  },
+  {
+   "culture": "fr",
+   "key": "Aim at next ball",
+   "text": "Viser la bille suivante"
+  },
+  {
+   "culture": "de",
+   "key": "Aim at next ball",
+   "text": "Auf die nächste Kugel zielen"
+  },
+  {
+   "culture": "it",
+   "key": "Aim at next ball",
+   "text": "Mira alla palla successiva"
+  },
+  {
+   "culture": "pt",
+   "key": "Aim at next ball",
+   "text": "Apontar à bola seguinte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aim at next ball",
+   "text": "Mirar na próxima bola"
+  },
+  {
+   "culture": "ja",
+   "key": "Aim at next ball",
+   "text": "次の球を狙う"
+  },
+  {
+   "culture": "ko",
+   "key": "Aim at next ball",
+   "text": "다음 공 조준"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aim at next ball",
+   "text": "瞄准下一颗球"
+  },
+  {
+   "culture": "ru",
+   "key": "Aim at next ball",
+   "text": "Целиться в следующий шар"
+  },
+  {
+   "culture": "ar",
+   "key": "Aim at next ball",
+   "text": "التصويب على الكرة التالية"
+  },
+  {
+   "culture": "es",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Apuntar para meterla en la tronera más cercana"
+  },
+  {
+   "culture": "fr",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Viser pour rentrer dans la poche la plus proche"
+  },
+  {
+   "culture": "de",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Für die nächste Tasche zielen"
+  },
+  {
+   "culture": "it",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Mira per la buca più vicina"
+  },
+  {
+   "culture": "pt",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Apontar para a caçapa mais próxima"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Mirar para a caçapa mais próxima"
+  },
+  {
+   "culture": "ja",
+   "key": "Aim to pot in nearest pocket",
+   "text": "一番近いポケットに入れるよう狙う"
+  },
+  {
+   "culture": "ko",
+   "key": "Aim to pot in nearest pocket",
+   "text": "가장 가까운 포켓에 넣도록 조준"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aim to pot in nearest pocket",
+   "text": "瞄准最近的袋口"
+  },
+  {
+   "culture": "ru",
+   "key": "Aim to pot in nearest pocket",
+   "text": "Целиться в ближайшую лузу"
+  },
+  {
+   "culture": "ar",
+   "key": "Aim to pot in nearest pocket",
+   "text": "التصويب للإدخال في أقرب جيب"
+  },
+  {
+   "culture": "es",
+   "key": "Finer",
+   "text": "Más fino"
+  },
+  {
+   "culture": "fr",
+   "key": "Finer",
+   "text": "Plus fin"
+  },
+  {
+   "culture": "de",
+   "key": "Finer",
+   "text": "Feiner"
+  },
+  {
+   "culture": "it",
+   "key": "Finer",
+   "text": "Più fine"
+  },
+  {
+   "culture": "pt",
+   "key": "Finer",
+   "text": "Mais fino"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Finer",
+   "text": "Mais fino"
+  },
+  {
+   "culture": "ja",
+   "key": "Finer",
+   "text": "細かく"
+  },
+  {
+   "culture": "ko",
+   "key": "Finer",
+   "text": "더 세밀하게"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Finer",
+   "text": "更精细"
+  },
+  {
+   "culture": "ru",
+   "key": "Finer",
+   "text": "Точнее"
+  },
+  {
+   "culture": "ar",
+   "key": "Finer",
+   "text": "أدق"
+  },
+  {
+   "culture": "es",
+   "key": "Coarser",
+   "text": "Más grueso"
+  },
+  {
+   "culture": "fr",
+   "key": "Coarser",
+   "text": "Plus grossier"
+  },
+  {
+   "culture": "de",
+   "key": "Coarser",
+   "text": "Gröber"
+  },
+  {
+   "culture": "it",
+   "key": "Coarser",
+   "text": "Più grossolano"
+  },
+  {
+   "culture": "pt",
+   "key": "Coarser",
+   "text": "Mais grosso"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Coarser",
+   "text": "Mais grosso"
+  },
+  {
+   "culture": "ja",
+   "key": "Coarser",
+   "text": "粗く"
+  },
+  {
+   "culture": "ko",
+   "key": "Coarser",
+   "text": "더 크게"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Coarser",
+   "text": "更粗略"
+  },
+  {
+   "culture": "ru",
+   "key": "Coarser",
+   "text": "Грубее"
+  },
+  {
+   "culture": "ar",
+   "key": "Coarser",
+   "text": "أكبر"
+  },
+  {
+   "culture": "es",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Cada paso mueve la puntería %@ milímetros."
+  },
+  {
+   "culture": "fr",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Chaque pas déplace la visée de %@ millimètres."
+  },
+  {
+   "culture": "de",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Jeder Schritt verschiebt das Ziel um %@ Millimeter."
+  },
+  {
+   "culture": "it",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Ogni passo sposta la mira di %@ millimetri."
+  },
+  {
+   "culture": "pt",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Cada passo move a mira %@ milímetros."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Cada passo move a mira %@ milímetros."
+  },
+  {
+   "culture": "ja",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "1ステップで狙いが%@ミリ動きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "한 단계마다 조준이 %@밀리미터 움직입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "每一步瞄准移动%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "Каждый шаг сдвигает прицел на %@ мм."
+  },
+  {
+   "culture": "ar",
+   "key": "Each step moves the aim %@ millimetres.",
+   "text": "كل خطوة تحرك التصويب %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Cada paso gira la puntería %@ grados."
+  },
+  {
+   "culture": "fr",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Chaque pas tourne la visée de %@ degrés."
+  },
+  {
+   "culture": "de",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Jeder Schritt dreht das Ziel um %@ Grad."
+  },
+  {
+   "culture": "it",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Ogni passo ruota la mira di %@ gradi."
+  },
+  {
+   "culture": "pt",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Cada passo roda a mira %@ graus."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Cada passo gira a mira %@ graus."
+  },
+  {
+   "culture": "ja",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "1ステップで狙いが%@度回ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "한 단계마다 조준이 %@도 돌아갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "每一步瞄准转动%@度。"
+  },
+  {
+   "culture": "ru",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "Каждый шаг поворачивает прицел на %@°."
+  },
+  {
+   "culture": "ar",
+   "key": "Each step turns the aim %@ degrees.",
+   "text": "كل خطوة تدير التصويب %@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "No ball can be hit in a straight line.",
+   "text": "No hay ninguna bola a la que dar en línea recta."
+  },
+  {
+   "culture": "fr",
+   "key": "No ball can be hit in a straight line.",
+   "text": "Aucune bille ne peut être touchée en ligne droite."
+  },
+  {
+   "culture": "de",
+   "key": "No ball can be hit in a straight line.",
+   "text": "Keine Kugel ist auf geradem Weg zu treffen."
+  },
+  {
+   "culture": "it",
+   "key": "No ball can be hit in a straight line.",
+   "text": "Nessuna palla si può colpire in linea retta."
+  },
+  {
+   "culture": "pt",
+   "key": "No ball can be hit in a straight line.",
+   "text": "Nenhuma bola pode ser acertada em linha reta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No ball can be hit in a straight line.",
+   "text": "Nenhuma bola pode ser acertada em linha reta."
+  },
+  {
+   "culture": "ja",
+   "key": "No ball can be hit in a straight line.",
+   "text": "まっすぐ当てられる球はありません。"
+  },
+  {
+   "culture": "ko",
+   "key": "No ball can be hit in a straight line.",
+   "text": "직선으로 맞힐 수 있는 공이 없습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No ball can be hit in a straight line.",
+   "text": "没有可以直线击中的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "No ball can be hit in a straight line.",
+   "text": "Ни один шар нельзя задеть по прямой."
+  },
+  {
+   "culture": "ar",
+   "key": "No ball can be hit in a straight line.",
+   "text": "لا توجد كرة يمكن إصابتها في خط مستقيم."
+  },
+  {
+   "culture": "es",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "Desde aquí ninguna bola puede entrar en esa tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "D'ici, aucune bille ne peut rentrer dans cette poche."
+  },
+  {
+   "culture": "de",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "Von hier fällt keine Kugel in diese Tasche."
+  },
+  {
+   "culture": "it",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "Da qui nessuna palla può entrare in quella buca."
+  },
+  {
+   "culture": "pt",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "Daqui nenhuma bola pode entrar nessa caçapa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "Daqui nenhuma bola pode entrar nessa caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "ここからそのポケットに入る球はありません。"
+  },
+  {
+   "culture": "ko",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "여기서는 그 포켓에 넣을 수 있는 공이 없습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "从这里没有球能打进那个袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "Отсюда ни один шар не забить в эту лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "No ball can be potted in that pocket from here.",
+   "text": "لا يمكن إدخال أي كرة في ذلك الجيب من هنا."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball is off the table.",
+   "text": "La bola blanca está fuera de la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball is off the table.",
+   "text": "La bille blanche est hors de la table."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball is off the table.",
+   "text": "Die weiße Kugel ist nicht auf dem Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball is off the table.",
+   "text": "La palla bianca è fuori dal tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball is off the table.",
+   "text": "A bola branca está fora da mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball is off the table.",
+   "text": "A bola branca está fora da mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball is off the table.",
+   "text": "手球は台の外にあります。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball is off the table.",
+   "text": "큐볼이 테이블 밖에 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball is off the table.",
+   "text": "白球不在台面上。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball is off the table.",
+   "text": "Белого шара нет на столе."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball is off the table.",
+   "text": "الكرة البيضاء خارج الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Líneas de la lente: las ámbar discontinuas muestran una bola deslizando, las cian continuas una bola rodando"
+  },
+  {
+   "culture": "fr",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Lignes de la lentille : les ambrées en pointillés montrent une bille qui glisse, les cyan continues une bille qui roule"
+  },
+  {
+   "culture": "de",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linien der Linse: gestrichelte bernsteinfarbene Linien zeigen eine gleitende Kugel, durchgehende cyanfarbene eine rollende"
+  },
+  {
+   "culture": "it",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linee della lente: le ambra tratteggiate mostrano una palla che scivola, le ciano continue una palla che rotola"
+  },
+  {
+   "culture": "pt",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linhas da lente: as âmbar tracejadas mostram uma bola a deslizar, as ciano contínuas uma bola a rolar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linhas da lente: as âmbar tracejadas mostram uma bola deslizando, as ciano contínuas uma bola rolando"
+  },
+  {
+   "culture": "ja",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "レンズの線：琥珀色の破線は滑っている球、シアンの実線は転がっている球"
+  },
+  {
+   "culture": "ko",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "렌즈 선: 호박색 점선은 미끄러지는 공, 청록색 실선은 구르는 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "透镜线条：琥珀色虚线表示球在滑动，青色实线表示球在滚动"
+  },
+  {
+   "culture": "ru",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Линии линзы: янтарный пунктир — шар скользит, сплошной голубой — шар катится"
+  },
+  {
+   "culture": "ar",
+   "key": "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "خطوط العدسة: الخطوط الكهرمانية المتقطعة تُظهر كرة تنزلق، والخطوط السماوية المتصلة كرة تتدحرج"
+  },
+  {
+   "culture": "es",
+   "key": "Less power",
+   "text": "Menos fuerza"
+  },
+  {
+   "culture": "fr",
+   "key": "Less power",
+   "text": "Moins de puissance"
+  },
+  {
+   "culture": "de",
+   "key": "Less power",
+   "text": "Weniger Kraft"
+  },
+  {
+   "culture": "it",
+   "key": "Less power",
+   "text": "Meno potenza"
+  },
+  {
+   "culture": "pt",
+   "key": "Less power",
+   "text": "Menos força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Less power",
+   "text": "Menos força"
+  },
+  {
+   "culture": "ja",
+   "key": "Less power",
+   "text": "パワーを下げる"
+  },
+  {
+   "culture": "ko",
+   "key": "Less power",
+   "text": "힘 줄이기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Less power",
+   "text": "减小力度"
+  },
+  {
+   "culture": "ru",
+   "key": "Less power",
+   "text": "Слабее"
+  },
+  {
+   "culture": "ar",
+   "key": "Less power",
+   "text": "قوة أقل"
+  },
+  {
+   "culture": "es",
+   "key": "More power",
+   "text": "Más fuerza"
+  },
+  {
+   "culture": "fr",
+   "key": "More power",
+   "text": "Plus de puissance"
+  },
+  {
+   "culture": "de",
+   "key": "More power",
+   "text": "Mehr Kraft"
+  },
+  {
+   "culture": "it",
+   "key": "More power",
+   "text": "Più potenza"
+  },
+  {
+   "culture": "pt",
+   "key": "More power",
+   "text": "Mais força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "More power",
+   "text": "Mais força"
+  },
+  {
+   "culture": "ja",
+   "key": "More power",
+   "text": "パワーを上げる"
+  },
+  {
+   "culture": "ko",
+   "key": "More power",
+   "text": "힘 늘리기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "More power",
+   "text": "加大力度"
+  },
+  {
+   "culture": "ru",
+   "key": "More power",
+   "text": "Сильнее"
+  },
+  {
+   "culture": "ar",
+   "key": "More power",
+   "text": "قوة أكبر"
+  }
+ ]
+}

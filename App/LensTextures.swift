@@ -15,6 +15,8 @@
 //          texel is exactly the number the formulas say.
 //          Package 4 (0.4.0): the trail picture now also narrows the line with age (older path is a hairline).
 //          Does NOT belong here: where the pictures are used (LensLayer.swift), the grid (BallTextures.gridTexture).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reads the system's Differentiate Without Colour setting and names
+//          the notification for its change, beside the Increase Contrast reader, for the dashed sliding trails.)
 // SRP/DRY check: Pass - Lens picture generation only; colours arrive from Theme through the caller.
 import CoreGraphics
 import Foundation
@@ -34,6 +36,26 @@ enum LensTextures {
         return UIAccessibility.isDarkerSystemColorsEnabled
         #else
         return NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
+        #endif
+    }
+
+    /// System "Differentiate Without Colour" setting. When on, the Lens draws a sliding path dashed and a rolling path
+    /// solid, so the two motion phases differ in shape and not only in amber against cyan. Read whenever the trails
+    /// are rebuilt; LensLayer also rebuilds them when the setting changes (see `differentiateWithoutColorChanged`).
+    static var differentiateWithoutColor: Bool {
+        #if canImport(UIKit)
+        return UIAccessibility.shouldDifferentiateWithoutColor
+        #else
+        return NSWorkspace.shared.accessibilityDisplayShouldDifferentiateWithoutColor
+        #endif
+    }
+
+    /// The notification posted when that setting changes, and the centre it is posted on.
+    static var differentiateWithoutColorChanged: (name: Notification.Name, center: NotificationCenter) {
+        #if canImport(UIKit)
+        return (UIAccessibility.differentiateWithoutColorDidChangeNotification, NotificationCenter.default)
+        #else
+        return (NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, NSWorkspace.shared.notificationCenter)
         #endif
     }
 
