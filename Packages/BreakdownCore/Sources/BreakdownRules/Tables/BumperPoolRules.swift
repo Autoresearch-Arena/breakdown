@@ -82,7 +82,7 @@ public struct BumperPoolRules: MatchRules {
         let left = inPlay.subtracting(sunk)
         let order = [seat] + Self.sides.indices.filter { $0 != seat }
         let winner = order.first { s in
-            Self.sides.indices.contains(s) && !Self.sides[s].contains { left.contains($0) }
+            Self.sides.indices.contains(s) && !Self.sides[s].contains(where: { left.contains($0) })
         }
         let result = winner.map { MatchResult(winner: PlayerID($0), reason: .allBallsSunk) }
 

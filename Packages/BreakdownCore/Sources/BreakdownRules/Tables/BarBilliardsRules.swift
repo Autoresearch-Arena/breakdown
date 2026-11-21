@@ -14,6 +14,10 @@
 //          Reads ShotFacts (first contact, bed-hole drops, pins down, resting places) and the MatchState; writes a
 //          Ruling, keeps MatchState.breakPoints (the break in progress) through applying(_:facts:to:), and gives the
 //          next solve's layout with nextLayout(after:in:table:dSpot:redSpot:).
+//          Calling order matters: every one of those takes the state as it stood BEFORE the shot (the bar, the balls
+//          still in the game and the break all come from it), so the app asks for the ruling and the next layout first
+//          and only then applies the ruling. cueBall(for:in:) does not depend on the player: both seats play the
+//          lowest-numbered white still in the game.
 //          Hole values, ball numbers and the black peg's number are owned here; App/Tables/BarBilliardsTable.swift
 //          reads them, so the table and the scoring cannot disagree.
 // SRP/DRY check: Pass - bar billiards' rules only. The shared bookkeeping is the protocol's default, reached through a

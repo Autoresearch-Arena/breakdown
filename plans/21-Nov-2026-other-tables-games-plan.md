@@ -130,7 +130,7 @@ table's "How to play" page and says it is one common version.
 3. Your ball must hit another ball first. Each ball that then drops scores its hole: 200, 100, two 50s, and 30, 20,
    10, 20, 30 along the far row. The red scores double.
 4. Your break goes on while every shot drops at least one ball. A shot that drops nothing ends it. A shot that hits
-   no ball scores nothing, ends the break, and the ball goes back to the tray.
+   no ball is a foul: it scores nothing, ends the break, and the ball goes back to the tray.
 5. Knock down a white peg and the break ends and its points are lost. Knock down the black peg and the break ends
    and your whole score is lost.
 6. Balls that drop come back to the tray; the red goes back on its spot. If every white is on the table, they all

@@ -66,17 +66,4 @@ public enum TableSpots {
         }
         return spot
     }
-
-    /// Puts each listed ball at its own spot (or the nearest free place), in ball order, each placed ball blocking the
-    /// later ones. Balls with no spot listed are left where they are.
-    public static func place(_ balls: [Int], at spots: [Int: Vec2], in positions: [Vec2], table: TableSpec,
-                             first: Vec2 = Vec2(-1, 0)) -> [Vec2] {
-        var out = positions
-        for b in balls.sorted() where out.indices.contains(b) {
-            guard let spot = spots[b] else { continue }
-            out[b] = ShotFacts.offTable   // a ball never blocks itself
-            out[b] = nearestFree(to: spot, for: b, among: out, table: table, first: first)
-        }
-        return out
-    }
 }
