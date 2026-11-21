@@ -1,4 +1,5 @@
 // Author: Claude Opus 5.5 High
+// Edited: GPT 6.2 Sol, 21-November-2026 (draw-massé carom lesson).
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (The Called Break, Throw It In, The Massé and Jump the Blocker authored with the capped search and playable; elevation is the sine the solver uses).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (every player-facing line is wrapped in String(localized:) for translation)
@@ -61,6 +62,8 @@ struct TrickGoal: Equatable {
     var cueZone: TrickZone? = nil
     /// The ball the cue ball must touch first, if it matters.
     var firstHit: Int? = nil
+    /// For a carom, the ball the cue ball must touch on its second contact.
+    var secondHit: Int? = nil
     /// A ball that must touch a cushion before it drops (a bank), if any.
     var bank: Int? = nil
 }
@@ -119,7 +122,7 @@ enum TrickShots {
 
     static let all: [TrickShot] = [
         calledBreak, stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt,
-        masse, jumpOver,
+        masse, jumpOver, drawMasseCarom,
     ]
 
     // MARK: 1. The Called Break
@@ -323,4 +326,20 @@ enum TrickShots {
         mathsSpoken: String(localized: "The height is the upward speed squared over twice gravity, and the hop's length is twice the upward speed times the forward speed over gravity."),
         difficulty: .medium, window: TrickWindow(aim: 0.32, power: 0.60, tipUp: 0.0145, tipSide: 0),
         praise: String(localized: "Clean over the top."), pending: false)
+
+    // A standalone solver sweep found the 4 at 0.080 s and the 9 at 0.616 s on standard cloth.
+    // Levelling the cue, removing draw, or removing side spin each misses the carom.
+    // Passing windows, one setting at a time: 351.8° to 356.25°, 1.41 to 2.17 m/s, tip
+    // height -14.6 to -9.9 mm, side 5.9 to 15.8 mm, elevation sine 0.445 to 0.65.
+    static let drawMasseCarom = TrickShot(
+        id: "draw-masse-carom", number: 11, title: String(localized: "Draw-Massé Carom"),
+        hook: String(localized: "Hit the 4 first, then bring the cue ball back around to the 9."),
+        goalLine: String(localized: "Hit the 4 first, then bring the cue ball back around to the 9."),
+        setup: .layout(placed([0: Vec2(0.9, 0.61), 4: Vec2(1.06, 0.61), 9: Vec2(0.93, 0.219)])),
+        solution: TrickSettings(aim: 354, power: 2, tipUp: -0.012, tipSide: 0.010, elevation: 0.55),
+        goal: TrickGoal(drops: [], firstHit: 4, secondHit: 9), usesBridge: false,
+        idea: String(localized: "Raise the cue and strike low and to the side. Backspin brings the cue ball back, and the tilted spin bends its path toward the 9."),
+        maths: nil, mathsSpoken: nil,
+        difficulty: .hard, window: TrickWindow(aim: 2.2, power: 0.17, tipUp: 0.0021, tipSide: 0.0041),
+        praise: String(localized: "You brought it back around to the 9."), pending: false)
 }

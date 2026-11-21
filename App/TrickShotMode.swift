@@ -1,4 +1,5 @@
 // Author: Claude Opus 5.5 High
+// Edited: GPT 6.2 Sol, 21-November-2026 (draw-massé carom lesson).
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (passes the shot's cue elevation to the table, so the massé and the jump are struck with a raised cue).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Watch it now turns the Ride camera on through model.setRide).
@@ -94,6 +95,9 @@ final class TrickShotMode {
             break
         default:
             return nil
+        }
+        if let first = shot.goal.firstHit, let second = shot.goal.secondHit {
+            return ([first, second], [])
         }
         return (shot.goal.drops.map(\.ball), shot.goal.drops.compactMap(\.pocket))
     }

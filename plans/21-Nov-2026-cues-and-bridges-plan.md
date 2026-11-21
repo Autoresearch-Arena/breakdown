@@ -16,7 +16,7 @@ Give each cue one shot that shows why someone would take it out of the case. Kee
 | Oxblood break | 21 oz | Wine-stained maple, black chevrons, reinforced ferrule | Compare centre-hit launch speeds on the same rack. Match tip speed for the demonstration. A player's achievable swing speed depends on the cue. |
 | Amber jump | 10 oz | Short figured maple, ivory-coloured diamond inlays | Get the butt into position for a steep downward strike in tight space. Use the raised-strike solver and measure blocker clearance and landing. |
 
-Custom cue makers already offer choices in weight, shafts, wraps and inlay. A wood or colour is an art choice. Assign performance through the cue's measured or calibrated physical properties. [Custom construction](https://pechauer.com/frequently-asked-questions/) · [Cue weight](https://drdavepoolinfo.com/faq/cue/weight/) · [Shaft end mass](https://drdavepoolinfo.com/faq/squirt/endmass/)
+Custom cue makers already offer choices in weight, shafts, wraps and inlay. A wood or colour is an art choice. Assign performance through the cue's measured or calibrated physical properties.
 
 ## Decide what stays equal in a comparison
 
@@ -29,7 +29,7 @@ Measure sidespin deflection immediately after contact, before the cloth curves t
 - **Brass cross.** A walnut handle and a low brass X head. Offer a long reach across open cloth with the cue close to level. Rotating the head changes which groove supports the shaft.
 - **Silver spider.** An ash handle and a tall arched head. Its feet can straddle an intervening ball. The higher cradle changes the cue angle needed to reach the chosen point on the cue ball. Give the player room to see the shaft clear the blocker.
 
-Author feet, cradle locations, shaft radius and cue length in table metres. Use those same landmarks for the Blender mesh, aiming preview, delivered elevation and the foul judge. The existing fixed setback and bridge-head box would falsely fill the spider's open arch. Test a ball under that arch, a ball touching a foot and a shaft clipping a blocker during the stroke. With identical delivered strikes the ball should follow the same path from either rest. [Rest types and use](https://coaching.aebf.com.au/images/8-ball-coach/Module-Documents/AEBF-NCAS-Eight-Ball-Coaching-Manual-WEB.pdf)
+Author feet, cradle locations, shaft radius and cue length in table metres. Use those same landmarks for the Blender mesh, aiming preview, delivered elevation and the foul judge. The existing fixed setback and bridge-head box would falsely fill the spider's open arch. Test a ball under that arch, a ball touching a foot and a shaft clipping a blocker during the stroke. With identical delivered strikes the ball should follow the same path from either rest.
 
 ## Integration after the other developer's push
 

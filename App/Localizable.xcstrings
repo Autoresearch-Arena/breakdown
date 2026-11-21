@@ -1,6 +1,356 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "Draw-Massé Carom": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كاروم ماسيه بالسحب"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rückläufer-Massé-Karambolage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carambola de massé con retroceso"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carambolage massé-rétro"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carambola di massé con retro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "引きマッセのキャロム"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "끌어치기 마세 캐롬"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carambola de massé com recuo"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carambola de massé com recuo"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Карамболь массе с оттяжкой"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回旋扎杆碰球"
+          }
+        }
+      }
+    },
+    "Hit the 4 first, then bring the cue ball back around to the 9.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اضرب الكرة ٤ أولًا، ثم أعد الكرة البيضاء في مسار منحني إلى الكرة ٩."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triff zuerst die 4 und lass die Weiße dann im Bogen zur 9 zurücklaufen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca primero la 4 y haz que la blanca vuelva en curva hasta la 9."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touche d’abord la 4, puis fais revenir la blanche en courbe vers la 9."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpisci prima la 4, poi fai tornare la bianca in curva verso la 9."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先に4番に当て、手球をカーブさせながら戻して9番に当てよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4번 공을 먼저 맞힌 뒤, 수구를 휘어 돌아오게 해서 9번 공을 맞히세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca primeiro na 4 e faz a branca voltar em curva até à 9."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque primeiro na 4 e faça a branca voltar em curva até a 9."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сначала попади в 4, затем верни биток по дуге к 9."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先碰4号球，再让母球沿弧线回转碰到9号球。"
+          }
+        }
+      }
+    },
+    "Raise the cue and strike low and to the side. Backspin brings the cue ball back, and the tilted spin bends its path toward the 9.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارفع العصا واضرب الكرة من أسفل وإلى الجانب. يعيد الدوران الخلفي الكرة البيضاء، ويحني محور الدوران المائل مسارها نحو الكرة ٩."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hebe das Queue an und triff die Weiße tief und seitlich. Der Rückdrall zieht sie zurück, und die geneigte Drehachse lenkt sie im Bogen zur 9."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eleva el taco y golpea abajo y a un lado. El retroceso trae de vuelta la blanca y el giro inclinado curva su trayectoria hacia la 9."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relève la queue et frappe bas sur le côté. Le rétro ramène la blanche et la rotation inclinée courbe sa trajectoire vers la 9."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alza la stecca e colpisci in basso e di lato. Il retro fa tornare la bianca e la rotazione inclinata la fa curvare verso la 9."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キューを立て、手球の下側を中心から外して撞こう。逆回転で手球が戻り、傾いた回転軸で軌道が9番へ曲がる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큐를 세우고 수구의 아래쪽 옆을 치세요. 역회전이 수구를 돌아오게 하고, 기울어진 회전이 경로를 9번 공 쪽으로 휘게 합니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eleva o taco e bate em baixo e de lado. O efeito de recuo traz a branca de volta e a rotação inclinada curva o trajeto em direção à 9."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eleve o taco e bata embaixo e de lado. O efeito de recuo traz a branca de volta e a rotação inclinada curva a trajetória em direção à 9."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подними кий и ударь ниже и сбоку от центра. Обратное вращение вернёт биток, а наклон оси вращения направит его по дуге к 9."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "抬高球杆，击打母球偏下、偏侧的位置。下旋让母球回退，倾斜的旋转轴让它沿弧线转向9号球。"
+          }
+        }
+      }
+    },
+    "You brought it back around to the 9.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أعدت الكرة البيضاء في مسار منحني حتى الكرة ٩."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast die Weiße im Bogen zur 9 zurückgebracht."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiciste que la blanca volviera en curva hasta la 9."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu as ramené la blanche en courbe jusqu’à la 9."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hai fatto tornare la bianca in curva fino alla 9."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手球をカーブさせて9番まで戻せたね。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "수구를 휘어 돌아오게 해서 9번 공을 맞혔어요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fizeste a branca voltar em curva até à 9."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você fez a branca voltar em curva até a 9."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты вернул биток по дуге к 9."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你让母球沿弧线回转碰到了9号球。"
+          }
+        }
+      }
+    },
+    "You hit the 4. Raise the cue and keep the low, off-centre hit to bend back toward the 9.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أصبت الكرة ٤. ارفع العصا وواصل الضرب أسفل المركز وإلى الجانب لتعود الكرة البيضاء نحو ٩."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast die 4 getroffen. Hebe das Queue an und triff weiter tief und seitlich, damit die Weiße zur 9 zurückbiegt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocaste la 4. Eleva el taco y mantén el golpe bajo y lateral para volver en curva hacia la 9."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu as touché la 4. Relève la queue et garde l’impact bas et décentré pour revenir en courbe vers la 9."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hai colpito la 4. Alza la stecca e mantieni il colpo basso e decentrato per curvare verso la 9."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4番には当たったよ。キューを立て、手球の下側を中心から外して撞き、9番へ曲げて戻そう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4번 공은 맞혔어요. 큐를 세우고 수구의 아래쪽 옆을 쳐서 9번 공 쪽으로 휘어 돌아오게 하세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocaste na 4. Eleva o taco e mantém a tacada baixa e descentrada para voltar em curva até à 9."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você tocou na 4. Eleve o taco e mantenha a tacada baixa e fora do centro para voltar em curva até a 9."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты попал в 4. Подними кий и бей ниже и сбоку от центра, чтобы биток вернулся по дуге к 9."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你碰到了4号球。抬高球杆，继续击打母球偏下、偏侧的位置，让它沿弧线转回9号球。"
+          }
+        }
+      }
+    },
     "%@ (%@)": {
       "localizations": {
         "ar": {
