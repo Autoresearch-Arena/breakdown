@@ -138,7 +138,8 @@ final class TableCamera {
         if camera.camera.near != shot.near { camera.camera.near = shot.near }
         camera.look(at: shot.target, from: shot.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
         // Sound stream hook (21-Nov-2026): tell the sound which way screen-right runs across the table, for panning.
-        SoundStage.listen(frame: frame, cameraRight: camera.orientation(relativeTo: nil).act(SIMD3<Float>(1, 0, 0)))
+        // Screen-right is the view direction crossed with world up (SoundStage normalises it).
+        SoundStage.listen(frame: frame, cameraRight: simd_cross(shot.target - shot.position, SIMD3<Float>(0, 1, 0)))
         if Self.frameDebug { logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation) }
     }
 

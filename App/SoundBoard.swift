@@ -28,6 +28,7 @@
 import AVFoundation
 import BreakdownPhysics
 import BreakdownTimeline
+import Darwin   // mach_absolute_time, the audio clock's host time
 import Foundation
 
 // MARK: - The voice book: every recipe and level, to tune without touching the code below
