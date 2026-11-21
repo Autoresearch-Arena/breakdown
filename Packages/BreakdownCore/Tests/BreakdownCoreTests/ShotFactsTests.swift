@@ -189,6 +189,15 @@ final class ShotFactsTests: XCTestCase {
         XCTAssertFalse(before.railOrPocketAfterContact)
     }
 
+    func testAJawHitIsARailAfterContactButNotABallDrivenToARail() {
+        var segs = stillBalls()
+        segs[1] = moves(start[1], to: Vec2(2.45, 0.05), at: 0.5)
+        let f = ShotFacts(timeline: recording(segs, [contact(0.4, 0, 1), cushion(0.8, 1, edge: .jaw)]), start: start)
+        XCTAssertTrue(f.railOrPocketAfterContact, "the judge has always counted a jaw for rail after contact")
+        XCTAssertEqual(f.ballsReachingRail, [], "a ball rattling in a jaw was not driven to a rail")
+        XCTAssertEqual(f.objectBallsReachingRail, [])
+    }
+
     func testPocketAfterContactSatisfiesTheRule() {
         let f = ShotFacts(timeline: recording(stillBalls(), [contact(0.4, 0, 1), drop(0.9, 1, pocket: 3)],
                                               pocketTime: [1: 0.9]), start: start)

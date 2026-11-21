@@ -143,12 +143,15 @@ public struct ShotFacts: Sendable, Equatable {
     public let cueBallOffTable: Bool
     public let cueBallScratched: Bool             // pocketed or off the table
     public let objectBallsOffTable: [Int]
-    public let railOrPocketAfterContact: Bool     // the pool "rail after contact" test: a drop or flying off counts
-    public let ballsReachingRail: [Int]           // after first contact, cue ball included, first-reach order
+    public let railOrPocketAfterContact: Bool     // the pool "rail after contact" test: any cushion face (rail, jaw,
+                                                  // knuckle; not a post), a drop or flying off counts
+    public let ballsReachingRail: [Int]           // straight rails only (not jaws), after first contact, cue ball
+                                                  // included, first-reach order
     public var objectBallsReachingRail: [Int] { get }   // the break's "four balls to a rail" count is .count
     public var objectBallsPocketed: [Drop] { get }
     public func pocket(of ball: Int) -> Int?
-    public let resting: [Vec2]                    // offTable for any ball gone
+    public let resting: [Vec2]                    // offTable for any ball gone; NextShot.layout(after:) gives the
+                                                  // same places except it re-spots a scratched cue ball
     public let pinsDown: [PinKnock]
     public let postsTouched: [PostTouch]
     public let rimSkips: [Drop]
@@ -275,7 +278,10 @@ is a `public struct` with a `public init()`.
 
 ### 1.6 Package helpers the rules stream adds (names fixed here so the model can call them)
 
-BreakdownPhysics does not import BreakdownRules, so the head-line area is passed as a plain flag, not a BallInHand.
+These do not exist yet; the rules stream writes them with exactly these signatures. `CueBallSpot` lives in
+BreakdownPhysics (NextShot.swift). BreakdownPhysics does not import BreakdownRules, so the head-line area is passed
+as a plain flag, not a BallInHand. `shot(from:...)` is the existing function with `ballIndex` appended (not a second
+overload), and it passes `ballIndex` into the CueStrike it builds.
 
 ```swift
 // NextShot.swift (rules stream)
@@ -441,3 +447,15 @@ Small, additive, so everything still compiles with the new event kinds and the m
 - Simulation.swift: the generation rule written at the top; no code change.
 - Timeline.swift: contentHash folds the new event fields only when set.
 - Geometry.swift: Vec2 is Codable.
+
+## 5. Decided here beyond the brief (so nobody is surprised)
+
+- EightBallLoss moved with the other four eight-ball types (the eight-ball rules need it for the result).
+- Match additions the plans imply but did not name: `MatchRack` (keeps the rules free of physics), `MatchFoul`
+  (with two table fouls, `wrongCup` and `ownBallKnockedPins`), `RulingReason`, `MatchEndReason`, `MatchChoice`,
+  `MatchChoiceAnswer` and `PendingChoice` (the eight-ball plan's "accept the table or re-rack" and "spot the 8 or
+  re-rack"), `FoulRecord`, and the protocol's `ruling(answering:in:)`, `initialState(playerNames:)` and
+  `applying(_:facts:to:)` with shared bookkeeping defaults.
+- The retry comparison's `key` is a code, not a sentence: plan 14 gives the words to the view.
+- The table rules (bumper pool, five-pin, bar billiards) still need the Boss's yes on their rule sheets
+  (other-tables plan); the codes above are the starting set and the tables-rules stream may append to them.

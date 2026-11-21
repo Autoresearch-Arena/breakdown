@@ -109,10 +109,13 @@ public struct ShotFacts: Sendable, Equatable {
     /// After the first contact some ball reached a rail (having moved to get there), dropped, or left the table.
     /// This is the pool rule's "rail after contact" (a pocketed ball satisfies it). False when nothing was touched.
     public let railOrPocketAfterContact: Bool
-    /// Every ball (the cue ball included) that reached a rail, jaw or knuckle after the first contact, having moved at
-    /// least railMoveMinimum from its start, in the order each first got there. Posts are not rails.
+    /// Every ball (the cue ball included) that reached a straight rail (edge .rail) after the first contact, having
+    /// moved at least railMoveMinimum from its start, in the order each first got there. Pocket jaws, knuckles and
+    /// posts are not rails here (a ball rattling in a jaw was not driven to a rail), although a jaw or knuckle does
+    /// satisfy railOrPocketAfterContact.
     public let ballsReachingRail: [Int]
     /// Where each ball came to rest; the off-table parking spot for a ball pocketed, off the table, or never on it.
+    /// The same places NextShot.layout(after:) gives, except that it re-spots a scratched cue ball and this does not.
     public let resting: [Vec2]
     /// Pins knocked down, in the order they fell.
     public let pinsDown: [PinKnock]
@@ -180,7 +183,8 @@ public struct ShotFacts: Sendable, Equatable {
 
         // Rails after the first contact. A cushion event counts unless it is a post, names a ball the start layout
         // does not cover, or is a ball frozen on the rail that has not moved railMoveMinimum from its start. For the
-        // pool rule, a pocketed ball or a ball off the table also satisfies "a rail after contact".
+        // pool rule, a pocketed ball or a ball off the table also satisfies "a rail after contact"; the list of balls
+        // driven to a rail takes straight rails only.
         var railOrPocket = false
         var reached: [Int] = []
         if let t0 {
@@ -192,8 +196,10 @@ public struct ShotFacts: Sendable, Equatable {
                     guard e.edge != .post, let b = e.balls.first?.ball, b < start.count else { continue }
                     let at = tl.state(ball: b, at: e.time).position
                     if ShotFacts.isOnTable(start[b]), (at - start[b]).length < railMoveMinimum { continue }
+                    // Any cushion face (rail, jaw or knuckle) satisfies the judge's "rail after contact", as it
+                    // always has; only the straight rail counts as a ball driven TO a rail (the break rule).
                     railOrPocket = true
-                    if !reached.contains(b) { reached.append(b) }
+                    if e.edge == .rail, !reached.contains(b) { reached.append(b) }
                 case .phaseTransition:
                     if e.flight == .offTable { railOrPocket = true }
                 default:

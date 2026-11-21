@@ -23,7 +23,9 @@ final class PhysicsSwitchTests: XCTestCase {
     /// read from PoolParameters, so a changed default fails this test as well as a changed hash. (The literal hash
     /// itself is not written down: it cannot be worked out by hand with certainty and the package is not compiled while
     /// this batch is written. JumpTests' content-hash literals pin it a second way, because every recording's content
-    /// hash starts from its parameter hash.)
+    /// hash starts from its parameter hash.) IF THIS FAILS while JumpTests.testLevelStrikesAreBitForBitUnchanged
+    /// passes, check this typed list against the loop in PoolParameters.hash first: the hash is then fine and the
+    /// list is wrong. If both fail, the hash changed.
     private func preSwitchDefaultHash() -> UInt64 {
         var h = StableHasher()
         let numbers: [Double] = [
