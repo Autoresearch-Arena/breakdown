@@ -59,6 +59,15 @@ func reportLesson(_ a: Authored) {
     if let z = a.goal.cueZone { print(String(format: "   cue zone: centre %@, radius %.2f m", fmt(z.centre), z.radius)) }
     let tl = simulate(a.layout, s)
     print("   events: \(tl.events.count), duration \(String(format: "%.2f", tl.duration)) s")
+    // Every event of the reference recording, so the moment the Watch beat stops on is chosen from what the solver
+    // records (and whether its caption clears the caption engine's speed gates), not from what the plan expects.
+    for e in tl.events {
+        let b = e.balls.first
+        var line = String(format: "     %.3f s %@ balls %@", e.time, "\(e.kind)", "\(e.balls.map(\.ball))")
+        if e.kind == .phaseTransition { line += " \(e.phaseFrom) -> \(e.phaseTo) flight \(e.flight)" }
+        if let b { line += String(format: " speed %.2f -> %.2f m/s", b.velocityBefore.length, b.velocityAfter.length) }
+        print(line)
+    }
 }
 
 // MARK: Straight pots: stop, follow, draw
@@ -263,7 +272,14 @@ func authorStopExercise() {
         let line = widest.map { String(format: "tip %+.4f to %+.4f m works", $0.lo, $0.hi) } ?? "no tip height works"
         print(String(format: "   cue %.2f m back: copying the lesson %@; %@", gap, copy ? "MAKES IT (rejected)" : "misses", line))
         guard !copy, let b = widest, b.lo > lesson.strike.tipUp || b.hi < lesson.strike.tipUp else { continue }
-        if bestFound == nil || b.hi - b.lo > bestFound!.band.hi - bestFound!.band.lo {
+        // Kept: a working band at least 4 mm wide (two of the lesson's own half-windows), then the one whose band is
+        // FURTHEST from the lesson's tip, so copying the demonstration misses clearly rather than by a millimetre and
+        // the change a player has to make is one they can see on the cue-ball picture.
+        guard b.hi - b.lo >= 0.004 - 1e-9 else { continue }
+        func margin(_ x: (lo: Double, hi: Double)) -> Double {
+            x.lo > lesson.strike.tipUp ? x.lo - lesson.strike.tipUp : lesson.strike.tipUp - x.hi
+        }
+        if bestFound == nil || margin(b) > margin(bestFound!.band) {
             bestFound = (gap, b, ((b.lo + b.hi) / 2 / 0.0005).rounded() * 0.0005)
         }
     }

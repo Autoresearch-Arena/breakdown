@@ -189,9 +189,10 @@ let authoredLessons: [AuthoredTrick] = [
 ]
 
 /// The stop shot's second exercise as App/Lessons/Lessons.swift carries it (Lessons.stopExercise), copied from
-/// "BreakProbe lessons stop-exercise": the stop lesson's own line with the cue ball 0.35 m back instead of 0.25 m, the
-/// same aim and power, and the tip a little lower. KEEP IN STEP.
+/// "BreakProbe lessons stop-exercise": the stop lesson's own line with the cue ball 0.45 m back instead of 0.25 m, the
+/// same aim and power, and the tip lower (tip heights -18.0 to -13.0 mm work there; the lesson's -7 mm misses by six
+/// millimetres of tip). KEEP IN STEP.
 let stopExercise = AuthoredTrick(id: "lesson-stop-exercise",
-                                 layout: layoutOf([0: Vec2(1.9139, 0.9570), 3: Vec2(2.2270, 1.1135)]),
-                                 strike: Strike(aim: 26.57, power: 1.40, tipUp: -0.0105, tipSide: 0),
+                                 layout: layoutOf([0: Vec2(1.8245, 0.9123), 3: Vec2(2.2270, 1.1135)]),
+                                 strike: Strike(aim: 26.57, power: 1.40, tipUp: -0.0155, tipSide: 0),
                                  goal: Goal(drops: [(3, 3)], cueZone: (Vec2(2.1759, 1.0880), 0.05), firstHit: 3))
