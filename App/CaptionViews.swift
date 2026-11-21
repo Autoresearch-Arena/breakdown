@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the strip under the table hugs its words: the room stays reserved
+//          for the camera, title and three lines, but the glass card is only as tall as the caption and sits on the
+//          controls; nothing is drawn before the first caption; a longer one grows upward instead of moving the table).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (all caption glass is plain system Liquid Glass: no dark tint on the
+//          card or the Lens key, only a faint colour tint on the on-table label, no drawn outline).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (follows the Options: no card at all with explanations off, the
 //          equation only with Show the maths on; the slot under the title takes no room unless a card can show, so
 //          the warm table gets the whole screen).
@@ -52,7 +57,7 @@ private struct CaptionContent: View {
                 .reservedLines(reserved ? 1 : nil)
             Text(verbatim: caption?.detail ?? " ")
                 .font(Theme.body)
-                .reservedLines(reserved ? 4 : nil)
+                .reservedLines(reserved ? 3 : nil)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -70,10 +75,10 @@ private extension View {
         self
             .padding(.leading, 4)
             .padding(CaptionCard.padding)
-            // Liquid Glass tinted toward the room colour: over the bright Lens grid and trails plain clear glass lets
-            // the lines show through the words, so the tint keeps the text readable. Reduce Transparency still turns
-            // it solid (the system does that for every glass surface).
-            .glassEffect(.regular.tint(palette.ground.opacity(0.55)), in: .rect(cornerRadius: 18, style: .continuous))
+            // Plain system Liquid Glass, untinted, like every other panel in the app (the Boss: "all of it should be
+            // liquid glass, Apple native"). The card now sits below the table, not over the Lens grid, so the system's
+            // own glass keeps the words readable; Reduce Transparency still turns it solid.
+            .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
             .overlay(alignment: .leading) {
                 Capsule().fill(accent).frame(width: 3).padding(.vertical, 12).padding(.leading, 5)
             }
@@ -188,44 +193,42 @@ struct CaptionStrip: View {
         let caption = active ?? shown
         let accent = palette.color(for: caption?.accent ?? .impact)
         let height = min(reservedHeight, maxHeight)
-        HStack(alignment: .bottom, spacing: 8) {
-            ZStack(alignment: .topLeading) {
-                if let caption {
-                    // Natural lines inside the fixed frame: at normal sizes the reserve always fits them; at the
-                    // accessibility sizes FittingScroll turns into a scroll view of exactly the reserved height.
-                    FittingScroll(maxHeight: height) {
+        // The room is reserved (so the camera frames the table above it and the table never jumps between captions),
+        // but the glass is not: the card hugs its words and sits at the bottom of the room, right on the controls, so
+        // a short caption is a short card and nothing is drawn at all before the first one. A caption longer than the
+        // room grows upward over the rails rather than pushing the table. (The Boss: the old fixed card covered the
+        // table and left a lot of empty glass.)
+        ZStack(alignment: .bottom) {
+            if let caption {
+                HStack(alignment: .bottom, spacing: 8) {
+                    // At the accessibility text sizes a long detail scrolls inside the cap instead of growing.
+                    FittingScroll(maxHeight: maxHeight) {
                         CaptionContent(caption: caption, accent: accent)
                     }
-                    .transition(.opacity)
-                    .id(caption.id)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(caption.title). \(caption.detail)")
+                    .accessibilityValue(maths ? caption.equation : "")
+                    .accessibilityAddTraits(.updatesFrequently)
+                    if model.holding { ContinueButton(model: model).transition(.opacity) }
                 }
-            }
-            .frame(maxWidth: .infinity, minHeight: height, maxHeight: height, alignment: .topLeading)
-            // The hidden sizer: same fonts and spacing as the real lines, every line reserved, never drawn or spoken.
-            .background(alignment: .topLeading) {
-                CaptionContent(caption: nil, accent: accent, reserved: true)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .hidden()
-                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { reservedHeight = $0 }
-            }
-            .clipped()
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(caption.map { "\($0.title). \($0.detail)" } ?? "")
-            .accessibilityValue(maths ? (caption?.equation ?? "") : "")
-            .accessibilityAddTraits(.updatesFrequently)
-            .accessibilityHidden(caption == nil)
-            // While guided, the button keeps its place even when hidden, so the words never reflow when a hold
-            // begins or ends; only its visibility changes.
-            if model.guided {
-                ContinueButton(model: model)
-                    .opacity(model.holding ? 1 : 0)
-                    .disabled(!model.holding)
-                    .accessibilityHidden(!model.holding)
+                .captionGlass(accent: accent, palette: palette)
+                .transition(.opacity)
+                .id(caption.id)
             }
         }
-        .captionGlass(accent: accent, palette: palette)
-        .animation(.easeOut(duration: 0.2), value: caption?.id)
-        .animation(.easeOut(duration: 0.2), value: model.holding)
+        .frame(maxWidth: .infinity, minHeight: height, maxHeight: height, alignment: .bottom)
+        // The hidden sizer: same fonts and spacing as the real lines plus the card's padding, every line reserved,
+        // never drawn or spoken.
+        .background(alignment: .bottom) {
+            CaptionContent(caption: nil, accent: accent, reserved: true)
+                .padding(.vertical, CaptionCard.padding)
+                .fixedSize(horizontal: false, vertical: true)
+                .hidden()
+                .accessibilityHidden(true)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { reservedHeight = $0 }
+        }
+        .animation(.smooth(duration: 0.3), value: caption?.id)
+        .animation(.smooth(duration: 0.25), value: model.holding)
         // Remember the newest caption so it stays up between beats instead of leaving a blank card.
         .onChange(of: active?.id) { _, _ in
             if model.lensOn, let now = model.activeCaption() { shown = now }
@@ -273,7 +276,7 @@ struct LensLegendChip: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
-        .glassEffect(.regular.tint(palette.ground.opacity(0.4)), in: .rect(cornerRadius: 16, style: .continuous))
+        .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Lens colours: amber lines show a ball sliding, cyan lines a ball rolling")
     }
@@ -403,8 +406,8 @@ struct CaptionLeader: View {
                         .environment(\.layoutDirection, layoutDirection)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 5)
-                        .glassEffect(.regular.tint(color.opacity(0.35)), in: .capsule)
-                        .overlay { Capsule().strokeBorder(color.opacity(0.7), lineWidth: 1) }
+                        // System glass; the caption's colour shows only as a faint tint, so it reads as native glass.
+                        .glassEffect(.regular.tint(color.opacity(0.15)), in: .capsule)
                         .onGeometryChange(for: CGSize.self) { $0.size } action: { chipSize = $0 }
                         .position(chipCenter(ring: ring, in: geo.size))
                         // A new caption's chip fades in at its own ball rather than sliding across the table; an

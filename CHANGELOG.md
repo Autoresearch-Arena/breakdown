@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.5.6] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Ride is now a chase view of the cue ball. The camera sits behind and above the cue ball for the whole shot instead of hugging it at rail height and then jumping to the ball it hits. After the first hit it lifts up and back, so on the break you see the whole rack open, and on a pot you watch the ball run into the pocket. The explanation card under the table is now plain Apple glass that is only as big as its words, and it is gone when there is nothing to say. Replay moved into the scrub bar, so the Physics Lens, Ride and Your shot buttons share one row.
+- Why: The Boss found the ride view weird: the cue ball filled half the screen, the rack was a wall of giant balls, and it switched to riding the yellow ball. He wants to be the cue ball, in a chase view. He also found the explanation box covering the table with a lot of empty glass, and Your shot sitting alone on its own row.
+- How: The ride camera's height, distance and look point were changed, the hand-over to the struck ball was removed, the cue ball's heading only turns after the hit when the cue ball really travels on, and the lift is a smooth blend timed from the hit, so scrubbing still gives the same view for the same moment. The strip still keeps its room so the table does not jump, but the glass now hugs the text and sits on the controls. No new text to translate (the Ride button's old hint was dropped because it described the hand-over).
+- Checked: the iPhone and Mac builds pass; the straight pot and the full break were watched with Ride on in the iPhone 17 Pro Max simulator.
+
 ## [0.5.5] - 20-November-2026
 
 Author: Claude Opus 5.5 High

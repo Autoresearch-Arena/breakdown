@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (Replay moved into the scrub row beside the speed menu, so Physics
+//          Lens, Ride and Your shot share one centred row instead of leaving Your shot alone on a second row).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (fewer rows over the table on a phone: play and pause sit in the
 //          scrub row, speed is a small menu instead of four segments, and the scrub row steps aside while aiming).
@@ -172,12 +174,15 @@ struct PlaybackControls: View {
             #if os(iOS)
             // On a phone the speed lives here, where the time read-out was: one fewer row over the table.
             SpeedPicker(model: model, asMenu: true).fixedSize().buttonStyle(.plain).frame(minHeight: 44)
+            // Replay lives in the scrub row too (it is a playback control), so the button row below has room for
+            // Physics Lens, Ride and Your shot on one line instead of leaving Your shot alone on a second row.
+            ReplayButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
             #else
             if !typeSize.isAccessibilitySize { TimeReadout(model: model) }
             #endif
         }
         .padding(.leading, 8)
-        .padding(.trailing, 20)
+        .padding(.trailing, 8)
         .glassEffect(.regular, in: .capsule)
     }
 
@@ -194,11 +199,11 @@ struct PlaybackControls: View {
         .accessibilityLabel("Physics Lens")
     }
 
-    /// Ride: the replay camera follows the balls at table height. Named "Ride" on the button and spoken in full.
+    /// Ride: the replay camera chases the cue ball. Named "Ride" on the button and spoken in full. (Its old hint said
+    /// it hands over to the ball it hits; it no longer does, and no new string is wanted, so the hint is gone.)
     private func ride(fill: Bool = false) -> some View {
         ToggleButton(title: "Ride", symbol: "video", isOn: model.rideOn, fill: fill) { model.setRide(!model.rideOn) }
             .accessibilityLabel("Ride camera")
-            .accessibilityHint("During a replay the camera rides behind the cue ball and the ball it hits, in slow motion at the contact")
     }
 
     private var shot: some View {
@@ -230,8 +235,8 @@ struct PlaybackControls: View {
             Spacer(minLength: 0)
             lens(full: fullLens)
             ride()
-            ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
             shot
+            Spacer(minLength: 0)
         }
     }
 
@@ -242,9 +247,9 @@ struct PlaybackControls: View {
                 Spacer(minLength: 0)
                 lens(full: fullLens)
                 ride()
-                ReplayButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
+                Spacer(minLength: 0)
             }
-            HStack(spacing: 8) { Spacer(minLength: 0); shot }
+            HStack(spacing: 8) { Spacer(minLength: 0); shot; Spacer(minLength: 0) }
         }
     }
 
@@ -257,7 +262,6 @@ struct PlaybackControls: View {
                 lens(full: false, fill: true)
             }
             ride(fill: true)
-            ReplayButton(model: model, fill: true)
             ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen, fill: true) { shotPanelOpen.toggle() }
         }
     }

@@ -1,14 +1,17 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
-// PURPOSE: Ride the shot: the "crazy" replay camera. When Ride is on, the camera drops to just above ball height a
-//          couple of ball widths behind the cue ball, looks the way the cue ball is travelling and follows it into the
-//          first ball it hits. At that contact it hands over to ride behind the struck ball wherever it goes (into the
-//          pocket if it drops), then rises up and back to the normal overhead table once that ball's run is over. With
-//          the Lens on, the same ride happens over the Lens, so the trails and the grid are seen from the low angle.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (a chase view of the cue ball for the whole shot, as the Boss asked:
+//          higher and further back, no hand-over to the struck ball, a crane up after the first contact).
+// PURPOSE: Ride the shot: a chase view of the cue ball. When Ride is on, the camera sits behind and above the cue
+//          ball, looks the way it is travelling and follows it for the whole shot (it never hands over to the ball it
+//          hits). After the first contact it cranes up and back so the rack opening, or the struck ball's run to its
+//          pocket, is in view; it keeps looking the way the cue ball came unless the cue ball travels on. Once the cue
+//          ball and the ball it hit have finished their runs it rises to the normal overhead table. With
+//          the Lens on, the same ride happens over the Lens, so the trails and the grid are seen from behind the cue ball.
 //          Everything about the ride is a pure function of the playback clock and the recorded timeline: there is no
 //          frame-to-frame camera state, so scrubbing either way shows the same camera for the same time. Direction is
 //          read from a look-ahead along the recorded path, smoothed by a critically damped kernel over that path, so it
-//          turns smoothly through a cushion bounce instead of snapping when the velocity flips. The hand-off at
+//          turns smoothly through a cushion bounce instead of snapping when the velocity flips. The crane after the
 //          contact and the rise at the end are critically damped blends computed from event times.
 //          The one piece of wall-clock state is `engage`: switching Ride on or off mid-shot eases in over half a
 //          second instead of jumping (under Reduce Motion it cuts).
@@ -45,6 +48,9 @@ struct RidePlan: Equatable {
     /// The clock span each ball is ridden over: the cue ball until contact (or until it stops), the struck ball from
     /// contact until it stops or drops. Samples outside these spans are clamped into them.
     var cueSpan: ClosedRange<Double> = 0...0
+    /// The span the cue ball's heading is read over: all of cueSpan when the cue ball travels on after the contact,
+    /// otherwise only up to the contact (see init).
+    var headingSpan: ClosedRange<Double> = 0...0
     var objectSpan: ClosedRange<Double> = 0...0
     /// When the rise to the overhead view starts, and how long it takes (it always finishes by the end of the shot,
     /// so the balls the next shot starts from are seen from the normal camera).
@@ -72,25 +78,36 @@ struct RidePlan: Equatable {
         let first = tl.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
         contactTime = first?.time
         let struck = first?.balls.first { $0.ball != 0 }?.ball
-        cueSpan = 0...max(Self.window, contactTime ?? cueStop)
-
-        var rideEnd: Double            // when the ridden ball's run is over
-        if let c = contactTime, let b = struck {
-            let end = Self.travelEnd(tl, ball: b)
-            let travel = (tl.state(ball: b, at: end).position - tl.state(ball: b, at: c).position).length
-            if travel > 0.15, end - c > Self.window {
-                objectBall = b
-                objectSpan = c...end
-                // A ball that drops: hold on the pocket a moment while it falls, then rise.
-                rideEnd = tl.pocketTime[b] != nil ? end + 0.35 : end + 0.2
-                // Once the action dies down: never ride a slow drift for more than a few seconds after the contact.
-                rideEnd = min(max(rideEnd, c + 0.8), c + Self.longestRide)
-            } else {
-                // The struck ball barely moves (the apex ball of a break): watch from behind the cue ball for a beat.
-                rideEnd = c + 0.6
-            }
+        // The camera stays with the cue ball the whole way (the Boss: "you want to be the cue ball"), so its place is
+        // followed until it stops or drops.
+        cueSpan = 0...max(Self.window, cueStop)
+        // Its heading only follows the cue ball after the contact when the cue ball really goes somewhere afterwards.
+        // A cue ball that stops dead or sits in the middle of a break keeps looking the way it came, at the balls it
+        // sent off, instead of swinging round to stare at the rail behind it.
+        if let c = contactTime {
+            let after = (tl.state(ball: 0, at: cueStop).position - tl.state(ball: 0, at: c).position).length
+            headingSpan = after > Self.followOn ? cueSpan : 0...max(Self.window, c)
         } else {
-            rideEnd = min(tl.pocketTime[0] != nil ? cueStop + 0.35 : cueStop + 0.2, Self.longestRide)
+            headingSpan = cueSpan
+        }
+
+        // Stay low until the cue ball and the ball it hit have both finished their runs, so the camera watches the
+        // struck ball roll away (and drop) from behind the cue ball. Never for more than a few seconds after contact.
+        var rideEnd = tl.pocketTime[0] != nil ? cueStop + 0.35 : cueStop + 0.2
+        if let c = contactTime {
+            if let b = struck {
+                let end = Self.travelEnd(tl, ball: b)
+                let travel = (tl.state(ball: b, at: end).position - tl.state(ball: b, at: c).position).length
+                if travel > 0.15, end - c > Self.window {
+                    objectBall = b
+                    objectSpan = c...end
+                    rideEnd = max(rideEnd, tl.pocketTime[b] != nil ? end + 0.35 : end + 0.2)
+                }
+            }
+            // A break: the apex ball barely moves but the whole rack opens; watch it spread for a moment.
+            rideEnd = min(max(rideEnd, c + 1.2), c + Self.longestRide)
+        } else {
+            rideEnd = min(rideEnd, Self.longestRide)
         }
         riseLength = min(1.2, duration * 0.5)
         riseStart = min(max(0, rideEnd), duration - riseLength)
@@ -101,6 +118,8 @@ struct RidePlan: Equatable {
     static let window = 0.08
     /// The longest the camera stays low after the contact (or after the strike when nothing is hit), in clock seconds.
     static let longestRide = 3.0
+    /// How far (metres) the cue ball must travel after the contact before the camera turns to follow its new way.
+    static let followOn = 0.3
 
     /// When a ball stops travelling across the cloth: its pocket time, or the start of the first segment after which
     /// it only spins in place or rests.
@@ -169,17 +188,22 @@ final class ShotCamera {
     private var engage = 0.0
     private var lastTick: TimeInterval?
 
-    /// Near plane while riding: the ball followed is about ten centimetres away, closer than the overhead's
-    /// five-centimetre plane allows. One centimetre clears every ball and rail under the eye (see eyeHeight) while
-    /// keeping depth precision on the cloth and rails far better than a hair-thin plane would.
-    static let rideNear: Float = 0.01
+    /// Near plane while riding: the eye is about half a metre from the ball it chases, so two centimetres clears
+    /// everything near it while keeping good depth precision on the cloth and rails.
+    static let rideNear: Float = 0.02
     static let overheadNear: Float = 0.05
-    /// Eye height above the cloth: just over the rail tops (7.5 cm), so the camera can never pass through a rail or a
-    /// ball (ball tops are at 5.7 cm) whatever the ball does.
-    static let eyeHeight: Float = 0.085
-    /// How far behind the ridden ball's centre the eye sits (about two ball widths) and how far ahead it looks.
-    static let back: Float = 0.11
-    static let ahead: Float = 0.55
+    /// The chase view: the eye sits well above the rail tops (7.5 cm) and about a dozen ball widths behind the cue ball,
+    /// so the cue ball reads as a ball in the lower part of the screen with the balls it is heading for in view
+    /// beyond it, and the camera can see over a whole rack as it opens. The first ride sat a ball width behind at
+    /// rail height: the cue ball filled half the screen and the rack was a wall (the Boss found it "a weird view").
+    static let eyeHeight: Float = 0.42
+    static let back: Float = 0.62
+    /// The point on the cloth the camera looks at, this far ahead of the cue ball.
+    static let ahead: Float = 0.38
+    /// Where the camera cranes to after the first contact, and how long that takes (clock seconds).
+    static let craneHeight: Float = 0.85
+    static let craneBack: Float = 0.95
+    static let craneTime = 0.45
 
     func load(_ tl: Timeline, frame: TableFrame) {
         timeline = tl
@@ -239,29 +263,28 @@ final class ShotCamera {
             // One still view behind the cue ball where it starts, looking the way it is struck.
             shot = follow(centre: plan.cueStart, heading: plan.strikeDirection, frame: frame, fov: fov)
         } else {
-            let cueHeading = tracks.cue.heading(at: t)
-            shot = follow(centre: position(tl, ball: 0, at: t, span: plan.cueSpan), heading: cueHeading, frame: frame, fov: fov)
-            if let b = plan.objectBall, let c = plan.contactTime, t > c {
-                // Hand over to the struck ball: a critically damped blend that starts at the contact with zero slope.
-                let w = RidePlan.damped(t - c, length: 0.45)
-                let objHeading = tracks.object?.heading(at: t) ?? cueHeading
-                let obj = follow(centre: position(tl, ball: b, at: t, span: plan.objectSpan), heading: objHeading,
-                                 frame: frame, fov: fov)
-                shot = mix(shot, obj, Float(w))
-            }
+            // Always the cue ball: a chase view from behind and above it, never handed over to the ball it hits.
+            // After the contact the camera cranes up and back (critically damped, from the contact time, so still a
+            // pure function of the clock): close behind the cue ball on the way in, then high enough to see the
+            // whole rack open or the struck ball run to its pocket.
+            let crane = Float(plan.contactTime.map { RidePlan.damped(t - $0, length: Self.craneTime) } ?? 0)
+            shot = follow(centre: position(tl, ball: 0, at: t, span: plan.cueSpan), heading: tracks.cue.heading(at: t),
+                          frame: frame, fov: fov,
+                          height: eyeHeight + (craneHeight - eyeHeight) * crane, back: back + (craneBack - back) * crane)
         }
         return frameInFreeSpace(shot, free: free, size: size)
     }
 
     /// The camera a couple of ball widths behind a ball at `centre`, looking along `heading` at the cloth ahead.
-    static func follow(centre c: Vec2, heading h: Vec2, frame: TableFrame, fov: Float) -> CameraShot {
+    static func follow(centre c: Vec2, heading h: Vec2, frame: TableFrame, fov: Float,
+                       height: Float = eyeHeight, back: Float = back) -> CameraShot {
         let r = frame.ballRadius
         let eye2 = c - h * Double(back)
         // Rails: the eye is already above the rail tops, but when it backs out past the cushion line it climbs a
         // little more, so the rail never hides the ball it is following. Continuous in position, so in time too.
         let outside = max(0, -eye2.x, eye2.x - Double(frame.length), -eye2.y, eye2.y - Double(frame.width))
         let lift = Float(min(outside, 0.2)) * 0.6
-        var eye = frame.world(eye2, height: eyeHeight + lift)
+        var eye = frame.world(eye2, height: height + lift)
         // Belt and braces: never lower than the ball tops plus the near plane, whatever the constants become.
         eye.y = max(eye.y, 2 * r + rideNear * 2)
         let look = frame.world(c + h * Double(ahead), height: 0)
@@ -269,12 +292,12 @@ final class ShotCamera {
     }
 
     /// A wide lens for the ride: about 64 degrees across the narrow side of the screen where that fits, kept between
-    /// 50 and 70 degrees tall. A phone held upright hits the 70-degree ceiling (about 36 degrees across), which still
-    /// shows the ball followed and where it is going without the stretched look of a wider lens.
+    /// 46 and 62 degrees tall. A phone held upright hits the 62-degree ceiling, which keeps less empty room above the
+    /// far rail in view than a taller lens would.
     static func rideFov(_ size: CGSize) -> Float {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let vertical = 2 * atan(tan(32 * Float.pi / 180) * h / w) * 180 / .pi
-        return min(70, max(50, vertical))
+        return min(62, max(46, vertical))
     }
 
     /// Turn the ride's look direction so its centre lands in the middle of the free space (between the title, the
@@ -385,11 +408,9 @@ final class ShotCamera {
 /// The ridden balls' headings, sampled once per shot.
 struct RideTracks {
     let cue: HeadingTrack
-    let object: HeadingTrack?
 
     init(_ tl: Timeline, plan: RidePlan) {
-        cue = HeadingTrack(tl, ball: 0, span: plan.cueSpan, fallback: plan.strikeDirection)
-        object = plan.objectBall.map { HeadingTrack(tl, ball: $0, span: plan.objectSpan, fallback: plan.strikeDirection) }
+        cue = HeadingTrack(tl, ball: 0, span: plan.headingSpan, fallback: plan.strikeDirection)
     }
 }
 
