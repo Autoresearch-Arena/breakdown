@@ -2,6 +2,9 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the draw-massé carom joins the list; a carom goal checks the cue
 //          ball's second contact as the app's judge does).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the six lessons and the stop shot's second exercise join the check:
+//          each lesson's reference must still make its goal, the exercise's answer must make it, and copying the stop
+//          lesson's settings onto the exercise must still miss, so a physics change that breaks a lesson is caught).
 // PURPOSE: "BreakProbe verify [generation]": plays every authored trick shot and every Behind the 8-Ball escape the app
 //          carries, exactly as authored, on the chosen physics generation (default: the solver's default, the one the
 //          app ships), and prints one PASS or FAIL line each, with the reason for a failure. Returns whether all passed;
@@ -124,7 +127,24 @@ func runContentVerify(generation: Int) -> Bool {
         s.generation = generation
         return ebPasses(s, e, f.strike) ? nil : ebWhy(s, e, f.strike)
     }
+    // The lessons, judged like the tricks; then the stop shot's second exercise both ways: its own answer must make it,
+    // and copying the stop lesson's settings onto it must NOT (plan 14, section 4: the exercise only checks learning
+    // while copying the demonstration fails).
+    let lessons = parallelMap(authoredLessons.count) { i -> String? in
+        let t = authoredLessons[i]
+        return trickFailure(t.goal, simulate(t.layout, t.strike, parameters: parameters))
+    }
+    let exercise = stopExercise
+    let exerciseWhy = trickFailure(exercise.goal, simulate(exercise.layout, exercise.strike, parameters: parameters))
+    let copied = trickFailure(exercise.goal, simulate(exercise.layout, authoredLessons[0].strike, parameters: parameters))
     var failures = 0
+    for (t, why) in zip(authoredLessons, lessons) {
+        if let why { failures += 1; print("FAIL \(t.id): \(why)") } else { print("PASS \(t.id)") }
+    }
+    if let why = exerciseWhy { failures += 1; print("FAIL lesson-stop-exercise: \(why)") }
+    else { print("PASS lesson-stop-exercise") }
+    if copied == nil { failures += 1; print("FAIL lesson-stop-exercise: copying the stop lesson's settings makes it too") }
+    else { print("PASS lesson-stop-exercise: copying the stop lesson's settings misses (\(copied!))") }
     for (t, why) in zip(authoredTricks, tricks) {
         if let why { failures += 1; print("FAIL trick \(t.id): \(why)") } else { print("PASS trick \(t.id)") }
     }
@@ -132,8 +152,46 @@ func runContentVerify(generation: Int) -> Bool {
         if let why { failures += 1; print("FAIL eightball \(f.situation) \(f.escape): \(why)") }
         else { print("PASS eightball \(f.situation) \(f.escape)") }
     }
-    let total = authoredTricks.count + ebFinal.count
+    let total = authoredTricks.count + ebFinal.count + authoredLessons.count + 2
     print(String(format: "== %d of %d authored shots pass on generation %d (%.1f s)", total - failures, total,
                  generation, Date().timeIntervalSince(start)))
     return failures == 0
 }
+
+/// The six lessons of App/Lessons/Lessons.swift, in lesson order, copied number for number from "BreakProbe lessons"
+/// (LessonAuthoring.swift). KEEP IN STEP with that file, as the trick shots above are with TrickShots.swift. The
+/// stop lesson must stay first: the second exercise is built on its line.
+let authoredLessons: [AuthoredTrick] = [
+    AuthoredTrick(id: "lesson-stop",
+                  layout: layoutOf([0: Vec2(2.0033, 1.0017), 3: Vec2(2.2270, 1.1135)]),
+                  strike: Strike(aim: 26.57, power: 1.40, tipUp: -0.007, tipSide: 0),
+                  goal: Goal(drops: [(3, 3)], cueZone: (Vec2(2.1758, 1.0879), 0.05), firstHit: 3)),
+    AuthoredTrick(id: "lesson-follow",
+                  layout: layoutOf([0: Vec2(1.4220, 0.7110), 3: Vec2(1.6456, 0.8228)]),
+                  strike: Strike(aim: 26.69, power: 1.30, tipUp: 0.0085, tipSide: 0),
+                  goal: Goal(drops: [(3, 3)], cueZone: (Vec2(2.2206, 1.1103), 0.15), firstHit: 3)),
+    AuthoredTrick(id: "lesson-draw",
+                  layout: layoutOf([0: Vec2(2.0033, 1.0017), 3: Vec2(2.1822, 1.0911)]),
+                  strike: Strike(aim: 26.80, power: 1.50, tipUp: -0.012, tipSide: 0),
+                  goal: Goal(drops: [(3, 3)], cueZone: (Vec2(1.7286, 0.8643), 0.25), firstHit: 3)),
+    AuthoredTrick(id: "lesson-cut",
+                  layout: layoutOf([0: Vec2(1.9279, 0.7124), 3: Vec2(2.2270, 1.1135)]),
+                  strike: Strike(aim: 57.13, power: 2.15, tipUp: 0, tipSide: 0),
+                  goal: Goal(drops: [(3, 3)], firstHit: 3)),
+    AuthoredTrick(id: "lesson-curve",
+                  layout: layoutOf([0: Vec2(1.0000, 0.6350), 4: Vec2(1.2000, 0.6007), 9: Vec2(1.5500, 0.6350)]),
+                  strike: Strike(aim: 23.28, power: 1.45, tipUp: -0.012, tipSide: 0.0171, elevation: sineOf(degrees: 30)),
+                  goal: Goal(drops: [], firstHit: 9)),
+    AuthoredTrick(id: "lesson-jump",
+                  layout: layoutOf([0: Vec2(1.0000, 0.6350), 6: Vec2(1.2500, 0.6350), 11: Vec2(2.0000, 0.6350)]),
+                  strike: Strike(aim: -1.18, power: 4.20, tipUp: 0.0015, tipSide: 0, elevation: sineOf(degrees: 40)),
+                  goal: Goal(drops: [], firstHit: 11)),
+]
+
+/// The stop shot's second exercise as App/Lessons/Lessons.swift carries it (Lessons.stopExercise), copied from
+/// "BreakProbe lessons stop-exercise": the stop lesson's own line with the cue ball 0.35 m back instead of 0.25 m, the
+/// same aim and power, and the tip a little lower. KEEP IN STEP.
+let stopExercise = AuthoredTrick(id: "lesson-stop-exercise",
+                                 layout: layoutOf([0: Vec2(1.9139, 0.9570), 3: Vec2(2.2270, 1.1135)]),
+                                 strike: Strike(aim: 26.57, power: 1.40, tipUp: -0.0105, tipSide: 0),
+                                 goal: Goal(drops: [(3, 3)], cueZone: (Vec2(2.1759, 1.0880), 0.05), firstHit: 3))
