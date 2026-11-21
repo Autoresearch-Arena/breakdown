@@ -15,6 +15,8 @@
 //          Break and Shoot call the same model methods as before.
 // Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo: the fine controls open inside the side panel instead of
 //          in a sheet, so nothing covers the table.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the power slider's readout says the power in a word beside the number,
+//          from PowerWords.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -229,7 +231,7 @@ private struct FineControls: View {
                         aimRow
                     }
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
-                              range: model.powerRange, readout: String(format: "%.1f m/s", model.activePower))
+                              range: model.powerRange, readout: PowerWords.readout(speed: model.activePower, racked: model.racked))
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
                               range: -ShowpieceModel.tipLimit...ShowpieceModel.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
                     SliderRow(label: "Side", value: Binding(get: { model.activeTipSide }, set: { model.activeTipSide = $0 }),

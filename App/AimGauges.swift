@@ -1,6 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the power readout and its spoken value carry a plain word before the
+//          number, soft to hard or break, from PowerWords).
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -102,9 +104,11 @@ struct PowerGauge: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("Power").font(Theme.label).foregroundStyle(.secondary)
                 Spacer(minLength: 4)
-                Text(String(format: "%.1f m/s", model.activePower))
+                Text(PowerWords.readout(speed: model.activePower, racked: model.racked))
                     .font(Theme.number)
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
@@ -126,7 +130,7 @@ struct PowerGauge: View {
         .frame(minHeight: 44)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
-        .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(String(format: "%.1f", locale: Locale.current, model.activePower)) metres per second"))
+        .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(PowerWords.spoken(speed: model.activePower, racked: model.racked))"))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: model.powerFraction += 0.1

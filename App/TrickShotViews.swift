@@ -3,6 +3,8 @@
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (strings that are built in code, such as the card lines, the spoken row
 //          label and the "Coming next" line, are String(localized:); literal labels and buttons are already keys)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the -trickAim store-screenshot flag.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the list shows each shot's place in the easiest-first order,
+//          TrickShots.listNumber, instead of its authored number)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -66,7 +68,7 @@ struct TrickShotList: View {
                 } else if shot.pending {
                     Image(systemName: "lock.fill").foregroundStyle(.secondary)
                 } else {
-                    Text("\(shot.number)").font(Theme.equation).foregroundStyle(palette.accent)
+                    Text("\(TrickShots.listNumber(of: shot))").font(Theme.equation).foregroundStyle(palette.accent)
                 }
             }
             .font(.title3)
@@ -90,7 +92,7 @@ struct TrickShotList: View {
     private func spoken(_ shot: TrickShot) -> String {
         let state = shot.pending ? String(localized: "coming next")
             : (mode.isDone(shot) ? String(localized: "made") : String(localized: "not made yet"))
-        return String(localized: "Shot \(shot.number), \(shot.title), \(shot.difficulty.label), \(state). \(shot.hook)")
+        return String(localized: "Shot \(TrickShots.listNumber(of: shot)), \(shot.title), \(shot.difficulty.label), \(state). \(shot.hook)")
     }
 }
 

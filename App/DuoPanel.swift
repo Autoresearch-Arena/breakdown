@@ -15,6 +15,8 @@
 //          beside them. The environment value inlinePages tells those views to stay out of sheets on this screen.
 //          When the phone is propped like a laptop the panel is short and wide, and the play page splits into two
 //          columns (controls and cards on one side, the commentary and numbers on the other).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the opening hand-over line and the Lens callouts are cards here, so
+//          nothing covers the table: OpeningCard and LensCalloutCard, hook lines only.)
 // SRP/DRY check: Pass - layout and page switching only. The words are in DuoStory and DuoDossier, the numbers in
 //          DuoNumbers; every card, list and menu is the same view the other screens use, embedded.
 import SwiftUI
@@ -105,6 +107,8 @@ struct DuoPanel: View {
     private var cards: some View {
         VStack(spacing: 10) {
             ComparisonCard(model: model)
+            OpeningCard(model: model)
+            LensCalloutCard(model: model)
             TrickShotCard(model: model)
             EightBallCard(model: model)
             if showShotPanel {
