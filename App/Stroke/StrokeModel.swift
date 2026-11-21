@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (integration: authored modes keep the cue's full calm zone with a
+//          short bridge finger, found by the first test run).
 // PURPOSE: Swinging hard costs control (plans/21-Nov-2026-stroke-and-power-plan.md). Pure numbers, no views:
 //          - StrokeZones: where the calm zone of the power bar ends, from the cue's comfortable top swing and the
 //            bridge length.
@@ -199,7 +201,11 @@ enum StrokeModel {
     static func delivery(power: Double, fraction: Double, record: StrokeRecord?, bridge: Double, cue: CueProfile,
                          authored: Bool) -> StrokeDelivery {
         let swing = CueProfile.swing(forPower: power)
-        let zones = zones(cue: cue, bridge: bridge)
+        // In a trick shot, situation or lesson a short bridge finger does not lower the calm top: every authored
+        // answer was made at a power inside the cue's own calm zone, and a shortened zone would put the hardest of
+        // them (The Called Break) in the warm part, where drift is uncapped and the shot could no longer be made.
+        // The lever still uses the real bridge; authoredWobbleCap already allows for the longest one.
+        let zones = zones(cue: cue, bridge: authored ? max(bridge, automaticBridge) : bridge)
         let e = wobble(swing: swing, zones: zones, record: record, authored: authored)
         // The rear hand to the right turns the cue about the bridge: the tip goes left and the cue points left
         // (counter-clockwise on the table plan, a positive aim error).
