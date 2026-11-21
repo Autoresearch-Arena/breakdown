@@ -43,6 +43,8 @@
 //          as it drops into the moulded cup, so it goes behind the lip instead of through the pocket's edge; balls are
 //          drawn 8% larger in the Lens; the bed is redressed once the cloth's close-up normal map has been drawn; the
 //          table is built with the scene root as its light source, for the models that load later.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (release stream: the -lensSelfTest check moved, unchanged, into
+//          LensScrubCheck.run so the unit tests run the same check; this file now only logs its result.)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -370,29 +372,11 @@ final class TableScene {
     /// Scrub-exactness check. Drives the Lens to a list of clock times, records its fingerprint at each, then
     /// visits the same times again going backwards, then in a shuffled order, and compares. Also checks that the
     /// trail fade only ever dims with age. Results go to the console (visible with simctl launch --console).
+    /// The check itself is LensScrubCheck.run (shared with the unit tests); this only logs its result.
     private func runSelfTest() {
-        let d = timeline.duration
-        let times = [0.0, 0.05, 0.3, 0.9, 1.7, 2.6, d * 0.5, d * 0.8, d].map { min($0, d) }
-        let visible = [Bool](repeating: true, count: timeline.ballCount)
-        func print(at t: Double) -> UInt64 {
-            lens.apply(time: t, melt: 1, aim: nil, timeline: timeline, frame: frame, ballVisible: visible)
-            return lens.fingerprint()
-        }
-        var first: [Double: UInt64] = [:]
-        for t in times { first[t] = print(at: t) }                     // forward
-        var mismatches = 0
-        for t in times.reversed() where print(at: t) != first[t] { mismatches += 1 }   // backward
-        for t in [times[5], times[1], times[8], times[0], times[6], times[3], times[2], times[7], times[4]] {
-            _ = print(at: d * 0.37)                                    // jump somewhere unrelated first
-            if print(at: t) != first[t] { mismatches += 1 }            // then back to a known time
-        }
-        // Different times should look different (guards against a fingerprint that ignores the clock).
-        let distinct = Set(first.values).count
-        var monotone = true
-        var prev = 2.0
-        for i in 0...400 { let b = LensLayer.trailBrightness(age: Double(i) * 0.01); if b > prev + 1e-12 { monotone = false }; prev = b }
+        let r = LensScrubCheck.run(lens: lens, timeline: timeline, frame: frame)
         NSLog("LENS-SELFTEST scrub mismatches=%d distinctStates=%d/%d fadeMonotone=%@ floor=%.2f bloom=%@ -> %@",
-              mismatches, distinct, times.count, monotone ? "yes" : "NO", LensLayer.trailBrightness(age: 99),
-              lens.bloomActive ? "on" : "off", (mismatches == 0 && monotone && distinct > 4) ? "PASS" : "FAIL")
+              r.mismatches, r.distinctStates, r.timesVisited, r.fadeMonotone ? "yes" : "NO", r.fadeFloor,
+              r.bloomActive ? "on" : "off", r.passed ? "PASS" : "FAIL")
     }
 }

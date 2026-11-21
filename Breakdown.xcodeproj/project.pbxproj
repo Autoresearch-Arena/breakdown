@@ -6,10 +6,12 @@
 	objects = {
 		B1000001 /* Breakdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Breakdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1000002 /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B1000020); path = App; sourceTree = "<group>"; };
+		B1000030 /* BreakdownTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakdownTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1000031 /* BreakdownTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = BreakdownTests; sourceTree = "<group>"; };
 		B1000020 /* Exceptions for "App" folder in "Breakdown" target */ = {isa = PBXFileSystemSynchronizedBuildFileExceptionSet; membershipExceptions = (EightBall/README.md, Tables/README.md); target = B1000008 /* Breakdown */; };
 		B1000003 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (B1000012); runOnlyForDeploymentPostprocessing = 0; };
-		B1000004 = {isa = PBXGroup; children = (B1000002, B1000005); sourceTree = "<group>"; };
-		B1000005 /* Products */ = {isa = PBXGroup; children = (B1000001); name = Products; sourceTree = "<group>"; };
+		B1000004 = {isa = PBXGroup; children = (B1000002, B1000031, B1000005); sourceTree = "<group>"; };
+		B1000005 /* Products */ = {isa = PBXGroup; children = (B1000001, B1000030); name = Products; sourceTree = "<group>"; };
 		B1000006 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		B1000007 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		B1000008 /* Breakdown */ = {
@@ -25,9 +27,27 @@
 			productReference = B1000001;
 			productType = "com.apple.product-type.application";
 		};
+		B1000032 /* Sources (tests) */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B1000033 /* Frameworks (tests) */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B1000034 /* Resources (tests) */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B1000035 /* BreakdownTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1000038;
+			buildPhases = (B1000032, B1000033, B1000034);
+			buildRules = ();
+			dependencies = (B1000037);
+			fileSystemSynchronizedGroups = (B1000031);
+			name = BreakdownTests;
+			packageProductDependencies = ();
+			productName = BreakdownTests;
+			productReference = B1000030;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B1000036 /* PBXContainerItemProxy */ = {isa = PBXContainerItemProxy; containerPortal = B1000009; proxyType = 1; remoteGlobalIDString = B1000008; remoteInfo = Breakdown; };
+		B1000037 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = B1000008; targetProxy = B1000036; };
 		B1000009 /* Project object */ = {
 			isa = PBXProject;
-			attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 2700; LastUpgradeCheck = 2700;};
+			attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 2700; LastUpgradeCheck = 2700; TargetAttributes = {B1000035 = {TestTargetID = B1000008;};};};
 			buildConfigurationList = B100000A;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
@@ -38,7 +58,7 @@
 			productRefGroup = B1000005;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (B1000008);
+			targets = (B1000008, B1000035);
 		};
 		B1000010 /* BreakdownCore local package */ = {isa = XCLocalSwiftPackageReference; relativePath = Packages/BreakdownCore; };
 		B1000011 /* BreakdownCore product */ = {isa = XCSwiftPackageProductDependency; productName = BreakdownCore; };
@@ -56,7 +76,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
 			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = "Breakdown-Info.plist";
 			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; MARKETING_VERSION = 0.6.5; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games"; MARKETING_VERSION = 0.6.5; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 			SWIFT_EMIT_LOC_STRINGS = YES; LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;
@@ -67,11 +87,24 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
 			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = "Breakdown-Info.plist";
 			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; MARKETING_VERSION = 0.6.5; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games"; MARKETING_VERSION = 0.6.5; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 			SWIFT_EMIT_LOC_STRINGS = YES; LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;
 			ENABLE_APP_SANDBOX = YES; ENABLE_USER_SELECTED_FILES = readonly; };};
+		B1000038 /* Test target config list */ = {isa = XCConfigurationList; buildConfigurations = (B1000039, B100003A); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		B1000039 /* Debug */ = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+			SDKROOT = auto; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx"; SUPPORTS_MACCATALYST = NO;
+			TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 26.0; MACOSX_DEPLOYMENT_TARGET = 26.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown.tests; PRODUCT_NAME = "$(TARGET_NAME)"; GENERATE_INFOPLIST_FILE = YES;
+			TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Breakdown.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Breakdown"; BUNDLE_LOADER = "$(TEST_HOST)";
+			SWIFT_EMIT_LOC_STRINGS = NO; CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES; };};
+		B100003A /* Release */ = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+			SDKROOT = auto; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx"; SUPPORTS_MACCATALYST = NO;
+			TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 26.0; MACOSX_DEPLOYMENT_TARGET = 26.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown.tests; PRODUCT_NAME = "$(TARGET_NAME)"; GENERATE_INFOPLIST_FILE = YES;
+			TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Breakdown.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Breakdown"; BUNDLE_LOADER = "$(TEST_HOST)";
+			SWIFT_EMIT_LOC_STRINGS = NO; CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES; };};
 	};
 	rootObject = B1000009;
 }

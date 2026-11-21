@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Author: Claude Opus 5.5 High
+Date: 21-November-2026
+PURPOSE: The shared Breakdown scheme, so every machine (and the TestFlight runner) gets the same one instead of the
+         per-user scheme Xcode makes up: Run, Profile and Archive build the app (Archive in Release, as
+         scripts/testflight.py expects), and Test runs the app's unit tests (the BreakdownTests target, hosted in the
+         app) with "xcodebuild test -scheme Breakdown".
+SRP/DRY check: Pass - the only scheme file in the project; targets are referenced by their ids in project.pbxproj.
+-->
+<Scheme
+   LastUpgradeVersion = "2700"
+   version = "1.7">
+   <BuildAction
+      parallelizeBuildables = "YES"
+      buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B1000008"
+               BuildableName = "Breakdown.app"
+               BlueprintName = "Breakdown"
+               ReferencedContainer = "container:Breakdown.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+   <TestAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      shouldUseLaunchSchemeArgsEnv = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B1000035"
+               BuildableName = "BreakdownTests.xctest"
+               BlueprintName = "BreakdownTests"
+               ReferencedContainer = "container:Breakdown.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
+   </TestAction>
+   <LaunchAction
+      buildConfiguration = "Debug"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
+      useCustomWorkingDirectory = "NO"
+      ignoresPersistentStateOnLaunch = "NO"
+      debugDocumentVersioning = "YES"
+      debugServiceExtension = "internal"
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B1000008"
+            BuildableName = "Breakdown.app"
+            BlueprintName = "Breakdown"
+            ReferencedContainer = "container:Breakdown.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </LaunchAction>
+   <ProfileAction
+      buildConfiguration = "Release"
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      savedToolIdentifier = ""
+      useCustomWorkingDirectory = "NO"
+      debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B1000008"
+            BuildableName = "Breakdown.app"
+            BlueprintName = "Breakdown"
+            ReferencedContainer = "container:Breakdown.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+   </ProfileAction>
+   <AnalyzeAction
+      buildConfiguration = "Debug">
+   </AnalyzeAction>
+   <ArchiveAction
+      buildConfiguration = "Release"
+      revealArchiveInOrganizer = "YES">
+   </ArchiveAction>
+</Scheme>
