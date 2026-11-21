@@ -89,6 +89,12 @@ struct DuoStory: View {
                 .padding(.vertical, 2)
             }
             .scrollBounceBehavior(.basedOnSize)
+            // The rows above and below the visible ones fade out, so a row cut by the edge reads as "more", not as a glitch.
+            .mask {
+                LinearGradient(stops: [.init(color: .clear, location: 0), .init(color: .black, location: 0.05),
+                                       .init(color: .black, location: 0.9), .init(color: .clear, location: 1)],
+                               startPoint: .top, endPoint: .bottom)
+            }
             .onChange(of: activeID) { _, id in
                 guard let id else { return }
                 withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) { proxy.scrollTo(id, anchor: .center) }
@@ -119,7 +125,6 @@ struct DuoStory: View {
                     Text(verbatim: caption.detail)
                         .font(Theme.body)
                         .foregroundStyle(lit ? Color.primary : Color.secondary)
-                        .lineLimit(lit ? nil : 3)
                         .fixedSize(horizontal: false, vertical: true)
                     if maths {
                         Text(verbatim: caption.equation)

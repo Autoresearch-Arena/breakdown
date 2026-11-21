@@ -36,6 +36,9 @@ struct DuoPanel: View {
     @State private var infoPage: InfoPage?
     /// The natural height of the cards block, so the commentary is shown only when there is room left for it.
     @State private var cardsHeight: CGFloat = 0
+    /// Measured heights of the controls and the numbers strip (they grow when their buttons wrap onto two rows).
+    @State private var controlsMeasured: CGFloat = 0
+    @State private var numbersMeasured: CGFloat = 0
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
     private enum InfoPage { case howTo, options }
@@ -117,8 +120,8 @@ struct DuoPanel: View {
     /// cards are not squeezed) when less than a few rows' worth remains, as while aiming a trick shot.
     private func oneColumn(_ size: CGSize) -> some View {
         // The fixed parts: padding, top bar, controls (the scrub row steps aside while aiming), the numbers, the gaps.
-        let controlsHeight: CGFloat = showShotPanel ? 36 : 90
-        let numbersHeight: CGFloat = showsNumbers ? 128 : 0
+        let controlsHeight: CGFloat = controlsMeasured > 0 ? controlsMeasured : (showShotPanel ? 36 : 90)
+        let numbersHeight: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) : 0
         let gaps = CGFloat(showsNumbers ? 4 : 3) * 12
         let free = size.height - 32 - 40 - controlsHeight - numbersHeight - gaps
         let storyMinimum: CGFloat = 140
@@ -136,8 +139,12 @@ struct DuoPanel: View {
             } else {
                 Spacer(minLength: 0)
             }
-            if showsNumbers { DuoNumbers(model: model) }
+            if showsNumbers {
+                DuoNumbers(model: model)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { numbersMeasured = $0 }
+            }
             PlaybackControls(model: model, shotPanelOpen: $showShotPanel, compact: true)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlsMeasured = $0 }
         }
         // Slightly narrower side padding than the other layouts: the trick-shot and 8-ball cards keep their buttons on
         // one row only if the column is a few points wider.

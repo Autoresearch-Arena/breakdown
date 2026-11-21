@@ -72,6 +72,7 @@ struct ShowpieceView: View {
     @State private var controlsTop: Double?
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.layoutDirection) private var layoutDirection
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
 
@@ -160,9 +161,14 @@ struct ShowpieceView: View {
         // The 3D view is full-bleed; the camera is told the safe areas and the measured edges of what floats over it.
         // Where the table's view stops at the column or the fold it has no safe inset on that side.
         let i = geo.safeAreaInsets
-        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading,
+        // SwiftUI's insets are leading and trailing, the camera's are left and right: turned round for right-to-left
+        // languages, where the status badge and the home indicator stay where the hardware put them.
+        let leadingInset = i.leading
+        let trailingInset = columnEdge == .trailing ? 0 : i.trailing
+        let rtl = layoutDirection == .rightToLeft
+        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: rtl ? trailingInset : leadingInset,
                                                      bottom: columnEdge == .bottom ? 0 : i.bottom,
-                                                     right: columnEdge == .trailing ? 0 : i.trailing),
+                                                     right: rtl ? leadingInset : trailingInset),
                                  headerBottom: header ? headerBottom : nil, controlsTop: controlsInColumn ? nil : controlsTop)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
@@ -205,7 +211,10 @@ struct ShowpieceView: View {
     }
 
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
-        FittingScroll(maxHeight: geo.size.height * 0.62) {
+        // A phone this wide for its height (the closed Duo: nearly two thirds as wide as tall) has no height to spare for the
+        // table anyway, and a taller stack keeps a scorecard and its controls from being cut at the bottom.
+        let squarish = geo.size.width / max(1, geo.size.height) > 0.65
+        FittingScroll(maxHeight: geo.size.height * (squarish ? 0.74 : 0.62)) {
             VStack(spacing: 10) {
                 if !wide { ComparisonCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.

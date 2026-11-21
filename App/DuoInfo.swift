@@ -64,15 +64,15 @@ struct DuoNumbers: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
             Text(label)
-                .font(.caption2.weight(.semibold))
+                .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
-                .minimumScaleFactor(0.8)
+                .minimumScaleFactor(0.85)
         }
         .frame(maxWidth: .infinity, minHeight: 52)
         .padding(.vertical, 6)
-        .padding(.horizontal, 2)
+        .padding(.horizontal, 1)
         .glassEffect(.regular, in: .rect(cornerRadius: 14, style: .continuous))
         .accessibilityElement(children: .combine)
     }
@@ -118,7 +118,8 @@ struct DuoSurfaceCard: View {
                 constant("e", p.cushionRestitution)
                 constant("g", p.gravity)
             }
-            if detailed {
+            // The standard table needs no introduction; any other table is described, since it changes the whole game.
+            if detailed && model.tableKind != .standard {
                 HStack(spacing: 8) {
                     Image(systemName: model.tableKind.symbol).foregroundStyle(palette.accent).accessibilityHidden(true)
                     Text(verbatim: model.tableKind.title).font(Theme.heading).lineLimit(1)
