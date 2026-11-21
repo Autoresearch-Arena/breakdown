@@ -1,0 +1,38 @@
+# Author: Claude Opus 5.5 Low
+# Date: 20-November-2026
+# PURPOSE: Every push to main that changes the app is built on the Mac Mini's own runner and put on TestFlight by
+#          scripts/testflight.py (build, upload, retire older builds, public group, beta review). Modelled on the dog
+#          game's Mac Mini TestFlight workflow.
+# SRP/DRY check: Pass - the only workflow in this repo; all release steps live in the script.
+# Safety: the repo is public, so this runs only on pushes to main and on a manual start from main. There is no
+#          pull_request trigger, and outside contributors' pull requests need approval before any workflow runs.
+name: Mac Mini TestFlight
+on:
+  push:
+    branches: [main]
+    # A push that only changes notes or docs ships the same app, so it does not start a build.
+    paths-ignore:
+      - 'docs/**'
+      - 'plans/**'
+      - 'store/**'
+      - '**/*.md'
+      - '.github/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    # One build at a time; a newer push waiting in line replaces an older waiting one (main contains it).
+    concurrency:
+      group: breakdown-testflight
+      cancel-in-progress: false
+    runs-on: [self-hosted, macOS, ARM64, breakdown-ios]
+    timeout-minutes: 120
+    steps:
+      - name: Check out main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Build, upload and publish to TestFlight
+        run: /usr/bin/caffeinate -is /Users/macmini/.appstoreconnect/venv/bin/python scripts/testflight.py
