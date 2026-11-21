@@ -27,6 +27,7 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (starts the opening music, TitleMusic, while the main menu is up and fades it when play starts or Sound is switched off).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Behind the 8-Ball: EightBallTableLayer sits beside the trick-shot
 //          layer and EightBallCard beside the trick-shot card, in both layouts).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the -rackShoot test flag, for the store video.)
 // PURPOSE: The showpiece screen's layout and nothing else: the 3D table (TableStage) with the title row (back button,
 //          Physics Lens key, surface picker, status label), the controls, and the caption and shot panel arranged for the screen at
 //          hand. On a phone held upright the caption strip (fixed height, while the Lens is up with explanations on)
@@ -93,6 +94,13 @@ struct ShowpieceView: View {
                 if args.contains("-aimDemo") || args.contains("-aimDemoRack") || args.contains("-retryDemo") {
                     model.skipToResult(); model.setLens(false); showShotPanel = true
                     if ProcessInfo.processInfo.arguments.contains("-aimDemoRack") { model.rerack() }
+                    // -rackShoot (with -aimDemoRack): play the table's own opening shot a moment later, for the store video.
+                    if args.contains("-rackShoot") {
+                        Task { @MainActor in
+                            try? await Task.sleep(for: .seconds(1.2))
+                            model.shootNow()
+                        }
+                    }
                 }
             }
             .onChange(of: geo.size) { _, new in model.viewSize = new }

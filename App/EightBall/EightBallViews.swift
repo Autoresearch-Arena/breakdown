@@ -5,7 +5,9 @@
 //          table" card; the rings and the tap-to-call on the table; VoiceOver labels and a complete call from the card
 //          alone).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (tapping a ball or pocket works: the tap area measures itself; the
-//          scorecard says each result once and keeps its buttons on one row; the -eightPlay test flag; the -eightJudgeCheck launch flag writes the acceptance check to the log and Documents.)
+//          scorecard says each result once and keeps its buttons on one row; the -eightPlay, -eightRide, -eightAim, -eightWatch
+//          and -eightRealTable test flags; the -eightJudgeCheck launch flag writes the acceptance check to the log and
+//          Documents.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -776,14 +778,34 @@ struct EightBallTableLayer: View {
         guard !Self.launchHandled else { return }
         Self.launchHandled = true
         let args = ProcessInfo.processInfo.arguments
-        if args.contains("-eightList") { mode.listOpen = true }
         if let i = args.firstIndex(of: "-eight"), i + 1 < args.count { mode.begin(id: args[i + 1]) }
+        // After begin, which closes the list, so -eight <id> -eightList shows the list over that situation's table.
+        if args.contains("-eightList") { mode.listOpen = true }
+        // Store-screenshot routes, after -eight: -eightAim lines an escape up with its call made; -eightWatch plays it as
+        // the hint, with the ride camera.
+        for flag in ["-eightAim", "-eightWatch"] {
+            if let i = args.firstIndex(of: flag), i + 1 < args.count, let s = mode.current,
+               let escape = s.escapes.first(where: { $0.id == args[i + 1] }) {
+                Task { @MainActor in
+                    try? await Task.sleep(for: .seconds(1.5))
+                    if flag == "-eightAim" { mode.playAsTry(escape, shoot: false) } else { mode.watch(escape) }
+                }
+            }
+        }
         // -eightPlay <escape id>, after -eight: shoot that escape as a judged try, a moment after the table settles.
         if let i = args.firstIndex(of: "-eightPlay"), i + 1 < args.count, let s = mode.current,
            let escape = s.escapes.first(where: { $0.id == args[i + 1] }) {
             Task { @MainActor in
                 try? await Task.sleep(for: .seconds(1.5))
+                // -eightRide: watch the try from the ride camera (the store's opening shot).
+                if args.contains("-eightRide") { model.setRide(true) }
                 mode.playAsTry(escape)
+                // -eightRealTable: once the try is scored, turn the card over to "On a real table".
+                guard args.contains("-eightRealTable") else { return }
+                for _ in 0..<120 {
+                    try? await Task.sleep(for: .seconds(0.25))
+                    if case .scored = mode.phase { mode.showingRealTable = true; return }
+                }
             }
         }
         // -eightJudgeCheck: the acceptance check. Every authored escape is solved and judged off the main thread

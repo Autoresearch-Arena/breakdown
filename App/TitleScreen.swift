@@ -12,6 +12,7 @@
 //          mode. The one-line description and the first How to play step now say what the game is for.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 ("Behind the 8-Ball" under Trick shots in both menus opens its list
 //          (EightBallList, hosted by EightBallTableLayer); Free play, New free game and Watch the break end it too).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (-trickAim and -pauseAt also skip the menu, for store screenshots).
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
 //          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
@@ -43,7 +44,7 @@ struct TitleScreen: View {
         let args = ProcessInfo.processInfo.arguments
         // -trick and -trickPlay open a trick shot on the table; -trickList is not here: its list opens over the menu.
         let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo", "-jumpDemo",
-                        "-rideDemo", "-trick", "-trickPlay"]
+                        "-rideDemo", "-trick", "-trickPlay", "-trickAim", "-pauseAt"]
         return switches.contains { args.contains($0) }
     }
 

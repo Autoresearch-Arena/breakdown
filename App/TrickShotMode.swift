@@ -2,6 +2,7 @@
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (passes the shot's cue elevation to the table, so the massé and the jump are struck with a raised cue).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Watch it now turns the Ride camera on through model.setRide).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (lineUpAnswer, for the -trickAim store-screenshot flag.)
 // PURPOSE: Trick-shot mode: the game's main purpose. Holds which trick shot is on the table and walks the player through
 //          it: Ready (the table set up at the shot's start, a card with the hook) > Watching (the authored solution plays
 //          at full speed) > Explaining (it replays slowly in the Physics Lens while the card gives the one idea behind
@@ -137,6 +138,17 @@ final class TrickShotMode {
         ride(false)
         loadStart(with: playerSettings[shot.id] ?? defaultSettings(for: shot))
         if playerSettings[shot.id] == nil, !shot.isBreak { model.aimAtNearestBall() }
+        model.setLens(false)
+        phase = .aiming
+        requestAiming(true)
+    }
+
+    /// Test route (-trickAim <id>): the answer's own stroke lined up with aiming open and nothing played, so a store
+    /// screenshot shows the real cue, and the bridge on a bridge shot, exactly where the answer puts them.
+    func lineUpAnswer() {
+        guard let shot = current else { return }
+        ride(false)
+        loadStart(with: shot.solution)
         model.setLens(false)
         phase = .aiming
         requestAiming(true)

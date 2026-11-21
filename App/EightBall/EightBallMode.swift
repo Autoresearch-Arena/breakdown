@@ -23,7 +23,8 @@
 //          Entering puts the situation's surface on through model.setSurface (menu, 3D cloth and solver agree);
 //          end() puts the player's own surface back.
 //          Launch flags (handled by EightBallTableLayer): -eightList opens the list, -eight <id> sets a situation up,
-//          and -eightPlay <escape id> then plays that escape as a judged try (for testing the scorecard).
+//          and -eightPlay <escape id> then plays that escape as a judged try (for testing the scorecard); -eightAim
+//          <escape id> only lines it up with the call made, and -eightWatch <escape id> plays it as the hint.
 // SRP/DRY check: Pass - flow only. Data is EightBallSituations, judging EightBallJudge, views EightBallViews; the table
 //          is driven through ShowpieceModel's existing trick-shot methods, not copies of them.
 import BreakdownLensModel
@@ -250,14 +251,14 @@ final class EightBallMode {
     /// Test route (-eightPlay <escape id>): make the escape's own call, line up its stroke and shoot it as a normal,
     /// judged try. Not a hint, so nothing is capped. Lets a made shot and its scorecard be checked without a hand on
     /// the sliders.
-    func playAsTry(_ escape: EightBallEscape) {
+    func playAsTry(_ escape: EightBallEscape, shoot: Bool = true) {
         guard current != nil else { return }
         call = escape.call
         pendingBall = nil
         callNote = nil
         loadStart(with: escape.settings)
         openAiming()
-        model.shootNow()
+        if shoot { model.shootNow() }
     }
 
     /// Line up again with the call already made (from the story card after a hint, for example).

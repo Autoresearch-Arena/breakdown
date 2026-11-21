@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.6.2] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: New App Store screenshots and a gameplay video, in all twelve languages, plus a refreshed store listing. Ten framed screenshots per language for 6.9-inch iPhone and 13-inch iPad (Behind the 8-Ball's jump, the call, the gold-medal scorecard, the real-table card, the Physics Lens, the bridge shot, the surfaces, the new tables and both lists), and a 29-second gameplay video per language with the title music, as an App Store preview and a larger copy for sharing. In the game, six trick-shot strings that were never translated ("Watch it", "Watch again", "Made it!", "Missed", "Hide the maths" and a VoiceOver hint) are now in every language, a piece of English slang left in six translations of a Behind the 8-Ball story is gone, and a Spanish typo in eight trick-shot strings is fixed.
+- Why: The Boss asked for new marketing material showing the best of the game, localized, and a good video of the most impressive gameplay.
+- How: scripts/store-shots.sh and store-shot.sh open the app straight into each moment with its own launch flags (new test-only flags: -pauseAt, -trickAim, -eightAim, -eightWatch, -eightRide, -eightRealTable, -rackShoot; -trickList and -eightList now open over a shot's table when given with -trick or -eight), with stored settings pinned on the launch line so no scene leaks into the next. store/screenshots/compose.swift frames the shots with translated headlines at App Store sizes. scripts/store-video.sh records clips and store-video-cut.sh cuts them. Raw and finished files live on the Team 4TB drive; store/screenshots/README.md explains it all. Nothing is uploaded.
+- Checked: one reviewer per language looked at every iPhone frame, every iPad frame and every video beat; the fixes they called for (untranslated buttons, headline wording, beats starting inside a fade) are in. The listing checker passes for all twelve languages. No Mac set yet: capturing it means opening game windows over the Mac's desktop.
+
 ## [0.6.1] - 21-November-2026
 
 Author: Claude Opus 5.5 High

@@ -43,6 +43,7 @@
 //          EightBallMode (made on first use, like the trick mode) and enterEightBallTable(); entering either mode ends
 //          the other; physicsTable and setTable treat a situation on the table like a trick shot (the pool table);
 //          showsBridge and strokeUsesBridge answer for both modes, for the 3D cue and the bridge label).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the -pauseAt test flag, for store screenshots.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -589,10 +590,21 @@ final class ShowpieceModel {
 
     // MARK: Per-frame step
 
+    /// Test hook (-pauseAt <seconds>): every shot played in explore stops itself at that moment on the clock, so a
+    /// store screenshot of a ball in the air or a Lens beat comes out the same in every language. Read once.
+    private static let pauseAt: Double? = {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-pauseAt"), i + 1 < args.count else { return nil }
+        return Double(args[i + 1])
+    }()
+
     func advance(_ rawDt: Double) {
         let dt = min(rawDt, 1.0 / 20.0)
         // The menu freezes the table behind it, whatever stage it is in.
         if menuOpen { return }
+        defer {
+            if let hold = Self.pauseAt, stage == .explore, playing, time >= hold { scrub(to: hold) }
+        }
         switch stage {
         case .lead:
             stageTime += dt

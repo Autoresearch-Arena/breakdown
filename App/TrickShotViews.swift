@@ -2,6 +2,7 @@
 // Date: 20-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (strings that are built in code, such as the card lines, the spoken row
 //          label and the "Coming next" line, are String(localized:); literal labels and buttons are already keys)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the -trickAim store-screenshot flag.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -328,7 +329,8 @@ struct TrickTableLayer: View {
         }
     }
 
-    /// -trickList opens the list over the menu; -trick <id> sets a shot up; -trickPlay <id> also plays the answer.
+    /// -trickList opens the list over the menu; -trick <id> sets a shot up; -trickPlay <id> also plays the answer;
+    /// -trickAim <id> lines the answer up with aiming open and plays nothing (for store screenshots).
     private func handleLaunchFlags() {
         // Once per launch: the layer is rebuilt when the screen switches between its narrow and wide layouts.
         guard !Self.launchHandled else { return }
@@ -338,9 +340,11 @@ struct TrickTableLayer: View {
             guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
             return args[i + 1]
         }
-        if args.contains("-trickList") { mode.listOpen = true }
         if let id = value(after: "-trick") { mode.begin(id: id) }
         if let id = value(after: "-trickPlay") { mode.begin(id: id); mode.watch() }
+        if let id = value(after: "-trickAim") { mode.begin(id: id); mode.lineUpAnswer() }
+        // Last, so -trick <id> -trickList shows the list over that shot's table (begin closes the list).
+        if args.contains("-trickList") { mode.listOpen = true }
     }
 
     /// Rings on the balls the shot names (where they rest now) and on the pockets they must drop in.

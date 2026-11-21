@@ -13301,6 +13301,76 @@
         }
       }
     },
+    "Hide the maths": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أخفِ الحسابات"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Rechnung ausblenden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar las matemáticas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer les maths"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascondi i calcoli"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "計算を隠す"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계산 숨기기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar a matemática"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar a matemática"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрыть формулы"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐藏公式"
+          }
+        }
+      }
+    },
     "Hill-hill, you're on stripes and hooked mid-table. Your 13 sits just off the foot rail.": {
       "localizations": {
         "ar": {
@@ -13312,25 +13382,25 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hill-Hill, du spielst die Halben und bist mitten auf dem Tisch gesnookert. Deine 13 liegt knapp vor der Fußbande."
+            "value": "Entscheidungsspiel: du spielst die Halben und bist mitten auf dem Tisch gesnookert. Deine 13 liegt knapp vor der Fußbande."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hill-hill, vas con las rayadas y estás tapado en mitad de la mesa. Tu 13 está justo al lado de la banda del pie."
+            "value": "Partida decisiva: vas con las rayadas y estás tapado en mitad de la mesa. Tu 13 está justo al lado de la banda del pie."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hill-hill, tu joues les rayées et tu es coincé au milieu de la table. Ta 13 est juste au bord de la bande du pied."
+            "value": "Manche décisive : tu joues les rayées et tu es coincé au milieu de la table. Ta 13 est juste au bord de la bande du pied."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hill-hill, hai le spezzate e sei coperto a metà tavolo. La tua 13 è appena staccata dalla sponda di fondo."
+            "value": "Partita decisiva: hai le spezzate e sei coperto a metà tavolo. La tua 13 è appena staccata dalla sponda di fondo."
           }
         },
         "ja": {
@@ -13348,13 +13418,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hill-hill, jogas com as listradas e estás tapado a meio da mesa. A tua 13 está mesmo junto à tabela do pé."
+            "value": "Jogo decisivo: jogas com as listradas e estás tapado a meio da mesa. A tua 13 está mesmo junto à tabela do pé."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hill-hill, você joga com as listradas e está tapado no meio da mesa. Sua 13 está bem perto da tabela do pé."
+            "value": "Jogo decisivo: você joga com as listradas e está tapado no meio da mesa. Sua 13 está bem perto da tabela do pé."
           }
         },
         "ru": {
@@ -13598,7 +13668,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Golpea la 3, que golpea la 4, que embosca la 7. Un solo empujón por una fila de bolas."
+            "value": "Golpea la 3, que golpea la 4, que emboca la 7. Un solo empujón por una fila de bolas."
           }
         },
         "fr": {
@@ -15208,7 +15278,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salta el obstáculo y embosca la bola objetivo."
+            "value": "Salta el obstáculo y emboca la bola objetivo."
           }
         },
         "fr": {
@@ -18131,6 +18201,76 @@
         }
       }
     },
+    "Made it!": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نجحت!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschafft!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Lo lograste!"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réussi !"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fatto!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成功！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "성공!"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conseguiste!"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você conseguiu!"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Получилось!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成功了！"
+          }
+        }
+      }
+    },
     "Made, but only just.": {
       "localizations": {
         "ar": {
@@ -19177,6 +19317,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "菜单"
+          }
+        }
+      }
+    },
+    "Missed": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أخطأت"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daneben"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fallado"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raté"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mancato"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "失敗"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실패"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falhado"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errou"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мимо"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没进"
           }
         }
       }
@@ -24448,7 +24658,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Embosca la 1 en la tronera de esquina y luego la 2 en la lateral."
+            "value": "Emboca la 1 en la tronera de esquina y luego la 2 en la lateral."
           }
         },
         "fr": {
@@ -24518,7 +24728,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Embosca la 1 y deja que el efecto de avance lleve la bola blanca hasta embocar también la 2."
+            "value": "Emboca la 1 y deja que el efecto de avance lleve la bola blanca hasta embocar también la 2."
           }
         },
         "fr": {
@@ -24588,7 +24798,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Embosca la 3 y haz que la bola blanca se quede parada justo donde golpeó."
+            "value": "Emboca la 3 y haz que la bola blanca se quede parada justo donde golpeó."
           }
         },
         "fr": {
@@ -24658,7 +24868,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Embosca la 3. La bola blanca debe parar donde golpeó."
+            "value": "Emboca la 3. La bola blanca debe parar donde golpeó."
           }
         },
         "fr": {
@@ -24728,7 +24938,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Embosca la 6 y luego retrocede para embocar la 2."
+            "value": "Emboca la 6 y luego retrocede para embocar la 2."
           }
         },
         "fr": {
@@ -24798,7 +25008,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Embosca la 6 y luego haz volver la bola blanca a lo largo de toda la mesa para embocar la 2 del fondo."
+            "value": "Emboca la 6 y luego haz volver la bola blanca a lo largo de toda la mesa para embocar la 2 del fondo."
           }
         },
         "fr": {
@@ -28417,6 +28627,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "摆好球台"
+          }
+        }
+      }
+    },
+    "Sets up the shot on the table": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يضع الضربة على الطاولة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baut den Stoß auf dem Tisch auf"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepara el tiro en la mesa"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place le coup sur la table"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepara il colpo sul tavolo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "台にショットを並べます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테이블에 샷을 배치합니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepara a jogada na mesa"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepara a jogada na mesa"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расставляет удар на столе"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在球台上摆好这一杆"
           }
         }
       }
@@ -39201,6 +39481,76 @@
         }
       }
     },
+    "Watch again": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد مجدداً"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nochmal ansehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver otra vez"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revoir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda di nuovo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もう一度見る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다시 보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver outra vez"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver de novo"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Посмотреть снова"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再看一遍"
+          }
+        }
+      }
+    },
     "Watch each shot, see the physics behind it in the Lens, then make it yourself.": {
       "localizations": {
         "ar": {
@@ -39267,6 +39617,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "观看每一杆，用镜片看清背后的物理原理，然后亲自打出来。"
+          }
+        }
+      }
+    },
+    "Watch it": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهدها"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Míralo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regarder"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смотреть"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "观看"
           }
         }
       }
@@ -43978,7 +44398,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "conseguido"
+            "value": "metida"
           }
         },
         "fr": {
