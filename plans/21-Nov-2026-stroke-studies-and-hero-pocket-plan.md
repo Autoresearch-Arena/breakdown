@@ -1,5 +1,6 @@
 <!--
 Author: GPT 6.2 Sol (session reasoning)
+Edited: GPT 6.2 Sol, 21-November-2026 (rebuilt hand poses, swan-neck rest and corner pocket).
 Date: 21-November-2026
 PURPOSE: Plan the spotted ball, hand bridge poses, massé cue, swan rest and corner pocket for the equipment branch.
 SRP/DRY check: Reuse Timeline orientation, CueRig, the existing shot authoring tool and the table's pocket geometry.
@@ -11,10 +12,10 @@ The editable source scenes are in the [equipment folder](../art/equipment). Revi
 ## What to show
 
 - **Draw shot.** Use six flush marks on the cue ball. Show it travelling forward while the marks turn backward, then coming back after contact. The Blender study uses trajectory and orientation samples from the current solver. In the game, drive the marks with the ball's recorded orientation so the replay shows the actual result.
-- **Hand bridges.** Show the open V between thumb and index finger, the closed loop around the shaft, and a rail bridge with the hand anchored to the cushion rail. Use one left hand and matched camera angles. The game can choose a pose automatically. A later lesson can let the player move the front hand and compare what a small rear-hand error does to the tip.
+- **Hand bridges.** Show the open V between thumb and index finger, the closed loop around the shaft, and a rail bridge with the hand anchored to the cushion rail. Use one anatomical left hand and matched camera angles. Place the palm and fingertips against the table or rail, and confirm that the shaft clears the hand as it slides. The game can choose a pose automatically. A later lesson can let the player move the front hand and compare what a small rear-hand error does to the tip.
 - **Massé cue.** Give the short, heavier cue dark plum wood, ivory-coloured points and a broad chalked tip. Make shaft length, mass and tip distinct from the jump cue. Test the shot through the landed raised-strike solver before promising a particular amount of curve.
-- **Swan-neck rest.** Put the cue groove ahead of the feet. Show a ball near the point where a conventional rest head would have to stand. Keep the support point, feet and neck as separately inspectable geometry.
-- **Corner pocket.** Build one corner with a rolled leather lip, lined drop, stitched facing, cloth-covered cushion noses, and inlaid rail diamond. Show it from ball height. Before integration, fit the visible mouth and cushion faces to the landed knuckle, jaw and shelf measurements. Confirm with a clean pot and a near-jaw rebound viewed in slow motion.
+- **Swan-neck rest.** Put the cue groove ahead of the feet. Show a ball where a spider would have to stand. Draw and advance the same continuous cue along its axis through the groove. Check that the cue clears the rest neck and the intervening ball across the full stroke.
+- **Corner pocket.** Set the dark liner flush with the rail and keep the well below the felt. Sweep the cushion profile to the actual knuckles, then follow the jaw direction to make the facings. The Blender corner uses the current table’s 120.7 mm mouth. Recheck that fit against the merged solver and table mesh. Confirm with a clean pot and a near-jaw rebound viewed in slow motion.
 
 ## Teach the draw-massé carom
 
