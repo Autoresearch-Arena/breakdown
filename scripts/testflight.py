@@ -4,7 +4,8 @@
 # PURPOSE: Builds Breakdown for iPhone and puts it on TestFlight, start to finish, so every change that lands on main
 #          reaches the Boss's phone and the public link without anyone doing it by hand. Run by the GitHub workflow
 #          .github/workflows/testflight.yml on this Mac Mini's own build runner; it can also be run by hand from the repo.
-#          Steps: read the app's version from the Xcode project; ask App Store Connect for the highest build number
+#          Steps: run the physics tests and the authored-shot check and stop, uploading nothing, if either fails; read
+#          the app's version from the Xcode project; ask App Store Connect for the highest build number
 #          uploaded so far and use the next one (passed to Xcode on the command line, so nothing is committed back);
 #          archive and upload with the team's App Store Connect key; wait for Apple to finish processing; retire every
 #          older build so testers only ever see the newest; add the new one to the public link's group; set its
@@ -16,6 +17,12 @@
 #          Needs: Xcode, and PyJWT (run with ~/.appstoreconnect/venv/bin/python, which has it).
 # Edited: Claude Opus 5.5 Medium, 21-November-2026 (the "What to Test" note is now updated when Apple has already made
 #          an empty one for the build; before, the second note was refused every run and testers saw no note).
+# Edited: Claude Opus 5.5 High, 21-November-2026 (checks before upload, plans/21-Nov-2026-release-safety-plan.md
+#          package 1: before anything is numbered, archived or sent to Apple, the physics package's tests run, then
+#          BreakProbe plays every authored trick shot and Behind the 8-Ball escape ("BreakProbe verify"). If either
+#          fails the script stops, uploads nothing and prints the names of what failed. Both use a package scratch
+#          folder on the Team 4TB drive (/Volumes/Team 4TB/breakdown-build/spm) and run one after the other, never in
+#          parallel; their logs go under /Volumes/Team 4TB/breakdown-build/ci/checks/.)
 # SRP/DRY check: Pass - the only release script in this repo. It talks to App Store Connect on its own (a few calls)
 #          instead of importing the dog game's helper, so this repo does not depend on another checkout.
 import json
@@ -36,6 +43,9 @@ PROJECT = ROOT / "Breakdown.xcodeproj" / "project.pbxproj"
 CHANGELOG = ROOT / "CHANGELOG.md"
 DRIVE = Path("/Volumes/Team 4TB")
 OUT = DRIVE / "breakdown-build" / "ci"
+PACKAGE = ROOT / "Packages" / "BreakdownCore"
+# The physics package's build folder for the checks, kept between runs so each run only rebuilds what changed.
+SCRATCH = DRIVE / "breakdown-build" / "spm"
 API = "https://api.appstoreconnect.apple.com"
 APP_ID = "6833700596"                                  # Breakdown: See the Physics
 TEAM = "4VTS722U8L"
@@ -105,19 +115,65 @@ def set_whats_new(build_id, note):
     say("Set the What to Test note")
 
 
-def run(command, log):
+def execute(command, log):
+    """Run a command with its output in a log file; return its exit status."""
     say("$ " + " ".join(command))
     with open(log, "w") as handle:
-        # nice keeps the shared Mac responsive while Xcode compiles.
+        # nice keeps the shared Mac responsive while Xcode and Swift compile.
         result = subprocess.run(["nice", "-n", "10"] + command, stdout=handle, stderr=subprocess.STDOUT, cwd=ROOT)
-    if result.returncode != 0:
+    return result.returncode
+
+
+def run(command, log):
+    if execute(command, log) != 0:
         tail = Path(log).read_text().splitlines()[-40:]
         sys.exit("Failed; last lines of " + str(log) + ":\n" + "\n".join(tail))
+
+
+def refuse_upload(what, names, log):
+    """Stop the release: say what failed, by name, and that nothing was uploaded."""
+    lines = [f"Nothing was uploaded: {what} failed."]
+    if names:
+        lines += ["Failing:"] + [f"  {name}" for name in names]
+    else:
+        # No names to show (a compile error, for instance): the end of the log says why.
+        lines += [f"Last lines of {log}:"] + Path(log).read_text().splitlines()[-40:]
+    lines.append(f"Full log: {log}")
+    sys.exit("\n".join(lines))
+
+
+def check_before_upload():
+    """The checks every build must pass before it is numbered, archived or uploaded (release-safety plan, package 1).
+    One after the other, on the one runner: the physics package's tests, then every authored trick shot and Behind the
+    8-Ball escape played on the physics the app ships. Tests marked as expected failures (the real-table cases still
+    waiting on tuning) report but do not fail."""
+    logs = OUT / "checks" / time.strftime("%Y%m%d-%H%M%S")
+    logs.mkdir(parents=True, exist_ok=True)
+    SCRATCH.mkdir(parents=True, exist_ok=True)
+
+    tests_log = logs / "package-tests.log"
+    if execute(["swift", "test", "--package-path", str(PACKAGE), "--scratch-path", str(SCRATCH)], tests_log) != 0:
+        text = tests_log.read_text()
+        # XCTest prints "Test Case '-[Module.Class testName]' failed (...)"; Swift Testing prints "✘ Test name() ... failed".
+        names = re.findall(r"Test Case '-\[([^\]]+)\]' failed", text)
+        names += re.findall(r"✘ Test (\S+).* failed", text)
+        refuse_upload("the physics package tests", sorted(set(names)), tests_log)
+    say("Physics package tests pass")
+
+    content_log = logs / "authored-shots.log"
+    # Release build: the check plays dozens of full shots and the release solver is many times faster.
+    if execute(["swift", "run", "-c", "release", "--package-path", str(PACKAGE), "--scratch-path", str(SCRATCH),
+                "BreakProbe", "verify"], content_log) != 0:
+        # BreakProbe prints "FAIL trick <id>: <why>" or "FAIL eightball <situation> <escape>: <why>" per broken shot.
+        names = [line[5:] for line in content_log.read_text().splitlines() if line.startswith("FAIL ")]
+        refuse_upload("the authored trick shot and Behind the 8-Ball check", names, content_log)
+    say("Every authored trick shot and Behind the 8-Ball escape still works")
 
 
 def main():
     if not DRIVE.is_dir():
         sys.exit("The Team 4TB drive is not mounted; build output must not go on the internal drive.")
+    check_before_upload()
     version = marketing_version()
     numbers = [int(b["attributes"]["version"]) for b in builds() if b["attributes"]["version"].isdigit()]
     local = int(re.search(r"CURRENT_PROJECT_VERSION = (\d+);", PROJECT.read_text()).group(1))
