@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.6.4] - 21-November-2026
+
+Author: Claude Opus 5.5 Medium
+
+- What: On the iPhone Duo opened up, the screen now splits at the fold: the table fills the whole left half and everything you read or tap (the menu, the aiming card, the trick-shot and 8-Ball cards, the captions and the Physics Lens, Ride and Your shot buttons) sits on the right half, with nothing on the hinge. Propped open like a laptop, the table goes on the upright half and the rest on the flat half. Closed, the phone plays as before. The main menu's one-line description is never cut off with "…" any more, and How to play and Options never shrink to "How to p…".
+- Why: Testing on the Duo simulator showed the open phone using the ordinary sideways layout, with the table and the menu card running across the fold and a narrow empty column beside them. The Boss asked for the table on one whole side and all the text on the other.
+- How: ScreenLayout.fold reads the hinge the system reports as a division region (iOS 27.1 and later), including when the phone lies flat and the system marks it inactive. ShowpieceView lays every layout out in one switchable stack, so the 3D table keeps its built scene while the phone turns, folds and unfolds; on a fold it sizes the table to the panel before the hinge, leaves the hinge empty and gives the other panel to the column, with the controls and the main menu there. The menu card is centred by its scroll view instead of being forced to the screen's height, which had squeezed the description to one line, and its two small buttons drop their icons, then stack, rather than truncate.
+- Checked: on the Duo simulator closed, half open and flat open, at the menu and while aiming, including folding and unfolding with the game running; the iPhone and Mac builds pass.
+
 ## [0.6.3] - 21-November-2026
 
 Author: Claude Opus 5.5 Medium

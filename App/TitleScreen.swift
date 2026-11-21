@@ -13,6 +13,10 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 ("Behind the 8-Ball" under Trick shots in both menus opens its list
 //          (EightBallList, hosted by EightBallTableLayer); Free play, New free game and Watch the break end it too).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (-trickAim and -pauseAt also skip the menu, for store screenshots).
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (the one-line description always wraps in full instead of being cut
+//          off with an ellipsis, the card is centred by the scroll view rather than forced to the screen's height, and
+//          How to play and Options stack when there is no room for them side by side, as on a folding phone's outer
+//          screen).
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
 //          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
@@ -57,11 +61,13 @@ struct TitleScreen: View {
             ScrollView {
                 card
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 40)
+                    .padding(.vertical, 24)
                     .frame(maxWidth: 460)
                     .frame(maxWidth: .infinity)
-                    .containerRelativeFrame(.vertical, alignment: .center) { h, _ in h }
             }
+            // Centred while it fits, scrolls when it does not. A card forced to the screen's height squeezed the
+            // description down to one cut-off line.
+            .defaultScrollAnchor(.center, for: .alignment)
             .scrollBounceBehavior(.basedOnSize)
         }
         .opacity(shown ? 1 : 0)
@@ -93,6 +99,7 @@ struct TitleScreen: View {
                     .font(Theme.copy)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 2)
             }
 
@@ -116,14 +123,23 @@ struct TitleScreen: View {
                     }
                 }
                 menuButton("Watch the break", symbol: "sparkles", prominent: false) { model.trickMode.end(); model.eightBallMode.end(); model.watchBreak() }
-                HStack(spacing: 12) {
-                    menuButton("How to play", symbol: "questionmark.circle", prominent: false) { howToOpen = true }
-                    menuButton("Options", symbol: "gearshape", prominent: false) { optionsOpen = true }
+                // Side by side when both names fit whole, then side by side without their icons, and only then
+                // stacked: never cut to "How to p…".
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) { secondaryButtons }
+                    HStack(spacing: 12) { secondaryButtons }.labelStyle(.titleOnly)
+                    VStack(spacing: 12) { secondaryButtons }
                 }
             }
         }
         .padding(28)
         .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
+    }
+
+    @ViewBuilder
+    private var secondaryButtons: some View {
+        menuButton("How to play", symbol: "questionmark.circle", prominent: false) { howToOpen = true }
+        menuButton("Options", symbol: "gearshape", prominent: false) { optionsOpen = true }
     }
 
     @ViewBuilder

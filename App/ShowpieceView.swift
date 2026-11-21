@@ -46,6 +46,11 @@
 //          open and open the aiming panel on the break's resting balls) and -aimDemoRack (same, on a fresh rack ready for
 //          a break) put the screen in the aiming state for screenshots without tapping through.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Surface menu gains a Tables section listing the four tables).
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (folding phone: when the system reports a hinge across the window
+//          (ScreenLayout.fold), the screen splits exactly along it. The table fills the panel before the fold, and the
+//          other panel holds everything else: the cards, captions, shot panel, the playback controls and the main
+//          menu. A hinge running across (the phone propped like a laptop) puts the table on the top panel and the rest
+//          on the bottom one. Nothing sits on the fold itself.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -69,18 +74,36 @@ struct ShowpieceView: View {
         GeometryReader { geo in
             let wide = ScreenLayout.isWide(geo.size)
             let short = ScreenLayout.isShort(geo.size)
+            let fold = ScreenLayout.fold(in: geo)
+            // A hinge running down the screen (opened like a book) or across it (propped like a laptop).
+            let bookFold = fold.flatMap { $0.height > $0.width ? $0 : nil }
+            let laptopFold = fold.flatMap { $0.height > $0.width ? nil : $0 }
+            let split = wide || fold != nil
+            let controlsInColumn = fold != nil || short
             ZStack {
                 palette.ground.ignoresSafeArea()
-                if wide {
-                    HStack(spacing: 0) {
-                        stage(geo: geo, wide: true, controlsInColumn: short)
-                        sideColumn(geo: geo, controlsInColumn: short)
+                // One container for every layout, so the table keeps its identity (and its built 3D scene) when the
+                // phone turns, folds or unfolds; only its frame and its neighbours change. The hinge itself stays empty.
+                (laptopFold != nil ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))) {
+                    stage(geo: geo, wide: split, controlsInColumn: controlsInColumn,
+                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil), menuOnStage: fold == nil)
+                        // Folding phone: the table owns the whole panel before the hinge.
+                        .frame(width: bookFold.map { max(0, $0.minX) }, height: laptopFold.map { max(0, $0.minY) })
+                    if let fold {
+                        Color.clear.frame(width: bookFold == nil ? nil : fold.width, height: laptopFold == nil ? nil : fold.height)
                     }
-                } else {
-                    stage(geo: geo, wide: false, controlsInColumn: false)
+                    if split {
+                        // Every word and button on the other panel of a folding phone, or in the side column.
+                        sideColumn(geo: geo, controlsInColumn: controlsInColumn,
+                                   width: laptopFold != nil ? nil
+                                       : bookFold.map { max(0, geo.size.width - $0.maxX) } ?? min(columnWidth, geo.size.width * 0.45),
+                                   divider: laptopFold != nil ? .top : .leading)
+                            .frame(height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
+                            .overlay { if fold != nil { foldMenu } }
+                    }
                 }
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
-                CaptionLeader(leader: leader, showLine: wide)
+                CaptionLeader(leader: leader, showLine: split)
             }
             .coordinateSpace(name: StageSpace.name)
             .onAppear {
@@ -119,11 +142,15 @@ struct ShowpieceView: View {
 
     // MARK: The table and what floats over it
 
-    private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool) -> some View {
+    /// `columnEdge` is the side where the column (or the other panel of a folding phone) meets the table, if any.
+    /// `menuOnStage` is false when the main menu is shown on the other panel of a folding phone instead.
+    private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool, columnEdge: Edge?, menuOnStage: Bool) -> some View {
         // The 3D view is full-bleed; the camera is told the safe areas and the measured edges of what floats over it.
-        // In the wide layout the table's view stops at the side column, so it has no safe inset on that side.
+        // Where the table's view stops at the column or the fold it has no safe inset on that side.
         let i = geo.safeAreaInsets
-        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading, bottom: i.bottom, right: wide ? 0 : i.trailing),
+        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: i.leading,
+                                                     bottom: columnEdge == .bottom ? 0 : i.bottom,
+                                                     right: columnEdge == .trailing ? 0 : i.trailing),
                                  headerBottom: headerBottom, controlsTop: controlsInColumn ? nil : controlsTop)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
@@ -154,7 +181,7 @@ struct ShowpieceView: View {
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
             // The main menu, over everything, until the player picks something (and again from the back button).
-            if model.menuOpen { TitleScreen(model: model, onPlay: { showShotPanel = true }) }
+            if model.menuOpen && menuOnStage { TitleScreen(model: model, onPlay: { showShotPanel = true }) }
         }
         // The menu comes and goes with the system's smooth motion, not a cut.
         .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
@@ -194,7 +221,17 @@ struct ShowpieceView: View {
 
     /// On a phone turned sideways there is no room under the table for the controls, so they join the column and the
     /// table gets the full height.
-    private func sideColumn(geo: GeometryProxy, controlsInColumn: Bool) -> some View {
+    /// On a folding phone the main menu sits on the panel opposite the table, so the whole table stays in view beside it.
+    @ViewBuilder private var foldMenu: some View {
+        if model.menuOpen {
+            TitleScreen(model: model, onPlay: { showShotPanel = true })
+                .background(palette.ground)
+        }
+    }
+
+    /// `width` is nil when the column spans the screen (under the table on a folding phone propped like a laptop);
+    /// `divider` is the edge that meets the table and gets the hairline.
+    private func sideColumn(geo: GeometryProxy, controlsInColumn: Bool, width: CGFloat?, divider: Edge) -> some View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 12) {
@@ -220,9 +257,16 @@ struct ShowpieceView: View {
                     .padding(.bottom, 12)
             }
         }
-        .frame(width: min(columnWidth, geo.size.width * 0.45))
+        .frame(width: width)
+        .frame(maxWidth: width == nil ? .infinity : nil)
         .background(palette.ground)
-        .overlay(alignment: .leading) { Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea() }
+        .overlay(alignment: divider == .top ? .top : .leading) {
+            if divider == .top {
+                Rectangle().fill(palette.track).frame(height: 1)
+            } else {
+                Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea()
+            }
+        }
     }
 }
 

@@ -4,6 +4,10 @@
 //          floating panel sits on, a container that only scrolls when its content is taller than the room it is
 //          given (so nothing is lost at the largest text size), and the one rule for when the screen switches from the
 //          phone-portrait layout to the wide layout with a side column.
+//          Also where a folding phone's hinge crosses the window (ScreenLayout.fold), so the showpiece screen can
+//          split along it.
+// Edited: Claude Opus 5.5 Medium, 21-November-2026 (ScreenLayout.fold reads the system's division region on iOS 27.1
+//          and later: on a folding phone the hinge, so the table can fill one panel and everything else the other).
 // SRP/DRY check: Pass - checked the old view file, which repeated the panel background three times; they all use
 //          glassCard now. No other file builds surfaces.
 import SwiftUI
@@ -53,5 +57,28 @@ enum ScreenLayout {
     /// A phone turned sideways: too short to stack the controls under the table, so they move into the column.
     static func isShort(_ size: CGSize) -> Bool {
         size.width > size.height && size.height < 500
+    }
+
+    /// Where a folding phone's hinge crosses this view, in the view's own coordinates, or nil when there is none
+    /// (closed, or a screen without one). The system reports the hinge as a "division" region, about 40 points wide
+    /// with its margins, whether the phone is half open or flat.
+    /// Only a division that runs right across the view counts, so the screen can be cut into two panels along it;
+    /// a small notch-like region is not a fold. A zero-thickness line is fine: the panels then just meet on it.
+    static func fold(in geo: GeometryProxy) -> CGRect? {
+        #if os(iOS)
+        if #available(iOS 27.1, *) {
+            let size = geo.size
+            // Inactive ones count too: lying flat the system marks the hinge inactive (content may cross it), but the
+            // screen still reads best as two panels, table on one and words on the other.
+            return geo.reservedRegions(kind: .division, options: .includeInactive)
+                .map(\.frame)
+                .first { r in
+                    let crossesTopToBottom = r.minY <= 1 && r.maxY >= size.height - 1 && r.midX > 1 && r.midX < size.width - 1
+                    let crossesSideToSide = r.minX <= 1 && r.maxX >= size.width - 1 && r.midY > 1 && r.midY < size.height - 1
+                    return crossesTopToBottom || crossesSideToSide
+                }
+        }
+        #endif
+        return nil
     }
 }
