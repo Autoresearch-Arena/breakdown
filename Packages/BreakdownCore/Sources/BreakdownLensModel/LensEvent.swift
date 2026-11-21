@@ -17,6 +17,8 @@
 //          cloth from a rail nose above the ball's centre) and energyRemoved (settled-in-contact events).
 //          Timeline.contentHash folds each one in only when it is set, so every recording without them hashes
 //          exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (doc only: a settledInContact event can list a single ball, one that
+//          chattered between rubber faces, and it can appear at any generation because the jam guard runs at all.)
 // PURPOSE: The engine-agnostic event stream the Physics Lens reads. Each event names its producer so the
 //          Lens knows how far to trust a number (pool solver numbers are exact; scanned-scene numbers
 //          will be labelled estimates later). Also holds the stable 64-bit hasher used for replay equality.
@@ -42,8 +44,10 @@ public enum FlightMark: UInt8, Sendable {
 /// the hole (an edge pocket 0 to 5 or a bed hole 6 + j, as on a pocket event), `balls[0]` is the ball with its speed
 /// before and after (it pays PoolParameters.rimSkipSpeedLoss), and `entry` holds the speed and angle it came in at.
 /// `settledInContact` (21-Nov-2026, the jam guard): a group of wedged balls that were bouncing in a storm of tiny
-/// impacts was brought to rest touching. `balls` lists EVERY ball in the group (two or more, each with its state
-/// before and after), `energyRemoved` is the energy taken out, joules, so the energy ledger still closes.
+/// impacts was brought to rest touching. `balls` lists EVERY ball in the group, in ball order, each with its state
+/// before and after: usually two or more, but ONE when a single ball chattered between rubber faces (a pocket-mouth
+/// rattle the spec's guard also covers). `energyRemoved` is the energy taken out, joules, so the energy ledger still
+/// closes. Every generation can record it, but only a shot that would otherwise have stormed does.
 public enum LensEventKind: UInt8, Sendable {
     case cueStrike, phaseTransition, ballBall, cushion, pocket, pinDown, rimSkip, settledInContact
 }

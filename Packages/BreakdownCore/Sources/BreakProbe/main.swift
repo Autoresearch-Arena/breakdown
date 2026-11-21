@@ -9,6 +9,9 @@
 //          and measured skill windows, ready to copy into the app's TrickShots file.
 //          With "eightball [id ...]": authors the Behind the 8-Ball situations (EightBallAuthoring); "eightball verify"
 //          re-checks the strokes the app carries.
+//          With "jams [count] [gen2]": solves random free-play shots and prints every one that needs more than five
+//          thousand events or that the jam guard had to settle (JamSweep), so real jams become test fixtures.
+// Edited: Claude Opus 5.5 High, 21-November-2026 ("jams" runs the jam sweep of the pockets-and-jams plan).
 // SRP/DRY check: Pass - single-purpose command line probe, not shipped in the app.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -35,6 +38,8 @@ if args.first == "timing" {
         print("   by kind: \(kinds.sorted { $0.value > $1.value }.prefix(6))")
         if let e = tl.events.dropFirst(200).first { print("   event 200 at t=\(e.time): \(e.kind) \(e.balls.map(\.ball)) slip \(e.slipSpeed) impulse \(e.normalImpulse)") }
     }
+} else if args.first == "jams" {
+    runJamSweep(Array(args.dropFirst()))
 } else if args.first == "tricks" {
     runTrickAuthoring(only: Set(args.dropFirst()))
 } else if args.first == "eightball" {

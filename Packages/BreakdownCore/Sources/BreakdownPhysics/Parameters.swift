@@ -16,6 +16,16 @@
 //          generation and every generation-two number join the hash only when the generation is not one, behind their
 //          own marker, so the default parameters and every recording made before them hash exactly as before.
 //          CueStrike gains ballIndex, the ball the cue strikes (default 0, the cue ball; not hashed, see its note).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (generation two built: the strike-model note below; derived, unhashed
+//          helpers the solver and the app share: the rail's contact tilt (railContactSine, railContactCosine,
+//          railContactDistance) and the miscue limit (miscueOffsetLimit). They are worked out from hashed numbers, so
+//          they add nothing to the hash. The solver now strikes CueStrike.ballIndex.)
+//
+// THE STRIKE MODEL (plans/21-Nov-2026-cue-strike-plan.md). CueStrike.speed is the launch speed a CENTRE hit with the
+// same stroke would give, so the power control and every authored shot mean the same thing at centre on every
+// generation. At generation 1 every hit launches at exactly that speed, straight along the cue. At generation 2 an
+// off-centre hit launches slower (the factor under cueMass), side spin pushes the ball off line (shaftEndMass) and an
+// offset past the tip's grip miscues (tipGrip, miscueSpeedFraction, miscueMaxDeflection).
 // PURPOSE: Every tunable number of the pool solver in one versioned value that is hashed into each recorded
 //          shot. Values follow the spec section 3.4; anything marked "calibrate" there is a first guess to
 //          tune later against the validation suite. modelGeneration picks the physics model (1 is today's solver;
@@ -151,6 +161,25 @@ public struct PoolParameters: Sendable {
 
     public init() {}
 
+    // MARK: Derived generation-two geometry (not hashed: worked out from hashed numbers)
+
+    /// Sine of the tilt of the rail's contact above the ball's centre: the nose touches the ball at cushionNoseHeight,
+    /// which is cushionNoseHeight - R above the centre, so the sine is that over R (spec 3.3: about 0.27 for a pool
+    /// table). Clamped to 0...0.9 so a nose set at or below the centre gives the flat rail and a very high nose cannot
+    /// make the cosine vanish.
+    public var railContactSine: Double {
+        let s = (cushionNoseHeight - ballRadius) / ballRadius
+        return s < 0 ? 0 : (s > 0.9 ? 0.9 : s)
+    }
+    /// Cosine of the same tilt, sqrt(1 - s^2) (no trigonometry in the solver).
+    public var railContactCosine: Double { (1 - railContactSine * railContactSine).squareRoot() }
+    /// How far the ball's centre is from a rail's nose line when they touch: R at generation 1 (the flat wall),
+    /// R * cos(tilt) at generation 2 (spec 3.3: about 0.963 R), because the nose meets the ball above its centre.
+    public var railContactDistance: Double { usesGenerationTwo ? ballRadius * railContactCosine : ballRadius }
+    /// The tip offset (metres, measured across the cue) past which a generation-2 strike miscues:
+    /// R * tipGrip / sqrt(1 + tipGrip^2) (spec 3.3; about half the radius). The app draws its miscue ring here.
+    public var miscueOffsetLimit: Double { ballRadius * tipGrip / (1 + tipGrip * tipGrip).squareRoot() }
+
     public var inertia: Double { 0.4 * ballMass * ballRadius * ballRadius }
 
     /// Hole centres, corners then sides: (0,0) (L,0) (0,W) (L,W) (L/2,-s) (L/2,W+s), s the side setback.
@@ -248,14 +277,15 @@ public struct PoolParameters: Sendable {
 /// How the cue hits the cue ball. Direction is a unit vector supplied by the caller (no trig in the solver).
 /// `tipUp` and `tipSide` are the contact offsets from the ball centre in metres, up and to the right of the
 /// aim direction, measured across the cue (for a raised cue "up" leans back toward the player with the cue).
-/// Speed is the cue ball's launch speed along the cue.
+/// Speed is the launch speed of a centre hit with this stroke (see THE STRIKE MODEL at the top of this file): at
+/// generation 1 every hit launches at exactly this speed, at generation 2 an off-centre hit launches slower.
 /// `elevation` is the sine of the cue's angle above horizontal (0 level, 1 straight down), clamped to 0...0.995;
 /// the caller does the trig, as with the direction. A raised cue sends part of the speed down into the cloth (the
 /// slate bounces it back up: a jump once the rise is at least PoolParameters.minimumHop) and tilts the side-spin axis,
 /// which makes the path curve while the ball slides (masse: a left offset curves left, a right offset right).
 /// `ballIndex` (21-Nov-2026) is the ball the cue strikes: 0, the default, is the pool cue ball; on tables where each
-/// player has their own cue ball (five-pin, bumper pool) it is that player's ball. The solver's use of it belongs to
-/// the solver work (plans/21-Nov-2026-other-tables-games-plan.md package 1 step 3). CueStrike is not part of any hash
+/// player has their own cue ball (five-pin, bumper pool) it is that player's ball. The solver strikes it at every
+/// generation (the default 0 strikes ball 0 exactly as before). CueStrike is not part of any hash
 /// and is not encoded anywhere (recordings hash their segments and events), so the default changes nothing recorded.
 public struct CueStrike: Sendable {
     public var direction: Vec2
