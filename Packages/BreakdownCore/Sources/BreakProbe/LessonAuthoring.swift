@@ -13,6 +13,9 @@
 //          cue-to-object distance, kept only when copying the stop lesson's own settings MISSES the finish zone and a
 //          change of tip height alone (same aim, same power) makes it. Its output names the band of tip heights that
 //          work, so the app's second exercise is checked, not hoped for.
+//          Two evidence commands: "lessons scan <object gap> <cue gap> <power>" prints where a straight pot's cue ball
+//          finishes for every tip height, and "lessons curvescan" how far a raised-cue side hit bends; both were used to
+//          place the follow, draw and curve lessons and are kept so a re-author starts from the same evidence.
 //          Generation 1 physics throughout (what ships); seed 1, as every authored shot.
 // SRP/DRY check: Pass - checked TrickAuthoring (its best(), placedOnPath and difficulty bands are reused, not copied)
 //          and TrickSearch (simulate, passes, the band walks and measured are reused). Only the lesson layouts, the

@@ -192,8 +192,7 @@ struct LessonCard: View {
             ContactButton(model: model)
             if passed {
                 if lesson.id == Lessons.stop.id {
-                    plainButton(String(localized: "A new distance"), symbol: "arrow.left.and.right")
-                        { mode.startExercise() }
+                    plainButton(String(localized: "A new distance"), symbol: "arrow.left.and.right") { mode.startExercise() }
                         .accessibilityHint(String(localized: "The same pot with the cue ball further back"))
                 }
                 if mode.suggestedTrick != nil {
