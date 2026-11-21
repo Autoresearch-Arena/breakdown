@@ -1,5 +1,6 @@
 <!--
 Author: Claude Fable 5.2 High
+Edited: GPT 6.2 Astra High, 21-November-2026, added the retry and learning check to the order of work.
 Date: 21-November-2026
 PURPOSE: The front page for the twelve gap plans written on 21 November 2026 after a critical review of Breakdown
          against Apple Design Award standards. Says honestly where the game stands, what the gaps are, which plan
@@ -60,6 +61,7 @@ Award winners are narrow and finished. The plans below make Breakdown finished. 
 | 2 | 21-Nov-2026-look-plan.md | A room, the table up close, readable balls | Large |
 | 3 | 21-Nov-2026-accessibility-plan.md | The table spoken aloud; not by colour alone; controller | Medium |
 | 4 | 21-Nov-2026-first-minute-and-lessons-plan.md, packages 3 and 4 | The six lessons (after new physics is the default) | Large |
+| 1, then 4 | [Plan 14 · Learn from a retry](21-Nov-2026-learn-from-a-retry-plan.md) | Check the existing retry now, then use the first lesson to see whether a beginner can apply it to a different shot | Small playtest and a focused app change |
 
 Rows with the same order number can be worked at the same time by different people.
 
