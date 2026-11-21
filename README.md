@@ -14,6 +14,7 @@ The longer-term design extends the physics view to scan-and-smash scenes. That w
 
 - Spec: [docs/2026-11-02-breakdown-spec.md](docs/2026-11-02-breakdown-spec.md)
 - Change log: [CHANGELOG.md](CHANGELOG.md)
+- Approved opening track and build handoff: [Pool Table Take](docs/audio/README.md)
 
 Built natively in Swift with Xcode on the Mac Mini. The pool physics is our own deterministic solver, so every quantity shown in the physics view is something the game actually computed.
 
