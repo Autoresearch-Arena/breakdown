@@ -21,6 +21,8 @@
 //          knife-edge; ebFinal names the ones the app uses.
 //          The cloth numbers for Tournament cloth and Dive-bar felt are COPIED from App/PlaySurface.swift (the app
 //          target cannot be imported here); if those change, change them here too and re-run.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (a situation carries the physics generation it is solved on, default
+//          1, so "BreakProbe verify 2" can re-check every authored escape on generation two; nothing else changes).
 // SRP/DRY check: Pass - situation search only. Simulation, pockets, first-ball and band primitives are reused from
 //          TrickSearch.swift; the legality test is new because the trick goal has no "must not drop" (the 8) or
 //          "must be one of a group" first hit. The app ships the authored answers; this tool only finds them.
@@ -107,6 +109,16 @@ struct EBSituationSpec: Sendable {
     var solids: Bool
     var cloth: EBCloth
     var escapes: [EBEscapeSpec]
+    /// The physics generation to solve on (PoolParameters.modelGeneration). 1, the default, is what every escape was
+    /// authored on; the content check (ContentVerify.swift) sets 2 to see which escapes survive the new physics.
+    var generation: Int = 1
+
+    /// The cloth's numbers on this situation's physics generation.
+    var parameters: PoolParameters {
+        var p = cloth.parameters
+        p.modelGeneration = generation
+        return p
+    }
 
     var layout: [Vec2] {
         var out = [Vec2](repeating: NextShot.offTable, count: 16)
@@ -125,7 +137,7 @@ struct EBSituationSpec: Sendable {
 
 // MARK: Legality and the technique test
 
-func ebSim(_ s: EBSituationSpec, _ k: Strike) -> Timeline { simulate(s.layout, k, parameters: s.cloth.parameters) }
+func ebSim(_ s: EBSituationSpec, _ k: Strike) -> Timeline { simulate(s.layout, k, parameters: s.parameters) }
 
 func wentOff(_ ball: Int, _ tl: Timeline) -> Bool {
     tl.events.contains { $0.flight == .offTable && $0.balls.first?.ball == ball }
@@ -417,7 +429,7 @@ func ebReport(_ s: EBSituationSpec, _ e: EBEscapeSpec, _ r: EBResult) {
     if e.technique == .touch { print("   leaves the opponent hooked: \(opponentHooked(s, tl))") }
     // Seed independence: the app shoots with a varying seed.
     let other = PoolSolver.simulate(NextShot.shot(from: s.layout, direction: k.direction, speed: k.power, tipUp: k.tipUp,
-                                                  tipSide: k.tipSide, seed: 4242, parameters: s.cloth.parameters,
+                                                  tipSide: k.tipSide, seed: 4242, parameters: s.parameters,
                                                   elevation: k.elevation))
     print("   seed check: \(other.events.count == tl.events.count && pocketOf(e.ball ?? 0, other) == pocketOf(e.ball ?? 0, tl) ? "same" : "DIFFERENT")")
 }

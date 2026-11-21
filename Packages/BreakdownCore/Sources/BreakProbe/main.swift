@@ -3,6 +3,9 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 ("tricks" runs the trick-shot authoring search; with no argument it
 //          still runs the original break sweep).
 // Edited: Claude Opus 5.5 High, 21-November-2026 ("eightball [id ...]" authors the Behind the 8-Ball situations).
+// Edited: Claude Opus 5.5 High, 21-November-2026 ("sweep [quick]" runs the real-table checks over a grid of the guessed
+//          numbers (RealWorldSweep.swift); "verify [generation]" plays every authored trick shot and escape on a physics
+//          generation and exits with status 1 if any fails (ContentVerify.swift), for the upload script.)
 // PURPOSE: Dev tool. With no argument: sweeps candidate breaks (aim offset, speed, tip height) and prints the ones that
 //          drop at least two object balls while keeping the cue ball, so the showpiece break is chosen with evidence.
 //          With "tricks [id ...]": authors the app's trick shots (TrickAuthoring) and prints each one's layout, strike
@@ -12,6 +15,9 @@
 //          With "jams [count] [gen2]": solves random free-play shots and prints every one that needs more than five
 //          thousand events or that the jam guard had to settle (JamSweep), so real jams become test fixtures.
 // Edited: Claude Opus 5.5 High, 21-November-2026 ("jams" runs the jam sweep of the pockets-and-jams plan).
+//          With "sweep [quick]": the real-table checks on generation two over a grid of the guessed numbers, and the
+//          combination that passes the most. With "verify [generation]": every authored trick shot and Behind the 8-Ball
+//          escape, pass or fail, on that physics generation (default: the solver's default); exit status 1 on any fail.
 // SRP/DRY check: Pass - single-purpose command line probe, not shipped in the app.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -44,6 +50,12 @@ if args.first == "timing" {
     runTrickAuthoring(only: Set(args.dropFirst()))
 } else if args.first == "eightball" {
     runEightBallAuthoring(only: Set(args.dropFirst()))
+} else if args.first == "sweep" {
+    runRealWorldSweep(quick: args.dropFirst().contains("quick"))
+} else if args.first == "verify" {
+    // The upload script reads the exit status: 0 only when every authored shot still works.
+    let generation = args.dropFirst().first.flatMap { Int($0) } ?? PoolParameters().modelGeneration
+    exit(runContentVerify(generation: generation) ? 0 : 1)
 } else {
     var shown = 0
     for speed in [8.0, 9.0, 10.0, 11.0, 12.0] {
