@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens) - the ruling sentences take the game: on the three
+//          other tables the balls are named as players there name them (the white, the yellow, the red, a white, a
+//          marked ball; TableGameWords) and a ball put back goes to its own spot, not the pool foot spot. Every
+//          RulingReason, MatchFoul and MatchEndReason case the table rules use already had its sentence here.
 // PURPOSE: Every word a match says, in one place. The rules (package module BreakdownRules) speak only in codes:
 //          MatchFoul, RulingReason, MatchEndReason, MatchChoice, BallInHand. This file turns them into plain sentences
 //          a player reads after each shot ("Foul: the cue ball hit the 11 first. Ball in hand for Sam."), the game
@@ -102,9 +106,15 @@ enum MatchWords {
     /// - Parameters:
     ///   - pocketed: object balls that dropped on this shot (from the recording).
     ///   - firstBall: the ball the shooter's cue ball touched first, or nil.
-    static func sentences(for r: Ruling, names: [String], pocketed: [Int], firstBall: Int?) -> [String] {
+    ///   - kind: the game, so the other tables' balls are named as players there name them (default: pool numbers).
+    static func sentences(for r: Ruling, names: [String], pocketed: [Int], firstBall: Int?,
+                          kind: MatchKind = .eightBall) -> [String] {
         let shooter = name(r.shooter, in: names)
         let next = name(r.nextShooter, in: names)
+        // Pool balls by number; the other tables' balls by their names there.
+        func balls(_ numbers: [Int]) -> String {
+            kind.isTableGame ? TableGameWords.balls(numbers, kind: kind) : MatchWords.balls(numbers)
+        }
         var out: [String] = []
         if r.fouled {
             let what = r.fouls.map { foul($0, firstBall: firstBall) }.formatted(.list(type: .and))
@@ -131,9 +141,7 @@ enum MatchWords {
             case .scratchOnBreak: out.append(String(localized: "Scratch on the break."))
             case .eightOnBreak: out.append(String(localized: "The 8 went down on the break."))
             case .ballSpotted:
-                if !r.ballsToSpot.isEmpty {
-                    out.append(String(localized: "Back on the foot spot: \(balls(r.ballsToSpot))."))
-                }
+                if !r.ballsToSpot.isEmpty { out.append(TableGameWords.spotted(r.ballsToSpot, kind: kind)) }
             case .foulWarning: out.append(String(localized: "\(shooter) has fouled twice in a row. A third foul loses the game."))
             case .pointsScored:
                 for (seat, p) in r.points.enumerated() where p != 0 {

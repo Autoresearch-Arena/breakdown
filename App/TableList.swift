@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens) - bumper pool, five-pin and bar billiards are games
+//          now: each entry also names its game and opens that game's page (TableGamePage: a match for two, bar
+//          billiards alone, practice on the table, and How to play). The pool table still plays at once, as before.
 // PURPOSE: The list of tables, opened from the main menu ("Tables"): the pool table, bumper pool, five-pin billiards
 //          and bar billiards, each with its plain one-line description. Choosing one plays it as the game
 //          (ShowpieceModel.playTable): any trick shot or Behind the 8-Ball situation ends, the table changes and its
@@ -7,6 +10,7 @@
 //          here, away from the Surface button (which now only picks what the bed is made of). On the folding phone's open
 //          screen this is a page of the side panel, not a sheet over the table.
 // SRP/DRY check: Pass - display and one model call. Titles, summaries and symbols come from TableKind.
+import BreakdownRules
 import SwiftUI
 
 struct TableList: View {
@@ -25,14 +29,26 @@ struct TableList: View {
         NavigationStack {
             List {
                 ForEach(TableKind.allCases) { kind in
-                    Button {
-                        model.playTable(kind)
-                        onChosen()
-                        onClose()
-                    } label: { row(kind) }
-                        .buttonStyle(.plain)
-                        .accessibilityElement(children: .combine)
-                        .accessibilityAddTraits(kind == current ? .isSelected : [])
+                    if let game = kind.matchKind {
+                        // A table with a game of its own: its page offers the match, practice and the rules.
+                        NavigationLink {
+                            TableGamePage(model: model, table: kind, game: game) {
+                                onChosen()
+                                onClose()
+                            }
+                        } label: { row(kind) }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityAddTraits(kind == current ? .isSelected : [])
+                    } else {
+                        Button {
+                            model.playTable(kind)
+                            onChosen()
+                            onClose()
+                        } label: { row(kind) }
+                            .buttonStyle(.plain)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityAddTraits(kind == current ? .isSelected : [])
+                    }
                 }
             }
             .navigationTitle("Tables")
@@ -61,6 +77,13 @@ struct TableList: View {
                     .font(Theme.body)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+                // The game this table plays, for the tables that have one.
+                if let game = kind.matchKind {
+                    Text(TableGameWords.gameLine(game))
+                        .font(Theme.body)
+                        .foregroundStyle(palette.accent)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             Spacer(minLength: 0)
         }

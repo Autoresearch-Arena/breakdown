@@ -7,6 +7,15 @@
 //          is acting (computerActing). Against the computer there is no hand-over: the device stays with the person.
 //          Rematch keeps who is the computer. Every ruling plays its moment (SoundBoard.play: win, foul, turn change),
 //          and a game the rules finish is counted in the on-device record (MatchRecord).)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens) - the three table games play from first shot to a
+//          result: a match can start with one player where the rules allow it (bar billiards alone); after each shot
+//          the next table comes from the table's own rules (BumperPoolRules, FivePinRules and BarBilliardsRules
+//          nextLayout, on the recorded TableSpec, so balls go back to their own spots clear of bumpers, pins and
+//          holes, pins stand again and the next white sits on the D) instead of the pool foot spot; the bar-billiards
+//          clock is a real-time clock fed every frame by the model (tickClock) and paused by MatchClock's rule
+//          (replays, the Lens, solving, cards, the menu) instead of charging each shot its recording's length; each
+//          shot keeps the ball that was struck and the points explained (TablePoints) for the ruling card; a finished
+//          one-player bar-billiards game records its best score on the device (BarBilliardsBest).
 // PURPOSE: A match for two on one device (plans/21-Nov-2026-rules-games-plan.md package 3 steps 4, 7 and 8, package 4
 //          step 3, model side). MatchMode owns the MatchState and one `any MatchRules` (EightBallRules, NineBallRules,
 //          or a table's rules from the BreakdownRules module) and runs the turn loop:
@@ -68,6 +77,13 @@ final class MatchMode {
     private(set) var currentCall: EightBallCall?
     /// The ruling on the last shot (or the last answered choice), for the ruling card.
     private(set) var lastRuling: Ruling?
+    /// The ball struck on the last shot (the cue ball of the player who shot, read before the ruling moved the turn
+    /// on), so the ruling card names the right ball on tables where each player has their own.
+    private(set) var lastShotBall: Int?
+    /// Five-pin and bar billiards: how the last shot's points came, line by line (empty for the other games).
+    private(set) var lastPoints: [TablePoints.Line] = []
+    /// A finished one-player bar-billiards game: what it did to the best score on this device.
+    private(set) var bestOutcome: BarBilliardsBest.Outcome?
 
     @ObservationIgnored unowned let model: ShowpieceModel
     /// What is on the table now between shots (saved), and what goes on it once the ruling card is dismissed.
@@ -79,6 +95,13 @@ final class MatchMode {
     @ObservationIgnored private var shotCall: EightBallCall?
     @ObservationIgnored private var shotVersion: Int?
     @ObservationIgnored private var firstBreaker: PlayerID
+    /// The game clock to the fraction of a second. The observed state's clockRemaining is only updated when the whole
+    /// second shown changes (and before every ruling and save), so the banner redraws once a second, not every frame.
+    /// Nil until the clock first runs, and after anything replaces the state; it then starts from the state.
+    @ObservationIgnored private var clockExact: Double?
+    /// The furthest point of the shot's recording shown so far: the clock runs only while the replay moves past it
+    /// (the shot's first showing), never while the player rewinds and watches again.
+    @ObservationIgnored private var shotSeenUpTo = 0.0
 
     /// The computer player, when one sits at this match; nil for a match between people.
     private(set) var opponent: MatchOpponent?
@@ -86,14 +109,16 @@ final class MatchMode {
     /// let a stroke, call, answer or cue-ball placement through on the computer's turn.
     @ObservationIgnored var computerActing = false
 
-    /// A new match of `kind`, not yet on the table (start() puts it there). With `computer` set, the second seat is
-    /// the computer at that level; the person sits first and breaks the first game.
-    init(model: ShowpieceModel, kind: MatchKind, computer: ComputerLevel? = nil) {
+    /// A new match of `kind`, not yet on the table (start() puts it there). `players` is how many play, kept within
+    /// what the rules allow; nil means two wherever the game takes two. With `computer` set, the second seat is the
+    /// computer at that level; the person sits first and breaks the first game.
+    init(model: ShowpieceModel, kind: MatchKind, players: Int? = nil, computer: ComputerLevel? = nil) {
         self.model = model
         let r = Self.rules(for: kind)
         rules = r
         table = Self.table(for: kind)
-        var fresh = r.initialState(playerNames: Self.defaultNames(count: Self.seats(for: r)))
+        let seats = players.map { min(max($0, r.playerCount.lowerBound), r.playerCount.upperBound) } ?? Self.seats(for: r)
+        var fresh = r.initialState(playerNames: Self.defaultNames(count: seats))
         if let level = computer, fresh.players.count > 1 {
             fresh.players[1].computer = level
             fresh.players[1].name = OpponentWords.name(level)
@@ -189,6 +214,7 @@ final class MatchMode {
         guard phase == .shooting else { return }
         shotVersion = version
         shotStart = start
+        shotSeenUpTo = 0
     }
 
     /// The model dropped the shot before it was solved (the surface changed while solving): back to aiming.
@@ -206,20 +232,29 @@ final class MatchMode {
 
     /// Read the recording, ask the rules, apply the ruling, work out the next table and save.
     private func rule() {
-        let facts = ShotFacts(timeline: model.timeline, start: shotStart, cueBall: cueBallIndex)
+        let struck = cueBallIndex
+        let facts = ShotFacts(timeline: model.timeline, start: shotStart, cueBall: struck)
         var before = state
-        // The game clock runs while balls are in play: the recording's duration is exactly that time, and replays
-        // never count (they do not reach this point again).
-        if let clock = before.clockRemaining { before.clockRemaining = max(0, clock - model.timeline.duration) }
+        // The game clock as it stands now: it ran in real time while the shot was aimed and first played
+        // (tickClock), so a shot is judged by the clock at the moment it is ruled, as BarBilliardsRules expects.
+        if let exact = clockExact, before.clockRemaining != nil { before.clockRemaining = exact }
         let ruling = rules.ruling(for: facts, call: before.isBreak ? nil : shotCall, in: before)
         let after = rules.applying(ruling, facts: facts, to: before)
+        // setupAfter and the points read `before`: BarBilliardsRules' helpers take the state as it stood before the
+        // shot (its bar, its balls in the game, its break).
         nextSetup = setupAfter(ruling, facts: facts, before: before, after: after)
+        lastPoints = TablePoints.lines(for: facts, ruling: ruling, before: before, after: after, rules: rules)
+        lastShotBall = struck
         state = after
+        clockExact = after.clockRemaining
         lastRuling = ruling
         currentCall = nil
         phase = .ruling
         Self.playMoment(for: ruling)
         if state.isOver { MatchRecord.noteFinished(state) }
+        if after.isOver, after.kind == .barBilliards, after.players.count == 1, let score = after.scores.first {
+            bestOutcome = BarBilliardsBest.record(score)
+        }
         save()
     }
 
@@ -235,6 +270,30 @@ final class MatchMode {
     private static func playMoment(for r: Ruling) {
         if let m = moment(for: r) { SoundBoard.play(m) }
     }
+
+    /// Called every frame the table is live (ShowpieceModel.advance; it stops before this while the menu is open)
+    /// with the real seconds since the last frame. Runs the game clock by MatchClock's rule; games without a clock
+    /// ignore it.
+    func tickClock(realSeconds: Double) {
+        guard let shown = state.clockRemaining else { return }
+        // The shot's first showing is the replay moving past anything already seen of this shot.
+        let newGround = phase == .shooting && model.time > shotSeenUpTo
+        if phase == .shooting { shotSeenUpTo = max(shotSeenUpTo, model.time) }
+        let moment = MatchClock.Moment(hasClock: true, isOver: state.isOver, stage: MatchClock.Stage(phase),
+                                       lensOn: model.lensOn, isSolving: model.isSolving, tableAtRest: model.aimReady,
+                                       playingNewGround: newGround)
+        guard MatchClock.runs(moment) else { return }
+        let exact = MatchClock.ticked(clockExact ?? shown, by: MatchClock.seconds(forFrame: realSeconds))
+        clockExact = exact
+        guard MatchClock.shownSeconds(exact) != MatchClock.shownSeconds(shown) else { return }
+        state.clockRemaining = exact
+        // Saved once a minute while aiming, so quitting the app costs at most a minute of clock. Not mid-shot: the
+        // saved table is then still the one before the shot.
+        if phase == .aiming, MatchClock.shownSeconds(exact) % 60 == 0 { save() }
+    }
+
+    /// True once the bar-billiards clock has run out (the bar is down).
+    var timeIsUp: Bool { state.clockRemaining.map { $0 <= 0 } ?? false }
 
     /// The ruling card was dismissed (from .ruling), or the next player has the device (from .handOver).
     func acknowledgeRuling() {
@@ -302,6 +361,10 @@ final class MatchMode {
         fresh.turn = firstBreaker
         state = fresh
         lastRuling = nil
+        lastShotBall = nil
+        lastPoints = []
+        bestOutcome = nil
+        clockExact = nil
         currentCall = nil
         nextSetup = nil
         start()
@@ -324,9 +387,10 @@ final class MatchMode {
     }
 
     /// Put a table setup on screen, unless the table already shows it (so the replay of the last shot survives a
-    /// ruling that moved nothing).
+    /// ruling that moved nothing). Pins that fell are always stood up again: the still table is a fresh solve, which
+    /// starts with every pin standing, while the last shot's replay ends with them down.
     private func show(_ s: MatchTableSetup) {
-        let unchanged = !s.racked && s.layout == model.layout && !model.racked
+        let unchanged = !s.racked && s.layout == model.layout && !model.racked && model.timeline.pinFalls.isEmpty
         setup = s
         if !unchanged { model.showMatchTable(s) }
     }
@@ -335,6 +399,11 @@ final class MatchMode {
     /// back and any player's missing cue ball on its default spot (ball in hand lets them move it from there).
     private func setupAfter(_ ruling: Ruling, facts: ShotFacts, before: MatchState, after: MatchState) -> MatchTableSetup {
         if ruling.rerack { return model.matchSetup(for: rules.rack, seed: Self.freshSeed()) }
+        // The other tables put balls back by their own rules; the pool spotting below would use the pool table's foot
+        // spot and ignore bumpers, pins and holes.
+        if let l = tableLayoutAfter(ruling, facts: facts, before: before) {
+            return MatchTableSetup(layout: l, racked: false, rackSeed: setup.rackSeed)
+        }
         var l = facts.resting
         spot(ruling.ballsToSpot + rules.ballsReturningToHand(after: facts, in: before), in: &l)
         let p = model.physicsTable.parameters
@@ -346,6 +415,32 @@ final class MatchMode {
             l[c] = c == 0 ? NextShot.respotCueBall(among: l, parameters: p) : NextShot.spot(c, among: l, parameters: p)
         }
         return MatchTableSetup(layout: l, racked: false, rackSeed: setup.rackSeed)
+    }
+
+    /// The next layout on one of the other tables, from that table's own rules; nil for the pool games. Each helper
+    /// works on the TableSpec the shot was recorded on (the bumpers, pins and holes exactly as the solver had them)
+    /// and the table's start layout for the spots balls go back to (bumper pool's starting places; five-pin's white,
+    /// yellow and red spots; bar billiards' D, where the first white starts, and the red spot).
+    private func tableLayoutAfter(_ ruling: Ruling, facts: ShotFacts, before: MatchState) -> [Vec2]? {
+        let spec = model.timeline.table
+        let start = table.startLayout ?? []
+        switch rules {
+        case is BumperPoolRules:
+            return BumperPoolRules.nextLayout(after: facts, ruling: ruling, start: start, table: spec)
+        case let five as FivePinRules:
+            var spots: [Int: Vec2] = [:]
+            for b in five.rack.objectBalls where start.indices.contains(b) && NextShot.isOnTable(start[b]) {
+                spots[b] = start[b]
+            }
+            return FivePinRules.nextLayout(after: facts.resting, table: spec, spots: spots)
+        case let bar as BarBilliardsRules:
+            // BarBilliardsTable.startLayout puts the first white (ball 0) on the D spot and the red on its spot.
+            let red = BarBilliardsRules.redBall
+            guard start.indices.contains(0), start.indices.contains(red) else { return facts.resting }
+            return bar.nextLayout(after: facts, in: before, table: spec, dSpot: start[0], redSpot: start[red])
+        default:
+            return nil
+        }
     }
 
     /// Put balls back on the table one by one (each is lifted first, so its old place never blocks its new one).
@@ -368,6 +463,8 @@ final class MatchMode {
             return
         }
         guard let url = Self.saveURL else { return }
+        // While aiming, the clock to the moment it really stands at, not the last whole second shown.
+        if let exact = clockExact, state.clockRemaining != nil, phase == .aiming { state.clockRemaining = exact }
         let saved = SavedMatch(format: SavedMatch.currentFormat, state: state, setup: nextSetup ?? setup,
                                firstBreaker: firstBreaker)
         do {

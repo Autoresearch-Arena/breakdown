@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, one hook: the spoken ruling ends with everyone's
+//          score in games that keep one, five-pin and bar billiards.)
 // PURPOSE: The table as VoiceOver and Switch Control find it (accessibility plan, packages 1 and 3).
 //          TableAccessLayer lays one invisible accessibility element over each ball and each pocket of the 3D table,
 //          at the place the ball or pocket really is on screen, so touch exploration finds a ball where it sits and
@@ -46,7 +48,10 @@ enum ShotNarration {
 
     /// The finished shot in one to three sentences, with the striking player's ball as the cue ball in a match.
     static func summary(of model: ShowpieceModel) -> String {
-        TableWords.summary(timeline: model.timeline, start: start(of: model), cueBall: model.match?.cueBallIndex ?? 0)
+        // The ball that was struck: once the ruling is in, the turn (and on the other tables the striking ball) has
+        // moved on, so the match's record of the shot comes first.
+        TableWords.summary(timeline: model.timeline, start: start(of: model),
+                           cueBall: model.match.map { $0.lastShotBall ?? $0.cueBallIndex } ?? 0)
     }
 
     /// Called once a frame by TableStage's scene update (not from a view body, so reading the clock here redraws
@@ -74,7 +79,8 @@ enum ShotNarration {
             // The ruling is still being made while the shot is out: wait for it, then say both together.
             if match.phase == .shooting { return }
             if match.phase != .aiming, let ruling = match.lastRuling {
-                text += " " + TableWords.ruling(ruling, names: match.playerNames)
+                text += " " + TableWords.ruling(ruling, names: match.playerNames,
+                                                scores: match.rules.keepsRunningScore ? match.state.scores : nil)
             }
         }
         bridge.narratedVersion = version

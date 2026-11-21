@@ -33,6 +33,8 @@
 //          does the same for one-finger play: tap a ball and the line snaps to its centre, tap a pocket and it aims
 //          the ball in line (or the easiest ball) into that pocket. A game controller's A button fires while this
 //          layer is up, and the controller turns the aim the way the arrow keys do on this camera.)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, one hook in the drawing: the guide stops at the
+//          first bumper, standing pin or hole on a small table, AimGeometry.obstacleDistance, as it does at a ball.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -449,9 +451,14 @@ struct AimOverlay: View {
 
         // Without the guide: no contact prediction drawn, and the line stops a short way out; it still never runs on
         // through the first ball in its way (it fades out there, look plan package 5).
+        // On the small tables a bumper, a standing pin or a hole can come first: the line stops there, and a ball
+        // behind it is not shown as the contact (other-tables plan package 1 step 4).
+        let wall = min(AimGeometry.cushionDistance(from: origin, direction: dir, table: table),
+                       AimGeometry.obstacleDistance(from: origin, direction: dir, table: table) ?? .greatestFiniteMagnitude)
         let firstHit = AimGeometry.firstContact(layout: model.layout, from: origin, direction: dir, radius: radius)
+            .flatMap { ($0.ghost - origin).length <= wall ? $0 : nil }
         let contact = aimGuide ? firstHit : nil
-        let cushion = AimGeometry.cushionDistance(from: origin, direction: dir, table: table)
+        let cushion = wall
         let toHit = firstHit.map { ($0.ghost - origin).length }
         let reach = aimGuide ? (toHit ?? cushion) : min(0.35, cushion, toHit ?? .greatestFiniteMagnitude)
         let accent = palette.accent, amber = palette.slide, paper = palette.paper

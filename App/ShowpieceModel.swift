@@ -68,6 +68,8 @@
 //          playComputerStroke places the cue ball, sets the stroke and strikes for the computer (the person's own power,
 //          tip and cue elevation are put back afterwards); a lifted cue ball on the computer's turn is the computer's
 //          alone (canPlaceCueBall).)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, two hooks: startMatch takes how many play, so bar
+//          billiards can start alone; advance feeds the match's real-time game clock every live frame, tickClock.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -1101,15 +1103,16 @@ final class ShowpieceModel {
     // MARK: Matches (MatchMode)
 
     /// Start a match of `kind` from the menu: any trick shot or situation ends, the menu closes, the rack goes on.
-    /// With `computer` set, the second seat is the computer at that level.
-    func startMatch(_ kind: MatchKind, computer: ComputerLevel? = nil) {
+    /// `players` is how many play (bar billiards also plays alone); nil is two. With `computer` set, the second seat
+    /// is the computer at that level.
+    func startMatch(_ kind: MatchKind, players: Int? = nil, computer: ComputerLevel? = nil) {
         cancelPendingSolve()
         trickMode.end()
         eightBallMode.end()
         menuOpen = false
         gameInProgress = true
         endPlacement(); ballInHand = .none; undoStep = nil
-        let m = MatchMode(model: self, kind: kind, computer: computer)
+        let m = MatchMode(model: self, kind: kind, players: players, computer: computer)
         match = m
         m.start()
         setLens(false)
@@ -1487,6 +1490,9 @@ final class ShowpieceModel {
         // ball in hand that is lifted only once the balls are at rest.
         updateOpening()
         match?.update()
+        // The bar-billiards clock counts real seconds (rawDt, not the step clamped for the physics replay); MatchMode
+        // and MatchClock decide whether this frame counts. Never reached while the menu is open (returned above).
+        match?.tickClock(realSeconds: rawDt)
         if placementDue, aimReady {
             placementDue = false
             beginPlacingCueBall()

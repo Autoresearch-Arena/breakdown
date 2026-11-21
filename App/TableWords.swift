@@ -16,6 +16,9 @@
 //          Read by TableStage (the table's accessibility children, the narration), AimOverlay (the aim element) and
 //          TableAccessLayer. Words go through String(localized:) so the string catalog collects them; numbers are
 //          formatted for the player's language. No drawing and no model writes.
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens: the spoken ruling covers the other tables too -
+//          points scored by either player and points lost, the white and black pegs, time running out, balls coming
+//          back, pins stood up again - and ends with everyone's score in games that keep one.)
 // SRP/DRY check: Pass - checked CaptionEngine (Captions.swift: the per-event physics sentences, reused as they are
 //          for "Step through the shot"; its ball-name strings are reused here), EightBallTypes (pocket, group and
 //          foul titles, reused) and EightBallJudge (its line tests now live in TableLines, used here). The ruling
@@ -266,9 +269,10 @@ enum TableWords {
 
     // MARK: Match rulings
 
-    /// A ruling spoken: the fouls, a group taken, points, ball in hand, a choice to make, and either the result or
-    /// who shoots next. `names` are the players' names by seat.
-    static func ruling(_ r: Ruling, names: [String]) -> String {
+    /// A ruling spoken: the fouls, a group taken, points, the other tables' events (pegs, time, balls back, pins up),
+    /// ball in hand, a choice to make, and either the result or who shoots next, then everyone's score when `scores`
+    /// is given (games that keep a running score). `names` are the players' names by seat.
+    static func ruling(_ r: Ruling, names: [String], scores: [Int]? = nil) -> String {
         func name(_ p: PlayerID) -> String { names.indices.contains(p.index) ? names[p.index] : String(p.index + 1) }
         var out: [String] = []
         if !r.fouls.isEmpty {
@@ -279,9 +283,23 @@ enum TableWords {
             out.append(group == .solids ? String(localized: "\(name(r.shooter)) takes the solids.")
                                         : String(localized: "\(name(r.shooter)) takes the stripes."))
         }
-        if r.points.indices.contains(r.shooter.index), r.points[r.shooter.index] > 0 {
-            out.append(String(localized: "\(name(r.shooter)) scores \(r.points[r.shooter.index])."))
+        // The pegs and the clock come before the points, as on the ruling card.
+        for reason in r.reasons {
+            switch reason {
+            case .whitePegDown: out.append(String(localized: "The white peg went down: this turn's points are lost."))
+            case .blackPegDown: out.append(String(localized: "The black peg went down: the whole score is lost."))
+            case .timeUp: out.append(String(localized: "Time is up."))
+            default: break
+            }
         }
+        // Points for whoever got them (a five-pin foul pays the other player), and points lost to a peg.
+        for (seat, p) in r.points.enumerated() where p != 0 {
+            out.append(p > 0 ? String(localized: "\(name(PlayerID(seat))) scores \(p).")
+                             : String(localized: "\(name(PlayerID(seat))) loses \(-p) points."))
+        }
+        if r.reasons.contains(.ballsReturned) { out.append(String(localized: "Balls come back to be played again.")) }
+        if r.reasons.contains(.pinsReset) { out.append(String(localized: "The pins are stood up again.")) }
+        if let scores { out.append(TableGameWords.scores(scores, names: names)) }
         if let result = r.result {
             if let winner = result.winner {
                 out.append(String(localized: "\(name(winner)) wins the game."))

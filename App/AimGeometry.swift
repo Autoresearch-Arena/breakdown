@@ -17,6 +17,10 @@
 //          from the solver's own launch function, so the drawn guide bends exactly as the physics will.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (launchDirection, so the guide line bends with side spin on the new
 //          physics generation; the overlay draws from it instead of from the bare aim).
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, other-tables plan package 1 step 4: on the small
+//          tables the guide stops at the first thing it meets. firstContact now skips the striking ball by where it
+//          sits, not by being ball 0, so on five-pin and bumper pool the other player's ball (often ball 0) is seen;
+//          obstacleDistance finds the first bumper, standing pin or bed hole on the path, which the overlay stops at.)
 // SRP/DRY check: Pass - checked TableStage and TableCamera, which project world points to the screen for the caption
 //          ring; that goes one way only and lives in a closure inside the 3D view, so the other way (screen to table)
 //          is done here from the camera entity itself. Table/world conversion stays in TableFrame.
@@ -47,12 +51,14 @@ struct AimContact {
 
 enum AimGeometry {
     /// First object ball hit by a cue ball of radius `radius` that starts at `from` and travels along the unit
-    /// vector `direction`. `layout` is the resting positions with index 0 the cue ball; a ball parked off the table
-    /// is skipped. Nil when the path reaches a cushion first.
+    /// vector `direction`. `layout` is the resting positions; the striking ball is the one sitting at `from` (ball 0
+    /// on the pool table, a player's own ball on five-pin and bumper pool) and is skipped, as is a ball parked off the
+    /// table. Nil when the path reaches a cushion first.
     static func firstContact(layout: [Vec2], from: Vec2, direction: Vec2, radius: Double) -> AimContact? {
         var best: (t: Double, ball: Int)?
         let touch = 2 * radius
-        for i in 1..<max(1, layout.count) where NextShot.isOnTable(layout[i]) {
+        // Two balls can never rest closer than touching, so anything within a micrometre of `from` is the striker.
+        for i in layout.indices where NextShot.isOnTable(layout[i]) && (layout[i] - from).lengthSquared > 1e-12 {
             let c = layout[i] - from
             let along = c.dot(direction)
             if along <= 0 { continue }                         // behind the cue ball
@@ -93,6 +99,30 @@ enum AimGeometry {
         p.modelGeneration = model.activeModelGeneration
         return launchDirection(aim: model.aimDirection, tipUp: model.activeTipUp, tipSide: model.activeTipSide,
                                parameters: p)
+    }
+
+    /// Distance the striking ball's centre can travel from `from` along `direction` before it meets one of the small
+    /// tables' fixed things: a bumper post or a standing pin (touching at the solver's contact distance, ball radius
+    /// plus post or pin radius), or a bed hole or cup (its centre crossing the hole's capture radius, where the solver
+    /// drops it). Nil when nothing is in the way; always nil on the pool table, which has none of these.
+    static func obstacleDistance(from: Vec2, direction: Vec2, table: TableSpec) -> Double? {
+        let r = table.ballRadius
+        var best: Double?
+        /// The distance along the path at which the centre first comes within `reach` of `c`, if it ever does ahead.
+        func enters(_ c: Vec2, reach: Double) {
+            let d = c - from
+            let along = d.dot(direction)
+            if along <= 0 { return }                                  // behind the ball
+            let perpSquared = d.lengthSquared - along * along
+            if perpSquared >= reach * reach { return }                // passes wide
+            let t = along - (reach * reach - perpSquared).squareRoot()
+            if t < 0 { return }                                       // already inside: the ball starts there
+            if best == nil || t < best! { best = t }
+        }
+        for post in table.posts { enters(post.center, reach: r + post.radius) }
+        for pin in table.pins { enters(pin.center, reach: r + pin.radius) }
+        for hole in table.bedHoles { enters(hole.center, reach: hole.captureRadius) }
+        return best
     }
 
     /// Distance the cue ball's centre can travel from `from` along `direction` before it reaches a cushion.

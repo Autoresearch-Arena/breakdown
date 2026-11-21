@@ -6,6 +6,14 @@
 //          is part of the notebook panel on the open Duo, iPad and Mac, never a sheet). The ruling's tap moved to the
 //          match itself: MatchMode plays each ruling's moment through SoundBoard.play, which sounds it and plays its
 //          haptic together, so the card no longer adds a second tap of its own.)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens) - the three table games: the turn banner says
+//          which ball to strike and what is left (bumper pool: each side's balls still to sink; five-pin: your ball,
+//          the ball to hit first, the scores and the target; bar billiards: the clock, or the bar once time is up,
+//          the break in progress, the total and, alone, the best score); after each five-pin and bar-billiards shot a
+//          "How the points came" section explains the score line by line (TablePoints, TableGameWords); the result
+//          card says what a one-player bar-billiards game did to the best score; VoiceOver hears the points and the
+//          scores with each ruling and the moment time runs out. The ruling card names the ball that was really
+//          struck (MatchMode.lastShotBall) and the other tables' balls by their names there.
 // PURPOSE: Everything the player sees of a match (eight-ball and nine-ball for two on one device; the other tables'
 //          games use the same card), as ONE glass card whose content follows MatchMode.phase:
 //            aiming   - the turn banner: who shoots (or breaks), the game, each player's group with their balls left
@@ -57,6 +65,11 @@ struct MatchCard: View {
                 showingWhy = false
                 announce(phase, match)
             }
+            // Bar billiards: the moment the clock runs out, said aloud and felt (the banner shows the bar from then).
+            .onChange(of: match.timeIsUp) { _, up in
+                if up { AccessibilityNotification.Announcement(TableGameWords.timeUpNow).post() }
+            }
+            .sensoryFeedback(trigger: match.timeIsUp) { _, up in up && GameSettings.hapticsOn ? .warning : nil }
             .transition(.opacity)
         }
     }
@@ -82,6 +95,7 @@ struct MatchCard: View {
             if let r = match.lastRuling {
                 rulingHeader(r)
                 ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                if !match.lastPoints.isEmpty { pointsSection(match) }
                 if let shot = match.opponent?.lastShot, shot.seat == r.shooter, !r.reasons.contains(.choiceAnswered) {
                     whySection(shot)
                 }
@@ -121,7 +135,9 @@ struct MatchCard: View {
     /// The ruling's sentences, with what the recording showed: the object balls that dropped and the first ball the
     /// shooter's cue ball touched (so a wrong-ball foul names the ball).
     private func rulingSentences(_ r: Ruling, _ match: MatchMode) -> [String] {
-        let cueBall = match.rules.cueBall(for: r.shooter, in: match.state)
+        // The ball that was struck: after the ruling the state may name another (bumper pool's next ball once the
+        // marked one is down, bar billiards' next white).
+        let cueBall = match.lastShotBall ?? match.rules.cueBall(for: r.shooter, in: match.state)
         let tl = model.timeline
         // Only balls that started this shot on the table: a ball pocketed on an earlier shot sits at the parking spot
         // from the start of the recording and must not be named again.
@@ -129,7 +145,28 @@ struct MatchCard: View {
             $0 != cueBall && tl.pocketTime[$0] != nil && NextShot.isOnTable(tl.state(ball: $0, at: 0).position)
         }
         return MatchWords.sentences(for: r, names: match.playerNames, pocketed: pocketed,
-                                    firstBall: Self.firstBall(hitBy: cueBall, in: tl))
+                                    firstBall: Self.firstBall(hitBy: cueBall, in: tl), kind: match.state.kind)
+    }
+
+    /// Five-pin and bar billiards: how the shot's points came, line by line, then everyone's score.
+    @ViewBuilder
+    private func pointsSection(_ match: MatchMode) -> some View {
+        Text(String(localized: "How the points came"))
+            .font(Theme.label)
+            .foregroundStyle(palette.slide)
+            .accessibilityAddTraits(.isHeader)
+        ForEach(Array(TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames).enumerated()),
+                id: \.offset) { _, s in line(s) }
+        if match.rules.keepsRunningScore { ScoreRow(match: match) }
+    }
+
+    /// Everything a ruling says aloud: its sentences, then (five-pin, bar billiards) how the points came and the
+    /// scores, so a player who cannot see the card hears the same as one who can.
+    private func spokenRuling(_ r: Ruling, _ match: MatchMode) -> String {
+        var parts = rulingSentences(r, match)
+        parts += TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames)
+        if match.rules.keepsRunningScore { parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames)) }
+        return parts.joined(separator: " ")
     }
 
     /// The first ball a given cue ball touched in a recording, or nil when it touched none.
@@ -235,6 +272,7 @@ struct MatchCard: View {
             let why = MatchWords.endReason(r, shooter: match.lastRuling?.shooter, names: match.playerNames)
             if !why.isEmpty { line(why) }
             if match.rules.keepsRunningScore { ScoreRow(match: match) }
+            if let best = match.bestOutcome { line(TableGameWords.bestOutcome(best)) }
         }
         buttons {
             Button {
@@ -264,12 +302,17 @@ struct MatchCard: View {
         switch phase {
         case .ruling:
             guard let r = match.lastRuling else { return }
-            text = rulingSentences(r, match).joined(separator: " ")
+            text = spokenRuling(r, match)
         case .handOver:
             text = MatchWords.handOver(to: MatchWords.name(match.state.turn, in: match.playerNames))
         case .over:
             guard let r = match.state.result else { return }
-            text = MatchWords.resultTitle(r, names: match.playerNames)
+            var parts = [MatchWords.resultTitle(r, names: match.playerNames)]
+            if match.rules.keepsRunningScore {
+                parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames))
+            }
+            if let best = match.bestOutcome { parts.append(TableGameWords.bestOutcome(best)) }
+            text = parts.joined(separator: " ")
         case .aiming, .shooting:
             return
         }
@@ -348,12 +391,9 @@ struct TurnBanner: View {
                 if state.kind == .eightBall {
                     ForEach(state.players, id: \.id) { p in playerRow(p) }
                 }
+                // The other tables: which ball to strike and what is left (TableGameLines below).
+                if state.kind.isTableGame { TableGameLines(match: match) }
                 if match.rules.keepsRunningScore { ScoreRow(match: match) }
-                if let clock = state.clockRemaining {
-                    Text(String(localized: "Time left: \(Duration.seconds(max(0, clock)).formatted(.time(pattern: .minuteSecond)))"))
-                        .font(Theme.number)
-                        .foregroundStyle(palette.paper.opacity(0.9))
-                }
             }
         }
     }
@@ -383,6 +423,66 @@ struct TurnBanner: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(spoken)
+    }
+}
+
+/// The turn banner's lines for the three table games, under the shooter's name.
+private struct TableGameLines: View {
+    let match: MatchMode
+    @Environment(\.palette) private var palette
+
+    private var state: MatchState { match.state }
+
+    var body: some View {
+        if let bumper = match.rules as? BumperPoolRules {
+            let seat = state.turn.index
+            let ball = match.cueBallIndex
+            let marked = BumperPoolRules.sides.indices.contains(seat) && BumperPoolRules.sides[seat].first == ball
+            line(TableGameWords.bumperStrike(ball, marked: marked))
+            // Each side's balls still to sink, a dot on the side shooting.
+            ForEach(state.players, id: \.id) { p in
+                let name = MatchWords.name(p.id, in: match.playerNames)
+                let left = TableGameWords.ballsToSink(bumper.ballsLeft(for: p.id, in: state).count)
+                HStack(spacing: 6) {
+                    Circle().fill(p.id == state.turn ? palette.accent : Color.clear)
+                        .frame(width: 6, height: 6)
+                        .accessibilityHidden(true)
+                    Text(name).font(Theme.label).lineLimit(1)
+                    Spacer(minLength: 0)
+                    Text(left).font(Theme.label).foregroundStyle(.secondary).lineLimit(1)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel([name, left].joined(separator: ". "))
+            }
+        } else if let five = match.rules as? FivePinRules {
+            line(TableGameWords.fivePinStrike(seat: state.turn.index))
+            line(TableGameWords.target(five.targetScore))
+        } else if match.rules is BarBilliardsRules {
+            if let clock = state.clockRemaining {
+                if clock > 0 {
+                    Text(TableGameWords.timeLeft(seconds: MatchClock.shownSeconds(clock)))
+                        .font(Theme.number)
+                        .foregroundStyle(palette.paper.opacity(0.9))
+                        .accessibilityAddTraits(.updatesFrequently)
+                } else {
+                    let whites = BarBilliardsRules.whiteBalls.filter { state.ballsLeft.contains($0) }.count
+                    Text(TableGameWords.barDown(whitesLeft: whites))
+                        .font(Theme.label)
+                        .foregroundStyle(palette.slide)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            if let points = state.breakPoints { line(TableGameWords.breakSoFar(points)) }
+            if state.players.count == 1 { line(TableGameWords.best(BarBilliardsBest.best())) }
+        }
+    }
+
+    private func line(_ text: String) -> some View {
+        Text(text)
+            .font(Theme.body)
+            .foregroundStyle(palette.paper.opacity(0.9))
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

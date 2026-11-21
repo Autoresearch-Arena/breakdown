@@ -33,6 +33,8 @@
 //          Eight-ball and Nine-ball against the computer. Eight-ball and Nine-ball carry a small mark of games won out
 //          of games played on this device (MatchRecord). Inline in the card, so it works as the notebook panel's menu
 //          page on the open Duo, iPad and Mac.)
+// Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens: How to play's Rules section also links the rules
+//          of bumper pool, five-pin and bar billiards, TableRulesPage.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
 //          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
@@ -419,6 +421,22 @@ struct HowToPlaySheet: View {
                             RulesPage(title: "Nine-ball", rules: RulesPage.nineBall)
                         } label: {
                             rulesLink("Nine-ball", line: "Lowest ball first, and the 9 wins.", symbol: "9.circle")
+                        }
+                        // The other tables' games (tables-screens): the same rules their Tables pages show.
+                        NavigationLink {
+                            TableRulesPage(game: .bumperPool)
+                        } label: {
+                            rulesLink("Bumper pool", line: "Five balls each, sunk in the far cup.", symbol: TableKind.bumperPool.symbol)
+                        }
+                        NavigationLink {
+                            TableRulesPage(game: .fivePin)
+                        } label: {
+                            rulesLink("Five-pin billiards", line: "Pins, a red ball and points.", symbol: TableKind.fivePin.symbol)
+                        }
+                        NavigationLink {
+                            TableRulesPage(game: .barBilliards)
+                        } label: {
+                            rulesLink("Bar billiards", line: "Holes, pegs and a clock.", symbol: TableKind.barBilliards.symbol)
                         }
                     }
                 }
