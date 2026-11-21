@@ -56,6 +56,10 @@
 //          commentary, the numbers and the controls; the main menu, the lists and the option pages are pages of that
 //          panel instead of sheets or overlays, so nothing ever covers the table. The environment value inlinePages
 //          tells the sheet-hosting views so. MenuBackButton and SurfaceMenuButton are shared with the panel's top bar.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (first minute: OpeningLayer (tap anywhere skips the opening, the glow
+//          on the cue ball at the hand-over) and LensCalloutLayer (the three Lens callouts, once) over the table;
+//          OpeningCard (the hand-over line) with the other cards. Hook lines only; the views are in OpeningHandover.swift
+//          and LensCallouts.swift.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -200,6 +204,9 @@ struct ShowpieceView: View {
             .padding(.bottom, 6)
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
+            // First minute: tap anywhere skips the opening, the cue ball glows at the hand-over, the Lens callouts.
+            OpeningLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
+            LensCalloutLayer(model: model, bridge: bridge)
             // The main menu, over everything, until the player picks something (and again from the back button).
             if model.menuOpen && menuOnStage { TitleScreen(model: model, onPlay: { showShotPanel = true }) }
         }
@@ -217,6 +224,7 @@ struct ShowpieceView: View {
         return FittingScroll(maxHeight: geo.size.height * (squarish ? 0.74 : 0.62)) {
             VStack(spacing: 10) {
                 if !wide { ComparisonCard(model: model) }
+                if !wide { OpeningCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
                 if !wide { TrickShotCard(model: model) }
                 if !wide { EightBallCard(model: model) }
@@ -263,6 +271,7 @@ struct ShowpieceView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ComparisonCard(model: model)
+                    OpeningCard(model: model)
                     // Trick shots: the shot's card at the top of the column.
                     TrickShotCard(model: model)
                     EightBallCard(model: model)

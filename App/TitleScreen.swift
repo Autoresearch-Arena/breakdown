@@ -21,17 +21,28 @@
 //          one of its own pages, with no dimming veil and no sheets over the table.)
 // Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (a Tables button opens TableList: a table is a game of its own, no longer a
 //          section of the Surface menu).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (a menu a stranger can read: ordered by what a new player should do
+//          next (Continue when something is in progress, then Play, Trick shots, Behind the 8-Ball, Tables, Watch the
+//          intro, How to play, Options), every entry with one short line saying what it is and, where there is
+//          progress to show, a small mark (trick shots made, medals won). Play opens a short list in the card itself:
+//          Continue match when a saved one exists, Practice (free play), Eight-ball and Nine-ball. "Watch the break" is
+//          now "Watch the intro". How to play gains a Rules section with a page each for eight-ball and nine-ball, in
+//          our own plain words.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
-//          names the game, says in one line what it is, and offers: Trick shots (the list of shots to learn),
-//          Continue (once something is under way), Free play (a fresh rack for your own break; New free game once a
-//          game is under way), Watch the break (the showpiece opening
-//          with the slow-motion Physics Lens), How to play (the three steps, in a sheet) and Options (a sheet).
-//          It changes the model only through its menu methods (closeMenu, startGame, watchBreak) and the trick-shot
-//          mode's list switch and end(). Launch switches that
-//          open a specific screen for testing skip it, so the screenshots those switches take stay as before.
+//          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
+//          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
+//          Behind the 8-Ball, Tables, Watch the intro (the showpiece opening with the slow-motion Physics Lens), How to
+//          play (the three steps and the rules, in a sheet) and Options (a sheet). The lessons will head the list as
+//          Learn once they are built; the place is marked in the code.
+//          It changes the model only through its menu methods (closeMenu, startGame, watchBreak, playTable via
+//          TableList) and the match methods of the model contract (startMatch, continueSavedMatch), and the modes'
+//          list switches and end(). Launch switches that open a specific screen for testing skip it, so the
+//          screenshots those switches take stay as before.
 // SRP/DRY check: Pass - menu and instructions only. Options live in GameSettings; fonts come from Theme, colours from
 //          Palette, and the controls named in the instructions are the real labels in PlaybackControls, ShotPanel and
-//          AimOverlay.
+//          AimOverlay. Progress is read from the modes (TrickShotMode.isDone, EightBallMode.medals), never stored here.
+//          The rules pages describe what the rules engine does (BreakdownRules) in words; they hold no rule logic.
+import BreakdownRules
 import SwiftUI
 
 struct TitleScreen: View {
@@ -52,6 +63,8 @@ struct TitleScreen: View {
     @State private var howToOpen = false
     @State private var optionsOpen = false
     @State private var tablesOpen = false
+    /// The Play list (Practice, Eight-ball, Nine-ball) replaces the main list inside the same card.
+    @State private var playListOpen = false
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
     /// -noTitle is there for anyone who wants the table straight away.
@@ -87,6 +100,8 @@ struct TitleScreen: View {
         .onAppear {
             withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true }
         }
+        // Back to the main list whenever the menu is opened again.
+        .onDisappear { playListOpen = false }
         .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen) }
         .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
         .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
@@ -116,57 +131,188 @@ struct TitleScreen: View {
                     .padding(.top, 2)
             }
 
-            VStack(spacing: 12) {
-                // The game's purpose first: the list of trick shots, in a sheet over the menu.
-                if model.gameInProgress {
-                    menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
-                    menuButton("Behind the 8-Ball", symbol: "8.circle.fill", prominent: false) { model.eightBallMode.listOpen = true }
-                    menuButton("Tables", symbol: "square.grid.2x2", prominent: false) { if let onTables { onTables() } else { tablesOpen = true } }
-                    menuButton("Continue", symbol: "play.fill", prominent: false) { model.closeMenu() }
-                        // Return continues on the Mac and with a hardware keyboard.
-                        .keyboardShortcut(.defaultAction)
-                    menuButton("New free game", symbol: "triangle", prominent: false) {
-                        model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
-                    }
-                } else {
-                    menuButton("Trick shots", symbol: "wand.and.sparkles", prominent: true) { model.trickMode.listOpen = true }
-                        .keyboardShortcut(.defaultAction)
-                    menuButton("Behind the 8-Ball", symbol: "8.circle.fill", prominent: false) { model.eightBallMode.listOpen = true }
-                    menuButton("Tables", symbol: "square.grid.2x2", prominent: false) { if let onTables { onTables() } else { tablesOpen = true } }
-                    menuButton("Free play", symbol: "play.fill", prominent: false) {
-                        model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
-                    }
-                }
-                menuButton("Watch the break", symbol: "sparkles", prominent: false) { model.trickMode.end(); model.eightBallMode.end(); model.watchBreak() }
-                // Side by side when both names fit whole, then side by side without their icons, and only then
-                // stacked: never cut to "How to p…".
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) { secondaryButtons }
-                    HStack(spacing: 12) { secondaryButtons }.labelStyle(.titleOnly)
-                    VStack(spacing: 12) { secondaryButtons }
-                }
+            Group {
+                if playListOpen { playList } else { mainList }
             }
+            .transition(.opacity)
+            .animation(reduceMotion ? nil : .snappy, value: playListOpen)
         }
         .padding(28)
         .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
     }
 
-    @ViewBuilder
-    private var secondaryButtons: some View {
-        menuButton("How to play", symbol: "questionmark.circle", prominent: false) { if let onHowTo { onHowTo() } else { howToOpen = true } }
-        menuButton("Options", symbol: "gearshape", prominent: false) { if let onOptions { onOptions() } else { optionsOpen = true } }
+    // MARK: The main list
+
+    /// Something to go back to: the game on the table, or after a relaunch the saved match.
+    private var resumable: Bool { model.gameInProgress || model.hasSavedMatch }
+
+    private var mainList: some View {
+        VStack(spacing: 10) {
+            // Continue first whenever something is in progress. Return continues on the Mac and with a keyboard.
+            if model.gameInProgress {
+                MenuRow(title: "Continue", line: "Back to the table, just as you left it.", symbol: "play.fill",
+                        prominent: true) { model.closeMenu() }
+                    .keyboardShortcut(.defaultAction)
+            } else if model.hasSavedMatch {
+                MenuRow(title: "Continue match", line: "Pick up your saved match where you left it.",
+                        symbol: "play.fill", prominent: true) { continueMatch() }
+                    .keyboardShortcut(.defaultAction)
+            }
+            // Learn goes here, first after Continue, once the six lessons exist (first-minute plan, package 3).
+            MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend.",
+                    symbol: "circle.grid.cross", prominent: !resumable) { playListOpen = true }
+                .keyboardShortcut(resumable ? nil : KeyboardShortcut.defaultAction)
+            MenuRow(title: "Trick shots", line: "Shots that make people stare, easiest first.", symbol: "wand.and.sparkles",
+                    mark: trickMark) { model.trickMode.listOpen = true }
+            MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
+                    symbol: "8.circle.fill", mark: medalMark) { model.eightBallMode.listOpen = true }
+            MenuRow(title: "Tables", line: "Other tables, each a game of its own.", symbol: "square.grid.2x2") {
+                if let onTables { onTables() } else { tablesOpen = true }
+            }
+            MenuRow(title: "Watch the intro", line: "The opening break again, slowed down under the Physics Lens.",
+                    symbol: "sparkles") {
+                model.trickMode.end(); model.eightBallMode.end(); model.watchBreak()
+            }
+            MenuRow(title: "How to play", line: "The controls, the Lens and the rules of each game.",
+                    symbol: "questionmark.circle") {
+                if let onHowTo { onHowTo() } else { howToOpen = true }
+            }
+            MenuRow(title: "Options", line: "Sound, vibration, the aim guide and the tips.", symbol: "gearshape") {
+                if let onOptions { onOptions() } else { optionsOpen = true }
+            }
+        }
     }
 
-    @ViewBuilder
-    private func menuButton(_ title: LocalizedStringKey, symbol: String, prominent: Bool, action: @escaping () -> Void) -> some View {
+    /// Trick shots made out of the ones that can be played.
+    private var trickMark: MenuRow.Mark {
+        let mode = model.trickMode
+        let playable = TrickShots.all.filter { !$0.pending }
+        let made = playable.filter { mode.isDone($0) }.count
+        return MenuRow.Mark(symbol: "checkmark.circle.fill",
+                            text: String(localized: "\(made)/\(playable.count)"),
+                            spoken: String(localized: "\(made) of \(playable.count) made"))
+    }
+
+    /// Medals won out of the situations there are.
+    private var medalMark: MenuRow.Mark {
+        let won = model.eightBallMode.medals.count
+        let total = EightBallSituations.all.count
+        return MenuRow.Mark(symbol: "medal.fill",
+                            text: String(localized: "\(won)/\(total)"),
+                            spoken: String(localized: "\(won) of \(total) medals won"))
+    }
+
+    // MARK: The Play list
+
+    private var playList: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Button { playListOpen = false } label: {
+                    Label("Back", systemImage: "chevron.backward")
+                        .font(.body.weight(.semibold))
+                }
+                .buttonStyle(.glass)
+                .controlSize(.regular)
+                Spacer(minLength: 0)
+                Text("Play")
+                    .font(Theme.sectionTitle)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 0)
+                // Balances the Back button so the title sits in the middle.
+                Color.clear.frame(width: 44, height: 1).accessibilityHidden(true)
+            }
+            if model.hasSavedMatch {
+                MenuRow(title: "Continue match", line: "Pick up your saved match where you left it.",
+                        symbol: "play.fill", prominent: true) { continueMatch() }
+                    .keyboardShortcut(.defaultAction)
+            }
+            MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle",
+                    prominent: !model.hasSavedMatch) {
+                model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
+            }
+            MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
+                    symbol: "8.circle") { start(.eightBall) }
+            MenuRow(title: "Nine-ball", line: "Two players. Always hit the lowest ball first; sink the 9 to win.",
+                    symbol: "9.circle") { start(.nineBall) }
+        }
+    }
+
+    /// A new match of the given kind. The model racks it and closes the menu; closing it here as well is harmless and
+    /// keeps the table in view whatever the model does first.
+    private func start(_ kind: MatchKind) {
+        model.trickMode.end(); model.eightBallMode.end()
+        model.startMatch(kind)
+        model.closeMenu()
+        onPlay()
+    }
+
+    private func continueMatch() {
+        model.trickMode.end(); model.eightBallMode.end()
+        model.continueSavedMatch()
+        model.closeMenu()
+        onPlay()
+    }
+}
+
+// MARK: One menu entry
+
+/// A menu entry: symbol, name, one short line saying what it is, and an optional small progress mark at the end. The
+/// whole row is one button; VoiceOver reads the name, then the progress, and offers the line as the hint.
+private struct MenuRow: View {
+    struct Mark {
+        let symbol: String
+        /// Short, for the eye ("3/10").
+        let text: String
+        /// Whole, for VoiceOver ("3 of 10 made").
+        let spoken: String
+    }
+
+    let title: LocalizedStringKey
+    let line: LocalizedStringKey
+    let symbol: String
+    var prominent = false
+    var mark: Mark? = nil
+    let action: () -> Void
+    @Environment(\.palette) private var palette
+
+    var body: some View {
         let button = Button(action: action) {
-            Label(title, systemImage: symbol)
-                .font(Theme.heading)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                .frame(maxWidth: .infinity, minHeight: 30)
+            HStack(alignment: .center, spacing: 12) {
+                Image(systemName: symbol)
+                    .font(.title3)
+                    .frame(width: 28)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(Theme.heading)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Text(line)
+                        .font(Theme.body)
+                        .opacity(0.75)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                if let mark {
+                    HStack(spacing: 4) {
+                        Image(systemName: mark.symbol)
+                        Text(verbatim: mark.text).monospacedDigit()
+                    }
+                    .font(Theme.label)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Capsule().fill(palette.track))
+                    .fixedSize()
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
         }
         .controlSize(.large)
+        .accessibilityLabel(Text(title))
+        .accessibilityValue(mark.map { Text(verbatim: $0.spoken) } ?? Text(verbatim: ""))
+        .accessibilityHint(Text(line))
         if prominent {
             button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
         } else {
@@ -175,7 +321,10 @@ struct TitleScreen: View {
     }
 }
 
-/// The three steps of the game, in plain words, in a sheet from the menu.
+// MARK: How to play
+
+/// The three steps of the game, in plain words, and the rules of the two pool games, in a sheet from the menu (a page
+/// of the side panel on a folding phone, which shows this same view).
 struct HowToPlaySheet: View {
     @Binding var isOpen: Bool
     @Environment(\.palette) private var palette
@@ -195,22 +344,21 @@ struct HowToPlaySheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    ForEach(Array(Self.steps.enumerated()), id: \.offset) { index, step in
-                        HStack(alignment: .firstTextBaseline, spacing: 14) {
-                            Text("\(index + 1)")
-                                .font(Theme.equation)
-                                .foregroundStyle(palette.accent)
-                                .frame(width: 24, alignment: .leading)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(step.title).font(Theme.heading)
-                                Text(step.detail)
-                                    .font(Theme.copy)
-                                    .foregroundStyle(.secondary)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
+                    NumberedSteps(steps: Self.steps)
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Rules")
+                            .font(Theme.sectionTitle)
+                            .accessibilityAddTraits(.isHeader)
+                        NavigationLink {
+                            RulesPage(title: "Eight-ball", rules: RulesPage.eightBall)
+                        } label: {
+                            rulesLink("Eight-ball", line: "Solids, stripes and the 8.", symbol: "8.circle")
                         }
-                        // VoiceOver reads the step as one sentence: the number is decoration.
-                        .accessibilityElement(children: .combine)
+                        NavigationLink {
+                            RulesPage(title: "Nine-ball", rules: RulesPage.nineBall)
+                        } label: {
+                            rulesLink("Nine-ball", line: "Lowest ball first, and the 9 wins.", symbol: "9.circle")
+                        }
                     }
                 }
                 .padding(24)
@@ -223,8 +371,111 @@ struct HowToPlaySheet: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { isOpen = false } }
             }
         }
+        .tint(palette.accent)
         #if os(macOS)
         .frame(minWidth: 420, minHeight: 420)
         #endif
+    }
+
+    private func rulesLink(_ title: LocalizedStringKey, line: LocalizedStringKey, symbol: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: symbol).font(.title3).foregroundStyle(palette.accent).frame(width: 28).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(Theme.heading).foregroundStyle(.primary)
+                Text(line).font(Theme.body).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.track.opacity(0.5)))
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// A numbered list of short titled paragraphs: the How to play steps and each rules page.
+private struct NumberedSteps: View {
+    let steps: [(title: String, detail: String)]
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
+                HStack(alignment: .firstTextBaseline, spacing: 14) {
+                    Text("\(index + 1)")
+                        .font(Theme.equation)
+                        .foregroundStyle(palette.accent)
+                        .frame(width: 24, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(step.title).font(Theme.heading)
+                        Text(step.detail)
+                            .font(Theme.copy)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                // VoiceOver reads the step as one sentence: the number is decoration.
+                .accessibilityElement(children: .combine)
+            }
+        }
+    }
+}
+
+/// The rules of one game, in our own plain words. They describe what the match rules in BreakdownRules decide; the
+/// rulings themselves come from there, never from this text.
+private struct RulesPage: View {
+    let title: LocalizedStringKey
+    let rules: [(title: String, detail: String)]
+
+    var body: some View {
+        ScrollView {
+            NumberedSteps(steps: rules).padding(24)
+        }
+        .navigationTitle(title)
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+    }
+
+    static var eightBall: [(title: String, detail: String)] {
+        [
+            (String(localized: "The idea"),
+             String(localized: "Two players share one table. One takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.")),
+            (String(localized: "The break"),
+             String(localized: "A good break sinks a ball or drives at least four balls to a cushion. If it does neither, your opponent may play the table as it lies or have it racked again. Sink the cue ball on the break and your opponent places it anywhere behind the head line.")),
+            (String(localized: "The 8 on the break"),
+             String(localized: "Sinking the 8 on the break neither wins nor loses. The breaker chooses: put the 8 back on its spot, or rack again.")),
+            (String(localized: "An open table"),
+             String(localized: "After the break nobody owns a group. The first ball you call and sink on a fair shot makes its group yours.")),
+            (String(localized: "Call every shot"),
+             String(localized: "Before each shot, name the ball and the pocket. The game suggests the ball you are aiming at and the nearest pocket, so one tap confirms it.")),
+            (String(localized: "A fair shot"),
+             String(localized: "Hit one of your own balls first, or the 8 once your group is gone. Then a ball must drop or any ball must reach a cushion.")),
+            (String(localized: "Fouls"),
+             String(localized: "Sinking the cue ball, hitting the wrong ball first, hitting nothing, or knocking a ball off the table is a foul. Your opponent then has ball in hand: they place the cue ball anywhere.")),
+            (String(localized: "Keep your turn"),
+             String(localized: "Sink the ball you called and you shoot again. Miss it, or foul, and the turn passes.")),
+            (String(localized: "Winning and losing"),
+             String(localized: "Sink the 8 in the pocket you called once your group is gone and you win. Sink it early, in the wrong pocket, off the table, or on a foul, and you lose.")),
+        ]
+    }
+
+    static var nineBall: [(title: String, detail: String)] {
+        [
+            (String(localized: "The idea"),
+             String(localized: "Only the balls 1 to 9 are used, racked in a diamond with the 1 at the front and the 9 in the middle. Whoever sinks the 9 on a fair shot wins, whenever it happens.")),
+            (String(localized: "Lowest ball first"),
+             String(localized: "Every shot must hit the lowest-numbered ball on the table first. Then a ball must drop or any ball must reach a cushion.")),
+            (String(localized: "No calling"),
+             String(localized: "You do not name your shots: any ball that drops on a fair shot counts. The game marks the ball you must hit first.")),
+            (String(localized: "Keep your turn"),
+             String(localized: "Sink any ball on a fair shot and you shoot again.")),
+            (String(localized: "Fouls"),
+             String(localized: "A foul gives your opponent ball in hand anywhere on the table. A 9 sunk on a foul comes back to its spot.")),
+            (String(localized: "Three fouls"),
+             String(localized: "Three fouls in a row by the same player lose the game. The game warns you after the second.")),
+        ]
     }
 }

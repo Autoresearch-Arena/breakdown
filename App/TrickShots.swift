@@ -2,6 +2,8 @@
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (The Called Break, Throw It In, The Massé and Jump the Blocker authored with the capped search and playable; elevation is the sine the solver uses).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (every player-facing line is wrapped in String(localized:) for translation)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the list is sorted easiest first, ties in authored order, and the
+//          player sees each shot's place in that list (listNumber); the authored numbers below are unchanged)
 // PURPOSE: The trick-shot library: data only. Ten shots, each with its id, title, a one-sentence hook, where the balls
 //          start (only the balls it uses; every other ball is off the table), the authored answer (aim, power, cue-tip
 //          height and side; cue elevation is reserved for the massé and the jump), the goal the app checks from the
@@ -117,10 +119,25 @@ private func placed(_ balls: [Int: Vec2]) -> [Vec2] {
 enum TrickShots {
     static func shot(id: String) -> TrickShot? { all.first { $0.id == id } }
 
-    static let all: [TrickShot] = [
+    /// Every shot in the order it was authored; each keeps its authored `number` (its id in the authoring notes
+    /// below and in BreakProbe's output).
+    private static let authored: [TrickShot] = [
         calledBreak, stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt,
         masse, jumpOver,
     ]
+
+    /// The list the player sees and the order Next shot walks: easiest first. Shots of the same difficulty keep their
+    /// authored order (the tuple compares the authored number second), so the order is fixed and does not depend on
+    /// how the sort treats ties.
+    static let all: [TrickShot] = authored.sorted {
+        ($0.difficulty.rawValue, $0.number) < ($1.difficulty.rawValue, $1.number)
+    }
+
+    /// The number the player sees: the shot's place in the easiest-first list, from 1. The authored `number` is left
+    /// untouched; this is the one to show.
+    static func listNumber(of shot: TrickShot) -> Int {
+        (all.firstIndex { $0.id == shot.id } ?? 0) + 1
+    }
 
     // MARK: 1. The Called Break
     // Search (BreakProbe tricks called-break-short, 20-Nov-2026, three threads, 24 minutes): a full fifteen-ball rack is

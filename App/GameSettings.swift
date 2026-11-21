@@ -9,6 +9,8 @@
 //          explanation card shows its maths. One key per option, read by the views with @AppStorage and by the sound
 //          and haptics players at the moment they play, so a change in Options applies at once. Also the Options sheet
 //          itself, opened from the main menu.
+// Edited: Claude Opus 5.5 High, 21-November-2026 ("Show the Lens tips again" beside "Show the aiming tips again": clears
+//          the key LensCallouts.swift owns, so the three Lens callouts play once more.)
 // SRP/DRY check: Pass - checked ShotPanel (aimHintSeen key, reused here for "show the aiming tips again") and
 //          SoundBoard/Haptics (the -muteSound launch switch stays for testing; these options sit on top of it).
 import SwiftUI
@@ -39,6 +41,7 @@ struct OptionsSheet: View {
     @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     @AppStorage(GameSettings.mathsKey) private var maths = false
     @AppStorage("aimHintSeen") private var hintSeen = false
+    @AppStorage(LensCallouts.seenKey) private var lensTipsSeen = false
 
     private var version: String {
         let info = Bundle.main.infoDictionary
@@ -69,6 +72,8 @@ struct OptionsSheet: View {
                     Toggle("Aim guide", systemImage: "scope", isOn: $aimGuide)
                     Button("Show the aiming tips again", systemImage: "questionmark.circle") { hintSeen = false }
                         .disabled(!hintSeen)
+                    Button("Show the Lens tips again", systemImage: "scribble.variable") { lensTipsSeen = false }
+                        .disabled(!lensTipsSeen)
                 } header: {
                     Text("Aiming")
                 } footer: {
