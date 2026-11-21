@@ -8,6 +8,7 @@
 #          Usage: store-shot.sh <device id> <language> <seconds to wait> <output.png> [launch flags...]
 #             or: store-shot.sh --launch-only <device id> <language> [launch flags...]
 #          Language is an App Store code (en, de, pt-BR, zh-Hans...); the locale is set to match.
+# Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (SIM_DISPLAY: capture one screen of the two-screen iPhone Duo simulator.)
 # SRP/DRY check: Pass - one capture only. The scene list lives in store-shots.sh; the scenes themselves are the app's
 #          own launch flags, not copies of its logic.
 set -e
@@ -30,5 +31,6 @@ xcrun simctl launch "$device" com.voynichlabs.breakdown -muteSound -AppleLanguag
 (( launch_only )) && exit 0
 sleep "$wait"
 mkdir -p "${out:h}"
-xcrun simctl io "$device" screenshot "$out" >/dev/null 2>&1
+# SIM_DISPLAY picks one screen of a two-screen simulator (the iPhone Duo: 3 is the inner display, 1 the outer one).
+xcrun simctl io "$device" screenshot ${SIM_DISPLAY:+--display=$SIM_DISPLAY} "$out" >/dev/null 2>&1
 echo "$out"

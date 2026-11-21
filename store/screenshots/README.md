@@ -7,6 +7,8 @@ PURPOSE: How Breakdown's App Store screenshots are made: the ten frames, how scr
 Edited: Claude Opus 5.5 High, 21-November-2026 (retaking a few scenes, pinned launch settings, the gameplay video, and
          no Mac set for now.)
 Edited: Claude Opus 5.5 High, 21-November-2026 (iPad frames 07 and 08 cropped to the tables and laid out large.)
+Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo sets: duo-inner, the open screen, and duo-outer, the
+         closed one; how to capture each and how their composite frames differ.)
 SRP/DRY check: Pass - this folder holds only the screenshot framing script and the headlines. The listing text is in
          store/listing; the scenes themselves are the app's own launch flags, listed once in scripts/store-shots.sh.
 -->
@@ -42,9 +44,24 @@ Raw shots land on the Team 4TB drive, never in git:
 
     /Volumes/Team 4TB/breakdown-build/store-shots/raw/<device>/<language>/<scene>.png
 
-Device names are `iphone-6.9`, `ipad-13` and `mac`. There is no Mac set yet: capturing the Mac app means opening game
+Device names are `iphone-6.9`, `ipad-13`, `mac`, `duo-inner` and `duo-outer`. There is no Mac set yet: capturing the Mac app means opening game
 windows over the desktop of whoever is using the Mac, so it waits for a time the Boss chooses. compose.swift already
 frames Mac window captures of any size.
+
+### The iPhone Duo (two sets from one simulator)
+
+The Duo simulator has two screens, and posture is set with the simulator tool's `set_posture` (there is no command-line
+way). Install a Release build, then run the capture once per screen with `SIM_DISPLAY` naming the screen (3 is the inner
+display, 1 the outer one; `xcrun simctl io <device> screenshot` refuses to choose between them):
+
+    # posture open, in its landscape orientation (951 x 669 points): the table fills the left half, the words the right
+    SIM_DISPLAY=3 scripts/store-shots.sh <duo id> duo-inner en de ...
+    # posture closed: the small outer screen, portrait
+    SIM_DISPLAY=1 scripts/store-shots.sh <duo id> duo-outer en de ...
+
+Do not use `DEVICE_LOCALE=1` on the Duo: restarting the simulator can reset its posture, and the Duo status bar shows
+nothing that changes with the language. Raw shots are 2853 x 2007 (inner) and 1398 x 2034 (outer). The Duo needs its own
+screenshots from April 2027 for apps built with the iOS 27.1 SDK or later.
 
 ## Step two: frame them
 
@@ -62,6 +79,14 @@ Chinese and Cyrillic use the system's own fonts for those scripts. A missing raw
 
 Headlines come from `captions/<language>.json`, one key per frame (`01-jump` ... `10-situations`, with `07-surfaces`
 and `08-tables` for the side-by-side frames).
+
+On the Duo, every frame is one whole screen. Frames 07 and 08, which show several tables, crop each raw shot to its table
+(on the inner screen, the table's own half, left of the fold, mirrored for Arabic; on the outer screen, the table's
+strip above the controls). The inner frames stand the tiles side by side, the same height; the outer frames cannot
+(whole portrait screens side by side would each be tiny), so frame 07 stacks its two tiles in a gentle zigzag and frame 08
+puts one tile on top and two side by side beneath it. On the outer screen the status column on the right and, for the
+surface shots, the trick-shot card under the table are cropped away. The crops are the `tableCrops` and `frameCrops`
+tables in compose.swift.
 
 Optional flags, for testing:
 
@@ -83,6 +108,8 @@ rejects) in sRGB:
 | iphone-6.9 | 1320 x 2868, portrait |
 | ipad-13 | 2064 x 2752, portrait |
 | mac | 2880 x 1800, landscape |
+| duo-inner | 2853 x 2007, landscape (the open iPhone Duo; 2007 x 2853 portrait is also accepted, not used) |
+| duo-outer | 1398 x 2034, portrait (the closed iPhone Duo) |
 
 Check one with `sips -g pixelWidth -g pixelHeight -g hasAlpha <file>`.
 

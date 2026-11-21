@@ -10,12 +10,17 @@
 //          Japanese, Korean, Chinese and Cyrillic fall back to the right system fonts.
 //          Usage: swift store/screenshots/compose.swift <device> <language> [<language>...]
 //                   [--raw-root <dir>] [--out-root <dir>] [--captions <file.json or folder>]
-//          Devices: iphone-6.9 (1320x2868), ipad-13 (2064x2752), mac (2880x1800).
+//          Devices: iphone-6.9 (1320x2868), ipad-13 (2064x2752), mac (2880x1800), duo-outer (1398x2034, the iPhone Duo's
+//          closed outer screen) and duo-inner (2853x2007, its open inner screen, landscape).
 //          Defaults: raw and final folders under /Volumes/Team 4TB/breakdown-build/store-shots/, captions next to this
 //          script. A --captions file is used for every language given; a folder is read as <folder>/<lang>.json.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (iPad frames 07 and 08: each raw shot cropped to its table area,
 //          without the side column, status bar and bottom buttons; 07 as two large staggered tiles, 08 as one large
 //          five-pin tile beside two stacked ones, mirrored for Arabic.)
+// Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo sets: duo-inner is landscape, one shot per frame, and
+//          frames 07 and 08 show each table cropped to its own panel, side by side; duo-outer is the small closed
+//          screen, whose frames 07 and 08 show the tables cropped and stacked in a gentle zigzag, since three whole
+//          portrait screens side by side would be tiny. Crops are per device now (tableCrops).)
 // SRP/DRY check: Pass - framing only. Capturing is scripts/store-shots.sh and store-shot.sh; the words are in
 //          captions/<lang>.json. One row-layout routine serves single shots and the side-by-side composites on every
 //          device.
@@ -46,6 +51,12 @@ let devices: [String: Device] = [
                          headlineZone: 0.150, maxFontSize: 130, shotBottom: 0.040, shotSide: 0.07),
     "mac":        Device(width: 2880, height: 1800, cornerFraction: 0.015, sideMargin: 0.12, headlineTop: 0.055,
                          headlineZone: 0.200, maxFontSize: 116, shotBottom: 0.055, shotSide: 0.07),
+    // iPhone Duo, closed: the outer screen, portrait.
+    "duo-outer":  Device(width: 1398, height: 2034, cornerFraction: 0.06, sideMargin: 0.075, headlineTop: 0.050,
+                         headlineZone: 0.165, maxFontSize: 118, shotBottom: 0.035, shotSide: 0.06),
+    // iPhone Duo, open: the inner screen, landscape (the table on one side, everything else on the other).
+    "duo-inner":  Device(width: 2853, height: 2007, cornerFraction: 0.02, sideMargin: 0.12, headlineTop: 0.055,
+                         headlineZone: 0.200, maxFontSize: 115, shotBottom: 0.055, shotSide: 0.07),
 ]
 
 // Frame name -> raw scene files shown in it (left to right). The frame name is also the caption key.
@@ -67,6 +78,27 @@ let frames: [(name: String, scenes: [String])] = [
 // at the top and the camera buttons at the bottom. These fractions of the raw shot keep the whole table with its rails
 // and pockets and drop the rest; the layout is the same in every language, mirrored for Arabic.
 let tableCrop = (width: CGFloat(0.686), top: CGFloat(0.060), bottom: CGFloat(0.915))
+
+// Per-device crops for the composite frames (07 and 08). Each is fractions of the raw shot: width (kept from the
+// leading side, the trailing side for Arabic), top and bottom.
+//  - ipad-13: see tableCrop above.
+//  - duo-inner: the table panel left of the fold (the fold is at 48% of the width; the panel stops just short of its
+//    hairline), down to just above the home indicator. Nothing is drawn over the table on the Duo, so no buttons to cut.
+//  - duo-outer: the closed screen without its status column (the right 17%), from the top of the table down to above the
+//    aiming panel, which covers the lower edge of the bigger tables (frameCrops has the one exception).
+let tableCrops: [String: (width: CGFloat, top: CGFloat, bottom: CGFloat)] = [
+    "ipad-13": tableCrop,
+    "duo-inner": (width: 0.476, top: 0.01, bottom: 0.955),
+    "duo-outer": (width: 0.83, top: 0.0, bottom: 0.64),
+]
+// A frame's own crop where the device's default does not suit it: on the closed Duo the surface shots have their trick-shot
+// card right under the table, which would show in a tile that went down as far as the bumper-pool and bar tables.
+let frameCrops: [String: (width: CGFloat, top: CGFloat, bottom: CGFloat)] = [
+    "duo-outer/07a-ice": (width: 0.83, top: 0.0, bottom: 0.435),
+    "duo-outer/07b-moon": (width: 0.83, top: 0.0, bottom: 0.415),
+]
+// Devices whose composites stack vertically instead of standing side by side.
+let stackedDevices: Set<String> = ["duo-outer"]
 
 // iPad frame 08 shows its featured shot (five-pin, whose small pins need the room) large, the other two stacked beside it.
 let featuredScene = ["08-tables": "08b-fivepin"]
@@ -104,7 +136,7 @@ do {
     }
 }
 guard positional.count >= 2, let device = devices[positional[0]] else {
-    fail("Usage: swift compose.swift <iphone-6.9|ipad-13|mac> <language> [<language>...] [--raw-root dir] [--out-root dir] [--captions file|dir]")
+    fail("Usage: swift compose.swift <iphone-6.9|ipad-13|mac|duo-outer|duo-inner> <language> [<language>...] [--raw-root dir] [--out-root dir] [--captions file|dir]")
 }
 let deviceName = positional[0]
 let languages = Array(positional.dropFirst())
@@ -148,7 +180,21 @@ func headlineString(_ text: String, size: CGFloat, rtl: Bool) -> NSAttributedStr
     shadow.shadowBlurRadius = size * 0.18
     shadow.shadowOffset = NSSize(width: 0, height: -size * 0.04)
     // A non-breaking hyphen keeps words like "five-pin" whole on one line.
-    let text = text.replacingOccurrences(of: "-", with: "\u{2011}")
+    var text = text.replacingOccurrences(of: "-", with: "\u{2011}")
+    // Japanese may break between any two characters, which splits a katakana word or the particle "など". A word joiner
+    // between their characters stops that.
+    if let runs = try? NSRegularExpression(pattern: "[\\u30A0-\\u30FF]{2,}|など") {
+        let ns = text as NSString
+        var out = ""
+        var last = 0
+        for m in runs.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+            out += ns.substring(with: NSRange(location: last, length: m.range.location - last))
+            out += ns.substring(with: m.range).map(String.init).joined(separator: "\u{2060}")
+            last = m.range.location + m.range.length
+        }
+        out += ns.substring(from: last)
+        text = out
+    }
     return NSAttributedString(string: text, attributes: [
         .font: headlineFont(size), .foregroundColor: NSColor.white, .paragraphStyle: para,
         .kern: size * -0.005, .shadow: shadow,
@@ -210,13 +256,13 @@ func loadImage(_ path: String) -> CGImage? {
     return CGImageSourceCreateImageAtIndex(src, 0, nil)
 }
 
-/// The table area of an iPad raw shot (see tableCrop). Right-to-left layouts have the card column on the left.
-func cropToTable(_ img: CGImage, rtl: Bool) -> CGImage? {
+/// The table area of a raw shot (see tableCrops). Right-to-left layouts have the card column on the left.
+func cropToTable(_ img: CGImage, rtl: Bool, crop: (width: CGFloat, top: CGFloat, bottom: CGFloat)) -> CGImage? {
     let w = CGFloat(img.width), h = CGFloat(img.height)
-    let cw = (w * tableCrop.width).rounded()
+    let cw = (w * crop.width).rounded()
     // CGImage cropping uses a top-left origin.
-    let r = CGRect(x: rtl ? w - cw : 0, y: (h * tableCrop.top).rounded(), width: cw,
-                   height: (h * (tableCrop.bottom - tableCrop.top)).rounded())
+    let r = CGRect(x: rtl ? w - cw : 0, y: (h * crop.top).rounded(), width: cw,
+                   height: (h * (crop.bottom - crop.top)).rounded())
     return img.cropping(to: r)
 }
 
@@ -233,7 +279,7 @@ func writePNG(_ image: CGImage, to path: String) -> Bool {
 /// Renders one frame. The canvas is a CoreGraphics bitmap with no alpha channel (sRGB, alpha skipped), so the PNG
 /// written from it is opaque. AppKit draws the text into the same bitmap through an NSGraphicsContext.
 /// Coordinates: CoreGraphics origin is bottom-left; `top(y)` converts a distance from the top edge.
-func render(shots: [CGImage], headline: String, fontSize: CGFloat, rtl: Bool, featured: Int? = nil) -> CGImage? {
+func render(shots: [CGImage], headline: String, fontSize: CGFloat, rtl: Bool, featured: Int? = nil, stacked: Bool = false) -> CGImage? {
     let W = CGFloat(device.width), H = CGFloat(device.height)
     guard let ctx = CGContext(data: nil, width: device.width, height: device.height, bitsPerComponent: 8, bytesPerRow: 0,
                               space: sRGB, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else { return nil }
@@ -294,6 +340,41 @@ func render(shots: [CGImage], headline: String, fontSize: CGFloat, rtl: Bool, fe
         rects[others[0]] = CGRect(x: colX, y: top(blockTop + cw / a1), width: cw, height: cw / a1)
         rects[others[1]] = CGRect(x: colX, y: top(blockTop + bigH), width: cw, height: cw / a2)
         glowTop = blockTop; glowW = totalW; glowH = bigH
+    }
+
+    // Stacked layout (Duo outer screen, frames 07 and 08): the tiles one above the other, each as wide as the height
+    // allows, alternately shifted left and right (the other way round for Arabic) so the frame uses its width.
+    if stacked, shots.count == 3 {
+        // Three tiles: one centred on top, two side by side beneath it, all one width. Much larger than three in a column.
+        let g = W * 0.02
+        let w = min((availW - g) / 2, (availH - g) / (aspects[0] > 0 ? (1 / aspects[0] + 1 / min(aspects[1], aspects[2])) : 2))
+        let h0 = w / aspects[0], h1 = w / aspects[1], h2 = w / aspects[2]
+        let blockH = h0 + g + max(h1, h2)
+        let blockTop = zoneTop + (availH - blockH) * 0.25
+        let x0 = (W - w) / 2
+        let leftX = (W - 2 * w - g) / 2
+        // Reading order: the second tile on the leading side (the right for Arabic).
+        let (xa, xb) = rtl ? (leftX + w + g, leftX) : (leftX, leftX + w + g)
+        rects = [CGRect(x: x0, y: top(blockTop + h0), width: w, height: h0),
+                 CGRect(x: xa, y: top(blockTop + h0 + g + h1), width: w, height: h1),
+                 CGRect(x: xb, y: top(blockTop + h0 + g + h2), width: w, height: h2)]
+        glowTop = blockTop; glowW = 2 * w + g; glowH = blockH
+    } else if stacked, shots.count > 1 {
+        let vGap = H * 0.014
+        let invSum = aspects.reduce(0) { $0 + 1 / $1 }
+        let w = min(availW * 0.74, (availH - vGap * CGFloat(shots.count - 1)) / invSum)
+        let totalH = invSum * w + vGap * CGFloat(shots.count - 1)
+        let blockTop = zoneTop + (availH - totalH) * 0.25
+        let shift = (availW - w) * 0.34
+        var y = blockTop
+        rects = []
+        for (i, a) in aspects.enumerated() {
+            let h = w / a
+            let dir: CGFloat = (i % 2 == 0 ? -1 : 1) * (rtl ? -1 : 1)
+            rects.append(CGRect(x: (W - w) / 2 + dir * shift, y: top(y + h), width: w, height: h))
+            y += h + vGap
+        }
+        glowTop = blockTop; glowW = w + 2 * shift; glowH = totalH
     }
 
     // Soft felt-green glow behind the shots.
@@ -379,13 +460,18 @@ for lang in languages {
             print("warning: \(deviceName)/\(lang)/\(frame.name) skipped, missing raw: \(missing.map { ($0 as NSString).lastPathComponent }.joined(separator: ", "))")
             continue
         }
-        // iPad composites: table area only, so the tables are drawn large (see tableCrop).
+        // Composites: table area only, so the tables are drawn large (see tableCrops). Only the iPad uses the
+        // big-tile-plus-two layout.
         var featured: Int? = nil
-        if deviceName == "ipad-13", images.count > 1 {
-            images = images.compactMap { cropToTable($0, rtl: rtl) }
-            featured = featuredScene[frame.name].flatMap { frame.scenes.firstIndex(of: $0) }
+        if let crop = tableCrops[deviceName], images.count > 1 {
+            // Each scene may have its own crop (the moon's trick-shot card starts higher than the ice's).
+            images = zip(frame.scenes, images).compactMap { scene, image in
+                cropToTable(image, rtl: rtl, crop: frameCrops["\(deviceName)/\(scene)"] ?? crop)
+            }
+            if deviceName == "ipad-13" { featured = featuredScene[frame.name].flatMap { frame.scenes.firstIndex(of: $0) } }
         }
-        guard let out = render(shots: images, headline: headline, fontSize: fontSize, rtl: rtl, featured: featured) else { fail("Could not draw \(frame.name)") }
+        guard let out = render(shots: images, headline: headline, fontSize: fontSize, rtl: rtl, featured: featured,
+                               stacked: stackedDevices.contains(deviceName) && images.count > 1) else { fail("Could not draw \(frame.name)") }
         let path = "\(outDir)/\(frame.name).png"
         guard writePNG(out, to: path) else { fail("Could not write \(path)") }
         print(path)
