@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-pacing, G1 "signature beats": a plan can be given a
+//          SIGNATURE, the events a trick shot or a highlight is about (TrickSignature, ShotHighlightJudge). Those are
+//          held right after the strike and the first hit, every one of them, as headline beats (equation filled in),
+//          and the plan is kept short around them: at most the signature plus three beats. Every standard and opening
+//          plan, signature or not, also takes the physics a shot is famous for before the usual variety: the first
+//          take-off (a jump), the first ball-to-ball hit that threw a ball a degree or more, and the end of the
+//          biggest bend (a masse). The first launch is untouched and never takes a signature.)
 // Date: 20-November-2026
 // PURPOSE: Guided pacing for the Physics Lens replay. Built once per recorded shot from its captions (the way
 //          RidePlan is built once per shot), it picks the BEATS: the handful of moments worth stopping on so the
@@ -33,8 +40,9 @@ struct PaceBeat: Equatable {
     let caption: Caption
     /// How long to hold here, in real seconds, so the caption can be read.
     let dwell: Double
-    /// True for a headline moment of the opening (the cue ball handing its speed to the rack, skid turning into roll):
-    /// while it is held its equation is shown with the event's own numbers whatever the maths setting says.
+    /// True for a headline moment: one of the opening's two (the cue ball handing its speed to the rack, skid turning
+    /// into roll), or since 0.7.4 a signature beat (the moment a trick shot or a highlight is about). While it is held
+    /// its equation is shown with the event's own numbers whatever the maths setting says.
     var headline = false
     var time: Double { caption.time }
 }
@@ -77,8 +85,9 @@ struct PacePlan: Equatable {
 
     init() {}
 
-    /// `signature`: event indices (Caption.id) a trick shot or a highlight needs held as headline beats (0.7.4); unused
-    /// until the lens-pacing stream implements it.
+    /// `signature`: event indices (Caption.id) a trick shot or a highlight needs held as headline beats (0.7.4). Each
+    /// one with a caption is held, marked headline, even when it is the strike or the first hit; an index with no
+    /// caption (or outside the recording) is ignored. Ignored entirely for `.firstLaunch`, which stays exactly as it was.
     init(captions: [Caption], timeline tl: Timeline, style: Style = .standard, signature: [Int] = []) {
         // A still table (a re-rack or a laid-out trick position records a zero-speed strike) has nothing to pace.
         guard tl.duration > 0.3, !captions.isEmpty else { return }
@@ -114,13 +123,37 @@ struct PacePlan: Equatable {
         let firstHit = first(.impact)
         let hitTime = firstHit.map { captions[$0].time } ?? -Double.infinity
         let skidToRoll = kinds.indices.first { kinds[$0] == .roll && captions[$0].time > hitTime } ?? first(.roll)
-        let headlines: Set<Int> = style == .standard ? [] : Set([firstHit, skidToRoll].compactMap { $0 })
+        var headlines: Set<Int> = style == .standard ? [] : Set([firstHit, skidToRoll].compactMap { $0 })
+
+        // Caption index of each event index, for the signature and the bend (two different index spaces: events in
+        // the recording, captions in this list; only events with a caption can be held).
+        var captionOf: [Int: Int] = [:]
+        for i in captions.indices where captionOf[captions[i].id] == nil { captionOf[captions[i].id] = i }
+
+        // The signature as caption indices, in the order given, each once. Never on the first launch: its few beats
+        // are fixed (FIRST-MINUTE CHECK in the 0.7.4 plan).
+        var signatureCaptions: [Int] = []
+        if style != .firstLaunch {
+            for ev in signature where tl.events.indices.contains(ev) {
+                if let i = captionOf[ev], !signatureCaptions.contains(i) { signatureCaptions.append(i) }
+            }
+        }
+        headlines.formUnion(signatureCaptions)
 
         // How many beats this shot earns: a short follow-up shot gets a few, a long break up to nine, so the replay
-        // never drags; the first launch holds four at most (firstLaunchBeats says why). Never more than there are
+        // never drags; the first launch holds four at most (firstLaunchBeats says why). A signature replay is short:
+        // the strike, the first hit, the signature and one more, three at the least. Never more than there are
         // captions.
         let usual = min(9, max(2, Int((tl.duration * 1.5).rounded()) + 2))
-        let cap = min(captions.count, style == .firstLaunch ? Self.firstLaunchBeats : usual)
+        let limit: Int
+        if style == .firstLaunch {
+            limit = Self.firstLaunchBeats
+        } else if !signatureCaptions.isEmpty {
+            limit = max(3, signatureCaptions.count + 3)
+        } else {
+            limit = usual
+        }
+        let cap = min(captions.count, limit)
         var chosen: [Int] = []          // indices into captions
         func take(_ i: Int?) {
             guard let i, chosen.count < cap, !chosen.contains(i) else { return }
@@ -139,6 +172,13 @@ struct PacePlan: Equatable {
         } else {
             // The opening always holds its second headline moment, whatever the variety rule below would pick first.
             if style == .opening { take(skidToRoll) }
+            // The signature, every beat of it (the cap above leaves room for all of them).
+            for i in signatureCaptions { take(i) }
+            // The physics a shot is remembered for, before the usual variety: the jump's take-off, a hit that threw
+            // a ball off the line of centres by a degree or more, and the end of the biggest bend (the masse's curve).
+            take(Self.firstTakeOff(captions, in: tl))
+            take(Self.firstThrow(captions, in: tl))
+            take(Self.biggestBend(in: tl, captionOf: captionOf))
             // Variety before volume: a jaw or knuckle answers "why didn't it drop?", then the first pot, the first
             // cushion and the first skid-to-roll each show a different piece of physics.
             for i in kinds.indices where kinds[i] == .jaw && chosen.filter({ kinds[$0] == .jaw }).count < 2 { take(i) }
@@ -166,6 +206,43 @@ struct PacePlan: Equatable {
             .sorted { (captions[$0].time, captions[$0].id) < (captions[$1].time, captions[$1].id) }
             .map { PaceBeat(caption: captions[$0], dwell: Self.readingTime(captions[$0].detail),
                             headline: headlines.contains($0)) }
+    }
+
+    /// Smallest throw, degrees, that earns its hit a beat of its own (twice the half degree the caption starts naming
+    /// throw at, so the beat is spent on a throw that can be seen).
+    static let throwBeatDegrees = 1.0
+
+    /// The first caption on a take-off (a ball leaving the cloth), as a caption index. Read from the event's flight
+    /// mark, not the moment kind: a landing is a flight moment too, and the beat is the take-off.
+    private static func firstTakeOff(_ captions: [Caption], in tl: Timeline) -> Int? {
+        captions.indices.first { i in
+            tl.events.indices.contains(captions[i].id) && tl.events[captions[i].id].flight == .takeOff
+        }
+    }
+
+    /// The first ball-to-ball caption whose contact threw a ball at least throwBeatDegrees off the line of centres
+    /// (CaptionEngine.throwFacts, the same reading the caption's words use).
+    private static func firstThrow(_ captions: [Caption], in tl: Timeline) -> Int? {
+        captions.indices.first { i in
+            guard tl.events.indices.contains(captions[i].id) else { return false }
+            let e = tl.events[captions[i].id]
+            guard e.kind == .ballBall, let t = CaptionEngine.throwFacts(e) else { return false }
+            return abs(t.degrees) >= throwBeatDegrees
+        }
+    }
+
+    /// The caption of the event that ends the biggest bent slide of the shot, any ball (CaptionEngine.bendEvents, the
+    /// lookup the caption's bend sentence comes from). Only captioned events count; ties keep the earlier event.
+    private static func biggestBend(in tl: Timeline, captionOf: [Int: Int]) -> Int? {
+        var best: (caption: Int, degrees: Double)?
+        let bends = CaptionEngine.bendEvents(in: tl)
+        for ev in bends.keys.sorted() {
+            guard let c = captionOf[ev] else { continue }
+            for b in bends[ev] ?? [] where best == nil || abs(b.degrees) > best!.degrees {
+                best = (caption: c, degrees: abs(b.degrees))
+            }
+        }
+        return best?.caption
     }
 
     /// The most beats the first launch holds. The plan asks for three or four (the strike, the first hit, one
