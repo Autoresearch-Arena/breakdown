@@ -3,6 +3,8 @@
 // Date: 20-November-2026
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (every line of advice is a String(localized:) key; a scratch adds its
 //          sentence as one placeholder line, not by joining two strings)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: the strong-side rule of the two side-spin
+//          shots (TrickGoal.side), checked first from the stroke's settings, with its own line of advice.)
 // PURPOSE: Decides whether a player's attempt at a trick shot made it, and if not, says in one sentence what to change.
 //          It reads only the attempt's own recording (which balls dropped and in which pocket, which ball the cue ball
 //          touched first, whether a ball banked, where the cue ball stopped, whether it scratched) and the settings the
@@ -41,9 +43,22 @@ enum TrickShotJudge {
     }
 
     /// What part of the goal failed first, or nil when it all held.
-    enum Failure: Equatable { case scratch, missedFirstBall, missedCarom, notBanked, ballStayedUp(Int), wrongPocket(Int), cueZone }
+    enum Failure: Equatable {
+        case scratch, missedFirstBall, missedCarom, notBanked, ballStayedUp(Int), wrongPocket(Int), cueZone
+        /// A side-spin shot struck without its strong side (TrickGoal.side). `restHeld` is true when everything else in
+        /// the goal held, so the card can say the ball went in but not the way the shot asks.
+        case notEnoughSide(restHeld: Bool)
+    }
 
     static func failure(_ goal: TrickGoal, _ attempt: ShotAttempt) -> Failure? {
+        // The strong-side rule is read from the stroke's own settings and checked first: without the side, whatever the
+        // balls did, it was not this shot. Same side of centre as the rule, and at least as much (a hair of rounding
+        // allowed, so a player who sets exactly the rule's value is not refused).
+        if let need = goal.side, !(attempt.tipSide * need > 0 && abs(attempt.tipSide) >= abs(need) - 1e-6) {
+            var rest = goal
+            rest.side = nil
+            return .notEnoughSide(restHeld: failure(rest, attempt) == nil)
+        }
         let tl = attempt.timeline
         if let first = goal.firstHit, attempt.firstStruck != first { return .missedFirstBall }
         if let second = goal.secondHit {
@@ -76,6 +91,13 @@ enum TrickShotJudge {
 
     private static func advice(_ shot: TrickShot, _ a: ShotAttempt, _ fail: Failure) -> String {
         let sol = shot.solution, win = shot.window
+        // A side-spin shot struck without its side: that is the one thing to change, whatever else happened.
+        if case .notEnoughSide(let restHeld) = fail {
+            let want = (shot.goal.side ?? sol.tipSide) > 0 ? String(localized: "right") : String(localized: "left")
+            return restHeld
+                ? String(localized: "In, but without the strong side this shot is about. Strike further to the \(want) of the cue ball.")
+                : String(localized: "Not enough \(want) side. Strike further to the \(want) of the cue ball.")
+        }
         // The stop shot is all about strike height: where the cue ball finished says which way to go.
         if fail == .cueZone, let zone = shot.goal.cueZone {
             let along = (a.cueRest - zone.centre).dot(strikeDirection(shot, a))
