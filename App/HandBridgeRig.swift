@@ -56,30 +56,31 @@ final class HandBridgeRig {
         let horizontal = SIMD2(back.x, back.z)
         let speed = simd_length(horizontal)
         guard speed > 0.8 else { hide(); return nil }
-        let base = SIMD2(contact.x, contact.z)
         let half = SIMD2(frame.length, frame.width) * 0.5
         let outward = horizontal / speed
 
         // Near a perpendicular rail, use the top of the wood as the support surface. The rail pose only fits
         // when the cue actually reaches that height at the rail and the hand is clear of the corner pocket.
-        for axis in 0..<2 where abs(outward[axis]) > 0.86 {
-            let across = 1 - axis
-            let railOffset = TableBuilder.cushionDepth + 0.045
-            let edge = copysign(half[axis] + railOffset, outward[axis])
-            let distance = (edge - base[axis]) / horizontal[axis]
-            guard distance >= 0.115, distance <= 0.39 else { continue }
-            let point = contact + back * distance
-            let otherCoordinate = SIMD2(point.x, point.z)[across]
-            guard abs(otherCoordinate) < half[across] - 0.15 else { continue }
-            if axis == 1, abs(otherCoordinate) < 0.14, timeline.table.pockets.count >= 6 { continue }
-            let support = point.y - TableBuilder.railTop
-            guard abs(support - Pose.rail.supportHeight) <= 0.0025 else { continue }
-            if show(.rail, point: point, floor: TableBuilder.railTop, orientation: orientation) {
-                return distance
+        let railDistance = (TableBuilder.railTop + Pose.rail.supportHeight - contact.y) / back.y
+        if (0.115...0.39).contains(railDistance) {
+            let point = contact + back * railDistance
+            let foot = SIMD2(point.x, point.z)
+            for axis in 0..<2 where abs(outward[axis]) > 0.86 {
+                let across = 1 - axis
+                // The exported hand was posed with its support 36 mm behind the inner edge of the wood.
+                let inset = abs(foot[axis]) - half[axis] - TableBuilder.cushionDepth
+                guard (0.023...0.052).contains(inset),
+                      abs(foot[across]) < half[across] - 0.15 else { continue }
+                if axis == 1, abs(foot[across]) < 0.14, timeline.table.pockets.count >= 6 { continue }
+                if show(.rail, point: point, floor: TableBuilder.railTop, orientation: orientation) {
+                    return railDistance
+                }
             }
         }
 
-        let distance: Float = 0.215 / speed
+        let pose: Pose = firmStroke ? .closed : .open
+        let fittedDistance = (pose.supportHeight - contact.y) / back.y
+        let distance: Float = (0.13...0.28).contains(fittedDistance * speed) ? fittedDistance : 0.215 / speed
         let point = contact + back * distance
         let foot = SIMD2(point.x, point.z)
         // Most of the palm is behind the cue support. Keep both the fingers and palm on the bed.
@@ -105,7 +106,7 @@ final class HandBridgeRig {
                 return nil
             }
         }
-        if show(firmStroke ? .closed : .open, point: point, floor: 0, orientation: orientation) {
+        if show(pose, point: point, floor: 0, orientation: orientation) {
             return distance
         }
         hide()
@@ -115,7 +116,7 @@ final class HandBridgeRig {
     private func show(_ pose: Pose, point: SIMD3<Float>, floor: Float, orientation: simd_quatf) -> Bool {
         guard let selected = hands[pose] else { return false }
         let heightScale = (point.y - floor) / pose.supportHeight
-        guard (0.75...1.32).contains(heightScale) else { return false }
+        guard (0.87...1.15).contains(heightScale) else { return false }
 
         // Anchor to the table, with the vertical scale matching the cue axis at this fixed support point.
         root.position = SIMD3(point.x, floor, point.z)
