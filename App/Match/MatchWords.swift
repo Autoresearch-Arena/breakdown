@@ -1,5 +1,17 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
+//          the person is "you". personSeat finds the one seat the person holding the device plays (the seat that is
+//          not the computer, or the only seat when playing alone); while that seat keeps its default name ("Player 1",
+//          in any old save too) or none, every sentence that names it is said in the second person ("You have the
+//          solids.", "You shoot again.", "You win!"); a typed name is kept. Nothing stores "You": it is only words.
+//          A game-ending ruling says why it ended (the .gameOver reason gives endReason's sentence), so an eight-ball
+//          loss card is never empty, and three fouls in a row says the game was lost. The computer's answer to a
+//          choice is one sentence naming it. Fouls on the other tables name the balls by colour and say "the struck
+//          ball", never "the cue ball"; the new head-line foul is worded; ball in hand behind the line says what may
+//          not be hit first. The saved line ends "Your shot." or "The computer's shot.". Nine-ball's two-foul line.
+//          Bar billiards' white peg loses "this break's" points, and "Time is up." can be left out of routine rulings
+//          (the bar-down line and the one-time announcement already say it).)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens) - the ruling sentences take the game: on the three
 //          other tables the balls are named as players there name them (the white, the yellow, the red, a white, a
 //          marked ball; TableGameWords) and a ball put back goes to its own spot, not the pool foot spot. Every
@@ -12,15 +24,18 @@
 //          shot it is ("Sam to shoot.") instead of telling them to pass the device.)
 // PURPOSE: Every word a match says, in one place. The rules (package module BreakdownRules) speak only in codes:
 //          MatchFoul, RulingReason, MatchEndReason, MatchChoice, BallInHand. This file turns them into plain sentences
-//          a player reads after each shot ("Foul: the cue ball hit the 11 first. Ball in hand for Sam."), the game
+//          a player reads after each shot ("Foul: the cue ball hit the 11 first. Ball in hand for you."), the game
 //          names, the call line and the hand-over line. Everything goes through String(localized:) so the string
 //          catalog collects it; numbers and names are passed in as finished strings or whole numbers so every
-//          language can order the sentence its own way.
-//          Read by MatchViews (the banner and the cards) and CallControl. It reads nothing itself: the caller hands
-//          in the ruling, the state, the names and what the recording showed (balls pocketed, the first ball hit).
+//          language can order the sentence its own way. Each sentence that names a seat has a second-person form for
+//          the seat the words call you (you(in:)); the caller passes that seat in, and nil names every seat.
+//          Read by MatchViews (the banner and the cards), CallControl, TableGamePage and the menu (savedLine). It
+//          reads nothing itself: the caller hands in the ruling, the state, the names and what the recording showed
+//          (balls pocketed, the first ball hit).
 // SRP/DRY check: Pass - checked EightBallTypes.swift (EightBallGroup.title, EightBallPocket.title are reused here, not
 //          repeated) and EightBallFoul.title (short labels for the puzzle's scorecard; a match needs whole sentences
-//          naming the ball, so these are separate words for a different job).
+//          naming the ball, so these are separate words for a different job). TableWords.ruling is the spoken form
+//          and keeps its own sentences; the other tables' ball names are TableGameWords.ball, reused.
 import BreakdownRules
 import Foundation
 
@@ -44,6 +59,38 @@ enum MatchWords {
     }
 
     static func defaultName(_ player: PlayerID) -> String { String(localized: "Player \(player.index + 1)") }
+
+    // MARK: You
+
+    /// The seat the person holding the device plays: the one seat that is not the computer when the computer plays
+    /// the other, or the only seat in a game played alone (bar billiards). Nil when no single seat is the person's
+    /// (a game between people, kept only in old saves).
+    static func personSeat(in players: [Player]) -> PlayerID? {
+        let people = players.filter { !$0.isComputer }
+        guard people.count == 1, players.count == 1 || players.contains(where: \.isComputer) else { return nil }
+        return people[0].id
+    }
+
+    /// The seat the words call "you": the person's seat while it carries no name of its own. A seat's name is its
+    /// default ("Player 1") from the start, in this language or, for a save written before a language change, in
+    /// English; empty counts too. A name the player typed is theirs and the sentences use it.
+    static func you(in players: [Player]) -> PlayerID? {
+        guard let seat = personSeat(in: players), let p = players.first(where: { $0.id == seat }) else { return nil }
+        return isDefaultName(p.name, seat: seat) ? seat : nil
+    }
+
+    /// True for a name the player never chose: empty, or the seat's default in this language or in English.
+    static func isDefaultName(_ name: String, seat: PlayerID) -> Bool {
+        let n = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        // The English default is built without the catalog on purpose: saves made in English keep that name.
+        return n.isEmpty || n == defaultName(seat) || n == "Player \(seat.index + 1)"
+    }
+
+    /// A seat's name as a label on its own (score rows, the eight-ball and bumper-pool rows): "You" for the seat the
+    /// words call you, otherwise its name.
+    static func displayName(_ player: PlayerID, in names: [String], you: PlayerID?) -> String {
+        player == you ? String(localized: "You") : name(player, in: names)
+    }
 
     /// "the 3", "the 3 and the 11", in the player's language.
     static func balls(_ numbers: [Int]) -> String {
@@ -70,12 +117,21 @@ enum MatchWords {
 
     // MARK: The banner
 
-    static func toShoot(_ name: String, isBreak: Bool) -> String {
-        isBreak ? String(localized: "\(name) to break") : String(localized: "\(name) to shoot")
+    /// The banner's heading. `isBreak` is only passed true for a pool rack's break (the other tables have no break,
+    /// so their first shot is a plain "to shoot"); `isYou` says it to the person ("Your break", "Your shot").
+    static func toShoot(_ name: String, isBreak: Bool, isYou: Bool = false) -> String {
+        if isYou { return isBreak ? String(localized: "Your break") : String(localized: "Your shot") }
+        return isBreak ? String(localized: "\(name) to break") : String(localized: "\(name) to shoot")
     }
 
     /// Nine-ball: the lowest ball on the table is the one to hit first.
     static func hitFirst(_ ball: Int) -> String { String(localized: "Hit the \(ball) first") }
+
+    /// Nine-ball: a seat one foul from losing (NineBallRules.foulsToLose), a quiet line under "Hit the N first".
+    static func onTwoFouls(_ name: String, isYou: Bool) -> String {
+        isYou ? String(localized: "You are on two fouls. A third loses the game.")
+              : String(localized: "\(name) is on two fouls.")
+    }
 
     static func groupLine(_ group: EightBallGroup?, left: Int, tableOpen: Bool) -> String {
         guard let group else { return tableOpen ? String(localized: "Table open") : "" }
@@ -85,14 +141,31 @@ enum MatchWords {
 
     // MARK: Fouls
 
-    /// One foul as the end of "Foul: ...". `firstBall` is the ball the cue ball touched first, when the recording
+    /// Who fouled and on which table, so a foul on the other tables is worded the way those tables are played.
+    struct FoulContext {
+        /// The game (pool numbers on the pool table; the other tables' balls by colour).
+        var kind: MatchKind = .eightBall
+        /// The shooter's name, for the foul that is theirs alone (five-pin's own ball knocking the pins).
+        var shooter: String?
+        /// The shooter is the seat the words call you.
+        var shooterIsYou = false
+        /// The ball the shooter had to hit first where the table fixes one (five-pin: the other player's ball).
+        var target: Int?
+    }
+
+    /// One foul as the end of "Foul: ...". `firstBall` is the ball the struck ball touched first, when the recording
     /// has one, so a wrong-ball foul can name it. `illegalBreak` is true when the ruling also carries the reason
     /// breakIllegal: nine-ball files an illegal break under the "no rail" foul (the nearest code the rules have), so
     /// that foul is worded as the break's own failure, which is true even when some balls did reach a rail.
-    static func foul(_ f: MatchFoul, firstBall: Int?, illegalBreak: Bool = false) -> String {
+    /// On the pool table the words are as before. The other tables have no cue ball (each player strikes their own
+    /// white, yellow or marked ball), so there the fouls that would name it say "the struck ball" and name balls by
+    /// colour (TableGameWords.ball), never by a number.
+    static func foul(_ f: MatchFoul, firstBall: Int?, illegalBreak: Bool = false,
+                     context c: FoulContext = FoulContext()) -> String {
         if illegalBreak, f == .noRailAfterContact {
             return String(localized: "an illegal break: nothing went down and fewer than \(NineBallRules.breakRailCount) balls reached a rail")
         }
+        if c.kind.isTableGame, let words = tableFoul(f, firstBall: firstBall, context: c) { return words }
         switch f {
         case .scratch: return String(localized: "the cue ball went in a pocket or off the table")
         case .wrongBallFirst:
@@ -105,32 +178,76 @@ enum MatchWords {
         case .doubleHit: return String(localized: "the cue struck the cue ball twice")
         case .illegalJump: return String(localized: "the cue ball was scooped over a ball")
         case .wrongCup: return String(localized: "a ball dropped in the other player's cup")
-        case .ownBallKnockedPins: return String(localized: "your own ball knocked pins down")
+        case .ownBallKnockedPins: return ownBallKnockedPins(c)
+        case .cueBallBehindHeadLine:
+            return String(localized: "from behind the head line, the cue ball hit a ball behind the line without crossing it first")
         // The table rules may append fouls; until this file names one, the card still says a foul happened.
         @unknown default: return String(localized: "a foul")
         }
     }
 
+    /// The other tables' own words for the fouls that would otherwise say "cue ball"; nil keeps the shared words
+    /// (a ball off the table, the wrong cup, the pins: none of them names the struck ball).
+    private static func tableFoul(_ f: MatchFoul, firstBall: Int?, context c: FoulContext) -> String? {
+        switch f {
+        case .wrongBallFirst:
+            guard let b = firstBall else { return String(localized: "the wrong ball was hit first") }
+            let first = TableGameWords.ball(b, kind: c.kind)
+            if let t = c.target, t != b {
+                // "the red was hit before the yellow"
+                return String(localized: "\(first) was hit before \(TableGameWords.ball(t, kind: c.kind))")
+            }
+            return String(localized: "\(first) was hit first")
+        case .noBallHit: return String(localized: "the struck ball touched no ball")
+        case .scratch: return String(localized: "the struck ball left the table")
+        default: return nil
+        }
+    }
+
+    /// Five-pin's foul of knocking pins with your own ball, naming whose ball it was. With no name given the old
+    /// words stand ("your own ball"), which is also what the person reads.
+    private static func ownBallKnockedPins(_ c: FoulContext) -> String {
+        guard let shooter = c.shooter, !c.shooterIsYou else { return String(localized: "your own ball knocked pins down") }
+        return String(localized: "\(shooter)'s own ball knocked pins down")
+    }
+
     // MARK: The ruling
 
-    /// What the next shooter may do with the cue ball, with their name.
-    static func ballInHand(_ kind: BallInHand, for name: String) -> String? {
+    /// What the next shooter may do with the cue ball, with their name (or to the person, "for you"). Behind the head
+    /// line it adds the rule that comes with it: a ball that is also behind the line can't be hit first.
+    static func ballInHand(_ kind: BallInHand, for name: String, isYou: Bool = false) -> String? {
         switch kind {
         case .none: return nil
-        case .anywhere: return String(localized: "Ball in hand for \(name).")
-        case .behindHeadLine: return String(localized: "Ball in hand behind the head line for \(name).")
+        case .anywhere:
+            return isYou ? String(localized: "Ball in hand for you.") : String(localized: "Ball in hand for \(name).")
+        case .behindHeadLine:
+            return isYou
+                ? String(localized: "Ball in hand behind the head line for you. From behind the line, a ball also behind it can't be hit first.")
+                : String(localized: "Ball in hand behind the head line for \(name). From behind the line, a ball also behind it can't be hit first.")
         }
     }
 
     /// The ruling card's sentences, in order: what happened, then what follows.
     /// - Parameters:
     ///   - pocketed: object balls that dropped on this shot (from the recording).
-    ///   - firstBall: the ball the shooter's cue ball touched first, or nil.
+    ///   - firstBall: the ball the shooter's struck ball touched first, or nil.
     ///   - kind: the game, so the other tables' balls are named as players there name them (default: pool numbers).
+    ///   - you: the seat the words call you (MatchWords.you, MatchMode.you), or nil to name every seat.
+    ///   - target: the ball the shooter had to hit first where the table fixes one (MatchMode.targetBall).
+    ///   - mentionTimeUp: false for a routine ruling: in bar billiards every shot after the bar drops carries the
+    ///     time-up reason, and the banner's bar-down line and the one-time announcement already say it.
     static func sentences(for r: Ruling, names: [String], pocketed: [Int], firstBall: Int?,
-                          kind: MatchKind = .eightBall) -> [String] {
+                          kind: MatchKind = .eightBall, you: PlayerID? = nil, target: Int? = nil,
+                          mentionTimeUp: Bool = true) -> [String] {
+        // An answered choice is one sentence naming who chose and what (the computer's answers settle into the
+        // banner): the re-rack, the spotted 8 and who breaks are all in it, so nothing else is said.
+        if r.reasons.contains(.choiceAnswered) {
+            return [choiceAnswered(r, names: names, you: you)]
+        }
         let shooter = name(r.shooter, in: names)
         let next = name(r.nextShooter, in: names)
+        let shooterIsYou = r.shooter == you
+        let nextIsYou = r.nextShooter == you
         // Pool balls by number; the other tables' balls by their names there.
         func balls(_ numbers: [Int]) -> String {
             kind.isTableGame ? TableGameWords.balls(numbers, kind: kind) : MatchWords.balls(numbers)
@@ -139,14 +256,23 @@ enum MatchWords {
         // An illegal break that the rules count as a foul (nine-ball) is said once, in the foul line.
         let illegalBreakFoul = r.fouled && r.reasons.contains(.breakIllegal) && r.fouls.contains(.noRailAfterContact)
         if r.fouled {
-            let what = r.fouls.map { foul($0, firstBall: firstBall, illegalBreak: illegalBreakFoul) }
+            let context = FoulContext(kind: kind, shooter: shooter, shooterIsYou: shooterIsYou, target: target)
+            let what = r.fouls.map { foul($0, firstBall: firstBall, illegalBreak: illegalBreakFoul, context: context) }
                 .formatted(.list(type: .and))
             out.append(String(localized: "Foul: \(what)."))
         }
+        // The ball that won the game is said by the end line ("You pocketed the 9."), so the pot line lists only
+        // what else dropped with it.
+        let endCode = r.result?.reason
+        let decidingBall: Int? = endCode == .eightBallPocketed ? 8 : (endCode == .nineBallPocketed ? 9 : nil)
         for reason in r.reasons {
             switch reason {
             case .legalPot:
-                if !pocketed.isEmpty { out.append(String(localized: "\(shooter) pocketed \(balls(pocketed)).")) }
+                let others = pocketed.filter { $0 != decidingBall }
+                if !others.isEmpty {
+                    out.append(shooterIsYou ? String(localized: "You pocketed \(balls(others)).")
+                                            : String(localized: "\(shooter) pocketed \(balls(others))."))
+                }
             case .noLegalPot:
                 out.append(pocketed.isEmpty ? String(localized: "Nothing went down.")
                                             : String(localized: "Went down without keeping the turn: \(balls(pocketed))."))
@@ -154,10 +280,7 @@ enum MatchWords {
             case .foul: break   // said above, with the fouls named
             case .tableOpen: out.append(String(localized: "The table is still open."))
             case .groupsAssigned:
-                if let g = r.assignedGroup {
-                    out.append(g == .solids ? String(localized: "\(shooter) has the solids.")
-                                            : String(localized: "\(shooter) has the stripes."))
-                }
+                if let g = r.assignedGroup { out.append(groupTaken(g, by: shooter, isYou: shooterIsYou)) }
             case .breakLegal: out.append(String(localized: "A legal break."))
             case .breakIllegal:
                 if !illegalBreakFoul {
@@ -167,17 +290,29 @@ enum MatchWords {
             case .eightOnBreak: out.append(String(localized: "The 8 went down on the break."))
             case .ballSpotted:
                 if !r.ballsToSpot.isEmpty { out.append(TableGameWords.spotted(r.ballsToSpot, kind: kind)) }
-            case .foulWarning: out.append(String(localized: "\(shooter) has fouled twice in a row. A third foul loses the game."))
+            case .foulWarning:
+                out.append(shooterIsYou
+                    ? String(localized: "You have fouled twice in a row. A third foul loses the game.")
+                    : String(localized: "\(shooter) has fouled twice in a row. A third foul loses the game."))
             case .pointsScored:
                 for (seat, p) in r.points.enumerated() where p != 0 {
-                    out.append(String(localized: "\(name(PlayerID(seat), in: names)) scores \(p)."))
+                    let id = PlayerID(seat)
+                    out.append(id == you ? String(localized: "You score \(p).")
+                                         : String(localized: "\(name(id, in: names)) scores \(p)."))
                 }
             case .pinsReset: out.append(String(localized: "The pins are stood up again."))
             case .ballsReturned: out.append(String(localized: "Balls come back to be played again."))
-            case .whitePegDown: out.append(String(localized: "The white peg went down: this turn's points are lost."))
+            // Bar billiards: the white peg costs the break in progress, not every point of the turn so far.
+            case .whitePegDown: out.append(String(localized: "The white peg went down: this break's points are lost."))
             case .blackPegDown: out.append(String(localized: "The black peg went down: the whole score is lost."))
-            case .timeUp: out.append(String(localized: "Time is up."))
-            case .choiceAnswered, .gameOver: break   // the choice and the result have their own lines
+            case .timeUp: if mentionTimeUp { out.append(String(localized: "Time is up.")) }
+            case .gameOver:
+                // Why the game ended, so a game-ending card is never empty (an eight-ball loss has no other line).
+                if let result = r.result {
+                    let why = MatchWords.endReason(result, shooter: r.shooter, names: names, you: you)
+                    if !why.isEmpty { out.append(why) }
+                }
+            case .choiceAnswered: break   // answered above
             case .rerack: out.append(String(localized: "The balls are racked again."))
             // Reasons appended later by the table rules say nothing here until they are given words.
             @unknown default: break
@@ -185,20 +320,37 @@ enum MatchWords {
         }
         // What follows, unless the game is over (the result card says that).
         if r.result == nil {
-            if let hand = ballInHand(r.ballInHand, for: next) {
+            if let hand = ballInHand(r.ballInHand, for: next, isYou: nextIsYou) {
                 out.append(hand)
             } else if r.turnPasses {
-                out.append(String(localized: "\(next) to shoot."))
+                out.append(nextIsYou ? String(localized: "Your shot.") : String(localized: "\(next) to shoot."))
             } else if r.choice == nil {
-                out.append(String(localized: "\(shooter) shoots again."))
+                out.append(shooterIsYou ? String(localized: "You shoot again.")
+                                        : String(localized: "\(shooter) shoots again."))
             }
         }
         return out
     }
 
+    /// "You have the solids.", "Computer (Hard) has the stripes."
+    private static func groupTaken(_ g: EightBallGroup, by shooter: String, isYou: Bool) -> String {
+        if isYou {
+            return g == .solids ? String(localized: "You have the solids.") : String(localized: "You have the stripes.")
+        }
+        return g == .solids ? String(localized: "\(shooter) has the solids.") : String(localized: "\(shooter) has the stripes.")
+    }
+
     // MARK: Choices
 
-    static func choicePrompt(_ c: PendingChoice, names: [String]) -> String {
+    /// The question a pending choice asks. Put to the person it has no name in front ("Take the table as it lies,
+    /// or have it racked again?").
+    static func choicePrompt(_ c: PendingChoice, names: [String], you: PlayerID? = nil) -> String {
+        if c.chooser == you {
+            switch c.choice {
+            case .acceptTableOrRerack: return String(localized: "Take the table as it lies, or have it racked again?")
+            case .spotEightOrRerack: return String(localized: "Put the 8 back on its spot, or rack again?")
+            }
+        }
         let who = name(c.chooser, in: names)
         switch c.choice {
         case .acceptTableOrRerack: return String(localized: "\(who): take the table as it lies, or have it racked again?")
@@ -214,28 +366,66 @@ enum MatchWords {
         }
     }
 
+    /// An answered choice in one sentence naming who chose (the ruling's shooter is the chooser, as
+    /// EightBallRules.ruling(answering:) builds it): a re-rack, the 8 spotted, or the table taken as it lies.
+    static func choiceAnswered(_ r: Ruling, names: [String], you: PlayerID? = nil) -> String {
+        let isYou = r.shooter == you
+        let who = name(r.shooter, in: names)
+        if r.rerack {
+            return isYou ? String(localized: "You have it racked again and break.")
+                         : String(localized: "\(who) has it racked again and breaks.")
+        }
+        if r.ballsToSpot.contains(8) {
+            return isYou ? String(localized: "You have the 8 put back on its spot.")
+                         : String(localized: "\(who) has the 8 put back on its spot.")
+        }
+        return isYou ? String(localized: "You take the table as it lies.")
+                     : String(localized: "\(who) takes the table as it lies.")
+    }
+
     // MARK: The end
 
-    /// The result card's title: who won, or plain "Game over" when the game names no winner.
-    static func resultTitle(_ r: MatchResult, names: [String]) -> String {
+    /// The result card's title (and a game-ending ruling's heading): who won, or plain "Game over" when the game
+    /// names no winner.
+    static func resultTitle(_ r: MatchResult, names: [String], you: PlayerID? = nil) -> String {
         guard let w = r.winner else { return String(localized: "Game over") }
-        return String(localized: "\(name(w, in: names)) wins!")
+        return w == you ? String(localized: "You win!") : String(localized: "\(name(w, in: names)) wins!")
     }
 
     /// Why the game ended. `shooter` is whoever took the last shot: for a loss on the 8 it is the player who lost.
-    static func endReason(_ r: MatchResult, shooter: PlayerID?, names: [String]) -> String {
+    static func endReason(_ r: MatchResult, shooter: PlayerID?, names: [String], you: PlayerID? = nil) -> String {
         let who = shooter.map { name($0, in: names) } ?? ""
         let winner = r.winner.map { name($0, in: names) } ?? ""
+        let whoIsYou = shooter != nil && shooter == you
+        let winnerIsYou = r.winner != nil && r.winner == you
         switch r.reason {
-        case .eightBallPocketed: return String(localized: "\(winner) pocketed the 8 in the called pocket.")
-        case .eightOnFoul: return String(localized: "\(who) pocketed the 8 on a foul.")
-        case .eightEarly: return String(localized: "\(who) pocketed the 8 before clearing their group.")
-        case .eightWrongPocket: return String(localized: "\(who) sank the 8 in a pocket that was not called.")
-        case .eightOffTable: return String(localized: "\(who) knocked the 8 off the table.")
-        case .nineBallPocketed: return String(localized: "\(winner) pocketed the 9.")
-        case .threeConsecutiveFouls: return String(localized: "\(who) fouled three times in a row.")
-        case .allBallsSunk: return String(localized: "\(winner) sank every ball of their side.")
-        case .targetScoreReached: return String(localized: "\(winner) reached the target score.")
+        case .eightBallPocketed:
+            return winnerIsYou ? String(localized: "You pocketed the 8 in the called pocket.")
+                               : String(localized: "\(winner) pocketed the 8 in the called pocket.")
+        case .eightOnFoul:
+            return whoIsYou ? String(localized: "You pocketed the 8 on a foul.")
+                            : String(localized: "\(who) pocketed the 8 on a foul.")
+        case .eightEarly:
+            return whoIsYou ? String(localized: "You pocketed the 8 before clearing your group.")
+                            : String(localized: "\(who) pocketed the 8 before clearing their group.")
+        case .eightWrongPocket:
+            return whoIsYou ? String(localized: "You sank the 8 in a pocket that was not called.")
+                            : String(localized: "\(who) sank the 8 in a pocket that was not called.")
+        case .eightOffTable:
+            return whoIsYou ? String(localized: "You knocked the 8 off the table.")
+                            : String(localized: "\(who) knocked the 8 off the table.")
+        case .nineBallPocketed:
+            return winnerIsYou ? String(localized: "You pocketed the 9.") : String(localized: "\(winner) pocketed the 9.")
+        case .threeConsecutiveFouls:
+            // Said on the ruling card that ends the game, so it says the game was lost, not only the third foul.
+            return whoIsYou ? String(localized: "You fouled three times in a row, which loses the game.")
+                            : String(localized: "\(who) fouled three times in a row, which loses the game.")
+        case .allBallsSunk:
+            return winnerIsYou ? String(localized: "You sank every ball of your side.")
+                               : String(localized: "\(winner) sank every ball of their side.")
+        case .targetScoreReached:
+            return winnerIsYou ? String(localized: "You reached the target score.")
+                               : String(localized: "\(winner) reached the target score.")
         case .timeExpired: return String(localized: "Time ran out.")
         case .conceded: return String(localized: "The game was ended early.")
         @unknown default: return ""
@@ -250,11 +440,14 @@ enum MatchWords {
 
     // MARK: The saved game
 
-    /// The menu's Continue row for a saved match: which game, against whom, and whose shot it is.
+    /// The menu's Continue row (and the Tables page's question) for a saved match: which game, against whom, and
+    /// whose shot it is. Against the computer it ends "Your shot." or "The computer's shot.", never a seat's name.
     static func savedLine(_ s: SavedMatchSummary) -> String {
         let game = title(s.kind)
         if let level = s.opponent {
-            return String(localized: "\(game) against the computer (\(level.title)). \(s.turnName) to shoot.")
+            return s.computerToShoot
+                ? String(localized: "\(game) against the computer (\(level.title)). The computer's shot.")
+                : String(localized: "\(game) against the computer (\(level.title)). Your shot.")
         }
         if s.playerNames.count == 1 {
             return String(localized: "\(game), playing alone.")

@@ -9,6 +9,12 @@
 //          steps is read from the rules' constants (FivePinRules, BarBilliardsRules), never retyped.
 //          Read by MatchViews (banner, points card, result), MatchWords (ball lists on these tables), TableWords
 //          (spoken scores), TableList and TableGamePage (game lines and rules), and the tests.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
+//          the person is "you" in the points lines ("the points go to you.") and the spoken scores ("You: 120"), from
+//          the seat MatchWords.you finds, passed in by the caller (nil names every seat, as before). On the computer's
+//          turn the banner describes its stroke ("Computer (Hard) strikes its marked ball.", "... plays the yellow;
+//          the white first.") instead of giving the person orders. Bar billiards' time-up line and its rules step say
+//          the game also ends when nothing is left on the table to hit.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: bumper pool's and five-pin's game lines name
 //          the computer, which now plays both, instead of two players; so does the opening rules step of each ("The
 //          idea": you play white, or the white ball, and the computer the other side). The person always sits in the
@@ -109,11 +115,18 @@ enum TableGameWords {
     // MARK: The turn banner
 
     /// Bumper pool: which ball the shooter strikes. The plain balls of a side look alike and the order is fixed, so
-    /// the line points at the ball the cue is already set on rather than naming it.
-    static func bumperStrike(_ ball: Int, marked: Bool) -> String {
+    /// the line points at the ball the cue is already set on rather than naming it. On the computer's turn
+    /// (`computer` is its name) the line describes what it strikes instead of telling the person to.
+    static func bumperStrike(_ ball: Int, marked: Bool, computer: String? = nil) -> String {
+        let red = bumperColour(of: ball) == .red
+        if let name = computer {
+            if marked { return String(localized: "\(name) strikes its marked ball.") }
+            return red ? String(localized: "\(name) strikes the red the cue is set on.")
+                       : String(localized: "\(name) strikes the white the cue is set on.")
+        }
         if marked { return String(localized: "Strike your marked ball.") }
-        return bumperColour(of: ball) == .red ? String(localized: "Strike the red the cue is set on.")
-                                              : String(localized: "Strike the white the cue is set on.")
+        return red ? String(localized: "Strike the red the cue is set on.")
+                   : String(localized: "Strike the white the cue is set on.")
     }
 
     /// Bumper pool: one side's balls still to sink.
@@ -121,10 +134,15 @@ enum TableGameWords {
         count == 1 ? String(localized: "1 ball left") : String(localized: "\(count) balls left")
     }
 
-    /// Five-pin: which ball the shooter plays and which they must hit first.
-    static func fivePinStrike(seat: Int) -> String {
-        seat == 0 ? String(localized: "Strike the white; hit the yellow first.")
-                  : String(localized: "Strike the yellow; hit the white first.")
+    /// Five-pin: which ball the shooter plays and which they must hit first; on the computer's turn (`computer` is
+    /// its name), what it plays.
+    static func fivePinStrike(seat: Int, computer: String? = nil) -> String {
+        if let name = computer {
+            return seat == 0 ? String(localized: "\(name) plays the white; the yellow first.")
+                             : String(localized: "\(name) plays the yellow; the white first.")
+        }
+        return seat == 0 ? String(localized: "Strike the white; hit the yellow first.")
+                         : String(localized: "Strike the yellow; hit the white first.")
     }
 
     /// Five-pin: the winning total.
@@ -146,9 +164,10 @@ enum TableGameWords {
                         : String(localized: "The bar is down: \(whitesLeft) whites left to play.")
     }
 
-    /// Spoken (and shown once) the moment the clock reaches zero.
+    /// Spoken the moment the clock reaches zero. The game also ends early when nothing is left on the table to hit
+    /// (BarBilliardsRules: the red out of the game and no white resting on the bed).
     static var timeUpNow: String {
-        String(localized: "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.")
+        String(localized: "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played or nothing is left on the table to hit.")
     }
 
     /// Bar billiards alone: the best score kept on this device.
@@ -159,18 +178,20 @@ enum TableGameWords {
 
     // MARK: Scores
 
-    /// Everyone's score in one sentence, for VoiceOver: "Scores: Sam: 120 and Alex: 80."
-    static func scores(_ scores: [Int], names: [String]) -> String {
+    /// Everyone's score in one sentence, for VoiceOver: "Scores: You: 120 and Computer (Hard): 80." `you` is the
+    /// seat the words call you (MatchWords.you), or nil to name every seat.
+    static func scores(_ scores: [Int], names: [String], you: PlayerID? = nil) -> String {
         let each = scores.enumerated().map { seat, score in
-            String(localized: "\(MatchWords.name(PlayerID(seat), in: names)): \(score)")
+            String(localized: "\(MatchWords.displayName(PlayerID(seat), in: names, you: you)): \(score)")
         }
         return String(localized: "Scores: \(each.formatted(.list(type: .and))).")
     }
 
     // MARK: The points-explained card
 
-    /// One line of the card in plain words. `kind` names the balls; `names` the players.
-    static func line(_ l: TablePoints.Line, kind: MatchKind, names: [String]) -> String {
+    /// One line of the card in plain words. `kind` names the balls; `names` the players; `you` the seat the words
+    /// call you (a foul's points then "go to you").
+    static func line(_ l: TablePoints.Line, kind: MatchKind, names: [String], you: PlayerID? = nil) -> String {
         switch l {
         case .whitePins(let count, let points):
             return count == 1 ? String(localized: "One white pin down: \(points) points.")
@@ -179,6 +200,10 @@ enum TableGameWords {
         case .redPinAlone(let points): return String(localized: "The red pin down on its own: \(points) points.")
         case .redBallHit(let points): return String(localized: "The other player's ball hit the red: \(points) points.")
         case .foulPoints(let to, let points, let raised):
+            if to == you {
+                return raised ? String(localized: "It was a foul, so you get the points, raised to the least a foul gives: \(points).")
+                              : String(localized: "It was a foul, so the \(points) points go to you.")
+            }
             let who = MatchWords.name(to, in: names)
             return raised ? String(localized: "It was a foul, so \(who) gets the points, raised to the least a foul gives: \(points).")
                           : String(localized: "It was a foul, so the \(points) points go to \(who).")
@@ -199,8 +224,8 @@ enum TableGameWords {
     }
 
     /// The whole card, in order.
-    static func lines(_ ls: [TablePoints.Line], kind: MatchKind, names: [String]) -> [String] {
-        ls.map { line($0, kind: kind, names: names) }
+    static func lines(_ ls: [TablePoints.Line], kind: MatchKind, names: [String], you: PlayerID? = nil) -> [String] {
+        ls.map { line($0, kind: kind, names: names, you: you) }
     }
 
     /// The first letter in upper case, for a ball phrase that starts a sentence ("A white dropped ...").
@@ -285,7 +310,7 @@ enum TableGameWords {
                 (String(localized: "Balls come back"),
                  String(localized: "Dropped balls come back to the tray and the red goes back on its spot, until time is up.")),
                 (String(localized: "Time up"),
-                 String(localized: "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.")),
+                 String(localized: "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. The game ends when the last white from the tray has been played, or when nothing is left on the table to hit. The clock stops while you watch a replay or the Lens.")),
             ]
         case .eightBall, .nineBall:
             return []

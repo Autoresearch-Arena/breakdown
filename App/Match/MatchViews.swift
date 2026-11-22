@@ -1,5 +1,18 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2
+//          and B3: the person is "you" on every line (MatchMode.you): "Your shot", "You have the solids.", "You win!",
+//          score and player rows labelled "You", and the names editor lists only the person's seat ("Your name"),
+//          never the computer's. A ruling that ends the game is headed by the result ("You win!" with a trophy, or the
+//          winner's name with a flag in the foul colour) and says why; the result card no longer repeats that reason,
+//          and adds the record against this level and, from the second game, this sitting's tally. Nine-ball's banner
+//          says who is on two fouls. The table games never say "to break", and on the computer's turn the banner
+//          describes its stroke instead of giving orders; fouls there name balls by colour. Bar billiards alone hides
+//          "This break: 0", leaves the repeated "Time is up." out of routine rulings, and its Rematch hint says
+//          against the clock. The End-this-game confirmation lives on MatchMode.confirmingEnd (so the menu's back
+//          button can stand aside for Escape). While a guided Lens replay plays on an upright phone
+//          (lensReplayCompact) the ruling shows only its heading and its button. The aiming card's Lens offer, which
+//          could never show there, is gone.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3: the
 //          Lens offer follows the model's offerLensReplay and watchShotInLens (renamed from the break-only
 //          offerLensReplayOfBreak and watchBreakInLens): after a break as before, and after any shot by either seat that
@@ -77,11 +90,14 @@ struct MatchCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// True on a phone held upright while a guided Lens replay plays (set by ShowpieceView): the ruling then shows
+    /// only its heading and its button, so the table keeps its height.
+    @Environment(\.lensReplayCompact) private var lensReplayCompact
     @State private var editingNames = false
     /// "Why that shot" is open (on the ruling card, or under the settled line in the banner).
     @State private var showingWhy = false
-    /// "End match" was chosen and the card is asking to confirm.
-    @State private var confirmingEnd = false
+    // "End match" asking to confirm is MatchMode.confirmingEnd (0.7.5), not view state, so the menu's back button
+    // can read it and give up Escape to the card's "Keep playing".
 
     var body: some View {
         if let match = model.match {
@@ -96,7 +112,7 @@ struct MatchCard: View {
                 // The reasons belong to one shot: closed when the next shot starts, kept open while a routine ruling
                 // settles into the banner (it was opened during that beat).
                 if phase == .shooting { showingWhy = false }
-                if phase != .aiming { confirmingEnd = false }
+                if phase != .aiming { match.confirmingEnd = false }
                 announce(phase, match)
             }
             // Bar billiards: the moment the clock runs out, said aloud and felt (the banner shows the bar from then).
@@ -112,17 +128,17 @@ struct MatchCard: View {
     private func content(_ match: MatchMode) -> some View {
         switch match.phase {
         case .aiming:
-            TurnBanner(match: match, editingNames: $editingNames, confirmingEnd: $confirmingEnd)
-            if confirmingEnd {
-                endMatchConfirmation
+            TurnBanner(match: match, editingNames: $editingNames)
+            if match.confirmingEnd {
+                endMatchConfirmation(match)
             } else {
+                // (No Lens offer here: the model only offers it while the ruling or the result is up.)
                 if let settled = match.settledRuling { settledSection(settled, match) }
-                lensOffer
                 if match.computerSeatToAct != nil {
                     // The computer's decision: its choice prompt (if any) and that it is thinking or lining up;
                     // nothing to tap.
                     if let choice = match.state.pendingChoice {
-                        line(MatchWords.choicePrompt(choice, names: match.playerNames))
+                        line(MatchWords.choicePrompt(choice, names: match.playerNames, you: match.you))
                     }
                     computerLine
                 } else if let choice = match.state.pendingChoice {
@@ -132,7 +148,7 @@ struct MatchCard: View {
                 }
             }
         case .shooting:
-            TurnBanner(match: match, editingNames: .constant(false), confirmingEnd: .constant(false), compact: true)
+            TurnBanner(match: match, editingNames: .constant(false), compact: true)
             if let call = match.currentCall { line(MatchWords.callLine(call)) }
             if model.matchShotPlaying {
                 // A paused or slowed replay never leaves the player waiting for the ruling (item 14).
@@ -167,13 +183,17 @@ struct MatchCard: View {
     // MARK: Ruling
 
     /// The full ruling card: it waits for Continue (or the choice).
+    /// While a guided Lens replay plays on an upright phone (lensReplayCompact) only the heading and the button (or
+    /// the choice that must be answered) stay, so the table keeps its height.
     @ViewBuilder
     private func rulingCard(_ r: Ruling, _ match: MatchMode) -> some View {
-        rulingHeader(r)
-        ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
-        if !match.lastPoints.isEmpty { pointsSection(match) }
-        whyIfComputers(r, match)
-        lensOffer
+        rulingHeader(r, match)
+        if !lensReplayCompact {
+            ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+            if !match.lastPoints.isEmpty { pointsSection(match) }
+            whyIfComputers(r, match)
+            lensOffer
+        }
         // A choice the computer makes is made after Continue, on its turn; a person's is answered here.
         if let choice = match.state.pendingChoice, !match.isComputer(choice.chooser) {
             choiceSection(choice, match)
@@ -183,22 +203,27 @@ struct MatchCard: View {
     }
 
     /// A routine ruling during its beat: the same words with no Continue button. It settles by itself after
-    /// MatchMode.settleBeat; a tap on it (or Return) moves on at once.
+    /// MatchMode.settleBeat; a tap on it (or Return) moves on at once. Slim (the heading only) during a guided Lens
+    /// replay on an upright phone.
     @ViewBuilder
     private func routineRuling(_ r: Ruling, _ match: MatchMode) -> some View {
         Button { match.settleNow() } label: {
             VStack(alignment: .leading, spacing: 6) {
-                rulingHeader(r)
-                ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                rulingHeader(r, match)
+                if !lensReplayCompact {
+                    ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                }
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .keyboardShortcut(.defaultAction)
         .accessibilityHint(String(localized: "Moves on now. It also moves on by itself in a moment."))
-        if !match.lastPoints.isEmpty { pointsSection(match) }
-        whyIfComputers(r, match)
-        lensOffer
+        if !lensReplayCompact {
+            if !match.lastPoints.isEmpty { pointsSection(match) }
+            whyIfComputers(r, match)
+            lensOffer
+        }
     }
 
     /// The last routine ruling, settled under the turn banner until the next shot: its sentences as one quiet line
@@ -221,18 +246,37 @@ struct MatchCard: View {
 
     /// The settled line's words: the ruling's sentences, then how the points came (five-pin, bar billiards).
     private func settledWords(_ r: Ruling, _ match: MatchMode) -> String {
-        let points = TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames)
+        let points = TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames,
+                                          you: match.you)
         return (rulingSentences(r, match) + points).joined(separator: " ")
     }
 
-    private func rulingHeader(_ r: Ruling) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: r.fouled ? "exclamationmark.triangle.fill"
-                  : (r.turnPasses ? "arrow.left.arrow.right" : "checkmark.circle.fill"))
-                .foregroundStyle(r.fouled ? palette.slide : palette.accent)
+    /// The ruling's heading. A ruling that ends the game is headed by the result (MatchWords.resultTitle: "You
+    /// win!"), with a trophy for the person's win and a flag in the foul colour for their loss or a game with no
+    /// winner, before any foul or turn heading: the last shot of a game is never "Keep shooting".
+    private func rulingHeader(_ r: Ruling, _ match: MatchMode) -> some View {
+        let symbol: String
+        let colour: Color
+        let title: String
+        if let result = r.result {
+            let won = Self.personWon(result, match)
+            symbol = won ? "trophy.fill" : "flag.fill"
+            colour = won ? palette.accent : palette.slide
+            title = MatchWords.resultTitle(result, names: match.playerNames, you: match.you)
+        } else if r.fouled {
+            symbol = "exclamationmark.triangle.fill"
+            colour = palette.slide
+            title = String(localized: "Foul")
+        } else {
+            symbol = r.turnPasses ? "arrow.left.arrow.right" : "checkmark.circle.fill"
+            colour = palette.accent
+            title = r.turnPasses ? String(localized: "Turn over") : String(localized: "Keep shooting")
+        }
+        return HStack(spacing: 8) {
+            Image(systemName: symbol)
+                .foregroundStyle(colour)
                 .accessibilityHidden(true)
-            Text(r.fouled ? String(localized: "Foul") : (r.turnPasses ? String(localized: "Turn over")
-                                                                     : String(localized: "Keep shooting")))
+            Text(title)
                 .font(Theme.heading)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -240,12 +284,23 @@ struct MatchCard: View {
         .accessibilityAddTraits(.isHeader)
     }
 
+    /// True when the game's winner is the person: their seat (MatchMode.personSeat) when there is one, otherwise any
+    /// seat the computer does not play. A game with no named winner is not a win.
+    static func personWon(_ result: MatchResult, _ match: MatchMode) -> Bool {
+        guard let w = result.winner else { return false }
+        if let person = match.personSeat { return w == person }
+        return !match.isComputer(w)
+    }
+
     /// The ruling's sentences, from what the recording showed when the shot was ruled (MatchMode keeps the balls that
     /// dropped and the first ball the striking ball touched, so a wrong-ball foul names the ball), then, when the
-    /// stroke went through with no call made, the suggested call it was held to.
+    /// stroke went through with no call made, the suggested call it was held to. "Time is up." is said on a card
+    /// only: a routine ruling after the bar drops would repeat it every shot.
     private func rulingSentences(_ r: Ruling, _ match: MatchMode) -> [String] {
         var out = MatchWords.sentences(for: r, names: match.playerNames, pocketed: match.lastPocketed,
-                                       firstBall: match.lastFirstBall, kind: match.state.kind)
+                                       firstBall: match.lastFirstBall, kind: match.state.kind, you: match.you,
+                                       target: match.targetBall(for: r.shooter),
+                                       mentionTimeUp: match.lastRulingShow == .card && match.settledRuling == nil)
         // Only for the shot itself, not for an answered choice that followed it.
         if match.lastCallWasSuggested, let call = match.lastShotCall, !r.reasons.contains(.choiceAnswered) {
             out.insert(MatchWords.suggestedCallUsed(call), at: 0)
@@ -260,7 +315,8 @@ struct MatchCard: View {
             .font(Theme.label)
             .foregroundStyle(palette.slide)
             .accessibilityAddTraits(.isHeader)
-        ForEach(Array(TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames).enumerated()),
+        ForEach(Array(TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames,
+                                           you: match.you).enumerated()),
                 id: \.offset) { _, s in line(s) }
         if match.rules.keepsRunningScore { ScoreRow(match: match) }
     }
@@ -269,8 +325,10 @@ struct MatchCard: View {
     /// scores, so a player who cannot see the card hears the same as one who can.
     private func spokenRuling(_ r: Ruling, _ match: MatchMode) -> String {
         var parts = rulingSentences(r, match)
-        parts += TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames)
-        if match.rules.keepsRunningScore { parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames)) }
+        parts += TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames, you: match.you)
+        if match.rules.keepsRunningScore {
+            parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames, you: match.you))
+        }
         return parts.joined(separator: " ")
     }
 
@@ -359,7 +417,7 @@ struct MatchCard: View {
 
     @ViewBuilder
     private func choiceSection(_ c: PendingChoice, _ match: MatchMode) -> some View {
-        line(MatchWords.choicePrompt(c, names: match.playerNames))
+        line(MatchWords.choicePrompt(c, names: match.playerNames, you: match.you))
         CardButtonRow {
             ForEach(Array(c.choice.answers.enumerated()), id: \.offset) { i, a in
                 let b = Button { match.answer(a) } label: {
@@ -375,18 +433,19 @@ struct MatchCard: View {
 
     /// Asked inside the card (no alert or sheet, so nothing covers the table): ending throws the game away and, like
     /// any game not finished by the rules, it is not counted in the record (MatchRecord).
+    /// The flag is MatchMode.confirmingEnd: set by the banner's More menu, cleared here and when the phase moves on.
     @ViewBuilder
-    private var endMatchConfirmation: some View {
+    private func endMatchConfirmation(_ match: MatchMode) -> some View {
         line(String(localized: "End this game? It won't be saved, and it doesn't count in your record."))
         CardButtonRow {
-            Button { confirmingEnd = false } label: {
+            Button { match.confirmingEnd = false } label: {
                 Text(String(localized: "Keep playing")).font(.headline).lineLimit(1)
                     .frame(minHeight: CallMetrics.buttonHeight)
             }
             .buttonStyle(.glass)
             .keyboardShortcut(.cancelAction)
             Button(role: .destructive) {
-                confirmingEnd = false
+                match.confirmingEnd = false
                 model.endMatch()
                 if !model.menuOpen { model.openMenu() }
             } label: {
@@ -427,21 +486,31 @@ struct MatchCard: View {
 
     // MARK: Result
 
+    /// The result card: who won (the person's win with a trophy, a loss or a game with no winner with a flag), why,
+    /// unless the ruling card just before it said so, the scores, the best score alone, and against the computer the
+    /// record at this level and, from the second game of the sitting, the sitting's tally.
     @ViewBuilder
     private func result(_ match: MatchMode) -> some View {
         if let r = match.state.result {
+            let won = Self.personWon(r, match)
             HStack(spacing: 8) {
-                Image(systemName: r.winner == nil ? "flag.checkered" : "trophy.fill")
-                    .foregroundStyle(palette.pocket).accessibilityHidden(true)
-                Text(MatchWords.resultTitle(r, names: match.playerNames)).font(Theme.heading)
+                Image(systemName: won ? "trophy.fill" : (r.winner == nil ? "flag.checkered" : "flag.fill"))
+                    .foregroundStyle(won || r.winner == nil ? palette.pocket : palette.slide).accessibilityHidden(true)
+                Text(MatchWords.resultTitle(r, names: match.playerNames, you: match.you)).font(Theme.heading)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
-            let why = MatchWords.endReason(r, shooter: match.lastRuling?.shooter, names: match.playerNames)
-            if !why.isEmpty { line(why) }
+            // The ruling card that ended the game already said why (its .gameOver line); an end reached without that
+            // card (an answered choice) says it here.
+            if match.lastRuling?.result == nil {
+                let why = MatchWords.endReason(r, shooter: match.lastRuling?.shooter, names: match.playerNames,
+                                               you: match.you)
+                if !why.isEmpty { line(why) }
+            }
             if match.rules.keepsRunningScore { ScoreRow(match: match) }
             if let best = match.bestOutcome { line(TableGameWords.bestOutcome(best)) }
+            ForEach(Array(Self.recordLines(match).enumerated()), id: \.offset) { _, s in line(s) }
         }
         CardButtonRow {
             Button {
@@ -459,8 +528,31 @@ struct MatchCard: View {
             .buttonStyle(.glassProminent)
             .foregroundStyle(palette.ground)
             .keyboardShortcut(.defaultAction)
-            .accessibilityHint(String(localized: "Racks for a new game between the same players"))
+            .accessibilityHint(rematchHint(match))
         }
+    }
+
+    /// What Rematch does, per game: alone against the clock (bar billiards), against the computer, or (old saves
+    /// only) between the same players.
+    private func rematchHint(_ match: MatchMode) -> String {
+        if match.state.players.count == 1 { return String(localized: "Racks for a new game against the clock") }
+        if match.hasComputer { return String(localized: "Racks for a new game against the computer") }
+        return String(localized: "Racks for a new game between the same players")
+    }
+
+    /// Against the computer: the person's record at this level in this game (MatchRecord, already counting the game
+    /// just finished: MatchMode notes it before the result shows), then, from the second game of this sitting, the
+    /// sitting's tally. Empty for a game with no computer.
+    static func recordLines(_ match: MatchMode) -> [String] {
+        guard let level = match.state.players.compactMap(\.computer).first else { return [] }
+        var out = [OpponentWords.levelRecord(MatchRecord.load().tally(match.state.kind, level), level: level)]
+        if match.sittingGames >= 2, let person = match.personSeat,
+           let computer = match.state.players.first(where: \.isComputer)?.id {
+            let wins = match.sittingWins
+            out.append(OpponentWords.sitting(you: wins.indices.contains(person.index) ? wins[person.index] : 0,
+                                             computer: wins.indices.contains(computer.index) ? wins[computer.index] : 0))
+        }
+        return out
     }
 
     // MARK: Feedback
@@ -478,11 +570,12 @@ struct MatchCard: View {
             text = MatchWords.handOver(to: MatchWords.name(match.state.turn, in: match.playerNames))
         case .over:
             guard let r = match.state.result else { return }
-            var parts = [MatchWords.resultTitle(r, names: match.playerNames)]
+            var parts = [MatchWords.resultTitle(r, names: match.playerNames, you: match.you)]
             if match.rules.keepsRunningScore {
-                parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames))
+                parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames, you: match.you))
             }
             if let best = match.bestOutcome { parts.append(TableGameWords.bestOutcome(best)) }
+            parts += Self.recordLines(match)
             text = parts.joined(separator: " ")
         case .aiming, .shooting:
             return
@@ -530,8 +623,7 @@ struct CardButtonRow<Content: View>: View {
 struct TurnBanner: View {
     let match: MatchMode
     @Binding var editingNames: Bool
-    /// Set by the More menu's End match: the card then asks to confirm.
-    @Binding var confirmingEnd: Bool
+    // The More menu's End match sets match.confirmingEnd; the card then asks to confirm.
     /// While a shot plays: only the first line.
     var compact = false
     @Environment(\.palette) private var palette
@@ -554,6 +646,13 @@ struct TurnBanner: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .accessibilityElement(children: .combine)
+                    // Whoever is one foul from losing the game, as a quiet line under it.
+                    ForEach(onTwoFouls, id: \.self) { seat in
+                        Text(MatchWords.onTwoFouls(MatchWords.name(seat, in: match.playerNames), isYou: seat == match.you))
+                            .font(Theme.label)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 if state.kind == .eightBall {
                     ForEach(state.players, id: \.id) { p in playerRow(p) }
@@ -565,11 +664,22 @@ struct TurnBanner: View {
         }
     }
 
+    /// Nine-ball: the seats one foul from losing (NineBallRules.foulsToLose), in seat order.
+    private var onTwoFouls: [PlayerID] {
+        state.players.map(\.id).filter { p in
+            state.consecutiveFouls.indices.contains(p.index)
+                && state.consecutiveFouls[p.index] >= NineBallRules.foulsToLose - 1
+        }
+    }
+
     /// Who shoots and the game's name: side by side, or stacked at the accessibility text sizes. The who-shoots line
-    /// wraps as far as it needs (item 43); it is never cut to two lines.
+    /// wraps as far as it needs (item 43); it is never cut to two lines. Only a pool rack is a break: the other
+    /// tables' first shot is plain "to shoot". The person's turn reads "Your shot" / "Your break".
     @ViewBuilder
     private var header: some View {
-        let who = Text(MatchWords.toShoot(MatchWords.name(state.turn, in: match.playerNames), isBreak: state.isBreak))
+        let who = Text(MatchWords.toShoot(MatchWords.name(state.turn, in: match.playerNames),
+                                          isBreak: state.isBreak && !state.kind.isTableGame,
+                                          isYou: state.turn == match.you))
             .font(Theme.heading)
             .fixedSize(horizontal: false, vertical: true)
         let game = Text(MatchWords.title(state.kind)).font(Theme.label).foregroundStyle(palette.slide)
@@ -595,17 +705,22 @@ struct TurnBanner: View {
         }
     }
 
-    /// Player names and End match, in one small menu so the banner stays one line on a phone.
+    /// The seats the names editor offers: the people's, never the computer's.
+    private var peopleCount: Int { state.players.filter { !$0.isComputer }.count }
+
+    /// Your name (or, in an old game between people, Player names) and End match, in one small menu so the banner
+    /// stays one line on a phone. With nobody to name the menu holds End match alone.
     private var moreMenu: some View {
         Menu {
-            Button {
-                editingNames.toggle()
-            } label: {
-                Label(editingNames ? String(localized: "Done editing names") : String(localized: "Player names"),
-                      systemImage: editingNames ? "checkmark" : "pencil")
+            if peopleCount > 0 {
+                Button {
+                    editingNames.toggle()
+                } label: {
+                    Label(namesItemTitle, systemImage: editingNames ? "checkmark" : "pencil")
+                }
             }
             Button(role: .destructive) {
-                confirmingEnd = true
+                match.confirmingEnd = true
             } label: {
                 Label(String(localized: "End match"), systemImage: "xmark.circle")
             }
@@ -617,15 +732,31 @@ struct TurnBanner: View {
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
         .accessibilityLabel(String(localized: "Match options"))
-        .accessibilityHint(String(localized: "Player names, or end the match"))
+        .accessibilityHint(moreMenuHint)
     }
 
-    /// One player's line in eight-ball: a dot on whoever is shooting, the name, the group and the balls left.
+    /// The names item: "Your name" for the one person (against the computer, or bar billiards alone), "Player
+    /// names" in an old game between people; "Done" or "Done editing names" while the field is open.
+    private var namesItemTitle: String {
+        if peopleCount == 1 { return editingNames ? String(localized: "Done") : String(localized: "Your name") }
+        return editingNames ? String(localized: "Done editing names") : String(localized: "Player names")
+    }
+
+    private var moreMenuHint: String {
+        switch peopleCount {
+        case 0: return String(localized: "End the match")
+        case 1: return String(localized: "Your name, or end the match")
+        default: return String(localized: "Player names, or end the match")
+        }
+    }
+
+    /// One player's line in eight-ball: a dot on whoever is shooting, the name ("You" for the person), the group and
+    /// the balls left.
     private func playerRow(_ p: Player) -> some View {
         let group = state.group(of: p.id)
         let left = state.ballsRemaining(for: p.id)
         let groupText = MatchWords.groupLine(group, left: left.count, tableOpen: state.tableOpen)
-        let name = MatchWords.name(p.id, in: match.playerNames)
+        let name = MatchWords.displayName(p.id, in: match.playerNames, you: match.you)
         // Spoken as one line: the name, the group and the balls left by number (the icons are pictures only).
         let spoken = [name, groupText, left.isEmpty ? "" : MatchWords.balls(left)]
             .filter { !$0.isEmpty }.joined(separator: ". ")
@@ -663,13 +794,14 @@ private struct TableGameLines: View {
             let marked = BumperPoolRules.sides.indices.contains(seat) && BumperPoolRules.sides[seat].first == ball
             HStack(spacing: 6) {
                 BallIcon(ball: ball, set: ballSet)
-                line(TableGameWords.bumperStrike(ball, marked: marked))
+                // On the computer's turn the line says what it strikes; on the person's it says what to strike.
+                line(TableGameWords.bumperStrike(ball, marked: marked, computer: computerName))
             }
             .accessibilityElement(children: .combine)
             // Each side's balls still to sink, as that side's own balls (white or red, the marked one spotted), a dot
             // on the side shooting.
             ForEach(state.players, id: \.id) { p in
-                let name = MatchWords.name(p.id, in: match.playerNames)
+                let name = MatchWords.displayName(p.id, in: match.playerNames, you: match.you)
                 let balls = bumper.ballsLeft(for: p.id, in: state)
                 let left = TableGameWords.ballsToSink(balls.count)
                 HStack(spacing: 6) {
@@ -697,7 +829,7 @@ private struct TableGameLines: View {
                         .accessibilityHidden(true)
                     BallIcon(ball: five.targetBall(for: state.turn), set: ballSet)
                 }
-                line(TableGameWords.fivePinStrike(seat: seat))
+                line(TableGameWords.fivePinStrike(seat: seat, computer: computerName))
             }
             .accessibilityElement(children: .combine)
             line(TableGameWords.target(five.targetScore))
@@ -718,9 +850,16 @@ private struct TableGameLines: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            if let points = state.breakPoints { line(TableGameWords.breakSoFar(points)) }
+            // The break in progress only once it has points: "This break: 0" before every first shot says nothing.
+            if let points = state.breakPoints, points > 0 { line(TableGameWords.breakSoFar(points)) }
             if state.players.count == 1 { line(TableGameWords.best(BarBilliardsBest.best())) }
         }
+    }
+
+    /// The computer's name while it is the computer's turn (the banner then describes its stroke), nil on the
+    /// person's turn.
+    private var computerName: String? {
+        match.isComputer(state.turn) ? MatchWords.name(state.turn, in: match.playerNames) : nil
     }
 
     private func line(_ text: String) -> some View {
@@ -744,33 +883,43 @@ private struct ScoreRow: View {
                 VStack(spacing: 0) {
                     Text("\(score)").font(.title3.monospacedDigit().weight(.bold))
                         .foregroundStyle(p.id == match.state.turn ? palette.accent : palette.paper)
-                    Text(MatchWords.name(p.id, in: match.playerNames)).font(.caption2).foregroundStyle(.secondary)
+                    Text(MatchWords.displayName(p.id, in: match.playerNames, you: match.you)).font(.caption2)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(String(localized: "\(MatchWords.name(p.id, in: match.playerNames)): \(score)"))
+                .accessibilityLabel(String(localized: "\(MatchWords.displayName(p.id, in: match.playerNames, you: match.you)): \(score)"))
             }
             Spacer(minLength: 0)
         }
     }
 }
 
-/// Editable names, in the card itself (no sheet, so it works as part of the notebook panel on the open Duo). An
-/// emptied field shows the default name again ("Player 1"), so nobody is ever nameless.
+/// Editable names, in the card itself (no sheet, so it works as part of the notebook panel on the open Duo). Only
+/// the people's seats are listed: the computer's name says its level and is never changed. A seat still on its
+/// default name shows an empty field with the placeholder ("Your name" for the one person), and an emptied field
+/// returns the seat to its default, so the words call the person "you" again.
 private struct PlayerNamesEditor: View {
     let match: MatchMode
 
+    private var people: [Player] { match.state.players.filter { !$0.isComputer } }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            ForEach(match.state.players, id: \.id) { p in
+            ForEach(people, id: \.id) { p in
                 let fallback = MatchWords.defaultName(p.id)
-                TextField(fallback, text: Binding(
-                    get: { match.playerNames.indices.contains(p.id.index) ? match.playerNames[p.id.index] : "" },
+                let label = people.count == 1 ? String(localized: "Your name") : String(localized: "Name for \(fallback)")
+                TextField(people.count == 1 ? String(localized: "Your name") : fallback, text: Binding(
+                    get: {
+                        guard match.playerNames.indices.contains(p.id.index) else { return "" }
+                        let stored = match.playerNames[p.id.index]
+                        return MatchWords.isDefaultName(stored, seat: p.id) ? "" : stored
+                    },
                     set: { match.setPlayerName($0, for: p.id) }))
                     .textFieldStyle(.roundedBorder)
                     .autocorrectionDisabled()
                     .submitLabel(.done)
-                    .accessibilityLabel(String(localized: "Name for \(fallback)"))
+                    .accessibilityLabel(label)
             }
         }
     }

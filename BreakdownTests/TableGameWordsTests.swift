@@ -5,6 +5,9 @@
 //          in plain words), plus the spoken ruling's new parts in TableWords.ruling (points to either player, points
 //          lost, the pegs, the scores). Words are compared with String(localized:) of the same sentence, so the tests
 //          hold in every language the catalog carries; every point value comes from FivePinRules and BarBilliardsRules.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui: the computer's turn in the banner is described in
+//          the third person; five-pin's fouls name the balls by colour and never say "cue ball" or a number; a foul's
+//          points that go to the person say "you"; the spoken scores call the person "You".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: the game lines of bumper pool and five-pin name
 //          the computer; bar billiards' line is unchanged.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 21: bumper pool's balls are named by their side's colour
@@ -155,6 +158,65 @@ final class TableGameWordsTests: XCTestCase {
                        String(localized: "Score as much as you can before the clock runs out."))
         XCTAssertEqual(TableGameWords.gameLine(.eightBall), "")
         XCTAssertEqual(TableGameWords.gameLine(.nineBall), "")
+    }
+
+    // MARK: 0.7.5: the computer's turn, the person, five-pin's fouls
+
+    func testTheBannerDescribesTheComputersTurnInTheThirdPerson() {
+        let name = OpponentWords.name(.medium)
+        let redMarked = BumperPoolRules.sides[1][0], redPlain = BumperPoolRules.sides[1][1]
+        XCTAssertEqual(TableGameWords.bumperStrike(redMarked, marked: true, computer: name),
+                       String(localized: "\(name) strikes its marked ball."))
+        XCTAssertEqual(TableGameWords.bumperStrike(redPlain, marked: false, computer: name),
+                       String(localized: "\(name) strikes the red the cue is set on."))
+        XCTAssertEqual(TableGameWords.fivePinStrike(seat: 1, computer: name),
+                       String(localized: "\(name) plays the yellow; the white first."))
+        // Never an order to the person on the computer's turn.
+        XCTAssertNotEqual(TableGameWords.bumperStrike(redMarked, marked: true, computer: name),
+                          String(localized: "Strike your marked ball."))
+        XCTAssertNotEqual(TableGameWords.fivePinStrike(seat: 1, computer: name),
+                          String(localized: "Strike the yellow; hit the white first."))
+        // The person's own turn keeps the instruction.
+        XCTAssertEqual(TableGameWords.fivePinStrike(seat: 0), String(localized: "Strike the white; hit the yellow first."))
+    }
+
+    func testFivePinFoulsNameBallsByColourNeverTheCueBallOrANumber() {
+        let names = [MatchWords.defaultName(.first), OpponentWords.name(.easy)]
+        let five = FivePinRules()
+        // The computer (yellow) hit the red before the white.
+        let r = Ruling(shooter: .second, nextShooter: .first, fouls: [.wrongBallFirst], reasons: [.foul, .pointsScored],
+                       points: [FivePinRules.foulMinimum, 0])
+        let said = MatchWords.sentences(for: r, names: names, pocketed: [], firstBall: FivePinRules.redBall,
+                                        kind: .fivePin, you: .first, target: five.targetBall(for: .second))
+        let foul = MatchWords.foul(.wrongBallFirst, firstBall: FivePinRules.redBall,
+                                   context: .init(kind: .fivePin, shooter: names[1], target: five.targetBall(for: .second)))
+        XCTAssertEqual(foul, String(localized: "\(TableGameWords.ball(FivePinRules.redBall, kind: .fivePin)) was hit before \(TableGameWords.ball(FivePinRules.playerBalls[0], kind: .fivePin))"))
+        XCTAssertTrue(said.contains(String(localized: "Foul: \([foul].formatted(.list(type: .and))).")), "\(said)")
+        for f in [MatchFoul.wrongBallFirst, .noBallHit, .scratch, .ownBallKnockedPins] {
+            let words = MatchWords.foul(f, firstBall: FivePinRules.redBall,
+                                        context: .init(kind: .fivePin, shooter: names[1], target: FivePinRules.playerBalls[0]))
+            XCTAssertFalse(words.localizedCaseInsensitiveContains("cue ball"), words)
+            XCTAssertNil(words.rangeOfCharacter(from: .decimalDigits), words)
+        }
+        // Knocking the pins with your own ball: whose ball, or "your own ball" for the person.
+        XCTAssertEqual(MatchWords.foul(.ownBallKnockedPins, firstBall: nil,
+                                       context: .init(kind: .fivePin, shooter: names[1])),
+                       String(localized: "\(names[1])'s own ball knocked pins down"))
+        XCTAssertEqual(MatchWords.foul(.ownBallKnockedPins, firstBall: nil,
+                                       context: .init(kind: .fivePin, shooter: names[0], shooterIsYou: true)),
+                       String(localized: "your own ball knocked pins down"))
+    }
+
+    func testAFoulsPointsGoToYou() {
+        XCTAssertEqual(TableGameWords.line(.foulPoints(to: .first, points: 6, raisedToMinimum: false), kind: .fivePin,
+                                           names: names, you: .first),
+                       String(localized: "It was a foul, so the \(6) points go to you."))
+        XCTAssertEqual(TableGameWords.line(.foulPoints(to: .first, points: 6, raisedToMinimum: true), kind: .fivePin,
+                                           names: names, you: .first),
+                       String(localized: "It was a foul, so you get the points, raised to the least a foul gives: \(6)."))
+        let each = [String(localized: "\(String(localized: "You")): \(120)"), String(localized: "\("Alex"): \(80)")]
+        XCTAssertEqual(TableGameWords.scores([120, 80], names: names, you: .first),
+                       String(localized: "Scores: \(each.formatted(.list(type: .and)))."))
     }
 
     func testTheSpokenRulingCarriesPointsLossesAndScores() {

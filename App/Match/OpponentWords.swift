@@ -21,6 +21,9 @@
 //          away from the pins; easy's five-pin stroke says it aimed by eye; a stroke with nothing on says it gave away
 //          as little as it could. None of them names a pocket. Counts are whole numbers (Int), so the catalog keys
 //          carry %lld; degrees arrive as finished strings (%@), as before.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
+//          the result card's tally for this sitting, "This sitting: you 2, computer 1." (MatchMode.sittingWins). The
+//          card's record line reuses levelRecord.)
 // SRP/DRY check: Pass - checked MatchWords (the ruling, turn and call words stay there and are not repeated; pocket
 //          names are EightBallPocket.title, reused) and TrickShotViews (its window words describe a player's own
 //          settings, not a computer's choice).
@@ -170,7 +173,13 @@ enum OpponentWords {
         String(localized: "\(won) won, \(lost) lost")
     }
 
-    /// The line under the level choice: this level's record against the computer.
+    /// The result card, from the second game of a sitting on: games won by each side since this match started
+    /// (counted in memory only, MatchMode.sittingWins).
+    static func sitting(you: Int, computer: Int) -> String {
+        String(localized: "This sitting: you \(you), computer \(computer).")
+    }
+
+    /// The line under the level choice, and on the result card: this level's record against the computer.
     static func levelRecord(_ t: MatchTally, level: ComputerLevel) -> String {
         t.played == 0 ? String(localized: "No games against \(level.title) yet.")
                       : String(localized: "Against \(level.title): won \(t.won) of \(t.played).")
