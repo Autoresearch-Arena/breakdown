@@ -12,6 +12,11 @@
 //          foul and loss types now live; nothing else changed.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (no longer dismisses the model's retry comparison: the general
 //          comparison card hides by itself while a situation is up, so the facts stay for the views to read.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 8: the judge is handed the cue angle the shot was struck with (the attempt's), not the control's value
+//          after the shot; the card's own cue-angle menu and this mode's copy of the angle list are gone, since the
+//          shot panel has the one cue-angle control (CueAngleMenu, shown whenever the cue may be raised); the Lens
+//          replay turns Ride off through the model's hold, which restores it afterwards.)
 // PURPOSE: Behind the 8-Ball flow, modelled on TrickShotMode. Holds which situation is on the table and walks the
 //          player through it: Looking (the table set up, the story card) > Calling (tap a ball, then a pocket, or tap
 //          Safety) > Aiming (the shot panel open, the player's own settings, never the answer) > Playing (the shot is
@@ -319,11 +324,13 @@ final class EightBallMode {
         if call == nil { startCalling() } else { openAiming() }
     }
 
-    /// Replay the shot on screen slowly in the Physics Lens, which explains it beat by beat.
+    /// Replay the shot on screen slowly in the Physics Lens, which explains it beat by beat. Ride goes off for the
+    /// replay through the model's hold (0.7.5), which puts it back when the replay ends or is left, rather than being
+    /// switched off for good.
     func lensReplay() {
         guard current != nil else { return }
         showingRealTable = false
-        model.setRide(false)
+        model.holdRideForGuidedReplay()
         model.replay(withLens: true)
     }
 
@@ -355,24 +362,6 @@ final class EightBallMode {
         wantsAiming = false
     }
 
-    // MARK: The cue angle
-
-    /// The cue angles offered while aiming, in degrees above level (0 is a level cue). The shot panel has no
-    /// elevation control, so the card offers these for jumps and masses.
-    static let cueAngles = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80]
-
-    /// The cue angle now, in whole degrees, snapped to the nearest offered angle. Setting it writes the sine, the
-    /// solver's unit, into the model's next shot.
-    var cueAngle: Int {
-        get {
-            let degrees = asin(min(max(model.shotElevation, 0), 0.995)) * 180 / .pi
-            return Self.cueAngles.min { abs(Double($0) - degrees) < abs(Double($1) - degrees) } ?? 0
-        }
-        set {
-            model.shotElevation = newValue <= 0 ? 0 : sin(Double(newValue) * .pi / 180)
-        }
-    }
-
     // MARK: Following the table
 
     /// Called by the table layer whenever the model's playback state changes.
@@ -393,9 +382,12 @@ final class EightBallMode {
                   model.timelineVersion != hintVersion else { return }
             judgedVersion = model.timelineVersion
             guard !attempt.isBreak, attempt.start == s.setup else { return }
+            // Every setting from the attempt itself, the cue angle included (0.7.5): the angle the shot was struck
+            // with, not whatever the cue-angle control reads now (it may have moved while the shot rolled), so the
+            // judge re-solves the very stroke that was played.
             let settings = TrickSettings(aim: attempt.aim, power: attempt.power, tipUp: attempt.tipUp,
                                          tipSide: attempt.tipSide,
-                                         elevation: model.shotElevation > 0 ? model.shotElevation : nil)
+                                         elevation: attempt.elevation > 0 ? attempt.elevation : nil)
             playerSettings[s.id] = settings
             // The try is counted now, for the shot that was taken, even if the player moves on before the verdict.
             tries += 1

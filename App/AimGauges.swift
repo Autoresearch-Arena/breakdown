@@ -30,6 +30,9 @@
 //          come from TipAccessActions, and the power value adds the lesson's band, TableWords.powerBandLine.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, item 57: the power readout, its spoken value and the
 //          help's ball speed are worked out for the cue the game picked (model.cueInHand), the cue the help names.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 5: the tip picture snaps each axis to its centre line on its own (side within about 1.5 mm of zero
+//          becomes exactly zero while the height stays free, and the other way round), never on an axis a lesson marks.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -110,6 +113,12 @@ struct TipPicker: View {
                 // A tiny region around the middle snaps to exactly centre so "centre" is easy to hit, but never while a
                 // lesson marks a tip band: the stop band sits a couple of millimetres below centre, inside this region.
                 if len < Self.centreSnap, !hasTipBand { x = 0; y = 0 }
+                // Each axis also snaps to its centre line on its own (0.7.5): side within about 1.5 mm of zero becomes
+                // exactly zero while the height stays where the finger is, and the same for height, so a plain draw or
+                // follow carries no stray side (and a plain side no stray height). Not on an axis a lesson marks a band
+                // on, where the band may sit just off the centre line.
+                if abs(x) < Self.axisSnap, zones?.tipSide == nil { x = 0 }
+                if abs(y) < Self.axisSnap, zones?.tipUp == nil { y = 0 }
                 // Only the open one of the two moves when a lesson has opened just one: the other stays where it was set.
                 if open.contains(.tipSide) { model.activeTipSide = x * model.tipLimit }
                 if open.contains(.tipUp) { model.activeTipUp = y * model.tipLimit }
@@ -139,6 +148,9 @@ struct TipPicker: View {
     /// The centre snap's reach, as a share of the dot's travel: about two millimetres of tip on the default physics,
     /// a fingertip's wobble on the picture, so "centre" is easy to hit outside a lesson band.
     private static let centreSnap = 0.12
+    /// The per-axis snap's reach, as a share of the dot's travel (0.7.5): about 1.5 millimetres of tip on the default
+    /// physics' travel, the wobble of a finger moving the dot straight up or down (or across) the picture.
+    private static let axisSnap = 0.09
 
     /// True while the lesson marks a tip band (height, side or both).
     private var hasTipBand: Bool { zones?.tipUp != nil || zones?.tipSide != nil }

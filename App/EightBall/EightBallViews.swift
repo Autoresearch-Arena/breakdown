@@ -26,6 +26,11 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next's arrow follows the reading direction.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the interface's orange became magenta, so the bronze medal
 //          no longer borrows Palette.slide (a magenta medal would read as a fourth prize); it gets its own muted bronze.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 8, 11 and 12: the card's cue-angle menu is gone, so the shot panel's is the one cue-angle control while
+//          aiming; the card steps aside while a what-if is open and shows its slim form (the heading and the main
+//          button) during a guided Lens replay on a phone held upright; the list's Mac minimum size applies only as a
+//          sheet, not as a page of the notebook.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -33,8 +38,8 @@
 //          EightBallCard - the compact glass card at the bottom edge (top of the side column on iPad, Mac and
 //            landscape), hosted beside TrickShotCard. Looking: the story, Make your call, Watch an escape (the hint,
 //            which caps style at 2). Calling: the prompt, your callable balls and the six pockets as buttons (the
-//            complete route for VoiceOver; tapping the table is the quick route), Safety, Back. Aiming: the call, the
-//            cue angle (for jumps and masses; CueAngleMenu, shared with the shot panel), the bridge line. Scored: the
+//            complete route for VoiceOver; tapping the table is the quick route), Safety, Back. Aiming: the call and
+//            the bridge line (the cue angle for jumps and massés is the shot panel's CueAngleMenu). Scored: the
 //            result, the sum (5 made + difficulty + style - retry = total) with each style point named, the medal,
 //            then Physics Lens replay, Watch an escape, On a real table, Try again or Next. The "On a real table" card
 //            replaces the score while it is open: where to aim, how to hold the cue, how hard, the commonest miss, with
@@ -101,6 +106,8 @@ private enum EightBallFormat {
 struct EightBallList: View {
     let mode: EightBallMode
     @Environment(\.palette) private var palette
+    /// True when the list is a page of the notebook (iPad, Mac, the open Duo) rather than a sheet of its own.
+    @Environment(\.inlinePages) private var inlinePages
 
     var body: some View {
         NavigationStack {
@@ -125,7 +132,9 @@ struct EightBallList: View {
         }
         .tint(palette.accent)
         #if os(macOS)
-        .frame(minWidth: 460, minHeight: 560)
+        // A sheet's own minimum size; as a page of the Mac notebook it takes the panel's size (0.7.5: the minimum
+        // pushed the list past the panel's edge). Nil sizes rather than an if, so the view keeps its identity.
+        .frame(minWidth: inlinePages ? nil : 460, minHeight: inlinePages ? nil : 560)
         #endif
     }
 
@@ -213,15 +222,19 @@ struct EightBallCard: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
+    /// card, heading and main button only, so the table keeps its height.
+    @Environment(\.lensReplayCompact) private var compact
 
     private var mode: EightBallMode { model.eightBallMode }
 
     var body: some View {
         // While the Lens tips are up (the player's own Lens replay of this try) the card stands back, so the tips are
-        // the one thing to read; it returns as soon as they are done.
-        if let s = mode.current, mode.isActive, !model.holdForTips {
+        // the one thing to read; it returns as soon as they are done. While a what-if is open on the try (0.7.5,
+        // WhatIfFork.isShowing) its card is the one result card: this one steps aside and comes back when it closes.
+        if let s = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
             VStack(alignment: .leading, spacing: 8) {
-                content(s)
+                if compact { slim(s) } else { content(s) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .glassCard(cornerRadius: 22, padding: 12)
@@ -289,8 +302,9 @@ struct EightBallCard: View {
             if s.usesBridge {
                 note(String(localized: "Too far to reach: the bridge is legal, and touching a ball with it is a foul."))
             }
+            // No cue-angle menu here (0.7.5): the shot panel's own (CueAngleMenu, ShotPanel) is the one control, so the
+            // card no longer shows a second copy of it beside the panel.
             buttons {
-                cueAngleMenu
                 styled(Button { mode.startCalling() } label: {
                     Label("Change call", systemImage: "hand.tap").font(.headline).lineLimit(1)
                         .frame(minHeight: Self.buttonHeight)
@@ -321,6 +335,19 @@ struct EightBallCard: View {
         }
     }
 
+    /// The slim card (0.7.5, lensReplayCompact): the situation's heading and the one button that moves it on, so the
+    /// player's Lens replay on a phone held upright keeps the table its height. After a scored try, Next when it went
+    /// as called and Try again otherwise; the heading alone in any other phase.
+    @ViewBuilder
+    private func slim(_ s: EightBallSituation) -> some View {
+        header(s)
+        if case .scored(let v) = mode.phase {
+            buttons {
+                if v.madeAsCalled { nextButton } else { tryAgainButton(prominent: true) }
+            }
+        }
+    }
+
     // MARK: Calling
 
     private func callPrompt(_ s: EightBallSituation) -> String {
@@ -339,15 +366,6 @@ struct EightBallCard: View {
         case .safety?: return String(localized: "You called Safety: a legal hit that leaves them hooked.")
         case nil: return String(localized: "No call yet.")
         }
-    }
-
-    // MARK: Aiming
-
-    /// The cue angle: level for most shots, raised for a jump, steep for a massé. The shared control writes the sine
-    /// into the model's next shot, exactly what EightBallMode.cueAngle's setter does.
-    private var cueAngleMenu: some View {
-        CueAngleMenu(sine: Binding(get: { model.shotElevation }, set: { model.shotElevation = $0 }),
-                     minHeight: Self.buttonHeight)
     }
 
     // MARK: Scored
@@ -485,15 +503,19 @@ struct EightBallCard: View {
                 .buttonBorderShape(.circle)
                 .accessibilityLabel(String(localized: "Try again"))
                 .accessibilityHint(String(localized: "Puts the balls back, with the same call and your last settings"))
-                styled(Button { mode.next() } label: {
-                    Label("Next", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: true)
-                .keyboardShortcut(.defaultAction)
+                nextButton
             } else {
                 tryAgainButton(prominent: true)
             }
         }
+    }
+
+    private var nextButton: some View {
+        styled(Button { mode.next() } label: {
+            Label("Next", systemImage: "arrow.forward").font(.headline).lineLimit(1)
+                .frame(minHeight: Self.buttonHeight)
+        }, prominent: true)
+        .keyboardShortcut(.defaultAction)
     }
 
     // MARK: On a real table

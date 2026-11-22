@@ -43,6 +43,10 @@
 //          person's controls are greyed out with a line saying whose turn it is (personControlsLive); the cue-angle
 //          control writes through activeElevation, where a lesson's lock applies; the fine controls gain a bridge
 //          slider beside the bridge readout.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 4: the fine controls' Cue tip and Side readouts show the signed millimetres beside the word
+//          (tipReadout: "follow, +8.5 mm"), so the judge's millimetre advice can be followed; the readout column is wider
+//          to hold them. tipWord and sideWord are unchanged.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -323,6 +327,18 @@ struct ShotPanel: View {
         }
     }
 
+    /// The fine controls' tip and side readout (0.7.5): the word the player sees and the signed offset in millimetres,
+    /// "follow, +8.5 mm", "left, −3.0 mm", "centre, 0.0 mm", so a judge's "about 2 millimetres lower" can be set by
+    /// eye. Tenths of a millimetre, in the player's number style. tipWord and sideWord are left exactly as they are:
+    /// the retry comparison (ShotAttempt) reads them as fixed identifiers.
+    static func tipReadout(_ metres: Double, vertical: Bool) -> String {
+        let word = shownWord(vertical ? tipWord(metres) : sideWord(metres))
+        // Rounded to the tenth first, so a value a hair either side of zero reads "0.0" with no sign.
+        let tenths = (metres * 10_000).rounded() / 10
+        let mm = tenths.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always(includingZero: false)))
+        return String(localized: "\(word), \(mm) mm")
+    }
+
     /// The word on the main shot button: Break for the opening rack, Shoot after that.
     static func actionWord(racked: Bool) -> String {
         racked ? String(localized: "Break") : String(localized: "Shoot")
@@ -366,10 +382,12 @@ private struct FineControls: View {
                                   .formatted(.measurement(width: .abbreviated, usage: .asProvided)))
                         .disabled(model.restInUse)
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
-                              range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
+                              range: -model.tipLimit...model.tipLimit,
+                              readout: ShotPanel.tipReadout(model.activeTipUp, vertical: true))
                         .disabled(!open.contains(.tipUp)).lockedForStep(!open.contains(.tipUp))
                     SliderRow(label: "Side", value: Binding(get: { model.activeTipSide }, set: { model.activeTipSide = $0 }),
-                              range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.sideWord(model.activeTipSide)))
+                              range: -model.tipLimit...model.tipLimit,
+                              readout: ShotPanel.tipReadout(model.activeTipSide, vertical: false))
                         .disabled(!open.contains(.tipSide)).lockedForStep(!open.contains(.tipSide))
                     if model.elevationAllowed && !model.racked {
                         // Degrees on the slider, the sine in the model (the solver's unit). The top is the last angle
@@ -452,7 +470,8 @@ private struct SliderRow: View {
     let readout: String
     @Environment(\.dynamicTypeSize) private var typeSize
     @ScaledMetric(relativeTo: .caption) private var labelWidth = 64
-    @ScaledMetric(relativeTo: .caption) private var readoutWidth = 72
+    /// Wide enough for the tip and side readouts' word and millimetres ("follow, +8.5 mm", 0.7.5).
+    @ScaledMetric(relativeTo: .caption) private var readoutWidth = 112
 
     var body: some View {
         Group {

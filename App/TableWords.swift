@@ -34,6 +34,9 @@
 //            circle is), and the card's verdict and idea as spoken lines;
 //          - item 47: the stance is folded into the aim's words (stanceLine) instead of being announced on each
 //            change.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 4: the spoken bar-billiards ruling says a fallen white peg loses "this break's points", not this
+//          turn's; the tip's spoken value already names its millimetres (tipAmount), as the fine controls now show them.)
 // SRP/DRY check: Pass - checked CaptionEngine (Captions.swift: the per-event physics sentences, reused as they are
 //          for "Step through the shot"; its ball-name strings are reused here), EightBallTypes (pocket, group and
 //          foul titles, reused) and EightBallJudge (its line tests now live in TableLines, used here). The ruling
@@ -654,7 +657,9 @@ enum TableWords {
         // The pegs and the clock come before the points, as on the ruling card.
         for reason in r.reasons {
             switch reason {
-            case .whitePegDown: out.append(String(localized: "The white peg went down: this turn's points are lost."))
+            // "This break's points" (0.7.5): in bar billiards the points at stake are the break's, as the ruling card
+            // and the bar-down line say; "turn" read as if the whole game's score went.
+            case .whitePegDown: out.append(String(localized: "The white peg went down: this break's points are lost."))
             case .blackPegDown: out.append(String(localized: "The black peg went down: the whole score is lost."))
             case .timeUp: out.append(String(localized: "Time is up."))
             default: break

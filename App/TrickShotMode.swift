@@ -1,4 +1,8 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 1, 9 and 10: the player's cue angle is kept with their settings, so Your turn after Watch it keeps a
+//          raised cue; markers carries the cue ball's finish circle (Stop Dead); recordingReplaced follows a surface
+//          change mid-answer (the shared part is RecordingFollow, at the end of this file, also used by LessonMode).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F10:
 //          startsAtTrick is internal for the what-if's Keep; recordingReplaced is a stub learn-modes fills.)
 // Edited: GPT 6.2 Sol, 21-November-2026 (draw-massé carom lesson).
@@ -29,7 +33,9 @@
 //          Launch flags (handled by the table layer at start-up): -trickList opens the list over the menu, -trick <id>
 //          opens a shot ready to watch, -trickPlay <id> opens it and plays the solution.
 // SRP/DRY check: Pass - flow only. The shot data is TrickShots, the judging is TrickShotJudge, the views are
-//          TrickShotViews; the table is driven through ShowpieceModel's existing methods, not copies of them.
+//          TrickShotViews; the table is driven through ShowpieceModel's existing methods, not copies of them. The small
+//          RecordingFollow helper at the end is the one copy of what this mode and LessonMode both do when the model
+//          re-solves the recording on screen.
 import BreakdownLensModel
 import BreakdownPhysics
 import Foundation
@@ -107,9 +113,10 @@ final class TrickShotMode {
     /// The mechanical bridge is drawn under the cue while the player lines up a shot that needs it.
     var showsBridge: Bool { current?.usesBridge == true && phase == .aiming }
 
-    /// Balls and pockets to mark on the table: the balls the goal names and the pockets they must drop in. Shown while
-    /// the shot is set up and while the player lines up, not while anything is moving.
-    var markers: (balls: [Int], pockets: [Int])? {
+    /// Balls and pockets to mark on the table: the balls the goal names and the pockets they must drop in, and the
+    /// circle the cue ball must finish in (Stop Dead's, 0.7.5; the same shape as LessonMode.markers, drawn by the same
+    /// GoalMarks). Shown while the shot is set up and while the player lines up, not while anything is moving.
+    var markers: (balls: [Int], pockets: [Int], zone: TrickZone?)? {
         guard let shot = current else { return nil }
         switch phase {
         case .ready, .aiming, .judged, .offScript:
@@ -118,9 +125,9 @@ final class TrickShotMode {
             return nil
         }
         if let first = shot.goal.firstHit, let second = shot.goal.secondHit {
-            return ([first, second], [])
+            return ([first, second], [], nil)
         }
-        return (shot.goal.drops.map(\.ball), shot.goal.drops.compactMap(\.pocket))
+        return (shot.goal.drops.map(\.ball), shot.goal.drops.compactMap(\.pocket), shot.goal.cueZone)
     }
 
     /// True once this shot's answer has been watched, so its path can be offered beside a try.
@@ -269,8 +276,10 @@ final class TrickShotMode {
                   model.timelineVersion != solutionVersion else { return }
             judgedVersion = model.timelineVersion
             guard startsAtTrick(attempt) else { phase = .offScript; return }
+            // The cue angle too (0.7.5): without it, Your turn after Watch it put a raised cue back to level.
             playerSettings[shot.id] = TrickSettings(aim: attempt.aim, power: attempt.power, tipUp: attempt.tipUp,
-                                                    tipSide: attempt.tipSide)
+                                                    tipSide: attempt.tipSide,
+                                                    elevation: attempt.elevation > 0 ? attempt.elevation : nil)
             let verdict = TrickShotJudge.verdict(for: shot, attempt: attempt)
             // The trick card is the one result card: it carries the retry's one-sentence difference itself, and the
             // general comparison card hides while this mode is active (ComparisonCard), so the facts are kept, not
@@ -305,19 +314,36 @@ final class TrickShotMode {
                      : TrickSettings(aim: 0, power: 3, tipUp: 0, tipSide: 0)
     }
 
-    /// Keep what the player had dialled in before the answer replaces it on the table.
+    /// Keep what the player had dialled in before the answer replaces it on the table, the cue angle included (0.7.5;
+    /// the break is always struck level).
     private func rememberPlayerSettings() {
         guard let shot = current, phase == .ready || phase == .aiming || phase == .offScript || isJudged else { return }
         playerSettings[shot.id] = shot.isBreak
             ? TrickSettings(aim: model.aimOffset, power: model.power, tipUp: model.tipHeight, tipSide: model.breakTipSide)
-            : TrickSettings(aim: model.aimDegrees, power: model.shotPower, tipUp: model.shotTipUp, tipSide: model.shotTipSide)
+            : TrickSettings(aim: model.aimDegrees, power: model.shotPower, tipUp: model.shotTipUp, tipSide: model.shotTipSide,
+                            elevation: model.shotElevation > 0 ? model.shotElevation : nil)
     }
 
     private var isJudged: Bool { if case .judged = phase { return true } else { return false } }
 
-    /// The model re-solved the recording on screen (a surface change): the one with version `old` is now `new`.
-    /// Stub from the 0.7.5 foundation; learn-modes fills it so a playing answer or attempt follows its recording.
-    func recordingReplaced(old: Int, new: Int) {}
+    /// The model re-solved the recording on screen (a surface change, ShowpieceModel.setSurface): the one with version
+    /// `old` is now `new`. Before 0.7.5 the answer's version no longer matched, so a surface picked while the answer
+    /// played left update() waiting for ever and the explanation never came. Now the versions this mode keeps follow
+    /// the recording (RecordingFollow), and an answer being explained is explained again on the new cloth: its kept
+    /// path rebuilt from the new recording, its moments found again, and the slow Lens replay started over.
+    func recordingReplaced(old: Int, new: Int) {
+        guard let shot = current else { return }
+        RecordingFollow.move(&solutionVersion, old: old, new: new)
+        RecordingFollow.move(&judgedVersion, old: old, new: new)
+        guard phase == .explaining, solutionVersion == new, !shot.isBreak else { return }
+        // setSurface calls this before it swaps in the re-solved attempt, so the attempt is resolved here from the new
+        // recording (the one on screen now) rather than read from model.currentAttempt, which still holds the old one.
+        if let a = RecordingFollow.attemptOnScreen(model) {
+            answerPath = AnswerPath(shotID: shot.id, cue: a.ghostPaths().cue, rest: a.cueBallScratched ? nil : a.cueRest)
+        }
+        model.setPaceSignature(TrickSignature.events(forTrick: shot.id, in: model.timeline, captions: model.captions))
+        model.replay(withLens: true)
+    }
 
     /// True when an attempt started from this trick's own start (not from wherever the last shot left the balls).
     func startsAtTrick(_ attempt: ShotAttempt) -> Bool {
@@ -344,5 +370,24 @@ final class TrickShotMode {
     private func ride(_ on: Bool) {
         // Watching the answer rides behind the cue ball; the player's own turn goes back to the table camera.
         model.setRide(on)
+    }
+}
+
+/// The part of following a re-solved recording (0.7.5, a surface change mid-answer) that TrickShotMode and LessonMode
+/// share, written once: a recording version a mode keeps moves from the old number to the new one, and the attempt on
+/// screen is read from the new recording. ShowpieceModel.setSurface calls each mode's recordingReplaced(old:new:)
+/// right after loading the re-solved recording and before it swaps in the re-solved attempt, so model.currentAttempt
+/// still holds the old timeline at that moment; attemptOnScreen resolves it onto the new one, as setSurface itself
+/// does a moment later (ShotAttempt.resolved, on the model's surface, which setSurface has already changed).
+@MainActor
+enum RecordingFollow {
+    /// A kept version that named the old recording now names the new one; any other version is left alone.
+    static func move(_ version: inout Int, old: Int, new: Int) {
+        if version == old { version = new }
+    }
+
+    /// The attempt on screen, on the recording the model has just loaded.
+    static func attemptOnScreen(_ model: ShowpieceModel) -> ShotAttempt? {
+        model.currentAttempt?.resolved(on: model.timeline, surface: model.surface)
     }
 }
