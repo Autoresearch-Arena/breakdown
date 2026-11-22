@@ -108,10 +108,19 @@ def call(method, path, body=None, soft=False):
 def builds(platform=None):
     """The app's newest builds, newest first; only one platform's when `platform` (IOS or MAC_OS) is given. Both
     platforms share build numbers, so anything that matches a build by number must name the platform."""
-    path = f"/v1/builds?filter[app]={APP_ID}&sort=-uploadedDate&limit=50"
-    if platform:
-        path += f"&filter[preReleaseVersion.platform]={platform}"
-    return call("GET", path)["data"]
+    # The platform lives on each build's pre-release version, so ask for those alongside and match here, rather than
+    # rely on a server-side filter: a refused filter would stop the run after the iPhone build was already uploaded.
+    found = call("GET", f"/v1/builds?filter[app]={APP_ID}&sort=-uploadedDate&limit=50&include=preReleaseVersion")
+    if not platform:
+        return found["data"]
+    platforms = {item["id"]: item["attributes"].get("platform") for item in found.get("included", [])
+                 if item["type"] == "preReleaseVersions"}
+
+    def platform_of(build):
+        link = (build.get("relationships", {}).get("preReleaseVersion", {}).get("data") or {})
+        return platforms.get(link.get("id"))
+
+    return [build for build in found["data"] if platform_of(build) == platform]
 
 
 def marketing_version():

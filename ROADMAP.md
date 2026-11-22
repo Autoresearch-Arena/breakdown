@@ -4,29 +4,29 @@ Date: 10-November-2026
 Edited: Claude Opus 5.5 High, 21-November-2026 (replaced with a pointer to the order-of-work plan of 21 November, per
         plans/21-Nov-2026-release-safety-plan.md package 4; the items that are done (pocket jaws and knuckles, spin and
         elevation controls, trick shots, replay comparison) are removed rather than repeated here).
+Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0: the five steps of the 21 November order shipped in 0.6.6, so
+        the next step is the bug plan for 0.7.0, then what the spec still lacks).
 PURPOSE: Say in one place where the list of unfinished work lives and what is next, without duplicating the plans.
 SRP/DRY check: Pass - the plans folder holds the steps; this page only points at them and names the order.
 -->
 # Roadmap
 
-The work still to do is planned in the plans folder, and its front page says what comes first and why:
-[plans/21-Nov-2026-award-gaps-order-plan.md](plans/21-Nov-2026-award-gaps-order-plan.md). That page is the roadmap;
-this one only summarises it.
+The work still to do is planned in the plans folder. The plan being worked on now is
+[plans/21-Nov-2026-bugs-after-0-6-6-plan.md](plans/21-Nov-2026-bugs-after-0-6-6-plan.md); this page only summarises it.
+
+Done in 0.6.6, from the order of 21 November: the physics proved against real-table checks and made the default,
+real rails, a real cue strike with miscues, pockets that refuse a fast ball, eight-ball and nine-ball with a computer
+opponent, the opening for a first-time player, six lessons, iPad and Mac layouts, the table spoken aloud, new sound,
+and scores on the three other tables.
 
 ## Next, in order
 
-1. **Prove the physics.** Finish the spec's test list, check the physics against real-table behaviour, and put every
-   physics change behind a switch so authored shots keep working (physics proof plan). The tests run before every
-   upload (release safety plan).
-2. **Make it real.** Real rails, a real cue strike with miscues, pockets that can refuse a fast ball, and a guard
-   against wedged balls (rails, cue-strike, and pockets-and-jams plans).
-3. **Play a real game.** Eight-ball and nine-ball for two players with turns, fouls, ball in hand and a winner (rules
-   and games plan), then a computer opponent.
-4. **Tune once, re-author once.** Tune the guessed numbers against the real-table checks, re-author every trick shot
-   and puzzle on the new physics, and make it the default (physics proof plan, package 4).
-5. **Finish the rest.** The opening for a first-time player and lessons, the look of the table up close, iPad and Mac
-   as themselves, the table spoken aloud for blind players, sound, and scores on the other three tables (their plans
-   in the same folder).
+1. **Version 0.7.0: every bug the review of 0.6.6 found** (the bug plan): the stroke and the first minute, touch and
+   zoom, free play and lessons, matches and the computer, the three other tables, the physics the Lens shows, the Mac
+   and iPad pointer, the look and sound, the release (a layered icon, the Mac on TestFlight, the store page), the
+   controller and translations, and VoiceOver last.
+2. **What the spec still lacks** (its status note): the what-if fork in the Lens first, then predict-the-shot and the
+   break challenge, a daily challenge, and a computer opponent for the three other tables.
 
 ## Later
 
