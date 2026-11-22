@@ -1,0 +1,790 @@
+{
+ "keys": [
+  "Call your shot first.",
+  "Draw the cue back further before you push through.",
+  "Put the ball down on a free spot first.",
+  "This game is over.",
+  "It's the computer's turn.",
+  "Wait for the balls to stop.",
+  "Answer the question on the card first.",
+  "Read the ruling card first.",
+  "Still working out the last shot.",
+  "White",
+  "Red",
+  "Yellow",
+  "Marked white",
+  "Marked red"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Call your shot first.",
+   "text": "Primero canta tu tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Call your shot first.",
+   "text": "Annonce d'abord ton coup."
+  },
+  {
+   "culture": "de",
+   "key": "Call your shot first.",
+   "text": "Sag zuerst deinen Stoß an."
+  },
+  {
+   "culture": "it",
+   "key": "Call your shot first.",
+   "text": "Prima chiama il tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "Call your shot first.",
+   "text": "Primeiro anuncia a tua jogada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Call your shot first.",
+   "text": "Primeiro cante sua jogada."
+  },
+  {
+   "culture": "ja",
+   "key": "Call your shot first.",
+   "text": "先にショットをコールしよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Call your shot first.",
+   "text": "먼저 샷을 콜하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Call your shot first.",
+   "text": "先叫球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Call your shot first.",
+   "text": "Сначала закажи удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Call your shot first.",
+   "text": "أعلن ضربتك أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Lleva el taco más atrás antes de empujar."
+  },
+  {
+   "culture": "fr",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Recule davantage la queue avant de pousser."
+  },
+  {
+   "culture": "de",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Hol mit dem Queue weiter aus, bevor du durchstößt."
+  },
+  {
+   "culture": "it",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Porta la stecca più indietro prima di spingere."
+  },
+  {
+   "culture": "pt",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Puxa o taco mais para trás antes de empurrar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Puxe o taco mais para trás antes de empurrar."
+  },
+  {
+   "culture": "ja",
+   "key": "Draw the cue back further before you push through.",
+   "text": "押し出す前に、キューをもっと後ろに引こう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Draw the cue back further before you push through.",
+   "text": "밀기 전에 큐를 더 뒤로 당기세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Draw the cue back further before you push through.",
+   "text": "往前推之前，先把球杆再往后拉一些。"
+  },
+  {
+   "culture": "ru",
+   "key": "Draw the cue back further before you push through.",
+   "text": "Отведи кий дальше, прежде чем толкать."
+  },
+  {
+   "culture": "ar",
+   "key": "Draw the cue back further before you push through.",
+   "text": "اسحب العصا إلى الخلف أكثر قبل أن تدفع."
+  },
+  {
+   "culture": "es",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Primero deja la bola en un sitio libre."
+  },
+  {
+   "culture": "fr",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Pose d'abord la bille sur une place libre."
+  },
+  {
+   "culture": "de",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Leg die Kugel zuerst auf einen freien Platz."
+  },
+  {
+   "culture": "it",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Prima posa la bilia in un punto libero."
+  },
+  {
+   "culture": "pt",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Primeiro pousa a bola num sítio livre."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Primeiro coloque a bola num lugar livre."
+  },
+  {
+   "culture": "ja",
+   "key": "Put the ball down on a free spot first.",
+   "text": "先にボールを空いている場所に置こう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Put the ball down on a free spot first.",
+   "text": "먼저 공을 빈자리에 내려놓으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Put the ball down on a free spot first.",
+   "text": "先把球放到空位上。"
+  },
+  {
+   "culture": "ru",
+   "key": "Put the ball down on a free spot first.",
+   "text": "Сначала поставь шар на свободное место."
+  },
+  {
+   "culture": "ar",
+   "key": "Put the ball down on a free spot first.",
+   "text": "ضع الكرة في مكان فارغ أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "This game is over.",
+   "text": "Esta partida ha terminado."
+  },
+  {
+   "culture": "fr",
+   "key": "This game is over.",
+   "text": "Cette partie est terminée."
+  },
+  {
+   "culture": "de",
+   "key": "This game is over.",
+   "text": "Dieses Spiel ist vorbei."
+  },
+  {
+   "culture": "it",
+   "key": "This game is over.",
+   "text": "Questa partita è finita."
+  },
+  {
+   "culture": "pt",
+   "key": "This game is over.",
+   "text": "Este jogo acabou."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This game is over.",
+   "text": "Esta partida acabou."
+  },
+  {
+   "culture": "ja",
+   "key": "This game is over.",
+   "text": "このゲームは終わりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "This game is over.",
+   "text": "이 게임은 끝났어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This game is over.",
+   "text": "这局已经结束了。"
+  },
+  {
+   "culture": "ru",
+   "key": "This game is over.",
+   "text": "Эта партия окончена."
+  },
+  {
+   "culture": "ar",
+   "key": "This game is over.",
+   "text": "انتهت هذه المباراة."
+  },
+  {
+   "culture": "es",
+   "key": "It's the computer's turn.",
+   "text": "Le toca al ordenador."
+  },
+  {
+   "culture": "fr",
+   "key": "It's the computer's turn.",
+   "text": "C'est au tour de l'ordinateur."
+  },
+  {
+   "culture": "de",
+   "key": "It's the computer's turn.",
+   "text": "Der Computer ist dran."
+  },
+  {
+   "culture": "it",
+   "key": "It's the computer's turn.",
+   "text": "Tocca al computer."
+  },
+  {
+   "culture": "pt",
+   "key": "It's the computer's turn.",
+   "text": "É a vez do computador."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It's the computer's turn.",
+   "text": "É a vez do computador."
+  },
+  {
+   "culture": "ja",
+   "key": "It's the computer's turn.",
+   "text": "コンピューターの番です。"
+  },
+  {
+   "culture": "ko",
+   "key": "It's the computer's turn.",
+   "text": "컴퓨터 차례예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It's the computer's turn.",
+   "text": "现在轮到电脑。"
+  },
+  {
+   "culture": "ru",
+   "key": "It's the computer's turn.",
+   "text": "Сейчас ход компьютера."
+  },
+  {
+   "culture": "ar",
+   "key": "It's the computer's turn.",
+   "text": "الدور الآن على الكمبيوتر."
+  },
+  {
+   "culture": "es",
+   "key": "Wait for the balls to stop.",
+   "text": "Espera a que se paren las bolas."
+  },
+  {
+   "culture": "fr",
+   "key": "Wait for the balls to stop.",
+   "text": "Attends que les billes s'arrêtent."
+  },
+  {
+   "culture": "de",
+   "key": "Wait for the balls to stop.",
+   "text": "Warte, bis die Kugeln liegen."
+  },
+  {
+   "culture": "it",
+   "key": "Wait for the balls to stop.",
+   "text": "Aspetta che le bilie si fermino."
+  },
+  {
+   "culture": "pt",
+   "key": "Wait for the balls to stop.",
+   "text": "Espera que as bolas parem."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Wait for the balls to stop.",
+   "text": "Espere as bolas pararem."
+  },
+  {
+   "culture": "ja",
+   "key": "Wait for the balls to stop.",
+   "text": "ボールが止まるまで待とう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Wait for the balls to stop.",
+   "text": "공이 멈출 때까지 기다리세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Wait for the balls to stop.",
+   "text": "等球停下来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Wait for the balls to stop.",
+   "text": "Подожди, пока шары остановятся."
+  },
+  {
+   "culture": "ar",
+   "key": "Wait for the balls to stop.",
+   "text": "انتظر حتى تتوقف الكرات."
+  },
+  {
+   "culture": "es",
+   "key": "Answer the question on the card first.",
+   "text": "Primero responde a la pregunta de la tarjeta."
+  },
+  {
+   "culture": "fr",
+   "key": "Answer the question on the card first.",
+   "text": "Réponds d'abord à la question de la carte."
+  },
+  {
+   "culture": "de",
+   "key": "Answer the question on the card first.",
+   "text": "Beantworte zuerst die Frage auf der Karte."
+  },
+  {
+   "culture": "it",
+   "key": "Answer the question on the card first.",
+   "text": "Prima rispondi alla domanda della scheda."
+  },
+  {
+   "culture": "pt",
+   "key": "Answer the question on the card first.",
+   "text": "Primeiro responde à pergunta do cartão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Answer the question on the card first.",
+   "text": "Primeiro responda à pergunta do cartão."
+  },
+  {
+   "culture": "ja",
+   "key": "Answer the question on the card first.",
+   "text": "先にカードの質問に答えよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Answer the question on the card first.",
+   "text": "먼저 카드의 질문에 답하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Answer the question on the card first.",
+   "text": "先回答卡片上的问题。"
+  },
+  {
+   "culture": "ru",
+   "key": "Answer the question on the card first.",
+   "text": "Сначала ответь на вопрос на карточке."
+  },
+  {
+   "culture": "ar",
+   "key": "Answer the question on the card first.",
+   "text": "أجب عن السؤال في البطاقة أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "Read the ruling card first.",
+   "text": "Primero lee la tarjeta del arbitraje."
+  },
+  {
+   "culture": "fr",
+   "key": "Read the ruling card first.",
+   "text": "Lis d'abord la carte de décision."
+  },
+  {
+   "culture": "de",
+   "key": "Read the ruling card first.",
+   "text": "Lies zuerst die Entscheidungskarte."
+  },
+  {
+   "culture": "it",
+   "key": "Read the ruling card first.",
+   "text": "Prima leggi la scheda della decisione."
+  },
+  {
+   "culture": "pt",
+   "key": "Read the ruling card first.",
+   "text": "Primeiro lê o cartão da decisão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Read the ruling card first.",
+   "text": "Primeiro leia o cartão da decisão."
+  },
+  {
+   "culture": "ja",
+   "key": "Read the ruling card first.",
+   "text": "先に判定カードを読もう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Read the ruling card first.",
+   "text": "먼저 판정 카드를 읽으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Read the ruling card first.",
+   "text": "先看判定卡片。"
+  },
+  {
+   "culture": "ru",
+   "key": "Read the ruling card first.",
+   "text": "Сначала прочитай карточку с решением."
+  },
+  {
+   "culture": "ar",
+   "key": "Read the ruling card first.",
+   "text": "اقرأ بطاقة القرار أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "Still working out the last shot.",
+   "text": "Todavía calculando el último tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Still working out the last shot.",
+   "text": "Le dernier coup est encore en calcul."
+  },
+  {
+   "culture": "de",
+   "key": "Still working out the last shot.",
+   "text": "Der letzte Stoß wird noch berechnet."
+  },
+  {
+   "culture": "it",
+   "key": "Still working out the last shot.",
+   "text": "Sto ancora calcolando l'ultimo tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "Still working out the last shot.",
+   "text": "Ainda a calcular a última jogada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Still working out the last shot.",
+   "text": "Ainda calculando a última jogada."
+  },
+  {
+   "culture": "ja",
+   "key": "Still working out the last shot.",
+   "text": "前のショットをまだ計算中です。"
+  },
+  {
+   "culture": "ko",
+   "key": "Still working out the last shot.",
+   "text": "이전 샷을 아직 계산하고 있어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Still working out the last shot.",
+   "text": "还在计算上一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Still working out the last shot.",
+   "text": "Последний удар ещё считается."
+  },
+  {
+   "culture": "ar",
+   "key": "Still working out the last shot.",
+   "text": "ما زالت الضربة الأخيرة قيد الحساب."
+  },
+  {
+   "culture": "es",
+   "key": "White",
+   "text": "Blanca"
+  },
+  {
+   "culture": "fr",
+   "key": "White",
+   "text": "Blanche"
+  },
+  {
+   "culture": "de",
+   "key": "White",
+   "text": "Weiße"
+  },
+  {
+   "culture": "it",
+   "key": "White",
+   "text": "Bianca"
+  },
+  {
+   "culture": "pt",
+   "key": "White",
+   "text": "Branca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "White",
+   "text": "Branca"
+  },
+  {
+   "culture": "ja",
+   "key": "White",
+   "text": "白球"
+  },
+  {
+   "culture": "ko",
+   "key": "White",
+   "text": "흰 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "White",
+   "text": "白球"
+  },
+  {
+   "culture": "ru",
+   "key": "White",
+   "text": "Белый"
+  },
+  {
+   "culture": "ar",
+   "key": "White",
+   "text": "كرة بيضاء"
+  },
+  {
+   "culture": "es",
+   "key": "Red",
+   "text": "Roja"
+  },
+  {
+   "culture": "fr",
+   "key": "Red",
+   "text": "Rouge"
+  },
+  {
+   "culture": "de",
+   "key": "Red",
+   "text": "Rote"
+  },
+  {
+   "culture": "it",
+   "key": "Red",
+   "text": "Rossa"
+  },
+  {
+   "culture": "pt",
+   "key": "Red",
+   "text": "Vermelha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Red",
+   "text": "Vermelha"
+  },
+  {
+   "culture": "ja",
+   "key": "Red",
+   "text": "赤球"
+  },
+  {
+   "culture": "ko",
+   "key": "Red",
+   "text": "빨간 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Red",
+   "text": "红球"
+  },
+  {
+   "culture": "ru",
+   "key": "Red",
+   "text": "Красный"
+  },
+  {
+   "culture": "ar",
+   "key": "Red",
+   "text": "كرة حمراء"
+  },
+  {
+   "culture": "es",
+   "key": "Yellow",
+   "text": "Amarilla"
+  },
+  {
+   "culture": "fr",
+   "key": "Yellow",
+   "text": "Jaune"
+  },
+  {
+   "culture": "de",
+   "key": "Yellow",
+   "text": "Gelbe"
+  },
+  {
+   "culture": "it",
+   "key": "Yellow",
+   "text": "Gialla"
+  },
+  {
+   "culture": "pt",
+   "key": "Yellow",
+   "text": "Amarela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Yellow",
+   "text": "Amarela"
+  },
+  {
+   "culture": "ja",
+   "key": "Yellow",
+   "text": "黄球"
+  },
+  {
+   "culture": "ko",
+   "key": "Yellow",
+   "text": "노란 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Yellow",
+   "text": "黄球"
+  },
+  {
+   "culture": "ru",
+   "key": "Yellow",
+   "text": "Жёлтый"
+  },
+  {
+   "culture": "ar",
+   "key": "Yellow",
+   "text": "كرة صفراء"
+  },
+  {
+   "culture": "es",
+   "key": "Marked white",
+   "text": "Blanca marcada"
+  },
+  {
+   "culture": "fr",
+   "key": "Marked white",
+   "text": "Blanche marquée"
+  },
+  {
+   "culture": "de",
+   "key": "Marked white",
+   "text": "Markierte Weiße"
+  },
+  {
+   "culture": "it",
+   "key": "Marked white",
+   "text": "Bianca segnata"
+  },
+  {
+   "culture": "pt",
+   "key": "Marked white",
+   "text": "Branca marcada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Marked white",
+   "text": "Branca marcada"
+  },
+  {
+   "culture": "ja",
+   "key": "Marked white",
+   "text": "マーク付き白球"
+  },
+  {
+   "culture": "ko",
+   "key": "Marked white",
+   "text": "표시된 흰 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Marked white",
+   "text": "带标记的白球"
+  },
+  {
+   "culture": "ru",
+   "key": "Marked white",
+   "text": "Белый с меткой"
+  },
+  {
+   "culture": "ar",
+   "key": "Marked white",
+   "text": "كرة بيضاء معلَّمة"
+  },
+  {
+   "culture": "es",
+   "key": "Marked red",
+   "text": "Roja marcada"
+  },
+  {
+   "culture": "fr",
+   "key": "Marked red",
+   "text": "Rouge marquée"
+  },
+  {
+   "culture": "de",
+   "key": "Marked red",
+   "text": "Markierte Rote"
+  },
+  {
+   "culture": "it",
+   "key": "Marked red",
+   "text": "Rossa segnata"
+  },
+  {
+   "culture": "pt",
+   "key": "Marked red",
+   "text": "Vermelha marcada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Marked red",
+   "text": "Vermelha marcada"
+  },
+  {
+   "culture": "ja",
+   "key": "Marked red",
+   "text": "マーク付き赤球"
+  },
+  {
+   "culture": "ko",
+   "key": "Marked red",
+   "text": "표시된 빨간 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Marked red",
+   "text": "带标记的红球"
+  },
+  {
+   "culture": "ru",
+   "key": "Marked red",
+   "text": "Красный с меткой"
+  },
+  {
+   "culture": "ar",
+   "key": "Marked red",
+   "text": "كرة حمراء معلَّمة"
+  }
+ ]
+}

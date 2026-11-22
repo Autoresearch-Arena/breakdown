@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 foundation, docs/v07-contracts.md section 1.3: the two
+//          declarations the equipment stream fills for the automatic cue pick (plan item 57): CueKind, every cue that
+//          has art in art/equipment, and CueChoice, the cue picked for a shot with the reason it was picked. Nothing
+//          reads them yet; the house cue and every solve are unchanged.)
 // PURPOSE: The cue as numbers (plans/21-Nov-2026-stroke-and-power-plan.md). Power in Breakdown means how hard the
 //          player swings, not how fast the ball leaves, so the cue's weight matters: the same swing sends the ball
 //          faster with a heavier cue. The model's power value stays exactly what it has always been, the launch speed
@@ -15,6 +19,52 @@
 //          PowerWords (the plain words stay there; this file has numbers only).
 import BreakdownPhysics
 import Foundation
+
+/// Every cue the game can hand the player: one per cue modelled in art/equipment (the Blender files). The game picks
+/// the cue for each shot itself and says so (the Boss's decision: cues are only ever added, the pick is automatic,
+/// with a clear indicator). Raw values are stored and compared, so never rename one; append new cues at the end.
+/// The house cue's raw value is CueProfile's existing house id, so a profile's id can be its kind's raw value.
+enum CueKind: String, CaseIterable, Codable, Sendable {
+    /// The house maple cue: every shot that needs nothing special (house-maple.blend).
+    case house
+    /// The heavy break cue (oxblood-break.blend). Named breakCue because `break` is a Swift keyword.
+    case breakCue = "break"
+    /// The short, light jump cue (amber-jump.blend).
+    case jump
+    /// The short, heavier massé cue (masse-cue.blend).
+    case masse
+    /// A plain playing cue: rosewood butt, a lighter butt than the house cue (rosewood-four-point.blend).
+    case rosewoodFourPoint
+    /// A plain playing cue with a low-deflection carbon shaft (cobalt.blend).
+    case cobalt
+}
+
+/// The cue the game picked for the next shot, and why. The equipment stream writes the pick (CueProfile.choice) and the
+/// indicator line on the stance card; the model holds the current one (ShowpieceModel.cueChoice).
+struct CueChoice: Equatable, Codable, Sendable {
+    /// Why this cue: the reason the indicator line names.
+    enum Reason: String, CaseIterable, Codable, Sendable {
+        /// Nothing special about the shot: the house cue.
+        case standard
+        /// A break from the rack: the break cue.
+        case breakShot
+        /// The cue ball is to jump: the jump cue.
+        case jump
+        /// A steeply raised cue with side spin, to curve the ball: the massé cue.
+        case steepMasse
+    }
+
+    var kind: CueKind
+    var reason: Reason
+
+    init(kind: CueKind, reason: Reason) {
+        self.kind = kind
+        self.reason = reason
+    }
+
+    /// The house cue for an ordinary shot: what every shot used before the pick existed.
+    static let standard = CueChoice(kind: .house, reason: .standard)
+}
 
 struct CueProfile: Equatable, Sendable {
     /// A fixed identifier, never shown: saved choices and comparisons use it.
