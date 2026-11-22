@@ -9,6 +9,11 @@
 //          steps is read from the rules' constants (FivePinRules, BarBilliardsRules), never retyped.
 //          Read by MatchViews (banner, points card, result), MatchWords (ball lists on these tables), TableWords
 //          (spoken scores), TableList and TableGamePage (game lines and rules), and the tests.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: bumper pool's and five-pin's game lines name
+//          the computer, which now plays both, instead of two players; so does the opening rules step of each ("The
+//          idea": you play white, or the white ball, and the computer the other side). The person always sits in the
+//          first seat and the computer in the second (MatchStartRequest with computer set), so the colours hold.
+//          Every other rules step is unchanged.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: bar billiards' rules page describes the game played alone, the only
 //          way it is offered now.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 20 and 21: the time-up line and the rules page's
@@ -217,11 +222,12 @@ enum TableGameWords {
 
     // MARK: The Tables list and How to play
 
-    /// The game a table plays, in one line for the Tables list.
+    /// The game a table plays, in one line for the Tables list and the table's game page. Bumper pool and five-pin
+    /// are played against the computer (0.7.4), so their lines say so; the target is the rules' own constant.
     static func gameLine(_ kind: MatchKind) -> String {
         switch kind {
-        case .bumperPool: return String(localized: "Two players race to sink five balls each in the far cup.")
-        case .fivePin: return String(localized: "Two players score with the pins and the red, first to \(FivePinRules.standardTarget).")
+        case .bumperPool: return String(localized: "Race the computer to sink all your balls in your cup.")
+        case .fivePin: return String(localized: "Score off the pins and the red against the computer, first to \(FivePinRules.standardTarget).")
         case .barBilliards: return String(localized: "Score as much as you can before the clock runs out.")
         case .eightBall, .nineBall: return ""
         }
@@ -238,7 +244,7 @@ enum TableGameWords {
         case .bumperPool:
             return [
                 (String(localized: "The idea"),
-                 String(localized: "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.")),
+                 String(localized: "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.")),
                 (String(localized: "Your ball"),
                  String(localized: "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.")),
                 (String(localized: "Keep your turn"),
@@ -251,7 +257,7 @@ enum TableGameWords {
         case .fivePin:
             return [
                 (String(localized: "The idea"),
-                 String(localized: "Two players: one plays the white, the other the yellow. The red ball and the five pins in the middle are shared.")),
+                 String(localized: "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.")),
                 (String(localized: "A fair shot"),
                  String(localized: "Strike your own ball so it hits the other player's ball first. Points come from what that ball and the red do next.")),
                 (String(localized: "Points"),

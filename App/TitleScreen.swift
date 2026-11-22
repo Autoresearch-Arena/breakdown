@@ -1,5 +1,11 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: the computer plays all four table games, so
+//          the Play list gains Bumper pool and Five-pin billiards against it, and the Play row's line and the menu's
+//          intro say "four games". Trick shots moves directly under Play with a line that says what the shots are for
+//          (watch one, see why it works, make it). The level picker is the model's shared computerLevel, the same
+//          choice the Tables pages show (ComputerLevelPicker, below). How to play no longer opens with the lessons: it
+//          ends with "Watch the trick shots", and the lessons are named there as an option.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: two players on one device is gone from the Play list; the Boss: passing one phone between two people is not a game to offer)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: playing the computer is the game's offer. The menu's intro and
 //          the Play row's line name the computer, not a friend; the Play list opens on the computer's level and its
@@ -61,17 +67,18 @@
 //          (FirstInstruction) and gains a Controls page: the push, the bridge finger, practice strokes, the Pencil, tap
 //          to aim, pinch, pan, double tap, the pointer and keys, and the controller. The store scenes' launch flags
 //          skip the menu.)
-// PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
-//          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
-//          or the saved match after a relaunch), Play (Continue match, then Eight-ball and Nine-ball against the
-//          computer at a chosen level, Practice, Straight stroke, and Two players last), Trick shots,
-//          Behind the 8-Ball, Tables, Watch the intro (the showpiece opening with the slow-motion Physics Lens), How to
-//          play (the steps, the controls and the rules, in a sheet) and Options (a sheet). The next step (a lesson, its
-//          trick shot, a game against the easy computer) comes first after Continue, then Learn (the lessons).
+// PURPOSE: The main menu, laid over the live table, dimmed, so the room stays visible behind it. (A first launch
+//          skips it and goes straight to the opening; it is seen from the second launch on, or from the back button.)
+//          It names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the
+//          table, or the saved match after a relaunch), Play (Continue match, then the computer's level and the four
+//          games against it: Eight-ball, Nine-ball, Bumper pool and Five-pin billiards; then Practice and Straight
+//          stroke), Trick shots, Learn (the lessons, offered, never pushed), Behind the 8-Ball, Tables, Watch the
+//          intro (the showpiece opening with the slow-motion Physics Lens), How to play (the steps, the controls and
+//          the rules, in a sheet) and Options (a sheet). Nothing here offers two people sharing one device.
 //          It changes the model only through its menu methods (closeMenu, startGame, watchBreak, playTable via
-//          TableList) and the match methods of the model contract (startMatch, continueSavedMatch), and the modes'
-//          list switches and end(). Launch switches that open a specific screen for testing skip it, so the
-//          screenshots those switches take stay as before.
+//          TableList), the match methods of the model contract (startMatch through MatchStartRequest,
+//          continueSavedMatch), the shared computerLevel, and the modes' list switches and end(). Launch switches that
+//          open a specific screen for testing skip it, so the screenshots those switches take stay as before.
 // SRP/DRY check: Pass - menu and instructions only. Options live in GameSettings; fonts come from Theme, colours from
 //          Palette, and the controls named in the instructions are the real labels in PlaybackControls, ShotPanel and
 //          AimOverlay. Progress is read from the modes (TrickShotMode.isDone, EightBallMode.medals), never stored here.
@@ -121,12 +128,9 @@ struct TitleScreen: View {
     @State private var howToOpen = false
     @State private var optionsOpen = false
     @State private var tablesOpen = false
-    /// The Play list (the computer's games, Practice, Straight stroke, Two players) replaces the main list inside the
-    /// same card.
+    /// The Play list (the computer's level and its four games, Practice, Straight stroke) replaces the main list
+    /// inside the same card. The level itself lives on the model (computerLevel), shared with the Tables pages.
     @State private var playListOpen = false
-    /// The two-player list (Eight-ball and Nine-ball on one device) replaces the Play list inside the same card.
-    /// The level picked for a game against the computer (kept while the app runs).
-    @State private var computerLevel: ComputerLevel = .medium
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
     /// -noTitle is there for anyone who wants the table straight away. The store scenes (StoreScene.flags) put their
@@ -141,7 +145,7 @@ struct TitleScreen: View {
 
     /// The menu's own one line about the game: the same idea the store page leads with (item 39).
     private static var intro: String {
-        String(localized: "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.")
+        String(localized: "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.")
     }
 
     /// How strongly the table is dimmed behind the menu. Lighter while the opening's slow Lens replay plays behind it on
@@ -249,13 +253,15 @@ struct TitleScreen: View {
                 }
                 .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
-            MenuRow(title: "Play", line: "Eight-ball or nine-ball against the computer, or practise on your own.",
+            MenuRow(title: "Play", line: "Four games against the computer, or practise on your own.",
                     symbol: "circle.grid.cross", prominent: playHighlighted) { playListOpen = true }
                 .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
+            // 0.7.4: the trick shots sit directly under Play, where people look first: they are the coolest thing the
+            // table shows. The lessons follow as an ordinary entry.
+            MenuRow(title: "Trick shots", line: "Watch a shot that looks impossible, see why it works, then make it.",
+                    symbol: "wand.and.sparkles", mark: trickMark) { model.trickMode.listOpen = true }
             MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
                     symbol: "graduationcap", mark: lessonMark) { model.lessonMode.listOpen = true }
-            MenuRow(title: "Trick shots", line: "Shots that make people stare, easiest first.", symbol: "wand.and.sparkles",
-                    mark: trickMark) { model.trickMode.listOpen = true }
             MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
                     symbol: "8.circle.fill", mark: medalMark) { model.eightBallMode.listOpen = true }
             MenuRow(title: "Tables", line: "Other tables, each a game of its own.", symbol: "square.grid.2x2") {
@@ -352,9 +358,9 @@ struct TitleScreen: View {
         }
     }
 
-    /// The computer first: its level and its two games lead the list, so one tap on Play and one on a game starts a
-    /// match against it. Practice and the stroke drill follow, and two players on one device is the last row, a plain
-    /// way in to its own list rather than an offer.
+    /// The computer first: its level and its four games lead the list, so one tap on Play and one on a game starts a
+    /// match against it. Practice and the stroke drill follow. The level is the model's (computerLevel), so a level
+    /// picked here is the one the Tables pages show, and the reverse.
     private var playList: some View {
         VStack(spacing: 10) {
             listHeader("Play") { playListOpen = false }
@@ -366,24 +372,29 @@ struct TitleScreen: View {
                 .font(Theme.heading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityAddTraits(.isHeader)
-            Picker(String(localized: "Level"), selection: $computerLevel) {
-                ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
-            }
-            .pickerStyle(.segmented)
-            Text(computerLevel.line)
-                .font(Theme.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+            ComputerLevelPicker(model: model)
             // Highlighted (and on Return) when no saved match is waiting; with one, Continue match keeps both.
             MenuRow(title: "Eight-ball", line: "You against the computer. Claim a group, clear it, sink the 8.",
-                    symbol: "8.circle", prominent: !model.hasSavedMatch, mark: recordMark(.eightBall, level: computerLevel)) {
-                start(MatchStartRequest(kind: .eightBall, computer: computerLevel))
+                    symbol: "8.circle", prominent: !model.hasSavedMatch,
+                    mark: recordMark(.eightBall, level: model.computerLevel)) {
+                start(MatchStartRequest(kind: .eightBall, computer: model.computerLevel))
             }
             .keyboardShortcut(model.hasSavedMatch ? nil : KeyboardShortcut.defaultAction)
             MenuRow(title: "Nine-ball", line: "You against the computer. Lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle", mark: recordMark(.nineBall, level: computerLevel)) {
-                start(MatchStartRequest(kind: .nineBall, computer: computerLevel))
+                    symbol: "9.circle", mark: recordMark(.nineBall, level: model.computerLevel)) {
+                start(MatchStartRequest(kind: .nineBall, computer: model.computerLevel))
+            }
+            // The other tables' games (0.7.4: the computer plays them too), named as the notebook and the Tables list
+            // name them. The match itself puts its own table on (MatchMode, from the request's kind).
+            MenuRow(verbatimTitle: NotebookWords.gameName(.bumperPool),
+                    verbatimLine: String(localized: "You against the computer. Bank your balls past the bumpers into your cup."),
+                    symbol: TableKind.bumperPool.symbol, mark: recordMark(.bumperPool, level: model.computerLevel)) {
+                start(MatchStartRequest(kind: .bumperPool, computer: model.computerLevel))
+            }
+            MenuRow(verbatimTitle: NotebookWords.gameName(.fivePin),
+                    verbatimLine: String(localized: "You against the computer. Drive its ball into the pins. First to \(FivePinRules.standardTarget)."),
+                    symbol: TableKind.fivePin.symbol, mark: recordMark(.fivePin, level: model.computerLevel)) {
+                start(MatchStartRequest(kind: .fivePin, computer: model.computerLevel))
             }
             MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle") {
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
@@ -451,6 +462,36 @@ struct TitleScreen: View {
         model.continueSavedMatch()
         model.closeMenu()
         onPlay()
+    }
+}
+
+// MARK: The computer's level
+
+/// The computer's level (Easy, Medium, Hard) as a segmented choice, and one line on what that level plays like. Bound
+/// to the model's computerLevel, so the main menu's Play list and the Tables pages of bumper pool and five-pin show and
+/// set one shared choice (kept while the app runs). The model is @Observable, so reading computerLevel here redraws
+/// the picker and the line whichever screen changed it.
+struct ComputerLevelPicker: View {
+    let model: ShowpieceModel
+    /// Centred in the menu's card; leading on a Tables page, where everything else is leading.
+    var leading = false
+
+    var body: some View {
+        VStack(alignment: leading ? .leading : .center, spacing: 10) {
+            // An explicit binding, as the Mac's Tables and Surface pickers do: the view holds the model as a plain
+            // constant (it is a class), so there is no projected $ binding to hand the picker.
+            Picker(String(localized: "Level"),
+                   selection: Binding(get: { model.computerLevel }, set: { model.computerLevel = $0 })) {
+                ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
+            }
+            .pickerStyle(.segmented)
+            Text(model.computerLevel.line)
+                .font(Theme.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(leading ? .leading : .center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: leading ? .leading : .center)
     }
 }
 
@@ -565,8 +606,8 @@ struct HowToPlaySheet: View {
 
     private var steps: [(title: String, detail: String)] {
         [
-            (String(localized: "Learn the shots"),
-             String(localized: "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.")),
+            // 0.7.4: the steps no longer open with the lessons. They start with the shot itself and end with the trick
+            // shots, where the Lens shows its best; the lessons are named in that last step as an option only.
             // The same instruction as the hand-over card and the shot panel's hint, so every place teaches one stroke.
             (String(localized: "Take your shot"),
              FirstInstruction.line(for: input) + " "
@@ -575,6 +616,8 @@ struct HowToPlaySheet: View {
              String(localized: "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
             (String(localized: "Try again"),
              String(localized: "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare.")),
+            (String(localized: "Watch the trick shots"),
+             String(localized: "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.")),
         ]
     }
 

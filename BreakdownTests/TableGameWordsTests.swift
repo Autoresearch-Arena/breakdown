@@ -5,6 +5,8 @@
 //          in plain words), plus the spoken ruling's new parts in TableWords.ruling (points to either player, points
 //          lost, the pegs, the scores). Words are compared with String(localized:) of the same sentence, so the tests
 //          hold in every language the catalog carries; every point value comes from FivePinRules and BarBilliardsRules.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: the game lines of bumper pool and five-pin name
+//          the computer; bar billiards' line is unchanged.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 21: bumper pool's balls are named by their side's colour
 //          and counted, never by a pool number, and the strike line points at the ball the cue is on.)
 // SRP/DRY check: Pass - checks only; no rule is re-decided here (the rulings are built by hand, the way the rules
@@ -140,6 +142,19 @@ final class TableGameWordsTests: XCTestCase {
         XCTAssertEqual(TableGameWords.timeLeft(seconds: 65),
                        String(localized: "Time left: \(Duration.seconds(65).formatted(.time(pattern: .minuteSecond)))"))
         XCTAssertEqual(TableGameWords.barDown(whitesLeft: 1), String(localized: "The bar is down: 1 white left to play."))
+    }
+
+    func testGameLinesNameTheComputer() {
+        // Bumper pool and five-pin are played against the computer (0.7.4); the five-pin target is the rules' own.
+        XCTAssertEqual(TableGameWords.gameLine(.bumperPool),
+                       String(localized: "Race the computer to sink all your balls in your cup."))
+        XCTAssertEqual(TableGameWords.gameLine(.fivePin),
+                       String(localized: "Score off the pins and the red against the computer, first to \(FivePinRules.standardTarget)."))
+        // Bar billiards stays a game played alone; the pool games have no table line.
+        XCTAssertEqual(TableGameWords.gameLine(.barBilliards),
+                       String(localized: "Score as much as you can before the clock runs out."))
+        XCTAssertEqual(TableGameWords.gameLine(.eightBall), "")
+        XCTAssertEqual(TableGameWords.gameLine(.nineBall), "")
     }
 
     func testTheSpokenRulingCarriesPointsLossesAndScores() {
