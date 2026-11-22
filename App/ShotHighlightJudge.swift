@@ -2,6 +2,8 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-pacing: the bodies filled in, and the shared event
 //          finders (ShotMoments) that TrickSignature reads too.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (0.7.4 lens-pacing review: the throw rule's note was attached to
+//          drawDistance's doc comment; it now sits on throwDegrees, and the thresholds' group note is a plain comment.)
 // PURPOSE: Reads a recorded shot and says which remarkable moments it had (plans/22-Nov-2026-v074-glow-up-plan.md,
 //          F3 and stream lens-pacing): a jump, a curve, a thrown pot, a combination, a kick, a bank, two at once, a
 //          big draw, a dead stop, a ball too fast for the pocket, a bumper into the cup, the red pin alone, or a break.
@@ -257,9 +259,10 @@ struct ShotMoments {
 // MARK: The judge
 
 enum ShotHighlightJudge {
-    /// Thresholds from the plan (plans/22-Nov-2026-v074-glow-up-plan.md, lens-pacing brief item 4), except the three
-    /// whose notes say they were changed or added after measuring real solves (curveCurl, the throw's miss test and
-    /// stopSpeed).
+    // Thresholds from the plan (plans/22-Nov-2026-v074-glow-up-plan.md, lens-pacing brief item 4), except the three
+    // whose notes say they were changed or added after measuring real solves (curveCurl, the throw's miss test and
+    // stopSpeed).
+
     /// A take-off counts as a jump from this upward speed, m/s (a raised stroke's small hop is not a jump).
     static let jumpSpeed = 0.5
     /// A slide before the first hit must bend at least this much, degrees, to be a curve (a masse, not a drift).
@@ -269,13 +272,13 @@ enum ShotHighlightJudge {
     /// coming off a rail with top or back spin bends too (measured on 22-Nov-2026 over 280 random level-cue shots,
     /// whose largest share was 0.03; the Masse answer has 0.43 and the Draw-Masse Carom 0.25).
     static let curveCurl = 0.1
-    /// A pot's last contact must throw the ball at least this much, degrees, to be "thrown in"...
+    /// A pot's last contact must throw the ball at least this much, degrees, to be "thrown in", and the throw must have
+    /// made the pot: on the line of centres alone the ball would have missed the hole (ShotMoments.wouldMiss). Without
+    /// that, an ordinary cut pot threw 1.5 to 2.5 degrees often enough that the "rare" card came after most cut pots
+    /// (Follow Train's and Combination Chain's pots throw about 2 degrees and would have dropped anyway; Throw It In's
+    /// 8 is 71 mm off the hole on its line of centres, outside the 65 mm capture radius, and 52 mm off on its real
+    /// path; measured on 22-Nov-2026).
     static let throwDegrees = 1.5
-    /// ...and the throw must have made the pot: on the line of centres alone the ball would have missed the hole
-    /// (ShotMoments.wouldMiss). Without that, an ordinary cut pot threw 1.5 to 2.5 degrees often enough that the
-    /// "rare" card came after most cut pots (Follow Train's and Combination Chain's pots throw about 2 degrees and
-    /// would have dropped anyway; Throw It In's 8 is 71 mm off the hole on its line of centres, outside the 65 mm
-    /// capture radius, and 52 mm off on its real path; measured on 22-Nov-2026).
     /// A drawn cue ball must come to rest at least this far behind where it hit, metres, along its way in.
     static let drawDistance = 0.6
     /// A dead stop needs at least this speed into the hit, m/s, so a dribble that dies beside the ball is not one. The
