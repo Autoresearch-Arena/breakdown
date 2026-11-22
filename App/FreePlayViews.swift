@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          stream model-flow item 10: the intro-end card's Practice racks the pool table and opens Your shot, and its
+//          Trick shots opens that list alone (model.showList). Table cleared, the highlight card and the intro-end card
+//          step aside while a what-if is showing (model.whatIf.isShowing; the what-if card has the slot). On a phone
+//          held upright during a guided Lens replay (lensReplayCompact) Table cleared and the highlight card shrink to
+//          their heading, so the table keeps its height.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3 and
 //          G4: two new cards in PlayCards, so they sit in the card slot and never over the table. HighlightCard offers a
 //          remarkable free-play shot (ShowpieceModel.highlightCard): its name and physics, Watch it in the Lens, Try the
@@ -276,10 +282,15 @@ struct PlaceBallsCard: View {
 struct TableClearedCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
+    /// A phone held upright while a guided Lens replay plays (ShowpieceView sets it): the heading only, no buttons.
+    @Environment(\.lensReplayCompact) private var compact
 
     /// Free play only (a match ends with its own result card), once the last shot has played out; kept up while
     /// Watch your best shot replays (the other shot's balls are on the table meanwhile, so tableCleared is false).
-    private var visible: Bool { model.match == nil && ((model.tableCleared && model.aimReady) || model.replayingBest) }
+    /// Steps aside while a what-if is showing (0.7.5): the what-if card has the slot, and comes back on its close.
+    private var visible: Bool {
+        model.match == nil && ((model.tableCleared && model.aimReady) || model.replayingBest) && !model.whatIf.isShowing
+    }
 
     var body: some View {
         // The haptic sits on the always-present Group, so the change from hidden to shown is what fires it.
@@ -294,43 +305,50 @@ struct TableClearedCard: View {
                 Text(String(localized: "Table cleared")).font(Theme.heading)
             }
             .accessibilityAddTraits(.isHeader)
-            Text(shotsLine)
-                .font(Theme.body)
-                .foregroundStyle(palette.paper.opacity(0.9))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            // The rack's best remarkable shot, replayed in the Lens; Menu and Rack again end that replay first.
-            if model.canWatchBestShot {
-                CardButtonRow {
-                    Button { model.watchBestShot() } label: {
-                        Label(HighlightWords.watchBest, systemImage: "eye").font(.headline).lineLimit(1)
-                            .frame(minHeight: CallMetrics.buttonHeight)
-                    }
-                    .buttonStyle(.glass)
-                    .accessibilityHint(HighlightWords.watchHint)
-                }
-            }
-            HStack(spacing: 8) {
-                Spacer(minLength: 0)
-                Button { model.openMenu() } label: {
-                    Label("Menu", systemImage: "chevron.backward").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glass)
-                Button { model.rackAgain() } label: {
-                    Label(String(localized: "Rack again"), systemImage: "triangle").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glassProminent)
-                .foregroundStyle(palette.ground)
-                .keyboardShortcut(.defaultAction)
-            }
-            .controlSize(.regular)
+            // Slim while the best shot replays in the Lens on an upright phone: the heading says what is on screen,
+            // and the buttons come back when the replay has handed the cleared table back.
+            if !compact { details }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(cornerRadius: 22, padding: 12)
         .tint(palette.accent)
         .onAppear { ShotNarration.announce(String(localized: "Table cleared")) }
         .transition(.opacity)
+    }
+
+    /// The shot count and the buttons: everything under the heading.
+    @ViewBuilder private var details: some View {
+        Text(shotsLine)
+            .font(Theme.body)
+            .foregroundStyle(palette.paper.opacity(0.9))
+            .frame(maxWidth: .infinity, alignment: .leading)
+        // The rack's best remarkable shot, replayed in the Lens; Menu and Rack again end that replay first.
+        if model.canWatchBestShot {
+            CardButtonRow {
+                Button { model.watchBestShot() } label: {
+                    Label(HighlightWords.watchBest, systemImage: "eye").font(.headline).lineLimit(1)
+                        .frame(minHeight: CallMetrics.buttonHeight)
+                }
+                .buttonStyle(.glass)
+                .accessibilityHint(HighlightWords.watchHint)
+            }
+        }
+        HStack(spacing: 8) {
+            Spacer(minLength: 0)
+            Button { model.openMenu() } label: {
+                Label("Menu", systemImage: "chevron.backward").font(.headline).lineLimit(1)
+                    .frame(minHeight: CallMetrics.buttonHeight)
+            }
+            .buttonStyle(.glass)
+            Button { model.rackAgain() } label: {
+                Label(String(localized: "Rack again"), systemImage: "triangle").font(.headline).lineLimit(1)
+                    .frame(minHeight: CallMetrics.buttonHeight)
+            }
+            .buttonStyle(.glassProminent)
+            .foregroundStyle(palette.ground)
+            .keyboardShortcut(.defaultAction)
+        }
+        .controlSize(.regular)
     }
 
     private var shotsLine: String {
@@ -347,9 +365,12 @@ struct TableClearedCard: View {
 struct HighlightCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
+    /// A phone held upright while a guided Lens replay plays (ShowpieceView sets it): the title only.
+    @Environment(\.lensReplayCompact) private var compact
 
     var body: some View {
-        if let offer = model.highlightCard {
+        // Steps aside while a what-if is showing (0.7.5); it comes back on the what-if's close.
+        if let offer = model.highlightCard, !model.whatIf.isShowing {
             let kind = offer.highlight.kind
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
@@ -359,42 +380,52 @@ struct HighlightCard: View {
                     }
                     .accessibilityAddTraits(.isHeader)
                     Spacer(minLength: 0)
-                    Button { model.dismissHighlight() } label: {
-                        Image(systemName: "xmark").frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.circle)
-                    .accessibilityLabel(String(localized: "Close"))
+                    if !compact { closeButton }
                 }
-                Text(HighlightWords.line(kind))
-                    .font(Theme.body)
-                    .foregroundStyle(palette.paper.opacity(0.9))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                CardButtonRow {
-                    if offer.canTryTrick {
-                        Button { model.tryHighlightTrick() } label: {
-                            Label(String(localized: "Try the trick shot"), systemImage: "scope").font(.headline)
-                                .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
-                        }
-                        .buttonStyle(.glass)
-                    }
-                    if offer.canWatch {
-                        Button { model.watchHighlight() } label: {
-                            Label(String(localized: "Watch it in the Lens"), systemImage: "eye").font(.headline)
-                                .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
-                        }
-                        .buttonStyle(.glassProminent)
-                        .foregroundStyle(palette.ground)
-                        .accessibilityHint(HighlightWords.watchHint)
-                    }
-                }
+                if !compact { details(offer) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .onAppear { ShotNarration.announce(HighlightWords.title(kind)) }
             .transition(.opacity)
+        }
+    }
+
+    /// The card's close button: gone until the next remarkable shot.
+    private var closeButton: some View {
+        Button { model.dismissHighlight() } label: {
+            Image(systemName: "xmark").frame(width: 30, height: 30)
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.circle)
+        .accessibilityLabel(String(localized: "Close"))
+    }
+
+    /// The physics line and the buttons: everything under the title.
+    @ViewBuilder private func details(_ offer: ShowpieceModel.HighlightCardOffer) -> some View {
+        Text(HighlightWords.line(offer.highlight.kind))
+            .font(Theme.body)
+            .foregroundStyle(palette.paper.opacity(0.9))
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        CardButtonRow {
+            if offer.canTryTrick {
+                Button { model.tryHighlightTrick() } label: {
+                    Label(String(localized: "Try the trick shot"), systemImage: "scope").font(.headline)
+                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                }
+                .buttonStyle(.glass)
+            }
+            if offer.canWatch {
+                Button { model.watchHighlight() } label: {
+                    Label(String(localized: "Watch it in the Lens"), systemImage: "eye").font(.headline)
+                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                }
+                .buttonStyle(.glassProminent)
+                .foregroundStyle(palette.ground)
+                .accessibilityHint(HighlightWords.watchHint)
+            }
         }
     }
 }
@@ -406,7 +437,8 @@ struct IntroEndCard: View {
     @Environment(\.palette) private var palette
 
     var body: some View {
-        if model.introEndOffered {
+        // Steps aside while a what-if is showing (0.7.5), like every result card.
+        if model.introEndOffered, !model.whatIf.isShowing {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "sparkles").foregroundStyle(palette.accent).accessibilityHidden(true)
@@ -423,12 +455,14 @@ struct IntroEndCard: View {
                     .accessibilityLabel(String(localized: "Close"))
                 }
                 CardButtonRow {
-                    Button { model.startGame() } label: {
+                    // Practice: a fresh rack on the pool table and Your shot open, as the menu's Practice does
+                    // (0.7.5; startGame racks the pool table whatever table was chosen before).
+                    Button { model.startGame(); model.requestShotPanel(.open) } label: {
                         Label(String(localized: "Practice"), systemImage: "triangle").font(.headline).lineLimit(1)
                             .frame(minHeight: CallMetrics.buttonHeight)
                     }
                     .buttonStyle(.glass)
-                    Button { model.trickMode.listOpen = true } label: {
+                    Button { model.showList(.tricks) } label: {
                         Label(String(localized: "Trick shots"), systemImage: "sparkles").font(.headline).lineLimit(1)
                             .frame(minHeight: CallMetrics.buttonHeight)
                     }

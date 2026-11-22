@@ -1,5 +1,15 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          stream model-flow items 3, 4, 5 and 11: Trick shots, Learn and Behind the 8-Ball open their list alone
+//          (model.showList), so two lists never stack; Continue match closes the menu and goes to the table only when
+//          the saved match really loaded, and otherwise the menu stays (and the row goes, the model clears it); the
+//          saved game's line is the match words' own (MatchWords.savedLine), one sentence for the menu and the Tables
+//          pages; the computer's level is remembered across launches (the model stores it); the unused next-step
+//          highlight is gone, so Continue is highlighted whenever there is something to go back to; the eight-ball
+//          rules say that from behind the head line a ball also behind it cannot be hit first unless the cue ball
+//          crosses the line; How to play's Mac minimum size applies only in a sheet, not as a notebook page; the
+//          PURPOSE now says what a first launch really does.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: the computer plays all four table games, so
 //          the Play list gains Bumper pool and Five-pin billiards against it, and the Play row's line and the menu's
 //          intro say "four games". Trick shots moves directly under Play with a line that says what the shots are for
@@ -68,7 +78,9 @@
 //          to aim, pinch, pan, double tap, the pointer and keys, and the controller. The store scenes' launch flags
 //          skip the menu.)
 // PURPOSE: The main menu, laid over the live table, dimmed, so the room stays visible behind it. (A first launch
-//          skips it and goes straight to the opening; it is seen from the second launch on, or from the back button.)
+//          skips it: the game opens on a racked pool table with the cue in hand and one line saying how to shoot,
+//          with no opening replay first. The menu is reached from the back button on the table, and later launches
+//          open on it.)
 //          It names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the
 //          table, or the saved match after a relaunch), Play (Continue match, then the computer's level and the four
 //          games against it: Eight-ball, Nine-ball, Bumper pool and Five-pin billiards; then Practice and Straight
@@ -230,14 +242,9 @@ struct TitleScreen: View {
     /// Something to go back to: the game on the table, or after a relaunch the saved match.
     private var resumable: Bool { model.gameInProgress || model.hasSavedMatch }
 
-    /// The next step from stored progress gets the highlight (items 3 and 52). A player with no lesson passed always
-    /// sees Learn's first lesson highlighted, even when Continue is offered (item 3); once a lesson is passed, a game
-    /// left on the table keeps Continue highlighted, since the player came to the menu from it.
-    /// 0.7.1: nothing steers the player into the lessons. Learn is an ordinary entry; Play (or Continue) leads.
-    private var nextHighlighted: Bool { false }
-
-    /// Continue is highlighted when something is there to go back to and the next step is not.
-    private var continueHighlighted: Bool { resumable && !nextHighlighted }
+    /// Continue is highlighted whenever there is something to go back to. (Since 0.7.1 nothing steers the player into
+    /// the lessons: Learn is an ordinary entry and Play, or Continue, leads.)
+    private var continueHighlighted: Bool { resumable }
 
     private var mainList: some View {
         VStack(spacing: 10) {
@@ -259,11 +266,11 @@ struct TitleScreen: View {
             // 0.7.4: the trick shots sit directly under Play, where people look first: they are the coolest thing the
             // table shows. The lessons follow as an ordinary entry.
             MenuRow(title: "Trick shots", line: "Watch a shot that looks impossible, see why it works, then make it.",
-                    symbol: "wand.and.sparkles", mark: trickMark) { model.trickMode.listOpen = true }
+                    symbol: "wand.and.sparkles", mark: trickMark) { model.showList(.tricks) }
             MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
-                    symbol: "graduationcap", mark: lessonMark) { model.lessonMode.listOpen = true }
+                    symbol: "graduationcap", mark: lessonMark) { model.showList(.lessons) }
             MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
-                    symbol: "8.circle.fill", mark: medalMark) { model.eightBallMode.listOpen = true }
+                    symbol: "8.circle.fill", mark: medalMark) { model.showList(.eightBall) }
             MenuRow(title: "Tables", line: "Other tables, each a game of its own.", symbol: "square.grid.2x2") {
                 if let onTables { onTables() } else { tablesOpen = true }
             }
@@ -287,27 +294,16 @@ struct TitleScreen: View {
     /// The live game's line: a match names itself (which game, against whom, whose shot); anything else is the table as
     /// it was left.
     private var liveLine: String {
-        if model.match != nil, let summary = model.savedMatchSummary { return Self.summaryLine(summary) }
+        if model.match != nil, let summary = model.savedMatchSummary { return MatchWords.savedLine(summary) }
         return String(localized: "Back to the table, just as you left it.")
     }
 
-    /// The saved match's line, named when the save can be read.
+    /// The saved match's line, named when the save can be read. The match words' own sentence (0.7.5), the same one
+    /// the Tables pages show, so the menu and those pages name a saved game alike (which game, against whom, whose
+    /// shot).
     private var savedLine: String {
-        model.savedMatchSummary.map(Self.summaryLine) ?? String(localized: "Pick up your saved match where you left it.")
+        model.savedMatchSummary.map(MatchWords.savedLine) ?? String(localized: "Pick up your saved match where you left it.")
     }
-
-    /// "Eight-ball against Computer (Easy). Player 1 to shoot." The saved game named for the Continue row (item 18).
-    static func summaryLine(_ s: SavedMatchSummary) -> String {
-        let game = NotebookWords.gameName(s.kind)
-        if let level = s.opponent {
-            return String(localized: "\(game) against \(OpponentWords.name(level)). \(s.turnName) to shoot.")
-        }
-        if s.playerNames.count > 1 {
-            return String(localized: "\(game) with \(s.playerNames.formatted(.list(type: .and))). \(s.turnName) to shoot.")
-        }
-        return String(localized: "\(game) on your own. \(s.turnName) to shoot.")
-    }
-
 
     /// Lessons passed out of the six.
     private var lessonMark: MenuRow.Mark {
@@ -457,9 +453,11 @@ struct TitleScreen: View {
         onPlay()
     }
 
+    /// Continue match: onto the table only when the saved match really loaded (0.7.5). A save that does not load
+    /// leaves the menu up, and the model clears the row, so a Continue that does nothing is never left on offer. The
+    /// model ends any trick shot or situation itself once the save loads, so a failed Continue ends nothing.
     private func continueMatch() {
-        model.trickMode.end(); model.eightBallMode.end()
-        model.continueSavedMatch()
+        guard model.continueSavedMatch() else { return }
         model.closeMenu()
         onPlay()
     }
@@ -469,7 +467,7 @@ struct TitleScreen: View {
 
 /// The computer's level (Easy, Medium, Hard) as a segmented choice, and one line on what that level plays like. Bound
 /// to the model's computerLevel, so the main menu's Play list and the Tables pages of bumper pool and five-pin show and
-/// set one shared choice (kept while the app runs). The model is @Observable, so reading computerLevel here redraws
+/// set one shared choice, remembered on the device across launches (0.7.5). The model is @Observable, so reading computerLevel here redraws
 /// the picker and the line whichever screen changed it.
 struct ComputerLevelPicker: View {
     let model: ShowpieceModel
@@ -603,6 +601,8 @@ struct HowToPlaySheet: View {
     /// The input in use, so "Take your shot" teaches the stroke for the way this player plays (FirstInstruction).
     var input: PlayInput = FirstInstruction.platformDefault
     @Environment(\.palette) private var palette
+    /// True when shown as a page of the notebook rather than a sheet (NotebookPanel sets it).
+    @Environment(\.inlinePages) private var inlinePages
 
     private var steps: [(title: String, detail: String)] {
         [
@@ -675,7 +675,9 @@ struct HowToPlaySheet: View {
         }
         .tint(palette.accent)
         #if os(macOS)
-        .frame(minWidth: 420, minHeight: 420)
+        // A sheet's minimum size only: as a page of the notebook (inlinePages) it takes the panel's width, and a fixed
+        // minimum there pushed it past the panel's edge (0.7.5).
+        .frame(minWidth: inlinePages ? nil : 420, minHeight: inlinePages ? nil : 420)
         #endif
     }
 
@@ -829,7 +831,11 @@ private struct RulesPage: View {
             (String(localized: "The idea"),
              String(localized: "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.")),
             (String(localized: "The break"),
-             String(localized: "A good break sinks a ball or drives at least four balls to a cushion. If it does neither, your opponent may play the table as it lies or have it racked again. Sink the cue ball on the break and your opponent places it anywhere behind the head line.")),
+             // 0.7.5: one added sentence on ball in hand behind the head line, as the rules now judge it. Its own
+             // string, so the paragraph before it keeps its translations; two whole sentences joined, never words.
+             [String(localized: "A good break sinks a ball or drives at least four balls to a cushion. If it does neither, your opponent may play the table as it lies or have it racked again. Sink the cue ball on the break and your opponent places it anywhere behind the head line."),
+              String(localized: "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.")]
+                .joined(separator: " ")),
             (String(localized: "The 8 on the break"),
              // Match stream hub edit (bug plan item 20): the fouled break, as EightBallRules.breakRuling rules it.
              String(localized: "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.")),

@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow: computerLevelKey, the computer's level the menu and
+//          the Tables pages share, stored so it is remembered across launches; read and written by ShowpieceModel.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (two keys the model stores that are not Options toggles:
 //          seenOpeningKey, set once the first-launch opening has played through, and freePlayRackKey, the rack free play
 //          lays out: fifteen-ball triangle, nine-ball diamond or place balls. Kept here so every stored key lives in one
@@ -33,6 +35,9 @@ enum GameSettings {
     static let seenOpeningKey = "seenOpening"
     /// The rack free play lays out (FreePlayRack's raw value). Read and written by ShowpieceModel.
     static let freePlayRackKey = "optionFreePlayRack"
+    /// The computer's level for a game against it (ComputerLevel's raw value: easy, medium or hard), shared by the
+    /// menu's Play list and the Tables pages. Read and written by ShowpieceModel.computerLevel.
+    static let computerLevelKey = "optionComputerLevel"
     /// The straight-stroke drill's best return, metres off the cue line (StrokeDrill).
     static let strokeDrillBestKey = "strokeDrillBest"
     /// How many dead-straight strokes the drill has seen (StrokeDrill).

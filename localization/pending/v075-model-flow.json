@@ -1,0 +1,62 @@
+{
+ "keys": [
+  "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "Desde detrás de la línea de cabecera, una bola que también esté detrás de la línea no puede ser la primera en recibir el golpe, salvo que la bola blanca cruce la línea antes de tocarla."
+  },
+  {
+   "culture": "fr",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "Depuis l'arrière de la ligne de tête, une bille elle aussi derrière la ligne ne peut pas être touchée en premier, sauf si la bille blanche franchit la ligne avant de la toucher."
+  },
+  {
+   "culture": "de",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "Von hinter der Kopflinie darf eine Kugel, die ebenfalls hinter der Linie liegt, nicht zuerst getroffen werden, es sei denn, der Spielball überquert die Linie, bevor er sie trifft."
+  },
+  {
+   "culture": "it",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "Da dietro la linea di testa, una bilia anch'essa dietro la linea non può essere colpita per prima, a meno che la bianca non superi la linea prima di colpirla."
+  },
+  {
+   "culture": "pt",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "De trás da linha de cabeceira, uma bola que também esteja atrás da linha não pode ser a primeira a ser atingida, a menos que a bola branca atravesse a linha antes de lhe tocar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "De trás da linha de cabeceira, uma bola que também esteja atrás da linha não pode ser a primeira a ser atingida, a menos que a bola branca cruze a linha antes de tocá-la."
+  },
+  {
+   "culture": "ja",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "ヘッドラインの後ろから打つとき、同じくラインの後ろにあるボールには、手球が先にラインを越えてからでないと最初に当てられません。"
+  },
+  {
+   "culture": "ko",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "헤드 라인 뒤에서 칠 때, 같은 라인 뒤에 있는 공은 큐볼이 먼저 라인을 넘어간 뒤가 아니면 처음으로 맞힐 수 없습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "从开球线后击球时，同样位于线后的球不能被第一个击中，除非母球先越过开球线再碰到它。"
+  },
+  {
+   "culture": "ru",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "Из-за линии дома нельзя первым ударить шар, который тоже стоит за линией, если только биток не пересечёт линию, прежде чем его коснуться."
+  },
+  {
+   "culture": "ar",
+   "key": "From behind the head line, a ball that is also behind the line can't be hit first unless the cue ball crosses the line before hitting it.",
+   "text": "عند اللعب من خلف خط الرأس، لا يجوز ضرب كرة موجودة أيضًا خلف الخط أولًا، إلا إذا عبرت الكرة البيضاء الخط قبل أن تلمسها."
+  }
+ ]
+}
