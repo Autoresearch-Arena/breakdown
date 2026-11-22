@@ -319,8 +319,9 @@ func ebNearSpec(_ e: EBEscapeSpec, _ old: Strike) -> EBEscapeSpec {
 /// works is the smallest move; it is reported with each escape's stroke, and the hook is checked again there: no legal
 /// ball may be made by a level straight stroke with no rail first.
 /// With "cue" the cue ball is moved instead of the called ball (its place is in no story), and the escapes are tried
-/// narrowest first, so a place that cannot widen the hard one is left after one search.
-func runEightBallRelay(only: Set<String>, moveCue: Bool = false) {
+/// narrowest first, so a place that cannot widen the hard one is left after one search. With "two" every escape must
+/// hold two aim steps (half a degree), the authoring's aim, instead of one.
+func runEightBallRelay(only: Set<String>, moveCue: Bool = false, steps: Int = 1) {
     print("== Behind the 8-Ball situations re-laid for aim windows of one aim step (item 30)\(moveCue ? ", moving the cue ball" : "")")
     for a in AuthoredEscapes.all where only.isEmpty || only.contains(a.id) {
         let start = Date()
@@ -345,36 +346,72 @@ func runEightBallRelay(only: Set<String>, moveCue: Bool = false) {
         } }
         places.sort { abs($0.0 - home.0) + abs($0.1 - home.1) < abs($1.0 - home.0) + abs($1.1 - home.1) }
         print("#### \(a.id): the \(called) from across \(home.0), along \(home.1); \(places.count) places")
-        var kept: (place: (Double, Double), results: [EBResult], narrowest: Double)?
+        // Every escape searched near its old stroke on a layout, narrowest first; nil unless all hold an aim step.
+        func tryLayout(_ t: EBSituationSpec) -> [EBResult]? {
+            var found: [Int: EBResult] = [:]
+            for i in order {
+                let e = t.escapes[i], ae = a.escapes[i]
+                var near = ebNearSpec(e, probeStrike(ae.strike))
+                if let a0 = near.aimAround, e.technique != .curve { near.aimAround = (a0.0, a0.1, 0.04) }
+                guard let r = ebSearch(t, near),
+                      let w = ebAimWindow(t, e, r.strike), w.hi - w.lo >= Double(steps) * ebAimStep - 1e-9 else { return nil }
+                found[i] = r
+            }
+            return a.escapes.indices.compactMap { found[$0] }
+        }
+        func free(_ t: EBSituationSpec, _ ball: Int) -> Bool {
+            let lay = t.layout, p = lay[ball]
+            return clearOfRails(p, margin: 0.0, pocketClear: 0.06)
+                && !lay.enumerated().contains(where: { $0.offset != ball && NextShot.isOnTable($0.element)
+                                                      && ($0.element - p).length < 2 * R + 0.001 })
+        }
+        var kept: (spec: EBSituationSpec, results: [EBResult], note: String)?
         for place in places {
             var s = base
             if called == 0 { s.cue = place } else if called == 8 { s.eight = place } else { s.balls[called] = place }
-            let lay = s.layout
-            let p = lay[called]
-            guard clearOfRails(p, margin: 0.0, pocketClear: 0.06),
-                  !lay.enumerated().contains(where: { $0.offset != called && NextShot.isOnTable($0.element)
-                                                       && ($0.element - p).length < 2 * R + 0.001 }) else { continue }
-            var found: [Int: EBResult] = [:]
-            for i in order {
-                let e = s.escapes[i], ae = a.escapes[i]
-                var near = ebNearSpec(e, probeStrike(ae.strike))
-                if let a0 = near.aimAround, e.technique != .curve { near.aimAround = (a0.0, a0.1, 0.04) }
-                guard let r = ebSearch(s, near),
-                      let w = ebAimWindow(s, e, r.strike), w.hi - w.lo >= ebAimStep - 1e-9 else { break }
-                found[i] = r
+            guard free(s, called) else { continue }
+            guard let results = tryLayout(s) else {
+                print(String(format: "   place across %.2f along %.2f: not every escape", place.0, place.1))
+                continue
             }
-            let ok = found.count == a.escapes.count
-            let results = a.escapes.indices.compactMap { found[$0] }
             let narrowest = results.map { $0.aim.hi - $0.aim.lo }.min() ?? 0
-            print(String(format: "   place across %.2f along %.2f: %@", place.0, place.1,
-                         ok ? String(format: "every escape at least one aim step (narrowest %.2f)", narrowest) : "not every escape"))
-            // Places are tried nearest first, so the first that works is the smallest move: kept.
-            if ok { kept = (place, results, narrowest); break }
+            print(String(format: "   place across %.2f along %.2f: every escape at least one aim step (narrowest %.2f)",
+                         place.0, place.1, narrowest))
+            // Places are tried nearest first, so the first that works is the smallest move: kept, if the situation is
+            // still hooked there (a moved cue ball can open a straight line to a legal ball).
+            let direct = directMakes(s)
+            if direct.isEmpty {
+                kept = (s, results, String(format: "the %d moved to across %.2f, along %.2f", called, place.0, place.1))
+                break
+            }
+            print("      but not hooked there: \(direct.count) direct makes")
+            // Not hooked: the opponent ball nearest the straight line from the cue ball to the called ball is moved onto
+            // that line (four tenths to six tenths of the way, up to an eighth of a diamond either side), and the escapes
+            // and the hook are checked again there.
+            let lay = s.layout
+            let cueP = lay[0], target = lay[calledBall]
+            let u = (target - cueP).normalized
+            let blockers = s.opponent.filter { NextShot.isOnTable(lay[$0]) }.sorted { i, j in
+                abs((lay[i] - cueP).dot(u.perp)) < abs((lay[j] - cueP).dot(u.perp))
+            }
+            guard let blocker = blockers.first else { continue }
+            var placedBlocker = false
+            for frac in [0.5, 0.4, 0.6] { for off in [0.0, 0.06, -0.06, 0.12, -0.12] {
+                let spot = cueP + (target - cueP) * frac + u.perp * (off * Diamond.size)
+                var t = s
+                t.balls[blocker] = (4 - spot.y / Diamond.size, spot.x / Diamond.size)
+                guard free(t, blocker), let r2 = tryLayout(t), directMakes(t).isEmpty else { continue }
+                let b = t.balls[blocker]!
+                kept = (t, r2, String(format: "the %d moved to across %.2f, along %.2f, and the %d to across %.2f, along %.2f to block it",
+                                      called, place.0, place.1, blocker, b.0, b.1))
+                placedBlocker = true
+                break
+            } ; if placedBlocker { break } }
+            if placedBlocker { break }
         }
         guard let f = kept else { print("== \(a.id): NO PLACE FOUND"); continue }
-        var s = base
-        if called == 0 { s.cue = f.place } else if called == 8 { s.eight = f.place } else { s.balls[called] = f.place }
-        print(String(format: "== %@: the %d moved to across %.2f, along %.2f", a.id, called, f.place.0, f.place.1))
+        let s = f.spec
+        print("== \(a.id): \(f.note)")
         let direct = directMakes(s)
         print("   hook there: \(direct.count) direct makes\(direct.isEmpty ? "" : ": " + direct.prefix(6).joined(separator: "; "))")
         for (e, r) in zip(s.escapes, f.results) { ebReport(s, e, r) }

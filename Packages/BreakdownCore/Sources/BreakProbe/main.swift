@@ -76,7 +76,8 @@ if args.first == "timing" {
 } else if args.first == "eightball", args.dropFirst().first == "wide" {
     runEightBallWide(Array(args.dropFirst(2)))
 } else if args.first == "eightball", args.dropFirst().first == "relay" {
-    runEightBallRelay(only: Set(args.dropFirst(2)).subtracting(["cue"]), moveCue: args.contains("cue"))
+    runEightBallRelay(only: Set(args.dropFirst(2)).subtracting(["cue", "two"]), moveCue: args.contains("cue"),
+                      steps: args.contains("two") ? 2 : 1)
 } else if args.first == "eightball", args.dropFirst().first == "near" {
     runEightBallNear(only: Set(args.dropFirst(2)))
 } else if args.first == "eightball" {
@@ -98,7 +99,16 @@ if args.first == "timing" {
     var shown = 0
     var tally: [String: Int] = [:]
     // "breaks gen1" sweeps the old physics and "breaks low" the old 6 mm-low strike, for comparison only.
-    let breakParameters = args.contains("gen1") ? PoolParameters.generationOne : PoolParameters()
+    // "oldrail" puts back the first tuning's rail numbers on today's coupled rail, and "bounce" turns the push rule off,
+    // to see which change moves how often a break pockets a ball (evidence only; nothing ships with them).
+    let breakParameters: PoolParameters = {
+        var q = args.contains("gen1") ? PoolParameters.generationOne : PoolParameters()
+        if args.contains("oldrail") {
+            q.cushionRestitution = 0.95; q.railRestitutionSlope = 0.025; q.cushionFriction = 0.17; q.railCrossGrip = 0.17
+        }
+        if args.contains("bounce") { q.gentleContactSpeed = 0 }
+        return q
+    }()
     let breakTip = args.contains("low") ? -0.006 : 0.0
     let seeds: [UInt64] = [3, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     let speeds = [8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0]
