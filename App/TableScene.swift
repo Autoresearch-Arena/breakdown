@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the Lens colour legend is a glass chip in the title row now, so it
 //          no longer hangs off the camera).
@@ -66,6 +67,9 @@ final class TableScene {
     private let tableHolder = Entity()
     private var tableGroup: Entity
     private let lens = LensLayer()
+    /// The event of the guided Lens beat being held this frame (TableStage sets it from model.heldCaption), handed
+    /// to the Lens for the contact drawing (0.7.4 foundation).
+    var lensHeldEvent: Int?
     private let camera = TableCamera()
     /// The Ride camera (see ShotCamera): follows the cue ball and the ball it hits during a replay when Ride is on.
     private let shotCamera = ShotCamera()
@@ -320,6 +324,7 @@ final class TableScene {
 
         detail?.bridge(bridgeMark, frame: frame)
         applyPins(t)
+        lens.heldEvent = lensHeldEvent
         lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
         cueRig.update(aim: cueAim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
     }

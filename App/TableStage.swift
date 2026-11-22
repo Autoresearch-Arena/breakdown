@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the opening's lamp shot is switched off; it looked broken.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: the aim preview and 3D cue start from the striker).
 // Date: 13-November-2026
@@ -142,9 +143,11 @@ struct TableStage: View {
                     let preview: AimPreview? = (bridge.showAim || bridge.showCue) ? Self.aim(for: model) : nil
                     let aim = bridge.showAim ? preview : nil
                     let cueAim = bridge.showCue ? preview : nil
+                    table.lensHeldEvent = model.heldCaption?.id
                     table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim, cueAim: cueAim,
                                 stroke: Self.stroke(for: model), ride: model.rideActive,
                                 bridgeMark: cueAim.flatMap { Self.bridgeMark(for: model, cue: $0, bridge: bridge) })
+                    SignatureCloseUp.step(model: model, table: table)
                     table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.

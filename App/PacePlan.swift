@@ -1,4 +1,5 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Date: 20-November-2026
 // PURPOSE: Guided pacing for the Physics Lens replay. Built once per recorded shot from its captions (the way
 //          RidePlan is built once per shot), it picks the BEATS: the handful of moments worth stopping on so the
@@ -76,7 +77,9 @@ struct PacePlan: Equatable {
 
     init() {}
 
-    init(captions: [Caption], timeline tl: Timeline, style: Style = .standard) {
+    /// `signature`: event indices (Caption.id) a trick shot or a highlight needs held as headline beats (0.7.4); unused
+    /// until the lens-pacing stream implements it.
+    init(captions: [Caption], timeline tl: Timeline, style: Style = .standard, signature: [Int] = []) {
         // A still table (a re-rack or a laid-out trick position records a zero-speed strike) has nothing to pace.
         guard tl.duration > 0.3, !captions.isEmpty else { return }
         momentTimes = captions.map(\.time).sorted()

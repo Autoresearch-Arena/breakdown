@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the colour legend left the 3D scene: it is a SwiftUI glass chip in
 //          the title row now (LensLegendChip in CaptionViews), which follows Dynamic Type and VoiceOver and costs the
@@ -105,6 +106,10 @@ struct AimPreview {
 
 @MainActor
 final class LensLayer {
+    /// The timeline event of the guided beat being held, set by TableScene each frame; nil when nothing is held;
+    /// LensScrubCheck leaves it nil, so the scrub check stays a pure function of the clock (0.7.4 foundation).
+    var heldEvent: Int?
+
     // MARK: Tunables
 
     /// Seconds of clock the newest part of a path stays at full brightness.

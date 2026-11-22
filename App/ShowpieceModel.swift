@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1, the Boss's first look at 0.7.0: every launch starts on the pool
 //          table; the first launch goes straight to the table with the cue in hand, no opening replay; the first break
 //          is followed by more play, not a lessons card; later launches open on the menu over a still table, without
@@ -1342,12 +1343,14 @@ final class ShowpieceModel {
     private func load(_ tl: Timeline, showpiece: Bool = false) {
         menuBackdropPlaying = false
         lensReplayStartedByPlayer = false
+        // A new recording has no signature until its owner (a trick shot, a highlight) sets one (0.7.4).
+        paceSignature = []
         showpieceOnScreen = showpiece
         adoptLayout(after: tl)
         timeline = tl
         // The solved strike too (lens stream, 0.7.0): a raised strike that did not hop carries its angle nowhere else.
         captions = CaptionEngine.make(from: tl, surface: solvedSurface, strike: lastInput?.strike)
-        pacePlan = PacePlan(captions: captions, timeline: tl, style: paceStyle)
+        pacePlan = PacePlan(captions: captions, timeline: tl, style: paceStyle, signature: paceSignature)
         ridePlan = RidePlan(tl)
         readShot(tl)
         timelineVersion += 1
@@ -1364,7 +1367,7 @@ final class ShowpieceModel {
 
     /// Re-make the pace plan of the recording on screen after its style changed (the first launch starting).
     private func refreshPacePlan() {
-        pacePlan = PacePlan(captions: captions, timeline: timeline, style: paceStyle)
+        pacePlan = PacePlan(captions: captions, timeline: timeline, style: paceStyle, signature: paceSignature)
         resetPacing()
     }
 
@@ -2345,7 +2348,12 @@ final class ShowpieceModel {
         let lessonDemonstration = lessonModeStorage.map {
             $0.current != nil && ($0.phase == .watching || $0.phase == .replaying)
         } ?? false
-        lensReplayStartedByPlayer = withLens && !lessonDemonstration && openingStage == .none
+        // A trick shot's own demonstration has its card over it too (0.7.4): TrickShotMode sets .explaining before it
+        // calls this, so the Lens tips stay off over the answer's replay, as LensCallouts already says.
+        let trickDemonstration = trickModeStorage.map {
+            $0.current != nil && ($0.phase == .watching || $0.phase == .explaining)
+        } ?? false
+        lensReplayStartedByPlayer = withLens && !lessonDemonstration && !trickDemonstration && openingStage == .none
         resetPacing()
     }
 
@@ -2883,6 +2891,37 @@ final class ShowpieceModel {
 
     /// True while the clock is stopped on a beat so its caption can be read. Worked out from stored state, so it is
     /// false at once if guided pacing ends or the clock is moved off the beat (a scrub, a replay).
+    // MARK: 0.7.4 foundation (plans/22-Nov-2026-v074-glow-up-plan.md, F6)
+
+    /// Event indices the guided replay must hold as headline beats (a trick shot's or a highlight's signature).
+    /// Cleared by load(_:).
+    private var paceSignature: [Int] = []
+
+    /// Hold these events in the next guided replay of the recording on screen; rebuilds the pace plan at once.
+    func setPaceSignature(_ events: [Int]) { paceSignature = events; refreshPacePlan() }
+
+    /// The caption of the beat being held right now (nil when not holding).
+    var heldCaption: Caption? {
+        guard holding, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return nil }
+        return pacePlan.beats[h].caption
+    }
+
+    /// The event index of the held beat when it is one of the signature events, else nil.
+    var heldSignatureEvent: Int? {
+        guard let c = heldCaption, paceSignature.contains(c.id) else { return nil }
+        return c.id
+    }
+
+    /// The level picked for a game against the computer, shared by the menu and the Tables pages (kept while the
+    /// app runs).
+    var computerLevel: ComputerLevel = .medium
+
+    /// The remarkable shot on offer for a Lens replay (stub; the watch-invite stream fills it, MacChrome reads it).
+    var highlightOnOffer: ShotHighlight? { nil }
+
+    /// Replay the offered highlight in the Lens, holding its signature (stub; the watch-invite stream fills it).
+    func watchHighlight() {}
+
     var holding: Bool {
         guard guided, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return false }
         return abs(pacePlan.beats[h].time - time) <= Self.beatTolerance
