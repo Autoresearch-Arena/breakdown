@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: writes the playback row top for the third Lens tip, a waiting match ruling keeps Your shot closed, the menu sends its pages to the page sheet).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream card, plans/22-Nov-2026-v076-phone-plan.md, bugs #10,
 //          #11, #36, #45, #50: the phone's bottom stack is the explanation's fixed room, the scrolling cards, Your shot
 //          and the playback row, with the room, Your shot and the playback row pinned and measured, so the cards get
@@ -228,7 +229,7 @@ struct ShowpieceView: View {
                 // only, so the notebook's own page cross-fade and the stage keep theirs.
                 ZStack {
                     if model.menuOpen && menuOverWindow {
-                        TitleScreen(model: model, onPlay: { showShotPanel = true }, pendingMatch: $pendingMatch)
+                        TitleScreen(model: model, onPlay: { showShotPanel = true }, page: $page, pendingMatch: $pendingMatch)
                             .transition(.opacity)
                     }
                 }
@@ -402,7 +403,7 @@ struct ShowpieceView: View {
             LensCalloutLayer(model: model, bridge: bridge)
             // The main menu, over everything, until the player picks something (and again from the back button).
             if model.menuOpen && menuOnStage {
-                TitleScreen(model: model, onPlay: { showShotPanel = true }, pendingMatch: $pendingMatch)
+                TitleScreen(model: model, onPlay: { showShotPanel = true }, page: $page, pendingMatch: $pendingMatch)
             }
         }
         // The space bar plays and pauses the replay while the table has keyboard focus (a click on it gives it focus,
@@ -500,7 +501,10 @@ struct ShowpieceView: View {
             // bubble should sit (stream pacing reads it once the model carries it; see the 0.7.6 hand-off).
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
                 if playbackFrame != frame { playbackFrame = frame }
+                // The third Lens tip anchors on this top (0.7.6 coordinator, stream pacing hand-off).
+                if model.playbackRowTop != Double(frame.minY) { model.playbackRowTop = Double(frame.minY) }
             }
+            .onDisappear { model.playbackRowTop = nil }
         }
         // Phone held upright, guided Lens replay: the mode cards show their slim form (heading and main button) so the
         // table keeps its height while the replay plays (B3, item 13).
@@ -546,7 +550,7 @@ struct ShowpieceView: View {
     private var matchCardWaits: Bool {
         guard let match = model.match else { return false }
         switch match.phase {
-        case .ruling: return match.lastRuling == nil || match.lastRulingShow == .card
+        case .ruling: return match.lastRuling == nil || match.lastRulingShow == .card || match.rulingWaitsForTap
         case .handOver, .over: return true
         case .aiming, .shooting: return false
         }

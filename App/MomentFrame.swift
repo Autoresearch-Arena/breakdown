@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: reads the pace plan's TableRect regions).
 // PURPOSE: The moment framing of a guided Physics Lens replay (0.7.6, plans/22-Nov-2026-v076-phone-plan.md, stream
 //          camera; it replaces the 0.7.4 signature close-up). As the replay slows into a beat, the view glides in on
 //          what the beat is about so it fills the open space above the cards and sits in its middle; it stays close
@@ -99,7 +100,7 @@ enum MomentFraming {
             while j > 0, abs(beats[j - 1].time - beats[i].time) < 1e-6 { j -= 1 }
             while j < beats.count, abs(beats[j].time - beats[i].time) < 1e-6 {
                 // TableFrame flips the across-table axis, so each corner is converted and the box re-sorted.
-                for corner in [regions[j].min, regions[j].max] {
+                for corner in [Vec2(regions[j].minX, regions[j].minY), Vec2(regions[j].maxX, regions[j].maxY)] {
                     let w3 = frame.world(corner)
                     let q = SIMD2<Float>(w3.x, w3.z)
                     lo = simd_min(lo, q); hi = simd_max(hi, q)

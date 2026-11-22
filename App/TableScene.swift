@@ -1,6 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: the Lens reads the camera for its marks' screen floors).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the Lens colour legend is a glass chip in the title row now, so it
 //          no longer hangs off the camera).
 // PURPOSE: The thin coordinator of the 3D scene. Owns the root entity and the shared state (current timeline and
@@ -139,6 +140,8 @@ final class TableScene {
         root.addChild(tableHolder)
         root.addChild(lens.root)
         root.addChild(camera.rig)
+        // The Lens reads the camera's points per metre for its marks' screen floors (0.7.6 stream drawings).
+        lens.camera = camera
         lens.buildStatic(ballCount: timeline.ballCount, frame: frame, table: timeline.table)
         shotCamera.load(timeline, frame: frame)
         for n in 0..<timeline.ballCount {
