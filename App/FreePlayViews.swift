@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The rules the
+//          upright phone's blurbs (FreePlayPhoneBlurbs.swift) share with these cards are lifted out so the two never
+//          disagree: when each card shows (BallInHandCard.isVisible, PlaceBallsCard.isVisible,
+//          TableClearedCard.isVisible), the ball-in-hand words, the VoiceOver moves and the put-down (CueBallPlacement),
+//          and the cleared rack's shot count (TableClearedCard.shotsLine).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #33 and
 //          #62: Ball in hand never shows on the computer's turn (its button could do nothing there); "Cleared in %lld
 //          shots." is one catalog string with a count, so the catalog gives it real plural forms in every language.)
@@ -111,6 +116,54 @@ enum CueBallPlacement {
         @unknown default: return String(localized: "Not a legal spot")
         }
     }
+
+    // MARK: Words and moves (shared by BallInHandCard and the upright phone's blurb)
+
+    /// "Move the 5", "Move the cue ball" or "Ball in hand".
+    static func heading(_ model: ShowpieceModel) -> String {
+        if liftedObjectBall(model) { return String(localized: "Move the \(model.placingBall)") }
+        return model.ballInHand == .none ? String(localized: "Move the cue ball") : String(localized: "Ball in hand")
+    }
+
+    /// What to do now: pick the ball up, or drag it to a free spot (behind the head line when the rules say so).
+    static func instructions(_ model: ShowpieceModel) -> String {
+        guard model.placingCueBall else { return String(localized: "Pick up the cue ball and put it anywhere free.") }
+        if liftedObjectBall(model) { return String(localized: "Drag the \(model.placingBall) to a free spot, then let go.") }
+        return model.ballInHand == .behindHeadLine
+            ? String(localized: "Drag the cue ball to a free spot behind the head line, then let go.")
+            : String(localized: "Drag the cue ball to a free spot, then let go.")
+    }
+
+    /// Put the ball down; if the spot is not legal it stays lifted and VoiceOver hears why.
+    static func place(_ model: ShowpieceModel) {
+        if !model.confirmCueBallPlacement() {
+            let why = problem(legality(of: spot(model), model))
+            ShotNarration.announce(why ?? String(localized: "Not a legal spot"))
+        }
+    }
+
+    /// One VoiceOver step: one ball radius along a table direction (x toward the foot, y toward the left long
+    /// cushion as seen from the head end). A radius is small enough to slip a ball past a neighbour and large enough
+    /// that a third of the table's width is about fifteen steps.
+    static func nudge(_ model: ShowpieceModel, _ direction: Vec2) {
+        let r = model.timeline.table.ballRadius
+        let verdict = model.moveCueBallCandidate(to: spot(model) + direction * r)
+        ShotNarration.announce(spoken(model, at: spot(model), problem: problem(verdict)))
+    }
+
+    /// "38 centimetres from the head cushion and 20 centimetres from the left cushion. Touching the 5."
+    static func spoken(_ model: ShowpieceModel, at p: Vec2, problem: String?) -> String {
+        let t = model.timeline.table
+        func length(_ m: Double) -> String {
+            Measurement(value: (max(0, m) * 100).rounded(), unit: UnitLength.centimeters)
+                .formatted(.measurement(width: .wide, usage: .asProvided))
+        }
+        // The nearer long cushion is the one named: y = 0 is the right-hand cushion seen from the head end.
+        let place = p.y > t.width / 2
+            ? String(localized: "\(length(p.x)) from the head cushion and \(length(t.width - p.y)) from the left cushion")
+            : String(localized: "\(length(p.x)) from the head cushion and \(length(p.y)) from the right cushion")
+        return [place, problem ?? String(localized: "Free spot")].joined(separator: ". ")
+    }
 }
 
 struct BallInHandCard: View {
@@ -121,7 +174,10 @@ struct BallInHandCard: View {
     /// Shown while the ball is lifted, and while ball in hand is owed but the player has not picked it up yet. Never
     /// while the ball in hand is the computer's (0.7.6, #33): the model copies the owed ball for its seat too, but the
     /// person may not pick it up, so the card's button would do nothing.
-    private var visible: Bool {
+    private var visible: Bool { Self.isVisible(model) }
+
+    /// The rule behind `visible`, shared with the upright phone's ball-in-hand blurb.
+    static func isVisible(_ model: ShowpieceModel) -> Bool {
         model.placingCueBall
             || (model.ballInHand != .none && model.aimReady && !model.tableCleared && model.computerTurnStage == .none)
     }
@@ -149,12 +205,12 @@ struct BallInHandCard: View {
                         .foregroundStyle(problem == nil ? palette.accent : Color.red)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel(objectBall ? MatchWords.balls([model.placingBall]) : String(localized: "Cue ball"))
-                        .accessibilityValue(spoken(spot, problem: problem))
+                        .accessibilityValue(CueBallPlacement.spoken(model, at: spot, problem: problem))
                         .accessibilityHint(String(localized: "Use the actions to move it. Up is toward the foot of the table, seen from the head end."))
-                        .accessibilityAction(named: String(localized: "Move up")) { nudge(Vec2(1, 0)) }
-                        .accessibilityAction(named: String(localized: "Move down")) { nudge(Vec2(-1, 0)) }
-                        .accessibilityAction(named: String(localized: "Move left")) { nudge(Vec2(0, 1)) }
-                        .accessibilityAction(named: String(localized: "Move right")) { nudge(Vec2(0, -1)) }
+                        .accessibilityAction(named: String(localized: "Move up")) { CueBallPlacement.nudge(model, Vec2(1, 0)) }
+                        .accessibilityAction(named: String(localized: "Move down")) { CueBallPlacement.nudge(model, Vec2(-1, 0)) }
+                        .accessibilityAction(named: String(localized: "Move left")) { CueBallPlacement.nudge(model, Vec2(0, 1)) }
+                        .accessibilityAction(named: String(localized: "Move right")) { CueBallPlacement.nudge(model, Vec2(0, -1)) }
                 }
                 buttons
             }
@@ -168,18 +224,9 @@ struct BallInHandCard: View {
     /// True while the lifted ball is an object ball (free play's place-balls setup, or arranging a practice shot).
     private var objectBall: Bool { CueBallPlacement.liftedObjectBall(model) }
 
-    private var heading: String {
-        if objectBall { return String(localized: "Move the \(model.placingBall)") }
-        return model.ballInHand == .none ? String(localized: "Move the cue ball") : String(localized: "Ball in hand")
-    }
+    private var heading: String { CueBallPlacement.heading(model) }
 
-    private var instructions: String {
-        guard model.placingCueBall else { return String(localized: "Pick up the cue ball and put it anywhere free.") }
-        if objectBall { return String(localized: "Drag the \(model.placingBall) to a free spot, then let go.") }
-        return model.ballInHand == .behindHeadLine
-            ? String(localized: "Drag the cue ball to a free spot behind the head line, then let go.")
-            : String(localized: "Drag the cue ball to a free spot, then let go.")
-    }
+    private var instructions: String { CueBallPlacement.instructions(model) }
 
     @ViewBuilder
     private var buttons: some View {
@@ -192,7 +239,7 @@ struct BallInHandCard: View {
                     }
                     .buttonStyle(.glass)
                 }
-                Button { place() } label: {
+                Button { CueBallPlacement.place(model) } label: {
                     Label(String(localized: "Place it"), systemImage: "checkmark").font(.headline).lineLimit(1)
                         .frame(minHeight: CallMetrics.buttonHeight)
                 }
@@ -214,38 +261,6 @@ struct BallInHandCard: View {
             HStack(spacing: 8) { Spacer(minLength: 0); row }.controlSize(.regular)
         }
     }
-
-    /// Put the ball down; if the spot is not legal it stays lifted and VoiceOver hears why.
-    private func place() {
-        if !model.confirmCueBallPlacement() {
-            let why = CueBallPlacement.problem(CueBallPlacement.legality(of: CueBallPlacement.spot(model), model))
-            ShotNarration.announce(why ?? String(localized: "Not a legal spot"))
-        }
-    }
-
-    /// One VoiceOver step: one ball radius along a table direction (x toward the foot, y toward the left long
-    /// cushion as seen from the head end). A radius is small enough to slip a ball past a neighbour and large enough
-    /// that a third of the table's width is about fifteen steps.
-    private func nudge(_ direction: Vec2) {
-        let r = model.timeline.table.ballRadius
-        let spot = model.moveCueBallCandidate(to: CueBallPlacement.spot(model) + direction * r)
-        let at = CueBallPlacement.spot(model)
-        ShotNarration.announce(spoken(at, problem: CueBallPlacement.problem(spot)))
-    }
-
-    /// "38 centimetres from the head cushion and 20 centimetres from the left cushion. Touching the 5."
-    private func spoken(_ p: Vec2, problem: String?) -> String {
-        let t = model.timeline.table
-        func length(_ m: Double) -> String {
-            Measurement(value: (max(0, m) * 100).rounded(), unit: UnitLength.centimeters)
-                .formatted(.measurement(width: .wide, usage: .asProvided))
-        }
-        // The nearer long cushion is the one named: y = 0 is the right-hand cushion seen from the head end.
-        let place = p.y > t.width / 2
-            ? String(localized: "\(length(p.x)) from the head cushion and \(length(t.width - p.y)) from the left cushion")
-            : String(localized: "\(length(p.x)) from the head cushion and \(length(p.y)) from the right cushion")
-        return [place, problem ?? String(localized: "Free spot")].joined(separator: ". ")
-    }
 }
 
 // MARK: Place the balls
@@ -256,7 +271,10 @@ struct PlaceBallsCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
 
-    private var visible: Bool {
+    private var visible: Bool { Self.isVisible(model) }
+
+    /// The rule behind `visible`, shared with the upright phone's blurb.
+    static func isVisible(_ model: ShowpieceModel) -> Bool {
         model.match == nil && model.freePlayRack == .placeBalls && model.shotsThisRack == 0 && model.aimReady
             && !model.placingCueBall && model.ballInHand == .none && !model.tableCleared
             && !model.trickMode.isActive && !model.eightBallMode.isActive && !model.lessonMode.isActive
@@ -294,7 +312,10 @@ struct TableClearedCard: View {
     /// Free play only (a match ends with its own result card), once the last shot has played out; kept up while
     /// Watch your best shot replays (the other shot's balls are on the table meanwhile, so tableCleared is false).
     /// Steps aside while a what-if is showing (0.7.5): the what-if card has the slot, and comes back on its close.
-    private var visible: Bool {
+    private var visible: Bool { Self.isVisible(model) }
+
+    /// The rule behind `visible`, shared with the upright phone's blurb and its Rack again.
+    static func isVisible(_ model: ShowpieceModel) -> Bool {
         model.match == nil && ((model.tableCleared && model.aimReady) || model.replayingBest) && !model.whatIf.isShowing
     }
 
@@ -324,7 +345,7 @@ struct TableClearedCard: View {
 
     /// The shot count and the buttons: everything under the heading.
     @ViewBuilder private var details: some View {
-        Text(shotsLine)
+        Text(Self.shotsLine(model))
             .font(Theme.body)
             .foregroundStyle(palette.paper.opacity(0.9))
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -359,7 +380,7 @@ struct TableClearedCard: View {
 
     /// One catalog string with the count (0.7.6, #62): the catalog's plural forms choose the noun ("one shot" in
     /// English, the few and many forms in Russian, all six in Arabic) instead of a one-or-many branch here.
-    private var shotsLine: String {
+    static func shotsLine(_ model: ShowpieceModel) -> String {
         String(localized: "Cleared in \(model.shotsThisRack) shots.",
                comment: "Practice: the rack was cleared in this many shots. Needs plural forms; English one: Cleared in one shot.")
     }

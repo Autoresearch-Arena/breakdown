@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: on the upright phone this layer also
+//          hosts PhonePlayFeedback (FreePlayPhoneBlurbs.swift), the always-present observer that announces each match
+//          phase and plays the clock's and the cleared rack's haptics there, because the phone's blurbs come and go
+//          and MatchCard and TableClearedCard, which do it on the other layouts, are not on screen.)
 // PURPOSE: Marks on the table for free play and matches, laid over the 3D table beside the trick-shot and 8-ball layers
 //          and never taking touches:
 //            - the lifted cue ball (ball in hand, Move cue ball): a disc where it would be put down, outlined in the
@@ -23,6 +27,8 @@ struct PlayTableLayer: View {
     let bridge: SceneBridge
     @Binding var shotPanelOpen: Bool
     @Environment(\.palette) private var palette
+    /// The phone held upright (ShowpieceView sets it on the stage): the match and free-play feedback lives here then.
+    @Environment(\.phoneUpright) private var phoneUpright
     @State private var cameraBox = AimProjector.CameraBox()
 
     /// True when there is anything to draw, so the layer costs nothing in a trick shot or a puzzle.
@@ -42,6 +48,9 @@ struct PlayTableLayer: View {
                 }
             }
         }
+        // Only on the upright phone: elsewhere MatchCard and TableClearedCard are on screen and do this themselves,
+        // so hosting it there too would say every ruling twice.
+        .background { if phoneUpright { PhonePlayFeedback(model: model) } }
         .allowsHitTesting(false)
         .ignoresSafeArea()
         .accessibilityHidden(true)   // the ball-in-hand card and the turn banner say all of this in words

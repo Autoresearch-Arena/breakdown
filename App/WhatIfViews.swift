@@ -13,6 +13,14 @@
 //          readout and plus, and the readout may shrink a little. The scrub row's What if button keeps its slot (shown
 //          or hidden by opacity), so the scrub bar never changes width. The picker falls back to a menu when its
 //          segments do not fit.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md Part 3: on the
+//          upright phone the what-if is two pieces instead of the card. WhatIfPhonePanel takes the aiming panel's place
+//          in the bottom bar, regular glass sized to its content: the title with Reset, Keep this one (the white capsule,
+//          when the mode can retry with it) and Close, the setting picker, and the chosen setting's nudge rows (room kept
+//          for the tallest setting, so the table does not reframe between settings). WhatIfPhoneBlurb is the result as a
+//          docked blurb: the sentences folded to two lines, the rest behind a tap, with Play both and Where they part
+//          as its two small buttons. The card's close button is glass instead of bordered. The text rules (full and
+//          short result) are shared statics, so card, panel and blurb say the same words. The card is unchanged elsewhere.)
 // PURPOSE: The what-if replay's controls. WhatIfButton is the entry in the playback row beside Replay (a branch
 //          symbol), shown only while model.whatIf.canOpen and the what-if is not already up. WhatIfCard is the card in
 //          the card slot (below the table on a phone, in the notebook on iPad, Mac and the open Duo, so nothing covers
@@ -158,23 +166,7 @@ struct WhatIfCard: View {
     /// Every section's rows laid over each other, only the chosen one visible: the area is as tall as the tallest
     /// section (Spin's two rows), so switching from Aim to Spin does not reframe the table. The others are invisible,
     /// untouchable and silent to VoiceOver.
-    private func nudgeArea(_ real: ShotAttempt) -> some View {
-        ZStack(alignment: .topLeading) {
-            ForEach(fork.sections, id: \.self) { s in
-                let chosen = s == fork.section
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(fork.controls(in: s), id: \.self) { c in
-                        NudgeRow(model: model, control: c, real: real)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-                .opacity(chosen ? 1 : 0)
-                .allowsHitTesting(chosen)
-                .disabled(!chosen)
-                .accessibilityHidden(!chosen)
-            }
-        }
-    }
+    private func nudgeArea(_ real: ShotAttempt) -> some View { WhatIfNudgeArea(model: model, real: real) }
 
     /// The short result: the trick verdict and the outcome (or the prompt, the working line, the too-long line), in a
     /// room of two lines. A tap opens all the sentences in a fixed room of five lines that scrolls, so nudging while it
@@ -286,20 +278,24 @@ struct WhatIfCard: View {
         .accessibilityLabel(full)
     }
 
-    /// Every sentence about the other future, or the one line that stands in for them.
-    private func fullText(_ real: ShotAttempt) -> String {
+    private func fullText(_ real: ShotAttempt) -> String { Self.fullText(fork, real: real) }
+    private func shortText(_ real: ShotAttempt) -> String { Self.shortText(fork, real: real) }
+
+    /// Every sentence about the other future, or the one line that stands in for them. Shared with the upright phone's
+    /// result blurb (WhatIfPhoneBlurb).
+    static func fullText(_ fork: WhatIfFork, real: ShotAttempt) -> String {
         if let r = fork.result { return WhatIfWords.sentences(r, real: real).joined(separator: " ") }
-        return standIn
+        return standIn(fork)
     }
 
     /// What matters most: the trick verdict and the outcome; the change itself is already on the nudge row.
-    private func shortText(_ real: ShotAttempt) -> String {
-        guard let r = fork.result else { return standIn }
+    static func shortText(_ fork: WhatIfFork, real: ShotAttempt) -> String {
+        guard let r = fork.result else { return standIn(fork) }
         return ([WhatIfWords.verdict(r)].compactMap { $0 } + [WhatIfWords.outcome(r, real: real)]).joined(separator: " ")
     }
 
     /// Before there is a result: too long to show, the prompt, or working it out.
-    private var standIn: String {
+    static func standIn(_ fork: WhatIfFork) -> String {
         if fork.tooLong { return WhatIfWords.tooLong }
         if fork.steps.isZero { return WhatIfWords.prompt }
         return WhatIfWords.working
@@ -325,31 +321,13 @@ struct WhatIfCard: View {
             Button { fork.close() } label: {
                 Image(systemName: "xmark").frame(width: 30, height: 30)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.glass)
             .buttonBorderShape(.circle)
             .accessibilityLabel(String(localized: "Close"))
         }
     }
 
-    /// The setting picker: segments when they all fit, a menu of the same choices when they do not (the fourth segment,
-    /// Cue angle, was cut short in several languages and in the side column; bug 27).
-    @ViewBuilder
-    private var sectionPicker: some View {
-        let sections = fork.sections
-        if sections.count > 1 {
-            ViewThatFits(in: .horizontal) {
-                picker(sections).pickerStyle(.segmented)
-                picker(sections).pickerStyle(.menu)
-            }
-        }
-    }
-
-    private func picker(_ sections: [WhatIfFork.Section]) -> some View {
-        Picker(String(localized: "Setting"), selection: Binding(get: { fork.section }, set: { fork.section = $0 })) {
-            ForEach(sections, id: \.self) { s in Text(WhatIfWords.sectionLabel(s)).tag(s) }
-        }
-        .labelsHidden()
-    }
+    private var sectionPicker: some View { WhatIfSectionPicker(fork: fork) }
 
     @ViewBuilder
     private func sentences(_ real: ShotAttempt) -> some View {
@@ -406,6 +384,59 @@ struct WhatIfCard: View {
     }
 }
 
+/// The setting picker: segments when they all fit, a menu of the same choices when they do not (the fourth segment,
+/// Cue angle, was cut short in several languages and in the side column; bug 27). Nothing with a single setting.
+/// Shared by the card and the upright phone's nudge panel.
+private struct WhatIfSectionPicker: View {
+    let fork: WhatIfFork
+
+    var body: some View {
+        let sections = fork.sections
+        if sections.count > 1 {
+            ViewThatFits(in: .horizontal) {
+                picker(sections).pickerStyle(.segmented)
+                picker(sections).pickerStyle(.menu)
+            }
+        }
+    }
+
+    private func picker(_ sections: [WhatIfFork.Section]) -> some View {
+        Picker(String(localized: "Setting"), selection: Binding(get: { fork.section }, set: { fork.section = $0 })) {
+            ForEach(sections, id: \.self) { s in Text(WhatIfWords.sectionLabel(s)).tag(s) }
+        }
+        .labelsHidden()
+    }
+}
+
+/// Every section's rows laid over each other, only the chosen one visible: the area is as tall as the tallest section
+/// (Spin's two rows), so switching from Aim to Spin does not reframe the table. The others are invisible, untouchable
+/// and silent to VoiceOver. Shared by the compact card and the upright phone's nudge panel (`onGlass`: the rows' step
+/// buttons are drawn as content on the panel's glass, PhonePanelControl, instead of glass buttons).
+private struct WhatIfNudgeArea: View {
+    let model: ShowpieceModel
+    let real: ShotAttempt
+    var onGlass = false
+
+    var body: some View {
+        let fork = model.whatIf
+        ZStack(alignment: .topLeading) {
+            ForEach(fork.sections, id: \.self) { s in
+                let chosen = s == fork.section
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(fork.controls(in: s), id: \.self) { c in
+                        NudgeRow(model: model, control: c, real: real, onGlass: onGlass)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .opacity(chosen ? 1 : 0)
+                .allowsHitTesting(chosen)
+                .disabled(!chosen)
+                .accessibilityHidden(!chosen)
+            }
+        }
+    }
+}
+
 /// One setting's row: its name on its own line, then a button each way with the offset between them; one adjustable
 /// element for VoiceOver. The name sits above (0.7.6, bug 27) so a long name ("Nachläufer oder Rückläufer") and a long
 /// readout ("2,5 mm más arriba") never share one line and cut each other to an ellipsis, in a narrow side column too.
@@ -413,6 +444,8 @@ private struct NudgeRow: View {
     let model: ShowpieceModel
     let control: WhatIfFork.Control
     let real: ShotAttempt
+    /// On the upright phone's nudge panel: the step buttons are content on the panel's glass, not glass themselves.
+    var onGlass = false
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -468,15 +501,150 @@ private struct NudgeRow: View {
         }
     }
 
+    @ViewBuilder
     private func step(_ symbol: String, delta: Int) -> some View {
-        Button { fork.nudge(control, by: delta) } label: {
-            Image(systemName: symbol)
-                .font(.headline)
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
+        if onGlass {
+            // On the phone's glass panel: a plain button on a faint circle, 44 to touch (no glass on glass).
+            Button { fork.nudge(control, by: delta) } label: {
+                Image(systemName: symbol)
+                    .font(.headline)
+                    .frame(width: 44, height: 44)
+                    .modifier(PhonePanelControl(shape: .circle))
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .disabled(!fork.canStep(control, by: delta))
+        } else {
+            Button { fork.nudge(control, by: delta) } label: {
+                Image(systemName: symbol)
+                    .font(.headline)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .disabled(!fork.canStep(control, by: delta))
         }
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .disabled(!fork.canStep(control, by: delta))
+    }
+}
+
+// MARK: The upright phone
+
+/// The what-if's nudge controls on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, "The aiming panel": "its
+/// nudge controls take the panel's place, sized to their content"). ShowpieceView shows it in the bottom bar's glass
+/// container instead of PhoneAimPanel while model.whatIf.isShowing. One regular glass shape, the controls drawn on it as
+/// content: the title with Reset, Keep this one (the white capsule, only when the mode can retry with it) and Close;
+/// the setting picker; the chosen setting's nudge rows, with room kept for the tallest setting so the table does not
+/// reframe as the player switches. The result is not here: it is WhatIfPhoneBlurb, docked over the table. A selection
+/// haptic on each click when Vibration is on, as the card.
+struct WhatIfPhonePanel: View {
+    let model: ShowpieceModel
+    @Environment(\.palette) private var palette
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    private var fork: WhatIfFork { model.whatIf }
+
+    var body: some View {
+        Group {
+            if fork.isShowing, let real = fork.real {
+                VStack(alignment: .leading, spacing: 10) {
+                    header
+                    WhatIfSectionPicker(fork: fork)
+                    WhatIfNudgeArea(model: model, real: real, onGlass: true)
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassEffect(.regular, in: .rect(cornerRadius: PhoneAimPanel.corner, style: .continuous))
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(WhatIfWords.title)
+            }
+        }
+        .sensoryFeedback(trigger: fork.clicks) { _, _ in GameSettings.hapticsOn ? .selection : nil }
+    }
+
+    /// The title, then Reset, Keep and Close at the right. When the row does not fit (a long language, large text) the
+    /// title steps out first (VoiceOver still hears it on the panel), then the buttons stack.
+    private var header: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { title; Spacer(minLength: 0); buttons }
+            HStack(spacing: 8) { Spacer(minLength: 0); buttons }
+            VStack(alignment: .trailing, spacing: 8) { buttons }.frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
+    private var title: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "arrow.triangle.branch").foregroundStyle(palette.whatIf).accessibilityHidden(true)
+            Text(WhatIfWords.title).font(Theme.phoneTitle).lineLimit(1).accessibilityAddTraits(.isHeader)
+        }
+        .fixedSize()
+    }
+
+    @ViewBuilder private var buttons: some View {
+        Button { fork.reset() } label: {
+            Text(String(localized: "Reset"))
+                .font(Theme.phoneControl).lineLimit(1)
+                .padding(.horizontal, 14).frame(minHeight: 44)
+                .modifier(PhonePanelControl(shape: .capsule))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .fixedSize()
+        .disabled(fork.steps.isZero)
+        .opacity(fork.steps.isZero ? 0.45 : 1)
+        .accessibilityHint(String(localized: "Puts every setting back to the shot you played"))
+        // Present only when the mode can retry with it: absent, not disabled, otherwise (as the card).
+        if fork.canKeep {
+            Button { fork.keep() } label: {
+                Text(String(localized: "Keep this one"))
+                    .font(Theme.phoneControl).lineLimit(1)
+                    .padding(.horizontal, 16).frame(minHeight: 44)
+                    .foregroundStyle(palette.ground)
+                    .background(.white, in: .capsule)
+                    .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .fixedSize()
+            .accessibilityHint(String(localized: "Sets up your next try with this version's settings"))
+        }
+        Button { fork.close() } label: {
+            Image(systemName: "xmark")
+                .font(.body.weight(.semibold))
+                .frame(width: 44, height: 44)
+                .modifier(PhonePanelControl(shape: .circle))
+                .contentShape(Circle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: "Close"))
+    }
+}
+
+/// The what-if's result on the upright phone: a docked blurb with every sentence about the other future, folded to two
+/// lines (the verdict and the outcome come first, so the fold keeps what matters most), the rest behind a tap. Play both
+/// and Where they part are its two small buttons once there is a result (Where they part only with a parting point).
+/// Before a result it says the prompt, that it is working, or that the shot is too long to show. Silent and of no
+/// height while the what-if is not showing.
+struct WhatIfPhoneBlurb: View {
+    let model: ShowpieceModel
+
+    private var fork: WhatIfFork { model.whatIf }
+
+    var body: some View {
+        if fork.isShowing, let real = fork.real {
+            Blurb(sentence: WhatIfCard.fullText(fork, real: real), foldedLines: 2, buttons: buttons)
+                .opacity(fork.solving ? 0.6 : 1)
+        }
+    }
+
+    private var buttons: [BlurbButton] {
+        guard fork.result != nil else { return [] }
+        var list = [BlurbButton(String(localized: "Play both"),
+                                hint: String(localized: "Plays your shot again with the other future rolling beside it")) {
+            fork.playBoth()
+        }]
+        if fork.result?.fork.marker != nil {
+            list.append(BlurbButton(String(localized: "Where they part")) { fork.jumpToParting() })
+        }
+        return list
     }
 }

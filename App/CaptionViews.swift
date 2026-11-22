@@ -1,5 +1,11 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 4: CaptionLeader gains showChip (the ring
+//          stays, its title chip goes on the upright phone, where the anchored explanation blurb carries the title) and
+//          shares its ring radius (CaptionLeader.ringRadius) with that blurb; the worked equation line moves onto Caption
+//          (Caption.equationLine) so the phone's blurb shows the same line; the Lens key's glowing entries become
+//          LensKeyEntry, shared by LensLegendChip and the phone's one-line Lens key blurb. Nothing changes on the other
+//          layouts.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: the caption's physics figures (Caption.figures)
 //          as a row of compact tiles under the title line, each number large in rounded monospaced digits in the colour
@@ -204,7 +210,7 @@ private struct CaptionContent: View {
     /// The equation as shown: with the event's own numbers when the caption has them, else the bare formula. Also what
     /// VoiceOver reads as the card's value, so the screen and the voice agree.
     static func equationLine(_ caption: Caption) -> String {
-        caption.worked.isEmpty ? caption.equation : caption.worked
+        caption.equationLine
     }
 
     /// What VoiceOver reads for a caption's words (0.7.6): the title, the detail, then each figure, label then value
@@ -213,6 +219,12 @@ private struct CaptionContent: View {
         let figures = caption.figures.map { "\($0.label), \($0.spoken)." }
         return (["\(caption.title). \(caption.detail)"] + figures).joined(separator: " ")
     }
+}
+
+extension Caption {
+    /// The equation as shown: with the event's own numbers when the caption has them, else the bare formula. One place
+    /// for the side card, the phone strip and the upright phone's explanation blurb (PhoneExplanation.swift).
+    var equationLine: String { worked.isEmpty ? equation : worked }
 }
 
 // MARK: Physics figures (0.7.6)
@@ -909,19 +921,7 @@ struct LensLegendChip: View {
 
     /// `dashed`: the sliding entry when shape must carry the meaning (Differentiate Without Colour).
     private func entry(_ name: LocalizedStringKey, _ color: Color, dashed: Bool = false) -> some View {
-        HStack(spacing: 6) {
-            // A short glowing line, like the trail it stands for: three dashes or one solid stroke.
-            Group {
-                if dashed {
-                    HStack(spacing: 2) { ForEach(0..<3, id: \.self) { _ in Capsule().fill(color).frame(width: 4, height: 3) } }
-                        .frame(width: 16)
-                } else {
-                    Capsule().fill(color).frame(width: 16, height: 3)
-                }
-            }
-            .shadow(color: color.opacity(0.8), radius: 3)
-            Text(name).font(Theme.label).lineLimit(1)
-        }
+        LensKeyEntry(name: name, color: color, dashed: dashed)
     }
 
     private var heading: some View {
@@ -950,6 +950,43 @@ struct LensLegendChip: View {
         .accessibilityLabel(withoutColour
             ? Text("Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling")
             : Text("Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling"))
+    }
+}
+
+/// One entry of the Lens colour key: a short glowing line like the trail it stands for (three dashes, or one solid
+/// stroke), then its word. Shared by LensLegendChip (the title-row chip on the other layouts) and PhoneLensKeyBlurb (the
+/// upright phone's one-line docked key), so both draw the key the same way.
+struct LensKeyEntry: View {
+    let name: LocalizedStringKey
+    let color: Color
+    /// The sliding entry when shape must carry the meaning (Differentiate Without Colour): dashed, as the trail is.
+    var dashed = false
+
+    var body: some View {
+        HStack(spacing: 6) {
+            LensTrailMark(color: color, dashed: dashed)
+            Text(name).font(Theme.label).lineLimit(1)
+        }
+    }
+}
+
+/// A short glowing line like a Lens trail, 16 points long: one solid stroke, or three dashes when shape must carry the
+/// meaning (Differentiate Without Colour, sliding). The Lens key's entries and the upright phone's Lens tips draw it.
+struct LensTrailMark: View {
+    let color: Color
+    var dashed = false
+
+    var body: some View {
+        Group {
+            if dashed {
+                HStack(spacing: 2) { ForEach(0..<3, id: \.self) { _ in Capsule().fill(color).frame(width: 4, height: 3) } }
+                    .frame(width: 16)
+            } else {
+                Capsule().fill(color).frame(width: 16, height: 3)
+            }
+        }
+        .shadow(color: color.opacity(0.8), radius: 3)
+        .accessibilityHidden(true)
     }
 }
 
@@ -1049,13 +1086,16 @@ final class LeaderState {
     }
 }
 
-/// A ring around the ball, the caption's short title as a small glass chip beside it, and (only when the card sits
-/// beside the table, in the wide layout) a thin line back to the card. Decoration only: hidden from VoiceOver (the
+/// A ring around the ball, the caption's short title as a small glass chip beside it (not on the upright phone, see
+/// showChip), and (only when the card sits beside the table, in the wide layout) a thin line back to the card. Decoration only: hidden from VoiceOver (the
 /// card or strip already speaks the caption) and never takes touches, so aiming drags pass straight through.
 struct CaptionLeader: View {
     let leader: LeaderState
     /// Draw the line to the card. Off on a phone held upright, where the card is a strip far below the table.
     var showLine = true
+    /// Draw the caption's title chip beside the ring. Off on the upright phone (phone UI plan): the anchored explanation
+    /// blurb carries the title there, and the chip repeated it and collided with it. The ring and the stroke lines stay.
+    var showChip = true
     @Environment(\.palette) private var palette
     @Environment(\.layoutDirection) private var layoutDirection
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
@@ -1066,7 +1106,9 @@ struct CaptionLeader: View {
     /// The lead figure's width on one line (0.7.6), measured the same way, to decide whether it fits after the title.
     @State private var figureWidth: CGFloat = 0
 
-    private let ringRadius: CGFloat = 20
+    /// The ring's radius. Shared with the upright phone's explanation blurb, which keeps clear of the ring.
+    static let ringRadius: CGFloat = 20
+    private var ringRadius: CGFloat { Self.ringRadius }
     /// Gap between the ring and the chip, and the least distance the chip keeps from the screen's edges.
     private let gap: CGFloat = 8
     /// Space between the title and the lead figure in the chip.
@@ -1180,7 +1222,7 @@ struct CaptionLeader: View {
                     ctx.stroke(Path(ellipseIn: rect), with: .color(color), lineWidth: 2)
                 }
                 // The chip is a SwiftUI view, not drawn in the Canvas, because a Canvas cannot host Liquid Glass.
-                if explanations, let ring = visibleRing, let title = leader.title {
+                if showChip, explanations, let ring = visibleRing, let title = leader.title {
                     let color = palette.color(for: leader.accent)
                     // At most the stage's width less the edge gaps and the chip's own padding; a longer title (a long
                     // translation, a large text size) wraps onto a second line instead of running off the screen (#59).

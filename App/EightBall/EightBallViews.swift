@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The card's
+//          words are lifted into EightBallWords (the try label, the call prompt and call line, the situation's note,
+//          the result's title and what went wrong, the scorecard's notes, the sum's terms, the cloth sentence) so the
+//          upright phone's blurbs (EightBallPhoneBlurbs.swift) say exactly the same; EightBallFormat is no longer
+//          private to this file for the same reason.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #41: the slim
 //          card's heading shows the replayed try's number during the Lens replay of a scored try, not the next try's.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (sound-lessons hook, bug plan item 36: a medal plays the made-it sound
@@ -79,8 +84,8 @@ private extension EightBallMedal {
     }
 }
 
-/// Numbers for the cards, in the player's own number format.
-private enum EightBallFormat {
+/// Numbers for the cards, in the player's own number format. Also read by the upright phone's real-table blurb.
+enum EightBallFormat {
     static func decimal(_ x: Double, _ places: Int) -> String {
         String(format: "%.\(places)f", locale: Locale.current, x)
     }
@@ -100,6 +105,120 @@ private enum EightBallFormat {
         if s > 0 { parts.append(String(localized: "\(decimal(s, 0)) mm right")) }
         if s < 0 { parts.append(String(localized: "\(decimal(-s, 0)) mm left")) }
         return parts.isEmpty ? String(localized: "Centre") : parts.formatted(.list(type: .and))
+    }
+}
+
+// MARK: Words, shared
+
+/// The card's words, shared with the upright phone's blurbs (EightBallPhoneBlurbs.swift) so the two layouts never say
+/// different things. Reads EightBallMode and the verdict only.
+@MainActor
+enum EightBallWords {
+    /// "Try 2 of 3", or "Practice" once the scored tries are used up.
+    static func tryLabel(_ n: Int) -> String {
+        n > EightBallVerdict.maxTries ? String(localized: "Practice")
+                                      : String(localized: "Try \(n) of \(EightBallVerdict.maxTries)")
+    }
+
+    /// What to tap while calling.
+    static func callPrompt(_ mode: EightBallMode, _ s: EightBallSituation) -> String {
+        if let b = mode.pendingBall {
+            return String(localized: "The \(b). Now tap the pocket you call.")
+        }
+        return s.onTheEight
+            ? String(localized: "You're on the 8. Tap it, then the pocket you call. Or call Safety.")
+            : String(localized: "Tap one of your balls (\(s.group.title)), then the pocket you call. Or call Safety.")
+    }
+
+    /// "You called the 3 in the foot-left corner." or "You called Safety."
+    static func callLine(_ mode: EightBallMode) -> String {
+        switch mode.call {
+        case .ball(let b, let p)?: return String(localized: "You called the \(b): \(p.title).")
+        case .safety?: return String(localized: "You called Safety: a legal hit that leaves them hooked.")
+        case nil: return String(localized: "No call yet.")
+        }
+    }
+
+    /// The cloth and the bridge, when they matter: one small line under the story.
+    static func situationNote(_ mode: EightBallMode, _ s: EightBallSituation) -> String? {
+        var parts: [String] = []
+        if s.surface != .cloth { parts.append(String(localized: "Set on \(s.surface.title).")) }
+        if s.usesBridge { parts.append(String(localized: "The bridge is legal here.")) }
+        if mode.hintTaken { parts.append(String(localized: "Style capped at 2.")) }
+        return parts.isEmpty ? nil : parts.joined(separator: " ")
+    }
+
+    static func resultTitle(_ v: EightBallVerdict) -> String {
+        if v.gameLost { return String(localized: "Game lost") }
+        if v.fouled { return String(localized: "Foul") }
+        if v.madeAsCalled { return String(localized: "Made it as called!") }
+        if v.call == .safety { return v.safetyLeftHooked ? String(localized: "Safe! They're hooked.")
+                                                          : String(localized: "Legal safety") }
+        return String(localized: "Missed, but legal")
+    }
+
+    static func whatWentWrong(_ v: EightBallVerdict) -> String? {
+        if let loss = v.loss { return loss.title + "." }
+        if v.fouled { return v.fouls.map(\.title).formatted(.list(type: .and)) + "." }
+        return nil
+    }
+
+    /// The one line under the result's title, never the same news twice: what went wrong, or else the judge's
+    /// sentence when it adds something to the title (a plain "Made as called." does not).
+    static func resultLine(_ v: EightBallVerdict) -> String? {
+        if let why = whatWentWrong(v) { return why }
+        if !v.line.isEmpty, v.line != String(localized: "Made as called.") { return v.line }
+        return nil
+    }
+
+    /// The scorecard's small notes under the sum, in order.
+    static func scoreNotes(_ mode: EightBallMode, _ v: EightBallVerdict) -> [String] {
+        var out: [String] = []
+        if v.madeAsCalled && !v.style.isEmpty {
+            out.append(String(localized: "Style: \(v.style.map(\.title).formatted(.list(type: .and)))."))
+        }
+        if v.nearEdge { out.append(String(localized: "Close to the edge of what works: one off difficulty, and no style.")) }
+        if v.fluke { out.append(String(localized: "An unplanned kiss: it counts, but scores no difficulty or style.")) }
+        if mode.hintTaken && v.madeAsCalled { out.append(String(localized: "You watched a way out first, so style is capped at 2.")) }
+        if v.isPractice { out.append(String(localized: "Practice: three scored tries are used up, so this one isn't kept.")) }
+        return out
+    }
+
+    /// The sum's terms, in order, the total last: made 5 + difficulty + style − retry = total (or escape 1, safety 3,
+    /// foul 0).
+    static func sumTerms(_ v: EightBallVerdict) -> [(value: String, label: String)] {
+        var terms: [(value: String, label: String)] = []
+        if !v.legal {
+            terms.append(("0", v.gameLost ? String(localized: "game lost") : String(localized: "foul")))
+        } else if v.madeAsCalled {
+            terms.append(("\(EightBallVerdict.madePoints)", String(localized: "made")))
+            terms.append(("+\(v.difficulty)", String(localized: "difficulty")))
+            terms.append(("+\(v.stylePoints)", String(localized: "style")))
+        } else if v.call == .safety && v.safetyLeftHooked {
+            terms.append(("\(EightBallVerdict.safetyPoints)", String(localized: "safety")))
+        } else {
+            terms.append(("\(EightBallVerdict.legalMissPoints)", String(localized: "escape")))
+        }
+        if v.retryPenalty > 0 && v.legal { terms.append(("−\(v.retryPenalty)", String(localized: "retry"))) }
+        terms.append(("= \(v.total)", String(localized: "total")))
+        return terms
+    }
+
+    /// The sum as VoiceOver reads it: "Score: made 5, difficulty +3, ..., total = 10".
+    static func spokenSum(_ v: EightBallVerdict) -> String {
+        let spoken = sumTerms(v).map { "\($0.label) \($0.value)" }.joined(separator: ", ")
+        return String(localized: "Score: \(spoken)")
+    }
+
+    /// This cloth's numbers next to the standard cloth's, in one sentence (the card's VoiceOver label for its cloth
+    /// grid; the phone's real-table blurb shows it as its last line).
+    static func clothSentence(_ n: RealTableNumbers) -> String {
+        let std = PlaySurface.cloth.parameters
+        let d = EightBallFormat.decimal
+        let pace = d(RailKeep.pace, 0)
+        let keeps = RailKeep.percent(parameters: n.surface.parameters)
+        let keepsStd = RailKeep.percent(parameters: std)
+        return String(localized: "Cloth: \(n.surface.title). Sliding friction \(d(n.slidingFriction, 2)), standard \(d(std.slidingFriction, 2)). Rolling resistance \(d(n.rollingResistance, 3)), standard \(d(std.rollingResistance, 3)). A ball rolling straight into a rail at \(pace) metres per second keeps \(keeps) percent of its speed, standard \(keepsStd) percent.")
     }
 }
 
@@ -274,7 +393,7 @@ struct EightBallCard: View {
             }
         case .calling:
             header(s)
-            line(callPrompt(s))
+            line(EightBallWords.callPrompt(mode, s))
             if let n = mode.callNote { note(n, warning: true) }
             CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
             buttons {
@@ -354,23 +473,8 @@ struct EightBallCard: View {
 
     // MARK: Calling
 
-    private func callPrompt(_ s: EightBallSituation) -> String {
-        if let b = mode.pendingBall {
-            return String(localized: "The \(b). Now tap the pocket you call.")
-        }
-        return s.onTheEight
-            ? String(localized: "You're on the 8. Tap it, then the pocket you call. Or call Safety.")
-            : String(localized: "Tap one of your balls (\(s.group.title)), then the pocket you call. Or call Safety.")
-    }
-
     /// "You called the 3 in the foot-left corner." or "You called Safety."
-    private var callLine: String {
-        switch mode.call {
-        case .ball(let b, let p)?: return String(localized: "You called the \(b): \(p.title).")
-        case .safety?: return String(localized: "You called Safety: a legal hit that leaves them hooked.")
-        case nil: return String(localized: "No call yet.")
-        }
-    }
+    private var callLine: String { EightBallWords.callLine(mode) }
 
     // MARK: Scored
 
@@ -392,19 +496,9 @@ struct EightBallCard: View {
         .accessibilityAddTraits(.isHeader)
         // One line under the title, never the same news twice: what went wrong, or else the judge's sentence when it
         // adds something to the title (a plain "Made as called." does not).
-        if let why = whatWentWrong(v) {
-            line(why)
-        } else if !v.line.isEmpty, v.line != String(localized: "Made as called.") {
-            line(v.line)
-        }
+        if let words = EightBallWords.resultLine(v) { line(words) }
         sum(v)
-        if v.madeAsCalled && !v.style.isEmpty {
-            note(String(localized: "Style: \(v.style.map(\.title).formatted(.list(type: .and)))."))
-        }
-        if v.nearEdge { note(String(localized: "Close to the edge of what works: one off difficulty, and no style.")) }
-        if v.fluke { note(String(localized: "An unplanned kiss: it counts, but scores no difficulty or style.")) }
-        if mode.hintTaken && v.madeAsCalled { note(String(localized: "You watched a way out first, so style is capped at 2.")) }
-        if v.isPractice { note(String(localized: "Practice: three scored tries are used up, so this one isn't kept.")) }
+        ForEach(Array(EightBallWords.scoreNotes(mode, v).enumerated()), id: \.offset) { _, n in note(n) }
     }
 
     private func resultSymbol(_ v: EightBallVerdict) -> String {
@@ -415,45 +509,14 @@ struct EightBallCard: View {
         return "arrow.uturn.backward.circle"
     }
 
-    private func resultTitle(_ v: EightBallVerdict) -> String {
-        if v.gameLost { return String(localized: "Game lost") }
-        if v.fouled { return String(localized: "Foul") }
-        if v.madeAsCalled { return String(localized: "Made it as called!") }
-        if v.call == .safety { return v.safetyLeftHooked ? String(localized: "Safe! They're hooked.")
-                                                          : String(localized: "Legal safety") }
-        return String(localized: "Missed, but legal")
-    }
+    private func resultTitle(_ v: EightBallVerdict) -> String { EightBallWords.resultTitle(v) }
 
-    private func whatWentWrong(_ v: EightBallVerdict) -> String? {
-        if let loss = v.loss { return loss.title + "." }
-        if v.fouled { return v.fouls.map(\.title).formatted(.list(type: .and)) + "." }
-        return nil
-    }
-
-    private func tryLabel(_ n: Int) -> String {
-        n > EightBallVerdict.maxTries ? String(localized: "Practice")
-                                      : String(localized: "Try \(n) of \(EightBallVerdict.maxTries)")
-    }
+    private func tryLabel(_ n: Int) -> String { EightBallWords.tryLabel(n) }
 
     /// The sum in one row: made 5 + difficulty + style − retry = total (or escape 1, safety 3, foul 0).
     private func sum(_ v: EightBallVerdict) -> some View {
-        var terms: [(value: String, label: String)] = []
-        if !v.legal {
-            terms.append(("0", v.gameLost ? String(localized: "game lost") : String(localized: "foul")))
-        } else if v.madeAsCalled {
-            terms.append(("\(EightBallVerdict.madePoints)", String(localized: "made")))
-            terms.append(("+\(v.difficulty)", String(localized: "difficulty")))
-            terms.append(("+\(v.stylePoints)", String(localized: "style")))
-        } else if v.call == .safety && v.safetyLeftHooked {
-            terms.append(("\(EightBallVerdict.safetyPoints)", String(localized: "safety")))
-        } else {
-            terms.append(("\(EightBallVerdict.legalMissPoints)", String(localized: "escape")))
-        }
-        if v.retryPenalty > 0 && v.legal { terms.append(("−\(v.retryPenalty)", String(localized: "retry"))) }
-        terms.append(("= \(v.total)", String(localized: "total")))
-        let all = terms
+        let all = EightBallWords.sumTerms(v)
         let last = all.count - 1
-        let spoken = all.map { "\($0.label) \($0.value)" }.joined(separator: ", ")
         let totalFont = Font.title3.monospacedDigit().weight(.bold)
         let termFont = Font.headline.monospacedDigit()
         return HStack(alignment: .firstTextBaseline, spacing: 12) {
@@ -470,7 +533,7 @@ struct EightBallCard: View {
         }
         .padding(.vertical, 2)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(String(localized: "Score: \(spoken)"))
+        .accessibilityLabel(EightBallWords.spokenSum(v))
     }
 
     private func scoredButtons(_ s: EightBallSituation, _ v: EightBallVerdict) -> some View {
@@ -603,7 +666,7 @@ struct EightBallCard: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(String(localized: "Cloth: \(n.surface.title). Sliding friction \(d(n.slidingFriction, 2)), standard \(d(std.slidingFriction, 2)). Rolling resistance \(d(n.rollingResistance, 3)), standard \(d(std.rollingResistance, 3)). A ball rolling straight into a rail at \(pace) metres per second keeps \(keeps) percent of its speed, standard \(keepsStd) percent."))
+        .accessibilityLabel(EightBallWords.clothSentence(n))
     }
 
     // MARK: Pieces
@@ -621,13 +684,7 @@ struct EightBallCard: View {
     }
 
     /// The cloth and the bridge, when they matter: one small line under the story.
-    private func situationNote(_ s: EightBallSituation) -> String? {
-        var parts: [String] = []
-        if s.surface != .cloth { parts.append(String(localized: "Set on \(s.surface.title).")) }
-        if s.usesBridge { parts.append(String(localized: "The bridge is legal here.")) }
-        if mode.hintTaken { parts.append(String(localized: "Style capped at 2.")) }
-        return parts.isEmpty ? nil : parts.joined(separator: " ")
-    }
+    private func situationNote(_ s: EightBallSituation) -> String? { EightBallWords.situationNote(mode, s) }
 
     private func line(_ text: String) -> some View {
         Text(text)

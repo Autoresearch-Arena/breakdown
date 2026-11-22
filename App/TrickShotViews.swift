@@ -24,6 +24,10 @@
 //          now shared with LessonTableLayer; the card steps aside while a what-if is open and shows its slim form (the
 //          heading and the main button) during a guided Lens replay on a phone held upright (lensReplayCompact); the
 //          list's Mac minimum size applies only as a sheet, not as a page of the notebook.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: TrickPhoneBlurbs, the trick card's
+//          words as blurbs on the phone held upright, and PhonePrimaryAction.trick, its main button as the strip's
+//          primary action ("Watch it", "Your turn", "Try again", "Next shot"). The make's success haptic moved from the
+//          card to TrickTableLayer, which is on screen in every layout, so the upright phone (no card) keeps it.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the trick shots, in a sheet from the menu: number (or a tick once made), title,
 //            hook and difficulty, and beside them a small drawing of the answer's real path (above the text at
@@ -33,6 +37,13 @@
 //            replays in the Lens, with the maths behind a button; Made it or Missed with one line on what to change,
 //            Try again and Next shot, Watch yours in the Lens after a make, and Show the answer's path once the answer
 //            has been watched. One or two lines of text and one row of buttons.
+//          TrickPhoneBlurbs - the phone held upright only (ShowpieceView's dock): the card's words without the card, as
+//            blurbs (App/Phone/Blurb.swift). The shot's name and difficulty are the title row's, the main button is the
+//            strip's primary action (PhonePrimaryAction.trick, below), and the list, Watch again, Show the maths and
+//            the answer's path are in the title row's More menu; what is left is the hook, the goal, the idea (folded to
+//            one line with its more dot while the answer replays, opened by a tap here or on the title), the verdict
+//            with the retry's one difference, and at most two small buttons (Your turn before watching; See the
+//            contact and Watch yours after a try).
 //          TrickTableLayer - laid over the 3D table, never taking touches: rings on the balls the shot names and on the
 //            pockets they must drop in, the cue ball's finish circle for Stop Dead (GoalMarks, shared with the lesson
 //            layer), the answer's cue-ball path when the player asks for it (white, dashed, faint,
@@ -193,9 +204,7 @@ struct TrickShotCard: View {
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: mode.phase)
-            // One success haptic per make, with the glow and the made-it sound (TrickTableLayer); the Vibration option
-            // is read at the moment it fires.
-            .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
+            // The make's success haptic is TrickTableLayer's (with the glow and the sound), so it fires in every layout.
             .transition(.opacity)
         }
     }
@@ -448,6 +457,120 @@ struct TrickShotCard: View {
     #endif
 }
 
+// MARK: The phone held upright
+
+/// The trick card's words as blurbs, docked at the top of the table area on the phone held upright (ShowpieceView's
+/// dock; phone UI plan, Part 3 and Part 4 step 5). One blurb at a time, chosen by the phase, plus the idea whenever the
+/// title has opened it. Shows nothing outside a trick shot, while the Lens tips hold a beat (they are the one text then,
+/// as the card stepped back for them) and while a what-if is open (its result is the one result then).
+struct TrickPhoneBlurbs: View {
+    let model: ShowpieceModel
+    /// The idea is open: the title row's tap and a tap on the idea blurb both toggle it (ShowpieceView owns it).
+    @Binding var ideaOpen: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var mode: TrickShotMode { model.trickMode }
+
+    var body: some View {
+        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+            // The idea while the answer replays in the Lens (folded to one line, its dot saying there is more), or
+            // whenever the title opened it (then shown open; folding it puts it away).
+            if mode.phase == .explaining || ideaOpen { idea(shot) }
+            phaseBlurb(shot)
+        }
+    }
+
+    /// Blurb's fold switch is true when folded; ideaOpen is true when open. One binding turns one into the other.
+    private var ideaFolded: Binding<Bool> {
+        Binding(get: { !ideaOpen }, set: { ideaOpen = !$0 })
+    }
+
+    /// "The idea", the shot's one idea, and the worked maths while Show the maths is on (the title row's More menu
+    /// sets mode.showMaths with the stored option).
+    private func idea(_ shot: TrickShot) -> some View {
+        Blurb(title: String(localized: "The idea"), sentence: shot.idea,
+              equation: mode.showMaths ? shot.maths : nil,
+              folded: ideaFolded, foldedLines: 1)
+    }
+
+    /// The phase's own words. Explaining has none beyond the idea; Watch it, Your turn, Try again and Next shot are the
+    /// strip's primary action (PhonePrimaryAction.trick).
+    @ViewBuilder
+    private func phaseBlurb(_ shot: TrickShot) -> some View {
+        switch mode.phase {
+        case .ready:
+            // The hook, and Your turn for a player who wants to skip the answer (Watch it is the primary action).
+            Blurb(sentence: shot.hook, buttons: [
+                BlurbButton(String(localized: "Your turn"),
+                            hint: String(localized: "Puts the balls back and opens the aiming controls")) { mode.yourTurn() }
+            ])
+        case .watching:
+            Blurb(sentence: String(localized: "Watch the answer. \(shot.goalLine)"))
+        case .aiming:
+            Blurb(sentence: shot.usesBridge
+                  ? String(localized: "\(shot.goalLine) The ball is out of reach, so the bridge holds the cue.")
+                  : shot.goalLine)
+        case .judged(let verdict):
+            judged(verdict)
+        case .offScript:
+            Blurb(sentence: String(localized: "That shot started from where the balls stopped. Try again puts them back for the trick."))
+        case .explaining, .off:
+            EmptyView()
+        }
+    }
+
+    /// Made it or Missed, the judge's one line and, after a retry, the one difference between the two tries
+    /// (RetryWords), folded to three lines with the dot when longer. Two small buttons at most: See the contact (when
+    /// the cue ball touched a ball) and, after a make, Watch yours in the Lens.
+    private func judged(_ verdict: TrickVerdict) -> some View {
+        var sentence = verdict.line
+        if let c = model.retryComparison { sentence += " " + RetryWords.sentence(c) }
+        var buttons: [BlurbButton] = []
+        if let contact = ContactButton.blurbButton(model: model, reduceMotion: reduceMotion) { buttons.append(contact) }
+        if verdict.made {
+            buttons.append(BlurbButton(String(localized: "Watch yours in the Lens"),
+                                       hint: String(localized: "Replays your stroke slowly in the Lens, stopping on the moments that made it")) {
+                mode.watchYours()
+            })
+        }
+        return Blurb(title: verdict.made ? String(localized: "Made it!") : String(localized: "Missed"),
+                     sentence: sentence, buttons: buttons)
+    }
+}
+
+extension PhonePrimaryAction {
+    /// The trick shot's way on, the old card's prominent button (phone UI plan, Part 3 "The control strip"): "Watch
+    /// it" before the answer has been watched; "Your turn" while the answer plays and replays in the Lens (one word for
+    /// the whole replay, so it never changes under the thumb); "Next shot" after a make; "Try again" after a miss or an
+    /// off-script shot. Nil while lining up (the aiming panel is the way on), outside a trick shot, and while a
+    /// what-if is open (the trick card stepped aside for it too).
+    static func trick(_ model: ShowpieceModel) -> PhonePrimaryAction? {
+        let mode = model.trickMode
+        guard mode.isActive, !model.whatIf.isShowing else { return nil }
+        switch mode.phase {
+        case .ready:
+            return PhonePrimaryAction(title: String(localized: "Watch it"),
+                                      hint: String(localized: "Plays the answer, then explains it in the Physics Lens")) {
+                mode.watch()
+            }
+        case .watching, .explaining:
+            return PhonePrimaryAction(title: String(localized: "Your turn"),
+                                      hint: String(localized: "Puts the balls back and opens the aiming controls")) {
+                mode.yourTurn()
+            }
+        case .judged(let verdict) where verdict.made:
+            return PhonePrimaryAction(title: String(localized: "Next shot")) { mode.next() }
+        case .judged, .offScript:
+            return PhonePrimaryAction(title: String(localized: "Try again"),
+                                      hint: String(localized: "Puts the balls back where the shot started, with your last aim, power and spin")) {
+                mode.tryAgain()
+            }
+        case .aiming, .off:
+            return nil
+        }
+    }
+}
+
 // MARK: Over the table
 
 struct TrickTableLayer: View {
@@ -491,10 +614,13 @@ struct TrickTableLayer: View {
         .onChange(of: mode.celebrations) { _, _ in
             glow = 1
             withAnimation(.easeOut(duration: reduceMotion ? 0.8 : 1.4)) { glow = 0 }
-            // The made-it sound starts with the glow's flash (the card's success haptic fires on the same change).
-            // SoundBoard honours the Sound option.
+            // The made-it sound starts with the glow's flash. SoundBoard honours the Sound option.
             SoundBoard.play(.madeIt)
         }
+        // One success haptic per make, with the glow and the sound. Here rather than on the card (phone UI plan): this
+        // layer is on screen in every layout and already mounted when the make lands, while the upright phone has no
+        // card and its result blurb appears in the same update as the make. The Vibration option is read as it fires.
+        .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
     }
 
     /// -trickList opens the list over the menu; -trick <id> sets a shot up; -trickPlay <id> also plays the answer;

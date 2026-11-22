@@ -16,6 +16,9 @@
 //          hand-over no longer draws its own groove. Its wide, tapering band sat on top of AimOverlay's groove hint (the
 //          one shaped like the real groove), so two grooves showed and the first touch changed which. The hint is now
 //          the one groove; the halo is unchanged, so the first minute is as calm as before.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: OpeningPhoneBlurb, the hand-over's
+//          one instruction as a docked blurb on the phone held upright, the whole sentence with nothing folded, gone
+//          once the break is struck.)
 // PURPOSE: What a first-time player sees around the opening, the view side of the model's OpeningStage.
 //          FirstInstruction - the one instruction for the input in use (PlayInput): on touch the cue ball is pulled
 //            back and pushed through (letting go plays nothing, StrokeGesture), with a pointer it is pulled back and
@@ -36,6 +39,11 @@
 //            that card is not seen on a first launch. Shown with the other mode cards (above the controls, in the side
 //            column, or in the notebook), so nothing covers the table. Its Skip intro button (the notebook's version of
 //            the phone's "Tap to skip") belongs to the .playing stage, which a first launch no longer reaches.
+//          OpeningPhoneBlurb - the phone held upright only (ShowpieceView's dock): the hand-over's instruction as a
+//            blurb, the full sentence, never folded behind a dot. It shows while the model is at the hand-over and goes
+//            the moment the break is struck (the model leaves .handOver on the strike, not on the first touch of the
+//            table, and comes back to it if the stroke is cancelled before it is solved). The first-break card is not
+//            repeated as a blurb: since 0.7.1 the model passes straight through that stage, and Skip is the title row's.
 //          Reads only the contract names (docs/award-batch-contracts.md section 2.1, docs/v07-contracts.md sections 1.4
 //          and 2.3); the model decides when each stage starts and ends.
 // SRP/DRY check: Pass - checked AimOverlay (draws the pull handle itself; this only adds a glow round it, projected the
@@ -250,5 +258,33 @@ struct OpeningCard: View {
             parts.append(String(localized: "The white ball went in too, so you put it back by hand."))
         }
         return parts.joined(separator: " ")
+    }
+}
+
+// MARK: The phone held upright
+
+/// The first minute's one instruction on the phone held upright (phone UI plan, Part 3 "Every phone state": "the docked
+/// instruction blurb, full sentence over two lines, fading once the break is struck, not on the first touch"). The
+/// instruction is the one for the input in use (FirstInstruction), drawn whole: a content blurb has no fold, so no word
+/// of the only instruction a new player gets is ever hidden. Its fade is the blurb's own transition, animated here on
+/// the opening's stage.
+struct OpeningPhoneBlurb: View {
+    let model: ShowpieceModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Group {
+            if model.openingStage == .handOver {
+                let words = FirstInstruction.line(for: model.inputInUse)
+                Blurb(accessibilityText: words) {
+                    // The instruction is the screen's one heading-weight line, as the hand-over card's was.
+                    Text(verbatim: words)
+                        .font(Theme.blurbTitle)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .accessibilityAddTraits(.isHeader)
+            }
+        }
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.4), value: model.openingStage)
     }
 }

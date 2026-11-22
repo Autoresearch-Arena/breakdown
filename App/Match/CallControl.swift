@@ -17,6 +17,11 @@
 //          your shot first" on the table and to VoiceOver (ShowpieceModel.lastRefusal and refusalSerial); the row of
 //          Safety, the pocket and Call it uses the cards' row-or-column helper (CardButtonRow), so at the largest text
 //          sizes it becomes a column instead of cutting off the pocket's name.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md "The aiming
+//          panel": MatchCallRow, the upright phone's call row, which takes the aiming panel's second row while a call is
+//          due: Safety, one menu holding the ball and the pocket (its label the call so far), and "Call it" as the
+//          white capsule. The pick-and-suggestion rules moved into MatchCallChoice so MatchCallControl and the row read
+//          the same ones; MatchCallControl looks and behaves exactly as before.)
 // SRP/DRY check: Pass - moved out of EightBallViews.swift (its private ballChips and pocketMenu are now these views);
 //          the suggestion is MatchMode's (the same ray cast the aim guide draws), the pocket words EightBallPocket.title,
 //          the refusal sentence ShotRefusal's, the button row MatchViews' CardButtonRow. Nothing here decides
@@ -130,28 +135,16 @@ struct MatchCallControl: View {
     /// True for the moments the card flashes after a stroke was refused for want of a call.
     @State private var pulsing = false
 
-    /// Balls the rules allow the shooter to call now (their group, or the 8 once the group is gone, or any but the 8
-    /// while the table is open).
-    private var callable: [Int] { match.state.ballsLeft.filter { match.rules.mayCall($0, in: match.state) } }
-
-    /// What the cue is pointed at now: MatchMode.suggestedCall, the very call the model plays when a stroke goes
-    /// through with no call made, so what this card suggests is what the shot is held to.
-    private var suggestion: (ball: Int, pocket: EightBallPocket)? {
-        guard case .ball(let b, let p)? = match.suggestedCall else { return nil }
-        return (b, p)
-    }
+    private var choice: MatchCallChoice { MatchCallChoice(match: match, ball: ball, pocket: pocket) }
+    private var callable: [Int] { choice.callable }
+    private var suggestion: (ball: Int, pocket: EightBallPocket)? { choice.suggestion }
 
     /// A stroke was refused because no call was made and nothing was suggested (the model clears this on the next
     /// accepted strike).
     private var refusedForCall: Bool { model.lastRefusal == .noCall && match.currentCall == nil }
 
-    private var shownBall: Int? { ball ?? suggestion?.ball }
-    private var shownPocket: EightBallPocket? {
-        // A pocket picked by hand wins; otherwise the suggestion's pocket, but only while its ball is the one shown.
-        if let pocket { return pocket }
-        if let s = suggestion, s.ball == shownBall { return s.pocket }
-        return nil
-    }
+    private var shownBall: Int? { choice.shownBall }
+    private var shownPocket: EightBallPocket? { choice.shownPocket }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -220,5 +213,162 @@ struct MatchCallControl: View {
             return String(localized: "Suggested call: the \(b), \(p.title).")
         }
         return String(localized: "Call your shot: pick a ball, then a pocket. Or call Safety.")
+    }
+}
+
+// MARK: The pick, shared
+
+/// The call being put together: the ball and pocket the player has touched (nil until they do) over the suggestion from
+/// the aim. Read by MatchCallControl (the card) and MatchCallRow (the upright phone's aiming panel), which each keep
+/// their own touched ball and pocket.
+@MainActor
+struct MatchCallChoice {
+    let match: MatchMode
+    /// Picked by hand; nil until the player touches a ball or a pocket.
+    let ball: Int?
+    let pocket: EightBallPocket?
+
+    /// Balls the rules allow the shooter to call now (their group, or the 8 once the group is gone, or any but the 8
+    /// while the table is open).
+    var callable: [Int] { match.state.ballsLeft.filter { match.rules.mayCall($0, in: match.state) } }
+
+    /// What the cue is pointed at now: MatchMode.suggestedCall, the very call the model plays when a stroke goes
+    /// through with no call made, so what is suggested is what the shot is held to.
+    var suggestion: (ball: Int, pocket: EightBallPocket)? {
+        guard case .ball(let b, let p)? = match.suggestedCall else { return nil }
+        return (b, p)
+    }
+
+    var shownBall: Int? { ball ?? suggestion?.ball }
+    var shownPocket: EightBallPocket? {
+        // A pocket picked by hand wins; otherwise the suggestion's pocket, but only while its ball is the one shown.
+        if let pocket { return pocket }
+        if let s = suggestion, s.ball == shownBall { return s.pocket }
+        return nil
+    }
+}
+
+// MARK: The upright phone's call row
+
+/// The call on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, "The aiming panel"): in the aiming panel's second
+/// row while a call is due (PhoneAimPanel shows it in place of the row that holds Shoot, and Shoot comes back once the
+/// call is made). Safety; one menu holding the callable balls and, once a ball is chosen, the six pockets, its label
+/// the call so far ("3 · Head-left corner"); and "Call it", the white capsule. Drawn as content on the panel's glass
+/// (PhonePanelControl), never glass on glass. The prompt and the refusal's words are the panel's status line and the
+/// match's own blurb, not this row. The table's taps still pick a ball, through the match, as before.
+struct MatchCallRow: View {
+    let match: MatchMode
+    @Environment(\.palette) private var palette
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @State private var ball: Int?
+    @State private var pocket: EightBallPocket?
+
+    private var choice: MatchCallChoice { MatchCallChoice(match: match, ball: ball, pocket: pocket) }
+
+    var body: some View {
+        let shownBall = choice.shownBall
+        let shownPocket = choice.shownPocket
+        // One row, Call it at the right; a column when the row does not fit (a long pocket name, the largest text).
+        let row = HStack(spacing: 8) {
+            safety
+            callMenu(shownBall, shownPocket)
+            Spacer(minLength: 0)
+            callIt(shownBall, shownPocket)
+        }
+        let column = VStack(alignment: .leading, spacing: 8) {
+            safety
+            callMenu(shownBall, shownPocket)
+            callIt(shownBall, shownPocket)
+        }
+        Group {
+            if typeSize.isAccessibilitySize {
+                column
+            } else {
+                ViewThatFits(in: .horizontal) { row; column }
+            }
+        }
+    }
+
+    private var safety: some View {
+        Button { match.setCall(.safety); ball = nil; pocket = nil } label: {
+            Text("Safety")
+                .font(Theme.phoneControl)
+                .lineLimit(1)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 44)
+                .modifier(PhonePanelControl(shape: .capsule))
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint(String(localized: "Calls a safety: no ball, just a legal hit that leaves your opponent hooked"))
+    }
+
+    /// "Call it": only once a ball and a pocket are shown (picked or suggested).
+    @ViewBuilder
+    private func callIt(_ shownBall: Int?, _ shownPocket: EightBallPocket?) -> some View {
+        if let b = shownBall, let p = shownPocket {
+            Button { match.setCall(.ball(b, pocket: p)); ball = nil; pocket = nil } label: {
+                Text("Call it")
+                    .font(Theme.phoneControl)
+                    .lineLimit(1)
+                    .fixedSize()
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 44)
+                    .foregroundStyle(palette.ground)
+                    .background(.white, in: .capsule)
+                    .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(MatchWords.callLine(.ball(b, pocket: p)))
+            .accessibilityHint(String(localized: "Makes this your call for the shot"))
+        }
+    }
+
+    /// The ball and the pocket in one menu. Its label is the call so far: the ball and pocket, the ball alone, or
+    /// "Pocket" before anything is chosen or suggested.
+    private func callMenu(_ shownBall: Int?, _ shownPocket: EightBallPocket?) -> some View {
+        Menu {
+            Section(String(localized: "Ball")) {
+                ForEach(choice.callable, id: \.self) { b in
+                    Button {
+                        ball = b
+                        if b != choice.suggestion?.ball { pocket = nil }
+                    } label: {
+                        if b == shownBall { Label(String(localized: "Ball \(b)"), systemImage: "checkmark") }
+                        else { Text(String(localized: "Ball \(b)")) }
+                    }
+                }
+            }
+            if shownBall != nil {
+                Section(String(localized: "Pocket")) {
+                    ForEach(EightBallPocket.allCases, id: \.self) { p in
+                        Button { pocket = p } label: {
+                            if p == shownPocket { Label(p.title, systemImage: "checkmark") } else { Text(p.title) }
+                        }
+                    }
+                }
+            }
+        } label: {
+            Text(verbatim: menuTitle(shownBall, shownPocket))
+                .font(Theme.phoneControl)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 44)
+                .modifier(PhonePanelControl(shape: .capsule))
+                .contentShape(Capsule())
+        }
+        .menuIndicator(.hidden)
+        .buttonStyle(.plain)
+        .accessibilityLabel(String(localized: "Pick the pocket"))
+        .accessibilityValue(menuTitle(shownBall, shownPocket))
+    }
+
+    private func menuTitle(_ shownBall: Int?, _ shownPocket: EightBallPocket?) -> String {
+        switch (shownBall, shownPocket) {
+        case let (b?, p?): return String(localized: "\(b) · \(p.title)")
+        case let (b?, nil): return String(localized: "Ball \(b)")
+        default: return String(localized: "Pocket")
+        }
     }
 }

@@ -10,6 +10,9 @@
 //          row come and go, the panel grew and shrank by a row, and the table slid under the finger. Now the room is at
 //          least one row and never shrinks while the panel is up; with nothing to say it is an empty faint plate. Not
 //          during the first-launch hand-over, which still draws nothing here.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, aiming panel step: the rows' drawing moved into
+//          EquipmentRowList, so the upright phone's stance blurb (StrokePhoneBlurbs, StrokeViews.swift) draws the same
+//          pictograms and lines without the card; EquipmentCard looks exactly as before.)
 // PURPOSE: The reach ladder on screen (App/Stroke/Reach.swift), apart from the bridge mark on the cloth (BridgeRing,
 //          placed by TableStage; AimOverlay's flat copy went in 0.7.6):
 //          - EquipmentCard: the single equipment indicator. A small card beside the power and tip controls (inside the
@@ -142,20 +145,8 @@ struct EquipmentCard: View {
     }
 
     @ViewBuilder private func content(_ rows: [EquipmentRow]) -> some View {
-        let stack = VStack(alignment: .leading, spacing: 6) {
-            ForEach(rows) { row in
-                HStack(spacing: 10) {
-                    StancePictogram(picture: row.picture)
-                        .frame(width: 44, height: 30)
-                    Text(row.line)
-                        .font(Theme.body)
-                        .foregroundStyle(palette.paper)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        let stack = EquipmentRowList(rows: rows)
+            .frame(maxWidth: .infinity, alignment: .leading)
         if embedded {
             stack
                 .padding(.horizontal, 10).padding(.vertical, 6)
@@ -180,6 +171,31 @@ struct EquipmentCard: View {
                 try? await Task.sleep(for: .milliseconds(320))
                 withAnimation(.easeInOut(duration: 0.4)) { lifted = false }
                 try? await Task.sleep(for: .milliseconds(450))
+            }
+        }
+    }
+}
+
+// MARK: The rows, drawn
+
+/// The equipment rows themselves: a pictogram and its line for each, with no plate or card around them. Drawn inside
+/// EquipmentCard (on its plate or glass card) and inside the upright phone's stance blurb (StrokePhoneBlurbs), so both
+/// show exactly the same pictures and words.
+struct EquipmentRowList: View {
+    let rows: [EquipmentRow]
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ForEach(rows) { row in
+                HStack(spacing: 10) {
+                    StancePictogram(picture: row.picture)
+                        .frame(width: 44, height: 30)
+                    Text(row.line)
+                        .font(Theme.body)
+                        .foregroundStyle(palette.paper)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
     }

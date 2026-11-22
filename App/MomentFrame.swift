@@ -1,6 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: reads the pace plan's TableRect regions).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 3 "Placement": while the upright phone's
+//          anchored explanation blurb shows, the moment is framed at about 35 per cent of the free space's height
+//          instead of its middle, so the blurb has room below it. The blurb sets MomentFrame.blurbShare; the gate eases
+//          the share like everything else here, MomentFocus carries it, and MomentFraming.frame moves the view across
+//          so the moment lands there and fits the smaller side when it picks the magnification. Every other layout
+//          keeps the middle (share 0.5) and is unchanged.)
 // PURPOSE: The moment framing of a guided Physics Lens replay (0.7.6, plans/22-Nov-2026-v076-phone-plan.md, stream
 //          camera; it replaces the 0.7.4 signature close-up). As the replay slows into a beat, the view glides in on
 //          what the beat is about so it fills the open space above the cards and sits in its middle; it stays close
@@ -45,6 +51,9 @@ struct MomentFocus: Equatable {
     var weight: Float
     var centre: SIMD2<Float>
     var half: SIMD2<Float>
+    /// Where the moment lands, as a share of the free space's height from its top: 0.5 the middle (every layout), about
+    /// 0.35 while the upright phone's explanation blurb shows (MomentFrame.blurbShare), leaving room for it below.
+    var share: Float = 0.5
 }
 
 /// What the screen asks of the moment framing this frame (TableStage builds it from the model).
@@ -155,7 +164,8 @@ enum MomentFraming {
     /// the rectangle (on the cloth and at ball-top height) stays within `fill` of the free space around its middle.
     /// Found by halving, like the fit itself, so perspective is measured rather than assumed.
     static func magnification(_ focus: MomentFocus, position: SIMD3<Float>, forward f: SIMD3<Float>, pivot q: SIMD3<Float>,
-                              free: FramingRect, size: CGSize, fovDegrees: Float, ballTop: Float) -> Float {
+                              free: FramingRect, size: CGSize, fovDegrees: Float, ballTop: Float,
+                              share: Float = 0.5) -> Float {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let kY = tan(fovDegrees * .pi / 360), kX = kY * w / h
         let side = simd_cross(f, SIMD3<Float>(0, 1, 0))
@@ -163,7 +173,12 @@ enum MomentFraming {
         let r = simd_normalize(side), u = simd_cross(r, f)
         // The free space's middle in normalised device coordinates, and the room either side of it in the same units.
         let cx = Float(free.centerX) / w * 2 - 1, cy = 1 - Float(free.centerY) / h * 2
-        let roomX = Float(free.width) / w * fill, roomY = Float(free.height) / h * fill
+        // Off-centre framing (share away from 0.5) leaves less room on the near side: the rectangle must fit the
+        // smaller side, so the vertical room is cut to twice that side's share. The check stays about the middle,
+        // because the pan in frame(...) moves the whole picture across without changing its size (the camera keeps
+        // its height), so fitting about the middle with the smaller room is the same test as fitting about the spot.
+        let nearSide: Float = 2 * min(max(share, 0.05), 1 - min(share, 0.95))
+        let roomX = Float(free.width) / w * fill, roomY = Float(free.height) / h * fill * nearSide
         let p = SIMD3<Float>(focus.centre.x, 0, focus.centre.y)
         var corners: [SIMD3<Float>] = []
         for sx: Float in [-1, 1] { for sz: Float in [-1, 1] { for y in [0, ballTop] {
@@ -200,13 +215,28 @@ enum MomentFraming {
         -> (position: SIMD3<Float>, target: SIMD3<Float>, scale: Float, offset: SIMD2<Float>, magnification: Float) {
         let f = simd_normalize(target - position)
         let m = magnification(focus, position: position, forward: f, pivot: q, free: free, size: size,
-                              fovDegrees: fovDegrees, ballTop: ballTop)
+                              fovDegrees: fovDegrees, ballTop: ballTop, share: focus.share)
         let w = min(1, max(0, focus.weight))
         // Magnification blended on a log scale, so the glide in feels even rather than rushing at the start.
         let mw = pow(m, w)
         let p = SIMD3<Float>(focus.centre.x, 0, focus.centre.y)
-        let look = q + (p - q) * w
-        let newPosition = look + (position - q) / mw
+        var look = q + (p - q) * w
+        var newPosition = look + (position - q) / mw
+        // Off-centre framing (the upright phone's explanation blurb): so far the look point sits under the middle of
+        // the free space; the moment should sit at `share` of its height instead. The cloth points seen there and at
+        // the middle, from the moved camera, differ by d; sliding the camera (and its look point) back by d along the
+        // cloth brings the moment to that height. Scaled by w, so it eases in and out with the framing itself and the
+        // whole view at w = 0 is untouched. The camera keeps its height and orientation, so this is a pure pan.
+        if abs(focus.share - 0.5) > 1e-3 {
+            let mid = CGPoint(x: free.centerX, y: free.centerY)
+            let spot = CGPoint(x: free.centerX, y: free.top + free.height * Double(focus.share))
+            if let a = clothPoint(position: newPosition, forward: f, at: mid, size: size, fovDegrees: fovDegrees),
+               let b = clothPoint(position: newPosition, forward: f, at: spot, size: size, fovDegrees: fovDegrees) {
+                let d = SIMD3<Float>(b.x - a.x, 0, b.z - a.z) * w
+                newPosition -= d
+                look -= d
+            }
+        }
         return (newPosition, newPosition + f, 1 / mw, SIMD2(look.x - q.x, look.z - q.z), m)
     }
 }
@@ -223,7 +253,15 @@ final class MomentFrame {
     private static let motionOff = ProcessInfo.processInfo.arguments.contains("-noPushIn")
 
     private var gate = 0.0
+    /// The share in use (see blurbShare), eased toward the asked one over gateTime so the view never jumps when the
+    /// explanation blurb comes or goes mid-moment.
+    private var share = 0.5
     private var lastTick: TimeInterval?
+
+    /// Where the moment should land, as a share of the free space's height from its top: 0.5 (the middle) by default,
+    /// about 0.35 while the upright phone's anchored explanation blurb shows (PhoneExplanationBlurb sets it and puts it
+    /// back when it goes). Read by every MomentFrame each frame; written only by that view, on the main actor.
+    static var blurbShare = 0.5
     private var lastClock = 0.0
 
     /// A new shot: the next moment eases in from the whole table.
@@ -262,9 +300,18 @@ final class MomentFrame {
         } else {
             gate = max(0, gate - dt / Self.gateTime)
         }
+        // The share eases like the gate (snaps where the gate snaps), toward what the screen asks now.
+        let wanted = min(0.95, max(0.05, Self.blurbShare))
+        if reduceMotion || Self.motionOff || gate == 0 {
+            share = wanted
+        } else {
+            let step = dt / Self.gateTime * 0.5
+            share += max(-step, min(step, wanted - share))
+        }
         guard gate > 0, let plan = request?.plan,
               var focus = MomentFraming.shape(at: clock, plan: plan, frame: frame) else { return nil }
         focus.weight *= Float(MomentFraming.smooth(gate))
+        focus.share = Float(share)
         return focus.weight > 1e-4 ? focus : nil
     }
 }

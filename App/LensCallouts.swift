@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 4: on the upright phone the tips are a
+//          docked blurb (PhoneLensTipBlurb, in the docked stack under the title row) with small glass "Not now" and
+//          "Next" or "Got it", and LensCalloutLayer stops drawing its own bubble there; it still decides when the tips
+//          show, still holds the beat, and still draws the pointer line, now from the docked blurb's frame. The step
+//          and the docked frame live in LensTipsShared so the layer and the blurb agree. Every other layout is as before.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
 //          entries 7 and 13: the tips start on a held beat after the strike, once the sliding trail they point at has
 //          been drawn; the third tip sits just above the playback row itself (model.playbackRowTop) instead of above
@@ -84,6 +89,24 @@ enum LensCallouts {
     }
 }
 
+// MARK: Shared between the layer and the upright phone's docked tip
+
+/// What the layer over the table and the upright phone's docked tip blurb share: which tip is up, whether the tips are
+/// showing (the layer decides, from the model), and where the docked blurb is (StageSpace), so the layer's pointer can
+/// leave from it. One instance, on the main actor, like RideLive. Observed: each of these changes only on a tap or when
+/// the tips come and go, never per frame.
+@MainActor
+@Observable
+final class LensTipsShared {
+    static let shared = LensTipsShared()
+    /// The tip on screen: 0 the sliding path, 1 the rolling path, 2 the bar.
+    var step = 0
+    /// True while LensCalloutLayer's tips are up (the upright phone's blurb shows exactly then).
+    var showing = false
+    /// The docked tip blurb's frame in StageSpace; zero when it is not on screen.
+    var dockedFrame: CGRect = .zero
+}
+
 // MARK: Over the table
 
 struct LensCalloutLayer: View {
@@ -93,7 +116,12 @@ struct LensCalloutLayer: View {
     @Environment(\.inlinePages) private var inlinePages
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var step = 0
+    /// On the upright phone the bubble is the docked PhoneLensTipBlurb; this layer then draws only the pointer.
+    @Environment(\.phoneUpright) private var upright
+    /// The step, shared with the upright phone's docked blurb.
+    private var tips: LensTipsShared { LensTipsShared.shared }
+    private var step: Int { tips.step }
+    private var stepBinding: Binding<Int> { Binding(get: { tips.step }, set: { tips.step = $0 }) }
     /// The tips have begun on a hold; they stay up until finished, closed, or the Lens goes away.
     @State private var started = false
     @State private var cameraBox = AimProjector.CameraBox()
@@ -115,10 +143,11 @@ struct LensCalloutLayer: View {
                     GeometryReader { geo in
                         let origin = geo.frame(in: .named(StageSpace.name)).origin
                         ZStack {
-                            Canvas { ctx, size in drawPointer(&ctx, size: size) }
+                            Canvas { ctx, size in drawPointer(&ctx, size: size, origin: origin) }
                                 .allowsHitTesting(false)
                                 .accessibilityHidden(true)
-                            placedBubble(size: geo.size, origin: origin)
+                            // Upright, the words are the docked blurb in the title row's stack (PhoneLensTipBlurb).
+                            if !upright { placedBubble(size: geo.size, origin: origin) }
                         }
                     }
                 }
@@ -129,6 +158,10 @@ struct LensCalloutLayer: View {
             }
         }
         .lensTipsHold(model: model, showing: showing, owns: !inlinePages, started: $started)
+        // The upright phone's docked blurb shows exactly while this layer's tips do. This layer stays the one that
+        // decides and holds the beat on every layout, so there is never a second owner of model.holdForTips.
+        .onChange(of: showing, initial: true) { _, now in if tips.showing != now { tips.showing = now } }
+        .onDisappear { if tips.showing { tips.showing = false } }
     }
 
     // MARK: The bubble
@@ -151,7 +184,7 @@ struct LensCalloutLayer: View {
         // on the column's side.
         let bottom = controlsTop.map { size.height - $0 + 12 } ?? CGFloat(chrome.safe.bottom) + 24
         let arrow: LensCalloutBubble.Arrow? = bar ? (controlsTop == nil ? .side : .down) : nil
-        LensCalloutBubble(step: $step, seen: $seen, arrow: arrow)
+        LensCalloutBubble(step: stepBinding, seen: $seen, arrow: arrow)
             .frame(maxWidth: 420)
             .padding(.horizontal, 16)
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { bubbleFrame = $0 }
@@ -163,8 +196,11 @@ struct LensCalloutLayer: View {
 
     // MARK: The pointer
 
-    private func drawPointer(_ ctx: inout GraphicsContext, size: CGSize) {
-        guard step < 2, bubbleFrame.width > 0,
+    /// - origin: this layer's top-left corner in StageSpace, to bring the docked blurb's frame into this layer's space.
+    private func drawPointer(_ ctx: inout GraphicsContext, size: CGSize, origin: CGPoint) {
+        // Upright, the pointer leaves from the docked blurb (reported in StageSpace); elsewhere from this layer's bubble.
+        let from = upright ? tips.dockedFrame.offsetBy(dx: -origin.x, dy: -origin.y) : bubbleFrame
+        guard step < 2, from.width > 0,
               let point = target(phase: step == 0 ? .sliding : .rolling),
               let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table)),
@@ -172,8 +208,8 @@ struct LensCalloutLayer: View {
         else { return }
         let colour = step == 0 ? palette.slide : palette.accent
         // From the bubble's nearest edge, so the line never crosses its own words.
-        let start = CGPoint(x: min(max(end.x, bubbleFrame.minX + 24), bubbleFrame.maxX - 24),
-                            y: end.y > bubbleFrame.midY ? bubbleFrame.maxY : bubbleFrame.minY)
+        let start = CGPoint(x: min(max(end.x, from.minX + 24), from.maxX - 24),
+                            y: end.y > from.midY ? from.maxY : from.minY)
         var line = Path()
         line.move(to: start)
         line.addLine(to: end)
@@ -309,5 +345,80 @@ struct LensCalloutBubble: View {
         }
         .glassCard(cornerRadius: 20, padding: 12)
         .accessibilityElement(children: .contain)
+    }
+}
+
+// MARK: The upright phone's docked tip
+
+/// The Lens tips on the upright phone (phone UI plan, Part 3 "Lens tips"): the same three tips as a docked blurb in the
+/// stack under the title row (ShowpieceView's phoneDock, last in its order), with small glass "Not now" and "Next" (or
+/// "Got it" on the last). In place of the bubble's symbols, which meant nothing here, the first two tips lead with the
+/// trail they name drawn small (LensTrailMark), and the bar's tip with a plain down arrow (white: cyan means rolling).
+/// Shows exactly while LensCalloutLayer's tips are up (LensTipsShared.showing); the layer keeps deciding when, holds
+/// the beat, and draws the pointer line from this blurb's frame, which this view reports (StageSpace). Writes only the
+/// shared step and the remembered "seen" flag, as the bubble's buttons do.
+struct PhoneLensTipBlurb: View {
+    let model: ShowpieceModel
+    @AppStorage(LensCallouts.seenKey) private var seen = false
+    @Environment(\.palette) private var palette
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
+    @Environment(\.phoneUpright) private var upright
+
+    private var tips: LensTipsShared { LensTipsShared.shared }
+
+    var body: some View {
+        if upright, tips.showing, !seen {
+            let step = min(max(0, tips.step), LensCallouts.count - 1)
+            let last = step + 1 >= LensCallouts.count
+            let text = LensCallouts.text(step: step, withoutColour: withoutColour)
+            let counter = String(localized: "\(step + 1) of \(LensCallouts.count)")
+            Blurb(accessibilityText: text + " " + counter, buttons: [
+                BlurbButton(String(localized: "Not now")) {
+                    seen = true
+                    LensTipsShared.shared.step = 0
+                },
+                BlurbButton(last ? String(localized: "Got it") : String(localized: "Next")) {
+                    if last {
+                        seen = true
+                        LensTipsShared.shared.step = 0
+                    } else {
+                        LensTipsShared.shared.step += 1
+                    }
+                }
+            ]) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        marker(step)
+                        Text(verbatim: text)
+                            .font(Theme.body)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Text(verbatim: counter)
+                        .font(Theme.label)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            // The pointer line (drawn by LensCalloutLayer) leaves from here.
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
+                let shared = LensTipsShared.shared
+                if shared.dockedFrame != frame { shared.dockedFrame = frame }
+            }
+            .onDisappear { LensTipsShared.shared.dockedFrame = .zero }
+        }
+    }
+
+    /// What the tip is about, drawn small at the start of its first line: the sliding or rolling trail, or an arrow
+    /// down toward the bar. Lifted a little off the text's baseline so a 3-point line sits by the middle of the words.
+    @ViewBuilder
+    private func marker(_ step: Int) -> some View {
+        if step < 2 {
+            LensTrailMark(color: step == 0 ? palette.slide : palette.accent, dashed: step == 0 && withoutColour)
+                .alignmentGuide(.firstTextBaseline) { $0[VerticalAlignment.bottom] + 4 }
+        } else {
+            Image(systemName: "arrow.down")
+                .font(Theme.label)
+                .foregroundStyle(.white)
+                .accessibilityHidden(true)
+        }
     }
 }

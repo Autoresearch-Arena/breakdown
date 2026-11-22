@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The pieces the
+//          upright phone's match blurbs (MatchPhoneBlurbs.swift) share with this card are lifted out so both say the
+//          same words: the ruling's title and sentences, the settled line, the Rematch hint and the announcements are
+//          MatchCard statics; the phase and clock feedback is the MatchFeedback modifier; the turn banner's standings
+//          (nine-ball's ball to hit first, eight-ball's player rows, the table games' lines, the score) are
+//          MatchStandings, which the banner shows exactly as before.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #32, #34,
 //          #35, #37: a routine ruling that waits for a tap (MatchMode.rulingWaitsForTap, a break's with the Lens offer
 //          up) always shows its own row, "Watch it in the Lens" and Continue, slim or not, so a legal break with the Lens
@@ -133,18 +139,11 @@ struct MatchCard: View {
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: match.phase)
-            .onChange(of: match.phase) { _, phase in
+            .modifier(MatchFeedback(match: match) { phase in
                 // The reasons belong to one shot: closed when the next shot starts, kept open while a routine ruling
                 // settles into the banner (it was opened during that beat).
                 if phase == .shooting { showingWhy = false }
-                if phase != .aiming { match.confirmingEnd = false }
-                announce(phase, match)
-            }
-            // Bar billiards: the moment the clock runs out, said aloud and felt (the banner shows the bar from then).
-            .onChange(of: match.timeIsUp) { _, up in
-                if up { ShotNarration.announce(TableGameWords.timeUpNow) }
-            }
-            .sensoryFeedback(trigger: match.timeIsUp) { _, up in up && GameSettings.hapticsOn ? .warning : nil }
+            })
             .transition(.opacity)
         }
     }
@@ -220,7 +219,7 @@ struct MatchCard: View {
         rulingHeader(r, match)
         if !replaying {
             if !lensReplayCompact || Self.explainsItself(r) {
-                ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                ForEach(Array(Self.rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
                 if !match.lastPoints.isEmpty { pointsSection(match) }
                 whyIfComputers(r, match)
             }
@@ -252,7 +251,7 @@ struct MatchCard: View {
             VStack(alignment: .leading, spacing: 6) {
                 rulingHeader(r, match)
                 if !lensReplayCompact {
-                    ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                    ForEach(Array(Self.rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
                 }
             }
         } else {
@@ -260,7 +259,7 @@ struct MatchCard: View {
                 VStack(alignment: .leading, spacing: 6) {
                     rulingHeader(r, match)
                     if !lensReplayCompact {
-                        ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                        ForEach(Array(Self.rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
                     }
                 }
                 .contentShape(Rectangle())
@@ -290,7 +289,7 @@ struct MatchCard: View {
             Image(systemName: r.turnPasses ? "arrow.left.arrow.right" : "checkmark.circle")
                 .foregroundStyle(palette.accent)
                 .accessibilityHidden(true)
-            Text(settledWords(r, match))
+            Text(Self.settledWords(r, match))
                 .font(Theme.label)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -301,7 +300,7 @@ struct MatchCard: View {
     }
 
     /// The settled line's words: the ruling's sentences, then how the points came (five-pin, bar billiards).
-    private func settledWords(_ r: Ruling, _ match: MatchMode) -> String {
+    static func settledWords(_ r: Ruling, _ match: MatchMode) -> String {
         let points = TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames,
                                           you: match.you)
         return (rulingSentences(r, match) + points).joined(separator: " ")
@@ -313,20 +312,17 @@ struct MatchCard: View {
     private func rulingHeader(_ r: Ruling, _ match: MatchMode) -> some View {
         let symbol: String
         let colour: Color
-        let title: String
+        let title = Self.rulingTitle(r, match)
         if let result = r.result {
             let won = Self.personWon(result, match)
             symbol = won ? "trophy.fill" : "flag.fill"
             colour = won ? palette.accent : palette.slide
-            title = MatchWords.resultTitle(result, names: match.playerNames, you: match.you)
         } else if r.fouled {
             symbol = "exclamationmark.triangle.fill"
             colour = palette.slide
-            title = String(localized: "Foul")
         } else {
             symbol = r.turnPasses ? "arrow.left.arrow.right" : "checkmark.circle.fill"
             colour = palette.accent
-            title = r.turnPasses ? String(localized: "Turn over") : String(localized: "Keep shooting")
         }
         return HStack(spacing: 8) {
             Image(systemName: symbol)
@@ -338,6 +334,14 @@ struct MatchCard: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
+    }
+
+    /// The ruling's heading words: the result for a ruling that ends the game ("You win!"), else "Foul", else "Turn
+    /// over" or "Keep shooting". Shared by the card's heading and the upright phone's ruling blurb.
+    static func rulingTitle(_ r: Ruling, _ match: MatchMode) -> String {
+        if let result = r.result { return MatchWords.resultTitle(result, names: match.playerNames, you: match.you) }
+        if r.fouled { return String(localized: "Foul") }
+        return r.turnPasses ? String(localized: "Turn over") : String(localized: "Keep shooting")
     }
 
     /// True when the game's winner is the person: their seat (MatchMode.personSeat) when there is one, otherwise any
@@ -352,7 +356,7 @@ struct MatchCard: View {
     /// dropped and the first ball the striking ball touched, so a wrong-ball foul names the ball), then, when the
     /// stroke went through with no call made, the suggested call it was held to. "Time is up." is said on a card
     /// only: a routine ruling after the bar drops would repeat it every shot.
-    private func rulingSentences(_ r: Ruling, _ match: MatchMode) -> [String] {
+    static func rulingSentences(_ r: Ruling, _ match: MatchMode) -> [String] {
         var out = MatchWords.sentences(for: r, names: match.playerNames, pocketed: match.lastPocketed,
                                        firstBall: match.lastFirstBall, kind: match.state.kind, you: match.you,
                                        target: match.targetBall(for: r.shooter),
@@ -380,7 +384,7 @@ struct MatchCard: View {
     /// Everything a ruling says aloud: its sentences, then (five-pin, bar billiards) how the points came and the
     /// scores, so a player who cannot see the card hears the same as one who can.
     private func spokenRuling(_ r: Ruling, _ match: MatchMode) -> String {
-        var parts = rulingSentences(r, match)
+        var parts = Self.rulingSentences(r, match)
         parts += TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames, you: match.you)
         if match.rules.keepsRunningScore {
             parts.append(TableGameWords.scores(match.state.scores, names: match.playerNames, you: match.you))
@@ -593,13 +597,13 @@ struct MatchCard: View {
             .buttonStyle(.glassProminent)
             .foregroundStyle(palette.ground)
             .keyboardShortcut(.defaultAction)
-            .accessibilityHint(rematchHint(match))
+            .accessibilityHint(Self.rematchHint(match))
         }
     }
 
     /// What Rematch does, per game: alone against the clock (bar billiards), against the computer, or (old saves
     /// only) between the same players.
-    private func rematchHint(_ match: MatchMode) -> String {
+    static func rematchHint(_ match: MatchMode) -> String {
         if match.state.players.count == 1 { return String(localized: "Racks for a new game against the clock") }
         if match.hasComputer { return String(localized: "Racks for a new game against the computer") }
         return String(localized: "Racks for a new game between the same players")
@@ -624,7 +628,7 @@ struct MatchCard: View {
 
     /// VoiceOver hears each ruling (a routine one too, as it appears), the hand-over and the result as they arrive,
     /// without hunting for the card.
-    private func announce(_ phase: MatchMode.Phase, _ match: MatchMode) {
+    static func announce(_ phase: MatchMode.Phase, _ match: MatchMode) {
         let text: String
         switch phase {
         case .ruling:
@@ -656,6 +660,32 @@ struct MatchCard: View {
             .foregroundStyle(palette.paper.opacity(0.9))
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: Feedback, shared
+
+/// What a match says and plays as it moves on, whichever view shows it: each phase change is announced to VoiceOver
+/// (MatchCard.announce) and closes the End-this-game confirmation once the game moves past aiming; bar billiards' clock
+/// running out is said aloud and felt. Hosted by MatchCard (every layout but the upright phone) and, on the upright
+/// phone, by PlayTableLayer's always-present background (the phone's blurbs come and go, so they cannot hold it).
+/// `onPhase` runs first, for the host's own view state.
+struct MatchFeedback: ViewModifier {
+    let match: MatchMode
+    var onPhase: (MatchMode.Phase) -> Void = { _ in }
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: match.phase) { _, phase in
+                onPhase(phase)
+                if phase != .aiming { match.confirmingEnd = false }
+                MatchCard.announce(phase, match)
+            }
+            // Bar billiards: the moment the clock runs out, said aloud and felt (the banner shows the bar from then).
+            .onChange(of: match.timeIsUp) { _, up in
+                if up { ShotNarration.announce(TableGameWords.timeUpNow) }
+            }
+            .sensoryFeedback(trigger: match.timeIsUp) { _, up in up && GameSettings.hapticsOn ? .warning : nil }
     }
 }
 
@@ -698,8 +728,6 @@ struct TurnBanner: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private var state: MatchState { match.state }
-    /// The balls of the table this game is played on, for the icons.
-    private var ballSet: TableBallSet { TableBallSet.for(table: match.table) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -707,38 +735,7 @@ struct TurnBanner: View {
             if !compact {
                 if editingNames { PlayerNamesEditor(match: match) }
             }
-            if !compact && !slim {
-                // Nine-ball, and any game without calls that is played in order: the lowest ball is hit first.
-                if state.kind == .nineBall, let low = state.ballsLeft.min() {
-                    HStack(spacing: 6) {
-                        BallIcon(ball: low, set: ballSet)
-                        Text(MatchWords.hitFirst(low)).font(Theme.body).foregroundStyle(palette.paper.opacity(0.9))
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .accessibilityElement(children: .combine)
-                    // Whoever is one foul from losing the game, as a quiet line under it.
-                    ForEach(onTwoFouls, id: \.self) { seat in
-                        Text(MatchWords.onTwoFouls(MatchWords.name(seat, in: match.playerNames), isYou: seat == match.you))
-                            .font(Theme.label)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                if state.kind == .eightBall {
-                    ForEach(state.players, id: \.id) { p in playerRow(p) }
-                }
-                // The other tables: which ball to strike and what is left (TableGameLines below).
-                if state.kind.isTableGame { TableGameLines(match: match) }
-                if match.rules.keepsRunningScore { ScoreRow(match: match) }
-            }
-        }
-    }
-
-    /// Nine-ball: the seats one foul from losing (NineBallRules.foulsToLose), in seat order.
-    private var onTwoFouls: [PlayerID] {
-        state.players.map(\.id).filter { p in
-            state.consecutiveFouls.indices.contains(p.index)
-                && state.consecutiveFouls[p.index] >= NineBallRules.foulsToLose - 1
+            if !compact && !slim { MatchStandings(match: match) }
         }
     }
 
@@ -817,6 +814,52 @@ struct TurnBanner: View {
         case 0: return String(localized: "End the match")
         case 1: return String(localized: "Your name, or end the match")
         default: return String(localized: "Player names, or end the match")
+        }
+    }
+}
+
+/// Where each player stands, under the turn banner's first line, and on the upright phone in the match's status blurb
+/// (MatchPhoneBlurbs.swift): nine-ball's ball to hit first and who is on two fouls, eight-ball's player rows (name,
+/// group, balls left as icons), the table games' lines (TableGameLines) and the running score. Lifted out of
+/// TurnBanner unchanged (22-November-2026), so both layouts show the same standings.
+struct MatchStandings: View {
+    let match: MatchMode
+    @Environment(\.palette) private var palette
+
+    private var state: MatchState { match.state }
+    /// The balls of the table this game is played on, for the icons.
+    private var ballSet: TableBallSet { TableBallSet.for(table: match.table) }
+
+    var body: some View {
+        // Nine-ball, and any game without calls that is played in order: the lowest ball is hit first.
+        if state.kind == .nineBall, let low = state.ballsLeft.min() {
+            HStack(spacing: 6) {
+                BallIcon(ball: low, set: ballSet)
+                Text(MatchWords.hitFirst(low)).font(Theme.body).foregroundStyle(palette.paper.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+            // Whoever is one foul from losing the game, as a quiet line under it.
+            ForEach(onTwoFouls, id: \.self) { seat in
+                Text(MatchWords.onTwoFouls(MatchWords.name(seat, in: match.playerNames), isYou: seat == match.you))
+                    .font(Theme.label)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        if state.kind == .eightBall {
+            ForEach(state.players, id: \.id) { p in playerRow(p) }
+        }
+        // The other tables: which ball to strike and what is left (TableGameLines below).
+        if state.kind.isTableGame { TableGameLines(match: match) }
+        if match.rules.keepsRunningScore { ScoreRow(match: match) }
+    }
+
+    /// Nine-ball: the seats one foul from losing (NineBallRules.foulsToLose), in seat order.
+    private var onTwoFouls: [PlayerID] {
+        state.players.map(\.id).filter { p in
+            state.consecutiveFouls.indices.contains(p.index)
+                && state.consecutiveFouls[p.index] >= NineBallRules.foulsToLose - 1
         }
     }
 

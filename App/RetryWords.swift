@@ -14,6 +14,11 @@
 //          (ContactArrivalLine, shown with the cards while the replay stays stopped there).)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: See the contact's announcement goes through the one
 //          speaker, ShotNarration.announce.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: See the contact's action is one
+//          function, ContactButton.seek, used by the button and by the small blurb button the upright phone's result
+//          blurbs carry (ContactButton.blurbButton); ContactArrivalLine's "still at the contact" test is one function,
+//          ContactArrivalLine.isShowing, read by the line and by ContactArrivalPhoneBlurb, the line as a blurb on the
+//          phone held upright.)
 // PURPOSE: Learn from a retry (plans/21-Nov-2026-learn-from-a-retry-plan.md, section 3), the view side.
 //          RetryWords   - the one sentence a result card shows after a retry, written from the facts the model
 //                         records (RetryComparison: which controls moved and which way, how far apart the two cue
@@ -31,6 +36,8 @@
 //          ContactArrivalLine - the line on screen after See the contact, with the cards (ShowpieceView, NotebookPanel):
 //                         what the stopped replay shows. It stays while the replay sits at the contact and goes as soon
 //                         as the replay moves on.
+//          ContactArrivalPhoneBlurb - the same words as a docked blurb on the phone held upright (ShowpieceView's dock),
+//                         shown and hidden by the same test; the shared line keeps serving the other layouts.
 //          Used by the free-play comparison card (GhostOverlay.swift) and the trick-shot result card
 //          (TrickShotViews.swift), which carries the sentence itself so only one result card is ever up.
 // SRP/DRY check: Pass - checked ShotAttempt.swift (the model stream owns the facts and RetryComparison; this file only
@@ -150,14 +157,31 @@ struct ContactButton: View {
         }
     }
 
+    /// See the contact's whole action, shared by this button and the upright phone's blurb button: pause the replay
+    /// at the first contact, remember which recording it stopped in (ContactArrivalLine reads it), and say where it
+    /// stopped. Reduce Motion is handed in because a blurb button's action cannot read the environment.
+    static func seek(_ model: ShowpieceModel, reduceMotion: Bool) {
+        // Reduce Motion: no camera flight to the moment; the Ride camera steps aside and the table view cuts.
+        if reduceMotion && model.rideOn { model.setRide(false) }
+        model.seekToFirstContact()
+        ContactArrival.shared.version = model.timelineVersion
+        ShotNarration.announce(ContactArrivalLine.words(ghost: model.ghost != nil))
+    }
+
+    /// See the contact as a small blurb button (the upright phone's result blurbs), or nil when the shot on screen
+    /// touched no ball, as this button hides itself then.
+    static func blurbButton(model: ShowpieceModel, reduceMotion: Bool) -> BlurbButton? {
+        guard model.firstContactTime != nil else { return nil }
+        return BlurbButton(String(localized: "See the contact"),
+                           hint: String(localized: "Pauses the replay where the cue ball first touched a ball")) {
+            seek(model, reduceMotion: reduceMotion)
+        }
+    }
+
     private func button(words: Bool) -> some View {
         Button {
-            // Reduce Motion: no camera flight to the moment; the Ride camera steps aside and the table view cuts.
-            if reduceMotion && model.rideOn { model.setRide(false) }
-            model.seekToFirstContact()
-            ContactArrival.shared.version = model.timelineVersion
+            Self.seek(model, reduceMotion: reduceMotion)
             onSeek()
-            ShotNarration.announce(ContactArrivalLine.words(ghost: model.ghost != nil))
         } label: {
             Group {
                 if words {
@@ -204,13 +228,15 @@ struct ContactArrivalLine: View {
         return ghost ? first + " " + String(localized: "The faint ball is your last try.") : first
     }
 
-    private var visible: Bool {
+    /// True while the replay is still stopped at the first contact of the recording See the contact stopped in.
+    /// Shared with ContactArrivalPhoneBlurb, so the line and the blurb come and go together.
+    static func isShowing(_ model: ShowpieceModel) -> Bool {
         guard let t = model.firstContactTime, ContactArrival.shared.version == model.timelineVersion else { return false }
-        return !model.playing && abs(model.time - t) < Self.atContact
+        return !model.playing && abs(model.time - t) < atContact
     }
 
     var body: some View {
-        if visible {
+        if Self.isShowing(model) {
             HStack(alignment: .firstTextBaseline, spacing: 10) {
                 Image(systemName: ContactButton.symbol).foregroundStyle(palette.accent).accessibilityHidden(true)
                 Text(Self.words(ghost: model.ghost != nil))
@@ -221,6 +247,20 @@ struct ContactArrivalLine: View {
             .glassCard(cornerRadius: 20, padding: 12)
             .accessibilityElement(children: .combine)
             .transition(.opacity)
+        }
+    }
+}
+
+/// The upright phone's form of ContactArrivalLine (phone UI plan, Part 4 step 5): the same words as a docked blurb at
+/// the top of the table area instead of a full-width glass card, while the replay stays stopped at the contact.
+/// VoiceOver already heard the words when See the contact was pressed (ContactButton.seek); the blurb reads them again
+/// when it is reached.
+struct ContactArrivalPhoneBlurb: View {
+    let model: ShowpieceModel
+
+    var body: some View {
+        if ContactArrivalLine.isShowing(model) {
+            Blurb(sentence: ContactArrivalLine.words(ghost: model.ghost != nil))
         }
     }
 }

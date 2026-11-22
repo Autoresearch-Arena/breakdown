@@ -58,6 +58,12 @@
 //          panel in place of the tip picture and power bar, as on the folding phone, so no sheet covers the table;
 //          each slider's name and readout sit on one line beside it where they fit and above it where they do not; the
 //          aim and break-aim readouts follow the player's number style.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, aiming panel step: the More menu's items moved into
+//          ShotOptionsItems, which the upright phone's "Shot options" menu (PhoneAimPanel) also uses, with Try again,
+//          Change the call and the phone's clearer Undo and Re-rack symbols in its form only (and no Show the hint
+//          again there); the status line moved into ShotStatusLine, shared with the phone's panel; the fine controls
+//          (FineControls) are no longer private, so the phone's panel opens the same sliders inside itself. This panel
+//          looks and behaves exactly as before.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -224,30 +230,7 @@ struct ShotPanel: View {
 
     /// One line above the controls: on the computer's turn, that it is its turn; otherwise the reason the last stroke
     /// was refused, until the next stroke is accepted (the model clears it). Nothing when there is nothing to say.
-    @ViewBuilder private var statusLine: some View {
-        // personControlsLive is false on the computer's turn or while a solve is in flight; without the solve it is the
-        // computer's turn (read this way so no comparison with a case named "none" can be taken for an optional's).
-        let computer = !model.personControlsLive && !model.isSolving
-        if let text = computer ? Optional(ShotRefusal.notYourTurn.sentence) : model.lastRefusal?.sentence {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Image(systemName: computer ? "cpu" : "exclamationmark.circle")
-                    .foregroundStyle(computer ? palette.accent : palette.slide)
-                    .symbolEffect(.bounce, value: refusalPulse)
-                    .accessibilityHidden(true)
-                Text(text)
-                    .font(Theme.body)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-            }
-            .accessibilityElement(children: .combine)
-            .transition(.opacity)
-        }
-    }
-
-    /// True in plain free play: no match, no trick shot, no Behind the 8-Ball situation on the table.
-    private var freePlay: Bool {
-        model.match == nil && !model.trickMode.isActive && !model.eightBallMode.isActive && !model.lessonMode.isActive
-    }
+    private var statusLine: some View { ShotStatusLine(model: model, pulse: refusalPulse) }
 
     /// The raised cue, where the model allows it (free play and matches) and for a shot rather than the break.
     @ViewBuilder private var cueAngle: some View {
@@ -297,31 +280,7 @@ struct ShotPanel: View {
 
     private var moreMenu: some View {
         Menu {
-            Button { slidersOpen = true } label: { Label("Fine controls", systemImage: "slider.horizontal.3") }
-            if !model.racked {
-                Button { model.aimAtNearestBall() } label: { Label("Aim at nearest ball", systemImage: "scope") }
-                    .disabled(!open.contains(.aim))
-            }
-            if freePlay {
-                // Practice players move the cue ball all the time: the same placement state as ball in hand.
-                Button { model.beginPlacingCueBall() } label: { Label("Move cue ball", systemImage: "hand.raised") }
-                    .disabled(!model.aimReady || model.placingCueBall)
-                Button { model.undoLastShot() } label: { Label("Undo last shot", systemImage: "arrow.uturn.backward.circle") }
-                    .disabled(!model.canUndo)
-                    .keyboardShortcut("z", modifiers: .command)
-                Picker(selection: Binding(get: { model.freePlayRack }, set: { model.setFreePlayRack($0) })) {
-                    ForEach(FreePlayRack.allCases, id: \.self) { rack in Text(ShotPanel.rackName(rack)).tag(rack) }
-                } label: {
-                    Label("Rack", systemImage: "triangle")
-                }
-                .pickerStyle(.menu)
-                if !model.racked {
-                    Button { model.rerack() } label: { Label("Re-rack for a break", systemImage: "triangle") }
-                }
-            }
-            if hintSeen {
-                Button { hintSeen = false } label: { Label("Show the hint again", systemImage: "questionmark.circle") }
-            }
+            ShotOptionsItems(model: model, slidersOpen: $slidersOpen)
         } label: {
             Label("More shot options", systemImage: "ellipsis")
                 .labelStyle(.iconOnly)
@@ -398,11 +357,112 @@ struct ShotPanel: View {
     }
 }
 
+// MARK: The status line
+
+/// One line above the shot controls: on the computer's turn, that it is its turn; otherwise the reason the last stroke
+/// was refused, until the next stroke is accepted (the model clears it). Nothing when there is nothing to say. Shared by
+/// ShotPanel and the upright phone's PhoneAimPanel; each bumps `pulse` on a refusal to bounce the mark once.
+struct ShotStatusLine: View {
+    let model: ShowpieceModel
+    var pulse = 0
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        // personControlsLive is false on the computer's turn or while a solve is in flight; without the solve it is the
+        // computer's turn (read this way so no comparison with a case named "none" can be taken for an optional's).
+        let computer = !model.personControlsLive && !model.isSolving
+        if let text = computer ? Optional(ShotRefusal.notYourTurn.sentence) : model.lastRefusal?.sentence {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: computer ? "cpu" : "exclamationmark.circle")
+                    .foregroundStyle(computer ? palette.accent : palette.slide)
+                    .symbolEffect(.bounce, value: pulse)
+                    .accessibilityHidden(true)
+                Text(text)
+                    .font(Theme.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+            }
+            .accessibilityElement(children: .combine)
+            .transition(.opacity)
+        }
+    }
+}
+
+// MARK: Shot options (the More menu's items)
+
+/// The items of the shot panel's More menu, shared by ShotPanel and the upright phone's "Shot options" menu
+/// (PhoneAimPanel), so both offer the same things with the same rules: Fine controls, Aim at nearest ball, and in plain
+/// free play Move cue ball, Undo last shot, the rack and Re-rack, then Show the hint again once the hint has been seen.
+/// The phone's form (`phone`) adds Try again first (it left the phone's main row) and Change the call in a match whose
+/// call is made, uses the symbols the phone plan chose (Undo's plain back arrow, Re-rack's circling arrows), and leaves
+/// out Show the hint again (the phone has no hint card to bring back); the shot panel's form is exactly the menu it
+/// always had. The hint's seen flag is the same stored "aimHintSeen" key the
+/// panel and the aim overlay read, so Show the hint again works from either menu.
+struct ShotOptionsItems: View {
+    let model: ShowpieceModel
+    /// Opens the fine controls (the panel shows them inside itself, or in a sheet on iPad and Mac).
+    @Binding var slidersOpen: Bool
+    var phone = false
+    @AppStorage("aimHintSeen") private var hintSeen = false
+
+    /// True in plain free play: no match, no trick shot, no Behind the 8-Ball situation, no lesson on the table.
+    private var freePlay: Bool {
+        model.match == nil && !model.trickMode.isActive && !model.eightBallMode.isActive && !model.lessonMode.isActive
+    }
+
+    var body: some View {
+        let open = model.openControls
+        if phone && model.canTryAgain {
+            Button {
+                hintSeen = true
+                model.tryAgain()
+            } label: { Label("Try again", systemImage: "arrow.uturn.backward") }
+            .accessibilityHint("Puts the balls back where your last shot started, with the same aim, power and spin")
+        }
+        Button { slidersOpen = true } label: { Label("Fine controls", systemImage: "slider.horizontal.3") }
+        if !model.racked {
+            Button { model.aimAtNearestBall() } label: { Label("Aim at nearest ball", systemImage: "scope") }
+                .disabled(!open.contains(.aim))
+        }
+        if phone, let match = model.match, match.mustCall, match.currentCall != nil, match.phase == .aiming,
+           match.personMayAct {
+            // Back to the call row in the aiming panel, to call something else before shooting.
+            Button { match.setCall(nil) } label: { Label("Change the call", systemImage: "pencil") }
+        }
+        if freePlay {
+            // Practice players move the cue ball all the time: the same placement state as ball in hand.
+            Button { model.beginPlacingCueBall() } label: { Label("Move cue ball", systemImage: "hand.raised") }
+                .disabled(!model.aimReady || model.placingCueBall)
+            Button { model.undoLastShot() } label: {
+                Label("Undo last shot", systemImage: phone ? "arrow.uturn.backward" : "arrow.uturn.backward.circle")
+            }
+            .disabled(!model.canUndo)
+            .keyboardShortcut("z", modifiers: .command)
+            Picker(selection: Binding(get: { model.freePlayRack }, set: { model.setFreePlayRack($0) })) {
+                ForEach(FreePlayRack.allCases, id: \.self) { rack in Text(ShotPanel.rackName(rack)).tag(rack) }
+            } label: {
+                Label("Rack", systemImage: "triangle")
+            }
+            .pickerStyle(.menu)
+            if !model.racked {
+                Button { model.rerack() } label: {
+                    Label("Re-rack for a break", systemImage: phone ? "arrow.triangle.2.circlepath" : "triangle")
+                }
+            }
+        }
+        // Not on the upright phone, which shows no hint card (the opening's docked blurb teaches the gestures there).
+        if hintSeen && !phone {
+            Button { hintSeen = false } label: { Label("Show the hint again", systemImage: "questionmark.circle") }
+        }
+    }
+}
+
 // MARK: Fine controls (the sliders, in a sheet)
 
 /// Every value the gestures set, as standard labelled sliders. The complete accessible route into the shot: it needs
 /// no picture of the table, no drag and no pointer. Also handy on a Mac for typing a precise value with the keyboard.
-private struct FineControls: View {
+/// Also opened inside the upright phone's aiming panel (PhoneAimPanel), in place of its tip picture and power bar.
+struct FineControls: View {
     @Bindable var model: ShowpieceModel
     @Binding var isOpen: Bool
     @Binding var sheetOpen: Bool

@@ -22,6 +22,10 @@
 //          ball, pocket and zone rings), measured through the projector; TablePathStroke.line skips a point behind the
 //          camera and starts a new piece at the next one instead of dropping the whole path, so the what-if's violet
 //          paths stay up through a Ride chase.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md Part 3: the
+//          comparison card's close button is glass instead of bordered; when the card shows is one shared rule
+//          (ComparisonCard.shows), which ComparisonPhoneBlurb, the upright phone's docked blurb of the same sentence with
+//          See the contact and Close, also reads. The card is unchanged elsewhere.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
@@ -207,12 +211,16 @@ struct ComparisonCard: View {
     /// The recording the player paused at its contact: the card stays up while the replay sits there.
     @State private var seekedVersion = -1
 
-    private var visible: Bool {
-        guard model.retryComparison != nil, dismissedVersion != model.timelineVersion,
+    private var visible: Bool { Self.shows(model, dismissed: dismissedVersion, seeked: seekedVersion) }
+
+    /// When the comparison shows: free play only, once the retry has played out (so it never talks over the shot) or
+    /// while the replay is paused at its contact, until put away for this recording. Shared by this card and the
+    /// upright phone's blurb (ComparisonPhoneBlurb), each keeping its own dismissed and seeked versions.
+    static func shows(_ model: ShowpieceModel, dismissed: Int, seeked: Int) -> Bool {
+        guard model.retryComparison != nil, dismissed != model.timelineVersion,
               !model.trickMode.isActive, !model.eightBallMode.isActive, !model.lessonMode.isActive,
               model.match == nil, !model.whatIf.isShowing else { return false }
-        // Only once the retry has played out, so it never talks over the shot; or while paused at the contact.
-        return model.aimReady || seekedVersion == model.timelineVersion
+        return model.aimReady || seeked == model.timelineVersion
     }
 
     var body: some View {
@@ -233,7 +241,7 @@ struct ComparisonCard: View {
                 Button { dismissedVersion = model.timelineVersion } label: {
                     Image(systemName: "xmark").frame(width: 30, height: 30)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.glass)
                 .buttonBorderShape(.circle)
                 .accessibilityLabel("Dismiss comparison")
             }
@@ -241,5 +249,47 @@ struct ComparisonCard: View {
             .accessibilityElement(children: .contain)
             .transition(.opacity)
         }
+    }
+}
+
+/// The retry comparison on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3): the same sentence as
+/// ComparisonCard, as a docked blurb sized to its words, with See the contact and Close as its two small buttons. Shows
+/// exactly when the card would (ComparisonCard.shows) and adds no height to the dock when it does not.
+struct ComparisonPhoneBlurb: View {
+    let model: ShowpieceModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// As the card: the recording whose comparison was put away, and the one paused at its contact.
+    @State private var dismissedVersion = -1
+    @State private var seekedVersion = -1
+
+    var body: some View {
+        if ComparisonCard.shows(model, dismissed: dismissedVersion, seeked: seekedVersion),
+           let c = model.retryComparison {
+            let text = RetryWords.sentence(c)
+            Blurb(sentence: String(localized: "Compared with your last try. \(text)"), buttons: buttons)
+        }
+    }
+
+    private var buttons: [BlurbButton] {
+        var list: [BlurbButton] = []
+        if model.firstContactTime != nil {
+            list.append(BlurbButton(String(localized: "See the contact"),
+                                    hint: String(localized: "Pauses the replay where the cue ball first touched a ball")) {
+                seeContact()
+            })
+        }
+        list.append(BlurbButton(String(localized: "Close")) { dismissedVersion = model.timelineVersion })
+        return list
+    }
+
+    /// What ContactButton (RetryWords.swift) does on a press, for the blurb's own button: Ride steps aside under Reduce
+    /// Motion (no camera flight), the replay stops at the first contact, the arrival line is told which recording it
+    /// stopped on, the blurb stays up while the replay sits there, and VoiceOver hears what to look at.
+    private func seeContact() {
+        if reduceMotion && model.rideOn { model.setRide(false) }
+        model.seekToFirstContact()
+        ContactArrival.shared.version = model.timelineVersion
+        seekedVersion = model.timelineVersion
+        ShotNarration.announce(ContactArrivalLine.words(ghost: model.ghost != nil))
     }
 }

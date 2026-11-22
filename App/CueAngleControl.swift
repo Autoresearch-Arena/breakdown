@@ -12,6 +12,10 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream aim, plans/22-Nov-2026-phone-bug-hunt.md #47: when the
 //          shot panel's row has no room for the words, the button shows its icon and the bare degrees ("40°",
 //          shortWords) instead of cutting the words short; VoiceOver still hears the full words.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, aiming panel: a `phone` form for the upright phone's
+//          aiming panel (PhoneAimPanel): a text capsule showing "Level" or the bare degrees, no icon, drawn as content on
+//          the panel's glass (a faint capsule, PhonePanelControl) so there is no glass on glass. The menu, the lesson
+//          marks and everything VoiceOver hears are the same as before; the default form is unchanged.)
 // PURPOSE: The cue-angle control, shared. A small glass menu button that shows how far the cue is raised ("Level",
 //          "30° up") and offers the angles a player picks from: level for nearly every shot, a little raised for a
 //          jump, steep for a massé. It reads and writes the solver's own unit, the SINE of the cue's angle above the
@@ -39,6 +43,9 @@ struct CueAngleMenu: View {
     var zoneStrength: Double = 1
     /// True while a lesson has locked the cue angle for this step.
     var locked: Bool = false
+    /// The upright phone's aiming panel: a plain text capsule ("Level", "30°") drawn on the panel's glass instead of a
+    /// glass button with an icon (plans/22-Nov-2026-phone-ui-plan.md, "The aiming panel": the cue angle shows degrees).
+    var phone: Bool = false
 
     /// The angles offered, in degrees above level: the one list in the app (the Behind the 8-Ball card's copy went in
     /// 0.7.5). Fine steps up to 30 degrees, where jumps live, then coarser ones for the massé, up to 80 degrees, short
@@ -88,23 +95,59 @@ struct CueAngleMenu: View {
                 }
             }
         } label: {
-            // In a lesson's band the label wears the band's target mark, so the player sees they have landed in it.
-            let icon = zone?.contains(angle) == true && zoneStrength >= 0.5 ? "scope" : "angle"
-            // The words when the row has room; else the icon and the bare degrees ("40°"), so a long translation of
-            // "40° up" is never cut to "40° vers le h…" beside Shoot (0.7.6 #47). VoiceOver hears the full words either
-            // way (the value below).
-            ViewThatFits(in: .horizontal) {
-                Label(Self.words(degrees: Double(angle)), systemImage: icon)
-                Label(Self.shortWords(degrees: angle), systemImage: icon)
+            if phone {
+                phoneLabel(angle)
+            } else {
+                // In a lesson's band the label wears the band's target mark, so the player sees they have landed in it.
+                let icon = zone?.contains(angle) == true && zoneStrength >= 0.5 ? "scope" : "angle"
+                // The words when the row has room; else the icon and the bare degrees ("40°"), so a long translation of
+                // "40° up" is never cut to "40° vers le h…" beside Shoot (0.7.6 #47). VoiceOver hears the full words
+                // either way (the value below).
+                ViewThatFits(in: .horizontal) {
+                    Label(Self.words(degrees: Double(angle)), systemImage: icon)
+                    Label(Self.shortWords(degrees: angle), systemImage: icon)
+                }
+                .font(.headline).lineLimit(1)
+                .frame(minHeight: minHeight)
             }
-            .font(.headline).lineLimit(1)
-            .frame(minHeight: minHeight)
         }
-        .buttonStyle(.glass)
+        .modifier(CueAngleMenuStyle(phone: phone))
         .disabled(locked)
         .lockedForStep(locked)
         .accessibilityLabel(String(localized: "Cue angle"))
         .accessibilityValue(TableWords.cueAngleValue(words: Self.words(degrees: Double(angle)), degrees: angle, band: zone))
         .accessibilityHint(String(localized: "Raise the cue to jump or curve the cue ball"))
+    }
+
+    /// The phone form's label: "Level", or the bare degrees ("30°"), in the panel's control font, on a faint capsule
+    /// 44 high. Inside a lesson's band a small target mark follows the words, as the default form's icon does.
+    private func phoneLabel(_ angle: Int) -> some View {
+        HStack(spacing: 4) {
+            Text(verbatim: angle == 0 ? Self.words(degrees: 0) : Self.shortWords(degrees: angle))
+                .font(Theme.phoneControl.monospacedDigit())
+                .lineLimit(1)
+            if zone?.contains(angle) == true && zoneStrength >= 0.5 {
+                Image(systemName: "scope").font(.caption).accessibilityHidden(true)
+            }
+        }
+        .fixedSize()
+        .padding(.horizontal, 14)
+        .frame(minHeight: 44)
+        .modifier(PhonePanelControl(shape: .capsule))
+        .contentShape(Capsule())
+    }
+}
+
+/// The default form is a glass menu button; the phone form is a plain one, its capsule drawn by phoneLabel, because it
+/// sits on the aiming panel's own glass.
+private struct CueAngleMenuStyle: ViewModifier {
+    let phone: Bool
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if phone {
+            content.buttonStyle(.plain).menuIndicator(.hidden)
+        } else {
+            content.buttonStyle(.glass)
+        }
     }
 }

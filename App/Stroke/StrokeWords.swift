@@ -9,6 +9,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, item 57: the power readout, the ball readout and the
 //          spoken power take the cue the game picked for the shot (callers pass model.cueInHand) instead of the default
 //          CueProfile.selected, so the word and the ball's speed match what the strike will really launch.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, aiming panel: swingFigure and swingCaption, the
+//          upright phone's power readout split in two, the bare figure ("2.6 m/s", drawn large) over its caption
+//          ("Swing speed · firm"). Same numbers and words as readout.)
 // PURPOSE: The stroke in words (plans/21-Nov-2026-stroke-and-power-plan.md): the power readout as a swing with the ball
 //          speed kept on hand, the result line when the stroke changed what happened ("Your stroke turned the cue a
 //          little left. Played straight, the pot would have dropped."), the retry comparison's stroke sentence ("Your
@@ -35,6 +38,18 @@ enum StrokeWords {
     static func readout(power: Double, racked: Bool, cue: CueProfile) -> String {
         let word = PowerWords.word(speed: cue.launchSpeed(forPower: power), racked: racked)
         return String(localized: "\(word) · swing \(speed(CueProfile.swing(forPower: power))) m/s")
+    }
+
+    /// The upright phone's power figure, the swing alone: "2.6 m/s" (the aiming panel draws it in headline monospaced,
+    /// with swingCaption under it). The unit is the same everywhere, so only the number is formatted.
+    static func swingFigure(power: Double) -> String {
+        String(localized: "\(speed(CueProfile.swing(forPower: power))) m/s")
+    }
+
+    /// The caption under swingFigure: what the figure is and the plain word for it. "Swing speed · firm".
+    static func swingCaption(power: Double, racked: Bool, cue: CueProfile) -> String {
+        let word = PowerWords.word(speed: cue.launchSpeed(forPower: power), racked: racked)
+        return String(localized: "Swing speed · \(word)")
     }
 
     /// The ball's speed for those who want it, as the fine-controls slider shows it. "firm · ball 3.4 m/s".

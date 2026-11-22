@@ -1,15 +1,33 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, foundation: phoneUpright, the upright phone's own
+//          layout switch, and phoneGlassNamespace with PhoneGlassID, the one glass identity the primary action and the
+//          aiming panel share so "Your shot" grows into the panel and back.)
 // PURPOSE: Shared layout flags handed down the view tree through the environment, so a view that sets a layout state
 //          (ShowpieceView) and the cards that react to it (free play, match, trick, lesson and situation cards) never
-//          need to know about each other. Frozen after the 0.7.5 foundation commit: streams read and set these flags
-//          but do not add to this file.
+//          need to know about each other. Frozen after the 0.7.5 foundation commit except for the phone UI plan's
+//          foundation entries below: streams read and set these flags but do not add to this file.
 // SRP/DRY check: Pass - checked NotebookPanel.swift (inlinePages, notebookRoomy) and MacChrome.swift (showpieceModel,
-//          shotPanelOpen, notebookPage); none of those carries the guided-replay compact state.
+//          shotPanelOpen, notebookPage); none of those carries the guided-replay compact state, the upright phone
+//          layout or a glass namespace.
 import SwiftUI
 
 extension EnvironmentValues {
     /// True on a phone held upright while a guided Lens replay plays (ShowpieceView sets it on the bottom stack).
     /// Mode cards then show their slim form, heading and main button only, so the table keeps its height.
     @Entry var lensReplayCompact: Bool = false
+    /// True on the stage while the upright phone layout is on screen (title row, docked blurbs, the bottom bar with
+    /// PhoneStrip), set by ShowpieceView. False in the notebook, the sideways column and the big-window table-only
+    /// layout, which keep the shared views.
+    @Entry var phoneUpright: Bool = false
+    /// The glass namespace of the upright phone's bottom bar (one GlassEffectContainer, ShowpieceView). The primary
+    /// action in PhoneStrip and PhoneAimPanel each mark their glass with `.glassEffectID(PhoneGlassID.primaryAction,
+    /// in: namespace)` from this, so the button morphs into the panel and back. Nil outside that bar.
+    @Entry var phoneGlassNamespace: Namespace.ID? = nil
+}
+
+/// Glass identities shared across files inside the upright phone's bottom bar (see phoneGlassNamespace).
+enum PhoneGlassID {
+    /// The primary action capsule ("Your shot") and the aiming panel that grows out of it.
+    static let primaryAction = "phone.primaryAction"
 }

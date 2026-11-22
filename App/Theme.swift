@@ -15,6 +15,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: the caption figure styles (figure, figureUnit,
 //          figureLabel, figureChip: rounded, monospaced digits, all system text styles) and Palette.color(for:) for a
 //          FigureMark, so a figure's number wears the colour of the Lens mark it belongs to.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, foundation: the upright phone's blurb and control
+//          fonts, all system text styles.)
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
 //          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
@@ -70,6 +72,28 @@ enum Theme {
     static var figureLabel: Font { .caption2.weight(.medium) }
     /// The lead figure in the title chip on the table: the chip's size, in the tile's rounded digits.
     static var figureChip: Font { .system(.caption, design: .rounded, weight: .bold).monospacedDigit() }
+
+    // MARK: The upright phone's blurbs and controls (phone UI plan, Part 3)
+
+    /// A blurb's title ("Throw"): subheadline semibold.
+    static var blurbTitle: Font { .subheadline.weight(.semibold) }
+    /// The lead figure after a blurb's title ("2.1°"): bold monospaced, so it reads as a measured number.
+    static var blurbFigure: Font { .system(.subheadline, design: .monospaced, weight: .bold) }
+    /// A figure chip's number: caption monospaced.
+    static var blurbChip: Font { .system(.caption, design: .monospaced, weight: .semibold) }
+    /// The few words after a chip's number: caption 2 (11 points at the default size, the smallest text on the phone).
+    static var blurbChipLabel: Font { .caption2 }
+    /// The worked equation in a blurb: italic caption.
+    static var blurbEquation: Font { .caption.italic() }
+    /// A blurb's small glass buttons.
+    static var blurbButton: Font { .subheadline.weight(.semibold) }
+    /// The upright phone's worded controls (Lens, Ride, the primary action, Skip): subheadline semibold, one weight
+    /// whatever their state, so joined glass never jumps.
+    static var phoneControl: Font { .subheadline.weight(.semibold) }
+    /// The speed capsule: monospaced, so "Auto", "1×" and "⅒×" keep the rail's width steady.
+    static var phoneSpeed: Font { .system(.subheadline, design: .monospaced, weight: .semibold) }
+    /// The title row's title: plain headline.
+    static var phoneTitle: Font { .headline }
 }
 
 // MARK: - Palette

@@ -16,6 +16,10 @@
 //          are one list of named actions instead of two mechanisms side by side; same names, same jumps.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bug 30 of plans/22-Nov-2026-phone-bug-hunt.md:
 //          the parting diamond draws over the playhead, so it stays visible when Where they part lands on it.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, foundation: phoneStyle for the upright phone's
+//          strip (PhoneStrip): unplayed rail white at 25 per cent, played rail white, no accent glow on the knob, and a
+//          2-point white tick at each explained moment (the captions) instead of the coloured impact ticks, because on
+//          the phone cyan and magenta mean only rolling and sliding. Touch area, haptics and VoiceOver are unchanged.)
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -23,6 +27,9 @@ import SwiftUI
 
 struct ScrubBar: View {
     let model: ShowpieceModel
+    /// The upright phone's look (PhoneStrip): white rail, white knob, a tick at each explained moment. Off everywhere
+    /// else, which keeps the coloured impact ticks and the accent fill.
+    var phoneStyle = false
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var hovering = false
@@ -79,13 +86,15 @@ struct ScrubBar: View {
         let thumbScale: CGFloat = dragging ? 1.25 : (hovering ? 1.15 : 1)
         let thumbX: CGFloat = min(max(0, x - thumb / 2), w - thumb)
         return ZStack(alignment: .leading) {
-            Capsule().fill(palette.track).frame(height: railHeight)
-            ticks(duration: d)
-            Capsule().fill(palette.accent).frame(width: max(railHeight, x), height: railHeight)
+            Capsule().fill(phoneStyle ? Color.white.opacity(0.25) : palette.track).frame(height: railHeight)
+            if !phoneStyle { ticks(duration: d) }
+            Capsule().fill(phoneStyle ? Color.white : palette.accent).frame(width: max(railHeight, x), height: railHeight)
+            // The phone's moment ticks go over the played rail, which is white too; their dark edge keeps them apart.
+            if phoneStyle { momentTicks(duration: d) }
             Circle()
                 .fill(.white)
                 .frame(width: thumb, height: thumb)
-                .shadow(color: palette.accent.opacity(0.8), radius: 4)
+                .shadow(color: phoneStyle ? Color.black.opacity(0.5) : palette.accent.opacity(0.8), radius: 4)
                 .scaleEffect(thumbScale)
                 .animation(reduceMotion ? nil : .snappy(duration: 0.15), value: thumbScale)
                 .offset(x: thumbX)
@@ -133,6 +142,22 @@ struct ScrubBar: View {
                 let x = size.width * (e.time / d)
                 let rect = CGRect(x: x - 0.75, y: (size.height - h) / 2, width: 1.5, height: h)
                 ctx.fill(Path(rect), with: .color(color.opacity(0.85)))
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    /// The phone's ticks: one 2-point mark at each explained moment (each caption's time), white with a dark edge so
+    /// it reads on the played and the unplayed rail alike.
+    private func momentTicks(duration d: Double) -> some View {
+        Canvas { ctx, size in
+            let h: CGFloat = 12
+            for c in model.captions {
+                let x = size.width * CGFloat(min(1, max(0, c.time / d)))
+                let rect = CGRect(x: x - 1, y: (size.height - h) / 2, width: 2, height: h)
+                ctx.fill(Path(rect.insetBy(dx: -0.5, dy: -0.5)), with: .color(.black.opacity(0.45)))
+                ctx.fill(Path(rect), with: .color(.white))
             }
         }
         .allowsHitTesting(false)

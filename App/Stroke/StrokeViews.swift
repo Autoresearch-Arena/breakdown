@@ -6,6 +6,11 @@
 //          every drifted stroke, and marks a shot played another way as left out of the record.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bug 29 of plans/22-Nov-2026-phone-bug-hunt.md:
 //          the stroke result line steps aside while the what-if shows.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md Part 3: on the
+//          upright phone the stroke's words are blurbs instead of glass cards. StrokePhoneBlurbs docks the drill's goal or
+//          verdict (folded to its first lines, the rest behind a tap), the result line with "Practise the straight
+//          stroke", and the stance notice (EquipmentRowList); PhonePrimaryAction.stroke offers "Again" in the drill. The
+//          cards above are unchanged for the notebook and the sideways column.)
 // PURPOSE: The stroke on screen (plans/21-Nov-2026-stroke-and-power-plan.md), apart from the live groove:
 //          - StrokeCards: the cards this stream adds, one hook line wherever the cards sit (the phone's bottom stack,
 //            the side column, the notebook panel), so each works as a card of the notebook beside the table and
@@ -26,7 +31,7 @@ import BreakdownLensModel
 import BreakdownTimeline
 import SwiftUI
 
-/// Every card the stroke adds, for one hook line in each place the cards sit.
+/// Every card the stroke adds, for one hook line in each place the cards sit (not the upright phone: StrokePhoneBlurbs).
 struct StrokeCards: View {
     let model: ShowpieceModel
 
@@ -45,16 +50,20 @@ struct StrokeResultCard: View {
     /// The line for the shot on screen, once it has played out. Not in the drill, whose card says it with its verdict,
     /// and not while the what-if shows (0.7.6, bug 29): every result card steps aside for it, and this one used to
     /// stay under it, vanish when Play both started and pop back when the replay ended, shifting the cards.
-    private var line: String? {
+    /// Shared with the upright phone's result blurb (StrokePhoneBlurbs).
+    static func line(_ model: ShowpieceModel) -> String? {
         guard model.aimReady, !model.strokeDrill.isActive, !model.whatIf.isShowing else { return nil }
         return StrokeWords.resultLine(for: model.currentAttempt)
     }
 
     /// The drill is offered only in free play: starting it ends whatever is on the table, and a match, a lesson, a
-    /// trick shot or a Behind the 8-Ball situation must not be thrown away by a tip.
-    private var offersDrill: Bool {
+    /// trick shot or a Behind the 8-Ball situation must not be thrown away by a tip. Shared with StrokePhoneBlurbs.
+    static func offersDrill(_ model: ShowpieceModel) -> Bool {
         model.match == nil && !model.trickMode.isActive && !model.lessonMode.isActive && !model.eightBallMode.isActive
     }
+
+    private var line: String? { Self.line(model) }
+    private var offersDrill: Bool { Self.offersDrill(model) }
 
     var body: some View {
         if let line {
@@ -173,8 +182,15 @@ struct StrokeDrillCard: View {
     }
 
     /// What the device remembers.
-    @ViewBuilder private var progress: some View {
-        let drill = model.strokeDrill
+    private var progress: some View { StrokeDrillProgress(drill: model.strokeDrill) }
+}
+
+/// What the device remembers about the drill: the best stroke and the count of dead straight ones. Shared by the
+/// drill's card and its blurb on the upright phone.
+struct StrokeDrillProgress: View {
+    let drill: StrokeDrill
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             if let best = drill.best {
                 Text(String(localized: "Best: \(StrokeWords.distance(best)) off the line"))
@@ -183,6 +199,138 @@ struct StrokeDrillCard: View {
         }
         .font(Theme.label)
         .foregroundStyle(.secondary)
+    }
+}
+
+// MARK: The upright phone
+
+/// The stroke's blurbs on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3), docked at the top of the
+/// table area by ShowpieceView, in this order: the drill (its goal, or its verdict), the result line, the stance notice.
+/// Each is drawn only when it has something to say, so a silent one adds no height to the dock (the camera frames the
+/// table from the dock's bottom). The drill's "Again" is the screen's primary action (PhonePrimaryAction.stroke), not
+/// a button here.
+struct StrokePhoneBlurbs: View {
+    let model: ShowpieceModel
+    /// The drill blurb is folded to its first lines; a tap opens the rest (the turn, the trace, the progress).
+    @State private var drillFolded = true
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        drillBlurb
+        resultBlurb
+        stanceBlurb
+    }
+
+    // MARK: The drill
+
+    @ViewBuilder private var drillBlurb: some View {
+        let drill = model.strokeDrill
+        if drill.isActive {
+            Blurb(folded: $drillFolded, accessibilityText: drillSpoken) { open in
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(localized: "Straight stroke")).font(Theme.blurbTitle)
+                    if model.aimReady, let result = drill.last {
+                        Text(StrokeWords.verdict(result)).font(Theme.body)
+                            .lineLimit(open ? nil : 2)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if drill.lastWasBest {
+                            Text(String(localized: "Your best yet.")).font(Theme.label).foregroundStyle(.secondary)
+                        }
+                        if open {
+                            if !drill.lastCounted {
+                                Text(StrokeWords.notCounted).font(Theme.label).foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            if let line = StrokeWords.drillLine(drill.lastStroke) {
+                                Text(line).font(Theme.body).fixedSize(horizontal: false, vertical: true)
+                            }
+                            if let shape = drill.lastStroke?.record?.shape, shape.count > 1 {
+                                // The trace stays a drawing, never cut (the Boss: never shortchange the graphics).
+                                StrokeShape(shape: shape).frame(height: 44)
+                                Text(String(localized: "Your stroke, with its sideways wander drawn four times larger."))
+                                    .font(Theme.label).foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            StrokeDrillProgress(drill: drill)
+                        }
+                    } else {
+                        Text(String(localized: "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line."))
+                            .font(Theme.body)
+                            .lineLimit(open ? nil : 2)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if open {
+                            Text(StrokeWords.drillMeasuresFinger).font(Theme.label).foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text(String(localized: "Then try it hard: past the calm zone on the power bar, the line wanders more."))
+                                .font(Theme.label).foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            StrokeDrillProgress(drill: drill)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Everything the drill blurb says, folded or not, for VoiceOver.
+    private var drillSpoken: String {
+        let drill = model.strokeDrill
+        var parts = [String(localized: "Straight stroke")]
+        if model.aimReady, let result = drill.last {
+            parts.append(StrokeWords.verdict(result))
+            if drill.lastWasBest { parts.append(String(localized: "Your best yet.")) }
+            if !drill.lastCounted { parts.append(StrokeWords.notCounted) }
+            if let line = StrokeWords.drillLine(drill.lastStroke) { parts.append(line) }
+        } else {
+            parts.append(String(localized: "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line."))
+            parts.append(StrokeWords.drillMeasuresFinger)
+        }
+        if let best = drill.best { parts.append(String(localized: "Best: \(StrokeWords.distance(best)) off the line")) }
+        parts.append(String(localized: "Dead straight strokes: \(drill.straightCount)"))
+        return parts.joined(separator: " ")
+    }
+
+    // MARK: The result line
+
+    @ViewBuilder private var resultBlurb: some View {
+        if let line = StrokeResultCard.line(model) {
+            let buttons: [BlurbButton] = StrokeResultCard.offersDrill(model)
+                ? [BlurbButton(String(localized: "Practise the straight stroke"),
+                               hint: String(localized: "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back")) {
+                       model.strokeDrill.begin()
+                   }]
+                : []
+            Blurb(sentence: line, buttons: buttons)
+        }
+    }
+
+    // MARK: The stance
+
+    /// The stance notice (a stretch, a raised cue, the cue the game picked), while lining up a shot. Not during the
+    /// first minute's hand-over, which shows one instruction only, nor on the computer's turn. No room is kept when it
+    /// has nothing to say: the dock's height is where the camera's table area starts, so an empty kept room would cost
+    /// the table height through every aim.
+    @ViewBuilder private var stanceBlurb: some View {
+        let aiming = model.aimReady && model.openingStage != .handOver && model.personControlsLive
+        let rows = aiming ? EquipmentRows.current(model) : []
+        if !rows.isEmpty {
+            Blurb(accessibilityText: rows.map(\.line).joined(separator: ". ")) {
+                EquipmentRowList(rows: rows)
+            }
+        }
+    }
+}
+
+extension PhonePrimaryAction {
+    /// The stroke drill's primary action: "Again" once a drill stroke has played out, putting the cue ball back on the
+    /// head spot. Nil whenever the drill is not on the table, so the other providers and "Your shot" are untouched.
+    static func stroke(_ model: ShowpieceModel) -> PhonePrimaryAction? {
+        let drill = model.strokeDrill
+        guard drill.isActive, model.aimReady, drill.last != nil else { return nil }
+        return PhonePrimaryAction(title: String(localized: "Again"),
+                                  hint: String(localized: "Puts the cue ball back on the head spot")) {
+            drill.again()
+        }
     }
 }
 

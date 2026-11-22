@@ -16,6 +16,10 @@
 //          the trick-shot layer; the card steps aside while a what-if is open and shows its slim form (the heading and
 //          the main button) during a guided Lens replay on a phone held upright; the list's Mac minimum size applies
 //          only as a sheet, not as a page of the notebook.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: LessonPhoneBlurbs, the lesson card's
+//          words as blurbs on the phone held upright, and PhonePrimaryAction.lesson, its main button as the strip's
+//          primary action; the step words moved into LessonWords so the card and the blurbs say the same; the pass's
+//          success haptic moved from the card to LessonTableLayer, which is on screen in every layout.)
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
@@ -29,6 +33,14 @@
 //                             (ContactButton), with Try again and Next step. A passed lesson suggests the trick shot that
 //                             uses the idea and the next lesson; the stop shot also offers its second exercise. This is
 //                             the one result card while a lesson is up (the general comparison card steps aside).
+//          LessonPhoneBlurbs - the phone held upright only (ShowpieceView's dock): the card's words without the card, as
+//                             blurbs (App/Phone/Blurb.swift). The lesson's name is the title row's, the main button is the
+//                             strip's primary action (PhonePrimaryAction.lesson, below), the list and Watch again are in
+//                             the title row's More menu; what is left is the hook, what to watch for, the idea (folded to
+//                             one line while the replay runs toward the moment, three lines once it holds there), each
+//                             step's line, the verdict with the retry's difference, and at most two small buttons.
+//          LessonWords      - the step's name ("Try 2 of 3") and its line (what is set, open and marked), shared by the
+//                             card and the blurbs.
 //          LessonTableLayer - over the 3D table, never taking touches: rings on the balls the goal names and on their
 //                             pocket, the cue ball's finish circle, and a short glow when a lesson is passed. It hosts the
 //                             list sheet, forwards the model's playback changes to LessonMode.update() and its clock to
@@ -141,9 +153,7 @@ struct LessonCard: View {
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: mode.phase)
-            // One success haptic per pass, with the glow and the made-it sound (LessonTableLayer); the Vibration option
-            // is read at the moment it fires.
-            .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
+            // The pass's success haptic is LessonTableLayer's (with the glow and the sound), so it fires in every layout.
             .transition(.opacity)
         }
     }
@@ -292,43 +302,11 @@ struct LessonCard: View {
 
     // MARK: Words
 
-    /// "Try 1 of 3" and so on, for the card's corner.
-    private func stepName(_ step: LessonMode.Step) -> String {
-        switch step {
-        case .try1: return String(localized: "Try 1 of 3")
-        case .try2: return String(localized: "Try 2 of 3")
-        case .try3: return String(localized: "Try 3 of 3")
-        case .pass: return String(localized: "Pass shot")
-        case .exercise: return String(localized: "A new distance")
-        }
-    }
+    /// The step's name and line (LessonWords, shared with the upright phone's blurbs).
+    private func stepName(_ step: LessonMode.Step) -> String { LessonWords.stepName(step) }
 
-    /// What is set, what is open and what is marked in this step.
     private func stepLine(_ lesson: Lesson, _ step: LessonMode.Step) -> String {
-        switch step {
-        case .try1:
-            return String(localized: "Everything is set for you and locked. Just shoot and watch it work.")
-        case .try2:
-            switch lesson.control {
-            case .tipUp: return String(localized: "Only the tip height is open. Move the dot on the cue ball into the marked band.")
-            case .tipSide: return String(localized: "Only the side spin is open. Move the dot on the cue ball into the marked band.")
-            case .aim: return String(localized: "Only the aim is open. Swing the line into the marked fan.")
-            case .power: return String(localized: "Only the power is open. Set it inside the marked part of the bar.")
-            case .elevation: return String(localized: "Only the cue angle is open. Pick one of the marked angles.")
-            }
-        // In a lesson not about power, try 3 and the pass shot hold the power at the lesson's stroke (LessonMode.powerHeld),
-        // and the line says so: the power bar shows a lock.
-        case .try3:
-            return mode.powerHeld
-                ? String(localized: "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.")
-                : String(localized: "Every control is open now, and the marks are faint.")
-        case .pass:
-            return mode.powerHeld
-                ? String(localized: "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.")
-                : String(localized: "No marks and nothing locked. Make it on your own to pass.")
-        case .exercise:
-            return String(localized: "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.")
-        }
+        LessonWords.stepLine(lesson, step, powerHeld: mode.powerHeld)
     }
 
     // MARK: Pieces
@@ -424,6 +402,223 @@ struct LessonCard: View {
     #endif
 }
 
+// MARK: Words shared by the card and the blurbs
+
+/// The lesson's step words, one copy for LessonCard and LessonPhoneBlurbs.
+enum LessonWords {
+    /// "Try 1 of 3" and so on, for the card's corner.
+    static func stepName(_ step: LessonMode.Step) -> String {
+        switch step {
+        case .try1: return String(localized: "Try 1 of 3")
+        case .try2: return String(localized: "Try 2 of 3")
+        case .try3: return String(localized: "Try 3 of 3")
+        case .pass: return String(localized: "Pass shot")
+        case .exercise: return String(localized: "A new distance")
+        }
+    }
+
+    /// What is set, what is open and what is marked in this step.
+    static func stepLine(_ lesson: Lesson, _ step: LessonMode.Step, powerHeld: Bool) -> String {
+        switch step {
+        case .try1:
+            return String(localized: "Everything is set for you and locked. Just shoot and watch it work.")
+        case .try2:
+            switch lesson.control {
+            case .tipUp: return String(localized: "Only the tip height is open. Move the dot on the cue ball into the marked band.")
+            case .tipSide: return String(localized: "Only the side spin is open. Move the dot on the cue ball into the marked band.")
+            case .aim: return String(localized: "Only the aim is open. Swing the line into the marked fan.")
+            case .power: return String(localized: "Only the power is open. Set it inside the marked part of the bar.")
+            case .elevation: return String(localized: "Only the cue angle is open. Pick one of the marked angles.")
+            }
+        // In a lesson not about power, try 3 and the pass shot hold the power at the lesson's stroke (LessonMode.powerHeld),
+        // and the line says so: the power bar shows a lock.
+        case .try3:
+            return powerHeld
+                ? String(localized: "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.")
+                : String(localized: "Every control is open now, and the marks are faint.")
+        case .pass:
+            return powerHeld
+                ? String(localized: "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.")
+                : String(localized: "No marks and nothing locked. Make it on your own to pass.")
+        case .exercise:
+            return String(localized: "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.")
+        }
+    }
+}
+
+// MARK: The phone held upright
+
+/// The lesson card's words as blurbs, docked at the top of the table area on the phone held upright (ShowpieceView's
+/// dock; phone UI plan, Part 3 and Part 4 step 5). One blurb for the phase, plus the idea while the demonstration
+/// replays and holds on its moment, or whenever the title has opened it. Shows nothing outside a lesson, while the Lens
+/// tips hold a beat and while a what-if is open, as the card stepped back for both.
+struct LessonPhoneBlurbs: View {
+    let model: ShowpieceModel
+    /// The idea is open: the title row's tap and a tap on the idea blurb both toggle it (ShowpieceView owns it).
+    @Binding var ideaOpen: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var mode: LessonMode { model.lessonMode }
+
+    var body: some View {
+        if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+            if mode.phase == .replaying || mode.phase == .keyMoment || ideaOpen { idea(lesson) }
+            phaseBlurb(lesson)
+        }
+    }
+
+    /// Blurb's fold switch is true when folded; ideaOpen is true when open. One binding turns one into the other.
+    private var ideaFolded: Binding<Bool> {
+        Binding(get: { !ideaOpen }, set: { ideaOpen = !$0 })
+    }
+
+    /// "The idea": one line with its more dot while the slow replay runs toward the moment, so the table keeps the
+    /// room; three lines once the replay holds on the moment, because the idea is why it stopped there (0.7.6, #38).
+    private func idea(_ lesson: Lesson) -> some View {
+        Blurb(title: String(localized: "The idea"), sentence: lesson.idea, folded: ideaFolded,
+              foldedLines: mode.phase == .keyMoment ? 3 : 1)
+    }
+
+    /// The phase's own words. Watch it, Your turn, Next step, Next lesson and Try again are the strip's primary action
+    /// (PhonePrimaryAction.lesson); the replay and the moment have the idea alone.
+    @ViewBuilder
+    private func phaseBlurb(_ lesson: Lesson) -> some View {
+        switch mode.phase {
+        case .ready:
+            // The hook, and Your turn for a player who knows the shot (nothing is gated; Watch it is the primary action).
+            Blurb(sentence: lesson.hook, buttons: [
+                BlurbButton(String(localized: "Your turn"),
+                            hint: String(localized: "Puts the balls back and opens the aiming controls")) { mode.yourTurn() }
+            ])
+        case .watching:
+            Blurb(sentence: String(localized: "Watch a perfect example. \(lesson.goalLine)"))
+        case .aiming(let step):
+            Blurb(title: LessonWords.stepName(step), sentence: aimingSentence(lesson, step))
+        case .judged(let step, let verdict):
+            judged(lesson, step, verdict)
+        case .offScript(let step):
+            Blurb(title: LessonWords.stepName(step),
+                  sentence: String(localized: "That shot started from where the balls stopped. Try again puts them back for the lesson."))
+        case .replaying, .keyMoment, .off:
+            EmptyView()
+        }
+    }
+
+    /// What is set, open and marked in this step; the pass shot and the exercise add their goal, as the card did.
+    private func aimingSentence(_ lesson: Lesson, _ step: LessonMode.Step) -> String {
+        let line = LessonWords.stepLine(lesson, step, powerHeld: mode.powerHeld)
+        switch step {
+        case .pass: return line + " " + lesson.goalLine
+        case .exercise: return line + " " + Lessons.stopExercise.trick.goalLine
+        case .try1, .try2, .try3: return line
+        }
+    }
+
+    /// Lesson passed, Made it or Missed with the step's name; the judge's line, the retry's one difference (RetryWords)
+    /// and, after a pass, the trick shot built on the idea. Two small buttons at most, in this order of need:
+    ///   passed:                the suggested trick shot, then the stop lesson's new distance (See the contact drops);
+    ///   a guided try made:     Try again, See the contact;
+    ///   a guided try missed:   Next step (nothing is gated), See the contact;
+    ///   the pass shot missed:  Back to the lesson's stroke, See the contact;
+    ///   the exercise:          Try again once made, See the contact.
+    private func judged(_ lesson: Lesson, _ step: LessonMode.Step, _ verdict: TrickVerdict) -> some View {
+        let passed = verdict.made && step == .pass
+        var sentence = verdict.line
+        if let c = model.retryComparison { sentence += " " + RetryWords.sentence(c) }
+        if passed, let trick = mode.suggestedTrick {
+            sentence += " " + String(localized: "The trick shot \(trick.title) is built on this idea.")
+        }
+        let contact = ContactButton.blurbButton(model: model, reduceMotion: reduceMotion)
+        var buttons: [BlurbButton] = []
+        if passed {
+            if mode.suggestedTrick != nil {
+                buttons.append(BlurbButton(String(localized: "Try the trick shot")) { mode.playSuggestedTrick() })
+            }
+            if lesson.id == Lessons.stop.id {
+                buttons.append(BlurbButton(String(localized: "A new distance"),
+                                           hint: String(localized: "The same pot with the cue ball further back")) {
+                    mode.startExercise()
+                })
+            }
+        } else if step == .pass {
+            buttons.append(BlurbButton(String(localized: "Back to the lesson's stroke"),
+                                       hint: String(localized: "Puts the balls back with the lesson's own aim, power and spin")) {
+                mode.backToLessonStroke()
+            })
+        } else if step == .exercise {
+            if verdict.made { buttons.append(tryAgain) }
+        } else if verdict.made {
+            buttons.append(tryAgain)
+        } else {
+            buttons.append(BlurbButton(String(localized: "Next step"),
+                                       hint: String(localized: "Goes on to the next try, with less help")) { mode.nextStep() })
+        }
+        if let contact { buttons.append(contact) }
+        let word = passed ? String(localized: "Lesson passed")
+            : (verdict.made ? String(localized: "Made it!") : String(localized: "Missed"))
+        // "Missed · Try 2 of 3": the result, then the step, as the card's header and its corner said. The Blurb draws
+        // at most two buttons, so the order above decides which survive.
+        return Blurb(title: "\(word) · \(LessonWords.stepName(step))", sentence: sentence, buttons: buttons)
+    }
+
+    private var tryAgain: BlurbButton {
+        BlurbButton(String(localized: "Try again"),
+                    hint: String(localized: "Puts the balls back where the shot started, with your last aim, power and spin")) {
+            mode.tryAgain()
+        }
+    }
+}
+
+extension PhonePrimaryAction {
+    /// The lesson's way on, the old card's prominent button (phone UI plan, Part 3 "The control strip"), in the
+    /// lesson's own words: "Watch it" before the demonstration; "Your turn" while it plays, replays and holds on its
+    /// moment (one word for the whole demonstration); after a guided try "Next step" for a make and "Try again" for a
+    /// miss; "Next lesson" once passed; "Try again" after a missed pass shot, a missed exercise or an off-script shot.
+    /// Nil while lining up (the aiming panel is the way on), after a made exercise (the card's way on there was the
+    /// list, now in the title row's More menu), outside a lesson, and while a what-if is open.
+    static func lesson(_ model: ShowpieceModel) -> PhonePrimaryAction? {
+        let mode = model.lessonMode
+        guard mode.isActive, !model.whatIf.isShowing else { return nil }
+        let tryAgain = PhonePrimaryAction(
+            title: String(localized: "Try again"),
+            hint: String(localized: "Puts the balls back where the shot started, with your last aim, power and spin")) {
+            mode.tryAgain()
+        }
+        switch mode.phase {
+        case .ready:
+            return PhonePrimaryAction(title: String(localized: "Watch it"),
+                                      hint: String(localized: "Plays a perfect example, then slows it down in the Physics Lens")) {
+                mode.watch()
+            }
+        case .watching, .replaying, .keyMoment:
+            return PhonePrimaryAction(title: String(localized: "Your turn"),
+                                      hint: String(localized: "Puts the balls back and opens the aiming controls")) {
+                mode.yourTurn()
+            }
+        case .judged(let step, let verdict):
+            switch (step, verdict.made) {
+            case (.pass, true):
+                return PhonePrimaryAction(title: String(localized: "Next lesson")) { mode.nextLesson() }
+            case (.exercise, true):
+                return nil
+            case (.pass, false), (.exercise, false):
+                return tryAgain
+            case (_, true):
+                return PhonePrimaryAction(title: String(localized: "Next step"),
+                                          hint: String(localized: "Goes on to the next try, with less help")) {
+                    mode.nextStep()
+                }
+            case (_, false):
+                return tryAgain
+            }
+        case .offScript:
+            return tryAgain
+        case .aiming, .off:
+            return nil
+        }
+    }
+}
+
 // MARK: Over the table
 
 struct LessonTableLayer: View {
@@ -468,10 +663,14 @@ struct LessonTableLayer: View {
         .onChange(of: mode.celebrations) { _, _ in
             glow = 1
             withAnimation(.easeOut(duration: reduceMotion ? 0.8 : 1.4)) { glow = 0 }
-            // The made-it sound starts with the glow's flash (the card's success haptic fires on the same change); the
+            // The made-it sound starts with the glow's flash (the success haptic fires on the same change, below); the
             // mode says whether it is the big one. SoundBoard honours the Sound option.
             SoundBoard.play(mode.celebrationMoment)
         }
+        // One success haptic per pass, with the glow and the sound. Here rather than on the card (phone UI plan): this
+        // layer is on screen in every layout and already mounted when the pass lands, while the upright phone has no
+        // card. The Vibration option is read as it fires.
+        .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
     }
 
     /// Rings on the balls the goal names (where they rest now), on the pocket they must drop in, and the circle the cue

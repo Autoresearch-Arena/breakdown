@@ -10,6 +10,14 @@ All notable changes to this project are listed here, newest first. Versions foll
 
 ## [0.7.6] - 22-November-2026 (not yet shipped)
 
+### The upright phone on Liquid Glass
+
+Author: Claude Opus 5.5 Medium (coordinator), with a foundation builder and four builders at Claude Opus 5.5 Medium. Plan: plans/22-Nov-2026-phone-ui-plan.md.
+
+- What: On a phone held upright the cards are gone. Every word is a small blurb sized to its text: the explanation sits above or below its moment with a leader line, while the Lens key, rulings, the first-minute instruction, the trick or lesson idea and the Lens tips dock at the top of the table. The title row is a clear-glass back button, the shot's name (a tap opens its idea) and a More menu holding Surface, What if, Show the maths, the lists, Watch again and End match. The bottom is one slim glass strip: a scrub rail with a speed capsule, play and replay joined, "Lens" and "Ride" as words with a two-colour underline when on, and one white button for the next step ("Watch it", "Continue", "Your turn", "Try again", "Next shot", "Your shot"). The aiming panel is two rows (tip and swing speed; put away, cue angle, shot options, Break or Shoot) and grows out of the white button. The table gets everything between the title row and the strip, and a guided Lens replay frames its moment about a third of the way down so the explanation has room under it.
+- Why: The Boss's notes on 0.7.5 and the 0.7.6 attempt: cards took the middle of the screen for a few words, the buttons were too big and their icons meant nothing, and the action was too small.
+- How: a foundation builder first (blurb, placement with unit tests, title row, strip, primary action, layout and framing), then four builders on separate files (explanation, tricks and lessons, matches and free play, aiming panel and what-if); one compile after the merge. The iPad, the Mac, the open folding phone and the sideways phone keep their panels unchanged.
+
 Author: Claude Opus 5.5 High (coordinator), with nine phone-bug finders, a hundred and thirty skeptics, eight builders, two more builders (Ride hand-over, caption figures) and twenty-two translators at Claude Opus 5.5 High. Plans: plans/22-Nov-2026-phone-bug-hunt.md, plans/22-Nov-2026-v076-phone-plan.md, plans/22-Nov-2026-ride-handover-plan.md, plans/22-Nov-2026-phone-ui-plan.md.
 
 - What: The phone bugs from the hunt are fixed; guided Lens replays come in on the moment being explained, hold each explanation for its full reading time and page long ones; the Lens drawings never shrink below a readable size; the Ride camera has a hand-over (the clock holds while the camera comes down to the struck ball and back, each step named, a small table map, the hit held with its drawing); explanations carry their figures; no sound while a ball travels and no reverb on the hits; short labels fixed in eleven languages.
