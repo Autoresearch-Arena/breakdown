@@ -6,6 +6,8 @@
 //          while the Lens tips are up (model.holdForTips), so the tips never stack on the lesson's own card.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next lesson's and Next step's arrows follow the
 //          reading direction, so they point left in Arabic.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, item 53: the rings LessonTableLayer draws on the cloth
+//          stand back while the Lens tips are up too, as the card already did, so the tips are alone on screen.)
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
@@ -421,7 +423,11 @@ struct LessonTableLayer: View {
     /// Rings on the balls the goal names (where they rest now), on the pocket they must drop in, and the circle the cue
     /// ball must finish in, lying on the cloth.
     private func drawMarkers(_ ctx: inout GraphicsContext, size: CGSize) {
-        guard let marks = mode.markers, model.aimReady || mode.phase == .keyMoment, model.layout.count == 16,
+        // Not while the Lens tips are up (model.holdForTips): like the card and the caption's ring, the rings on the
+        // cloth stand back so the tips are the one thing on screen during their held beat (item 53). The Canvas
+        // redraws every frame, so they come back the moment the tips close.
+        guard !model.holdForTips, let marks = mode.markers, model.aimReady || mode.phase == .keyMoment,
+              model.layout.count == 16,
               let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
         else { return }

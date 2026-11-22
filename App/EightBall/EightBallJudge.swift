@@ -16,6 +16,15 @@
 //          call, foul and loss types moved to the BreakdownRules module, hence its import.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the clear-path test and the first-ball ray scan moved to
 //          App/TableLines.swift, shared with the spoken table; the two private helpers here now call it. Same numbers.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, plan items 10 and 23: the bridge-touch foul judges the
+//          swan-neck rest CueRig draws, where CueRig draws it, instead of the old fixed box 0.30 m back: the cradle
+//          stands 0.30 m behind the cue ball, or slides in for a steep strike (restCradleDistance, CueRig.pose's rule),
+//          shifted sideways with the tip's side offset, and only the feet and the low brace 17 to 25 cm behind it can
+//          touch a ball; the open neck passes over one. CueRig's numbers are restated (restSetback, restClosest,
+//          restSeat) because CueRig is main-actor and the judge is not. Every authored bridge escape (The Z Shot A and
+//          B, Jump Off the Bridge A and B) was checked against both shapes across its whole window sweep (aim, side and
+//          elevation): no ball comes within 8 cm of either, so no authored verdict or rating changes. The self check
+//          now places a ball under the feet (a foul) and one under the neck (none).)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the window sweep keeps the tip inside the
 //          default physics' miscue limit instead of 20 mm.)
 // PURPOSE: Judges one Behind the 8-Ball attempt (docs/2026-11-21-behind-the-eight-ball-design.md, sections 1 and 2)
@@ -101,10 +110,37 @@ enum EightBallJudge {
     static let cueLength = 1.45
     static let cueTipRadius = 0.0065
     static let cueButtRadius = 0.0145
-    /// The bridge head (CueRig.bridgeSetback): how far behind the cue ball's centre it stands, and its footprint.
-    static let bridgeSetback = 0.30
-    static let bridgeHeadHalfWidth = 0.07
-    static let bridgeHeadHalfDepth = 0.02
+    /// The swan-neck rest, placed exactly as CueRig draws it (plan items 10 and 23). The numbers are restated here
+    /// because CueRig is main-actor and this judge runs on a background task; change them together.
+    /// How far behind the cue ball's centre the rest's cradle stands for an ordinary rest shot (CueRig.bridgeSetback).
+    static let restSetback = 0.30
+    /// The nearest the cradle comes when it slides in to meet a steeply raised cue (CueRig.restClosest).
+    static let restClosest = 0.10
+    /// Height of the cue's axis lying in the cradle, for the house cue (CueRig.restSeat(.house)): a situation always
+    /// plays the house cue (ShowpieceModel.cueChoice keeps it in authored modes).
+    static let restSeat = 0.08884
+
+    /// One part of the rest low enough to meet a ball, in the rest's own frame: from `from` to `to` metres behind the
+    /// cradle along the cue's line, and `halfWidth` either side of it.
+    struct RestPart: Sendable {
+        let halfWidth: Double
+        let from: Double
+        let to: Double
+    }
+    /// What of the rest can touch a ball, measured on the exported model (App/Models/SwanNeckRest.usdz, read back with
+    /// usdcat, 21-Nov-2026): the two front feet with their brass struts (rubber pads at x = +-5.5 cm, 17 to 18.5 cm
+    /// behind the cradle, brass from the cloth to 7.8 cm up), the low brass brace between them (down to 4 cm above the
+    /// cloth, under a ball's top at 5.7 cm), and the single back foot with its strut (to 25 cm behind, 1.4 cm wide).
+    /// Everything between the cradle and the feet is the open neck, at least 6.1 cm above the cloth: it passes over a
+    /// ball (5.7 cm tall), so a ball under it is no foul. The wooden handle behind the head is held in the player's
+    /// hand, as on a real table, and is not judged.
+    /// Each part is treated as standing full height, so a ball touches it when its centre comes within a ball's radius
+    /// of the part on the plan; for the low pads that is a few millimetres generous, the same allowance as the cue.
+    static let restParts = [
+        RestPart(halfWidth: 0.055, from: 0.170, to: 0.185),
+        RestPart(halfWidth: 0.034, from: 0.185, to: 0.215),
+        RestPart(halfWidth: 0.014, from: 0.215, to: 0.250),
+    ]
 
     /// Style: threaded is passing a ball it never touched with less than a quarter of a ball's width between them.
     static let threadGap = 0.5 * ballRadius
@@ -398,8 +434,23 @@ enum EightBallJudge {
         return Vec3(p.x, p.y, r) - f.cue * depth + f.up * s.tipUp + f.right * s.tipSide
     }
 
+    /// How far behind the cue ball's centre the rest's cradle stands for this stroke: CueRig.pose's rule restated (see
+    /// restSetback). At the usual setback the cue is raised just enough to lie in the cradle; a strike steeper than
+    /// that keeps its own angle and the rest slides in along the line until its cradle meets the cue, never nearer
+    /// than restClosest. CueRig measures the contact height as the ball's radius plus the tip height, as here.
+    static func restCradleDistance(_ s: TrickSettings) -> Double {
+        let strike = asin(min(max(s.elevation ?? 0, 0), 0.995))
+        // The seat (about 9 cm) is far above any contact (about 3 cm), so the rise is positive.
+        let rise = max(0.001, restSeat - (ballRadius + s.tipUp))
+        let cradlePitch = atan2(rise, restSetback)
+        if strike <= cradlePitch { return restSetback }
+        return max(rise / tan(strike), restClosest)
+    }
+
     /// Cue or bridge touching a ball at the strike (rule 5). The cue is a tapered rod from the tip back along its
-    /// own line; the bridge head (only in a situation that uses the bridge) stands bridgeSetback behind the cue ball.
+    /// own line. The rest (only in a situation that uses it) stands where CueRig draws it: its cradle
+    /// restCradleDistance behind the cue ball and moved sideways with the tip's side offset, its feet behind that
+    /// (restParts); the open neck between them passes over balls.
     private static func cueOrBridgeTouches(start: [Vec2], settings s: TrickSettings, bridge: Bool) -> Bool {
         let r = ballRadius
         let f = frame(s)
@@ -413,13 +464,19 @@ enum EightBallJudge {
             t += 0.004
         }
         guard bridge else { return false }
-        let head = start[0] - f.d * bridgeSetback
-        let across = f.d.perp
+        // Right as the player sees it from behind the cue, the solver's and CueRig's (d.y, -d.x): CueRig centres the
+        // cradle under the cue's line, which the side offset moves sideways.
+        let right = Vec2(f.d.y, -f.d.x)
+        let cradle = start[0] - f.d * restCradleDistance(s) + right * s.tipSide
         for b in others {
-            let rel = start[b] - head
-            let along = max(abs(rel.dot(f.d)) - bridgeHeadHalfDepth, 0)
-            let side = max(abs(rel.dot(across)) - bridgeHeadHalfWidth, 0)
-            if (along * along + side * side).squareRoot() < r { return true }
+            let rel = start[b] - cradle
+            let back = -rel.dot(f.d)          // metres behind the cradle, along the line away from the cue ball
+            let side = abs(rel.dot(right))    // metres either side of the line
+            for part in restParts {
+                let along = max(part.from - back, back - part.to, 0)
+                let across = max(side - part.halfWidth, 0)
+                if (along * along + across * across).squareRoot() < r { return true }
+            }
         }
         return false
     }
@@ -1305,11 +1362,19 @@ extension EightBallJudge {
         check("cue touches a ball behind", v8.fouls.contains(.cueOrBridgeTouchedBall))
         let raisedOver = run(table(b8), call1, TrickSettings(aim: -45, power: 1.0, tipUp: 0, tipSide: 0, elevation: 0.6))
         check("a raised cue clears it", !raisedOver.fouls.contains(.cueOrBridgeTouchedBall))
-        // ...and a ball under the bridge head in a bridge situation.
-        var b8b = balls; b8b[2] = cue + behind * bridgeSetback
-        let v8b = run(table(b8b, bridge: true), call1, TrickSettings(aim: -45, power: 1.0, tipUp: 0, tipSide: 0,
-                                                                      elevation: 0.6))
-        check("bridge touches a ball", v8b.fouls.contains(.cueOrBridgeTouchedBall))
+        // ...and in a bridge situation a ball under the rest's feet is touched, while one under its open neck, between
+        // the cradle and the feet, is passed over. The raised stroke slides the rest in (restCradleDistance), so both
+        // balls are placed from where its cradle stands for that stroke.
+        let onRest = TrickSettings(aim: -45, power: 1.0, tipUp: 0, tipSide: 0, elevation: 0.6)
+        let cradleBack = restCradleDistance(onRest)
+        let feetMiddle = (restParts[0].from + restParts[restParts.count - 1].to) / 2
+        var b8b = balls; b8b[2] = cue + behind * (cradleBack + feetMiddle)
+        let v8b = run(table(b8b, bridge: true), call1, onRest)
+        check("the rest's feet touch a ball", v8b.fouls.contains(.cueOrBridgeTouchedBall))
+        var b8c = balls; b8c[2] = cue + behind * (cradleBack + restParts[0].from / 2)
+        let v8c = run(table(b8c, bridge: true), call1, onRest)
+        check("the rest's neck passes over a ball", !v8c.fouls.contains(.cueOrBridgeTouchedBall),
+              "fouls \(v8c.fouls.map(\.rawValue))")
 
         // 9. Jumps: a shallow cue that hops the ball is a scoop; a properly raised one is legal.
         let clearTable = table([1: Vec2(2.3, 1.1), 9: Vec2(0.3, 1.1), 8: Vec2(0.3, 0.2)], cue: mid)
