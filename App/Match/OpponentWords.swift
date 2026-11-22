@@ -13,6 +13,14 @@
 //          swings its aim and draws the cue back; "Why that shot" for each level's own way of choosing (easy goes for
 //          the pot that looks easiest without planning the cue ball, and a plain hit when no pot is on is no longer
 //          called a safety); the record as wins and losses against one level at one game.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent stream: "Why that shot" for the computer at
+//          bumper pool and five-pin. A cup shot says which of its balls it aimed for and its route (straight, off a
+//          cushion, off a bumper, or both); a roll toward its cup says no cup shot was likely enough; a five-pin
+//          stroke says the points it played for on an average stroke and struck perfectly, whether its ball went off
+//          a cushion first, how far its aim could have been off and still scored, and (hard) that it kept its ball
+//          away from the pins; easy's five-pin stroke says it aimed by eye; a stroke with nothing on says it gave away
+//          as little as it could. None of them names a pocket. Counts are whole numbers (Int), so the catalog keys
+//          carry %lld; degrees arrive as finished strings (%@), as before.)
 // SRP/DRY check: Pass - checked MatchWords (the ruling, turn and call words stay there and are not repeated; pocket
 //          names are EightBallPocket.title, reused) and TrickShotViews (its window words describe a player's own
 //          settings, not a computer's choice).
@@ -98,11 +106,56 @@ enum OpponentWords {
             } else {
                 lines.append(String(localized: "No pot was on, so it simply hit the nearest ball it was allowed to hit."))
             }
+        case .cup(_, let marked, let route):
+            // Bumper pool (BumperPoolPlanner): its own ball into its own cup. Cups have no names, so none is said.
+            lines.append(marked ? String(localized: "It aimed to sink its marked ball in its cup.")
+                                : String(localized: "It aimed to sink one of its balls in its cup."))
+            lines.append(cupRoute(route))
+            if let w = plan.window {
+                lines.append(String(localized: "Its aim could have been off by \(degrees(w / 2)) degrees either way and still sunk it."))
+            }
+        case .advance:
+            lines.append(String(localized: "No cup shot was likely enough, so it rolled its ball nearer its cup."))
+        case .pins(let expected, let clean, let kick):
+            if shot.level == .easy {
+                // Easy's five-pin stroke is a ghost-ball aim with no solves (FivePinPlanner.easyPlan): no figures.
+                lines.append(String(localized: "It sent your ball at the pins by eye, without working out the points."))
+            } else {
+                // Whole points keep the key to %lld; no count sits right before a noun, so "1" reads as well as "6"
+                // with no plural forms. A stroke only gets .pins when the expected points are above zero, so the
+                // average is shown as at least 1.
+                let about = max(1, Int(expected.rounded()))
+                lines.append(String(localized: "It played for the pins. Points on an average stroke of its hand: about \(about). Struck perfectly: \(clean)."))
+            }
+            if kick {
+                lines.append(String(localized: "It sent its ball off a cushion first to reach yours."))
+            }
+            if let w = plan.window {
+                // Nothing is sunk at five-pin, so the pool line's "still sunk it" becomes "still scored".
+                lines.append(String(localized: "Its aim could have been off by \(degrees(w / 2)) degrees either way and still scored."))
+            }
+            if plan.leavesNextShot {
+                // Hard only (FivePinPlanner): its value kept its own ball away from the castle.
+                lines.append(String(localized: "It also kept its ball away from the pins, so you have less to aim at."))
+            }
+        case .concede:
+            lines.append(String(localized: "Nothing scored often enough, so it touched your ball softly to give away as little as possible."))
         }
         let n = shot.noise
         let speed = (abs(n.speedShare) * 100).formatted(.number.precision(.fractionLength(0)))
+        // The closing line is the same on every table: what the computer's hand actually did on the stroke.
         lines.append(String(localized: "On the stroke its aim drifted \(degrees(n.aimDegrees)) degrees and its speed \(speed) percent (\(shot.level.title) level)."))
         return lines
+    }
+
+    /// Bumper pool: how the cup shot reached the cup. Straight in reuses the pool line, word for word.
+    private static func cupRoute(_ route: OpponentPlan.CupRoute) -> String {
+        switch route {
+        case .straight: return String(localized: "Straight in, no cushion.")
+        case .cushion: return String(localized: "Off a cushion on the way.")
+        case .bumper: return String(localized: "Off a bumper on the way.")
+        case .cushionAndBumper: return String(localized: "Off cushions and bumpers on the way.")
+        }
     }
 
     // MARK: The record
