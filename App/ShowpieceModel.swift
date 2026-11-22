@@ -1,4 +1,10 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
+//          entries 4, 6, 13, 56 and 58: a held beat's reading time counts the stroke sentence the card adds to the
+//          strike; with the Lens on but not guided (a fixed speed, Ride on) the card shows only the latest beat's
+//          caption, so it no longer flickers through every event of a break; playbackRowTop, the playback row's own top
+//          edge for the third Lens tip; Watch the intro closes Your shot as it starts; the melt's status title is the
+//          short "The Lens". The page code of the foundation is unchanged.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 foundation, plans/22-Nov-2026-v076-phone-plan.md: the held
 //          caption can be split into pages (holdPage, setHoldPages, showHoldPage; Continue turns the page before it ends
 //          the hold), the ride plan is built on the ball that was struck, and Ride only counts as active on a shot it can
@@ -520,6 +526,12 @@ final class ShowpieceModel {
     private(set) var lensReplayStartedByPlayer = false
     /// While true, a held beat's reading time does not run out (the Lens tips are showing over it).
     var holdForTips = false
+    /// Top edge of the playback row itself (play, the scrub bar, Lens, Ride), in stage space (StageSpace.name), written
+    /// by ShowpieceView when it measures that row under the table; nil when nothing measured it (0.7.6, entry 13). The
+    /// third Lens tip points at the bar from just above this edge: the top of the whole bottom stack also holds the
+    /// explanation card's room, which stands blank while the tips show, so the bubble floated over the table. Writers
+    /// compare before writing (it is observed).
+    var playbackRowTop: Double?
     /// True when the recording on screen is the showpiece opening (the cold open, Watch the intro, the menu backdrop),
     /// so its pace plan holds the opening's beats.
     @ObservationIgnored private var showpieceOnScreen = false
@@ -602,7 +614,9 @@ final class ShowpieceModel {
         case .lead: return ""
         case .normalBreak: return String(localized: "The break")
         case .freeze: return String(localized: "Hold on")
-        case .melt: return String(localized: "Now look at what the table is doing")
+        // Short (0.7.6, entry 58): the Lens key appears beside it in the same title row halfway through the melt, and
+        // the long sentence was cut to "..." on an upright phone, harder in German and Russian.
+        case .melt: return String(localized: "The Lens", comment: "Short status title while the table turns into the Physics Lens during the intro; must fit beside the Lens key in the title row")
         case .rewind: return String(localized: "Rewind")
         case .slowReplay: return String(localized: "Slow motion")
         case .explore: return lensOn ? String(localized: "Physics Lens") : String(localized: "Table")
@@ -687,6 +701,9 @@ final class ShowpieceModel {
         menuOpen = false
         gameInProgress = true
         panelAfterBreakDue = false
+        // Your shot closes as the intro starts (0.7.6, entry 56): left open from a game, it squeezed the table over a
+        // break nothing can be aimed at, snapped shut at the slow replay and sprang open again over the intro's end card.
+        requestShotPanel(.close)
         // 0.7.4: a mode start for the highlight memory, and Watch the intro's end gets its card (noteIntroEnded).
         startHighlightRack()
         introWatchArmed = true
@@ -3675,6 +3692,25 @@ final class ShowpieceModel {
         // An option never set reads as on (its default), hence the object lookup rather than bool(forKey:).
         let explanations = UserDefaults.standard.object(forKey: GameSettings.explanationsKey) as? Bool ?? true
         holdDwell = menuBackdropPlaying ? Self.backdropDwell : (explanations ? pacePlan.beats[i].dwell : 0.6)
+        holdDwellChecked = !explanations || menuBackdropPlaying
+        checkHoldDwell(i)
+    }
+
+    /// The held beat's dwell has been compared with the words the card really shows (see checkHoldDwell).
+    @ObservationIgnored private var holdDwellChecked = true
+
+    /// The card can show more words than the beat's own caption: the strike's gains a sentence on the player's stroke
+    /// (displayedCaption). The hold then lasts the reading time of what is actually shown (0.7.6, entry 4), worked out
+    /// the plan's own way (capped on the first launch only). That sentence only shows once the Lens is up, and a Lens
+    /// replay can stop on the strike at its first frame while the Lens is still fading in, so this runs once the Lens
+    /// is up: from beginHold, or from the hold's own frames (stepGuided). Once per hold; it only ever lengthens it.
+    private func checkHoldDwell(_ i: Int) {
+        guard !holdDwellChecked, lensOn, pacePlan.beats.indices.contains(i) else { return }
+        holdDwellChecked = true
+        let beat = pacePlan.beats[i]
+        if let shown = displayedCaption(), shown.id == beat.caption.id, shown.detail != beat.caption.detail {
+            holdDwell = max(holdDwell, pacePlan.dwell(for: shown.detail))
+        }
     }
 
     /// True while the clock holds a headline beat of the opening (the cue ball handing its speed to the rack, skid
@@ -3741,6 +3777,7 @@ final class ShowpieceModel {
             guard holding, let h = heldBeat else { resetPacing(); return }
             // The Lens tips are showing over this beat: it waits for them (never behind the menu, where no tip shows).
             if holdForTips, !menuBackdropPlaying { return }
+            checkHoldDwell(h)
             holdElapsed += dt
             // The page follows the counter: each page gets its share of the reading time.
             if holdPagesApply(to: h) {
@@ -3780,7 +3817,9 @@ final class ShowpieceModel {
 
     /// The caption on screen now. Guided: the caption of the beat being held, or of the most recent beat, kept up
     /// until the next beat replaces it (none once the shot has finished). Otherwise: the latest captioned event,
-    /// shown for a short while after it that depends on the playback speed.
+    /// shown for a short while after it that depends on the playback speed; with the Lens on the ordinary table only
+    /// the beats count (0.7.6, entry 6), so a break at a fixed speed or under Ride shows a few steady cards instead of
+    /// swapping its words many times a second.
     func activeCaption() -> Caption? {
         let beats = pacePlan.beats
         if guided {
@@ -3794,6 +3833,15 @@ final class ShowpieceModel {
             return after > 0 ? beats[after - 1].caption : nil
         }
         let hold = playing || stage != .explore ? max(0.4, 3.4 * displayRate) : 3.0
+        // Lens on but not guided (a speed the player picked, Ride on, a shot struck with the Lens up): the latest beat
+        // at or before the clock, for the same while. Only on the ordinary table, so the opening's own stages (the
+        // first minute) show exactly what they did; a plan with no beats falls through to every caption.
+        if stage == .explore, (meltTarget ?? melt) > 0.5, pacePlan.hasBeats {
+            let after = pacePlan.firstBeat(atOrAfter: time + Self.beatTolerance)
+            guard after > 0 else { return nil }
+            let c = beats[after - 1].caption
+            return time - c.time <= hold ? c : nil
+        }
         // Captions are sorted by time, so the latest one at or before the clock is found by a binary search; it is the
         // closest, so if it has timed out every earlier one has too.
         var lo = 0, hi = captions.count

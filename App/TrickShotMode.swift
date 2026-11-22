@@ -1,4 +1,7 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
+//          entry 22: The Called Break's answer gets its slow guided Lens replay like every other trick (the break guard
+//          is gone from update and recordingReplaced; breaks have played at real speed with the Lens off since 0.7.1).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          items 1, 9 and 10: the player's cue angle is kept with their settings, so Your turn after Watch it keeps a
 //          raised cue; markers carries the cue ball's finish circle (Stop Dead); recordingReplaced follows a surface
@@ -171,7 +174,8 @@ final class TrickShotMode {
         if let shot = TrickShots.shot(id: id) { begin(shot) }
     }
 
-    /// Watch it: the answer, at full speed. For the break, the model's own opening plays it with the slow Lens replay.
+    /// Watch it: the answer, at full speed, riding behind the cue ball. When it has played, update() replays it slowly
+    /// in the Lens, the break too (0.7.6).
     func watch() {
         guard let shot = current else { return }
         rememberPlayerSettings()
@@ -263,13 +267,14 @@ final class TrickShotMode {
             if let a = model.currentAttempt {
                 answerPath = AnswerPath(shotID: shot.id, cue: a.ghostPaths().cue, rest: a.cueBallScratched ? nil : a.cueRest)
             }
-            // The break already replayed itself slowly in the Lens during its opening; a shot replays now, holding the
-            // moments the shot is about (TrickSignature: the jump's take-off and landing, the massé's bend, ...). The
-            // signature is set before the replay, so the pace plan the replay reads already holds it.
-            if !shot.isBreak {
-                model.setPaceSignature(TrickSignature.events(forTrick: shot.id, in: model.timeline, captions: model.captions))
-                model.replay(withLens: true)
-            }
+            // The answer replays now, holding the moments the shot is about (TrickSignature: the jump's take-off and
+            // landing, the massé's bend, the break's push into the rack and the called ball dropping, ...). The
+            // signature is set before the replay, so the pace plan the replay reads already holds it. The break too
+            // (0.7.6, entry 22): it used to be skipped on the belief that a break replays itself slowly in its opening,
+            // but since 0.7.1 a struck break plays once at real speed with the Lens off, so The Called Break was the one
+            // trick whose Watch it never explained anything.
+            model.setPaceSignature(TrickSignature.events(forTrick: shot.id, in: model.timeline, captions: model.captions))
+            model.replay(withLens: true)
         case .ready, .aiming, .judged, .offScript:
             // While explaining, a shot of the player's is never judged: it may be a retry of the answer itself.
             guard let attempt = model.currentAttempt, model.timelineVersion != judgedVersion,
@@ -335,7 +340,8 @@ final class TrickShotMode {
         guard let shot = current else { return }
         RecordingFollow.move(&solutionVersion, old: old, new: new)
         RecordingFollow.move(&judgedVersion, old: old, new: new)
-        guard phase == .explaining, solutionVersion == new, !shot.isBreak else { return }
+        // The break is explained again like any other answer (0.7.6, entry 22).
+        guard phase == .explaining, solutionVersion == new else { return }
         // setSurface calls this before it swaps in the re-solved attempt, so the attempt is resolved here from the new
         // recording (the one on screen now) rather than read from model.currentAttempt, which still holds the old one.
         if let a = RecordingFollow.attemptOnScreen(model) {
