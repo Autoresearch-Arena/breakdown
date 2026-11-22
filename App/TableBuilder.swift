@@ -16,10 +16,22 @@
 //          normal map on the bed and cushions (bedMaterial, when the picture is ready); a crisper ball coat and the ball
 //          material shared with the small-on-screen pictures (ballMaterial); the reflection picture redrawn from the
 //          room as it now is. makeTable takes the scene's light source so models that load later still reflect it.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 33 and 56. Pockets: the other developer's hero corner
+//          pocket and a side pocket made from it (Tools/blender/make_pockets.py) ARE the pocket now, not a cup set
+//          inside the old one: the drawn hole is the solver's own (a corner's is its 0.065 m capture circle round the
+//          cushion corner, exactly as the hero was modelled; a side's holds the throat between its jaws), the cloth runs
+//          on as a shelf under the cushions and into the jaws' throat up to the rail's cut, the rail is cut round the
+//          liner's lip, and the satin-metal band that lay on the cloth in front of every mouth is gone. The code-built
+//          wall now only faces the rail's cut where the liner does not reach (ending where the liner begins); the old
+//          deep wall and black floor are built only as the stand-in while the models load and are switched off when
+//          they arrive. Bar billiards' and bumper pool's bed holes get their metal lining rings. Reflections: the lamp's
+//          window in the reflection picture is laid along the table by working out each pixel's world direction from
+//          the documented cube layout (see lampEnvironmentImage), so the window and the bulbs share one mapping.)
 // PURPOSE: Builds the STATIC warm table and everything that sits on it, as one group that fades out when the Lens
-//          melts in: cloth that stops exactly at the cushion noses, cushions with a sloped rounded nose and jaw-cut
-//          ends, a walnut rail frame with a rounded edge and an apron, real pocket wells (a wall that drops below the
-//          cloth, a black floor and a satin-metal rim), pearl diamond sights, head and foot spots, legs, and the room
+//          melts in: the cloth bed (running under the cushions to the rail, with the pockets' and bed holes' holes cut
+//          through it), cushions with a sloped rounded nose and jaw-cut ends, a walnut rail frame with a rounded edge
+//          and an apron, the rail's cut round each pocket (the pocket itself is a model, see TableRoom), the bed holes'
+//          walls and lining rings, pearl diamond sights, head and foot spots, legs, and the room
 //          floor painted with its own pool of light. Also builds the sixteen balls (with their Lens spin markers), the
 //          overhead spot lamp (the key light, with shadows) plus a cool fill, and the generated lamp-and-room picture
 //          that lights and reflects off the glossy parts. It makes entities and hands them back; it never runs per
@@ -37,6 +49,7 @@
 //          mouths follow the physics capture radius so a ball dropping near the edge is never clipped by the cloth.
 // SRP/DRY check: Pass - static scene construction only; coordinates come from TableFrame, colours from rgba/Theme.
 import BreakdownLensModel
+import BreakdownPhysics
 import BreakdownTimeline
 import CoreGraphics
 import Foundation
@@ -91,21 +104,23 @@ enum TableBuilder {
     /// The circle each edge pocket's hole is drawn with, in plan (world x, world z), one per TableSpec pocket.
     /// Everything about the pockets comes from the solver's table description (pocket model version 2): the hole
     /// centres, the capture radii and the jaws. Each hole is drawn at least as big as the capture radius (so a ball
-    /// that drops is never cut by cloth) and big enough to fill the throat between the two jaws right back to the
-    /// rail, so there is no gap between a jaw face and the well. Used for the cloth, the rail opening, the wells, the
-    /// moulded liners, and by TableScene to drop a pocketed ball into the middle of its hole.
+    /// that drops is never cut by cloth) and big enough to hold the throat between the two jaws right back to the
+    /// cushion's back, so the pocket models (TableRoom) close everything round it. A corner's hole is exactly the
+    /// solver's capture circle round the cushion corner: the hero corner pocket was modelled that way, and that circle
+    /// already holds the corner's throat. A side's hole sits a little behind the solver's centre, out toward the rail,
+    /// so it bites less into the playing surface, and is grown to hold its throat (the side jaws lean back further
+    /// than the capture circle reaches); SidePocket.usdz is built round the same circle (make_pockets.py). Used for
+    /// the cloth, the rail opening, the pocket models, and by TableScene to drop a pocketed ball into its hole.
     static func pocketCuts(frame: TableFrame, table: TableSpec) -> [Outline.Cut] {
         let b = frame.width * 0.5
         let c = cushionDepth
         func plan(_ v: Vec2) -> SIMD2<Float> { let w = frame.world(v); return SIMD2(w.x, w.z) }
         func planDir(_ v: Vec2) -> SIMD2<Float> { let d = frame.direction(v); return simd_normalize(SIMD2(d.x, d.z)) }
         return table.pockets.enumerated().map { k, hole in
-            // The drawn hole sits a little behind the solver's hole centre, out toward the rail, so it bites less into
-            // the playing surface; it stays inside the cloth outline (whose tuck is 14 mm), which the outline code needs,
-            // and it is grown below to still contain the whole capture circle.
             let solverCentre = plan(hole)
-            let shift: Float = 0.011
-            let out = SIMD2<Float>(k < 4 ? (solverCentre.x < 0 ? -1 : 1) : 0, solverCentre.y < 0 ? -1 : 1)
+            let corner = isCornerPocket(k)
+            let shift: Float = corner ? 0 : 0.011
+            let out = SIMD2<Float>(corner ? (solverCentre.x < 0 ? -1 : 1) : 0, solverCentre.y < 0 ? -1 : 1)
             let centre = solverCentre + out * shift
             var reach = Float(table.pocketCaptureRadius[k]) + simd_length(out * shift)
             var backs: [SIMD2<Float>] = []
@@ -116,10 +131,25 @@ enum TableBuilder {
                 let outward = onLong ? SIMD2<Float>(0, start.y < 0 ? -1 : 1) : SIMD2<Float>(start.x < 0 ? -1 : 1, 0)
                 backs.append(start + dir * (c / max(0.1, simd_dot(dir, outward))))
             }
-            // For a corner, the corner of the cushion zone between the two jaw backs must be inside the hole too.
-            if k < 4, backs.count == 2 { backs.append(SIMD2(centre.x + (centre.x < 0 ? -c : c), centre.y + (centre.y < 0 ? -c : c))) }
             for p in backs { reach = max(reach, simd_length(p - centre) + 0.003) }
+            // For a corner, the corner of the cushion zone between the two jaw backs must be inside the hole too (on
+            // the standard table it is, 64 mm from the hole's centre); the cloth shelf covers the rest of the throat.
+            if corner, backs.count == 2 {
+                let zoneCorner = SIMD2(centre.x + (centre.x < 0 ? -c : c), centre.y + (centre.y < 0 ? -c : c))
+                reach = max(reach, simd_length(zoneCorner - centre))
+            }
             return Outline.Cut(center: centre, radius: reach)
+        }
+    }
+
+    /// True for the four corner pockets: TableSpec lists the corners first, then the two sides (PoolParameters).
+    nonisolated static func isCornerPocket(_ k: Int) -> Bool { k < 4 }
+
+    /// The circle the rail is cut away round each pocket: the pocket model's lip, scaled as the model is.
+    static func railCuts(_ cuts: [Outline.Cut]) -> [Outline.Cut] {
+        cuts.enumerated().map { k, cut in
+            let model = pocketModel(k)
+            return Outline.Cut(center: cut.center, radius: cut.radius * model.railRadius / model.holeRadius)
         }
     }
 
@@ -134,12 +164,8 @@ enum TableBuilder {
     ]
     /// Which section points get smooth (shared) normals: all of the nose and top, not the corners at the back.
     private static let cushionSmooth = [false, true, true, true, true, true, true, true, false, false]
-    /// The rising part of the section, from the nose (d = 0) back to the rail: what a well wall must meet.
-    private static var cushionTopProfile: [(d: Float, y: Float)] {
-        cushionSection.filter { $0.y >= 0.0325 }.sorted { $0.d < $1.d }
-    }
 
-    /// Felt, cushions, rails, pocket wells, diamond sights, spots, legs and the room (floor, walls, lamp, props), all
+    /// Felt, cushions, rails, pocket cuts and models, bed holes, diamond sights, spots, legs and the room (floor, walls, lamp, props), all
     /// under one group so the whole warm table and the room it stands in fade out as the Lens melts in. Nothing here
     /// may be added outside the group, or it would stay visible in the Lens.
     /// - surface: the playing surface the bed is drawn in (see PlaySurfaceLook). The bed is the entity named
@@ -171,25 +197,27 @@ enum TableBuilder {
         wellMat.faceCulling = .none
         var pearlMat = pbr(rgba(0.93, 0.90, 0.82), rough: 0.22)
         pearlMat.clearcoat = .init(floatLiteral: 1.0)
+        // Satin metal: the bed holes' lining rings.
         let plateMat = pbr(rgba(0.55, 0.52, 0.48), rough: 0.32, metal: 1.0)
         let spotMat = pbr(rgba(0.55, 0.68, 0.60), rough: 0.9)
         let clothUV: (SIMD3<Float>) -> SIMD2<Float> = { p in SIMD2(p.x / L + 0.5, p.z / W + 0.5) }
 
-        // 1. Cloth: exactly the playing surface (plus the strip that tucks under the cushion nose), with a round
-        //    hole bitten out at each pocket. Nothing overhangs the rails.
-        let tuck: Float = 0.014
+        // 1. Cloth: the bed runs on under the cushions as far as the rail, and at each pocket out to the rail's cut, so
+        //    the jaws' throat and the nook behind each cushion's end have a cloth shelf under them as a real table
+        //    does; each pocket's hole (the solver's, see pocketCuts) and each bed hole is cut right through it. The
+        //    holes are joined to the outline by bridges so one outline still describes the whole cloth.
+        //    The rail's opening (the cushion zone plus each pocket's rail cut) is the cloth's outer edge.
+        let railCut = railCuts(cuts)
+        let opening = Outline.rectWithCuts(hx: a + c, hz: b + c, cuts: railCut, arcsOutside: true)
         var felt = MeshBuilder()
-        var feltOutline = Outline.rectWithCuts(hx: a + tuck, hz: b + tuck, cuts: cuts, arcsOutside: false).points
-        // Holes in the bed (another table's scoring holes or cups): round holes cut right through the cloth, each joined
-        // to the outline by a bridge so one outline still describes the whole cloth. The same circles shape the wells.
+        // Holes in the bed (another table's scoring holes or cups). The same circles shape the wells and the rings.
         let bedHoleRims: [(center: SIMD2<Float>, points: [SIMD2<Float>])] = table.bedHoles.map { hole in
             let centre = plan(hole.center)
-            // Started a little off angle zero, so a hole's rightmost point never lines up exactly with another's.
-            let pts = Array(Outline.arc(center: centre, radius: Float(hole.radius), from: 0.0137, to: 0.0137 + 2 * .pi,
-                                        stepDegrees: 15).dropLast())
-            return (centre, pts)
+            return (centre, Outline.circle(center: centre, radius: Float(hole.radius), stepDegrees: 15))
         }
-        if !bedHoleRims.isEmpty { feltOutline = Outline.withHoles(outer: feltOutline, holes: bedHoleRims.map(\.points)) }
+        // Pocket holes at 12 degrees a step: the chord falls at most 0.4 mm inside the round slate edge below it.
+        let holes = cuts.map { Outline.circle(center: $0.center, radius: $0.radius, stepDegrees: 12) } + bedHoleRims.map(\.points)
+        let feltOutline = holes.isEmpty ? opening.points : Outline.withHoles(outer: opening.points, holes: holes)
         felt.addFlat(feltOutline, y: 0, normal: SIMD3(0, 1, 0)) { p, _ in SIMD2(p.x / L + 0.5, p.y / W + 0.5) }
         if let e = part(felt, bedMat, "felt") { tableGroup.addChild(e) }
 
@@ -285,8 +313,8 @@ enum TableBuilder {
             return pts
         }
         let topOuter = roundedRect(hx: A - f, hz: B - f, radius: outerR - f)
-        // The inner opening: the cushion zone's rectangle with each pocket circle bulging out of it.
-        let opening = Outline.rectWithCuts(hx: a + c, hz: b + c, cuts: cuts, arcsOutside: true)
+        // The inner opening (worked out with the cloth above): the cushion zone's rectangle with each pocket's rail cut
+        // bulging out of it.
         let lipPts = opening.points, lipArc = opening.arcEdge
         // Bridge for the ring: add the point (a + c, 0) on the short end of the opening, and join it to (A - f, 0).
         var holePts = opening.points
@@ -319,69 +347,95 @@ enum TableBuilder {
                          uvScale: 0.9, skip: lipArc)
         if let e = part(frameTop, woodMat, "rails") { tableGroup.addChild(e) }
 
-        // 4. Pocket wells: a wall that drops below the cloth, its top following whatever surrounds it, a black floor,
-        //    and a full metal rim all the way round the mouth.
-        /// Height of the table's top surface at a plan point: cloth level inside the playing area, the cushion's own
-        /// profile beside it (so a well wall meets the cushion exactly), rail height under the frame.
-        let topProfile = cushionTopProfile
-        func surfaceHeight(_ p: SIMD2<Float>) -> Float {
-            let ex = abs(p.x) - a, ez = abs(p.y) - b
-            func cushionTop(_ d: Float) -> Float {
-                // Rising part of the section from the nose (d = 0) back to the rail, read from the one section.
-                let pts = topProfile
-                for k in 0..<(pts.count - 1) where d <= pts[k + 1].d {
-                    let t = (d - pts[k].d) / (pts[k + 1].d - pts[k].d)
-                    return pts[k].y + (pts[k + 1].y - pts[k].y) * max(0, t)
-                }
-                return 0.040
-            }
-            if ex < 0 && ez < 0 { return 0 }
-            if ez < c && ex < 0 { return cushionTop(ez) }
-            if ex < c && ez < 0 { return cushionTop(ex) }
-            return railTop
-        }
-        var wells = MeshBuilder()
-        var plates = MeshBuilder()
-        for cut in cuts {
+        // 4. Pockets and bed holes.
+        //    Each pocket is its model (TableRoom.addPocketLiners): the dark liner round the back from the cloth up to a
+        //    lip flush with the rail, the slate's cut edge and the funnel below the cloth. Built here:
+        //      - the rail's cut face where the liner does not reach: between the end of the liner and the back of the
+        //        cushion, from the rail top down to the cloth shelf (in wood: it is the rail's own cut);
+        //      - a stand-in while each model loads (the rail's cut face over the liner's part, and a wall down from the
+        //        hole's edge to a dark floor), switched off by addPocketLiners once the model is in place. It is never
+        //        seen once the models have loaded; it only stops a gap to nothing in the first moments.
+        //    Bed holes keep their wall and dark floor, and gain a lining ring: a thin satin-metal lip on the cloth and a
+        //    metal lining down the top of the hole, as a bar-billiards hole and a bumper-pool cup have.
+        var railWalls = MeshBuilder()
+        var standIns = [MeshBuilder(), MeshBuilder()]      // corner pockets, side pockets
+        for (k, cut) in cuts.enumerated() {
+            let model = pocketModel(k)
+            let which = isCornerPocket(k) ? 0 : 1
+            // The stand-in well: a wall straight down from the hole's edge, and a dark floor.
             let n = 72
-            var pts: [SIMD2<Float>] = [], inward: [SIMD2<Float>] = [], tops: [Float] = []
+            var pts: [SIMD2<Float>] = [], inward: [SIMD2<Float>] = []
             for i in 0..<n {
                 let t = Float(i) / Float(n) * 2 * .pi
                 let dir = SIMD2(cos(t), sin(t))
-                let p = cut.center + dir * cut.radius
-                pts.append(p); inward.append(-dir)
-                tops.append(surfaceHeight(p))
+                pts.append(cut.center + dir * cut.radius); inward.append(-dir)
             }
-            wells.addWall(pts, outward: inward, top: tops, bottom: -pocketDepth, closed: true, uvScale: 1)
-            // Satin-metal rim: a thin band right round the mouth, lying on whatever surface is there (cloth, cushion or
-            // rail) a hair above it. It is complete (the old rim existed only where the mouth cut the wood).
-            let rimWidth: Float = 0.013
-            for i in 0..<n {
-                let j = (i + 1) % n
-                let ri = -inward[i], rj = -inward[j]
-                let o0 = pts[i] + ri * rimWidth, o1 = pts[j] + rj * rimWidth
-                let lift: Float = 0.0012
-                let v0 = plates.vertex(SIMD3(pts[i].x, tops[i] + lift, pts[i].y), SIMD3(0, 1, 0), .zero)
-                let v1 = plates.vertex(SIMD3(pts[j].x, tops[j] + lift, pts[j].y), SIMD3(0, 1, 0), .zero)
-                let v2 = plates.vertex(SIMD3(o1.x, surfaceHeight(o1) + lift, o1.y), SIMD3(0, 1, 0), .zero)
-                let v3 = plates.vertex(SIMD3(o0.x, surfaceHeight(o0) + lift, o0.y), SIMD3(0, 1, 0), .zero)
-                plates.quad(v0, v1, v2, v3)
+            standIns[which].addWall(pts, outward: inward, top: pts.map { _ in 0 }, bottom: -pocketDepth, closed: true, uvScale: 1)
+            let disc = Outline.circle(center: cut.center, radius: cut.radius * 0.98)
+            standIns[which].addFlat(disc, y: -pocketDepth, normal: SIMD3(0, 1, 0)) { _, _ in SIMD2(0, 1) }
+            // The rail's cut face: round the rail cut, only where it lies outside the cushion zone (inside it the cut
+            // is open cushion zone, not rail), split at the liner's end.
+            let rail = railCut[k]
+            let back = pocketBack(cut)
+            let m = 120
+            func point(_ i: Int) -> SIMD2<Float> {
+                let t = Float(i) / Float(m) * 2 * .pi
+                return rail.center + SIMD2(cos(t), sin(t)) * rail.radius
             }
-            // Black floor of the well, a little smaller so it never pokes through the wall.
-            let disc = Outline.arc(center: cut.center, radius: cut.radius * 0.98, from: 0, to: 2 * .pi, stepDegrees: 10).dropLast()
-            wells.addFlat(Array(disc), y: -pocketDepth, normal: SIMD3(0, 1, 0)) { _, _ in SIMD2(0, 1) }
+            func inRail(_ p: SIMD2<Float>) -> Bool { abs(p.x) > a + c - 1e-4 || abs(p.y) > b + c - 1e-4 }
+            for i in 0..<m {
+                let p0 = point(i), p1 = point(i + 1)
+                guard inRail(p0), inRail(p1) else { continue }
+                let mid = simd_normalize((p0 + p1) * 0.5 - rail.center)
+                let fromBack = acos(max(-1, min(1, simd_dot(mid, back))))
+                let face = [simd_normalize(rail.center - p0), simd_normalize(rail.center - p1)]
+                // One degree of overlap under the liner's end, so no slit shows between them.
+                if fromBack >= model.linerHalfArc - .pi / 180 {
+                    railWalls.addWall([p0, p1], outward: face, top: [railTop, railTop], bottom: 0, closed: false, uvScale: 0.9)
+                } else {
+                    standIns[which].addWall([p0, p1], outward: face, top: [railTop, railTop], bottom: 0, closed: false, uvScale: 0.9)
+                }
+            }
         }
-        // Bed holes: a wall straight down from the cloth round the hole's own outline, and a black floor.
+        if let e = part(railWalls, woodMat, "pocket-rail-cuts") { tableGroup.addChild(e) }
+        var standInEntities: [Entity?] = []
+        for (i, builder) in standIns.enumerated() {
+            let e = part(builder, wellMat, i == 0 ? "corner-pocket-stand-in" : "side-pocket-stand-in")
+            if let e { tableGroup.addChild(e) }
+            standInEntities.append(e)
+        }
+        // Bed holes: a wall straight down from the cloth round the hole's own outline, a dark floor, and the lining.
+        var wells = MeshBuilder()
+        var rings = MeshBuilder()
         for rim in bedHoleRims {
             let inward = rim.points.map { simd_normalize(rim.center - $0) }
             wells.addWall(rim.points, outward: inward, top: rim.points.map { _ in 0 }, bottom: -pocketDepth, closed: true, uvScale: 1)
             wells.addFlat(rim.points.map { rim.center + ($0 - rim.center) * 0.98 }, y: -pocketDepth, normal: SIMD3(0, 1, 0)) { _, _ in SIMD2(0, 1) }
+            // The lining ring. Its lip is 3 mm wide on the cloth (the rolled edge of a pressed-metal hole lining, and
+            // about the narrowest band that still shows from the normal view of the small table), a hair above the
+            // cloth; the lining runs 20 mm down inside the hole (the depth of such a lining's collar), 0.5 mm inside
+            // the hole's wall so the two never fight.
+            let lip: Float = 0.003, collar: Float = 0.020
+            let r = simd_length(rim.points[0] - rim.center)
+            let count = rim.points.count
+            for i in 0..<count {
+                let j = (i + 1) % count
+                let di = simd_normalize(rim.points[i] - rim.center), dj = simd_normalize(rim.points[j] - rim.center)
+                let up = SIMD3<Float>(0, 1, 0)
+                let o0 = rim.center + di * (r + lip), o1 = rim.center + dj * (r + lip)
+                let v0 = rings.vertex(SIMD3(rim.points[i].x, 0.0006, rim.points[i].y), up, .zero)
+                let v1 = rings.vertex(SIMD3(rim.points[j].x, 0.0006, rim.points[j].y), up, .zero)
+                let v2 = rings.vertex(SIMD3(o1.x, 0.0006, o1.y), up, .zero)
+                let v3 = rings.vertex(SIMD3(o0.x, 0.0006, o0.y), up, .zero)
+                rings.quad(v0, v1, v2, v3)
+            }
+            let lining = rim.points.map { rim.center + ($0 - rim.center) * ((r - 0.0005) / r) }
+            rings.addWall(lining, outward: inward, top: lining.map { _ in 0.0006 }, bottom: -collar, closed: true, uvScale: 1)
         }
-        if let e = part(wells, wellMat, "wells") { tableGroup.addChild(e) }
-        if let e = part(plates, plateMat, "pocket-plates") { tableGroup.addChild(e) }
-        // The moulded cup and rolled lip in each pocket (TableRoom): the wall and floor above stay as the fallback while
-        // the model loads, and the cup sits just inside them, so a dropping ball goes behind the lip into the cup.
-        addPocketLiners(cuts: cuts, to: tableGroup, lightSource: lightSource)
+        if let e = part(wells, wellMat, "bed-hole-wells") { tableGroup.addChild(e) }
+        if let e = part(rings, plateMat, "bed-hole-rings") { tableGroup.addChild(e) }
+        // The pocket models (TableRoom), each switching its stand-in off once it is in place.
+        addPocketLiners(cuts: cuts, to: tableGroup, standIns: standInEntities, lightSource: lightSource)
 
         // 5. Diamond sights on the rail tops: three between each corner pocket and side pocket, three on each end.
         var diamonds = MeshBuilder()
@@ -545,8 +599,25 @@ enum TableBuilder {
     ///     away), and the dark wainscot below it; on one side the cue rack's board and the pale line of its cues.
     ///   - Just below the horizon the table's own wooden rails, and below them the dim green of the cloth, which
     ///     tints the underside of every ball as real cloth does.
-    /// The shade's long side is drawn along the picture's x = 0 and x = half (taken to be the world's x axis, the
-    /// table's length); if the system maps them elsewhere, the window simply turns on the balls.
+    /// Which way the picture wraps round the room. Each pixel is turned into the world direction it stands for, once,
+    /// and everything (the window, the bulbs, the cue rack) is drawn from that direction, so they can never disagree.
+    /// The mapping: RealityKit documents its cube layout (TextureResource.init(cubeFromImage:)) as the faces +X, -Z,
+    /// -X, +Z left to right across the middle row with +Y above; an equirectangular picture is taken to wrap the
+    /// horizon in that same order with its centre column on -Z, the way RealityKit's own camera looks by default. So
+    /// the picture's left edge looks along +Z, a quarter of the way across along +X, the centre along -Z and three
+    /// quarters along -X. That is a stated reading of the documented layout, not something measured on screen: if a
+    /// look on a device shows the lamp's window lying across the table, set `reflectionTurn` to a quarter turn
+    /// (pi / 2) and nothing else needs to change.
+    nonisolated static let reflectionTurn = 0.0
+
+    /// The world direction (x, y, z; y up) a pixel of the reflection picture stands for. `column` and `row` run from 0
+    /// to 1 across and down the picture.
+    nonisolated static func reflectionDirection(column u: Double, row v: Double) -> (x: Double, y: Double, z: Double) {
+        let elevation = (0.5 - v) * Double.pi
+        let azimuth = u * 2 * Double.pi + reflectionTurn
+        return (cos(elevation) * sin(azimuth), sin(elevation), cos(elevation) * cos(azimuth))
+    }
+
     nonisolated static func lampEnvironmentImage() -> CGImage? {
         let w = 1024, h = 512
         var px = [UInt8](repeating: 255, count: w * h * 4)
@@ -563,12 +634,19 @@ enum TableBuilder {
         let shadeHalfLength = 0.65, shadeHalfWidth = 0.18
         let shadeUp = Double(shadeBottom) - 0.028
         let bulbUp = shadeUp + 0.105
+        // The cue rack's direction on the horizon, from the middle of the standard table (TableRoom.addProps hangs it
+        // on the far wall, at z = -room half width, a third of the way to the left end).
+        let spec = PoolParameters()
+        let room = roomHalfExtent(tableHalf: floorHalfExtent(length: Float(spec.tableLength), width: Float(spec.tableWidth)))
+        let rackAzimuth = atan2(-0.35 * Double(room.x), -Double(room.y))
         for row in 0..<h {
             // Row 0 is the top of the picture: straight up.
             let elev = 90 - (Double(row) + 0.5) / Double(h) * 180
-            let elevRad = elev * Double.pi / 180
             for col in 0..<w {
-                let lon = (Double(col) + 0.5) / Double(w) * 2 * Double.pi
+                let d = reflectionDirection(column: (Double(col) + 0.5) / Double(w), row: (Double(row) + 0.5) / Double(h))
+                // The direction's way across the floor plan (unit), for the window and the rack.
+                let flat = max(1e-9, (d.x * d.x + d.z * d.z).squareRoot())
+                let ax = d.x / flat, az = d.z / flat
                 var c: (Double, Double, Double)
                 // Below the horizon: cloth, then the table's rails right at the horizon, then the walls.
                 if elev < -3 { c = cloth }
@@ -581,25 +659,25 @@ enum TableBuilder {
                     c = (plaster.0 * spill, plaster.1 * spill, plaster.2 * spill)
                 } else { c = mix(plaster, ceiling, smooth(35, 42, elev)) }
                 // The cue rack on one wall: a dark board with pale cues standing in it.
-                let rackLon = 1.5 * Double.pi
-                let dl = atan2(sin(lon - rackLon), cos(lon - rackLon))
+                let azimuth = atan2(ax, az)
+                let dl = atan2(sin(azimuth - rackAzimuth), cos(azimuth - rackAzimuth))
                 if abs(dl) < 0.09, elev > -1, elev < 22 {
                     c = mix(c, (0.035, 0.020, 0.012), 0.8)
                     if elev > 2, elev < 20, Int((dl + 0.09) / 0.036) % 2 == 0 { c = mix(c, (0.30, 0.22, 0.14), 0.5) }
                 }
-                // Overhead: the shade's opening as seen from below. Along direction `lon` the opening's edge is
-                // `reach` metres out, so the window starts at elevation atan(shadeUp / reach).
-                let reach = min(shadeHalfLength / max(1e-6, abs(cos(lon))), shadeHalfWidth / max(1e-6, abs(sin(lon))))
+                // Overhead: the shade's opening as seen from below, its length along world x (the table's length).
+                // Along this direction's way across the plan the opening's edge is `reach` metres out, so the window
+                // starts at elevation atan(shadeUp / reach).
+                let reach = min(shadeHalfLength / max(1e-6, abs(ax)), shadeHalfWidth / max(1e-6, abs(az)))
                 let edge = atan(shadeUp / reach) * 180 / Double.pi
                 if elev > edge - 4 {
                     // A dark enamel rim, then the warm glowing reflector inside it.
                     c = mix(c, enamel, smooth(edge - 4, edge - 2.5, elev))
                     c = mix(c, glow, smooth(edge - 1, edge + 1.5, elev))
                     // The three bulbs: 0.40 m either side of the middle and in the middle, 0.105 m up inside the shade.
-                    let x = cos(elevRad) * cos(lon), y = sin(elevRad), z = cos(elevRad) * sin(lon)
                     for bx in [-0.40, 0.0, 0.40] {
                         let len = (bx * bx + bulbUp * bulbUp).squareRoot()
-                        let cosAngle = (x * bx + y * bulbUp + z * 0) / len
+                        let cosAngle = (d.x * bx + d.y * bulbUp) / len
                         let angle = acos(max(-1, min(1, cosAngle))) * 180 / Double.pi
                         // About four degrees across with a soft edge: small enough for a crisp highlight on a ball.
                         c = mix(c, bulb, 1 - smooth(1.4, 2.4, angle))

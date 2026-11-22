@@ -132,10 +132,11 @@ final class TableDetail {
         }
         guard !wanted.isEmpty else { return }
         for look in wanted { Self.drawing.insert(Self.key(look)) }
+        let toDraw = wanted
         Task { [weak self] in
             // Drawing is pure CoreGraphics on a background thread; the textures are made back on the main actor.
             let drawn = await Task.detached(priority: .userInitiated) {
-                wanted.map { look in (look, BallTextures.ballImage(look: look), BallTextures.ballImage(look: look, compact: true)) }
+                toDraw.map { look in (look, BallTextures.ballImage(look: look), BallTextures.ballImage(look: look, compact: true)) }
             }.value
             for (look, standard, compact) in drawn {
                 let key = Self.key(look)

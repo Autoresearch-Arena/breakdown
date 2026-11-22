@@ -12,6 +12,8 @@
 //          (clothDetailNormalImage); the floor now reaches the room's walls instead of fading to nothing; soft round
 //          shadow picture (softSpotImage) for the balls' contact shadows, the cue's shadow and the strips where the
 //          cushions meet the bed).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 56: wallSpillImage, the room's plaster with the lamp's
+//          light painted on, so the far wall in the low Ride view reads as a dim wall instead of a void.)
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that runs to the room's walls, the
 //          pocket-wall gradient that makes a well read as deep, and the other playing beds of the Surface menu.
@@ -488,6 +490,38 @@ enum SurfaceTextures {
                 let nearWall = 0.55 + 0.45 * k * k * (3 - 2 * k)
                 let v = (0.20 * pool * shade + ambient * shade) * tone * nearWall
                 r.set(x, y, v * 1.00 + 0.004, v * 0.74 + 0.004, v * 0.52 + 0.005)
+            }
+        }
+        return r.image()
+    }
+
+    // MARK: Walls
+
+    /// The plaster of one wall above the waist rail, with the lamp's light falling on it, for an unlit material
+    /// (TableRoom), `length` metres long; its bottom edge is the waist rail. The light: a bounce level everywhere (as the floor's: about a sixth of the lit pool), plus the lamp's
+    /// spill, warm, strongest in the middle of the wall and falling off along it over the same 2.6 m as the floor's
+    /// pool of light (roomFloorImage), so wall and floor meet in one pool. It also fades a little toward the ceiling
+    /// (to seven tenths at the top): kept gentle on purpose, so the picture reads as plain plaster whichever way up the
+    /// system lays it on the plane. Peak brightness is about a third of the lit cloth's, so the table stays the
+    /// brightest thing in the room. Dark green-grey plaster, as the reflection picture's walls.
+    static func wallSpillImage(length: Float, width w: Int = 256, height h: Int = 128) -> CGImage? {
+        var r = Raster(w, h)
+        let plaster: (Float, Float, Float) = (0.075, 0.085, 0.078)
+        let lamp: (Float, Float, Float) = (1.0, 0.88, 0.72)
+        for y in 0..<h {
+            // Row 0 is the top of the wall: up is 1 at the ceiling, 0 at the rail.
+            let up = 1 - (Float(y) + 0.5) / Float(h)
+            let k = up * up * (3 - 2 * up)
+            let vertical = 1 - 0.3 * k
+            for x in 0..<w {
+                let along = ((Float(x) + 0.5) / Float(w) - 0.5) * length
+                let spill = exp(-pow(along / 2.6, 2)) * vertical
+                // A faint mottle so a large flat wall does not read as a computer gradient.
+                let mottle = 1 + (fbm(Float(x) / 18, Float(y) / 18, px: 15, py: 8, octaves: 3, seed: 61) - 0.5) * 0.12
+                let bounce: Float = 0.45, light: Float = 1.1 * spill
+                r.set(x, y, plaster.0 * (bounce + light * lamp.0) * mottle,
+                      plaster.1 * (bounce + light * lamp.1) * mottle,
+                      plaster.2 * (bounce + light * lamp.2) * mottle)
             }
         }
         return r.image()

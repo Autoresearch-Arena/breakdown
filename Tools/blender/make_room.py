@@ -1,5 +1,6 @@
 # Author: Claude Opus 5.5 High
 # Date: 21-November-2026
+# Edited: Claude Opus 5.5 High, 21-November-2026 (comment only: make_pocket.py became make_pockets.py).
 # PURPOSE: Generates the room's models for the Breakdown app: the long lamp shade that hangs over the table, a
 #          wall-mounted cue rack, a bar stool and a cube of chalk, as four files in App/Models (LampShade.usdz,
 #          CueRack.usdz, Stool.usdz, Chalk.usdz). Run headless:
@@ -26,7 +27,7 @@
 #              ChalkWrap  - the paper-wrapped cube.  ChalkFace - the worn chalk face on top.
 #          Geometry only: no materials, cameras or lights are exported; Swift assigns materials by part name.
 #          After export each file is read back with pxr and its contract numbers checked; exits non-zero on failure.
-# SRP/DRY check: Pass - follows make_bumper_pool.py and make_pocket.py (lathe, named-object, export and verify steps);
+# SRP/DRY check: Pass - follows make_bumper_pool.py and the old make_pocket.py, now make_pockets.py (lathe, named-object, export and verify steps);
 #          those helpers are private to each script by the established pattern in Tools/blender. One script makes all
 #          four room models because they share every helper and are only ever rebuilt together.
 

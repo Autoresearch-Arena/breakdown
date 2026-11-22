@@ -57,7 +57,7 @@ final class TableCamera {
     /// Rail top height above the cloth, so the near rail's top edge is framed too.
     private static let railHeight: Float = 0.075
     /// Metres the playing area reaches past the cloth's cushion line: the corner pocket holes (0.065 radius round the
-    /// cloth corner) plus a little of their metal rim. This is what must never sit under the title row or the controls.
+    /// cloth corner) plus a little of the liner behind them. This is what must never sit under the title row or the controls.
     private static let playReach: Float = 0.08
     /// The one overhead-ish angle Reduce Motion holds, in degrees. Near the Lens angle so the cross-fade lines up.
     private static let reducedMotionElevation: Float = 80
