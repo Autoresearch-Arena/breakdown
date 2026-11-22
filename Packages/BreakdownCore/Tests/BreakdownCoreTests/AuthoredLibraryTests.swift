@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4: the two side-spin shots keep their side windows inside the
+//          strong-side rule they are judged by.)
 // PURPOSE: The authored answers library (BreakdownAuthored; bug plan after 0.6.6, item 38) and the surfaces it holds
 //          (item 27), checked as data: ids are unique; every authored stroke keeps its tip inside the miscue limit; every
 //          window the judges divide by is above zero; a raised-cue lesson's elevation is exactly the sine of an angle the
@@ -51,6 +53,20 @@ final class AuthoredLibraryTests: XCTestCase {
             inGrip(t.solution, t.id)
             positive(t.window, t.id)
             XCTAssertTrue((1...3).contains(t.difficulty), t.id)
+        }
+    }
+
+    // 0.7.4: the side-spin shots are judged with the strong-side rule as well as their goal, so each must exist, judge
+    // its side (a side window above zero) and keep its whole side window inside the rule: an answer whose window
+    // reached below the rule would tell the player a side is fine that the judge then refuses.
+    func testStrongSideShotsKeepTheirWindowInsideTheRule() {
+        XCTAssertGreaterThan(AuthoredTricks.strongSide, 0)
+        XCTAssertLessThan(AuthoredTricks.strongSide, grip, "the rule must leave room before the miscue limit")
+        for id in AuthoredTricks.strongSideIDs {
+            guard let t = AuthoredTricks.trick(id: id) else { XCTFail("\(id): no such trick"); continue }
+            XCTAssertGreaterThan(t.window.tipSide, 0, "\(id): side must be judged")
+            XCTAssertGreaterThanOrEqual(abs(t.solution.tipSide) - t.window.tipSide, AuthoredTricks.strongSide - 1e-12,
+                                        "\(id): the side window reaches below the strong-side rule")
         }
     }
 

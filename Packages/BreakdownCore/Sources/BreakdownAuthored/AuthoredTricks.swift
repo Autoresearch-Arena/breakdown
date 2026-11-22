@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: Squirt and Side Off the Rail, and the
+//          strong-side rule both are judged by.)
 // PURPOSE: The trick shots' numbers, the one copy (bug plan after 0.6.6, item 38): where the balls start, the authored
 //          answer, the goal the judges check, the measured skill windows, the bridge and the difficulty. The app's
 //          TrickShots adds the titles and words and reads these; BreakProbe's "verify" plays them and "tricks near"
@@ -14,10 +16,21 @@ public enum AuthoredTricks {
     /// Every shot in the order it was authored (the app sorts it easiest first).
     public static let all: [AuthoredTrick] = [
         calledBreak, stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt, masse, jumpOver,
-        drawMasseCarom,
+        drawMasseCarom, squirt, sideOffRail,
     ]
 
     public static func trick(id: String) -> AuthoredTrick? { all.first { $0.id == id } }
+
+    /// The side-spin shots (0.7.4): judged with the strong-side rule as well as their goal, because a side-spin shot
+    /// that can also be made with no side teaches nothing (the cue's line is free, so a plain stroke aimed where the
+    /// side sends the ball would do). The app's TrickShotJudge applies it; BreakProbe measures their side windows
+    /// inside it.
+    public static let strongSideIDs: Set<String> = ["squirt", "side-off-rail"]
+
+    /// The strong-side rule, metres: at least this much side, on the answer's side of centre. 9 mm is about a third of
+    /// the ball's radius, two thirds of the way to the miscue limit (about 14.3 mm): plainly "strong side" on the
+    /// cue-ball picture, while leaving the player a band to hit.
+    public static let strongSide = 0.009
 
     // MARK: 1. The Called Break
     // First authored on the front three rows of a rack, half a millimetre apart (BreakProbe tricks called-break-short,
@@ -161,5 +174,40 @@ public enum AuthoredTricks {
         solution: AuthoredStrike(aim: 347.88, power: 2.70, tipUp: -0.010, tipSide: 0.006, elevation: 0.45),
         goal: AuthoredGoal(drops: [], firstHit: 4, secondHit: 9),
         window: AuthoredWindow(aim: 0.84, power: 0.25, tipUp: 0.0005, tipSide: 0.0025),
+        usesBridge: false, difficulty: 3)
+
+    // MARK: 12. Squirt (0.7.4)
+    // BreakProbe tricks squirt (22-Nov-2026, Claude Opus 5.5 High; log on the Team 4TB drive,
+    // breakdown-build/v074-trick-shots-search-1.log): 116,640 strokes over 72 layouts (the 2 hanging 0.16 to 0.34 m
+    // from a corner, the cue ball 1.0 to 1.6 m back on the same line), kept only if the same stroke aimed dead straight
+    // misses and the answer's aim with no side misses. Strong left side turns the cue ball 2.27 degrees off the cue's
+    // line (launch heading 25.79 degrees for an aim of 28.06; the straight line is 25.00), so the answer aims about
+    // three degrees off; aimed straight with the same stroke the 2 stays up, and it stays up at 1.5 m/s too. Windows:
+    // aim 27.36 to 28.76 degrees, power 1.10 to 8.00 m/s, tip height -7.0 to +7.0 mm, side -14.0 to -9.0 mm inside the
+    // strong-side rule (the physics alone allows -14.0 to -8.5 mm).
+    public static let squirt = AuthoredTrick(
+        id: "squirt", number: 12,
+        layout: authoredLayout([0: Vec2(1.4887, 0.7798), 2: Vec2(2.3950, 1.2024)]),
+        solution: AuthoredStrike(aim: 28.06, power: 4.55, tipUp: 0, tipSide: -0.0125),
+        goal: AuthoredGoal(drops: [AuthoredDrop(2, 3)], firstHit: 2),
+        window: AuthoredWindow(aim: 0.70, power: 3.45, tipUp: 0.0070, tipSide: 0.0015),
+        usesBridge: false, difficulty: 2)
+
+    // MARK: 13. Side Off the Rail (0.7.4)
+    // BreakProbe tricks side-off-rail (22-Nov-2026, Claude Opus 5.5 High; same log): the cue ball's own one-cushion paths
+    // with strong side from four spots, the 7 dropped onto each path so it goes to a pocket, the 9 and the 10 on the
+    // straight line; 11,904 candidates. Kept only if the same aim and power with no side fails, a no-side stroke launched
+    // on exactly the answer's line also fails (so the rail, not the launch deflection, needs the side), and the side
+    // widens the angle off the rail: with side the cue ball comes in 65.4 degrees from the rail's normal and leaves at
+    // 70.4; on the same line with no side it leaves at 67.7 and the 7 stays up. Windows: aim -23.50 to -21.96 degrees,
+    // power 1.35 to 2.80 m/s, tip height -9.0 to +9.0 mm, side -14.0 to -9.0 mm inside the strong-side rule (the physics
+    // alone allows -14.0 to -2.0 mm).
+    public static let sideOffRail = AuthoredTrick(
+        id: "side-off-rail", number: 13,
+        layout: authoredLayout([0: Vec2(1.0000, 0.3500), 7: Vec2(2.1653, 0.1093), 9: Vec2(1.5267, 0.2529),
+                                10: Vec2(1.7190, 0.1840)]),
+        solution: AuthoredStrike(aim: -22.50, power: 2.05, tipUp: 0, tipSide: -0.011),
+        goal: AuthoredGoal(drops: [AuthoredDrop(7, 1)], firstHit: 7),
+        window: AuthoredWindow(aim: 0.54, power: 0.70, tipUp: 0.0090, tipSide: 0.0020),
         usesBridge: false, difficulty: 3)
 }
