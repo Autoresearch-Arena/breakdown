@@ -380,13 +380,14 @@ final class TableScene {
     func updateCamera(melt: Double, request: FramingRequest, ride: Bool = false) {
         shotCamera.clock = lastClock
         shotCamera.active = ride
-        // The hand zoom ignores pinches, pans and double taps while the ride flies (bug #24).
-        zoom.rideHold = ride
         // The moment framing for this clock (a pure function of it once its gate is open; see MomentFrame).
         let focus = momentFrame.focus(clock: lastClock, request: moment, handAtFit: zoom.atFittedView, frame: frame,
                                       reduceMotion: TableCamera.reduceMotion)
         camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
                       request: request, frame: frame, ride: shotCamera, zoom: zoom, moment: focus)
+        // The hand zoom ignores pinches, pans and double taps while the ride has the view (bug #24); not merely while
+        // Ride is on, which it stays while the player aims the next shot from the ordinary table view.
+        zoom.rideHold = shotCamera.flying
         // With the camera placed: the lamp shade's fade and each ball's picture for the size it now is on screen.
         detail?.view(eye: camera.eye, forward: camera.forward, focal: camera.focal)
         // And the Lens, for this frame's clock and this frame's view.

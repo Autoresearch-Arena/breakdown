@@ -209,6 +209,10 @@ final class ShotCamera {
     private var lastTick: TimeInterval?
     /// The clock the last override saw, to notice a jump back to the start.
     private var lastClock = 0.0
+    /// True when the last override gave the ride pose any say over the view (not when Ride is merely on: between
+    /// shots, while the player aims, the ride has risen and the view is the ordinary table). The hand zoom waits only
+    /// while this is true (TableZoom.rideHold, bug #24).
+    private(set) var flying = false
 
     /// Near plane while riding: the eye is about half a metre from the ball it chases, so two centimetres clears
     /// everything near it while keeping good depth precision on the cloth and rails.
@@ -254,9 +258,11 @@ final class ShotCamera {
         lastTick = now
         let goal = active && plan.rideable ? 1.0 : 0.0
         if reduceMotion { engage = goal } else if engage < goal { engage = min(goal, engage + dt / 0.5) } else { engage = max(goal, engage - dt / 0.5) }
+        flying = false
         guard engage > 0, let tl = timeline, let frame, let tracks, plan.rideable else { return overhead }
         let weight = RidePlan.smooth(engage) * (1 - Self.riseWeight(at: clock, plan: plan, reduceMotion: reduceMotion))
         guard weight > 1e-4 else { return overhead }
+        flying = true
         let ride = Self.ridePose(at: clock, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
                                  reduceMotion: reduceMotion)
         return Self.mix(overhead, ride, Float(weight), turn: Self.turn(from: overhead, to: ride, tracks: tracks, clock: clock))
