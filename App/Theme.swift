@@ -10,6 +10,8 @@
 //          amberRGB is renamed slideRGB and joined by slideHighRGB for Increase Contrast; Palette.slide and
 //          Palette.friction take the same two magentas, so every sliding line, label, ring and gauge in the interface
 //          and the Lens agrees. The room's own warm light, wood, balls and cloth are not interface and are unchanged.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation: Palette.whatIf, the violet of the other future in
+//          a what-if replay; frozen after the foundation commit.)
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
 //          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
@@ -91,6 +93,9 @@ struct Palette {
     let track: Color
     /// Caption and scrub-tick colours, one per kind of event.
     let strike: Color, impact: Color, cushion: Color, friction: Color, pocket: Color
+    /// The other future in a what-if: violet, clear of the cloth's green, the rolling cyan, the sliding magenta, the
+    /// warm event colours and the cushion blue (never orange).
+    let whatIf: Color
 
     func color(for accent: CaptionAccent) -> Color {
         switch accent {
@@ -116,6 +121,8 @@ struct Palette {
         // Friction is what makes a ball slide and slow, so its captions wear the sliding magenta.
         friction = tone(C(1.0, 0.30, 0.70), C(1.0, 0.52, 0.82))
         pocket = tone(C(1.0, 0.82, 0.25), C(1.0, 0.90, 0.50))
+        // Violet: the one hue left clear of the default cloth's green-teal sheen and every colour above.
+        whatIf = tone(C(0.72, 0.48, 1.0), C(0.84, 0.70, 1.0))
     }
 }
 

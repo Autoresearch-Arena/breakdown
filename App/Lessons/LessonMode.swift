@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F10:
+//          recordingReplaced, a stub learn-modes fills.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: a lesson plays on the standard cloth it was authored on and
 //          puts the player's surface back when it ends.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 11 and 36: in try 3 and the pass shot of a lesson that
@@ -42,6 +44,10 @@ import Observation
 @MainActor
 @Observable
 final class LessonMode {
+    /// The model re-solved the recording on screen (a surface change): the one with version `old` is now `new`.
+    /// Stub from the 0.7.5 foundation; learn-modes fills it so a playing lesson beat follows its recording.
+    func recordingReplaced(old: Int, new: Int) {}
+
     /// The player's steps after the Watch beat.
     enum Step: Int, Equatable {
         case try1 = 1, try2, try3, pass, exercise

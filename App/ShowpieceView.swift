@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F11:
+//          the what-if mounts. While a what-if shows, the last-try ghost and the stroke trace step aside and
+//          WhatIfOverlay draws the other future; WhatIfCard leads the bottom stack's and the side column's cards.)
 // Edited: Claude Haiku 5.5 Medium, 18-November-2026 (the opening title is now the TitleScreen file, shown until Start is tapped; the old title card was removed).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: the "last try" ghost is laid over the table
 //          under the aiming layer, the comparison card sits above the controls or at the top of the side column, and
@@ -248,9 +251,14 @@ struct ShowpieceView: View {
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, showCue: showShotPanel, chrome: chrome)
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
-            if model.ghost != nil { GhostOverlay(model: model, bridge: bridge) }
+            // Both step aside while a what-if shows: the violet other future is then the only extra drawing (0.7.5).
+            if model.ghost != nil && !model.whatIf.isShowing { GhostOverlay(model: model, bridge: bridge) }
             // The stroke that played the shot, faint on the cloth while it replays. Never takes touches.
-            if model.currentAttempt?.stroke?.trace.isEmpty == false { StrokeTraceOverlay(model: model, bridge: bridge) }
+            if model.currentAttempt?.stroke?.trace.isEmpty == false && !model.whatIf.isShowing {
+                StrokeTraceOverlay(model: model, bridge: bridge)
+            }
+            // The what-if's other future: violet paths, ghost balls and the parting marker. Never takes touches.
+            if model.whatIf.isShowing { WhatIfOverlay(model: model, bridge: bridge) }
             // Trick shots: rings on the shot's balls and pockets, the success glow, the list sheet, launch flags.
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Lessons: rings, the finish circle, the pass glow, the list sheet, and the Watch beat's stop (LessonViews).
@@ -323,6 +331,8 @@ struct ShowpieceView: View {
         let squarish = geo.size.width / max(1, geo.size.height) > 0.65
         return FittingScroll(maxHeight: geo.size.height * (squarish ? 0.74 : 0.62)) {
             VStack(spacing: 10) {
+                // The what-if card first: while it shows, the result cards below step aside (0.7.5).
+                if !wide { WhatIfCard(model: model) }
                 if !wide { ComparisonCard(model: model) }
                 if !wide { OpeningCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
@@ -388,6 +398,7 @@ struct ShowpieceView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 12) {
+                    WhatIfCard(model: model)
                     ComparisonCard(model: model)
                     OpeningCard(model: model)
                     // Trick shots: the shot's card at the top of the column.

@@ -1,4 +1,6 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F10:
+//          startsAtTrick is internal for the what-if's Keep; recordingReplaced is a stub learn-modes fills.)
 // Edited: GPT 6.2 Sol, 21-November-2026 (draw-massé carom lesson).
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (passes the shot's cue elevation to the table, so the massé and the jump are struck with a raised cue).
@@ -313,8 +315,12 @@ final class TrickShotMode {
 
     private var isJudged: Bool { if case .judged = phase { return true } else { return false } }
 
+    /// The model re-solved the recording on screen (a surface change): the one with version `old` is now `new`.
+    /// Stub from the 0.7.5 foundation; learn-modes fills it so a playing answer or attempt follows its recording.
+    func recordingReplaced(old: Int, new: Int) {}
+
     /// True when an attempt started from this trick's own start (not from wherever the last shot left the balls).
-    private func startsAtTrick(_ attempt: ShotAttempt) -> Bool {
+    func startsAtTrick(_ attempt: ShotAttempt) -> Bool {
         guard let shot = current else { return false }
         switch shot.setup {
         case .layout(let positions): return !attempt.isBreak && attempt.start == positions

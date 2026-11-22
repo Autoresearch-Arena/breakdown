@@ -1,4 +1,11 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F6:
+//          the what-if fork (whatIf, closed by every load), solverCopy pulled out of prepare unchanged, the kept strike
+//          (keptStrike, keepFuture, writeRetrySettings split out of tryAgain(restoring:)), authoredModeUp and
+//          ControlValues made internal, stubs model-flow fills (ModeList, showList, closeAllLists, tableOnScreen,
+//          setAutoRate, holdRideForGuidedReplay), continueSavedMatch returns whether a match is up, leaveMatch stops
+//          the computer's search, setSurface tells trick shots and lessons their recording was replaced, and load's
+//          captions get the solved table and the striking ball.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (0.7.4 watch-invite review: a stroke, a break or Try again while
 //          Watch your best shot replays first puts the cleared table back, so nothing is struck from the replayed
 //          shot's resting balls; controls the player set during that replay are kept; a lifted ball is dropped. The
@@ -202,6 +209,10 @@ struct ShotPanelRequest: Equatable {
     let serial: Int
     let action: Action
 }
+
+/// The three mode lists the menu, the Mac menu bar and the notebook can open (ShowpieceModel.showList); at most one is
+/// open at a time.
+enum ModeList { case tricks, lessons, eightBall }
 
 /// The next step on the path from stored progress, for the menu's highlighted entry (plan item 52).
 enum NextStep: Equatable, Sendable {
@@ -781,8 +792,13 @@ final class ShowpieceModel {
                                   tipUp: shotTipUp, tipSide: shotTipSide, seed: seed,
                                   elevation: strikeElevation, ballIndex: strikeBall)
         // The player's stroke drifts the strike before it is solved; a demonstration or scripted shot is struck clean.
-        let delivery = strokeDue ? strokeDelivery(chosenUp: shotTipUp, chosenSide: shotTipSide) : nil
+        var delivery = strokeDue ? strokeDelivery(chosenUp: shotTipUp, chosenSide: shotTipSide) : nil
         delivery?.apply(to: &input.strike, ballRadius: physicsTable.parameters.ballRadius)
+        // A kept what-if future replaces the strike only when nothing was touched since Keep: the controls read exactly
+        // as kept and no new finger stroke was measured. Then the exact input the what-if solved (and its stroke) is
+        // struck, so the future plays as it was shown. Any touch, or any other shot, uses it up either way.
+        if let k = keptStrike, k.controls == controlValues, pendingStroke == nil { input = k.input; delivery = k.delivery }
+        keptStrike = nil
         // The attempt keeps the player's own angle (shotElevation) as its setting, while its `input` holds the raised
         // strike. A retry puts the player's angle back, and the same layout and aim raise it by the same clearing, so
         // an untouched retry repeats exactly; recording the raised angle instead would leave the cue-angle control
@@ -1042,7 +1058,15 @@ final class ShowpieceModel {
     func tryAgain(restoring settings: TrickSettings) {
         guard let attempt = currentAttempt, aimReady, match == nil else { return }
         tryAgain()
-        if attempt.isBreak {
+        writeRetrySettings(settings, isBreak: attempt.isBreak)
+        pendingStroke = nil
+    }
+
+    /// Write `settings` into the controls directly (not through the active setters, so a lesson lock cannot half-apply
+    /// them): the break's controls when `isBreak`, the shot's otherwise. For a break, `settings.aim` is metres off the
+    /// apex ball and is clamped to the break's aim limit. Shared by tryAgain(restoring:) and keepFuture.
+    func writeRetrySettings(_ settings: TrickSettings, isBreak: Bool) {
+        if isBreak {
             aimOffset = min(max(settings.aim, -Self.breakAimLimit), Self.breakAimLimit)
             power = settings.power; tipHeight = settings.tipUp; breakTipSide = settings.tipSide
         } else {
@@ -1050,8 +1074,20 @@ final class ShowpieceModel {
             shotTipUp = settings.tipUp; shotTipSide = settings.tipSide
             shotElevation = settings.elevation ?? 0
         }
-        pendingStroke = nil
     }
+
+    /// Keep a what-if future, after a retry was armed from the attempt it forked (ghost is that attempt): the future's
+    /// settings go in the controls and its exact strike is armed for the next Shoot.
+    func keepFuture(_ settings: TrickSettings, input: ShotInput, delivery: StrokeDelivery?) {
+        writeRetrySettings(settings, isBreak: false)
+        pendingStroke = nil
+        keptStrike = KeptStrike(input: input, delivery: delivery, controls: controlValues)
+    }
+
+    /// A what-if future the player kept: Shoot with the controls exactly as kept, and no new finger stroke, strikes this
+    /// input, so the kept future plays exactly as it was shown. Used up by the next strike; cleared by clearAttempts.
+    struct KeptStrike { let input: ShotInput; let delivery: StrokeDelivery?; let controls: ControlValues }
+    @ObservationIgnored var keptStrike: KeptStrike?
 
     /// Put the comparison card away; the ghost stays until the next fresh shot.
     func dismissComparison() { comparison = nil; retryComparison = nil }
@@ -1082,6 +1118,7 @@ final class ShowpieceModel {
 
     private func clearAttempts() {
         currentAttempt = nil
+        keptStrike = nil
         if ghost != nil { ghostVersion += 1 }
         ghost = nil; comparison = nil; retryComparison = nil; retryPending = false; retrySeed = nil
     }
@@ -1376,6 +1413,8 @@ final class ShowpieceModel {
     /// Put a recording on screen. `showpiece` is true only for the showpiece opening (Watch the intro), whose replay
     /// holds the opening's beats. Anything loaded ends the menu's backdrop: a table is going on screen.
     private func load(_ tl: Timeline, showpiece: Bool = false) {
+        // A new recording, a surface change, Try again, a menu choice: the what-if never outlives the recording it forked.
+        whatIfStorage?.close()
         // Anything else going on the table ends Watch your best shot's replay; the replay's own loads say so (0.7.4).
         if replayingBest, !loadingKeptRecording { abandonBestReplay() }
         // Anything but the showpiece going on screen means Watch the intro was left before its end (0.7.4).
@@ -1388,7 +1427,9 @@ final class ShowpieceModel {
         adoptLayout(after: tl)
         timeline = tl
         // The solved strike too (lens stream, 0.7.0): a raised strike that did not hop carries its angle nowhere else.
-        captions = CaptionEngine.make(from: tl, surface: solvedSurface, strike: lastInput?.strike)
+        // The solved table and the striking ball too (0.7.5), so captions can name balls the way that table does.
+        captions = CaptionEngine.make(from: tl, surface: solvedSurface, strike: lastInput?.strike,
+                                      table: solvedTable, striker: lastInput?.strike.ballIndex)
         pacePlan = PacePlan(captions: captions, timeline: tl, style: paceStyle, signature: paceSignature)
         ridePlan = RidePlan(tl)
         readShot(tl)
@@ -1602,10 +1643,11 @@ final class ShowpieceModel {
     /// True when a match is saved on the device ("Continue match").
     var hasSavedMatch: Bool { savedMatchExists }
 
-    /// Back to the match: the live one if there is one, otherwise the saved one from the device.
-    func continueSavedMatch() {
-        if match != nil { closeMenu(); return }
-        guard let saved = MatchMode.loadSaved() else { noteMatchSave(exists: false); return }
+    /// Back to the match: the live one if there is one, otherwise the saved one from the device. Returns whether a
+    /// match is up afterwards (false when no save could be loaded), so the menu stays open when Continue fails.
+    @discardableResult func continueSavedMatch() -> Bool {
+        if match != nil { closeMenu(); return true }
+        guard let saved = MatchMode.loadSaved() else { noteMatchSave(exists: false); return false }
         panelAfterBreakDue = false
         strokeDrillStorage?.end()
         cancelPendingSolve()
@@ -1620,6 +1662,7 @@ final class ShowpieceModel {
         match = m
         m.resume()
         setLens(false)
+        return match != nil
     }
 
     /// End the match for good: its save is removed and free play's rack goes back on.
@@ -1632,6 +1675,8 @@ final class ShowpieceModel {
 
     /// Step out of a live match into something else, keeping its save so the menu can offer it again.
     private func leaveMatch() {
+        // Stop the computer's search first, so a think still running cannot come back to a match that is gone.
+        match?.opponent?.cancel()
         guard match != nil else { return }
         abandonStaging()
         cancelPendingSolve()
@@ -2565,13 +2610,22 @@ final class ShowpieceModel {
     private func prepare(_ input: ShotInput, classic: Bool = false) -> Prepared {
         let s = physicsSurface, t = physicsTable
         let generation = classic ? PoolParameters().modelGeneration : activeModelGeneration
+        let onSurface = Self.solverCopy(input, table: t, surface: s, generation: generation)
+        return Prepared(input: input, solvable: onSurface, surface: s, table: t, generation: generation, classic: classic)
+    }
+
+    /// The solver's copy of `input` on `table`, `surface` and physics `generation`: generation one's own numbers first,
+    /// then the table, then the surface, then the generation written last. Pure: it commits nothing, so the what-if
+    /// can build a copy on an attempt's own table, surface and generation without touching what is on screen.
+    nonisolated static func solverCopy(_ input: ShotInput, table: TableKind, surface: PlaySurface,
+                                       generation: Int) -> ShotInput {
         var onSurface = input
         if generation == 1 { onSurface.parameters.useGenerationOne() }
-        t.apply(to: &onSurface.parameters)
-        s.apply(to: &onSurface.parameters)
+        table.apply(to: &onSurface.parameters)
+        surface.apply(to: &onSurface.parameters)
         // Last, so nothing above can overwrite it.
         onSurface.parameters.modelGeneration = generation
-        return Prepared(input: input, solvable: onSurface, surface: s, table: t, generation: generation, classic: classic)
+        return onSurface
     }
 
     /// The shot about to go on screen was solved from `p`: remember what it was solved on.
@@ -2622,7 +2676,13 @@ final class ShowpieceModel {
         let attemptOnScreen = playerShotOnScreen
         let inColdOpen = stage != .explore
         let backdrop = menuBackdropPlaying
+        let replaced = timelineVersion
         load(solve(input, classic: lastClassic), showpiece: showpieceOnScreen)
+        // A trick shot or lesson keyed to the old recording's version follows it to the re-solved one (0.7.5).
+        if timelineVersion != replaced {
+            trickModeStorage?.recordingReplaced(old: replaced, new: timelineVersion)
+            lessonModeStorage?.recordingReplaced(old: replaced, new: timelineVersion)
+        }
         if let a = attempt {
             currentAttempt = a.resolved(on: timeline, surface: solvedSurface)
             // The re-solved attempt is the recording on screen only if the old one was.
@@ -2652,7 +2712,7 @@ final class ShowpieceModel {
     }
 
     /// True while a mode that was authored on the pool table is up: a trick shot or a Behind the 8-Ball situation.
-    private var authoredModeUp: Bool {
+    var authoredModeUp: Bool {
         trickModeStorage?.current != nil || eightBallModeStorage?.current != nil || lessonModeStorage?.current != nil
     }
 
@@ -2707,6 +2767,33 @@ final class ShowpieceModel {
         shotTipUp = 0; shotTipSide = 0
         stage = .explore; stageTime = 0; time = 0; playing = false; chosenRate = nil
     }
+
+    // MARK: What if (WhatIfFork) - 0.7.5 foundation, Claude Opus 5.5 High, 22-November-2026
+
+    /// The what-if replay for this table, made on first use (the trickMode pattern): observable itself, and creating it
+    /// lazily must not count as a change to the model.
+    @ObservationIgnored private var whatIfStorage: WhatIfFork?
+    var whatIf: WhatIfFork {
+        if let w = whatIfStorage { return w }
+        let w = WhatIfFork(model: self)
+        whatIfStorage = w
+        return w
+    }
+
+    // MARK: Lists, table on screen, Auto speed, Ride in guided replays - 0.7.5 foundation stubs model-flow fills
+
+    /// Open one mode list and close the other two (stub until model-flow fills it).
+    func showList(_ list: ModeList) {}
+    /// Close the trick, lesson and eight-ball lists (stub until model-flow fills it).
+    func closeAllLists() {}
+    /// The table the Tables list ticks: the free-play table on screen, nil while a pool-only mode or a match is up
+    /// (stub until model-flow fills it).
+    var tableOnScreen: TableKind? { nil }
+    /// The speed menu's Auto: back to the paced replay (stub until model-flow fills it).
+    func setAutoRate() {}
+    /// Turns Ride off for a guided Lens replay and remembers it; restored when the replay ends or is left
+    /// (stub until model-flow fills it).
+    func holdRideForGuidedReplay() {}
 
     // MARK: Trick shots (TrickShotMode) - added by Claude Opus 5.5 High, 20-November-2026
 
@@ -2983,7 +3070,7 @@ final class ShowpieceModel {
 
     /// The aim, power, tip and cue angle, break and shot values both. Compared whole: any difference means the player
     /// touched a control. Also what Watch your best shot puts back, because loading another recording re-aims.
-    private struct ControlValues: Equatable {
+    struct ControlValues: Equatable {
         let aimDegrees: Double
         let aimOffset: Double
         let shotPower: Double
@@ -2995,7 +3082,7 @@ final class ShowpieceModel {
         let shotElevation: Double
     }
 
-    private var controlValues: ControlValues {
+    var controlValues: ControlValues {
         ControlValues(aimDegrees: aimDegrees, aimOffset: aimOffset, shotPower: shotPower, power: power,
                       shotTipUp: shotTipUp, shotTipSide: shotTipSide, tipHeight: tipHeight, breakTipSide: breakTipSide,
                       shotElevation: shotElevation)

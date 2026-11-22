@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F7:
+//          make takes the solved table and the striking ball, unused until the rules-lens stream names balls by table.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (jaw and knuckle hits get their own caption: "Off the jaw" or "Clipped the point").
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (every sentence is a whole localized string, so translators can reorder it; numbers are formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no more thinning to one caption per quarter second: every
@@ -179,7 +181,10 @@ enum CaptionEngine {
     /// `surface` is the one the timeline was solved on (ShowpieceModel.physicsSurface), so the numbers explained are
     /// the numbers used. `strike` is the strike that was solved (the model's input for this recording), when known: the
     /// cue's angle of a raised strike that did not make the ball hop is in no event, so it is read from there.
-    static func make(from timeline: Timeline, surface: PlaySurface, strike: CueStrike? = nil) -> [Caption] {
+    /// `table` is the table the timeline was solved on and `striker` the ball the cue struck (0.7.5 hooks, not read yet:
+    /// the rules-lens stream uses them to name balls the way that table does).
+    static func make(from timeline: Timeline, surface: PlaySurface, strike: CueStrike? = nil,
+                     table: TableKind = .standard, striker: Int? = nil) -> [Caption] {
         let facts = SurfaceFacts(surface: surface, p: surface.parameters, cloth: PlaySurface.cloth.parameters)
         // Bends are found per sliding segment, then said in the caption of the event that ends each one.
         let bendsAt = bendEvents(in: timeline)

@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F9:
+//          confirmingEnd, so the menu back button can give up Escape while End this game is asking.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3: a
 //          remarkable shot by either seat is offered for a Lens replay on its ruling. rule() reads the model's judged
 //          highlight for the recording it rules (ShowpieceModel.matchShotHighlight) and keeps it as lensHighlight when it
@@ -98,6 +100,8 @@ final class MatchMode {
     enum Phase: Equatable { case aiming, shooting, ruling, handOver, over }
 
     let rules: any MatchRules
+    /// The End-this-game confirmation is up; the menu back button gives up Escape while it is.
+    var confirmingEnd = false
     /// The table this game is played on (the pool table for eight-ball and nine-ball).
     let table: TableKind
     private(set) var state: MatchState

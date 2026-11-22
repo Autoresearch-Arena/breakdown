@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F11:
+//          WhatIfCard first among the cards, so a what-if lives in the notebook and never covers the table.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the folding phone's panel becomes the notebook of every big screen:
 //          renamed NotebookPanel in NotebookPanel.swift (it was DuoPanel in DuoPanel.swift), shown beside or under the table on iPad and Mac windows as well as
 //          across the hinge. The page switch (How to play, Options, Tables) is handed in by ShowpieceView so the Help
@@ -172,6 +174,7 @@ struct NotebookPanel: View {
     /// The cards that belong to the mode on the table and the mode's details.
     private var cards: some View {
         VStack(spacing: 10) {
+            WhatIfCard(model: model)
             ComparisonCard(model: model)
             OpeningCard(model: model)
             LensCalloutCard(model: model)

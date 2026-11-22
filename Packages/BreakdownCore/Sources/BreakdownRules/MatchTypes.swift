@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F8:
+//          MatchFoul.cueBallBehindHeadLine, the ball-in-hand-behind-the-line foul; the rules-lens stream calls it.)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - appended MatchState.breakPoints (optional, nil for
 //          every game but bar billiards), the points of the break in progress, which a white peg down takes away.
 //          Optional, so a match saved before it decodes unchanged.
@@ -110,6 +112,9 @@ public enum MatchFoul: String, CaseIterable, Codable, Sendable {
     case wrongCup
     /// Five-pin: pins knocked down by the shooter's own cue ball.
     case ownBallKnockedPins
+    /// Ball in hand behind the head line: the cue ball hit a ball that also started behind the line without crossing
+    /// the line first.
+    case cueBallBehindHeadLine
 
     public init(_ foul: EightBallFoul) {
         switch foul {
