@@ -9731,6 +9731,76 @@
         }
       }
     },
+    "A bank shot": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسديدة بالحافة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Bandenball"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tiro por banda"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un doublé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tiro di sponda"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バンクショット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "뱅크 샷"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma bola de tabela"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma bola de tabela"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дуплет"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻袋"
+          }
+        }
+      }
+    },
     "A break-speed hit.": {
       "localizations": {
         "ar": {
@@ -9797,6 +9867,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "开球力度的一杆。"
+          }
+        }
+      }
+    },
+    "A bumper turned the ball into the cup.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حوّل مصدٌّ مسار الكرة إلى الحفرة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Pfosten lenkte die Kugel ins Loch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tope desvió la bola hacia el hoyo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un plot a dévié la bille dans le trou."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un respingente ha deviato la palla nella buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バンパーが球の向きを変え、カップへ入れた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "범퍼가 공의 방향을 바꿔 컵에 넣었어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um pino de borracha desviou a bola para o buraco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um pino de borracha desviou a bola para o buraco."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Столбик развернул шар в лунку."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挡柱把球拐进了球洞。"
           }
         }
       }
@@ -9871,6 +10011,146 @@
         }
       }
     },
+    "A combination": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تركيبة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Kombination"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una combinación"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une combinaison"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una combinazione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンビネーション"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "콤비네이션"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma combinação"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma combinação"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Комбинация"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "组合球"
+          }
+        }
+      }
+    },
+    "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تعيد الوسادة الكرة بزاوية تقارب زاوية وصولها، لذلك تعمل كل وسادة كمرآة. صوّب نحو انعكاس الكرة 5 في الوسادتين، فتصل إليها الكرة البيضاء من الطريق الطويل."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Bande schickt eine Kugel etwa im Winkel zurück, in dem sie ankam, daher ist jede Bande wie ein Spiegel. Ziele auf das Spiegelbild der 5 in den zwei Banden, und die Weiße findet sie auf dem langen Weg."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una banda devuelve la bola casi con el mismo ángulo con que llegó, así que cada banda es un espejo. Apunta al reflejo de la 5 en las dos bandas, y la blanca la encuentra dando la vuelta larga."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une bande renvoie la bille à peu près selon l'angle d'arrivée, donc chaque bande est un miroir. Vise le reflet de la 5 dans les deux bandes, et la blanche la trouve par le long chemin."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una sponda rimanda una palla quasi con lo stesso angolo con cui è arrivata, quindi ogni sponda è uno specchio. Mira al riflesso della 5 nelle due sponde, e la bianca la trova facendo il giro lungo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クッションは球を、入ってきたのとほぼ同じ角度で跳ね返すので、各クッションは鏡の役割をします。二つのクッションに映る5番の鏡像を狙えば、手球は遠回りして5番に届きます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쿠션은 공을 들어온 각도와 거의 같은 각도로 되돌려 보내므로, 각 쿠션은 거울 역할을 합니다. 두 쿠션에 비친 5번의 거울상을 겨냥하면, 큐볼이 먼 길을 돌아 5번을 찾아가요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tabela devolve a bola com quase o mesmo ângulo com que chegou, por isso cada tabela é um espelho. Aponta ao reflexo da 5 nas duas tabelas, e a branca encontra-a pelo caminho mais longo."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tabela devolve a bola com quase o mesmo ângulo em que chegou, então cada tabela é um espelho. Mire no reflexo da 5 nas duas tabelas, e a branca a encontra pelo caminho mais longo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Борт отражает шар примерно под тем же углом, под каким тот пришёл, поэтому каждый борт — это зеркало. Целься в отражение 5-го в двух бортах, и белый шар найдёт его в обход."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "库边会让球以大致相同的角度弹出，所以每条库边都像一面镜子。瞄准5号球在两条库边中的镜像，白球就会绕远路找到它。"
+          }
+        }
+      }
+    },
     "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection, and side spin would bend that angle.": {
       "localizations": {
         "ar": {
@@ -9937,6 +10217,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "库边会让球以大致相同的角度弹出，所以每条库边都像一面镜子。瞄准5号球的镜像，侧旋则会改变这个角度。"
+          }
+        }
+      }
+    },
+    "A downward hit bounced it off the slate and over the ball in the way.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضربة نحو الأسفل جعلتها ترتد عن اللوح وتقفز فوق الكرة المعترضة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Stoß nach unten ließ sie von der Platte abprallen und über die Kugel im Weg springen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un golpe hacia abajo la hizo rebotar en la pizarra y pasar por encima de la bola que estorbaba."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un coup vers le bas l'a fait rebondir sur l'ardoise et passer au-dessus de la bille qui gênait."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un colpo verso il basso l'ha fatta rimbalzare sull'ardesia e passare sopra la palla che ostacolava."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下向きの打撃でスレートから跳ね、邪魔な球を飛び越えた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아래로 내려친 타격에 슬레이트에서 튀어 올라 길을 막은 공을 넘어갔어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma pancada para baixo fê-la ressaltar na ardósia e passar por cima da bola no caminho."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tacada para baixo a fez quicar na ardósia e passar por cima da bola no caminho."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удар сверху вниз отбил его от плиты, и он перелетел шар на пути."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向下的一击让它从石板上弹起，越过了挡路的球。"
           }
         }
       }
@@ -10427,6 +10777,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "大力一杆。"
+          }
+        }
+      }
+    },
+    "A kick": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارتداد"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Vorbänder"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un rebote"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une bricole"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un rimbalzo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キック"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "킥"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tabela"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tabela"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через борт"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "库边解球"
           }
         }
       }
@@ -11127,6 +11547,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "一张会展示自身物理的台球桌。和电脑打八球或九球，看看每一杆为什么会走到那里。"
+          }
+        }
+      }
+    },
+    "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "طاولة بلياردو تُظهر فيزياءها بنفسها. العب أربع ألعاب ضد الكمبيوتر، وشاهد لماذا ذهبت كل ضربة إلى حيث ذهبت."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Billardtisch, der seine eigene Physik zeigt. Spiel vier Spiele gegen den Computer und sieh, warum jeder Stoß dorthin ging, wo er hinging."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una mesa de billar que muestra su propia física. Juega a cuatro juegos contra el ordenador, y mira por qué cada tiro fue a donde fue."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une table de billard qui montre sa propre physique. Joue à quatre jeux contre l'ordinateur, et vois pourquoi chaque coup est allé là où il est allé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tavolo da biliardo che mostra la propria fisica. Gioca a quattro giochi contro il computer, e scopri perché ogni colpo è andato dove è andato."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分の物理を見せてくれるビリヤード台。コンピューターと4つのゲームで遊び、どのショットもなぜそこへ行ったのかを見てみよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자기 물리를 보여 주는 당구대. 컴퓨터와 네 가지 게임을 하고, 샷마다 왜 그쪽으로 갔는지 확인해 보세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma mesa de snooker que mostra a sua própria física. Joga quatro jogos contra o computador, e vê porque cada tacada foi para onde foi."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma mesa de sinuca que mostra a própria física. Jogue quatro jogos contra o computador, e veja por que cada tacada foi para onde foi."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бильярдный стол, который показывает свою физику. Сыграй в четыре игры с компьютером и смотри, почему каждый удар пошёл именно туда."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一张会展示自身物理的台球桌。和电脑玩四种游戏，看看每一杆为什么会走到那里。"
           }
         }
       }
@@ -11901,6 +12391,76 @@
         }
       }
     },
+    "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضربة مستقيمة فيها خدعة: يجب ضربها بلف جانبي قوي إلى اليسار، واللف الجانبي يدفع الكرة البيضاء بعيدًا عن خط العصا."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein gerader Stoß mit Haken: Er muss mit kräftigem Seitendrall links gespielt werden, und Seitendrall drückt die Weiße von der Linie des Queues weg."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tiro recto con trampa: hay que darle con mucho efecto a la izquierda, y el efecto desvía la blanca de la línea del taco."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un coup droit avec un piège : il faut le jouer avec beaucoup d'effet à gauche, et l'effet écarte la blanche de la ligne de la queue."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un tiro dritto con un trucco: va colpito con molto effetto a sinistra, e l'effetto sposta la bianca fuori dalla linea della stecca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まっすぐなショットだが落とし穴がある。強い左の横回転で撞かなければならず、横回転は手球をキューの線からずらす。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "곧은 샷이지만 함정이 있어요. 강한 왼쪽 옆회전으로 쳐야 하는데, 옆회전은 큐볼을 큐의 선에서 밀어내요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma jogada direita com truque: tem de ser feita com muito efeito à esquerda, e o efeito desvia a branca da linha do taco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tacada reta com pegadinha: precisa ser feita com muito efeito à esquerda, e o efeito desvia a branca da linha do taco."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прямой удар с подвохом: бить нужно с сильным левым боковым вращением, а боковое вращение уводит белый шар с линии кия."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一杆直球，但有个陷阱：必须加强烈的左侧旋，而侧旋会把白球推离球杆的直线。"
+          }
+        }
+      }
+    },
     "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.": {
       "localizations": {
         "ar": {
@@ -12107,6 +12667,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "跑满全台的弧线球能打进你看不见的球。路线越长，弧线就越依赖台呢和速度。"
+          }
+        }
+      }
+    },
+    "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "رأس العصا الذي يضرب بعيدًا عن المركز يدفع الكرة البيضاء بعيدًا عن الجانب الذي ضربه. اضربها من اليسار فتنطلق قليلًا إلى يمين خط العصا، لذا صوّب قليلًا إلى اليسار لتعويض ذلك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Pomeranze, die außermittig trifft, drückt die Weiße von der getroffenen Seite weg. Triff sie links, und sie läuft ein wenig rechts der Queuelinie ab, also ziel ein kleines Stück nach links, um das auszugleichen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una punta que golpea fuera del centro empuja la blanca lejos del lado que tocó. Dale por la izquierda y sale un poco a la derecha de la línea del taco, así que apunta un pelín a la izquierda para compensarlo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un procédé qui frappe hors du centre pousse la blanche à l'opposé du côté touché. Frappe-la à gauche et elle part un peu à droite de la ligne de la queue, alors vise un poil à gauche pour compenser."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un cuoio che colpisce fuori centro spinge la bianca lontano dal lato colpito. Colpiscila a sinistra e parte un po' a destra della linea della stecca, quindi mira un filo a sinistra per compensare."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中心を外して撞いたタップは、手球を撞いた側から押しのけます。左を撞くと手球はキューの線より少し右へ出るので、その分だけ少し左を狙いましょう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "중심을 벗어나 친 팁은 큐볼을 맞은 쪽 반대로 밀어내요. 왼쪽을 치면 큐볼이 큐의 선보다 조금 오른쪽으로 나가니, 그만큼 살짝 왼쪽을 겨냥하세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma sola que bate fora do centro empurra a branca para longe do lado que tocou. Bate-lhe à esquerda e ela sai um pouco à direita da linha do taco, por isso aponta um nadinha à esquerda para compensar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma ponta que bate fora do centro empurra a branca para longe do lado que tocou. Bata nela à esquerda e ela sai um pouco à direita da linha do taco, então mire um pouquinho à esquerda para compensar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наклейка, ударившая не по центру, отталкивает белый шар от той стороны, по которой пришёлся удар. Ударь слева, и шар уйдёт чуть правее линии кия, так что целься чуть левее, чтобы это учесть."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏离中心击打的杆头会把白球推向被击打一侧的反方向。击打左侧，白球会略微偏到球杆直线的右边，所以瞄准时稍微偏左来抵消。"
           }
         }
       }
@@ -12527,6 +13157,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "再加百分之%@即可进入标记区。"
+          }
+        }
+      }
+    },
+    "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعد الكرة 4، وبينما تنزلق الكرة البيضاء، يدفعها اللباد بالاحتكاك مضروبًا في وزنها، عكس اتجاه انزلاق نقطة تلامسها، فينحني مسارها عائدًا نحو الكرة 9 حتى تتدحرج، وعندها تساوي سرعتها نصف قطرها مضروبًا في سرعة دورانها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach der 4 drückt das Tuch, solange die Weiße gleitet, mit der Reibung mal ihrem Gewicht gegen die Richtung, in die ihr Berührpunkt rutscht, also biegt sich ihre Bahn zurück zur 9, bis sie rollt, wenn ihre Geschwindigkeit gleich ihrem Radius mal ihrer Drehrate ist."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Después de la 4, mientras la blanca desliza, el paño la empuja con la fricción por su peso, en contra de cómo resbala su punto de contacto, así que su trayectoria se curva de vuelta hacia la 9 hasta que rueda, cuando su velocidad es igual a su radio por su velocidad de giro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Après la 4, tant que la blanche glisse, le tapis la pousse avec le frottement multiplié par son poids, à l'opposé du glissement de son point de contact, donc sa trajectoire se recourbe vers la 9 jusqu'à ce qu'elle roule, quand sa vitesse égale son rayon multiplié par sa vitesse de rotation."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopo la 4, mentre la bianca scivola, il panno la spinge con l'attrito per il suo peso, contro il verso in cui scivola il suo punto di contatto, così la traiettoria si piega di nuovo verso la 9 finché non rotola, quando la sua velocità è uguale al raggio per la velocità di rotazione."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4番に当たった後、手球が滑っている間、ラシャは摩擦に球の重さを掛けた力で、接点が滑る向きと逆に押します。そのため軌道は9番の方へ曲がり戻り、転がり始めるまで続きます。そのとき速さは半径に回転の速さを掛けたものと等しくなります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4번 다음, 큐볼이 미끄러지는 동안 천은 마찰에 공의 무게를 곱한 힘으로, 접촉점이 미끄러지는 반대 방향으로 밀어요. 그래서 경로가 9번 쪽으로 휘어 돌아오고, 구르기 시작할 때까지 이어져요. 그때 속도는 반지름에 회전 속도를 곱한 값과 같아요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depois da 4, enquanto a branca desliza, o pano empurra-a com o atrito vezes o seu peso, contra o sentido em que escorrega o seu ponto de contacto, por isso a trajetória curva de volta para a 9 até ela rolar, quando a sua velocidade é igual ao raio vezes a velocidade de rotação."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Depois da 4, enquanto a branca desliza, o pano a empurra com o atrito vezes o peso dela, contra o sentido em que escorrega seu ponto de contato, então a trajetória curva de volta para a 9 até ela rolar, quando sua velocidade é igual ao raio vezes a velocidade de rotação."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "После 4-го, пока белый шар скользит, сукно толкает его с силой трения, умноженной на вес, против скольжения точки касания, поэтому путь загибается обратно к 9-му, пока шар не покатится: тогда его скорость равна радиусу, умноженному на скорость вращения."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "碰到4号球之后，白球滑动时，台呢以摩擦力乘以球的重量推它，方向与接触点滑动的方向相反，所以路径向9号球弯回去，直到它开始滚动，那时它的速度等于半径乘以转速。"
           }
         }
       }
@@ -14701,6 +15401,76 @@
         }
       }
     },
+    "Answer": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الحل"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lösung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solución"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solution"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soluzione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "答え"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정답"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solução"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solução"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Решение"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "答案"
+          }
+        }
+      }
+    },
     "Answer the question on the card first.": {
       "localizations": {
         "ar": {
@@ -16097,6 +16867,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "回到距球杆线 %@ 以内:直。"
+          }
+        }
+      }
+    },
+    "Backspin outlasted the hit and pulled the cue ball back.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "صمد الدوران الخلفي بعد الاصطدام وسحب الكرة البيضاء إلى الوراء."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Rückwärtsdrall überdauerte den Treffer und zog die Weiße zurück."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El efecto de retroceso duró más que el golpe y tiró de la blanca hacia atrás."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effet rétro a survécu au choc et a ramené la blanche en arrière."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effetto indietro è durato più dell'impatto e ha riportato indietro la bianca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逆回転が衝突のあとも残り、手球を引き戻した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "백스핀이 충돌 뒤에도 남아서 큐볼을 뒤로 끌어당겼어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O efeito de recuo durou mais do que o impacto e puxou a branca para trás."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O efeito de recuo durou mais que o impacto e puxou a branca para trás."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обратное вращение пережило удар и потянуло биток назад."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回旋比撞击持续得更久，把母球拉了回来。"
           }
         }
       }
@@ -25971,6 +26811,76 @@
         }
       }
     },
+    "Drawn back": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سُحبت إلى الخلف"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurückgezogen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retroceso"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rétro"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tirata indietro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ドローで戻った"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "끌려 돌아왔어"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuou"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltou com recuo"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оттяжка"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拉回来了"
+          }
+        }
+      }
+    },
     "Drawn back. The backspin did the pulling.": {
       "localizations": {
         "ar": {
@@ -26037,6 +26947,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "拉回来了。是下旋在拉。"
+          }
+        }
+      }
+    },
+    "Draws the answer's cue-ball path faintly on the cloth beside your own": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يرسم مسار الكرة البيضاء في الحل باهتًا على اللباد بجانب مسارك"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeichnet den Weg der Weißen aus der Lösung blass aufs Tuch, neben deinen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dibuja tenue sobre el paño el recorrido de la blanca de la solución, junto al tuyo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dessine discrètement sur le tapis le trajet de la blanche de la solution, à côté du tien"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disegna leggermente sul panno il percorso della bianca della soluzione, accanto al tuo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "答えの手球の軌道を、あなたの軌道の横にラシャの上へ薄く描きます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정답의 큐볼 경로를 내 경로 옆에, 천 위에 흐리게 그려요"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desenha de leve no pano o percurso da branca da solução, ao lado do teu"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desenha de leve no pano o caminho da branca da solução, ao lado do seu"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Бледно рисует на сукне путь белого шара из решения рядом с твоим"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在台呢上淡淡地画出答案的白球路线，放在你的路线旁边"
           }
         }
       }
@@ -27927,6 +28907,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "每一杆都必须先碰台面上号码最小的球。之后必须有球落袋，或有任意球碰到库边。"
+          }
+        }
+      }
+    },
+    "Every trick shot can be watched like this: the answer, then the Lens.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يمكن مشاهدة كل ضربة خدعة هكذا: الحل أولاً، ثم العدسة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeder Trickstoß lässt sich so ansehen: die Lösung, dann die Lens."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada tiro de truco se puede ver así: la solución y luego la Lente."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chaque coup spectaculaire peut se regarder comme ça : la solution, puis la Lentille."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni colpo spettacolare si può guardare così: la soluzione, poi la Lens."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "どのトリックショットもこうして見られる。まず答え、それからレンズで。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 트릭 샷을 이렇게 볼 수 있어. 먼저 정답, 그다음 렌즈로."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada jogada de efeito pode ser vista assim: a solução e depois a Lente."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toda tacada de efeito pode ser vista assim: a solução e depois a Lente."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Любой трюковой удар можно посмотреть так: сначала решение, потом Линза."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每个花式球都可以这样看：先看答案，再用透镜看。"
           }
         }
       }
@@ -30311,6 +31361,76 @@
         }
       }
     },
+    "Four games against the computer, or practise on your own.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أربع ألعاب ضد الكمبيوتر، أو تدرّب وحدك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vier Spiele gegen den Computer, oder übe allein."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuatro juegos contra el ordenador, o practica solo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quatre jeux contre l'ordinateur, ou entraîne-toi seul."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quattro giochi contro il computer, oppure allenati da solo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンピューターと4つのゲームを。ひとりで練習もできます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "컴퓨터와 네 가지 게임을 하거나, 혼자 연습하세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quatro jogos contra o computador, ou treina sozinho."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quatro jogos contra o computador, ou treine sozinho."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Четыре игры против компьютера или тренировка в одиночку."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "与电脑玩四种游戏，或独自练习。"
+          }
+        }
+      }
+    },
     "Free play": {
       "localizations": {
         "ar": {
@@ -30447,6 +31567,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "空位"
+          }
+        }
+      }
+    },
+    "Friction at the contact dragged the ball off the line of centres.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سحب الاحتكاك عند نقطة التلامس الكرة بعيداً عن خط المركزين."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Reibung am Kontakt zog die Kugel von der Mittellinie weg."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fricción en el contacto desvió la bola de la línea de centros."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le frottement au contact a entraîné la bille hors de la ligne des centres."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'attrito al contatto ha trascinato la palla fuori dalla linea dei centri."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接触点の摩擦が、球を中心線から引きずり出した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접촉점의 마찰이 공을 중심선에서 끌어냈어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O atrito no contacto arrastou a bola para fora da linha dos centros."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O atrito no contato arrastou a bola para fora da linha dos centros."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Трение в точке контакта увело шар с линии центров."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接触点的摩擦把球拖离了中心连线。"
           }
         }
       }
@@ -32547,6 +33737,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "隐藏透镜"
+          }
+        }
+      }
+    },
+    "Hide the answer's path": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أخفِ مسار الحل"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weg der Lösung ausblenden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar el recorrido de la solución"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer le trajet de la solution"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascondi il percorso della soluzione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "答えの軌道を隠す"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정답의 경로 숨기기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar o percurso da solução"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar o caminho da solução"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Скрыть путь решения"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐藏答案的路线"
           }
         }
       }
@@ -35001,6 +36261,76 @@
         }
       }
     },
+    "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دخلت، لكن من دون اللف الجانبي القوي الذي تدور حوله هذه الضربة. اضرب أبعد نحو الجانب %@ من الكرة البيضاء."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drin, aber ohne den kräftigen Seitendrall, um den es bei diesem Stoß geht. Triff die weiße Kugel weiter %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entró, pero sin el efecto fuerte del que trata este tiro. Golpea más hacia la %@ de la bola blanca."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elle est rentrée, mais sans l'effet fort dont parle ce coup. Frappe plus vers la %@ de la bille blanche."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dentro, ma senza il forte effetto di cui parla questo colpo. Colpisci più lontano, a %@ della palla bianca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "入ったけれど、このショットの肝である強い横回転がなかった。手球の%@寄りを、もっと打ちましょう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "들어갔지만, 이 샷의 핵심인 강한 옆회전이 없었어요. 큐볼의 %@ 쪽을 더 치세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrou, mas sem o efeito forte de que trata esta jogada. Bate mais para o lado %@ da bola branca."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrou, mas sem o efeito forte de que trata esta tacada. Bata mais para o lado %@ da bola branca."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забит, но без сильного бокового вращения, ради которого этот удар. Бей дальше к %@ стороне белого шара."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "进了，但没有这一杆要练的强烈侧旋。击打位置再偏向白球的%@侧一些。"
+          }
+        }
+      }
+    },
     "Inside the marked angles.": {
       "localizations": {
         "ar": {
@@ -35351,6 +36681,146 @@
         }
       }
     },
+    "It aimed to sink its marked ball in its cup.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أراد إدخال كرته المحددة في حفرته."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er wollte seine markierte Kugel in sein Loch bringen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiso meter su bola marcada en su hoyo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il a visé à rentrer sa bille marquée dans son trou."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha mirato a mandare la sua bilia segnata nella sua buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マーク付きの自分の球を自分のカップに入れようとしました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "표시된 자기 공을 자기 컵에 넣으려고 했습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentou meter a sua bola marcada no seu buraco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentou colocar a bola marcada dele no buraco dele."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он целился забить свой отмеченный шар в свою лунку."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它想把自己的标记球打进自己的球洞。"
+          }
+        }
+      }
+    },
+    "It aimed to sink one of its balls in its cup.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أراد إدخال إحدى كراته في حفرته."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er wollte eine seiner Kugeln in sein Loch bringen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiso meter una de sus bolas en su hoyo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il a visé à rentrer une de ses billes dans son trou."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha mirato a mandare una delle sue bilie nella sua buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分の球のひとつを自分のカップに入れようとしました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자기 공 하나를 자기 컵에 넣으려고 했습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentou meter uma das suas bolas no seu buraco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentou colocar uma das bolas dele no buraco dele."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он целился забить один из своих шаров в свою лунку."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它想把自己的一颗球打进自己的球洞。"
+          }
+        }
+      }
+    },
     "It also carries left-hand side spin, which shows at the next rail.": {
       "localizations": {
         "ar": {
@@ -35487,6 +36957,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "它还带着右侧旋，会在下一次碰库时显现。"
+          }
+        }
+      }
+    },
+    "It also kept its ball away from the pins, so you have less to aim at.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وأبقى كرته بعيدًا عن الأوتاد أيضًا، فيقلّ ما تصوّب عليه."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er hielt seine Kugel auch von den Kegeln fern, damit du weniger zum Zielen hast."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Además dejó su bola lejos de los bolos, así tienes menos a qué apuntar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il a aussi gardé sa bille loin des quilles, pour te laisser moins de cible."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha anche tenuto la sua bilia lontana dai birilli, così hai meno da mirare."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "さらに自分の球をピンから離し、あなたが狙いにくいようにしました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자기 공을 핀에서 멀리 두어서 당신이 노릴 곳이 줄었습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Também manteve a sua bola longe dos pinos, para teres menos onde apontar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Também deixou a bola dele longe dos pinos, para você ter menos onde mirar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ещё он увёл свой шар от кеглей, чтобы тебе было меньше куда целиться."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它还让自己的球远离柱，让你更难瞄。"
           }
         }
       }
@@ -37871,6 +39411,216 @@
         }
       }
     },
+    "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لعب على الأوتاد. النقاط بضربة عادية من يده: نحو %1$lld. بضربة مثالية: %2$lld."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er spielte auf die Kegel. Punkte bei einem durchschnittlichen Stoß seiner Hand: etwa %1$lld. Bei einem perfekten Stoß: %2$lld."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jugó a los bolos. Puntos con un golpe normal de su mano: unos %1$lld. Con un golpe perfecto: %2$lld."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il a joué les quilles. Points sur un coup moyen de sa main : environ %1$lld. Sur un coup parfait : %2$lld."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha giocato per i birilli. Punti con un colpo medio della sua mano: circa %1$lld. Con un colpo perfetto: %2$lld."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ピンを狙いました。ふつうの打ち方での得点：およそ%1$lld。完璧に撞いた場合：%2$lld。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "핀을 노렸습니다. 평소 솜씨의 점수: 약 %1$lld. 완벽하게 쳤을 때: %2$lld."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jogou para os pinos. Pontos numa tacada média da sua mão: cerca de %1$lld. Numa tacada perfeita: %2$lld."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jogou nos pinos. Pontos numa tacada média da mão dele: cerca de %1$lld. Numa tacada perfeita: %2$lld."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он играл на кегли. Очки при обычном ударе его руки: около %1$lld. При идеальном ударе: %2$lld."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它冲着柱去打。按它平常的手感得分：约%1$lld。打得完美时：%2$lld。"
+          }
+        }
+      }
+    },
+    "It sent its ball off a cushion first to reach yours.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أرسل كرته أولًا إلى الحافة ليصل إلى كرتك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er spielte seine Kugel zuerst über eine Bande, um an deine zu kommen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandó su bola primero a una banda para llegar a la tuya."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il a envoyé sa bille d'abord sur une bande pour atteindre la tienne."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha mandato la sua bilia prima su una sponda per arrivare alla tua."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたの球に届かせるため、まず自分の球をクッションに当てました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신의 공에 닿으려고 먼저 자기 공을 쿠션에 맞혔습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandou a sua bola primeiro a uma tabela para chegar à tua."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandou a bola dele primeiro numa tabela para chegar à sua."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он сначала отправил свой шар в борт, чтобы добраться до твоего."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它先让自己的球吃一库，再去碰你的球。"
+          }
+        }
+      }
+    },
+    "It sent your ball at the pins by eye, without working out the points.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أرسل كرتك نحو الأوتاد بالنظر، دون حساب النقاط."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Er schickte deine Kugel nach Augenmaß auf die Kegel, ohne die Punkte auszurechnen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lanzó tu bola a los bolos a ojo, sin calcular los puntos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il a envoyé ta bille vers les quilles à l'œil, sans calculer les points."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha mandato la tua bilia sui birilli a occhio, senza calcolare i punti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点数を計算せず、目分量であなたの球をピンへ送りました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "점수를 계산하지 않고 눈대중으로 당신의 공을 핀 쪽으로 보냈습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandou a tua bola aos pinos a olho, sem calcular os pontos."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mandou a sua bola nos pinos no olho, sem calcular os pontos."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Он отправил твой шар в кегли на глаз, не подсчитывая очки."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它凭目测把你的球送向柱，没有算分。"
+          }
+        }
+      }
+    },
     "It stopped %@ off the cue line before coming all the way back.": {
       "localizations": {
         "ar": {
@@ -38287,6 +40037,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "现在轮到电脑。"
+          }
+        }
+      }
+    },
+    "Its aim could have been off by %@ degrees either way and still scored.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "كان يمكن أن ينحرف تصويبه %@ درجة في أي اتجاه ويسجل مع ذلك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sein Zielen hätte um %@ Grad nach jeder Seite abweichen können, und er hätte trotzdem gepunktet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Su puntería podía desviarse %@ grados hacia cualquier lado y aun así puntuaba."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sa visée pouvait dévier de %@ degrés d'un côté ou de l'autre et marquer quand même."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La sua mira poteva sbagliare di %@ gradi da una parte o dall'altra e fare punti lo stesso."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "狙いが左右どちらに %@ 度ずれても得点できていました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조준이 어느 쪽으로든 %@도 벗어나도 점수를 냈을 겁니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A sua mira podia desviar-se %@ graus para qualquer lado e ainda assim pontuava."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mira dele podia desviar %@ graus para qualquer lado e mesmo assim pontuava."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прицел мог уйти на %@ градуса в любую сторону, и очки всё равно были бы."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它的瞄准左右偏 %@ 度也照样能得分。"
           }
         }
       }
@@ -50191,6 +52011,76 @@
         }
       }
     },
+    "No cup shot was likely enough, so it rolled its ball nearer its cup.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم تكن أي ضربة نحو الحفرة مضمونة بما يكفي، فدحرج كرته أقرب إلى حفرته."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Stoß ins Loch war sicher genug, also rollte er seine Kugel näher an sein Loch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ningún tiro al hoyo era lo bastante seguro, así que acercó su bola a su hoyo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun coup au trou n'était assez sûr, alors il a roulé sa bille plus près de son trou."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun tiro in buca era abbastanza sicuro, così ha avvicinato la sua bilia alla sua buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カップに入る見込みの高いショットがなかったので、自分の球をカップの近くへ転がしました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "컵에 넣을 만한 샷이 없어서 자기 공을 컵 가까이로 굴렸습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhuma jogada ao buraco era provável o suficiente, por isso rolou a sua bola para mais perto do seu buraco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhuma jogada no buraco era provável o bastante, então rolou a bola dele para mais perto do buraco dele."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ни один удар в лунку не был достаточно надёжным, поэтому он подкатил свой шар ближе к своей лунке."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有足够有把握的进洞球，所以它把自己的球滚到离球洞更近的地方。"
+          }
+        }
+      }
+    },
     "No games against %@ yet.": {
       "localizations": {
         "ar": {
@@ -51871,6 +53761,76 @@
         }
       }
     },
+    "Nothing scored often enough, so it touched your ball softly to give away as little as possible.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يكن هناك ما يسجل بما يكفي، فلمس كرتك بلطف ليمنح أقل ما يمكن."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nichts punktete oft genug, also berührte er deine Kugel sanft, um so wenig wie möglich herzugeben."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada puntuaba lo bastante a menudo, así que tocó tu bola suave para regalar lo menos posible."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rien ne marquait assez souvent, alors il a touché ta bille doucement pour donner le moins possible."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente faceva punti abbastanza spesso, così ha toccato la tua bilia piano per concedere il meno possibile."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "得点できる見込みのある打ち方がなかったので、あなたの球にそっと当てて、与える点をできるだけ少なくしました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "충분히 자주 점수가 나는 샷이 없어서 당신의 공을 살살 맞혀 내주는 점수를 최대한 줄였습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada pontuava vezes suficientes, por isso tocou a tua bola com suavidade para dar o mínimo possível."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada pontuava com frequência suficiente, então tocou a sua bola de leve para entregar o mínimo possível."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ничто не приносило очков достаточно часто, поэтому он мягко коснулся твоего шара, чтобы отдать как можно меньше."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有哪种打法能经常得分，所以它轻碰你的球，尽量少送分。"
+          }
+        }
+      }
+    },
     "Nothing went down.": {
       "localizations": {
         "ar": {
@@ -52147,6 +54107,286 @@
           "stringUnit": {
             "state": "translated",
             "value": "关"
+          }
+        }
+      }
+    },
+    "Off a bumper": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عبر مصدّ"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über einen Pfosten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rebote en un tope"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par un plot"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di respingente"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バンパーを使って"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "범퍼를 맞고"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pelo pino de borracha"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pelo pino de borracha"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "От столбика"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "借挡柱入洞"
+          }
+        }
+      }
+    },
+    "Off a bumper on the way.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرورًا بارتداد عن مصدّ."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterwegs über einen Pfosten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasando por un tope."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En passant par un plot."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando da un respingente."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "途中でバンパーに当てて。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가는 길에 범퍼를 맞고."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando por um pino de borracha."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando por um pino de borracha."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По пути от столбика."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "途中碰一个挡柱。"
+          }
+        }
+      }
+    },
+    "Off a cushion on the way.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرورًا بارتداد عن الحافة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterwegs über eine Bande."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasando por una banda."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En passant par une bande."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando da una sponda."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "途中でクッションに当てて。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가는 길에 쿠션을 맞고."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando por uma tabela."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando por uma tabela."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По пути от борта."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "途中吃一库。"
+          }
+        }
+      }
+    },
+    "Off cushions and bumpers on the way.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرورًا بالحواف والمصدّات."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterwegs über Banden und Pfosten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasando por bandas y topes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En passant par des bandes et des plots."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando da sponde e respingenti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "途中でクッションとバンパーに当てて。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가는 길에 쿠션과 범퍼를 맞고."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando por tabelas e pinos de borracha."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passando por tabelas e pinos de borracha."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По пути от бортов и столбиков."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "途中吃库又碰挡柱。"
           }
         }
       }
@@ -54111,6 +56351,76 @@
         }
       }
     },
+    "One ball passed its speed through another, along the line of centres.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نقلت كرة سرعتها عبر كرة أخرى، على امتداد خط المركزين."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Kugel gab ihr Tempo durch eine andere weiter, entlang der Mittellinie."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una bola pasó su velocidad a través de otra, a lo largo de la línea de centros."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une bille a transmis sa vitesse à travers une autre, le long de la ligne des centres."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una palla ha passato la sua velocità attraverso un'altra, lungo la linea dei centri."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一つの球が、中心線に沿って別の球へと速さを受け渡した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 공이 중심선을 따라 다른 공을 통해 속도를 전달했어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma bola passou a velocidade através de outra, ao longo da linha dos centros."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma bola passou a velocidade através de outra, ao longo da linha dos centros."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Один шар передал скорость через другой, вдоль линии центров."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一颗球沿着中心连线，把速度穿过另一颗球传了出去。"
+          }
+        }
+      }
+    },
     "One game at a time": {
       "localizations": {
         "ar": {
@@ -54177,6 +56487,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "一次只能玩一局"
+          }
+        }
+      }
+    },
+    "One stroke, more than one ball down.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ضربة واحدة، وأكثر من كرة في الجيب."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Stoß, mehr als eine Kugel versenkt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un golpe, más de una bola dentro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un seul coup, plus d'une bille empochée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un colpo, più di una palla in buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一打で、2つ以上の球が落ちた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 번 쳐서 공이 두 개 이상 들어갔어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tacada, mais de uma bola dentro."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma tacada, mais de uma bola encaçapada."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Один удар, больше одного шара в лузе."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一杆，不止一颗球落袋。"
           }
         }
       }
@@ -54877,6 +57257,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "只有力度可调。在“力度”上上下滑动，直到听到在标记区内。然后击球。"
+          }
+        }
+      }
+    },
+    "Only the red pin fell.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لم يسقط إلا الوتد الأحمر."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur der rote Kegel ist gefallen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo cayó el bolo rojo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seule la quille rouge est tombée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "È caduto solo il birillo rosso."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "倒れたのは赤ピンだけ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 핀만 쓰러졌어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Só caiu o pino vermelho."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Só o pino vermelho caiu."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Упала только красная кегля."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只有红柱倒下了。"
           }
         }
       }
@@ -57751,6 +60201,76 @@
         }
       }
     },
+    "Play the computer": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العب ضد الكمبيوتر"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gegen den Computer spielen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Juega contra el ordenador"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Joue contre l'ordinateur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gioca contro il computer"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンピューターと遊ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "컴퓨터와 대전하기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Joga contra o computador"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jogue contra o computador"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Играть с компьютером"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "和电脑对战"
+          }
+        }
+      }
+    },
     "Playback": {
       "localizations": {
         "ar": {
@@ -59711,6 +62231,76 @@
         }
       }
     },
+    "Pot the 2 in the top-right corner, with strong left side.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أدخل الكرة 2 في الزاوية العلوية اليمنى، بلف جانبي قوي إلى اليسار."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die 2 in der oberen rechten Ecke versenken, mit kräftigem Seitendrall links."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mete la 2 en la esquina de arriba a la derecha, con mucho efecto a la izquierda."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rentre la 2 dans le coin en haut à droite, avec beaucoup d'effet à gauche."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metti in buca la 2 nell'angolo in alto a destra, con molto effetto a sinistra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "強い左の横回転で、2番を右上のコーナーに落とそう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강한 왼쪽 옆회전으로 2번을 오른쪽 위 코너에 넣으세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encaçapa a 2 no canto superior direito, com muito efeito à esquerda."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encaçape a 2 no canto superior direito, com muito efeito à esquerda."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забей 2 в правый верхний угол с сильным левым боковым вращением."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加强烈左侧旋，把2号球打进右上角袋口。"
+          }
+        }
+      }
+    },
     "Pot the 3 and bring the cue ball back into the marked circle.": {
       "localizations": {
         "ar": {
@@ -61597,6 +64187,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "把母球放回开球点"
+          }
+        }
+      }
+    },
+    "Race the computer to sink all your balls in your cup.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سابِق الكمبيوتر لإدخال كل كراتك في حفرتك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versenk um die Wette mit dem Computer alle deine Kugeln in deinem Loch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compite con el ordenador por meter todas tus bolas en tu hoyo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fais la course contre l'ordinateur pour rentrer toutes tes billes dans ton trou."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai a gara col computer a imbucare tutte le tue bilie nella tua buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンピューターと競って、自分の球を全部自分のカップに沈めよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "컴퓨터와 겨뤄 내 공을 모두 내 컵에 먼저 넣으세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compete com o computador para meter todas as tuas bolas no teu buraco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dispute com o computador quem encaçapa primeiro todas as bolas no próprio buraco."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Соревнуйся с компьютером: кто первым загонит все свои шары в свою лунку."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "和电脑比赛，看谁先把自己的球全部打进自己的洞。"
           }
         }
       }
@@ -64191,6 +66851,76 @@
         }
       }
     },
+    "Replays the shot slowly with the physics drawn on the table": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يعيد الضربة ببطء مع رسم الفيزياء على الطاولة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigt den Stoß noch einmal langsam, mit der Physik auf den Tisch gezeichnet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repite el tiro a cámara lenta con la física dibujada sobre la mesa"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rejoue le coup au ralenti avec la physique dessinée sur la table"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rivedi il colpo al rallentatore con la fisica disegnata sul tavolo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショットを、物理を台に描いてスローで再生する"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "샷을 테이블 위에 물리를 그려 느리게 다시 보여줘"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repete a jogada em câmara lenta com a física desenhada na mesa"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repete a tacada em câmera lenta com a física desenhada na mesa"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Повторяет удар замедленно, с физикой, нарисованной на столе"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "慢放这一杆，并把物理画在球台上"
+          }
+        }
+      }
+    },
     "Replays your shot slowly and explains it": {
       "localizations": {
         "ar": {
@@ -64257,6 +66987,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "慢放你的这一杆并讲解"
+          }
+        }
+      }
+    },
+    "Replays your stroke slowly in the Lens, stopping on the moments that made it": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يعيد ضربتك ببطء في العدسة، ويتوقف عند اللحظات التي صنعتها"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spielt deinen Stoß langsam in der Lens ab und hält bei den Momenten an, die ihn gelingen ließen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repite tu golpe despacio en la Lente, deteniéndose en los momentos que lo hicieron entrar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rejoue ton coup lentement dans la lentille, en s'arrêtant sur les moments qui l'ont fait réussir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripete il tuo colpo al rallentatore nella lente, fermandosi sui momenti che l'hanno fatto riuscire"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたのショットをレンズでゆっくり再生し、決め手になった瞬間で止まります"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내 샷을 렌즈로 천천히 다시 보여 주고, 성공을 만든 순간에서 멈춥니다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repete a tua tacada devagar na lente, parando nos momentos que a fizeram resultar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repete sua tacada devagar na lente, parando nos momentos que a fizeram dar certo"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Медленно повторяет твой удар в линзе, останавливаясь на моментах, которые его решили"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在镜片中慢放你的这一杆，并停在让它成功的那些瞬间"
           }
         }
       }
@@ -66571,6 +69371,76 @@
         }
       }
     },
+    "Score off the pins and the red against the computer, first to %lld.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سجّل النقاط بالأوتاد والكرة الحمراء ضد الكمبيوتر، والفائز أول من يبلغ %lld."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punkte mit den Kegeln und der Roten gegen den Computer; wer zuerst %lld hat, gewinnt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puntúa con los bolos y la roja contra el ordenador; gana quien llegue a %lld."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marque avec les quilles et la rouge contre l'ordinateur ; le premier à %lld gagne."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai punti con i birilli e la rossa contro il computer; vince chi arriva a %lld."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンピューターを相手にピンと赤球で得点し、先に%lld点で勝ち。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "컴퓨터를 상대로 핀과 빨간 공으로 점수를 내며, 먼저 %lld점이면 이깁니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marca pontos com os pinos e a vermelha contra o computador; ganha quem chegar a %lld."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marque pontos com os pinos e a vermelha contra o computador; ganha quem chegar a %lld."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Набирай очки кеглями и красным шаром против компьютера, до %lld очков."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "和电脑对战，用木柱和红球得分，先到%lld分者胜。"
+          }
+        }
+      }
+    },
     "Score: %@": {
       "localizations": {
         "ar": {
@@ -68741,6 +71611,76 @@
         }
       }
     },
+    "Show the answer's path": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أظهر مسار الحل"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weg der Lösung zeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar el recorrido de la solución"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher le trajet de la solution"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra il percorso della soluzione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "答えの軌道を表示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정답의 경로 보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar o percurso da solução"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar o caminho da solução"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Показать путь решения"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示答案的路线"
+          }
+        }
+      }
+    },
     "Show the hint again": {
       "localizations": {
         "ar": {
@@ -69021,6 +71961,76 @@
         }
       }
     },
+    "Side Off the Rail": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اللف الجانبي على الوسادة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seitendrall an der Bande"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efecto en la banda"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effet sur la bande"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Effetto in sponda"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クッションで効く横回転"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쿠션에서 사는 옆회전"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efeito na tabela"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efeito na tabela"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Боковое вращение от борта"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "库边侧旋"
+          }
+        }
+      }
+    },
     "Side inside the marked band.": {
       "localizations": {
         "ar": {
@@ -69087,6 +72097,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "侧向位置在标记区内。"
+          }
+        }
+      }
+    },
+    "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يتشبث اللف الجانبي بالوسادة بينما تستدير الكرة عنها. الدوران في نفس اتجاه جريان الكرة على طول الوسادة يدفعها على طولها، فتخرج بزاوية أوسع من زاوية دخولها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seitendrall greift an der Bande, während die Kugel von ihr abdreht. Drall in die Richtung, in die die Kugel an der Bande entlangläuft, schiebt sie an der Bande weiter, also läuft sie in einem weiteren Winkel ab, als sie kam."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El efecto agarra la banda mientras la bola gira al salir de ella. Un giro en el mismo sentido en que la bola corre a lo largo de la banda la empuja a lo largo de ella, así que sale con un ángulo más abierto que el de llegada."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effet accroche la bande pendant que la bille tourne pour en repartir. Une rotation dans le sens où la bille court le long de la bande la pousse le long de celle-ci, donc elle repart avec un angle plus ouvert qu'à l'arrivée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effetto fa presa sulla sponda mentre la palla ne esce. Una rotazione nello stesso verso in cui la palla corre lungo la sponda la spinge avanti lungo di essa, così esce con un angolo più aperto di quello d'arrivo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球がクッションから離れるとき、横回転がクッションをつかみます。球がクッションに沿って進む向きと同じ向きの回転は、球をクッションに沿ってさらに押すので、入ってきた角度より広い角度で出ていきます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공이 쿠션에서 돌아 나올 때 옆회전이 쿠션을 붙잡아요. 공이 쿠션을 따라 달리는 방향과 같은 쪽으로 도는 회전은 공을 쿠션을 따라 더 밀어 주니, 들어온 각도보다 넓은 각도로 나가요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O efeito agarra a tabela enquanto a bola sai dela. Uma rotação no mesmo sentido em que a bola corre ao longo da tabela empurra-a ao longo dela, por isso sai com um ângulo mais aberto do que o de chegada."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O efeito agarra a tabela enquanto a bola sai dela. Uma rotação no mesmo sentido em que a bola corre ao longo da tabela a empurra ao longo dela, então ela sai com um ângulo mais aberto do que o de chegada."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Боковое вращение цепляет борт, когда шар отворачивает от него. Вращение в ту же сторону, куда шар бежит вдоль борта, подталкивает его дальше вдоль борта, поэтому он уходит под более широким углом, чем пришёл."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球离开库边转向时，侧旋会咬住库边。旋转方向和球沿库边前进的方向一致时，会把球沿库边继续推，所以它弹出的角度比进来时更大。"
           }
         }
       }
@@ -71611,6 +74691,76 @@
         }
       }
     },
+    "Squirt": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انحراف البيضاء"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abweichung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desvío"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déviation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deviazione"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手球のトビ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스쿼트"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desvio"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desvio"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Снос"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "母球偏移"
+          }
+        }
+      }
+    },
     "Stance this time: %@ (last time: %@).": {
       "localizations": {
         "ar": {
@@ -73147,6 +76297,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "停在第一次碰撞处。"
+          }
+        }
+      }
+    },
+    "Stopped dead": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توقفت تماماً"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie angenagelt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parada en seco"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arrêt net"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferma di colpo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ピタリと止まった"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "딱 멈췄어"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parou a seco"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parou na hora"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Встал как вкопанный"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定住了"
           }
         }
       }
@@ -77141,6 +80361,76 @@
         }
       }
     },
+    "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انقر على ضربات الخدع لتشاهد ضربة تبدو مستحيلة، وترى في العدسة لماذا تنجح، ثم تنفّذها بنفسك. وفي تعلّم ستة دروس قصيرة متى أردتها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippe auf Trickstöße, um einen Stoß zu sehen, der unmöglich aussieht, in der Lens zu verstehen, warum er klappt, und ihn dann selbst zu schaffen. Unter Lernen warten sechs kurze Lektionen, wann immer du willst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Tiros de truco para ver un tiro que parece imposible, descubrir en la Lente por qué funciona y luego hacerlo tú. En Aprender hay seis lecciones cortas para cuando las quieras."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touche Coups spectaculaires pour regarder un coup qui semble impossible, voir dans la Lentille pourquoi il marche, puis le réussir toi-même. Apprendre propose six courtes leçons, quand tu veux."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca Colpi spettacolari per guardare un colpo che sembra impossibile, scoprire nella Lens perché funziona e poi farlo tu. In Impara ci sono sei brevi lezioni, quando vuoi."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「トリックショット」をタップすると、ありえないように見えるショットを見て、レンズでなぜうまくいくのかを知り、自分で決められます。「学ぶ」には短いレッスンが6つあり、いつでも受けられます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'트릭 샷'을 탭해 불가능해 보이는 샷을 보고, 렌즈로 왜 되는지 알아본 다음 직접 성공해 보세요. '배우기'에는 원할 때 언제든 볼 수 있는 짧은 레슨 여섯 개가 있습니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca em Jogadas de efeito para ver uma tacada que parece impossível, perceber na Lente porque resulta e depois fazê-la tu. Em Aprender há seis lições curtas, sempre que quiseres."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque em Tacadas de efeito para ver uma tacada que parece impossível, entender na Lente por que ela funciona e depois fazer você mesmo. Em Aprender há seis lições curtas, quando você quiser."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажми «Трюковые удары», чтобы посмотреть удар, который кажется невозможным, понять в Линзе, почему он работает, и сделать его самому. В «Учиться» есть шесть коротких уроков — когда захочешь."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点击“花式球”，看一杆看似不可能的球，在透镜里弄懂它为什么能成，然后亲手打进。“学习”里有六节短课，想学随时都在。"
+          }
+        }
+      }
+    },
     "Tap one of your balls (%@), then the pocket you call. Or call Safety.": {
       "localizations": {
         "ar": {
@@ -78261,6 +81551,76 @@
         }
       }
     },
+    "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الكرتان 9 و10 تحجبان الكرة 7. اضرب عبر وسادة واحدة بلف جانبي قوي إلى اليسار، فيوسّع الدوران زاوية الخروج من الوسادة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die 9 und die 10 verdecken die 7. Spiel über eine Bande mit kräftigem Seitendrall links, und der Drall öffnet den Winkel von der Bande."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La 9 y la 10 tapan la 7. Juega a una banda con mucho efecto a la izquierda, y el giro abre el ángulo al salir de la banda."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La 9 et la 10 cachent la 7. Joue une bande avec beaucoup d'effet à gauche, et la rotation ouvre l'angle en sortie de bande."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La 9 e la 10 nascondono la 7. Gioca di sponda con molto effetto a sinistra, e la rotazione apre l'angolo in uscita dalla sponda."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "9番と10番が7番を隠している。強い左の横回転でワンクッションを使えば、回転がクッションからの角度を広げる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "9번과 10번이 7번을 가리고 있어요. 강한 왼쪽 옆회전으로 원쿠션을 치면, 회전이 쿠션에서 나오는 각도를 넓혀 줘요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 9 e a 10 escondem a 7. Joga a uma tabela com muito efeito à esquerda, e a rotação abre o ângulo à saída da tabela."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A 9 e a 10 escondem a 7. Jogue numa tabela com muito efeito à esquerda, e a rotação abre o ângulo na saída da tabela."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "9-й и 10-й закрывают 7-й. Сыграй от одного борта с сильным левым боковым вращением, и вращение раскроет угол отскока от борта."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "9号球和10号球挡住了7号球。加强烈左侧旋吃一库，旋转会让球离开库边的角度变大。"
+          }
+        }
+      }
+    },
     "The Called Break": {
       "localizations": {
         "ar": {
@@ -78677,6 +82037,216 @@
           "stringUnit": {
             "state": "translated",
             "value": "入射角大致等于反射角；库边的摩擦和任何旋转都会使其偏转几度。"
+          }
+        }
+      }
+    },
+    "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تكبر زاوية الانحراف عن خط العصا كلما ابتعدت ضربة الرأس عن المركز، وتصغر كلما كانت الكرة أثقل مقارنةً بالطرف الخفيف من العصا: عند أقوى لف جانبي نحو درجتين ونصف."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Winkel weg von der Queuelinie wächst, je weiter außen die Pomeranze trifft, und schrumpft, je schwerer die Kugel gegenüber dem leichten Ende des Oberteils ist: beim stärksten Seitendrall etwa zweieinhalb Grad."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El ángulo fuera de la línea del taco crece cuanto más lejos del centro golpea la punta, y se reduce cuanto más pesa la bola frente a la ligera punta del taco: con el efecto más fuerte, unos dos grados y medio."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'angle hors de la ligne de la queue grandit à mesure que le procédé frappe loin du centre, et diminue à mesure que la bille pèse plus que le bout léger de la flèche : avec l'effet le plus fort, environ deux degrés et demi."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'angolo fuori dalla linea della stecca cresce quanto più lontano dal centro colpisce il cuoio, e diminuisce quanto più la palla pesa rispetto alla punta leggera della stecca: con l'effetto più forte, circa due gradi e mezzo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キューの線からずれる角度は、タップが中心から離れて撞くほど大きくなり、キュー先の軽い部分に比べて球が重いほど小さくなります。いちばん強い横回転で約2.5度です。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큐의 선에서 벗어나는 각도는 팁이 중심에서 멀리 칠수록 커지고, 큐 끝의 가벼운 부분보다 공이 무거울수록 작아져요. 가장 강한 옆회전에서 약 2.5도예요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O ângulo fora da linha do taco cresce quanto mais longe do centro a sola bate, e diminui quanto mais a bola pesa face à ponta leve do taco: com o efeito mais forte, cerca de dois graus e meio."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O ângulo fora da linha do taco cresce quanto mais longe do centro a ponta bate, e diminui quanto mais a bola pesa em relação à ponta leve do taco: com o efeito mais forte, cerca de dois graus e meio."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Угол ухода с линии кия растёт, чем дальше от центра бьёт наклейка, и уменьшается, чем тяжелее шар по сравнению с лёгким концом кия: при самом сильном боковом вращении это примерно два с половиной градуса."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏离球杆直线的角度随杆头击打点离中心越远而越大，球相对于球杆前端那段轻的部分越重，角度就越小：最强的侧旋大约两度半。"
+          }
+        }
+      }
+    },
+    "The ball crossed the hole faster than it could fall in.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "عبرت الكرة الحفرة أسرع من أن تسقط فيها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kugel lief schneller über das Loch, als sie hineinfallen konnte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La bola cruzó el agujero más rápido de lo que podía caer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La bille a traversé le trou plus vite qu'elle ne pouvait y tomber."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La palla ha attraversato il buco più veloce di quanto potesse cadervi."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球は落ちきれないほどの速さで穴を通り過ぎた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공이 떨어질 수 있는 것보다 빠르게 구멍을 지나갔어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A bola atravessou o buraco mais depressa do que conseguia cair."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A bola atravessou o buraco mais rápido do que conseguia cair."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шар пересёк лузу быстрее, чем успел в неё упасть."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球越过洞口的速度太快，来不及落下去。"
+          }
+        }
+      }
+    },
+    "The ball left the cushion at its mirror angle, into the pocket.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "غادرت الكرة الحافة بزاويتها المعكوسة، إلى داخل الجيب."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kugel verließ die Bande im Spiegelwinkel, hinein in die Tasche."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La bola salió de la banda con su ángulo de espejo, hacia la tronera."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La bille a quitté la bande à son angle miroir, droit dans la poche."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La palla ha lasciato la sponda con il suo angolo a specchio, dritta in buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球は鏡のような角度でクッションを離れ、ポケットへ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공이 거울 각도로 쿠션을 떠나 포켓으로 들어갔어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A bola saiu da tabela no seu ângulo de espelho, para dentro da caçapa."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A bola saiu da tabela no ângulo de espelho, direto para a caçapa."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шар ушёл от борта под зеркальным углом, прямо в лузу."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球以镜面角度离开库边，落入袋中。"
           }
         }
       }
@@ -80221,6 +83791,76 @@
         }
       }
     },
+    "The cue ball found its ball off the cushion, like light off a mirror.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وجدت الكرة البيضاء كرتها عبر الحافة، كالضوء المنعكس عن مرآة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Weiße fand ihre Kugel über die Bande, wie Licht über einen Spiegel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La blanca encontró su bola rebotando en la banda, como la luz en un espejo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La blanche a trouvé sa bille par la bande, comme la lumière sur un miroir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La bianca ha trovato la sua palla di sponda, come la luce su uno specchio."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手球はクッションに当たって、鏡に反射する光のように狙いの球を捉えた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큐볼이 쿠션을 맞고, 거울에 반사되는 빛처럼 목표 공을 찾아갔어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A branca encontrou a sua bola pela tabela, como a luz num espelho."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A branca encontrou a bola dela pela tabela, como a luz num espelho."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Биток нашёл свой шар через борт, как свет от зеркала."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "母球借库边找到了目标球，就像光在镜子上反射。"
+          }
+        }
+      }
+    },
     "The cue ball has to reach the %lld first. Aim %@ %@.": {
       "localizations": {
         "ar": {
@@ -80637,6 +84277,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "白球不在台面上。"
+          }
+        }
+      }
+    },
+    "The cue ball jumped": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قفزت الكرة البيضاء"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Weiße ist gesprungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La blanca saltó"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La blanche a sauté"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La bianca è saltata"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手球がジャンプした"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큐볼이 점프했어"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A branca saltou"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A branca pulou"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Биток подпрыгнул"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "母球跳起来了"
           }
         }
       }
@@ -81547,6 +85257,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "库边把球弹回来"
+          }
+        }
+      }
+    },
+    "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستطيع تماسك الوسادة أن يغيّر سرعة الكرة على طولها بما لا يزيد على التماسك مضروبًا في واحد زائد الارتداد، مضروبًا في السرعة الداخلة مباشرة نحو الوسادة. اللف المساير يصرف تلك الدفعة في تسريع الكرة على طول الوسادة، فتخرج بزاوية أوسع من زاوية دخولها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Griff der Bande kann die Geschwindigkeit der Kugel entlang der Bande höchstens um den Griff mal eins plus den Rückprall ändern, mal die Geschwindigkeit gerade in die Bande. Mitlaufender Drall nutzt diesen Schub, um die Kugel entlang der Bande zu beschleunigen, also läuft sie in einem weiteren Winkel ab, als sie kam."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El agarre de la banda puede cambiar la velocidad de la bola a lo largo de ella como mucho en el agarre por uno más el rebote, por la velocidad con que entra de frente. El efecto a favor gasta ese empujón en acelerar la bola a lo largo de la banda, así que sale con un ángulo más abierto que el de llegada."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'adhérence de la bande peut changer la vitesse de la bille le long de la bande d'au plus l'adhérence fois un plus le rebond, fois la vitesse qui arrive droit dans la bande. L'effet dans le sens de la course utilise cette poussée pour accélérer la bille le long de la bande, donc elle repart avec un angle plus ouvert qu'à l'arrivée."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La presa della sponda può cambiare la velocità della palla lungo la sponda al massimo della presa per uno più il rimbalzo, per la velocità dritta contro la sponda. L'effetto a favore usa quella spinta per accelerare la palla lungo la sponda, così esce con un angolo più aperto di quello d'arrivo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クッションのグリップがクッションに沿った球の速さを変えられるのは、最大でグリップ×（1＋跳ね返り）×クッションにまっすぐ入る速さまでです。順方向の横回転はその押しを、球をクッションに沿って速めることに使うので、入ってきた角度より広い角度で出ていきます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쿠션의 그립이 쿠션을 따라가는 공의 속도를 바꿀 수 있는 최대치는 그립 곱하기 1 더하기 반발, 곱하기 쿠션에 곧장 들어가는 속도예요. 순방향 옆회전은 그 힘을 공을 쿠션을 따라 빠르게 하는 데 써서, 들어온 각도보다 넓은 각도로 나가요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A aderência da tabela pode mudar a velocidade da bola ao longo dela, no máximo, na aderência vezes um mais o ressalto, vezes a velocidade que entra de frente na tabela. O efeito a favor gasta esse empurrão a acelerar a bola ao longo da tabela, por isso sai com um ângulo mais aberto do que o de chegada."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A aderência da tabela pode mudar a velocidade da bola ao longo dela, no máximo, na aderência vezes um mais o quique, vezes a velocidade que entra de frente na tabela. O efeito a favor gasta esse empurrão acelerando a bola ao longo da tabela, então ela sai com um ângulo mais aberto do que o de chegada."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сцепление борта может изменить скорость шара вдоль борта не больше чем на сцепление, умноженное на единицу плюс отскок и на скорость прямо в борт. Попутное вращение тратит этот толчок на разгон шара вдоль борта, поэтому он уходит под более широким углом, чем пришёл."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "库边的抓力最多能把球沿库边的速度改变：抓力乘以一加反弹系数，再乘以垂直撞向库边的速度。顺旋把这股推力用来让球沿库边加速，所以它弹出的角度比进来时更大。"
           }
         }
       }
@@ -82951,6 +86731,76 @@
         }
       }
     },
+    "The path curved": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "انحنى المسار"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Bahn hat sich gekrümmt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La trayectoria se curvó"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La trajectoire s'est courbée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La traiettoria si è curvata"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "軌道が曲がった"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경로가 휘었어"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A trajetória curvou"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A trajetória fez uma curva"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Путь изогнулся"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "路线弯了"
+          }
+        }
+      }
+    },
     "The pegs": {
       "localizations": {
         "ar": {
@@ -83367,6 +87217,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "红球放回置球点。"
+          }
+        }
+      }
+    },
+    "The red pin alone": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الوتد الأحمر وحده"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der rote Kegel allein"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El bolo rojo solo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La quille rouge seule"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il birillo rosso da solo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赤ピンだけ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 핀만"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O pino vermelho sozinho"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O pino vermelho sozinho"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только красная кегля"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只倒红柱"
           }
         }
       }
@@ -83857,6 +87777,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "白球返回的速度，是它的半径乘以旋转速率的七分之二。"
+          }
+        }
+      }
+    },
+    "The spin ran out exactly at contact, so all the speed went on.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نفد الدوران تماماً عند التلامس، فانتقلت السرعة كلها إلى الأمام."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Effet war genau beim Kontakt aufgebraucht, also ging das ganze Tempo weiter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El efecto se acabó justo en el contacto, así que toda la velocidad pasó a la otra bola."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effet s'est épuisé pile au contact, donc toute la vitesse est passée à l'autre bille."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'effetto si è esaurito proprio al contatto, così tutta la velocità è passata all'altra palla."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回転がちょうど接触の瞬間に尽きたので、速さはすべて相手の球へ渡った。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전이 딱 접촉 순간에 다 풀려서, 속도가 전부 다른 공으로 넘어갔어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O efeito acabou mesmo no contacto, por isso toda a velocidade passou para a outra bola."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O efeito acabou bem no contato, então toda a velocidade passou para a outra bola."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вращение кончилось ровно в момент контакта, и вся скорость ушла дальше."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旋转恰好在接触时耗尽，所以全部速度都传了出去。"
           }
         }
       }
@@ -86307,6 +90297,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "切球带来的偏移：13 号球吃得稍薄，翻袋就会在中袋前偏短。"
+          }
+        }
+      }
+    },
+    "Thrown in": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دخلت بالانحراف بالاحتكاك"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per Throw versenkt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metida por arrastre"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rentrée par effet d'entraînement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imbucata col throw"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スローで入った"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스로우로 들어갔어"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metida com throw"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encaçapada com throw"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Забит с отбросом"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "带偏入袋"
           }
         }
       }
@@ -90021,6 +94081,76 @@
         }
       }
     },
+    "Two at once": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اثنتان دفعة واحدة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwei auf einmal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos de una vez"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deux d'un coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due in un colpo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一度に2つ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 번에 두 개"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duas de uma vez"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duas de uma vez"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Два сразу"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一杆两球"
+          }
+        }
+      }
+    },
     "Two balls, one stroke. The topspin did the second half.": {
       "localizations": {
         "ar": {
@@ -91421,6 +95551,76 @@
         }
       }
     },
+    "Watch It in the Lens": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهدها في العدسة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Lens ansehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlo en la Lente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le revoir dans la Lentille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardalo nella Lens"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レンズで見る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "렌즈로 보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver na Lente"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver na Lente"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смотреть в Линзе"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在透镜中观看"
+          }
+        }
+      }
+    },
     "Watch a perfect example. %@": {
       "localizations": {
         "ar": {
@@ -91487,6 +95687,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "看一个完美示范。%@"
+          }
+        }
+      }
+    },
+    "Watch a shot that looks impossible, see why it works, then make it.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد ضربة تبدو مستحيلة، واعرف لماذا تنجح، ثم نفّذها بنفسك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieh dir einen Stoß an, der unmöglich aussieht, versteh, warum er klappt, und schaff ihn dann selbst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira un tiro que parece imposible, descubre por qué funciona y luego hazlo tú."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regarde un coup qui semble impossible, vois pourquoi il marche, puis réussis-le."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda un colpo che sembra impossibile, scopri perché funziona, poi fallo tu."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ありえないように見えるショットを見て、なぜうまくいくのかを知り、自分で決めよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "불가능해 보이는 샷을 보고, 왜 되는지 알아본 다음, 직접 성공해 보세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vê uma tacada que parece impossível, percebe porque resulta e depois fá-la tu."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veja uma tacada que parece impossível, entenda por que ela funciona e depois faça você mesmo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Посмотри удар, который кажется невозможным, пойми, почему он работает, и сделай его сам."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "看一杆看似不可能的球，弄懂它为什么能成，然后亲手打进。"
           }
         }
       }
@@ -92191,6 +96461,76 @@
         }
       }
     },
+    "Watch the cue ball hand its speed to the rack, ball to ball.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد الكرة البيضاء تنقل سرعتها إلى الرصّة، من كرة إلى كرة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieh zu, wie die Weiße ihr Tempo Kugel für Kugel an das Dreieck weitergibt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira cómo la blanca pasa su velocidad al triángulo, bola a bola."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regarde la blanche transmettre sa vitesse au triangle, bille après bille."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda la bianca passare la sua velocità al triangolo, palla dopo palla."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手球が速さを球から球へと、ラックに渡していく様子を見よう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큐볼이 공에서 공으로 랙에 속도를 넘겨주는 걸 봐."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vê a branca passar a velocidade ao triângulo, bola a bola."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veja a branca passar a velocidade para o triângulo, bola a bola."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смотри, как биток передаёт скорость пирамиде, от шара к шару."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "看母球如何把速度一颗接一颗地传给球堆。"
+          }
+        }
+      }
+    },
     "Watch the intro": {
       "localizations": {
         "ar": {
@@ -92257,6 +96597,216 @@
           "stringUnit": {
             "state": "translated",
             "value": "观看开场"
+          }
+        }
+      }
+    },
+    "Watch the trick shots": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد ضربات الخدع"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sieh dir die Trickstöße an"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira los tiros de truco"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regarde les coups spectaculaires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda i colpi spettacolari"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トリックショットを見る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "트릭 샷 보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vê as jogadas de efeito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veja as tacadas de efeito"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Посмотри трюковые удары"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "看看花式球"
+          }
+        }
+      }
+    },
+    "Watch your best shot": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد أفضل ضرباتك"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deinen besten Stoß ansehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver tu mejor tiro"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revoir ton meilleur coup"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda il tuo colpo migliore"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ベストショットを見る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최고의 샷 보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver a tua melhor jogada"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver sua melhor tacada"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смотреть твой лучший удар"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "观看你的最佳一杆"
+          }
+        }
+      }
+    },
+    "Watch yours in the Lens": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شاهد ضربتك في العدسة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deinen in der Lens ansehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver el tuyo en la Lente"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revoir le tien dans la Lentille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guarda il tuo nella Lens"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分のショットをレンズで見る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내 샷을 렌즈로 보기"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver o teu na Lente"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver o seu na Lente"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Смотреть свой в Линзе"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在透镜中观看你的这一杆"
           }
         }
       }
@@ -93031,6 +97581,76 @@
         }
       }
     },
+    "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بينما كانت الكرة تنزلق، سحبها الجوخ في اتجاه انزلاق دورانها، لا في اتجاه حركتها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solange die Kugel rutschte, zog das Tuch sie in Richtung des Rutschens ihres Effets, nicht in ihre Laufrichtung."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mientras la bola se deslizaba, el paño la arrastró en la dirección del deslizamiento de su efecto, no en la de su movimiento."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tant que la bille glissait, le tapis l'a tirée dans le sens du glissement de son effet, pas dans celui de son mouvement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mentre la palla strisciava, il panno l'ha tirata nella direzione dello slittamento del suo effetto, non del suo moto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球が滑っている間、ラシャは進む向きではなく、回転による滑りの向きに球を引っぱった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공이 미끄러지는 동안, 천은 공을 움직이는 방향이 아니라 회전으로 미끄러지는 방향으로 끌었어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enquanto a bola deslizava, o pano puxou-a no sentido do deslize do efeito, não no do movimento."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enquanto a bola deslizava, o pano a puxou no sentido do deslize do efeito, não no do movimento."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пока шар скользил, сукно тянуло его по направлению проскальзывания от вращения, а не по направлению движения."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球在滑动时，台布沿着它旋转造成的打滑方向拉它，而不是沿着它运动的方向。"
+          }
+        }
+      }
+    },
     "White": {
       "localizations": {
         "ar": {
@@ -93661,6 +98281,76 @@
         }
       }
     },
+    "Wider off the rail, and in. The side did that.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "خرجت أوسع من الوسادة، ودخلت. هذا ما فعله اللف الجانبي."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weiter von der Bande, und drin. Das war der Seitendrall."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más abierta al salir de la banda, y dentro. Eso fue el efecto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plus ouverte en sortie de bande, et dedans. C'est l'effet qui a fait ça."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Più aperta in uscita dalla sponda, e dentro. È stato l'effetto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クッションから広く出て、イン。横回転のおかげだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쿠션에서 더 넓게 나와서, 들어갔어요. 옆회전 덕분이에요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mais aberta à saída da tabela, e lá dentro. Foi o efeito."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mais aberta na saída da tabela, e lá dentro. Foi o efeito."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Шире от борта — и в лузе. Это сделало боковое вращение."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "离开库边的角度更宽，进了。这是侧旋的功劳。"
+          }
+        }
+      }
+    },
     "Winning": {
       "localizations": {
         "ar": {
@@ -93797,6 +98487,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "胜负"
+          }
+        }
+      }
+    },
+    "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بلف جانبي قوي إلى اليسار وعبر وسادة واحدة، اضرب الكرة 7 أولاً وأدخلها في الزاوية السفلية اليمنى."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit kräftigem Seitendrall links über eine Bande zuerst die 7 treffen und in der unteren rechten Ecke versenken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con mucho efecto a la izquierda, tras una banda, golpea primero la 7 y métela en la esquina de abajo a la derecha."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec beaucoup d'effet à gauche, après une bande, touche d'abord la 7 et rentre-la dans le coin en bas à droite."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con molto effetto a sinistra, dopo una sponda, colpisci prima la 7 e mettila in buca nell'angolo in basso a destra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "強い左の横回転でワンクッションを使い、まず7番に当てて右下のコーナーに落とそう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강한 왼쪽 옆회전으로 원쿠션을 치고, 먼저 7번을 맞혀 오른쪽 아래 코너에 넣으세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Com muito efeito à esquerda, numa tabela, bate primeiro na 7 e encaçapa-a no canto inferior direito."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Com muito efeito à esquerda, numa tabela, bata primeiro na 7 e encaçape no canto inferior direito."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С сильным левым боковым вращением, через один борт, сначала ударь по 7-му и забей его в правый нижний угол."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加强烈左侧旋吃一库，先击中7号球，把它打进右下角袋口。"
           }
         }
       }
@@ -94291,6 +99051,76 @@
         }
       }
     },
+    "You against the computer. Bank your balls past the bumpers into your cup.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت ضد الكمبيوتر. ارتدّ بكراتك عن الحواف متجاوزًا المصدّات إلى حفرتك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du gegen den Computer. Spiel deine Kugeln über die Banden an den Pfosten vorbei in dein Loch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tú contra el ordenador. Mete tus bolas en tu hoyo, rebotando en las bandas para esquivar los topes."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toi contre l'ordinateur. Fais passer tes billes par la bande, entre les plots, jusque dans ton trou."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu contro il computer. Manda le tue bilie di sponda oltre i respingenti, nella tua buca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなた対コンピューター。クッションを使ってバンパーをかわし、自分のカップへ球を沈めよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신 대 컴퓨터. 쿠션을 이용해 범퍼를 피해 자기 컵에 공을 넣으세요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu contra o computador. Leva as tuas bolas pela tabela, para lá dos pinos de borracha, até ao teu buraco."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você contra o computador. Leve suas bolas pela tabela, passando pelos pinos de borracha, até o seu buraco."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты против компьютера. Отправляй свои шары от борта мимо столбиков в свою лунку."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你对战电脑。借库边绕过挡柱，把你的球打进自己的洞。"
+          }
+        }
+      }
+    },
     "You against the computer. Claim a group, clear it, sink the 8.": {
       "localizations": {
         "ar": {
@@ -94361,6 +99191,76 @@
         }
       }
     },
+    "You against the computer. Drive its ball into the pins. First to %lld.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت ضد الكمبيوتر. ادفع كرته نحو الأوتاد. الفائز أول من يبلغ %lld."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du gegen den Computer. Treib seine Kugel in die Kegel. Wer zuerst %lld hat, gewinnt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tú contra el ordenador. Lanza su bola contra los bolos. Gana quien llegue a %lld."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toi contre l'ordinateur. Envoie sa bille dans les quilles. Le premier à %lld gagne."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu contro il computer. Manda la sua bilia contro i birilli. Vince chi arriva a %lld."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなた対コンピューター。相手の球をピンに当てよう。先に%lld点で勝ち。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신 대 컴퓨터. 상대 공을 핀으로 보내세요. 먼저 %lld점이면 승리."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu contra o computador. Atira a bola dele contra os pinos. Ganha quem chegar a %lld."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você contra o computador. Jogue a bola dele contra os pinos. Ganha quem chegar a %lld."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты против компьютера. Загоняй его шар в кегли. До %lld очков."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你对战电脑。把它的球撞向木柱。先到%lld分者胜。"
+          }
+        }
+      }
+    },
     "You against the computer. Lowest ball first; sink the 9 to win.": {
       "localizations": {
         "ar": {
@@ -94427,6 +99327,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "你对战电脑。先打号码最小的球；打进9号球获胜。"
+          }
+        }
+      }
+    },
+    "You allowed for the squirt, and it went in with the side on.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حسبت حساب الانحراف، فدخلت الكرة واللف الجانبي عليها."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast die Abweichung eingerechnet, und sie fiel mit Seitendrall."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compensaste el desvío y entró con el efecto puesto."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu as compensé la déviation, et elle est rentrée avec l'effet."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hai compensato la deviazione, ed è entrata con l'effetto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トビを計算に入れて、横回転をかけたまま決めた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스쿼트를 감안했고, 옆회전을 건 채로 들어갔어요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compensaste o desvio e entrou com o efeito."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você compensou o desvio e entrou com o efeito."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты учёл снос, и шар зашёл с боковым вращением."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你算准了母球偏移，带着侧旋打进了。"
           }
         }
       }
@@ -94567,6 +99537,146 @@
           "stringUnit": {
             "state": "translated",
             "value": "你总是击打自己的球：带圆点的标记球还在台上时打它，之后按固定顺序逐个打其他球。球杆总是对准该打的那个球。"
+          }
+        }
+      }
+    },
+    "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت والكمبيوتر، لكل منكما خمس كرات: البيضاء لك والحمراء للكمبيوتر. أدخل كراتك الخمس كلها في الحفرة في الطرف المقابل لمكان بدايتها، قبل الكمبيوتر."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du und der Computer, je fünf Kugeln: Weiß für dich, Rot für den Computer. Versenke alle fünf deiner Kugeln im Loch am anderen Ende ihres Startplatzes, bevor der Computer es schafft."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tú y el ordenador, cinco bolas cada uno: blancas para ti, rojas para el ordenador. Mete tus cinco bolas en la copa del extremo opuesto a donde empezaron, antes que el ordenador."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toi et l'ordinateur, cinq billes chacun : les blanches pour toi, les rouges pour l'ordinateur. Rentre tes cinq billes dans le trou à l'autre bout de leur départ, avant l'ordinateur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu e il computer, cinque bilie a testa: bianche per te, rosse per il computer. Imbuca tutte e cinque le tue nella buca all'estremità opposta a dove sono partite, prima del computer."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたとコンピューターで、各自5個の球を使う。あなたは白、コンピューターは赤。スタート位置と反対側の穴に、コンピューターより先に自分の5個を全部沈めよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신과 컴퓨터가 각자 공 5개로 해. 당신은 흰 공, 컴퓨터는 빨간 공. 컴퓨터보다 먼저, 출발한 곳 반대편 구멍에 내 공 5개를 모두 넣어."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu e o computador, cinco bolas cada um: brancas para ti, vermelhas para o computador. Mete as tuas cinco no buraco do lado oposto ao de onde partiram, antes do computador."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você e o computador, cinco bolas cada um: brancas para você, vermelhas para o computador. Encaçape suas cinco no buraco do lado oposto ao de onde saíram, antes do computador."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты и компьютер, по пять шаров: белые у тебя, красные у компьютера. Загони все свои пять в лузу на дальнем от старта конце раньше компьютера."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你和电脑，每方五个球：你用白球，电脑用红球。抢在电脑之前，把自己的五个球全部打进起点另一端的洞里。"
+          }
+        }
+      }
+    },
+    "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت والكمبيوتر: أنت تلعب بالبيضاء والكمبيوتر بالصفراء. الكرة الحمراء والأوتاد الخمسة في الوسط مشتركة."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du und der Computer: Du spielst die Weiße, der Computer die Gelbe. Die rote Kugel und die fünf Kegel in der Mitte gehören beiden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tú y el ordenador: tú juegas con la blanca y el ordenador con la amarilla. La bola roja y los cinco bolos del centro son de los dos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toi et l'ordinateur : tu joues la blanche, l'ordinateur la jaune. La bille rouge et les cinq quilles du centre sont communes."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu e il computer: tu giochi la bianca, il computer la gialla. La bilia rossa e i cinque birilli al centro sono di entrambi."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたとコンピューターで、あなたは白球、コンピューターは黄球を使います。赤球と中央の5本のピンは共通です。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 흰 공, 컴퓨터는 노란 공으로 칩니다. 빨간 공과 가운데 핀 5개는 함께 씁니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu e o computador: tu jogas com a branca, o computador com a amarela. A bola vermelha e os cinco pinos do meio são partilhados."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você e o computador: você joga com a branca, o computador com a amarela. A bola vermelha e os cinco pinos do meio são compartilhados."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты и компьютер: ты играешь белым, компьютер жёлтым. Красный шар и пять кеглей в центре общие."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你和电脑：你用白球，电脑用黄球。红球和中间的五根木柱双方共用。"
           }
         }
       }
@@ -101011,6 +106121,76 @@
         }
       }
     },
+    "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بعد الكرة 4، أثناء الانزلاق:  F = μ m g عكس الانزلاق،  فينحني المسار حتى  v = R ω"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nach der 4, solange sie gleitet:  F = μ m g gegen das Gleiten,  die Bahn biegt sich, bis  v = R ω"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tras la 4, mientras desliza:  F = μ m g contra el deslizamiento,  así la trayectoria se curva hasta  v = R ω"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "après la 4, tant qu'elle glisse :  F = μ m g contre le glissement,  la trajectoire se courbe jusqu'à  v = R ω"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dopo la 4, mentre scivola:  F = μ m g contro lo scivolamento,  la traiettoria si piega finché  v = R ω"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4番の後、滑っている間:  F = μ m g が滑りと逆向きに働き、 v = R ω になるまで軌道が曲がる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4번 다음, 미끄러지는 동안:  F = μ m g 가 미끄럼 반대로,  v = R ω 가 될 때까지 경로가 휜다"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "depois da 4, enquanto desliza:  F = μ m g contra o deslizamento,  a trajetória curva até  v = R ω"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "depois da 4, enquanto desliza:  F = μ m g contra o deslizamento,  a trajetória curva até  v = R ω"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "после 4-го, пока скользит:  F = μ m g против скольжения,  путь изгибается, пока  v = R ω"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "碰4号球之后，滑动时:  F = μ m g 与滑动方向相反，路径一直弯曲，直到  v = R ω"
+          }
+        }
+      }
+    },
     "against %@, %@ diamonds from %@": {
       "localizations": {
         "ar": {
@@ -101287,6 +106467,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "瞄准稍微偏右"
+          }
+        }
+      }
+    },
+    "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "على طول الوسادة:  Δv ≤ μ (1 + e) v⊥،  لذا يخرج اللف المساير أوسع:  زاوية الخروج > زاوية الدخول"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "entlang der Bande:  Δv ≤ μ (1 + e) v⊥,  also läuft mitlaufender Drall weiter ab:  Ausfallswinkel > Einfallswinkel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a lo largo de la banda:  Δv ≤ μ (1 + e) v⊥,  así el efecto a favor sale más abierto:  ángulo de salida > ángulo de entrada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "le long de la bande :  Δv ≤ μ (1 + e) v⊥,  donc l'effet dans le sens de la course ressort plus ouvert :  angle de sortie > angle d'entrée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lungo la sponda:  Δv ≤ μ (1 + e) v⊥,  così l'effetto a favore esce più aperto:  angolo d'uscita > angolo d'entrata"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クッションに沿って:  Δv ≤ μ (1 + e) v⊥、 順方向の横回転は広く出る:  出る角度 > 入る角度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쿠션을 따라:  Δv ≤ μ (1 + e) v⊥,  그래서 순방향 옆회전은 넓게 나간다:  나가는 각 > 들어오는 각"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ao longo da tabela:  Δv ≤ μ (1 + e) v⊥,  por isso o efeito a favor sai mais aberto:  ângulo de saída > ângulo de entrada"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ao longo da tabela:  Δv ≤ μ (1 + e) v⊥,  então o efeito a favor sai mais aberto:  ângulo de saída > ângulo de entrada"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "вдоль борта:  Δv ≤ μ (1 + e) v⊥,  поэтому попутное вращение уходит шире:  угол выхода > угол входа"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沿库边:  Δv ≤ μ (1 + e) v⊥，所以顺旋弹出更宽:  出射角 > 入射角"
           }
         }
       }
@@ -104647,6 +109897,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "尚未通过"
+          }
+        }
+      }
+    },
+    "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الانحراف عن خط العصا:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²)،  x = الإزاحة الجانبية ÷ R"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "weg von der Queuelinie:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = Seite ÷ R"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fuera de la línea del taco:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = efecto ÷ R"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hors de la ligne de la queue :  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = effet ÷ R"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fuori dalla linea della stecca:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = effetto ÷ R"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キューの線からのずれ:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²)、 x = 横のずれ ÷ R"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큐의 선에서 벗어남:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = 옆 거리 ÷ R"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fora da linha do taco:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = efeito ÷ R"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fora da linha do taco:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = efeito ÷ R"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "уход с линии кия:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = смещение ÷ R"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "偏离球杆直线:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²)，x = 侧向偏移 ÷ R"
           }
         }
       }

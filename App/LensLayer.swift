@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4: the Lens draws bumper-pool posts and five-pin pins, so a held
+//          moment off a bumper or into the pins shows what it is about.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-drawing, feature G2 "see the hit": while a guided replay
 //          holds on a ball-to-ball hit (heldEvent), the Lens draws its contact geometry on the cloth: the line of
@@ -281,6 +283,12 @@ final class LensLayer {
     private var sideMaterial = UnlitMaterial()
     /// Contact geometry of a held hit (0.7.4, see CONTACT GEOMETRY in the header): its own parent, so it fades as one.
     private let contactRoot = Entity()
+    /// The table's solid obstacles drawn into the Lens (0.7.4): bumper-pool posts and five-pin pins. The warm table
+    /// (and its props) fades out as the Lens melts in, so without these a replay that holds on "off a bumper" or "the
+    /// red pin alone" would show the moment with nothing there. Posts are static; each pin's mark goes when the
+    /// recording knocks that pin down (Timeline.pinDownTime), following the clock like everything else here.
+    private let obstacleRoot = Entity()
+    private var pinMarks: [ModelEntity] = []
     private var centresLine = ModelEntity()
     /// The tangent in two dashes: a finer dash normally, dots with Differentiate Without Colour on (only one shows).
     private var tangentDashed = ModelEntity()
@@ -376,6 +384,7 @@ final class LensLayer {
         arrowMaterial = core
 
         root.addChild(gridEntity)
+        root.addChild(obstacleRoot)
         root.addChild(dotRoot)
         root.addChild(trailRoot)
         root.addChild(ringRoot)
@@ -492,11 +501,43 @@ final class LensLayer {
         let edge: [(x: Double, y: Double, radius: Double)] = table.pocketsEnabled
             ? zip(table.pockets, table.pocketCaptureRadius).map { (x: $0.0.x, y: $0.0.y, radius: $0.1) } : []
         let pockets = edge + table.bedHoles.map { (x: $0.center.x, y: $0.center.y, radius: $0.captureRadius) }
+        buildObstacles(frame: frame, table: table)
         if let tex = BallTextures.gridTexture(length: Double(L), width: Double(W), pockets: pockets) {
             let m = Float(BallTextures.gridMargin)
             gridEntity.model = ModelComponent(mesh: .generatePlane(width: L + 2 * m, depth: W + 2 * m), materials: [Self.glow(tex)])
             gridEntity.position = SIMD3(0, 0.0004, 0)
             gridEntity.components.set(ModelSortGroupComponent(group: sortGroup, order: 0))
+        }
+    }
+
+    /// Posts as solid paper-coloured discs with a small dark peg (a hole is a dark disc with a thin light rim) and
+    /// pins as smaller discs, the red pin red, at their standing spots. Rebuilt with the grid when the table changes.
+    private func buildObstacles(frame: TableFrame, table: TableSpec) {
+        for child in Array(obstacleRoot.children) { child.removeFromParent() }
+        pinMarks = []
+        let paper = UnlitMaterial(color: rgba(0.92, 0.96, 1.0, 0.92))
+        let red = UnlitMaterial(color: rgba(0.95, 0.25, 0.30, 0.95))
+        func disc(_ center: Vec2, radius: Double, _ material: UnlitMaterial) -> ModelEntity {
+            let e = ModelEntity(mesh: .generateCylinder(height: 0.003, radius: Float(radius)), materials: [material])
+            e.position = frame.world(center, height: 0.002)
+            e.components.set(ModelSortGroupComponent(group: sortGroup, order: 1))
+            obstacleRoot.addChild(e)
+            return e
+        }
+        // A post is a solid light disc with a small dark peg in the middle: not a ball (no shading), not a hole (mostly
+        // dark with a thin rim).
+        let core = UnlitMaterial(color: rgba(0.0, 0.006, 0.014, 1.0))
+        for post in table.posts {
+            _ = disc(post.center, radius: post.radius, paper)
+            let inner = disc(post.center, radius: post.radius * 0.28, core)
+            inner.position.y += 0.001
+        }
+        for (k, pin) in table.pins.enumerated() {
+            // The red pin is the one in the middle of the castle (FivePinRules.redPin, the pin nearest the table's
+            // centre); read here from the geometry so the Lens needs nothing from the rules.
+            let centre = Vec2(table.length / 2, table.width / 2)
+            let nearest = table.pins.indices.min { (table.pins[$0].center - centre).length < (table.pins[$1].center - centre).length }
+            pinMarks.append(disc(pin.center, radius: max(pin.radius, 0.008) * 1.6, k == nearest ? red : paper))
         }
     }
 
@@ -843,6 +884,12 @@ final class LensLayer {
         let m = Float(melt)
         root.isEnabled = m > 0.002
         root.components.set(OpacityComponent(opacity: m))
+
+        // A pin's mark stays until the recording knocks that pin down.
+        for (k, mark) in pinMarks.enumerated() {
+            let down = k < timeline.pinDownTime.count ? timeline.pinDownTime[k] : nil
+            mark.isEnabled = down.map { t < $0 } ?? true
+        }
 
         // Velocity arrows
         for b in 0..<arrows.count {
