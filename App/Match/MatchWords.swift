@@ -4,6 +4,10 @@
 //          other tables the balls are named as players there name them (the white, the yellow, the red, a white, a
 //          marked ball; TableGameWords) and a ball put back goes to its own spot, not the pool foot spot. Every
 //          RulingReason, MatchFoul and MatchEndReason case the table rules use already had its sentence here.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 13, 18 and 20: nine-ball's illegal break gets its own
+//          foul words instead of "no ball reached a rail after the hit", which was wrong whenever some balls did, and
+//          the separate break line is not repeated after it; a shot played on the suggested call says which call that
+//          was; the menu's Continue row can name the saved game (savedLine).)
 // PURPOSE: Every word a match says, in one place. The rules (package module BreakdownRules) speak only in codes:
 //          MatchFoul, RulingReason, MatchEndReason, MatchChoice, BallInHand. This file turns them into plain sentences
 //          a player reads after each shot ("Foul: the cue ball hit the 11 first. Ball in hand for Sam."), the game
@@ -53,6 +57,15 @@ enum MatchWords {
         }
     }
 
+    /// The ruling card's line when the stroke went through with no call made and the game played the suggested call
+    /// (MatchMode.lastCallWasSuggested), so the player sees what they were held to.
+    static func suggestedCallUsed(_ call: EightBallCall) -> String {
+        switch call {
+        case .ball(let b, let p): return String(localized: "No call was made, so the suggested call was used: the \(b), \(p.title).")
+        case .safety: return String(localized: "No call was made, so the suggested call was used: Safety.")
+        }
+    }
+
     // MARK: The banner
 
     static func toShoot(_ name: String, isBreak: Bool) -> String {
@@ -71,8 +84,13 @@ enum MatchWords {
     // MARK: Fouls
 
     /// One foul as the end of "Foul: ...". `firstBall` is the ball the cue ball touched first, when the recording
-    /// has one, so a wrong-ball foul can name it.
-    static func foul(_ f: MatchFoul, firstBall: Int?) -> String {
+    /// has one, so a wrong-ball foul can name it. `illegalBreak` is true when the ruling also carries the reason
+    /// breakIllegal: nine-ball files an illegal break under the "no rail" foul (the nearest code the rules have), so
+    /// that foul is worded as the break's own failure, which is true even when some balls did reach a rail.
+    static func foul(_ f: MatchFoul, firstBall: Int?, illegalBreak: Bool = false) -> String {
+        if illegalBreak, f == .noRailAfterContact {
+            return String(localized: "an illegal break: nothing went down and fewer than \(NineBallRules.breakRailCount) balls reached a rail")
+        }
         switch f {
         case .scratch: return String(localized: "the cue ball went in a pocket or off the table")
         case .wrongBallFirst:
@@ -116,8 +134,11 @@ enum MatchWords {
             kind.isTableGame ? TableGameWords.balls(numbers, kind: kind) : MatchWords.balls(numbers)
         }
         var out: [String] = []
+        // An illegal break that the rules count as a foul (nine-ball) is said once, in the foul line.
+        let illegalBreakFoul = r.fouled && r.reasons.contains(.breakIllegal) && r.fouls.contains(.noRailAfterContact)
         if r.fouled {
-            let what = r.fouls.map { foul($0, firstBall: firstBall) }.formatted(.list(type: .and))
+            let what = r.fouls.map { foul($0, firstBall: firstBall, illegalBreak: illegalBreakFoul) }
+                .formatted(.list(type: .and))
             out.append(String(localized: "Foul: \(what)."))
         }
         for reason in r.reasons {
@@ -137,7 +158,9 @@ enum MatchWords {
                 }
             case .breakLegal: out.append(String(localized: "A legal break."))
             case .breakIllegal:
-                out.append(String(localized: "The break pocketed nothing and drove too few balls to a rail."))
+                if !illegalBreakFoul {
+                    out.append(String(localized: "The break pocketed nothing and drove too few balls to a rail."))
+                }
             case .scratchOnBreak: out.append(String(localized: "Scratch on the break."))
             case .eightOnBreak: out.append(String(localized: "The 8 went down on the break."))
             case .ballSpotted:
@@ -220,4 +243,19 @@ enum MatchWords {
     // MARK: Between turns
 
     static func handOver(to name: String) -> String { String(localized: "Pass the device to \(name).") }
+
+    // MARK: The saved game
+
+    /// The menu's Continue row for a saved match: which game, against whom, and whose shot it is.
+    static func savedLine(_ s: SavedMatchSummary) -> String {
+        let game = title(s.kind)
+        if let level = s.opponent {
+            return String(localized: "\(game) against the computer (\(level.title)). \(s.turnName) to shoot.")
+        }
+        if s.playerNames.count == 1 {
+            return String(localized: "\(game), playing alone.")
+        }
+        let who = s.playerNames.formatted(.list(type: .and))
+        return String(localized: "\(game): \(who). \(s.turnName) to shoot.")
+    }
 }

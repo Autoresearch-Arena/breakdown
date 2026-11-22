@@ -10,6 +10,9 @@
 //          page on a phone. Nothing here is drawn over the table.
 //          Starting a match calls ShowpieceModel.startMatch(kind, players:), which ends any trick shot or situation,
 //          closes the menu and puts the table's start layout on; practice is the list's existing playTable.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 18: starting a game here while a match is saved asks
+//          first, inside the page, naming the saved game (MatchMode.savedSummary, MatchWords.savedLine), instead of
+//          silently throwing it away.)
 // SRP/DRY check: Pass - checked TitleScreen's HowToPlaySheet and RulesPage (the pool games' rules; their step list is
 //          private to that file, so this page draws its own numbered list in the same style) and TableList (the rows;
 //          it pushes this page). The words are TableGameWords; the best score is BarBilliardsBest.
@@ -23,6 +26,9 @@ struct TableGamePage: View {
     /// Called once play has started (the Tables list opens the aiming controls and closes itself).
     let onStarted: () -> Void
     @Environment(\.palette) private var palette
+    /// A new game was asked for while a match is saved: how many players it was for, until the player says whether
+    /// to replace the saved one.
+    @State private var replacingFor: Int?
 
     var body: some View {
         ScrollView {
@@ -32,6 +38,9 @@ struct TableGamePage: View {
                     Text(TableGameWords.gameLine(game)).font(Theme.body)
                 }
                 .fixedSize(horizontal: false, vertical: true)
+                if let players = replacingFor, let saved = MatchMode.savedSummary() {
+                    replaceQuestion(saved, players: players)
+                }
                 VStack(spacing: 10) {
                     playButton(String(localized: "Two players"), line: String(localized: "Take turns on one device."),
                                symbol: "person.2.fill", prominent: true) { start(players: 2) }
@@ -60,10 +69,44 @@ struct TableGamePage: View {
         #endif
     }
 
-    /// A new match of this table's game with `players` players, then hand over to the table.
+    /// A new match of this table's game with `players` players, then hand over to the table. With a match saved (or
+    /// one in play, which is saved too) the page asks first: the device keeps one saved match, and a new one would
+    /// replace it.
     private func start(players: Int) {
+        if model.hasSavedMatch, MatchMode.savedSummary() != nil {
+            replacingFor = players
+            return
+        }
+        begin(players: players)
+    }
+
+    private func begin(players: Int) {
+        replacingFor = nil
         model.startMatch(game, players: players)
         onStarted()
+    }
+
+    /// The question, in the page itself (no alert, so on the open folding phone and big screens it stays in the side
+    /// panel beside the table): which game is saved, and whether to replace it.
+    private func replaceQuestion(_ saved: SavedMatchSummary, players: Int) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(String(localized: "A new game replaces your saved one: \(MatchWords.savedLine(saved))"))
+                .font(Theme.body)
+                .fixedSize(horizontal: false, vertical: true)
+            CardButtonRow {
+                Button { replacingFor = nil } label: {
+                    Text(String(localized: "Keep my saved game")).font(.headline).lineLimit(1)
+                }
+                .buttonStyle(.glass)
+                .keyboardShortcut(.cancelAction)
+                Button(role: .destructive) { begin(players: players) } label: {
+                    Text(String(localized: "Start a new game")).font(.headline).lineLimit(1)
+                }
+                .buttonStyle(.glassProminent)
+            }
+        }
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.track.opacity(0.5)))
     }
 
     private func playButton(_ title: String, line: String, symbol: String, prominent: Bool,

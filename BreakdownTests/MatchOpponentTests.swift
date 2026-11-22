@@ -8,6 +8,10 @@
 //          on a hanging ball (it pots it, with the right call, and plans the same way twice), the computer seat
 //          surviving a save, and the record's counting.
 //          The full plan solves a few hundred budgeted shots, about a second in a Debug build.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 15, 17 and 18: each level's own way of choosing (easy
+//          pots the best-looking ball with no solves and never plays safe, the thresholds of medium and hard), which
+//          rulings settle by themselves and which keep the card (MatchMode.rulingShow), and the record counting only
+//          games against the computer, from the person's side, per game and level, with an old record still loading.)
 // SRP/DRY check: Pass - no opponent logic here; layouts are hand-made, parameters come from TestShots.parameters.
 @testable import Breakdown
 import BreakdownLensModel
@@ -236,7 +240,7 @@ final class MatchOpponentTests: XCTestCase {
         XCTAssertEqual(player.name, "Sam")
     }
 
-    func testTheRecordCountsFinishedGames() throws {
+    func testTheRecordCountsOnlyGamesAgainstTheComputer() throws {
         let suite = "MatchOpponentTests.record"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defaults.removePersistentDomain(forName: suite)
@@ -248,10 +252,113 @@ final class MatchOpponentTests: XCTestCase {
         MatchRecord.noteFinished(s, in: defaults)
         s.result = MatchResult(winner: .second, reason: .eightEarly)
         MatchRecord.noteFinished(s, in: defaults)
+        // A game between two people is not counted at all (who sat first says nothing about the person).
+        var people = s
+        people.players[1].computer = nil
+        people.result = MatchResult(winner: .first, reason: .eightBallPocketed)
+        MatchRecord.noteFinished(people, in: defaults)
         let rec = MatchRecord.load(from: defaults)
         XCTAssertEqual(rec.tally(.eightBall), MatchTally(played: 2, won: 1))
         XCTAssertEqual(rec.tally(.easy), MatchTally(played: 2, won: 1))
+        XCTAssertEqual(rec.tally(.eightBall, .easy), MatchTally(played: 2, won: 1))
         XCTAssertEqual(rec.tally(.hard), MatchTally())
         XCTAssertEqual(rec.tally(.nineBall), MatchTally())
+        let record = MatchRecord.record(kind: .eightBall, level: .easy, in: defaults)
+        XCTAssertEqual(record.won, 1)
+        XCTAssertEqual(record.lost, 1)
+        XCTAssertEqual(MatchRecord.record(kind: .nineBall, level: .easy, in: defaults).won, 0)
+    }
+
+    func testTheRecordCountsFromThePersonsSeat() throws {
+        let suite = "MatchOpponentTests.record.seat"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defaults.removePersistentDomain(forName: suite)
+        defer { defaults.removePersistentDomain(forName: suite) }
+        // The computer in the first seat: a win for the second seat is the person's win.
+        var s = eightBallState(left: [])
+        s.players[1].computer = nil
+        s.players[0].computer = .hard
+        s.result = MatchResult(winner: .second, reason: .eightBallPocketed)
+        MatchRecord.noteFinished(s, in: defaults)
+        XCTAssertEqual(MatchRecord.load(from: defaults).tally(.eightBall, .hard), MatchTally(played: 1, won: 1))
+    }
+
+    func testARecordFromTheOldFormatStillLoads() throws {
+        // 0.6.6's record: byKind mixed two-player games in, byLevel was computer-only, and there was no format field.
+        let json = "{\"byKind\":{\"eightBall\":{\"played\":5,\"won\":3}},\"byLevel\":{\"easy\":{\"played\":2,\"won\":1}}}"
+        let rec = try JSONDecoder().decode(MatchRecord.self, from: Data(json.utf8))
+        XCTAssertEqual(rec.tally(.easy), MatchTally(played: 2, won: 1), "per-level counts carry over")
+        XCTAssertEqual(rec.tally(.eightBall), MatchTally(), "per-game counts that mixed in two-player games are dropped")
+        XCTAssertEqual(rec.format, MatchRecord.currentFormat)
+        let back = try JSONDecoder().decode(MatchRecord.self, from: JSONEncoder().encode(rec))
+        XCTAssertEqual(back, rec)
+    }
+
+    // MARK: The levels choose differently
+
+    func testEachLevelsShootingThreshold() {
+        XCTAssertEqual(OpponentPlanner.threshold(.easy), 0, "easy never plays a deliberate safety")
+        XCTAssertEqual(OpponentPlanner.threshold(.medium),
+                       OpponentPlanner.reasonableChanceWidth * ComputerLevel.medium.aimNoiseDegrees, accuracy: 1e-12)
+        XCTAssertLessThan(OpponentPlanner.threshold(.medium),
+                          OpponentPlanner.evenChanceWidth * ComputerLevel.medium.aimNoiseDegrees,
+                          "medium plays safe only when nothing reasonable is on")
+        XCTAssertEqual(OpponentPlanner.threshold(.hard),
+                       OpponentPlanner.evenChanceWidth * ComputerLevel.hard.aimNoiseDegrees, accuracy: 1e-12)
+        XCTAssertEqual(ComputerLevel.easy.style, .bestLookingPot)
+        XCTAssertEqual(ComputerLevel.medium.style, .safeOnlyWhenNothingOn)
+        XCTAssertEqual(ComputerLevel.hard.style, .fullSearch)
+    }
+
+    func testEasyPotsTheBestLookingBallWithoutPlanningPosition() {
+        let hole = PoolParameters().pocketCenters[1]
+        let inward = Vec2(-1, 1).normalized
+        let l = layout([1: hole + inward * 0.25, 8: Vec2(0.8, 1.0)], cue: hole + inward * 0.85)
+        let plan = OpponentPlanner.plan(snapshot(l, eightBallState(left: [1, 8]), level: .easy))
+        XCTAssertEqual(plan.kind, .pot(ball: 1, pocket: 1, bankRail: nil))
+        XCTAssertEqual(plan.call, .ball(1, pocket: .footRight))
+        XCTAssertFalse(plan.leavesNextShot, "easy never plays for position")
+        XCTAssertNil(plan.window, "easy judges by eye: nothing was measured")
+        XCTAssertLessThanOrEqual(plan.stroke.speed, PlayerShotSpeed.ordinary.upperBound)
+        XCTAssertGreaterThanOrEqual(plan.stroke.speed, PlayerShotSpeed.ordinary.lowerBound)
+    }
+
+    func testEasyNeverPlaysASafety() {
+        // Hooked inside a ring of balls: the others would look for a safety; easy still goes for a pot (or, with
+        // nothing straight on at all, simply hits the nearest ball it may hit).
+        let centre = Vec2(1.27, 0.635)
+        var balls: [Int: Vec2] = [9: Vec2(2.2, 0.3)]
+        for k in 0..<8 {
+            let a = Double(k) * Double.pi / 4
+            balls[k + 1] = centre + Vec2(cos(a), sin(a)) * (2.7 * r)
+        }
+        let plan = OpponentPlanner.plan(snapshot(layout(balls, cue: centre),
+                                                 eightBallState(left: Array(1...9), group: .stripes), level: .easy))
+        if case .safety = plan.kind { XCTFail("easy played a deliberate safety") }
+    }
+
+    // MARK: Which rulings settle by themselves
+
+    @MainActor
+    func testRoutineRulingsSettleAndTheRestKeepTheCard() {
+        let after = EightBallRules().initialState(playerNames: ["Sam", "Alex"])
+        let keep = Ruling(shooter: .first, nextShooter: .first, reasons: [.legalPot])
+        let passes = Ruling(shooter: .first, nextShooter: .second, reasons: [.noLegalPot])
+        let foul = Ruling(shooter: .first, nextShooter: .second, fouls: [.scratch], reasons: [.foul])
+        XCTAssertEqual(MatchMode.rulingShow(for: keep, after: after, hasComputer: false), .banner, "keep shooting")
+        XCTAssertEqual(MatchMode.rulingShow(for: passes, after: after, hasComputer: false), .card,
+                       "the device changes hands between two people")
+        XCTAssertEqual(MatchMode.rulingShow(for: passes, after: after, hasComputer: true), .banner,
+                       "an ordinary turn change against the computer")
+        XCTAssertEqual(MatchMode.rulingShow(for: foul, after: after, hasComputer: true), .card, "a foul")
+        var choosing = after
+        choosing.pendingChoice = PendingChoice(choice: .spotEightOrRerack, chooser: .first)
+        XCTAssertEqual(MatchMode.rulingShow(for: keep, after: choosing, hasComputer: true), .card, "a choice")
+        var over = after
+        over.result = MatchResult(winner: .first, reason: .eightBallPocketed)
+        XCTAssertEqual(MatchMode.rulingShow(for: keep, after: over, hasComputer: true), .card, "the end")
+        let peg = Ruling(shooter: .first, nextShooter: .first, reasons: [.whitePegDown])
+        XCTAssertEqual(MatchMode.rulingShow(for: peg, after: after, hasComputer: false), .card, "a peg down")
+        XCTAssertGreaterThan(MatchMode.settleBeat, 0)
     }
 }

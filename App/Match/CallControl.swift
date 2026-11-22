@@ -11,9 +11,16 @@
 //                             obvious shot (rules plan, package 3: "obvious shots still need the call").
 //          The three small pieces take plain values and closures, so the 8-ball card drives them from EightBallMode
 //          (pendingBall, pick, callSafety) and the match drives them from its own state: one control, two callers.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 13 and 43: the suggestion moved to the match
+//          (MatchMode.suggestedCall), so the model can play a stroke made with no call on the same suggestion this card
+//          shows; when a stroke is refused for want of a call (no suggestion either), the card pulses and says "Call
+//          your shot first" on the table and to VoiceOver (ShowpieceModel.lastRefusal and refusalSerial); the row of
+//          Safety, the pocket and Call it uses the cards' row-or-column helper (CardButtonRow), so at the largest text
+//          sizes it becomes a column instead of cutting off the pocket's name.)
 // SRP/DRY check: Pass - moved out of EightBallViews.swift (its private ballChips and pocketMenu are now these views);
-//          the aim's first ball comes from AimGeometry.firstContact, the same ray cast the aim guide draws, and the
-//          pocket words from EightBallPocket.title. Nothing here decides legality: the rules (mayCall) do.
+//          the suggestion is MatchMode's (the same ray cast the aim guide draws), the pocket words EightBallPocket.title,
+//          the refusal sentence ShotRefusal's, the button row MatchViews' CardButtonRow. Nothing here decides
+//          legality: the rules (mayCall) do.
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
@@ -115,42 +122,28 @@ struct MatchCallControl: View {
     let model: ShowpieceModel
     let match: MatchMode
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// The ball picked and the pocket picked, before "Call it" hands the finished call to the match. Nil until the
     /// player touches a chip or the pocket menu; until then the suggestion from the aim stands in for them.
     @State private var ball: Int?
     @State private var pocket: EightBallPocket?
+    /// True for the moments the card flashes after a stroke was refused for want of a call.
+    @State private var pulsing = false
 
     /// Balls the rules allow the shooter to call now (their group, or the 8 once the group is gone, or any but the 8
     /// while the table is open).
     private var callable: [Int] { match.state.ballsLeft.filter { match.rules.mayCall($0, in: match.state) } }
 
-    /// What the cue is pointed at now: the first ball on the aim line, if it may be called, and the pocket nearest
-    /// the line that ball would leave along (the same right-angle guide the aim line draws).
+    /// What the cue is pointed at now: MatchMode.suggestedCall, the very call the model plays when a stroke goes
+    /// through with no call made, so what this card suggests is what the shot is held to.
     private var suggestion: (ball: Int, pocket: EightBallPocket)? {
-        guard model.layout.count == 16, NextShot.isOnTable(model.aimOrigin) else { return nil }
-        let table = model.timeline.table
-        guard let hit = AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin,
-                                                 direction: model.aimDirection, radius: table.ballRadius),
-              callable.contains(hit.ball), let k = Self.nearestPocket(from: hit.target, along: hit.objectDirection,
-                                                                     pockets: table.pockets),
-              let named = EightBallPocket(rawValue: k) else { return nil }
-        return (hit.ball, named)
+        guard case .ball(let b, let p)? = match.suggestedCall else { return nil }
+        return (b, p)
     }
 
-    /// The pocket whose centre lies closest to the line a ball leaves along, counting only pockets ahead of it. Nil
-    /// when no pocket is ahead (the ball is heading straight for a cushion with no pocket on that side).
-    static func nearestPocket(from start: Vec2, along direction: Vec2, pockets: [Vec2]) -> Int? {
-        var best: (k: Int, miss: Double)?
-        for (k, p) in pockets.enumerated() {
-            let d = p - start
-            let ahead = d.dot(direction)
-            guard ahead > 0 else { continue }
-            // Sideways distance from the line to the pocket's centre.
-            let miss = (d.lengthSquared - ahead * ahead).squareRoot()
-            if best == nil || miss < best!.miss { best = (k, miss) }
-        }
-        return best?.k
-    }
+    /// A stroke was refused because no call was made and nothing was suggested (the model clears this on the next
+    /// accepted strike).
+    private var refusedForCall: Bool { model.lastRefusal == .noCall && match.currentCall == nil }
 
     private var shownBall: Int? { ball ?? suggestion?.ball }
     private var shownPocket: EightBallPocket? {
@@ -163,16 +156,17 @@ struct MatchCallControl: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(prompt)
-                .font(Theme.body)
-                .foregroundStyle(palette.paper.opacity(0.9))
+                .font(refusedForCall ? Theme.heading : Theme.body)
+                .foregroundStyle(refusedForCall ? palette.slide : palette.paper.opacity(0.9))
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
             CallBallChips(balls: callable, picked: shownBall) { b in
                 ball = b
                 if b != suggestion?.ball { pocket = nil }
             }
-            HStack(spacing: 8) {
-                Spacer(minLength: 0)
+            // Safety, the pocket and Call it: one row, or a column at the largest text sizes, so the pocket's name is
+            // never cut off (item 43).
+            CardButtonRow {
                 CallSafetyButton { match.setCall(.safety); ball = nil; pocket = nil }
                 if shownBall != nil {
                     CallPocketMenu(picked: shownPocket) { pocket = $0 }
@@ -188,12 +182,40 @@ struct MatchCallControl: View {
                     .accessibilityHint(String(localized: "Makes this your call for the shot"))
                 }
             }
-            .controlSize(.regular)
+        }
+        // The pulse: an outline in the warning colour that flashes twice (and, unless Reduce Motion is on, the card
+        // swells a little), so the eye goes to the call the moment a stroke is refused for want of one.
+        .padding(4)
+        .background {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(palette.slide, lineWidth: pulsing ? 3 : 0)
+        }
+        .scaleEffect(pulsing && !reduceMotion ? 1.03 : 1)
+        .onChange(of: model.refusalSerial) { _, _ in
+            guard model.lastRefusal == .noCall else { return }
+            // The table's line and the screen reader say the same thing.
+            AccessibilityNotification.Announcement(ShotRefusal.noCall.sentence).post()
+            pulse()
+        }
+    }
+
+    /// Two quick flashes of the outline (on the main actor, where the view and its state live).
+    @MainActor
+    private func pulse() {
+        Task { @MainActor in
+            for _ in 0..<2 {
+                withAnimation(reduceMotion ? nil : .easeOut(duration: 0.15)) { pulsing = true }
+                try? await Task.sleep(for: .milliseconds(200))
+                withAnimation(reduceMotion ? nil : .easeIn(duration: 0.2)) { pulsing = false }
+                try? await Task.sleep(for: .milliseconds(220))
+            }
         }
     }
 
     private var prompt: String {
         if let call = match.currentCall { return MatchWords.callLine(call) }
+        // Refused with nothing to suggest: the refusal's own sentence, in the warning colour above.
+        if refusedForCall, shownBall == nil { return ShotRefusal.noCall.sentence }
         if let b = shownBall, let p = shownPocket {
             return String(localized: "Suggested call: the \(b), \(p.title).")
         }

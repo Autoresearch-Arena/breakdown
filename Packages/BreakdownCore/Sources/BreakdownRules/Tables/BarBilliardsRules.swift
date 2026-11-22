@@ -6,7 +6,9 @@
 //          scores its hole (200, 100, 50, 50, then 30, 20, 10, 20, 30 along the far row), the red double. A break goes
 //          on while every shot drops a ball. A white peg down ends the break and loses its points; the black peg down
 //          ends it and loses the whole score. Dropped balls come back to the tray (the red back to its spot) until time
-//          is up; then a bar drops, dropped balls stay down, and the game ends when no white is left to play.
+//          is up; then a bar drops, dropped balls stay down, and from then on only the whites still in the tray are
+//          played: a white that stops on the bed stays there, and once the last white in the tray has been played the
+//          game ends, whatever is still resting on the bed (whitesLeftToPlay counts them for the banner).
 //          The clock is injected: the rules only read MatchState.clockRemaining (set from turnClock at the start), the
 //          app counts it down with ticking(_:by:) while balls are in play and pauses it during replays and the Lens,
 //          and a test simply sets it, so nothing here ever waits. A shot is judged by the clock as it stands when the
@@ -20,6 +22,10 @@
 //          lowest-numbered white still in the game.
 //          Hole values, ball numbers and the black peg's number are owned here; App/Tables/BarBilliardsTable.swift
 //          reads them, so the table and the scoring cannot disagree.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 20: the game's ending is unchanged, but the rule sheet
+//          now says what the code always did - after time is up only the whites in the tray are played, and the game
+//          ends when the tray is empty even with whites resting on the bed - and whitesLeftToPlay(in:layout:) gives
+//          the banner that exact count, so the banner, the rules page, the time-up line and the code agree.)
 // SRP/DRY check: Pass - bar billiards' rules only. The shared bookkeeping is the protocol's default, reached through a
 //          small forwarding value rather than copied; the free-place search is TableSpots; the hole values moved here
 //          from BarBilliardsTable.swift (which now reads them) rather than being copied.
@@ -81,6 +87,23 @@ public struct BarBilliardsRules: MatchRules {
         return s
     }
 
+    /// The whites still to be played before the game ends, for the banner once the bar is down: the white set on the
+    /// D for the next shot plus every white still in the game that is off the table (waiting in the tray). Whites
+    /// resting anywhere else on the bed are not counted: outcome(_:_:) ends the game as soon as the tray is empty
+    /// after a shot, whatever is still on the bed, so counting them would promise shots that never come. `layout` is
+    /// the table the next shot starts from (nextLayout's answer, which always puts the next white on the D); 0 for a
+    /// finished game.
+    public func whitesLeftToPlay(in state: MatchState, layout: [Vec2]) -> Int {
+        guard !state.isOver else { return 0 }
+        let inGame = Set(state.ballsLeft)
+        let next = Self.striker(among: inGame)
+        let tray = Self.whiteBalls.filter { b in
+            b != next && inGame.contains(b) && !(layout.indices.contains(b) && ShotFacts.isOnTable(layout[b]))
+        }
+        // The striker counts whether or not it is drawn yet (a layout that has not been through nextLayout).
+        return inGame.contains(next) ? tray.count + 1 : tray.count
+    }
+
     // MARK: One shot
 
     /// Everything a shot decides, worked out once and read by the ruling, the returning balls, the bookkeeping and
@@ -103,7 +126,7 @@ public struct BarBilliardsRules: MatchRules {
         var spotRed: Bool
         /// Every ball still in the game after the shot.
         var inGame: Set<Int>
-        /// The bar is down and no white is left to play.
+        /// The bar is down and no white is left in the tray (whites resting on the bed are not played again).
         var gameOver: Bool
     }
 
@@ -135,7 +158,8 @@ public struct BarBilliardsRules: MatchRules {
         var lifted: [Int] = []
         if !hit, let k = tableWhites.firstIndex(of: f.cueBall) { lifted.append(tableWhites.remove(at: k)) }
         // Rule 6 and 7: no white left in the tray. While time remains they all come back; once the bar is down the
-        // game is over.
+        // game is over, even with whites still resting on the bed (they are never played again; the rule sheet,
+        // the banner's count, whitesLeftToPlay, and the time-up line all say so).
         let tray = Self.whiteBalls.filter { inGame.contains($0) && !tableWhites.contains($0) }
         var gameOver = false
         if tray.isEmpty {

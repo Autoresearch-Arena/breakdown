@@ -4,8 +4,11 @@
 //          scripted two-player game against a short clock, on hand-built shots (TableRulesFixtures): hole values and the
 //          red's double, a break that goes on while balls drop, a miss, the white and black pegs, balls coming back to
 //          the tray and the red to its spot, the next white set on the D, all whites coming back when none is left to
-//          play, the bar dropping when time is up, the game ending when no white is left, one player, and the clock.
+//          play, the bar dropping when time is up, the game ending when no white is left in the tray, one player, and the clock.
 //          The clock is injected: the tests set MatchState.clockRemaining or call ticking(_:by:), so nothing waits.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 20: a timed game that ends with several whites still
+//          resting on the bed, and the banner's count of whites left to play (whitesLeftToPlay) counting down only the
+//          whites on the D and in the tray, never the ones on the bed.)
 // SRP/DRY check: Pass - BarBilliardsRules only; the shot reading is ShotFactsTests', the shared bookkeeping
 //          MatchContractTests'.
 import BreakdownLensModel
@@ -198,6 +201,48 @@ final class BarBilliardsRulesTests: XCTestCase {
         // A level score has no winner.
         s.scores = [320, 320]
         XCTAssertEqual(rules.ruling(for: stopped, call: nil, in: s).result, MatchResult(winner: nil, reason: .timeExpired))
+    }
+
+    func testAfterTimeIsUpOnlyTheTrayIsPlayedAndWhitesOnTheBedDoNotCount() {
+        var s = fresh()
+        s.clockRemaining = 0
+        s.scores = [200, 150]
+        // Whites 1, 2, 4 and 5 rest on the bed; 0 is on the D; 6 and 7 wait in the tray (in the game, off the table).
+        s.ballsLeft = [0, 1, 2, 3, 4, 5, 6, 7]
+        var layout = TableShot.empty()
+        layout[0] = d
+        layout[3] = Vec2(0.85, 0.4)
+        for (k, b) in [1, 2, 4, 5].enumerated() { layout[b] = Vec2(0.15 + 0.1 * Double(k), 0.08) }
+        XCTAssertEqual(rules.whitesLeftToPlay(in: s, layout: layout), 3, "the white on the D and the two in the tray")
+
+        // Ada's white hits the red and stops on the bed: one fewer to play, the four on the bed still not counted.
+        let first = shot(s, from: layout, ends: [0: Vec2(1.0, 0.6)], [.contact(0.2, 0, 3)])
+        let r1 = rules.ruling(for: first, call: nil, in: s)
+        XCTAssertNil(r1.result, "whites are still in the tray")
+        layout = next(first, s)
+        s = rules.applying(r1, facts: first, to: s)
+        XCTAssertEqual(rules.whitesLeftToPlay(in: s, layout: layout), 2)
+        XCTAssertTrue(ShotFacts.isOnTable(layout[rules.cueBall(for: s.turn, in: s)]), "the next white is on the D")
+
+        // Ben plays one, it stops on the bed too: the last white in the tray is next.
+        let second = shot(s, from: layout, ends: [rules.cueBall(for: s.turn, in: s): Vec2(1.1, 0.2)],
+                          [.contact(0.2, rules.cueBall(for: s.turn, in: s), 3)])
+        let r2 = rules.ruling(for: second, call: nil, in: s)
+        XCTAssertNil(r2.result)
+        layout = next(second, s)
+        s = rules.applying(r2, facts: second, to: s)
+        XCTAssertEqual(rules.whitesLeftToPlay(in: s, layout: layout), 1)
+
+        // The last white stops on the bed as well: the tray is empty, so the game ends with six whites resting there.
+        let striker = rules.cueBall(for: s.turn, in: s)
+        let last = shot(s, from: layout, ends: [striker: Vec2(0.7, 0.7)], [.contact(0.2, striker, 3)])
+        let r3 = rules.ruling(for: last, call: nil, in: s)
+        XCTAssertEqual(r3.result, MatchResult(winner: .first, reason: .timeExpired))
+        let restingWhites = BarBilliardsRules.whiteBalls.filter { ShotFacts.isOnTable(last.resting[$0]) }
+        XCTAssertGreaterThanOrEqual(restingWhites.count, 6, "several whites are still on the bed when it ends")
+        s = rules.applying(r3, facts: last, to: s)
+        XCTAssertTrue(s.isOver)
+        XCTAssertEqual(rules.whitesLeftToPlay(in: s, layout: next(last, s)), 0)
     }
 
     func testOnePlayerKeepsTheTableAndPlaysForAScore() {

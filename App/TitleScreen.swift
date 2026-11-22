@@ -550,7 +550,8 @@ private struct RulesPage: View {
             (String(localized: "The break"),
              String(localized: "A good break sinks a ball or drives at least four balls to a cushion. If it does neither, your opponent may play the table as it lies or have it racked again. Sink the cue ball on the break and your opponent places it anywhere behind the head line.")),
             (String(localized: "The 8 on the break"),
-             String(localized: "Sinking the 8 on the break neither wins nor loses. The breaker chooses: put the 8 back on its spot, or rack again.")),
+             // Match stream hub edit (bug plan item 20): the fouled break, as EightBallRules.breakRuling rules it.
+             String(localized: "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.")),
             (String(localized: "An open table"),
              String(localized: "After the break nobody owns a group. The first ball you call and sink on a fair shot makes its group yours.")),
             (String(localized: "Call every shot"),
