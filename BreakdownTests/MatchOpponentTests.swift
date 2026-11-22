@@ -254,12 +254,15 @@ final class MatchOpponentTests: XCTestCase {
         let plan = OpponentPlanner.plan(snap)
         XCTAssertEqual(plan.kind, .hit(ball: 1))
         XCTAssertGreaterThan(plan.stroke.direction.x, 0, "aimed up the table, at the 1's image in the foot cushion")
-        // Solved as struck, the cue ball crosses the head line before its first hit, so that foul is not called.
-        let input = NextShot.shot(from: l, direction: plan.stroke.direction, speed: plan.stroke.speed,
+        // Solved as struck, from where the computer put the cue ball (it has ball in hand, so the plan may place it),
+        // the cue ball crosses the head line before its first hit, so that foul is not called.
+        var placed = l
+        if let spot = plan.placement { placed[0] = spot }
+        let input = NextShot.shot(from: placed, direction: plan.stroke.direction, speed: plan.stroke.speed,
                                   tipUp: plan.stroke.tipUp, tipSide: plan.stroke.tipSide, seed: 1,
                                   parameters: snap.parameters)
         let tl = PoolSolver.simulate(input)
-        let facts = ShotFacts(timeline: tl, start: l)
+        let facts = ShotFacts(timeline: tl, start: placed)
         XCTAssertGreaterThan(facts.cueBallFarthestBeforeContact ?? 0, NextShot.headLineX(parameters: snap.parameters))
         XCTAssertFalse(EightBallRules().ruling(for: facts, call: .safety, in: s).fouls.contains(.cueBallBehindHeadLine))
     }

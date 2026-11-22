@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: the foot-cushion kick is struck hard enough for the cushion's
+//          loss and its aim checked on the real solver, since a cushion returns the ball flatter than a mirror).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 16 and 17. Each level now chooses its shot its own way,
 //          not only with its own hand (OpponentStyle): easy always goes for the pot that looks easiest by eye, lined
 //          up by the ghost-ball rule with no trial solves, never plays a deliberate safety and never plans the cue
@@ -538,6 +540,9 @@ enum OpponentPlanner {
 
     /// The launch speed that rolls a ball `distance` metres from a standstill on this cloth (seven fifths of the
     /// rolling speed that covers it). Used for the safety strokes.
+    /// The share of its speed a slow cue ball keeps off a cushion, on the cautious side, for the foot-cushion kick.
+    static let kickRebound = 0.5
+
     static func rollingLaunch(distance: Double, parameters p: PoolParameters) -> Double {
         (2 * p.rollingResistance * p.gravity * distance).squareRoot() * 7 / 5
     }
@@ -950,10 +955,30 @@ enum OpponentPlanner {
         if let near = nearest(up) {
             let image = Vec2(2 * (p.tableLength - p.ballRadius) - layout[near].x, layout[near].y)
             let pace = PlayerShotSpeed.ordinary
-            let speed = rollingLaunch(distance: (image - cue).length + 2 * p.tableWidth, parameters: p)
-            return OpponentPlan(kind: .hit(ball: near),
-                                stroke: OpponentStroke(aimDegrees: degrees(image - cue),
-                                                       speed: min(max(speed, pace.lowerBound), pace.upperBound)),
+            // The cushion takes pace: a slow cue ball leaves the foot cushion at about half its speed (kickRebound),
+            // so the leg back, plus two table widths after the hit, is paid for at the cushion first, then the leg up
+            // the table on top. Without this the kick died short of the ball (0.7.5 coordinator, found by its test).
+            let fold = (p.tableLength - p.ballRadius - cue.x) / max(image.x - cue.x, 1e-9)
+            let upLeg = (image - cue).length * fold, backLeg = (image - cue).length - upLeg
+            let roll = 2 * p.rollingResistance * p.gravity
+            let atCushion = roll * (backLeg + 2 * p.tableWidth) / (kickRebound * kickRebound)
+            let speed = min(max((atCushion + roll * upLeg).squareRoot() * 7 / 5, pace.lowerBound), pace.upperBound)
+            // A cushion sends the ball back flatter than a mirror would (it keeps less of the speed into the cushion
+            // than along it), so the mirror aim alone missed the ball. The real solver checks a small fan around it,
+            // nearest first, and keeps the first aim that is legal, else the first that reaches the ball. At most
+            // 33 solves, and only in this rare spot (every legal ball behind the line with ball in hand behind it).
+            let mirror = degrees(image - cue)
+            var chosen = mirror, reaches: Double?
+            search: for step in 0...16 {
+                for sign in (step == 0 ? [1.0] : [1.0, -1.0]) {
+                    let aim = mirror + sign * Double(step) * 0.5
+                    let t = trial(s, layout: layout, stroke: OpponentStroke(aimDegrees: aim, speed: speed), call: call)
+                    if t.firstBall == near, t.safetyLegal || t.keeps { chosen = aim; reaches = nil; break search }
+                    if t.firstBall == near, reaches == nil { reaches = aim }
+                }
+            }
+            if let reaches, chosen == mirror { chosen = reaches }
+            return OpponentPlan(kind: .hit(ball: near), stroke: OpponentStroke(aimDegrees: chosen, speed: speed),
                                 placement: placement, call: call, leftOpponent: nil)
         }
         // Nothing legal on the table at all (it cannot happen in a real game): straight up the table.
