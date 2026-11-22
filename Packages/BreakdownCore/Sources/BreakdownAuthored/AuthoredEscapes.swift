@@ -4,9 +4,9 @@
 //          in diamonds, your group, the surface it is set on, and every authored escape's stroke, call, rails, bridge,
 //          rating and the technique test it is checked with. The app's EightBallSituations adds the titles, stories and
 //          "On a real table" words and reads these; BreakProbe's "verify" plays every escape and "eightball near"
-//          re-authors them (EightBallAuthoring.swift, Reauthor.swift). Item 30: every escape's aim window must be at
-//          least half a degree wide, so it holds two of the aim control's quarter-degree steps; the content check fails
-//          any narrower one.
+//          re-authors them (EightBallAuthoring.swift, Reauthor.swift). Item 30: every escape's aim window holds at least
+//          one of the aim control's quarter-degree steps, or the content check fails it; the authoring aims for two
+//          (half a degree), and each comment says where a window falls short of that.
 // SRP/DRY check: Pass - data only; the types are AuthoredTypes', the call and group BreakdownRules'.
 import BreakdownRules
 
@@ -204,17 +204,27 @@ public enum AuthoredEscapes {
         ])
 
     // MARK: 10. Kick-Bank Cross-Side
+    // On the 0.7.0 physics (21-Nov-2026): the kick-then-bank was a sliver before (0.04 degrees) and stayed one: nothing
+    // near it, no place for the 13 within half a diamond, and nothing round the full circle with up to two rails before
+    // the 13 ("eightball wide", 378,000 strokes, the widest 0.08) held one aim step. So the situation is re-laid
+    // ("eightball relay ... cue", item 30): the cue ball moved from across 2.2, along 6.6 to across 1.75, along 6.30,
+    // and, because from there the 13 would be a straight pot, the 3 moved onto that line at across 2.94, along 5.37 to
+    // block it (the hook checked again: no direct makes). There the second way out is a cross-side bank struck straight
+    // at the 13, rated 4.
+    // A: foot rail at across 2.42; aim -22.72 to -22.08 (two aim steps), power 2.80 to 4.60 m/s, tip -6.0 to -4.0 mm.
+    // B: the 13 off the right rail into the left side; aim -135.25 to -134.99, power 5.25 to 6.15 m/s, tip +5.0 to
+    //   +14.0 mm.
     public static let kickBankCrossSide = AuthoredSituation(
-        id: "kick-bank-cross-side", number: 10, cue: Diamond(2.2, 6.6), eight: Diamond(2.2, 2.0),
-        balls: [13: Diamond(3.6, 4.6), 10: Diamond(0.7, 1.5), 2: Diamond(2.83, 5.7), 3: Diamond(1.4, 7.0),
+        id: "kick-bank-cross-side", number: 10, cue: Diamond(1.75, 6.30), eight: Diamond(2.2, 2.0),
+        balls: [13: Diamond(3.6, 4.6), 10: Diamond(0.7, 1.5), 2: Diamond(2.83, 5.7), 3: Diamond(2.94, 5.37),
                 5: Diamond(3.5, 6.9), 6: Diamond(1.15, 3.0)],
         group: .stripes, surface: .cloth,
         escapes: [
-            kick("A", rails: 1, AuthoredStrike(aim: -19.77, power: 3.70, tipUp: -0.0075, tipSide: 0),
+            kick("A", rails: 1, AuthoredStrike(aim: -22.40, power: 3.70, tipUp: -0.0050, tipSide: 0),
                  .ball(13, pocket: .rightSide), rating: 3),
-            AuthoredEscape(id: "B", kind: .kick, alsoUses: [.bank], rails: 1,
-                           strike: AuthoredStrike(aim: -133.24, power: 5.05, tipUp: 0.0115, tipSide: 0),
-                           call: .ball(13, pocket: .leftSide), usesBridge: false, rating: 5, check: .bank,
+            AuthoredEscape(id: "B", kind: .bank, alsoUses: [], rails: 0,
+                           strike: AuthoredStrike(aim: -135.11, power: 5.70, tipUp: 0.0095, tipSide: 0),
+                           call: .ball(13, pocket: .leftSide), usesBridge: false, rating: 4, check: .bank,
                            railCheck: 0...2, touchBall: nil),
         ])
 

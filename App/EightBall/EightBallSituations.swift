@@ -7,9 +7,10 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6: item 38, every number (the tables, groups,
 //          surfaces, strokes, calls, rails, bridge and ratings) moved to the package's authored library
 //          (BreakdownAuthored, AuthoredEscapes), which the dev tool's content check plays too, so no copy can drift;
-//          items 27 and 30, every escape re-authored on the 0.7.0 physics and cloths with an aim window of at least half a
-//          degree, two of the aim control's quarter-degree steps, re-laying a situation where its escapes needed it. The
-//          runs are recorded beside the numbers in AuthoredEscapes.)
+//          items 27 and 30, every escape re-authored on the 0.7.0 physics and cloths with an aim window of at least one
+//          of the aim control's quarter-degree steps (two where the table allows), re-laying a situation or finding a new
+//          route where its escapes needed it, and the cards' words changed to match a new route. The runs are recorded
+//          beside the numbers in AuthoredEscapes.)
 // PURPOSE: The Behind the 8-Ball library as the app shows it: the twelve situations of the design (section 3), each a
 //          full eight-ball table in progress (both groups and the 8, the rest pocketed), with the authored escapes
 //          (stroke, call, bridge, rating, "On a real table" card), the lesson and the trick shots that teach it.
@@ -23,7 +24,7 @@
 //          the called pocket, the 8 not pocketed unless called, no ball off the table, a rail or pocket after contact,
 //          the cue stick clear of every other ball at the strike, and the technique really used (rails before contact
 //          for a kick, a take-off for a jump, a curve a level cue cannot copy for a massé or swerve, a cushion for the
-//          banked ball), with an aim window of at least two aim steps. "BreakProbe verify" plays them all before every
+//          banked ball), with an aim window of at least one aim step. "BreakProbe verify" plays them all before every
 //          upload.
 //          Pockets: headRight 0, footRight 1, headLeft 2, footLeft 3, rightSide 4, leftSide 5 (solver indices).
 //          Read by EightBallMode (flow), EightBallJudge (escapes, ratings) and EightBallViews (words).
@@ -264,14 +265,14 @@ enum EightBallSituations {
         story: String(localized: "You're on stripes. Your 13 sits a ball off the right rail, just past the side pocket."),
         escapes: [
             Words(id: "A", title: String(localized: "One-rail kick"),
-                  aim: String(localized: "Kick off the foot rail two thirds of a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket."),
+                  aim: String(localized: "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket."),
                   cue: String(localized: "Level, below centre for draw."),
                   speed: String(localized: "Firm."),
                   commonMiss: String(localized: "Too full on the 13: it hits the near point of the side pocket and stays out.")),
-            Words(id: "B", title: String(localized: "Kick, then bank cross-side"),
-                  aim: String(localized: "Kick into the right rail at the first diamond past the side pocket. The cue ball comes off it into the 13, which banks off the right rail and straight across into the left side pocket."),
+            Words(id: "B", title: String(localized: "Bank cross-side"),
+                  aim: String(localized: "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket."),
                   cue: String(localized: "Level, a little follow, no side."),
-                  speed: String(localized: "Medium."),
+                  speed: String(localized: "Firm."),
                   commonMiss: String(localized: "Throw from the cut: hit the 13 a little thin and the bank comes off short of the side pocket.")),
         ],
         lesson: String(localized: "A bank is never obvious and must be called. Throw from the cut shortens or lengthens a bank, and a kick then a bank stacks two sources of error."),

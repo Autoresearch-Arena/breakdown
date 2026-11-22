@@ -23,8 +23,9 @@
 //          cushion(); ImpactResult gains bedImpulse, the push the cloth took during a rail hit (zero everywhere else).
 //          The header now says truthfully which model is which.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 26: the rail is coupled. The cloth grips
-//          during the rail's push, step by step through the impulse, instead of after it, because no setting of the
-//          step-by-step rail let a ball keep the spin it brought in; the rail sweep in BreakProbe shows it.)
+//          during the rail's push, step by step through the impulse, instead of after it, and the nose's grip is split
+//          along the rail and across the nose, because no setting of the step-by-step rail let a ball keep the spin it
+//          brought in while still leaving a slow ball steeper; the rail sweeps in BreakProbe show both.)
 // SRP/DRY check: Pass - impact maths only; the event loop decides when they run. rail() applies the cloth's grip in its
 //          own steps with the same Coulomb rule slate() uses, because it acts throughout the push, not as a second
 //          impact after it.
@@ -159,12 +160,13 @@ enum Impacts {
         /// The coupled rail (bug plan after 0.6.6, item 26; the spec's coupled model, revisited because no setting of
         /// the step-by-step rail kept a ball's spin: draw, stun and roll came back within millimetres of each other).
         /// The normal impulse jn is spread over railSteps equal steps, and in each step both contacts act together:
-        /// the nose pushes along the tilted normal with its Coulomb friction against the nose's slip, and for a ball on
+        /// the nose pushes along the tilted normal with its Coulomb friction against the nose's slip (split along the rail
+        /// and across the nose, each with its own grip: PoolParameters.railCrossGrip says why), and for a ball on
         /// the cloth the slate takes exactly the downward push of that step (the nose's normal and friction together),
         /// its own friction (slateFriction, the bed's grip) acting against the slip under the ball. So the cloth grips
         /// all through the rail's push, as it does on a real table, instead of only after it. Each contact's friction
         /// in a step is the smaller of its Coulomb limit and the impulse that stops its slip on a fixed surface
-        /// (2 m |u| / 7), the rule every impact here uses. `frictionScale` scales the nose's friction for the energy guard.
+        /// (2 m |u| / 7), the rule every impact here uses. `frictionScale` scales both frictions for the energy guard.
         func resolve(_ frictionScale: Double) -> (state: BodyState, friction: Double, bed: Double) {
             var vel = v, w = a.omega
             var noseFriction = Vec3.zero
@@ -172,10 +174,10 @@ enum Impacts {
             if jn > 0 {
                 let dP = jn / Double(railSteps)
                 for _ in 0..<railSteps {
-                    // The nose: its normal step and its friction against the nose's slip.
-                    // The nose's slip, split along the rail line (t) and across it, up and down the nose's face (the
-                    // rest of the slip in the contact plane). Each part has its own grip (PoolParameters.cushionFriction
-                    // along, railCrossGrip across) and its own stick cap, so the friction is a box, not a circle.
+                    // The nose: its normal step and its friction against the nose's slip. The slip is split along the
+                    // rail line and across it, up and down the nose's face (the rest of the slip in the contact plane);
+                    // each part has its own grip (PoolParameters.cushionFriction along, railCrossGrip across) and its own
+                    // stick cap, so the friction is a box, not a circle.
                     let u = vel + w.cross(rc)
                     let ut = u - normal * u.dot(normal)
                     let along = ut.dot(railLine)

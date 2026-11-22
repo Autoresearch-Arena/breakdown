@@ -3,7 +3,10 @@
   "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
   "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
   "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
-  "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9."
+  "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+  "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+  "Bank cross-side",
+  "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket."
  ],
  "translations": [
   {
@@ -225,6 +228,171 @@
    "culture": "ar",
    "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
    "text": "حافة القدم يمين الماسة الأولى مباشرة، ثم الحافة اليسرى قرب الزاوية، ثم الحافة اليمنى بعد الجيب الجانبي، ثم صعوداً إلى الكرة 9."
+  },
+  {
+   "culture": "es",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Rebota en la banda del pie algo menos de medio diamante a la derecha del centro. La blanca vuelve y corta la 13 a la tronera lateral derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Bricole sur la bande du pied à un peu moins d'une demi-mouche à droite du milieu. La blanche remonte et coupe la 13 dans la poche du milieu droite."
+  },
+  {
+   "culture": "de",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Vorbänder an der Fußbande knapp einen halben Diamanten rechts der Mitte. Die Weiße kommt zurück und schneidet die 13 in die rechte Mitteltasche."
+  },
+  {
+   "culture": "it",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Rimbalza sulla sponda di fondo poco meno di mezzo diamante a destra del centro. La bianca torna su e taglia la 13 nella buca centrale destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Tabela na tabela do pé um pouco menos de meio diamante à direita do meio. A branca volta e corta a 13 para a caçapa lateral direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Tabela na tabela do pé um pouco menos de meio diamante à direita do meio. A branca volta e corta a 13 na caçapa lateral direita."
+  },
+  {
+   "culture": "ja",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "フットクッションの中央から右へ半ポイント弱でキック。手球が戻り、13番を右サイドポケットへカット。"
+  },
+  {
+   "culture": "ko",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "풋 쿠션 가운데에서 반 포인트가 조금 안 되게 오른쪽으로 킥. 큐볼이 돌아와 13번을 오른쪽 사이드 포켓으로 깎아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "打脚库中间偏右不到半个星点处。母球弹回，把 13 号球切进右侧中袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "Через нижний борт чуть меньше чем на полметки правее центра. Биток вернётся и срежет 13 в правую среднюю лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.",
+   "text": "ارتدّ عن حافة القدم بأقل قليلاً من نصف ماسة يمين الوسطى. تعود الكرة البيضاء وتقطع الكرة 13 إلى الجيب الجانبي الأيمن."
+  },
+  {
+   "culture": "es",
+   "key": "Bank cross-side",
+   "text": "Banda cruzada"
+  },
+  {
+   "culture": "fr",
+   "key": "Bank cross-side",
+   "text": "Doublé en travers"
+  },
+  {
+   "culture": "de",
+   "key": "Bank cross-side",
+   "text": "Bandenball quer"
+  },
+  {
+   "culture": "it",
+   "key": "Bank cross-side",
+   "text": "Sponda incrociata"
+  },
+  {
+   "culture": "pt",
+   "key": "Bank cross-side",
+   "text": "Bola de tabela cruzada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Bank cross-side",
+   "text": "Bola de tabela cruzada"
+  },
+  {
+   "culture": "ja",
+   "key": "Bank cross-side",
+   "text": "クロスサイドバンク"
+  },
+  {
+   "culture": "ko",
+   "key": "Bank cross-side",
+   "text": "크로스 사이드 뱅크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Bank cross-side",
+   "text": "对边翻袋"
+  },
+  {
+   "culture": "ru",
+   "key": "Bank cross-side",
+   "text": "Дуплет поперёк"
+  },
+  {
+   "culture": "ar",
+   "key": "Bank cross-side",
+   "text": "تسديدة بالحافة عبر الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Corta la 13 contra la banda derecha justo pasada la tronera lateral, para que rebote y cruce la mesa hasta la tronera lateral izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Coupe la 13 sur la bande droite juste après la poche du milieu, pour qu'elle revienne en travers de la table dans la poche du milieu gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Schneide die 13 knapp hinter der Mitteltasche an die rechte Bande, damit sie quer über den Tisch in die linke Mitteltasche zurückläuft."
+  },
+  {
+   "culture": "it",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Taglia la 13 sulla sponda destra appena oltre la buca centrale, così rimbalza dritta attraverso il tavolo nella buca centrale sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Corta a 13 contra a tabela direita logo depois da lateral, para que volte em linha reta pela mesa até à caçapa lateral esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Corte a 13 contra a tabela direita logo depois da lateral, para que ela volte reto pela mesa até a caçapa lateral esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "13番を右クッションのサイドポケットのすぐ先へカットし、台を横切って左サイドポケットへバンクさせる。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "13번을 사이드 포켓 바로 지난 오른쪽 쿠션으로 깎아 보내서, 테이블을 가로질러 왼쪽 사이드 포켓으로 뱅크시켜요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "把 13 号球切向右库中袋稍后处，让它直接横穿球台翻进左侧中袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "Срежь 13 в правый борт чуть за средней лузой, чтобы она отскочила поперёк стола в левую среднюю лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.",
+   "text": "اقطع الكرة 13 نحو الحافة اليمنى بعد الجيب الجانبي مباشرة، فترتد عبر الطاولة إلى الجيب الجانبي الأيسر."
   }
  ]
 }
