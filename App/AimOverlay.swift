@@ -52,19 +52,35 @@
 //          Without Colour that also gets an inner ring, so it never rests on colour alone. It never moves by itself,
 //          so Reduce Motion has nothing to stop. Its length is read in the fine controls and the stance by the
 //          equipment card, both spoken; the drawing itself stays hidden from VoiceOver like the rest of this Canvas.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 touch stream, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items
+//          5, 7, 9, 11, 13 and 23: this layer no longer decides for itself what a touch is. Its old one-finger drag,
+//          which acted the moment a finger landed (so the first finger of a pinch swung the aim and a touch during the
+//          replay skipped it), is gone; the touch arbiter in App/Stroke/StrokeGesture.swift decides (undecided, zoom,
+//          bridge and stroke, placement, aim, tap) and calls this layer's aim, pointer pull, carry, release and tap
+//          handlers. A drag that starts on a ball free play lets the player lift picks that ball up and carries it,
+//          letting go puts it down, as for ball in hand. The pull handle ring is drawn at the grab circle's own size
+//          (TableTouch.grabRadius, from the ball on screen with a 22-point floor). A pointer's pull follows the curved
+//          pull (StrokeTracker.powerFraction) and leaves the power alone in lesson steps not about power. Return and
+//          the controller's shoot go through model.fireStroke(), so a refusal is recorded and shown. The bridge mark
+//          is drawn beside the groove, at the bridge's own distance from the cue ball, instead of on the cue line where
+//          the stroke finger travels, and is left out when the mechanical rest is drawn; the "Bridge" label follows
+//          model.restInUse. The test script drives the same handlers directly.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
-//          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
-//          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
-//          starts on the cue ball is a pull-back, and how far you pull behind the aim line sets the power, shown live
-//          in the power gauge and as a percentage by the ball; letting go keeps the power. On a Mac the pointer does the
-//          same, and the arrow keys fine-tune: left and right turn the aim a quarter degree (shift: a degree), up and
+//          two jobs. (1) Gestures: which gesture a touch is gets decided by the touch arbiter (StrokeGestures,
+//          App/Stroke/StrokeGesture.swift), which then calls this layer's handlers: a drag to aim swings the aim line to
+//          follow the finger (the finger's spot on the table is found with AimProjector, so it works from any camera
+//          angle); a finger on the cue ball is the measured stroke (that file); a mouse or trackpad pressed on the cue
+//          ball pulls back, and how far behind the aim line sets the power on the curved pull, shown live in the power
+//          gauge and as a percentage by the ball; a lifted ball is carried and put down; a tap aims at a ball or a
+//          pocket. The arrow keys fine-tune: left and right turn the aim a quarter degree (shift: a degree), up and
 //          down change the power, Return takes the shot. (2) Drawing: a glowing aim line to the first ball it will hit, the "ghost ball" where the cue ball will be at that
 //          moment, the ball it hits ringed, where that ball and the cue ball will head afterwards, or the line to the
 //          cushion when it misses everything. All of it is drawn in screen space from the live camera, so it also
 //          follows the camera's swing into the Physics Lens. The cue itself (drawn back as far as the power) and the
-//          mechanical bridge are 3D models placed by CueRig; for a bridge shot this layer only labels the bridge.
+//          mechanical bridge are 3D models placed by CueRig; while the rest is in use this layer only labels it, and
+//          otherwise draws the chalk ring of the bridge hand beside the groove.
 //          TEST HOOK: launching with -aimScript <break|shots|scratch> makes the layer drive itself through the same
-//          drag handlers a finger uses (aim drag, pull-back, release, Break or Shoot, second shot, or a shot straight at a
+//          handlers the touch arbiter calls (aim drag, pull-back, release, Break or Shoot, second shot, or a shot straight at a
 //          pocket) and log what it did with the prefix AIMSCRIPT, so the flow can be checked and photographed without
 //          anyone at the screen. It does not go through UIKit touch delivery; real touches were checked separately.
 //          Reads and writes the model only through its aim, power and fire methods; the layer is only in the view
@@ -73,7 +89,8 @@
 //          fine-controls sheet remain the complete slider route.
 // SRP/DRY check: Pass - checked CaptionViews (a Canvas overlay that projects model points; same pattern, but one-way
 //          and for the caption ring) and ShotPanel (the sliders, kept as the fallback). Ray casting and camera maths
-//          live in AimGeometry; the gauges in AimGauges; this file is only gesture, keys and drawing.
+//          live in AimGeometry; the gauges in AimGauges; who owns a touch in StrokeGesture; this file is only the
+//          gesture handlers, keys and drawing.
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
@@ -96,7 +113,7 @@ struct AimOverlay: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
     @State private var cameraBox = AimProjector.CameraBox()
-    @State private var mode: DragMode?
+    /// True while a mouse or trackpad pulls back from the cue ball (a finger's pull is the stroke's: stroke.pullOn).
     @State private var pulling = false
     /// The stroke being drawn on the cue ball (StrokeGesture), shared with the drawing below.
     @State private var stroke = StrokeSession()
@@ -110,12 +127,6 @@ struct AimOverlay: View {
     /// A quarter degree for the last hair, a degree (the old fixed step), five degrees to swing round the table.
     private static let aimSteps: [Double] = [1, 4, 20]
 
-    private enum DragMode { case aim, pull }
-
-    /// How close to the cue ball (in points) a touch must start to count as grabbing the ball to pull back.
-    private let grabRadius: CGFloat = 44
-    /// A pull shorter than this on screen is a tap on the ball, not a pull: it leaves the power as it was.
-    private let pullSlop: CGFloat = 10
     /// Honour the silent-testing flag for touch feedback too.
     private static let muted = ProcessInfo.processInfo.arguments.contains("-muteSound")
 
@@ -123,9 +134,9 @@ struct AimOverlay: View {
         ZStack {
             Color.clear
                 .contentShape(Rectangle())
-                .gesture(dragGesture)
-                // The pull on the cue ball as a measured stroke: groove, wander, bridge finger, Pencil, a push to play.
-                .strokeGestures(model: model, bridge: bridge, session: stroke, isOpen: $isOpen)
+                // Who owns each touch (aim, the measured stroke with its bridge finger, carrying a lifted ball, a tap,
+                // or the zoom), decided in one place; it calls back into this layer's handlers.
+                .strokeGestures(model: model, bridge: bridge, session: stroke, isOpen: $isOpen, routes: touchRoutes)
                 .modifier(TableZoomGestures(model: model, bridge: bridge))
                 .accessibilityHidden(true)
             TimelineView(.animation) { _ in
@@ -151,7 +162,8 @@ struct AimOverlay: View {
             // A game controller fires and turns the aim through this layer while it is up (GameControllerInput).
             GameControllerInput.shared.shoot = { [model] in
                 hintSeen = true
-                if model.fire() { isOpen = false }
+                // Through fireStroke, so a refused shot (no call, ...) is recorded and the card says why.
+                if model.fireStroke() == .breakStruck { isOpen = false }
             }
             GameControllerInput.shared.turnSign = { screenSign() }
         }
@@ -325,86 +337,77 @@ struct AimOverlay: View {
 
     // MARK: Gestures
 
-    private var dragGesture: some Gesture {
-        DragGesture(minimumDistance: 0, coordinateSpace: .local)
-            .onChanged { v in drag(from: v.startLocation, to: v.location) }
-            .onEnded { v in
-                // A touch that never moved is a tap: one finger, no drag (accessibility plan, package 5).
-                if mode == .aim, hypot(v.location.x - v.startLocation.x, v.location.y - v.startLocation.y) <= pullSlop {
-                    tapped(at: v.location)
-                }
-                endDrag()
-            }
+    /// The handlers the touch arbiter (StrokeGestures) calls once it has decided what a touch or a press is.
+    private var touchRoutes: TableTouchRoutes {
+        TableTouchRoutes(aim: { aimDrag(to: $0) },
+                         pull: { pull(from: $0, to: $1) },
+                         carry: { carry(to: $0) },
+                         release: { endDrag() },
+                         tap: { tapAim(at: $0) })
     }
 
     fileprivate func projectorForScript() -> AimProjector? { projector(size: viewSize) }
-
-    fileprivate func endDrag() {
-        // Ball in hand: letting go puts the ball down. On an illegal spot the model keeps it lifted (and the table
-        // layer tints it red), so the player simply drags again.
-        if placingDrag {
-            placingDrag = false
-            model.confirmCueBallPlacement()
-            return
-        }
-        if mode == .pull { hintSeen = true }
-        mode = nil; pulling = false
-    }
 
     private func projector(size: CGSize) -> AimProjector? {
         guard let root = bridge.table?.root else { return nil }
         return AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
     }
 
-    fileprivate func drag(from start: CGPoint, to location: CGPoint) {
-        // Ball in hand: the lifted cue ball follows the finger wherever the drag started; nothing is aimed.
-        if model.placingCueBall {
-            guard let proj = projector(size: viewSize), let spot = proj.table(at: location) else { return }
-            model.moveCueBallCandidate(to: spot)
-            placingDrag = true
-            return
-        }
-        // A stroke that has just played its shot by a push through the ball: the rest of that touch is not a new
-        // gesture (it would jump the new shot to its end).
-        if stroke.spent { return }
-        // Touching the table while the last shot is still playing takes over: jump to where the balls came to rest.
-        if !model.aimReady { model.skipToResult() }
-        // Two fingers on the table are zooming or panning it (TableZoomGestures), not aiming.
-        if bridge.table?.zoom.isGesturing == true { return }
-        guard model.layout.count == 16, let proj = projector(size: viewSize) else { return }
-        if mode == nil {
-            // Decided once, at the first touch: on the cue ball is a pull, anywhere else is aiming.
-            let ball = proj.screen(model.aimOrigin)
-            let near = ball.map { hypot($0.x - start.x, $0.y - start.y) <= grabRadius } ?? false
-            mode = near ? .pull : .aim
-        }
-        guard let spot = proj.table(at: location) else { return }
-        switch mode {
-        case .aim:
-            // A lesson step with the aim locked: the line stays where the lesson set it.
-            guard open.contains(.aim) else { return }
-            model.aim(toward: spot)
-        case .pull:
-            guard open.contains(.power) else { return }
-            // A measured stroke sets the power itself (StrokeGestures); this only shows the pull is on.
-            if stroke.isTracking {
-                pulling = hypot(location.x - start.x, location.y - start.y) > pullSlop
-                return
-            }
-            guard hypot(location.x - start.x, location.y - start.y) > pullSlop else { return }
-            // How far the finger is behind the cue ball, measured along the aim line, on the table itself.
-            let behind = (model.aimOrigin - spot).dot(model.aimDirection)
-            model.powerFraction = behind / ShowpieceModel.pullReach
-            pulling = true
-        case nil:
-            break
-        }
+    /// Drag to aim: the line swings through the table point under the finger or pointer. A lesson step with the aim
+    /// locked keeps the line where the lesson set it (the model refuses too).
+    fileprivate func aimDrag(to location: CGPoint) {
+        guard open.contains(.aim), model.layout.count == 16, let proj = projector(size: viewSize),
+              let spot = proj.table(at: location) else { return }
+        model.aim(toward: spot)
     }
 
-    /// Changes each tenth of pull so the phone can tick as the power climbs; -1 when not pulling.
-    private var pullBucket: Int { pulling && !Self.muted ? Int(model.powerFraction * 10) : -1 }
+    /// A mouse or trackpad pulling back from the cue ball (a finger's pull is the measured stroke): how far behind the
+    /// cue ball it is, along the aim line on the table, sets the power through the curved pull. Below the slop it is a
+    /// click on the ball and leaves the power as it was. In a lesson step not about power the pull only plays the shot
+    /// (PointerAim's release), so the power is left where the lesson put it.
+    fileprivate func pull(from start: CGPoint, to location: CGPoint) {
+        guard model.layout.count == 16, TableTouch.pullSetsPower(model),
+              hypot(location.x - start.x, location.y - start.y) > TableTouch.slop,
+              let proj = projector(size: viewSize), let spot = proj.table(at: location) else { return }
+        let behind = (model.aimOrigin - spot).dot(model.aimDirection)
+        model.powerFraction = StrokeTracker.powerFraction(forDepth: behind)
+        pulling = true
+    }
+
+    /// Ball in hand or a ball lifted in free play: the lifted ball follows the finger or pointer; nothing is aimed.
+    fileprivate func carry(to location: CGPoint) {
+        guard model.placingCueBall, let proj = projector(size: viewSize), let spot = proj.table(at: location) else { return }
+        model.moveCueBallCandidate(to: spot)
+        placingDrag = true
+    }
+
+    /// A finger or pointer let go of an aim, a pull or a carried ball.
+    fileprivate func endDrag() {
+        // A carried ball: letting go puts it down. On an illegal spot the model keeps it lifted (and the table layer
+        // tints it red), so the player simply drags again or uses Place it.
+        if placingDrag {
+            placingDrag = false
+            model.confirmCueBallPlacement()
+            return
+        }
+        if pulling { hintSeen = true }
+        pulling = false
+    }
+
+    /// A tap (a touch that did not move) on the table with the balls at rest: aim through the spot, then, on an object
+    /// ball, straight at it, or on a pocket, the pot into it (accessibility plan, package 5).
+    fileprivate func tapAim(at point: CGPoint) {
+        aimDrag(to: point)
+        tapped(at: point)
+    }
+
+    /// Changes each tenth of pull so the phone can tick as the power climbs; -1 when not pulling. A finger's pull is
+    /// the stroke's (stroke.pullOn, not observed; the body is re-read as the power it sets changes).
+    private var pullBucket: Int { (pulling || stroke.pullOn) && !Self.muted ? Int(model.powerFraction * 10) : -1 }
 
     private func handleKey(_ press: KeyPress) -> KeyPress.Result {
+        // The keyboard is the input in use now (the hand-over line and the panel hint pick their words by it).
+        if model.inputInUse != .keyboard { model.inputInUse = .keyboard }
         if model.placingCueBall { return placementKey(press) }
         guard model.aimReady else { return .ignored }
         let big = press.modifiers.contains(.shift)
@@ -415,7 +418,7 @@ struct AimOverlay: View {
         case .downArrow: model.powerFraction -= big ? 0.1 : 0.02; return .handled
         case .return:
             hintSeen = true
-            if model.fire() { isOpen = false }
+            if model.fireStroke() == .breakStruck { isOpen = false }
             return .handled
         default: return .ignored
         }
@@ -501,16 +504,17 @@ struct AimOverlay: View {
         let reach = aimGuide ? (toHit ?? cushion) : min(0.35, cushion, toHit ?? .greatestFiniteMagnitude)
         let accent = palette.accent, amber = palette.slide, paper = palette.paper
 
-        // The cue and the mechanical bridge are 3D models (CueRig); for the trick shots that need the bridge, a small
-        // label names it beside its head.
-        if model.showsBridge { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
+        // The cue and the mechanical bridge are 3D models (CueRig); whenever the rest is in use (a shot that needs it,
+        // or a stance out of reach), a small label names it beside its head.
+        if model.restInUse { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
 
         // A lesson's aim band: a faint fan from the cue ball between the two edge aims of the window, as far as the
         // first ball the middle of the band meets (or half a metre), so the line can be swung into it.
         if let band = zones?.aim { drawAimBand(&ctx, proj, origin: origin, band: band, radius: radius) }
 
-        // Where the bridge rests, under the cue behind the ball (drawn before the aim line, which stays on top).
-        drawBridgeMark(&ctx, proj, origin: origin, radius: radius)
+        // Where the bridge hand rests, beside the groove behind the ball (drawn before the aim line, which stays on
+        // top). Not with the mechanical rest: its 3D head is the bridge then.
+        if !model.restInUse { drawBridgeMark(&ctx, proj, origin: origin, radius: radius) }
 
         // The aim line: a soft wide halo under a thin bright core, from the ball's edge to where the cue ball stops.
         // When that is a ball, the last third of the line fades out into the contact, so the line reads as ending
@@ -563,11 +567,13 @@ struct AimOverlay: View {
         // The stroke's groove on the cloth and the finger's trace, while a stroke is drawn on the cue ball.
         StrokeDrawing.draw(&ctx, session: stroke, paper: paper, accent: accent)
 
-        // The pull handle around the cue ball, and the live power read-out while pulling.
-        let ringRadius = max(24, handleRadius(proj, origin, radius))
+        // The pull handle around the cue ball, drawn at the grab circle itself (TableTouch.grabRadius), so the ring the
+        // player sees is exactly where a touch grabs the ball; and the live power read-out while pulling.
+        let ringRadius = TableTouch.grabRadius(proj, centre: origin, ballRadius: radius)
+        let pullOn = pulling || stroke.pullOn
         let handle = Path(ellipseIn: CGRect(x: cueScreen.x - ringRadius, y: cueScreen.y - ringRadius, width: ringRadius * 2, height: ringRadius * 2))
-        ctx.stroke(handle, with: .color(accent.opacity(pulling ? 1 : 0.8)), style: StrokeStyle(lineWidth: pulling ? 2.5 : 1.5, dash: pulling ? [] : [5, 4]))
-        if pulling {
+        ctx.stroke(handle, with: .color(accent.opacity(pullOn ? 1 : 0.8)), style: StrokeStyle(lineWidth: pullOn ? 2.5 : 1.5, dash: pullOn ? [] : [5, 4]))
+        if pullOn {
             let text = ctx.resolve(Text(String(format: "%.0f%%", model.powerFraction * 100)).font(.headline.monospacedDigit()).foregroundStyle(Color.white))
             let measured = text.measure(in: size)
             let badge = CGRect(x: cueScreen.x - measured.width / 2 - 10, y: cueScreen.y - ringRadius - measured.height - 14,
@@ -602,19 +608,28 @@ struct AimOverlay: View {
     /// The bridge mark's radius on the cloth, metres: about a bridge hand's knuckles across.
     private static let bridgeMarkRadius = 0.03
 
-    /// The bridge mark: a soft chalk ring on the cloth where the bridge rests, the bridge's length behind the cue ball
-    /// along the cue, and a faint dotted line from it to the back of the cue ball. Lying on the cloth (0.001 m up, as
-    /// the ghost and the stroke's trace are), projected through the live camera.
+    /// The bridge mark: a soft chalk ring on the cloth where the bridge hand can rest, at the bridge's length from the
+    /// cue ball, and a faint dotted line from it to the cue ball. Swung off the cue line to the shooter's left (the
+    /// bridge hand of a right-handed player) just far enough that the ring clears the groove by a ball's radius: on
+    /// the line it sat on the groove, where the stroke finger travels, and a finger resting there blocked any pull
+    /// past it. The bridge is read from the finger's distance to the cue ball in any direction, so a finger on the
+    /// ring sets exactly the length it shows. Lying on the cloth (0.001 m up, as the ghost and the stroke's trace
+    /// are), projected through the live camera.
     private func drawBridgeMark(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, radius: Double) {
         let forward = model.aimDirection
         guard forward.lengthSquared > 0.5 else { return }
-        let spot = origin - forward * model.strokeBridgeLength
+        let length = max(model.strokeBridgeLength, 1e-3)
+        // The sideways share of the swing: the ring's own radius plus a ball's radius of clear cloth, over the length.
+        let sideways = min(1, (Self.bridgeMarkRadius + radius) / length)
+        let backward = (1 - sideways * sideways).squareRoot()
+        let spot = origin - forward * (length * backward) + forward.perp * (length * sideways)
         guard let ring = clothCircle(proj, spot, Self.bridgeMarkRadius) else { return }
         // Paper for a square stance with a clear path; amber (the lamp's colour) when the stance is not.
         let awkward = model.stance.map { !$0.isNormal } ?? false
         let ink = awkward ? palette.slide : palette.paper
-        if let a = proj.screen(spot + forward * Self.bridgeMarkRadius, height: 0.001),
-           let b = proj.screen(origin - forward * radius, height: 0.001) {
+        let toBall = (origin - spot).normalized
+        if let a = proj.screen(spot + toBall * Self.bridgeMarkRadius, height: 0.001),
+           let b = proj.screen(origin - toBall * radius, height: 0.001) {
             var line = Path(); line.move(to: a); line.addLine(to: b)
             ctx.stroke(line, with: .color(ink.opacity(0.35)), style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [1, 4]))
         }
@@ -667,18 +682,13 @@ struct AimOverlay: View {
         path.closeSubpath()
         return path
     }
-
-    /// On-screen size of the pull handle: about twice the ball's own radius, so it is easy to land a finger on.
-    private func handleRadius(_ proj: AimProjector, _ centre: Vec2, _ radius: Double) -> CGFloat {
-        guard let a = proj.screen(centre), let b = proj.screen(centre + Vec2(0, radius)), let c = proj.screen(centre + Vec2(radius, 0)) else { return 24 }
-        return max(hypot(a.x - b.x, a.y - b.y), hypot(a.x - c.x, a.y - c.y)) * 2.0
-    }
 }
 
 // MARK: Test hook
 
-/// Scripted drags for -aimScript. Every drag is a list of screen points fed to AimOverlay.drag, one every 30 ms,
-/// followed by the same end-of-drag clean-up a lifted finger causes.
+/// Scripted drags for -aimScript. Every drag is a list of screen points fed, one every 30 ms, to the handler the touch
+/// arbiter would call for it (AimOverlay.aimDrag for an aim, AimOverlay.pull for a pull-back), followed by the same
+/// end-of-drag clean-up a lifted finger causes. The script knows which gesture it is making, so it skips the arbiter.
 @MainActor
 private enum TestScript {
     static func run(on o: AimOverlay) async {
@@ -779,25 +789,28 @@ private enum TestScript {
     /// A drag that starts well off the cue ball and ends on the screen point of the wanted table spot.
     static func aim(_ o: AimOverlay, toward spot: Vec2) async {
         guard let proj = o.projectorForScript(), let to = proj.screen(spot, height: nil), let from = proj.screen(o.model.aimOrigin + (spot - o.model.aimOrigin).perp.normalized * 0.4) else { return }
-        await move(o, from, to)
+        await move(from, to) { o.aimDrag(to: $0) }
+        o.endDrag()
     }
 
-    /// A drag that starts on the cue ball and ends behind it, along the aim line, far enough for `fraction` power.
+    /// A drag that starts on the cue ball and ends behind it, along the aim line, far enough for `fraction` power on
+    /// the curved pull (StrokeTracker.depth(forPowerFraction:), the inverse of the curve the pull reads).
     static func pull(_ o: AimOverlay, fraction: Double, hold seconds: Double) async {
         let m = o.model
+        let depth = StrokeTracker.depth(forPowerFraction: fraction)
         guard let proj = o.projectorForScript(), let from = proj.screen(m.aimOrigin),
-              let to = proj.screen(m.aimOrigin - m.aimDirection * (fraction * ShowpieceModel.pullReach)) else { return }
-        await move(o, from, to, finish: false)
+              let to = proj.screen(m.aimOrigin - m.aimDirection * depth) else { return }
+        await move(from, to) { o.pull(from: from, to: $0) }
         await hold(seconds)
         o.endDrag()
     }
 
-    private static func move(_ o: AimOverlay, _ from: CGPoint, _ to: CGPoint, finish: Bool = true) async {
-        for step in 0...12 {
-            let k = CGFloat(step) / 12
-            o.drag(from: from, to: CGPoint(x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k))
+    /// Feeds thirteen evenly spaced points from `from` to `to` to a handler, one every 30 ms.
+    private static func move(_ from: CGPoint, _ to: CGPoint, step: (CGPoint) -> Void) async {
+        for i in 0...12 {
+            let k = CGFloat(i) / 12
+            step(CGPoint(x: from.x + (to.x - from.x) * k, y: from.y + (to.y - from.y) * k))
             try? await Task.sleep(for: .milliseconds(30))
         }
-        if finish { o.endDrag() }
     }
 }

@@ -3,6 +3,13 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: strokeHold, set while a stroke is drawn on the cue
 //          ball (StrokeGesture), keeps pinch and two-finger pan still, so a bridge finger resting on the cloth beside a
 //          moving stroke finger is not read as a zoom or a pan.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 touch stream, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items
+//          7 and 32: zoom from the keyboard and the menus. zoomStep(_:) zooms in or out a step about the middle of the
+//          view (View menu Zoom In and Zoom Out), actualSize() returns to the fitted view (Actual Size), and
+//          panStep(_:) moves the zoomed view the way an arrow key points on screen, a tenth of the camera's distance
+//          to the cloth per press, using the camera's own screen directions recorded each frame. The double tap now
+//          tells the aiming layer's touch arbiter it was recognised (onDoubleTap), so the aim from before its first tap
+//          is put back and that tap does not aim. The menus and key bindings themselves are the menu stream's.)
 // PURPOSE: Zooming into the table by hand (look plan package 3: on a phone held upright the camera fits the whole
 //          table, so the balls are a few millimetres across). Two parts:
 //          (1) TableZoom, the state: one more distance multiplier and a sideways offset of the camera's look point,
@@ -63,6 +70,23 @@ final class TableZoom {
     /// True while the player strokes the cue ball (StrokeGesture): a second finger then is the bridge hand, so pinches
     /// and two-finger drags are ignored until the stroke ends.
     var strokeHold = false
+    /// Called when a double tap is recognised, before it zooms: the aiming layer's touch arbiter (StrokeGestures) puts
+    /// back the aim from before the double tap's first tap and drops that tap. Nil while the aiming layer is closed.
+    var onDoubleTap: (@MainActor () -> Void)?
+
+    /// One View-menu zoom step: the view comes a quarter closer (or goes a quarter further out), so five steps run
+    /// from the fitted view to the closest one, few enough to reach quickly, fine enough to stop on any ball.
+    static let keyZoomFactor: Float = 1.25
+    /// One arrow-key pan, as a share of the camera's distance to the point it looks at on the cloth. At the usual
+    /// lens (about 45 degrees) the view shows about four fifths of that distance top to bottom, so a press moves the
+    /// table about an eighth of the screen: clearly a step, never a jump past what was in view.
+    static let panStepShare: Float = 0.1
+    /// The camera's screen-right and screen-up directions laid flat on the cloth (world plan x, z) and its distance to
+    /// the cloth along its line of sight, from the last frame (apply). The camera looks with world up as its up
+    /// vector (TableCamera), so screen up is the way its line of sight runs across the cloth.
+    private var planRight = SIMD2<Float>(1, 0)
+    private var planUp = SIMD2<Float>(0, -1)
+    private var viewDistance: Float = 2
 
     /// True when the hand has zoomed or moved the view away from the fitted one.
     var isZoomed: Bool { goalScale < 0.999 || simd_length(goalOffset) > 0.002 }
@@ -121,6 +145,30 @@ final class TableZoom {
         focusedBall = ball
     }
 
+    // MARK: Keys and menus
+
+    /// Zoom by whole steps about the middle of the view: positive comes in, negative goes out (View menu Zoom In and
+    /// Zoom Out). Coming out to near the fitted view snaps to it, as a pinch let go there does.
+    func zoomStep(_ steps: Int) {
+        guard steps != 0 else { return }
+        let s = goalScale / pow(Self.keyZoomFactor, Float(steps))
+        if s > 0.95 { setGoal(scale: 1, offset: .zero) } else { setGoal(scale: s, offset: goalOffset) }
+        focusedBall = nil
+    }
+
+    /// The fitted view (View menu Actual Size).
+    func actualSize() { springBack() }
+
+    /// Arrow keys while zoomed: move the view the way the arrow points on screen (x right, y up; -1, 0 or 1 each), so
+    /// what lies that way comes into view. Nothing in the fitted view, which already shows the whole table.
+    func panStep(_ direction: SIMD2<Float>) {
+        guard goalScale < 0.999, simd_length(direction) > 1e-4 else { return }
+        let step = Self.panStepShare * viewDistance
+        let move = (planRight * direction.x + planUp * direction.y) * step
+        setGoal(scale: goalScale, offset: goalOffset + move)
+        focusedBall = nil
+    }
+
     /// Back to the fitted view: a double tap off a ball or on the focused one, and every new shot.
     func springBack() {
         setGoal(scale: 1, offset: .zero)
@@ -148,6 +196,7 @@ final class TableZoom {
         let now = ProcessInfo.processInfo.systemUptime
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
+        recordScreenDirections(position: position, target: target)
         if isGesturing || reduceMotion {
             scale = goalScale; offset = goalOffset
         } else {
@@ -162,7 +211,25 @@ final class TableZoom {
         guard dir.y < -1e-3 else { return (position, target) }
         let pivot = position + dir * (-position.y / dir.y)
         let newPivot = pivot + SIMD3(offset.x, 0, offset.y)
-        return (newPivot + (position - pivot) * scale, newPivot)
+        let newPosition = newPivot + (position - pivot) * scale
+        viewDistance = simd_length(newPosition - newPivot)
+        return (newPosition, newPivot)
+    }
+
+    /// Keeps the camera's screen directions on the cloth for panStep (see planRight). With world up as the camera's up
+    /// vector, screen right is the line of sight crossed with up, and screen up is the line of sight's own run across
+    /// the cloth. A camera looking straight down has neither; the last good directions are kept then.
+    private func recordScreenDirections(position: SIMD3<Float>, target: SIMD3<Float>) {
+        let sight = target - position
+        let run = SIMD2<Float>(sight.x, sight.z)
+        guard simd_length(run) > 1e-4 else { return }
+        planUp = simd_normalize(run)
+        // (sight x up) = (-sight.z, 0, sight.x): on the plan, the run turned a quarter clockwise as seen from above.
+        planRight = SIMD2<Float>(-planUp.y, planUp.x)
+        if !(abs(scale - 1) < 1e-4 && simd_length(offset) < 1e-5) { return }
+        // Fitted view: the distance from the camera to where its line of sight meets the cloth.
+        let dir = simd_normalize(sight)
+        if dir.y < -1e-3 { viewDistance = -position.y / dir.y }
     }
 }
 
@@ -212,6 +279,8 @@ struct TableZoomGestures: ViewModifier {
     private var doubleTap: some Gesture {
         SpatialTapGesture(count: 2).onEnded { value in
             guard let zoom = zoom, zoom.takeDoubleTap(), let proj = projector() else { return }
+            // The aiming layer puts back the aim from before the first tap and drops that tap (item 7).
+            zoom.onDoubleTap?()
             let timeline = model.timeline
             let radius = timeline.table.ballRadius
             var best: (ball: Int, distance: CGFloat, at: Vec2)?
