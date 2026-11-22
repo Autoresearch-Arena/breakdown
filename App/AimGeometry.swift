@@ -21,9 +21,24 @@
 //          tables the guide stops at the first thing it meets. firstContact now skips the striking ball by where it
 //          sits, not by being ball 0, so on five-pin and bumper pool the other player's ball (often ball 0) is seen;
 //          obstacleDistance finds the first bumper, standing pin or bed hole on the path, which the overlay stops at.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, gauges-pointer stream, items 24, 31 and 50 of
+//          plans/21-Nov-2026-bugs-after-0-6-6-plan.md):
+//          (4) guideLine / guideContact: the one answer for "what does the guide show the striking ball meeting first",
+//          along the launch direction (side-spin push included) and stopped at the first cushion, bumper, pin or hole,
+//          exactly as the overlay draws it. The target badge, the spoken aim and Aim to pot use it too (item 50), so a
+//          sighted player and a VoiceOver player are told about the same ball. cueAim(forLaunch:) is its inverse: the
+//          cue aim that sends the ball along a wanted line, so Aim to pot can allow for the push.
+//          (5) fork / AimFork: when side spin turns the ball half a degree or more off the cue's line, the two lines
+//          the overlay draws as a labelled fork, with their words (item 24).
+//          (6) solvedImpact: at full assist, where the object ball really leaves (throw included) and where the cue
+//          ball heads, read from a two-ball trial solve by the solver itself, remembered until the shot changes.
+//          (7) AimProjector.turnSign: which way a counter-clockwise turn on the table looks on screen, shared by the
+//          pointer's scroll (PointerAim) so it turns the line the way the arrow keys do (item 31).
 // SRP/DRY check: Pass - checked TableStage and TableCamera, which project world points to the screen for the caption
 //          ring; that goes one way only and lives in a closure inside the 3D view, so the other way (screen to table)
-//          is done here from the camera entity itself. Table/world conversion stays in TableFrame.
+//          is done here from the camera entity itself. Table/world conversion stays in TableFrame. guideLine is the
+//          overlay's own stop-and-contact rule moved here, not a second copy; the throw comes from PoolSolver itself
+//          (its impact routine is internal to the package), not from re-deriving the friction maths in the app.
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
@@ -47,6 +62,74 @@ struct AimContact {
     var cueDirection: Vec2?
     /// 0 for head-on, 1 for a grazing cut: how much of the cue ball's speed carries on sideways.
     var cut: Double
+}
+
+/// The guide along one direction from the striking ball (AimGeometry.guideLine).
+struct GuideLine {
+    /// Where the striking ball starts and the unit direction it travels (the launch direction for the model's shot).
+    var origin: Vec2
+    var direction: Vec2
+    /// How far the ball's centre travels before a cushion, bumper, standing pin or hole stops the line, metres.
+    var stop: Double
+    /// The first ball met before that stop, if any.
+    var contact: AimContact?
+    /// Where the line ends, metres from the origin: at the ghost ball when a ball is met, else at the stop.
+    var reach: Double { contact.map { ($0.ghost - origin).length } ?? stop }
+}
+
+/// The cue's line and the ball's line when side spin pushes the ball off the cue's line (item 24). Drawn by the aiming
+/// layer as a fork from the cue ball, each prong labelled.
+struct AimFork: Equatable, Sendable {
+    /// Unit: where the cue points.
+    let cueLine: Vec2
+    /// Unit: where the ball leaves.
+    let ballLine: Vec2
+    /// Signed turn from the cue's line to the ball's, degrees, + counter-clockwise on the table plan (to the shooter's
+    /// left).
+    let turnDegrees: Double
+
+    /// The words on the cue's prong.
+    static var cueLabel: String { String(localized: "Cue aims here") }
+    /// The words on the ball's prong.
+    static var ballLabel: String { String(localized: "Ball goes here") }
+    /// How far and which way side spin turns the ball, for beside the ball's prong ("2.4° left"), as the shooter sees it
+    /// standing behind the cue.
+    var turnWords: String {
+        let degrees = abs(turnDegrees).formatted(.number.precision(.fractionLength(1)))
+        return turnDegrees > 0 ? String(localized: "\(degrees)° left") : String(localized: "\(degrees)° right")
+    }
+}
+
+/// What the solver says happens at the first impact of the next shot (AimGeometry.solvedImpact).
+struct ImpactPreview: Equatable {
+    /// Unit direction the object ball really leaves in: the line of centres turned by throw.
+    let objectDirection: Vec2
+    /// Unit direction the striking ball heads off in just after the impact; nil when it is left almost still.
+    let cueDirection: Vec2?
+    /// Unit line of centres at the solver's contact, from the striking ball to the object ball: where the object ball
+    /// would go with no friction at the contact.
+    let lineOfCentres: Vec2
+    /// Signed degrees from the line of centres to the object ball's departure, + counter-clockwise: the throw.
+    let throwDegrees: Double
+}
+
+/// The last two-ball trial solve and what it gave, so the overlay's every-frame drawing solves only when the shot changes.
+@MainActor
+private enum ImpactMemo {
+    struct Key: Equatable {
+        let positions: [Vec2]
+        let direction: Vec2
+        let speed: Double
+        let tipUp: Double
+        let tipSide: Double
+        let elevation: Double
+        let striker: Int
+        let target: Int
+        let table: TableKind
+        let surface: PlaySurface
+        let generation: Int
+    }
+    static var last: (key: Key, value: ImpactPreview?)?
 }
 
 enum AimGeometry {
@@ -95,10 +178,163 @@ enum AimGeometry {
     /// far side spin pushes the ball) and the physics generation the next solve will use.
     @MainActor
     static func launchDirection(for model: ShowpieceModel) -> Vec2 {
+        launchDirection(aim: model.aimDirection, tipUp: model.activeTipUp, tipSide: model.activeTipSide,
+                        parameters: launchParameters(for: model))
+    }
+
+    /// The parameters the launch is worked out with: the table's (ball size and mass) at the generation the next solve
+    /// uses. The cloth does not change the push, so the surface is left out.
+    @MainActor
+    private static func launchParameters(for model: ShowpieceModel) -> PoolParameters {
         var p = model.physicsTable.parameters
         p.modelGeneration = model.activeModelGeneration
-        return launchDirection(aim: model.aimDirection, tipUp: model.activeTipUp, tipSide: model.activeTipSide,
-                               parameters: p)
+        return p
+    }
+
+    /// The cue aim that sends the struck ball along `launch`: the side-spin push undone. The push turns the ball by
+    /// the same angle whatever the aim (it depends on the tip alone, PoolSolver.turned), so turning the wanted line back
+    /// by that angle is exact. For Aim to pot (item 50): the ghost-ball line is where the ball must go, this is where
+    /// the cue must point.
+    static func cueAim(forLaunch launch: Vec2, tipUp: Double, tipSide: Double,
+                       parameters: PoolParameters = PoolParameters()) -> Vec2 {
+        let want = launch.normalized
+        guard want.lengthSquared > 0.5 else { return launch }
+        let bent = launchDirection(aim: want, tipUp: tipUp, tipSide: tipSide, parameters: parameters)
+        // cos and sin of the push's turn (counter-clockwise positive), then the wanted line turned back by it.
+        let c = want.dot(bent), s = want.x * bent.y - want.y * bent.x
+        return Vec2(c * want.x + s * want.y, -s * want.x + c * want.y).normalized
+    }
+
+    /// The same for the model's next shot, with its tip and table.
+    @MainActor
+    static func cueAim(forLaunch launch: Vec2, for model: ShowpieceModel) -> Vec2 {
+        cueAim(forLaunch: launch, tipUp: model.activeTipUp, tipSide: model.activeTipSide,
+               parameters: launchParameters(for: model))
+    }
+
+    // MARK: What the guide shows (item 50)
+
+    /// The guide along one direction from the striking ball: how far the line runs before the first cushion, bumper,
+    /// standing pin or hole stops it, and the first ball it meets before that (nil when the stop comes first).
+    static func guideLine(layout: [Vec2], origin: Vec2, direction: Vec2, table: TableSpec) -> GuideLine {
+        // On the small tables a bumper, a standing pin or a hole can come first: the line stops there, and a ball behind
+        // it is not the contact (other-tables plan package 1 step 4). On the pool table only the cushion can stop it.
+        let stop = min(cushionDistance(from: origin, direction: direction, table: table),
+                       obstacleDistance(from: origin, direction: direction, table: table) ?? .greatestFiniteMagnitude)
+        let contact = firstContact(layout: layout, from: origin, direction: direction, radius: table.ballRadius)
+            .flatMap { ($0.ghost - origin).length <= stop ? $0 : nil }
+        return GuideLine(origin: origin, direction: direction, stop: stop, contact: contact)
+    }
+
+    /// The guide for the model's next shot: from the striking ball along the launch direction (the aim bent by side
+    /// spin, launchDirection(for:)). Nil when there is no shot to guide (no full layout, the striking ball off the
+    /// table). Independent of the Aim guide option on purpose: that option only hides drawing, and the spoken aim and
+    /// the badge still need the answer.
+    @MainActor
+    static func guideLine(for model: ShowpieceModel) -> GuideLine? {
+        guard model.layout.count == 16, NextShot.isOnTable(model.aimOrigin) else { return nil }
+        let direction = launchDirection(for: model)
+        guard direction.lengthSquared > 0.5 else { return nil }
+        return guideLine(layout: model.layout, origin: model.aimOrigin, direction: direction, table: model.timeline.table)
+    }
+
+    /// What the guide shows the striking ball hitting first, along the launch direction (side-spin push included) and
+    /// short of any cushion, bumper, pin or hole: one answer for the guide (AimOverlay), the target badge
+    /// (TargetBallBadge), the spoken aim and Aim to pot (TableWords, AimOverlay's actions). Item 50.
+    @MainActor
+    static func guideContact(for model: ShowpieceModel) -> AimContact? {
+        guideLine(for: model)?.contact
+    }
+
+    // MARK: The side-spin fork (item 24)
+
+    /// The smallest turn, in degrees, that is drawn as a fork. The plan's figure (item 24): half a degree carried two
+    /// metres up the table is about 17 mm, more than half a ball's radius, enough to turn a pot into a miss, while a
+    /// smaller turn would draw two prongs too close together to tell apart on a phone.
+    static let forkThresholdDegrees = 0.5
+
+    /// The cue's line and the ball's line when side spin turns the ball half a degree or more off the cue's line
+    /// (squirt), for the overlay to draw as a labelled fork; nil below that, on generation one (no push), and for a
+    /// miscue (its turn cannot be known before the shot, so the ball's line is the cue's). From the solver's own launch
+    /// function, so the prong is where the ball will really go.
+    static func fork(aim: Vec2, tipUp: Double, tipSide: Double, elevation: Double,
+                     parameters: PoolParameters) -> AimFork? {
+        let cue = aim.normalized
+        guard cue.lengthSquared > 0.5 else { return nil }
+        let strike = CueStrike(direction: cue, speed: 1, tipUp: tipUp, tipSide: tipSide, elevation: elevation)
+        let ball = PoolSolver.launchDirection(for: strike, parameters: parameters)
+        // Signed angle from the cue's line to the ball's: positive counter-clockwise on the table plan.
+        let turn = atan2(cue.x * ball.y - cue.y * ball.x, cue.dot(ball)) * 180 / Double.pi
+        guard abs(turn) >= forkThresholdDegrees else { return nil }
+        return AimFork(cueLine: cue, ballLine: ball, turnDegrees: turn)
+    }
+
+    /// The fork for the model's next shot: its aim, tip and cue angle (strikeElevation), on its table and generation.
+    @MainActor
+    static func fork(for model: ShowpieceModel) -> AimFork? {
+        fork(aim: model.aimDirection, tipUp: model.activeTipUp, tipSide: model.activeTipSide,
+             elevation: model.strikeElevation, parameters: launchParameters(for: model))
+    }
+
+    // MARK: The solver's own impact (item 24, full assist)
+
+    /// Event budget for the two-ball trial solve. Only the first impact is read, but the public solve only returns a
+    /// recording once every ball is at rest. Two balls on their own reach rest in a few dozen events (each cushion,
+    /// each slide-to-roll change; an estimate from the event kinds, not a measurement), so this leaves room for a hard
+    /// shot round the table several times; a solve that needs more is not worth spending a frame on, and the guide
+    /// then falls back to the line of centres.
+    private static let impactEventBudget = 400
+
+    /// At full assist: where the object ball really leaves and where the striking ball heads, from the solver's own
+    /// ball-to-ball impact, so the drawn object-ball line includes throw (the friction at contact drags a soft cut off
+    /// the line of centres by up to about five degrees). The strike is the model's next one (aim, launch speed for the
+    /// cue in hand, tip, cue angle), solved on the table, cloth and generation the real shot will use, with only the two
+    /// balls on the table: the first impact is the same unless a third ball already touches the object ball. Nil for a
+    /// break (the rack's frozen balls share the impact), for a miscue (its turn is random, as launchDirection says),
+    /// when the solver's first impact is not with `contact.ball` (a swerving raised cue can bend onto another line), or
+    /// when the trial runs past its budget. The answer is remembered until any input changes, because the overlay draws
+    /// every frame.
+    @MainActor
+    static func solvedImpact(for model: ShowpieceModel, contact: AimContact) -> ImpactPreview? {
+        guard !model.racked, model.layout.count == 16, model.layout.indices.contains(contact.ball) else { return nil }
+        let striker = model.strikeBall
+        guard striker != contact.ball, model.layout.indices.contains(striker) else { return nil }
+        let p = model.matchSolveParameters
+        let up = model.activeTipUp, side = model.activeTipSide
+        if p.usesGenerationTwo, up * up + side * side > p.miscueOffsetLimit * p.miscueOffsetLimit { return nil }
+        var positions = [Vec2](repeating: NextShot.offTable, count: model.layout.count)
+        positions[striker] = model.layout[striker]
+        positions[contact.ball] = model.layout[contact.ball]
+        let strike = CueStrike(direction: model.aimDirection, speed: model.cueInHand.launchSpeed(forPower: model.activePower),
+                               tipUp: up, tipSide: side, elevation: model.strikeElevation, ballIndex: striker)
+        let key = ImpactMemo.Key(positions: positions, direction: strike.direction, speed: strike.speed, tipUp: up,
+                                 tipSide: side, elevation: strike.elevation, striker: striker, target: contact.ball,
+                                 table: model.physicsTable, surface: model.physicsSurface,
+                                 generation: model.activeModelGeneration)
+        if let memo = ImpactMemo.last, memo.key == key { return memo.value }
+        let value = trialImpact(ShotInput(parameters: p, positions: positions, strike: strike, seed: 0),
+                                striker: striker, target: contact.ball)
+        ImpactMemo.last = (key, value)
+        return value
+    }
+
+    /// Solve the two-ball trial and read its first ball-to-ball impact.
+    private static func trialImpact(_ input: ShotInput, striker: Int, target: Int) -> ImpactPreview? {
+        guard let timeline = PoolSolver.simulate(input, eventBudget: impactEventBudget),
+              let hit = timeline.events.first(where: { $0.kind == .ballBall }),
+              let objectBall = hit.balls.first(where: { $0.ball == target }),
+              let cueBall = hit.balls.first(where: { $0.ball == striker }) else { return nil }
+        let object = objectBall.velocityAfter.normalized
+        guard object.lengthSquared > 0.5 else { return nil }
+        // The event's normal points from its first ball to its second; the line of centres the object ball would take
+        // without friction points from the striker to the target.
+        let centres = hit.balls.first?.ball == striker ? hit.normal : hit.normal * -1
+        let throwDegrees = atan2(centres.x * object.y - centres.y * object.x, centres.dot(object)) * 180 / Double.pi
+        let cue = cueBall.velocityAfter
+        // A striking ball left with almost no speed (a stop shot) has no direction worth drawing: a millimetre a second.
+        let cueDirection = cue.length > 0.001 ? cue.normalized : nil
+        return ImpactPreview(objectDirection: object, cueDirection: cueDirection, lineOfCentres: centres.normalized,
+                             throwDegrees: throwDegrees)
     }
 
     /// Distance the striking ball's centre can travel from `from` along `direction` before it meets one of the small
@@ -206,5 +442,24 @@ struct AimProjector {
         let hit = origin + dir * t
         // The inverse of TableFrame.world: x runs along the table, the solver's y is minus the world z.
         return Vec2(Double(hit.x + frame.length * 0.5), Double(frame.width * 0.5 - hit.z))
+    }
+
+    /// +1 when turning the aim counter-clockwise on the table plan also turns the line counter-clockwise on the screen,
+    /// -1 when the camera views the table the other way round (portrait swings it a quarter turn, and a low camera can
+    /// look from the far end). Multiply a "turn anticlockwise as the player sees it" step by this before handing it to
+    /// ShowpieceModel.nudgeAim, as the arrow keys do. Worked out from a short turn of the line at `origin`: half a metre
+    /// out and two degrees round, big enough to land on different screen points from any camera that shows the table.
+    /// +1 when the line cannot be projected (behind the camera), the table plan's own sense.
+    func turnSign(origin: Vec2, direction: Vec2) -> Double {
+        let d = direction.normalized
+        guard d.lengthSquared > 0.5 else { return 1 }
+        let a = 2.0 * Double.pi / 180
+        let turned = Vec2(cos(a) * d.x - sin(a) * d.y, sin(a) * d.x + cos(a) * d.y)
+        guard let s0 = screen(origin), let s1 = screen(origin + d * 0.5), let s2 = screen(origin + turned * 0.5) else {
+            return 1
+        }
+        // Screen y points down, so a negative cross product is a counter-clockwise turn as seen.
+        let cross = (s1.x - s0.x) * (s2.y - s0.y) - (s1.y - s0.y) * (s2.x - s0.x)
+        return cross < 0 ? 1 : -1
     }
 }
