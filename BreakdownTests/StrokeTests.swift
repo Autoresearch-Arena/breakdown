@@ -7,6 +7,8 @@
 //          stroke; the bridge scales the tip as the lever says and a short bridge lowers the calm zone; authored shots
 //          stay inside the bound; the tracker reads a push through the ball, practice rhythm and wander; the retry
 //          comparison's stroke fact; and the drill's judge on real solved shots.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the authored-bound test gains a stance case, every rung of the
+//          reach ladder with and without a raised cue, which must stay inside the same bound; ReachTests holds the rest.)
 // SRP/DRY check: Pass - checks only; every limit is read from the named constants in CueProfile, StrokeModel,
 //          StrokeTracker and StrokeDrill, never retyped. Shots are solved through TestShots, the app's own path.
 @testable import Breakdown
@@ -192,6 +194,20 @@ final class StrokeTests: XCTestCase {
                     let d = delivery(power: power, wander: w, bridge: bridge, authored: true)
                     XCTAssertLessThan(abs(d.aimError), StrokeModel.authoredAimBound)
                     XCTAssertLessThan(abs(d.tipSideError), 0.0000625, "tip drift past 0.0625 mm")
+                    // The stance case: every rung of the reach ladder, the cue raised over a ball or not, stays inside
+                    // the same bound and never lowers the calm top.
+                    for rung in Stance.Rung.allCases {
+                        for raised in [nil, 5] as [Int?] {
+                            let stance = Stance(rung: rung, raisedOver: raised, reach: 0, rail: .head,
+                                                standing: Vec2(-Reach.railOuter, 0))
+                            let s = StrokeModel.delivery(power: power, fraction: 0.5, record: record(w, power: power),
+                                                         bridge: stance.bridge(hand: bridge), cue: house, authored: true,
+                                                         stance: stance)
+                            XCTAssertLessThan(abs(s.aimError), StrokeModel.authoredAimBound, "\(rung)")
+                            XCTAssertLessThan(abs(s.tipSideError), 0.0000625, "tip drift past 0.0625 mm on \(rung)")
+                            XCTAssertFalse(s.warm, "\(rung) put an authored power in the warm zone")
+                        }
+                    }
                 }
             }
         }

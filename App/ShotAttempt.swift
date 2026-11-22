@@ -14,6 +14,11 @@
 //          drifted strike. The comparison gains one fact, `stroke`: whether the retry's stroke was straighter or
 //          wandered more, judged from the two deliveries' aim drift, outside the controls so no setting is reported
 //          as changed by it. The words add the stroke's sentence.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the comparison gains a second fact beside the stroke, `setup`:
+//          the stance (App/Stroke/Reach.swift) and the bridge length each try was played from, when either changed. Like
+//          the stroke it is not a control and never enters inputChanges. A changed setup counts as one more thing that
+//          changed, so a single changed setting is no longer named on its own when the stance or bridge moved too (the
+//          several-changes sentence says the cause is open), and an exact repeat needs the same setup as well.)
 // PURPOSE: Try again and compare. One player shot (or the player's own break) recorded as an attempt: where every ball
 //          started, the exact settings used, and the recorded timeline it produced. Two attempts from the same start
 //          are compared as facts (RetryComparison) and then in plain words (ShotComparison): what the player changed
@@ -192,8 +197,35 @@ struct RetryComparison: Equatable {
     /// How the retry's stroke compared with the last try's (nil when either had no stroke drift, or the two were too
     /// close to tell apart). Not a control: it never appears in inputChanges, so no setting is reported as changed.
     var stroke: StrokeChange? = nil
+    /// The stance and bridge each try was played from, when either changed (nil when both stayed the same, or either
+    /// try had no stroke to read them from). Not a control either.
+    var setup: SetupChange? = nil
 
     enum StrokeChange: Equatable { case straighter, wilder }
+
+    /// Where each try was played from: the stance (Reach) and the bridge's length.
+    struct SetupChange: Equatable {
+        let stanceBefore: Stance
+        let stanceAfter: Stance
+        let bridgeBefore: Double
+        let bridgeAfter: Double
+
+        /// Two bridges this far apart are worth a sentence, metres: two centimetres, about a finger's width, under
+        /// which a resting finger's own placement varies from one stroke to the next.
+        static let bridgeWorthSaying = 0.02
+
+        /// A different rung, or a cue raised over a ball one time and not the other (or over a different ball).
+        var stanceChanged: Bool {
+            stanceBefore.rung != stanceAfter.rung || stanceBefore.raisedOver != stanceAfter.raisedOver
+        }
+        /// The bridge hand moved along the cue. Not said when either try was played off the rest: its head stands
+        /// where it stands, and the change of stance already says the rest came or went.
+        var bridgeChanged: Bool {
+            stanceBefore.rung != .rest && stanceAfter.rung != .rest
+                && abs(bridgeAfter - bridgeBefore) >= Self.bridgeWorthSaying
+        }
+        var changed: Bool { stanceChanged || bridgeChanged }
+    }
 }
 
 extension RetryComparison {
@@ -214,20 +246,23 @@ extension RetryComparison {
         let shift: Double? = factsA.cueBallScratched || factsB.cueBallScratched ? nil : (b.cueRest - a.cueRest).length
         let pottedA = a.pocketedObjectBalls, pottedB = b.pocketedObjectBalls
 
+        // A changed stance or bridge is one more thing that changed: with it, no single setting is named as the change.
+        let setup = setupChange(a.stroke, b.stroke)
+        let setupMoved = setup != nil
         let key: Key
-        if changes.isEmpty, a.start == b.start, a.seed == b.seed, a.motionHash == b.motionHash {
+        if changes.isEmpty, !setupMoved, a.start == b.start, a.seed == b.seed, a.motionHash == b.motionHash {
             key = .exactRepeat
         } else if factsB.firstContactTime == nil {
             key = .missedEverything
         } else {
             let described = changes.filter { ShotComparison.isDescribable($0, in: a) }
-            if described.count == 1 {
+            if described.count == 1 && !setupMoved {
                 key = .oneChange(described[0].control)
-            } else if described.count > 1 {
+            } else if described.count > 1 || (described.count == 1 && setupMoved) {
                 key = .severalChanges
             } else if Set(pottedA) == Set(pottedB), let s = shift, s <= nearSameSpot {
                 key = .sameSpot
-            } else if changes.count == 1 {
+            } else if changes.count == 1 && !setupMoved {
                 // Too small to put in words, yet the shot came out differently: that one control is still the only
                 // thing that moved, so it is named (as "only slightly").
                 key = .oneChange(changes[0].control)
@@ -236,7 +271,15 @@ extension RetryComparison {
             }
         }
         return RetryComparison(inputChanges: changes, cueBallFinishShift: shift, pottedBefore: pottedA,
-                               pottedNow: pottedB, key: key, stroke: strokeChange(a.stroke, b.stroke))
+                               pottedNow: pottedB, key: key, stroke: strokeChange(a.stroke, b.stroke), setup: setup)
+    }
+
+    /// The stance and bridge of the two tries, when either changed; nil when both stayed the same or either try has no
+    /// delivery or stance to read them from (a scripted strike).
+    static func setupChange(_ a: StrokeDelivery?, _ b: StrokeDelivery?) -> SetupChange? {
+        guard let a, let b, let before = a.stance, let after = b.stance else { return nil }
+        let s = SetupChange(stanceBefore: before, stanceAfter: after, bridgeBefore: a.bridge, bridgeAfter: b.bridge)
+        return s.changed ? s : nil
     }
 
     /// Two strokes' aim drifts this far apart are worth a sentence, radians: a third of the 0.15 degrees the aim's own
@@ -278,28 +321,49 @@ enum ShotComparison {
     static func describe(_ c: RetryComparison, previous a: ShotAttempt, current b: ShotAttempt) -> String {
         let near = c.cueBallFinishShift.map { $0 <= RetryComparison.nearSameSpot } ?? false
         let nearSentence = String(localized: "Both tries left the cue ball near the same spot.")
+        // The stance and bridge each try was played from, when they changed: facts only, never a cause.
+        let setup: [String?] = StanceWords.details(c.setup)
+        let moreThanOne = String(localized: "More than one thing changed, so the replay is the place to see which one mattered.")
         switch c.key {
         case .exactRepeat:
             return String(localized: "Same shot, same result. The physics is exact, so nothing changes unless you do.")
         case .missedEverything:
-            return join([settingsChange(c, a), StrokeWords.comparison(c.stroke),
-                         String(localized: "This time the cue ball did not touch any ball.")])
+            var said: [String?] = [settingsChange(c, a)]
+            said += setup
+            said.append(StrokeWords.comparison(c.stroke))
+            said.append(String(localized: "This time the cue ball did not touch any ball."))
+            return join(said)
         case .sameSpot:
-            let slight = c.inputChanges.count == 1 ? slightly(c.inputChanges[0].control) : nil
-            return join([slight, StrokeWords.comparison(c.stroke), nearSentence])
+            let slight: String? = c.inputChanges.count == 1 ? slightly(c.inputChanges[0].control) : nil
+            var said: [String?] = [slight]
+            said += setup
+            said.append(StrokeWords.comparison(c.stroke))
+            said.append(nearSentence)
+            return join(said)
         case .oneChange(let control):
             let said = settingsChange(c, a) ?? slightly(control)
             return join([said, StrokeWords.comparison(c.stroke), outcomeChange(a, b) ?? (near ? nearSentence : nil)])
         case .severalChanges:
             if c.inputChanges.isEmpty {
-                // Same settings, different motion: only the stroke can have changed it.
-                return join([StrokeWords.comparison(c.stroke)
-                                ?? String(localized: "The settings were the same, but the shot did not play out exactly the same."),
-                             outcomeChange(a, b)])
+                // Same settings, different motion: the stroke, the stance or the bridge changed it. Each that changed
+                // is said; with more than one, which mattered is left open.
+                let stroke: String? = StrokeWords.comparison(c.stroke)
+                let things = setup.count + (stroke == nil ? 0 : 1)
+                var said: [String?] = setup
+                said.append(stroke)
+                if things == 0 {
+                    said.append(String(localized: "The settings were the same, but the shot did not play out exactly the same."))
+                }
+                said.append(outcomeChange(a, b))
+                if things > 1 { said.append(moreThanOne) }
+                return join(said)
             }
-            return join([settingsChange(c, a), StrokeWords.comparison(c.stroke),
-                         outcomeChange(a, b) ?? (near ? nearSentence : nil),
-                         String(localized: "More than one thing changed, so the replay is the place to see which one mattered.")])
+            var said: [String?] = [settingsChange(c, a)]
+            said += setup
+            said.append(StrokeWords.comparison(c.stroke))
+            said.append(outcomeChange(a, b) ?? (near ? nearSentence : nil))
+            said.append(moreThanOne)
+            return join(said)
         }
     }
 

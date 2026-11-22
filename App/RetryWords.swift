@@ -3,6 +3,10 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: when only the stroke changed (no setting moved) the
 //          sentence says so, "Your stroke was straighter this time, and ..."; when settings moved too, the stroke's
 //          sentence follows the card's own (StrokeWords).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach: a changed stance or bridge (RetryComparison.setup) is named.
+//          With no setting moved it is the sentence's change ("You changed your stance, and ..."), or one of several;
+//          with settings moved it joins the several-changes list, which never says which one did it; the stance each try
+//          was played from follows as a plain fact (StanceWords).)
 // PURPOSE: Learn from a retry (plans/21-Nov-2026-learn-from-a-retry-plan.md, section 3), the view side.
 //          RetryWords   - the one sentence a result card shows after a retry, written from the facts the model
 //                         records (RetryComparison: which controls moved and which way, how far apart the two cue
@@ -29,12 +33,17 @@ enum RetryWords {
 
     /// The card's one sentence.
     static func sentence(_ c: RetryComparison) -> String {
-        // No setting moved, yet the shot played differently: the stroke is the only thing that changed.
+        let details = c.key == .exactRepeat ? [] : StanceWords.details(c.setup)
+        // No setting moved, yet the shot played differently: the stance or bridge, when either changed, is named (with
+        // the stroke when that changed too), otherwise the stroke is the only thing that changed.
         if c.inputChanges.isEmpty, c.key == .severalChanges || c.key == .sameSpot {
+            if let setup = StanceWords.setupOnly(c.setup, strokeChanged: c.stroke != nil, outcome: outcome(c)) {
+                return ([setup] + details).joined(separator: " ")
+            }
             return StrokeWords.strokeOnly(c.stroke, outcome: outcome(c))
         }
         let stroke = c.key == .exactRepeat ? nil : StrokeWords.comparison(c.stroke)
-        return [mainSentence(c), stroke].compactMap { $0 }.joined(separator: " ")
+        return ([mainSentence(c)] + details + [stroke].compactMap { $0 }).joined(separator: " ")
     }
 
     /// The card's sentence from the settings and the outcome (the stroke's sentence, if any, follows it).
@@ -50,7 +59,9 @@ enum RetryWords {
             let change = changeWords(control, c.inputChanges.first { $0.control == control })
             return String(localized: "You \(change), and \(outcome(c)).")
         case .severalChanges:
-            let names = c.inputChanges.map { controlName($0.control) }.formatted(.list(type: .and))
+            // A changed stance or bridge is listed with the settings: it is one of the several things that changed.
+            let names = (c.inputChanges.map { controlName($0.control) } + StanceWords.changedNames(c.setup))
+                .formatted(.list(type: .and))
             return String(localized: "You changed \(names), and \(outcome(c)). With several changes at once, this alone can't say which one did it.")
         }
     }
