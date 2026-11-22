@@ -1,0 +1,62 @@
+{
+ "keys": [
+  "You play alone against a %lld-minute clock, for your best score."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Juegas solo contra un reloj de %lld minutos, buscando tu mejor puntuación."
+  },
+  {
+   "culture": "fr",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Tu joues seul contre une horloge de %lld minutes, pour ton meilleur score."
+  },
+  {
+   "culture": "de",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Du spielst allein gegen eine Uhr von %lld Minuten, für deine beste Punktzahl."
+  },
+  {
+   "culture": "it",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Giochi da solo contro un orologio di %lld minuti, per il tuo miglior punteggio."
+  },
+  {
+   "culture": "pt",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Jogas sozinho contra um relógio de %lld minutos, pela tua melhor pontuação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Você joga sozinho contra um relógio de %lld minutos, pela sua melhor pontuação."
+  },
+  {
+   "culture": "ja",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "%lld分の時計を相手に一人でプレイし、自己ベストを目指そう。"
+  },
+  {
+   "culture": "ko",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "%lld분 시계를 상대로 혼자 플레이하며 최고 점수에 도전하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "你独自对抗%lld分钟的时钟，争取最好成绩。"
+  },
+  {
+   "culture": "ru",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "Ты играешь один против часов на %lld минут — на свой лучший счёт."
+  },
+  {
+   "culture": "ar",
+   "key": "You play alone against a %lld-minute clock, for your best score.",
+   "text": "تلعب وحدك ضد ساعة مدتها %lld دقيقة، لتحقق أفضل نتيجة لك."
+  }
+ ]
+}

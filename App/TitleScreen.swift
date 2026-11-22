@@ -1,5 +1,6 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: two players on one device is gone from the Play list; the Boss: passing one phone between two people is not a game to offer)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: playing the computer is the game's offer. The menu's intro and
 //          the Play row's line name the computer, not a friend; the Play list opens on the computer's level and its
 //          Eight-ball and Nine-ball rows, then Practice and Straight stroke, and two players on one device is a plain
@@ -124,7 +125,6 @@ struct TitleScreen: View {
     /// same card.
     @State private var playListOpen = false
     /// The two-player list (Eight-ball and Nine-ball on one device) replaces the Play list inside the same card.
-    @State private var twoPlayerListOpen = false
     /// The level picked for a game against the computer (kept while the app runs).
     @State private var computerLevel: ComputerLevel = .medium
 
@@ -174,7 +174,7 @@ struct TitleScreen: View {
         }
         // Back to the main list whenever the menu is opened again.
         // A question left unanswered when the menu goes is dropped, so it never greets the player later.
-        .onDisappear { playListOpen = false; twoPlayerListOpen = false; pendingMatch = nil }
+        .onDisappear { playListOpen = false; pendingMatch = nil }
         .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen, input: model.inputInUse) }
         .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
         .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
@@ -207,8 +207,6 @@ struct TitleScreen: View {
             Group {
                 if let request = pendingMatch {
                     replaceList(request)
-                } else if twoPlayerListOpen {
-                    twoPlayerList
                 } else if playListOpen {
                     playList
                 } else {
@@ -217,7 +215,6 @@ struct TitleScreen: View {
             }
             .transition(.opacity)
             .animation(reduceMotion ? nil : .snappy, value: playListOpen)
-            .animation(reduceMotion ? nil : .snappy, value: twoPlayerListOpen)
             .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
         }
         .padding(28)
@@ -395,9 +392,6 @@ struct TitleScreen: View {
                     symbol: "arrow.up.and.down") {
                 model.strokeDrill.begin(); onPlay()
             }
-            MenuRow(title: "Two players", line: "Eight-ball or nine-ball, taking turns.", symbol: "person.2") {
-                twoPlayerListOpen = true
-            }
         }
     }
 
@@ -408,21 +402,6 @@ struct TitleScreen: View {
         guard played > 0 else { return nil }
         return MenuRow.Mark(symbol: "trophy.fill", text: String(localized: "\(r.won)/\(played)"),
                             spoken: String(localized: "\(r.won) won of \(played) played"))
-    }
-
-    // MARK: Two players
-
-    /// Eight-ball and Nine-ball for two people on one device. Two-player games carry no record: a mark counting wins by
-    /// whoever sat first said nothing about the person holding the device (item 18). Records are kept per level
-    /// against the computer, on the Play list.
-    private var twoPlayerList: some View {
-        VStack(spacing: 10) {
-            listHeader("Two players") { twoPlayerListOpen = false }
-            MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
-                    symbol: "8.circle") { start(MatchStartRequest(kind: .eightBall)) }
-            MenuRow(title: "Nine-ball", line: "Two players. Always hit the lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle") { start(MatchStartRequest(kind: .nineBall)) }
-        }
     }
 
     // MARK: Replacing the saved match

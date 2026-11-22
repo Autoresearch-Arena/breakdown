@@ -10,6 +10,7 @@
 //          page on a phone. Nothing here is drawn over the table.
 //          Starting a match calls ShowpieceModel.startMatch(kind, players:), which ends any trick shot or situation,
 //          closes the menu and puts the table's start layout on; practice is the list's existing playTable.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: no two-player game on one device)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the ways to play lead with the ones a person plays by
 //          themselves (bar billiards alone, then Practice, highlighted); Two players comes last, plain, with a line
 //          that says what the game is rather than offering to pass the device around.)
@@ -44,8 +45,8 @@ struct TableGamePage: View {
                 if let players = replacingFor, let saved = MatchMode.savedSummary() {
                     replaceQuestion(saved, players: players)
                 }
-                // These tables have no computer player, so what one person can play comes first: bar billiards alone
-                // (highlighted), else Practice (highlighted). Two players stays as the last, plain choice.
+                // These tables have no computer player: bar billiards is played alone against the clock (highlighted),
+                // and every table can be practised. Two players on one device is not offered (0.7.3).
                 VStack(spacing: 10) {
                     if game == .barBilliards {
                         playButton(String(localized: "Play alone"), line: TableGameWords.best(BarBilliardsBest.best()),
@@ -56,8 +57,6 @@ struct TableGamePage: View {
                         model.playTable(table)
                         onStarted()
                     }
-                    playButton(String(localized: "Two players"), line: String(localized: "A full game with turns and a score."),
-                               symbol: "person.2", prominent: false) { start(players: 2) }
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     Text("How to play")

@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.3] - 22-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: Two players on one device is gone. The Play list is the computer (eight-ball and nine-ball at three levels), Practice and the Straight stroke drill; the other tables offer bar billiards alone and Practice; the Mac's New Game menu lists only those games.
+- Why: The Boss: passing one phone between two people is not a game worth offering.
+- How: TitleScreen loses the Two players row and its list; TableGamePage loses its Two players button; MacChrome's New Game menu covers eight-ball and nine-ball against the computer and bar billiards alone; bar billiards' rules page describes the game played alone. The match engine still runs two seats (the computer is one), so nothing underneath changed. Bumper pool and five-pin are practice-only until they have a computer player.
+- Checked: the Play list on the iPhone 17 Pro Max simulator; the Mac build, the app tests and the translation check pass.
+
 ## [0.7.2] - 22-November-2026
 
 Author: Claude Opus 5.5 High (coordinator), with three builders at Claude Opus 5.5 High

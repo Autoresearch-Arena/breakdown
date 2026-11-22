@@ -9,6 +9,8 @@
 //          steps is read from the rules' constants (FivePinRules, BarBilliardsRules), never retyped.
 //          Read by MatchViews (banner, points card, result), MatchWords (ball lists on these tables), TableWords
 //          (spoken scores), TableList and TableGamePage (game lines and rules), and the tests.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: bar billiards' rules page describes the game played alone, the only
+//          way it is offered now.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 20 and 21: the time-up line and the rules page's
 //          "Time up" step say what the game does - after the bar drops only the whites left in the tray are played and
 //          whites resting on the bed stay there - matching the banner's count (BarBilliardsRules.whitesLeftToPlay);
@@ -265,7 +267,7 @@ enum TableGameWords {
             let minutes = Int(BarBilliardsRules.standardClock / 60)
             return [
                 (String(localized: "The idea"),
-                 String(localized: "One or two players against a \(minutes)-minute clock. Two players take breaks in turn and the higher score wins; alone, you play for your best score.")),
+                 String(localized: "You play alone against a \(minutes)-minute clock, for your best score.")),
                 (String(localized: "Each shot"),
                  String(localized: "Every shot is a white from the tray, placed on the spot in the D. The red starts on its own spot.")),
                 (String(localized: "Scoring"),
