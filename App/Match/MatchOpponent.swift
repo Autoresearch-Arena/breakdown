@@ -11,7 +11,18 @@
 //          upcomingComputerDecision gives the table that card will leave), and it plays through the model's staged
 //          stroke (stageComputerStroke: the aim swings to its choice, the cue draws back a beat, then it strikes)
 //          instead of striking in the same frame.)
-// PURPOSE: The computer opponent for eight-ball and nine-ball (plans/21-Nov-2026-rules-games-plan.md package 5).
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent stream, plans/22-Nov-2026-v074-glow-up-plan.md
+//          feature R: the computer now plays bumper pool and five-pin too. OpponentPlanner.plan hands those two games
+//          to BumperPoolPlanner and FivePinPlanner before anything pool-specific runs, so eight-ball and nine-ball
+//          plan exactly as before. OpponentPlan.Kind gains .cup, .advance, .pins and .concede (with CupRoute) for
+//          their "Why that shot"; OpponentSnapshot gains noiseSeed (the seed the stroke's real noise will be drawn
+//          from, so the new search can test its candidates against other draws, never that one); OpponentNoise gains
+//          a per-game scale (tableNoiseScale, every game at 1 for now); Slots is internal and parallel(_:_:) runs any
+//          batch of solves across the cores; MatchOpponent keeps the handle of the task that runs the planner and
+//          cancels it in cancel(), so an abandoned think stops at its next phase instead of running on.)
+// PURPOSE: The computer opponent for eight-ball and nine-ball (plans/21-Nov-2026-rules-games-plan.md package 5), and
+//          since 0.7.4 the entry point for bumper pool and five-pin (BumperPoolPlanner, FivePinPlanner and their
+//          shared search, TableOpponentSearch, each in its own file under App/Match).
 //          Two halves:
 //            OpponentPlanner (pure, runs on a background task): given the layout, the MatchState, the rules and the
 //              solver's parameters, it picks a stroke the way a player would, by trying shots on the real solver.
@@ -161,6 +172,25 @@ struct OpponentNoise: Equatable, Sendable {
         return OpponentNoise(aimDegrees: aim, speedShare: speed, tipUp: up, tipSide: side)
     }
 
+    /// How much shakier (above 1) or steadier (below 1) the computer's hand is on one game than the level says.
+    /// The tuning knob for a table where a level proves too strong or too weak against a person-like hand, so the
+    /// table itself never has to change. Every game is at 1 for now: no self-play run has asked for anything else
+    /// (BreakdownTests/TableOpponentTests.testSelfPlay is the check). A game missing from the table is at 1.
+    static let tableNoiseScale: [MatchKind: Double] = [:]
+
+    /// The scale for one game (1 when the game is not listed).
+    static func tableScale(_ kind: MatchKind) -> Double { tableNoiseScale[kind] ?? 1 }
+
+    /// The noise for one stroke at `level` on game `kind`: draw(level:seed:) with every part scaled by the game's
+    /// tableScale. At a scale of exactly 1 the numbers are identical to draw(level:seed:), so the pool games are
+    /// unchanged by going through here.
+    static func draw(level: ComputerLevel, seed: UInt64, kind: MatchKind) -> OpponentNoise {
+        let n = draw(level: level, seed: seed)
+        let k = tableScale(kind)
+        return OpponentNoise(aimDegrees: n.aimDegrees * k, speedShare: n.speedShare * k, tipUp: n.tipUp * k,
+                             tipSide: n.tipSide * k)
+    }
+
     /// The seed of one stroke: the rack's seed (saved with the match), the match's shot count (saved) and the seat,
     /// mixed with two odd constants and one SplitMix step so neighbouring shots draw unrelated noise.
     static func seed(rackSeed: UInt64, shotCount: Int, seat: Int) -> UInt64 {
@@ -225,6 +255,34 @@ struct OpponentPlan: Equatable, Sendable {
         /// No pot was on and no safety was chosen: a plain full hit on the nearest legal ball (nil when none).
         case hit(ball: Int?)
         case breakShot
+        /// Bumper pool: the stroke, struck perfectly, drops `ball` (one of the computer's own) in its own cup.
+        /// `marked` when that ball is the side's marked ball; `route` is how it got there (BumperPoolPlanner).
+        case cup(ball: Int, marked: Bool, route: CupRoute)
+        /// Bumper pool: no cup shot was likely enough, so the stroke rolls its balls nearer its cup; `ball` is the one
+        /// it struck.
+        case advance(ball: Int)
+        /// Five-pin: the points the stroke is expected to make on an average stroke of the computer's hand
+        /// (`expected`, the shooter's points less the other player's, averaged over the noise check), the points it
+        /// makes for itself struck perfectly (`clean`, 0 when even that fouls), and whether its ball meets a cushion
+        /// before the other ball (`kick`).
+        case pins(expected: Double, clean: Int, kick: Bool)
+        /// Five-pin: nothing scored often enough; the stroke that gives the least away.
+        case concede
+    }
+
+    /// Bumper pool: how a cup shot reaches the cup, from the noise-free trial's cushion and bumper touches by the
+    /// dropped ball before it dropped (TableTrial.railsBeforeDrop and postsBeforeDrop).
+    enum CupRoute: Equatable, Sendable {
+        case straight, cushion, bumper, cushionAndBumper
+
+        init(rails: Int, posts: Int) {
+            switch (rails > 0, posts > 0) {
+            case (false, false): self = .straight
+            case (true, false): self = .cushion
+            case (false, true): self = .bumper
+            case (true, true): self = .cushionAndBumper
+            }
+        }
     }
 
     var kind: Kind
@@ -235,7 +293,9 @@ struct OpponentPlan: Equatable, Sendable {
     var call: EightBallCall?
     /// The measured aim window of the pot, degrees; nil for a safety and the break.
     var window: Double?
-    /// Most of the strokes that made the pot also left the cue ball a clear pot on a next legal ball.
+    /// Most of the strokes that made the pot also left the cue ball a clear pot on a next legal ball. On five-pin
+    /// (.pins, hard only) it means the stroke, struck perfectly, leaves the computer's own ball clear of the castle,
+    /// which its value asked for (FivePinPlanner.leaveWeight).
     var leavesNextShot = false
     /// A safety: the aim window the other player was estimated to be left, degrees (0: no clear pot at all).
     var leftOpponent: Double?
@@ -251,6 +311,11 @@ struct OpponentSnapshot: Sendable {
     var level: ComputerLevel
     /// True when the balls are still in the rack (the next stroke is the break).
     var racked: Bool
+    /// The seed the stroke's real noise will be drawn from (OpponentNoise.seed of the rack, the shot count and the
+    /// seat; MatchOpponent.update sets it). The bumper-pool and five-pin search draws its noise samples from seeds
+    /// mixed out of this one (TableOpponentSearch.sampleSeeds) and never from this seed itself, so it cannot plan
+    /// around the very wobble its hand is about to deal. Last, with a default, so every existing caller is unchanged.
+    var noiseSeed: UInt64 = 0
 }
 
 /// What the background task hands back: a stroke to play, or the answer to a pending choice.
@@ -350,6 +415,11 @@ enum OpponentPlanner {
 
     /// The stroke to play now, the level's own way (OpponentStyle).
     static func plan(_ s: OpponentSnapshot) -> OpponentPlan {
+        // Bumper pool and five-pin have their own planners, chosen by the rules value (never by TableKind, whose
+        // props side belongs to the main actor). This comes first: their fresh state says isBreak, but neither game
+        // has a pool break, and nothing below is meant for them.
+        if s.rules is BumperPoolRules { return BumperPoolPlanner.plan(s) }
+        if s.rules is FivePinRules { return FivePinPlanner.plan(s) }
         if s.state.isBreak && s.racked {
             return OpponentPlan(kind: .breakShot, stroke: OpponentStroke(aimDegrees: 0, speed: breakSpeed,
                                                                           tipUp: breakTipUp))
@@ -945,13 +1015,26 @@ enum OpponentPlanner {
         return planFrom(s, layout: l, placement: first.spot)
     }
 
-    /// Result slots for the parallel solves, each written once under the lock.
-    private final class Slots<T: Sendable>: @unchecked Sendable {
+    /// Result slots for the parallel solves, each written once under the lock. Internal since 0.7.4 so the bumper-pool
+    /// and five-pin search can share it (through parallel(_:_:)).
+    final class Slots<T: Sendable>: @unchecked Sendable {
         private var items: [T?]
         private let lock = NSLock()
         init(_ n: Int) { items = [T?](repeating: nil, count: n) }
         func set(_ i: Int, _ v: T) { lock.withLock { items[i] = v } }
         var values: [T?] { lock.withLock { items } }
+    }
+
+    /// Run `body` for 0..<n across the cores and return the results in index order. The solver and the rules are
+    /// pure, so running them in parallel cannot change any answer, only how soon it comes. concurrentPerform returns
+    /// only after every iteration has run, so every slot is filled; the count check below says so out loud.
+    static func parallel<T: Sendable>(_ n: Int, _ body: @Sendable (Int) -> T) -> [T] {
+        guard n > 0 else { return [] }
+        let slots = Slots<T>(n)
+        DispatchQueue.concurrentPerform(iterations: n) { i in slots.set(i, body(i)) }
+        let out = slots.values.compactMap { $0 }
+        precondition(out.count == n, "OpponentPlanner.parallel: an iteration left its slot empty")
+        return out
     }
 }
 
@@ -974,6 +1057,11 @@ final class MatchOpponent {
     /// The turn whose stroke the model is staging (the aim swinging, the cue drawing back): nothing is planned again
     /// for it while the model stages or strikes it.
     @ObservationIgnored private var stagedKey: TurnKey?
+    /// The detached task that runs the planner for the think in flight. Its handle is kept so cancel() can cancel it:
+    /// a detached task does not inherit cancellation from the task that awaits it, so cancelling only the awaiting
+    /// task would leave the planner running. The bumper-pool and five-pin search checks Task.isCancelled between its
+    /// phases and returns early; the token still drops whatever comes back.
+    @ObservationIgnored private var thinkTask: Task<OpponentWork, Never>?
 
     /// What a plan was made for. A plan is played only while all of this is still the same.
     struct TurnKey: Equatable, Sendable {
@@ -1013,23 +1101,30 @@ final class MatchOpponent {
         thinking = true
         token += 1
         let t = token
+        // The seed perform(_:) will draw this stroke's noise from: the same rack seed, shot count and seat (the key
+        // above pins the shot count and seat, so the two agree whenever the plan is played).
         let snapshot = OpponentSnapshot(layout: d.layout, state: match.state, rules: match.rules,
-                                        parameters: model.matchSolveParameters, level: d.level, racked: d.racked)
+                                        parameters: model.matchSolveParameters, level: d.level, racked: d.racked,
+                                        noiseSeed: Self.strokeSeed(match, seat: d.seat))
         let choosing = match.state.pendingChoice != nil
         // A pure function of the snapshot, so it runs off the main actor (ShowpieceModel.strike and EightBallMode's
         // Scoring phase use the same pattern): the table keeps drawing while the computer thinks.
+        let think = Task.detached(priority: .userInitiated) {
+            choosing ? OpponentWork.answer(OpponentPlanner.answer(snapshot))
+                     : OpponentWork.stroke(OpponentPlanner.plan(snapshot))
+        }
+        thinkTask = think
         Task { [weak self] in
-            let work = await Task.detached(priority: .userInitiated) {
-                choosing ? OpponentWork.answer(OpponentPlanner.answer(snapshot))
-                         : OpponentWork.stroke(OpponentPlanner.plan(snapshot))
-            }.value
+            let work = await think.value
             self?.finish(work, key: key, token: t)
         }
     }
 
-    /// Forget any think in flight or waiting (a rematch, the match left).
+    /// Forget any think in flight or waiting (a rematch, the match left), and stop the planner that runs it.
     func cancel() {
         token += 1
+        thinkTask?.cancel()
+        thinkTask = nil
         thinking = false
         ready = nil
         stagedKey = nil
@@ -1037,8 +1132,15 @@ final class MatchOpponent {
 
     private func finish(_ work: OpponentWork, key: TurnKey, token t: Int) {
         guard t == token else { return }
+        thinkTask = nil
         thinking = false
         ready = (key, work)
+    }
+
+    /// The seed of the computer's next stroke at `seat`: the rack's seed (saved), the match's shot count (saved) and
+    /// the seat. One place, read by update (the planner's snapshot) and perform (the real noise).
+    private static func strokeSeed(_ match: MatchMode, seat: PlayerID) -> UInt64 {
+        OpponentNoise.seed(rackSeed: match.setup.rackSeed, shotCount: match.state.shotCount, seat: seat.index)
     }
 
     /// Play the plan through the match and the model, as a player's taps would: the answer at once; a stroke by
@@ -1052,9 +1154,10 @@ final class MatchOpponent {
             match.answer(a)
         case .stroke(let plan):
             let model = match.model
-            let noise = OpponentNoise.draw(level: level, seed: OpponentNoise.seed(rackSeed: match.setup.rackSeed,
-                                                                                  shotCount: match.state.shotCount,
-                                                                                  seat: seat.index))
+            // The game's noise scale is 1 for every game today, which leaves the numbers exactly as draw(level:seed:)
+            // gives them (OpponentNoise.draw(level:seed:kind:)).
+            let noise = OpponentNoise.draw(level: level, seed: Self.strokeSeed(match, seat: seat),
+                                           kind: match.rules.kind)
             if match.mustCall {
                 match.setCall(plan.call ?? .safety)
                 // A call the rules refuse (it cannot happen for a planned pot, but the turn must never stall): safety.

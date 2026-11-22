@@ -1,0 +1,678 @@
+{
+ "keys": [
+  "It aimed to sink its marked ball in its cup.",
+  "It aimed to sink one of its balls in its cup.",
+  "Off a cushion on the way.",
+  "Off a bumper on the way.",
+  "Off cushions and bumpers on the way.",
+  "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+  "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+  "It sent its ball off a cushion first to reach yours.",
+  "Its aim could have been off by %@ degrees either way and still scored.",
+  "It also kept its ball away from the pins, so you have less to aim at.",
+  "It sent your ball at the pins by eye, without working out the points.",
+  "Nothing scored often enough, so it touched your ball softly to give away as little as possible."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Quiso meter su bola marcada en su hoyo."
+  },
+  {
+   "culture": "fr",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Il a visé à rentrer sa bille marquée dans son trou."
+  },
+  {
+   "culture": "de",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Er wollte seine markierte Kugel in sein Loch bringen."
+  },
+  {
+   "culture": "it",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Ha mirato a mandare la sua bilia segnata nella sua buca."
+  },
+  {
+   "culture": "pt",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Tentou meter a sua bola marcada no seu buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Tentou colocar a bola marcada dele no buraco dele."
+  },
+  {
+   "culture": "ja",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "マーク付きの自分の球を自分のカップに入れようとしました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "표시된 자기 공을 자기 컵에 넣으려고 했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "它想把自己的标记球打进自己的球洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "Он целился забить свой отмеченный шар в свою лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "It aimed to sink its marked ball in its cup.",
+   "text": "أراد إدخال كرته المحددة في حفرته."
+  },
+  {
+   "culture": "es",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Quiso meter una de sus bolas en su hoyo."
+  },
+  {
+   "culture": "fr",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Il a visé à rentrer une de ses billes dans son trou."
+  },
+  {
+   "culture": "de",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Er wollte eine seiner Kugeln in sein Loch bringen."
+  },
+  {
+   "culture": "it",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Ha mirato a mandare una delle sue bilie nella sua buca."
+  },
+  {
+   "culture": "pt",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Tentou meter uma das suas bolas no seu buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Tentou colocar uma das bolas dele no buraco dele."
+  },
+  {
+   "culture": "ja",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "自分の球のひとつを自分のカップに入れようとしました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "자기 공 하나를 자기 컵에 넣으려고 했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "它想把自己的一颗球打进自己的球洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "Он целился забить один из своих шаров в свою лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "It aimed to sink one of its balls in its cup.",
+   "text": "أراد إدخال إحدى كراته في حفرته."
+  },
+  {
+   "culture": "es",
+   "key": "Off a cushion on the way.",
+   "text": "Pasando por una banda."
+  },
+  {
+   "culture": "fr",
+   "key": "Off a cushion on the way.",
+   "text": "En passant par une bande."
+  },
+  {
+   "culture": "de",
+   "key": "Off a cushion on the way.",
+   "text": "Unterwegs über eine Bande."
+  },
+  {
+   "culture": "it",
+   "key": "Off a cushion on the way.",
+   "text": "Passando da una sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "Off a cushion on the way.",
+   "text": "Passando por uma tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Off a cushion on the way.",
+   "text": "Passando por uma tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "Off a cushion on the way.",
+   "text": "途中でクッションに当てて。"
+  },
+  {
+   "culture": "ko",
+   "key": "Off a cushion on the way.",
+   "text": "가는 길에 쿠션을 맞고."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Off a cushion on the way.",
+   "text": "途中吃一库。"
+  },
+  {
+   "culture": "ru",
+   "key": "Off a cushion on the way.",
+   "text": "По пути от борта."
+  },
+  {
+   "culture": "ar",
+   "key": "Off a cushion on the way.",
+   "text": "مرورًا بارتداد عن الحافة."
+  },
+  {
+   "culture": "es",
+   "key": "Off a bumper on the way.",
+   "text": "Pasando por un tope."
+  },
+  {
+   "culture": "fr",
+   "key": "Off a bumper on the way.",
+   "text": "En passant par un plot."
+  },
+  {
+   "culture": "de",
+   "key": "Off a bumper on the way.",
+   "text": "Unterwegs über einen Pfosten."
+  },
+  {
+   "culture": "it",
+   "key": "Off a bumper on the way.",
+   "text": "Passando da un respingente."
+  },
+  {
+   "culture": "pt",
+   "key": "Off a bumper on the way.",
+   "text": "Passando por um pino de borracha."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Off a bumper on the way.",
+   "text": "Passando por um pino de borracha."
+  },
+  {
+   "culture": "ja",
+   "key": "Off a bumper on the way.",
+   "text": "途中でバンパーに当てて。"
+  },
+  {
+   "culture": "ko",
+   "key": "Off a bumper on the way.",
+   "text": "가는 길에 범퍼를 맞고."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Off a bumper on the way.",
+   "text": "途中碰一个挡柱。"
+  },
+  {
+   "culture": "ru",
+   "key": "Off a bumper on the way.",
+   "text": "По пути от столбика."
+  },
+  {
+   "culture": "ar",
+   "key": "Off a bumper on the way.",
+   "text": "مرورًا بارتداد عن مصدّ."
+  },
+  {
+   "culture": "es",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "Pasando por bandas y topes."
+  },
+  {
+   "culture": "fr",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "En passant par des bandes et des plots."
+  },
+  {
+   "culture": "de",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "Unterwegs über Banden und Pfosten."
+  },
+  {
+   "culture": "it",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "Passando da sponde e respingenti."
+  },
+  {
+   "culture": "pt",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "Passando por tabelas e pinos de borracha."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "Passando por tabelas e pinos de borracha."
+  },
+  {
+   "culture": "ja",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "途中でクッションとバンパーに当てて。"
+  },
+  {
+   "culture": "ko",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "가는 길에 쿠션과 범퍼를 맞고."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "途中吃库又碰挡柱。"
+  },
+  {
+   "culture": "ru",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "По пути от бортов и столбиков."
+  },
+  {
+   "culture": "ar",
+   "key": "Off cushions and bumpers on the way.",
+   "text": "مرورًا بالحواف والمصدّات."
+  },
+  {
+   "culture": "es",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Ningún tiro al hoyo era lo bastante seguro, así que acercó su bola a su hoyo."
+  },
+  {
+   "culture": "fr",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Aucun coup au trou n'était assez sûr, alors il a roulé sa bille plus près de son trou."
+  },
+  {
+   "culture": "de",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Kein Stoß ins Loch war sicher genug, also rollte er seine Kugel näher an sein Loch."
+  },
+  {
+   "culture": "it",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Nessun tiro in buca era abbastanza sicuro, così ha avvicinato la sua bilia alla sua buca."
+  },
+  {
+   "culture": "pt",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Nenhuma jogada ao buraco era provável o suficiente, por isso rolou a sua bola para mais perto do seu buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Nenhuma jogada no buraco era provável o bastante, então rolou a bola dele para mais perto do buraco dele."
+  },
+  {
+   "culture": "ja",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "カップに入る見込みの高いショットがなかったので、自分の球をカップの近くへ転がしました。"
+  },
+  {
+   "culture": "ko",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "컵에 넣을 만한 샷이 없어서 자기 공을 컵 가까이로 굴렸습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "没有足够有把握的进洞球，所以它把自己的球滚到离球洞更近的地方。"
+  },
+  {
+   "culture": "ru",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "Ни один удар в лунку не был достаточно надёжным, поэтому он подкатил свой шар ближе к своей лунке."
+  },
+  {
+   "culture": "ar",
+   "key": "No cup shot was likely enough, so it rolled its ball nearer its cup.",
+   "text": "لم تكن أي ضربة نحو الحفرة مضمونة بما يكفي، فدحرج كرته أقرب إلى حفرته."
+  },
+  {
+   "culture": "es",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Jugó a los bolos. Puntos con un golpe normal de su mano: unos %1$lld. Con un golpe perfecto: %2$lld."
+  },
+  {
+   "culture": "fr",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Il a joué les quilles. Points sur un coup moyen de sa main : environ %1$lld. Sur un coup parfait : %2$lld."
+  },
+  {
+   "culture": "de",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Er spielte auf die Kegel. Punkte bei einem durchschnittlichen Stoß seiner Hand: etwa %1$lld. Bei einem perfekten Stoß: %2$lld."
+  },
+  {
+   "culture": "it",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Ha giocato per i birilli. Punti con un colpo medio della sua mano: circa %1$lld. Con un colpo perfetto: %2$lld."
+  },
+  {
+   "culture": "pt",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Jogou para os pinos. Pontos numa tacada média da sua mão: cerca de %1$lld. Numa tacada perfeita: %2$lld."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Jogou nos pinos. Pontos numa tacada média da mão dele: cerca de %1$lld. Numa tacada perfeita: %2$lld."
+  },
+  {
+   "culture": "ja",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "ピンを狙いました。ふつうの打ち方での得点：およそ%1$lld。完璧に撞いた場合：%2$lld。"
+  },
+  {
+   "culture": "ko",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "핀을 노렸습니다. 평소 솜씨의 점수: 약 %1$lld. 완벽하게 쳤을 때: %2$lld."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "它冲着柱去打。按它平常的手感得分：约%1$lld。打得完美时：%2$lld。"
+  },
+  {
+   "culture": "ru",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "Он играл на кегли. Очки при обычном ударе его руки: около %1$lld. При идеальном ударе: %2$lld."
+  },
+  {
+   "culture": "ar",
+   "key": "It played for the pins. Points on an average stroke of its hand: about %lld. Struck perfectly: %lld.",
+   "text": "لعب على الأوتاد. النقاط بضربة عادية من يده: نحو %1$lld. بضربة مثالية: %2$lld."
+  },
+  {
+   "culture": "es",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Mandó su bola primero a una banda para llegar a la tuya."
+  },
+  {
+   "culture": "fr",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Il a envoyé sa bille d'abord sur une bande pour atteindre la tienne."
+  },
+  {
+   "culture": "de",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Er spielte seine Kugel zuerst über eine Bande, um an deine zu kommen."
+  },
+  {
+   "culture": "it",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Ha mandato la sua bilia prima su una sponda per arrivare alla tua."
+  },
+  {
+   "culture": "pt",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Mandou a sua bola primeiro a uma tabela para chegar à tua."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Mandou a bola dele primeiro numa tabela para chegar à sua."
+  },
+  {
+   "culture": "ja",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "あなたの球に届かせるため、まず自分の球をクッションに当てました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "당신의 공에 닿으려고 먼저 자기 공을 쿠션에 맞혔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "它先让自己的球吃一库，再去碰你的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "Он сначала отправил свой шар в борт, чтобы добраться до твоего."
+  },
+  {
+   "culture": "ar",
+   "key": "It sent its ball off a cushion first to reach yours.",
+   "text": "أرسل كرته أولًا إلى الحافة ليصل إلى كرتك."
+  },
+  {
+   "culture": "es",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "Su puntería podía desviarse %@ grados hacia cualquier lado y aun así puntuaba."
+  },
+  {
+   "culture": "fr",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "Sa visée pouvait dévier de %@ degrés d'un côté ou de l'autre et marquer quand même."
+  },
+  {
+   "culture": "de",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "Sein Zielen hätte um %@ Grad nach jeder Seite abweichen können, und er hätte trotzdem gepunktet."
+  },
+  {
+   "culture": "it",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "La sua mira poteva sbagliare di %@ gradi da una parte o dall'altra e fare punti lo stesso."
+  },
+  {
+   "culture": "pt",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "A sua mira podia desviar-se %@ graus para qualquer lado e ainda assim pontuava."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "A mira dele podia desviar %@ graus para qualquer lado e mesmo assim pontuava."
+  },
+  {
+   "culture": "ja",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "狙いが左右どちらに %@ 度ずれても得点できていました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "조준이 어느 쪽으로든 %@도 벗어나도 점수를 냈을 겁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "它的瞄准左右偏 %@ 度也照样能得分。"
+  },
+  {
+   "culture": "ru",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "Прицел мог уйти на %@ градуса в любую сторону, и очки всё равно были бы."
+  },
+  {
+   "culture": "ar",
+   "key": "Its aim could have been off by %@ degrees either way and still scored.",
+   "text": "كان يمكن أن ينحرف تصويبه %@ درجة في أي اتجاه ويسجل مع ذلك."
+  },
+  {
+   "culture": "es",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Además dejó su bola lejos de los bolos, así tienes menos a qué apuntar."
+  },
+  {
+   "culture": "fr",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Il a aussi gardé sa bille loin des quilles, pour te laisser moins de cible."
+  },
+  {
+   "culture": "de",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Er hielt seine Kugel auch von den Kegeln fern, damit du weniger zum Zielen hast."
+  },
+  {
+   "culture": "it",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Ha anche tenuto la sua bilia lontana dai birilli, così hai meno da mirare."
+  },
+  {
+   "culture": "pt",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Também manteve a sua bola longe dos pinos, para teres menos onde apontar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Também deixou a bola dele longe dos pinos, para você ter menos onde mirar."
+  },
+  {
+   "culture": "ja",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "さらに自分の球をピンから離し、あなたが狙いにくいようにしました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "자기 공을 핀에서 멀리 두어서 당신이 노릴 곳이 줄었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "它还让自己的球远离柱，让你更难瞄。"
+  },
+  {
+   "culture": "ru",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "Ещё он увёл свой шар от кеглей, чтобы тебе было меньше куда целиться."
+  },
+  {
+   "culture": "ar",
+   "key": "It also kept its ball away from the pins, so you have less to aim at.",
+   "text": "وأبقى كرته بعيدًا عن الأوتاد أيضًا، فيقلّ ما تصوّب عليه."
+  },
+  {
+   "culture": "es",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Lanzó tu bola a los bolos a ojo, sin calcular los puntos."
+  },
+  {
+   "culture": "fr",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Il a envoyé ta bille vers les quilles à l'œil, sans calculer les points."
+  },
+  {
+   "culture": "de",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Er schickte deine Kugel nach Augenmaß auf die Kegel, ohne die Punkte auszurechnen."
+  },
+  {
+   "culture": "it",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Ha mandato la tua bilia sui birilli a occhio, senza calcolare i punti."
+  },
+  {
+   "culture": "pt",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Mandou a tua bola aos pinos a olho, sem calcular os pontos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Mandou a sua bola nos pinos no olho, sem calcular os pontos."
+  },
+  {
+   "culture": "ja",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "点数を計算せず、目分量であなたの球をピンへ送りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "점수를 계산하지 않고 눈대중으로 당신의 공을 핀 쪽으로 보냈습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "它凭目测把你的球送向柱，没有算分。"
+  },
+  {
+   "culture": "ru",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "Он отправил твой шар в кегли на глаз, не подсчитывая очки."
+  },
+  {
+   "culture": "ar",
+   "key": "It sent your ball at the pins by eye, without working out the points.",
+   "text": "أرسل كرتك نحو الأوتاد بالنظر، دون حساب النقاط."
+  },
+  {
+   "culture": "es",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Nada puntuaba lo bastante a menudo, así que tocó tu bola suave para regalar lo menos posible."
+  },
+  {
+   "culture": "fr",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Rien ne marquait assez souvent, alors il a touché ta bille doucement pour donner le moins possible."
+  },
+  {
+   "culture": "de",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Nichts punktete oft genug, also berührte er deine Kugel sanft, um so wenig wie möglich herzugeben."
+  },
+  {
+   "culture": "it",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Niente faceva punti abbastanza spesso, così ha toccato la tua bilia piano per concedere il meno possibile."
+  },
+  {
+   "culture": "pt",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Nada pontuava vezes suficientes, por isso tocou a tua bola com suavidade para dar o mínimo possível."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Nada pontuava com frequência suficiente, então tocou a sua bola de leve para entregar o mínimo possível."
+  },
+  {
+   "culture": "ja",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "得点できる見込みのある打ち方がなかったので、あなたの球にそっと当てて、与える点をできるだけ少なくしました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "충분히 자주 점수가 나는 샷이 없어서 당신의 공을 살살 맞혀 내주는 점수를 최대한 줄였습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "没有哪种打法能经常得分，所以它轻碰你的球，尽量少送分。"
+  },
+  {
+   "culture": "ru",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "Ничто не приносило очков достаточно часто, поэтому он мягко коснулся твоего шара, чтобы отдать как можно меньше."
+  },
+  {
+   "culture": "ar",
+   "key": "Nothing scored often enough, so it touched your ball softly to give away as little as possible.",
+   "text": "لم يكن هناك ما يسجل بما يكفي، فلمس كرتك بلطف ليمنح أقل ما يمكن."
+  }
+ ]
+}
