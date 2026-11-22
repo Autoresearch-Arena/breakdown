@@ -14,6 +14,8 @@
 //          Vibration off; the Mac's time readout writes its decimals the way the player's language does.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif-review: Next impact, Previous impact and Where they part
 //          are one list of named actions instead of two mechanisms side by side; same names, same jumps.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bug 30 of plans/22-Nov-2026-phone-bug-hunt.md:
+//          the parting diamond draws over the playhead, so it stays visible when Where they part lands on it.)
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -80,7 +82,6 @@ struct ScrubBar: View {
             Capsule().fill(palette.track).frame(height: railHeight)
             ticks(duration: d)
             Capsule().fill(palette.accent).frame(width: max(railHeight, x), height: railHeight)
-            partingMark(width: w, duration: d)
             Circle()
                 .fill(.white)
                 .frame(width: thumb, height: thumb)
@@ -88,6 +89,9 @@ struct ScrubBar: View {
                 .scaleEffect(thumbScale)
                 .animation(reduceMotion ? nil : .snappy(duration: 0.15), value: thumbScale)
                 .offset(x: thumbX)
+            // Over the playhead (0.7.6, bug 30): Where they part puts the playhead exactly on the diamond, and drawn
+            // under it the mark the player jumped to vanished the moment they got there.
+            partingMark(width: w, duration: d)
         }
         .frame(maxHeight: .infinity)
         .contentShape(Rectangle())

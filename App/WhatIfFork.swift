@@ -8,6 +8,8 @@
 //          the retry needs); a solve that lands after a cached result is already showing does not show and announce it
 //          twice; the click haptic counts clicks, not every change of the steps (a close is not a click); and the
 //          clearing raise is worked out only on a sixteen-ball layout, the same guard the model's own raise has.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bug 29 of plans/22-Nov-2026-phone-bug-hunt.md:
+//          the what-if is not offered while ball in hand is owed or the cue ball is lifted.)
 // PURPOSE: The what-if replay's state (spec 4.3): one nudged copy of the player's own shot, solved beside the real one
 //          on the same start, seed and stroke. The player moves one setting at a time in clicks (aim, power, follow or
 //          draw, side, and the cue angle on a raised shot); each click builds the nudged input here on the main actor
@@ -213,12 +215,15 @@ import Observation
 
     /// The entry may be offered now (the button and the Mac menu item read it): the balls are at rest after the
     /// player's own shot, in free play or a judged try at a trick shot, lesson or Behind the 8-Ball situation. Never on
-    /// a break, in a match, in the first minute, while solving, during Watch your best shot, in the stroke drill, or
-    /// with the menu open.
+    /// a break, in a match, in the first minute, while solving, during Watch your best shot, in the stroke drill, with
+    /// the menu open, or while ball in hand is owed or the cue ball is lifted (0.7.6, bug 29): opening the what-if
+    /// closes Your shot, which carries the lifted ball's drag, so the ball could not be put down again, and the Ball in
+    /// hand card would stack under the what-if card.
     var canOpen: Bool {
         guard let a = model.currentAttempt, model.playerShotOnScreen, !a.isBreak, model.match == nil, model.aimReady,
               model.stage == .explore, model.openingStage == .none, !model.replayingBest,
-              !model.strokeDrill.isActive, !model.menuOpen else { return false }
+              !model.strokeDrill.isActive, !model.menuOpen,
+              !model.placingCueBall, model.ballInHand == .none else { return false }
         // In a learn mode only the judged try: never while its answer plays (then the answer is the attempt on screen).
         if model.trickMode.isActive { guard case .judged = model.trickMode.phase else { return false } }
         if model.lessonMode.isActive { guard case .judged = model.lessonMode.phase else { return false } }

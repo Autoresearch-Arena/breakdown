@@ -4,6 +4,8 @@
 //          the result card shows whenever the stroke changed what happened, in either zone (StrokeEffect), and offers
 //          the straight-stroke drill in free play; the drill card says it measures a finger stroke, names the turn of
 //          every drifted stroke, and marks a shot played another way as left out of the record.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bug 29 of plans/22-Nov-2026-phone-bug-hunt.md:
+//          the stroke result line steps aside while the what-if shows.)
 // PURPOSE: The stroke on screen (plans/21-Nov-2026-stroke-and-power-plan.md), apart from the live groove:
 //          - StrokeCards: the cards this stream adds, one hook line wherever the cards sit (the phone's bottom stack,
 //            the side column, the notebook panel), so each works as a card of the notebook beside the table and
@@ -40,9 +42,11 @@ struct StrokeResultCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
 
-    /// The line for the shot on screen, once it has played out. Not in the drill, whose card says it with its verdict.
+    /// The line for the shot on screen, once it has played out. Not in the drill, whose card says it with its verdict,
+    /// and not while the what-if shows (0.7.6, bug 29): every result card steps aside for it, and this one used to
+    /// stay under it, vanish when Play both started and pop back when the replay ended, shifting the cards.
     private var line: String? {
-        guard model.aimReady, !model.strokeDrill.isActive else { return nil }
+        guard model.aimReady, !model.strokeDrill.isActive, !model.whatIf.isShowing else { return nil }
         return StrokeWords.resultLine(for: model.currentAttempt)
     }
 
