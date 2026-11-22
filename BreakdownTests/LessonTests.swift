@@ -9,6 +9,8 @@
 //          the menu offers). Also the lesson flow's locks: which controls each step opens.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the reach check is the miscue limit of the
 //          default physics instead of the old 20 mm tip travel.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 integration: try 3 and the pass shot of a lesson not about power
+//          keep the power held, so the steps test expects every control but the power, and no power band.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 10: every lesson and the exercise must be
 //          played from a square stance by the app's own reach ladder. The numbers now come from the package library.)
 // SRP/DRY check: Pass - checks only. Solving and attempts come from TestShots (the model's own path); the verdicts are
@@ -141,15 +143,18 @@ final class LessonTests: XCTestCase {
         model.activeTipSide = 0.01
         XCTAssertEqual(model.shotTipSide, 0, accuracy: 1e-12, "try 2 let the side move")
 
-        // Try 3: everything open, every band faint. Pass shot: everything open, nothing marked.
+        // Try 3: everything open but the power, every band faint. Stop is not a power lesson, so its power stays held
+        // at the lesson's stroke (0.7.0 bug plan item 11, LessonMode.powerHeld) and carries no band. Pass shot: the
+        // same controls, nothing marked.
         mode.nextStep()
         XCTAssertEqual(mode.step, .try3)
-        XCTAssertEqual(mode.openControls, .all)
+        XCTAssertTrue(mode.powerHeld)
+        XCTAssertEqual(mode.openControls, ShotControls.all.subtracting(.power))
         XCTAssertLessThan(mode.zones?.strength ?? 1, 1)
-        XCTAssertNotNil(mode.zones?.power)
+        XCTAssertNil(mode.zones?.power)
         mode.nextStep()
         XCTAssertEqual(mode.step, .pass)
-        XCTAssertEqual(mode.openControls, .all)
+        XCTAssertEqual(mode.openControls, ShotControls.all.subtracting(.power))
         XCTAssertNil(mode.zones)
     }
 }
