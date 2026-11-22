@@ -1,5 +1,9 @@
 # Author: Claude Opus 5.5 High
 # Date: 21-November-2026
+# Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment, plan item 57: retired. The app no longer ships or
+#          loads Bridge.usdz; the one rest it draws is the other developer's swan-neck rest, exported by
+#          Tools/blender/export_equipment.py as SwanNeckRest.usdz. Kept as the record of how the first code-built
+#          bridge was made; running it writes a file nothing reads.)
 # PURPOSE: Generates the mechanical bridge (the chrome "spider" rest used for out-of-reach shots) as
 #          App/Models/Bridge.usdz for the Breakdown app. Run headless:
 #              /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python Tools/blender/make_bridge.py

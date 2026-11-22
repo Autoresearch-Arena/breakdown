@@ -33,6 +33,9 @@
 //          the aiming layer carries the same elements. Each frame the update also reads a game controller
 //          (GameControllerInput) and lets ShotNarration speak a finished shot (and a match ruling) once; the bridge
 //          carries whether a screen reader is on and what has been said, so nothing here reads the clock in a body.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 57 and 23: the aim preview carries
+//          the cue the game picked, model.cueChoice.kind, so CueRig draws that cue, and the bridge's length, so the
+//          drawn pull-back stops in front of the bridge hand; two lines.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -198,6 +201,10 @@ struct TableStage: View {
         // The 3D cue: shown on the same rule the old flat cue used (the balls on screen are the ones the next shot
         // starts from, and the cue ball is on the table); the aim line itself keeps showing either way.
         preview.showsCue = model.aimReady && model.layout.count == 16 && NextShot.isOnTable(model.aimOrigin)
+        // The cue the game picked for this shot is the one drawn, its pull-back stopped short of the bridge hand
+        // (plan items 57 and 23; equipment's hook).
+        preview.cue = model.cueChoice.kind
+        preview.bridgeLength = model.strokeBridgeLength
         preview.powerFraction = model.powerFraction
         preview.elevation = model.racked ? 0 : model.shotElevation
         preview.tipUp = model.activeTipUp

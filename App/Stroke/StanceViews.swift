@@ -7,11 +7,17 @@
 //            stance when it is not a square one ("Stretch: one foot off the floor"), and a cue raised over a ball. A
 //            square stance with a clear path shows nothing, so the screen stays clean. The first few times it appears
 //            it pulses gently (counted on the device, never with Reduce Motion), and VoiceOver reads the same lines.
-//            Its rows come from EquipmentRows.current, the one place a future automatic cue pick adds its own row (the
-//            cue's name and the reason); there is no cue row until there are cues to pick.
-//          - StancePictogram: the flat pictograms, a side view of a figure at the rail for each rung and a cue raised
-//            over a ball, drawn with paths in a Canvas (no images), in the dark palette.
+//            Its rows come from EquipmentRows.current, which also adds the automatic cue pick's row (the cue's name and
+//            the reason) whenever the pick is not the house cue.
+//          - StancePictogram: the flat pictograms, a side view of a figure at the rail for each rung, a cue raised
+//            over a ball, and the picked cue at its angle over a ball, drawn with paths in a Canvas (no images), in the
+//            dark palette.
 //          - BridgeReadout: the bridge's length for the fine controls ("20 cm, automatic bridge"), spoken the same.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment, plan item 57: the card's cue row. When the game
+//          picks a cue other than the house cue for the shot (the break cue, the jump cue, the massé cue), the card
+//          names it in one line (StanceWords.cueLine) beside a pictogram of that cue at its angle, so the pick is
+//          always said; it shows even with a square stance. The rest's pictogram is now the swan-neck rest the table
+//          draws, and the bridge readout says "the rest" whenever the model uses it (model.restInUse).)
 // SRP/DRY check: Pass - checked StrokeViews (StrokeResultCard is the same small-card pattern, its glass card and fonts
 //          reused), AimGauges (the panel's own controls; this card sits beside them, it does not change them) and
 //          StanceWords (every line comes from there).
@@ -23,7 +29,7 @@ import SwiftUI
 
 /// One row of the equipment card: what its pictogram shows and its line.
 struct EquipmentRow: Identifiable, Equatable {
-    enum Picture: Equatable { case stance(Stance.Rung), raisedCue }
+    enum Picture: Equatable { case stance(Stance.Rung), raisedCue, cue(CueKind) }
     let id: String
     let picture: Picture
     let line: String
@@ -32,17 +38,26 @@ struct EquipmentRow: Identifiable, Equatable {
 @MainActor
 enum EquipmentRows {
     /// The rows for the strike being lined up, once the balls are at rest and the cue ball is down: the stance unless
-    /// it is a square one, then the raised cue. Empty when there is nothing to say. The automatic cue pick (the
-    /// cues-and-bridges plan) appends its row here when cues exist.
+    /// it is a square one, then the raised cue, then the cue the game picked when it is not the house cue (plan item
+    /// 57: the pick is automatic and always said). Empty when there is nothing to say.
     static func current(_ model: ShowpieceModel) -> [EquipmentRow] {
-        guard model.aimReady, !model.placingCueBall, let stance = model.stance, !stance.isNormal else { return [] }
+        guard model.aimReady, !model.placingCueBall else { return [] }
         var rows: [EquipmentRow] = []
-        if stance.rung != .normal {
-            rows.append(EquipmentRow(id: "stance", picture: .stance(stance.rung), line: StanceWords.rungLine(stance.rung)))
+        if let stance = model.stance {
+            if stance.rung != .normal {
+                rows.append(EquipmentRow(id: "stance", picture: .stance(stance.rung),
+                                         line: StanceWords.rungLine(stance.rung)))
+            }
+            if let ball = stance.raisedOver {
+                rows.append(EquipmentRow(id: "raised", picture: .raisedCue,
+                                         line: StanceWords.raisedLine(over: ball, kind: model.match?.rules.kind)))
+            }
         }
-        if let ball = stance.raisedOver {
-            rows.append(EquipmentRow(id: "raised", picture: .raisedCue,
-                                     line: StanceWords.raisedLine(over: ball, kind: model.match?.rules.kind)))
+        // The pick (model.cueChoice, from CueProfile.choice) follows the break, the cue's angle and the side, so the
+        // row comes and goes as the player sets them; VoiceOver says its line with the rest of the card.
+        let choice = model.cueChoice
+        if let line = StanceWords.cueLine(choice) {
+            rows.append(EquipmentRow(id: "cue", picture: .cue(choice.kind), line: line))
         }
         return rows
     }
@@ -156,12 +171,18 @@ struct StancePictogram: View {
             let r = size.height * 0.08
             ctx.fill(Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: r * 2, height: r * 2)), with: .color(ink))
         }
-        // The floor, and the table: its top from the rail's edge to the right, one leg.
+        // The floor, and the table: its top from the rail's edge to the right, one leg. The cue pictures are close-ups
+        // on the cloth, so their table runs the whole width and has no leg.
+        let closeUp: Bool
+        switch picture {
+        case .raisedCue, .cue: closeUp = true
+        case .stance: closeUp = false
+        }
         stroke([p(0.02, 0.96), p(0.98, 0.96)], ink.opacity(0.25))
-        let tableLeft: CGFloat = picture == .raisedCue ? 0.02 : 0.56
+        let tableLeft: CGFloat = closeUp ? 0.02 : 0.56
         ctx.fill(Path(CGRect(x: tableLeft * size.width, y: 0.45 * size.height, width: (1 - tableLeft) * size.width,
                              height: 0.07 * size.height)), with: .color(ink.opacity(0.35)))
-        if picture != .raisedCue { stroke([p(0.64, 0.52), p(0.64, 0.96)], ink.opacity(0.35)) }
+        if !closeUp { stroke([p(0.64, 0.52), p(0.64, 0.96)], ink.opacity(0.35)) }
 
         switch picture {
         case .stance(.normal):
@@ -196,17 +217,20 @@ struct StancePictogram: View {
             head(p(0.88, 0.24))
             stroke([p(0.40, 0.38), p(0.99, 0.40)], cue)
         case .stance(.rest):
-            // Standing tall, the cue carried on the rest: its long handle on the table and the cross head near the
-            // far end.
+            // Standing tall, the cue carried on the swan-neck rest the table draws: its long handle low on the table,
+            // feet near the far end, the neck reaching forward and up to a small V cradle under the cue.
             stroke([p(0.24, 0.95), p(0.30, 0.55), p(0.36, 0.95)], ink)
             stroke([p(0.30, 0.55), p(0.32, 0.24)], ink)
             stroke([p(0.32, 0.27), p(0.24, 0.42)], ink)
             stroke([p(0.32, 0.28), p(0.46, 0.40)], ink)
             head(p(0.33, 0.13))
-            stroke([p(0.46, 0.41), p(0.84, 0.42)], ink.opacity(0.8))
-            stroke([p(0.80, 0.34), p(0.88, 0.44)], ink.opacity(0.8))
-            stroke([p(0.88, 0.34), p(0.80, 0.44)], ink.opacity(0.8))
-            stroke([p(0.20, 0.38), p(0.98, 0.34)], cue)
+            stroke([p(0.46, 0.41), p(0.76, 0.41)], ink.opacity(0.8))
+            stroke([p(0.72, 0.44), p(0.76, 0.40), p(0.80, 0.44)], ink.opacity(0.8))       // the feet
+            stroke([p(0.76, 0.40), p(0.82, 0.36), p(0.88, 0.36)], ink.opacity(0.8))       // the neck
+            stroke([p(0.86, 0.31), p(0.88, 0.35), p(0.90, 0.31)], ink.opacity(0.8))       // the cradle
+            stroke([p(0.20, 0.38), p(0.98, 0.31)], cue)
+        case .cue(let kind):
+            drawCue(kind, in: &ctx, size: size, ink: ink, cue: cue)
         case .raisedCue:
             // A ball behind the cue ball and the cue tilted up over it to strike down at the cue ball.
             let r = size.height * 0.10
@@ -217,6 +241,40 @@ struct StancePictogram: View {
             }
             stroke([p(0.84, 0.30), p(0.20, 0.06)], cue)
         }
+    }
+
+    /// The picked cue over a ball on the cloth, its tip just short of it: near level for the break cue (and the plain
+    /// cues), raised for the jump cue, steeper still for the massé cue, and drawn as long beside the house cue as the
+    /// real cue is (the jump cue's 1.05 m and the massé cue's 1.26 m against 1.47 m), so a short cue reads as short.
+    /// The heavy cues (break, massé) get a thicker butt. The angles are the picture's, chosen to read at 44 by 30
+    /// points (a 40 degree jump, a 70 degree massé), not the strike's own angle, which the cue angle control shows.
+    private static func drawCue(_ kind: CueKind, in ctx: inout GraphicsContext, size: CGSize, ink: Color, cue: Color) {
+        let r = size.height * 0.10
+        let ball = CGPoint(x: size.width * 0.86, y: size.height * 0.45 - r)
+        ctx.stroke(Path(ellipseIn: CGRect(x: ball.x - r, y: ball.y - r, width: r * 2, height: r * 2)),
+                   with: .color(ink), lineWidth: 1.5)
+        let degrees: CGFloat
+        switch kind {
+        case .jump: degrees = 40
+        case .masse: degrees = 70
+        case .house, .breakCue, .rosewoodFourPoint, .cobalt: degrees = 4
+        }
+        let angle = degrees * .pi / 180
+        // From the tip back toward the butt: left, and up the screen (negative y) by the cue's angle.
+        let back = CGVector(dx: -cos(angle), dy: -sin(angle))
+        let tip = CGPoint(x: ball.x + back.dx * r * 1.4, y: ball.y + back.dy * r * 1.4)
+        let length = size.width * 0.85 * CGFloat(CueProfile.profile(for: kind).length / CueProfile.houseLength)
+        let joint = CGPoint(x: tip.x + back.dx * length * 0.5, y: tip.y + back.dy * length * 0.5)
+        let butt = CGPoint(x: tip.x + back.dx * length, y: tip.y + back.dy * length)
+        var shaft = Path()
+        shaft.move(to: tip)
+        shaft.addLine(to: joint)
+        ctx.stroke(shaft, with: .color(cue), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+        var rear = Path()
+        rear.move(to: joint)
+        rear.addLine(to: butt)
+        let heavy = kind == .breakCue || kind == .masse
+        ctx.stroke(rear, with: .color(cue), style: StrokeStyle(lineWidth: heavy ? 3.5 : 2.5, lineCap: .round))
     }
 }
 
@@ -240,10 +298,11 @@ struct BridgeReadout: View {
         .accessibilityValue(readout)
     }
 
-    /// Where the length comes from: the rest when the stance needs it (or the shot shows it), the finger while one
-    /// rests on the cloth, otherwise the automatic bridge.
+    /// Where the length comes from: the rest whenever the model uses it (the stance needs it, or the mode shows it:
+    /// model.restInUse, the same answer the table uses to draw it), the finger while one rests on the cloth, otherwise
+    /// the automatic bridge.
     private var source: StanceWords.BridgeSource {
-        if model.stance?.rung == .rest || model.showsBridge { return .rest }
+        if model.restInUse { return .rest }
         return model.strokeBridge == nil ? .automatic : .finger
     }
 }

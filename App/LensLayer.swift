@@ -52,6 +52,8 @@
 //          generation-two events now leave a visible mark like the others: a red double ring where the cue MISCUED (the
 //          one place a sound alone would carry it), a pocket-coloured ring where a ball skipped over a hole, and an
 //          impact ring where a jam was brought to rest.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 57 and 23: AimPreview carries the
+//          picked cue and the bridge's length for CueRig; two appended fields with defaults.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -80,6 +82,12 @@ struct AimPreview {
     var tipSide = 0.0
     /// The cue rests on the mechanical bridge.
     var usesBridge = false
+    /// Which cue CueRig draws: the one the game picked for the shot (model.cueChoice.kind; plan item 57, the
+    /// equipment stream's hook, appended with a default like the rest).
+    var cue: CueKind = .house
+    /// Metres from the cue ball's centre back to the bridge hand (model.strokeBridgeLength): CueRig stops the drawn
+    /// pull-back in front of it (plan item 23). Nil: the automatic bridge.
+    var bridgeLength: Double? = nil
 }
 
 @MainActor
