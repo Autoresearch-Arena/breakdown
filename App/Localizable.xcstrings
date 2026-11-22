@@ -7374,7 +7374,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une faute donne à votre adversaire la bille en main n'importe où sur la table. Une 9 empochée sur une faute revient sur sa mouche."
+            "value": "Une faute donne à ton adversaire la bille en main n'importe où sur la table. Une 9 empochée sur une faute revient sur sa mouche."
           }
         },
         "it": {
@@ -7514,7 +7514,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une bonne casse empoche une bille ou envoie au moins quatre billes à une bande. Si elle ne fait ni l'un ni l'autre, votre adversaire peut jouer la table telle quelle ou faire remettre le triangle. Si la blanche tombe à la casse, votre adversaire la place où il veut derrière la ligne de tête."
+            "value": "Une bonne casse empoche une bille ou envoie au moins quatre billes à une bande. Si elle ne fait ni l'un ni l'autre, ton adversaire peut jouer la table telle quelle ou faire remettre le triangle. Si la blanche tombe à la casse, ton adversaire la place où il veut derrière la ligne de tête."
           }
         },
         "it": {
@@ -9124,7 +9124,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Après la casse, personne n'a de groupe. La première bille que vous annoncez et empochez sur un coup valable vous donne son groupe."
+            "value": "Après la casse, personne n'a de groupe. La première bille que tu annonces et empoches sur un coup valable te donne son groupe."
           }
         },
         "it": {
@@ -9160,7 +9160,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "После разбоя ни у кого нет группы. Первый шар, который вы заказали и забили честным ударом, делает его группу вашей."
+            "value": "После разбоя ни у кого нет группы. Первый шар, заказанный и забитый тобой честным ударом, делает его группу твоей."
           }
         },
         "zh-Hans": {
@@ -11714,7 +11714,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Retour à la table, telle que vous l'avez laissée."
+            "value": "Retour à la table, telle que tu l'as laissée."
           }
         },
         "it": {
@@ -11750,7 +11750,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Назад к столу, ровно таким, каким вы его оставили."
+            "value": "Назад к столу, ровно в том виде, в каком он был."
           }
         },
         "zh-Hans": {
@@ -12974,7 +12974,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avant chaque coup, désignez la bille et la poche. Le jeu propose la bille que vous visez et la poche la plus proche : un toucher suffit pour confirmer."
+            "value": "Avant chaque coup, désigne la bille et la poche. Le jeu propose la bille que tu vises et la poche la plus proche : un toucher suffit pour confirmer."
           }
         },
         "it": {
@@ -13010,7 +13010,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перед каждым ударом назовите шар и лузу. Игра предложит шар, в который вы целитесь, и ближайшую лузу, так что хватит одного касания."
+            "value": "Перед каждым ударом назови шар и лузу. Игра предложит шар, в который ты целишься, и ближайшую лузу, так что хватит одного касания."
           }
         },
         "zh-Hans": {
@@ -14584,7 +14584,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Annoncez chaque coup"
+            "value": "Annonce chaque coup"
           }
         },
         "it": {
@@ -14620,7 +14620,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Заказывайте каждый удар"
+            "value": "Заказывай каждый удар"
           }
         },
         "zh-Hans": {
@@ -14794,7 +14794,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Annoncez votre coup : choisissez une bille, puis une poche. Ou annoncez une sécurité."
+            "value": "Annonce ton coup : choisis une bille, puis une poche. Ou annonce une sécurité."
           }
         },
         "it": {
@@ -14830,7 +14830,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Закажите удар: выберите шар, затем лузу. Или закажите отыгрыш."
+            "value": "Закажи удар: выбери шар, затем лузу. Или закажи отыгрыш."
           }
         },
         "zh-Hans": {
@@ -18050,7 +18050,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кий: %@. Оттяните назад от битка на столе или проведите здесь."
+            "value": "Кий: %@. Оттяни назад от битка на столе или проведи здесь."
           }
         },
         "zh-Hans": {
@@ -19484,7 +19484,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faites glisser la barre pour parcourir le coup dans le temps, en avant ou en arrière."
+            "value": "Fais glisser la barre pour parcourir le coup dans le temps, en avant ou en arrière."
           }
         },
         "it": {
@@ -19520,7 +19520,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перетаскивайте полосу, чтобы двигаться по удару во времени, вперёд или назад."
+            "value": "Перетаскивай полосу, чтобы двигаться по удару во времени, вперёд или назад."
           }
         },
         "zh-Hans": {
@@ -19554,7 +19554,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faites glisser la bille blanche vers un endroit libre derrière la ligne de tête, puis relâchez."
+            "value": "Fais glisser la bille blanche vers un endroit libre derrière la ligne de tête, puis relâche."
           }
         },
         "it": {
@@ -19590,7 +19590,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перетащите биток на свободное место за линией дома и отпустите."
+            "value": "Перетащи биток на свободное место за линией дома и отпусти."
           }
         },
         "zh-Hans": {
@@ -19624,7 +19624,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faites glisser la bille blanche vers un endroit libre, puis relâchez."
+            "value": "Fais glisser la bille blanche vers un endroit libre, puis relâche."
           }
         },
         "it": {
@@ -19660,7 +19660,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перетащите биток на свободное место и отпустите."
+            "value": "Перетащи биток на свободное место и отпусти."
           }
         },
         "zh-Hans": {
@@ -20674,7 +20674,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La 8 ou la 9 contre un adversaire informatique à votre niveau."
+            "value": "La 8 ou la 9 contre un adversaire informatique à ton niveau."
           }
         },
         "it": {
@@ -20710,7 +20710,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Восьмёрка или девятка против компьютера вашего уровня."
+            "value": "Восьмёрка или девятка против компьютера твоего уровня."
           }
         },
         "zh-Hans": {
@@ -20954,7 +20954,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sortez des pires situations au jeu de la 8 et marquez des points à chaque issue."
+            "value": "Sors des pires situations au jeu de la 8 et marque des points à chaque issue."
           }
         },
         "it": {
@@ -20990,7 +20990,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выбирайтесь из самых скверных положений в восьмёрке и получайте очки за каждый выход."
+            "value": "Выбирайся из самых скверных положений в восьмёрке и получай очки за каждый выход."
           }
         },
         "zh-Hans": {
@@ -23720,7 +23720,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Полная сила: наклейка попала левее, чем вы целились."
+            "value": "Полная сила: наклейка попала левее точки прицела."
           }
         },
         "zh-Hans": {
@@ -23790,7 +23790,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Полная сила: наклейка попала правее, чем вы целились."
+            "value": "Полная сила: наклейка попала правее точки прицела."
           }
         },
         "zh-Hans": {
@@ -24454,7 +24454,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passe directement à votre propre casse"
+            "value": "Passe directement à ta propre casse"
           }
         },
         "it": {
@@ -24490,7 +24490,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сразу к вашему собственному разбою"
+            "value": "Сразу к твоему собственному разбою"
           }
         },
         "zh-Hans": {
@@ -25644,7 +25644,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Touchez d'abord une de vos billes, ou la 8 quand votre groupe est parti. Ensuite, une bille doit tomber ou une bille doit atteindre une bande."
+            "value": "Touche d'abord une de tes billes, ou la 8 quand ton groupe est parti. Ensuite, une bille doit tomber ou une bille doit atteindre une bande."
           }
         },
         "it": {
@@ -25680,7 +25680,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сначала попадите в свой шар, или в восьмёрку, когда ваша группа закончилась. Затем шар должен упасть или любой шар должен дойти до борта."
+            "value": "Сначала попади в свой шар, или в восьмёрку, когда твоя группа закончилась. Затем шар должен упасть или любой шар должен дойти до борта."
           }
         },
         "zh-Hans": {
@@ -25784,7 +25784,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Touchez d'abord la %lld"
+            "value": "Touche d'abord la %lld"
           }
         },
         "it": {
@@ -28094,7 +28094,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il a touché la %lld doucement pour cacher la blanche de vos billes."
+            "value": "Il a touché la %lld doucement pour cacher la blanche de tes billes."
           }
         },
         "it": {
@@ -28130,7 +28130,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Он мягко сыграл %lld-й, чтобы спрятать биток от ваших шаров."
+            "value": "Он мягко сыграл %lld-й, чтобы спрятать биток от твоих шаров."
           }
         },
         "zh-Hans": {
@@ -28234,7 +28234,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il voulait vous laisser au plus %@ degrés de marge de chaque côté sur votre meilleur coup."
+            "value": "Il voulait te laisser au plus %@ degrés de marge de chaque côté sur ton meilleur coup."
           }
         },
         "it": {
@@ -28270,7 +28270,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Он хотел оставить вам на лучшем ударе не больше %@ градуса запаса в каждую сторону."
+            "value": "Он хотел оставить тебе на лучшем ударе не больше %@ градуса запаса в каждую сторону."
           }
         },
         "zh-Hans": {
@@ -28304,7 +28304,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il voulait ne vous laisser aucun coup dégagé."
+            "value": "Il voulait ne te laisser aucun coup dégagé."
           }
         },
         "it": {
@@ -28340,7 +28340,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Он хотел не оставить вам ни одного чистого удара."
+            "value": "Он хотел не оставить тебе ни одного чистого удара."
           }
         },
         "zh-Hans": {
@@ -30054,7 +30054,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continuez à jouer"
+            "value": "Continue à jouer"
           }
         },
         "it": {
@@ -30090,7 +30090,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Продолжайте"
+            "value": "Продолжай"
           }
         },
         "zh-Hans": {
@@ -30124,7 +30124,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gardez la main"
+            "value": "Garde la main"
           }
         },
         "it": {
@@ -30160,7 +30160,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сохраняйте ход"
+            "value": "Сохрани ход"
           }
         },
         "zh-Hans": {
@@ -31104,7 +31104,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faites tomber un champignon blanc et la série s’arrête, ses points perdus. Faites tomber le champignon noir et tout votre score est perdu."
+            "value": "Fais tomber un champignon blanc et la série s’arrête, ses points perdus. Fais tomber le champignon noir et tout ton score est perdu."
           }
         },
         "it": {
@@ -31140,7 +31140,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сбили белый грибок — серия заканчивается, её очки сгорают. Сбили чёрный — сгорает весь счёт."
+            "value": "Белый грибок упал — серия заканчивается, её очки сгорают. Упал чёрный — сгорает весь счёт."
           }
         },
         "zh-Hans": {
@@ -31174,7 +31174,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouez les billes librement, sans tours ni score."
+            "value": "Joue les billes librement, sans tours ni score."
           }
         },
         "it": {
@@ -31210,7 +31210,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Просто гоняйте шары: без очереди и без счёта."
+            "value": "Просто гоняй шары: без очереди и без счёта."
           }
         },
         "zh-Hans": {
@@ -34184,7 +34184,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Annoncez d'abord votre coup"
+            "value": "Annonce d'abord ton coup"
           }
         },
         "it": {
@@ -34220,7 +34220,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сначала закажите удар"
+            "value": "Сначала закажи удар"
           }
         },
         "zh-Hans": {
@@ -34254,7 +34254,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "En fait votre annonce pour ce coup"
+            "value": "En fait ton annonce pour ce coup"
           }
         },
         "it": {
@@ -35900,7 +35900,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Изменилось больше одного, поэтому смотрите повтор, чтобы понять, что повлияло."
+            "value": "Изменилось больше одного, поэтому смотри повтор, чтобы понять, что повлияло."
           }
         },
         "zh-Hans": {
@@ -36214,7 +36214,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Déplacez la bille blanche"
+            "value": "Déplace la bille blanche"
           }
         },
         "it": {
@@ -36250,7 +36250,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Переставьте биток"
+            "value": "Переставь биток"
           }
         },
         "zh-Hans": {
@@ -38454,7 +38454,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sans triangle : placez les billes"
+            "value": "Sans triangle : place les billes"
           }
         },
         "it": {
@@ -38490,7 +38490,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Без пирамиды: расставьте шары"
+            "value": "Без пирамиды: расставь шары"
           }
         },
         "zh-Hans": {
@@ -41464,7 +41464,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un ou deux joueurs contre un chrono de %lld minutes. À deux, on joue des séries à tour de rôle et le meilleur score gagne ; seul, vous visez votre record."
+            "value": "Un ou deux joueurs contre un chrono de %lld minutes. À deux, on joue des séries à tour de rôle et le meilleur score gagne ; seul, tu vises ton record."
           }
         },
         "it": {
@@ -41500,7 +41500,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Один или два игрока против часов на %lld минут. Вдвоём играют серии по очереди, побеждает больший счёт; в одиночку вы играете на рекорд."
+            "value": "Один или два игрока против часов на %lld минут. Вдвоём играют серии по очереди, побеждает больший счёт; в одиночку ты играешь на рекорд."
           }
         },
         "zh-Hans": {
@@ -42654,7 +42654,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passez l'appareil à %@."
+            "value": "Passe l'appareil à %@."
           }
         },
         "it": {
@@ -42690,7 +42690,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Передайте устройство: %@."
+            "value": "Передай устройство: %@."
           }
         },
         "zh-Hans": {
@@ -42864,7 +42864,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "En pause là où la bille blanche a touché la première bille. Le trait pâle est votre essai précédent."
+            "value": "En pause là où la bille blanche a touché la première bille. Le trait pâle est ton essai précédent."
           }
         },
         "it": {
@@ -42900,7 +42900,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пауза там, где биток впервые коснулся шара. Бледная линия — ваша прошлая попытка."
+            "value": "Пауза там, где биток впервые коснулся шара. Бледная линия — твоя прошлая попытка."
           }
         },
         "zh-Hans": {
@@ -43564,7 +43564,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prenez la bille blanche et posez-la sur n'importe quel endroit libre."
+            "value": "Prends la bille blanche et pose-la sur n'importe quel endroit libre."
           }
         },
         "it": {
@@ -43600,7 +43600,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Возьмите биток и поставьте на любое свободное место."
+            "value": "Возьми биток и поставь на любое свободное место."
           }
         },
         "zh-Hans": {
@@ -43634,7 +43634,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reprenez votre partie enregistrée là où vous l'avez laissée."
+            "value": "Reprends ta partie enregistrée là où tu l'as laissée."
           }
         },
         "it": {
@@ -43670,7 +43670,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Продолжите сохранённый матч с того места, где остановились."
+            "value": "Продолжи сохранённый матч с того же места."
           }
         },
         "zh-Hans": {
@@ -46364,7 +46364,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entraînez-vous seul, ou jouez à la 8 ou à la 9 avec un ami ou contre l'ordinateur."
+            "value": "Entraîne-toi seul, ou joue à la 8 ou à la 9 avec un ami ou contre l'ordinateur."
           }
         },
         "it": {
@@ -46400,7 +46400,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тренируйтесь сами или играйте в восьмёрку или девятку с другом или против компьютера."
+            "value": "Тренируйся в одиночку или играй в восьмёрку или девятку с другом или против компьютера."
           }
         },
         "zh-Hans": {
@@ -46434,7 +46434,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entraînez-vous seul, ou jouez au jeu de la 8 ou de la 9 avec un ami."
+            "value": "Entraîne-toi seul, ou joue au jeu de la 8 ou de la 9 avec un ami."
           }
         },
         "it": {
@@ -46470,7 +46470,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Тренируйтесь в одиночку или сыграйте в восьмёрку или девятку с другом."
+            "value": "Тренируйся в одиночку или сыграй в восьмёрку или девятку с другом."
           }
         },
         "zh-Hans": {
@@ -50914,7 +50914,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Marquez contre la montre, seul ou contre un ami."
+            "value": "Marque contre la montre, seul ou contre un ami."
           }
         },
         "it": {
@@ -50950,7 +50950,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Набирайте очки на время — в одиночку или с другом."
+            "value": "Набирай очки на время — в одиночку или с другом."
           }
         },
         "zh-Hans": {
@@ -51720,7 +51720,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пошлите биток вдоль стола и обратно. Вернётся ли он к кию?"
+            "value": "Пошли биток вдоль стола и обратно. Вернётся ли он к кию?"
           }
         },
         "zh-Hans": {
@@ -53294,7 +53294,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empochez n'importe quelle bille sur un coup valable et vous rejouez."
+            "value": "Empoche n'importe quelle bille sur un coup valable et tu rejoues."
           }
         },
         "it": {
@@ -53330,7 +53330,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забили любой шар честным ударом — бьёте снова."
+            "value": "Забиваешь любой шар честным ударом — бьёшь снова."
           }
         },
         "zh-Hans": {
@@ -53364,7 +53364,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rentrez une de vos billes dans votre trou et vous rejouez. Sinon, la main passe."
+            "value": "Rentre une de tes billes dans ton trou et tu rejoues. Sinon, la main passe."
           }
         },
         "it": {
@@ -53400,7 +53400,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Загнали свой шар в свою лузу — бьёте снова. Иначе ход переходит."
+            "value": "Загоняешь свой шар в свою лузу — бьёшь снова. Иначе ход переходит."
           }
         },
         "zh-Hans": {
@@ -53434,7 +53434,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empochez la 8 dans la poche annoncée une fois votre groupe parti et vous gagnez. Empochez-la trop tôt, dans la mauvaise poche, hors de la table ou sur une faute, et vous perdez."
+            "value": "Empoche la 8 dans la poche annoncée une fois ton groupe parti et tu gagnes. Empoche-la trop tôt, dans la mauvaise poche, hors de la table ou sur une faute, et tu perds."
           }
         },
         "it": {
@@ -53470,7 +53470,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забейте восьмёрку в заказанную лузу, когда ваша группа закончилась, — и вы победили. Забили раньше, не в ту лузу, выбили со стола или с фолом — проиграли."
+            "value": "Забей восьмёрку в заказанную лузу, когда твоя группа закончилась, — и победа твоя. Забьёшь раньше, не в ту лузу, выбьешь со стола или с фолом — проигрыш."
           }
         },
         "zh-Hans": {
@@ -53504,7 +53504,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empochez la bille annoncée et vous rejouez. Ratez-la, ou faites une faute, et la main passe."
+            "value": "Empoche la bille annoncée et tu rejoues. Rate-la, ou fais une faute, et la main passe."
           }
         },
         "it": {
@@ -53540,7 +53540,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забили заказанный шар — бьёте снова. Промах или фол — ход переходит."
+            "value": "Забиваешь заказанный шар — бьёшь снова. Промах или фол — ход переходит."
           }
         },
         "zh-Hans": {
@@ -53644,7 +53644,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empocher la blanche, toucher d'abord la mauvaise bille, ne rien toucher ou faire sortir une bille de la table est une faute. Votre adversaire a alors la bille en main : il place la blanche où il veut."
+            "value": "Empocher la blanche, toucher d'abord la mauvaise bille, ne rien toucher ou faire sortir une bille de la table est une faute. Ton adversaire a alors la bille en main : il place la blanche où il veut."
           }
         },
         "it": {
@@ -57774,7 +57774,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouez la %lld."
+            "value": "Joue la %lld."
           }
         },
         "it": {
@@ -57810,7 +57810,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте шар %lld."
+            "value": "Бей шар %lld."
           }
         },
         "zh-Hans": {
@@ -57844,7 +57844,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouez la blanche ; touchez d’abord la jaune."
+            "value": "Joue la blanche ; touche d’abord la jaune."
           }
         },
         "it": {
@@ -57880,7 +57880,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте белым; сначала попадите в жёлтый."
+            "value": "Бей белым; сначала попади в жёлтый."
           }
         },
         "zh-Hans": {
@@ -57914,7 +57914,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouez la jaune ; touchez d’abord la blanche."
+            "value": "Joue la jaune ; touche d’abord la blanche."
           }
         },
         "it": {
@@ -57950,7 +57950,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте жёлтым; сначала попадите в белый."
+            "value": "Бей жёлтым; сначала попади в белый."
           }
         },
         "zh-Hans": {
@@ -57984,7 +57984,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouez votre bille marquée."
+            "value": "Joue ta bille marquée."
           }
         },
         "it": {
@@ -58020,7 +58020,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте свой отмеченный шар."
+            "value": "Бей своим отмеченным шаром."
           }
         },
         "zh-Hans": {
@@ -58054,7 +58054,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouez votre bille pour qu’elle touche d’abord celle de l’autre joueur. Les points viennent de ce que font ensuite cette bille et la rouge."
+            "value": "Joue ta bille pour qu’elle touche d’abord celle de l’autre joueur. Les points viennent de ce que font ensuite cette bille et la rouge."
           }
         },
         "it": {
@@ -58090,7 +58090,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бейте своим шаром так, чтобы он сначала попал в шар соперника. Очки дают то, что потом сделают этот шар и красный."
+            "value": "Бей своим шаром так, чтобы он сначала попал в шар соперника. Очки дают то, что потом сделают этот шар и красный."
           }
         },
         "zh-Hans": {
@@ -58300,7 +58300,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пошлите биток к дальнему борту. При прямом ударе он вернётся по линии кия."
+            "value": "Пошли биток к дальнему борту. При прямом ударе он вернётся по линии кия."
           }
         },
         "zh-Hans": {
@@ -58930,7 +58930,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сильный замах: наклейка попала левее, чем вы целились."
+            "value": "Сильный замах: наклейка попала левее точки прицела."
           }
         },
         "zh-Hans": {
@@ -59000,7 +59000,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сильный замах: наклейка попала правее, чем вы целились."
+            "value": "Сильный замах: наклейка попала правее точки прицела."
           }
         },
         "zh-Hans": {
@@ -60680,7 +60680,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Шестёрка стоит прямо на пути. Ударь по бите сверху, и она чисто перепрыгнет и загонит 11."
+            "value": "Шестёрка стоит прямо на пути. Ударь по битку сверху, и он чисто перепрыгнет и загонит 11."
           }
         },
         "zh-Hans": {
@@ -64004,7 +64004,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le premier camp dont les cinq billes sont dans son trou gagne, quel que soit celui qui a rentré la dernière. Une bille adverse que vous rentrez dans son trou compte pour l’adversaire."
+            "value": "Le premier camp dont les cinq billes sont dans son trou gagne, quel que soit celui qui a rentré la dernière. Une bille adverse que tu rentres dans son trou compte pour l’adversaire."
           }
         },
         "it": {
@@ -64040,7 +64040,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Побеждает сторона, первой загнавшая все пять шаров в свою лузу, кто бы ни забил последний. Шар соперника, загнанный вами в его лузу, засчитывается ему."
+            "value": "Побеждает сторона, первой загнавшая все пять шаров в свою лузу, кто бы ни забил последний. Шар соперника, загнанный тобой в его лузу, засчитывается ему."
           }
         },
         "zh-Hans": {
@@ -66630,7 +66630,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Потом попробуйте сильно: за пределами спокойной зоны на шкале силы линия уходит сильнее."
+            "value": "Потом попробуй сильно: за пределами спокойной зоны на шкале силы линия уходит сильнее."
           }
         },
         "zh-Hans": {
@@ -67504,7 +67504,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trois fautes de suite par le même joueur font perdre la partie. Le jeu vous prévient après la deuxième."
+            "value": "Trois fautes de suite par le même joueur font perdre la partie. Le jeu te prévient après la deuxième."
           }
         },
         "it": {
@@ -71144,7 +71144,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deux joueurs se partagent la table. L'un prend les pleines, de 1 à 7, l'autre les rayées, de 9 à 15. Videz votre groupe, puis empochez la 8 pour gagner."
+            "value": "Deux joueurs se partagent la table. L'un prend les pleines, de 1 à 7, l'autre les rayées, de 9 à 15. Vide ton groupe, puis empoche la 8 pour gagner."
           }
         },
         "it": {
@@ -71180,7 +71180,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Два игрока за одним столом. Один берёт сплошные, с 1 по 7, другой полосатые, с 9 по 15. Забейте свою группу, затем восьмёрку, чтобы победить."
+            "value": "Два игрока за одним столом. Один берёт сплошные, с 1 по 7, другой полосатые, с 9 по 15. Забей свою группу, затем восьмёрку, чтобы победить."
           }
         },
         "zh-Hans": {
@@ -71214,7 +71214,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deux joueurs, cinq billes chacun. Rentrez vos cinq billes dans le trou à l’autre bout de leur départ, avant l’autre joueur."
+            "value": "Deux joueurs, cinq billes chacun. Rentre tes cinq billes dans le trou à l’autre bout de leur départ, avant l’autre joueur."
           }
         },
         "it": {
@@ -71250,7 +71250,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Два игрока, по пять шаров. Загоните все свои пять в лузу на дальнем от старта конце раньше соперника."
+            "value": "Два игрока, по пять шаров. Загони все свои пять в лузу на дальнем от старта конце раньше соперника."
           }
         },
         "zh-Hans": {
@@ -71284,7 +71284,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deux joueurs. Touchez toujours d'abord la plus petite bille ; empochez la 9 pour gagner."
+            "value": "Deux joueurs. Touche toujours d'abord la plus petite bille ; empoche la 9 pour gagner."
           }
         },
         "it": {
@@ -71320,7 +71320,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Два игрока. Всегда сначала бейте по самому младшему шару; забейте девятку, чтобы победить."
+            "value": "Два игрока. Всегда сначала бей по самому младшему шару; забей девятку, чтобы победить."
           }
         },
         "zh-Hans": {
@@ -71354,7 +71354,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deux joueurs. Prenez les pleines ou les rayées, videz-les, puis empochez la 8."
+            "value": "Deux joueurs. Prends les pleines ou les rayées, vide-les, puis empoche la 8."
           }
         },
         "it": {
@@ -71390,7 +71390,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Два игрока. Займите сплошные или полосатые, забейте их, затем восьмёрку."
+            "value": "Два игрока. Займи сплошные или полосатые, забей их, затем восьмёрку."
           }
         },
         "zh-Hans": {
@@ -71914,7 +71914,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Utilisez les actions pour la déplacer. Le haut va vers le pied de la table, vu depuis la tête."
+            "value": "Utilise les actions pour la déplacer. Le haut va vers le pied de la table, vu depuis la tête."
           }
         },
         "it": {
@@ -71950,7 +71950,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перемещайте его действиями. Вверх — к дальнему концу стола, если смотреть со стороны дома."
+            "value": "Перемещай его действиями. Вверх — к дальнему концу стола, если смотреть со стороны дома."
           }
         },
         "zh-Hans": {
@@ -73350,7 +73350,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Когда время выходит, опускается планка: упавшие шары больше не возвращаются. Игра идёт, пока не кончатся белые, затем заканчивается. Часы стоят, пока вы смотрите повтор или Линзу."
+            "value": "Когда время выходит, опускается планка: упавшие шары больше не возвращаются. Игра идёт, пока не кончатся белые, затем заканчивается. Часы стоят, пока ты смотришь повтор или Линзу."
           }
         },
         "zh-Hans": {
@@ -74014,7 +74014,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous contre l'ordinateur. Prenez un groupe, videz-le, rentrez la 8."
+            "value": "Toi contre l'ordinateur. Prends un groupe, vide-le, rentre la 8."
           }
         },
         "it": {
@@ -74050,7 +74050,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы против компьютера. Возьмите группу, очистите её, забейте восьмёрку."
+            "value": "Ты против компьютера. Возьми группу, очисти её, забей восьмёрку."
           }
         },
         "zh-Hans": {
@@ -74084,7 +74084,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous contre l'ordinateur. Toujours la plus petite bille d'abord ; rentrez la 9 pour gagner."
+            "value": "Toi contre l'ordinateur. Toujours la plus petite bille d'abord ; rentre la 9 pour gagner."
           }
         },
         "it": {
@@ -74120,7 +74120,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы против компьютера. Сначала младший шар; забейте девятку, чтобы выиграть."
+            "value": "Ты против компьютера. Сначала младший шар; забей девятку, чтобы выиграть."
           }
         },
         "zh-Hans": {
@@ -74154,7 +74154,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous jouez toujours une de vos billes : votre bille marquée tant qu’elle est sur la table, puis les autres une à une, du plus petit numéro au plus grand."
+            "value": "Tu joues toujours une de tes billes : ta bille marquée tant qu’elle est sur la table, puis les autres une à une, du plus petit numéro au plus grand."
           }
         },
         "it": {
@@ -74190,7 +74190,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы всегда бьёте своим шаром: отмеченным, пока он на столе, затем остальными по одному, начиная с меньшего номера."
+            "value": "Ты всегда бьёшь своим шаром: отмеченным, пока он на столе, затем остальными по одному, начиная с меньшего номера."
           }
         },
         "zh-Hans": {
@@ -74610,7 +74610,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы лишь чуть-чуть изменили наклон кия."
+            "value": "Наклон кия изменился лишь чуть-чуть."
           }
         },
         "zh-Hans": {
@@ -74680,7 +74680,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы лишь чуть-чуть изменили силу удара."
+            "value": "Сила удара изменилась лишь чуть-чуть."
           }
         },
         "zh-Hans": {
@@ -74714,7 +74714,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous n'annoncez pas vos coups : toute bille qui tombe sur un coup valable compte. Le jeu marque la bille à toucher en premier."
+            "value": "Tu n'annonces pas tes coups : toute bille qui tombe sur un coup valable compte. Le jeu marque la bille à toucher en premier."
           }
         },
         "it": {
@@ -74960,7 +74960,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы лишь чуть-чуть сдвинули прицел."
+            "value": "Прицел сдвинулся лишь чуть-чуть."
           }
         },
         "zh-Hans": {
@@ -75030,7 +75030,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы лишь чуть-чуть сдвинули наклейку в сторону."
+            "value": "Наклейка сдвинулась в сторону лишь чуть-чуть."
           }
         },
         "zh-Hans": {
@@ -75100,7 +75100,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вы лишь чуть-чуть сдвинули наклейку вверх или вниз."
+            "value": "Наклейка сдвинулась вверх или вниз лишь чуть-чуть."
           }
         },
         "zh-Hans": {
@@ -75274,7 +75274,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vous avez marqué %1$lld. Votre record reste %2$lld."
+            "value": "Tu as marqué %1$lld. Ton record reste %2$lld."
           }
         },
         "it": {
@@ -75310,7 +75310,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш счёт: %1$lld. Рекорд по-прежнему %2$lld."
+            "value": "Твой счёт: %1$lld. Рекорд по-прежнему %2$lld."
           }
         },
         "zh-Hans": {
@@ -76394,7 +76394,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Votre bille"
+            "value": "Ta bille"
           }
         },
         "it": {
@@ -76430,7 +76430,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш шар"
+            "value": "Твой шар"
           }
         },
         "zh-Hans": {
@@ -76464,7 +76464,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Votre bille doit d’abord toucher une autre bille. Chaque bille qui tombe ensuite marque le nombre de son trou, et la rouge compte double."
+            "value": "Ta bille doit d’abord toucher une autre bille. Chaque bille qui tombe ensuite marque le nombre de son trou, et la rouge compte double."
           }
         },
         "it": {
@@ -76500,7 +76500,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш шар должен сначала попасть в другой шар. Каждый упавший потом шар приносит число у своей лунки, красный — вдвойне."
+            "value": "Твой шар должен сначала попасть в другой шар. Каждый упавший потом шар приносит число у своей лунки, красный — вдвойне."
           }
         },
         "zh-Hans": {
@@ -76850,7 +76850,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш лучший результат."
+            "value": "Твой лучший результат."
           }
         },
         "zh-Hans": {
@@ -76884,7 +76884,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Votre série"
+            "value": "Ta série"
           }
         },
         "it": {
@@ -76920,7 +76920,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваша серия"
+            "value": "Твоя серия"
           }
         },
         "zh-Hans": {
@@ -76954,7 +76954,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Votre série continue tant que chaque coup fait tomber une bille. Un coup qui ne fait rien tomber la termine ; un coup qui ne touche aucune bille ne marque rien et la termine."
+            "value": "Ta série continue tant que chaque coup fait tomber une bille. Un coup qui ne fait rien tomber la termine ; un coup qui ne touche aucune bille ne marque rien et la termine."
           }
         },
         "it": {
@@ -77164,7 +77164,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Votre première partie terminée : %lld est le score à battre."
+            "value": "Ta première partie terminée : %lld est le score à battre."
           }
         },
         "it": {
@@ -77200,7 +77200,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваша первая законченная игра: %lld — счёт, который нужно побить."
+            "value": "Твоя первая законченная игра: %lld — счёт, который нужно побить."
           }
         },
         "zh-Hans": {
@@ -77234,7 +77234,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Votre propre casse sur un triangle neuf. Ni tours, ni fautes."
+            "value": "Ta propre casse sur un triangle neuf. Ni tours, ni fautes."
           }
         },
         "it": {
@@ -77270,7 +77270,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш собственный разбой свежей пирамиды. Без очерёдности и фолов."
+            "value": "Твой собственный разбой свежей пирамиды. Без очерёдности и фолов."
           }
         },
         "zh-Hans": {
@@ -77760,7 +77760,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш удар; отклонение в сторону показано в четыре раза крупнее."
+            "value": "Твой удар; отклонение в сторону показано в четыре раза крупнее."
           }
         },
         "zh-Hans": {
@@ -77934,7 +77934,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "À vous. Glissez pour viser, tirez en arrière, lâchez."
+            "value": "À toi. Glisse pour viser, tire en arrière, lâche."
           }
         },
         "it": {
@@ -77970,7 +77970,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ваш ход. Проведите, чтобы прицелиться, оттяните и отпустите."
+            "value": "Твой ход. Проведи, чтобы прицелиться, оттяни и отпусти."
           }
         },
         "zh-Hans": {
@@ -86194,7 +86194,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "votre propre bille a fait tomber des quilles"
+            "value": "ta propre bille a fait tomber des quilles"
           }
         },
         "it": {
@@ -86230,7 +86230,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "ваш собственный шар сбил кегли"
+            "value": "твой собственный шар сбил кегли"
           }
         },
         "zh-Hans": {

@@ -14,6 +14,15 @@
 #          longer finds in the code are reported but do not fail the check (the next build in Xcode removes them).
 #          Reads only the catalog; writes nothing. Usage: python3 scripts/translation-check.py [path to .xcstrings]
 #          Prints one line per problem and a summary; exit 0 when there are none.
+# Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 item 44: the register check. The game talks to the player as a
+#          friend would, in one informal register per language: tu in French, ты in Russian, du in German, tú in
+#          Spanish, tu in Italian and European Portuguese, você in Brazilian Portuguese. French and Russian had drifted
+#          between formal and informal from one screen to the next. A line that addresses the player formally now fails
+#          the check, naming the word that gave it away: French vous, votre and vos, the -ez verb forms and faites or
+#          dites; Russian вы and ваш in every form, the -те imperatives and the -ёте verb forms; German Sie, Ihr and
+#          Ihnen with a capital in mid-sentence; Spanish usted; Italian Lei and Suo with a capital in mid-sentence;
+#          European Portuguese o senhor and a senhora. Ordinary words that only look like a formal form (French assez,
+#          Russian полёте) are listed in REGISTER_ALLOW; a new one that trips the check is added there, with care.)
 # SRP/DRY check: Pass - checking only. scripts/localization-merge.py writes translations into the catalog and refuses a
 #          mismatched one as it goes; this reads the finished catalog as a whole, so a gap or a hand edit cannot slip
 #          through. The language list matches the merge script's and the project's knownRegions.
@@ -26,6 +35,51 @@ ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "App" / "Localizable.xcstrings"
 SOURCE = "en"
 TRANSLATIONS = ["es", "fr", "de", "it", "pt", "pt-BR", "ja", "ko", "zh-Hans", "ru", "ar"]
+
+# The formal register, per language: (pattern, what it is). A pattern either matches anywhere ("any") or only when the
+# word is capitalised in mid-sentence ("mid"), where a capital can only mean the polite form (German Sie, not sie;
+# Italian Lei, not lei). Russian words are matched whole, since Python's \b does treat Cyrillic letters as word letters.
+CYR = "А-Яа-яЁё"
+REGISTER = {
+    "fr": [
+        ("any", re.compile(r"\b(vous|votre|vos)\b", re.IGNORECASE), "formal vous"),
+        ("any", re.compile(r"\b(\w+ez)\b", re.IGNORECASE), "a formal -ez verb form"),
+        ("any", re.compile(r"\b(faites|dites)\b", re.IGNORECASE), "a formal verb form"),
+    ],
+    "ru": [
+        ("any", re.compile(rf"(?<![{CYR}])(вы|вас|вам|вами|ваш[{CYR}]*)(?![{CYR}])", re.IGNORECASE), "formal вы"),
+        ("any", re.compile(rf"(?<![{CYR}])([{CYR}]+(?:ите|йте|ьте))(?![{CYR}])", re.IGNORECASE), "a formal -те imperative"),
+        ("any", re.compile(rf"(?<![{CYR}])([{CYR}]+ёте)(?![{CYR}])", re.IGNORECASE), "a formal -ёте verb form"),
+    ],
+    "de": [("mid", re.compile(r"\b(Sie|Ihr|Ihre|Ihren|Ihrem|Ihrer|Ihres|Ihnen)\b"), "formal Sie")],
+    "es": [("any", re.compile(r"\b(usted|ustedes)\b", re.IGNORECASE), "formal usted")],
+    "it": [("mid", re.compile(r"\b(Lei|Suo|Sua|Suoi|Sue)\b"), "formal Lei")],
+    "pt": [("any", re.compile(r"\b(o senhor|a senhora)\b", re.IGNORECASE), "formal o senhor")],
+}
+# Words that only look formal. French: adverbs and nouns ending in -ez. Russian: nouns whose locative or dative ends
+# like an imperative or a -ёте verb (on a site, under protection, in flight, on the bill).
+REGISTER_ALLOW = {
+    "fr": {"assez", "nez", "chez", "rez", "lez"},
+    "ru": {"сайте", "защите", "лимите", "орбите", "граните", "визите", "кредите", "элите", "свите",
+           "полёте", "отчёте", "счёте", "расчёте", "учёте", "самолёте", "переплёте"},
+}
+
+
+def register_problem(lang, text):
+    """None when a line keeps the language's informal register, otherwise a plain sentence naming the formal word."""
+    allow = REGISTER_ALLOW.get(lang, set())
+    for where, pattern, what in REGISTER.get(lang, []):
+        for m in pattern.finditer(text):
+            word = m.group(1)
+            if word.lower() in allow:
+                continue
+            if where == "mid":
+                # A capital at the start of the line or of a sentence is just a capital.
+                before = text[:m.start()].rstrip()
+                if not before or before[-1] in ".!?:;«\"“(":
+                    continue
+            return f"{what} ({word!r}); the game uses the informal register"
+    return None
 
 # A printf placeholder: "%", an optional argument number "N$", optional flags, width and precision, an optional length
 # (l, ll, h, hh, q, z, t, j), then the conversion. "%%" is a literal percent sign, not a placeholder, and is matched
@@ -121,6 +175,9 @@ def check(catalog):
                 why = placeholder_problem(english, value)
                 if why:
                     problems.append((key, lang + label, why))
+                formal = register_problem(lang, value)
+                if formal:
+                    problems.append((key, lang + label, formal))
     return problems, stale
 
 

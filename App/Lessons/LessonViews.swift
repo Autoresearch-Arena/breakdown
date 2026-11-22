@@ -4,6 +4,8 @@
 //          glow (SoundBoard.play, the big one for the sixth lesson); a missed pass shot also offers "Back to the lesson's
 //          stroke"; the try-3 and pass-shot lines say when the power is held at the lesson's stroke; the card steps back
 //          while the Lens tips are up (model.holdForTips), so the tips never stack on the lesson's own card.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next lesson's and Next step's arrows follow the
+//          reading direction, so they point left in Arabic.)
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
@@ -207,7 +209,7 @@ struct LessonCard: View {
                     plainButton(String(localized: "Try the trick shot"), symbol: "wand.and.sparkles") { mode.playSuggestedTrick() }
                 }
                 styled(Button { mode.nextLesson() } label: {
-                    Label("Next lesson", systemImage: "arrow.right").font(.headline).lineLimit(1)
+                    Label("Next lesson", systemImage: "arrow.forward").font(.headline).lineLimit(1)
                         .frame(minHeight: Self.buttonHeight)
                 }, prominent: true)
                 .keyboardShortcut(.defaultAction)
@@ -224,7 +226,7 @@ struct LessonCard: View {
             } else {
                 tryAgainButton(prominent: !verdict.made)
                 styled(Button { mode.nextStep() } label: {
-                    Label("Next step", systemImage: "arrow.right").font(.headline).lineLimit(1)
+                    Label("Next step", systemImage: "arrow.forward").font(.headline).lineLimit(1)
                         .frame(minHeight: Self.buttonHeight)
                 }, prominent: verdict.made)
                 .accessibilityHint(String(localized: "Goes on to the next try, with less help"))

@@ -12,6 +12,8 @@
 //          Aim at nearest ball and the Aim guide option); on arrival a line on screen says what to look at, "Stopped at
 //          the first hit.", with "The faint ball is your last try." only when a last try is on the table
 //          (ContactArrivalLine, shown with the cards while the replay stays stopped there).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: See the contact's announcement goes through the one
+//          speaker, ShotNarration.announce.)
 // PURPOSE: Learn from a retry (plans/21-Nov-2026-learn-from-a-retry-plan.md, section 3), the view side.
 //          RetryWords   - the one sentence a result card shows after a retry, written from the facts the model
 //                         records (RetryComparison: which controls moved and which way, how far apart the two cue
@@ -155,7 +157,7 @@ struct ContactButton: View {
             model.seekToFirstContact()
             ContactArrival.shared.version = model.timelineVersion
             onSeek()
-            AccessibilityNotification.Announcement(ContactArrivalLine.words(ghost: model.ghost != nil)).post()
+            ShotNarration.announce(ContactArrivalLine.words(ghost: model.ghost != nil))
         } label: {
             Group {
                 if words {

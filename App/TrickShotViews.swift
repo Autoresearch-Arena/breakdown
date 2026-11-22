@@ -11,6 +11,7 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 36 and 53: a make plays the made-it sound with the glow
 //          (SoundBoard.play); the card steps back while the Lens tips are up (model.holdForTips), so the tips never
 //          stack on the explanation card.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next shot's arrow follows the reading direction.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -196,7 +197,7 @@ struct TrickShotCard: View {
                 if verdict.made {
                     tryAgainButton(prominent: false)
                     Button { mode.next() } label: {
-                        Label("Next shot", systemImage: "arrow.right").font(.headline).lineLimit(1)
+                        Label("Next shot", systemImage: "arrow.forward").font(.headline).lineLimit(1)
                             .frame(minHeight: Self.buttonHeight)
                     }
                     .buttonStyle(.glassProminent).foregroundStyle(palette.ground)
