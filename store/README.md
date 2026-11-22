@@ -23,12 +23,12 @@ follow, draw, cut, curve, jump), real games of eight-ball and nine-ball against 
 levels, the stroke (power is swing speed), the eleven trick shots and Behind the 8-Ball's twelve spots, the three other
 tables, the ten surfaces. Counts come from the game's own lists (TrickShots, EightBallSituations, Lessons, PlaySurface);
 change them here in the same change that changes a list. The colour words are the Lens legend's: amber for sliding,
-cyan for rolling. The closing line claims exact physics with one honest exception, the miscue, whose turn off the line
-is drawn by chance on purpose.
+cyan for rolling. The closing line claims exact physics with no exception: since 0.7.0 even a miscue's turn follows from the
+stroke, so the same shot always plays out the same way.
 
 Check every file against Apple's limits with `python3 scripts/store-listing-check.py` (it only reads the files).
 
-Nothing here is uploaded. The listing goes to App Store Connect only after the Boss signs off.
+The listing is uploaded to App Store Connect (the Boss signed off on 21-November-2026 for 0.7.0).
 
 ## Privacy policy and support page
 
