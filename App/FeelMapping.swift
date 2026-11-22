@@ -16,7 +16,8 @@
 //          GameMoment (through SoundBoard.play(_:)) for the three moments that are not table impacts; the lesson,
 //          trick-shot and Behind the 8-Ball screens use it for the two made-it moments, from the same place that starts
 //          their success glow (LessonTableLayer, TrickTableLayer, EightBallTableLayer).
-// SRP/DRY check: Pass - mapping only; SoundBoard makes noise and Haptics makes touch. Replaces the strength
+// SRP/DRY check: Pass - mapping only (GameMoment.medal only reads which medal it was, to choose the made-it; the medal
+//          rules stay in EightBallTypes); SoundBoard makes noise and Haptics makes touch. Replaces the strength
 //          formula that used to live inside SoundBoard. Physical constants (ball mass, gravity, pocket size) are read
 //          from PoolParameters, not copied.
 import BreakdownLensModel
