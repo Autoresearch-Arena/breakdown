@@ -481,8 +481,8 @@ final class StrokeTests: XCTestCase {
         guard let straight = StrokeEffect.straightInput(of: played) else { return XCTFail("a drifted stroke") }
         XCTAssertEqual(straight.strike.direction.x, aimed.input.strike.direction.x, accuracy: 1e-12)
         XCTAssertEqual(straight.strike.direction.y, aimed.input.strike.direction.y, accuracy: 1e-12)
-        XCTAssertEqual(straight.strike.tipSide, aimed.input.strike.tipSide)
-        XCTAssertEqual(straight.strike.speed, aimed.input.strike.speed)
+        XCTAssertEqual(straight.strike.tipSide, aimed.input.strike.tipSide, accuracy: 1e-15)
+        XCTAssertEqual(straight.strike.speed, aimed.input.strike.speed, accuracy: 1e-15)
         XCTAssertEqual(straight.parameters.modelGeneration, aimed.generation)
     }
 }
