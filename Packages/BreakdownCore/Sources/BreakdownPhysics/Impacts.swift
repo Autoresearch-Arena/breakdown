@@ -11,7 +11,8 @@
 //            standing on the bed, not a rail nose above the ball).
 //          - rail(): the spec's LEVEL A rail, generation 2. The nose touches the ball above its centre, so the normal is
 //            tilted down into the cloth; restitution falls with the speed into the rail; the impact is resolved in
-//            three dimensions, and the cloth then stops the downward speed with no bounce (with its own friction).
+//            three dimensions with the cloth holding the ball down and gripping it all through the rail's push (the
+//            coupled rail since 21-Nov-2026), so no bounce off the slate.
 //          - Level B (a step-by-step rubber-and-cloth model) is not built and not planned (rails plan).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (jump shots: a body state also has a height above the cloth and a
 //          vertical speed (both zero on the cloth, so the flat routines above are untouched); two new routines: the
@@ -21,8 +22,12 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Level A rail for generation 2, rail(), beside the untouched flat
 //          cushion(); ImpactResult gains bedImpulse, the push the cloth took during a rail hit (zero everywhere else).
 //          The header now says truthfully which model is which.)
-// SRP/DRY check: Pass - impact maths only; the event loop decides when they run. rail() reuses slate() for its bed
-//          impact rather than repeating the cloth friction.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 26: the rail is coupled. The cloth grips
+//          during the rail's push, step by step through the impulse, instead of after it, because no setting of the
+//          step-by-step rail let a ball keep the spin it brought in; the rail sweep in BreakProbe shows it.)
+// SRP/DRY check: Pass - impact maths only; the event loop decides when they run. rail() applies the cloth's grip in its
+//          own steps with the same Coulomb rule slate() uses, because it acts throughout the push, not as a second
+//          impact after it.
 import BreakdownLensModel
 
 struct BodyState {
@@ -98,24 +103,32 @@ enum Impacts {
         return ImpactResult(states: [na], normalImpulse: jn, frictionImpulse: jfMag, slipSpeed: slipMag)
     }
 
-    /// The Level A rail (generation 2; spec 3.3, plans/21-Nov-2026-rails-plan.md). `n` is the horizontal inward normal
-    /// (pointing into the table), as for cushion(). Three stages, each commented below:
+    /// Steps the coupled rail spreads its normal impulse over. A hundred: each step carries one percent of the push, so
+    /// a slip that stops or turns over part-way through the impact (at the nose or under the ball) is followed to within
+    /// a percent of the impulse, and a rail hit costs a few microseconds, small beside the root finding of one event.
+    static let railSteps = 100
+
+    /// The Level A rail, coupled (generation 2; spec 3.3, plans/21-Nov-2026-rails-plan.md; coupled since the bug plan
+    /// after 0.6.6, item 26). `n` is the horizontal inward normal (pointing into the table), as for cushion().
     /// 1. Geometry. The nose touches the ball above its centre by R * s (s = PoolParameters.railContactSine, about
     ///    0.27; c its cosine). The contact point from the centre is r_c = -R c n + R s z, and the normal on the ball is
     ///    N = c n - s z: into the table and down into the cloth.
-    /// 2. The rail impact, in three dimensions. Restitution falls with the speed into the rail,
+    /// 2. The normal impulse. Restitution falls with the speed into the rail,
     ///    e(v) = max(railRestitutionFloor, cushionRestitution - railRestitutionSlope * v), and never rises above
     ///    cushionRestitution (so a surface with dead rubber keeps its dead rubber). The normal impulse is (1 + e) m v:
-    ///    the rail is fixed and spin cannot move the contact point along N (r_c is parallel to N). Friction acts against
-    ///    the slip of the contact point across N, Coulomb, capped by the fixed-surface stick impulse 2 m |u| / 7 (the
-    ///    same rule as cushion() and slate()).
-    /// 3. The bed. A ball on the cloth now has some downward speed; the slate stops it with no bounce. This is slate()
-    ///    with restitution zero, so its friction part acts on the contact point under the ball: the second small
-    ///    impact that changes how topspin and backspin come off a rail.
-    /// Guards. Kinetic plus spin energy may not rise (rails plan step 3, spec test 5): each stage alone is dissipative,
-    /// but if rounding ever made the sum rise by more than one part in 10^12, the rail's friction impulse is cut to a
-    /// half, a quarter, then nothing, until it does not. A ball whose velocity does not approach along the tilted normal
-    /// (only possible in the air, coming down steeply onto the nose) is met by the flat normal instead, so a rail contact
+    ///    the rail is fixed and spin cannot move the contact point along N (r_c is parallel to N).
+    /// 3. Friction at both contacts at once. The impulse is applied in railSteps equal steps; in each, the nose's
+    ///    Coulomb friction acts against the slip of the nose's contact across N, and for a ball on the cloth the slate
+    ///    takes that step's downward push while its friction (slateFriction) acts against the slip under the ball. Each
+    ///    friction is capped by the fixed-surface stick impulse 2 m |u| / 7, the rule cushion() and slate() use. Until
+    ///    item 26 the cloth acted only after the rail's push, with whatever downward speed the nose's friction had left;
+    ///    then the rail took nearly all of a ball's spin and draw, stun and roll came back off a rail within millimetres
+    ///    of each other. With the cloth gripping during the push, as on a real table, the spin a ball brings in survives
+    ///    the rail as it should (RealWorldTests case 12).
+    /// Guards. Kinetic plus spin energy may not rise (rails plan step 3, spec test 5): each step alone is dissipative,
+    /// but if rounding ever made the sum rise by more than one part in 10^12, the nose's friction is cut to a half, a
+    /// quarter, then nothing, until it does not. A ball whose velocity does not approach along the tilted normal (only
+    /// possible in the air, coming down steeply onto the nose) is met by the flat normal instead, so a rail contact
     /// always pushes back. And the ball always leaves the rail's line moving away from it horizontally (with any
     /// restitution above about 0.2 it already does; below that the inward part is removed), because a ball still moving
     /// into the rail would be met again at the same instant.
@@ -135,42 +148,88 @@ enum Impacts {
         if e < p.railRestitutionFloor { e = p.railRestitutionFloor }
         if e > p.cushionRestitution { e = p.cushionRestitution }
         let jn = (1 + e) * m * vIn
-        // Slip of the contact point (v + omega x r_c), the part across the normal.
-        let u = v + a.omega.cross(rc)
-        let ut = u - normal * u.dot(normal)
-        let slipMag = ut.length
+        // Slip of the contact point (v + omega x r_c), the part across the normal, at the start (for the event).
+        let u0 = v + a.omega.cross(rc)
+        let slipMag = (u0 - normal * u0.dot(normal)).length
         let energyBefore = Impacts.kineticEnergy(a, p)
+        let onCloth = a.height <= 0
+        let under = Vec3(0, 0, -r)                       // the cloth's contact point from the centre
+        let railLine = Vec3(-n.y, n.x, 0)                // unit, along the rail (horizontal, across the normal)
 
+        /// The coupled rail (bug plan after 0.6.6, item 26; the spec's coupled model, revisited because no setting of
+        /// the step-by-step rail kept a ball's spin: draw, stun and roll came back within millimetres of each other).
+        /// The normal impulse jn is spread over railSteps equal steps, and in each step both contacts act together:
+        /// the nose pushes along the tilted normal with its Coulomb friction against the nose's slip, and for a ball on
+        /// the cloth the slate takes exactly the downward push of that step (the nose's normal and friction together),
+        /// its own friction (slateFriction, the bed's grip) acting against the slip under the ball. So the cloth grips
+        /// all through the rail's push, as it does on a real table, instead of only after it. Each contact's friction
+        /// in a step is the smaller of its Coulomb limit and the impulse that stops its slip on a fixed surface
+        /// (2 m |u| / 7), the rule every impact here uses. `frictionScale` scales the nose's friction for the energy guard.
         func resolve(_ frictionScale: Double) -> (state: BodyState, friction: Double, bed: Double) {
-            var jf = 0.0
-            var f = Vec3.zero
-            if slipMag > 1e-12 && jn > 0 {
-                let needed = 2 * m * slipMag / 7         // fixed surface: 1/m + R^2/I = 7/(2m) across any tangent
-                let limit = p.cushionFriction * jn
-                jf = (needed < limit ? needed : limit) * frictionScale
-                f = ut * (-jf / slipMag)
-            }
-            let impulse = normal * jn + f
-            let nv = v + impulse * (1 / m)
-            var st = a
-            st.velocity = Vec2(nv.x, nv.y)
-            st.vz = nv.z
-            st.omega = a.omega + rc.cross(impulse) * (1 / inertia)
+            var vel = v, w = a.omega
+            var noseFriction = Vec3.zero
             var bed = 0.0
-            if a.height <= 0 {
-                // On the cloth: the slate takes the downward speed with no bounce, and its friction works meanwhile.
-                st.height = 0
-                if st.vz < 0 {
-                    var q = p
-                    q.slateRestitution = 0
-                    let hit = Impacts.slate(st, q)
-                    st = hit.states[0]
-                    bed = hit.normalImpulse
+            if jn > 0 {
+                let dP = jn / Double(railSteps)
+                for _ in 0..<railSteps {
+                    // The nose: its normal step and its friction against the nose's slip.
+                    // The nose's slip, split along the rail line (t) and across it, up and down the nose's face (the
+                    // rest of the slip in the contact plane). Each part has its own grip (PoolParameters.cushionFriction
+                    // along, railCrossGrip across) and its own stick cap, so the friction is a box, not a circle.
+                    let u = vel + w.cross(rc)
+                    let ut = u - normal * u.dot(normal)
+                    let along = ut.dot(railLine)
+                    let across = ut - railLine * along
+                    var fI = Vec3.zero
+                    let alongMag = along < 0 ? -along : along
+                    if alongMag > 1e-12 {
+                        let stop = 2 * m * alongMag / 7
+                        let limit = p.cushionFriction * dP
+                        fI = railLine * (-(stop < limit ? stop : limit) * frictionScale * (along < 0 ? -1 : 1))
+                    }
+                    let acrossMag = across.length
+                    if acrossMag > 1e-12 {
+                        let stop = 2 * m * acrossMag / 7
+                        let limit = p.railCrossGrip * dP
+                        fI = fI + across * (-(stop < limit ? stop : limit) * frictionScale / acrossMag)
+                    }
+                    let nose = normal * dP + fI
+                    var cloth = Vec3.zero
+                    if onCloth {
+                        // The slate holds the ball on the cloth: it takes whatever downward speed this step would give.
+                        let down = -(m * vel.z + nose.z)
+                        let dPC = down > 0 ? down : 0
+                        // Its friction against the slip under the ball.
+                        let uc = vel + w.cross(under)
+                        let ucH = Vec3(uc.x, uc.y, 0)
+                        let ucMag = ucH.length
+                        var fC = Vec3.zero
+                        if ucMag > 1e-12 && dPC > 0 {
+                            let stop = 2 * m * ucMag / 7
+                            let limit = p.slateFriction * dPC
+                            fC = ucH * (-(stop < limit ? stop : limit) * frictionScale / ucMag)
+                        }
+                        cloth = Vec3(fC.x, fC.y, dPC)
+                        w = w + under.cross(fC) * (1 / inertia)
+                        bed += dPC
+                    }
+                    vel = vel + (nose + cloth) * (1 / m)
+                    w = w + rc.cross(nose) * (1 / inertia)
+                    noseFriction = noseFriction + fI
                 }
+            }
+            var st = a
+            st.velocity = Vec2(vel.x, vel.y)
+            st.vz = vel.z
+            st.omega = w
+            if onCloth {
+                // On the cloth: no bounce off the slate (its push only ever cancelled downward speed).
+                st.height = 0
+                if st.vz < 0 { st.vz = 0 }
             }
             let out = st.velocity.dot(n)
             if out < 0 { st.velocity = st.velocity - n * out }
-            return (st, jf, bed)
+            return (st, noseFriction.length, bed)
         }
 
         var best = resolve(1)

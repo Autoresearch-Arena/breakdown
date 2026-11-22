@@ -1,6 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
-// PURPOSE: The physics against the real world (plans/21-Nov-2026-physics-proof-plan.md package 3): eleven behaviours
+// PURPOSE: The physics against the real world (plans/21-Nov-2026-physics-proof-plan.md package 3): twelve behaviours
 //          anyone can check on a real pool table, each with a pass band and what it constrains. They play on physics
 //          generation two (PoolParameters.modelGeneration = 2, set explicitly), the physics the rails, cue-strike and
 //          pockets plans build and the proof plan's package 4 tunes and then makes the default. Every shot is solved
@@ -13,6 +13,10 @@
 //          step by hand because a test target cannot be imported by a tool), which tries the guessed numbers on a
 //          grid and reports which combination passes the most bands.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (package 4: the expected-failure wrappers removed; all eleven pass.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 26: case 7's slow rebound must be at least
+//          two degrees steeper, not merely steeper, and a twelfth case checks that draw, stun and natural roll come back
+//          off a rail in that order, each clearly farther than the next. The coupled rail and the rail sweep's numbers
+//          pass both; BreakProbe's copy, RealWorldCases.swift, carries the same two changes.)
 // SRP/DRY check: Pass - checked PhysicsTests, PocketTests, JumpTests and SpecItemTests: those check the solver
 //          against its own equations; these check it against the table. The thirty-degree rule appears in both
 //          SpecItemTests (item 2, on oracle numbers) and here (case 4, on the real numbers), on purpose.
@@ -225,8 +229,10 @@ final class RealWorldTests: XCTestCase {
     // shorter rebound) when it is slow, and flatter (a longer rebound) when it is fast. The rail's grip takes speed
     // along the rail, which steepens the rebound; at high pace the rail also loses more of the speed into it, which
     // flattens it. Measured as the angle between the ball's path and the rail just after it leaves the rail. Bands:
-    // slow (1 m/s) above 45 degrees; fast (5 m/s) below 45 degrees. Constrains rail grip and rail bounce together.
-    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
+    // slow (1 m/s) at least 47 degrees; fast (5 m/s) below 45 degrees. Why two degrees at least (bug plan after 0.6.6,
+    // item 26: on the first tuning the slow ball left at 45.8 degrees, steeper by a sliver no one could see): two
+    // degrees moves the ball 3.5 cm over a metre, more than a ball's radius, the least a player notices on a kick.
+    // Constrains rail grip along the rail and rail bounce together.
     func testCase07RailAngleSteeperWhenSlowLongerWhenFast() {
         let q = p, r = q.ballRadius
         func exitAngle(_ speed: Double) -> Double {
@@ -237,7 +243,7 @@ final class RealWorldTests: XCTestCase {
         }
         let slow = exitAngle(1), fast = exitAngle(5)
         print(String(format: "REAL 7 rail angle off the rail: slow %.1f deg, fast %.1f deg", slow, fast))
-        XCTAssertGreaterThan(slow, 45)
+        XCTAssertGreaterThanOrEqual(slow, 47)
         XCTAssertLessThan(fast, 45)
     }
 
@@ -336,5 +342,45 @@ final class RealWorldTests: XCTestCase {
         XCTAssertNotNil(hit, "the shallow stroke should run into the blocker")
         XCTAssertLessThan(hit?.point.x ?? 9, blocker.x)
         print("REAL 11 jump: steep clears the blocker \(over != nil), shallow hits it \(hit != nil)")
+    }
+
+    // MARK: 12. What a rail does to spin
+
+    // Straight into a rail from just in front of it (5 mm, so each ball arrives with the spin it was struck with), at
+    // a slow and a medium pace (0.5 and 1 m/s): a drawn ball comes back farthest, a stun ball next, and a naturally
+    // rolling ball the shortest. A drawn ball's backspin is topspin for the way back, so once it leaves the rail the
+    // cloth drives it on; a rolling ball's topspin is backspin for the way back, so the cloth holds it back. Players
+    // use this for position off a rail. Measured where each would stop if nothing touched it again (its slide after
+    // the rail ends, then the rolling law). The draw and roll strokes are 0.4 of the radius off centre, which gives
+    // exactly the natural roll's spin, at the stroke whose slower launch matches the stun's speed. Band: each at least
+    // 1.15 times as far as the next, at both paces. Why that margin: rebounds here run 0.2 to 1.6 m, so 15 percent is
+    // a few ball-widths, a difference a player sees; on the first tuning the three came back within 5 mm of each other
+    // and the order reversed at 1 m/s (bug plan after 0.6.6, item 26). Constrains the rail's grip across the nose and
+    // the cloth's grip during the rail's push (the coupled rail).
+    func testCase12DrawStunAndRollComeBackInOrder() {
+        let q = p, r = q.ballRadius
+        let start = Vec2(0.8, q.railContactDistance + 0.005)
+        let big = q.cueMass + q.ballMass
+        let factor = big / (big + 2.5 * q.cueMass * 0.16)
+        func rebound(_ tipUp: Double, _ speed: Double) -> Double {
+            let tl = solve(q, [0: start], dir: Vec2(0, -1), speed: speed, up: tipUp)
+            guard let rail = tl.events.first(where: { $0.kind == .cushion }) else { return .nan }
+            let after = tl.events.filter { $0.time > rail.time && $0.balls.first?.ball == 0 }
+            guard let end = after.first(where: { $0.kind == .phaseTransition && $0.phaseFrom == .sliding }) else {
+                return tl.state(ball: 0, at: tl.duration + 1).position.y - start.y
+            }
+            var travel = end.point.y - q.railContactDistance
+            if end.phaseTo == .rolling {
+                let v = end.balls[0].velocityAfter.y
+                travel += (v < 0 ? -1 : 1) * v * v / (2 * q.rollingResistance * q.gravity)
+            }
+            return travel
+        }
+        for pace in [0.5, 1.0] {
+            let draw = rebound(-0.4 * r, pace / factor), stun = rebound(0, pace), roll = rebound(0.4 * r, pace / factor)
+            print(String(format: "REAL 12 rail order at %.1f m/s: draw %.3f m, stun %.3f m, roll %.3f m", pace, draw, stun, roll))
+            XCTAssertGreaterThanOrEqual(draw, 1.15 * stun, "pace \(pace)")
+            XCTAssertGreaterThanOrEqual(stun, 1.15 * roll, "pace \(pace)")
+        }
     }
 }

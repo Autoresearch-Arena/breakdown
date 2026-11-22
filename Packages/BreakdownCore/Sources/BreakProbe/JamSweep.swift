@@ -2,6 +2,8 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: default physics, "gen1" for the old one, and
 //          the tip travel of free play on it.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 29: jamSweepShot rebuilds one shot of the
+//          sweep by its number, for jamtrace and the saved fixtures in JamGuardTests.)
 // PURPOSE: "BreakProbe jams [count] [gen1]": the jam finder of the pockets-and-jams plan (part B, step 1). Solves
 //          `count` (default ten thousand) seeded random free-play shots and prints the full input of every one that
 //          needs more than five thousand events, plus every one where the jam guard stepped in or the hard event limit
@@ -69,6 +71,15 @@ private func describe(_ input: ShotInput) -> String {
     return String(format: "seed %llu, generation %ld, strike: direction Vec2(%.12f, %.12f), speed %.6f, tipUp %.6f, tipSide %.6f, elevation %.6f\n      balls [%@]",
                   input.seed, input.parameters.modelGeneration, s.direction.x, s.direction.y, s.speed, s.tipUp,
                   s.tipSide, s.elevation, balls)
+}
+
+/// Shot `n` of the sweep exactly as runJamSweep solves it (the generator replayed from the start), so jamtrace can
+/// look inside one and a fixture can be rebuilt from its number.
+func jamSweepShot(_ n: Int, _ p: PoolParameters) -> ShotInput {
+    var rng = JamRandom(state: 20_261_121)
+    var input = randomFreePlayShot(0, &rng, p)
+    if n > 0 { for shot in 1...n { input = randomFreePlayShot(shot, &rng, p) } }
+    return input
 }
 
 func runJamSweep(_ args: [String]) {

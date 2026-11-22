@@ -9,6 +9,8 @@
 //          reaches its floor at break speed).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the flip: the pre-switch hash is now PoolParameters.generationOne's,
 //          and a new check pins the default to generation two with the tuned numbers.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6: the new generation-two numbers, the miscue's
+//          full-turn overshoot and the gentle-contact rule's, join the hash checks.)
 // SRP/DRY check: Pass - checked JumpTests (its testLevelStrikesAreBitForBitUnchanged pins five recordings' content
 //          hashes, which include the parameter hash) and TableFeatureTests (the table-feature hash marker). These are the
 //          switch's own checks; nothing here repeats a solver test.
@@ -63,18 +65,20 @@ final class PhysicsSwitchTests: XCTestCase {
         XCTAssertEqual(p.slidingFriction, 0.15)
         XCTAssertEqual(p.rollingResistance, 0.015)
         XCTAssertEqual(p.spinDecay, 9.5)
-        XCTAssertEqual(p.cushionRestitution, 0.95)
-        XCTAssertEqual(p.cushionFriction, 0.17)
-        XCTAssertEqual(p.railRestitutionSlope, 0.025)
+        XCTAssertEqual(p.cushionRestitution, 0.96)
+        XCTAssertEqual(p.cushionFriction, 0.15)
+        XCTAssertEqual(p.railCrossGrip, 0.10)
+        XCTAssertEqual(p.railRestitutionSlope, 0.035)
         XCTAssertEqual(p.railRestitutionFloor, 0.6)
         XCTAssertEqual(p.cueMass, 0.54)
         XCTAssertEqual(p.shaftEndMass, 0.0073)
         XCTAssertNotEqual(p.hash, preSwitchDefaultHash())
         XCTAssertEqual(PoolSolver.simulate(Rack.showpieceBreak()).parameterHash, p.hash)
-        // The preset differs from the default only in the generation and the four tuned numbers.
+        // The preset differs from the default only in the generation and the five tuned numbers.
         var back = PoolParameters.generationOne
         back.modelGeneration = 2
-        back.slidingFriction = 0.15; back.rollingResistance = 0.015; back.spinDecay = 9.5; back.cushionRestitution = 0.95
+        back.slidingFriction = 0.15; back.rollingResistance = 0.015; back.spinDecay = 9.5; back.cushionRestitution = 0.96
+        back.cushionFriction = 0.15
         XCTAssertEqual(back.hash, p.hash)
     }
 
@@ -85,7 +89,8 @@ final class PhysicsSwitchTests: XCTestCase {
         var g1 = PoolParameters.generationOne
         g1.railRestitutionSlope = 0.05; g1.railRestitutionFloor = 0.5; g1.cueMass = 0.6; g1.shaftEndMass = 0.009
         g1.tipGrip = 0.6; g1.miscueSpeedFraction = 0.4; g1.miscueMaxDeflection = 0.1
-        g1.pocketCaptureFallFraction = 0.5; g1.rimSkipSpeedLoss = 0.1
+        g1.pocketCaptureFallFraction = 0.5; g1.rimSkipSpeedLoss = 0.1; g1.miscueFullTurnOvershoot = 0.2; g1.gentleContactSpeed = 0.01
+        g1.railCrossGrip = 0.3
         XCTAssertEqual(g1.hash, base)
 
         // The generation itself changes it, and above 1 every generation-two number does too.
@@ -98,6 +103,7 @@ final class PhysicsSwitchTests: XCTestCase {
             { $0.railRestitutionSlope += 0.001 }, { $0.railRestitutionFloor += 0.01 }, { $0.cueMass += 0.01 },
             { $0.shaftEndMass += 0.0001 }, { $0.tipGrip += 0.01 }, { $0.miscueSpeedFraction += 0.01 },
             { $0.miscueMaxDeflection += 0.001 }, { $0.pocketCaptureFallFraction += 0.01 }, { $0.rimSkipSpeedLoss += 0.01 },
+            { $0.miscueFullTurnOvershoot += 0.01 }, { $0.gentleContactSpeed += 0.001 }, { $0.railCrossGrip += 0.01 },
         ]
         for tweak in tweaks {
             var q = g2
@@ -159,9 +165,11 @@ final class PhysicsSwitchTests: XCTestCase {
         // Miscue limit: about half the radius.
         let limit = p.tipGrip / (1 + p.tipGrip * p.tipGrip).squareRoot()
         XCTAssertEqual(limit, 0.5, accuracy: 0.01)
-        // Rail restitution: the tuned cushionRestitution at walking pace, the floor reached at 14 m/s, just past the
-        // hardest break (8 to 13 m/s, spec 3.4).
-        XCTAssertEqual(p.cushionRestitution - p.railRestitutionSlope * 14, p.railRestitutionFloor, accuracy: 1e-9)
+        // Rail restitution: the tuned cushionRestitution at walking pace, the floor reached inside the break range
+        // (8 to 13 m/s, spec 3.4), at (0.96 - 0.6) / 0.035 = 10.3 m/s since the rail sweep of the bug plan's item 26.
+        let floorPace = (p.cushionRestitution - p.railRestitutionFloor) / p.railRestitutionSlope
+        XCTAssertGreaterThanOrEqual(floorPace, 8)
+        XCTAssertLessThanOrEqual(floorPace, 13)
         // Pocket capture: a third of the radius.
         XCTAssertEqual(p.pocketCaptureFallFraction, 1.0 / 3.0)
         // Miscue deflection: tan 5 degrees.

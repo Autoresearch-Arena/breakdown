@@ -5,6 +5,8 @@
 //          out exactly as before; RackTests checks that against a copy of today's code.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the showpiece break re-picked on generation two,
 //          now the default; generationOneShowpieceBreak keeps the old one on the old physics for the bit-for-bit guard.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 55: the showpiece break is struck at
+//          centre height, re-picked on the default physics with the coupled rail.)
 // PURPOSE: Standard fifteen-ball triangle on the foot spot and the cue ball on the head spot, with a
 //          one-micrometre gap between neighbours and optional seeded jitter so the break is a deterministic
 //          cascade of binary collisions. Also the nine-ball diamond (the 1 at the front on the foot spot, the 9 in
@@ -132,13 +134,16 @@ extension Rack {
 }
 
 public extension Rack {
-    /// The cold-open break, picked from a parameter sweep (BreakProbe with no argument): a touch of draw, drops object
-    /// balls and keeps the cue ball on the table. Regression-tested. Re-picked on the tuned generation-two physics
-    /// (21-Nov-2026), where the old stroke (straight at the apex at 11 m/s) dropped fewer than two: of the sweep's
-    /// strokes that drop two or more and keep the cue ball, the one nearest the old one, 10 m/s with the same draw and
-    /// aimed 2 mm off the apex ball's centre, which drops three (the 4, the 5 and the 12).
+    /// The cold-open break, picked from a parameter sweep (BreakProbe with no argument): drops object balls and keeps the
+    /// cue ball on the table. Regression-tested. Struck at centre height since the bug plan after 0.6.6 (item 55): the
+    /// old stroke was struck 6 mm low, so the opening's first held beat was a footnote about off-centre hits; at centre
+    /// height the first beat is the cue ball handing its speed to the rack. Re-picked on the default physics with the
+    /// coupled rail (21-Nov-2026, "BreakProbe breaks": 1,836 centre-height breaks over twelve racks, nine speeds and
+    /// seventeen aims): the only one that drops two and keeps the cue ball is rack seed 8 at 12 m/s (a hard break, in
+    /// spec 3.4's 8 to 13 m/s), aimed 6 mm off the apex ball's centre; it drops the 1 and the 5, the cue ball first
+    /// meets the rack at 0.10 s and turns from skid to roll at 1.02 s, the two headline moments the opening holds.
     static func showpieceBreak(parameters p: PoolParameters = PoolParameters()) -> ShotInput {
-        breakShot(parameters: p, seed: 3, aimOffset: 0.002, speed: 10.0, tipUp: -0.006)
+        breakShot(parameters: p, seed: 8, aimOffset: -0.006, speed: 12.0, tipUp: 0)
     }
 
     /// The cold-open break as it was before the flip to generation two: generation one with that day's numbers.

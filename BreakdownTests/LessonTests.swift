@@ -9,12 +9,15 @@
 //          the menu offers). Also the lesson flow's locks: which controls each step opens.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the reach check is the miscue limit of the
 //          default physics instead of the old 20 mm tip travel.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 10: every lesson and the exercise must be
+//          played from a square stance by the app's own reach ladder. The numbers now come from the package library.)
 // SRP/DRY check: Pass - checks only. Solving and attempts come from TestShots (the model's own path); the verdicts are
 //          TrickShotJudge's; the flow is LessonMode's.
 @testable import Breakdown
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
+import Foundation
 import XCTest
 
 @MainActor
@@ -85,6 +88,23 @@ final class LessonTests: XCTestCase {
                 XCTAssertEqual(r.elevation ?? 0, 0, "\(lesson.id): a level-cue lesson raises the cue")
             }
         }
+    }
+
+    // Item 10 of the bug plan after 0.6.6: every lesson, and the stop shot's exercise, is played from a square stance,
+    // as the app's own reach ladder works it out with the automatic hand bridge (a lesson never uses the mechanical
+    // bridge), so the stance card stays away and no lesson opens with a card about a rest it never uses.
+    func testEveryLessonIsPlayedStandingSquare() {
+        let table = PoolParameters().tableSpec
+        func square(_ layout: [Vec2], _ s: TrickSettings, _ name: String) {
+            let a = s.aim * Double.pi / 180
+            guard let stance = Reach.stance(layout: layout, cueBall: 0, aim: Vec2(cos(a), sin(a)), table: table,
+                                            bridge: StrokeModel.automaticBridge, mechanical: false) else {
+                XCTFail("\(name): no stance"); return
+            }
+            XCTAssertTrue(stance.isNormal, "\(name): \(stance.rung) with a reach of \(stance.reach) m")
+        }
+        for lesson in Lessons.all { square(lesson.layout, lesson.reference, lesson.id) }
+        square(Lessons.stopExercise.layout, Lessons.stopExercise.reference, "lesson-stop-exercise")
     }
 
     func testEachStepOpensTheRightControls() {

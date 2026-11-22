@@ -29,6 +29,12 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4, the flip: generation two is the default, with
 //          the cloth, roll, spin and rail numbers the real-table sweep chose (0.15, 0.015, 9.5, 0.95); each once-guessed
 //          number now says which checks fixed it. PoolParameters.generationOne keeps the old numbers and generation.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6: items 25, 26 and 29. The miscue's turn is a
+//          function of the stroke (miscueFullTurnOvershoot); a gentle ball-ball contact is a push (gentleContactSpeed);
+//          the rail is coupled and its grip is split along the rail and across the nose (railCrossGrip), with the rail
+//          numbers the rail sweep chose against the two new bands (draw, stun and roll come back off a rail in order,
+//          and a slow roll at 45 degrees leaves at least two degrees steeper): rail bounce 0.96, falling 0.035 per m/s,
+//          grip 0.15 along the rail and 0.10 across. generationOne keeps the old rail grip, 0.17.)
 // PURPOSE: Every tunable number of the pool solver in one versioned value that is hashed into each recorded
 //          shot. Values follow the spec section 3.4, tuned against the real-table checks (RealWorldTests, BreakProbe
 //          sweep). modelGeneration picks the physics model (2, the default, is the tuned model; 1 is the solver as it
@@ -52,8 +58,15 @@ public struct PoolParameters: Sendable {
     public var ballBallFrictionFloor = 0.00995
     public var ballBallFrictionGain = 0.108
     public var ballBallFrictionDecay = 1.088
-    public var cushionRestitution = 0.95        // rail bounce at walking pace: fixed by the rail energy check (case 6)
-    public var cushionFriction = 0.17           // rail grip: fixed by the rail angle check (case 7), the spec's middle
+    /// Rail bounce at walking pace (generation 2: the top of the rail's speed-dependent restitution). Fixed with the
+    /// rail grips and railRestitutionSlope by the rail sweep of 21-Nov-2026 ("BreakProbe sweep rails"): the middle of
+    /// the swept 0.94 to 0.98, the one setting there that passes all twelve real-table checks with the slope and grips
+    /// at the middle of their ranges too (log: breakdown-build/v07-sweep-rails-5.log on the Team 4TB drive).
+    public var cushionRestitution = 0.96
+    /// Rail grip along the rail (the nose's friction along the rail line; generation 1 uses it in every direction).
+    /// 0.15, the middle of the rail sweep's 0.11 to 0.19 and inside spec 3.3's 0.14 to 0.2: it is what makes a slow
+    /// rolling ball leave a rail steeper than it came in (case 7). generationOne keeps the old 0.17.
+    public var cushionFriction = 0.15
     /// Playing surface between cushion nose lines (nine-foot table).
     public var tableLength = 2.54
     public var tableWidth = 1.27
@@ -122,10 +135,13 @@ public struct PoolParameters: Sendable {
     /// Rails (plans/21-Nov-2026-rails-plan.md). The rail's restitution falls with the ball's speed into the rail:
     /// e(v) = max(railRestitutionFloor, cushionRestitution - railRestitutionSlope * v), v the normal speed in m/s.
     /// Starting reasons: a floor of 0.6, whose energy share 0.6 squared = 0.36 is "proportionally less" than the
-    /// just-under-half the proof plan's case 6 expects at medium speed, and a slope of 0.025 per m/s. With the tuned
-    /// cushionRestitution (0.95) the floor is reached at (0.95 - 0.6) / 0.025 = 14 m/s, just past the hardest break
-    /// (8 to 13 m/s of cue-ball speed, spec 3.4). Both fixed by the rail energy and rail angle checks (cases 6, 7).
-    public var railRestitutionSlope = 0.025
+    /// just-under-half the proof plan's case 6 expects at medium speed, and a slope of 0.025 per m/s. The rail sweep of
+    /// 21-Nov-2026 (bug plan after 0.6.6, item 26) moved the slope to 0.035, the middle of its 0.03 to 0.04: a slow
+    /// ball must leave a rail steeper and a fast one flatter (case 7), and with the coupled rail the bounce has to fall
+    /// faster with pace for the fast one to come off flatter. With cushionRestitution 0.96 the floor is reached at
+    /// (0.96 - 0.6) / 0.035 = 10.3 m/s, inside the break range (8 to 13 m/s of cue-ball speed, spec 3.4), so the
+    /// hardest breaks meet the floor. Fixed by the rail energy and rail angle checks (cases 6, 7).
+    public var railRestitutionSlope = 0.035
     public var railRestitutionFloor = 0.6
     /// Cue strike (plans/21-Nov-2026-cue-strike-plan.md). The cue's mass, kilograms (spec 3.4: 0.54 kg). An off-centre
     /// hit launches the ball at the centre-hit speed times (M + m) / (M + m + 5/2 * M * offset^2 / R^2). Checked by the
@@ -146,10 +162,16 @@ public struct PoolParameters: Sendable {
     /// ball, so the ball gets roughly the part of the impulse along the contact normal at the point the tip slid to;
     /// near the edge of the tip's travel that normal is about 60 degrees off the cue, and cos 60 degrees = 0.5.
     public var miscueSpeedFraction = 0.5
-    /// A miscue's direction is turned by a seeded random amount up to this, as a tangent (sideways over forward; the
-    /// solver has no trig). 0.0875 is tan 5 degrees: twice the 2.5-degree push of the largest legal side hit, so a
-    /// miscue flies visibly off line while staying on the aimed side of the table.
+    /// The largest turn a miscue gives the ball, as a tangent (sideways over forward; the solver has no trig). 0.0875 is
+    /// tan 5 degrees: twice the 2.5-degree push of the largest legal side hit, so a miscue flies visibly off line while
+    /// staying on the aimed side of the table. Since 21-Nov-2026 (bug plan after 0.6.6, item 25) the turn is no longer
+    /// random: it is a function of the stroke (PoolSolver.cueLaunch), so the same miscue always goes the same way.
     public var miscueMaxDeflection = 0.0875
+    /// How far past the grip limit a tip must strike, as a share of the ball's radius, for a miscue to turn by the
+    /// full miscueMaxDeflection; nearer the limit the turn grows in proportion. Reason: the furthest a player can set
+    /// the tip in free play is a tenth of the radius past the miscue ring (the app's tip travel, ShowpieceModel.tipLimit),
+    /// so the worst miscue a player can play turns the most and one that only just slips turns very little.
+    public var miscueFullTurnOvershoot = 0.1
     /// Pockets (plans/21-Nov-2026-pockets-and-jams-plan.md, part A). A ball crossing a hole is captured when it falls
     /// at least this share of its radius before its centre leaves the far side (the plan's starting value, one third).
     public var pocketCaptureFallFraction = 1.0 / 3.0
@@ -157,11 +179,28 @@ public struct PoolParameters: Sendable {
     /// (0.0095 m) and must climb back out; that costs 2 * g * 0.0095 = 0.19 m^2/s^2 of speed squared, about 2.4
     /// percent of the speed at 2 m/s, and the knock on the far edge costs about as much again: 5 percent to start.
     public var rimSkipSpeedLoss = 0.05
+    /// Ball against ball (bug plan after 0.6.6, item 29): a contact gentler than this, metres per second of approach
+    /// along the line of centres, does not bounce; the pair shares its speed along that line (a push), and if the cloth
+    /// presses the two straight back together they are set rackGap apart (Simulation.pushApart). Reason: a ball at
+    /// 2 mm/s on the standard cloth rolls 0.002^2 / (2 * 0.015 * 9.81) = 14 micrometres before it stops, so whether such
+    /// a touch bounces or pushes cannot be seen, while a bounce there under the cloth's press is what made the seed-5
+    /// test break chatter six hundred times in a millisecond (its touches ran at 41 micrometres a second and less).
+    /// Every contact that matters to a shot (a break, a kiss, a cut) is hundreds of times faster.
+    public var gentleContactSpeed = 0.002
+    /// The rail nose's grip across the rail line, up and down the nose's face (bug plan after 0.6.6, item 26); the
+    /// grip along the rail is cushionFriction. Impacts.rail applies the two separately. Why two: with one grip in every
+    /// direction no setting passed both rail checks, because the grip that slows a ball along the rail (case 7, the
+    /// steeper rebound) also strips the topspin or backspin a ball brings straight in, and then draw, stun and roll
+    /// come back off a rail within millimetres of each other (case 12). On a real table the nose is a soft rubber
+    /// profile under cloth: driven up and down its face it gives and rolls with the ball, while along the rail the cloth
+    /// slides on the ball. 0.10, the middle of the rail sweep's 0.07 to 0.13 (cushionRestitution's note).
+    public var railCrossGrip = 0.10
 
     /// Every generation-two number, in hash order. Appending is safe; reordering would change generation-two hashes.
     private var generationTwoNumbers: [Double] {
         [railRestitutionSlope, railRestitutionFloor, cueMass, shaftEndMass, tipGrip, miscueSpeedFraction,
-         miscueMaxDeflection, pocketCaptureFallFraction, rimSkipSpeedLoss]
+         miscueMaxDeflection, pocketCaptureFallFraction, rimSkipSpeedLoss, miscueFullTurnOvershoot, gentleContactSpeed,
+         railCrossGrip]
     }
 
     public init() {}
@@ -184,6 +223,7 @@ public struct PoolParameters: Sendable {
         rollingResistance = 0.01
         spinDecay = 9.0
         cushionRestitution = 0.85
+        cushionFriction = 0.17
     }
 
     // MARK: Derived generation-two geometry (not hashed: worked out from hashed numbers)

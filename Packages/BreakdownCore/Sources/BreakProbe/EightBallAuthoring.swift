@@ -12,24 +12,30 @@
 //          that also show the escape's technique (rails before contact for kicks, a take-off for jumps, a curve that a
 //          level cue cannot copy for massés and swerves, the called ball off a rail for banks), picks the centre of the
 //          longest unbroken aim run, re-centres it in its aim, power and tip windows and prints the stroke and every
-//          measured window, ready for App/EightBall/EightBallSituations.swift. A safety escape instead needs a legal hit,
-//          nothing pocketed, and the opponent left with no straight line from the cue ball to the centre of any of their
-//          balls. "eightball verify" re-checks the exact strokes the app carries (ebFinal, at the end) and prints, for
-//          the "On a real table" cards, every cushion the cue ball takes before its first ball, in diamonds.
+//          measured window, ready for the package library (AuthoredEscapes.swift). A safety escape instead needs a
+//          legal hit, nothing pocketed, and the opponent left with no straight line from the cue ball to the centre of
+//          any of their balls. "eightball verify" re-checks the exact strokes the app carries (ebFinal, read from the
+//          library) and prints, for the "On a real table" cards, every cushion the cue ball takes before its first ball,
+//          in diamonds.
 //          The situation list keeps the search rounds: the design's layout first, then the reworked layouts (tucked2,
 //          bend2/bend3, kick-game-db, kick-bank2, swerve2, no-way2/no-way3) where a hook leaked or an escape was
-//          knife-edge; ebFinal names the ones the app uses.
-//          The cloth numbers for Tournament cloth and Dive-bar felt are COPIED from App/PlaySurface.swift (the app
-//          target cannot be imported here); if those change, change them here too and re-run.
+//          knife-edge; the package library (AuthoredEscapes) holds the ones the app uses.
+//          The cloths are the package's TableSurface (BreakdownAuthored), the numbers the app plays on, not a copy.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a situation carries the physics generation it is solved on, default
 //          1, so "BreakProbe verify 2" can re-check every authored escape on generation two; nothing else changes).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: situations solve on the default generation
 //          (two); every tip grid and window stays inside the miscue limit (tipReach); the escapes are re-authored.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, items 30 and 38: the strokes the app carries are
+//          read from the package's authored library (AuthoredEscapes) instead of the ebFinal copy, each situation built
+//          from it by ebSpec; the cloths are TableSurface; "eightball verify" prints each escape's aim window and flags
+//          one narrower than two of the aim control's quarter-degree steps, the content check's rule.)
 // SRP/DRY check: Pass - situation search only. Simulation, pockets, first-ball and band primitives are reused from
 //          TrickSearch.swift; the legality test is new because the trick goal has no "must not drop" (the 8) or
 //          "must be one of a group" first hit. The app ships the authored answers; this tool only finds them.
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import Foundation
 
@@ -41,28 +47,8 @@ let ebDiamond = 2.54 / 8
 /// Diamonds to solver metres, identical to EightBallTable.point(across:along:).
 func ebPoint(_ across: Double, _ along: Double) -> Vec2 { Vec2(along * ebDiamond, (4 - across) * ebDiamond) }
 
-/// The three cloths a situation can be set on. Numbers copied from PlaySurface.apply (App/PlaySurface.swift).
-enum EBCloth: String, Sendable {
-    case cloth, tournament, diveBar
-
-    var parameters: PoolParameters {
-        var p = PoolParameters()
-        apply(to: &p)
-        return p
-    }
-
-    /// Write this cloth's numbers into `p`, as PlaySurface.apply does.
-    func apply(to p: inout PoolParameters) {
-        switch self {
-        case .cloth: break
-        case .tournament:
-            p.slidingFriction = 0.15; p.rollingResistance = 0.005; p.spinDecay = 5.0; p.cushionRestitution = 0.95
-        case .diveBar:
-            p.slidingFriction = 0.3; p.rollingResistance = 0.015; p.spinDecay = 14.0; p.cushionRestitution = 0.8
-            p.cushionFriction = 0.22
-        }
-    }
-}
+/// The cloth a situation is set on: the package's own surfaces (BreakdownAuthored.TableSurface), what the app plays.
+typealias EBCloth = TableSurface
 
 /// Pocket names in the design's words, by the solver's index (EightBallPocket raw values).
 let ebPocketNames = ["headRight", "footRight", "headLeft", "footLeft", "rightSide", "leftSide"]
@@ -405,7 +391,7 @@ func ebSearch(_ s: EBSituationSpec, _ e: EBEscapeSpec) -> EBResult? {
         print("   why: \(tally.sorted { $0.value > $1.value }.prefix(8).map { "\($0.key) \($0.value)" }.joined(separator: "; "))")
         return nil
     }
-    let top = Array(runs.sorted { $0.count > $1.count }.prefix(e.technique == .curve ? 30 : 12))
+    let top = Array(runs.sorted { $0.count > $1.count }.prefix(e.technique == .curve ? 30 : 24))
     let measuredAll = parallelMap(top.count) { n in ebMeasure(s, e, top[n].start) }.compactMap { $0 }
     // Most forgiving in what a player sets by hand: aim, then speed, then tip height, each capped so no one huge
     // window wins on its own.
@@ -415,7 +401,21 @@ func ebSearch(_ s: EBSituationSpec, _ e: EBEscapeSpec) -> EBResult? {
         let curve = e.technique == .curve ? min(el / 0.03, 1) + min(side / 0.002, 1) : 0
         return min(r.aimHalf / 0.3, 1) + min(r.powerHalf / 0.3, 1) + min(r.tipHalf / 0.003, 1) + curve + r.aimHalf * 0.01
     }
-    return measuredAll.max { score($0) < score($1) }
+    // Item 30 of the bug plan after 0.6.6: an aim window must hold two of the aim control's quarter-degree steps. The
+    // aim band here is walked in the search's own steps (a tenth of a degree for a curve), so it is re-walked finely
+    // before the choice; a stroke whose window is too narrow is chosen only when no stroke has a wide enough one, and
+    // then the result says so.
+    let widths = measuredAll.map { r in ebAimWindow(s, e, r.strike).map { $0.hi - $0.lo } ?? 0 }
+    let two = zip(measuredAll, widths).filter { $0.1 >= 2 * ebAimStep - 1e-9 }.map(\.0)
+    let one = zip(measuredAll, widths).filter { $0.1 >= ebAimStep - 1e-9 }.map(\.0)
+    if two.isEmpty {
+        print(one.isEmpty ? "   \(e.id): NO STROKE WITH AN AIM WINDOW OF ONE AIM STEP; the widest is kept"
+                          : "   \(e.id): no stroke with two aim steps; one with at least one is kept")
+    }
+    if two.isEmpty && one.isEmpty {
+        return zip(measuredAll, widths).max { $0.1 < $1.1 }?.0
+    }
+    return (two.isEmpty ? one : two).max { score($0) < score($1) }
 }
 
 func ebReport(_ s: EBSituationSpec, _ e: EBEscapeSpec, _ r: EBResult) {
@@ -617,7 +617,7 @@ func ebRailWords(_ p: Vec2) -> String {
 /// (no re-centring).
 func runEightBallVerify(only: Set<String>) {
     for f in ebFinal where only.isEmpty || only.contains(f.situation) {
-        guard let s = ebSituations.first(where: { $0.id == f.situation }),
+        guard let s = ebAuthored.first(where: { $0.id == f.situation }),
               let e = s.escapes.first(where: { $0.id == f.escape }) else { print("?? \(f.situation) \(f.escape)"); continue }
         let k = f.strike
         let ok = ebPasses(s, e, k)
@@ -638,7 +638,14 @@ func runEightBallVerify(only: Set<String>) {
             print(String(format: "   take-off up speed %.2f m/s; highest recorded event height %.3f m", up?.verticalSpeedUp ?? 0, peak))
         }
         guard ok else { continue }
-        let aim = band(centre: k.aim, step: e.technique == .curve ? 0.1 : 0.02, limit: 6) { v in var t = k; t.aim = v; return ebPasses(s, e, t) }!
+        let aim = ebAimWindow(s, e, k)!
+        if aim.hi - aim.lo < ebAimStep - 1e-9 {
+            print(String(format: "   AIM WINDOW TOO NARROW: %.2f degrees wide, under one aim step (%.2f)", aim.hi - aim.lo,
+                         ebAimStep))
+        } else if aim.hi - aim.lo < 2 * ebAimStep - 1e-9 {
+            print(String(format: "   aim window %.2f degrees wide: one aim step, short of the two the authoring aims for",
+                         aim.hi - aim.lo))
+        }
         let pow = band(centre: k.power, step: 0.05, limit: 3) { v in v >= 0.3 && v <= 8 && { var t = k; t.power = v; return ebPasses(s, e, t) }() }!
         let side = band(centre: k.tipSide, step: 0.0005, limit: 0.02) { v in insideGrip(up: k.tipUp, side: v) && { var t = k; t.tipSide = v; return ebPasses(s, e, t) }() }!
         let tip = band(centre: k.tipUp, step: 0.0005, limit: 0.02) { v in insideGrip(up: v, side: k.tipSide) && { var t = k; t.tipUp = v; return ebPasses(s, e, t) }() }!
@@ -675,38 +682,52 @@ func runEightBallAuthoring(only: Set<String>) {
 
 // MARK: The strokes the app carries
 
-/// One authored escape exactly as App/EightBall/EightBallSituations.swift holds it ("eightball verify" re-checks them).
+/// One authored escape exactly as the package's library holds it ("eightball verify" re-checks them).
 struct EBFinal: Sendable {
     var situation: String
     var escape: String
     var strike: Strike
 }
 
-/// Aims as the app holds them (-180 to 180); elevations set inside each jump's measured band rather than at its edge.
-let ebFinal: [EBFinal] = [
-    EBFinal(situation: "tucked2", escape: "A", strike: Strike(aim: 169.97, power: 3.50, tipUp: 0.004, tipSide: 0)),
-    EBFinal(situation: "tucked2", escape: "B", strike: Strike(aim: 27.25, power: 3.80, tipUp: -0.002, tipSide: 0, elevation: 0.80)),
-    EBFinal(situation: "frozen", escape: "A", strike: Strike(aim: -173.78, power: 3.05, tipUp: 0.0055, tipSide: 0)),
-    EBFinal(situation: "frozen", escape: "B", strike: Strike(aim: -173.39, power: 4.45, tipUp: 0.007, tipSide: 0)),
-    EBFinal(situation: "jump-diamond", escape: "A", strike: Strike(aim: 60.68, power: 3.75, tipUp: -0.008, tipSide: 0)),
-    EBFinal(situation: "jump-diamond", escape: "B", strike: Strike(aim: -31.30, power: 5.20, tipUp: -0.010, tipSide: 0, elevation: 0.70)),
-    EBFinal(situation: "bend2", escape: "A", strike: Strike(aim: -14.43, power: 3.15, tipUp: -0.0025, tipSide: 0.0135, elevation: 0.40)),
-    EBFinal(situation: "bend2", escape: "B", strike: Strike(aim: -21.95, power: 4.35, tipUp: -0.0055, tipSide: 0, elevation: 0.70)),
-    EBFinal(situation: "bend2", escape: "C", strike: Strike(aim: -129.06, power: 4.30, tipUp: 0.0105, tipSide: 0)),
-    EBFinal(situation: "kick-game-db", escape: "A", strike: Strike(aim: 27.71, power: 1.50, tipUp: 0.0065, tipSide: 0)),
-    EBFinal(situation: "kick-game-db", escape: "B", strike: Strike(aim: 122.55, power: 7.65, tipUp: 0.0115, tipSide: 0)),
-    EBFinal(situation: "z-shot", escape: "A", strike: Strike(aim: -36.62, power: 5.00, tipUp: -0.004, tipSide: -0.005)),
-    EBFinal(situation: "z-shot", escape: "B", strike: Strike(aim: 52.60, power: 4.95, tipUp: -0.008, tipSide: 0)),
-    EBFinal(situation: "point-blank", escape: "A", strike: Strike(aim: 70.62, power: 3.45, tipUp: -0.008, tipSide: 0)),
-    EBFinal(situation: "point-blank", escape: "B", strike: Strike(aim: -61.55, power: 3.50, tipUp: -0.0045, tipSide: 0, elevation: 0.85)),
-    EBFinal(situation: "masse-win", escape: "A", strike: Strike(aim: -177.14, power: 1.75, tipUp: 0.006, tipSide: 0)),
-    EBFinal(situation: "masse-win", escape: "B", strike: Strike(aim: -11.28, power: 4.30, tipUp: 0.0005, tipSide: 0.0095, elevation: 0.80)),
-    EBFinal(situation: "bridge-jump", escape: "A", strike: Strike(aim: -59.44, power: 3.55, tipUp: -0.008, tipSide: 0)),
-    EBFinal(situation: "bridge-jump", escape: "B", strike: Strike(aim: 23.49, power: 3.85, tipUp: -0.0045, tipSide: 0, elevation: 0.75)),
-    EBFinal(situation: "kick-bank2", escape: "A", strike: Strike(aim: -21.46, power: 3.45, tipUp: -0.006, tipSide: 0)),
-    EBFinal(situation: "kick-bank2", escape: "B", strike: Strike(aim: -132.88, power: 3.65, tipUp: 0.011, tipSide: 0)),
-    EBFinal(situation: "swerve2", escape: "A", strike: Strike(aim: 52.41, power: 2.90, tipUp: 0.0105, tipSide: 0)),
-    EBFinal(situation: "swerve2", escape: "B", strike: Strike(aim: 151.30, power: 5.05, tipUp: -0.002, tipSide: -0.0135, elevation: 0.50)),
-    EBFinal(situation: "no-way3", escape: "T", strike: Strike(aim: 59.45, power: 2.75, tipUp: 0.009, tipSide: 0)),
-    EBFinal(situation: "no-way", escape: "B2", strike: Strike(aim: 27.90, power: 4.10, tipUp: -0.008, tipSide: 0)),
-]
+/// The technique test an authored escape is checked with, in this tool's terms.
+func ebTechnique(_ c: EscapeCheck) -> EBTechnique {
+    switch c {
+    case .kick: return .kick
+    case .bank: return .bank
+    case .jump: return .jump
+    case .curve: return .curve
+    case .safety: return .safety
+    case .touch: return .touch
+    }
+}
+
+/// A situation of the library as this tool searches and checks it: its table, cloth and each escape's test.
+func ebSpec(_ a: AuthoredSituation) -> EBSituationSpec {
+    EBSituationSpec(
+        id: a.id, number: a.number, cue: (a.cue.across, a.cue.along), eight: (a.eight.across, a.eight.along),
+        balls: a.balls.mapValues { ($0.across, $0.along) }, solids: a.group == .solids, cloth: a.surface,
+        escapes: a.escapes.map { e in
+            EBEscapeSpec(id: e.id, technique: ebTechnique(e.check), ball: e.call.ball ?? e.touchBall,
+                         pocket: e.call.pocket?.rawValue, rails: e.railCheck)
+        })
+}
+
+/// Every situation of the library, as specs, in the app's order.
+let ebAuthored: [EBSituationSpec] = AuthoredEscapes.all.map(ebSpec)
+
+/// The library's strokes: aims as the app holds them (-180 to 180).
+let ebFinal: [EBFinal] = AuthoredEscapes.all.flatMap { s in
+    s.escapes.map { EBFinal(situation: s.id, escape: $0.id, strike: probeStrike($0.strike)) }
+}
+
+/// The aim control's smallest step, degrees (the app's aim nudges are quarter degrees). Item 30 of the bug plan after
+/// 0.6.6: the content check fails an escape whose aim window is narrower than one of them, and the authoring aims for
+/// two (half a degree), so a keyboard, controller or VoiceOver player can step into it on purpose.
+let ebAimStep = 0.25
+
+/// An escape's aim window, walked outward from its stroke in steps of a fiftieth of a degree (finer than the control,
+/// so the width is measured, not rounded to the control's grid).
+func ebAimWindow(_ s: EBSituationSpec, _ e: EBEscapeSpec, _ k: Strike) -> (lo: Double, hi: Double)? {
+    band(centre: k.aim, step: 0.02, limit: 6) { v in var t = k; t.aim = v; return ebPasses(s, e, t) }
+}
+
