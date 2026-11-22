@@ -15,6 +15,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: the stroke's cards (the hard shot's result line
 //          and the straight-stroke drill) among the mode's cards, so the drill is a card of the notebook beside the
 //          table and nothing covers it.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the equipment card (the stance, App/Stroke/StanceViews.swift)
+//          is one of the cards while "Your shot" is open; the shot panel in the lower edge leaves it out here.)
 // PURPOSE: The notebook: the side of the screen that is not the table, on the open folding phone (across the hinge) and
 //          on every screen big enough for the table plus a readable column (an iPad either way up, a large iPad split or
 //          Stage Manager window, a Mac window). The table fills the other side and nothing is drawn over it: no title
@@ -172,6 +174,7 @@ struct NotebookPanel: View {
             EightBallCard(model: model)
             PlayCards(model: model)
             StrokeCards(model: model)
+            if showShotPanel { EquipmentCard(model: model) }
             NotebookDossier(model: model)
         }
     }

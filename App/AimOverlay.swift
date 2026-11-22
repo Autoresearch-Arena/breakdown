@@ -45,6 +45,13 @@
 //          a stroke this file's own pull defers to it (power is set in one place), the rest of a touch that has played
 //          its shot by a push through the ball is ignored (so it does not jump the new shot to its end), and the
 //          groove and the finger's trace are drawn from this Canvas with one call. Scripted drags are unchanged.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the bridge mark. While aiming and stroking, a soft chalk ring
+//          lies on the cloth where the bridge rests (model.strokeBridgeLength behind the cue ball along the cue: the
+//          finger's, the automatic one, or the rest's head), with a faint dotted line from it to the cue ball. Paper
+//          for a square stance, the lamp's amber when the stance is not (App/Stroke/Reach.swift); with Differentiate
+//          Without Colour that also gets an inner ring, so it never rests on colour alone. It never moves by itself,
+//          so Reduce Motion has nothing to stop. Its length is read in the fine controls and the stance by the
+//          equipment card, both spoken; the drawing itself stays hidden from VoiceOver like the rest of this Canvas.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -87,6 +94,7 @@ struct AimOverlay: View {
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
     @State private var cameraBox = AimProjector.CameraBox()
     @State private var mode: DragMode?
     @State private var pulling = false
@@ -501,6 +509,9 @@ struct AimOverlay: View {
         // first ball the middle of the band meets (or half a metre), so the line can be swung into it.
         if let band = zones?.aim { drawAimBand(&ctx, proj, origin: origin, band: band, radius: radius) }
 
+        // Where the bridge rests, under the cue behind the ball (drawn before the aim line, which stays on top).
+        drawBridgeMark(&ctx, proj, origin: origin, radius: radius)
+
         // The aim line: a soft wide halo under a thin bright core, from the ball's edge to where the cue ball stops.
         // When that is a ball, the last third of the line fades out into the contact, so the line reads as ending
         // there rather than running on; a line that ends at the cushion or a short way out stays solid.
@@ -586,6 +597,47 @@ struct AimOverlay: View {
         let strength = zones?.strength ?? 1
         ctx.fill(fan, with: .color(palette.paper.opacity(0.16 * strength)))
         ctx.stroke(fan, with: .color(palette.paper.opacity(0.7 * strength)), style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
+    }
+
+    /// The bridge mark's radius on the cloth, metres: about a bridge hand's knuckles across.
+    private static let bridgeMarkRadius = 0.03
+
+    /// The bridge mark: a soft chalk ring on the cloth where the bridge rests, the bridge's length behind the cue ball
+    /// along the cue, and a faint dotted line from it to the back of the cue ball. Lying on the cloth (0.001 m up, as
+    /// the ghost and the stroke's trace are), projected through the live camera.
+    private func drawBridgeMark(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, radius: Double) {
+        let forward = model.aimDirection
+        guard forward.lengthSquared > 0.5 else { return }
+        let spot = origin - forward * model.strokeBridgeLength
+        guard let ring = clothCircle(proj, spot, Self.bridgeMarkRadius) else { return }
+        // Paper for a square stance with a clear path; amber (the lamp's colour) when the stance is not.
+        let awkward = model.stance.map { !$0.isNormal } ?? false
+        let ink = awkward ? palette.slide : palette.paper
+        if let a = proj.screen(spot + forward * Self.bridgeMarkRadius, height: 0.001),
+           let b = proj.screen(origin - forward * radius, height: 0.001) {
+            var line = Path(); line.move(to: a); line.addLine(to: b)
+            ctx.stroke(line, with: .color(ink.opacity(0.35)), style: StrokeStyle(lineWidth: 1, lineCap: .round, dash: [1, 4]))
+        }
+        // Chalk: a soft wide halo under a thin ring.
+        ctx.stroke(ring, with: .color(ink.opacity(0.16)), style: StrokeStyle(lineWidth: 6))
+        ctx.stroke(ring, with: .color(ink.opacity(0.75)), style: StrokeStyle(lineWidth: 1.5))
+        // Differentiate Without Colour: an awkward stance is told by a second, inner ring as well as by its colour.
+        if awkward, differentiateWithoutColor, let inner = clothCircle(proj, spot, Self.bridgeMarkRadius * 0.5) {
+            ctx.stroke(inner, with: .color(ink.opacity(0.75)), style: StrokeStyle(lineWidth: 1.5))
+        }
+    }
+
+    /// A circle lying on the cloth itself (not at the balls' height), as a closed screen path.
+    private func clothCircle(_ proj: AimProjector, _ centre: Vec2, _ radius: Double) -> Path? {
+        var path = Path()
+        let steps = 32
+        for i in 0..<steps {
+            let a = Double(i) / Double(steps) * 2 * Double.pi
+            guard let p = proj.screen(centre + Vec2(cos(a), sin(a)) * radius, height: 0.001) else { return nil }
+            if i == 0 { path.move(to: p) } else { path.addLine(to: p) }
+        }
+        path.closeSubpath()
+        return path
     }
 
     /// A small label so a first-time player knows what the new shape on the cloth is: the mechanical bridge (the

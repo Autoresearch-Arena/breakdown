@@ -92,6 +92,11 @@
 //          the default's miscue limit in every mode.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: a surface change during a match applies from the next
 //          shot, so the shot being ruled is never re-solved or dropped and the turn cannot stick.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach, in the stroke section: `stance` is where the player stands and
+//          leans for the next strike (Reach, from the layout, the aim, the table and the hand bridge; the rest rung
+//          whenever the shot shows the mechanical bridge). strokeBridgeLength is the rest's head when the stance needs
+//          the rest; strokeZones takes the stance's swing factor outside the authored modes; the strike's delivery is
+//          worked out with the stance, which the delivery keeps for the retry comparison.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -1863,14 +1868,32 @@ final class ShowpieceModel {
     /// power bar's calm zone moves with it.
     var strokeBridge: Double?
 
-    /// The bridge the next strike is played off: the mechanical bridge when the shot needs it, else the finger's or the
-    /// automatic one.
+    /// The bridge the next strike is played off: the mechanical bridge when the shot needs it or the stance needs the
+    /// rest (the cue ball out of reach), else the finger's or the automatic one.
     var strokeBridgeLength: Double {
-        StrokeModel.bridgeLength(finger: strokeBridge, mechanical: showsBridge)
+        let hand = StrokeModel.bridgeLength(finger: strokeBridge, mechanical: false)
+        return stance(handBridge: hand)?.bridge(hand: hand)
+            ?? StrokeModel.bridgeLength(finger: strokeBridge, mechanical: showsBridge)
     }
 
-    /// The calm and warm zones of the power bar now, for the cue in hand and the bridge.
-    var strokeZones: StrokeZones { StrokeModel.zones(cue: CueProfile.selected, bridge: strokeBridgeLength) }
+    /// The calm and warm zones of the power bar now, for the cue in hand, the bridge and the stance. In a trick shot,
+    /// situation or lesson the stance does not move the calm top (StrokeModel.delivery's rule, so the bar shows what the
+    /// strike will use).
+    var strokeZones: StrokeZones {
+        StrokeModel.zones(cue: CueProfile.selected, bridge: strokeBridgeLength, stance: authoredModeUp ? nil : stance)
+    }
+
+    /// Where the player stands and leans for the next strike, from the balls on the table, the aim and the hand bridge
+    /// now (the finger's while it rests on the cloth, else the automatic one). Nil when there is no cue ball on the
+    /// table to stand behind. Read by the stance card and the bridge mark on the cloth.
+    var stance: Stance? { stance(handBridge: StrokeModel.bridgeLength(finger: strokeBridge, mechanical: false)) }
+
+    /// The stance for a given hand bridge (Reach.stance). A shot that shows the mechanical bridge is the rest rung.
+    private func stance(handBridge: Double) -> Stance? {
+        guard layout.count == 16 else { return nil }
+        return Reach.stance(layout: layout, cueBall: strikeBall, aim: aimDirection, table: timeline.table,
+                            bridge: handBridge, mechanical: showsBridge)
+    }
 
     /// The drift for the strike being fired. The finger's stroke counts only when it set the power now in force (a
     /// later change by the bar, a slider, the keys or a controller means the stroke is not the one being played), with
@@ -1878,9 +1901,13 @@ final class ShowpieceModel {
     /// that carried a tip inside the grip past it on the new physics (the stroke made the miscue).
     private func strokeDelivery(chosenUp: Double, chosenSide: Double) -> StrokeDelivery {
         let record = pendingStroke.flatMap { $0.power == activePower ? $0 : nil }
-        let bridge = StrokeModel.bridgeLength(finger: record?.bridge ?? strokeBridge, mechanical: showsBridge)
+        // The stance is worked out for the hand bridge this stroke used; the rest rung plays off the rest's head.
+        let hand = StrokeModel.bridgeLength(finger: record?.bridge ?? strokeBridge, mechanical: false)
+        let struckStance = stance(handBridge: hand)
+        let bridge = struckStance?.bridge(hand: hand)
+            ?? StrokeModel.bridgeLength(finger: record?.bridge ?? strokeBridge, mechanical: showsBridge)
         var d = StrokeModel.delivery(power: activePower, fraction: powerFraction, record: record, bridge: bridge,
-                                     cue: CueProfile.selected, authored: authoredModeUp)
+                                     cue: CueProfile.selected, authored: authoredModeUp, stance: struckStance)
         if activeModelGeneration >= 2 {
             let limit = physicsTable.parameters.miscueOffsetLimit
             let side = chosenSide + d.tipSideError

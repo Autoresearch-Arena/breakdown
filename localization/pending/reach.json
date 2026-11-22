@@ -1,0 +1,902 @@
+{
+ "keys": [
+  "Normal stance",
+  "Stretch: one foot off the floor",
+  "Behind the back",
+  "Sitting on the rail",
+  "Rest: the cue ball is out of reach",
+  "Cue raised over %@",
+  "%@, automatic bridge",
+  "%@, your bridge finger",
+  "%@, the rest",
+  "your stance",
+  "your bridge",
+  "your stroke",
+  "Stance this time: %@ (last time: %@).",
+  "Your bridge hand was further from the cue ball this time.",
+  "Your bridge hand was closer to the cue ball this time.",
+  "You changed %@, and %@."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Normal stance",
+   "text": "Postura normal"
+  },
+  {
+   "culture": "fr",
+   "key": "Normal stance",
+   "text": "Position normale"
+  },
+  {
+   "culture": "de",
+   "key": "Normal stance",
+   "text": "Normale Haltung"
+  },
+  {
+   "culture": "it",
+   "key": "Normal stance",
+   "text": "Posizione normale"
+  },
+  {
+   "culture": "pt",
+   "key": "Normal stance",
+   "text": "Posição normal"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Normal stance",
+   "text": "Postura normal"
+  },
+  {
+   "culture": "ja",
+   "key": "Normal stance",
+   "text": "通常の構え"
+  },
+  {
+   "culture": "ko",
+   "key": "Normal stance",
+   "text": "보통 자세"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Normal stance",
+   "text": "正常站姿"
+  },
+  {
+   "culture": "ru",
+   "key": "Normal stance",
+   "text": "Обычная стойка"
+  },
+  {
+   "culture": "ar",
+   "key": "Normal stance",
+   "text": "وقفة عادية"
+  },
+  {
+   "culture": "es",
+   "key": "Stretch: one foot off the floor",
+   "text": "Estirado: un pie en el aire"
+  },
+  {
+   "culture": "fr",
+   "key": "Stretch: one foot off the floor",
+   "text": "En extension : un pied décollé du sol"
+  },
+  {
+   "culture": "de",
+   "key": "Stretch: one foot off the floor",
+   "text": "Gestreckt: ein Fuß vom Boden"
+  },
+  {
+   "culture": "it",
+   "key": "Stretch: one foot off the floor",
+   "text": "In allungo: un piede sollevato da terra"
+  },
+  {
+   "culture": "pt",
+   "key": "Stretch: one foot off the floor",
+   "text": "Esticado: um pé fora do chão"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stretch: one foot off the floor",
+   "text": "Esticado: um pé fora do chão"
+  },
+  {
+   "culture": "ja",
+   "key": "Stretch: one foot off the floor",
+   "text": "伸びて構える：片足を床から離す"
+  },
+  {
+   "culture": "ko",
+   "key": "Stretch: one foot off the floor",
+   "text": "길게 뻗기: 한 발을 바닥에서 뗌"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stretch: one foot off the floor",
+   "text": "伸展：一只脚离地"
+  },
+  {
+   "culture": "ru",
+   "key": "Stretch: one foot off the floor",
+   "text": "Тянуться: одна нога над полом"
+  },
+  {
+   "culture": "ar",
+   "key": "Stretch: one foot off the floor",
+   "text": "تمدد: قدم واحدة مرفوعة عن الأرض"
+  },
+  {
+   "culture": "es",
+   "key": "Behind the back",
+   "text": "Por detrás de la espalda"
+  },
+  {
+   "culture": "fr",
+   "key": "Behind the back",
+   "text": "Derrière le dos"
+  },
+  {
+   "culture": "de",
+   "key": "Behind the back",
+   "text": "Hinter dem Rücken"
+  },
+  {
+   "culture": "it",
+   "key": "Behind the back",
+   "text": "Dietro la schiena"
+  },
+  {
+   "culture": "pt",
+   "key": "Behind the back",
+   "text": "Por trás das costas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Behind the back",
+   "text": "Por trás das costas"
+  },
+  {
+   "culture": "ja",
+   "key": "Behind the back",
+   "text": "背面打ち"
+  },
+  {
+   "culture": "ko",
+   "key": "Behind the back",
+   "text": "등 뒤로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Behind the back",
+   "text": "背后击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Behind the back",
+   "text": "Из-за спины"
+  },
+  {
+   "culture": "ar",
+   "key": "Behind the back",
+   "text": "من خلف الظهر"
+  },
+  {
+   "culture": "es",
+   "key": "Sitting on the rail",
+   "text": "Sentado en la banda"
+  },
+  {
+   "culture": "fr",
+   "key": "Sitting on the rail",
+   "text": "Assis sur la bande"
+  },
+  {
+   "culture": "de",
+   "key": "Sitting on the rail",
+   "text": "Auf der Bande sitzend"
+  },
+  {
+   "culture": "it",
+   "key": "Sitting on the rail",
+   "text": "Seduto sulla sponda"
+  },
+  {
+   "culture": "pt",
+   "key": "Sitting on the rail",
+   "text": "Sentado na tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Sitting on the rail",
+   "text": "Sentado na tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "Sitting on the rail",
+   "text": "レールに腰掛けて"
+  },
+  {
+   "culture": "ko",
+   "key": "Sitting on the rail",
+   "text": "레일에 걸터앉기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Sitting on the rail",
+   "text": "坐在台边上"
+  },
+  {
+   "culture": "ru",
+   "key": "Sitting on the rail",
+   "text": "Сидя на борту"
+  },
+  {
+   "culture": "ar",
+   "key": "Sitting on the rail",
+   "text": "جالسًا على حافة الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Diablo: la bola blanca está fuera de alcance"
+  },
+  {
+   "culture": "fr",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Râteau : la bille blanche est hors de portée"
+  },
+  {
+   "culture": "de",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Stütze: die weiße Kugel ist außer Reichweite"
+  },
+  {
+   "culture": "it",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Ponte: la bilia battente è fuori portata"
+  },
+  {
+   "culture": "pt",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Descanso: a bola branca está fora de alcance"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Apoio: a bola branca está fora de alcance"
+  },
+  {
+   "culture": "ja",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "レスト：手球に手が届かない"
+  },
+  {
+   "culture": "ko",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "레스트: 수구에 손이 닿지 않음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "架杆：母球够不着"
+  },
+  {
+   "culture": "ru",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "Машинка: биток не достать"
+  },
+  {
+   "culture": "ar",
+   "key": "Rest: the cue ball is out of reach",
+   "text": "المسند: الكرة البيضاء بعيدة المنال"
+  },
+  {
+   "culture": "es",
+   "key": "Cue raised over %@",
+   "text": "Taco elevado sobre %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Cue raised over %@",
+   "text": "Queue levée au-dessus de %@"
+  },
+  {
+   "culture": "de",
+   "key": "Cue raised over %@",
+   "text": "Queue über %@ angehoben"
+  },
+  {
+   "culture": "it",
+   "key": "Cue raised over %@",
+   "text": "Stecca sollevata sopra %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Cue raised over %@",
+   "text": "Taco levantado por cima de %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cue raised over %@",
+   "text": "Taco levantado por cima de %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Cue raised over %@",
+   "text": "%@の上にキューを上げて"
+  },
+  {
+   "culture": "ko",
+   "key": "Cue raised over %@",
+   "text": "%@ 위로 큐를 들어 올림"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cue raised over %@",
+   "text": "球杆抬高越过%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Cue raised over %@",
+   "text": "Кий поднят над %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Cue raised over %@",
+   "text": "العصا مرفوعة فوق %@"
+  },
+  {
+   "culture": "es",
+   "key": "%@, automatic bridge",
+   "text": "%@, puente automático"
+  },
+  {
+   "culture": "fr",
+   "key": "%@, automatic bridge",
+   "text": "%@, pont automatique"
+  },
+  {
+   "culture": "de",
+   "key": "%@, automatic bridge",
+   "text": "%@, automatische Brücke"
+  },
+  {
+   "culture": "it",
+   "key": "%@, automatic bridge",
+   "text": "%@, ponte automatico"
+  },
+  {
+   "culture": "pt",
+   "key": "%@, automatic bridge",
+   "text": "%@, ponte automática"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@, automatic bridge",
+   "text": "%@, ponte automática"
+  },
+  {
+   "culture": "ja",
+   "key": "%@, automatic bridge",
+   "text": "%@、自動ブリッジ"
+  },
+  {
+   "culture": "ko",
+   "key": "%@, automatic bridge",
+   "text": "%@, 자동 브리지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@, automatic bridge",
+   "text": "%@，自动手架"
+  },
+  {
+   "culture": "ru",
+   "key": "%@, automatic bridge",
+   "text": "%@, автоматический мостик"
+  },
+  {
+   "culture": "ar",
+   "key": "%@, automatic bridge",
+   "text": "%@، جسر تلقائي"
+  },
+  {
+   "culture": "es",
+   "key": "%@, your bridge finger",
+   "text": "%@, tu dedo de puente"
+  },
+  {
+   "culture": "fr",
+   "key": "%@, your bridge finger",
+   "text": "%@, ton doigt de pont"
+  },
+  {
+   "culture": "de",
+   "key": "%@, your bridge finger",
+   "text": "%@, dein Brückenfinger"
+  },
+  {
+   "culture": "it",
+   "key": "%@, your bridge finger",
+   "text": "%@, il tuo dito del ponte"
+  },
+  {
+   "culture": "pt",
+   "key": "%@, your bridge finger",
+   "text": "%@, o teu dedo de ponte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@, your bridge finger",
+   "text": "%@, seu dedo de ponte"
+  },
+  {
+   "culture": "ja",
+   "key": "%@, your bridge finger",
+   "text": "%@、あなたのブリッジの指"
+  },
+  {
+   "culture": "ko",
+   "key": "%@, your bridge finger",
+   "text": "%@, 브리지 손가락"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@, your bridge finger",
+   "text": "%@，你的手架手指"
+  },
+  {
+   "culture": "ru",
+   "key": "%@, your bridge finger",
+   "text": "%@, твой палец-мостик"
+  },
+  {
+   "culture": "ar",
+   "key": "%@, your bridge finger",
+   "text": "%@، إصبع الجسر لديك"
+  },
+  {
+   "culture": "es",
+   "key": "%@, the rest",
+   "text": "%@, el diablo"
+  },
+  {
+   "culture": "fr",
+   "key": "%@, the rest",
+   "text": "%@, le râteau"
+  },
+  {
+   "culture": "de",
+   "key": "%@, the rest",
+   "text": "%@, die Stütze"
+  },
+  {
+   "culture": "it",
+   "key": "%@, the rest",
+   "text": "%@, il ponte"
+  },
+  {
+   "culture": "pt",
+   "key": "%@, the rest",
+   "text": "%@, o descanso"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@, the rest",
+   "text": "%@, o apoio"
+  },
+  {
+   "culture": "ja",
+   "key": "%@, the rest",
+   "text": "%@、レスト"
+  },
+  {
+   "culture": "ko",
+   "key": "%@, the rest",
+   "text": "%@, 레스트"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@, the rest",
+   "text": "%@，架杆"
+  },
+  {
+   "culture": "ru",
+   "key": "%@, the rest",
+   "text": "%@, машинка"
+  },
+  {
+   "culture": "ar",
+   "key": "%@, the rest",
+   "text": "%@، المسند"
+  },
+  {
+   "culture": "es",
+   "key": "your stance",
+   "text": "tu postura"
+  },
+  {
+   "culture": "fr",
+   "key": "your stance",
+   "text": "ta position"
+  },
+  {
+   "culture": "de",
+   "key": "your stance",
+   "text": "deine Haltung"
+  },
+  {
+   "culture": "it",
+   "key": "your stance",
+   "text": "la tua posizione"
+  },
+  {
+   "culture": "pt",
+   "key": "your stance",
+   "text": "a tua postura"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "your stance",
+   "text": "sua postura"
+  },
+  {
+   "culture": "ja",
+   "key": "your stance",
+   "text": "構え"
+  },
+  {
+   "culture": "ko",
+   "key": "your stance",
+   "text": "자세"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "your stance",
+   "text": "你的站姿"
+  },
+  {
+   "culture": "ru",
+   "key": "your stance",
+   "text": "стойку"
+  },
+  {
+   "culture": "ar",
+   "key": "your stance",
+   "text": "وقفتك"
+  },
+  {
+   "culture": "es",
+   "key": "your bridge",
+   "text": "tu puente"
+  },
+  {
+   "culture": "fr",
+   "key": "your bridge",
+   "text": "ton pont"
+  },
+  {
+   "culture": "de",
+   "key": "your bridge",
+   "text": "deine Brücke"
+  },
+  {
+   "culture": "it",
+   "key": "your bridge",
+   "text": "il tuo ponte"
+  },
+  {
+   "culture": "pt",
+   "key": "your bridge",
+   "text": "a tua ponte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "your bridge",
+   "text": "sua ponte"
+  },
+  {
+   "culture": "ja",
+   "key": "your bridge",
+   "text": "ブリッジ"
+  },
+  {
+   "culture": "ko",
+   "key": "your bridge",
+   "text": "브리지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "your bridge",
+   "text": "你的手架"
+  },
+  {
+   "culture": "ru",
+   "key": "your bridge",
+   "text": "мостик"
+  },
+  {
+   "culture": "ar",
+   "key": "your bridge",
+   "text": "جسرك"
+  },
+  {
+   "culture": "es",
+   "key": "your stroke",
+   "text": "tu golpe"
+  },
+  {
+   "culture": "fr",
+   "key": "your stroke",
+   "text": "ton coup"
+  },
+  {
+   "culture": "de",
+   "key": "your stroke",
+   "text": "deinen Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "your stroke",
+   "text": "il tuo colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "your stroke",
+   "text": "a tua tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "your stroke",
+   "text": "sua tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "your stroke",
+   "text": "ストローク"
+  },
+  {
+   "culture": "ko",
+   "key": "your stroke",
+   "text": "스트로크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "your stroke",
+   "text": "你的出杆"
+  },
+  {
+   "culture": "ru",
+   "key": "your stroke",
+   "text": "удар"
+  },
+  {
+   "culture": "ar",
+   "key": "your stroke",
+   "text": "ضربتك"
+  },
+  {
+   "culture": "es",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Postura esta vez: %@ (la vez anterior: %@)."
+  },
+  {
+   "culture": "fr",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Position cette fois : %@ (la dernière fois : %@)."
+  },
+  {
+   "culture": "de",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Haltung diesmal: %@ (letztes Mal: %@)."
+  },
+  {
+   "culture": "it",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Posizione questa volta: %@ (l'ultima volta: %@)."
+  },
+  {
+   "culture": "pt",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Postura desta vez: %@ (da última vez: %@)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Postura desta vez: %@ (da última vez: %@)."
+  },
+  {
+   "culture": "ja",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "今回の構え：%@（前回：%@）。"
+  },
+  {
+   "culture": "ko",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "이번 자세: %@ (지난번: %@)."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "这次的站姿：%@（上次：%@）。"
+  },
+  {
+   "culture": "ru",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "Стойка в этот раз: %@ (в прошлый раз: %@)."
+  },
+  {
+   "culture": "ar",
+   "key": "Stance this time: %@ (last time: %@).",
+   "text": "الوقفة هذه المرة: %@ (المرة الماضية: %@)."
+  },
+  {
+   "culture": "es",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "Esta vez tu mano de puente estaba más lejos de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "Cette fois, ta main de pont était plus loin de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "Deine Brückenhand war diesmal weiter von der weißen Kugel entfernt."
+  },
+  {
+   "culture": "it",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "Questa volta la mano del ponte era più lontana dalla bilia battente."
+  },
+  {
+   "culture": "pt",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "Desta vez a tua mão de ponte estava mais longe da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "Desta vez sua mão de ponte estava mais longe da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "今回はブリッジの手が手球から遠くなりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "이번에는 브리지 손이 수구에서 더 멀었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "这次你的手架离母球更远。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "В этот раз рука-мостик была дальше от битка."
+  },
+  {
+   "culture": "ar",
+   "key": "Your bridge hand was further from the cue ball this time.",
+   "text": "كانت يد الجسر هذه المرة أبعد عن الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "Esta vez tu mano de puente estaba más cerca de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "Cette fois, ta main de pont était plus près de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "Deine Brückenhand war diesmal näher an der weißen Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "Questa volta la mano del ponte era più vicina alla bilia battente."
+  },
+  {
+   "culture": "pt",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "Desta vez a tua mão de ponte estava mais perto da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "Desta vez sua mão de ponte estava mais perto da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "今回はブリッジの手が手球に近くなりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "이번에는 브리지 손이 수구에 더 가까웠습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "这次你的手架离母球更近。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "В этот раз рука-мостик была ближе к битку."
+  },
+  {
+   "culture": "ar",
+   "key": "Your bridge hand was closer to the cue ball this time.",
+   "text": "كانت يد الجسر هذه المرة أقرب إلى الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "You changed %@, and %@.",
+   "text": "Cambiaste %@, y %@."
+  },
+  {
+   "culture": "fr",
+   "key": "You changed %@, and %@.",
+   "text": "Tu as changé %@, et %@."
+  },
+  {
+   "culture": "de",
+   "key": "You changed %@, and %@.",
+   "text": "Du hast %@ geändert, und %@."
+  },
+  {
+   "culture": "it",
+   "key": "You changed %@, and %@.",
+   "text": "Hai cambiato %@, e %@."
+  },
+  {
+   "culture": "pt",
+   "key": "You changed %@, and %@.",
+   "text": "Mudaste %@, e %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You changed %@, and %@.",
+   "text": "Você mudou %@, e %@."
+  },
+  {
+   "culture": "ja",
+   "key": "You changed %@, and %@.",
+   "text": "%@を変えました。そして%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "You changed %@, and %@.",
+   "text": "%@을(를) 바꿨고, %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You changed %@, and %@.",
+   "text": "你改变了%@，而且%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "You changed %@, and %@.",
+   "text": "Ты изменил %@, и %@."
+  },
+  {
+   "culture": "ar",
+   "key": "You changed %@, and %@.",
+   "text": "غيّرت %@، و%@."
+  }
+ ]
+}

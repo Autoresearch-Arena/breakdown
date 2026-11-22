@@ -2,6 +2,11 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (integration: authored modes keep the cue's full calm zone with a
 //          short bridge finger, found by the first test run).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (reach: a stance factor beside the bridge one. zones and delivery take
+//          the player's Stance (App/Stroke/Reach.swift): each rung lowers the comfortable top swing and multiplies the
+//          wander, the rest caps the swing low and stays steady. In trick shots, situations and lessons the stance
+//          never lowers the calm top and its wobble goes in before the saturating cap, so authoredAimBound still holds;
+//          StrokeDelivery keeps the stance it was played from, for the retry comparison.)
 // PURPOSE: Swinging hard costs control (plans/21-Nov-2026-stroke-and-power-plan.md). Pure numbers, no views:
 //          - StrokeZones: where the calm zone of the power bar ends, from the cue's comfortable top swing and the
 //            bridge length.
@@ -83,6 +88,9 @@ struct StrokeDelivery: Equatable, Sendable {
     /// True when the drift alone carried an offset that was inside the tip's grip past it (generation two only):
     /// the stroke made the miscue. Set by the model, which knows the physics generation.
     var pushedPastGrip = false
+    /// Where the player stood and leaned for this strike (Reach); nil when no stance was worked out (a strike with no
+    /// cue ball on the table to stand behind). The retry comparison names a change of stance from it.
+    var stance: Stance? = nil
 
     /// No drift at all: applying it changes nothing.
     var isZero: Bool { aimError == 0 && tipSideError == 0 }
@@ -162,13 +170,17 @@ enum StrokeModel {
         return min(max(f, bridgeRange.lowerBound), bridgeRange.upperBound)
     }
 
-    /// The calm zone for a cue and a bridge. A bridge shorter than the automatic one caps the comfortable swing: the
-    /// backswing cannot run longer than the cue's travel through the bridge, and from v^2 = 2 a L a swing reached over
-    /// a shorter stroke tops out lower, as the square root of the length. A longer bridge does not raise it past the
-    /// cue's own comfortable top.
-    static func zones(cue: CueProfile, bridge: Double) -> StrokeZones {
+    /// The calm zone for a cue, a bridge and a stance. A bridge shorter than the automatic one caps the comfortable
+    /// swing: the backswing cannot run longer than the cue's travel through the bridge, and from v^2 = 2 a L a swing
+    /// reached over a shorter stroke tops out lower, as the square root of the length. A longer bridge does not raise
+    /// it past the cue's own comfortable top. The stance (Reach) scales it down again by its swing factor: a stretched,
+    /// twisted or seated body, or a rest, cannot swing as hard as a square stance before control goes. No stance (nil)
+    /// is the square stance, factor one, so every caller that does not pass one is unchanged bit for bit.
+    static func zones(cue: CueProfile, bridge: Double, stance: Stance? = nil) -> StrokeZones {
         let cap = min(1, (max(bridge, 0) / automaticBridge).squareRoot())
-        return StrokeZones(calmTopSwing: cue.comfortableTopSwing * cap)
+        let calm = cue.comfortableTopSwing * cap
+        guard let stance else { return StrokeZones(calmTopSwing: calm) }
+        return StrokeZones(calmTopSwing: calm * stance.swingFactor)
     }
 
     /// The lever from rear hand to tip: tip-to-bridge over bridge-to-hand.
@@ -183,10 +195,13 @@ enum StrokeModel {
     ///    never reaches the cap) and only the warm part is uncapped.
     ///  - No finger stroke: the steady stroke's wobble times warmth alone, so nothing in the calm zone. Its side is
     ///    fixed: under strain a right-handed stroke's elbow swings out and the rear hand drifts right.
-    static func wobble(swing: Double, zones: StrokeZones, record: StrokeRecord?, authored: Bool) -> Double {
+    ///  `stanceWobble` (Stance.wobbleFactor, one for a square stance) multiplies the wander itself, before the
+    ///  authored modes' saturating cap, so an awkward stance reaches the cap sooner but never passes it.
+    static func wobble(swing: Double, zones: StrokeZones, record: StrokeRecord?, authored: Bool,
+                       stanceWobble: Double = 1) -> Double {
         let warmth = zones.warmth(swing: swing)
-        guard let r = record else { return steadyWander * wobblePerWander * warmth }
-        let w = r.wander * r.rhythm
+        guard let r = record else { return steadyWander * stanceWobble * wobblePerWander * warmth }
+        let w = r.wander * r.rhythm * stanceWobble
         let plain = w * wobblePerWander
         if !authored { return plain * (1 + warmth) }
         // Saturating calm part: cap * x / (1 + x), x the wander in units of a steady stroke. Zero at zero, rising with
@@ -197,21 +212,27 @@ enum StrokeModel {
     }
 
     /// The delivery for one strike. `power` is the model's power (house-cue-equivalent launch speed), `fraction` where
-    /// it sits on the power bar (0 to 1), `record` the finger stroke if one was made for this power.
+    /// it sits on the power bar (0 to 1), `record` the finger stroke if one was made for this power, `stance` where the
+    /// player stood and leaned (nil: a square stance, as before the reach work).
     static func delivery(power: Double, fraction: Double, record: StrokeRecord?, bridge: Double, cue: CueProfile,
-                         authored: Bool) -> StrokeDelivery {
+                         authored: Bool, stance: Stance? = nil) -> StrokeDelivery {
         let swing = CueProfile.swing(forPower: power)
         // In a trick shot, situation or lesson a short bridge finger does not lower the calm top: every authored
         // answer was made at a power inside the cue's own calm zone, and a shortened zone would put the hardest of
         // them (The Called Break) in the warm part, where drift is uncapped and the shot could no longer be made.
         // The lever still uses the real bridge; authoredWobbleCap already allows for the longest one.
-        let zones = zones(cue: cue, bridge: authored ? max(bridge, automaticBridge) : bridge)
-        let e = wobble(swing: swing, zones: zones, record: record, authored: authored)
+        // The stance is held to the same rule for the same reason: there it never lowers the calm top (the rest rung,
+        // the lowest cap of all, is exactly the trick shots that need the mechanical bridge), and its wobble factor
+        // goes in before the saturating cap (wobble), so the bound still holds on every rung.
+        let zones = zones(cue: cue, bridge: authored ? max(bridge, automaticBridge) : bridge,
+                          stance: authored ? nil : stance)
+        let e = wobble(swing: swing, zones: zones, record: record, authored: authored,
+                       stanceWobble: stance?.wobbleFactor ?? 1)
         // The rear hand to the right turns the cue about the bridge: the tip goes left and the cue points left
         // (counter-clockwise on the table plan, a positive aim error).
         let aim = e / max(1e-6, tipToRearHand - bridge)
         let tip = -e * lever(bridge: bridge)
         return StrokeDelivery(aimError: aim, tipSideError: tip, swing: swing, calmTopSwing: zones.calmTopSwing,
-                              fullPower: fraction >= 0.9, bridge: bridge, record: record)
+                              fullPower: fraction >= 0.9, bridge: bridge, record: record, stance: stance)
     }
 }
