@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: the title
 //          row's status slot shows the ride's acts with the small table map (RideTitleChip), in place of the surface
 //          button while a ride speaks.)
@@ -355,6 +356,8 @@ struct ShowpieceView: View {
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             // Both step aside while a what-if shows: the violet other future is then the only extra drawing (0.7.5).
             if model.ghost != nil && !model.whatIf.isShowing { GhostOverlay(model: model, bridge: bridge) }
+            // The Ride hand-over's rings on the ridden and first-struck balls and the dotted path between them.
+            RideOverlay(model: model, bridge: bridge)
             // The stroke that played the shot, faint on the cloth while it replays. Never takes touches.
             if model.currentAttempt?.stroke?.trace.isEmpty == false && !model.whatIf.isShowing {
                 StrokeTraceOverlay(model: model, bridge: bridge)

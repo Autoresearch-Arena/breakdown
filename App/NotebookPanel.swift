@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: the notebook's Continue waits for the opening
 //          to end, so the first minute's notebook stays its one line; the opening's holds end by themselves.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 4, 7, 8 and 9, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
@@ -377,7 +378,7 @@ private struct NotebookTopBar: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 0)
-            SurfaceMenuButton(model: model)
+            if model.rideStatus != nil { RideTitleChip(model: model) } else { SurfaceMenuButton(model: model) }
         }
     }
 }

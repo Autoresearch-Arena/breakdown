@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: the caption's physics figures (Caption.figures)
 //          as a row of compact tiles under the title line, each number large in rounded monospaced digits in the colour
 //          of the Lens mark it describes, its label small under it. The phone strip keeps the row's place in its fixed
@@ -762,7 +763,8 @@ struct CaptionStrip: View {
         // The dots' room depends only on the caption (more than one sentence), never on how it was paged, so the title's
         // width and the detail's room cannot change because of the pages they decide.
         let dotsRoom = (layout?.chunks.count ?? 0) > 1
-        let continueState: StripTitleRow.ContinueState = guided ? (holding ? .live : .waiting) : .hidden
+        // A ride's held hit is not guided pacing but still waits on Continue (0.7.6 Ride hand-over).
+        let continueState: StripTitleRow.ContinueState = holding ? .live : (guided ? .waiting : .hidden)
         ZStack(alignment: .bottom) {
             if let caption {
                 ZStack(alignment: .topLeading) {

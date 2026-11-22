@@ -8,6 +8,16 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.6] - 22-November-2026 (not yet shipped)
+
+Author: Claude Opus 5.5 High (coordinator), with nine phone-bug finders, a hundred and thirty skeptics, eight builders, two more builders (Ride hand-over, caption figures) and twenty-two translators at Claude Opus 5.5 High. Plans: plans/22-Nov-2026-phone-bug-hunt.md, plans/22-Nov-2026-v076-phone-plan.md, plans/22-Nov-2026-ride-handover-plan.md, plans/22-Nov-2026-phone-ui-plan.md.
+
+- What: The phone bugs from the hunt are fixed; guided Lens replays come in on the moment being explained, hold each explanation for its full reading time and page long ones; the Lens drawings never shrink below a readable size; the Ride camera has a hand-over (the clock holds while the camera comes down to the struck ball and back, each step named, a small table map, the hit held with its drawing); explanations carry their figures; no sound while a ball travels and no reverb on the hits; short labels fixed in eleven languages.
+- Why: The Boss's look at 0.7.5 on a regular iPhone: overlapping cards and labels, the moment too small and too fast, a Ride view that did not say what it showed, a loud hiss while balls rolled.
+- How: a code-wide phone bug hunt with two skeptics per finding, eight builders in their own worktrees with disjoint files, then the Ride and figures builders on the merged code; one compile after each merge.
+- Not done: the phone layout itself. The Boss rejected the explanation card's fixed room and the stacked cards ("they need to not be cards"); plans/22-Nov-2026-phone-ui-plan.md is the plan for a new session. New words from this version are English only in the other languages for now.
+- Checked: the app tests, the package tests, BreakProbe verify (45 of 45) and the Mac build pass; the first screen of a fresh install on the iPhone 17 simulator (the regular iPhone size). Not yet checked by hand: the Ride hand-over and the figures.
+
 ## [0.7.5] - 22-November-2026
 
 Author: Claude Opus 5.5 High (coordinator), with six gap hunters, seventy skeptics, three what-if designers, a judge, seven builders and seven reviewers at Claude Opus 5.5 High. Plan: plans/22-Nov-2026-v075-whatif-and-gaps-plan.md.

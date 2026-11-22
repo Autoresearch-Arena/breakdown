@@ -9,6 +9,7 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the opening's lamp shot is switched off; it looked broken.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: the aim preview and 3D cue start from the striker).
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no caption slot any more: captions float over the table's top edge
 //          and cost it nothing, so StageChrome and the camera request no longer carry a caption edge).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the bridge on the 3D cue now follows model.showsBridge and
@@ -160,6 +161,7 @@ struct TableStage: View {
                                 bridgeMark: cueAim.flatMap { Self.bridgeMark(for: model, cue: $0, bridge: bridge) })
                     // The moment framing of a guided Lens replay (MomentFrame): the camera glides in on each beat.
                     table.moment = MomentRequest(allowed: MomentFrame.allowed(for: model), plan: model.pacePlan)
+                    table.rideCue = model.rideCue
                     table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.
