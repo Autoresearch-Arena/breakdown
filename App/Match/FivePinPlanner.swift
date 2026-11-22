@@ -2,6 +2,13 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent review: the aim window is measured on each
 //          refined trial's points, not its value, so hard's leave term no longer hides a real scoring window.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 6: easy never plays a stroke it can see will
+//          foul. Its plain full hit used to be played whatever lay on the line, so with the other ball straight beyond
+//          the castle easy drove its own ball through the pins. Now every fallback line is checked by eye the way the
+//          cut already was (its ball's path to the hit clear of the castle and of the red): the full hit first, then
+//          thinner hits across the other ball, outward from the full one, then a one-cushion kick at the other ball's
+//          mirror image in each cushion (both legs checked); only when every one is blocked is the full hit played.)
 // PURPOSE: How the computer chooses its stroke at five-pin billiards (plans/22-Nov-2026-v074-glow-up-plan.md, feature
 //          R, table-opponent brief item 5). OpponentPlanner.plan hands a five-pin snapshot here. The computer strikes
 //          its own ball (the yellow, seat 1) onto the other player's, which should then knock pins down; a miss, the
@@ -18,7 +25,8 @@
 //          centre), where the cut that sends it into the castle lives; the success mark is 2 points.
 //          Easy plays by eye with no solves: the ghost-ball aim that sends the other ball at the castle's centre, at
 //          the speed that rolls that distance times 1.4 (between 2 and 5.5 m/s); when that cut is thinner than 70
-//          degrees or its ball's path to the ghost ball crosses the castle or the red ball, a plain full hit at 3 m/s.
+//          degrees or its ball's path to the ghost ball crosses the castle or the red ball, the first clear line of: a
+//          plain full hit at 3 m/s, a thinner hit across the other ball, a one-cushion kick (see Edited above).
 //          The plan's kind: .pins (expected points, clean points, whether its ball met a cushion first) when the
 //          expected points are above zero, otherwise .concede; easy's is .pins with no figures.
 // SRP/DRY check: Pass - the scoring is FivePinRules'; the solving, smoothing, refining and noise check are
@@ -58,6 +66,9 @@ enum FivePinPlanner {
     static let easyFullHitSpeed = 3.0
     /// Cuts thinner than this, degrees, send the other ball off with too little of the speed to reach the castle.
     static let easyMaxCut = 70.0
+    /// Easy's thinner hits when the full hit is blocked: aims this many degrees apart, out from the full-hit line on
+    /// both sides, up to the edge of the other ball (asin(2R / d), the extraAims rule). Half the fan's step: by eye.
+    static let easyFineStep = 0.25
 
     // MARK: Planning
 
@@ -205,10 +216,9 @@ enum FivePinPlanner {
         let redInWay = s.layout.indices.contains(red) && NextShot.isOnTable(s.layout[red])
             && !TableLines.clear(from: cue, to: g, past: [red], in: s.layout, radius: r)
         if cut > easyMaxCut || crossesCastle || redInWay {
-            let full = obj - cue
+            let line = easyFallbackLine(s, cue: cue, object: obj, castle: castle, castleReach: castleReach)
             return OpponentPlan(kind: kind,
-                                stroke: OpponentStroke(aimDegrees: atan2(full.y, full.x) * 180 / Double.pi,
-                                                       speed: easyFullHitSpeed, tipUp: tipUp),
+                                stroke: OpponentStroke(aimDegrees: line.aim, speed: line.speed, tipUp: tipUp),
                                 placement: nil, call: nil, window: nil)
         }
         let roll = OpponentPlanner.rollingLaunch(distance: toGhost.length + toCastle.length, parameters: p)
@@ -217,5 +227,87 @@ enum FivePinPlanner {
                             stroke: OpponentStroke(aimDegrees: ghostAim(cue: cue, object: obj, toward: castle, radius: r),
                                                    speed: speed, tipUp: tipUp),
                             placement: nil, call: nil, window: nil)
+    }
+
+    /// True when a ball rolling straight from `a` to `b` stays clear of the castle (its centre never within
+    /// `castleReach` of the castle's centre, the same test the cut uses) and of the red ball.
+    private static func lineIsClear(_ s: OpponentSnapshot, from a: Vec2, to b: Vec2, castle: Vec2,
+                                    castleReach: Double) -> Bool {
+        guard distance(from: castle, toSegment: a, b) >= castleReach else { return false }
+        let red = FivePinRules.redBall
+        guard s.layout.indices.contains(red), NextShot.isOnTable(s.layout[red]) else { return true }
+        return TableLines.clear(from: a, to: b, past: [red], in: s.layout, radius: s.parameters.ballRadius)
+    }
+
+    /// Easy's stroke when the cut is not on: the first line, by eye, along which its own ball reaches the other ball
+    /// without passing through the castle or the red (lineIsClear), so it never plays a foul it can see.
+    ///   1. The plain full hit at easyFullHitSpeed.
+    ///   2. Thinner hits across the other ball, easyFineStep apart, nearest the full hit first (left before right at
+    ///      the same offset, so the choice is the same on every run), out to where the line would miss it. The leg
+    ///      checked is the one to where the two balls touch: along the aim, `along - sqrt((2R)^2 - off^2)`.
+    ///   3. A one-cushion kick: the other ball mirrored in each cushion line (a radius in from the nose; five-pin has
+    ///      no pockets, so no jaw to keep clear of), checked on both legs, the shortest clear path first, struck to
+    ///      roll that path easyPace times over (within easySpeeds).
+    ///   4. Everything blocked: the full hit after all (it may foul, but some stroke must be played).
+    /// Returns the aim (degrees) and the speed (m/s).
+    static func easyFallbackLine(_ s: OpponentSnapshot, cue: Vec2, object obj: Vec2, castle: Vec2,
+                                 castleReach: Double) -> (aim: Double, speed: Double) {
+        let p = s.parameters, r = p.ballRadius
+        let full = obj - cue
+        let d = full.length
+        let fullAim = atan2(full.y, full.x) * 180 / Double.pi
+        // 1. The full hit: the ball's centre runs to two radii short of the other ball's.
+        if d > 2 * r, lineIsClear(s, from: cue, to: obj - full.normalized * (2 * r), castle: castle,
+                                  castleReach: castleReach) {
+            return (fullAim, easyFullHitSpeed)
+        }
+        // 2. Thinner hits. An aim `off` degrees from the full hit passes the other ball's centre at d sin(off); the
+        //    balls touch while that is under 2R, after the ball has run d cos(off) - sqrt((2R)^2 - (d sin off)^2).
+        if d > 2 * r {
+            let edge = asin(min(1, 2 * r / d)) * 180 / Double.pi
+            var off = easyFineStep
+            while off < edge {
+                for signed in [off, -off] {
+                    let a = (fullAim + signed) * Double.pi / 180
+                    let dir = Vec2(cos(a), sin(a))
+                    let rad = signed * Double.pi / 180
+                    let side = d * sin(abs(rad))
+                    guard side < 2 * r else { continue }
+                    let run = d * cos(rad) - (4 * r * r - side * side).squareRoot()
+                    if run > 0, lineIsClear(s, from: cue, to: cue + dir * run, castle: castle, castleReach: castleReach) {
+                        return (fullAim + signed, easyFullHitSpeed)
+                    }
+                }
+                off += easyFineStep
+            }
+        }
+        // 3. One-cushion kicks, the shortest unfolded path first.
+        let L = p.tableLength, W = p.tableWidth
+        let rails: [(alongX: Bool, line: Double)] = [(true, r), (true, L - r), (false, r), (false, W - r)]
+        var kicks: [(aim: Double, path: Double)] = []
+        for rail in rails {
+            let image = rail.alongX ? Vec2(2 * rail.line - obj.x, obj.y) : Vec2(obj.x, 2 * rail.line - obj.y)
+            let toImage = image - cue
+            let across = rail.alongX ? toImage.x : toImage.y
+            guard abs(across) > 1e-9 else { continue }
+            // Where along the line to the image the ball's centre meets the cushion line.
+            let t = (rail.alongX ? rail.line - cue.x : rail.line - cue.y) / across
+            guard t > 0, t < 1 else { continue }
+            let bounce = cue + toImage * t
+            guard bounce.x >= r, bounce.x <= L - r, bounce.y >= r, bounce.y <= W - r else { continue }
+            // The second leg ends where the balls touch, two radii short of the other ball.
+            let back = obj - bounce
+            guard back.length > 2 * r else { continue }
+            let touch = obj - back.normalized * (2 * r)
+            guard lineIsClear(s, from: cue, to: bounce, castle: castle, castleReach: castleReach),
+                  lineIsClear(s, from: bounce, to: touch, castle: castle, castleReach: castleReach) else { continue }
+            kicks.append((aim: atan2(toImage.y, toImage.x) * 180 / Double.pi, path: toImage.length))
+        }
+        if let k = kicks.min(by: { $0.path < $1.path }) {
+            let roll = OpponentPlanner.rollingLaunch(distance: k.path, parameters: p)
+            return (k.aim, min(max(roll * easyPace, easySpeeds.lowerBound), easySpeeds.upperBound))
+        }
+        // 4. Every line is blocked: the full hit.
+        return (fullAim, easyFullHitSpeed)
     }
 }

@@ -1,4 +1,11 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 9 and R-A: the hit diagram no longer vanishes when a held hit ends - it keeps its pose and fades out over
+//          the same quarter second it fades in, and a new held hit during that fade carries on from the opacity on
+//          screen; it is still cut at once when the Lens leaves, the recording changes or the hold is not a hit (see
+//          CONTACT GEOMETRY). The five-pin castle gets a faint paper-coloured ring round its pins so it reads at a glance
+//          on a phone (the pin marks were already 2.6 cm across, over the 1.4 cm asked for, so their size is
+//          unchanged), and bar billiards' pegs are no longer drawn with a red one: that table has no red peg.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4: the Lens draws bumper-pool posts and five-pin pins, so a held
 //          moment off a bumper or into the pins shows what it is about.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
@@ -58,7 +65,9 @@
 //
 //          CONTACT GEOMETRY (0.7.4). The one part of the Lens NOT driven by the clock alone: it appears only while the
 //          model holds a guided beat on a ball-to-ball hit (TableScene hands the held event over each frame), and it fades
-//          in over real time, because the clock stands still during a hold. It is therefore left out of fingerprint();
+//          in over real time, because the clock stands still during a hold. Since 0.7.5 it also fades out over the same
+//          real time when the hold ends with the Lens still in (it is cut at once when the Lens leaves, the recording is
+//          rebuilt, or the hold moves to a moment that is not a hit). It is therefore left out of fingerprint();
 //          LensScrubCheck leaves heldEvent nil, so the parts stay hidden there and the check is exactly as before.
 //          The triangle is drawn at one scale for all three arrows (0.12 m per m/s, smaller if the longest would pass
 //          0.35 m), so it still closes; arrows clamped one by one would not. When the struck ball was already moving
@@ -185,8 +194,14 @@ final class LensLayer {
     /// scaled down together to keep the longest inside it, so it still closes).
     static let contactArrowScale = 0.12
     static let contactArrowMax = 0.35
-    /// Real seconds the contact drawing takes to fade in when a held hit begins.
+    /// Real seconds the contact drawing takes to fade in when a held hit begins, and (0.7.5) to fade out when the hold
+    /// ends with the Lens still in.
     static let contactFadeIn = 0.25
+    /// The five-pin castle ring (0.7.5): metres outside the outer pin marks, its width in metres, and its strength
+    /// (opacity), faint so it marks the castle without competing with the paths.
+    static let castleRingGap = 0.012
+    static let castleRingWidth: Float = 0.003
+    static let castleRingStrength: Float = 0.35
     /// Arrowhead length of the triangle's arrows, metres (shortened on a very short arrow).
     static let contactHeadLength: Float = 0.022
     /// The right-angle mark's side, as a share of the ball radius.
@@ -302,8 +317,13 @@ final class LensLayer {
     /// Incoming (white), the struck ball out (cyan), the striking ball out (cyan), in that order.
     private var contactArrows: [ContactArrow] = []
     private var squareMark = ModelEntity()
-    /// The event the contact drawing is posed for and when (system uptime, seconds) it started to fade in.
+    /// The event the contact drawing is posed for and when (system uptime, seconds) it started to fade in (back-dated
+    /// when a fade-in carries on from part-way, see applyContact).
     private var contactShown: (event: Int, since: TimeInterval)?
+    /// The opacity the contact drawing was last shown at (0 when off), so a fade either way starts from it.
+    private var contactOpacity: Float = 0
+    /// Set while the drawing fades out after its hold ended (0.7.5): the opacity it started from and when.
+    private var contactFadingOut: (from: Float, since: TimeInterval)?
     private var tangentMaterial = UnlitMaterial()
     private var outgoingMaterial = UnlitMaterial()
 
@@ -532,12 +552,37 @@ final class LensLayer {
             let inner = disc(post.center, radius: post.radius * 0.28, core)
             inner.position.y += 0.001
         }
+        // A five-pin castle (pins and no holes in the bed) has a red pin; bar billiards' pegs (pins beside holes) have
+        // none, so there every peg is drawn in paper rather than painting its black peg red (0.7.5).
+        let castle = !table.pins.isEmpty && table.bedHoles.isEmpty
+        // The red pin is the one in the middle of the castle (FivePinRules.redPin, the pin nearest the table's
+        // centre); read here from the geometry so the Lens needs nothing from the rules.
+        let centre = Vec2(table.length / 2, table.width / 2)
+        let nearest = table.pins.indices.min { (table.pins[$0].center - centre).length < (table.pins[$1].center - centre).length }
+        // Each mark is a disc 1.6 times the pin's contact radius, never under 8 mm: 2.6 cm across on five-pin, whose
+        // pins touch at 2.4 mm. That already clears the 1.4 cm the 0.7.5 plan (R-A) asks for, so the size is unchanged
+        // and the castle ring below is what makes the castle read at a glance on a phone.
+        func markRadius(_ pin: Pin) -> Double { max(pin.radius, 0.008) * 1.6 }
         for (k, pin) in table.pins.enumerated() {
-            // The red pin is the one in the middle of the castle (FivePinRules.redPin, the pin nearest the table's
-            // centre); read here from the geometry so the Lens needs nothing from the rules.
-            let centre = Vec2(table.length / 2, table.width / 2)
-            let nearest = table.pins.indices.min { (table.pins[$0].center - centre).length < (table.pins[$1].center - centre).length }
-            pinMarks.append(disc(pin.center, radius: max(pin.radius, 0.008) * 1.6, k == nearest ? red : paper))
+            pinMarks.append(disc(pin.center, radius: markRadius(pin), castle && k == nearest ? red : paper))
+        }
+        // The castle ring (0.7.5, plan item R-A): a thin, faint paper-coloured circle round the whole castle, just
+        // outside the outer pins' marks, centred on the red pin. Static like the posts: the castle's place does not
+        // change when pins fall, and the ring stays so the eye still finds where the pins stood.
+        if castle, let middle = nearest {
+            let c = table.pins[middle].center
+            let outer = table.pins.map { ($0.center - c).length + markRadius($0) }.max() ?? 0
+            let radius = Float(outer + Self.castleRingGap)
+            let inner = max(0, 1 - Self.castleRingWidth / radius)
+            var faint = UnlitMaterial(color: rgba(Theme.paperRGB.0, Theme.paperRGB.1, Theme.paperRGB.2))
+            faint.blending = .transparent(opacity: .float(Self.castleRingStrength))
+            faint.faceCulling = .none
+            let ring = ModelEntity(mesh: Self.annulus(segments: 96, inner: inner), materials: [faint])
+            ring.scale = SIMD3(radius, 1, radius)
+            // Just under the pin marks (0.002 m), over the grid (0.0004 m).
+            ring.position = frame.world(c, height: 0.0016)
+            ring.components.set(ModelSortGroupComponent(group: sortGroup, order: 1))
+            obstacleRoot.addChild(ring)
         }
     }
 
@@ -549,9 +594,9 @@ final class LensLayer {
         for child in Array(ringRoot.children) { child.removeFromParent() }
         trailEntities = [:]; trailOffsets = [:]; rings = []
         lastBuild = (timeline, frame)
-        // A new recording: any contact drawing belonged to the old one (its event index means nothing here).
-        contactShown = nil
-        contactRoot.isEnabled = false
+        // A new recording: any contact drawing belonged to the old one (its event index means nothing here), so it is
+        // cut at once, a fade-out in progress included.
+        cutContact()
         builtDashed = LensTextures.differentiateWithoutColor
 
         // Gather every ball's ribbons into one mesh per colour.
@@ -1097,25 +1142,54 @@ final class LensLayer {
         tangentDashed.isEnabled = shown && !dotted
     }
 
-    /// One frame of the contact drawing: hidden unless the held event is a ball-to-ball hit and the Lens is in; posed
-    /// when the held event changes; faded in over `contactFadeIn` real seconds from then.
+    /// One frame of the contact drawing, in four cases (0.7.5 adds the fade-out):
+    ///   - the Lens is out: cut at once;
+    ///   - a guided hold on a ball-to-ball hit: posed when the held event changes, faded in over `contactFadeIn` real
+    ///     seconds, starting from whatever opacity it shows now (zero when hidden, part-way through a fade-out);
+    ///   - a hold on anything else: cut at once (the drawing would explain the wrong moment);
+    ///   - no hold any more (the replay moved on with the Lens still in): kept in its last pose and faded from its
+    ///     current opacity to zero over `contactFadeIn` real seconds, then switched off, so it leaves with the camera
+    ///     instead of vanishing.
+    /// Real time, not the clock, throughout: the clock stands still while a beat is held. None of this is in
+    /// fingerprint(), which covers only what the clock decides.
     private func applyContact(melt m: Float, timeline: Timeline, frame: TableFrame) {
-        guard m > 0.02, let i = heldEvent, timeline.events.indices.contains(i),
-              let g = ContactGeometry.at(timeline.events[i]) else {
-            if contactRoot.isEnabled { contactRoot.isEnabled = false }
-            contactShown = nil
+        guard m > 0.02 else { cutContact(); return }
+        let now = ProcessInfo.processInfo.systemUptime
+        if let i = heldEvent, timeline.events.indices.contains(i), let g = ContactGeometry.at(timeline.events[i]) {
+            if contactShown?.event != i || contactFadingOut != nil {
+                if contactShown?.event != i { poseContact(g, event: timeline.events[i], frame: frame) }
+                // Back-date the fade-in's start so it carries on from the opacity on screen now: from zero that is
+                // `now`, as before; part-way through a fade-out it is that much earlier, so nothing jumps.
+                contactShown = (i, now - Double(contactOpacity) * Self.contactFadeIn)
+                contactFadingOut = nil
+            }
+            let since = contactShown?.since ?? now
+            setContactOpacity(Float(min(1, max(0, (now - since) / Self.contactFadeIn))))
             return
         }
-        // Real time, not the clock: the clock stands still while the beat is held.
-        let now = ProcessInfo.processInfo.systemUptime
-        if contactShown?.event != i {
-            poseContact(g, event: timeline.events[i], frame: frame)
-            contactShown = (i, now)
-        }
-        let since = contactShown?.since ?? now
-        let fade = Float(min(1, max(0, (now - since) / Self.contactFadeIn)))
+        // Held on something that is not a hit, or nothing was showing: off at once.
+        guard heldEvent == nil, contactShown != nil, contactRoot.isEnabled else { cutContact(); return }
+        // The hold ended with the drawing up: fade it out where it is.
+        if contactFadingOut == nil { contactFadingOut = (from: contactOpacity, since: now) }
+        let fading = contactFadingOut ?? (from: contactOpacity, since: now)
+        let left = fading.from * Float(max(0, 1 - (now - fading.since) / Self.contactFadeIn))
+        if left <= 0.001 { cutContact() } else { setContactOpacity(left) }
+    }
+
+    /// Shows the contact drawing at `opacity` and remembers it, so a fade that starts next can carry on from it.
+    private func setContactOpacity(_ opacity: Float) {
         contactRoot.isEnabled = true
-        contactRoot.components.set(OpacityComponent(opacity: fade))
+        contactRoot.components.set(OpacityComponent(opacity: opacity))
+        contactOpacity = opacity
+    }
+
+    /// Switches the contact drawing off at once and forgets its pose and fades: the Lens left, the recording was
+    /// rebuilt, a hold moved to a moment that is not a hit, or a fade-out finished.
+    private func cutContact() {
+        if contactRoot.isEnabled { contactRoot.isEnabled = false }
+        contactShown = nil
+        contactFadingOut = nil
+        contactOpacity = 0
     }
 
     /// Lays the contact drawing out for one hit (see CONTACT GEOMETRY in the header for what shows when).

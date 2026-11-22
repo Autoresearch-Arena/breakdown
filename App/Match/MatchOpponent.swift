@@ -20,6 +20,14 @@
 //          a per-game scale (tableNoiseScale, every game at 1 for now); Slots is internal and parallel(_:_:) runs any
 //          batch of solves across the cores; MatchOpponent keeps the handle of the task that runs the planner and
 //          cancels it in cancel(), so an abandoned think stops at its next phase instead of running on.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 1 and 2. Ball in hand behind the head line: eight-ball now fouls a first hit on a ball that also
+//          started behind the line unless the cue ball crossed it first, so every direct shot (straight pots, banks,
+//          placements, safeties, easy's look and the plain full hit) leaves such balls out (directTargets); when every
+//          legal ball is behind the line, the last-resort stroke is a kick off the foot cushion, which crosses the line
+//          before the hit. And an abandoned think stops early: the pool search checks Task.isCancelled after its sweep
+//          and before its ball-in-hand fallback and returns a cheap plan the token then discards (MatchOpponent.cancel
+//          cancels the task, and leaving a match calls it).)
 // PURPOSE: The computer opponent for eight-ball and nine-ball (plans/21-Nov-2026-rules-games-plan.md package 5), and
 //          since 0.7.4 the entry point for bumper pool and five-pin (BumperPoolPlanner, FivePinPlanner and their
 //          shared search, TableOpponentSearch, each in its own file under App/Match).
@@ -482,6 +490,20 @@ enum OpponentPlanner {
         return []
     }
 
+    /// The legal balls the cue ball may hit first straight from where it will be played. With ball in hand behind the
+    /// head line, a ball that also starts behind the line (on the line counts as behind, NextShot.headLineX) may only be
+    /// hit first after the cue ball has crossed the line (EightBallRules.hitBehindHeadLine), which no direct shot
+    /// here does, so those balls are left out of the pots, banks, placements, safeties and easy's look; the fallback
+    /// still reaches them with a kick off the foot cushion when nothing else is left. Any other ball in hand, or none,
+    /// leaves `targets` as they are.
+    static func directTargets(_ s: OpponentSnapshot, _ targets: [Int], layout: [Vec2]) -> [Int] {
+        guard s.state.ballInHand == .behindHeadLine else { return targets }
+        let line = NextShot.headLineX(parameters: s.parameters)
+        return targets.filter { t in
+            !(layout.indices.contains(t) && NextShot.isOnTable(layout[t]) && layout[t].x <= line)
+        }
+    }
+
     // MARK: Geometry
 
     /// The aim window a pot gives, degrees, from the geometry alone. An aim error d turns the cue ball's path, which
@@ -856,7 +878,10 @@ enum OpponentPlanner {
     static func planFrom(_ s: OpponentSnapshot, layout: [Vec2], placement: Vec2?) -> OpponentPlan {
         let cueBall = s.rules.cueBall(for: s.state.turn, in: s.state)
         let targets = legalTargets(rules: s.rules, state: s.state)
-        let picked = shortlist(candidates(layout: layout, cueBall: cueBall, targets: targets, parameters: s.parameters))
+        // Only balls the cue ball may hit first straight from here (all of them, unless the ball in hand is behind
+        // the head line); the fallback below keeps the whole legal list for its kick.
+        let direct = directTargets(s, targets, layout: layout)
+        let picked = shortlist(candidates(layout: layout, cueBall: cueBall, targets: direct, parameters: s.parameters))
         var jobs: [Job] = []
         for c in picked {
             let callC = call(for: c, rules: s.rules)
@@ -867,8 +892,13 @@ enum OpponentPlanner {
             }
         }
         // The safety strokes go after every candidate's sweep, so candidate i's trials are slice i of the first part.
-        jobs += safetyJobs(s, layout: layout, cueBall: cueBall, targets: targets)
+        jobs += safetyJobs(s, layout: layout, cueBall: cueBall, targets: direct)
         let trials = run(s, jobs)
+        // The sweep is the long part. If the think was abandoned meanwhile (the match left, a rematch), skip the
+        // refine pass: the plain fallback is returned at once and MatchOpponent's token drops it anyway.
+        if Task.isCancelled {
+            return fallback(s, layout: layout, cueBall: cueBall, targets: targets, placement: placement)
+        }
         let per = speedFactors.count * aimOffsets.count
         var assessed: [Assessment] = []
         for (i, c) in picked.enumerated() {
@@ -890,17 +920,36 @@ enum OpponentPlanner {
 
     /// A plain full hit on the nearest legal ball at the speed that rolls two table widths. In a game with calls it
     /// is called as Safety: not a planned safety, but the one legal call for a stroke that aims at no pocket.
+    /// With ball in hand behind the head line and every legal ball behind the line too (directTargets is empty), a
+    /// full hit would foul, so the nearest legal ball is kicked off the foot cushion instead: aimed at its mirror image
+    /// across the line the cue ball's centre meets that cushion on (a radius in from the nose, as the bank candidates
+    /// mirror), so the cue ball crosses the head line on its way up the table and meets the ball coming back. Struck to
+    /// roll the whole unfolded path plus two table widths, so after the hit some ball still reaches a rail.
     private static func fallback(_ s: OpponentSnapshot, layout: [Vec2], cueBall: Int, targets: [Int],
                                  placement: Vec2?) -> OpponentPlan {
         let p = s.parameters
         let cue = layout.indices.contains(cueBall) ? layout[cueBall] : Vec2(p.tableLength / 4, p.tableWidth / 2)
-        let near = targets.filter { layout.indices.contains($0) && NextShot.isOnTable(layout[$0]) }
-            .min { (layout[$0] - cue).length < (layout[$1] - cue).length }
-        let aim = near.map { degrees(layout[$0] - cue) } ?? 0
-        return OpponentPlan(kind: .hit(ball: near),
-                            stroke: OpponentStroke(aimDegrees: aim, speed: rollingLaunch(distance: 2 * p.tableWidth,
-                                                                                         parameters: p)),
-                            placement: placement, call: s.rules.usesCalls ? .safety : nil, leftOpponent: nil)
+        let up = targets.filter { layout.indices.contains($0) && NextShot.isOnTable(layout[$0]) }
+        func nearest(_ balls: [Int]) -> Int? { balls.min { (layout[$0] - cue).length < (layout[$1] - cue).length } }
+        let call: EightBallCall? = s.rules.usesCalls ? .safety : nil
+        let plain = rollingLaunch(distance: 2 * p.tableWidth, parameters: p)
+        if let near = nearest(directTargets(s, up, layout: layout)) {
+            return OpponentPlan(kind: .hit(ball: near),
+                                stroke: OpponentStroke(aimDegrees: degrees(layout[near] - cue), speed: plain),
+                                placement: placement, call: call, leftOpponent: nil)
+        }
+        if let near = nearest(up) {
+            let image = Vec2(2 * (p.tableLength - p.ballRadius) - layout[near].x, layout[near].y)
+            let pace = PlayerShotSpeed.ordinary
+            let speed = rollingLaunch(distance: (image - cue).length + 2 * p.tableWidth, parameters: p)
+            return OpponentPlan(kind: .hit(ball: near),
+                                stroke: OpponentStroke(aimDegrees: degrees(image - cue),
+                                                       speed: min(max(speed, pace.lowerBound), pace.upperBound)),
+                                placement: placement, call: call, leftOpponent: nil)
+        }
+        // Nothing legal on the table at all (it cannot happen in a real game): straight up the table.
+        return OpponentPlan(kind: .hit(ball: nil), stroke: OpponentStroke(aimDegrees: 0, speed: plain),
+                            placement: placement, call: call, leftOpponent: nil)
     }
 
     // MARK: Easy: the best-looking pot
@@ -913,7 +962,9 @@ enum OpponentPlanner {
     static func easyPlan(_ s: OpponentSnapshot, layout: [Vec2], placement: Vec2?) -> OpponentPlan {
         let cueBall = s.rules.cueBall(for: s.state.turn, in: s.state)
         let targets = legalTargets(rules: s.rules, state: s.state)
-        let all = candidates(layout: layout, cueBall: cueBall, targets: targets, parameters: s.parameters)
+        // Easy looks only at balls it may hit first straight (directTargets); the fallback keeps the whole list.
+        let all = candidates(layout: layout, cueBall: cueBall, targets: directTargets(s, targets, layout: layout),
+                             parameters: s.parameters)
         guard let c = all.first(where: { $0.bankRail == nil }) else {
             return fallback(s, layout: layout, cueBall: cueBall, targets: targets, placement: placement)
         }
@@ -942,7 +993,8 @@ enum OpponentPlanner {
         let cueBall = s.rules.cueBall(for: s.state.turn, in: s.state)
         let behind = s.state.ballInHand == .behindHeadLine
         var best: [Placement] = []
-        let targets = legalTargets(rules: s.rules, state: s.state)
+        // Behind the head line, a ball also behind it cannot be potted straight from a spot there (directTargets).
+        let targets = directTargets(s, legalTargets(rules: s.rules, state: s.state), layout: s.layout)
         for t in targets where s.layout.indices.contains(t) && NextShot.isOnTable(s.layout[t]) {
             let obj = s.layout[t]
             let others = onTable(s.layout, except: [t, cueBall])
@@ -1000,6 +1052,14 @@ enum OpponentPlanner {
             }
         }
         let trials = run(s, jobs)
+        // Abandoned during the placements' sweep: stop here with the cheapest plan from the best spot (no refine, no
+        // full search after it); the token drops it.
+        if Task.isCancelled {
+            var l = s.layout
+            l[cueBall] = first.spot
+            return fallback(s, layout: l, cueBall: cueBall, targets: legalTargets(rules: s.rules, state: s.state),
+                            placement: first.spot)
+        }
         let per = speedFactors.count * aimOffsets.count
         var scored: [(a: Assessment, index: Int)] = []
         for (i, t) in tries.enumerated() {

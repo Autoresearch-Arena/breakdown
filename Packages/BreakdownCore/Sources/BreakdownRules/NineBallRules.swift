@@ -1,6 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
-// PURPOSE: The rules of nine-ball for two players on one device (plans/21-Nov-2026-rules-games-plan.md package 4), in
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 3: the header describes play against the computer, not two people on one device. No rule changed.
+//          The head-line rule eight-ball gained in 0.7.5 needs no copy here: a nine-ball ruling never gives ball in
+//          hand behind the head line (a foul gives it anywhere, and only the break starts from behind the line, with
+//          every object ball racked beyond it).)
+// PURPOSE: The rules of nine-ball, played against the computer (plans/21-Nov-2026-rules-games-plan.md package 4), in
 //          our own words:
 //            - The balls 1 to 9 are racked in a diamond. The breaker places the cue ball behind the head line.
 //            - Every shot must hit the lowest-numbered ball on the table first, and then pocket a ball or send some

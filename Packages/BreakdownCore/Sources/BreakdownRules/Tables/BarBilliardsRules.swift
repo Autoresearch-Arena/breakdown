@@ -26,6 +26,12 @@
 //          now says what the code always did - after time is up only the whites in the tray are played, and the game
 //          ends when the tray is empty even with whites resting on the bed - and whitesLeftToPlay(in:layout:) gives
 //          the banner that exact count, so the banner, the rules page, the time-up line and the code agree.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 4 and 5: a ball never rests inside a standing peg. nextLayout moves any white or the red that stopped
+//          where a peg stands up again (the red near its spot, a white to the nearest free place pushed away from the
+//          peg), also on the last layout of a finished game. And a game with the bar down ends as soon as the bed is
+//          empty: once the red is out of the game and no white in the game rests on the table, the next white would
+//          have nothing to hit, so the game is over in that shot with its points counted.)
 // SRP/DRY check: Pass - bar billiards' rules only. The shared bookkeeping is the protocol's default, reached through a
 //          small forwarding value rather than copied; the free-place search is TableSpots; the hole values moved here
 //          from BarBilliardsTable.swift (which now reads them) rather than being copied.
@@ -126,7 +132,8 @@ public struct BarBilliardsRules: MatchRules {
         var spotRed: Bool
         /// Every ball still in the game after the shot.
         var inGame: Set<Int>
-        /// The bar is down and no white is left in the tray (whites resting on the bed are not played again).
+        /// The bar is down and either no white is left in the tray (whites resting on the bed are not played again) or
+        /// the bed is empty (nothing left to hit).
         var gameOver: Bool
     }
 
@@ -169,6 +176,11 @@ public struct BarBilliardsRules: MatchRules {
                 lifted += tableWhites
             }
         }
+        // The bed is empty with the bar down: the red is out of the game (the red still in the game counts as on the
+        // bed, because it goes back on its spot) and no white in the game rests on the table after the lift above, so
+        // the next white from the tray would have no ball to hit. The game ends in this shot, its drops scored as usual.
+        // Whites still in the tray are not counted as played: they simply are not played.
+        if barDown, !inGame.contains(Self.redBall), tableWhites.isEmpty { gameOver = true }
         return Outcome(barDown: barDown, hit: hit, blackPeg: blackPeg, whitePeg: whitePeg, dropped: drops.map(\.ball),
                        value: value, breakGoesOn: breakGoesOn && !gameOver, lifted: lifted.sorted(), spotRed: spotRed,
                        inGame: inGame, gameOver: gameOver)
@@ -258,9 +270,9 @@ public struct BarBilliardsRules: MatchRules {
             out[Self.redBall] = TableSpots.nearestFree(to: redSpot, for: Self.redBall, among: out, table: table,
                                                        first: Vec2(1, 0))
         }
-        if o.gameOver { return out }
+        if o.gameOver { return Self.clearingPegs(out, table: table, redSpot: redSpot) }
         let next = Self.striker(among: o.inGame)
-        guard out.indices.contains(next) else { return out }
+        guard out.indices.contains(next) else { return Self.clearingPegs(out, table: table, redSpot: redSpot) }
         // Already resting on the D (within one ball of it): it simply stays to be played again.
         let atD = (out[next] - dSpot).length < 2 * table.ballRadius * TableSpots.clearance
         if ShotFacts.isOnTable(out[next]), !atD {
@@ -272,8 +284,39 @@ public struct BarBilliardsRules: MatchRules {
                 out[spare] = out[next]
             }
         }
+        // Lift the next white first (it goes on the D below), then move every ball left standing where a peg must
+        // stand again (a spare that just inherited the next white's place included), then set the next white on the D
+        // around them.
         out[next] = ShotFacts.offTable
+        out = Self.clearingPegs(out, table: table, redSpot: redSpot)
         out[next] = TableSpots.nearestFree(to: dSpot, for: next, among: out, table: table, first: Vec2(-1, 0))
+        return out
+    }
+
+    /// `layout` with every ball that rests where a peg stands (TableSpots.blocksAPin: within the solver's contact
+    /// distance of a peg's spot, so the peg could not stand again and the next solve would start overlapped) moved to
+    /// the nearest free place, in ball order so the result is the same on every run. The red goes near its own spot
+    /// (where a red put back always goes); a white goes near where it stopped, stepped away from the peg's centre, so it
+    /// keeps its place on the bed as nearly as it can. A ball is lifted off the table before its new place is searched,
+    /// so it does not count as in its own way. Never sends a white to the tray: ballsReturningToHand decides the tray
+    /// from the facts, and a white moved here is still on the table.
+    private static func clearingPegs(_ layout: [Vec2], table: TableSpec, redSpot: Vec2) -> [Vec2] {
+        var out = layout
+        for b in out.indices where TableSpots.blocksAPin(out[b], table: table) {
+            let stopped = out[b]
+            // The peg it blocks: the nearest one, by the same contact distance blocksAPin uses.
+            let peg = table.pins.min { ($0.center - stopped).length < ($1.center - stopped).length }
+            out[b] = ShotFacts.offTable
+            if b == redBall {
+                out[b] = TableSpots.nearestFree(to: redSpot, for: b, among: out, table: table, first: Vec2(1, 0))
+            } else {
+                // Away from the peg's centre; a ball dead on the centre (which the solver cannot leave) steps toward
+                // the player's end, the way a ball put back on the D does.
+                let away = peg.map { (stopped - $0.center).normalized } ?? .zero
+                out[b] = TableSpots.nearestFree(to: stopped, for: b, among: out, table: table,
+                                                first: away == .zero ? Vec2(-1, 0) : away)
+            }
+        }
         return out
     }
 }

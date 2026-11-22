@@ -3,6 +3,9 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent review: the foul test lets through a foul
 //          that also sinks one of the computer's own balls in its cup, which the plan's value rightly prefers to a
 //          clean roll; any other planned foul while a legal stroke exists still fails.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens: easy five-pin with the other ball straight beyond
+//          the castle no longer drives its own ball through the pins; it picks a line, here a one-cushion kick, whose
+//          legs both clear the castle.)
 // PURPOSE: The computer at bumper pool and five-pin (App/Match/BumperPoolPlanner.swift, FivePinPlanner.swift and their
 //          shared search, TableOpponentSearch.swift) as unit tests, from plans/22-Nov-2026-v074-glow-up-plan.md
 //          (table-opponent stream): bumper pool finds a cup shot from the start and a wide one near its cup, and never
@@ -187,6 +190,37 @@ final class TableOpponentTests: XCTestCase {
         XCTAssertTrue(abs(fromStart.stroke.aimDegrees - fullAim) < 1e-9
                       || abs(fromStart.stroke.aimDegrees - ghostFromStart) < 1e-9,
                       "easy aims by geometry alone")
+    }
+
+    func testFivePinEasyNeverDrivesThroughTheCastle() {
+        let p = fivePinParameters, r = p.ballRadius
+        let castle = FivePinPlanner.castleCentre(p)
+        // The white (the computer's target, ball 0) straight beyond the castle from the yellow (its own ball): the
+        // cut, the full hit and every thinner hit across the white pass through the pins. The red is out of the way.
+        var l = [Vec2](repeating: NextShot.offTable, count: 16)
+        l[1] = Vec2(castle.x + 0.90, castle.y)
+        l[0] = Vec2(castle.x - 0.60, castle.y)
+        l[FivePinRules.redBall] = Vec2(castle.x + 0.50, 1.20)
+        let plan = OpponentPlanner.plan(fivePin(l, level: .easy))
+        XCTAssertEqual(plan.kind, .pins(expected: 0, clean: 0, kick: false))
+        XCTAssertTrue(FivePinPlanner.easySpeeds.contains(plan.stroke.speed))
+        // The castle's reach as easy judges it: the farthest pin, its contact radius and a ball.
+        let reach = (p.pins.map { ($0.center - castle).length + $0.radius }.max() ?? 0) + r
+        func gap(_ a: Vec2, _ b: Vec2) -> Double {
+            let seg = b - a
+            let t = min(max((castle - a).dot(seg) / max(seg.lengthSquared, 1e-12), 0), 1)
+            return (castle - (a + seg * t)).length
+        }
+        // Follow the aim from the yellow to the first cushion line its centre meets (a radius in from each nose).
+        let dir = plan.stroke.direction
+        var hits: [Double] = []
+        if dir.x > 1e-9 { hits.append((p.tableLength - r - l[1].x) / dir.x) }
+        if dir.x < -1e-9 { hits.append((r - l[1].x) / dir.x) }
+        if dir.y > 1e-9 { hits.append((p.tableWidth - r - l[1].y) / dir.y) }
+        if dir.y < -1e-9 { hits.append((r - l[1].y) / dir.y) }
+        let bounce = l[1] + dir * (hits.filter { $0 > 0 }.min() ?? 0)
+        XCTAssertGreaterThanOrEqual(gap(l[1], bounce), reach, "the first leg clears the castle")
+        XCTAssertGreaterThanOrEqual(gap(bounce, l[0]), reach, "the way back to the white clears the castle")
     }
 
     // MARK: Both tables

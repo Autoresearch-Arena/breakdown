@@ -1,5 +1,14 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 03-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 7 and 8. Balls are named the way the table they were solved on names them (TableWords.ballName with
+//          the striking ball: "A white hits the post", "The yellow drops in"), so bumper pool, five-pin and bar
+//          billiards never read "the cue ball" or "the 3 ball"; the pool table's words are unchanged. A drop into a
+//          bed hole says "Into the hole" on bar billiards and "Into the cup" on bumper pool (and "Too fast for the
+//          hole" or "the cup" on a skip), a bar-billiards peg knocked over is "Peg down" with what that peg costs
+//          (BarBilliardsRules.blackPeg tells the black from the whites), a bumper-pool post is "the bumper", and the
+//          side-spin strike title says "the ball" off the pool table. And a cue strike that leaves the ball at
+//          walking pace or less (0.05 m/s, a still table) gets no caption at all.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F7:
 //          make takes the solved table and the striking ball, unused until the rules-lens stream names balls by table.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (jaw and knuckle hits get their own caption: "Off the jaw" or "Clipped the point").
@@ -63,6 +72,7 @@
 //          for the one case the words need; the reason and the risk are in its own comment.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
 import Foundation
 
@@ -166,11 +176,23 @@ enum RailKeep {
 }
 
 enum CaptionEngine {
-    /// The numbers a caption needs about the surface the shot was solved on, next to cloth's for comparison.
+    /// How a caption names this recording's balls (0.7.5): the way the table it was solved on names them, with the
+    /// ball the cue struck as that table's "cue ball" (TableWords.ballName: pool names on the pool table, colours on
+    /// the small tables). Each name is a whole phrase, so a translator can reorder the sentence around it.
+    private struct BallNames {
+        let table: TableKind
+        let striker: Int
+        func callAsFunction(_ ball: Int) -> String { TableWords.ballName(ball, cueBall: striker, table: table) }
+    }
+
+    /// The numbers a caption needs about the surface the shot was solved on, next to cloth's for comparison, and
+    /// (0.7.5) the table it was solved on with the names that table gives its balls.
     private struct SurfaceFacts {
         let surface: PlaySurface
         let p: PoolParameters
         let cloth: PoolParameters
+        let names: BallNames
+        var table: TableKind { names.table }
         /// The Moon (or any surface) with cloth's friction and a different gravity: gravity is the whole story.
         var gravityOnly: Bool {
             p.gravity != cloth.gravity && p.slidingFriction == cloth.slidingFriction
@@ -181,11 +203,15 @@ enum CaptionEngine {
     /// `surface` is the one the timeline was solved on (ShowpieceModel.physicsSurface), so the numbers explained are
     /// the numbers used. `strike` is the strike that was solved (the model's input for this recording), when known: the
     /// cue's angle of a raised strike that did not make the ball hop is in no event, so it is read from there.
-    /// `table` is the table the timeline was solved on and `striker` the ball the cue struck (0.7.5 hooks, not read yet:
-    /// the rules-lens stream uses them to name balls the way that table does).
+    /// `table` is the table the timeline was solved on and `striker` the ball the cue struck: balls are named the way
+    /// that table names them, with the striker as its cue ball. Without a striker, the ball the recording's own cue
+    /// strike moved is used (ball 0 when there is none). A trick shot or a situation is solved on the pool table, so
+    /// it keeps the pool names.
     static func make(from timeline: Timeline, surface: PlaySurface, strike: CueStrike? = nil,
                      table: TableKind = .standard, striker: Int? = nil) -> [Caption] {
-        let facts = SurfaceFacts(surface: surface, p: surface.parameters, cloth: PlaySurface.cloth.parameters)
+        let struck = striker ?? timeline.events.first { $0.kind == .cueStrike }?.balls.first?.ball ?? 0
+        let facts = SurfaceFacts(surface: surface, p: surface.parameters, cloth: PlaySurface.cloth.parameters,
+                                 names: BallNames(table: table, striker: struck))
         // Bends are found per sliding segment, then said in the caption of the event that ends each one.
         let bendsAt = bendEvents(in: timeline)
         var all: [Caption] = []
@@ -199,11 +225,6 @@ enum CaptionEngine {
         // tie-break keeps simultaneous rack hits in one fixed order whatever the solver's ordering guarantees.
         // The id stays the event's index: the on-table marker finds its ball through it.
         return all.sorted { ($0.time, $0.id) < ($1.time, $1.id) }
-    }
-
-    /// A ball's name as a player would say it. Each form is a whole phrase, so a translator can reorder it.
-    private static func name(_ ball: Int) -> String {
-        ball == 0 ? String(localized: "the cue ball") : String(localized: "the \(ball) ball")
     }
 
     /// A number with the decimal places asked for, written the way the player's language writes numbers.
@@ -418,7 +439,7 @@ enum CaptionEngine {
         return out
     }
 
-    private static func bendSentence(ball: Int, degrees turn: Double) -> String {
+    private static func bendSentence(ball: Int, degrees turn: Double, names name: BallNames) -> String {
         turn > 0
             ? String(localized: "While \(name(ball)) slid, its path bent \(f(abs(turn), 0)) degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.")
             : String(localized: "While \(name(ball)) slid, its path bent \(f(abs(turn), 0)) degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.")
@@ -548,7 +569,10 @@ enum CaptionEngine {
                 : String(localized: "Hit left of centre, the ball is pushed to the right, away from the side the tip struck: it leaves \(f(turn)) degrees off the line of the cue, at \(f(speed)) m/s. Side spin always costs a little aim.")
             // The caption is about side spin already; the spin sentence adds the topspin or backspin it carries.
             if let spin = strikeSpinSentence(b, radius: R, side: false) { detail += " " + spin }
-            return Caption(id: id, time: e.time, title: String(localized: "Side spin pushes the cue ball off line"),
+            // Off the pool table there is no "cue ball": each player strikes a ball of their own (0.7.5).
+            let title = facts.table == .standard ? String(localized: "Side spin pushes the cue ball off line")
+                                                 : String(localized: "Side spin pushes the ball off line")
+            return Caption(id: id, time: e.time, title: title,
                            detail: detail, equation: "tan α = (5/2)·x·√(1 − x²) / (1 + m/mₑ + (5/2)·x²)",
                            accent: .strike, importance: 1e9)
         }
@@ -613,6 +637,8 @@ enum CaptionEngine {
     }
 
     private static func flightCaption(_ e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts) -> Caption? {
+        /// The table's name for a ball (0.7.5).
+        func name(_ ball: Int) -> String { facts.names(ball) }
         guard let b = e.balls.first else { return nil }
         let ball = b.ball
         switch e.flight {
@@ -661,13 +687,20 @@ enum CaptionEngine {
     private static func caption(for e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts,
                                 bends: [(ball: Int, degrees: Double)], strike: CueStrike?) -> Caption? {
         let R = timeline.table.ballRadius
+        /// The table's name for a ball (0.7.5): every sentence below names its balls through this.
+        func name(_ ball: Int) -> String { facts.names(ball) }
         /// The bend sentences for this event, appended to its caption (a slide that ended in a hit or at a rail).
         func withBends(_ detail: String) -> String {
-            ([detail] + bends.map { bendSentence(ball: $0.ball, degrees: $0.degrees) }).joined(separator: " ")
+            ([detail] + bends.map { bendSentence(ball: $0.ball, degrees: $0.degrees, names: facts.names) })
+                .joined(separator: " ")
         }
         switch e.kind {
         case .cueStrike:
             guard let b = e.balls.first else { return nil }
+            // A strike that leaves the ball at walking pace or less moved nothing worth a caption: a still table (a
+            // zero-speed strike the opening or a replay can record) must not say "the cue sends the ball off at 0.0".
+            // Checked before the raised and special strikes, which would otherwise caption it too.
+            guard b.velocityAfter.length > 0.05 else { return nil }
             if e.miscue != true, let up = strikeTakeOff(e, ball: b.ball, in: timeline),
                let raised = raisedCaption(e, takeOff: up, id: id, R: R) { return raised }
             // A raised strike that did not hop: the slate took the push down without a bounce, so no event carries the
@@ -730,15 +763,31 @@ enum CaptionEngine {
             let vin = b.velocityBefore.length
             guard vin > 0.5 else { return nil }
             let kept = (b.velocityAfter.dot(e.normal) / max(1e-9, -b.velocityBefore.dot(e.normal))) * 100
-            return Caption(id: id, time: e.time, title: String(localized: "The post throws it back"),
-                           detail: withBends(String(localized: "\(name(b.ball).capitalizedFirst) hits the post at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into it.")),
+            // Bumper pool calls its posts bumpers (0.7.5); any other table with posts keeps the plain word.
+            let bumper = facts.table == .bumperPool
+            let title = bumper ? String(localized: "The bumper throws it back") : String(localized: "The post throws it back")
+            let detail = bumper
+                ? String(localized: "\(name(b.ball).capitalizedFirst) hits the bumper at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into it.")
+                : String(localized: "\(name(b.ball).capitalizedFirst) hits the post at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into it.")
+            return Caption(id: id, time: e.time, title: title, detail: withBends(detail),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse)
         case .pinDown:
             // A standing pin knocked over: the ball pays a little speed for it.
             let b = e.balls[0]
+            let equation = "J = (1 + e) · m·mₚ / (m + mₚ) · v⊥"
+            if !timeline.table.pins.isEmpty, !timeline.table.bedHoles.isEmpty {
+                // Bar billiards (pins and holes in the bed): its pins are pegs that must not fall, so the caption
+                // says what this one costs. The black peg is told apart by its index (BarBilliardsRules.blackPeg).
+                let cost = e.feature == BarBilliardsRules.blackPeg
+                    ? String(localized: "The black peg down costs the whole score.")
+                    : String(localized: "A white peg down costs the points of this break.")
+                let detail = String(localized: "\(name(b.ball).capitalizedFirst) knocks the peg over at \(f(b.velocityBefore.length)) m/s and rolls on at \(f(b.velocityAfter.length)) m/s.")
+                return Caption(id: id, time: e.time, title: String(localized: "Peg down"), detail: detail + " " + cost,
+                               equation: equation, accent: .impact, importance: e.normalImpulse + 1)
+            }
             return Caption(id: id, time: e.time, title: String(localized: "Pin down"),
                            detail: String(localized: "\(name(b.ball).capitalizedFirst) knocks the pin over at \(f(b.velocityBefore.length)) m/s and rolls on at \(f(b.velocityAfter.length)) m/s."),
-                           equation: "J = (1 + e) · m·mₚ / (m + mₚ) · v⊥", accent: .impact, importance: e.normalImpulse + 1)
+                           equation: equation, accent: .impact, importance: e.normalImpulse + 1)
         case .cushion where e.edge != .rail:
             // A pocket jaw or knuckle: the ball reached the mouth and was turned away (or rattled). Worth saying even
             // when slow, because it is the answer to "why didn't that go in?".
@@ -809,7 +858,7 @@ enum CaptionEngine {
                 }
             }
             if let bend {
-                detail = bendSentence(ball: b.ball, degrees: bend) + " " + detail
+                detail = bendSentence(ball: b.ball, degrees: bend, names: facts.names) + " " + detail
                 return Caption(id: id, time: e.time, title: String(localized: "The path bends"), detail: detail,
                                equation: "t = 2·Δv / (7·μ·g)", accent: .friction, importance: max(v, 0.7) * 0.12,
                                worked: worked)
@@ -818,16 +867,34 @@ enum CaptionEngine {
                            equation: "t = 2·Δv / (7·μ·g)", accent: .friction, importance: v * 0.12, worked: worked)
         case .pocket:
             let b = e.balls[0]
+            let speed = f(b.velocityBefore.length)
+            // A hole in the bed (pocket index past the edge pockets): bar billiards calls it a hole, bumper pool a cup.
+            if e.pocket >= TableSpec.edgePocketCount {
+                let hole = facts.table == .barBilliards
+                return Caption(id: id, time: e.time,
+                               title: hole ? String(localized: "Into the hole") : String(localized: "Into the cup"),
+                               detail: withBends(hole
+                                   ? String(localized: "\(name(b.ball).capitalizedFirst) drops into the hole at \(speed) m/s.")
+                                   : String(localized: "\(name(b.ball).capitalizedFirst) drops into the cup at \(speed) m/s.")),
+                               equation: "ΔKE → 0", accent: .pocket, importance: 3)
+            }
             return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),
-                           detail: withBends(String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s.")),
+                           detail: withBends(String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(speed) m/s.")),
                            equation: "ΔKE → 0", accent: .pocket, importance: 3)
         case .rimSkip:
             // Generation 2: the ball crossed the hole too fast to fall far enough to catch the far edge (the solver's
             // test: the fall g t^2 / 2 during the crossing time t was under a third of the radius).
             let b = e.balls[0]
             let vin = e.entry?.speed ?? b.velocityBefore.length
-            return Caption(id: id, time: e.time, title: String(localized: "Too fast for the pocket"),
-                           detail: withBends(String(localized: "\(name(b.ball).capitalizedFirst) reaches the hole at \(f(vin)) m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at \(f(b.velocityAfter.length)) m/s.")),
+            // A pocket on the pool table; a hole in the bed is bar billiards' hole or bumper pool's cup.
+            let bed = e.pocket >= TableSpec.edgePocketCount
+            let cup = bed && facts.table != .barBilliards
+            let title = !bed ? String(localized: "Too fast for the pocket")
+                : cup ? String(localized: "Too fast for the cup") : String(localized: "Too fast for the hole")
+            let detail = cup
+                ? String(localized: "\(name(b.ball).capitalizedFirst) reaches the cup at \(f(vin)) m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at \(f(b.velocityAfter.length)) m/s.")
+                : String(localized: "\(name(b.ball).capitalizedFirst) reaches the hole at \(f(vin)) m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at \(f(b.velocityAfter.length)) m/s.")
+            return Caption(id: id, time: e.time, title: title, detail: withBends(detail),
                            equation: "h = g · t² / 2", accent: .pocket, importance: 2.5)
         case .settledInContact:
             // The jam guard (any generation): wedged balls chattering in bounces too small to see were brought to rest

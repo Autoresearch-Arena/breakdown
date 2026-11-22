@@ -6,7 +6,8 @@
 //             needs two balls, a mover faster than 0.4 m/s and some energy; a rail hit needs more than 0.8 m/s; a post
 //             more than 0.5 m/s; a jaw or knuckle is always worth saying; a pin knocked down always; skid-to-roll needs
 //             sliding to rolling above 0.7 m/s, and off cloth also the recorded sliding segment that closes at the event
-//             (no made-up skid time); a drop and the cue strike always; the two generation-two kinds never (yet).
+//             (no made-up skid time); a drop always; the cue strike whenever it sends the ball off faster than
+//             0.05 m/s (0.7.5: a strike on a still table is not captioned); the two generation-two kinds never (yet).
 //          2. Real solved shots (a break and a straight pot, on cloth, ice and the Moon): every caption's event (its id is
 //             the event's index) meets its rule, every event that meets a rule has its caption, and captions come out in
 //             clock order.
@@ -17,12 +18,18 @@
 //          cushion moment; a skid-to-roll is also captioned below 0.7 m/s when its slide bent two degrees or more. New
 //          checks: RailKeep against the flat wall at generation one and the tilted rail's bounds at generation two; the
 //          jam's energy unit; throw's gates; the rail's spin words; the strike's spin words from the recorded spin.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens: the strike rule gains its speed gate; a
+//          zero-speed strike makes no caption; on bumper pool and bar billiards no caption names a ball by number,
+//          says "pocket" or "the cue ball", and each says its own words (the bumper, the cup, the hole, a peg and what
+//          it costs); the pool table's captions are the same with the table and striker passed as without.)
 // SRP/DRY check: Pass - checks only. The wording of each caption is the engine's; only titles that decide which template
 //          fired (jaw or knuckle) are compared, through the same String(localized:) lookup the engine uses.
 @testable import Breakdown
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownRules
 import BreakdownTimeline
+import Foundation
 import XCTest
 
 final class CaptionEngineTests: XCTestCase {
@@ -32,7 +39,9 @@ final class CaptionEngineTests: XCTestCase {
     private func expectedAccent(_ e: LensEvent, in tl: Timeline, surface: PlaySurface) -> CaptionAccent? {
         switch e.kind {
         case .cueStrike:
-            return e.balls.isEmpty ? nil : .strike
+            // Faster than 0.05 m/s off the tip (0.7.5): a strike that moved nothing is not worth a caption.
+            guard let b = e.balls.first else { return nil }
+            return b.velocityAfter.length > 0.05 ? .strike : nil
         case .ballBall:
             guard e.balls.count == 2 else { return nil }
             let a = e.balls[0], b = e.balls[1]
@@ -296,5 +305,117 @@ final class CaptionEngineTests: XCTestCase {
                        accuracy: 1e-12)
         XCTAssertNil(CaptionEngine.rollShare(omega: Vec3(0, 1, 0), velocity: Vec2(0.01, 0), radius: R),
                      "a ball barely moving has no direction of travel to compare its spin with")
+    }
+
+    // MARK: 4. The 0.7.5 words: still tables and the other tables' names
+
+    func testAZeroSpeedStrikeMakesNoCaption() {
+        let still = LensEvent(time: 0, kind: .cueStrike, point: .zero, normal: Vec2(1, 0), normalImpulse: 0,
+                              balls: [TestShots.ball(0, before: 0, after: 0)])
+        XCTAssertTrue(captions([still]).isEmpty, "a strike that moved nothing says nothing")
+        let crawl = LensEvent(time: 0, kind: .cueStrike, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.001,
+                              balls: [TestShots.ball(0, before: 0, after: 0.04)])
+        XCTAssertTrue(captions([crawl]).isEmpty)
+        let soft = LensEvent(time: 0, kind: .cueStrike, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.01,
+                             balls: [TestShots.ball(0, before: 0, after: 0.06)])
+        XCTAssertEqual(captions([soft]).map(\.accent), [.strike])
+    }
+
+    /// A recording on `table` holding these events, sixteen balls standing at spread-out spots.
+    private func recording(on table: TableKind, _ events: [LensEvent]) -> Timeline {
+        let spec = table.parameters.tableSpec
+        let segments = (0..<16).map { b in
+            [TestShots.still(Vec2(0.1 + 0.05 * Double(b), min(0.1 + 0.03 * Double(b), spec.width - 0.1)))]
+        }
+        let sorted = events.sorted { $0.time < $1.time }
+        return Timeline(table: spec, seed: 1, parameterHash: 1, segments: segments, events: sorted,
+                        pocketTime: [Double?](repeating: nil, count: 16), duration: (sorted.last?.time ?? 0) + 1)
+    }
+
+    /// Every kind of moment the small tables record, between the struck ball 0 and `other`: the strike, a hit, a
+    /// cushion, a post (bumper pool), two pins (bar billiards: the black peg, then a white one), a drop and a skip at
+    /// the first bed hole, a skid turning into roll, a jam of two balls.
+    private func everyMoment(other: Int, posts: Bool, pins: Bool) -> [LensEvent] {
+        var out: [LensEvent] = [
+            LensEvent(time: 0, kind: .cueStrike, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.4,
+                      balls: [TestShots.ball(0, before: 0, after: 2.5)]),
+            LensEvent(time: 0.3, kind: .ballBall, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.3,
+                      balls: [TestShots.ball(0, before: 2.4, after: 0.3), TestShots.ball(other, before: 0, after: 2.0)]),
+            LensEvent(time: 0.5, kind: .cushion, point: .zero, normal: Vec2(-1, 0), normalImpulse: 0.2,
+                      balls: [TestShots.ball(other, before: 1.8, after: -1.4)]),
+            LensEvent(time: 0.6, kind: .phaseTransition, point: .zero, normal: Vec2(1, 0),
+                      balls: [TestShots.ball(0, before: 1.0, after: 1.0)], phaseFrom: .sliding, phaseTo: .rolling),
+            LensEvent(time: 0.9, kind: .pocket, point: .zero, normal: Vec2(1, 0),
+                      balls: [TestShots.ball(other, before: 0.6, after: 0)], pocket: TableSpec.edgePocketCount),
+            LensEvent(time: 1.0, kind: .rimSkip, point: .zero, normal: Vec2(1, 0),
+                      balls: [TestShots.ball(0, before: 3, after: 2.8)], pocket: TableSpec.edgePocketCount,
+                      entry: PocketEntry(speed: 3, sine: 0.1, cosine: 0.995)),
+            LensEvent(time: 1.4, kind: .settledInContact, point: .zero, normal: Vec2(1, 0),
+                      balls: [TestShots.ball(0, before: 0.01, after: 0), TestShots.ball(other, before: 0.01, after: 0)],
+                      energyRemoved: 0.0001),
+        ]
+        if posts {
+            out.append(LensEvent(time: 0.4, kind: .cushion, point: .zero, normal: Vec2(-1, 0), normalImpulse: 0.2,
+                                 balls: [TestShots.ball(0, before: 1.5, after: -1.0)], edge: .post, feature: 0))
+        }
+        if pins {
+            out.append(LensEvent(time: 0.7, kind: .pinDown, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.05,
+                                 balls: [TestShots.ball(other, before: 1.2, after: 1.0)],
+                                 feature: BarBilliardsRules.blackPeg))
+            out.append(LensEvent(time: 0.8, kind: .pinDown, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.05,
+                                 balls: [TestShots.ball(0, before: 0.9, after: 0.8)], feature: 1))
+        }
+        return out
+    }
+
+    func testTheSmallTablesNeverNameABallByNumberOrSayPocket() throws {
+        // "the 3 ball", "ball 3": a number next to the word ball. "2 balls were wedged" counts balls, not a name.
+        let numbered = try NSRegularExpression(pattern: #"\d+\s*ball\b|\bball\s*\d"#, options: [.caseInsensitive])
+        for (table, other) in [(TableKind.bumperPool, 9), (.barBilliards, BarBilliardsRules.redBall)] {
+            let tl = recording(on: table, everyMoment(other: other, posts: table == .bumperPool,
+                                                      pins: table == .barBilliards))
+            let made = CaptionEngine.make(from: tl, surface: .cloth, table: table, striker: 0)
+            XCTAssertGreaterThanOrEqual(made.count, 7, "\(table): every moment is captioned")
+            for c in made {
+                for text in [c.title, c.detail] {
+                    let range = NSRange(text.startIndex..., in: text)
+                    XCTAssertNil(numbered.firstMatch(in: text, range: range), "\(table): \(text)")
+                    XCTAssertFalse(text.lowercased().contains("pocket"), "\(table): \(text)")
+                    XCTAssertFalse(text.lowercased().contains(String(localized: "the cue ball").lowercased()),
+                                   "\(table): \(text)")
+                }
+            }
+            let titles = made.map(\.title)
+            if table == .bumperPool {
+                XCTAssertTrue(titles.contains(String(localized: "Into the cup")))
+                XCTAssertTrue(titles.contains(String(localized: "Too fast for the cup")))
+                XCTAssertTrue(titles.contains(String(localized: "The bumper throws it back")))
+            } else {
+                XCTAssertTrue(titles.contains(String(localized: "Into the hole")))
+                XCTAssertTrue(titles.contains(String(localized: "Too fast for the hole")))
+                let pegs = made.filter { $0.title == String(localized: "Peg down") }
+                XCTAssertEqual(pegs.count, 2)
+                XCTAssertTrue(pegs.first?.detail.contains(String(localized: "The black peg down costs the whole score.")) == true)
+                XCTAssertTrue(pegs.last?.detail.contains(String(localized: "A white peg down costs the points of this break.")) == true)
+                // The red is named by its colour, the way the table names it.
+                let red = TableWords.ballName(BarBilliardsRules.redBall, cueBall: 0, table: .barBilliards)
+                XCTAssertTrue(made.contains { $0.detail.contains(red) }, "the red is called \(red)")
+            }
+        }
+    }
+
+    func testThePoolTablesCaptionsAreUnchanged() {
+        // Passing the pool table and its striker gives exactly what the defaults always gave.
+        for tl in [TestShots.breakShot(on: .cloth), TestShots.straightPot(on: .cloth)] {
+            XCTAssertEqual(CaptionEngine.make(from: tl, surface: .cloth),
+                           CaptionEngine.make(from: tl, surface: .cloth, table: .standard, striker: 0))
+        }
+        // And the pool names are the pool names: the cue ball and the numbered ball; a drop is "Pocketed".
+        let hit = captions([ballBall(mover: 2)]).first?.detail ?? ""
+        XCTAssertTrue(hit.hasPrefix(String(localized: "the cue ball").capitalizedFirst), hit)
+        XCTAssertTrue(hit.contains(String(localized: "the \(1) ball")), hit)
+        let drop = LensEvent(time: 1, kind: .pocket, point: .zero, normal: Vec2(1, 0),
+                             balls: [TestShots.ball(1, before: 0.5, after: 0)], pocket: 3)
+        XCTAssertEqual(captions([drop]).map(\.title), [String(localized: "Pocketed")])
     }
 }
