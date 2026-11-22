@@ -16,7 +16,10 @@
 //          Two evidence commands: "lessons scan <object gap> <cue gap> <power>" prints where a straight pot's cue ball
 //          finishes for every tip height, and "lessons curvescan" how far a raised-cue side hit bends; both were used to
 //          place the follow, draw and curve lessons and are kept so a re-author starts from the same evidence.
-//          Generation 1 physics throughout (what ships); seed 1, as every authored shot.
+//          The default physics throughout (generation two since the proof plan's package 4; what ships); seed 1, as
+//          every authored shot. Every tip stays inside the miscue limit (tipReach, about half the radius).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: tip grids inside the miscue limit, the curve's
+//          side at 0.40 and 0.45 of the radius, so the lessons re-author on generation two.)
 // SRP/DRY check: Pass - checked TrickAuthoring (its best(), placedOnPath and difficulty bands are reused, not copied)
 //          and TrickSearch (simulate, passes, the band walks and measured are reused). Only the lesson layouts, the
 //          side and cue-angle windows the trick report does not print, and the exercise check are new here.
@@ -94,7 +97,7 @@ func authorLessonStop() -> Authored? {
     for og in [0.35, 0.45] { for cg in [0.25, 0.32, 0.4] {
         let s = straightPot(objectGap: og, cueGap: cg)
         let goal = Goal(drops: [(3, 3)], cueZone: (s.ghost, 0.05), firstHit: 3)
-        for p in range(1.0, 3.0, 0.25) { for t in range(-0.02, 0.0, 0.001) {
+        for p in range(1.0, 3.0, 0.25) { for t in range(-0.014, 0.0, 0.001) {
             cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
                                    goal: goal, note: String(format: "stop shot: object %.2f m from the pocket, cue %.2f m back", og, cg)))
         } }
@@ -113,7 +116,7 @@ func authorLessonFollow() -> Authored? {
     for og in [1.0, 1.1] { for cg in [0.25, 0.3] { for ahead in [0.7, 0.8] {
         let s = straightPot(objectGap: og, cueGap: cg)
         let goal = Goal(drops: [(3, 3)], cueZone: (s.ghost + s.u * ahead, 0.15), firstHit: 3)
-        for p in range(0.9, 1.6, 0.1) { for t in range(0.004, 0.02, 0.001) {
+        for p in range(0.9, 2.0, 0.1) { for t in range(0.004, 0.014, 0.001) {
             cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
                                    goal: goal, note: String(format: "follow: object %.2f m out, cue %.2f m back, zone %.2f m past contact", og, cg, ahead)))
         } }
@@ -133,7 +136,7 @@ func authorLessonDraw() -> Authored? {
     for og in [0.4, 0.5] { for cg in [0.2, 0.25] { for back in [0.45, 0.5] {
         let s = straightPot(objectGap: og, cueGap: cg)
         let goal = Goal(drops: [(3, 3)], cueZone: (s.ghost - s.u * back, 0.25), firstHit: 3)
-        for p in range(1.0, 2.0, 0.1) { for t in range(-0.02, -0.004, 0.001) {
+        for p in range(1.0, 2.5, 0.1) { for t in range(-0.014, -0.004, 0.001) {
             cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
                                    goal: goal, note: String(format: "draw: object %.2f m out, cue %.2f m back, zone %.2f m behind contact", og, cg, back)))
         } }
@@ -187,7 +190,7 @@ func authorLessonCurve() -> Authored? {
         let target = c + Vec2(reach, 0)
         let blocker = c + Vec2(gap, -shift)
         let layout = layoutOf([0: c, 4: blocker, 9: target])
-        for angle in [30, 40, 50] { for side in [0.6 * R, 0.75 * R] { for p in [0.5, 0.6, 0.8, 1.0, 1.2] {
+        for angle in [30, 40, 50, 60] { for side in [0.4 * R, 0.45 * R] { for p in [0.5, 0.6, 0.8, 1.0, 1.2, 1.5] {
             for da in range(0, 30, 1.0) { for up in [0.0, -0.004] {
                 cands.append(Candidate(layout: layout,
                                        strike: Strike(aim: da, power: p, tipUp: up, tipSide: side, elevation: sineOf(degrees: angle)),
@@ -257,18 +260,21 @@ func authorStopExercise() {
     let goal = Goal(drops: [(3, 3)], cueZone: (ghost, 0.05), firstHit: 3)
     print("== stop-exercise: the stop lesson strikes \(lesson.strike) from \(fmt(c0))")
     var bestFound: (gap: Double, band: (lo: Double, hi: Double), centre: Double)?
-    // Nearer and further than the lesson's 0.25 m: a first run tried only 0.6 to 1.0 m, where at the lesson's soft
-    // 1.4 m/s no tip height keeps the backspin alive to contact, so nothing worked there.
-    for gap in [0.1, 0.12, 0.15, 0.18, 0.35, 0.4, 0.45, 0.5] {
+    // Further back than the lesson's 0.25 m only: the exercise's words say "the cue ball further back" (four
+    // translated strings). A first run tried only 0.6 to 1.0 m, where at the lesson's soft 1.4 m/s no tip height keeps
+    // the backspin alive to contact. On generation two the draw a tip inside the miscue limit can give runs out near
+    // 0.4 m at the lesson's first 1.4 m/s; the lesson was re-authored at 1.9 m/s (21-Nov-2026), where the exercise
+    // works from about 0.5 to 0.6 m (a one-off scan of lesson pace against exercise distance; its table is in the
+    // proof plan's Measured section).
+    for gap in [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65] {
         let layout = layoutOf([0: a - u * gap, 3: a])
         let copy = passes(goal, simulate(layout, lesson.strike))
         // The band of tip heights that work with the lesson's own aim and power, walked from every millimetre so a
         // band anywhere in reach is found, then the widest kept.
         var widest: (lo: Double, hi: Double)?
-        for t0 in range(-0.02, 0.0, 0.001) {
-            var s = lesson.strike; s.tipUp = t0
+        for t0 in range(-0.014, 0.0, 0.001) {
             if let b = band(centre: t0, step: 0.0005, limit: 0.02, { v in
-                guard abs(v) <= 0.02 else { return false }
+                guard insideGrip(up: v, side: lesson.strike.tipSide) else { return false }
                 var t = lesson.strike; t.tipUp = v; return passes(goal, simulate(layout, t))
             }), widest == nil || b.hi - b.lo > widest!.hi - widest!.lo { widest = b }
         }

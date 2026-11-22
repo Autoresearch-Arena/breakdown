@@ -5,6 +5,8 @@
 // PURPOSE: Checks the solver against results that can be derived by hand (spec section 9.1): the five-sevenths
 //          rule, the ninety-degree rule, cushion mirror angles, rolling stop distance, momentum and energy
 //          accounting at every event, continuity of every ball's path, repeatability and the no-libm rule.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the rolling-stop and mirror checks name
+//          generation one, whose strike and flat cushion their formulas describe.)
 // SRP/DRY check: Pass - one test file for the physics module; helpers build tiny two-ball scenes.
 import XCTest
 import BreakdownLensModel
@@ -42,7 +44,9 @@ final class PhysicsTests: XCTestCase {
 
     // Test 2: a rolling ball stops after v^2 / (2 c_r g).
     func testRollingStopDistance() {
-        var p = PoolParameters(); p.slidingFriction = 0.2
+        // Generation one: its strike launches at exactly the stroke's speed (generation two's off-centre hit is slower;
+        // CueStrikeModelTests checks that factor).
+        var p = PoolParameters.generationOne; p.slidingFriction = 0.2
         let tl = PoolSolver.simulate(scene(Vec2(0.3, 0.6), strike: CueStrike(direction: Vec2(1, 0), speed: 0.5, tipUp: 0.4 * p.ballRadius), p))
         // Top-spin of 2/5 R at the start means pure rolling from the first instant.
         let first = tl.segments[0][0]
@@ -96,7 +100,9 @@ final class PhysicsTests: XCTestCase {
 
     // Test 5: a frictionless, perfectly elastic cushion mirrors the angle.
     func testCushionMirrorAngle() {
-        var p = PoolParameters()
+        // Generation one's flat-normal cushion (generation two's nose meets the ball above its centre; RailModelTests
+        // checks its own mirror case, spec 3a).
+        var p = PoolParameters.generationOne
         p.cushionRestitution = 1.0; p.cushionFriction = 0
         let tl = PoolSolver.simulate(scene(Vec2(0.7, 0.4), strike: CueStrike(direction: Vec2(0.6, -0.8), speed: 1.5), p))
         let hit = tl.events.first { $0.kind == .cushion }!

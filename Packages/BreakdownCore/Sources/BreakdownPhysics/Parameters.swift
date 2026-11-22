@@ -26,10 +26,13 @@
 // generation. At generation 1 every hit launches at exactly that speed, straight along the cue. At generation 2 an
 // off-centre hit launches slower (the factor under cueMass), side spin pushes the ball off line (shaftEndMass) and an
 // offset past the tip's grip miscues (tipGrip, miscueSpeedFraction, miscueMaxDeflection).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4, the flip: generation two is the default, with
+//          the cloth, roll, spin and rail numbers the real-table sweep chose (0.15, 0.015, 9.5, 0.95); each once-guessed
+//          number now says which checks fixed it. PoolParameters.generationOne keeps the old numbers and generation.)
 // PURPOSE: Every tunable number of the pool solver in one versioned value that is hashed into each recorded
-//          shot. Values follow the spec section 3.4; anything marked "calibrate" there is a first guess to
-//          tune later against the validation suite. modelGeneration picks the physics model (1 is today's solver;
-//          the generation-two numbers below it are used only above 1). Also the cue strike (CueStrike) and the shot
+//          shot. Values follow the spec section 3.4, tuned against the real-table checks (RealWorldTests, BreakProbe
+//          sweep). modelGeneration picks the physics model (2, the default, is the tuned model; 1 is the solver as it
+//          was before, reachable with its old numbers through PoolParameters.generationOne). Also the cue strike (CueStrike) and the shot
 //          input (ShotInput) the solver takes. No Foundation import anywhere in this module (no libm).
 // SRP/DRY check: Pass - the single source of physical constants and table geometry.
 import BreakdownLensModel
@@ -40,17 +43,17 @@ public struct PoolParameters: Sendable {
     public var ballRadius = 0.028575            // regulation, metres
     public var ballMass = 0.170                 // kilograms
     public var gravity = 9.81
-    public var slidingFriction = 0.2            // cloth, calibrate (0.15 to 0.4)
-    public var rollingResistance = 0.01         // constant centre deceleration of c_r * g, calibrate
-    public var spinDecay = 9.0                  // rad/s squared for vertical spin, calibrate
+    public var slidingFriction = 0.15           // cloth: fixed by the stop-shot and draw checks (real-table cases 2, 3)
+    public var rollingResistance = 0.015        // centre deceleration c_r * g: fixed by the lag and lengths checks (1, 8)
+    public var spinDecay = 9.5                  // rad/s squared, vertical spin: fixed by the spin-down check (case 9)
     public var ballBallRestitution = 0.95
     /// Ball-ball friction is a fit of the form a + b * exp(-c * slip). The exponential is replaced by a fixed
     /// rational approximation (see `ballBallFriction`) so the solver needs no libm.
     public var ballBallFrictionFloor = 0.00995
     public var ballBallFrictionGain = 0.108
     public var ballBallFrictionDecay = 1.088
-    public var cushionRestitution = 0.85        // flat-normal Level A model, calibrate
-    public var cushionFriction = 0.17           // calibrate
+    public var cushionRestitution = 0.95        // rail bounce at walking pace: fixed by the rail energy check (case 6)
+    public var cushionFriction = 0.17           // rail grip: fixed by the rail angle check (case 7), the spec's middle
     /// Playing surface between cushion nose lines (nine-foot table).
     public var tableLength = 2.54
     public var tableWidth = 1.27
@@ -102,29 +105,31 @@ public struct PoolParameters: Sendable {
     // MARK: The physics switch (21-Nov-2026, plans/21-Nov-2026-physics-proof-plan.md package 1)
 
     /// Which physics model the solver runs. Unlike `version` (a label stamped on recordings), the solver READS this.
-    /// Generation 1 is the solver as it was on 21 November 2026, bit for bit: every trick shot and puzzle was authored
-    /// on it, so it stays the default until the proof plan's package 4 re-authors them and flips it. Generation 2
-    /// gathers the planned changes (real rails, a real cue strike, pockets that can refuse a ball); each of them checks
-    /// this number and takes the old path at generation 1 (the rule is written at the top of Simulation.swift).
-    public var modelGeneration = 1
-    /// The newest generation the solver knows. The app's developer flag (-newPhysics) plays on this one.
+    /// Generation 1 is the solver as it was on 21 November 2026, bit for bit (reach it, with that day's numbers, through
+    /// `PoolParameters.generationOne`). Generation 2 gathers the real rails, the real cue strike and pockets that can
+    /// refuse a ball; each checks this number and takes the old path at generation 1 (the rule is written at the top of
+    /// Simulation.swift). Generation 2 is the default since the proof plan's package 4 tuned it against the real-table
+    /// checks and re-authored every trick shot, puzzle and lesson on it (21-Nov-2026).
+    public var modelGeneration = 2
+    /// The newest generation the solver knows (also the default).
     public static let newestGeneration = 2
     /// True when the generation-two changes are on.
     public var usesGenerationTwo: Bool { modelGeneration >= 2 }
 
-    // Generation-two numbers. They do nothing at generation 1 and join the hash only above it. Every one is a starting
-    // value to be tuned against the real-table checks (proof plan, package 4); each says where it came from.
+    // Generation-two numbers. They do nothing at generation 1 and join the hash only above it. Each says where it came
+    // from; the full real-table sweep (proof plan, package 4) kept every one of them at its starting value.
 
     /// Rails (plans/21-Nov-2026-rails-plan.md). The rail's restitution falls with the ball's speed into the rail:
     /// e(v) = max(railRestitutionFloor, cushionRestitution - railRestitutionSlope * v), v the normal speed in m/s.
-    /// At walking pace that is about today's cushionRestitution (0.85). The floor is reached at break speed: the break
-    /// range is 8 to 13 m/s of cue-ball speed (spec 3.4), so take 10 m/s, and pick a floor of 0.6, whose energy share
-    /// 0.6 squared = 0.36 is "proportionally less" than the just-under-half the proof plan's case 6 expects at
-    /// medium speed. Slope = (0.85 - 0.6) / 10 m/s = 0.025 per m/s.
+    /// Starting reasons: a floor of 0.6, whose energy share 0.6 squared = 0.36 is "proportionally less" than the
+    /// just-under-half the proof plan's case 6 expects at medium speed, and a slope of 0.025 per m/s. With the tuned
+    /// cushionRestitution (0.95) the floor is reached at (0.95 - 0.6) / 0.025 = 14 m/s, just past the hardest break
+    /// (8 to 13 m/s of cue-ball speed, spec 3.4). Both fixed by the rail energy and rail angle checks (cases 6, 7).
     public var railRestitutionSlope = 0.025
     public var railRestitutionFloor = 0.6
     /// Cue strike (plans/21-Nov-2026-cue-strike-plan.md). The cue's mass, kilograms (spec 3.4: 0.54 kg). An off-centre
-    /// hit launches the ball at the centre-hit speed times (M + m) / (M + m + 5/2 * M * offset^2 / R^2).
+    /// hit launches the ball at the centre-hit speed times (M + m) / (M + m + 5/2 * M * offset^2 / R^2). Checked by the
+    /// off-centre speed share of case 10 (and the draw, case 3).
     public var cueMass = 0.54
     /// Effective mass of the end of the shaft, kilograms: it sets how far side spin pushes the cue ball off line. The
     /// deflection obeys tan(angle) = 5/2 * x * sqrt(1 - x^2) / (1 + m / Me + 5/2 * x^2), x = side offset / R. The spec
@@ -160,6 +165,26 @@ public struct PoolParameters: Sendable {
     }
 
     public init() {}
+
+    /// The parameters exactly as they were before the tuning of 21-Nov-2026: generation 1 with that day's cloth, roll,
+    /// spin and rail numbers. Every recording made before the flip was solved on these, and the bit-for-bit guard tests
+    /// pin them, so the old behaviour stays reachable (the app's -oldPhysics developer flag plays free play on them).
+    public static var generationOne: PoolParameters {
+        var p = PoolParameters()
+        p.useGenerationOne()
+        return p
+    }
+
+    /// Turn these parameters into generation one with that generation's cloth, roll, spin and rail numbers, leaving
+    /// everything else (table size, pockets, features) as it is. A caller that then applies a table or a surface does
+    /// so on top, exactly as on the default.
+    public mutating func useGenerationOne() {
+        modelGeneration = 1
+        slidingFriction = 0.2
+        rollingResistance = 0.01
+        spinDecay = 9.0
+        cushionRestitution = 0.85
+    }
 
     // MARK: Derived generation-two geometry (not hashed: worked out from hashed numbers)
 

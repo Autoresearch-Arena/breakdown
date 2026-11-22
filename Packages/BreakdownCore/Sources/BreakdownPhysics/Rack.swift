@@ -3,6 +3,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the nine-ball diamond and its break shot, for nine-ball matches and
 //          free play's rack choice. The fifteen-ball triangle's code is untouched, so every old rack and break comes
 //          out exactly as before; RackTests checks that against a copy of today's code.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the showpiece break re-picked on generation two,
+//          now the default; generationOneShowpieceBreak keeps the old one on the old physics for the bit-for-bit guard.)
 // PURPOSE: Standard fifteen-ball triangle on the foot spot and the cue ball on the head spot, with a
 //          one-micrometre gap between neighbours and optional seeded jitter so the break is a deterministic
 //          cascade of binary collisions. Also the nine-ball diamond (the 1 at the front on the foot spot, the 9 in
@@ -130,9 +132,18 @@ extension Rack {
 }
 
 public extension Rack {
-    /// The cold-open break, picked from a parameter sweep (BreakProbe): straight at the apex ball, a touch of
-    /// draw, drops two object balls and keeps the cue ball on the table. Regression-tested.
-    static func showpieceBreak() -> ShotInput {
-        breakShot(seed: 3, aimOffset: 0.0, speed: 11.0, tipUp: -0.006)
+    /// The cold-open break, picked from a parameter sweep (BreakProbe with no argument): a touch of draw, drops object
+    /// balls and keeps the cue ball on the table. Regression-tested. Re-picked on the tuned generation-two physics
+    /// (21-Nov-2026), where the old stroke (straight at the apex at 11 m/s) dropped fewer than two: of the sweep's
+    /// strokes that drop two or more and keep the cue ball, the one nearest the old one, 10 m/s with the same draw and
+    /// aimed 2 mm off the apex ball's centre, which drops three (the 4, the 5 and the 12).
+    static func showpieceBreak(parameters p: PoolParameters = PoolParameters()) -> ShotInput {
+        breakShot(parameters: p, seed: 3, aimOffset: 0.002, speed: 10.0, tipUp: -0.006)
+    }
+
+    /// The cold-open break as it was before the flip to generation two: generation one with that day's numbers.
+    /// The bit-for-bit guard tests pin its recording, so the old solver path stays watched.
+    static func generationOneShowpieceBreak() -> ShotInput {
+        breakShot(parameters: .generationOne, seed: 3, aimOffset: 0.0, speed: 11.0, tipUp: -0.006)
     }
 }

@@ -20,6 +20,10 @@
 //          escape, pass or fail, on that physics generation (default: the solver's default); exit status 1 on any fail.
 //          With "lessons [id ...]": authors the six lessons and the stop shot's second exercise (LessonAuthoring).
 // Edited: Claude Opus 5.5 High, 21-November-2026 ("lessons" runs the lesson authoring of the lesson path.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 ("tricks near [id ...]" re-authors the app's trick shots and lessons
+//          near their old answers on the default physics, and "surfaces" runs the real-table checks on every surface
+//          (Reauthor.swift); "eightball near [situation ...]" does the same for the Behind the 8-Ball escapes; "verify"
+//          with no argument checks the default, generation two since package 4.)
 // SRP/DRY check: Pass - single-purpose command line probe, not shipped in the app.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -48,10 +52,16 @@ if args.first == "timing" {
     }
 } else if args.first == "jams" {
     runJamSweep(Array(args.dropFirst()))
+} else if args.first == "tricks", args.dropFirst().first == "near" {
+    runNearReauthor(only: Set(args.dropFirst(2)))
+} else if args.first == "surfaces" {
+    runSurfaceCheck()
 } else if args.first == "tricks" {
     runTrickAuthoring(only: Set(args.dropFirst()))
 } else if args.first == "lessons" {
     runLessonAuthoring(only: Set(args.dropFirst()), arguments: Array(args.dropFirst()))
+} else if args.first == "eightball", args.dropFirst().first == "near" {
+    runEightBallNear(only: Set(args.dropFirst(2)))
 } else if args.first == "eightball" {
     runEightBallAuthoring(only: Set(args.dropFirst()))
 } else if args.first == "sweep" {

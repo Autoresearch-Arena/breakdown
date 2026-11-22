@@ -7,12 +7,12 @@
 //          with the public solver and measured from its recording only.
 //          Where the band comes from is written above each case: worked out from physics stated in the spec, or the
 //          kind of observation a player makes at a table (no measured figure is quoted that this repo cannot back).
-//          Cases the solver cannot meet before the rails and cue-strike work and the tuning sweep land are marked as
-//          expected failures (not strict: when one starts passing nothing complains), each naming the plan that will
-//          make it pass, so this file never blocks an upload while still running and printing every case. The same
+//          Since the proof plan's package 4 tuned the numbers and made generation two the default (21-Nov-2026), every
+//          case passes on the default physics and none is marked as an expected failure any more. The same
 //          setups run inside BreakProbe's "sweep" command (Sources/BreakProbe/RealWorldCases.swift, a copy kept in
 //          step by hand because a test target cannot be imported by a tool), which tries the guessed numbers on a
 //          grid and reports which combination passes the most bands.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (package 4: the expected-failure wrappers removed; all eleven pass.)
 // SRP/DRY check: Pass - checked PhysicsTests, PocketTests, JumpTests and SpecItemTests: those check the solver
 //          against its own equations; these check it against the table. The thirty-degree rule appears in both
 //          SpecItemTests (item 2, on oracle numbers) and here (case 4, on the real numbers), on purpose.
@@ -108,10 +108,8 @@ final class RealWorldTests: XCTestCase {
     // a centre-ball hit starts with no spin and the cloth builds topspin while it slides; firm, it arrives still
     // mostly sliding and stops; soft, it has turned into a roll and follows. Constrains cloth grip (sliding friction),
     // which sets how quickly a slide turns into a roll.
-    // Expected to fail until the tuning sweep: with today's guessed grip the solver lets a firm hit drift forward about
-    // 15 to 20 cm (plans/21-Nov-2026-physics-proof-plan.md package 4).
+    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
     func testCase02StopShotStopsDeadAndASoftOneRollsThrough() {
-        XCTExpectFailure("Cloth grip is still the first guess; the proof plan's package 4 tunes it.", strict: false)
         let q = p, r = q.ballRadius, W = q.tableWidth
         let object = Vec2(1.5, W / 2), cue = Vec2(1.5 - q.tableLength / 8, W / 2)
         let contact = object.x - 2 * r
@@ -129,12 +127,8 @@ final class RealWorldTests: XCTestCase {
     // miscue limit): the cue ball comes back roughly a table width (1.27 m), clearly not a table length (2.54 m).
     // Band 0.6 to 1.9 m back. Constrains cloth grip (how much backspin survives the trip) and the cue strike (how
     // much speed and spin an off-centre hit really gives).
-    // Expected to fail until the cue strike's speed loss lands and the grip is tuned: today an off-centre hit costs
-    // no speed, and the draw comes back near two metres (plans/21-Nov-2026-cue-strike-plan.md, then the proof plan's
-    // package 4).
+    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
     func testCase03DrawComesBackAboutATableWidth() {
-        XCTExpectFailure("Needs the cue strike's speed loss (cue-strike plan) and tuned cloth grip (proof plan package 4).",
-                         strict: false)
         let q = p, r = q.ballRadius, W = q.tableWidth
         let object = Vec2(1.5, W / 2), cue = Vec2(1.5 - q.tableLength / 8, W / 2)
         let travel = travelAfterHit(solve(q, [0: cue, 1: object], speed: 3.0, up: -0.4 * r), from: object.x - 2 * r, q)
@@ -210,10 +204,8 @@ final class RealWorldTests: XCTestCase {
     // comes up short. Measured as the share of the ball's kinetic and spin energy that it still has just after the
     // rail. Bands: 0.35 to 0.5 at medium pace; at hard pace at most nine tenths of the medium share. Constrains rail
     // bounce (restitution and how it falls with speed).
-    // Expected to fail until the real rail lands: today's flat rail keeps about 0.54 at every pace
-    // (plans/21-Nov-2026-rails-plan.md).
+    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
     func testCase06RailKeepsLessThanHalfTheEnergyAndLessWhenHard() {
-        XCTExpectFailure("Needs the real rail with speed-dependent bounce (rails plan).", strict: false)
         let q = p, r = q.ballRadius
         func share(_ speed: Double) -> Double {
             let tl = solve(q, [0: Vec2(q.tableLength - 0.6, q.tableWidth / 2)], speed: speed, up: 0.4 * r)
@@ -234,10 +226,8 @@ final class RealWorldTests: XCTestCase {
     // along the rail, which steepens the rebound; at high pace the rail also loses more of the speed into it, which
     // flattens it. Measured as the angle between the ball's path and the rail just after it leaves the rail. Bands:
     // slow (1 m/s) above 45 degrees; fast (5 m/s) below 45 degrees. Constrains rail grip and rail bounce together.
-    // Expected to fail until the real rail lands: today's rail treats every pace alike, so both come off at the same
-    // steeper angle (plans/21-Nov-2026-rails-plan.md).
+    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
     func testCase07RailAngleSteeperWhenSlowLongerWhenFast() {
-        XCTExpectFailure("Needs the real rail (rails plan).", strict: false)
         let q = p, r = q.ballRadius
         func exitAngle(_ speed: Double) -> Double {
             let tl = solve(q, [0: Vec2(0.6, 0.45)], dir: Vec2(1, -1), speed: speed, up: 0.4 * r)
@@ -257,10 +247,8 @@ final class RealWorldTests: XCTestCase {
     // table with nothing in its way travels about four to five table lengths before it stops: a familiar sight when a
     // player hits a lone ball hard. Measured as the length of its whole path. Band 3.5 to 5.5 lengths. Constrains
     // rail bounce at high pace (most of the energy goes at the rails) and rolling drag.
-    // Expected to fail until the real rail and the tuning sweep land: today's rail is too lively at break pace
-    // (plans/21-Nov-2026-rails-plan.md, then the proof plan's package 4).
+    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
     func testCase08HardBallTravelsFourToFiveLengths() {
-        XCTExpectFailure("Needs the real rail (rails plan) and tuned numbers (proof plan package 4).", strict: false)
         let q = p, r = q.ballRadius
         let tl = solve(q, [0: Vec2(r + 0.03, q.tableWidth / 2)], speed: 10)
         var path = 0.0
@@ -311,10 +299,8 @@ final class RealWorldTests: XCTestCase {
     // degrees, to the left for right side. And an off-centre hit gives the ball less speed than a centre hit with the
     // same stroke, because part of the push goes into spin: at half the radius the strike formula of spec 3.3,
     // (M + m) / (M + m + 5/2 M x^2), gives 0.68 for cues of 0.5 to 0.6 kg. Band 0.6 to 0.8 of the centre-hit speed.
-    // Expected to fail until the cue-strike plan lands: today side spin costs nothing and the ball goes dead straight
-    // at full speed (plans/21-Nov-2026-cue-strike-plan.md).
+    // Passes on the default physics since the proof plan's package 4 tuned it (21-Nov-2026).
     func testCase10SideSpinSquirtsAndOffCentreHitsAreSlower() {
-        XCTExpectFailure("Needs the real cue strike (cue-strike plan).", strict: false)
         let q = p, r = q.ballRadius
         let start = [0: Vec2(0.5, q.tableWidth / 2)]
         let right = solve(q, start, speed: 2, side: 0.5 * r).segments[0][0].velocity0

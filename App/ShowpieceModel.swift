@@ -85,6 +85,11 @@
 //          retry repeats exactly. strokeBridge is the bridge finger's length for the power bar's calm zone. The
 //          straight-stroke drill (StrokeDrill) is made on first use, holds the pool table while it is up, is told of
 //          every attempt, and is ended by every other menu choice; the table-cleared card stays away during it.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4, the flip: every mode solves on the default
+//          physics, generation two; the -newPhysics flag is gone and -oldPhysics plays free play and matches on
+//          generation one with its old numbers for comparison (prepare and matchSolveParameters write those numbers in
+//          before the table and surface); the opening is pinned to the default; tip travel and the miscue ring follow
+//          the default's miscue limit in every mode.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -219,7 +224,7 @@ final class ShowpieceModel {
     /// surface change can solve the very same shot again: re-applying a surface on top of another surface's numbers
     /// would leave the old ones wherever the new surface keeps the defaults (cloth changes nothing).
     @ObservationIgnored private var lastInput: ShotInput?
-    /// True when the last solve was pinned to generation one (the opening), so a surface re-solve keeps it there.
+    /// True when the last solve was pinned to the default generation (the opening), so a surface re-solve keeps it there.
     @ObservationIgnored private var lastClassic = false
     /// The surface the timeline on screen was solved on, set by solve(_:) next to the solve itself, so the captions
     /// explain the numbers the solver actually used (a trick shot is solved on cloth whatever `surface` says).
@@ -233,9 +238,11 @@ final class ShowpieceModel {
     private(set) var solvedTable: TableKind = .standard
 
     // Physics generation and background solving.
-    /// Developer flag -newPhysics: free play and matches play on the newest physics generation. Trick shots, puzzles
-    /// and the opening break stay on generation one until the proof plan re-authors them.
-    static let newPhysicsRequested = ProcessInfo.processInfo.arguments.contains("-newPhysics")
+    /// Developer flag -oldPhysics: free play and matches play on physics generation one with its old numbers
+    /// (PoolParameters.generationOne), for comparing against the tuned default. Generation two is simply the default
+    /// since the proof plan's package 4 (21-Nov-2026) re-authored every trick shot, puzzle, lesson and the opening on
+    /// it, so those always stay on the default. The old -newPhysics flag is gone: it would now change nothing.
+    static let oldPhysicsRequested = ProcessInfo.processInfo.arguments.contains("-oldPhysics")
     /// True while a shot is being solved on a background task. The table on screen holds still meanwhile.
     private(set) var isSolving = false
     /// Bumped by every solve started and every cancel: a result that comes back with an older token is dropped.
@@ -289,7 +296,7 @@ final class ShowpieceModel {
 
     init() {
         // Not through solve(_:): self is not fully initialised yet. Same steps: the stored table, then the stored
-        // surface, applied to a copy. Generation one: the opening always plays on today's physics.
+        // surface, applied to a copy. The default generation: the opening is authored on it.
         let startTable = TableKind.stored
         let input = startTable.openingShot
         let startSurface = PlaySurface.stored      // read once: the solve and the captions must agree
@@ -393,7 +400,7 @@ final class ShowpieceModel {
         menuOpen = false
         gameInProgress = true
         // The showpiece break on the pool table; on another table, that table's default shot from its start layout.
-        // Generation one always: the opening is authored on today's physics.
+        // Always the default generation (classic): the opening is authored on it.
         load(solve(physicsTable.openingShot, classic: true))
         clearAttempts()
         startColdOpen()
@@ -824,11 +831,15 @@ final class ShowpieceModel {
 
     /// How far from the apex ball the break may be aimed, metres. Wide enough to choose the second row instead.
     static let breakAimLimit = 0.05
-    /// The classic tip travel, metres (seventy percent of the pool ball's radius). Trick shots and puzzles were
-    /// authored with it and keep it; the instance tipLimit below is what a mode actually allows.
+    /// The generation-one tip travel, metres (seventy percent of the pool ball's radius): only with -oldPhysics, where
+    /// nothing miscues. The instance tipLimit below is what a mode actually allows.
     static let tipLimit = 0.02
     /// How far behind the cue ball a pull-back reaches full power, metres.
     static let pullReach = 0.5
+
+    /// The radius of the ball the cue strikes on the table in play, metres: the tip picture (AimGauges) draws the ball
+    /// to this scale, so its dot and miscue ring sit where the physics puts them.
+    var cueBallRadius: Double { physicsTable.parameters.ballRadius }
 
     /// Where the miscue ring is drawn, metres from the middle of the cue ball: R * tipGrip / sqrt(1 + tipGrip^2), the
     /// offset past which the tip's grip cannot hold the ball (cue-strike plan). About half the radius.
@@ -837,10 +848,11 @@ final class ShowpieceModel {
         return p.ballRadius * p.tipGrip / (1 + p.tipGrip * p.tipGrip).squareRoot()
     }
 
-    /// How far from the middle the tip dot may travel in this mode. On the newest physics in free play and matches it
+    /// How far from the middle the tip dot may travel in this mode. On generation two (every mode by default) it
     /// reaches a tenth of the ball's radius past the miscue ring, so a miscue can really be played while nearly all of
-    /// the gauge stays in the useful range (everything past the ring miscues anyway). Elsewhere it is the classic
-    /// travel the trick shots and puzzles were authored with, until they are re-authored on the new physics.
+    /// the gauge stays in the useful range (everything past the ring miscues anyway). Every authored trick shot, puzzle
+    /// escape and lesson keeps its tip inside the ring (re-authored on generation two, 21-Nov-2026), so the ring is
+    /// also the edge of every authored window. Only -oldPhysics, outside the authored modes, gets the old travel.
     var tipLimit: Double {
         guard activeModelGeneration >= 2 else { return Self.tipLimit }
         return miscueLimit + 0.1 * physicsTable.parameters.ballRadius
@@ -1213,6 +1225,7 @@ final class ShowpieceModel {
     /// plans on these, so its trial solves and the real stroke agree.
     var matchSolveParameters: PoolParameters {
         var p = PoolParameters()
+        if activeModelGeneration == 1 { p.useGenerationOne() }
         physicsTable.apply(to: &p)
         physicsSurface.apply(to: &p)
         p.modelGeneration = activeModelGeneration
@@ -1577,10 +1590,11 @@ final class ShowpieceModel {
     /// menu looked broken when trick shots silently stayed on cloth, 21-Nov-2026).
     var physicsSurface: PlaySurface { surface }
 
-    /// The physics generation the next solve uses: the newest with -newPhysics in free play and matches, generation
-    /// one otherwise (trick shots and puzzles are authored on it; the opening asks for it explicitly).
+    /// The physics generation the next solve uses: the default (two) everywhere, and generation one in free play and
+    /// matches only with the -oldPhysics developer flag. Trick shots, puzzles, lessons and the opening are authored on
+    /// the default and always use it.
     var activeModelGeneration: Int {
-        Self.newPhysicsRequested && !authoredModeUp ? PoolParameters.newestGeneration : 1
+        Self.oldPhysicsRequested && !authoredModeUp ? 1 : PoolParameters().modelGeneration
     }
 
     /// Where the cold open freezes: the usual point, but never past the end of the break. A surface that stops the
@@ -1590,14 +1604,16 @@ final class ShowpieceModel {
 
     /// Build the solver's copy of a shot: the table, then the surface, then the physics generation written into the
     /// parameters. The input as built is kept beside it, so a table or surface change can solve it again cleanly.
-    /// `classic` pins generation one (the opening).
+    /// `classic` pins the default generation, the one the opening is authored on, even under -oldPhysics. Generation
+    /// one gets its own old cloth, roll, spin and rail numbers first, so the table and surface go on top of those.
     private func prepare(_ input: ShotInput, classic: Bool = false) -> Prepared {
         let s = physicsSurface, t = physicsTable
-        let generation = classic ? 1 : activeModelGeneration
+        let generation = classic ? PoolParameters().modelGeneration : activeModelGeneration
         var onSurface = input
+        if generation == 1 { onSurface.parameters.useGenerationOne() }
         t.apply(to: &onSurface.parameters)
         s.apply(to: &onSurface.parameters)
-        // Last, so nothing above can overwrite it. Generation one is the default, so its parameters hash as before.
+        // Last, so nothing above can overwrite it.
         onSurface.parameters.modelGeneration = generation
         return Prepared(input: input, solvable: onSurface, surface: s, table: t, generation: generation, classic: classic)
     }

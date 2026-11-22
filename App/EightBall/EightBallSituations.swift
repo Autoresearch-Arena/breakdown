@@ -22,6 +22,10 @@
 //          Positions follow the design's diamonds, nudged where the solver needed it (each nudge is noted).
 //          Pockets: headRight 0, footRight 1, headLeft 2, footLeft 3, rightSide 4, leftSide 5 (solver indices).
 //          Read by EightBallMode (flow), EightBallJudge (escapes, ratings) and EightBallViews (words).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: every escape checked on the tuned
+//          generation-two physics, now the default; seventeen strokes re-authored near their old ones with every tip
+//          inside the miscue limit, windows walked again, routes and ratings kept; three cue lines now give the new cue
+//          angle or tip ("about 24 degrees", "about 30 degrees", no "a little low").)
 // SRP/DRY check: Pass - data only; the types are EightBallTypes. Each card's numbers are built from the escape's own
 //          stroke and the situation's surface (RealTableNumbers), never typed twice. The search lives in the package's
 //          dev tool and copies nothing from here; it holds the same diamonds and strokes as its evidence.
@@ -77,6 +81,10 @@ enum EightBallSituations {
     //   tip -0.5 to +8.0 mm. Off the head rail at across 1.86; the cue ball rests at across 0.87, along 6.38.
     // B (11,016 strokes, 456 pass; elevation and speed then set mid-band): aim 26.97 to 27.55, speed 2.80 to 4.75,
     //   tip -10.5 to +14.5 mm, elevation sine 0.65 to 0.94; take-off at 1.52 m/s upward.
+    // Generation two (the tuned default, 21-Nov-2026, "BreakProbe eightball near" and "eightball verify"): A no longer
+    //   made the 3 and was searched again around its old stroke (15,050 strokes, 408 pass): aim 169.83 to 170.05,
+    //   speed 3.25 to 3.75, side 0 only, tip +3.5 to +4.5 mm; head rail at across 1.76. B still passes as it is: aim
+    //   26.95 to 27.55, speed 2.80 to 4.80, tip -7.5 to +10.5 mm, elevation sine 0.65 to 0.93.
     // The design's third escape (a kick safety) was searched but no stroke left every stripe screened, so it is left
     // out; Safety can still be called and is judged on what it leaves.
     static let tucked = make(
@@ -89,7 +97,7 @@ enum EightBallSituations {
         group: .solids, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "One-rail kick"), kind: .kick, rails: 1,
-                  settings: TrickSettings(aim: 172.20, power: 2.25, tipUp: 0.004, tipSide: 0),
+                  settings: TrickSettings(aim: 169.97, power: 3.50, tipUp: 0.004, tipSide: 0),
                   call: .ball(3, pocket: .footLeft), rating: 3,
                   aim: String(localized: "Send the cue ball back into the head rail just left of the middle diamond. It comes back up the table and cuts the 3 into the foot-left corner."),
                   cue: String(localized: "Level, a touch above centre, no side."),
@@ -114,6 +122,11 @@ enum EightBallSituations {
     //   +13.5 mm. Off the head rail at across 2.77, back down the table onto the 10.
     // B (277 pass, then centred): aim -175.03 to -174.45, speed 2.60 to 5.40, side -0.5 to +0.5 mm, tip -4.0 to
     //   +19.5 mm. Head rail at across 2.82, then the right rail at along 6.29, and down the rail into the 10.
+    // Generation two (the tuned default, 21-Nov-2026, with Dive-bar felt's rails at 0.8): both searched again around
+    //   their old strokes. A (13,545 strokes, 295 pass): aim -173.88 to -173.68, speed 2.35 to 3.60, side -1.0 to
+    //   +1.0 mm, tip -3.5 to +14.0 mm; head rail at across 2.89. B (12,040 strokes, 1,422 pass): aim -173.71 to
+    //   -173.07, speed 2.40 to 6.50, side -0.5 to +0.5 mm, tip 0 to +14.0 mm; head rail at across 2.92, right rail at
+    //   along 6.28.
     static let frozen = make(
         id: "frozen-on-the-rail", number: 2, title: String(localized: "Frozen on the Rail"),
         story: String(localized: "You're on stripes. Your 10 is frozen to the rail and two solids hide it."),
@@ -124,14 +137,14 @@ enum EightBallSituations {
         group: .stripes, surface: .diveBar,
         escapes: [
             Draft(id: "A", title: String(localized: "One-rail kick off the head rail"), kind: .kick, rails: 1,
-                  settings: TrickSettings(aim: -175.25, power: 3.00, tipUp: 0.0075, tipSide: 0),
+                  settings: TrickSettings(aim: -173.78, power: 3.05, tipUp: 0.0055, tipSide: 0),
                   call: .ball(10, pocket: .footRight), rating: 3,
                   aim: String(localized: "Kick into the head rail about three quarters of a diamond right of the middle diamond. The cue ball runs back down and pins the 10 along the rail into the foot-right corner."),
                   cue: String(localized: "Level, a little follow, no side."),
                   speed: String(localized: "Firm. Dead bar rails eat speed, so hit harder than it looks."),
                   commonMiss: String(localized: "A trace of side spin: the rebound shifts and the 10 comes off the rail short of the corner.")),
             Draft(id: "B", title: String(localized: "Two-rail kick"), kind: .kick, rails: 2,
-                  settings: TrickSettings(aim: -174.71, power: 3.85, tipUp: 0.008, tipSide: 0),
+                  settings: TrickSettings(aim: -173.39, power: 4.45, tipUp: 0.007, tipSide: 0),
                   call: .ball(10, pocket: .footRight), rating: 4,
                   aim: String(localized: "Head rail just under a diamond right of the middle, then the right rail about three quarters of a diamond short of the 10, so the cue ball runs down the rail into it."),
                   cue: String(localized: "Level, a little follow, no side."),
@@ -148,6 +161,11 @@ enum EightBallSituations {
     //   -8.5 mm. Off the left rail at along 2.38.
     // B (13,770 strokes, 706 pass): aim -32.38 to -30.58, speed 3.40 to 5.00, tip -15.0 to -4.0 mm, elevation sine
     //   0.57 to 0.87; take-off at 1.47 m/s upward.
+    // Generation two (the tuned default, 21-Nov-2026): both searched again around their old strokes. A (9,632
+    //   strokes, 890 pass): aim 60.20 to 61.16, speed 2.90 to 4.55, side -0.5 to +0.5 mm, tip -8.5 to -7.5 mm; left
+    //   rail at along 2.47. B (153,510 strokes, 22,327 pass; the cue then set back to sine 0.70, inside its band, so
+    //   the card's 44 degrees still holds): aim -32.22 to -30.60, speed 4.15 to 6.15, tip -14.0 to -8.5 mm, elevation
+    //   sine 0.53 to 0.86; take-off at 1.48 m/s upward.
     static let jumpDiamond = make(
         id: "jump-a-diamond-out", number: 3, title: String(localized: "Jump a Diamond Out"),
         story: String(localized: "You're on solids. An opponent ball sits a diamond in front of you."),
@@ -158,14 +176,14 @@ enum EightBallSituations {
         group: .solids, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "One-rail kick"), kind: .kick, rails: 1,
-                  settings: TrickSettings(aim: 62.76, power: 4.80, tipUp: -0.012, tipSide: 0),
+                  settings: TrickSettings(aim: 60.68, power: 3.75, tipUp: -0.008, tipSide: 0),
                   call: .ball(5, pocket: .rightSide), rating: 3,
                   aim: String(localized: "Kick off the left rail a little past the second diamond. The cue ball crosses the table and cuts the 5 into the right side pocket."),
                   cue: String(localized: "Level, well below centre for draw."),
                   speed: String(localized: "Firm: a solid hit across the table and back."),
                   commonMiss: String(localized: "Hitting the rail too far up the table, so the 5 is struck too full and rattles in the jaws.")),
             Draft(id: "B", title: String(localized: "Jump the 11"), kind: .jump, rails: 0,
-                  settings: TrickSettings(aim: -31.36, power: 4.20, tipUp: -0.0105, tipSide: 0, elevation: 0.70),
+                  settings: TrickSettings(aim: -31.30, power: 5.20, tipUp: -0.010, tipSide: 0, elevation: 0.70),
                   call: .ball(5, pocket: .rightSide), rating: 3,
                   aim: String(localized: "Aim the cut on the 5 into the side as if the 11 weren't there."),
                   cue: String(localized: "Raised to about 44 degrees. Short, crisp stroke, hitting a little below the cue's line through the centre."),
@@ -187,6 +205,12 @@ enum EightBallSituations {
     // C (306,000 strokes, 90 pass; no two-rail route exists here, this one takes three): aim -129.49 to -129.25, speed
     //   2.70 to 3.30, side -1.0 to +1.0 mm, tip +3.5 to +11.0 mm. Right rail at along 1.10, head rail at across 2.74,
     //   left rail at along 2.13.
+    // Generation two (the tuned default, 21-Nov-2026): A's 20 mm of side is past the miscue limit; searched again
+    //   around it with side inside the limit (85,428 strokes, 133 pass): aim -14.63 to -14.23, speed 3.05 to 3.25, side
+    //   +13.5 mm only, tip -4.5 to -0.5 mm, elevation sine 0.40 only (about 24 degrees; still very touchy, as before).
+    //   B still passes as it is: aim -22.13 to -21.61, speed 3.80 to 5.45, tip -10.0 to +14.0 mm, elevation sine 0.49
+    //   to 0.84. C searched again (13,545 strokes, 205 pass): aim -129.14 to -128.96, speed 3.90 to 4.65, side 0 to
+    //   +0.5 mm, tip +7.5 to +14.0 mm; right rail at along 1.12, head rail at across 2.74, left rail at along 2.26.
     static let bendAround = make(
         id: "bend-around", number: 4, title: String(localized: "Bend Around"),
         story: String(localized: "You're on stripes. A solid half covers the line to your 15, and the kicks are long."),
@@ -197,10 +221,10 @@ enum EightBallSituations {
         group: .stripes, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "Swerve past the 6"), kind: .swerve, rails: 0,
-                  settings: TrickSettings(aim: -12.85, power: 2.50, tipUp: -0.0015, tipSide: 0.020, elevation: 0.30),
+                  settings: TrickSettings(aim: -14.43, power: 3.15, tipUp: -0.0025, tipSide: 0.0135, elevation: 0.40),
                   call: .ball(15, pocket: .footRight), rating: 3,
                   aim: String(localized: "Start the cue ball just past the left edge of the 6. Right side bends it back onto the 15."),
-                  cue: String(localized: "Raised a little, about 17 degrees, with lots of right side."),
+                  cue: String(localized: "Raised a little, about 24 degrees, with lots of right side."),
                   speed: String(localized: "Medium: the curve needs some pace to bend in time."),
                   commonMiss: String(localized: "Too little side or too much speed: it doesn't bend back and misses the 15 on the left.")),
             Draft(id: "B", title: String(localized: "Jump the 6"), kind: .jump, rails: 0,
@@ -211,7 +235,7 @@ enum EightBallSituations {
                   speed: String(localized: "Firm."),
                   commonMiss: String(localized: "Not enough height: the cue ball clips the 6, which is a foul.")),
             Draft(id: "C", title: String(localized: "Three-rail kick"), kind: .kick, rails: 3,
-                  settings: TrickSettings(aim: -129.39, power: 3.00, tipUp: 0.0075, tipSide: 0),
+                  settings: TrickSettings(aim: -129.06, power: 4.30, tipUp: 0.0105, tipSide: 0),
                   call: .ball(15, pocket: .footRight), rating: 4,
                   aim: String(localized: "Right rail at the first diamond, then the head rail, then the left rail past the second diamond, and down onto the 15."),
                   cue: String(localized: "Level, a little follow, no side."),
@@ -228,6 +252,10 @@ enum EightBallSituations {
     //   +19.5 mm. Off the left rail at along 5.87.
     // B (21 pass): aim 122.69 to 123.45, speed 4.60 to 5.90, side 0 only, tip +8.0 mm only. Left rail at along 2.02,
     //   head rail at across 2.26, right rail at along 1.03, then up the table onto the 8.
+    // Generation two (the tuned default, 21-Nov-2026, with Dive-bar felt's rails at 0.8): A still passes as it is: aim
+    //   26.61 to 28.17, speed 1.25 to 2.15, side -6.5 to +2.5 mm, tip -3.0 to +14.0 mm. B scratched and was searched
+    //   again around its old stroke (10,535 strokes, 23 pass): aim 122.31 to 122.73, speed 7.25 to 8.00, side -1.0 to
+    //   +0.5 mm, tip +9.5 to +13.5 mm; left rail at along 2.03, head rail at across 2.35, right rail at along 1.14.
     static let kickForTheGame = make(
         id: "kick-for-the-game", number: 5, title: String(localized: "Kick for the Game"),
         story: String(localized: "You've cleared your stripes. The 8 sits off the left rail near the corner, and a solid blocks it."),
@@ -244,7 +272,7 @@ enum EightBallSituations {
                   speed: String(localized: "Gentle: a soft roll, even on slow felt."),
                   commonMiss: String(localized: "Too much speed: the 8 is hit too hard off the rail and jumps out of the corner.")),
             Draft(id: "B", title: String(localized: "Three-rail kick"), kind: .kick, rails: 3,
-                  settings: TrickSettings(aim: 123.07, power: 5.25, tipUp: 0.008, tipSide: 0),
+                  settings: TrickSettings(aim: 122.55, power: 7.65, tipUp: 0.0115, tipSide: 0),
                   call: .ball(8, pocket: .footLeft), rating: 5,
                   aim: String(localized: "Left rail at the second diamond, the head rail just right of the middle, the right rail at the first diamond, then the length of the table onto the 8."),
                   cue: String(localized: "Level, a little follow, no side."),
@@ -261,6 +289,11 @@ enum EightBallSituations {
     //   -5.5 mm. Right rail at along 5.01, foot rail at across 1.75, then along the foot rail into the 13.
     // B (306,000 strokes, 86 pass): aim 52.44 to 52.74, speed 4.60 to 5.35, side 0 only, tip -8.0 mm only. Left rail at
     //   along 5.12, right rail at along 7.33, foot rail at across 1.93.
+    // Generation two (the tuned default, 21-Nov-2026): A took one rail too few and was searched again around its old
+    //   stroke (36,120 strokes, 1,501 pass): aim -36.78 to -36.46, speed 4.80 to 5.20, side -5.0 mm only, tip -8.0 to
+    //   0 mm; right rail at along 4.90, foot rail at across 1.75. B still passes as it is: aim 52.46 to 53.08, speed
+    //   4.20 to 5.20, side -0.5 to 0 mm, tip -8.5 to -8.0 mm; left rail at along 5.12, right rail at along 7.17, foot
+    //   rail at across 2.03.
     static let zShot = make(
         id: "the-z-shot", number: 6, title: String(localized: "The Z Shot"),
         story: String(localized: "Hill-hill, you're on stripes and hooked mid-table. Your 13 sits just off the foot rail."),
@@ -271,7 +304,7 @@ enum EightBallSituations {
         group: .stripes, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "Two-rail Z kick"), kind: .kick, rails: 2,
-                  settings: TrickSettings(aim: -35.92, power: 3.85, tipUp: -0.006, tipSide: -0.005),
+                  settings: TrickSettings(aim: -36.62, power: 5.00, tipUp: -0.004, tipSide: -0.005),
                   call: .ball(13, pocket: .footLeft), usesBridge: true, rating: 4,
                   aim: String(localized: "Right rail at the first diamond past the side pocket, then the foot rail, and along it into the 13 and on into the foot-left corner."),
                   cue: String(localized: "On the bridge: head flat a hand's width back, cue in the notch, light fingers on the butt. Level, a little draw and a touch of left side."),
@@ -294,6 +327,10 @@ enum EightBallSituations {
     //   at along 6.27.
     // B (5,184 strokes, 228 pass, then centred): aim -62.07 to -61.03, speed 2.80 to 4.15, tip -9.5 to +7.5 mm,
     //   elevation sine 0.73 to 0.93 (about 47 to 68 degrees); take-off at 1.49 m/s upward.
+    // Generation two (the tuned default, 21-Nov-2026): A no longer made the 14 and was searched again around its old
+    //   stroke (12,040 strokes, 1,022 pass): aim 70.30 to 70.92, speed 2.40 to 4.50, side 0 only, tip -8.5 to -7.5 mm;
+    //   left rail at along 6.32. B still passes as it is: aim -62.29 to -61.09, speed 2.95 to 4.35, tip -7.5 to
+    //   +7.5 mm, elevation sine 0.73 to 0.91.
     static let pointBlank = make(
         id: "point-blank", number: 7, title: String(localized: "Point-Blank"),
         story: String(localized: "You're on your last stripe. The 8 is almost touching the cue ball."),
@@ -304,7 +341,7 @@ enum EightBallSituations {
         group: .stripes, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "One-rail kick"), kind: .kick, rails: 1,
-                  settings: TrickSettings(aim: 73.30, power: 2.70, tipUp: -0.006, tipSide: 0),
+                  settings: TrickSettings(aim: 70.62, power: 3.45, tipUp: -0.008, tipSide: 0),
                   call: .ball(14, pocket: .footRight), rating: 3,
                   aim: String(localized: "Kick off the left rail a quarter diamond past the sixth diamond, back across onto the 14 for the foot-right corner."),
                   cue: String(localized: "Level, a little draw, no side."),
@@ -327,6 +364,12 @@ enum EightBallSituations {
     //   +19.5 mm. Off the head rail at across 3.22, the whole length of the table back onto the 8.
     // B (33,824 strokes, 40 pass): aim 0.20 to 4.10, speed 2.35 to 2.65, side +13.5 to +21.5 mm, tip -8.0 to -2.0 mm,
     //   elevation sine 0.79 to 0.81. Kept only because a level cue on the same stroke fails.
+    // Generation two (the tuned default, 21-Nov-2026, with Tournament cloth's rails at 0.95): A still passes as it is:
+    //   aim -177.28 to -176.74, speed 1.25 to 4.05, side -0.5 to +1.5 mm, tip -5.5 to +14.0 mm. B's 17 mm of side is
+    //   past the miscue limit; searched again around it with side inside the limit (85,428 strokes, 769 pass), still
+    //   kept only if a level cue fails: aim -13.88 to -8.58, speed 4.10 to 4.50, side +8.0 to +11.0 mm, tip -3.5 to
+    //   +4.5 mm, elevation sine 0.78 to 0.82. The tip now sits at centre height, so the card no longer says "a little
+    //   low".
     static let masseForTheWin = make(
         id: "masse-for-the-win", number: 8, title: String(localized: "Massé for the Win"),
         story: String(localized: "You're on the 8. It hangs in the jaws of the foot-right corner, and a stripe sits dead in the way."),
@@ -343,10 +386,10 @@ enum EightBallSituations {
                   speed: String(localized: "Soft: this slick cloth and lively rail do the work. About a lag to the head rail and back."),
                   commonMiss: String(localized: "Too much speed on fast cloth: the cue ball runs through and scratches behind the 8.")),
             Draft(id: "B", title: String(localized: "Full massé"), kind: .masse, rails: 0,
-                  settings: TrickSettings(aim: 2.00, power: 2.50, tipUp: -0.005, tipSide: 0.017, elevation: 0.80),
+                  settings: TrickSettings(aim: -11.28, power: 4.30, tipUp: 0.0005, tipSide: 0.0095, elevation: 0.80),
                   call: .ball(8, pocket: .footRight), rating: 5,
                   aim: String(localized: "Point the cue down the table, left of the 12, and let the curve bring the cue ball right onto the 8."),
-                  cue: String(localized: "Steep, about 53 degrees, tip well right of centre and a little low."),
+                  cue: String(localized: "Steep, about 53 degrees, tip well right of centre."),
                   speed: String(localized: "Medium: a curve on fast cloth needs pace to finish."),
                   commonMiss: String(localized: "On slick cloth the curve takes late. Aim too fine and it bends too late to reach the 8.")),
         ],
@@ -359,6 +402,10 @@ enum EightBallSituations {
     //   right rail at along 6.03.
     // B (5,184 strokes, 164 pass): aim 23.01 to 23.97, speed 3.10 to 4.90, tip -19.5 to +4.0 mm, elevation sine 0.58 to
     //   0.90; take-off at 1.44 m/s upward. The carom-for-shape extra in the design is not authored.
+    // Generation two (the tuned default, 21-Nov-2026): A no longer made the 4 and was searched again around its old
+    //   stroke (12,040 strokes, 1,035 pass): aim -59.72 to -59.16, speed 2.95 to 4.10, side -0.5 to +0.5 mm, tip -8.5
+    //   to -7.5 mm; right rail at along 6.13. B still passes as it is: aim 22.99 to 23.99, speed 3.25 to 5.15, tip
+    //   -10.5 to +12.0 mm, elevation sine 0.59 to 0.88.
     static let jumpOffTheBridge = make(
         id: "jump-off-the-bridge", number: 9, title: String(localized: "Jump Off the Bridge"),
         story: String(localized: "You're on solids with two left. The cue ball is far out on the table, and a stripe sits half a diamond in front of it."),
@@ -369,7 +416,7 @@ enum EightBallSituations {
         group: .solids, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "One-rail kick"), kind: .kick, rails: 1,
-                  settings: TrickSettings(aim: -61.75, power: 3.60, tipUp: -0.006, tipSide: 0),
+                  settings: TrickSettings(aim: -59.44, power: 3.55, tipUp: -0.008, tipSide: 0),
                   call: .ball(4, pocket: .footLeft), rating: 3,
                   aim: String(localized: "Kick off the right rail just past the sixth diamond, back across onto the 4 for the foot-left corner."),
                   cue: String(localized: "Level, a little draw, no side."),
@@ -395,6 +442,10 @@ enum EightBallSituations {
     //   the foot rail at across 2.67, back onto the 13 into the right side pocket.
     // B (378,000 strokes, 246 pass): aim -133.25 to -133.19, speed 2.35 to 2.95, side -4.0 to +1.5 mm, tip +3.5 to
     //   +12.5 mm. Off the right rail at along 4.99 into the 13, which banks off the right rail across to the left side.
+    // Generation two (the tuned default, 21-Nov-2026): both searched again around their old strokes. A (12,040
+    //   strokes, 456 pass): aim -21.84 to -21.08, speed 2.55 to 4.35, side 0 only, tip -6.5 to -5.5 mm; foot rail at
+    //   across 2.72. B (12,040 strokes, 59 pass): aim -132.90 to -132.86, speed 3.45 to 3.85, side 0 only, tip +7.5 to
+    //   +14.0 mm; right rail at along 5.01. B was a sliver before and is one still: the rating 5 stands.
     static let kickBankCrossSide = make(
         id: "kick-bank-cross-side", number: 10, title: String(localized: "Kick-Bank Cross-Side"),
         story: String(localized: "You're on stripes. Your 13 sits a ball off the right rail, just past the side pocket."),
@@ -405,14 +456,14 @@ enum EightBallSituations {
         group: .stripes, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "One-rail kick"), kind: .kick, rails: 1,
-                  settings: TrickSettings(aim: -19.80, power: 4.60, tipUp: -0.0095, tipSide: 0),
+                  settings: TrickSettings(aim: -21.46, power: 3.45, tipUp: -0.006, tipSide: 0),
                   call: .ball(13, pocket: .rightSide), rating: 3,
                   aim: String(localized: "Kick off the foot rail two thirds of a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket."),
                   cue: String(localized: "Level, below centre for draw."),
                   speed: String(localized: "Firm."),
                   commonMiss: String(localized: "Too full on the 13: it hits the near point of the side pocket and stays out.")),
             Draft(id: "B", title: String(localized: "Kick, then bank cross-side"), kind: .kick, alsoUses: [.bank], rails: 1,
-                  settings: TrickSettings(aim: -133.21, power: 2.65, tipUp: 0.008, tipSide: 0),
+                  settings: TrickSettings(aim: -132.88, power: 3.65, tipUp: 0.011, tipSide: 0),
                   call: .ball(13, pocket: .leftSide), rating: 5,
                   aim: String(localized: "Kick into the right rail at the first diamond past the side pocket. The cue ball comes off it into the 13, which banks off the right rail and straight across into the left side pocket."),
                   cue: String(localized: "Level, a little follow, no side."),
@@ -429,6 +480,12 @@ enum EightBallSituations {
     //   at across 1.32, left rail at along 7.15, right rail at along 4.43, then up the table to the 9.
     // B (67,680 strokes, 37 pass): aim 148.90 to 149.40, speed 3.40 to 3.60, side -20.5 to -19.5 mm, tip -3.5 to
     //   +3.0 mm, elevation sine 0.40 only. Takes 34 seconds to finish rolling on this cloth.
+    // Generation two (the tuned default, 21-Nov-2026, with Tournament cloth's rails at 0.95): both searched again
+    //   around their old strokes. A (13,545 strokes, 475 pass): aim 52.19 to 52.63, speed 2.50 to 3.30, side 0 only,
+    //   tip +7.0 to +14.0 mm; foot rail at across 1.41, left rail at along 7.15, right rail at along 4.43. B's 20 mm of
+    //   side is past the miscue limit; with side inside it (91,530 strokes, 205 pass): aim 151.00 to 151.70, speed 4.80
+    //   to 5.25, side -13.5 mm only, tip -4.5 to +0.5 mm, elevation sine 0.50 only (30 degrees; the card says so).
+    //   Takes about 21 seconds to finish rolling.
     static let fullTableSwerve = make(
         id: "full-table-swerve", number: 11, title: String(localized: "Full-Table Swerve"),
         story: String(localized: "You're on stripes. Your 9 sits by the head-left corner, and a cluster of solids fills the middle."),
@@ -439,17 +496,17 @@ enum EightBallSituations {
         group: .stripes, surface: .tournament,
         escapes: [
             Draft(id: "A", title: String(localized: "Three-rail kick"), kind: .kick, rails: 3,
-                  settings: TrickSettings(aim: 54.53, power: 2.05, tipUp: 0.0105, tipSide: 0),
+                  settings: TrickSettings(aim: 52.41, power: 2.90, tipUp: 0.0105, tipSide: 0),
                   call: .ball(9, pocket: .headLeft), rating: 4,
                   aim: String(localized: "Foot rail a third of a diamond right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9."),
                   cue: String(localized: "Level, above centre for follow."),
                   speed: String(localized: "Medium: lively rails and fast cloth carry it."),
                   commonMiss: String(localized: "Too firm on fast cloth: the cue ball runs past the 9 and the angles open up.")),
             Draft(id: "B", title: String(localized: "Full-table swerve"), kind: .swerve, rails: 0,
-                  settings: TrickSettings(aim: 149.20, power: 3.50, tipUp: -0.0005, tipSide: -0.020, elevation: 0.40),
+                  settings: TrickSettings(aim: 151.30, power: 5.05, tipUp: -0.002, tipSide: -0.0135, elevation: 0.50),
                   call: .ball(9, pocket: .headLeft), rating: 5,
                   aim: String(localized: "Start the cue ball toward the left rail between the second and third diamonds. Left side bends it off that line, round the solids and onto the 9."),
-                  cue: String(localized: "Raised to about 24 degrees, with full left side."),
+                  cue: String(localized: "Raised to about 30 degrees, with full left side."),
                   speed: String(localized: "Medium to firm: the curve has the whole table to build."),
                   commonMiss: String(localized: "The curve takes late on slick cloth. Start too straight and it hooks into the cluster.")),
         ],
@@ -468,6 +525,11 @@ enum EightBallSituations {
     // B (306,000 strokes, 26 pass, then centred): aim 27.82 to 28.04, speed 3.90 to 4.35, side -3.0 to +2.0 mm, tip
     //   -8.5 to -8.0 mm. Left rail at along 4.96, foot rail at across 1.80, along the rail into the 1, which runs into
     //   the foot-right corner.
+    // Generation two (the tuned default, 21-Nov-2026): the kick safety hit the wrong ball first and was searched again
+    //   around its old stroke (15,050 strokes, 331 pass): aim 59.17 to 59.75, speed 2.35 to 3.15, side -6.5 to +1.5 mm,
+    //   tip +3.5 to +14.0 mm; left rail at along 1.97, right rail at along 5.07; the cue ball rests at across 1.32,
+    //   along 7.69, by the foot rail, and as before it does not leave every stripe screened. B still passes as it is:
+    //   aim 27.80 to 27.98, speed 3.85 to 4.30, side -0.5 to 0 mm, tip -8.0 mm only.
     static let noWayToMakeIt = make(
         id: "no-way-to-make-it", number: 12, title: String(localized: "No Way to Make It"),
         story: String(localized: "You're on solids. The 1 is frozen on the foot rail behind stripes, the 6 is tied up, and you're behind the 8."),
@@ -478,7 +540,7 @@ enum EightBallSituations {
         group: .solids, surface: .cloth,
         escapes: [
             Draft(id: "A", title: String(localized: "Kick safety"), kind: .safety, alsoUses: [.kick], rails: 2,
-                  settings: TrickSettings(aim: 60.97, power: 2.35, tipUp: 0.002, tipSide: 0),
+                  settings: TrickSettings(aim: 59.45, power: 2.75, tipUp: 0.009, tipSide: 0),
                   call: .safety, rating: 2,
                   aim: String(localized: "Two rails: the left rail just short of the second diamond, the right rail at the first diamond past the side pocket, then a soft touch on the 1. The cue ball dies by the foot rail."),
                   cue: String(localized: "Level, a touch above centre, no side."),

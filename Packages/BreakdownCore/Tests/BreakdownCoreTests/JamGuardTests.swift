@@ -8,6 +8,8 @@
 //          cue ball against the 8; each must finish in under two thousand events, end at rest with nothing overlapping
 //          or in rubber, and never gain energy, with any settled-in-contact event removing energy only. And the guard
 //          must leave a normal shot alone: breaks record no settling (JumpTests' pinned hashes prove them unchanged).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the untouched-shots check names its
+//          generation: the bit-for-bit breaks on generation one, the new showpiece break on the default.)
 // SRP/DRY check: Pass - checked PhysicsTests (event budget), JumpTests (the bit-for-bit pins, unchanged) and BreakProbe's
 //          "timing" command (the source of the frozen-pair layout). These are the jam guard's own checks.
 import BreakdownLensModel
@@ -148,12 +150,19 @@ final class JamGuardTests: XCTestCase {
     }
 
     // The guard leaves normal shots alone: the showpiece break and another break pinned bit for bit in JumpTests (whose
-    // content hashes prove they are unchanged), and the break the momentum test uses, record no settling, never reach
-    // the event limit, and settle well inside two thousand events.
+    // content hashes prove they are unchanged; generation one on its old numbers since the flip), and the break the
+    // momentum test uses, record no settling, never reach the event limit, and settle well inside two thousand events.
+    // On the default generation two the new showpiece break and the momentum test's break are untouched too. (The
+    // seed-5 break below does storm on generation two: balls 7 and 8 chatter about six hundred times inside one
+    // millisecond a quarter of a second in, and the guard settles them, removing about nine microjoules; that is the
+    // guard doing its job, so that break is checked here on generation one only.)
     func testNormalShotsAreUntouched() {
+        let old = PoolParameters.generationOne
         let shots: [ShotInput] = [
+            Rack.generationOneShowpieceBreak(),
+            Rack.breakShot(parameters: old, seed: 5, aimOffset: 0.01, speed: 10, tipUp: 0.008, tipSide: -0.007),
+            Rack.breakShot(parameters: old, seed: 3, aimOffset: 0.004, speed: 9),
             Rack.showpieceBreak(),
-            Rack.breakShot(seed: 5, aimOffset: 0.01, speed: 10, tipUp: 0.008, tipSide: -0.007),
             Rack.breakShot(seed: 3, aimOffset: 0.004, speed: 9),
         ]
         for (k, input) in shots.enumerated() {

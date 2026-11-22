@@ -41,6 +41,10 @@
 //          fall-across-the-hole test, the back wall of edge pockets, rim-skip events, entry speed and angle on every
 //          pocket event), and a ball resting over a hole drops.)
 //
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: at generation two a ball in the air that comes
+//          down below the cushion nose inside a hole's circle drops in (airborneCandidates); before, one that had
+//          entered the circle high flew through the hole and was put back on the rail from beyond the table's edge.)
+//
 // THE GENERATION RULE (plans/21-Nov-2026-physics-proof-plan.md, package 1). PoolParameters.modelGeneration picks the
 // physics model. Generation 1 is this solver exactly as it was on 21 November 2026, and every trick shot and Behind
 // the 8-Ball puzzle was authored on it. So EVERY physics change (rails, cue strike, pockets, anything later) must:
@@ -711,17 +715,34 @@ private struct Simulation {
             for (k, c) in pockets.enumerated() where (p - c).lengthSquared <= captureRadii[k] * captureRadii[k] { return k }
             return nil
         }
+        // Generation 2: the moment the ball's lowest point comes down past the cushion nose (the later root of
+        // height(tau) = nose), or nil when it never does from here (it stays below the nose, or is already coming down
+        // below it). A ball that entered a hole's circle while still above
+        // the nose and comes down inside it is caught then; generation 1 only looked at the circle's edge and the
+        // segment's start, so such a ball flew on through the hole, landed beyond the table's edge and was put back on
+        // the rail by the next cushion test (found by the raised-cue sweep once generation two became the default).
+        let noseDescent: Double? = {
+            guard P.usesGenerationTwo else { return nil }
+            let d = s.vz * s.vz + 2 * g * (s.height - P.cushionNoseHeight)
+            guard d >= 0 else { return nil }
+            let tau = (s.vz + d.squareRoot()) / g
+            return tau > 0 ? tau : nil
+        }()
         // Holes: the ball drops in only while low enough to be inside the pocket.
         for (k, c) in pockets.enumerated() {
             let cr = captureRadii[k]
             let rel = s.position - c
             if rel.lengthSquared <= cr * cr {
-                if low(0) { out.append(Candidate(time: now, rank: .pocket, a: i, b: k)) }
-                continue
+                if low(0) { out.append(Candidate(time: now, rank: .pocket, a: i, b: k)); continue }
+            } else {
+                let poly = quarticCoefficients(rel, s.velocity, .zero, minus: cr * cr)
+                if let tau = RootFinder.firstDownCrossing(poly, limit: window), low(tau) {
+                    out.append(Candidate(time: now + tau, rank: .pocket, a: i, b: k))
+                    continue
+                }
             }
-            let poly = quarticCoefficients(rel, s.velocity, .zero, minus: cr * cr)
-            if let tau = RootFinder.firstDownCrossing(poly, limit: window), low(tau) {
-                out.append(Candidate(time: now + tau, rank: .pocket, a: i, b: k))
+            if let tn = noseDescent, tn <= window, (at(tn) - c).lengthSquared <= cr * cr {
+                out.append(Candidate(time: now + tn, rank: .pocket, a: i, b: k))
             }
         }
         // Cushion lines, over their full length: low and on a straight cushion is a rebound; low in a mouth is left

@@ -51,6 +51,8 @@
 //                                                 rejects, rattles) is PocketTests; the rattle guard (the jam guard)
 //                                                 comes with plans/21-Nov-2026-pockets-and-jams-plan.md part B
 //          25 no math library in the solver .... PhysicsTests.testPhysicsModuleHasNoFoundationImport
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: item 17 allows the solver's documented snap to
+//          rest; item 23's hand-built shot names generation one, where it has no ties.)
 // SRP/DRY check: Pass - checked PhysicsTests, PocketTests, JumpTests, TableFeatureTests, PhysicsSwitchTests,
 //          ShotFactsTests and MatchContractTests line by line against section 9.1; only items with no test, or with a
 //          test that covers part of the item, are written here, and the list above says which file has the rest.
@@ -390,9 +392,15 @@ final class SpecItemTests: XCTestCase {
                     XCTAssertEqual(dq, 0, accuracy: 1e-12, "shot \(n) ball \(b) orientation jumps at segment \(k)")
                     if impacts.contains("\(b)@\(t.bitPattern)") { continue }
                     phaseChanges += 1
-                    XCTAssertEqual((before.velocity - after.velocity).length, 0, accuracy: 1e-9,
+                    // The one allowed jump: a ball whose speed has fallen under the solver's rest threshold (1e-6 m/s,
+                    // Simulation.makeSegment) is put to rest or to spinning in place, losing that last hair of speed
+                    // and the rolling spin that went with it (found on generation two's break: 3e-7 m/s after a gentle
+                    // double kiss). Everywhere else the carry-over is exact.
+                    let toRest = segs[k].phase == .spinning || segs[k].phase == .stationary
+                    XCTAssertEqual((before.velocity - after.velocity).length, 0, accuracy: toRest ? 1e-6 : 1e-9,
                                    "shot \(n) ball \(b) velocity jumps at segment \(k)")
-                    XCTAssertEqual((before.omega - after.omega).length, 0, accuracy: 1e-9,
+                    XCTAssertEqual((before.omega - after.omega).length, 0,
+                                   accuracy: toRest ? 1e-6 / p.ballRadius : 1e-9,
                                    "shot \(n) ball \(b) spin jumps at segment \(k)")
                 }
             }
@@ -530,11 +538,11 @@ final class SpecItemTests: XCTestCase {
     func testItem23RelabelledBallsGiveTheSameOutcome() {
         func swapped(_ pos: [Vec2], _ i: Int, _ j: Int) -> [Vec2] { var q = pos; q.swapAt(i, j); return q }
         func compare(_ pos: [Vec2], _ i: Int, _ j: Int, dir: Vec2, speed: Double, up: Double, side: Double,
-                     _ name: String) -> Bool {
-            let a = solve(pos, dir: dir, speed: speed, tipUp: up, tipSide: side)
+                     _ name: String, parameters: PoolParameters? = nil) -> Bool {
+            let a = solve(pos, dir: dir, speed: speed, tipUp: up, tipSide: side, parameters: parameters)
             let times = a.events.map(\.time)
             if Set(times).count != times.count { return false }
-            let b = solve(swapped(pos, i, j), dir: dir, speed: speed, tipUp: up, tipSide: side)
+            let b = solve(swapped(pos, i, j), dir: dir, speed: speed, tipUp: up, tipSide: side, parameters: parameters)
             for ball in 0..<16 {
                 let other = ball == i ? j : (ball == j ? i : ball)
                 let sa = a.state(ball: ball, at: a.duration + 1), sb = b.state(ball: other, at: b.duration + 1)
@@ -544,8 +552,12 @@ final class SpecItemTests: XCTestCase {
             XCTAssertEqual(a.events.count, b.events.count, name)
             return true
         }
+        // The hand-built shot is checked on generation one, where it has no ties; on the default generation two the
+        // cue ball and the 12 happen to stop rolling at the same instant (2.509 s), which is the documented exception.
+        // The sixty random layouts below run on the default.
         let hand = layout([0: Vec2(0.5, 0.5), 3: Vec2(1.1, 0.62), 7: Vec2(1.8, 0.95), 12: Vec2(2.2, 0.3)])
-        XCTAssertTrue(compare(hand, 3, 7, dir: Vec2(1, 0.17), speed: 3, up: 0.005, side: -0.004, "hand-built"),
+        XCTAssertTrue(compare(hand, 3, 7, dir: Vec2(1, 0.17), speed: 3, up: 0.005, side: -0.004, "hand-built",
+                              parameters: .generationOne),
                       "the hand-built shot should have no ties")
         var rng = SeededGenerator(seed: 2323)
         func unit() -> Double { (rng.signedUnit() + 1) * 0.5 }

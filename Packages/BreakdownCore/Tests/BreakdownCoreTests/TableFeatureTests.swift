@@ -5,6 +5,8 @@
 //          pin knocks it down once, loses the predicted speed and rolls on; a ball rolling over a bed hole drops in and is
 //          recorded as pocket 6 + j; with the pockets off a ball driven into a corner rebounds off both cushions and stays
 //          on the table; the features change the parameter hash only when present, and each shot repeats exactly.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the bed-hole drop uses a pace that drops on the
+//          default generation two.)
 // SRP/DRY check: Pass - checked PocketTests and JumpTests (pockets, jaws and the old hashes are covered there); these
 //          are the new features only.
 import BreakdownLensModel
@@ -72,7 +74,9 @@ final class TableFeatureTests: XCTestCase {
             p.pocketsEnabled = pocketsOn
             p.bedHoles = [BedHole(center: Vec2(1.8, 0.3), radius: 0.04, captureRadius: 0.02),
                           BedHole(center: Vec2(1.5, W / 2), radius: 0.04, captureRadius: 0.02)]
-            let tl = shoot(p, from: Vec2(0.6, W / 2), toward: Vec2(1, 0), speed: 1.5)
+            // 0.8 m/s: slow enough to fall in on the default generation two, where a ball crossing a hole too fast
+            // skips over it (1.5 m/s skipped this 20 mm capture circle; HoleCrossingTests has the crossing rule).
+            let tl = shoot(p, from: Vec2(0.6, W / 2), toward: Vec2(1, 0), speed: 0.8)
             XCTAssertNotNil(tl.pocketTime[0], "the ball should drop into the bed hole (pockets \(pocketsOn))")
             XCTAssertEqual(tl.events.last { $0.kind == .pocket }?.pocket, TableSpec.edgePocketCount + 1)
             XCTAssertEqual(tl.table.holeCenter(pocket: TableSpec.edgePocketCount + 1), Vec2(1.5, W / 2))

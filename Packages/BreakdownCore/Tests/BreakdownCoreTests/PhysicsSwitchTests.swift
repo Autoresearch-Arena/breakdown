@@ -7,6 +7,8 @@
 //          checks the reasons written beside the new starting values (the shaft end mass gives 2 to 3 degrees of
 //          deflection at half-radius side offset; the miscue limit sits at about half the radius; the rail restitution
 //          reaches its floor at break speed).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (the flip: the pre-switch hash is now PoolParameters.generationOne's,
+//          and a new check pins the default to generation two with the tuned numbers.)
 // SRP/DRY check: Pass - checked JumpTests (its testLevelStrikesAreBitForBitUnchanged pins five recordings' content
 //          hashes, which include the parameter hash) and TableFeatureTests (the table-feature hash marker). These are the
 //          switch's own checks; nothing here repeats a solver test.
@@ -41,27 +43,53 @@ final class PhysicsSwitchTests: XCTestCase {
         return h.value
     }
 
-    func testDefaultParameterHashIsUnchanged() {
-        let p = PoolParameters()
+    // Since the flip (21-Nov-2026) the old defaults live in PoolParameters.generationOne: it must still hash exactly as
+    // the default did before the switch existed, so every recording made before the flip keeps its hash.
+    func testGenerationOnePresetHashIsUnchanged() {
+        let p = PoolParameters.generationOne
         XCTAssertEqual(p.modelGeneration, 1)
         XCTAssertFalse(p.usesGenerationTwo)
         XCTAssertEqual(p.hash, preSwitchDefaultHash())
         // The recorded parameter hash of a solve is the same value.
-        XCTAssertEqual(PoolSolver.simulate(Rack.showpieceBreak()).parameterHash, preSwitchDefaultHash())
+        XCTAssertEqual(PoolSolver.simulate(Rack.generationOneShowpieceBreak()).parameterHash, preSwitchDefaultHash())
+    }
+
+    // The flip (proof plan package 4): the default is generation two with the numbers the real-table sweep chose.
+    func testDefaultIsGenerationTwoWithTheTunedNumbers() {
+        let p = PoolParameters()
+        XCTAssertEqual(p.modelGeneration, 2)
+        XCTAssertEqual(p.modelGeneration, PoolParameters.newestGeneration)
+        XCTAssertTrue(p.usesGenerationTwo)
+        XCTAssertEqual(p.slidingFriction, 0.15)
+        XCTAssertEqual(p.rollingResistance, 0.015)
+        XCTAssertEqual(p.spinDecay, 9.5)
+        XCTAssertEqual(p.cushionRestitution, 0.95)
+        XCTAssertEqual(p.cushionFriction, 0.17)
+        XCTAssertEqual(p.railRestitutionSlope, 0.025)
+        XCTAssertEqual(p.railRestitutionFloor, 0.6)
+        XCTAssertEqual(p.cueMass, 0.54)
+        XCTAssertEqual(p.shaftEndMass, 0.0073)
+        XCTAssertNotEqual(p.hash, preSwitchDefaultHash())
+        XCTAssertEqual(PoolSolver.simulate(Rack.showpieceBreak()).parameterHash, p.hash)
+        // The preset differs from the default only in the generation and the four tuned numbers.
+        var back = PoolParameters.generationOne
+        back.modelGeneration = 2
+        back.slidingFriction = 0.15; back.rollingResistance = 0.015; back.spinDecay = 9.5; back.cushionRestitution = 0.95
+        XCTAssertEqual(back.hash, p.hash)
     }
 
     func testGenerationJoinsTheHashOnlyOffItsDefault() {
-        let base = PoolParameters().hash
+        let base = PoolParameters.generationOne.hash
 
         // Generation-two numbers do nothing at generation 1, so changing them there leaves the hash alone.
-        var g1 = PoolParameters()
+        var g1 = PoolParameters.generationOne
         g1.railRestitutionSlope = 0.05; g1.railRestitutionFloor = 0.5; g1.cueMass = 0.6; g1.shaftEndMass = 0.009
         g1.tipGrip = 0.6; g1.miscueSpeedFraction = 0.4; g1.miscueMaxDeflection = 0.1
         g1.pocketCaptureFallFraction = 0.5; g1.rimSkipSpeedLoss = 0.1
         XCTAssertEqual(g1.hash, base)
 
         // The generation itself changes it, and above 1 every generation-two number does too.
-        var g2 = PoolParameters()
+        var g2 = PoolParameters.generationOne
         g2.modelGeneration = PoolParameters.newestGeneration
         XCTAssertTrue(g2.usesGenerationTwo)
         XCTAssertNotEqual(g2.hash, base)
@@ -82,7 +110,7 @@ final class PhysicsSwitchTests: XCTestCase {
     // A strike that names no ball strikes ball 0, and today's level shots record exactly what they did (the literal is
     // JumpTests' first, printed by the unchanged solver on 20-Nov-2026).
     func testStrikeBallIndexDefaultsToTheCueBallAndChangesNothing() {
-        let input = Rack.showpieceBreak()
+        let input = Rack.generationOneShowpieceBreak()
         XCTAssertEqual(input.strike.ballIndex, 0)
         XCTAssertEqual(CueStrike(direction: Vec2(1, 0), speed: 2).ballIndex, 0)
         let tl = PoolSolver.simulate(input)
@@ -131,8 +159,9 @@ final class PhysicsSwitchTests: XCTestCase {
         // Miscue limit: about half the radius.
         let limit = p.tipGrip / (1 + p.tipGrip * p.tipGrip).squareRoot()
         XCTAssertEqual(limit, 0.5, accuracy: 0.01)
-        // Rail restitution: today's value at walking pace, the floor at 10 m/s of break speed.
-        XCTAssertEqual(p.cushionRestitution - p.railRestitutionSlope * 10, p.railRestitutionFloor, accuracy: 1e-9)
+        // Rail restitution: the tuned cushionRestitution at walking pace, the floor reached at 14 m/s, just past the
+        // hardest break (8 to 13 m/s, spec 3.4).
+        XCTAssertEqual(p.cushionRestitution - p.railRestitutionSlope * 14, p.railRestitutionFloor, accuracy: 1e-9)
         // Pocket capture: a third of the radius.
         XCTAssertEqual(p.pocketCaptureFallFraction, 1.0 / 3.0)
         // Miscue deflection: tan 5 degrees.

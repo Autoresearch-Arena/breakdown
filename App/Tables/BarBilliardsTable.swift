@@ -31,6 +31,8 @@
 //          19.5 mm domed cap that clears the top of a ball. Positions vary a little between makers.
 //          Estimates: ball mass from a pool ball's phenolic density at 47.6 mm (about 98 g); a turned beech skittle of
 //          this shape weighs about 25 g.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the default shot plays at 1.4 m/s, since on the
+//          default generation-two physics a 2 m/s ball skips over the 50 hole.)
 // SRP/DRY check: Pass - this table's data and props only; the solver features (posts, pins, bed holes, pockets off)
 //          live in BreakdownCore, the dispatch in TableKind.swift, shared prop helpers (plainPin, loadModel, dress) in
 //          TableProps.swift, which this file reuses rather than copying.
@@ -134,12 +136,13 @@ enum BarBilliardsTable: TableDefinition {
 
     /// Plain ball from the D straight into the left 50 hole (as the player looks up the table), passing well clear of
     /// the red (95 mm) and the black skittle (150 mm). A straight centre-ball shot needs no throw or swerve to land, so
-    /// it reliably pots. 2 m/s is enough on every surface: the hole is 0.65 m away and the stickiest surface in
-    /// PlaySurface (rolling resistance 0.13) still rolls a 2 m/s ball about a metre; the solver drops a ball into a bed
-    /// hole at any speed.
+    /// it reliably pots. On the default physics (generation two, since 21-Nov-2026) a ball crossing a hole too fast
+    /// skips over it, and 2 m/s skipped this one. Checked on a temporary copy of this table in BreakProbe at 0.6 to
+    /// 2.0 m/s on every surface: 1.4 m/s drops on every surface but sand (where the ball dies short below 1.6 m/s) and
+    /// the Moon (where almost every pace skips), so 1.4 it is.
     static let defaultShot: (aimDegrees: Double, power: Double) = (
         aimDegrees: atan2(bedHoles[2].center.y - dSpot.y, bedHoles[2].center.x - dSpot.x) * 180 / Double.pi,
-        power: 2.0
+        power: 1.4
     )
 
     // MARK: Look and props

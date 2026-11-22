@@ -5,6 +5,8 @@
 //          centre line rattle between the jaws; and a randomized sweep of thousands of seeded shots ends with no
 //          impossible state (no NaN, no ball resting inside rubber or off the table unless pocketed, no cushion hit that
 //          adds energy) and repeats exactly.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the random sweep runs on generation one with its
+//          old numbers and on the default generation two, checking rest positions against the rail contact distance.)
 // SRP/DRY check: Pass - checked PhysicsTests (break-level checks, kept as they are); these are pocket-level only.
 import BreakdownLensModel
 import BreakdownTimeline
@@ -76,11 +78,15 @@ final class PocketTests: XCTestCase {
     }
 
     // Thousands of seeded shots from random layouts: nothing impossible, and exact repeats.
+    // Both generations (since the flip, 21-Nov-2026): generation one on its old numbers, and the default. A ball rests
+    // against a rail, a jaw or a knuckle at the rail contact distance, which is the radius at generation one and a
+    // little less at generation two (the nose meets the ball above its centre).
     func testRandomSweepStaysPhysical() {
-        var rng = Lcg(seed: 20_261_120)
-        let L = p.tableLength, W = p.tableWidth, r = p.ballRadius
-        let jaws = p.jaws
         var checked = 0, mouthHits = 0
+        for p in [PoolParameters.generationOne, PoolParameters()] {
+        var rng = Lcg(seed: 20_261_120)
+        let L = p.tableLength, W = p.tableWidth, r = p.ballRadius, c = p.railContactDistance
+        let jaws = p.jaws
         for shot in 0..<3000 {
             // Five balls at random clear spots; the rest off the table.
             var pos = [Vec2](repeating: NextShot.offTable, count: 16)
@@ -106,8 +112,8 @@ final class PocketTests: XCTestCase {
                 XCTAssertFalse(s.position.x.isNaN || s.position.y.isNaN, "shot \(shot) ball \(b) NaN")
                 if s.pocketed { continue }
                 // Never inside a knuckle.
-                for j in jaws { XCTAssertGreaterThanOrEqual((s.position - j.start).length, r * (1 - 1e-6), "shot \(shot) ball \(b) inside a knuckle") }
-                let inside = s.position.x >= r - 1e-6 && s.position.x <= L - r + 1e-6 && s.position.y >= r - 1e-6 && s.position.y <= W - r + 1e-6
+                for j in jaws { XCTAssertGreaterThanOrEqual((s.position - j.start).length, c * (1 - 1e-6), "shot \(shot) ball \(b) inside a knuckle") }
+                let inside = s.position.x >= c - 1e-6 && s.position.x <= L - c + 1e-6 && s.position.y >= c - 1e-6 && s.position.y <= W - c + 1e-6
                 if !inside {
                     // Off the rectangle is only allowed hanging in a pocket mouth, on the playing side of its jaws.
                     let k = (0..<p.pocketCenters.count).min { (s.position - p.pocketCenters[$0]).length < (s.position - p.pocketCenters[$1]).length }!
@@ -120,7 +126,7 @@ final class PocketTests: XCTestCase {
                         // Only beside the face itself; behind the knuckle end the knuckle check above applies.
                         let along = (s.position - j.start).dot(dir)
                         if along < 0 || along > (j.end - j.start).length { continue }
-                        XCTAssertGreaterThanOrEqual(n.dot(s.position - j.start), r * (1 - 1e-6), "shot \(shot) ball \(b) inside a jaw")
+                        XCTAssertGreaterThanOrEqual(n.dot(s.position - j.start), c * (1 - 1e-6), "shot \(shot) ball \(b) inside a jaw")
                     }
                 }
             }
@@ -128,6 +134,7 @@ final class PocketTests: XCTestCase {
                 XCTAssertEqual(tl.contentHash, PoolSolver.simulate(input).contentHash, "shot \(shot) did not repeat")
             }
             checked += 1
+        }
         }
         XCTAssertGreaterThan(mouthHits, 0, "the sweep never touched a jaw or knuckle")
         print("POCKET sweep: \(checked) shots, \(mouthHits) jaw or knuckle contacts")

@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: since generation two became the default the
+//          file's checks solve on PoolParameters.generationOne, so the bit-for-bit guard keeps guarding the old solver
+//          path and the closed forms keep describing the strike they were written for; the raised-cue sweep runs on
+//          both generations.)
 // PURPOSE: Checks for cue elevation, masse and jump shots. A level strike must record bit for bit what it recorded
 //          before the jump model existed (content hashes taken from main before the change). A steep centre strike
 //          jumps, lands where the closed form says (slate bounce with friction, then a parabola) and settles after a
@@ -16,7 +20,10 @@ import BreakdownTimeline
 import XCTest
 
 final class JumpTests: XCTestCase {
-    let p = PoolParameters()
+    /// Generation one on its old numbers: these jump and massé checks, and their closed forms, describe its strike
+    /// (full speed, no push off line, no miscue: the massé below strikes 0.6 of the radius out, past generation two's
+    /// miscue limit). The raised-cue sweep also runs on the default generation two.
+    let p = PoolParameters.generationOne
 
     /// The cue ball and the listed object balls; everything else parked off the table.
     private func layout(_ cue: Vec2, _ others: [Vec2] = []) -> [Vec2] {
@@ -38,18 +45,22 @@ final class JumpTests: XCTestCase {
     }
 
     // A level strike records exactly what it recorded before the jump model: same content hash, bit for bit. The
-    // hashes were printed by the unchanged solver on main (20-Nov-2026) for these five shots.
+    // hashes were printed by the unchanged solver on main (20-Nov-2026) for these five shots. Since the flip to
+    // generation two (21-Nov-2026) they are solved on PoolParameters.generationOne, the old generation with its old
+    // numbers, so this test keeps guarding the old solver path exactly.
     func testLevelStrikesAreBitForBitUnchanged() {
+        let old = PoolParameters.generationOne
         let shots: [(ShotInput, UInt64)] = [
-            (Rack.showpieceBreak(), 8_237_982_394_174_342_167),
-            (Rack.breakShot(seed: 5, aimOffset: 0.01, speed: 10, tipUp: 0.008, tipSide: -0.007), 1_300_594_982_491_109_292),
-            (ShotInput(positions: layout(Vec2(0.5, 0.6), [Vec2(1.2, 0.7), Vec2(1.6, 0.3)]),
+            (Rack.generationOneShowpieceBreak(), 8_237_982_394_174_342_167),
+            (Rack.breakShot(parameters: old, seed: 5, aimOffset: 0.01, speed: 10, tipUp: 0.008, tipSide: -0.007),
+             1_300_594_982_491_109_292),
+            (ShotInput(parameters: old, positions: layout(Vec2(0.5, 0.6), [Vec2(1.2, 0.7), Vec2(1.6, 0.3)]),
                        strike: CueStrike(direction: Vec2(1, 0.14), speed: 4.0, tipUp: -0.01, tipSide: 0.006), seed: 9),
              10_734_446_667_115_689_931),
-            (ShotInput(positions: layout(Vec2(0.3, 0.3), [Vec2(0.9, 0.9)]),
+            (ShotInput(parameters: old, positions: layout(Vec2(0.3, 0.3), [Vec2(0.9, 0.9)]),
                        strike: CueStrike(direction: Vec2(0.6, 0.8), speed: 6.5, tipUp: 0.012, tipSide: -0.012), seed: 4),
              2_472_483_834_086_878_112),
-            (ShotInput(positions: layout(Vec2(2.0, 1.0)),
+            (ShotInput(parameters: old, positions: layout(Vec2(2.0, 1.0)),
                        strike: CueStrike(direction: Vec2(-0.3, -1), speed: 2.2, tipUp: 0, tipSide: 0.01), seed: 2),
              16_134_323_682_271_741_191),
         ]
@@ -58,7 +69,7 @@ final class JumpTests: XCTestCase {
             XCTAssertEqual(tl.contentHash, expected, "level shot \(k) changed")
             XCTAssertFalse(tl.segments.joined().contains { $0.phase == .airborne }, "level shot \(k) left the cloth")
         }
-        XCTAssertEqual(PoolParameters().hash, PoolSolver.simulate(Rack.showpieceBreak()).parameterHash)
+        XCTAssertEqual(old.hash, PoolSolver.simulate(Rack.generationOneShowpieceBreak()).parameterHash)
     }
 
     // A steep centre strike: the slate bounce (restitution and capped cloth friction) gives a closed-form take-off,
@@ -181,10 +192,13 @@ final class JumpTests: XCTestCase {
     }
 
     // Seeded random shots with raised cues among them: nothing impossible, and exact repeats.
+    // On both generations (since the flip): generation one on its old numbers and the default. A ball rests against a
+    // rail or a knuckle at the rail contact distance (the radius at generation one, a little less at generation two).
     func testRandomSweepWithRaisedCuesStaysPhysical() {
-        var rng = SweepRandom(seed: 20_261_121)
-        let L = p.tableLength, W = p.tableWidth, r = p.ballRadius
         var jumps = 0, offTable = 0, airContacts = 0, checked = 0
+        for p in [self.p, PoolParameters()] {
+        var rng = SweepRandom(seed: 20_261_121)
+        let L = p.tableLength, W = p.tableWidth, r = p.ballRadius, c = p.railContactDistance
         for shot in 0..<1500 {
             var pos = [Vec2](repeating: NextShot.offTable, count: 16)
             var placed = 0
@@ -228,8 +242,8 @@ final class JumpTests: XCTestCase {
                 }
                 XCTAssertEqual(s.height, 0, "shot \(shot) ball \(b) still in the air")
                 XCTAssertEqual(s.velocity.length, 0, "shot \(shot) ball \(b) still moving")
-                for j in p.jaws { XCTAssertGreaterThanOrEqual((s.position - j.start).length, r * (1 - 1e-6), "shot \(shot) ball \(b) inside a knuckle") }
-                let inside = s.position.x >= r - 1e-6 && s.position.x <= L - r + 1e-6 && s.position.y >= r - 1e-6 && s.position.y <= W - r + 1e-6
+                for j in p.jaws { XCTAssertGreaterThanOrEqual((s.position - j.start).length, c * (1 - 1e-6), "shot \(shot) ball \(b) inside a knuckle") }
+                let inside = s.position.x >= c - 1e-6 && s.position.x <= L - c + 1e-6 && s.position.y >= c - 1e-6 && s.position.y <= W - c + 1e-6
                 if !inside {
                     // Off the rectangle is only allowed hanging in a pocket mouth.
                     let near = p.pocketCenters.map { (s.position - $0).length }.min()!
@@ -245,7 +259,8 @@ final class JumpTests: XCTestCase {
             }
             checked += 1
         }
-        XCTAssertGreaterThan(jumps, 100, "the sweep hardly jumped")
+        }
+        XCTAssertGreaterThan(jumps, 200, "the sweep hardly jumped")
         print("JUMP sweep: \(checked) shots, \(jumps) with a take-off, \(airContacts) contacts in the air, \(offTable) balls flew off")
     }
 

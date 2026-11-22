@@ -7,6 +7,8 @@
 //          its own answer and MISSED when the stop lesson's settings are copied onto it (plan 14, section 4); and the
 //          target bands lie inside what the controls can set (the tip travel, the player's power range, the cue angles
 //          the menu offers). Also the lesson flow's locks: which controls each step opens.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the reach check is the miscue limit of the
+//          default physics instead of the old 20 mm tip travel.)
 // SRP/DRY check: Pass - checks only. Solving and attempts come from TestShots (the model's own path); the verdicts are
 //          TrickShotJudge's; the flow is LessonMode's.
 @testable import Breakdown
@@ -61,11 +63,13 @@ final class LessonTests: XCTestCase {
     }
 
     func testTargetBandsAreWithinReach() {
-        let tipTravel = ShowpieceModel.tipLimit
+        // Every reference keeps its tip inside the miscue limit of the default physics (generation two since the proof
+        // plan's package 4): a lesson must never ask for a stroke that slips.
+        let grip = PoolParameters().miscueOffsetLimit
         for lesson in Lessons.all {
             let r = lesson.reference, w = lesson.window
-            XCTAssertLessThanOrEqual(abs(r.tipUp), tipTravel, "\(lesson.id): reference tip height out of reach")
-            XCTAssertLessThanOrEqual(abs(r.tipSide), tipTravel, "\(lesson.id): reference side out of reach")
+            XCTAssertLessThanOrEqual((r.tipUp * r.tipUp + r.tipSide * r.tipSide).squareRoot(), grip,
+                                     "\(lesson.id): reference tip past the miscue limit")
             XCTAssertTrue(PlayerShotSpeed.ordinary.contains(r.power), "\(lesson.id): reference power out of range")
             XCTAssertGreaterThan(w.tipUp, 0, lesson.id)
             XCTAssertGreaterThan(w.power, 0, lesson.id)

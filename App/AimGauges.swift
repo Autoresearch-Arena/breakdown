@@ -16,6 +16,9 @@
 //          StrokeWords) with the ball's speed spoken and in the help; a calm zone and a warm zone on the bar, a mark at
 //          the calm zone's top (model.strokeZones, which moves with the bridge finger) and the warm part tinted, so
 //          the player sees where a harder swing starts to cost control.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the cue-ball picture is to scale, so the dot's
+//          reach and the dashed miscue ring sit where the default physics puts them: the ring at the miscue limit,
+//          about half the radius, the dot a tenth of the radius beyond it.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -39,14 +42,19 @@ struct TipPicker: View {
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var side: CGFloat = 52
 
-    /// The dot may travel to 70% of the ball's radius at full tip offset; the ring drawn there is the miscue limit.
-    private let reach: CGFloat = 0.7
+    /// The picture is the cue ball to scale. The dot travels as far as the mode's tip travel (model.tipLimit) as a
+    /// share of the ball's radius, and the dashed ring sits at the miscue limit (model.miscueLimit), where the tip slips
+    /// on the default physics: about half the radius, a little inside the dot's reach.
+    private func share(_ metres: Double) -> CGFloat {
+        CGFloat(min(max(metres / model.cueBallRadius, 0.1), 0.95))
+    }
 
     var body: some View {
         // Grows with text size for easy touching but stops at 72 points: past that it would crowd out the table.
         let size = min(max(44, side), 72)
         let radius = size / 2
-        let limit = radius * reach
+        let limit = radius * share(model.tipLimit)
+        let ring = radius * share(model.miscueLimit)
         let up = model.activeTipUp / model.tipLimit
         let across = model.activeTipSide / model.tipLimit
         ZStack {
@@ -61,7 +69,7 @@ struct TipPicker: View {
             }
             .stroke(.black.opacity(0.18), lineWidth: 1)
             Circle().strokeBorder(.black.opacity(0.28), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                .frame(width: limit * 2, height: limit * 2)
+                .frame(width: ring * 2, height: ring * 2)
             // A lesson's target band: where on the cue ball the shot works, clipped to the reachable disc.
             if let band = tipBand(radius: radius, limit: limit) {
                 Path(band)

@@ -23,6 +23,8 @@
 //          target cannot be imported here); if those change, change them here too and re-run.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a situation carries the physics generation it is solved on, default
 //          1, so "BreakProbe verify 2" can re-check every authored escape on generation two; nothing else changes).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: situations solve on the default generation
+//          (two); every tip grid and window stays inside the miscue limit (tipReach); the escapes are re-authored.)
 // SRP/DRY check: Pass - situation search only. Simulation, pockets, first-ball and band primitives are reused from
 //          TrickSearch.swift; the legality test is new because the trick goal has no "must not drop" (the 8) or
 //          "must be one of a group" first hit. The app ships the authored answers; this tool only finds them.
@@ -45,15 +47,20 @@ enum EBCloth: String, Sendable {
 
     var parameters: PoolParameters {
         var p = PoolParameters()
+        apply(to: &p)
+        return p
+    }
+
+    /// Write this cloth's numbers into `p`, as PlaySurface.apply does.
+    func apply(to p: inout PoolParameters) {
         switch self {
         case .cloth: break
         case .tournament:
-            p.slidingFriction = 0.15; p.rollingResistance = 0.005; p.spinDecay = 5.0; p.cushionRestitution = 0.9
+            p.slidingFriction = 0.15; p.rollingResistance = 0.005; p.spinDecay = 5.0; p.cushionRestitution = 0.95
         case .diveBar:
-            p.slidingFriction = 0.3; p.rollingResistance = 0.015; p.spinDecay = 14.0; p.cushionRestitution = 0.65
+            p.slidingFriction = 0.3; p.rollingResistance = 0.015; p.spinDecay = 14.0; p.cushionRestitution = 0.8
             p.cushionFriction = 0.22
         }
-        return p
     }
 }
 
@@ -109,14 +116,14 @@ struct EBSituationSpec: Sendable {
     var solids: Bool
     var cloth: EBCloth
     var escapes: [EBEscapeSpec]
-    /// The physics generation to solve on (PoolParameters.modelGeneration). 1, the default, is what every escape was
-    /// authored on; the content check (ContentVerify.swift) sets 2 to see which escapes survive the new physics.
-    var generation: Int = 1
+    /// The physics generation to solve on (PoolParameters.modelGeneration). The default is the solver's default (two
+    /// since the proof plan's package 4 re-authored every escape on it); the content check can set 1 to compare.
+    var generation: Int = P.modelGeneration
 
-    /// The cloth's numbers on this situation's physics generation.
+    /// The cloth's numbers on this situation's physics generation (generation one starts from its old numbers).
     var parameters: PoolParameters {
-        var p = cloth.parameters
-        p.modelGeneration = generation
+        var p = generationParameters(generation)
+        cloth.apply(to: &p)
         return p
     }
 
@@ -352,14 +359,17 @@ func ebMeasure(_ s: EBSituationSpec, _ e: EBEscapeSpec, _ start: Strike) -> EBRe
         c.aim = ((a.lo + a.hi) / 2 / 0.01).rounded() * 0.01
         guard let p = ebBand(s, e, c, step: 0.05, limit: 3, powSet, { $0.power }, valid: { $0 >= 0.3 && $0 <= 8 }) else { return nil }
         c.power = ((p.lo + p.hi) / 2 / 0.05).rounded() * 0.05
-        guard let t = ebBand(s, e, c, step: 0.0005, limit: 0.02, tipSet, { $0.tipUp }, valid: { abs($0) <= 0.02 }) else { return nil }
+        let side0 = c.tipSide
+        guard let t = ebBand(s, e, c, step: 0.0005, limit: 0.02, tipSet, { $0.tipUp },
+                             valid: { insideGrip(up: $0, side: side0) }) else { return nil }
         c.tipUp = ((t.lo + t.hi) / 2 / 0.0005).rounded() * 0.0005
     }
+    let up = c.tipUp, sideNow = c.tipSide
     guard let a = ebBand(s, e, c, step: aimStep, limit: 6, aimSet, { $0.aim }),
           let p = ebBand(s, e, c, step: 0.05, limit: 3, powSet, { $0.power }, valid: { $0 >= 0.3 && $0 <= 8 }),
-          let t = ebBand(s, e, c, step: 0.0005, limit: 0.02, tipSet, { $0.tipUp }, valid: { abs($0) <= 0.02 })
+          let t = ebBand(s, e, c, step: 0.0005, limit: 0.02, tipSet, { $0.tipUp }, valid: { insideGrip(up: $0, side: sideNow) })
     else { return nil }
-    let side = ebBand(s, e, c, step: 0.0005, limit: 0.02, sideSet, { $0.tipSide }, valid: { abs($0) <= 0.022 })
+    let side = ebBand(s, e, c, step: 0.0005, limit: 0.02, sideSet, { $0.tipSide }, valid: { insideGrip(up: up, side: $0) })
     let el = c.elevation > 0
         ? ebBand(s, e, c, step: 0.01, limit: 0.3, elSet, { $0.elevation }, valid: { $0 > 0.05 && $0 <= 0.95 }) : nil
     return EBResult(strike: c, aim: a, power: p, tipUp: t, tipSide: side, elevation: el)
@@ -462,14 +472,14 @@ func ebJump(_ id: String, _ ball: Int, _ pocket: Int, bridge: Bool = false,
 func ebMasse(_ id: String, _ ball: Int, _ pocket: Int) -> EBEscapeSpec {
     EBEscapeSpec(id: id, technique: .curve, ball: ball, pocket: pocket, rails: 0...0, aimAround: (0, 75, 1),
                  aimRelative: true, powers: [0.6, 0.8, 1.0, 1.3, 1.6, 2.0, 2.5], tipUps: [0, -0.004],
-                 tipSides: [-0.021, -0.017, 0.017, 0.021], elevations: [0.5, 0.6, 0.7, 0.8])
+                 tipSides: [-0.0135, -0.011, 0.011, 0.0135], elevations: [0.5, 0.6, 0.7, 0.8, 0.9])
 }
 
 func ebSwerve(_ id: String, _ ball: Int, _ pocket: Int, half: Double = 30, powers: [Double] = range(1.0, 5.0, 0.5),
               elevations: [Double] = [0.2, 0.3, 0.4, 0.5, 0.6]) -> EBEscapeSpec {
     EBEscapeSpec(id: id, technique: .curve, ball: ball, pocket: pocket, rails: 0...0, aimAround: (0, half, 0.5),
                  aimRelative: true, powers: powers, tipUps: [0],
-                 tipSides: [-0.02, -0.016, -0.012, -0.008, 0.008, 0.012, 0.016, 0.02], elevations: elevations)
+                 tipSides: [-0.014, -0.012, -0.010, -0.008, 0.008, 0.010, 0.012, 0.014], elevations: elevations)
 }
 
 func ebSafety(_ id: String, tips: [Double] = [0], powers: [Double] = range(0.5, 2.5, 0.25)) -> EBEscapeSpec {
@@ -553,7 +563,7 @@ let ebSituations: [EBSituationSpec] = [
         balls: [15: (3.0, 6.4), 11: (3.55, 2.1), 2: (0.4, 5.2), 4: (3.5, 5.4), 6: (2.1, 3.98), 7: (0.9, 7.6)],
         solids: false, cloth: .cloth,
         escapes: [EBEscapeSpec(id: "A", technique: .curve, ball: 15, pocket: 1, rails: 0...0, aimAround: (-13, 6, 0.25),
-                               powers: range(1.5, 4.0, 0.25), tipUps: [0], tipSides: range(0.014, 0.022, 0.002),
+                               powers: range(1.5, 4.0, 0.25), tipUps: [0], tipSides: range(0.008, 0.014, 0.002),
                                elevations: range(0.2, 0.5, 0.025))]),
     EBSituationSpec(
         id: "no-way3", number: 12, cue: (2.4, 0.6), eight: (2.5, 1.0),
@@ -630,8 +640,8 @@ func runEightBallVerify(only: Set<String>) {
         guard ok else { continue }
         let aim = band(centre: k.aim, step: e.technique == .curve ? 0.1 : 0.02, limit: 6) { v in var t = k; t.aim = v; return ebPasses(s, e, t) }!
         let pow = band(centre: k.power, step: 0.05, limit: 3) { v in v >= 0.3 && v <= 8 && { var t = k; t.power = v; return ebPasses(s, e, t) }() }!
-        let side = band(centre: k.tipSide, step: 0.0005, limit: 0.02) { v in abs(v) <= 0.022 && { var t = k; t.tipSide = v; return ebPasses(s, e, t) }() }!
-        let tip = band(centre: k.tipUp, step: 0.0005, limit: 0.02) { v in abs(v) <= 0.02 && { var t = k; t.tipUp = v; return ebPasses(s, e, t) }() }!
+        let side = band(centre: k.tipSide, step: 0.0005, limit: 0.02) { v in insideGrip(up: k.tipUp, side: v) && { var t = k; t.tipSide = v; return ebPasses(s, e, t) }() }!
+        let tip = band(centre: k.tipUp, step: 0.0005, limit: 0.02) { v in insideGrip(up: v, side: k.tipSide) && { var t = k; t.tipUp = v; return ebPasses(s, e, t) }() }!
         var line = String(format: "   windows: aim %.2f..%.2f, power %.2f..%.2f, side %+.4f..%+.4f, tip %+.4f..%+.4f",
                           aim.lo, aim.hi, pow.lo, pow.hi, side.lo, side.hi, tip.lo, tip.hi)
         if k.elevation > 0, let el = band(centre: k.elevation, step: 0.01, limit: 0.3, { v in
@@ -674,29 +684,29 @@ struct EBFinal: Sendable {
 
 /// Aims as the app holds them (-180 to 180); elevations set inside each jump's measured band rather than at its edge.
 let ebFinal: [EBFinal] = [
-    EBFinal(situation: "tucked2", escape: "A", strike: Strike(aim: 172.20, power: 2.25, tipUp: 0.004, tipSide: 0)),
+    EBFinal(situation: "tucked2", escape: "A", strike: Strike(aim: 169.97, power: 3.50, tipUp: 0.004, tipSide: 0)),
     EBFinal(situation: "tucked2", escape: "B", strike: Strike(aim: 27.25, power: 3.80, tipUp: -0.002, tipSide: 0, elevation: 0.80)),
-    EBFinal(situation: "frozen", escape: "A", strike: Strike(aim: -175.25, power: 3.00, tipUp: 0.0075, tipSide: 0)),
-    EBFinal(situation: "frozen", escape: "B", strike: Strike(aim: -174.71, power: 3.85, tipUp: 0.008, tipSide: 0)),
-    EBFinal(situation: "jump-diamond", escape: "A", strike: Strike(aim: 62.76, power: 4.80, tipUp: -0.012, tipSide: 0)),
-    EBFinal(situation: "jump-diamond", escape: "B", strike: Strike(aim: -31.36, power: 4.20, tipUp: -0.0105, tipSide: 0, elevation: 0.70)),
-    EBFinal(situation: "bend2", escape: "A", strike: Strike(aim: -12.85, power: 2.50, tipUp: -0.0015, tipSide: 0.020, elevation: 0.30)),
+    EBFinal(situation: "frozen", escape: "A", strike: Strike(aim: -173.78, power: 3.05, tipUp: 0.0055, tipSide: 0)),
+    EBFinal(situation: "frozen", escape: "B", strike: Strike(aim: -173.39, power: 4.45, tipUp: 0.007, tipSide: 0)),
+    EBFinal(situation: "jump-diamond", escape: "A", strike: Strike(aim: 60.68, power: 3.75, tipUp: -0.008, tipSide: 0)),
+    EBFinal(situation: "jump-diamond", escape: "B", strike: Strike(aim: -31.30, power: 5.20, tipUp: -0.010, tipSide: 0, elevation: 0.70)),
+    EBFinal(situation: "bend2", escape: "A", strike: Strike(aim: -14.43, power: 3.15, tipUp: -0.0025, tipSide: 0.0135, elevation: 0.40)),
     EBFinal(situation: "bend2", escape: "B", strike: Strike(aim: -21.95, power: 4.35, tipUp: -0.0055, tipSide: 0, elevation: 0.70)),
-    EBFinal(situation: "bend2", escape: "C", strike: Strike(aim: -129.39, power: 3.00, tipUp: 0.0075, tipSide: 0)),
+    EBFinal(situation: "bend2", escape: "C", strike: Strike(aim: -129.06, power: 4.30, tipUp: 0.0105, tipSide: 0)),
     EBFinal(situation: "kick-game-db", escape: "A", strike: Strike(aim: 27.71, power: 1.50, tipUp: 0.0065, tipSide: 0)),
-    EBFinal(situation: "kick-game-db", escape: "B", strike: Strike(aim: 123.07, power: 5.25, tipUp: 0.008, tipSide: 0)),
-    EBFinal(situation: "z-shot", escape: "A", strike: Strike(aim: -35.92, power: 3.85, tipUp: -0.006, tipSide: -0.005)),
+    EBFinal(situation: "kick-game-db", escape: "B", strike: Strike(aim: 122.55, power: 7.65, tipUp: 0.0115, tipSide: 0)),
+    EBFinal(situation: "z-shot", escape: "A", strike: Strike(aim: -36.62, power: 5.00, tipUp: -0.004, tipSide: -0.005)),
     EBFinal(situation: "z-shot", escape: "B", strike: Strike(aim: 52.60, power: 4.95, tipUp: -0.008, tipSide: 0)),
-    EBFinal(situation: "point-blank", escape: "A", strike: Strike(aim: 73.30, power: 2.70, tipUp: -0.006, tipSide: 0)),
+    EBFinal(situation: "point-blank", escape: "A", strike: Strike(aim: 70.62, power: 3.45, tipUp: -0.008, tipSide: 0)),
     EBFinal(situation: "point-blank", escape: "B", strike: Strike(aim: -61.55, power: 3.50, tipUp: -0.0045, tipSide: 0, elevation: 0.85)),
     EBFinal(situation: "masse-win", escape: "A", strike: Strike(aim: -177.14, power: 1.75, tipUp: 0.006, tipSide: 0)),
-    EBFinal(situation: "masse-win", escape: "B", strike: Strike(aim: 2.00, power: 2.50, tipUp: -0.005, tipSide: 0.017, elevation: 0.80)),
-    EBFinal(situation: "bridge-jump", escape: "A", strike: Strike(aim: -61.75, power: 3.60, tipUp: -0.006, tipSide: 0)),
+    EBFinal(situation: "masse-win", escape: "B", strike: Strike(aim: -11.28, power: 4.30, tipUp: 0.0005, tipSide: 0.0095, elevation: 0.80)),
+    EBFinal(situation: "bridge-jump", escape: "A", strike: Strike(aim: -59.44, power: 3.55, tipUp: -0.008, tipSide: 0)),
     EBFinal(situation: "bridge-jump", escape: "B", strike: Strike(aim: 23.49, power: 3.85, tipUp: -0.0045, tipSide: 0, elevation: 0.75)),
-    EBFinal(situation: "kick-bank2", escape: "A", strike: Strike(aim: -19.80, power: 4.60, tipUp: -0.0095, tipSide: 0)),
-    EBFinal(situation: "kick-bank2", escape: "B", strike: Strike(aim: -133.21, power: 2.65, tipUp: 0.008, tipSide: 0)),
-    EBFinal(situation: "swerve2", escape: "A", strike: Strike(aim: 54.53, power: 2.05, tipUp: 0.0105, tipSide: 0)),
-    EBFinal(situation: "swerve2", escape: "B", strike: Strike(aim: 149.20, power: 3.50, tipUp: -0.0005, tipSide: -0.020, elevation: 0.40)),
-    EBFinal(situation: "no-way3", escape: "T", strike: Strike(aim: 60.97, power: 2.35, tipUp: 0.002, tipSide: 0)),
+    EBFinal(situation: "kick-bank2", escape: "A", strike: Strike(aim: -21.46, power: 3.45, tipUp: -0.006, tipSide: 0)),
+    EBFinal(situation: "kick-bank2", escape: "B", strike: Strike(aim: -132.88, power: 3.65, tipUp: 0.011, tipSide: 0)),
+    EBFinal(situation: "swerve2", escape: "A", strike: Strike(aim: 52.41, power: 2.90, tipUp: 0.0105, tipSide: 0)),
+    EBFinal(situation: "swerve2", escape: "B", strike: Strike(aim: 151.30, power: 5.05, tipUp: -0.002, tipSide: -0.0135, elevation: 0.50)),
+    EBFinal(situation: "no-way3", escape: "T", strike: Strike(aim: 59.45, power: 2.75, tipUp: 0.009, tipSide: 0)),
     EBFinal(situation: "no-way", escape: "B2", strike: Strike(aim: 27.90, power: 4.10, tipUp: -0.008, tipSide: 0)),
 ]

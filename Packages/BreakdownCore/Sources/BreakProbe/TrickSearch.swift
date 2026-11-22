@@ -1,6 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (searches use at most three threads unless BREAKPROBE_THREADS says otherwise; strikes carry cue elevation).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: tip windows stop at the miscue limit (tipReach)
+//          instead of 20 mm; generationParameters gives generation one its old numbers.)
 // PURPOSE: The search machinery behind the trick shots (run by hand with "BreakProbe tricks"; never part of the app or
 //          of the package tests). It simulates a candidate shot with the real solver, checks it against a goal (which
 //          balls must drop and where, where the cue ball must stop, which ball the cue ball must touch first, no
@@ -19,6 +21,18 @@ import BreakdownTimeline
 import Foundation
 
 let P = PoolParameters()
+/// The parameters for a physics generation: the default (tuned) numbers for generation 2, and for generation 1 the
+/// old numbers it was authored on (PoolParameters.generationOne), so "verify 1" reproduces what shipped before the flip.
+func generationParameters(_ generation: Int) -> PoolParameters {
+    var q = generation == 1 ? PoolParameters.generationOne : PoolParameters()
+    q.modelGeneration = generation
+    return q
+}
+/// How far from the ball's centre an authored tip may sit (metres, total offset): the miscue limit of the default
+/// physics, about half the radius. Every search and window stays inside it, so no authored answer or window edge miscues.
+let tipReach = P.miscueOffsetLimit
+/// True when a strike's tip sits inside the grip (no miscue).
+func insideGrip(up: Double, side: Double) -> Bool { (up * up + side * side).squareRoot() <= tipReach }
 let R = P.ballRadius
 let L = P.tableLength
 let W = P.tableWidth
@@ -99,6 +113,12 @@ func passes(_ goal: Goal, _ tl: Timeline) -> Bool {
         if let want = d.pocket, want != k { return false }
     }
     if let first = goal.firstHit, firstStruck(tl) != first { return false }
+    if let second = goal.secondHit {
+        // A carom (the app's TrickShotJudge): the cue ball's second ball contact must be this ball.
+        let contacts = tl.events.filter { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
+            .compactMap { $0.balls.first { $0.ball != 0 }?.ball }
+        if contacts.dropFirst().first != second { return false }
+    }
     if let b = goal.bank {
         let drop = tl.pocketTime[b] ?? -1
         let banked = tl.events.contains { $0.kind == .cushion && $0.edge == .rail && $0.time < drop && $0.balls.first?.ball == b }
@@ -197,14 +217,14 @@ func powerBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: 
 
 func tipUpBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: Double)? {
     band(centre: s.tipUp, step: 0.0005, limit: 0.04) { v in
-        guard abs(v) <= 0.02 else { return false }
+        guard insideGrip(up: v, side: s.tipSide) else { return false }
         var t = s; t.tipUp = v; return passes(goal, simulate(layout, t))
     }
 }
 
 func tipSideBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: Double)? {
     band(centre: s.tipSide, step: 0.0005, limit: 0.04) { v in
-        guard abs(v) <= 0.02 else { return false }
+        guard insideGrip(up: s.tipUp, side: v) else { return false }
         var t = s; t.tipSide = v; return passes(goal, simulate(layout, t))
     }
 }

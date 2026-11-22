@@ -4,6 +4,8 @@ Date: 21-November-2026
 PURPOSE: The shared contract for the award batch: every type, field and function the foundation step added to the
          package, the app interface the "model" stream will build and every other stream codes against, and who owns
          which file. Eleven builders branch from the foundation commit and read this first.
+Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the default generation is two, the
+         generation-one preset, and -oldPhysics in place of -newPhysics.)
 SRP/DRY check: Pass - names and ownership only. The why of each change lives in the plans (plans/21-Nov-2026-*.md)
          and in the comments of the files named here; this page does not repeat them.
 -->
@@ -31,8 +33,9 @@ Rules for using this page:
 
 ```swift
 public struct PoolParameters {
-    public var modelGeneration: Int = 1           // read by the solver; 1 = today's solver, bit for bit
-    public static let newestGeneration: Int = 2   // what -newPhysics plays on
+    public var modelGeneration: Int = 2           // read by the solver; 2 since the proof plan's package 4 flip
+    public static let newestGeneration: Int = 2   // the default
+    public static var generationOne: PoolParameters { get }  // 1 = the old solver bit for bit, with its old numbers
     public var usesGenerationTwo: Bool { get }    // modelGeneration >= 2
 
     // Generation-two numbers: ignored at generation 1, hashed only above it. Starting values, reasons in the file.
@@ -49,8 +52,9 @@ public struct PoolParameters {
 ```
 
 Hash rule: the generation is folded in only when it is not 1, behind the marker `"GENR"`, and the nine numbers above
-only when it is above 1 (in the order listed; append new ones at the end of `generationTwoNumbers`). Default
-parameters hash exactly as before (test: `PhysicsSwitchTests.testDefaultParameterHashIsUnchanged`).
+only when it is above 1 (in the order listed; append new ones at the end of `generationTwoNumbers`).
+`PoolParameters.generationOne` hashes exactly as the default did before the switch (test:
+`PhysicsSwitchTests.testGenerationOnePresetHashIsUnchanged`); since the flip the default is generation two.
 
 The generation rule is written at the top of `Simulation.swift`: every physics change checks `modelGeneration` and
 takes the old path, line for line, at generation 1, and leaves the new event fields nil there. The jam guard is the
@@ -312,9 +316,9 @@ Everyone else codes against these names from the start. All live on the main act
 
 ```swift
 @MainActor @Observable final class ShowpieceModel {
-    // Physics developer flag: launch with -newPhysics to play free play and matches on the newest generation.
-    // Trick shots, puzzles and the opening break stay on generation 1 until the proof plan re-authors them.
-    static let newPhysicsRequested: Bool                 // CommandLine.arguments.contains("-newPhysics")
+    // Physics developer flag (changed by the proof plan's package 4 flip): generation two is the default everywhere;
+    // launch with -oldPhysics to play free play and matches on generation one with its old numbers, for comparison.
+    static let oldPhysicsRequested: Bool                 // CommandLine.arguments.contains("-oldPhysics")
     var activeModelGeneration: Int { get }               // the generation the next solve uses
 
     // Solving off the main thread (shootNow and breakNow; table and surface changes may stay direct).

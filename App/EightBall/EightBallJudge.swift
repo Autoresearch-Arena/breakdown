@@ -16,6 +16,8 @@
 //          call, foul and loss types moved to the BreakdownRules module, hence its import.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the clear-path test and the first-ball ray scan moved to
 //          App/TableLines.swift, shared with the spoken table; the two private helpers here now call it. Same numbers.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the window sweep keeps the tip inside the
+//          default physics' miscue limit instead of 20 mm.)
 // PURPOSE: Judges one Behind the 8-Ball attempt (docs/2026-11-21-behind-the-eight-ball-design.md, sections 1 and 2)
 //          from its recording, the stroke as struck and the situation's start, and nothing else.
 //          - Fouls (1.3): scratch (pocketed or off the table), wrong ball first (a tie inside sameInstant counts the
@@ -119,9 +121,10 @@ enum EightBallJudge {
     static let safetyDirections = 1440
 
     /// Window sweep: how far each input may be pushed. Aim in degrees either side; speed is the shot panel's range;
-    /// the tip must stay on the ball (ShowpieceModel.tipLimit); elevation is a sine.
+    /// the tip must stay inside the miscue limit of the default physics (about half the radius; every escape is
+    /// authored inside it, so a window never runs on into strokes that slip); elevation is a sine.
     static let aimLimit = 4.0
-    static let tipLimit = 0.02
+    static let tipLimit = PoolParameters().miscueOffsetLimit
     static let elevationRange = 0.01...0.95
     /// The first nudge of each input, then each nudge is growth times the last (or, when the first already fails,
     /// growth times smaller), up to maxNudges, then bisections between the last pass and the first fail. Worst case

@@ -7,6 +7,8 @@
 //          offset, two to three degrees at half the radius. Miscue: the same seed gives the same miscue, different seeds
 //          differ, the speed is cut. The strike hits CueStrike.ballIndex at both generations, generation one strikes as
 //          it always did, and the aim guide's launch direction is the direction the solver really launches.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the generation-one checks use
+//          PoolParameters.generationOne now that the default is generation two.)
 // SRP/DRY check: Pass - checked PhysicsSwitchTests (the starting values' reasons) and JumpTests (raised strikes on
 //          generation 1). These are the generation-two strike checks; the proof stream may write spec 12 as an expected
 //          failure, and this file holds the real test (the coordinator keeps one copy).
@@ -151,7 +153,7 @@ final class CueStrikeModelTests: XCTestCase {
 
     // Generation one strikes exactly as before: full speed, straight along the cue, and no generation-two flags.
     func testGenerationOneStrikeIsUnchanged() {
-        let p = PoolParameters(), R = p.ballRadius
+        let p = PoolParameters.generationOne, R = p.ballRadius
         let e = strike(CueStrike(direction: Vec2(1, 0), speed: 3, tipUp: 0.2 * R, tipSide: 0.7 * R), p)
         XCTAssertEqual(e.balls[0].velocityAfter, Vec2(3, 0))
         XCTAssertNil(e.miscue)
@@ -161,7 +163,7 @@ final class CueStrikeModelTests: XCTestCase {
 
     // The strike hits CueStrike.ballIndex at both generations; naming ball 0 is exactly the default.
     func testStrikeHitsTheNamedBall() {
-        for p in [PoolParameters(), p2] {
+        for p in [PoolParameters.generationOne, p2] {
             var pos = lone(Vec2(0.5, 0.4))
             pos[3] = Vec2(1.5, 0.9)
             let named = PoolSolver.simulate(ShotInput(parameters: p, positions: pos,
@@ -184,7 +186,7 @@ final class CueStrikeModelTests: XCTestCase {
     func testLaunchDirectionForTheAimGuide() {
         let R = PoolParameters().ballRadius
         let s = CueStrike(direction: Vec2(0.6, 0.8), speed: 2, tipSide: 0.4 * R)
-        XCTAssertEqual(PoolSolver.launchDirection(for: s, parameters: PoolParameters()), s.direction)
+        XCTAssertEqual(PoolSolver.launchDirection(for: s, parameters: .generationOne), s.direction)
         let guide = PoolSolver.launchDirection(for: s, parameters: p2)
         let tl = PoolSolver.simulate(ShotInput(parameters: p2, positions: lone(), strike: s, seed: 3))
         let v = tl.events.first { $0.kind == .cueStrike }!.balls[0].velocityAfter

@@ -1,10 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
-// PURPOSE: "BreakProbe jams [count] [gen2]": the jam finder of the pockets-and-jams plan (part B, step 1). Solves
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: default physics, "gen1" for the old one, and
+//          the tip travel of free play on it.)
+// PURPOSE: "BreakProbe jams [count] [gen1]": the jam finder of the pockets-and-jams plan (part B, step 1). Solves
 //          `count` (default ten thousand) seeded random free-play shots and prints the full input of every one that
 //          needs more than five thousand events, plus every one where the jam guard stepped in or the hard event limit
-//          was reached, then a summary (largest event count, slowest solve, how many storms were settled). With "gen2"
-//          the shots are solved on the newest physics generation instead of generation 1.
+//          was reached, then a summary (largest event count, slowest solve, how many storms were settled). The shots
+//          are solved on the default physics (generation two); with "gen1" on generation one with its old numbers.
 //          A free-play shot here is what a player can set up: two to sixteen balls at random clear spots (a few of them
 //          frozen together or against a rail, since that is where jams come from), any aim, a speed across the free-play
 //          range, the tip anywhere in its travel and, one shot in four, a raised cue. Everything comes from a seeded
@@ -50,7 +52,9 @@ private func randomFreePlayShot(_ shot: Int, _ rng: inout JamRandom, _ p: PoolPa
         if pos.prefix(placed).allSatisfy({ ($0 - c).length >= 2 * r }) { pos[placed] = c; placed += 1 }
     }
     let a = rng.next() * 2 * Double.pi
-    let tipLimit = 0.02                                         // the free-play tip travel (ShowpieceModel)
+    // The free-play tip travel on the default physics (ShowpieceModel.tipLimit): a tenth of the radius past the miscue
+    // ring, so random shots include miscues as free play does.
+    let tipLimit = p.miscueOffsetLimit + 0.1 * p.ballRadius
     let strike = CueStrike(direction: Vec2(cos(a), sin(a)), speed: 0.5 + rng.next() * 7.5,
                            tipUp: (rng.next() * 2 - 1) * tipLimit, tipSide: (rng.next() * 2 - 1) * tipLimit,
                            elevation: rng.next() < 0.25 ? rng.next() * 0.9 : 0)
@@ -69,8 +73,9 @@ private func describe(_ input: ShotInput) -> String {
 
 func runJamSweep(_ args: [String]) {
     let count = args.compactMap { Int($0) }.first ?? 10_000
-    var p = PoolParameters()
-    if args.contains("gen2") { p.modelGeneration = PoolParameters.newestGeneration }
+    // The default physics (generation two since the proof plan's package 4); "gen1" plays the old generation on its
+    // old numbers. "gen2" is still accepted and is the default.
+    let p = args.contains("gen1") ? PoolParameters.generationOne : PoolParameters()
     var rng = JamRandom(state: 20_261_121)
     var heavy = 0, settledShots = 0, limitShots = 0, maxEvents = 0
     var slowest = (seconds: 0.0, shot: -1)

@@ -11,6 +11,10 @@
 //          new clean cloth is slick and fast and old dirty
 //          cloth is sticky, so draw wears off sooner, and plays slower. These two are the first surfaces that change the
 //          cushions too, because worn bar tables have dead rails as well as slow cloth.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: with the tuned default rails (0.95) Tournament
+//          cloth's cushions rise from 0.9 to 0.95 so they are no longer deader than the standard ones, and Dive-bar
+//          felt's from 0.65 to 0.8 so its dead rails keep a believable share of the energy; checked with BreakProbe
+//          surfaces, the results in plans/21-Nov-2026-physics-proof-plan.md.)
 // PURPOSE: The playing surfaces the same physics can be watched on: standard cloth, ice, glass, rubber, cork, carpet,
 //          sand and the Moon. Each surface is only a set of numbers written into PoolParameters before a shot is solved
 //          (the solver already takes every one of them from there): friction and bounce numbers for most, gravity for
@@ -103,26 +107,32 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
     func apply(to p: inout PoolParameters) {
         switch self {
         case .cloth:
-            break   // defaults: sliding 0.2, rolling 0.01, spin decay 9, slate bounce 0.5, slate friction 0.2, g 9.81
+            break   // defaults: sliding 0.15, rolling 0.015, spin decay 9.5, rails 0.95, slate 0.5 and 0.2, g 9.81
         case .tournament:
             // New worsted cloth (a tight napless weave), clean and dry: the slick, fast end of every measured range.
-            // Sliding 0.15 means a skid lasts a third longer than on the standard cloth, so draw and follow "take" late
-            // and come back far; rolling 0.005 means a ball rolls twice as far; spin 5 rad/s squared means side spin
-            // lives nearly twice as long; fresh cushions return 0.9 of the speed into them.
+            // Sliding 0.15 is the slick end (the tuned standard cloth sits there too since 21-Nov-2026); rolling 0.005
+            // means a ball rolls three times as far as on the standard cloth, so draw and follow carry on far once they
+            // take; spin 5 rad/s squared means side spin lives nearly twice as long; fresh cushions as lively as the
+            // tuned standard rails (0.95, the top of the real range). Checked against the real-table bands (BreakProbe
+            // surfaces, 21-Nov-2026): it passes nine of eleven and fails only the stop and draw bands, by drifting and
+            // drawing too far, which is what slick cloth does.
             p.slidingFriction = 0.15
             p.rollingResistance = 0.005
             p.spinDecay = 5.0
-            p.cushionRestitution = 0.9
+            p.cushionRestitution = 0.95
         case .diveBar:
             // Old woollen felt, napped, chalky and dirty, in a humid room: the sticky, slow end of the ranges. Sliding
-            // 0.3 grabs the ball, so a skid (and with it draw) is over in two thirds of the standard time; rolling 0.015
-            // makes it half again as slow, so the same speed goes two thirds as far; spin dies fast (14). The rubber is
-            // old and hard: 0.65 of the speed comes back off a rail instead of 0.85, and the dirty cloth on the nose
-            // grips the ball more (cushion friction 0.22), so side spin takes harder off the rail.
+            // 0.3 grabs the ball, so a skid (and with it draw) is over in half the standard time; rolling 0.015 is the
+            // slow end (the tuned standard cloth sits there too); spin dies fast (14). The rubber is old and hard: 0.8
+            // of the speed comes back off a rail at walking pace instead of 0.95 (0.65 before the rails fell with
+            // speed, which now left only a quarter of the energy, far below any real table), and the dirty cloth on the
+            // nose grips the ball more (cushion friction 0.22), so side spin takes harder off the rail. Checked against
+            // the real-table bands (BreakProbe surfaces, 21-Nov-2026): it passes eight of eleven and fails the stop and
+            // draw bands (draw dies early) and the rail angle (the grippy nose), which is what dirty felt does.
             p.slidingFriction = 0.3
             p.rollingResistance = 0.015
             p.spinDecay = 14.0
-            p.cushionRestitution = 0.65
+            p.cushionRestitution = 0.8
             p.cushionFriction = 0.22
         case .ice:
             // A phenolic ball on smooth ice: almost no grip, so a struck ball skids a long way before it rolls.
