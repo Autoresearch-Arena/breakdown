@@ -57,6 +57,11 @@
 //          Ride camera is loaded with the struck ball (bug #21); the hand zoom is told while Ride flies (rideHold, bug
 //          #24); and the Lens is now drawn after the camera has moved, in updateCamera, so its drawings can read this
 //          frame's on-screen scale (TableCamera.pointsPerMetre, through tableCamera).)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md, wiring
+//          only: rideCue (set by TableStage from the model each frame) goes to the Ride camera, which follows the
+//          ride's acts; after the camera moves, RideLive is told which way it faces for the title-row map; and while
+//          the ride has the view, the warm table never fades below a faint floor, so over the Lens the rails, pockets
+//          and shadows still give the low view something upright (work package 7).)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -119,6 +124,15 @@ final class TableScene {
     /// TableStage every frame (nil: no moment framing).
     private let momentFrame = MomentFrame()
     var moment: MomentRequest?
+    /// The ride's act this frame (ShowpieceModel.rideCue), set by TableStage before updateCamera; nil leaves the Ride
+    /// camera as it was in 0.7.5.
+    var rideCue: RideCue?
+    /// The warm table's opacity floor while the ride has the view (0 otherwise), eased in wall time so it never pops.
+    private var rideTableFloor: Float = 0
+    private var rideFloorTick: TimeInterval?
+    /// How much of the warm table shows under the Lens while riding: faint, under the Lens marks, but enough that the
+    /// rails, pockets and shadows read as an upright table in a low view.
+    private static let rideTableOpacity: Float = 0.28
     /// The camera, for the Lens drawings' on-screen scale (TableCamera.pointsPerMetre(at:)), read after it has moved.
     var tableCamera: TableCamera { camera }
     /// The Lens inputs of this frame, set by apply() and drawn by updateCamera() once the camera has moved, so the
@@ -286,7 +300,14 @@ final class TableScene {
         let melt = Self.launchValue("-lensDebugMelt") ?? rawMelt
         let R = frame.ballRadius
         let m = Float(melt)
-        let tableOpacity = max(0, 1 - Float(melt) * 1.15)
+        // While the ride has the view (last frame's camera), the table keeps a faint floor (see rideTableOpacity).
+        let now = ProcessInfo.processInfo.systemUptime
+        let floorStep = Float(min(0.1, max(0, now - (rideFloorTick ?? now)))) * 2
+        rideFloorTick = now
+        let floorGoal: Float = shotCamera.flying ? Self.rideTableOpacity : 0
+        rideTableFloor = rideTableFloor < floorGoal ? min(floorGoal, rideTableFloor + floorStep)
+                                                    : max(floorGoal, rideTableFloor - floorStep)
+        let tableOpacity = max(max(0, 1 - Float(melt) * 1.15), rideTableFloor)
         tableGroup.components.set(OpacityComponent(opacity: tableOpacity))
         tableGroup.isEnabled = tableOpacity > 0.01
 
@@ -383,6 +404,7 @@ final class TableScene {
     func updateCamera(melt: Double, request: FramingRequest, ride: Bool = false) {
         shotCamera.clock = lastClock
         shotCamera.active = ride
+        shotCamera.cue = rideCue
         // The moment framing for this clock (a pure function of it once its gate is open; see MomentFrame).
         let focus = momentFrame.focus(clock: lastClock, request: moment, handAtFit: zoom.atFittedView, frame: frame,
                                       reduceMotion: TableCamera.reduceMotion)
@@ -391,6 +413,9 @@ final class TableScene {
         // The hand zoom ignores pinches, pans and double taps while the ride has the view (bug #24); not merely while
         // Ride is on, which it stays while the player aims the next shot from the ordinary table view.
         zoom.rideHold = shotCamera.flying
+        // The title-row map's wedge: which way the camera faces on the table while the ride has the view.
+        RideLive.shared.update(flying: shotCamera.flying, forward: camera.forward,
+                               portrait: request.size.width < request.size.height)
         // With the camera placed: the lamp shade's fade and each ball's picture for the size it now is on screen.
         detail?.view(eye: camera.eye, forward: camera.forward, focal: camera.focal)
         // And the Lens, for this frame's clock and this frame's view.

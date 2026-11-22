@@ -1,4 +1,8 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: Watch it
+//          still strikes at once with Ride on, and the model now holds the clock at the strike for the mount; when the
+//          answer has played, the slow Lens replay is announced and rewound (model.replayInLensAfterRide) instead of
+//          starting in the same frame.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
 //          entry 22: The Called Break's answer gets its slow guided Lens replay like every other trick (the break guard
 //          is gone from update and recordingReplaced; breaks have played at real speed with the Lens off since 0.7.1).)
@@ -175,7 +179,8 @@ final class TrickShotMode {
     }
 
     /// Watch it: the answer, at full speed, riding behind the cue ball. When it has played, update() replays it slowly
-    /// in the Lens, the break too (0.7.6).
+    /// in the Lens, the break too (0.7.6). The strike is made at once (solutionVersion must name the answer's own
+    /// recording); the model then holds the clock at the strike while the ride mounts (0.7.6 stream ride).
     func watch() {
         guard let shot = current else { return }
         rememberPlayerSettings()
@@ -274,7 +279,9 @@ final class TrickShotMode {
             // but since 0.7.1 a struck break plays once at real speed with the Lens off, so The Called Break was the one
             // trick whose Watch it never explained anything.
             model.setPaceSignature(TrickSignature.events(forTrick: shot.id, in: model.timeline, captions: model.captions))
-            model.replay(withLens: true)
+            // Announced and rewound first ("Now the same shot, slowed down"), as the intro does, so the ride's end and
+            // the slow replay's start are two scenes, not one cut (0.7.6 stream ride).
+            model.replayInLensAfterRide()
         case .ready, .aiming, .judged, .offScript:
             // While explaining, a shot of the player's is never judged: it may be a retry of the answer itself.
             guard let attempt = model.currentAttempt, model.timelineVersion != judgedVersion,

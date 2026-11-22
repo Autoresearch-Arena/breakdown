@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: the title
+//          row's status slot shows the ride's acts with the small table map (RideTitleChip), in place of the surface
+//          button while a ride speaks.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: writes the playback row top for the third Lens tip, a waiting match ruling keeps Your shot closed, the menu sends its pages to the page sheet).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream card, plans/22-Nov-2026-v076-phone-plan.md, bugs #10,
 //          #11, #36, #45, #50: the phone's bottom stack is the explanation's fixed room, the scrolling cards, Your shot
@@ -692,7 +695,14 @@ private struct ScreenHeader: View {
                 .transition(.opacity)
                 Spacer(minLength: 0)
             }
-            SurfaceMenuButton(model: model)
+            // A ride names its acts here, with the small table map (0.7.6 stream ride, RideMap.swift). The surface
+            // button steps aside meanwhile, so the chip fits beside the back button and the Lens key on a regular
+            // iPhone held upright; picking a surface mid-ride would re-solve the shot anyway.
+            if model.rideStatus != nil {
+                RideTitleChip(model: model)
+            } else {
+                SurfaceMenuButton(model: model)
+            }
             if model.stage != .explore && model.stage != .lead {
                 Text(model.stageTitle)
                     .font(Theme.label)
@@ -712,6 +722,7 @@ private struct ScreenHeader: View {
         .animation(.easeOut(duration: 0.25), value: model.stage)
         .animation(.easeOut(duration: 0.25), value: model.lensOn)
         .animation(.easeOut(duration: 0.25), value: model.openingStage)
+        .animation(.easeOut(duration: 0.25), value: model.rideAct)
     }
 }
 
