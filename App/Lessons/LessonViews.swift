@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #38: paused
+//          on the lesson's moment the card shows the idea and its buttons even in the slim form, so the lesson no longer
+//          freezes on its moment with only a heading and Your turn.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 11, 36 and 53: the made-it sound plays with the pass
 //          glow (SoundBoard.play, the big one for the sixth lesson); a missed pass shot also offers "Back to the lesson's
 //          stroke"; the try-3 and pass-shot lines say when the power is held at the lesson's stroke; the card steps back
@@ -130,7 +133,9 @@ struct LessonCard: View {
         // steps aside and comes back, unchanged, when the what-if closes.
         if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
             VStack(alignment: .leading, spacing: 8) {
-                if compact { slim(lesson) } else { content(lesson) }
+                // Paused on the lesson's moment the full card shows, slim or not: the idea is the reason the replay
+                // stopped there (0.7.6, #38; the guided flag stays on while the clock is held on the moment).
+                if compact && mode.phase != .keyMoment { slim(lesson) } else { content(lesson) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .glassCard(cornerRadius: 22, padding: 12)
@@ -245,6 +250,7 @@ struct LessonCard: View {
     /// The slim card (0.7.5, lensReplayCompact): the lesson's heading and the one button that moves the lesson on, so a
     /// guided Lens replay on a phone held upright keeps the table its height. Your turn during the Watch beat; after a
     /// try, Next lesson for a pass, Next step for a made guided try, Try again otherwise; nothing more while aiming.
+    /// Never used for the key moment itself (body shows the full card there, with the idea).
     @ViewBuilder
     private func slim(_ lesson: Lesson) -> some View {
         header(lesson, step: mode.step)

@@ -1,5 +1,13 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #32, #34,
+//          #35, #37: a routine ruling that waits for a tap (MatchMode.rulingWaitsForTap, a break's with the Lens offer
+//          up) always shows its own row, "Watch it in the Lens" and Continue, slim or not, so a legal break with the Lens
+//          on no longer freezes the match behind a bare heading. The slim card (Lens on, upright phone) drops the words
+//          only while a guided Lens replay actually plays; at rest a foul, a lost peg or the end of the game says why,
+//          with its points, and the Lens offer stays in the button row beside Continue. The aiming banner's slim form
+//          keeps the More menu (End match, Your name) and an open names editor. Eight-ball player rows stack the name,
+//          the group and the ball icons when one line does not fit, instead of cutting them.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: while aiming with the Lens on, on an upright phone,
 //          the card shows the turn line only).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2
@@ -92,14 +100,29 @@ struct MatchCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    /// True on a phone held upright while a guided Lens replay plays (set by ShowpieceView): the ruling then shows
-    /// only its heading and its button, so the table keeps its height.
+    /// True on a phone held upright while a guided Lens replay plays, and whenever the Lens is on in a match there
+    /// (ShowpieceView.lensCardsSlim): the card's slim form, so the Lens table keeps its height.
     @Environment(\.lensReplayCompact) private var lensReplayCompact
     @State private var editingNames = false
     /// "Why that shot" is open (on the ruling card, or under the settled line in the banner).
     @State private var showingWhy = false
     // "End match" asking to confirm is MatchMode.confirmingEnd (0.7.5), not view state, so the menu's back button
     // can read it and give up Escape to the card's "Keep playing".
+
+    /// The slim form's narrow case: a guided Lens replay is actually playing (the balls are moving or held on a beat).
+    /// Only then does a ruling shrink to its heading and its button. With the Lens merely on and the balls at rest the
+    /// slim card still says why a foul or a game-ending shot was ruled, and keeps every button that moves the game on
+    /// (0.7.6, #32 and #34). Same test as ShowpieceView.lensReplayCompact; the environment flag already says upright
+    /// phone and no opening.
+    private var replaying: Bool {
+        lensReplayCompact && model.lensOn && model.guided && !model.aimReady
+    }
+
+    /// A ruling the slim card still explains with the Lens on: a foul, a lost peg (bar billiards' penalty) or the end
+    /// of the game. Its sentences and its points are the reason the player is stopped.
+    private static func explainsItself(_ r: Ruling) -> Bool {
+        r.fouled || r.result != nil || r.reasons.contains(.whitePegDown) || r.reasons.contains(.blackPegDown)
+    }
 
     var body: some View {
         if let match = model.match {
@@ -130,9 +153,10 @@ struct MatchCard: View {
     private func content(_ match: MatchMode) -> some View {
         switch match.phase {
         case .aiming:
-            // Slim with the Lens on, on an upright phone (0.7.5 coordinator): the turn line alone, so the Lens table
-            // keeps its size; the score and the settled ruling come back when the Lens goes off.
-            TurnBanner(match: match, editingNames: $editingNames, compact: lensReplayCompact)
+            // Slim with the Lens on, on an upright phone (0.7.5 coordinator): the turn line, so the Lens table keeps
+            // its size; the score and the settled ruling come back when the Lens goes off. The More menu (End match,
+            // Your name) and an open names editor stay (0.7.6, #35).
+            TurnBanner(match: match, editingNames: $editingNames, slim: lensReplayCompact)
             if match.confirmingEnd {
                 endMatchConfirmation(match)
             } else {
@@ -187,46 +211,74 @@ struct MatchCard: View {
     // MARK: Ruling
 
     /// The full ruling card: it waits for Continue (or the choice).
-    /// While a guided Lens replay plays on an upright phone (lensReplayCompact) only the heading and the button (or
-    /// the choice that must be answered) stay, so the table keeps its height.
+    /// Slim (lensReplayCompact, an upright phone with the Lens on in a match): while a guided Lens replay actually
+    /// plays, only the heading and the button (or the choice that must be answered) stay, so the table keeps its
+    /// height. With the balls at rest a foul, a lost peg or the end of the game still says why, with its points (#34),
+    /// and "Watch it in the Lens" stays in the button row beside Continue; a remarkable shot keeps its name.
     @ViewBuilder
     private func rulingCard(_ r: Ruling, _ match: MatchMode) -> some View {
         rulingHeader(r, match)
-        if !lensReplayCompact {
-            ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
-            if !match.lastPoints.isEmpty { pointsSection(match) }
-            whyIfComputers(r, match)
-            lensOffer
+        if !replaying {
+            if !lensReplayCompact || Self.explainsItself(r) {
+                ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                if !match.lastPoints.isEmpty { pointsSection(match) }
+                whyIfComputers(r, match)
+            }
+            highlightName(withLine: !lensReplayCompact)
         }
         // A choice the computer makes is made after Continue, on its turn; a person's is answered here.
         if let choice = match.state.pendingChoice, !match.isComputer(choice.chooser) {
+            if model.offerLensReplay { CardButtonRow { lensButton } }
             choiceSection(choice, match)
         } else {
-            CardButtonRow { continueButton(match) }
+            CardButtonRow {
+                lensButton
+                continueButton(match)
+            }
         }
     }
 
     /// A routine ruling during its beat: the same words with no Continue button. It settles by itself after
-    /// MatchMode.settleBeat; a tap on it (or Return) moves on at once. Slim (the heading only) during a guided Lens
-    /// replay on an upright phone.
+    /// MatchMode.settleBeat; a tap on it (or Return) moves on at once. Slim (the heading only) with the Lens on, on an
+    /// upright phone.
+    /// A routine ruling that waits for a tap (MatchMode.rulingWaitsForTap: a break's, with "Watch it in the Lens" up)
+    /// never settles by itself, so it always shows its own row, the offer and Continue, slim or not (0.7.6, #32: the
+    /// slim card once showed a bare heading here and the match froze; the heading's tap looked like a label).
     @ViewBuilder
     private func routineRuling(_ r: Ruling, _ match: MatchMode) -> some View {
-        Button { match.settleNow() } label: {
+        let waits = match.rulingWaitsForTap
+        if waits {
+            // Continue below carries the tap and Return, so the words are plain text here.
             VStack(alignment: .leading, spacing: 6) {
                 rulingHeader(r, match)
                 if !lensReplayCompact {
                     ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
                 }
             }
-            .contentShape(Rectangle())
+        } else {
+            Button { match.settleNow() } label: {
+                VStack(alignment: .leading, spacing: 6) {
+                    rulingHeader(r, match)
+                    if !lensReplayCompact {
+                        ForEach(Array(rulingSentences(r, match).enumerated()), id: \.offset) { _, s in line(s) }
+                    }
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .keyboardShortcut(.defaultAction)
+            .accessibilityHint(String(localized: "Moves on now. It also moves on by itself in a moment."))
         }
-        .buttonStyle(.plain)
-        .keyboardShortcut(.defaultAction)
-        .accessibilityHint(String(localized: "Moves on now. It also moves on by itself in a moment."))
         if !lensReplayCompact {
             if !match.lastPoints.isEmpty { pointsSection(match) }
             whyIfComputers(r, match)
-            lensOffer
+            highlightName(withLine: true)
+        }
+        if waits {
+            CardButtonRow {
+                lensButton
+                continueButton(match)
+            }
         }
     }
 
@@ -377,35 +429,44 @@ struct MatchCard: View {
     }
 
     /// After a match break, or a remarkable shot by either seat, a replay of it under the Lens for anyone who wants
-    /// it (every match shot plays at real speed in the ordinary view; the model says when the offer stands). A
-    /// remarkable shot that is not the break is named first: its title and the physics in one line (HighlightWords).
+    /// it (every match shot plays at real speed in the ordinary view; the model says when the offer stands). The offer
+    /// is two pieces since 0.7.6: the remarkable shot's name above (highlightName) and this button, which sits in the
+    /// ruling's own button row beside Continue, so the slim card keeps it too. Empty when nothing is offered.
     @ViewBuilder
-    private var lensOffer: some View {
+    private var lensButton: some View {
         if model.offerLensReplay {
-            let highlight = model.match?.lensHighlight
-            // The break keeps its own hint and no title: the ruling card already says it was the break.
-            let named: ShotHighlight? = highlight?.kind == .breakShot ? nil : highlight
-            if let h = named {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(HighlightWords.title(h.kind))
-                        .font(Theme.label)
-                        .foregroundStyle(palette.accent)
-                        .fixedSize(horizontal: false, vertical: true)
-                    line(HighlightWords.line(h.kind))
-                }
-                .accessibilityElement(children: .combine)
+            Button { model.watchShotInLens() } label: {
+                Label(String(localized: "Watch it in the Lens"), systemImage: "eye")
+                    .font(.headline).lineLimit(1)
+                    .frame(minHeight: CallMetrics.buttonHeight)
             }
-            CardButtonRow {
-                Button { model.watchShotInLens() } label: {
-                    Label(String(localized: "Watch it in the Lens"), systemImage: "eye")
-                        .font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glass)
-                .accessibilityHint(named == nil
-                    ? String(localized: "Replays the break slowly with the physics drawn on the table")
-                    : HighlightWords.watchHint)
+            .buttonStyle(.glass)
+            .accessibilityHint(namedHighlight == nil
+                ? String(localized: "Replays the break slowly with the physics drawn on the table")
+                : HighlightWords.watchHint)
+        }
+    }
+
+    /// The remarkable shot on offer, or nil for the break (the ruling already says it was the break) and when nothing
+    /// is offered.
+    private var namedHighlight: ShotHighlight? {
+        guard model.offerLensReplay, let h = model.match?.lensHighlight, h.kind != .breakShot else { return nil }
+        return h
+    }
+
+    /// A remarkable shot on offer, named above the button: its title, and (in the full card) the physics in one line
+    /// (HighlightWords). The slim card keeps the title only.
+    @ViewBuilder
+    private func highlightName(withLine: Bool) -> some View {
+        if let h = namedHighlight {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(HighlightWords.title(h.kind))
+                    .font(Theme.label)
+                    .foregroundStyle(palette.accent)
+                    .fixedSize(horizontal: false, vertical: true)
+                if withLine { line(HighlightWords.line(h.kind)) }
             }
+            .accessibilityElement(children: .combine)
         }
     }
 
@@ -628,8 +689,11 @@ struct TurnBanner: View {
     let match: MatchMode
     @Binding var editingNames: Bool
     // The More menu's End match sets match.confirmingEnd; the card then asks to confirm.
-    /// While a shot plays: only the first line.
+    /// While a shot plays: only the first line, no More menu.
     var compact = false
+    /// Aiming with the Lens on, on an upright phone (0.7.6, #35): the first line with its More menu, and the names
+    /// editor while it is open; the player rows, the table games' lines and the score wait until the Lens goes off.
+    var slim = false
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -642,6 +706,8 @@ struct TurnBanner: View {
             header
             if !compact {
                 if editingNames { PlayerNamesEditor(match: match) }
+            }
+            if !compact && !slim {
                 // Nine-ball, and any game without calls that is played in order: the lowest ball is hit first.
                 if state.kind == .nineBall, let low = state.ballsLeft.min() {
                     HStack(spacing: 6) {
@@ -755,7 +821,9 @@ struct TurnBanner: View {
     }
 
     /// One player's line in eight-ball: a dot on whoever is shooting, the name ("You" for the person), the group and
-    /// the balls left.
+    /// the balls left. On one line when the whole of it fits; otherwise (a long name or group in a longer language, a
+    /// larger text size) stacked: the name, the group under it, both wrapping, and the ball icons on a line of their
+    /// own, so nothing is ever cut to a few letters (0.7.6, #37).
     private func playerRow(_ p: Player) -> some View {
         let group = state.group(of: p.id)
         let left = state.ballsRemaining(for: p.id)
@@ -764,19 +832,39 @@ struct TurnBanner: View {
         // Spoken as one line: the name, the group and the balls left by number (the icons are pictures only).
         let spoken = [name, groupText, left.isEmpty ? "" : MatchWords.balls(left)]
             .filter { !$0.isEmpty }.joined(separator: ". ")
-        return HStack(spacing: 6) {
-            Circle().fill(p.id == state.turn ? palette.accent : Color.clear)
-                .frame(width: 6, height: 6)
-                .accessibilityHidden(true)
-            Text(name).font(Theme.label).lineLimit(1)
-            if !groupText.isEmpty {
-                Text(groupText).font(Theme.label).foregroundStyle(.secondary).lineLimit(1)
-            }
-            Spacer(minLength: 0)
-            HStack(spacing: 2) {
-                ForEach(left, id: \.self) { BallIcon(ball: $0, set: ballSet) }
-            }
+        let dot = Circle().fill(p.id == state.turn ? palette.accent : Color.clear)
+            .frame(width: 6, height: 6)
             .accessibilityHidden(true)
+        let icons = HStack(spacing: 2) {
+            ForEach(left, id: \.self) { BallIcon(ball: $0, set: ballSet) }
+        }
+        .accessibilityHidden(true)
+        return ViewThatFits(in: .horizontal) {
+            // The texts at their full width (fixedSize), so ViewThatFits sees when the line is too long instead of
+            // the texts quietly truncating.
+            HStack(spacing: 6) {
+                dot
+                Text(name).font(Theme.label).lineLimit(1).fixedSize()
+                if !groupText.isEmpty {
+                    Text(groupText).font(Theme.label).foregroundStyle(.secondary).lineLimit(1).fixedSize()
+                }
+                Spacer(minLength: 0)
+                icons
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    dot
+                    Text(name).font(Theme.label).fixedSize(horizontal: false, vertical: true)
+                }
+                // Indented past the dot, under the name.
+                if !groupText.isEmpty {
+                    Text(groupText).font(Theme.label).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.leading, 12)
+                }
+                if !left.isEmpty { icons.padding(.leading, 12) }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(spoken)
