@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3: a
+//          remarkable shot by either seat is offered for a Lens replay on its ruling. rule() reads the model's judged
+//          highlight for the recording it rules (ShowpieceModel.matchShotHighlight) and keeps it as lensHighlight when it
+//          is the break's own, or a rare kind, or a common kind not yet offered this match (offeredHighlightKinds, not
+//          saved, cleared by rematch); a ball too fast for the pocket is never offered. A routine ruling that offers one
+//          becomes a card, so the shot can be named and watched (highlightShow).)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: a match can seat the computer (Player.computer, a
 //          ComputerLevel). MatchOpponent (App/Match/MatchOpponent.swift) is held here and run from update() while the
 //          match is aiming; computerSeatToAct says whose decision is due, and the person's taps (readyToShoot, setCall,
@@ -27,7 +33,8 @@
 //          the table on screen has moved on. The computer: update() now runs the opponent while a ruling card is up
 //          too, and upcomingComputerDecision gives it the table that card will leave, so it thinks before the card
 //          goes. The menu's Continue row can name the saved game (savedSummary, SavedMatchSummary).)
-// PURPOSE: A match for two on one device (plans/21-Nov-2026-rules-games-plan.md package 3 steps 4, 7 and 8, package 4
+// PURPOSE: A match: the person against the computer, or bar billiards alone (since 0.7.3 nothing offers two people one
+//          device, though the engine still runs any number of seats) (plans/21-Nov-2026-rules-games-plan.md package 3 steps 4, 7 and 8, package 4
 //          step 3, model side). MatchMode owns the MatchState and one `any MatchRules` (EightBallRules, NineBallRules,
 //          or a table's rules from the BreakdownRules module) and runs the turn loop:
 //            aiming    - the shooter lines up (placing the cue ball first when they have ball in hand) and, in a
@@ -119,6 +126,14 @@ final class MatchMode {
     private(set) var lastRulingShow: RulingShow = .card
     /// A routine ruling that has settled into the turn banner: shown there as a line until the next shot.
     private(set) var settledRuling: Ruling?
+    /// The remarkable shot the last ruling offers for a Lens replay (0.7.4): the break's own moment, or a shot by
+    /// either seat that highlightOffered let through; nil when the ruling offers none. lensHighlightVersion is the
+    /// model's timelineVersion of the recording it belongs to (ShowpieceModel.offerLensReplay compares them).
+    private(set) var lensHighlight: ShotHighlight?
+    private(set) var lensHighlightVersion: Int?
+    /// The common kinds already offered in this game (rare kinds are offered every time). Not saved: a resumed match
+    /// starts afresh, which at worst offers one more card. Cleared by rematch().
+    @ObservationIgnored private var offeredHighlightKinds: Set<HighlightKind> = []
 
     /// How a ruling is shown (bug plan item 15).
     enum RulingShow: Equatable { case banner, card }
@@ -351,6 +366,9 @@ final class MatchMode {
         shotVersion = nil
         // The settled line in the banner was about the shot before this one.
         settledRuling = nil
+        // So is any Lens offer.
+        lensHighlight = nil
+        lensHighlightVersion = nil
         phase = .shooting
     }
 
@@ -428,6 +446,7 @@ final class MatchMode {
         lastShotCall = shotCall
         lastCallWasSuggested = shotCallSuggested
         lastRulingShow = Self.rulingShow(for: ruling, after: after, hasComputer: hasComputer)
+        offerHighlight(model.matchShotHighlight, version: shotVersion)
         settleElapsed = 0
         settledRuling = nil
         state = after
@@ -441,6 +460,33 @@ final class MatchMode {
             bestOutcome = BarBilliardsBest.record(score)
         }
         save()
+    }
+
+    /// Which highlight the ruling just made offers for a Lens replay (0.7.4), and how it is shown. The break's own
+    /// moment rides on the break's existing offer and leaves the ruling as it is. Any other kind except a ball too fast
+    /// for the pocket is offered when it is rare, or common and not yet offered this game; then a routine ruling
+    /// becomes the card, so the shot is named and can be watched before play moves on.
+    private func offerHighlight(_ h: ShotHighlight?, version: Int?) {
+        lensHighlight = nil
+        lensHighlightVersion = nil
+        guard let h, let version else { return }
+        guard let show = Self.highlightShow(h.kind, offered: offeredHighlightKinds, current: lastRulingShow) else {
+            return
+        }
+        if h.kind != .breakShot, !h.kind.isRare { offeredHighlightKinds.insert(h.kind) }
+        lensHighlight = h
+        lensHighlightVersion = version
+        lastRulingShow = show
+    }
+
+    /// How a ruling is shown when its shot had a highlight of `kind`, or nil when the highlight is not offered: the
+    /// break keeps the ruling's own way (its Lens offer is the break's, as before 0.7.4); a ball too fast for the
+    /// pocket and a common kind already offered this game are not offered; anything else turns a banner into the card.
+    static func highlightShow(_ kind: HighlightKind, offered: Set<HighlightKind>, current: RulingShow) -> RulingShow? {
+        if kind == .breakShot { return current }
+        if kind == .rimSkip { return nil }
+        guard kind.isRare || !offered.contains(kind) else { return nil }
+        return .card
     }
 
     /// The match moment a ruling sounds and is felt (SoundBoard.play plays its voice and its haptic together): a win
@@ -574,6 +620,9 @@ final class MatchMode {
         lastRulingShow = .card
         settledRuling = nil
         settleElapsed = 0
+        lensHighlight = nil
+        lensHighlightVersion = nil
+        offeredHighlightKinds = []
         callIsSuggested = false
         bestOutcome = nil
         clockExact = nil
