@@ -202,22 +202,26 @@ enum TableBuilder {
         let spotMat = pbr(rgba(0.55, 0.68, 0.60), rough: 0.9)
         let clothUV: (SIMD3<Float>) -> SIMD2<Float> = { p in SIMD2(p.x / L + 0.5, p.z / W + 0.5) }
 
-        // 1. Cloth: the bed runs on under the cushions as far as the rail, and at each pocket out to the rail's cut, so
-        //    the jaws' throat and the nook behind each cushion's end have a cloth shelf under them as a real table
-        //    does; each pocket's hole (the solver's, see pocketCuts) and each bed hole is cut right through it. The
-        //    holes are joined to the outline by bridges so one outline still describes the whole cloth.
-        //    The rail's opening (the cushion zone plus each pocket's rail cut) is the cloth's outer edge.
+        // 1. Cloth: the playing surface plus the 14 mm strip that tucks under the cushion nose, and at each pocket on out
+        //    to the rail's cut, so the jaws' throat and the nook behind each cushion's end have a cloth shelf under them
+        //    as a real table does; each pocket's hole (the solver's, see pocketCuts) and each bed hole is cut right
+        //    through it. Along the straight runs it stops at the tuck as before, so it never lies under the cushions'
+        //    flat undersides. The holes are joined to the outline by bridges so one outline still describes the cloth.
+        let tuck: Float = 0.014
         let railCut = railCuts(cuts)
+        // The rail's opening: the cushion zone's rectangle with each pocket's rail cut bulging out of it (section 3).
         let opening = Outline.rectWithCuts(hx: a + c, hz: b + c, cuts: railCut, arcsOutside: true)
+        let clothEdge = Outline.rectWithCuts(hx: a + tuck, hz: b + tuck, cuts: railCut, arcsOutside: true)
         var felt = MeshBuilder()
         // Holes in the bed (another table's scoring holes or cups). The same circles shape the wells and the rings.
         let bedHoleRims: [(center: SIMD2<Float>, points: [SIMD2<Float>])] = table.bedHoles.map { hole in
             let centre = plan(hole.center)
             return (centre, Outline.circle(center: centre, radius: Float(hole.radius), stepDegrees: 15))
         }
-        // Pocket holes at 12 degrees a step: the chord falls at most 0.4 mm inside the round slate edge below it.
-        let holes = cuts.map { Outline.circle(center: $0.center, radius: $0.radius, stepDegrees: 12) } + bedHoleRims.map(\.points)
-        let feltOutline = holes.isEmpty ? opening.points : Outline.withHoles(outer: opening.points, holes: holes)
+        // Pocket holes at 15 degrees a step: the cloth's straight edges overhang the round slate edge below by at most
+        // 0.6 mm, which never shows, and the outline stays small enough to fill quickly when the table is built.
+        let holes = cuts.map { Outline.circle(center: $0.center, radius: $0.radius, stepDegrees: 15) } + bedHoleRims.map(\.points)
+        let feltOutline = holes.isEmpty ? clothEdge.points : Outline.withHoles(outer: clothEdge.points, holes: holes)
         felt.addFlat(feltOutline, y: 0, normal: SIMD3(0, 1, 0)) { p, _ in SIMD2(p.x / L + 0.5, p.y / W + 0.5) }
         if let e = part(felt, bedMat, "felt") { tableGroup.addChild(e) }
 

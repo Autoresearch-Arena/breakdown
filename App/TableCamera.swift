@@ -31,7 +31,7 @@
 //          opening starts (the first launch and Watch the intro; TableStage says when, through cueIntro), the camera
 //          opens low beside the table under the lit lamp, with the shade at the top of the frame and the cloth beyond,
 //          holds there a moment, then rises into the normal view of the table; TableStage holds the playback clock until
-//          it has risen, so the break is watched from the table view. Reduce Motion and -noPushIn skip it. And the
+//          it has risen, so the break is watched from the table view. Reduce Motion holds the lamp view then cuts to the table; -noPushIn skips it. And the
 //          camera now reports its view direction and focal size instead of one size at the look point, so TableDetail
 //          can size every ball by its own distance.)
 // SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame;
@@ -108,17 +108,22 @@ final class TableCamera {
     private static let shadeHeight: Float = 0.17
 
     /// Tell the camera whether the showpiece opening is at its start (TableStage, every frame). The lamp shot begins
-    /// when this turns true and stops at once if it turns false (the opening was skipped or left).
+    /// when this turns true and stops at once if it turns false (the opening was skipped or left). Launched with
+    /// -noPushIn (exact screenshot comparisons) there is none.
     func cueIntro(_ on: Bool) {
-        if on, !introCued, !Self.reduceMotion, !Self.motionOff { lampStart = ProcessInfo.processInfo.systemUptime }
+        if on, !introCued, !Self.motionOff { lampStart = ProcessInfo.processInfo.systemUptime }
         if !on { lampStart = nil }
         introCued = on
     }
 
+    /// How long the lamp shot lasts: the hold and the rise, or under Reduce Motion the hold alone, after which the
+    /// view cuts to the table (the room's one deliberate moment is kept, the camera move is not).
+    private static var lampLength: TimeInterval { reduceMotion ? lampHold : lampHold + lampRise }
+
     /// True until the lamp shot has risen to the table: TableStage holds the playback clock meanwhile.
     var introHolding: Bool {
         guard let start = lampStart else { return false }
-        return ProcessInfo.processInfo.systemUptime - start < Self.lampHold + Self.lampRise
+        return ProcessInfo.processInfo.systemUptime - start < Self.lampLength
     }
 
     /// The lamp shot: on the side the normal view looks from, a little outside the rail, low, looking toward the
@@ -226,10 +231,11 @@ final class TableCamera {
         var shot = ride?.override(position: position, target: target, fov: Self.fov, free: freeNow, size: size,
                                   reduceMotion: reduce)
             ?? CameraShot(position: position, target: target, fov: Self.fov, near: ShotCamera.overheadNear)
-        // The opening's lamp shot: held under the lamp, then blended into the table view as it rises.
+        // The opening's lamp shot: held under the lamp, then blended into the table view as it rises (under Reduce
+        // Motion it ends after the hold, so the next frame cuts to the table).
         if let start = lampStart {
             let t = now - start
-            if t >= Self.lampHold + Self.lampRise {
+            if t >= Self.lampLength {
                 lampStart = nil
             } else {
                 let w = Float(Self.smooth((t - Self.lampHold) / Self.lampRise))
