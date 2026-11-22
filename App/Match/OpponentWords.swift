@@ -9,6 +9,10 @@
 //          language can order its own sentence.
 //          Read by MatchViews (the match card) and TitleScreen (the Play list). Reads nothing itself: the caller hands
 //          in the OpponentShot (App/Match/MatchOpponent.swift) or the MatchTally (App/Match/MatchRecord.swift).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 16, 17 and 18: "Lining up..." while the computer
+//          swings its aim and draws the cue back; "Why that shot" for each level's own way of choosing (easy goes for
+//          the pot that looks easiest without planning the cue ball, and a plain hit when no pot is on is no longer
+//          called a safety); the record as wins and losses against one level at one game.)
 // SRP/DRY check: Pass - checked MatchWords (the ruling, turn and call words stay there and are not repeated; pocket
 //          names are EightBallPocket.title, reused) and TrickShotViews (its window words describe a player's own
 //          settings, not a computer's choice).
@@ -39,6 +43,8 @@ enum OpponentWords {
     static func name(_ level: ComputerLevel) -> String { String(localized: "Computer (\(level.title))") }
 
     static var thinking: String { String(localized: "Thinking…") }
+    /// While the computer's aim swings to its choice and its cue draws back, before it strikes.
+    static var liningUp: String { String(localized: "Lining up its shot…") }
     static var whyThatShot: String { String(localized: "Why that shot") }
 
     /// A number of degrees for these lines: at most two decimals, in the player's language.
@@ -59,6 +65,10 @@ enum OpponentWords {
             }
             let place = EightBallPocket(rawValue: pocket)?.title ?? ""
             lines.append(String(localized: "It went for the \(ball): \(place)."))
+            if shot.level == .easy {
+                // Easy picks by eye and never plans the cue ball (MatchOpponent's level styles).
+                lines.append(String(localized: "It picked the pot that looked easiest and did not plan where the cue ball would stop."))
+            }
             lines.append(bankRail == nil ? String(localized: "Straight in, no cushion.")
                                          : String(localized: "Off one cushion first, then into the pocket."))
             if let w = plan.window {
@@ -79,6 +89,15 @@ enum OpponentWords {
                 lines.append(left <= 0 ? String(localized: "It meant to leave you no clear pot at all.")
                                        : String(localized: "It meant to leave you at most \(degrees(left / 2)) degrees of aim either way on your best pot."))
             }
+        case .hit(let ball):
+            if plan.placement != nil {
+                lines.append(String(localized: "It placed the cue ball first."))
+            }
+            if let ball {
+                lines.append(String(localized: "No pot was on, so it simply hit the \(ball), the nearest ball it was allowed to hit."))
+            } else {
+                lines.append(String(localized: "No pot was on, so it simply hit the nearest ball it was allowed to hit."))
+            }
         }
         let n = shot.noise
         let speed = (abs(n.speedShare) * 100).formatted(.number.precision(.fractionLength(0)))
@@ -91,6 +110,11 @@ enum OpponentWords {
     /// The menu's short mark ("3/7") is shared with the other marks; this is what VoiceOver hears.
     static func recordSpoken(_ t: MatchTally) -> String {
         String(localized: "\(t.won) won of \(t.played) played")
+    }
+
+    /// One game against one level, as wins and losses ("3 won, 2 lost"), for the menu beside that game.
+    static func record(won: Int, lost: Int) -> String {
+        String(localized: "\(won) won, \(lost) lost")
     }
 
     /// The line under the level choice: this level's record against the computer.

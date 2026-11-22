@@ -11,9 +11,17 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Mac as a Mac: one game window (a Window scene) that remembers its
 //          size and place and can be made as small as the phone layout, a Settings window for Options, and the Game,
 //          Shot, View, Playback and Help menus from MacChrome on both the Mac and the iPad's keyboard menu bar.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 18: one game window on iPad, as on the Mac. iPadOS has
+//          no single-window scene (SwiftUI's Window is Mac-only) and the project's scene manifest is generated, so the
+//          rule is kept here: the first window to appear holds the game (GameWindowClaim); any further window the
+//          system opens shows a short card instead of a second game, with "Play here" (the game moves to this window)
+//          and "Close this window". Two windows can never run two games that overwrite one saved match.)
 // SRP/DRY check: Pass - shell only. Note SwiftUI.Scene is qualified because RealityKit also defines Scene.
 //          The colours come from Theme (palette.ground) and the timing from StartupAssets; nothing is repeated here.
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 @main
 struct BreakdownApp: App {
@@ -52,10 +60,10 @@ struct BreakdownApp: App {
                 .preferredColorScheme(.dark)
         }
         #else
-        // iPhone and iPad. On iPad each window the system opens is its own game with its own model; the menus below
-        // also fill the iPad's menu bar and hardware keyboard shortcut list.
+        // iPhone and iPad. On iPad the system can open more than one window of the app; only one of them holds the
+        // game (OneGameWindow). The menus below also fill the iPad's menu bar and hardware keyboard shortcut list.
         WindowGroup {
-            root
+            OneGameWindow { root }
         }
         .commands {
             GameCommands()
@@ -75,6 +83,129 @@ struct BreakdownApp: App {
             .preferredColorScheme(.dark)
     }
 }
+
+#if os(iOS)
+/// Which window holds the game on iPad. Shared by every window of the app process; the main actor owns it, as it
+/// owns the windows.
+@MainActor
+@Observable
+final class GameWindowClaim {
+    static let shared = GameWindowClaim()
+    /// The window that holds the game; nil before the first window appears and after the holder goes away.
+    private(set) var holder: UUID?
+    /// False until some window has held the game. Until then a window shows the game straight away (the first
+    /// launch frame must be the game under its launch cover, never the notice), and claims it as it appears.
+    private(set) var everHeld = false
+
+    /// Hold the game in window `id` if no window does.
+    func claimIfFree(_ id: UUID) { if holder == nil { holder = id; everHeld = true } }
+    /// Move the game to window `id` ("Play here"): the window that held it shows the notice instead.
+    func take(_ id: UUID) { holder = id; everHeld = true }
+
+    /// True when window `id` should show the game: it holds it, or no window has held it yet.
+    func shows(_ id: UUID) -> Bool { holder == id || (!everHeld && holder == nil) }
+    /// Window `id` is going away; if it held the game, the game is free for the next window to claim.
+    func release(_ id: UUID) { if holder == id { holder = nil } }
+}
+
+/// One window's content on iPad: the game when this window holds it, otherwise a short card explaining that the game
+/// is in another window. Only the holding window builds a ShowpieceView, so there is only ever one model, one table
+/// and one writer of the saved match. On the iPhone there is only ever one window, so it always holds the game.
+private struct OneGameWindow<Game: View>: View {
+    @ViewBuilder let game: Game
+    /// This window's identity for the claim (one per window, kept for the window's life).
+    @State private var id = UUID()
+    /// The shared claim, read in body so the window redraws when it changes (it is @Observable).
+    private var claim: GameWindowClaim { GameWindowClaim.shared }
+
+    var body: some View {
+        // A ZStack, not a Group: the appear and disappear hooks then belong to the window's content as a whole, not to
+        // whichever child is showing (a Group would release the claim when the notice gives way to the game).
+        ZStack {
+            if claim.shows(id) {
+                game
+            } else {
+                OtherWindowNotice { claim.take(id) }
+            }
+        }
+        .onAppear { claim.claimIfFree(id) }
+        // The holder went away (its window was closed): the first window still open takes the game over.
+        .onChange(of: claim.holder) { _, holder in if holder == nil { claim.claimIfFree(id) } }
+        .onDisappear { claim.release(id) }
+    }
+}
+
+/// Shown in an extra iPad window: the game is open in another window; play here instead, or close this one.
+private struct OtherWindowNotice: View {
+    let playHere: () -> Void
+    /// This window's scene session, found from the view's own window so "Close this window" closes this one.
+    @State private var session: UISceneSession?
+    private let ground = Color(red: 0.02, green: 0.03, blue: 0.05)
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text(String(localized: "One game at a time"))
+                .font(.title2.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+            Text(String(localized: "The game is open in another window. Play here instead, or close this window."))
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            VStack(spacing: 10) {
+                Button(action: playHere) {
+                    Text(String(localized: "Play here")).font(.headline).frame(maxWidth: 280)
+                }
+                .buttonStyle(.glassProminent)
+                .accessibilityHint(String(localized: "Moves the game to this window"))
+                if let session {
+                    Button {
+                        UIApplication.shared.requestSceneSessionDestruction(session, options: nil) { error in
+                            NSLog("BreakdownApp: the extra window could not be closed: %@", error.localizedDescription)
+                        }
+                    } label: {
+                        Text(String(localized: "Close this window")).font(.headline).frame(maxWidth: 280)
+                    }
+                    .buttonStyle(.glass)
+                }
+            }
+            .controlSize(.large)
+        }
+        .padding(32)
+        .frame(maxWidth: 480)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(ground.ignoresSafeArea())
+        .background(SceneSessionReader { session = $0 })
+    }
+}
+
+/// Reports the scene session of the window this view is in, once it is in one.
+private struct SceneSessionReader: UIViewRepresentable {
+    let found: @MainActor (UISceneSession?) -> Void
+
+    func makeUIView(context: Context) -> Probe { Probe(found: found) }
+    func updateUIView(_ uiView: Probe, context: Context) {}
+
+    final class Probe: UIView {
+        let found: @MainActor (UISceneSession?) -> Void
+        init(found: @escaping @MainActor (UISceneSession?) -> Void) {
+            self.found = found
+            super.init(frame: .zero)
+            isUserInteractionEnabled = false
+        }
+        @available(*, unavailable) required init?(coder: NSCoder) { fatalError("not used from a storyboard") }
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            // Reported on the next turn of the main actor, not in the middle of the layout pass that moved the view,
+            // so the SwiftUI state it sets is never changed while a view update is under way.
+            let session = window?.windowScene?.session
+            let report = found
+            Task { @MainActor in report(session) }
+        }
+    }
+}
+#endif
 
 /// A cover in the room's dark colour over the whole window until the 3D scene has been built, then a short fade to
 /// reveal it. Without it the first frames show the scene half-built (balls piled where they start, the camera not yet

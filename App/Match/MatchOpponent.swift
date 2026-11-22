@@ -1,5 +1,16 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 16 and 17. Each level now chooses its shot its own way,
+//          not only with its own hand (OpponentStyle): easy always goes for the pot that looks easiest by eye, lined
+//          up by the ghost-ball rule with no trial solves, never plays a deliberate safety and never plans the cue
+//          ball; medium runs the full search but plays safe only when no pot gives its hand even a one-in-four chance;
+//          hard keeps 0.6.6's search unchanged (safe below an even chance). Easy's wobble grew from 1.0 to 1.25 degrees
+//          because dropping its safeties makes it stronger at the same wobble (reasoning at aimNoiseDegrees). A plain
+//          hit when no pot is on is its own plan kind (.hit), not called a safety. At the table the computer starts
+//          thinking as soon as its turn is known, while the ruling card before it is still up (MatchMode's
+//          upcomingComputerDecision gives the table that card will leave), and it plays through the model's staged
+//          stroke (stageComputerStroke: the aim swings to its choice, the cue draws back a beat, then it strikes)
+//          instead of striking in the same frame.)
 // PURPOSE: The computer opponent for eight-ball and nine-ball (plans/21-Nov-2026-rules-games-plan.md package 5).
 //          Two halves:
 //            OpponentPlanner (pure, runs on a background task): given the layout, the MatchState, the rules and the
@@ -28,8 +39,8 @@
 //              call, and strikes with seeded noise on aim, speed and tip. The noise is drawn from a seed made of the
 //              rack's seed, the match's shot count and the seat, all of which are saved, so a saved match replays the
 //              same. Keeps the last stroke (OpponentShot) for the ruling card's "Why that shot".
-//          The levels (BreakdownRules.ComputerLevel) are physical only: each level searches for the same shot and
-//          differs only in the noise added before the strike.
+//          The levels (BreakdownRules.ComputerLevel) differ in how they choose (OpponentStyle, see Edited above) and
+//          in the noise added before the strike.
 // SRP/DRY check: Pass - the ghost-ball geometry and the clear-path test are TableLines', legality is the rules'
 //          (EightBallRules, NineBallRules, MatchRules.applying), the shot reading is ShotFacts, placement legality is
 //          NextShot.placement, the event budget, the shape cut limit and the aim search limit are EightBallJudge's
@@ -45,14 +56,41 @@ import Observation
 
 // MARK: - Levels: seeded noise
 
+/// How a level chooses its stroke (bug plan item 17).
+enum OpponentStyle: Equatable, Sendable {
+    /// Easy: the pot that looks easiest, by eye; no trial solves, no safety, no thought for the cue ball.
+    case bestLookingPot
+    /// Medium: the full search, but a safety only when no pot is reasonable for its hand (reasonableChanceWidth).
+    case safeOnlyWhenNothingOn
+    /// Hard: the full search as built in 0.6.6, a safety whenever no pot gives its hand an even chance.
+    case fullSearch
+}
+
 extension ComputerLevel {
+    var style: OpponentStyle {
+        switch self {
+        case .easy: return .bestLookingPot
+        case .medium: return .safeOnlyWhenNothingOn
+        case .hard: return .fullSearch
+        }
+    }
+
     /// One standard deviation of the aim error, degrees. Anchored on the shot panel's finest aim nudge, a quarter of a
-    /// degree (ShowpieceModel.nudgeAim): hard is half a nudge, medium two nudges, easy four. Each level is twice as
-    /// shaky as the one above it; four nudges miss most cut shots longer than a metre or so, a careful beginner's
-    /// level of control.
+    /// degree (ShowpieceModel.nudgeAim): hard is half a nudge, medium two nudges, easy five.
+    ///
+    /// Easy is tuned so it loses to a careful beginner. The chance of making a pot with aim error of standard
+    /// deviation s is erf(h / (s * sqrt 2)), where h is the pot's half-window (windowEstimate). The pots an ordinary
+    /// table offers run from about a metre each way (half-window about 0.2 degrees, the review's own figure) to a
+    /// ball half a metre out with the cue ball close (about 0.55 degrees). A careful beginner lines up on the aim
+    /// guide, so their error is mostly the stroke's drift, about medium's half a degree: they make about 31 percent
+    /// of the long pot and 73 percent of the short one. At 1.0 degree easy made about 16 and 42 percent; now that it
+    /// never gives up a turn on purpose (no safeties) that was close enough to the beginner's pace to win a fair share
+    /// of racks. At 1.25 degrees it makes about 13 and 34 percent, under half the beginner's rate on every pot, so
+    /// over a rack that needs eight pots and the 8 the beginner wins most games, while easy still drops a short
+    /// straight pot one time in three and so never feels hopeless. Not yet checked by playing whole games.
     var aimNoiseDegrees: Double {
         switch self {
-        case .easy: return 1.0
+        case .easy: return 1.25
         case .medium: return 0.5
         case .hard: return 0.125
         }
@@ -184,6 +222,8 @@ struct OpponentPlan: Equatable, Sendable {
         case pot(ball: Int, pocket: Int, bankRail: Int?)
         /// A safety, played off `ball` (nil when the stroke touched nothing in the planner's trial).
         case safety(ball: Int?)
+        /// No pot was on and no safety was chosen: a plain full hit on the nearest legal ball (nil when none).
+        case hit(ball: Int?)
         case breakShot
     }
 
@@ -277,6 +317,13 @@ enum OpponentPlanner {
     /// The z-score for an even chance: a window of width w centred on the aim makes a shot with Gaussian aim error
     /// of standard deviation s half the time when w / 2 = 0.6745 s, so w = 1.349 s.
     static let evenChanceWidth = 1.349
+    /// Medium's "something reasonable is on": a window that its own aim makes one time in four. erf(x) = 0.25 at
+    /// x = 0.2253, so w / 2 = 0.2253 * sqrt 2 * s = 0.3186 s and w = 0.637 s. Below that a club player stops going
+    /// for it and plays safe; above it, they shoot.
+    static let reasonableChanceWidth = 0.637
+    /// Easy's pace: the middle of the sweep's speeds (speedFactors), a firm hit that covers the losses the estimate
+    /// leaves out, without a search choosing the speed for it.
+    static var easyPaceFactor: Double { speedFactors[1] }
     /// The window score's weights: a clear next shot adds up to half again (shape matters, but making the ball
     /// matters more), a game-winning pot counts three times (nothing after it matters).
     static let nextShotWeight = 0.5
@@ -301,11 +348,22 @@ enum OpponentPlanner {
 
     // MARK: Entry points
 
-    /// The stroke to play now.
+    /// The stroke to play now, the level's own way (OpponentStyle).
     static func plan(_ s: OpponentSnapshot) -> OpponentPlan {
         if s.state.isBreak && s.racked {
             return OpponentPlan(kind: .breakShot, stroke: OpponentStroke(aimDegrees: 0, speed: breakSpeed,
                                                                           tipUp: breakTipUp))
+        }
+        if s.level.style == .bestLookingPot {
+            // Ball in hand: the cue ball goes behind the easiest-looking pot (the geometry's best placement), as a
+            // beginner would put it, and that pot is shot.
+            let cueBall = s.rules.cueBall(for: s.state.turn, in: s.state)
+            if s.state.ballInHand != .none, let first = placements(s).first, s.layout.indices.contains(cueBall) {
+                var l = s.layout
+                l[cueBall] = first.spot
+                return easyPlan(s, layout: l, placement: first.spot)
+            }
+            return easyPlan(s, layout: s.layout, placement: nil)
         }
         if s.state.ballInHand != .none, let placed = planWithPlacement(s) { return placed }
         return planFrom(s, layout: s.layout, placement: nil)
@@ -320,14 +378,28 @@ enum OpponentPlanner {
             return .spotEight
         case .acceptTableOrRerack:
             if s.state.ballInHand != .none { return .acceptTable }
+            // Easy takes the table whenever it sees a pot to go for (it judges by eye, as it shoots); the others when
+            // their search finds a pot at least as wide as their own shooting threshold.
+            if s.level.style == .bestLookingPot {
+                if case .pot = easyPlan(s, layout: s.layout, placement: nil).kind { return .acceptTable }
+                return .rerack
+            }
             let p = planFrom(s, layout: s.layout, placement: nil)
             if case .pot = p.kind, (p.window ?? 0) >= threshold(s.level) { return .acceptTable }
             return .rerack
         }
     }
 
-    /// The narrowest window worth shooting at this level: the width the level's aim noise makes half the time.
-    static func threshold(_ level: ComputerLevel) -> Double { evenChanceWidth * level.aimNoiseDegrees }
+    /// The narrowest measured window this level shoots at rather than playing safe: hard, the width its aim makes
+    /// half the time (evenChanceWidth); medium, one time in four (reasonableChanceWidth); easy, any pot at all (it
+    /// never plays a deliberate safety, so its threshold is zero).
+    static func threshold(_ level: ComputerLevel) -> Double {
+        switch level.style {
+        case .bestLookingPot: return 0
+        case .safeOnlyWhenNothingOn: return reasonableChanceWidth * level.aimNoiseDegrees
+        case .fullSearch: return evenChanceWidth * level.aimNoiseDegrees
+        }
+    }
 
     // MARK: Legal balls
 
@@ -744,7 +816,8 @@ enum OpponentPlanner {
         return fallback(s, layout: layout, cueBall: cueBall, targets: targets, placement: placement)
     }
 
-    /// A plain full hit on the nearest legal ball at the speed that rolls two table widths.
+    /// A plain full hit on the nearest legal ball at the speed that rolls two table widths. In a game with calls it
+    /// is called as Safety: not a planned safety, but the one legal call for a stroke that aims at no pocket.
     private static func fallback(_ s: OpponentSnapshot, layout: [Vec2], cueBall: Int, targets: [Int],
                                  placement: Vec2?) -> OpponentPlan {
         let p = s.parameters
@@ -752,10 +825,31 @@ enum OpponentPlanner {
         let near = targets.filter { layout.indices.contains($0) && NextShot.isOnTable(layout[$0]) }
             .min { (layout[$0] - cue).length < (layout[$1] - cue).length }
         let aim = near.map { degrees(layout[$0] - cue) } ?? 0
-        return OpponentPlan(kind: .safety(ball: near),
+        return OpponentPlan(kind: .hit(ball: near),
                             stroke: OpponentStroke(aimDegrees: aim, speed: rollingLaunch(distance: 2 * p.tableWidth,
                                                                                          parameters: p)),
                             placement: placement, call: s.rules.usesCalls ? .safety : nil, leftOpponent: nil)
+    }
+
+    // MARK: Easy: the best-looking pot
+
+    /// Easy's stroke: the pot that looks easiest, by eye. That is the first straight pot of `candidates` (clear paths
+    /// first, then the widest window the geometry predicts; banks are a planned shot, not a look), lined up by the
+    /// ghost-ball rule and struck at easyPaceFactor times the estimated speed with the usual touch of draw. No trial
+    /// solves, no thought for where the cue ball ends up, never a deliberate safety. With no straight pot on at all
+    /// it simply hits the nearest legal ball (fallback, kind .hit).
+    static func easyPlan(_ s: OpponentSnapshot, layout: [Vec2], placement: Vec2?) -> OpponentPlan {
+        let cueBall = s.rules.cueBall(for: s.state.turn, in: s.state)
+        let targets = legalTargets(rules: s.rules, state: s.state)
+        let all = candidates(layout: layout, cueBall: cueBall, targets: targets, parameters: s.parameters)
+        guard let c = all.first(where: { $0.bankRail == nil }) else {
+            return fallback(s, layout: layout, cueBall: cueBall, targets: targets, placement: placement)
+        }
+        let pace = PlayerShotSpeed.ordinary
+        let speed = min(max(c.speed * easyPaceFactor, pace.lowerBound), pace.upperBound)
+        return OpponentPlan(kind: .pot(ball: c.ball, pocket: c.pocket, bankRail: nil),
+                            stroke: potStroke(c.aimDegrees, speed), placement: placement,
+                            call: call(for: c, rules: s.rules), window: nil, leavesNextShot: false)
     }
 
     // MARK: Ball in hand
@@ -864,15 +958,20 @@ enum OpponentPlanner {
 @MainActor
 @Observable
 final class MatchOpponent {
-    /// True while the planner works on a background task; the match card says "Thinking..." meanwhile.
+    /// True while the planner works on a background task. The match card says "Thinking..." meanwhile, and the model
+    /// reads it for its computer-turn stage (.thinking), which can now begin while the ruling card is still up.
     private(set) var thinking = false
-    /// The computer's last stroke, for "Why that shot" on the ruling card that follows it.
+    /// The computer's last stroke, for "Why that shot" on the ruling card that follows it (and in the turn banner
+    /// once a routine ruling has settled by itself).
     private(set) var lastShot: OpponentShot?
 
     /// Bumped by every think started and every cancel: a result that comes back with an older token is dropped.
     @ObservationIgnored private var token = 0
-    /// A finished plan waiting to be played (the menu may be open, or the replay still running).
+    /// A finished plan waiting to be played (the ruling card may still be up, the menu open, or the replay running).
     @ObservationIgnored private var ready: (key: TurnKey, work: OpponentWork)?
+    /// The turn whose stroke the model is staging (the aim swinging, the cue drawing back): nothing is planned again
+    /// for it while the model stages or strikes it.
+    @ObservationIgnored private var stagedKey: TurnKey?
 
     /// What a plan was made for. A plan is played only while all of this is still the same.
     struct TurnKey: Equatable, Sendable {
@@ -883,29 +982,37 @@ final class MatchOpponent {
         var layout: [Vec2]
     }
 
-    /// Called every frame by MatchMode.update while the match is aiming.
+    /// Called every frame by MatchMode.update while the match is aiming or a ruling card is up. Thinking starts as
+    /// soon as the computer's next decision is known (MatchMode.upcomingComputerDecision): during the ruling card it
+    /// plans on the table the card's dismissal will put on, so by the time the card goes the plan is often ready.
+    /// The plan is only played once the match is aiming on that very table with the balls at rest.
     func update(_ match: MatchMode) {
         let model = match.model
-        guard match.phase == .aiming, !match.state.isOver, model.match === match,
-              let seat = match.computerSeatToAct,
-              match.state.players.indices.contains(seat.index),
-              let level = match.state.players[seat.index].computer else { return }
+        guard model.match === match, let d = match.upcomingComputerDecision else { return }
         let key = TurnKey(shotCount: match.state.shotCount, turn: match.state.turn, choice: match.state.pendingChoice,
-                          ballInHand: match.state.ballInHand, layout: model.layout)
+                          ballInHand: match.state.ballInHand, layout: d.layout)
+        if let staged = stagedKey {
+            // The model is staging or striking this turn's stroke: nothing to do until it is struck (the phase then
+            // leaves aiming and this is no longer called) or dropped (then it is planned again below).
+            if staged == key, model.computerTurnStage == .staging || model.computerTurnStage == .striking { return }
+            stagedKey = nil
+        }
         if let r = ready {
-            // The table moved on since this was planned: drop it and think again.
+            // The table moved on since this was planned (an answer on the card, a re-rack): drop it and think again.
             guard r.key == key else { ready = nil; return }
-            guard !model.menuOpen, model.aimReady, !model.isSolving else { return }
+            guard d.dueNow, !model.menuOpen, model.aimReady, !model.isSolving else { return }
             ready = nil
-            perform(r.work, seat: seat, level: level, match: match)
+            perform(r.work, seat: d.seat, level: d.level, match: match, key: key)
             return
         }
-        guard !thinking, model.aimReady, !model.isSolving else { return }
+        // While aiming the table on screen is the one played from, so it must be at rest; during the ruling card the
+        // snapshot is the card's next table, whatever the screen is replaying.
+        guard !thinking, !model.isSolving, !d.dueNow || model.aimReady else { return }
         thinking = true
         token += 1
         let t = token
-        let snapshot = OpponentSnapshot(layout: model.layout, state: match.state, rules: match.rules,
-                                        parameters: model.matchSolveParameters, level: level, racked: model.racked)
+        let snapshot = OpponentSnapshot(layout: d.layout, state: match.state, rules: match.rules,
+                                        parameters: model.matchSolveParameters, level: d.level, racked: d.racked)
         let choosing = match.state.pendingChoice != nil
         // A pure function of the snapshot, so it runs off the main actor (ShowpieceModel.strike and EightBallMode's
         // Scoring phase use the same pattern): the table keeps drawing while the computer thinks.
@@ -923,6 +1030,7 @@ final class MatchOpponent {
         token += 1
         thinking = false
         ready = nil
+        stagedKey = nil
     }
 
     private func finish(_ work: OpponentWork, key: TurnKey, token t: Int) {
@@ -931,8 +1039,10 @@ final class MatchOpponent {
         ready = (key, work)
     }
 
-    /// Play the plan through the match and the model, as a player's taps would.
-    private func perform(_ work: OpponentWork, seat: PlayerID, level: ComputerLevel, match: MatchMode) {
+    /// Play the plan through the match and the model, as a player's taps would: the answer at once; a stroke by
+    /// making the call, then handing it to the model to stage (the model places the cue ball, swings the aim, draws
+    /// the cue back for a beat and strikes, setting MatchMode.computerActing itself around the strike).
+    private func perform(_ work: OpponentWork, seat: PlayerID, level: ComputerLevel, match: MatchMode, key: TurnKey) {
         match.computerActing = true
         defer { match.computerActing = false }
         switch work {
@@ -948,25 +1058,30 @@ final class MatchOpponent {
                 // A call the rules refuse (it cannot happen for a planned pot, but the turn must never stall): safety.
                 if match.currentCall == nil { match.setCall(.safety) }
             }
-            let struck: Bool
+            // The planner's speeds are launch speeds solved with the house cue, whose launch speed equals its power
+            // (CueProfile.house), so they are handed to the model as the power, as 0.6.6's playComputerStroke took
+            // them.
+            let staged: Bool
             if case .breakShot = plan.kind {
                 let reach = model.layout.count > 1 ? (model.layout[1] - model.layout[0]).length : 0
                 let offset = tan(noise.aimDegrees * Double.pi / 180) * reach
                 let s = plan.stroke.with(OpponentNoise(aimDegrees: 0, speedShare: noise.speedShare, tipUp: noise.tipUp,
                                                        tipSide: noise.tipSide),
                                          speeds: PlayerShotSpeed.rackBreak, tipLimit: model.tipLimit)
-                struck = model.playComputerStroke(placement: nil, aimDegrees: 0, breakAimOffset: offset, power: s.speed,
-                                                  tipUp: s.tipUp, tipSide: s.tipSide)
+                staged = model.stageComputerStroke(placement: nil, aimDegrees: 0, breakAimOffset: offset,
+                                                   power: s.speed, tipUp: s.tipUp, tipSide: s.tipSide)
             } else {
                 let s = plan.stroke.with(noise, speeds: PlayerShotSpeed.ordinary, tipLimit: model.tipLimit)
-                struck = model.playComputerStroke(placement: plan.placement, aimDegrees: s.aimDegrees,
-                                                  breakAimOffset: 0, power: s.speed, tipUp: s.tipUp, tipSide: s.tipSide)
+                staged = model.stageComputerStroke(placement: plan.placement, aimDegrees: s.aimDegrees,
+                                                   breakAimOffset: 0, power: s.speed, tipUp: s.tipUp,
+                                                   tipSide: s.tipSide)
             }
-            if struck {
+            if staged {
                 lastShot = OpponentShot(seat: seat, level: level, plan: plan, noise: noise)
+                stagedKey = key
             } else {
-                // Not struck (the model refused the stroke); the next frame plans again from the table as it is.
-                NSLog("MatchOpponent: the model did not strike the planned stroke; planning again")
+                // Not staged (the model refused the stroke); the next frame plans again from the table as it is.
+                NSLog("MatchOpponent: the model did not stage the planned stroke; planning again")
             }
         }
     }

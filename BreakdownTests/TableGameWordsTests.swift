@@ -5,6 +5,8 @@
 //          in plain words), plus the spoken ruling's new parts in TableWords.ruling (points to either player, points
 //          lost, the pegs, the scores). Words are compared with String(localized:) of the same sentence, so the tests
 //          hold in every language the catalog carries; every point value comes from FivePinRules and BarBilliardsRules.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 21: bumper pool's balls are named by their side's colour
+//          and counted, never by a pool number, and the strike line points at the ball the cue is on.)
 // SRP/DRY check: Pass - checks only; no rule is re-decided here (the rulings are built by hand, the way the rules
 //          would return them, and the package's own tests cover the rules).
 @testable import Breakdown
@@ -114,6 +116,24 @@ final class TableGameWordsTests: XCTestCase {
         XCTAssertEqual(TableGameWords.balls([0, 1, red], kind: .barBilliards),
                        [String(localized: "\(2) whites"), String(localized: "the red")].formatted(.list(type: .and)))
         XCTAssertEqual(TableGameWords.ball(FivePinRules.playerBalls[1], kind: .fivePin), String(localized: "the yellow"))
+    }
+
+    func testBumperPoolBallsAreNamedByTheirSidesColour() {
+        // Seat 0 plays white, seat 1 red (TableBallSet.bumperPoolSideColours); each side's first ball is its marked one.
+        let whiteMarked = BumperPoolRules.sides[0][0], whitePlain = BumperPoolRules.sides[0][1]
+        let redMarked = BumperPoolRules.sides[1][0], redPlain = BumperPoolRules.sides[1][1]
+        XCTAssertEqual(TableGameWords.ball(whiteMarked, kind: .bumperPool), String(localized: "the marked white"))
+        XCTAssertEqual(TableGameWords.ball(whitePlain, kind: .bumperPool), String(localized: "a white"))
+        XCTAssertEqual(TableGameWords.ball(redMarked, kind: .bumperPool), String(localized: "the marked red"))
+        XCTAssertEqual(TableGameWords.ball(redPlain, kind: .bumperPool), String(localized: "a red"))
+        // Plain balls are counted, never named by a number nobody can see.
+        XCTAssertEqual(TableGameWords.balls([redMarked, BumperPoolRules.sides[0][1], BumperPoolRules.sides[0][2], redPlain],
+                                            kind: .bumperPool),
+                       [String(localized: "the marked red"), String(localized: "\(2) whites"), String(localized: "a red")]
+                           .formatted(.list(type: .and)))
+        XCTAssertEqual(TableGameWords.bumperStrike(redPlain, marked: false),
+                       String(localized: "Strike the red the cue is set on."))
+        XCTAssertEqual(TableGameWords.bumperStrike(whiteMarked, marked: true), String(localized: "Strike your marked ball."))
     }
 
     func testTheClockAndTheBar() {

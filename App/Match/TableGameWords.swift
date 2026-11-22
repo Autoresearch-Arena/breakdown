@@ -9,6 +9,12 @@
 //          steps is read from the rules' constants (FivePinRules, BarBilliardsRules), never retyped.
 //          Read by MatchViews (banner, points card, result), MatchWords (ball lists on these tables), TableWords
 //          (spoken scores), TableList and TableGamePage (game lines and rules), and the tests.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 20 and 21: the time-up line and the rules page's
+//          "Time up" step say what the game does - after the bar drops only the whites left in the tray are played and
+//          whites resting on the bed stay there - matching the banner's count (BarBilliardsRules.whitesLeftToPlay);
+//          bumper pool's balls are named by their side's colour as TableBallSet draws them (white for the first
+//          player, red for the second, a spot on each marked ball) instead of by pool numbers nobody can see, in
+//          sentences, lists, the turn banner and the rules page.)
 // SRP/DRY check: Pass - checked MatchWords (the shared ruling sentences, game names and player names are reused from
 //          there, not repeated) and TableKind (table names and summaries reused). Nothing else words these games.
 import BreakdownRules
@@ -18,7 +24,8 @@ enum TableGameWords {
     // MARK: Balls
 
     /// One ball of a table game inside a sentence: five-pin's white, yellow and red; bar billiards' red and its
-    /// whites (all alike); bumper pool's marked balls, and its other balls by number.
+    /// whites (all alike); bumper pool's marked white and marked red, and its other balls by their side's colour
+    /// (TableBallSet.bumperPool draws them plain, so a number would name something nobody can see).
     static func ball(_ ball: Int, kind: MatchKind) -> String {
         switch kind {
         case .fivePin:
@@ -27,23 +34,57 @@ enum TableGameWords {
         case .barBilliards:
             return ball == BarBilliardsRules.redBall ? String(localized: "the red") : String(localized: "a white")
         case .bumperPool:
-            if BumperPoolRules.sides.contains(where: { $0.first == ball }) { return String(localized: "a marked ball") }
-            return String(localized: "the \(ball)")
+            guard let colour = bumperColour(of: ball) else { return String(localized: "the \(ball)") }
+            let marked = BumperPoolRules.sides.contains(where: { $0.first == ball })
+            switch colour {
+            case .red: return marked ? String(localized: "the marked red") : String(localized: "a red")
+            // White, and yellow should a side ever be given it, read as a white ball.
+            case .white, .yellow: return marked ? String(localized: "the marked white") : String(localized: "a white")
+            }
         case .eightBall, .nineBall:
             return String(localized: "the \(ball)")
         }
     }
 
-    /// A list of balls of a table game: "the white and the red". Bar billiards' whites look alike, so they are
-    /// counted ("2 whites and the red") instead of listed one by one.
+    /// Bumper pool: the colour of the side a ball belongs to (TableBallSet's seat colours); nil for a ball that is
+    /// on neither side.
+    static func bumperColour(of ball: Int) -> BallColour? {
+        guard let seat = BumperPoolRules.seat(of: ball), TableBallSet.bumperPoolSideColours.indices.contains(seat)
+        else { return nil }
+        return TableBallSet.bumperPoolSideColours[seat]
+    }
+
+    /// A list of balls of a table game: "the white and the red". Balls that look alike are counted instead of listed
+    /// one by one: bar billiards' whites ("2 whites and the red") and bumper pool's plain balls of each side ("the
+    /// marked red, 2 whites and a red").
     static func balls(_ numbers: [Int], kind: MatchKind) -> String {
-        guard kind == .barBilliards else { return numbers.map { ball($0, kind: kind) }.formatted(.list(type: .and)) }
-        let whites = numbers.filter { $0 != BarBilliardsRules.redBall }.count
+        switch kind {
+        case .barBilliards:
+            let whites = numbers.filter { $0 != BarBilliardsRules.redBall }.count
+            var parts = counted(whites: whites, reds: 0)
+            if numbers.contains(BarBilliardsRules.redBall) { parts.append(String(localized: "the red")) }
+            return parts.formatted(.list(type: .and))
+        case .bumperPool:
+            // The marked balls are named one by one (each side has one); the rest are counted by colour.
+            let marked = numbers.filter { b in BumperPoolRules.sides.contains(where: { $0.first == b }) }
+            let plain = numbers.filter { !marked.contains($0) }
+            let reds = plain.filter { bumperColour(of: $0) == .red }.count
+            var parts = marked.map { ball($0, kind: kind) }
+            parts += counted(whites: plain.count - reds, reds: reds)
+            return parts.formatted(.list(type: .and))
+        case .fivePin, .eightBall, .nineBall:
+            return numbers.map { ball($0, kind: kind) }.formatted(.list(type: .and))
+        }
+    }
+
+    /// "a white", "3 whites", "a red", "2 reds": the counted part of a list of balls that look alike.
+    private static func counted(whites: Int, reds: Int) -> [String] {
         var parts: [String] = []
         if whites == 1 { parts.append(String(localized: "a white")) }
         if whites > 1 { parts.append(String(localized: "\(whites) whites")) }
-        if numbers.contains(BarBilliardsRules.redBall) { parts.append(String(localized: "the red")) }
-        return parts.formatted(.list(type: .and))
+        if reds == 1 { parts.append(String(localized: "a red")) }
+        if reds > 1 { parts.append(String(localized: "\(reds) reds")) }
+        return parts
     }
 
     /// Where a ball that the ruling puts back goes, as a sentence.
@@ -58,9 +99,12 @@ enum TableGameWords {
 
     // MARK: The turn banner
 
-    /// Bumper pool: which ball the shooter strikes.
+    /// Bumper pool: which ball the shooter strikes. The plain balls of a side look alike and the order is fixed, so
+    /// the line points at the ball the cue is already set on rather than naming it.
     static func bumperStrike(_ ball: Int, marked: Bool) -> String {
-        marked ? String(localized: "Strike your marked ball.") : String(localized: "Strike the \(ball).")
+        if marked { return String(localized: "Strike your marked ball.") }
+        return bumperColour(of: ball) == .red ? String(localized: "Strike the red the cue is set on.")
+                                              : String(localized: "Strike the white the cue is set on.")
     }
 
     /// Bumper pool: one side's balls still to sink.
@@ -86,7 +130,8 @@ enum TableGameWords {
         return String(localized: "Time left: \(clock)")
     }
 
-    /// Bar billiards once time is up: the bar is down; whites still to play.
+    /// Bar billiards once time is up: the bar is down; whites still to play (the one on the D and the tray's, from
+    /// BarBilliardsRules.whitesLeftToPlay; never the ones resting on the bed).
     static func barDown(whitesLeft: Int) -> String {
         whitesLeft == 1 ? String(localized: "The bar is down: 1 white left to play.")
                         : String(localized: "The bar is down: \(whitesLeft) whites left to play.")
@@ -94,7 +139,7 @@ enum TableGameWords {
 
     /// Spoken (and shown once) the moment the clock reaches zero.
     static var timeUpNow: String {
-        String(localized: "Time is up. The bar is down: balls that drop now stay down, and the game ends when no white is left.")
+        String(localized: "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.")
     }
 
     /// Bar billiards alone: the best score kept on this device.
@@ -189,9 +234,9 @@ enum TableGameWords {
         case .bumperPool:
             return [
                 (String(localized: "The idea"),
-                 String(localized: "Two players, five balls each. Sink all five of yours in the cup at the far end from where they started, before the other player does.")),
+                 String(localized: "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.")),
                 (String(localized: "Your ball"),
-                 String(localized: "You always strike one of your own balls: your marked ball while it is on the table, then your others one at a time, lowest number first.")),
+                 String(localized: "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.")),
                 (String(localized: "Keep your turn"),
                  String(localized: "Sink one of your own balls in your cup and you shoot again. Otherwise the turn passes.")),
                 (String(localized: "Fouls"),
@@ -230,7 +275,7 @@ enum TableGameWords {
                 (String(localized: "Balls come back"),
                  String(localized: "Dropped balls come back to the tray and the red goes back on its spot, until time is up.")),
                 (String(localized: "Time up"),
-                 String(localized: "When the clock runs out a bar drops: balls that drop stay down. Play goes on until no white is left, then the game ends. The clock stops while you watch a replay or the Lens.")),
+                 String(localized: "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.")),
             ]
         case .eightBall, .nineBall:
             return []

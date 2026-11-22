@@ -1,0 +1,2358 @@
+{
+ "keys": [
+  "the marked white",
+  "the marked red",
+  "a red",
+  "%lld reds",
+  "Strike the red the cue is set on.",
+  "Strike the white the cue is set on.",
+  "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+  "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+  "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+  "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+  "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+  "No call was made, so the suggested call was used: the %lld, %@.",
+  "No call was made, so the suggested call was used: Safety.",
+  "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+  "%@ against the computer (%@). %@ to shoot.",
+  "%@, playing alone.",
+  "%@: %@. %@ to shoot.",
+  "Lining up its shot…",
+  "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+  "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+  "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+  "%lld won, %lld lost",
+  "See the ruling",
+  "Skips to the end of the shot so the ruling comes at once",
+  "Moves on now. It also moves on by itself in a moment.",
+  "Watch it in the Lens",
+  "Replays the break slowly with the physics drawn on the table",
+  "End this game? It won't be saved, and it doesn't count in your record.",
+  "Keep playing",
+  "End match",
+  "Ends this game and goes back to the menu",
+  "More",
+  "Match options",
+  "Player names, or end the match",
+  "One game at a time",
+  "The game is open in another window. Play here instead, or close this window.",
+  "Play here",
+  "Moves the game to this window",
+  "Close this window",
+  "A new game replaces your saved one: %@",
+  "Keep my saved game",
+  "Start a new game"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "the marked white",
+   "text": "la blanca marcada"
+  },
+  {
+   "culture": "fr",
+   "key": "the marked white",
+   "text": "la blanche marquée"
+  },
+  {
+   "culture": "de",
+   "key": "the marked white",
+   "text": "die markierte Weiße"
+  },
+  {
+   "culture": "it",
+   "key": "the marked white",
+   "text": "la bianca segnata"
+  },
+  {
+   "culture": "pt",
+   "key": "the marked white",
+   "text": "a branca marcada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the marked white",
+   "text": "a branca marcada"
+  },
+  {
+   "culture": "ja",
+   "key": "the marked white",
+   "text": "マーク付きの白球"
+  },
+  {
+   "culture": "ko",
+   "key": "the marked white",
+   "text": "표시된 흰 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the marked white",
+   "text": "白色标记球"
+  },
+  {
+   "culture": "ru",
+   "key": "the marked white",
+   "text": "отмеченный белый"
+  },
+  {
+   "culture": "ar",
+   "key": "the marked white",
+   "text": "الكرة البيضاء المعلَّمة"
+  },
+  {
+   "culture": "es",
+   "key": "the marked red",
+   "text": "la roja marcada"
+  },
+  {
+   "culture": "fr",
+   "key": "the marked red",
+   "text": "la rouge marquée"
+  },
+  {
+   "culture": "de",
+   "key": "the marked red",
+   "text": "die markierte Rote"
+  },
+  {
+   "culture": "it",
+   "key": "the marked red",
+   "text": "la rossa segnata"
+  },
+  {
+   "culture": "pt",
+   "key": "the marked red",
+   "text": "a vermelha marcada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the marked red",
+   "text": "a vermelha marcada"
+  },
+  {
+   "culture": "ja",
+   "key": "the marked red",
+   "text": "マーク付きの赤球"
+  },
+  {
+   "culture": "ko",
+   "key": "the marked red",
+   "text": "표시된 빨간 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the marked red",
+   "text": "红色标记球"
+  },
+  {
+   "culture": "ru",
+   "key": "the marked red",
+   "text": "отмеченный красный"
+  },
+  {
+   "culture": "ar",
+   "key": "the marked red",
+   "text": "الكرة الحمراء المعلَّمة"
+  },
+  {
+   "culture": "es",
+   "key": "a red",
+   "text": "una roja"
+  },
+  {
+   "culture": "fr",
+   "key": "a red",
+   "text": "une rouge"
+  },
+  {
+   "culture": "de",
+   "key": "a red",
+   "text": "eine Rote"
+  },
+  {
+   "culture": "it",
+   "key": "a red",
+   "text": "una rossa"
+  },
+  {
+   "culture": "pt",
+   "key": "a red",
+   "text": "uma vermelha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "a red",
+   "text": "uma vermelha"
+  },
+  {
+   "culture": "ja",
+   "key": "a red",
+   "text": "赤球1個"
+  },
+  {
+   "culture": "ko",
+   "key": "a red",
+   "text": "빨간 공 하나"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "a red",
+   "text": "一个红球"
+  },
+  {
+   "culture": "ru",
+   "key": "a red",
+   "text": "красный шар"
+  },
+  {
+   "culture": "ar",
+   "key": "a red",
+   "text": "كرة حمراء"
+  },
+  {
+   "culture": "es",
+   "key": "%lld reds",
+   "text": "%lld rojas"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld reds",
+   "text": "%lld rouges"
+  },
+  {
+   "culture": "de",
+   "key": "%lld reds",
+   "text": "%lld Rote"
+  },
+  {
+   "culture": "it",
+   "key": "%lld reds",
+   "text": "%lld rosse"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld reds",
+   "text": "%lld vermelhas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld reds",
+   "text": "%lld vermelhas"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld reds",
+   "text": "赤球%lld個"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld reds",
+   "text": "빨간 공 %lld개"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld reds",
+   "text": "%lld个红球"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld reds",
+   "text": "красных: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld reds",
+   "text": "%lld كرات حمراء"
+  },
+  {
+   "culture": "es",
+   "key": "Strike the red the cue is set on.",
+   "text": "Golpea la roja a la que apunta el taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike the red the cue is set on.",
+   "text": "Joue la rouge sur laquelle ta queue est posée."
+  },
+  {
+   "culture": "de",
+   "key": "Strike the red the cue is set on.",
+   "text": "Spiel die Rote, an der dein Queue angesetzt ist."
+  },
+  {
+   "culture": "it",
+   "key": "Strike the red the cue is set on.",
+   "text": "Colpisci la rossa su cui è puntata la stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike the red the cue is set on.",
+   "text": "Joga a vermelha para onde o taco aponta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike the red the cue is set on.",
+   "text": "Jogue a vermelha para onde o taco aponta."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike the red the cue is set on.",
+   "text": "キューを構えている赤球を突こう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike the red the cue is set on.",
+   "text": "큐가 겨누고 있는 빨간 공을 쳐."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike the red the cue is set on.",
+   "text": "击打球杆对准的那个红球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike the red the cue is set on.",
+   "text": "Бей красным, на который наведён кий."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike the red the cue is set on.",
+   "text": "اضرب الكرة الحمراء التي تصوّب عليها العصا."
+  },
+  {
+   "culture": "es",
+   "key": "Strike the white the cue is set on.",
+   "text": "Golpea la blanca a la que apunta el taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike the white the cue is set on.",
+   "text": "Joue la blanche sur laquelle ta queue est posée."
+  },
+  {
+   "culture": "de",
+   "key": "Strike the white the cue is set on.",
+   "text": "Spiel die Weiße, an der dein Queue angesetzt ist."
+  },
+  {
+   "culture": "it",
+   "key": "Strike the white the cue is set on.",
+   "text": "Colpisci la bianca su cui è puntata la stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike the white the cue is set on.",
+   "text": "Joga a branca para onde o taco aponta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike the white the cue is set on.",
+   "text": "Jogue a branca para onde o taco aponta."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike the white the cue is set on.",
+   "text": "キューを構えている白球を突こう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike the white the cue is set on.",
+   "text": "큐가 겨누고 있는 흰 공을 쳐."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike the white the cue is set on.",
+   "text": "击打球杆对准的那个白球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike the white the cue is set on.",
+   "text": "Бей белым, на который наведён кий."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike the white the cue is set on.",
+   "text": "اضرب الكرة البيضاء التي تصوّب عليها العصا."
+  },
+  {
+   "culture": "es",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "Se acabó el tiempo. La barra ha bajado: las bolas que caigan ya no vuelven. Sigues jugando con las blancas que quedan en la bandeja, y la partida termina cuando juegues la última."
+  },
+  {
+   "culture": "fr",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "Le temps est écoulé. La barre est baissée : les billes qui tombent restent dedans. Tu continues avec les blanches qui restent dans le bac, et la partie se termine une fois la dernière jouée."
+  },
+  {
+   "culture": "de",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "Die Zeit ist um. Die Sperre ist unten: Kugeln, die jetzt fallen, bleiben unten. Du spielst mit den Weißen weiter, die noch in der Rinne liegen, und das Spiel endet, sobald die letzte gespielt ist."
+  },
+  {
+   "culture": "it",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "Il tempo è scaduto. La barra è abbassata: le bilie che cadono ora restano giù. Continui con le bianche rimaste nel vassoio, e la partita finisce quando hai giocato l’ultima."
+  },
+  {
+   "culture": "pt",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "Acabou o tempo. A barra desceu: as bolas que caírem agora ficam lá dentro. Continuas com as brancas que restam no tabuleiro, e o jogo termina quando jogares a última."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "O tempo acabou. A barra desceu: as bolas que caírem agora ficam lá dentro. Você continua com as brancas que sobram na bandeja, e o jogo termina quando jogar a última."
+  },
+  {
+   "culture": "ja",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "時間切れ。バーが下りた：これから落ちた球は戻らない。トレイに残った白球で続けて、最後の1個を突いたらゲーム終了。"
+  },
+  {
+   "culture": "ko",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "시간이 다 됐어. 바가 내려갔어: 이제 떨어지는 공은 돌아오지 않아. 트레이에 남은 흰 공으로 계속하고, 마지막 공을 치면 게임이 끝나."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "时间到。挡杆已落下：现在落洞的球不再返回。用球槽里剩下的白球继续打，最后一个打完比赛就结束。"
+  },
+  {
+   "culture": "ru",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "Время вышло. Планка опущена: упавшие шары больше не возвращаются. Играешь белыми, что остались в лотке, и игра закончится, когда сыграешь последний."
+  },
+  {
+   "culture": "ar",
+   "key": "Time is up. The bar is down: balls that drop now stay down. You play on with the whites left in the tray, and the game ends once the last one has been played.",
+   "text": "انتهى الوقت. نزل الحاجز: الكرات التي تسقط الآن تبقى في الأسفل. تواصل اللعب بالكرات البيضاء الباقية في الصينية، وتنتهي اللعبة بعد أن تلعب آخرها."
+  },
+  {
+   "culture": "es",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Dos jugadores, cinco bolas cada uno: blancas para el primero, rojas para el segundo. Mete tus cinco bolas en la copa del extremo opuesto a donde empezaron, antes que el otro jugador."
+  },
+  {
+   "culture": "fr",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Deux joueurs, cinq billes chacun : les blanches pour le premier, les rouges pour le second. Rentre tes cinq billes dans le trou à l’autre bout de leur départ, avant l’autre joueur."
+  },
+  {
+   "culture": "de",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Zwei Spieler, je fünf Kugeln: Weiß für den ersten, Rot für den zweiten. Versenke alle fünf deiner Kugeln im Loch am anderen Ende ihres Startplatzes, bevor der andere es schafft."
+  },
+  {
+   "culture": "it",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Due giocatori, cinque bilie a testa: bianche per il primo, rosse per il secondo. Imbuca tutte e cinque le tue nella buca all’estremità opposta a dove sono partite, prima dell’altro giocatore."
+  },
+  {
+   "culture": "pt",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Dois jogadores, cinco bolas cada um: brancas para o primeiro, vermelhas para o segundo. Mete as tuas cinco no buraco do lado oposto ao de onde partiram, antes do outro jogador."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Dois jogadores, cinco bolas cada um: brancas para o primeiro, vermelhas para o segundo. Encaçape suas cinco no buraco do lado oposto ao de onde saíram, antes do outro jogador."
+  },
+  {
+   "culture": "ja",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "2人で、各自5個の球を使う。1人目は白、2人目は赤。スタート位置と反対側の穴に、相手より先に自分の5個を全部沈めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "두 사람이 각자 공 5개로 해. 첫 번째 사람은 흰 공, 두 번째 사람은 빨간 공. 상대보다 먼저, 출발한 곳 반대편 구멍에 내 공 5개를 모두 넣어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "两名玩家，每人五个球：先手用白球，后手用红球。抢在对方之前，把自己的五个球全部打进起点另一端的洞里。"
+  },
+  {
+   "culture": "ru",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "Два игрока, по пять шаров: белые у первого, красные у второго. Загони все свои пять в лузу на дальнем от старта конце раньше соперника."
+  },
+  {
+   "culture": "ar",
+   "key": "Two players, five balls each: white for the first player, red for the second. Sink all five of yours in the cup at the far end from where they started, before the other player does.",
+   "text": "لاعبان، لكل منهما خمس كرات: البيضاء للاعب الأول والحمراء للثاني. أدخل كراتك الخمس كلها في الحفرة في الطرف المقابل لمكان بدايتها، قبل اللاعب الآخر."
+  },
+  {
+   "culture": "es",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Siempre golpeas una de tus bolas: tu bola marcada, la del punto, mientras siga en la mesa, y después las demás de una en una en un orden fijo. El taco siempre apunta a la que toca."
+  },
+  {
+   "culture": "fr",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Tu joues toujours une de tes billes : ta bille marquée, celle avec un point, tant qu’elle est sur la table, puis les autres une à une dans un ordre fixe. Ta queue est toujours posée sur la bonne."
+  },
+  {
+   "culture": "de",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Du spielst immer eine deiner eigenen Kugeln: deine markierte, die mit dem Punkt, solange sie auf dem Tisch ist, dann die anderen einzeln in fester Reihenfolge. Dein Queue ist immer an der richtigen angesetzt."
+  },
+  {
+   "culture": "it",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Colpisci sempre una delle tue bilie: quella segnata, con il pallino, finché è sul tavolo, poi le altre una alla volta in un ordine fisso. La stecca è sempre puntata su quella giusta."
+  },
+  {
+   "culture": "pt",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Jogas sempre uma das tuas bolas: a marcada, a que tem um ponto, enquanto estiver na mesa, depois as outras uma a uma por uma ordem fixa. O taco aponta sempre para a certa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Você sempre joga uma das suas bolas: a marcada, a que tem um ponto, enquanto estiver na mesa, depois as outras uma por vez em uma ordem fixa. O taco sempre aponta para a certa."
+  },
+  {
+   "culture": "ja",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "突くのは必ず自分の球。点の付いたマーク球が台にある間はそれを、そのあとは決まった順に1個ずつ。キューはいつも正しい球に構えてある。"
+  },
+  {
+   "culture": "ko",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "항상 내 공 중 하나를 쳐. 점이 찍힌 표시된 공이 테이블에 있는 동안은 그 공을, 그다음엔 정해진 순서대로 하나씩. 큐는 항상 맞는 공을 겨누고 있어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "你总是击打自己的球：带圆点的标记球还在台上时打它，之后按固定顺序逐个打其他球。球杆总是对准该打的那个球。"
+  },
+  {
+   "culture": "ru",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "Ты всегда бьёшь своим шаром: отмеченным, с точкой, пока он на столе, затем остальными по одному в установленном порядке. Кий всегда наведён на нужный."
+  },
+  {
+   "culture": "ar",
+   "key": "You always strike one of your own balls: your marked ball, the one with a spot, while it is on the table, then your others one at a time in a fixed order. The cue is always set on the right one.",
+   "text": "تضرب دائمًا إحدى كراتك: كرتك المعلَّمة، التي عليها نقطة، ما دامت على الطاولة، ثم الباقي واحدة تلو الأخرى بترتيب ثابت. العصا مصوَّبة دائمًا على الكرة الصحيحة."
+  },
+  {
+   "culture": "es",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Cuando se acaba el tiempo baja una barra: las bolas que caen ya no vuelven. Sigues jugando con las blancas que quedan en la bandeja; las blancas que están en la mesa se quedan donde están. Cuando juegas la última blanca de la bandeja, termina la partida. El reloj se para mientras ves una repetición o la Lente."
+  },
+  {
+   "culture": "fr",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Quand le chrono s’arrête, une barre descend : les billes qui tombent restent dedans. Tu continues avec les blanches qui restent dans le bac ; les blanches posées sur la table restent où elles sont. Une fois la dernière blanche du bac jouée, la partie se termine. Le chrono s’arrête pendant un ralenti ou la Lentille."
+  },
+  {
+   "culture": "de",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Wenn die Uhr abgelaufen ist, fällt eine Sperre: Kugeln, die fallen, bleiben unten. Du spielst mit den Weißen weiter, die noch in der Rinne liegen; Weiße, die auf dem Tisch liegen, bleiben, wo sie sind. Ist die letzte Weiße aus der Rinne gespielt, endet das Spiel. Die Uhr steht, solange du eine Wiederholung oder die Lens ansiehst."
+  },
+  {
+   "culture": "it",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Quando il tempo scade scende una barra: le bilie che cadono restano giù. Continui con le bianche rimaste nel vassoio; le bianche ferme sul tavolo restano dove sono. Quando hai giocato l’ultima bianca del vassoio, la partita finisce. L’orologio si ferma mentre guardi un replay o la Lens."
+  },
+  {
+   "culture": "pt",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Quando o tempo acaba desce uma barra: as bolas que caem ficam lá dentro. Continuas com as brancas que restam no tabuleiro; as brancas paradas na mesa ficam onde estão. Quando jogares a última branca do tabuleiro, o jogo termina. O relógio para enquanto vês uma repetição ou a Lente."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Quando o tempo acaba, desce uma barra: as bolas que caem ficam lá dentro. Você continua com as brancas que sobram na bandeja; as brancas paradas na mesa ficam onde estão. Quando você joga a última branca da bandeja, o jogo termina. O relógio para enquanto você vê um replay ou a Lente."
+  },
+  {
+   "culture": "ja",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "時間切れになるとバーが下り、落ちた球は戻らなくなる。トレイに残った白球で続け、台の上で止まっている白球はそのまま。トレイの最後の白球を突いたらゲーム終了。リプレイやレンズを見ている間は時計が止まる。"
+  },
+  {
+   "culture": "ko",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "시간이 다 되면 바가 내려가 떨어진 공은 돌아오지 않아. 트레이에 남은 흰 공으로 계속하고, 테이블 위에 멈춘 흰 공은 그대로 둬. 트레이의 마지막 흰 공을 치면 게임이 끝나. 다시보기나 렌즈를 보는 동안에는 시계가 멈춰."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "时间用完后挡杆落下：落洞的球不再返回。用球槽里剩下的白球继续打；停在台面上的白球留在原处。球槽里最后一个白球打完，比赛就结束。观看回放或透镜时计时暂停。"
+  },
+  {
+   "culture": "ru",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "Когда время выходит, опускается планка: упавшие шары больше не возвращаются. Играешь белыми, что остались в лотке; белые, лежащие на столе, остаются на месте. Когда сыгран последний белый из лотка, игра заканчивается. Часы стоят, пока ты смотришь повтор или Линзу."
+  },
+  {
+   "culture": "ar",
+   "key": "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. When the last white from the tray has been played, the game ends. The clock stops while you watch a replay or the Lens.",
+   "text": "عندما ينتهي الوقت ينزل حاجز: الكرات التي تسقط تبقى في الأسفل. تواصل اللعب بالكرات البيضاء الباقية في الصينية؛ والكرات البيضاء الواقفة على الطاولة تبقى مكانها. عندما تلعب آخر كرة بيضاء من الصينية تنتهي اللعبة. تتوقف الساعة أثناء مشاهدة الإعادة أو العدسة."
+  },
+  {
+   "culture": "es",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Meter la 8 en el saque ni gana ni pierde. Tras un saque limpio, quien sacó elige: devolver la 8 a su punto o volver a colocar las bolas. Si además el saque fue falta, elige tu rival, con bola en mano."
+  },
+  {
+   "culture": "fr",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Empocher la 8 à la casse ne fait ni gagner ni perdre. Après une casse sans faute, celui qui a cassé choisit : remettre la 8 sur sa mouche, ou refaire le triangle. Si la casse était aussi une faute, c’est ton adversaire qui choisit, avec bille en main."
+  },
+  {
+   "culture": "de",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Die 8 beim Anstoß zu versenken ist weder Sieg noch Niederlage. Nach einem sauberen Anstoß wählt, wer angestoßen hat: die 8 zurück auf ihren Punkt oder neu aufbauen. War der Anstoß auch ein Foul, wählt stattdessen dein Gegner, mit Ball in der Hand."
+  },
+  {
+   "culture": "it",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Imbucare la 8 in spaccata non fa né vincere né perdere. Dopo una spaccata pulita sceglie chi ha spaccato: rimettere la 8 sul suo punto o ricomporre il triangolo. Se la spaccata era anche fallo, sceglie invece il tuo avversario, con bilia in mano."
+  },
+  {
+   "culture": "pt",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Meter a 8 na abertura não ganha nem perde. Depois de uma abertura limpa, quem abriu escolhe: repor a 8 no seu ponto ou arrumar de novo. Se a abertura também foi falta, escolhe o teu adversário, com bola na mão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Encaçapar a 8 na abertura não ganha nem perde. Depois de uma abertura limpa, quem abriu escolhe: recolocar a 8 no ponto ou arrumar de novo. Se a abertura também foi falta, quem escolhe é o seu adversário, com bola na mão."
+  },
+  {
+   "culture": "ja",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "ブレイクで8番を沈めても勝ちでも負けでもない。ファウルのないブレイクなら、ブレイクした人が8番をスポットに戻すか並べ直すかを選ぶ。ブレイクがファウルでもあったなら、代わりに相手がボールインハンドで選ぶ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "브레이크에서 8번을 넣으면 승리도 패배도 아니야. 파울 없는 브레이크라면 브레이크한 사람이 8번을 제자리에 놓을지 다시 랙을 놓을지 골라. 브레이크가 파울이기도 했다면 대신 상대가 볼 인 핸드로 골라."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "开球打进 8 号球既不算赢也不算输。开球没有犯规时，由开球的人选择：把 8 号球放回置球点，或重新摆球。如果开球同时犯规，则改由对手选择，并获得自由球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "Восьмёрка, забитая на разбое, не приносит ни победы, ни поражения. После чистого разбоя выбирает разбивавший: вернуть восьмёрку на её точку или расставить заново. Если на разбое был ещё и фол, выбирает соперник, и биток у него с руки."
+  },
+  {
+   "culture": "ar",
+   "key": "Sinking the 8 on the break neither wins nor loses. After a clean break the breaker chooses: put the 8 back on its spot, or rack again. If the break was also a foul, your opponent chooses instead, with the cue ball in hand.",
+   "text": "إدخال الكرة 8 في الكسرة لا يعني فوزًا ولا خسارة. بعد كسرة نظيفة يختار من كسر: إعادة الكرة 8 إلى نقطتها، أو إعادة الرصّ. وإن كانت الكسرة خطأً أيضًا، يختار خصمك بدلًا منه، والكرة في يده."
+  },
+  {
+   "culture": "es",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "No cantaste el tiro, así que se usó el sugerido: la %lld, %@."
+  },
+  {
+   "culture": "fr",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "Tu n’as rien annoncé, donc l’annonce suggérée a été retenue : la %lld, %@."
+  },
+  {
+   "culture": "de",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "Du hast nichts angesagt, also galt die vorgeschlagene Ansage: die %lld, %@."
+  },
+  {
+   "culture": "it",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "Non hai chiamato, quindi è stata usata la chiamata suggerita: la %lld, %@."
+  },
+  {
+   "culture": "pt",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "Não anunciaste, por isso foi usado o anúncio sugerido: a %lld, %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "Você não cantou, então valeu a jogada sugerida: a %lld, %@."
+  },
+  {
+   "culture": "ja",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "コールしなかったので、おすすめのコールで打ったよ：%lld番、%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "콜을 안 해서 추천 콜로 쳤어: %lld번, %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "你没有叫球，所以用了建议的叫球：%lld 号球，%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "Ты не заказал удар, поэтому засчитан предложенный заказ: %lld-й, %@."
+  },
+  {
+   "culture": "ar",
+   "key": "No call was made, so the suggested call was used: the %lld, %@.",
+   "text": "لم تُعلن ضربتك، فاعتُمد الإعلان المقترح: الكرة %lld، %@."
+  },
+  {
+   "culture": "es",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "No cantaste el tiro, así que se usó el sugerido: defensa."
+  },
+  {
+   "culture": "fr",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "Tu n’as rien annoncé, donc l’annonce suggérée a été retenue : sécurité."
+  },
+  {
+   "culture": "de",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "Du hast nichts angesagt, also galt die vorgeschlagene Ansage: Sicherheit."
+  },
+  {
+   "culture": "it",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "Non hai chiamato, quindi è stata usata la chiamata suggerita: difesa."
+  },
+  {
+   "culture": "pt",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "Não anunciaste, por isso foi usado o anúncio sugerido: defesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "Você não cantou, então valeu a jogada sugerida: defesa."
+  },
+  {
+   "culture": "ja",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "コールしなかったので、おすすめのコールで打ったよ：セーフティ。"
+  },
+  {
+   "culture": "ko",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "콜을 안 해서 추천 콜로 쳤어: 세이프티."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "你没有叫球，所以用了建议的叫球：防守。"
+  },
+  {
+   "culture": "ru",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "Ты не заказал удар, поэтому засчитан предложенный заказ: отыгрыш."
+  },
+  {
+   "culture": "ar",
+   "key": "No call was made, so the suggested call was used: Safety.",
+   "text": "لم تُعلن ضربتك، فاعتُمد الإعلان المقترح: ضربة دفاعية."
+  },
+  {
+   "culture": "es",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "un saque ilegal: no entró ninguna bola y menos de %lld llegaron a la banda"
+  },
+  {
+   "culture": "fr",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "une casse non valable : rien n’est rentré et moins de %lld billes ont touché une bande"
+  },
+  {
+   "culture": "de",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "ein ungültiger Anstoß: nichts fiel, und weniger als %lld Kugeln erreichten eine Bande"
+  },
+  {
+   "culture": "it",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "una spaccata irregolare: non è entrato nulla e meno di %lld bilie hanno toccato una sponda"
+  },
+  {
+   "culture": "pt",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "uma abertura irregular: nada entrou e menos de %lld bolas chegaram à tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "uma abertura irregular: nada caiu e menos de %lld bolas chegaram à tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "反則のブレイク：1球も入らず、クッションに届いた球が%lld個未満だった"
+  },
+  {
+   "culture": "ko",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "잘못된 브레이크: 아무것도 들어가지 않았고 쿠션에 닿은 공이 %lld개 미만이었어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "开球不合规：没有进球，碰库的球少于 %lld 个"
+  },
+  {
+   "culture": "ru",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "неправильный разбой: ничего не забито, и до борта дошло меньше %lld шаров"
+  },
+  {
+   "culture": "ar",
+   "key": "an illegal break: nothing went down and fewer than %lld balls reached a rail",
+   "text": "كسرة غير قانونية: لم تدخل أي كرة ووصلت أقل من %lld كرات إلى الحافة"
+  },
+  {
+   "culture": "es",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ contra el ordenador (%@). Tira %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ contre l’ordinateur (%@). À %@ de jouer."
+  },
+  {
+   "culture": "de",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ gegen den Computer (%@). %@ ist am Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ contro il computer (%@). Tira %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ contra o computador (%@). Joga %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ contra o computador (%@). Vez de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@、コンピューター（%@）と対戦中。%@の番。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@, 컴퓨터(%@)와 대결 중. %@ 차례."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@，对战电脑（%@）。轮到 %@ 击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ против компьютера (%@). Бьёт %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ against the computer (%@). %@ to shoot.",
+   "text": "%@ ضد الكمبيوتر (%@). الدور على %@."
+  },
+  {
+   "culture": "es",
+   "key": "%@, playing alone.",
+   "text": "%@, jugando solo."
+  },
+  {
+   "culture": "fr",
+   "key": "%@, playing alone.",
+   "text": "%@, en solo."
+  },
+  {
+   "culture": "de",
+   "key": "%@, playing alone.",
+   "text": "%@, allein gespielt."
+  },
+  {
+   "culture": "it",
+   "key": "%@, playing alone.",
+   "text": "%@, da solo."
+  },
+  {
+   "culture": "pt",
+   "key": "%@, playing alone.",
+   "text": "%@, a jogar sozinho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@, playing alone.",
+   "text": "%@, jogando sozinho."
+  },
+  {
+   "culture": "ja",
+   "key": "%@, playing alone.",
+   "text": "%@、ひとりでプレイ中。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@, playing alone.",
+   "text": "%@, 혼자 플레이 중."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@, playing alone.",
+   "text": "%@，单人游戏。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@, playing alone.",
+   "text": "%@, игра в одиночку."
+  },
+  {
+   "culture": "ar",
+   "key": "%@, playing alone.",
+   "text": "%@، تلعب بمفردك."
+  },
+  {
+   "culture": "es",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. Tira %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@ : %@. À %@ de jouer."
+  },
+  {
+   "culture": "de",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. %@ ist am Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. Tira %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. Joga %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. Vez de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@：%@。%@の番。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. %@ 차례."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@：%@。轮到 %@ 击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. Бьёт %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@: %@. %@ to shoot.",
+   "text": "%@: %@. الدور على %@."
+  },
+  {
+   "culture": "es",
+   "key": "Lining up its shot…",
+   "text": "Preparando su tiro…"
+  },
+  {
+   "culture": "fr",
+   "key": "Lining up its shot…",
+   "text": "Il prépare son coup…"
+  },
+  {
+   "culture": "de",
+   "key": "Lining up its shot…",
+   "text": "Visiert seinen Stoß an…"
+  },
+  {
+   "culture": "it",
+   "key": "Lining up its shot…",
+   "text": "Prepara il tiro…"
+  },
+  {
+   "culture": "pt",
+   "key": "Lining up its shot…",
+   "text": "A preparar a jogada…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lining up its shot…",
+   "text": "Preparando a jogada…"
+  },
+  {
+   "culture": "ja",
+   "key": "Lining up its shot…",
+   "text": "狙いを定めています…"
+  },
+  {
+   "culture": "ko",
+   "key": "Lining up its shot…",
+   "text": "샷을 겨누는 중…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lining up its shot…",
+   "text": "正在瞄准…"
+  },
+  {
+   "culture": "ru",
+   "key": "Lining up its shot…",
+   "text": "Прицеливается…"
+  },
+  {
+   "culture": "ar",
+   "key": "Lining up its shot…",
+   "text": "يصوّب ضربته…"
+  },
+  {
+   "culture": "es",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Eligió la bola que parecía más fácil y no pensó dónde se pararía la blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Il a choisi la bille qui semblait la plus facile, sans prévoir où la blanche s’arrêterait."
+  },
+  {
+   "culture": "de",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Er hat die Kugel gewählt, die am leichtesten aussah, ohne zu planen, wo die Weiße liegen bleibt."
+  },
+  {
+   "culture": "it",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Ha scelto la bilia che sembrava più facile, senza pensare a dove si sarebbe fermata la bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Escolheu a bola que parecia mais fácil, sem pensar onde a branca ia parar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Escolheu a bola que parecia mais fácil, sem planejar onde a branca ia parar."
+  },
+  {
+   "culture": "ja",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "一番簡単そうな球を選び、手球の止まる位置は考えなかった。"
+  },
+  {
+   "culture": "ko",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "가장 쉬워 보이는 공을 골랐고, 수구가 어디 멈출지는 생각하지 않았어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "它选了看起来最容易进的球，没有考虑母球停在哪里。"
+  },
+  {
+   "culture": "ru",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "Он выбрал шар, который казался проще всего, и не думал, где остановится биток."
+  },
+  {
+   "culture": "ar",
+   "key": "It picked the pot that looked easiest and did not plan where the cue ball would stop.",
+   "text": "اختار الكرة التي بدت أسهل، ولم يخطط لمكان توقف الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "No había ninguna bola para meter, así que simplemente golpeó la %lld, la más cercana que podía tocar."
+  },
+  {
+   "culture": "fr",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "Aucune bille n’était jouable, alors il a simplement touché la %lld, la plus proche qu’il avait le droit de toucher."
+  },
+  {
+   "culture": "de",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "Keine Kugel war zu versenken, also hat er einfach die %lld gespielt, die nächste, die er treffen durfte."
+  },
+  {
+   "culture": "it",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "Non c’era nessuna bilia da imbucare, quindi ha semplicemente colpito la %lld, la più vicina che poteva toccare."
+  },
+  {
+   "culture": "pt",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "Não havia bola para meter, por isso limitou-se a bater na %lld, a mais próxima em que podia tocar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "Não havia bola para encaçapar, então ele só bateu na %lld, a mais próxima em que podia tocar."
+  },
+  {
+   "culture": "ja",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "狙える球がなかったので、当ててよい一番近い球、%lld番に当てただけ。"
+  },
+  {
+   "culture": "ko",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "넣을 공이 없어서, 맞혀도 되는 가장 가까운 공인 %lld번을 그냥 맞혔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "没有能进的球，所以它只是打了 %lld 号球，也就是允许击打的最近的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "Забивать было нечего, поэтому он просто попал в %lld-й, ближайший шар, в который можно было бить."
+  },
+  {
+   "culture": "ar",
+   "key": "No pot was on, so it simply hit the %lld, the nearest ball it was allowed to hit.",
+   "text": "لم تكن هناك كرة يمكن إدخالها، فضرب الكرة %lld فقط، وهي أقرب كرة يُسمح بضربها."
+  },
+  {
+   "culture": "es",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "No había ninguna bola para meter, así que simplemente golpeó la más cercana que podía tocar."
+  },
+  {
+   "culture": "fr",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "Aucune bille n’était jouable, alors il a simplement touché la plus proche qu’il avait le droit de toucher."
+  },
+  {
+   "culture": "de",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "Keine Kugel war zu versenken, also hat er einfach die nächste gespielt, die er treffen durfte."
+  },
+  {
+   "culture": "it",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "Non c’era nessuna bilia da imbucare, quindi ha semplicemente colpito la più vicina che poteva toccare."
+  },
+  {
+   "culture": "pt",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "Não havia bola para meter, por isso limitou-se a bater na mais próxima em que podia tocar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "Não havia bola para encaçapar, então ele só bateu na mais próxima em que podia tocar."
+  },
+  {
+   "culture": "ja",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "狙える球がなかったので、当ててよい一番近い球に当てただけ。"
+  },
+  {
+   "culture": "ko",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "넣을 공이 없어서, 맞혀도 되는 가장 가까운 공을 그냥 맞혔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "没有能进的球，所以它只是打了允许击打的最近的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "Забивать было нечего, поэтому он просто попал в ближайший шар, в который можно было бить."
+  },
+  {
+   "culture": "ar",
+   "key": "No pot was on, so it simply hit the nearest ball it was allowed to hit.",
+   "text": "لم تكن هناك كرة يمكن إدخالها، فضرب أقرب كرة يُسمح بضربها فقط."
+  },
+  {
+   "culture": "es",
+   "key": "%lld won, %lld lost",
+   "text": "%lld ganadas, %lld perdidas"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld won, %lld lost",
+   "text": "%lld gagnées, %lld perdues"
+  },
+  {
+   "culture": "de",
+   "key": "%lld won, %lld lost",
+   "text": "%lld gewonnen, %lld verloren"
+  },
+  {
+   "culture": "it",
+   "key": "%lld won, %lld lost",
+   "text": "%lld vinte, %lld perse"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld won, %lld lost",
+   "text": "%lld ganhas, %lld perdidas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld won, %lld lost",
+   "text": "%lld vitórias, %lld derrotas"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld won, %lld lost",
+   "text": "%lld勝 %lld敗"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld won, %lld lost",
+   "text": "%lld승 %lld패"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld won, %lld lost",
+   "text": "%lld 胜 %lld 负"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld won, %lld lost",
+   "text": "побед: %lld, поражений: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld won, %lld lost",
+   "text": "%lld فوز، %lld خسارة"
+  },
+  {
+   "culture": "es",
+   "key": "See the ruling",
+   "text": "Ver la decisión"
+  },
+  {
+   "culture": "fr",
+   "key": "See the ruling",
+   "text": "Voir la décision"
+  },
+  {
+   "culture": "de",
+   "key": "See the ruling",
+   "text": "Zur Entscheidung"
+  },
+  {
+   "culture": "it",
+   "key": "See the ruling",
+   "text": "Vedi la decisione"
+  },
+  {
+   "culture": "pt",
+   "key": "See the ruling",
+   "text": "Ver a decisão"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "See the ruling",
+   "text": "Ver a decisão"
+  },
+  {
+   "culture": "ja",
+   "key": "See the ruling",
+   "text": "判定を見る"
+  },
+  {
+   "culture": "ko",
+   "key": "See the ruling",
+   "text": "판정 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "See the ruling",
+   "text": "查看判定"
+  },
+  {
+   "culture": "ru",
+   "key": "See the ruling",
+   "text": "К решению"
+  },
+  {
+   "culture": "ar",
+   "key": "See the ruling",
+   "text": "عرض القرار"
+  },
+  {
+   "culture": "es",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Salta al final del tiro para ver la decisión enseguida"
+  },
+  {
+   "culture": "fr",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Passe à la fin du coup pour avoir la décision tout de suite"
+  },
+  {
+   "culture": "de",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Springt ans Ende des Stoßes, damit die Entscheidung sofort kommt"
+  },
+  {
+   "culture": "it",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Salta alla fine del tiro così la decisione arriva subito"
+  },
+  {
+   "culture": "pt",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Salta para o fim da jogada para a decisão chegar já"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Pula para o fim da jogada para a decisão aparecer na hora"
+  },
+  {
+   "culture": "ja",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "ショットの最後まで飛ばして、すぐに判定を出す"
+  },
+  {
+   "culture": "ko",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "샷의 끝으로 건너뛰어 판정을 바로 보여줘"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "跳到这一杆的结尾，立即给出判定"
+  },
+  {
+   "culture": "ru",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "Переходит к концу удара, чтобы решение появилось сразу"
+  },
+  {
+   "culture": "ar",
+   "key": "Skips to the end of the shot so the ruling comes at once",
+   "text": "ينتقل إلى نهاية الضربة ليظهر القرار فورًا"
+  },
+  {
+   "culture": "es",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Sigue ya. También sigue solo en un momento."
+  },
+  {
+   "culture": "fr",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Passe à la suite maintenant. Ça continue aussi tout seul dans un instant."
+  },
+  {
+   "culture": "de",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Geht jetzt weiter. Es geht auch gleich von selbst weiter."
+  },
+  {
+   "culture": "it",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Va avanti subito. Va avanti anche da solo tra un attimo."
+  },
+  {
+   "culture": "pt",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Avança já. Também avança sozinho daqui a pouco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Avança agora. Também avança sozinho em um instante."
+  },
+  {
+   "culture": "ja",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "今すぐ進む。少しすると自動でも進む。"
+  },
+  {
+   "culture": "ko",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "지금 넘어가. 잠시 후 저절로 넘어가기도 해."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "立即继续。稍后也会自动继续。"
+  },
+  {
+   "culture": "ru",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "Продолжить сейчас. Через мгновение продолжится и само."
+  },
+  {
+   "culture": "ar",
+   "key": "Moves on now. It also moves on by itself in a moment.",
+   "text": "المتابعة الآن. سيتابع تلقائيًا أيضًا بعد لحظة."
+  },
+  {
+   "culture": "es",
+   "key": "Watch it in the Lens",
+   "text": "Verlo en la Lente"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch it in the Lens",
+   "text": "Le revoir dans la Lentille"
+  },
+  {
+   "culture": "de",
+   "key": "Watch it in the Lens",
+   "text": "In der Lens ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch it in the Lens",
+   "text": "Guardalo nella Lens"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch it in the Lens",
+   "text": "Ver na Lente"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch it in the Lens",
+   "text": "Ver na Lente"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch it in the Lens",
+   "text": "レンズで見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch it in the Lens",
+   "text": "렌즈로 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch it in the Lens",
+   "text": "在透镜中观看"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch it in the Lens",
+   "text": "Смотреть в Линзе"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch it in the Lens",
+   "text": "شاهدها في العدسة"
+  },
+  {
+   "culture": "es",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Repite el saque a cámara lenta con la física dibujada sobre la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Rejoue la casse au ralenti avec la physique dessinée sur la table"
+  },
+  {
+   "culture": "de",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Zeigt den Anstoß noch einmal langsam, mit der Physik auf den Tisch gezeichnet"
+  },
+  {
+   "culture": "it",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Rivedi la spaccata al rallentatore con la fisica disegnata sul tavolo"
+  },
+  {
+   "culture": "pt",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Repete a abertura em câmara lenta com a física desenhada na mesa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Repete a abertura em câmera lenta com a física desenhada na mesa"
+  },
+  {
+   "culture": "ja",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "ブレイクを、物理を台に描いてスローで再生する"
+  },
+  {
+   "culture": "ko",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "브레이크를 테이블 위에 물리를 그려 느리게 다시 보여줘"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "慢放这次开球，并把物理画在球台上"
+  },
+  {
+   "culture": "ru",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "Повторяет разбой замедленно, с физикой, нарисованной на столе"
+  },
+  {
+   "culture": "ar",
+   "key": "Replays the break slowly with the physics drawn on the table",
+   "text": "يعيد الكسرة ببطء مع رسم الفيزياء على الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "¿Terminar esta partida? No se guardará y no cuenta en tu historial."
+  },
+  {
+   "culture": "fr",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "Arrêter cette partie ? Elle ne sera pas enregistrée et ne compte pas dans ton bilan."
+  },
+  {
+   "culture": "de",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "Dieses Spiel beenden? Es wird nicht gespeichert und zählt nicht für deine Bilanz."
+  },
+  {
+   "culture": "it",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "Chiudere questa partita? Non verrà salvata e non conta nel tuo record."
+  },
+  {
+   "culture": "pt",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "Terminar este jogo? Não fica guardado e não conta para o teu registo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "Encerrar este jogo? Ele não será salvo e não conta no seu histórico."
+  },
+  {
+   "culture": "ja",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "このゲームを終了する？保存されず、戦績にも数えない。"
+  },
+  {
+   "culture": "ko",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "이 게임을 끝낼까? 저장되지 않고 기록에도 들어가지 않아."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "结束这局吗？它不会被保存，也不计入你的战绩。"
+  },
+  {
+   "culture": "ru",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "Закончить эту игру? Она не сохранится и не войдёт в твою статистику."
+  },
+  {
+   "culture": "ar",
+   "key": "End this game? It won't be saved, and it doesn't count in your record.",
+   "text": "إنهاء هذه اللعبة؟ لن تُحفظ ولن تُحتسب في سجلك."
+  },
+  {
+   "culture": "es",
+   "key": "Keep playing",
+   "text": "Seguir jugando"
+  },
+  {
+   "culture": "fr",
+   "key": "Keep playing",
+   "text": "Continuer à jouer"
+  },
+  {
+   "culture": "de",
+   "key": "Keep playing",
+   "text": "Weiterspielen"
+  },
+  {
+   "culture": "it",
+   "key": "Keep playing",
+   "text": "Continua a giocare"
+  },
+  {
+   "culture": "pt",
+   "key": "Keep playing",
+   "text": "Continuar a jogar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Keep playing",
+   "text": "Continuar jogando"
+  },
+  {
+   "culture": "ja",
+   "key": "Keep playing",
+   "text": "続ける"
+  },
+  {
+   "culture": "ko",
+   "key": "Keep playing",
+   "text": "계속하기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Keep playing",
+   "text": "继续玩"
+  },
+  {
+   "culture": "ru",
+   "key": "Keep playing",
+   "text": "Играть дальше"
+  },
+  {
+   "culture": "ar",
+   "key": "Keep playing",
+   "text": "واصل اللعب"
+  },
+  {
+   "culture": "es",
+   "key": "End match",
+   "text": "Terminar partida"
+  },
+  {
+   "culture": "fr",
+   "key": "End match",
+   "text": "Arrêter la partie"
+  },
+  {
+   "culture": "de",
+   "key": "End match",
+   "text": "Spiel beenden"
+  },
+  {
+   "culture": "it",
+   "key": "End match",
+   "text": "Chiudi la partita"
+  },
+  {
+   "culture": "pt",
+   "key": "End match",
+   "text": "Terminar o jogo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "End match",
+   "text": "Encerrar partida"
+  },
+  {
+   "culture": "ja",
+   "key": "End match",
+   "text": "試合を終了"
+  },
+  {
+   "culture": "ko",
+   "key": "End match",
+   "text": "경기 끝내기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "End match",
+   "text": "结束比赛"
+  },
+  {
+   "culture": "ru",
+   "key": "End match",
+   "text": "Закончить матч"
+  },
+  {
+   "culture": "ar",
+   "key": "End match",
+   "text": "إنهاء المباراة"
+  },
+  {
+   "culture": "es",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Termina esta partida y vuelve al menú"
+  },
+  {
+   "culture": "fr",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Arrête cette partie et revient au menu"
+  },
+  {
+   "culture": "de",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Beendet dieses Spiel und geht zurück zum Menü"
+  },
+  {
+   "culture": "it",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Chiude questa partita e torna al menu"
+  },
+  {
+   "culture": "pt",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Termina este jogo e volta ao menu"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Encerra este jogo e volta ao menu"
+  },
+  {
+   "culture": "ja",
+   "key": "Ends this game and goes back to the menu",
+   "text": "このゲームを終えてメニューに戻る"
+  },
+  {
+   "culture": "ko",
+   "key": "Ends this game and goes back to the menu",
+   "text": "이 게임을 끝내고 메뉴로 돌아가"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Ends this game and goes back to the menu",
+   "text": "结束这局并返回菜单"
+  },
+  {
+   "culture": "ru",
+   "key": "Ends this game and goes back to the menu",
+   "text": "Завершает игру и возвращает в меню"
+  },
+  {
+   "culture": "ar",
+   "key": "Ends this game and goes back to the menu",
+   "text": "ينهي هذه اللعبة ويعود إلى القائمة"
+  },
+  {
+   "culture": "es",
+   "key": "More",
+   "text": "Más"
+  },
+  {
+   "culture": "fr",
+   "key": "More",
+   "text": "Plus"
+  },
+  {
+   "culture": "de",
+   "key": "More",
+   "text": "Mehr"
+  },
+  {
+   "culture": "it",
+   "key": "More",
+   "text": "Altro"
+  },
+  {
+   "culture": "pt",
+   "key": "More",
+   "text": "Mais"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "More",
+   "text": "Mais"
+  },
+  {
+   "culture": "ja",
+   "key": "More",
+   "text": "その他"
+  },
+  {
+   "culture": "ko",
+   "key": "More",
+   "text": "더 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "More",
+   "text": "更多"
+  },
+  {
+   "culture": "ru",
+   "key": "More",
+   "text": "Ещё"
+  },
+  {
+   "culture": "ar",
+   "key": "More",
+   "text": "المزيد"
+  },
+  {
+   "culture": "es",
+   "key": "Match options",
+   "text": "Opciones de la partida"
+  },
+  {
+   "culture": "fr",
+   "key": "Match options",
+   "text": "Options de la partie"
+  },
+  {
+   "culture": "de",
+   "key": "Match options",
+   "text": "Spieloptionen"
+  },
+  {
+   "culture": "it",
+   "key": "Match options",
+   "text": "Opzioni della partita"
+  },
+  {
+   "culture": "pt",
+   "key": "Match options",
+   "text": "Opções do jogo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Match options",
+   "text": "Opções da partida"
+  },
+  {
+   "culture": "ja",
+   "key": "Match options",
+   "text": "試合のオプション"
+  },
+  {
+   "culture": "ko",
+   "key": "Match options",
+   "text": "경기 옵션"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Match options",
+   "text": "比赛选项"
+  },
+  {
+   "culture": "ru",
+   "key": "Match options",
+   "text": "Параметры матча"
+  },
+  {
+   "culture": "ar",
+   "key": "Match options",
+   "text": "خيارات المباراة"
+  },
+  {
+   "culture": "es",
+   "key": "Player names, or end the match",
+   "text": "Nombres de los jugadores, o terminar la partida"
+  },
+  {
+   "culture": "fr",
+   "key": "Player names, or end the match",
+   "text": "Noms des joueurs, ou arrêter la partie"
+  },
+  {
+   "culture": "de",
+   "key": "Player names, or end the match",
+   "text": "Spielernamen, oder das Spiel beenden"
+  },
+  {
+   "culture": "it",
+   "key": "Player names, or end the match",
+   "text": "Nomi dei giocatori, o chiudi la partita"
+  },
+  {
+   "culture": "pt",
+   "key": "Player names, or end the match",
+   "text": "Nomes dos jogadores, ou terminar o jogo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Player names, or end the match",
+   "text": "Nomes dos jogadores, ou encerrar a partida"
+  },
+  {
+   "culture": "ja",
+   "key": "Player names, or end the match",
+   "text": "プレイヤー名、または試合を終了"
+  },
+  {
+   "culture": "ko",
+   "key": "Player names, or end the match",
+   "text": "플레이어 이름, 또는 경기 끝내기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Player names, or end the match",
+   "text": "玩家名字，或结束比赛"
+  },
+  {
+   "culture": "ru",
+   "key": "Player names, or end the match",
+   "text": "Имена игроков или завершение матча"
+  },
+  {
+   "culture": "ar",
+   "key": "Player names, or end the match",
+   "text": "أسماء اللاعبين، أو إنهاء المباراة"
+  },
+  {
+   "culture": "es",
+   "key": "One game at a time",
+   "text": "Una partida a la vez"
+  },
+  {
+   "culture": "fr",
+   "key": "One game at a time",
+   "text": "Une partie à la fois"
+  },
+  {
+   "culture": "de",
+   "key": "One game at a time",
+   "text": "Ein Spiel auf einmal"
+  },
+  {
+   "culture": "it",
+   "key": "One game at a time",
+   "text": "Una partita alla volta"
+  },
+  {
+   "culture": "pt",
+   "key": "One game at a time",
+   "text": "Um jogo de cada vez"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "One game at a time",
+   "text": "Um jogo por vez"
+  },
+  {
+   "culture": "ja",
+   "key": "One game at a time",
+   "text": "ゲームは一度にひとつ"
+  },
+  {
+   "culture": "ko",
+   "key": "One game at a time",
+   "text": "게임은 한 번에 하나"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "One game at a time",
+   "text": "一次只能玩一局"
+  },
+  {
+   "culture": "ru",
+   "key": "One game at a time",
+   "text": "Одна игра за раз"
+  },
+  {
+   "culture": "ar",
+   "key": "One game at a time",
+   "text": "لعبة واحدة في كل مرة"
+  },
+  {
+   "culture": "es",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "La partida está abierta en otra ventana. Juega aquí o cierra esta ventana."
+  },
+  {
+   "culture": "fr",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "La partie est ouverte dans une autre fenêtre. Joue ici à la place, ou ferme cette fenêtre."
+  },
+  {
+   "culture": "de",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "Das Spiel ist in einem anderen Fenster offen. Spiel stattdessen hier oder schließ dieses Fenster."
+  },
+  {
+   "culture": "it",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "La partita è aperta in un’altra finestra. Gioca qui invece, oppure chiudi questa finestra."
+  },
+  {
+   "culture": "pt",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "O jogo está aberto noutra janela. Joga aqui em vez disso, ou fecha esta janela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "O jogo está aberto em outra janela. Jogue aqui ou feche esta janela."
+  },
+  {
+   "culture": "ja",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "ゲームは別のウインドウで開いている。代わりにここで遊ぶか、このウインドウを閉じよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "게임이 다른 창에서 열려 있어. 대신 여기서 하거나 이 창을 닫아."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "游戏已在另一个窗口中打开。改在这里玩，或关闭这个窗口。"
+  },
+  {
+   "culture": "ru",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "Игра открыта в другом окне. Играй здесь или закрой это окно."
+  },
+  {
+   "culture": "ar",
+   "key": "The game is open in another window. Play here instead, or close this window.",
+   "text": "اللعبة مفتوحة في نافذة أخرى. العب هنا بدلًا منها، أو أغلق هذه النافذة."
+  },
+  {
+   "culture": "es",
+   "key": "Play here",
+   "text": "Jugar aquí"
+  },
+  {
+   "culture": "fr",
+   "key": "Play here",
+   "text": "Jouer ici"
+  },
+  {
+   "culture": "de",
+   "key": "Play here",
+   "text": "Hier spielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play here",
+   "text": "Gioca qui"
+  },
+  {
+   "culture": "pt",
+   "key": "Play here",
+   "text": "Jogar aqui"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play here",
+   "text": "Jogar aqui"
+  },
+  {
+   "culture": "ja",
+   "key": "Play here",
+   "text": "ここで遊ぶ"
+  },
+  {
+   "culture": "ko",
+   "key": "Play here",
+   "text": "여기서 하기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play here",
+   "text": "在这里玩"
+  },
+  {
+   "culture": "ru",
+   "key": "Play here",
+   "text": "Играть здесь"
+  },
+  {
+   "culture": "ar",
+   "key": "Play here",
+   "text": "العب هنا"
+  },
+  {
+   "culture": "es",
+   "key": "Moves the game to this window",
+   "text": "Pasa la partida a esta ventana"
+  },
+  {
+   "culture": "fr",
+   "key": "Moves the game to this window",
+   "text": "Déplace la partie dans cette fenêtre"
+  },
+  {
+   "culture": "de",
+   "key": "Moves the game to this window",
+   "text": "Holt das Spiel in dieses Fenster"
+  },
+  {
+   "culture": "it",
+   "key": "Moves the game to this window",
+   "text": "Sposta la partita in questa finestra"
+  },
+  {
+   "culture": "pt",
+   "key": "Moves the game to this window",
+   "text": "Passa o jogo para esta janela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Moves the game to this window",
+   "text": "Move o jogo para esta janela"
+  },
+  {
+   "culture": "ja",
+   "key": "Moves the game to this window",
+   "text": "ゲームをこのウインドウに移す"
+  },
+  {
+   "culture": "ko",
+   "key": "Moves the game to this window",
+   "text": "게임을 이 창으로 옮겨"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Moves the game to this window",
+   "text": "把游戏移到这个窗口"
+  },
+  {
+   "culture": "ru",
+   "key": "Moves the game to this window",
+   "text": "Переносит игру в это окно"
+  },
+  {
+   "culture": "ar",
+   "key": "Moves the game to this window",
+   "text": "ينقل اللعبة إلى هذه النافذة"
+  },
+  {
+   "culture": "es",
+   "key": "Close this window",
+   "text": "Cerrar esta ventana"
+  },
+  {
+   "culture": "fr",
+   "key": "Close this window",
+   "text": "Fermer cette fenêtre"
+  },
+  {
+   "culture": "de",
+   "key": "Close this window",
+   "text": "Dieses Fenster schließen"
+  },
+  {
+   "culture": "it",
+   "key": "Close this window",
+   "text": "Chiudi questa finestra"
+  },
+  {
+   "culture": "pt",
+   "key": "Close this window",
+   "text": "Fechar esta janela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Close this window",
+   "text": "Fechar esta janela"
+  },
+  {
+   "culture": "ja",
+   "key": "Close this window",
+   "text": "このウインドウを閉じる"
+  },
+  {
+   "culture": "ko",
+   "key": "Close this window",
+   "text": "이 창 닫기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Close this window",
+   "text": "关闭这个窗口"
+  },
+  {
+   "culture": "ru",
+   "key": "Close this window",
+   "text": "Закрыть это окно"
+  },
+  {
+   "culture": "ar",
+   "key": "Close this window",
+   "text": "أغلق هذه النافذة"
+  },
+  {
+   "culture": "es",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Una partida nueva reemplaza la que tienes guardada: %@"
+  },
+  {
+   "culture": "fr",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Une nouvelle partie remplace celle que tu as enregistrée : %@"
+  },
+  {
+   "culture": "de",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Ein neues Spiel ersetzt dein gespeichertes: %@"
+  },
+  {
+   "culture": "it",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Una nuova partita sostituisce quella che hai salvato: %@"
+  },
+  {
+   "culture": "pt",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Um jogo novo substitui o que tens guardado: %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Um jogo novo substitui o que você tem salvo: %@"
+  },
+  {
+   "culture": "ja",
+   "key": "A new game replaces your saved one: %@",
+   "text": "新しいゲームを始めると、保存中のゲームは置き換わる：%@"
+  },
+  {
+   "culture": "ko",
+   "key": "A new game replaces your saved one: %@",
+   "text": "새 게임을 시작하면 저장된 게임이 바뀌어: %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A new game replaces your saved one: %@",
+   "text": "新游戏会替换你保存的那局：%@"
+  },
+  {
+   "culture": "ru",
+   "key": "A new game replaces your saved one: %@",
+   "text": "Новая игра заменит сохранённую: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "A new game replaces your saved one: %@",
+   "text": "اللعبة الجديدة تحل محل لعبتك المحفوظة: %@"
+  },
+  {
+   "culture": "es",
+   "key": "Keep my saved game",
+   "text": "Conservar mi partida guardada"
+  },
+  {
+   "culture": "fr",
+   "key": "Keep my saved game",
+   "text": "Garder ma partie enregistrée"
+  },
+  {
+   "culture": "de",
+   "key": "Keep my saved game",
+   "text": "Gespeichertes Spiel behalten"
+  },
+  {
+   "culture": "it",
+   "key": "Keep my saved game",
+   "text": "Tieni la partita salvata"
+  },
+  {
+   "culture": "pt",
+   "key": "Keep my saved game",
+   "text": "Manter o meu jogo guardado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Keep my saved game",
+   "text": "Manter meu jogo salvo"
+  },
+  {
+   "culture": "ja",
+   "key": "Keep my saved game",
+   "text": "保存中のゲームを残す"
+  },
+  {
+   "culture": "ko",
+   "key": "Keep my saved game",
+   "text": "저장된 게임 유지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Keep my saved game",
+   "text": "保留我保存的那局"
+  },
+  {
+   "culture": "ru",
+   "key": "Keep my saved game",
+   "text": "Оставить сохранённую игру"
+  },
+  {
+   "culture": "ar",
+   "key": "Keep my saved game",
+   "text": "احتفظ بلعبتي المحفوظة"
+  },
+  {
+   "culture": "es",
+   "key": "Start a new game",
+   "text": "Empezar una partida nueva"
+  },
+  {
+   "culture": "fr",
+   "key": "Start a new game",
+   "text": "Commencer une nouvelle partie"
+  },
+  {
+   "culture": "de",
+   "key": "Start a new game",
+   "text": "Neues Spiel starten"
+  },
+  {
+   "culture": "it",
+   "key": "Start a new game",
+   "text": "Inizia una nuova partita"
+  },
+  {
+   "culture": "pt",
+   "key": "Start a new game",
+   "text": "Começar um jogo novo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Start a new game",
+   "text": "Começar um jogo novo"
+  },
+  {
+   "culture": "ja",
+   "key": "Start a new game",
+   "text": "新しいゲームを始める"
+  },
+  {
+   "culture": "ko",
+   "key": "Start a new game",
+   "text": "새 게임 시작"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Start a new game",
+   "text": "开始新游戏"
+  },
+  {
+   "culture": "ru",
+   "key": "Start a new game",
+   "text": "Начать новую игру"
+  },
+  {
+   "culture": "ar",
+   "key": "Start a new game",
+   "text": "ابدأ لعبة جديدة"
+  }
+ ]
+}

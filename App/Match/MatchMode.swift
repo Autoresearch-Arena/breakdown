@@ -16,6 +16,17 @@
 //          (replays, the Lens, solving, cards, the menu) instead of charging each shot its recording's length; each
 //          shot keeps the ball that was struck and the points explained (TablePoints) for the ruling card; a finished
 //          one-player bar-billiards game records its best score on the device (BarBilliardsBest).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 13, 15, 16 and 18, contract docs/v07-contracts.md 3.3.
+//          The call: the suggested call moved here from the call card (suggestedCall), so the model can play a stroke
+//          made with no call on the suggestion (adoptSuggestedCall) and the ruling card can say it did
+//          (lastCallWasSuggested, lastShotCall); refusal says why the match would refuse a stroke now. Routine
+//          rulings ("keep shooting", turn changes against the computer) settle by themselves after settleBeat seconds
+//          of the balls at rest and stay as a line in the turn banner (lastRulingShow, settledRuling); the card stays
+//          for fouls, the pegs, choices, a hand-over between two people on one device and the end. The ruling's facts
+//          (balls pocketed, the first ball hit) are kept here, so the card and the banner word the shot even after
+//          the table on screen has moved on. The computer: update() now runs the opponent while a ruling card is up
+//          too, and upcomingComputerDecision gives it the table that card will leave, so it thinks before the card
+//          goes. The menu's Continue row can name the saved game (savedSummary, SavedMatchSummary).)
 // PURPOSE: A match for two on one device (plans/21-Nov-2026-rules-games-plan.md package 3 steps 4, 7 and 8, package 4
 //          step 3, model side). MatchMode owns the MatchState and one `any MatchRules` (EightBallRules, NineBallRules,
 //          or a table's rules from the BreakdownRules module) and runs the turn loop:
@@ -63,6 +74,17 @@ struct SavedMatch: Codable {
     var firstBreaker: PlayerID
 }
 
+/// The saved game named for the menu's Continue row (contract 3.3): which game, against whom, whose shot. The words
+/// are MatchWords.savedLine's.
+struct SavedMatchSummary: Equatable {
+    let kind: MatchKind
+    /// The computer's level when one of the seats is the computer; nil for a game between people.
+    let opponent: ComputerLevel?
+    let playerNames: [String]
+    /// The name of whoever shoots next.
+    let turnName: String
+}
+
 @MainActor
 @Observable
 final class MatchMode {
@@ -84,6 +106,26 @@ final class MatchMode {
     private(set) var lastPoints: [TablePoints.Line] = []
     /// A finished one-player bar-billiards game: what it did to the best score on this device.
     private(set) var bestOutcome: BarBilliardsBest.Outcome?
+    /// The object balls that dropped on the last ruled shot (only balls that started it on the table), read from its
+    /// recording when it was ruled, so the card and the banner can word it after the table has moved on.
+    private(set) var lastPocketed: [Int] = []
+    /// The first ball the striking ball touched on the last ruled shot, nil when it touched none.
+    private(set) var lastFirstBall: Int?
+    /// The call the last ruled shot was played with (games with calls; nil otherwise).
+    private(set) var lastShotCall: EightBallCall?
+    /// The last ruled shot was played on the suggested call because the stroke went through with no call made.
+    private(set) var lastCallWasSuggested = false
+    /// How the last ruling is shown: .card waits for the player; .banner settles by itself (settleBeat).
+    private(set) var lastRulingShow: RulingShow = .card
+    /// A routine ruling that has settled into the turn banner: shown there as a line until the next shot.
+    private(set) var settledRuling: Ruling?
+
+    /// How a ruling is shown (bug plan item 15).
+    enum RulingShow: Equatable { case banner, card }
+    /// How long a routine ruling shows before it settles, seconds of the balls at rest at the table. The line stays
+    /// in the turn banner afterwards, so the beat only has to register the moment (a glance at a short header), not
+    /// to give time to read every word; any longer and a player who has read it waits on the game.
+    static let settleBeat: Double = 1.5
 
     @ObservationIgnored unowned let model: ShowpieceModel
     /// What is on the table now between shots (saved), and what goes on it once the ruling card is dismissed.
@@ -102,6 +144,13 @@ final class MatchMode {
     /// The furthest point of the shot's recording shown so far: the clock runs only while the replay moves past it
     /// (the shot's first showing), never while the player rewinds and watches again.
     @ObservationIgnored private var shotSeenUpTo = 0.0
+    /// The current call was adopted from the suggestion (adoptSuggestedCall), not made by the player; carried to the
+    /// shot's ruling as lastCallWasSuggested.
+    @ObservationIgnored private var callIsSuggested = false
+    @ObservationIgnored private var shotCallSuggested = false
+    /// Seconds a .banner ruling has been up with the balls at rest (counted by tickClock, which only runs while the
+    /// table is live, so the menu and a replay hold it; reset by every new ruling).
+    @ObservationIgnored private var settleElapsed = 0.0
 
     /// The computer player, when one sits at this match; nil for a match between people.
     private(set) var opponent: MatchOpponent?
@@ -180,6 +229,96 @@ final class MatchMode {
     /// True when the computer plays one of the seats (no hand-over between turns: the device stays with the person).
     var hasComputer: Bool { state.players.contains(where: \.isComputer) }
 
+    // MARK: The call (item 13)
+
+    /// What the cue is pointed at now, as a call: the first ball on the aim line, if the rules let the shooter call
+    /// it, into the pocket nearest the line that ball would leave along (the same right-angle guide the aim line
+    /// draws, AimGeometry.firstContact). Nil when no call is due, or the first ball on the line may not be called, or
+    /// the line hits nothing. Shared by the call card (it pre-selects this) and the model (a stroke made with no call
+    /// is played on this one). EightBallRules.suggestedCall is not used: it falls back to some other callable ball
+    /// when the line misses, which would hold a player to a call they never pointed at.
+    var suggestedCall: EightBallCall? {
+        guard mustCall, phase == .aiming, model.layout.count == 16, NextShot.isOnTable(model.aimOrigin) else { return nil }
+        let table = model.timeline.table
+        guard let hit = AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin,
+                                                 direction: model.aimDirection, radius: table.ballRadius),
+              rules.mayCall(hit.ball, in: state),
+              let k = Self.nearestPocket(from: hit.target, along: hit.objectDirection, pockets: table.pockets),
+              let named = EightBallPocket(rawValue: k) else { return nil }
+        return .ball(hit.ball, pocket: named)
+    }
+
+    /// The pocket whose centre lies closest to the line a ball leaves along, counting only edge pockets ahead of it.
+    /// Nil when no pocket is ahead (the ball is heading straight for a cushion with no pocket on that side).
+    static func nearestPocket(from start: Vec2, along direction: Vec2, pockets: [Vec2]) -> Int? {
+        var best: (k: Int, miss: Double)?
+        for (k, p) in pockets.prefix(EightBallPocket.allCases.count).enumerated() {
+            let d = p - start
+            let ahead = d.dot(direction)
+            guard ahead > 0 else { continue }
+            // Sideways distance from the line to the pocket's centre.
+            let miss = max(0, d.lengthSquared - ahead * ahead).squareRoot()
+            if best == nil || miss < best!.miss { best = (k, miss) }
+        }
+        return best?.k
+    }
+
+    /// No call made: take the suggestion as the call and remember it was suggested, so the ruling card can say which
+    /// call the shot was held to. False when no call is due, one is already made, or there is no suggestion.
+    func adoptSuggestedCall() -> Bool {
+        guard mustCall, currentCall == nil, let s = suggestedCall else { return false }
+        setCall(s)
+        guard currentCall == s else { return false }
+        callIsSuggested = true
+        return true
+    }
+
+    /// Why the match would refuse a stroke now, or nil when one may be struck. .noCall only when no call is made and
+    /// there is no suggestion to play instead. The model's strokeRefusal adds its own (solving, a replay playing, a
+    /// ball lifted); this is the match's part, in the order the player would have to deal with them.
+    var refusal: ShotRefusal? {
+        if state.isOver || phase == .over { return .gameOver }
+        if phase != .aiming { return .rulingPending }
+        if !personMayAct { return .notYourTurn }
+        if state.pendingChoice != nil { return .choicePending }
+        if mustCall && currentCall == nil && suggestedCall == nil { return .noCall }
+        return nil
+    }
+
+    // MARK: The computer's next decision (item 16)
+
+    /// A decision the computer seat has to make next, and the table it will be made on.
+    struct ComputerDecision {
+        let seat: PlayerID
+        let level: ComputerLevel
+        /// The table the decision is played from: the table on screen while aiming; while a ruling card is up, the
+        /// table the card's dismissal will put on (the next setup), so thinking can start before the card goes.
+        let layout: [Vec2]
+        let racked: Bool
+        /// True while aiming: the decision is due now and may be played once the balls are at rest.
+        let dueNow: Bool
+    }
+
+    /// The computer's next decision as soon as it is known: the chooser of a pending choice, otherwise the shooter,
+    /// when that seat is the computer. Nil while a shot plays, on a hand-over, after the game, or when the decision
+    /// is a person's.
+    var upcomingComputerDecision: ComputerDecision? {
+        guard !state.isOver else { return nil }
+        let seat = state.pendingChoice?.chooser ?? state.turn
+        guard state.players.indices.contains(seat.index), let level = state.players[seat.index].computer else {
+            return nil
+        }
+        switch phase {
+        case .aiming:
+            return ComputerDecision(seat: seat, level: level, layout: model.layout, racked: model.racked, dueNow: true)
+        case .ruling:
+            let next = nextSetup ?? setup
+            return ComputerDecision(seat: seat, level: level, layout: next.layout, racked: next.racked, dueNow: false)
+        case .shooting, .handOver, .over:
+            return nil
+        }
+    }
+
     // MARK: Turn loop
 
     /// Put a new match on the table: the rack, the first breaker to aim.
@@ -200,12 +339,18 @@ final class MatchMode {
         guard phase == .aiming, personMayAct else { return }
         if let ball = call?.ball, !rules.mayCall(ball, in: state) { return }
         currentCall = call
+        // A call set here is the player's (or the computer's) own; adoptSuggestedCall marks its own afterwards.
+        callIsSuggested = false
     }
 
     /// The model has started a shot (called from ShowpieceModel's strike, before the solve).
     func shotFired() {
         shotCall = mustCall ? currentCall : nil
+        shotCallSuggested = shotCall != nil && callIsSuggested
+        callIsSuggested = false
         shotVersion = nil
+        // The settled line in the banner was about the shot before this one.
+        settledRuling = nil
         phase = .shooting
     }
 
@@ -222,12 +367,39 @@ final class MatchMode {
         if phase == .shooting, shotVersion == nil { phase = .aiming }
     }
 
-    /// Called every frame by the model. Rules on the shot once its replay has played out (or been skipped).
+    /// Called every frame by the model. Rules on the shot once its replay has played out (or been skipped), and
+    /// settles a routine ruling once it has shown for settleBeat.
     func update() {
-        // The computer thinks and plays while the match is aiming; it does nothing on a person's turn.
-        if phase == .aiming { opponent?.update(self); return }
-        guard phase == .shooting, let v = shotVersion, model.timelineVersion == v, model.aimReady else { return }
-        rule()
+        switch phase {
+        case .aiming, .ruling:
+            // The computer thinks as soon as its decision is known (during the ruling card before its turn too) and
+            // plays once the match is aiming; it does nothing on a person's turn.
+            opponent?.update(self)
+            if phase == .ruling, lastRulingShow == .banner, settleElapsed >= Self.settleBeat { acknowledgeRuling() }
+        case .shooting:
+            guard let v = shotVersion, model.timelineVersion == v, model.aimReady else { return }
+            rule()
+        case .handOver, .over:
+            break
+        }
+    }
+
+    /// A routine ruling showing in the banner: move on now instead of waiting out the beat (a tap on its line, or
+    /// the model when the player reaches for the next stroke). Does nothing for a ruling that wants the card.
+    func settleNow() {
+        guard phase == .ruling, lastRulingShow == .banner else { return }
+        acknowledgeRuling()
+    }
+
+    /// How a ruling is shown. The card, which waits for a tap: any foul; a peg down in bar billiards (a lost break or a
+    /// lost score is a penalty like a foul, even though the rules do not file it as one); a choice to make; the end
+    /// of the game; and a turn passing between two people on one device (the device changes hands). Everything else
+    /// is routine and settles into the banner: keep shooting, and every ordinary turn change against the computer.
+    static func rulingShow(for r: Ruling, after: MatchState, hasComputer: Bool) -> RulingShow {
+        if r.fouled || r.result != nil || after.isOver || after.pendingChoice != nil { return .card }
+        if r.reasons.contains(.whitePegDown) || r.reasons.contains(.blackPegDown) { return .card }
+        if r.turnPasses && !hasComputer && after.players.count > 1 { return .card }
+        return .banner
     }
 
     /// Read the recording, ask the rules, apply the ruling, work out the next table and save.
@@ -245,6 +417,19 @@ final class MatchMode {
         nextSetup = setupAfter(ruling, facts: facts, before: before, after: after)
         lastPoints = TablePoints.lines(for: facts, ruling: ruling, before: before, after: after, rules: rules)
         lastShotBall = struck
+        // What the recording showed, kept with the ruling: the object balls that dropped (only balls that started
+        // this shot on the table; one pocketed earlier sits at the parking spot from the start and is not named
+        // again) and the first ball the striking ball touched (so a wrong-ball foul names it).
+        let tl = model.timeline
+        lastPocketed = (0..<tl.ballCount).filter {
+            $0 != struck && tl.pocketTime[$0] != nil && NextShot.isOnTable(tl.state(ball: $0, at: 0).position)
+        }
+        lastFirstBall = Self.firstBall(hitBy: struck, in: tl)
+        lastShotCall = shotCall
+        lastCallWasSuggested = shotCallSuggested
+        lastRulingShow = Self.rulingShow(for: ruling, after: after, hasComputer: hasComputer)
+        settleElapsed = 0
+        settledRuling = nil
         state = after
         clockExact = after.clockRemaining
         lastRuling = ruling
@@ -271,10 +456,25 @@ final class MatchMode {
         if let m = moment(for: r) { SoundBoard.play(m) }
     }
 
+    /// The first ball a given striking ball touched in a recording, or nil when it touched none.
+    static func firstBall(hitBy cueBall: Int, in tl: Timeline) -> Int? {
+        for e in tl.events where e.kind == .ballBall {
+            let ids = e.balls.map(\.ball)
+            if ids.contains(cueBall) { return ids.first { $0 != cueBall } }
+        }
+        return nil
+    }
+
     /// Called every frame the table is live (ShowpieceModel.advance; it stops before this while the menu is open)
     /// with the real seconds since the last frame. Runs the game clock by MatchClock's rule; games without a clock
     /// ignore it.
     func tickClock(realSeconds: Double) {
+        // A routine ruling's beat counts here, in live table seconds, for every game (the clock below is bar
+        // billiards' only). It only runs while the balls are at rest: a replay started from the card (the Lens on a
+        // break) holds it, and it starts over once the replay has played out.
+        if phase == .ruling, lastRulingShow == .banner {
+            settleElapsed = model.aimReady ? settleElapsed + MatchClock.seconds(forFrame: realSeconds) : 0
+        }
         guard let shown = state.clockRemaining else { return }
         // The shot's first showing is the replay moving past anything already seen of this shot.
         let newGround = phase == .shooting && model.time > shotSeenUpTo
@@ -299,6 +499,8 @@ final class MatchMode {
     func acknowledgeRuling() {
         switch phase {
         case .ruling:
+            // A routine ruling stays as a line in the turn banner until the next shot; a card's ruling does not.
+            settledRuling = lastRulingShow == .banner ? lastRuling : nil
             if let s = nextSetup { show(s) }
             nextSetup = nil
             if state.isOver { phase = .over; return }
@@ -326,6 +528,8 @@ final class MatchMode {
         let before = state
         let ruling = rules.ruling(answering: answer, in: before)
         let after = rules.applying(ruling, facts: nil, to: before)
+        // The answer is the latest word on the table; the banner no longer carries the shot's settled line.
+        settledRuling = nil
         let s: MatchTableSetup
         if ruling.rerack {
             s = model.matchSetup(for: rules.rack, seed: Self.freshSeed())
@@ -363,6 +567,14 @@ final class MatchMode {
         lastRuling = nil
         lastShotBall = nil
         lastPoints = []
+        lastPocketed = []
+        lastFirstBall = nil
+        lastShotCall = nil
+        lastCallWasSuggested = false
+        lastRulingShow = .card
+        settledRuling = nil
+        settleElapsed = 0
+        callIsSuggested = false
         bestOutcome = nil
         clockExact = nil
         currentCall = nil
@@ -383,6 +595,7 @@ final class MatchMode {
     private func beginTurn() {
         phase = .aiming
         currentCall = nil
+        callIsSuggested = false
         model.beginMatchTurn()
     }
 
@@ -485,6 +698,16 @@ final class MatchMode {
     }
 
     static var saveExists: Bool { saveURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false }
+
+    /// The saved game named for the menu's Continue row: which game, the computer's level when it plays, the
+    /// players' names and whose shot it is. Nil when there is no saved game that can be continued.
+    static func savedSummary() -> SavedMatchSummary? {
+        guard let saved = loadSaved() else { return nil }
+        let s = saved.state
+        let names = s.players.map(\.name)
+        return SavedMatchSummary(kind: s.kind, opponent: s.players.compactMap(\.computer).first, playerNames: names,
+                                 turnName: MatchWords.name(s.turn, in: names))
+    }
 
     /// The saved match, or nil when there is none, it cannot be read, or it was written in another format.
     static func loadSaved() -> SavedMatch? {
