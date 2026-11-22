@@ -3,7 +3,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-pacing: the bodies filled in, and the shared event
 //          finders (ShotMoments) that TrickSignature reads too.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (0.7.4 lens-pacing review: the throw rule's note was attached to
-//          drawDistance's doc comment; it now sits on throwDegrees, and the thresholds' group note is a plain comment.)
+//          drawDistance's doc comment; it now sits on throwDegrees, and the thresholds' group note is a plain comment.
+//          The per-drop rules stop at the first drop whose moment is kept, so an uncaptioned one cannot hide a later.)
 // PURPOSE: Reads a recorded shot and says which remarkable moments it had (plans/22-Nov-2026-v074-glow-up-plan.md,
 //          F3 and stream lens-pacing): a jump, a curve, a thrown pot, a combination, a kick, a bank, two at once, a
 //          big draw, a dead stop, a ball too fast for the pocket, a bumper into the cup, the red pin alone, or a break.
@@ -302,10 +303,14 @@ enum ShotHighlightJudge {
         }
 
         var found: [ShotHighlight] = []
-        func add(_ kind: HighlightKind, _ candidates: [Int?], ball: Int) {
+        // True when the moment was kept. The per-drop loops below stop at the first drop that is KEPT, not the first
+        // that matches: a drop whose moment has no caption must not hide the same kind on a later drop.
+        @discardableResult
+        func add(_ kind: HighlightKind, _ candidates: [Int?], ball: Int) -> Bool {
             let s = m.signature(candidates)
-            guard !s.isEmpty else { return }
+            guard !s.isEmpty else { return false }
             found.append(ShotHighlight(kind: kind, signatureEvents: s, ball: ball))
+            return true
         }
         let firstTime = first.map { events[$0].time } ?? .infinity
         let objectDrops = facts.objectBallsPocketed
@@ -329,8 +334,7 @@ enum ShotHighlightJudge {
                   let t = CaptionEngine.throwFacts(events[c]), t.object == drop.ball,
                   abs(t.degrees) >= throwDegrees, m.railAfterLastContact(of: drop.ball) == nil,
                   m.wouldMiss(ball: drop.ball, from: c, along: t.lineOfCentres, pocket: drop.pocket) else { continue }
-            add(.throwIn, [c], ball: drop.ball)
-            break
+            if add(.throwIn, [c], ball: drop.ball) { break }
         }
 
         // Combination: a ball that dropped was last struck by another object ball (not by the struck ball). The
@@ -341,8 +345,7 @@ enum ShotHighlightJudge {
                   let mine = events[c].balls.first(where: { $0.ball == drop.ball }),
                   let theirs = events[c].balls.first(where: { $0.ball == hitter }),
                   mine.velocityBefore.length < theirs.velocityBefore.length else { continue }
-            add(.combination, [first, c], ball: drop.ball)
-            break
+            if add(.combination, [first, c], ball: drop.ball) { break }
         }
 
         // Kick: the struck ball went to the cushions before it found a ball: two rails, or one that still made
@@ -357,16 +360,14 @@ enum ShotHighlightJudge {
         // Bank: a ball that dropped met a rail after its last contact; hold that cushion.
         for drop in objectDrops {
             guard let r = m.railAfterLastContact(of: drop.ball) else { continue }
-            add(.bank, [r], ball: drop.ball)
-            break
+            if add(.bank, [r], ball: drop.ball) { break }
         }
 
         // Bumper pool: a ball that went into a cup off a post; hold its last post hit and the drop.
         if table == .bumperPool {
             for hd in facts.holeDrops {
                 guard let post = m.postHits(of: hd.ball, atOrBefore: hd.time).last else { continue }
-                add(.bumperCup, [post, m.pocket(of: hd.ball)], ball: hd.ball)
-                break
+                if add(.bumperCup, [post, m.pocket(of: hd.ball)], ball: hd.ball) { break }
             }
         }
 
