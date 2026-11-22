@@ -10,6 +10,8 @@ All notable changes to this project are listed here, newest first. Versions foll
 
 ## [Unreleased]
 
+- The aiming view shows a bridge hand where the cue can be supported by the cloth or rail. The three Blender poses guide the visual cue along its existing strike line. — GPT 6.2 Sol
+
 - Trick Shots includes Draw-Massé Carom. Strike the 4, then bring the cue ball back around to touch the 9. The lesson uses an original layout, and the solver passes it with elevation, draw and side spin. — GPT 6.2 Sol
 
 - Players can now hit an ordinary shot at up to 13 m/s and a rack break at up to 16 m/s. Try the same layout at two powers to see how the cue ball finishes. The puzzle judge uses the full selectable speed range. — GPT 6.2 Astra High

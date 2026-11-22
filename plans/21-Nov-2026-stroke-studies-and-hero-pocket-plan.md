@@ -22,7 +22,7 @@ The current Massé challenge teaches curved travel around a blocker. The branch 
 
 ## Hand bridge studies
 
-The three hand renders had unnatural finger shapes and contact with the shaft. Keep the editable meshes in [art studies](../art/studies) and exclude them from the final build. The equipment work can move forward with the existing cue controls.
+The revised Blender hands use the original light skin tone, with baked colour and normal maps. The [editable scenes](../art/studies) and three [USDZ exports](../App/Models) travel with the equipment branch. During aiming, the game chooses a hand pose where the planned shaft and table support line up. Check the open and closed poses during ordinary aiming, the rail pose beside a long rail, and the mechanical rest on its own. Verify that the hand stays planted when power changes. The shot solver receives the existing settings.
 
 ## Fit the work into the final build
 

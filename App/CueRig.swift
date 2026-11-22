@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: GPT 6.2 Sol, 21-November-2026 (player bridge hands in the aiming view).
 // PURPOSE: The 3D cue and the mechanical bridge on the table, replacing the flat ones AimOverlay used to draw. Owns one
 //          root entity (a child of the warm table group, so it fades out with the table as the Physics Lens melts in)
 //          holding the cue and the bridge, loaded from the app bundle as Cue.usdz and Bridge.usdz. The models carry
@@ -74,6 +75,7 @@ final class CueRig {
     let root = Entity()
     private let cueHolder = Entity()
     private let bridgeHolder = Entity()
+    private let handBridge = HandBridgeRig()
     /// The scene root that carries the lamp reflection (ImageBasedLightComponent); the loaded parts point at it.
     private weak var lightSource: Entity?
 
@@ -82,6 +84,7 @@ final class CueRig {
         root.name = "CueRig"
         root.addChild(cueHolder)
         root.addChild(bridgeHolder)
+        root.addChild(handBridge.root)
         root.isEnabled = false
         // Load in the background of the main actor; the table shows at once and the cue appears when it is ready.
         Task { [weak self] in await self?.loadModels() }
@@ -98,6 +101,7 @@ final class CueRig {
             Self.dress(bridge, Self.bridgeMaterials())
             bridgeHolder.addChild(bridge)
         } catch { NSLog("CueRig: the bridge model did not load: %@", String(describing: error)) }
+        await handBridge.loadModels()
         // TableBuilder.installEnvironment walks the tree once; parts that arrive after it would miss the reflection.
         if let light = lightSource { Self.receiveLight(root, from: light) }
     }
@@ -115,7 +119,8 @@ final class CueRig {
             let reach = aim.usesBridge ? Self.bridgePullReach : Self.pullReach
             let gap = R * 1.7 + Float(min(max(aim.powerFraction, 0), 1)) * reach
             place(ball: aim.from, direction: aim.direction, tipUp: Float(aim.tipUp), tipSide: Float(aim.tipSide),
-                  elevation: Float(aim.elevation), bridge: aim.usesBridge, tipDistance: gap, frame: frame)
+                  elevation: Float(aim.elevation), bridge: aim.usesBridge, tipDistance: gap, frame: frame,
+                  handTimeline: timeline, handTime: t, firmStroke: aim.powerFraction >= 0.72)
             show(opacity: 1)
             return
         }
@@ -152,7 +157,8 @@ final class CueRig {
     /// Put the cue (and the bridge, when used) in place for a ball at `ball` (table plan), struck along `direction`.
     /// - tipDistance: how far behind the contact offset point the tip sits, along the cue's axis (negative is past it).
     private func place(ball: Vec2, direction: Vec2, tipUp: Float, tipSide: Float, elevation: Float, bridge: Bool,
-                       tipDistance: Float, frame: TableFrame) {
+                       tipDistance: Float, frame: TableFrame, handTimeline: Timeline? = nil,
+                       handTime: Double = 0, firmStroke: Bool = false) {
         let R = frame.ballRadius
         let worldUp = SIMD3<Float>(0, 1, 0)
         let centre = frame.world(ball, height: R)
@@ -176,7 +182,17 @@ final class CueRig {
         let cueUp = along * sin(pitch) + worldUp * cos(pitch)
         let contact = centre + right * tipSide + cueUp * tipUp
 
-        cueHolder.position = contact + back * tipDistance
+        var drawDistance = tipDistance
+        if !bridge, let handTimeline, let support = handBridge.place(
+            contact: contact, back: back, frame: frame, orientation: Self.facing(-along),
+            firmStroke: firmStroke, timeline: handTimeline, at: handTime
+        ) {
+            // A long pull still changes shot power. The visual tip stays ahead of the planted bridge.
+            drawDistance = min(tipDistance, support - 0.022)
+        } else {
+            handBridge.hide()
+        }
+        cueHolder.position = contact + back * drawDistance
         cueHolder.orientation = Self.facing(back)
 
         bridgeHolder.isEnabled = bridge
