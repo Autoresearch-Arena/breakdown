@@ -1,5 +1,8 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the "Next: Lesson ..." row is gone and Play, or Continue, is
+//          the highlighted entry and sits above Learn; the intro line no longer says to learn first; the lessons are
+//          offered, never pushed.)
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (now the main menu: Play or New game, Continue, Watch the break, How to
 //          play and Options, reachable again at any time from the back button on the table; the instructions moved
@@ -131,7 +134,7 @@ struct TitleScreen: View {
 
     /// The menu's own one line about the game: the same idea the store page leads with (item 39).
     private static var intro: String {
-        String(localized: "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.")
+        String(localized: "A pool table that shows its own physics. Play eight-ball or nine-ball against a friend or the computer, and see why every shot went where it did.")
     }
 
     /// How strongly the table is dimmed behind the menu. Lighter while the opening's slow Lens replay plays behind it on
@@ -222,10 +225,8 @@ struct TitleScreen: View {
     /// The next step from stored progress gets the highlight (items 3 and 52). A player with no lesson passed always
     /// sees Learn's first lesson highlighted, even when Continue is offered (item 3); once a lesson is passed, a game
     /// left on the table keeps Continue highlighted, since the player came to the menu from it.
-    private var nextHighlighted: Bool {
-        guard model.nextStep != nil else { return false }
-        return model.lessonMode.passedCount == 0 || !model.gameInProgress
-    }
+    /// 0.7.1: nothing steers the player into the lessons. Learn is an ordinary entry; Play (or Continue) leads.
+    private var nextHighlighted: Bool { false }
 
     /// Continue is highlighted when something is there to go back to and the next step is not.
     private var continueHighlighted: Bool { resumable && !nextHighlighted }
@@ -244,17 +245,11 @@ struct TitleScreen: View {
                 }
                 .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
-            // The next step, named ("Next: Lesson 2, Follow"), straight into it.
-            if let next = model.nextStep {
-                MenuRow(verbatimTitle: next.sentence, verbatimLine: nextLine, symbol: "arrow.forward.circle.fill",
-                        prominent: nextHighlighted) { beginNextStep() }
-                    .keyboardShortcut(nextHighlighted ? KeyboardShortcut.defaultAction : nil)
-            }
-            MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
-                    symbol: "graduationcap", mark: lessonMark) { model.lessonMode.listOpen = true }
             MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
                     symbol: "circle.grid.cross", prominent: playHighlighted) { playListOpen = true }
                 .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
+            MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
+                    symbol: "graduationcap", mark: lessonMark) { model.lessonMode.listOpen = true }
             MenuRow(title: "Trick shots", line: "Shots that make people stare, easiest first.", symbol: "wand.and.sparkles",
                     mark: trickMark) { model.trickMode.listOpen = true }
             MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
@@ -277,7 +272,7 @@ struct TitleScreen: View {
     }
 
     /// Play is highlighted only when there is nothing to go back to and no next step left (the whole path is done).
-    private var playHighlighted: Bool { !resumable && model.nextStep == nil }
+    private var playHighlighted: Bool { !resumable }
 
     /// The live game's line: a match names itself (which game, against whom, whose shot); anything else is the table as
     /// it was left.
@@ -303,32 +298,6 @@ struct TitleScreen: View {
         return String(localized: "\(game) on your own. \(s.turnName) to shoot.")
     }
 
-    /// The short line under the next step's name. (The step's type is read from the model by inference rather than
-    /// named here, so this file does not depend on where the model declares it.)
-    private var nextLine: String {
-        guard let next = model.nextStep else { return "" }
-        switch next {
-        case .lesson: return String(localized: "A short lesson: watch the shot, then play it yourself.")
-        case .trickShot: return String(localized: "The trick shot built on the lesson you passed.")
-        case .gameAgainstEasyComputer: return String(localized: "Eight-ball against the easy computer. Ask it why it played each shot.")
-        }
-    }
-
-    /// Straight into the next step: the lesson, its trick shot, or a game against the easy computer.
-    private func beginNextStep() {
-        guard let next = model.nextStep else { return }
-        switch next {
-        case .lesson(let number, _):
-            if let lesson = Lessons.all.first(where: { $0.number == number }) { model.lessonMode.begin(lesson) }
-            else { model.lessonMode.listOpen = true }
-        case .trickShot(let title):
-            // The model names the trick shot by its title (NextStep carries no id); the list is the fallback.
-            if let shot = TrickShots.all.first(where: { $0.title == title }) { model.trickMode.begin(shot) }
-            else { model.trickMode.listOpen = true }
-        case .gameAgainstEasyComputer:
-            start(MatchStartRequest(kind: .eightBall, computer: .easy))
-        }
-    }
 
     /// Lessons passed out of the six.
     private var lessonMark: MenuRow.Mark {

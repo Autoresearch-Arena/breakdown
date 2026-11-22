@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.1] - 21-November-2026
+
+Author: Claude Opus 5.5 High
+
+- What: A calm first minute. A new player lands straight on the pool table with the cue in hand and one line saying how to shoot; no intro plays first. Your own break plays at normal speed and you carry on shooting, with no slow-motion Lens replay or lessons card in between. Later launches open on the menu over a still table, with Play first and highlighted. The game always starts on the pool table. The close-up of the lamp is gone.
+- Why: The Boss's first look at 0.7.0 found the opening far too fast and too busy, the lessons pushed at him, and a first table with no pockets. That table was the last one chosen (five-pin or bar billiards, which have none), opened at launch. None of this had been played before 0.7.0 shipped.
+- How: ShowpieceModel starts every launch on the pool table, sends a first launch straight to the hand-over on a fresh rack, ends the opening after the first break by reopening Your shot, plays every break the player strikes at real speed in the ordinary view (as matches already did), and no longer starts the looping replay behind the menu. TitleScreen drops the "Next: Lesson" row, puts Play above Learn and highlights it, and its intro line now leads with playing. TableStage switches off the lamp shot. OpeningHandover's line is just how to shoot. Watch the intro still plays the full slowed-down opening under the Lens.
+- Checked: on the iPhone 17 Pro Max simulator, from a fresh install with five-pin saved as the last table: the first screen is the racked pool table with its pockets and the instruction; the break plays at normal speed and the next shot is ready; a relaunch opens on the menu with Play highlighted. The iPhone and Mac builds and the app tests pass.
+
 ## [0.7.0] - 21-November-2026
 
 Author: Claude Opus 5.5 High (coordinator), with thirteen builders and two gap closers at Claude Opus 5.5 High.

@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1, the Boss's first look at 0.7.0: every launch starts on the pool
+//          table; the first launch goes straight to the table with the cue in hand, no opening replay; the first break
+//          is followed by more play, not a lessons card; later launches open on the menu over a still table, without
+//          the looping backdrop replay; a player's own break plays at real speed, no automatic slow Lens replay.)
 // Edited: GPT 6.2 Astra High, 21-November-2026, shared higher player launch-speed limits.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke-model hook, 0.7.0 items 3 and 5: strokeZones uses
 //          StrokeModel.strikeZones, the delivery's own rule, and both pass isBreak: racked, so a break gets its own
@@ -478,7 +482,9 @@ final class ShowpieceModel {
     init() {
         // Not through solve(_:): self is not fully initialised yet. Same steps: the stored table, then the stored
         // surface, applied to a copy. The default generation: the opening is authored on it.
-        let startTable = TableKind.stored
+        // Every launch starts on the pool table (0.7.1): the other tables have no pockets, and opening on the last one
+        // chosen read as a pocketless, broken pool table. The choice is kept and the Tables list still offers it.
+        let startTable = TableKind.standard
         let input = startTable.openingShot
         let startSurface = PlaySurface.stored      // read once: the solve and the captions must agree
         var onSurface = input
@@ -505,7 +511,6 @@ final class ShowpieceModel {
         startRideDemoIfAsked()
         if ProcessInfo.processInfo.arguments.contains("-jumpDemo") { playJumpDemo() }
         startOpeningIfFirstLaunch()
-        startMenuBackdropIfLaterLaunch()
         startStoreSceneIfAsked()
         runRetryCasesIfAsked()
     }
@@ -880,18 +885,13 @@ final class ShowpieceModel {
                            aim: s.aim, power: s.power, powerRange: s.range, tipUp: s.up, tipSide: s.side,
                            elevation: s.elevation, seed: s.seed, input: prepared.input, surface: prepared.surface,
                            table: prepared.table, generation: prepared.generation, stroke: s.stroke))
-        if s.isBreak, match == nil {
-            // A break outside a match (the first launch's, practice, a trick shot's rack) plays the full opening:
-            // the break, the freeze, the melt into the Lens, the rewind and the guided slow replay.
-            startColdOpen()
-            stage = .normalBreak
-        } else {
-            // A shot, and in a match every break too (plan item 14): real speed in the ordinary view, the Lens left as
-            // the player had it. The match's ruling card offers the Lens replay of a break (watchBreakInLens).
-            stage = .explore; stageTime = 0; time = 0; playing = true
-            chosenRate = 1; displayRate = 1
-            meltTarget = melt > 0.5 ? 1 : nil
-        }
+        // Every shot and every break the player strikes plays at real speed in the ordinary view, the Lens left as the
+        // player had it (plan item 14 for matches; 0.7.1 for every break: the Boss found a player's own break turning
+        // into the slow Lens replay with its long cards far too much). The Lens is one tap away; Watch the intro keeps
+        // the full slowed-down opening.
+        stage = .explore; stageTime = 0; time = 0; playing = true
+        chosenRate = 1; displayRate = 1
+        meltTarget = melt > 0.5 ? 1 : nil
         if let m = match {
             m.shotLoaded(version: timelineVersion, start: prepared.input.positions)
             // See the ruling was pressed while this shot was being solved: the ruling comes at once.
@@ -1860,10 +1860,10 @@ final class ShowpieceModel {
               !args.contains("-retryCases") else { return }
         menuOpen = false
         gameInProgress = true
-        openingStage = .playing
-        // The first launch holds only the opening's few headline beats (plan item 6).
-        refreshPacePlan()
-        startColdOpen()
+        // 0.7.1: the first launch puts the player at the table straight away (a fresh rack, the cue in hand, one line
+        // saying how to shoot) instead of playing the slow Lens opening first. The Boss found the opening too fast and
+        // too busy as a first minute; it stays one tap away as Watch the intro.
+        beginHandOver()
     }
 
     /// Skip ahead: from the opening break to the hand-over; from the hand-over, the first break or its card to the menu.
@@ -1918,9 +1918,10 @@ final class ShowpieceModel {
         case .playing where stage == .explore:
             beginHandOver()
         case .firstBreak where stage == .explore && !isSolving && currentAttempt != nil && time >= duration - 1e-6:
-            // The player's first break has played out: its short card comes up (plan item 3), and the menu only
-            // after it (Learn the shots, or Keep playing).
+            // The player's first break has played out: they keep playing from where it left the balls (0.7.1: no card
+            // steering them into the lessons; the menu offers them).
             openingStage = .firstBreakCard
+            keepPlayingAfterFirstBreak()
         default:
             break
         }

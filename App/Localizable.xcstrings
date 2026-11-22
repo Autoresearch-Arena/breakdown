@@ -11061,72 +11061,72 @@
         }
       }
     },
-    "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.": {
+    "A pool table that shows its own physics. Play eight-ball or nine-ball against a friend or the computer, and see why every shot went where it did.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "طاولة بلياردو تُظهر فيزياءها بنفسها. تعلّم الضربات في ست دروس، ثم العب البلياردو بالكرة 8 أو 9 ضد صديق أو ضد الحاسوب."
+            "value": "طاولة بلياردو تُظهر فيزياءها بنفسها. العب الكرة الثامنة أو التاسعة ضد صديق أو ضد الكمبيوتر، وشاهد لماذا ذهبت كل ضربة إلى حيث ذهبت."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein Billardtisch, der seine eigene Physik zeigt. Lerne die Stöße in sechs Lektionen und spiel dann 8-Ball oder 9-Ball gegen Freunde oder den Computer."
+            "value": "Ein Billardtisch, der seine eigene Physik zeigt. Spiel 8-Ball oder 9-Ball gegen einen Freund oder den Computer und sieh, warum jeder Stoß dorthin ging, wo er hinging."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una mesa de billar que muestra su propia física. Aprende los tiros en seis lecciones y luego juega a la bola 8 o a la bola 9 contra un amigo o el ordenador."
+            "value": "Una mesa de billar que muestra su propia física. Juega a la bola ocho o a la bola nueve contra un amigo o contra la máquina, y mira por qué cada tiro fue a donde fue."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une table de billard qui montre sa propre physique. Apprends les coups en six leçons, puis joue au 8 ou au 9 contre un ami ou l'ordinateur."
+            "value": "Une table de billard qui montre sa propre physique. Joue au huit ou au neuf contre un ami ou contre l'ordinateur, et vois pourquoi chaque coup est allé là où il est allé."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un tavolo da biliardo che mostra la sua fisica. Impara i colpi in sei lezioni, poi gioca a palla 8 o palla 9 contro un amico o il computer."
+            "value": "Un tavolo da biliardo che mostra la propria fisica. Gioca a palla 8 o palla 9 contro un amico o il computer, e scopri perché ogni colpo è andato dove è andato."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "自らの物理を見せてくれるビリヤード台。6つのレッスンでショットを学び、友だちやコンピュータとエイトボールやナインボールで対戦しましょう。"
+            "value": "自分の物理を見せてくれるビリヤード台。友だちやコンピューターとエイトボールやナインボールで遊び、どのショットもなぜそこへ行ったのかを見てみよう。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "스스로 물리를 보여 주는 당구대. 여섯 개의 레슨으로 샷을 배우고, 친구나 컴퓨터와 에이트볼이나 나인볼을 겨뤄 보세요."
+            "value": "자기 물리를 보여 주는 당구대. 친구나 컴퓨터와 에이트볼이나 나인볼을 치고, 샷마다 왜 그쪽으로 갔는지 확인해 보세요."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uma mesa de bilhar que mostra a sua própria física. Aprende as tacadas em seis lições e depois joga bola 8 ou bola 9 contra um amigo ou o computador."
+            "value": "Uma mesa de snooker que mostra a sua própria física. Joga bola 8 ou bola 9 contra um amigo ou o computador, e vê porque cada tacada foi para onde foi."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uma mesa de sinuca que mostra a própria física. Aprenda as tacadas em seis lições e depois jogue bola 8 ou bola 9 contra um amigo ou o computador."
+            "value": "Uma mesa de sinuca que mostra a própria física. Jogue bola 8 ou bola 9 contra um amigo ou o computador, e veja por que cada tacada foi para onde foi."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бильярдный стол, который показывает свою физику. Освой удары за шесть уроков, а потом сыграй в восьмёрку или девятку с другом или компьютером."
+            "value": "Бильярдный стол, который показывает свою физику. Играй в восьмёрку или девятку с другом или с компьютером и смотри, почему каждый удар пошёл именно туда."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "一张会展示自身物理的球桌。用六节课学会击球，再和朋友或电脑打八球或九球。"
+            "value": "一张会展示自身物理的台球桌。和朋友或电脑打八球或九球，看看每一杆为什么会走到那里。"
           }
         }
       }

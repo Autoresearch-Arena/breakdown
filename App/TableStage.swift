@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the opening's lamp shot is switched off; it looked broken.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: the aim preview and 3D cue start from the striker).
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no caption slot any more: captions float over the table's top edge
@@ -233,9 +234,9 @@ struct TableStage: View {
     /// True while the showpiece opening is at its start: the first launch's opening or Watch the intro (no shot of the
     /// player's on screen), in its lead-in or its break, with the menu closed. A player's own break goes through the
     /// same stages but carries its attempt, so it never gets the lamp shot.
-    static func showpieceStarting(_ model: ShowpieceModel) -> Bool {
-        !model.menuOpen && model.currentAttempt == nil && (model.stage == .lead || model.stage == .normalBreak)
-    }
+    /// 0.7.1: the lamp shot is off. On screen it was a flat shade filling the view over a dark void, so the intro opens
+    /// on the table again.
+    static func showpieceStarting(_ model: ShowpieceModel) -> Bool { false }
 
     /// The bridge mark for the cue now shown at the aim: the bridge hand's spot, model.strokeBridgeLength behind the
     /// cue ball along the cue, while the cue may show and the mechanical rest is not standing there itself.

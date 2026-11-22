@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the hand-over is now the first thing a new player sees, so its
+//          line is just how to shoot, without "Your turn".)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 1, 3 and 6:
 //          FirstInstruction, one instruction per input that matches what the code does, used by the hand-over card,
 //          the shot panel's hint, How to play and the spoken first line; the hand-over draws the stroke's groove
@@ -200,7 +202,7 @@ struct OpeningCard: View {
                     .font(.title2)
                     .foregroundStyle(palette.accent)
                     .accessibilityHidden(true)
-                Text(String(localized: "Your turn. \(FirstInstruction.line(for: model.inputInUse))"))
+                Text(FirstInstruction.line(for: model.inputInUse))
                     .font(Theme.heading)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
