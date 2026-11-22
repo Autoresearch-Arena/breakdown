@@ -9,6 +9,9 @@
 //          lesson is up, because the lesson card is then the one result card and carries the sentence itself.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the struck ball's ghost line takes the sliding magenta from the palette; one
 //          comment updated.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: the path, rest-ring and label drawing moved
+//          into TablePathStroke at the end of this file, unchanged in look, so the trick-shot layer draws the answer's
+//          path with the same code.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
@@ -56,24 +59,12 @@ struct GhostOverlay: View {
         else { return }
         let paper = palette.paper
         let radius = model.timeline.table.ballRadius
-        // Lying on the cloth (height 0) rather than at ball height reads better as a mark left on the table.
-        func line(_ pts: [Vec2]) -> Path? {
-            var path = Path()
-            for (i, p) in pts.enumerated() {
-                guard let s = proj.screen(p, height: 0.001) else { return nil }
-                if i == 0 { path.move(to: s) } else { path.addLine(to: s) }
-            }
-            return path
-        }
-        if let object = line(paths.object) {
-            ctx.stroke(object, with: .color(palette.slide.opacity(0.35)),
-                       style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round, dash: [2, 5]))
-        }
-        if let cue = line(paths.cue) {
-            ctx.stroke(cue, with: .color(.black.opacity(0.35)), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-            ctx.stroke(cue, with: .color(paper.opacity(0.6)),
-                       style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round, dash: [7, 5]))
-        }
+        // The two paths through the shared cloth-path drawing (TablePathStroke), with the same colours and dashes as
+        // before it was shared.
+        TablePathStroke(points: paths.object, colour: palette.slide.opacity(0.35), lineWidth: 2, dash: [2, 5])
+            .draw(in: &ctx, proj)
+        TablePathStroke(points: paths.cue, colour: paper.opacity(0.6), lineWidth: 2, dash: [7, 5], underlayWidth: 4)
+            .draw(in: &ctx, proj)
         // Where the last try's cue ball first touched a ball: a small dashed ring with a dot in it.
         if let at = contact {
             var mark = Path()
@@ -90,21 +81,66 @@ struct GhostOverlay: View {
         }
         guard let rest = paths.rest else { return }
         // The hollow ring where the ghost cue ball stopped, and its label.
+        guard let ring = TablePathStroke.ring(at: rest, radius: radius, proj) else { return }
+        ctx.stroke(ring, with: .color(paper.opacity(0.75)), style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
+        TablePathStroke.label(Text("Last try"), at: rest, colour: paper.opacity(0.85), in: &ctx, size: size, proj)
+    }
+}
+
+/// A path lying on the cloth, drawn through the live camera: the shared drawing behind the last try's ghost (above) and
+/// a trick shot's answer path (TrickTableLayer, 0.7.4). Points are table metres, sampled once by the caller; each frame
+/// only projects them, so the picture follows the camera into the Lens and never depends on the playback clock.
+@MainActor
+struct TablePathStroke {
+    var points: [Vec2]
+    var colour: Color
+    var lineWidth: CGFloat
+    var dash: [CGFloat]
+    /// A dark line this wide under the colour (nil for none), so a pale path still reads on the bright cloth.
+    var underlayWidth: CGFloat? = nil
+
+    /// Strokes the path; draws nothing when it is empty or any point is behind the camera.
+    func draw(in ctx: inout GraphicsContext, _ proj: AimProjector) {
+        guard let path = Self.line(points, proj) else { return }
+        if let w = underlayWidth {
+            ctx.stroke(path, with: .color(.black.opacity(0.35)), style: StrokeStyle(lineWidth: w, lineCap: .round, lineJoin: .round))
+        }
+        ctx.stroke(path, with: .color(colour), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round, dash: dash))
+    }
+
+    /// The points as one screen path, lying on the cloth (height 0 reads better as a mark left on the table than ball
+    /// height); nil when any point is behind the camera, or there are none.
+    static func line(_ pts: [Vec2], _ proj: AimProjector) -> Path? {
+        guard !pts.isEmpty else { return nil }
+        var path = Path()
+        for (i, p) in pts.enumerated() {
+            guard let s = proj.screen(p, height: 0.001) else { return nil }
+            if i == 0 { path.move(to: s) } else { path.addLine(to: s) }
+        }
+        return path
+    }
+
+    /// A closed ring on the cloth, one ball radius round a resting spot; nil when it is behind the camera.
+    static func ring(at centre: Vec2, radius: Double, _ proj: AimProjector) -> Path? {
         var ring = Path()
         for i in 0..<36 {
             let a = Double(i) / 36 * 2 * Double.pi
-            guard let s = proj.screen(rest + Vec2(cos(a), sin(a)) * radius, height: 0.001) else { return }
+            guard let s = proj.screen(centre + Vec2(cos(a), sin(a)) * radius, height: 0.001) else { return nil }
             if i == 0 { ring.move(to: s) } else { ring.addLine(to: s) }
         }
         ring.closeSubpath()
-        ctx.stroke(ring, with: .color(paper.opacity(0.75)), style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
-        if let at = proj.screen(rest + Vec2(0, 0), height: 0.001) {
-            let label = ctx.resolve(Text("Last try").font(.caption2.weight(.semibold)).foregroundStyle(paper.opacity(0.85)))
-            let m = label.measure(in: size)
-            let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y + 14, width: m.width + 12, height: m.height + 4)
-            ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(.black.opacity(0.55)))
-            ctx.draw(label, at: CGPoint(x: box.midX, y: box.midY))
-        }
+        return ring
+    }
+
+    /// A small dark pill with a word in it, just below a spot on the cloth (the "Last try" label's look).
+    static func label(_ text: Text, at spot: Vec2, colour: Color, in ctx: inout GraphicsContext, size: CGSize,
+                      _ proj: AimProjector) {
+        guard let at = proj.screen(spot, height: 0.001) else { return }
+        let label = ctx.resolve(text.font(.caption2.weight(.semibold)).foregroundStyle(colour))
+        let m = label.measure(in: size)
+        let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y + 14, width: m.width + 12, height: m.height + 4)
+        ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(.black.opacity(0.55)))
+        ctx.draw(label, at: CGPoint(x: box.midX, y: box.midY))
     }
 }
 

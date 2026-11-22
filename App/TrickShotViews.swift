@@ -12,15 +12,22 @@
 //          (SoundBoard.play); the card steps back while the Lens tips are up (model.holdForTips), so the tips never
 //          stack on the explanation card.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next shot's arrow follows the reading direction.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: each list row carries a small drawing of
+//          the answer's real solved path (TrickPathThumb); a made try offers Watch yours in the Lens; after the answer
+//          has been watched, the card offers Show / Hide the answer's path, which the table layer draws faintly on the
+//          cloth with the ghost's own path drawing (TablePathStroke); this header no longer counts the shots.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
-//          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
-//            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
+//          TrickShotList - the list of the trick shots, in a sheet from the menu: number (or a tick once made), title,
+//            hook and difficulty, and beside them a small drawing of the answer's real path (above the text at
+//            accessibility text sizes); a shot that waits on new physics shows as "Coming next" and cannot be opened.
 //          TrickShotCard - one compact glass card at the bottom edge, above the controls (or at the top of the side
 //            column on iPad, Mac and landscape): the hook and Watch it / Your turn; the one idea while the answer
 //            replays in the Lens, with the maths behind a button; Made it or Missed with one line on what to change,
-//            Try again and Next shot. One or two lines of text and one row of buttons.
+//            Try again and Next shot, Watch yours in the Lens after a make, and Show the answer's path once the answer
+//            has been watched. One or two lines of text and one row of buttons.
 //          TrickTableLayer - laid over the 3D table, never taking touches: rings on the balls the shot names and on the
-//            pockets they must drop in, and a short glow around the screen when a shot is made. It also hosts the list
+//            pockets they must drop in, the answer's cue-ball path when the player asks for it (white, dashed, faint,
+//            labelled), and a short glow around the screen when a shot is made. It also hosts the list
 //            sheet, handles the launch flags (-trickList, -trick <id>, -trickPlay <id>), forwards the model's playback
 //            changes to TrickShotMode.update(), and opens or closes the shot panel when the mode asks.
 //          Standard controls throughout (Liquid Glass buttons, a List, SF Symbols), Dynamic Type (button rows fall back
@@ -37,6 +44,9 @@ import SwiftUI
 struct TrickShotList: View {
     let mode: TrickShotMode
     @Environment(\.palette) private var palette
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// The answers' drawings, solved once per run when this list first appears.
+    private var paths: TrickPathCache { TrickPathCache.shared }
 
     var body: some View {
         NavigationStack {
@@ -53,6 +63,8 @@ struct TrickShotList: View {
                     Text("Watch each shot, see the physics behind it in the Lens, then make it yourself.")
                 }
             }
+            // The drawings are solved when the list is first opened, never at launch (TrickPathCache).
+            .onAppear { paths.start() }
             .navigationTitle("Trick shots")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -67,7 +79,42 @@ struct TrickShotList: View {
         #endif
     }
 
+    /// The row: the text, and the answer's drawing beside it (above it, full width, at accessibility text sizes, where
+    /// the text needs the whole width). A shot whose drawing failed shows the text alone, as before 0.7.4.
+    @ViewBuilder
     private func row(_ shot: TrickShot) -> some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                thumb(shot, fullWidth: true)
+                rowText(shot)
+            }
+        } else {
+            HStack(alignment: .center, spacing: 12) {
+                rowText(shot)
+                thumb(shot, fullWidth: false)
+            }
+        }
+    }
+
+    /// The answer's drawing (TrickPathThumb), or the room for it while it is being solved, or nothing when it failed.
+    @ViewBuilder
+    private func thumb(_ shot: TrickShot, fullWidth: Bool) -> some View {
+        if let path = paths.paths[shot.id] {
+            if fullWidth {
+                TrickPathThumb(path: path).frame(maxWidth: .infinity)
+            } else {
+                TrickPathThumb(path: path).frame(width: 96, height: 48)
+            }
+        } else if !shot.pending, paths.isPending(shot.id) {
+            Color.clear
+                .aspectRatio(2, contentMode: .fit)
+                .frame(width: fullWidth ? nil : 96, height: fullWidth ? nil : 48)
+                .frame(maxWidth: fullWidth ? .infinity : nil)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private func rowText(_ shot: TrickShot) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 14) {
             ZStack {
                 if mode.isDone(shot) {
@@ -176,6 +223,7 @@ struct TrickShotCard: View {
             line(shot.usesBridge ? String(localized: "\(shot.goalLine) The ball is out of reach, so the bridge holds the cue.")
                                  : shot.goalLine)
             buttons {
+                answerPathButton
                 watchButton(prominent: false)
                 listButton
             }
@@ -194,7 +242,15 @@ struct TrickShotCard: View {
             buttons {
                 // Back to the moment of contact, with the last try's trail beside it (shown when a ball was touched).
                 ContactButton(model: model)
+                // The answer's path beside this try, once the answer has been watched (0.7.4).
+                answerPathButton
                 if verdict.made {
+                    // The player's own make, slowly in the Lens, holding the moments the shot is about (0.7.4).
+                    styled(Button { mode.watchYours() } label: {
+                        Label("Watch yours in the Lens", systemImage: "eye").font(.headline).lineLimit(1)
+                            .frame(minHeight: Self.buttonHeight)
+                    }, prominent: false)
+                    .accessibilityHint("Replays your stroke slowly in the Lens, stopping on the moments that made it")
                     tryAgainButton(prominent: false)
                     Button { mode.next() } label: {
                         Label("Next shot", systemImage: "arrow.forward").font(.headline).lineLimit(1)
@@ -275,6 +331,26 @@ struct TrickShotCard: View {
         .accessibilityHint("Puts the balls back where the shot started, with your last aim, power and spin")
     }
 
+    /// Show / Hide the answer's path: an icon button, offered once the answer has been watched, while the player lines
+    /// up or reads the verdict (TrickShotMode.offersAnswerPath). The path itself is drawn by TrickTableLayer.
+    @ViewBuilder
+    private var answerPathButton: some View {
+        if mode.offersAnswerPath {
+            let shown = mode.showAnswerPath
+            Button { mode.showAnswerPath.toggle() } label: {
+                Label(shown ? "Hide the answer's path" : "Show the answer's path",
+                      systemImage: shown ? "point.topleft.down.to.point.bottomright.curvepath.fill"
+                                         : "point.topleft.down.to.point.bottomright.curvepath")
+                    .labelStyle(.iconOnly)
+                    .frame(minWidth: 30, minHeight: Self.buttonHeight)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .accessibilityLabel(shown ? "Hide the answer's path" : "Show the answer's path")
+            .accessibilityHint("Draws the answer's cue-ball path faintly on the cloth beside your own")
+        }
+    }
+
     private var listButton: some View {
         Button { mode.listOpen = true } label: {
             Label("All trick shots", systemImage: "list.bullet").labelStyle(.iconOnly)
@@ -321,9 +397,9 @@ struct TrickTableLayer: View {
     var body: some View {
         @Bindable var mode = mode
         ZStack {
-            if mode.markers != nil {
+            if mode.markers != nil || mode.answerPathOnCloth != nil {
                 TimelineView(.animation) { _ in
-                    Canvas { ctx, size in drawMarkers(&ctx, size: size) }
+                    Canvas { ctx, size in draw(&ctx, size: size) }
                 }
             }
             // The make: a short glow around the edge of the screen. It only fades, so it is the same with Reduce Motion.
@@ -377,11 +453,32 @@ struct TrickTableLayer: View {
         }
     }
 
-    /// Rings on the balls the shot names (where they rest now) and on the pockets they must drop in.
-    private func drawMarkers(_ ctx: inout GraphicsContext, size: CGSize) {
-        guard let marks = mode.markers, model.aimReady, model.layout.count == 16, let root = bridge.table?.root,
+    /// Everything this layer draws on the cloth, through the live camera: the answer's path under the rings.
+    private func draw(_ ctx: inout GraphicsContext, size: CGSize) {
+        guard let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
         else { return }
+        if let answer = mode.answerPathOnCloth { drawAnswerPath(answer, &ctx, size: size, proj) }
+        drawMarkers(&ctx, proj)
+    }
+
+    /// The answer's cue-ball path, faint beside the player's own (0.7.4): neutral white, long dashes, about half
+    /// opacity, with a hollow ring and an "Answer" label where it stopped. Kept apart from the last-try ghost (shorter
+    /// dashes on a dark underlay, "Last try") by its dash and its label, never by colour alone. Drawn while the balls
+    /// run too, so the live shot can be watched against it.
+    private func drawAnswerPath(_ answer: TrickShotMode.AnswerPath, _ ctx: inout GraphicsContext, size: CGSize,
+                                _ proj: AimProjector) {
+        let colour = palette.paper.opacity(0.5)
+        TablePathStroke(points: answer.cue, colour: colour, lineWidth: 2, dash: [12, 7]).draw(in: &ctx, proj)
+        guard let rest = answer.rest,
+              let ring = TablePathStroke.ring(at: rest, radius: model.timeline.table.ballRadius, proj) else { return }
+        ctx.stroke(ring, with: .color(colour), style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
+        TablePathStroke.label(Text("Answer"), at: rest, colour: palette.paper.opacity(0.8), in: &ctx, size: size, proj)
+    }
+
+    /// Rings on the balls the shot names (where they rest now) and on the pockets they must drop in.
+    private func drawMarkers(_ ctx: inout GraphicsContext, _ proj: AimProjector) {
+        guard let marks = mode.markers, model.aimReady, model.layout.count == 16 else { return }
         let table = model.timeline.table
         func ring(_ centre: Vec2, _ radius: Double) -> Path? {
             var path = Path()

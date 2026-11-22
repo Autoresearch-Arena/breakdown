@@ -1,0 +1,1350 @@
+{
+ "keys": [
+  "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+  "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+  "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+  "Squirt",
+  "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+  "Pot the 2 in the top-right corner, with strong left side.",
+  "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+  "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+  "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+  "You allowed for the squirt, and it went in with the side on.",
+  "Side Off the Rail",
+  "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+  "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+  "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+  "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+  "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+  "Wider off the rail, and in. The side did that.",
+  "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+  "Watch yours in the Lens",
+  "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+  "Show the answer's path",
+  "Hide the answer's path",
+  "Draws the answer's cue-ball path faintly on the cloth beside your own",
+  "Answer"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Una banda devuelve la bola casi con el mismo ángulo con que llegó, así que cada banda es un espejo. Apunta al reflejo de la 5 en las dos bandas, y la blanca la encuentra dando la vuelta larga."
+  },
+  {
+   "culture": "fr",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Une bande renvoie la bille à peu près selon l'angle d'arrivée, donc chaque bande est un miroir. Vise le reflet de la 5 dans les deux bandes, et la blanche la trouve par le long chemin."
+  },
+  {
+   "culture": "de",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Eine Bande schickt eine Kugel etwa im Winkel zurück, in dem sie ankam, daher ist jede Bande wie ein Spiegel. Ziele auf das Spiegelbild der 5 in den zwei Banden, und die Weiße findet sie auf dem langen Weg."
+  },
+  {
+   "culture": "it",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Una sponda rimanda una palla quasi con lo stesso angolo con cui è arrivata, quindi ogni sponda è uno specchio. Mira al riflesso della 5 nelle due sponde, e la bianca la trova facendo il giro lungo."
+  },
+  {
+   "culture": "pt",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Uma tabela devolve a bola com quase o mesmo ângulo com que chegou, por isso cada tabela é um espelho. Aponta ao reflexo da 5 nas duas tabelas, e a branca encontra-a pelo caminho mais longo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Uma tabela devolve a bola com quase o mesmo ângulo em que chegou, então cada tabela é um espelho. Mire no reflexo da 5 nas duas tabelas, e a branca a encontra pelo caminho mais longo."
+  },
+  {
+   "culture": "ja",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "クッションは球を、入ってきたのとほぼ同じ角度で跳ね返すので、各クッションは鏡の役割をします。二つのクッションに映る5番の鏡像を狙えば、手球は遠回りして5番に届きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "쿠션은 공을 들어온 각도와 거의 같은 각도로 되돌려 보내므로, 각 쿠션은 거울 역할을 합니다. 두 쿠션에 비친 5번의 거울상을 겨냥하면, 큐볼이 먼 길을 돌아 5번을 찾아가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "库边会让球以大致相同的角度弹出，所以每条库边都像一面镜子。瞄准5号球在两条库边中的镜像，白球就会绕远路找到它。"
+  },
+  {
+   "culture": "ru",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "Борт отражает шар примерно под тем же углом, под каким тот пришёл, поэтому каждый борт — это зеркало. Целься в отражение 5-го в двух бортах, и белый шар найдёт его в обход."
+  },
+  {
+   "culture": "ar",
+   "key": "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round.",
+   "text": "تعيد الوسادة الكرة بزاوية تقارب زاوية وصولها، لذلك تعمل كل وسادة كمرآة. صوّب نحو انعكاس الكرة 5 في الوسادتين، فتصل إليها الكرة البيضاء من الطريق الطويل."
+  },
+  {
+   "culture": "es",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "tras la 4, mientras desliza:  F = μ m g contra el deslizamiento,  así la trayectoria se curva hasta  v = R ω"
+  },
+  {
+   "culture": "fr",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "après la 4, tant qu'elle glisse :  F = μ m g contre le glissement,  la trajectoire se courbe jusqu'à  v = R ω"
+  },
+  {
+   "culture": "de",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "nach der 4, solange sie gleitet:  F = μ m g gegen das Gleiten,  die Bahn biegt sich, bis  v = R ω"
+  },
+  {
+   "culture": "it",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "dopo la 4, mentre scivola:  F = μ m g contro lo scivolamento,  la traiettoria si piega finché  v = R ω"
+  },
+  {
+   "culture": "pt",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "depois da 4, enquanto desliza:  F = μ m g contra o deslizamento,  a trajetória curva até  v = R ω"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "depois da 4, enquanto desliza:  F = μ m g contra o deslizamento,  a trajetória curva até  v = R ω"
+  },
+  {
+   "culture": "ja",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "4番の後、滑っている間:  F = μ m g が滑りと逆向きに働き、 v = R ω になるまで軌道が曲がる"
+  },
+  {
+   "culture": "ko",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "4번 다음, 미끄러지는 동안:  F = μ m g 가 미끄럼 반대로,  v = R ω 가 될 때까지 경로가 휜다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "碰4号球之后，滑动时:  F = μ m g 与滑动方向相反，路径一直弯曲，直到  v = R ω"
+  },
+  {
+   "culture": "ru",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "после 4-го, пока скользит:  F = μ m g против скольжения,  путь изгибается, пока  v = R ω"
+  },
+  {
+   "culture": "ar",
+   "key": "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω",
+   "text": "بعد الكرة 4، أثناء الانزلاق:  F = μ m g عكس الانزلاق،  فينحني المسار حتى  v = R ω"
+  },
+  {
+   "culture": "es",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "Después de la 4, mientras la blanca desliza, el paño la empuja con la fricción por su peso, en contra de cómo resbala su punto de contacto, así que su trayectoria se curva de vuelta hacia la 9 hasta que rueda, cuando su velocidad es igual a su radio por su velocidad de giro."
+  },
+  {
+   "culture": "fr",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "Après la 4, tant que la blanche glisse, le tapis la pousse avec le frottement multiplié par son poids, à l'opposé du glissement de son point de contact, donc sa trajectoire se recourbe vers la 9 jusqu'à ce qu'elle roule, quand sa vitesse égale son rayon multiplié par sa vitesse de rotation."
+  },
+  {
+   "culture": "de",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "Nach der 4 drückt das Tuch, solange die Weiße gleitet, mit der Reibung mal ihrem Gewicht gegen die Richtung, in die ihr Berührpunkt rutscht, also biegt sich ihre Bahn zurück zur 9, bis sie rollt, wenn ihre Geschwindigkeit gleich ihrem Radius mal ihrer Drehrate ist."
+  },
+  {
+   "culture": "it",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "Dopo la 4, mentre la bianca scivola, il panno la spinge con l'attrito per il suo peso, contro il verso in cui scivola il suo punto di contatto, così la traiettoria si piega di nuovo verso la 9 finché non rotola, quando la sua velocità è uguale al raggio per la velocità di rotazione."
+  },
+  {
+   "culture": "pt",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "Depois da 4, enquanto a branca desliza, o pano empurra-a com o atrito vezes o seu peso, contra o sentido em que escorrega o seu ponto de contacto, por isso a trajetória curva de volta para a 9 até ela rolar, quando a sua velocidade é igual ao raio vezes a velocidade de rotação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "Depois da 4, enquanto a branca desliza, o pano a empurra com o atrito vezes o peso dela, contra o sentido em que escorrega seu ponto de contato, então a trajetória curva de volta para a 9 até ela rolar, quando sua velocidade é igual ao raio vezes a velocidade de rotação."
+  },
+  {
+   "culture": "ja",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "4番に当たった後、手球が滑っている間、ラシャは摩擦に球の重さを掛けた力で、接点が滑る向きと逆に押します。そのため軌道は9番の方へ曲がり戻り、転がり始めるまで続きます。そのとき速さは半径に回転の速さを掛けたものと等しくなります。"
+  },
+  {
+   "culture": "ko",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "4번 다음, 큐볼이 미끄러지는 동안 천은 마찰에 공의 무게를 곱한 힘으로, 접촉점이 미끄러지는 반대 방향으로 밀어요. 그래서 경로가 9번 쪽으로 휘어 돌아오고, 구르기 시작할 때까지 이어져요. 그때 속도는 반지름에 회전 속도를 곱한 값과 같아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "碰到4号球之后，白球滑动时，台呢以摩擦力乘以球的重量推它，方向与接触点滑动的方向相反，所以路径向9号球弯回去，直到它开始滚动，那时它的速度等于半径乘以转速。"
+  },
+  {
+   "culture": "ru",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "После 4-го, пока белый шар скользит, сукно толкает его с силой трения, умноженной на вес, против скольжения точки касания, поэтому путь загибается обратно к 9-му, пока шар не покатится: тогда его скорость равна радиусу, умноженному на скорость вращения."
+  },
+  {
+   "culture": "ar",
+   "key": "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate.",
+   "text": "بعد الكرة 4، وبينما تنزلق الكرة البيضاء، يدفعها اللباد بالاحتكاك مضروبًا في وزنها، عكس اتجاه انزلاق نقطة تلامسها، فينحني مسارها عائدًا نحو الكرة 9 حتى تتدحرج، وعندها تساوي سرعتها نصف قطرها مضروبًا في سرعة دورانها."
+  },
+  {
+   "culture": "es",
+   "key": "Squirt",
+   "text": "Desvío"
+  },
+  {
+   "culture": "fr",
+   "key": "Squirt",
+   "text": "Déviation"
+  },
+  {
+   "culture": "de",
+   "key": "Squirt",
+   "text": "Abweichung"
+  },
+  {
+   "culture": "it",
+   "key": "Squirt",
+   "text": "Deviazione"
+  },
+  {
+   "culture": "pt",
+   "key": "Squirt",
+   "text": "Desvio"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Squirt",
+   "text": "Desvio"
+  },
+  {
+   "culture": "ja",
+   "key": "Squirt",
+   "text": "手球のトビ"
+  },
+  {
+   "culture": "ko",
+   "key": "Squirt",
+   "text": "스쿼트"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Squirt",
+   "text": "母球偏移"
+  },
+  {
+   "culture": "ru",
+   "key": "Squirt",
+   "text": "Снос"
+  },
+  {
+   "culture": "ar",
+   "key": "Squirt",
+   "text": "انحراف البيضاء"
+  },
+  {
+   "culture": "es",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Un tiro recto con trampa: hay que darle con mucho efecto a la izquierda, y el efecto desvía la blanca de la línea del taco."
+  },
+  {
+   "culture": "fr",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Un coup droit avec un piège : il faut le jouer avec beaucoup d'effet à gauche, et l'effet écarte la blanche de la ligne de la queue."
+  },
+  {
+   "culture": "de",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Ein gerader Stoß mit Haken: Er muss mit kräftigem Seitendrall links gespielt werden, und Seitendrall drückt die Weiße von der Linie des Queues weg."
+  },
+  {
+   "culture": "it",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Un tiro dritto con un trucco: va colpito con molto effetto a sinistra, e l'effetto sposta la bianca fuori dalla linea della stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Uma jogada direita com truque: tem de ser feita com muito efeito à esquerda, e o efeito desvia a branca da linha do taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Uma tacada reta com pegadinha: precisa ser feita com muito efeito à esquerda, e o efeito desvia a branca da linha do taco."
+  },
+  {
+   "culture": "ja",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "まっすぐなショットだが落とし穴がある。強い左の横回転で撞かなければならず、横回転は手球をキューの線からずらす。"
+  },
+  {
+   "culture": "ko",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "곧은 샷이지만 함정이 있어요. 강한 왼쪽 옆회전으로 쳐야 하는데, 옆회전은 큐볼을 큐의 선에서 밀어내요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "一杆直球，但有个陷阱：必须加强烈的左侧旋，而侧旋会把白球推离球杆的直线。"
+  },
+  {
+   "culture": "ru",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "Прямой удар с подвохом: бить нужно с сильным левым боковым вращением, а боковое вращение уводит белый шар с линии кия."
+  },
+  {
+   "culture": "ar",
+   "key": "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue.",
+   "text": "ضربة مستقيمة فيها خدعة: يجب ضربها بلف جانبي قوي إلى اليسار، واللف الجانبي يدفع الكرة البيضاء بعيدًا عن خط العصا."
+  },
+  {
+   "culture": "es",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Mete la 2 en la esquina de arriba a la derecha, con mucho efecto a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Rentre la 2 dans le coin en haut à droite, avec beaucoup d'effet à gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Die 2 in der oberen rechten Ecke versenken, mit kräftigem Seitendrall links."
+  },
+  {
+   "culture": "it",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Metti in buca la 2 nell'angolo in alto a destra, con molto effetto a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Encaçapa a 2 no canto superior direito, com muito efeito à esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Encaçape a 2 no canto superior direito, com muito efeito à esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "強い左の横回転で、2番を右上のコーナーに落とそう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "강한 왼쪽 옆회전으로 2번을 오른쪽 위 코너에 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "加强烈左侧旋，把2号球打进右上角袋口。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "Забей 2 в правый верхний угол с сильным левым боковым вращением."
+  },
+  {
+   "culture": "ar",
+   "key": "Pot the 2 in the top-right corner, with strong left side.",
+   "text": "أدخل الكرة 2 في الزاوية العلوية اليمنى، بلف جانبي قوي إلى اليسار."
+  },
+  {
+   "culture": "es",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Una punta que golpea fuera del centro empuja la blanca lejos del lado que tocó. Dale por la izquierda y sale un poco a la derecha de la línea del taco, así que apunta un pelín a la izquierda para compensarlo."
+  },
+  {
+   "culture": "fr",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Un procédé qui frappe hors du centre pousse la blanche à l'opposé du côté touché. Frappe-la à gauche et elle part un peu à droite de la ligne de la queue, alors vise un poil à gauche pour compenser."
+  },
+  {
+   "culture": "de",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Eine Pomeranze, die außermittig trifft, drückt die Weiße von der getroffenen Seite weg. Triff sie links, und sie läuft ein wenig rechts der Queuelinie ab, also ziel ein kleines Stück nach links, um das auszugleichen."
+  },
+  {
+   "culture": "it",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Un cuoio che colpisce fuori centro spinge la bianca lontano dal lato colpito. Colpiscila a sinistra e parte un po' a destra della linea della stecca, quindi mira un filo a sinistra per compensare."
+  },
+  {
+   "culture": "pt",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Uma sola que bate fora do centro empurra a branca para longe do lado que tocou. Bate-lhe à esquerda e ela sai um pouco à direita da linha do taco, por isso aponta um nadinha à esquerda para compensar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Uma ponta que bate fora do centro empurra a branca para longe do lado que tocou. Bata nela à esquerda e ela sai um pouco à direita da linha do taco, então mire um pouquinho à esquerda para compensar."
+  },
+  {
+   "culture": "ja",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "中心を外して撞いたタップは、手球を撞いた側から押しのけます。左を撞くと手球はキューの線より少し右へ出るので、その分だけ少し左を狙いましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "중심을 벗어나 친 팁은 큐볼을 맞은 쪽 반대로 밀어내요. 왼쪽을 치면 큐볼이 큐의 선보다 조금 오른쪽으로 나가니, 그만큼 살짝 왼쪽을 겨냥하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "偏离中心击打的杆头会把白球推向被击打一侧的反方向。击打左侧，白球会略微偏到球杆直线的右边，所以瞄准时稍微偏左来抵消。"
+  },
+  {
+   "culture": "ru",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "Наклейка, ударившая не по центру, отталкивает белый шар от той стороны, по которой пришёлся удар. Ударь слева, и шар уйдёт чуть правее линии кия, так что целься чуть левее, чтобы это учесть."
+  },
+  {
+   "culture": "ar",
+   "key": "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it.",
+   "text": "رأس العصا الذي يضرب بعيدًا عن المركز يدفع الكرة البيضاء بعيدًا عن الجانب الذي ضربه. اضربها من اليسار فتنطلق قليلًا إلى يمين خط العصا، لذا صوّب قليلًا إلى اليسار لتعويض ذلك."
+  },
+  {
+   "culture": "es",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "fuera de la línea del taco:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = efecto ÷ R"
+  },
+  {
+   "culture": "fr",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "hors de la ligne de la queue :  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = effet ÷ R"
+  },
+  {
+   "culture": "de",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "weg von der Queuelinie:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = Seite ÷ R"
+  },
+  {
+   "culture": "it",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "fuori dalla linea della stecca:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = effetto ÷ R"
+  },
+  {
+   "culture": "pt",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "fora da linha do taco:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = efeito ÷ R"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "fora da linha do taco:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = efeito ÷ R"
+  },
+  {
+   "culture": "ja",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "キューの線からのずれ:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²)、 x = 横のずれ ÷ R"
+  },
+  {
+   "culture": "ko",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "큐의 선에서 벗어남:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = 옆 거리 ÷ R"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "偏离球杆直线:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²)，x = 侧向偏移 ÷ R"
+  },
+  {
+   "culture": "ru",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "уход с линии кия:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = смещение ÷ R"
+  },
+  {
+   "culture": "ar",
+   "key": "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R",
+   "text": "الانحراف عن خط العصا:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²)،  x = الإزاحة الجانبية ÷ R"
+  },
+  {
+   "culture": "es",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "El ángulo fuera de la línea del taco crece cuanto más lejos del centro golpea la punta, y se reduce cuanto más pesa la bola frente a la ligera punta del taco: con el efecto más fuerte, unos dos grados y medio."
+  },
+  {
+   "culture": "fr",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "L'angle hors de la ligne de la queue grandit à mesure que le procédé frappe loin du centre, et diminue à mesure que la bille pèse plus que le bout léger de la flèche : avec l'effet le plus fort, environ deux degrés et demi."
+  },
+  {
+   "culture": "de",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "Der Winkel weg von der Queuelinie wächst, je weiter außen die Pomeranze trifft, und schrumpft, je schwerer die Kugel gegenüber dem leichten Ende des Oberteils ist: beim stärksten Seitendrall etwa zweieinhalb Grad."
+  },
+  {
+   "culture": "it",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "L'angolo fuori dalla linea della stecca cresce quanto più lontano dal centro colpisce il cuoio, e diminuisce quanto più la palla pesa rispetto alla punta leggera della stecca: con l'effetto più forte, circa due gradi e mezzo."
+  },
+  {
+   "culture": "pt",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "O ângulo fora da linha do taco cresce quanto mais longe do centro a sola bate, e diminui quanto mais a bola pesa face à ponta leve do taco: com o efeito mais forte, cerca de dois graus e meio."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "O ângulo fora da linha do taco cresce quanto mais longe do centro a ponta bate, e diminui quanto mais a bola pesa em relação à ponta leve do taco: com o efeito mais forte, cerca de dois graus e meio."
+  },
+  {
+   "culture": "ja",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "キューの線からずれる角度は、タップが中心から離れて撞くほど大きくなり、キュー先の軽い部分に比べて球が重いほど小さくなります。いちばん強い横回転で約2.5度です。"
+  },
+  {
+   "culture": "ko",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "큐의 선에서 벗어나는 각도는 팁이 중심에서 멀리 칠수록 커지고, 큐 끝의 가벼운 부분보다 공이 무거울수록 작아져요. 가장 강한 옆회전에서 약 2.5도예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "偏离球杆直线的角度随杆头击打点离中心越远而越大，球相对于球杆前端那段轻的部分越重，角度就越小：最强的侧旋大约两度半。"
+  },
+  {
+   "culture": "ru",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "Угол ухода с линии кия растёт, чем дальше от центра бьёт наклейка, и уменьшается, чем тяжелее шар по сравнению с лёгким концом кия: при самом сильном боковом вращении это примерно два с половиной градуса."
+  },
+  {
+   "culture": "ar",
+   "key": "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees.",
+   "text": "تكبر زاوية الانحراف عن خط العصا كلما ابتعدت ضربة الرأس عن المركز، وتصغر كلما كانت الكرة أثقل مقارنةً بالطرف الخفيف من العصا: عند أقوى لف جانبي نحو درجتين ونصف."
+  },
+  {
+   "culture": "es",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Compensaste el desvío y entró con el efecto puesto."
+  },
+  {
+   "culture": "fr",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Tu as compensé la déviation, et elle est rentrée avec l'effet."
+  },
+  {
+   "culture": "de",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Du hast die Abweichung eingerechnet, und sie fiel mit Seitendrall."
+  },
+  {
+   "culture": "it",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Hai compensato la deviazione, ed è entrata con l'effetto."
+  },
+  {
+   "culture": "pt",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Compensaste o desvio e entrou com o efeito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Você compensou o desvio e entrou com o efeito."
+  },
+  {
+   "culture": "ja",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "トビを計算に入れて、横回転をかけたまま決めた。"
+  },
+  {
+   "culture": "ko",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "스쿼트를 감안했고, 옆회전을 건 채로 들어갔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "你算准了母球偏移，带着侧旋打进了。"
+  },
+  {
+   "culture": "ru",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "Ты учёл снос, и шар зашёл с боковым вращением."
+  },
+  {
+   "culture": "ar",
+   "key": "You allowed for the squirt, and it went in with the side on.",
+   "text": "حسبت حساب الانحراف، فدخلت الكرة واللف الجانبي عليها."
+  },
+  {
+   "culture": "es",
+   "key": "Side Off the Rail",
+   "text": "Efecto en la banda"
+  },
+  {
+   "culture": "fr",
+   "key": "Side Off the Rail",
+   "text": "L'effet sur la bande"
+  },
+  {
+   "culture": "de",
+   "key": "Side Off the Rail",
+   "text": "Seitendrall an der Bande"
+  },
+  {
+   "culture": "it",
+   "key": "Side Off the Rail",
+   "text": "Effetto in sponda"
+  },
+  {
+   "culture": "pt",
+   "key": "Side Off the Rail",
+   "text": "Efeito na tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Side Off the Rail",
+   "text": "Efeito na tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "Side Off the Rail",
+   "text": "クッションで効く横回転"
+  },
+  {
+   "culture": "ko",
+   "key": "Side Off the Rail",
+   "text": "쿠션에서 사는 옆회전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Side Off the Rail",
+   "text": "库边侧旋"
+  },
+  {
+   "culture": "ru",
+   "key": "Side Off the Rail",
+   "text": "Боковое вращение от борта"
+  },
+  {
+   "culture": "ar",
+   "key": "Side Off the Rail",
+   "text": "اللف الجانبي على الوسادة"
+  },
+  {
+   "culture": "es",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "La 9 y la 10 tapan la 7. Juega a una banda con mucho efecto a la izquierda, y el giro abre el ángulo al salir de la banda."
+  },
+  {
+   "culture": "fr",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "La 9 et la 10 cachent la 7. Joue une bande avec beaucoup d'effet à gauche, et la rotation ouvre l'angle en sortie de bande."
+  },
+  {
+   "culture": "de",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "Die 9 und die 10 verdecken die 7. Spiel über eine Bande mit kräftigem Seitendrall links, und der Drall öffnet den Winkel von der Bande."
+  },
+  {
+   "culture": "it",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "La 9 e la 10 nascondono la 7. Gioca di sponda con molto effetto a sinistra, e la rotazione apre l'angolo in uscita dalla sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "A 9 e a 10 escondem a 7. Joga a uma tabela com muito efeito à esquerda, e a rotação abre o ângulo à saída da tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "A 9 e a 10 escondem a 7. Jogue numa tabela com muito efeito à esquerda, e a rotação abre o ângulo na saída da tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "9番と10番が7番を隠している。強い左の横回転でワンクッションを使えば、回転がクッションからの角度を広げる。"
+  },
+  {
+   "culture": "ko",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "9번과 10번이 7번을 가리고 있어요. 강한 왼쪽 옆회전으로 원쿠션을 치면, 회전이 쿠션에서 나오는 각도를 넓혀 줘요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "9号球和10号球挡住了7号球。加强烈左侧旋吃一库，旋转会让球离开库边的角度变大。"
+  },
+  {
+   "culture": "ru",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "9-й и 10-й закрывают 7-й. Сыграй от одного борта с сильным левым боковым вращением, и вращение раскроет угол отскока от борта."
+  },
+  {
+   "culture": "ar",
+   "key": "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail.",
+   "text": "الكرتان 9 و10 تحجبان الكرة 7. اضرب عبر وسادة واحدة بلف جانبي قوي إلى اليسار، فيوسّع الدوران زاوية الخروج من الوسادة."
+  },
+  {
+   "culture": "es",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "Con mucho efecto a la izquierda, tras una banda, golpea primero la 7 y métela en la esquina de abajo a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "Avec beaucoup d'effet à gauche, après une bande, touche d'abord la 7 et rentre-la dans le coin en bas à droite."
+  },
+  {
+   "culture": "de",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "Mit kräftigem Seitendrall links über eine Bande zuerst die 7 treffen und in der unteren rechten Ecke versenken."
+  },
+  {
+   "culture": "it",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "Con molto effetto a sinistra, dopo una sponda, colpisci prima la 7 e mettila in buca nell'angolo in basso a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "Com muito efeito à esquerda, numa tabela, bate primeiro na 7 e encaçapa-a no canto inferior direito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "Com muito efeito à esquerda, numa tabela, bata primeiro na 7 e encaçape no canto inferior direito."
+  },
+  {
+   "culture": "ja",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "強い左の横回転でワンクッションを使い、まず7番に当てて右下のコーナーに落とそう。"
+  },
+  {
+   "culture": "ko",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "강한 왼쪽 옆회전으로 원쿠션을 치고, 먼저 7번을 맞혀 오른쪽 아래 코너에 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "加强烈左侧旋吃一库，先击中7号球，把它打进右下角袋口。"
+  },
+  {
+   "culture": "ru",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "С сильным левым боковым вращением, через один борт, сначала ударь по 7-му и забей его в правый нижний угол."
+  },
+  {
+   "culture": "ar",
+   "key": "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner.",
+   "text": "بلف جانبي قوي إلى اليسار وعبر وسادة واحدة، اضرب الكرة 7 أولاً وأدخلها في الزاوية السفلية اليمنى."
+  },
+  {
+   "culture": "es",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "El efecto agarra la banda mientras la bola gira al salir de ella. Un giro en el mismo sentido en que la bola corre a lo largo de la banda la empuja a lo largo de ella, así que sale con un ángulo más abierto que el de llegada."
+  },
+  {
+   "culture": "fr",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "L'effet accroche la bande pendant que la bille tourne pour en repartir. Une rotation dans le sens où la bille court le long de la bande la pousse le long de celle-ci, donc elle repart avec un angle plus ouvert qu'à l'arrivée."
+  },
+  {
+   "culture": "de",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "Seitendrall greift an der Bande, während die Kugel von ihr abdreht. Drall in die Richtung, in die die Kugel an der Bande entlangläuft, schiebt sie an der Bande weiter, also läuft sie in einem weiteren Winkel ab, als sie kam."
+  },
+  {
+   "culture": "it",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "L'effetto fa presa sulla sponda mentre la palla ne esce. Una rotazione nello stesso verso in cui la palla corre lungo la sponda la spinge avanti lungo di essa, così esce con un angolo più aperto di quello d'arrivo."
+  },
+  {
+   "culture": "pt",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "O efeito agarra a tabela enquanto a bola sai dela. Uma rotação no mesmo sentido em que a bola corre ao longo da tabela empurra-a ao longo dela, por isso sai com um ângulo mais aberto do que o de chegada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "O efeito agarra a tabela enquanto a bola sai dela. Uma rotação no mesmo sentido em que a bola corre ao longo da tabela a empurra ao longo dela, então ela sai com um ângulo mais aberto do que o de chegada."
+  },
+  {
+   "culture": "ja",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "球がクッションから離れるとき、横回転がクッションをつかみます。球がクッションに沿って進む向きと同じ向きの回転は、球をクッションに沿ってさらに押すので、入ってきた角度より広い角度で出ていきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "공이 쿠션에서 돌아 나올 때 옆회전이 쿠션을 붙잡아요. 공이 쿠션을 따라 달리는 방향과 같은 쪽으로 도는 회전은 공을 쿠션을 따라 더 밀어 주니, 들어온 각도보다 넓은 각도로 나가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "球离开库边转向时，侧旋会咬住库边。旋转方向和球沿库边前进的方向一致时，会把球沿库边继续推，所以它弹出的角度比进来时更大。"
+  },
+  {
+   "culture": "ru",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "Боковое вращение цепляет борт, когда шар отворачивает от него. Вращение в ту же сторону, куда шар бежит вдоль борта, подталкивает его дальше вдоль борта, поэтому он уходит под более широким углом, чем пришёл."
+  },
+  {
+   "culture": "ar",
+   "key": "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in.",
+   "text": "يتشبث اللف الجانبي بالوسادة بينما تستدير الكرة عنها. الدوران في نفس اتجاه جريان الكرة على طول الوسادة يدفعها على طولها، فتخرج بزاوية أوسع من زاوية دخولها."
+  },
+  {
+   "culture": "es",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "a lo largo de la banda:  Δv ≤ μ (1 + e) v⊥,  así el efecto a favor sale más abierto:  ángulo de salida > ángulo de entrada"
+  },
+  {
+   "culture": "fr",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "le long de la bande :  Δv ≤ μ (1 + e) v⊥,  donc l'effet dans le sens de la course ressort plus ouvert :  angle de sortie > angle d'entrée"
+  },
+  {
+   "culture": "de",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "entlang der Bande:  Δv ≤ μ (1 + e) v⊥,  also läuft mitlaufender Drall weiter ab:  Ausfallswinkel > Einfallswinkel"
+  },
+  {
+   "culture": "it",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "lungo la sponda:  Δv ≤ μ (1 + e) v⊥,  così l'effetto a favore esce più aperto:  angolo d'uscita > angolo d'entrata"
+  },
+  {
+   "culture": "pt",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "ao longo da tabela:  Δv ≤ μ (1 + e) v⊥,  por isso o efeito a favor sai mais aberto:  ângulo de saída > ângulo de entrada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "ao longo da tabela:  Δv ≤ μ (1 + e) v⊥,  então o efeito a favor sai mais aberto:  ângulo de saída > ângulo de entrada"
+  },
+  {
+   "culture": "ja",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "クッションに沿って:  Δv ≤ μ (1 + e) v⊥、 順方向の横回転は広く出る:  出る角度 > 入る角度"
+  },
+  {
+   "culture": "ko",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "쿠션을 따라:  Δv ≤ μ (1 + e) v⊥,  그래서 순방향 옆회전은 넓게 나간다:  나가는 각 > 들어오는 각"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "沿库边:  Δv ≤ μ (1 + e) v⊥，所以顺旋弹出更宽:  出射角 > 入射角"
+  },
+  {
+   "culture": "ru",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "вдоль борта:  Δv ≤ μ (1 + e) v⊥,  поэтому попутное вращение уходит шире:  угол выхода > угол входа"
+  },
+  {
+   "culture": "ar",
+   "key": "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in",
+   "text": "على طول الوسادة:  Δv ≤ μ (1 + e) v⊥،  لذا يخرج اللف المساير أوسع:  زاوية الخروج > زاوية الدخول"
+  },
+  {
+   "culture": "es",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "El agarre de la banda puede cambiar la velocidad de la bola a lo largo de ella como mucho en el agarre por uno más el rebote, por la velocidad con que entra de frente. El efecto a favor gasta ese empujón en acelerar la bola a lo largo de la banda, así que sale con un ángulo más abierto que el de llegada."
+  },
+  {
+   "culture": "fr",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "L'adhérence de la bande peut changer la vitesse de la bille le long de la bande d'au plus l'adhérence fois un plus le rebond, fois la vitesse qui arrive droit dans la bande. L'effet dans le sens de la course utilise cette poussée pour accélérer la bille le long de la bande, donc elle repart avec un angle plus ouvert qu'à l'arrivée."
+  },
+  {
+   "culture": "de",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "Der Griff der Bande kann die Geschwindigkeit der Kugel entlang der Bande höchstens um den Griff mal eins plus den Rückprall ändern, mal die Geschwindigkeit gerade in die Bande. Mitlaufender Drall nutzt diesen Schub, um die Kugel entlang der Bande zu beschleunigen, also läuft sie in einem weiteren Winkel ab, als sie kam."
+  },
+  {
+   "culture": "it",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "La presa della sponda può cambiare la velocità della palla lungo la sponda al massimo della presa per uno più il rimbalzo, per la velocità dritta contro la sponda. L'effetto a favore usa quella spinta per accelerare la palla lungo la sponda, così esce con un angolo più aperto di quello d'arrivo."
+  },
+  {
+   "culture": "pt",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "A aderência da tabela pode mudar a velocidade da bola ao longo dela, no máximo, na aderência vezes um mais o ressalto, vezes a velocidade que entra de frente na tabela. O efeito a favor gasta esse empurrão a acelerar a bola ao longo da tabela, por isso sai com um ângulo mais aberto do que o de chegada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "A aderência da tabela pode mudar a velocidade da bola ao longo dela, no máximo, na aderência vezes um mais o quique, vezes a velocidade que entra de frente na tabela. O efeito a favor gasta esse empurrão acelerando a bola ao longo da tabela, então ela sai com um ângulo mais aberto do que o de chegada."
+  },
+  {
+   "culture": "ja",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "クッションのグリップがクッションに沿った球の速さを変えられるのは、最大でグリップ×（1＋跳ね返り）×クッションにまっすぐ入る速さまでです。順方向の横回転はその押しを、球をクッションに沿って速めることに使うので、入ってきた角度より広い角度で出ていきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "쿠션의 그립이 쿠션을 따라가는 공의 속도를 바꿀 수 있는 최대치는 그립 곱하기 1 더하기 반발, 곱하기 쿠션에 곧장 들어가는 속도예요. 순방향 옆회전은 그 힘을 공을 쿠션을 따라 빠르게 하는 데 써서, 들어온 각도보다 넓은 각도로 나가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "库边的抓力最多能把球沿库边的速度改变：抓力乘以一加反弹系数，再乘以垂直撞向库边的速度。顺旋把这股推力用来让球沿库边加速，所以它弹出的角度比进来时更大。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "Сцепление борта может изменить скорость шара вдоль борта не больше чем на сцепление, умноженное на единицу плюс отскок и на скорость прямо в борт. Попутное вращение тратит этот толчок на разгон шара вдоль борта, поэтому он уходит под более широким углом, чем пришёл."
+  },
+  {
+   "culture": "ar",
+   "key": "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in.",
+   "text": "يستطيع تماسك الوسادة أن يغيّر سرعة الكرة على طولها بما لا يزيد على التماسك مضروبًا في واحد زائد الارتداد، مضروبًا في السرعة الداخلة مباشرة نحو الوسادة. اللف المساير يصرف تلك الدفعة في تسريع الكرة على طول الوسادة، فتخرج بزاوية أوسع من زاوية دخولها."
+  },
+  {
+   "culture": "es",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Más abierta al salir de la banda, y dentro. Eso fue el efecto."
+  },
+  {
+   "culture": "fr",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Plus ouverte en sortie de bande, et dedans. C'est l'effet qui a fait ça."
+  },
+  {
+   "culture": "de",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Weiter von der Bande, und drin. Das war der Seitendrall."
+  },
+  {
+   "culture": "it",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Più aperta in uscita dalla sponda, e dentro. È stato l'effetto."
+  },
+  {
+   "culture": "pt",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Mais aberta à saída da tabela, e lá dentro. Foi o efeito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Mais aberta na saída da tabela, e lá dentro. Foi o efeito."
+  },
+  {
+   "culture": "ja",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "クッションから広く出て、イン。横回転のおかげだ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "쿠션에서 더 넓게 나와서, 들어갔어요. 옆회전 덕분이에요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "离开库边的角度更宽，进了。这是侧旋的功劳。"
+  },
+  {
+   "culture": "ru",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "Шире от борта — и в лузе. Это сделало боковое вращение."
+  },
+  {
+   "culture": "ar",
+   "key": "Wider off the rail, and in. The side did that.",
+   "text": "خرجت أوسع من الوسادة، ودخلت. هذا ما فعله اللف الجانبي."
+  },
+  {
+   "culture": "es",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Entró, pero sin el efecto fuerte del que trata este tiro. Golpea más hacia la %@ de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Elle est rentrée, mais sans l'effet fort dont parle ce coup. Frappe plus vers la %@ de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Drin, aber ohne den kräftigen Seitendrall, um den es bei diesem Stoß geht. Triff die weiße Kugel weiter %@."
+  },
+  {
+   "culture": "it",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Dentro, ma senza il forte effetto di cui parla questo colpo. Colpisci più lontano, a %@ della palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Entrou, mas sem o efeito forte de que trata esta jogada. Bate mais para o lado %@ da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Entrou, mas sem o efeito forte de que trata esta tacada. Bata mais para o lado %@ da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "入ったけれど、このショットの肝である強い横回転がなかった。手球の%@寄りを、もっと打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "들어갔지만, 이 샷의 핵심인 강한 옆회전이 없었어요. 큐볼의 %@ 쪽을 더 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "进了，但没有这一杆要练的强烈侧旋。击打位置再偏向白球的%@侧一些。"
+  },
+  {
+   "culture": "ru",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "Забит, но без сильного бокового вращения, ради которого этот удар. Бей дальше к %@ стороне белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "In, but without the strong side this shot is about. Strike further to the %@ of the cue ball.",
+   "text": "دخلت، لكن من دون اللف الجانبي القوي الذي تدور حوله هذه الضربة. اضرب أبعد نحو الجانب %@ من الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "Watch yours in the Lens",
+   "text": "Ver el tuyo en la Lente"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch yours in the Lens",
+   "text": "Revoir le tien dans la Lentille"
+  },
+  {
+   "culture": "de",
+   "key": "Watch yours in the Lens",
+   "text": "Deinen in der Lens ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch yours in the Lens",
+   "text": "Guarda il tuo nella Lens"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch yours in the Lens",
+   "text": "Ver o teu na Lente"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch yours in the Lens",
+   "text": "Ver o seu na Lente"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch yours in the Lens",
+   "text": "自分のショットをレンズで見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch yours in the Lens",
+   "text": "내 샷을 렌즈로 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch yours in the Lens",
+   "text": "在透镜中观看你的这一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch yours in the Lens",
+   "text": "Смотреть свой в Линзе"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch yours in the Lens",
+   "text": "شاهد ضربتك في العدسة"
+  },
+  {
+   "culture": "es",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Repite tu golpe despacio en la Lente, deteniéndose en los momentos que lo hicieron entrar"
+  },
+  {
+   "culture": "fr",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Rejoue ton coup lentement dans la lentille, en s'arrêtant sur les moments qui l'ont fait réussir"
+  },
+  {
+   "culture": "de",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Spielt deinen Stoß langsam in der Lens ab und hält bei den Momenten an, die ihn gelingen ließen"
+  },
+  {
+   "culture": "it",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Ripete il tuo colpo al rallentatore nella lente, fermandosi sui momenti che l'hanno fatto riuscire"
+  },
+  {
+   "culture": "pt",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Repete a tua tacada devagar na lente, parando nos momentos que a fizeram resultar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Repete sua tacada devagar na lente, parando nos momentos que a fizeram dar certo"
+  },
+  {
+   "culture": "ja",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "あなたのショットをレンズでゆっくり再生し、決め手になった瞬間で止まります"
+  },
+  {
+   "culture": "ko",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "내 샷을 렌즈로 천천히 다시 보여 주고, 성공을 만든 순간에서 멈춥니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "在镜片中慢放你的这一杆，并停在让它成功的那些瞬间"
+  },
+  {
+   "culture": "ru",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "Медленно повторяет твой удар в линзе, останавливаясь на моментах, которые его решили"
+  },
+  {
+   "culture": "ar",
+   "key": "Replays your stroke slowly in the Lens, stopping on the moments that made it",
+   "text": "يعيد ضربتك ببطء في العدسة، ويتوقف عند اللحظات التي صنعتها"
+  },
+  {
+   "culture": "es",
+   "key": "Show the answer's path",
+   "text": "Mostrar el recorrido de la solución"
+  },
+  {
+   "culture": "fr",
+   "key": "Show the answer's path",
+   "text": "Afficher le trajet de la solution"
+  },
+  {
+   "culture": "de",
+   "key": "Show the answer's path",
+   "text": "Weg der Lösung zeigen"
+  },
+  {
+   "culture": "it",
+   "key": "Show the answer's path",
+   "text": "Mostra il percorso della soluzione"
+  },
+  {
+   "culture": "pt",
+   "key": "Show the answer's path",
+   "text": "Mostrar o percurso da solução"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Show the answer's path",
+   "text": "Mostrar o caminho da solução"
+  },
+  {
+   "culture": "ja",
+   "key": "Show the answer's path",
+   "text": "答えの軌道を表示"
+  },
+  {
+   "culture": "ko",
+   "key": "Show the answer's path",
+   "text": "정답의 경로 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Show the answer's path",
+   "text": "显示答案的路线"
+  },
+  {
+   "culture": "ru",
+   "key": "Show the answer's path",
+   "text": "Показать путь решения"
+  },
+  {
+   "culture": "ar",
+   "key": "Show the answer's path",
+   "text": "أظهر مسار الحل"
+  },
+  {
+   "culture": "es",
+   "key": "Hide the answer's path",
+   "text": "Ocultar el recorrido de la solución"
+  },
+  {
+   "culture": "fr",
+   "key": "Hide the answer's path",
+   "text": "Masquer le trajet de la solution"
+  },
+  {
+   "culture": "de",
+   "key": "Hide the answer's path",
+   "text": "Weg der Lösung ausblenden"
+  },
+  {
+   "culture": "it",
+   "key": "Hide the answer's path",
+   "text": "Nascondi il percorso della soluzione"
+  },
+  {
+   "culture": "pt",
+   "key": "Hide the answer's path",
+   "text": "Ocultar o percurso da solução"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hide the answer's path",
+   "text": "Ocultar o caminho da solução"
+  },
+  {
+   "culture": "ja",
+   "key": "Hide the answer's path",
+   "text": "答えの軌道を隠す"
+  },
+  {
+   "culture": "ko",
+   "key": "Hide the answer's path",
+   "text": "정답의 경로 숨기기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hide the answer's path",
+   "text": "隐藏答案的路线"
+  },
+  {
+   "culture": "ru",
+   "key": "Hide the answer's path",
+   "text": "Скрыть путь решения"
+  },
+  {
+   "culture": "ar",
+   "key": "Hide the answer's path",
+   "text": "أخفِ مسار الحل"
+  },
+  {
+   "culture": "es",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Dibuja tenue sobre el paño el recorrido de la blanca de la solución, junto al tuyo"
+  },
+  {
+   "culture": "fr",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Dessine discrètement sur le tapis le trajet de la blanche de la solution, à côté du tien"
+  },
+  {
+   "culture": "de",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Zeichnet den Weg der Weißen aus der Lösung blass aufs Tuch, neben deinen"
+  },
+  {
+   "culture": "it",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Disegna leggermente sul panno il percorso della bianca della soluzione, accanto al tuo"
+  },
+  {
+   "culture": "pt",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Desenha de leve no pano o percurso da branca da solução, ao lado do teu"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Desenha de leve no pano o caminho da branca da solução, ao lado do seu"
+  },
+  {
+   "culture": "ja",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "答えの手球の軌道を、あなたの軌道の横にラシャの上へ薄く描きます"
+  },
+  {
+   "culture": "ko",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "정답의 큐볼 경로를 내 경로 옆에, 천 위에 흐리게 그려요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "在台呢上淡淡地画出答案的白球路线，放在你的路线旁边"
+  },
+  {
+   "culture": "ru",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "Бледно рисует на сукне путь белого шара из решения рядом с твоим"
+  },
+  {
+   "culture": "ar",
+   "key": "Draws the answer's cue-ball path faintly on the cloth beside your own",
+   "text": "يرسم مسار الكرة البيضاء في الحل باهتًا على اللباد بجانب مسارك"
+  },
+  {
+   "culture": "es",
+   "key": "Answer",
+   "text": "Solución"
+  },
+  {
+   "culture": "fr",
+   "key": "Answer",
+   "text": "Solution"
+  },
+  {
+   "culture": "de",
+   "key": "Answer",
+   "text": "Lösung"
+  },
+  {
+   "culture": "it",
+   "key": "Answer",
+   "text": "Soluzione"
+  },
+  {
+   "culture": "pt",
+   "key": "Answer",
+   "text": "Solução"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Answer",
+   "text": "Solução"
+  },
+  {
+   "culture": "ja",
+   "key": "Answer",
+   "text": "答え"
+  },
+  {
+   "culture": "ko",
+   "key": "Answer",
+   "text": "정답"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Answer",
+   "text": "答案"
+  },
+  {
+   "culture": "ru",
+   "key": "Answer",
+   "text": "Решение"
+  },
+  {
+   "culture": "ar",
+   "key": "Answer",
+   "text": "الحل"
+  }
+ ]
+}

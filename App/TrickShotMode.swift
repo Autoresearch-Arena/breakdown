@@ -6,6 +6,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (lineUpAnswer, for the -trickAim store-screenshot flag.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (no longer dismisses the model's retry comparison: the trick card
 //          shows its sentence itself and the general card hides while a trick shot is up.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: the answer's replay holds the shot's own
+//          moments (TrickSignature through model.setPaceSignature); the answer's cue-ball path is kept for Show the
+//          answer's path (answerPath, showAnswerPath); Watch yours replays a made try the same way (watchYours).)
 // PURPOSE: Trick-shot mode: the game's main purpose. Holds which trick shot is on the table and walks the player through
 //          it: Ready (the table set up at the shot's start, a card with the hook) > Watching (the authored solution plays
 //          at full speed) > Explaining (it replays slowly in the Physics Lens while the card gives the one idea behind
@@ -67,6 +70,20 @@ final class TrickShotMode {
     private(set) var aimingRequests = 0
     private(set) var doneIDs: Set<String>
 
+    /// The answer's cue-ball path, kept from its recording when the answer is watched (0.7.4), so after a try the card
+    /// can lay it faintly beside the player's own. Kept for the shot it belongs to; another shot's is never shown.
+    struct AnswerPath: Equatable {
+        let shotID: String
+        /// The cue ball's path in table metres, from its start to where it stopped or dropped (ShotAttempt.ghostPaths).
+        let cue: [Vec2]
+        /// Where it came to rest; nil when it dropped.
+        let rest: Vec2?
+    }
+    private(set) var answerPath: AnswerPath?
+    /// Whether the answer's path is drawn on the cloth: the card's Show / Hide the answer's path. Cleared by begin,
+    /// next, end and watch, so it is always the player's own choice for the try in front of them.
+    var showAnswerPath = false
+
     /// The player's own settings per shot, kept across watching the answer, so Your turn never hands them the answer.
     @ObservationIgnored private var playerSettings: [String: TrickSettings] = [:]
     /// The recording already judged, so each attempt is judged once.
@@ -104,6 +121,23 @@ final class TrickShotMode {
         return (shot.goal.drops.map(\.ball), shot.goal.drops.compactMap(\.pocket))
     }
 
+    /// True once this shot's answer has been watched, so its path can be offered beside a try.
+    var hasAnswerPath: Bool {
+        guard let shot = current, let path = answerPath else { return false }
+        return path.shotID == shot.id && !path.cue.isEmpty
+    }
+
+    /// Whether the card offers Show / Hide the answer's path: while the player lines up or reads the verdict.
+    var offersAnswerPath: Bool {
+        guard hasAnswerPath else { return false }
+        return phase == .aiming || isJudged
+    }
+
+    /// The answer's path to draw on the cloth now, or nil.
+    var answerPathOnCloth: AnswerPath? {
+        offersAnswerPath && showAnswerPath ? answerPath : nil
+    }
+
     // MARK: Flow
 
     /// Put a trick shot on the table, ready to watch or try. Closes the menu and the list.
@@ -111,6 +145,9 @@ final class TrickShotMode {
         guard !shot.pending else { return }
         current = shot
         listOpen = false
+        showAnswerPath = false
+        // Another shot's answer path is of no use here; this shot's is kept (it was watched).
+        if answerPath?.shotID != shot.id { answerPath = nil }
         model.enterTrickTable()
         // The player's own settings (or a plain start), never the answer: the aim line must not give it away.
         loadStart(with: playerSettings[shot.id] ?? defaultSettings(for: shot))
@@ -129,6 +166,7 @@ final class TrickShotMode {
     func watch() {
         guard let shot = current else { return }
         rememberPlayerSettings()
+        showAnswerPath = false
         loadStart(with: shot.solution)
         model.setLens(false)
         requestAiming(false)
@@ -189,6 +227,18 @@ final class TrickShotMode {
         current = nil
         phase = .off
         wantsAiming = false
+        showAnswerPath = false
+    }
+
+    /// Watch yours (0.7.4): after a make, the player's own stroke replays slowly in the Lens, holding the same moments
+    /// the answer's replay held (TrickSignature, found in this recording). The recording and its version do not change,
+    /// so nothing is judged again and the phase stays judged; replay(withLens:) counts it as the player's replay (the
+    /// phase is not watching or explaining), so the Lens tips may join it as they do on any replay the player starts.
+    func watchYours() {
+        guard let shot = current, isJudged, model.currentAttempt != nil else { return }
+        ride(false)
+        model.setPaceSignature(TrickSignature.events(forTrick: shot.id, in: model.timeline, captions: model.captions))
+        model.replay(withLens: true)
     }
 
     /// Called by the table layer whenever the model's playback state changes: moves Watching on to Explaining when the
@@ -200,8 +250,17 @@ final class TrickShotMode {
             guard model.timelineVersion == solutionVersion else { return }
             phase = .explaining
             ride(false)
-            // The break already replayed itself slowly in the Lens during its opening; a shot replays now.
-            if !shot.isBreak { model.replay(withLens: true) }
+            // Keep the answer's own cue-ball path for Show the answer's path after the player's tries (0.7.4).
+            if let a = model.currentAttempt {
+                answerPath = AnswerPath(shotID: shot.id, cue: a.ghostPaths().cue, rest: a.cueBallScratched ? nil : a.cueRest)
+            }
+            // The break already replayed itself slowly in the Lens during its opening; a shot replays now, holding the
+            // moments the shot is about (TrickSignature: the jump's take-off and landing, the massé's bend, ...). The
+            // signature is set before the replay, so the pace plan the replay reads already holds it.
+            if !shot.isBreak {
+                model.setPaceSignature(TrickSignature.events(forTrick: shot.id, in: model.timeline, captions: model.captions))
+                model.replay(withLens: true)
+            }
         case .ready, .aiming, .judged, .offScript:
             // While explaining, a shot of the player's is never judged: it may be a retry of the answer itself.
             guard let attempt = model.currentAttempt, model.timelineVersion != judgedVersion,

@@ -12,7 +12,10 @@
 //          authored library (BreakdownAuthored, AuthoredTricks), which the dev tool's content check plays too, so no copy
 //          can drift; this file keeps the types, the words and the list order, and reads the numbers. Every shot was
 //          re-checked or re-authored on the 0.7.0 physics; the runs are recorded beside the numbers in AuthoredTricks.)
-// PURPOSE: The trick-shot library as the app shows it. Eleven shots, each with its id, title, a one-sentence hook, where
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: Squirt and Side Off the Rail join the
+//          list, judged with the package's strong-side rule (TrickGoal.side); Two-Rail Kick's idea no longer promises side
+//          it does not use; Draw-Massé Carom gets its maths line.)
+// PURPOSE: The trick-shot library as the app shows it. Every shot has its id, title, a one-sentence hook, where
 //          the balls start (only the balls it uses; every other ball is off the table), the authored answer (aim, power,
 //          cue-tip height and side; cue elevation for the massé, the jump and the carom), the goal the app checks from
 //          the recording (which balls must drop and in which pockets, which ball the cue ball must touch first and
@@ -88,6 +91,11 @@ struct TrickGoal: Equatable {
     var secondHit: Int? = nil
     /// A ball that must touch a cushion before it drops (a bank), if any.
     var bank: Int? = nil
+    /// The strong-side rule of a side-spin shot (0.7.4): the stroke itself must carry at least this much side, metres,
+    /// on this side of centre (the sign; right is positive). Nil for every other shot. A side-spin shot needs it because
+    /// the cue's line is free: a plain stroke aimed where the side would have sent the ball makes the goal without the
+    /// spin the shot is about. Checked from the attempt's settings, not its recording (TrickShotJudge.failure).
+    var side: Double? = nil
 }
 
 extension TrickGoal {
@@ -149,7 +157,7 @@ enum TrickShots {
     /// below and in BreakProbe's output).
     private static let authored: [TrickShot] = [
         calledBreak, stopDead, bridgeDraw, followTrain, twoRailKick, crossBank, comboChain, throwIt,
-        masse, jumpOver, drawMasseCarom,
+        masse, jumpOver, drawMasseCarom, squirt, sideOffRail,
     ]
 
     /// The list the player sees and the order Next shot walks: easiest first. Shots of the same difficulty keep their
@@ -172,8 +180,13 @@ enum TrickShots {
         guard let difficulty = TrickDifficulty(rawValue: a.difficulty) else {
             preconditionFailure("trick shot \(a.id): difficulty \(a.difficulty) is not 1, 2 or 3")
         }
+        var goal = TrickGoal(a.goal)
+        // A side-spin shot is held to the library's strong-side rule, on the side of centre its answer uses.
+        if AuthoredTricks.strongSideIDs.contains(a.id) {
+            goal.side = a.solution.tipSide < 0 ? -AuthoredTricks.strongSide : AuthoredTricks.strongSide
+        }
         return TrickShot(id: a.id, number: a.number, title: title, hook: hook, goalLine: goalLine, setup: .layout(a.layout),
-                         solution: TrickSettings(a.solution), goal: TrickGoal(a.goal), usesBridge: a.usesBridge,
+                         solution: TrickSettings(a.solution), goal: goal, usesBridge: a.usesBridge,
                          idea: idea, maths: maths, mathsSpoken: mathsSpoken, difficulty: difficulty,
                          window: TrickWindow(a.window), praise: praise, pending: false)
     }
@@ -223,7 +236,7 @@ enum TrickShots {
         AuthoredTricks.twoRailKick, title: String(localized: "Two-Rail Kick"),
         hook: String(localized: "The 5 is hidden behind two balls. Send the cue ball the long way round, off two cushions, and pot it anyway."),
         goalLine: String(localized: "Off two cushions, hit the 5 first and pot it."),
-        idea: String(localized: "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection, and side spin would bend that angle."),
+        idea: String(localized: "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round."),
         maths: String(localized: "angle in ≈ angle out  (cushion grip and spin bend it a few degrees)"),
         mathsSpoken: String(localized: "The angle in is about the angle out; the cushion's grip and any spin bend it a few degrees."),
         praise: String(localized: "Round the houses and in. Two mirrors, one pocket."))
@@ -284,7 +297,33 @@ enum TrickShots {
         hook: String(localized: "Hit the 4 first, then bring the cue ball back around to the 9."),
         goalLine: String(localized: "Hit the 4 first, then bring the cue ball back around to the 9."),
         idea: String(localized: "Raise the cue and strike low and to the side. Backspin brings the cue ball back, and the tilted spin bends its path toward the 9."),
-        maths: nil,
-        mathsSpoken: nil,
+        maths: String(localized: "after the 4, while it slides:  F = μ m g against the slip,  so the path bends until  v = R ω"),
+        mathsSpoken: String(localized: "After the 4, while the cue ball slides, the cloth pushes on it with the friction times its weight, against the way its contact point slips, so its path bends back toward the 9 until it rolls, when its speed equals its radius times its spin rate."),
         praise: String(localized: "You brought it back around to the 9."))
+
+    // MARK: 12. Squirt (0.7.4)
+    // The answer strikes the cue ball strongly on its left, so it leaves a little to the right of the cue's line
+    // (BreakdownPhysics: PoolSolver.squirtTangent, the deflection formula below), and aims a touch left to allow for it.
+    static let squirt = make(
+        AuthoredTricks.squirt, title: String(localized: "Squirt"),
+        hook: String(localized: "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue."),
+        goalLine: String(localized: "Pot the 2 in the top-right corner, with strong left side."),
+        idea: String(localized: "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it."),
+        maths: String(localized: "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R"),
+        mathsSpoken: String(localized: "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees."),
+        praise: String(localized: "You allowed for the squirt, and it went in with the side on."))
+
+    // MARK: 13. Side Off the Rail (0.7.4)
+    // Left side here is running side: the cue ball goes down and to the right into the bottom cushion, and its spin grips
+    // the cushion's nose along the rail (BreakdownPhysics: Impacts.rail, the coupled rail, grip 0.15 along it), adding
+    // speed along the rail, so it leaves wider than a plain ball on the same line (70.4 degrees from the normal against
+    // 67.7; AuthoredTricks records the run).
+    static let sideOffRail = make(
+        AuthoredTricks.sideOffRail, title: String(localized: "Side Off the Rail"),
+        hook: String(localized: "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail."),
+        goalLine: String(localized: "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner."),
+        idea: String(localized: "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in."),
+        maths: String(localized: "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in"),
+        mathsSpoken: String(localized: "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in."),
+        praise: String(localized: "Wider off the rail, and in. The side did that."))
 }

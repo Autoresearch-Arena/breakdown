@@ -1,6 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (throw search moved further off the pocket so it needs the throw, coarser aim steps; new massé and jump searches using cue elevation).
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: searches for the two side-spin shots,
+//          "squirt" and "side-off-rail", each kept only if it teaches what its words say; see their MARK sections.)
 // PURPOSE: Authors the trick shots for the app with the real solver (run "BreakProbe tricks [id ...]"). Each shot is
 //          built geometrically first (the ghost-ball line from the target pocket back through the object ball, a second
 //          ball dropped onto the cue ball's own recorded path, blockers on the straight line, a frozen pair whose line
@@ -13,6 +15,7 @@
 //          works): easy at least 0.6, medium 0.3 to 1.2, hard 0.12 to 0.6.
 // SRP/DRY check: Pass - shot construction and candidate choice only; simulation, goal checks and windows are in
 //          TrickSearch.
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
@@ -555,6 +558,198 @@ func choose(_ list: [Authored], _ difficulty: Difficulty) -> Authored? {
     }
 }
 
+// MARK: 12. Squirt (0.7.4)
+
+/// The strong-side rule both side-spin shots are judged by, read from the package library's one copy
+/// (AuthoredTricks.strongSide), so the windows measured here are the ones the app's judge holds the player to.
+let strongSide = AuthoredTricks.strongSide
+
+/// The side band of a strike inside the strong-side rule: walked like every other band, but a side weaker than the rule
+/// (or on the other side of centre) counts as a miss, as it does in the app. Nil when the strike itself fails.
+func strongSideBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: Double)? {
+    band(centre: s.tipSide, step: 0.0005, limit: 0.04) { v in
+        guard insideGrip(up: s.tipUp, side: v), v * s.tipSide > 0, abs(v) >= strongSide - 1e-12 else { return false }
+        var t = s; t.tipSide = v; return passes(goal, simulate(layout, t))
+    }
+}
+
+/// The half-width of a band around a value.
+func halfWidth(_ b: (lo: Double, hi: Double), _ centre: Double) -> Double { min(centre - b.lo, b.hi - centre) }
+
+/// The heading the cue ball actually leaves on (degrees), read from the recording a moment after the strike: the aim
+/// turned by the side-spin deflection.
+func launchHeading(_ tl: Timeline) -> Double {
+    degrees(of: tl.state(ball: 0, at: 1e-4).velocity)
+}
+
+/// An object ball hanging near a corner, the cue ball far down the table on the same line. Struck with strong side the
+/// cue ball leaves the cue's line by the deflection (the solver's squirt: about two and a half degrees at the strongest
+/// side the tip can hold), and over a long run that is enough to miss a straight-in pot; the answer aims off the other
+/// way to allow for it. Kept only if (a) the same stroke aimed dead straight misses, (b) the answer's own aim with no
+/// side misses (the side is needed at that aim), (c) the answer aims at least one degree off the straight line, and the
+/// windows are makeable: aim half-width at least 0.4 degrees, power at least 0.2 m/s, a tip-height band, and a side band
+/// inside the strong-side rule.
+func authorSquirt() -> Authored? {
+    var cands: [Candidate] = []
+    let ball = 2
+    for (k, pocketIndex) in [3, 1].enumerated() {
+        let pocket = pockets[pocketIndex]
+        // Directions from the pocket into the table, mostly along its length, so the cue ball can sit far back.
+        let into: [Double] = k == 0 ? [188, 196, 205, 215] : [-188, -196, -205, -215]
+        for phi in into {
+            let dir = Vec2(cos(phi * Double.pi / 180), sin(phi * Double.pi / 180))
+            for hang in [0.16, 0.24, 0.34] {
+                let a = pocket + dir * hang
+                for reach in [1.0, 1.3, 1.6] {
+                    let c = a + dir * reach
+                    guard clearOfRails(a, pocketClear: 0.05), clearOfRails(c) else { continue }
+                    let layout = layoutOf([0: c, ball: a])
+                    let straight = degrees(of: unit(a - c))
+                    let goal = Goal(drops: [(ball, pocketIndex)], firstHit: ball)
+                    let note = String(format: "squirt: the %d hangs %.2f m from the %@, the cue ball %.2f m back", ball, hang,
+                                      pocketNames[pocketIndex], reach)
+                    for da in range(-4, 4, 0.1) { for p in [4.0, 5.0, 6.0] {
+                        for side in [-0.0125, -0.011, 0.011, 0.0125] { for up in [-0.004, 0.0] {
+                            cands.append(Candidate(layout: layout, strike: Strike(aim: straight + da, power: p, tipUp: up, tipSide: side),
+                                                   goal: goal, note: note))
+                        } }
+                    } }
+                }
+            }
+        }
+    }
+    print("   squirt: \(cands.count) candidates")
+    let found = best("squirt", cands, .medium) { a in
+        let straight = degrees(of: unit(a.layout[ball] - a.layout[0]))
+        guard abs(a.strike.aim - straight) >= 1.0, abs(a.strike.tipSide) >= strongSide,
+              a.aimHalfWindow >= 0.4, a.powerHalfWindow >= 0.2, a.tipHalfWindow > 0 else { return false }
+        var dead = a.strike; dead.aim = straight
+        var plain = a.strike; plain.tipSide = 0
+        guard !passes(a.goal, simulate(a.layout, dead)), !passes(a.goal, simulate(a.layout, plain)) else { return false }
+        guard let side = strongSideBand(a.layout, a.strike, a.goal) else { return false }
+        return halfWidth(side, a.strike.tipSide) >= 0.0005
+    }
+    if let a = found {
+        explainSide(a)
+        var dead = a.strike; dead.aim = degrees(of: unit(a.layout[ball] - a.layout[0]))
+        print(String(format: "   aimed dead straight (%.2f deg) with the same stroke: ", dead.aim) + trickOutcome(a.goal, simulate(a.layout, dead)))
+        // The words say a firm stroke: does a slow one aimed straight with the same side still go (throw and slide pull it
+        // back), or miss as well? Printed as evidence for the maths line, not used to choose.
+        var slow = dead; slow.power = 1.5
+        print("   aimed dead straight at 1.5 m/s: " + trickOutcome(a.goal, simulate(a.layout, slow)))
+    }
+    return found
+}
+
+/// The facts behind a side-spin shot's words, printed under its report: the side band inside the strong-side rule (the
+/// window the app stores), the launch deflection, and what the same stroke does with no side.
+func explainSide(_ a: Authored) {
+    let s = a.strike
+    if let b = strongSideBand(a.layout, s, a.goal) {
+        print(String(format: "   side window inside the strong-side rule (%.4f m): %+.4f to %+.4f m (half-width %.4f)",
+                     strongSide, b.lo, b.hi, halfWidth(b, s.tipSide)))
+    }
+    let tl = simulate(a.layout, s)
+    print(String(format: "   launch heading %.2f deg for aim %.2f deg: the side turns the cue ball %+.2f deg",
+                 launchHeading(tl), s.aim, launchHeading(tl) - s.aim))
+    var plain = s; plain.tipSide = 0
+    print("   same aim and power, no side: " + trickOutcome(a.goal, simulate(a.layout, plain)))
+}
+
+/// A short account of a recording against a goal, for the authoring notes.
+func trickOutcome(_ goal: Goal, _ tl: Timeline) -> String {
+    if passes(goal, tl) { return "makes it" }
+    let first = firstStruck(tl).map { "first hit the \($0)" } ?? "touched no ball"
+    let drops = goal.drops.map { d in
+        pocketOf(d.ball, tl).map { "the \(d.ball) in the \(pocketNames[$0])" } ?? "the \(d.ball) stays up"
+    }
+    return "misses (\(first); \(drops.joined(separator: ", "))\(tl.pocketTime[0] != nil ? "; scratch" : ""))"
+}
+
+// MARK: 13. Side Off the Rail (0.7.4)
+
+/// The cue ball's first rail contact before its first ball, and how far its path lies from that rail's normal going in
+/// and coming out, degrees (0 is straight at or back off the rail, 90 along it). Nil when it touches no rail first.
+func firstRailRebound(_ tl: Timeline) -> (inFromNormal: Double, outFromNormal: Double)? {
+    let contact = tl.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }?.time ?? .infinity
+    guard let e = tl.events.first(where: { $0.kind == .cushion && $0.edge == .rail && $0.balls.first?.ball == 0 && $0.time < contact }),
+          let b = e.balls.first, b.velocityAfter.length > 1e-6, b.velocityBefore.length > 1e-6 else { return nil }
+    let n = e.normal.normalized
+    func angle(_ v: Vec2) -> Double { acos(min(1, abs(v.normalized.dot(n)))) * 180 / Double.pi }
+    return (angle(b.velocityBefore), angle(b.velocityAfter))
+}
+
+/// A one-rail kick: the cue ball goes off one cushion to the 7, which drops; two blockers sit on the straight line, so
+/// the kick is the way. Struck with side, the spin grips the rail as the ball turns off it and changes the angle it
+/// leaves at. Kept only if the side really does the work: (a) the same aim and power with no side fails; (b) a no-side
+/// stroke launched on exactly the answer's line (aimed where the side's stroke actually went) also fails, so it is the
+/// rail, not the launch deflection, that needs the side; (c) the side widens the angle off the rail, as the words say;
+/// and the windows are makeable, as for the squirt.
+func authorSideOffRail() -> Authored? {
+    let target = 7
+    var placed: [Candidate] = []
+    for c in [Vec2(0.75, 0.40), Vec2(0.70, 0.85), Vec2(1.0, 0.35), Vec2(1.8, 0.4)] {
+        let base = layoutOf([0: c])
+        var strikes: [Strike] = []
+        // Every 5 degrees round the circle, leaving out the lines straight along or across the table (those come
+        // straight back off a rail and teach nothing about the angle).
+        for aim in Swift.stride(from: -177.5, through: 177.5, by: 5.0)
+            where abs(abs(aim) - 90) > 6 && abs(aim) > 6 && abs(abs(aim) - 180) > 6 {
+            for p in [2.5, 3.5] { for side in [-0.011, 0.011] {
+                strikes.append(Strike(aim: aim, power: p, tipUp: 0.004, tipSide: side))
+            } }
+        }
+        placed += placedOnPath(base: base, ball: target, strikes: strikes, pocketsAllowed: [0, 1, 2, 3, 4, 5], fromStart: true,
+                               minCushions: 1, maxCushions: 1, minTime: 0.1, every: 6, pocketDistance: 0.2...0.9,
+                               goal: { Goal(drops: [(target, $0)], firstHit: target) },
+                               note: { "one cushion with side, then the \(target) into the \(pocketNames[$0])" })
+    }
+    print("   side-off-rail: \(placed.count) placements")
+    // Blockers on the straight line from the cue ball to the 7 (as the two-rail kick), clear of the kick's own path.
+    let all = placed
+    let blocked = parallelMap(all.count) { i -> Candidate? in
+        let cand = all[i]
+        let c = cand.layout[0], t = cand.layout[target]
+        let line = t - c
+        guard line.length > 0.6 else { return nil }
+        let b1 = c + line * 0.45 + unit(line).perp * (R * 0.4)
+        let b2 = c + line * 0.62 - unit(line).perp * (R * 0.6)
+        guard clearOfRails(b1), clearOfRails(b2), (b1 - t).length > 4 * R, (b2 - t).length > 4 * R else { return nil }
+        let path = cuePath(simulate(cand.layout, cand.strike), fromStart: true)
+        guard path.allSatisfy({ ($0.p - b1).length > 2 * R + 0.02 && ($0.p - b2).length > 2 * R + 0.02 }) else { return nil }
+        var layout = cand.layout
+        layout[9] = b1; layout[10] = b2
+        return Candidate(layout: layout, strike: cand.strike, goal: cand.goal, note: cand.note)
+    }.compactMap { $0 }
+    print("   side-off-rail: \(blocked.count) candidates with the straight line blocked")
+    let found = best("side-off-rail", blocked, .hard) { a in
+        guard abs(a.strike.tipSide) >= strongSide, a.aimHalfWindow >= 0.4, a.powerHalfWindow >= 0.2, a.tipHalfWindow > 0
+        else { return false }
+        let tl = simulate(a.layout, a.strike)
+        var plain = a.strike; plain.tipSide = 0
+        guard !passes(a.goal, simulate(a.layout, plain)) else { return false }
+        var sameLine = plain; sameLine.aim = launchHeading(tl)
+        let lineTl = simulate(a.layout, sameLine)
+        guard !passes(a.goal, lineTl) else { return false }
+        guard let with = firstRailRebound(tl), let without = firstRailRebound(lineTl),
+              with.outFromNormal > without.outFromNormal + 0.5 else { return false }
+        guard let side = strongSideBand(a.layout, a.strike, a.goal) else { return false }
+        return halfWidth(side, a.strike.tipSide) >= 0.0005
+    }
+    if let a = found {
+        explainSide(a)
+        let tl = simulate(a.layout, a.strike)
+        var sameLine = a.strike; sameLine.tipSide = 0; sameLine.aim = launchHeading(tl)
+        let lineTl = simulate(a.layout, sameLine)
+        if let w = firstRailRebound(tl), let o = firstRailRebound(lineTl) {
+            print(String(format: "   off the rail: with side in %.1f, out %.1f deg from the normal; same line with no side in %.1f, out %.1f deg",
+                         w.inFromNormal, w.outFromNormal, o.inFromNormal, o.outFromNormal))
+        }
+        print("   same launch line, no side: " + trickOutcome(a.goal, lineTl))
+    }
+    return found
+}
+
 // MARK: Driver
 
 /// Authors every shot (or only the ids named) and prints each report.
@@ -570,6 +765,8 @@ func runTrickAuthoring(only: Set<String>) {
         ("throw-it", authorThrowIt),
         ("masse-curve", authorMasse),
         ("jump-over", authorJump),
+        ("squirt", authorSquirt),
+        ("side-off-rail", authorSideOffRail),
     ]
     if only.isEmpty || only.contains("called-break") {
         let start = Date()
