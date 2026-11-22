@@ -467,9 +467,10 @@ final class ShowpieceModel {
     /// True when a match is saved on the device (Continue match on the menu). Seeded from a save that really loads
     /// (savedSummary decodes it), not from the file merely existing: a file that cannot be read, is in an old format
     /// or holds a finished game must never offer a Continue that then does nothing (0.7.5).
-    private(set) var savedMatchExists = MatchMode.savedSummary() != nil
+    /// Read from the one summary below, so launch reads the saves once (0.7.5: there is one file per game now).
+    var savedMatchExists: Bool { savedMatchSummary != nil }
     /// The saved match named for the menu's Continue row (which game, against whom, whose shot); nil when none is
-    /// saved. Refreshed whenever the save changes, as savedMatchExists is.
+    /// saved. Refreshed whenever a save changes (noteMatchSave).
     private(set) var savedMatchSummary: SavedMatchSummary? = MatchMode.savedSummary()
 
     // The opening for a first-time player.
@@ -1773,7 +1774,6 @@ final class ShowpieceModel {
     /// `exists` is kept for the callers and no longer decides.
     func noteMatchSave(exists: Bool) {
         savedMatchSummary = MatchMode.savedSummary()
-        savedMatchExists = savedMatchSummary != nil
     }
 
     /// The parameters a match shot is solved with right now, exactly as prepare(_:) builds them for a NextShot input
