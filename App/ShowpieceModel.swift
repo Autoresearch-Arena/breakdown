@@ -1345,7 +1345,8 @@ final class ShowpieceModel {
         showpieceOnScreen = showpiece
         adoptLayout(after: tl)
         timeline = tl
-        captions = CaptionEngine.make(from: tl, surface: solvedSurface)
+        // The solved strike too (lens stream, 0.7.0): a raised strike that did not hop carries its angle nowhere else.
+        captions = CaptionEngine.make(from: tl, surface: solvedSurface, strike: lastInput?.strike)
         pacePlan = PacePlan(captions: captions, timeline: tl, style: paceStyle)
         ridePlan = RidePlan(tl)
         readShot(tl)

@@ -1,13 +1,22 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
-// PURPOSE: The Physics Lens, explained once. The first time the Lens is on screen with the player in charge (the
-//          opening has handed over, the menu is shut, the shot is in the player's hands), three short callouts appear
-//          one at a time, each pointing at the thing it names:
-//            1. the orange path: a ball skidding over the cloth,
-//            2. the blue path: a ball rolling,
+// Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 44
+//          and 53: the tips use the Lens key's own words, amber and cyan, and with Differentiate Without Colour on
+//          "dashed amber" and "solid cyan", matching the trails and LensLegendChip; they no longer appear over a finished
+//          break or on a lesson's key moment, but on the first guided hold of a Lens replay the player started
+//          (model.lensReplayStartedByPlayer and model.holding), and while they show the beat holds
+//          (model.holdForTips) and the caption card, strip and ring stand back (CaptionViews reads the same flag).)
+// PURPOSE: The Physics Lens, explained once. The first time the player starts a Lens replay of their own (Replay with
+//          the Lens, Watch it in the Lens) and the replay stops on its first beat, three short callouts appear one at a
+//          time, each pointing at the thing it names:
+//            1. the amber path (dashed amber with Differentiate Without Colour): a ball sliding over the cloth,
+//            2. the cyan path (solid cyan): a ball rolling,
 //            3. the bar: drag it to move through the shot in time.
-//          Next moves on, Got it on the last one finishes; finishing (or closing early) is remembered under
-//          LensCallouts.seenKey, and Options can clear it ("Show the Lens tips again", beside the aiming tips button).
+//          The beat holds while they are up (model.holdForTips), so the trails they point at stay fresh. Next moves on,
+//          Got it on the last one finishes; finishing (or closing early) is remembered under LensCallouts.seenKey, and
+//          Options can clear it ("Show the Lens tips again", beside the aiming tips button).
+//          Other screens' cards that should stand back while the tips show read model.holdForTips (the trick-shot and
+//          lesson cards belong to other files; the Behind the 8-Ball card does it in EightBallViews).
 //          LensCalloutLayer - over the table on every screen but the folding phone's open one. Callouts 1 and 2 draw a
 //            thin pointer from the bubble to a stretch of path of their colour that the Lens is showing right now
 //            (found in the recorded timeline, the newest long enough stretch, so the brightest part of the trail);
@@ -28,16 +37,28 @@ enum LensCallouts {
     static let seenKey = "lensTipsSeen"
     static let count = 3
 
-    /// The Lens is on screen and the player is in charge: not under the menu, not while the opening or the player's
-    /// first break tells its story, and not mid-way through the opening's own stages.
-    @MainActor static func due(_ model: ShowpieceModel) -> Bool {
+    /// The Lens is up and nothing covers it, outside the opening's own story. Once the tips have started they stay
+    /// while this holds, even if the player scrubs off the beat, so a half-read tip never vanishes under a finger.
+    @MainActor static func visible(_ model: ShowpieceModel) -> Bool {
         model.lensOn && !model.menuOpen && model.stage == .explore && model.openingStage == .none
     }
 
-    static func text(step: Int) -> String {
-        switch step {
-        case 0: return String(localized: "Orange path: the ball is skidding. It slides over the cloth and its spin has not caught up yet.")
-        case 1: return String(localized: "Blue path: the ball is rolling. The cloth has matched its spin to its speed.")
+    /// When the tips start: the first guided hold of a Lens replay the player started themselves. Not the opening's
+    /// replay, not a lesson's or trick shot's own replay (their cards are on screen), and not a finished break whose
+    /// trails have faded: a hold is always mid-replay, on a beat, with its trails fresh.
+    @MainActor static func due(_ model: ShowpieceModel) -> Bool {
+        visible(model) && model.lensReplayStartedByPlayer && model.holding
+    }
+
+    /// The tip's words. `withoutColour` (Differentiate Without Colour) names each line's shape as well, the way the
+    /// trails and the Lens key draw it then: sliding dashed, rolling solid. The colour words are the key's own, amber
+    /// and cyan.
+    static func text(step: Int, withoutColour: Bool) -> String {
+        switch (step, withoutColour) {
+        case (0, false): return String(localized: "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
+        case (0, true): return String(localized: "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
+        case (1, false): return String(localized: "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
+        case (1, true): return String(localized: "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
         default: return String(localized: "Drag the bar to move through the shot in time, forwards or back.")
         }
     }
@@ -60,30 +81,41 @@ struct LensCalloutLayer: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var step = 0
+    /// The tips have begun on a hold; they stay up until finished, closed, or the Lens goes away.
+    @State private var started = false
     @State private var cameraBox = AimProjector.CameraBox()
     /// Where the bubble is, in this layer's own space, so the pointer can leave from it.
     @State private var bubbleFrame: CGRect = .zero
 
     private static let space = "lensCallouts"
 
+    /// This layer's tips are on screen now (on the folding phone's open screen the panel's card shows them instead).
+    private var showing: Bool {
+        !seen && !inlinePages && LensCallouts.visible(model) && (started || LensCallouts.due(model))
+    }
+
     var body: some View {
-        if !seen && !inlinePages && LensCallouts.due(model) {
-            TimelineView(.animation) { _ in
-                GeometryReader { geo in
-                    let origin = geo.frame(in: .named(StageSpace.name)).origin
-                    ZStack {
-                        Canvas { ctx, size in drawPointer(&ctx, size: size) }
-                            .allowsHitTesting(false)
-                            .accessibilityHidden(true)
-                        placedBubble(size: geo.size, origin: origin)
+        // A ZStack that always exists, so the hold flag is kept in step even when nothing is drawn.
+        ZStack {
+            if showing {
+                TimelineView(.animation) { _ in
+                    GeometryReader { geo in
+                        let origin = geo.frame(in: .named(StageSpace.name)).origin
+                        ZStack {
+                            Canvas { ctx, size in drawPointer(&ctx, size: size) }
+                                .allowsHitTesting(false)
+                                .accessibilityHidden(true)
+                            placedBubble(size: geo.size, origin: origin)
+                        }
                     }
                 }
+                .coordinateSpace(name: Self.space)
+                .ignoresSafeArea()
+                .transition(.opacity)
+                .animation(reduceMotion ? nil : .snappy, value: step)
             }
-            .coordinateSpace(name: Self.space)
-            .ignoresSafeArea()
-            .transition(.opacity)
-            .animation(reduceMotion ? nil : .snappy, value: step)
         }
+        .lensTipsHold(model: model, showing: showing, owns: !inlinePages, started: $started)
     }
 
     // MARK: The bubble
@@ -165,13 +197,44 @@ struct LensCalloutCard: View {
     @AppStorage(LensCallouts.seenKey) private var seen = false
     @Environment(\.inlinePages) private var inlinePages
     @State private var step = 0
+    @State private var started = false
+
+    private var showing: Bool {
+        !seen && inlinePages && LensCallouts.visible(model) && (started || LensCallouts.due(model))
+    }
 
     var body: some View {
-        if !seen && inlinePages && LensCallouts.due(model) {
-            // The bar is in this panel, below the card.
-            LensCalloutBubble(step: $step, seen: $seen, arrow: step == 2 ? .down : nil)
-                .transition(.opacity)
+        ZStack {
+            if showing {
+                // The bar is in this panel, below the card.
+                LensCalloutBubble(step: $step, seen: $seen, arrow: step == 2 ? .down : nil)
+                    .transition(.opacity)
+            }
         }
+        .lensTipsHold(model: model, showing: showing, owns: inlinePages, started: $started)
+    }
+}
+
+// MARK: Holding the beat
+
+private extension View {
+    /// Keeps the model's hold in step with the tips: while they show, the beat they appeared on does not run out
+    /// (model.holdForTips) and other cards stand back; when they finish, close or the Lens goes away, the hold runs on.
+    /// `owns`: only the copy that can show on this screen writes the flag (the layer over the table, or the card in the
+    /// folding phone's panel), so the hidden copy never clears what the shown one set.
+    func lensTipsHold(model: ShowpieceModel, showing: Bool, owns: Bool, started: Binding<Bool>) -> some View {
+        self
+            .onChange(of: showing, initial: true) { _, now in
+                if now { started.wrappedValue = true }
+                if owns, model.holdForTips != now { model.holdForTips = now }
+            }
+            // Leaving the Lens (or the menu covering it) ends this round: next time the tips wait for a new hold.
+            .onChange(of: LensCallouts.visible(model)) { _, now in
+                if !now { started.wrappedValue = false }
+            }
+            .onDisappear {
+                if owns, model.holdForTips { model.holdForTips = false }
+            }
     }
 }
 
@@ -185,6 +248,8 @@ struct LensCalloutBubble: View {
     @Binding var seen: Bool
     let arrow: Arrow?
     @Environment(\.palette) private var palette
+    /// Names each path's shape as well as its colour when colour alone may not tell them apart.
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
 
     private var last: Bool { step + 1 >= LensCallouts.count }
 
@@ -195,7 +260,7 @@ struct LensCalloutBubble: View {
                     .font(.title3)
                     .foregroundStyle(step == 0 ? palette.slide : palette.accent)
                     .accessibilityHidden(true)
-                Text(LensCallouts.text(step: step))
+                Text(LensCallouts.text(step: step, withoutColour: withoutColour))
                     .font(Theme.body)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
