@@ -22,6 +22,9 @@
 //          zero-speed strike makes no caption; on bumper pool and bar billiards no caption names a ball by number,
 //          says "pocket" or "the cue ball", and each says its own words (the bumper, the cup, the hole, a peg and what
 //          it costs); the pool table's captions are the same with the table and striker passed as without.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: every caption of the real shots carries one
+//          to three figures (a jam may carry none) with its text untouched; the strike, a hit, a throw, a rail, a skid
+//          and a drop carry the solver's own numbers in the sentences' number style, with the right units and marks.)
 // SRP/DRY check: Pass - checks only. The wording of each caption is the engine's; only titles that decide which template
 //          fired (jaw or knuckle) are compared, through the same String(localized:) lookup the engine uses.
 @testable import Breakdown
@@ -417,5 +420,104 @@ final class CaptionEngineTests: XCTestCase {
         let drop = LensEvent(time: 1, kind: .pocket, point: .zero, normal: Vec2(1, 0),
                              balls: [TestShots.ball(1, before: 0.5, after: 0)], pocket: 3)
         XCTAssertEqual(captions([drop]).map(\.title), [String(localized: "Pocketed")])
+    }
+
+    // MARK: 5. The 0.7.6 figures
+
+    /// A number as the captions print it: the player's number style, `digits` decimals.
+    private func printed(_ x: Double, _ digits: Int) -> String {
+        String(format: "%.\(digits)f", locale: Locale.current, x)
+    }
+
+    func testEveryRealCaptionCarriesItsFigures() {
+        for surface in [PlaySurface.cloth, .ice, .moon] {
+            for (name, tl) in [("break", TestShots.breakShot(on: surface)), ("straight pot", TestShots.straightPot(on: surface))] {
+                let label = "\(name) on \(surface.rawValue)"
+                for c in CaptionEngine.make(from: tl, surface: surface) {
+                    XCTAssertLessThanOrEqual(c.figures.count, CaptionEngine.maxFigures, label)
+                    // A jam has no number worth a tile; every other caption has at least one.
+                    if tl.events[c.id].kind != .settledInContact {
+                        XCTAssertFalse(c.figures.isEmpty, "\(label): \(c.title) has no figures")
+                    }
+                    for f in c.figures {
+                        XCTAssertFalse(f.value.isEmpty || f.unit.isEmpty || f.label.isEmpty, label)
+                        XCTAssertTrue(f.amount.isFinite, label)
+                    }
+                    // The figures are added beside the words, never into them.
+                    XCTAssertEqual(c.detail, c.sentences.joined(separator: " "), label)
+                }
+            }
+        }
+    }
+
+    func testStrikeFiguresAreTheSolversNumbers() {
+        let strike = LensEvent(time: 0, kind: .cueStrike, point: .zero, normal: Vec2(1, 0), normalImpulse: 0.5,
+                               balls: [TestShots.ball(0, before: 0, after: 2.4)])
+        let figures = captions([strike]).first?.figures ?? []
+        XCTAssertEqual(figures.count, 2)
+        guard figures.count == 2 else { return }
+        XCTAssertEqual(figures[0].amount, 2.4, accuracy: 1e-12, "the launch speed is the recorded speed off the tip")
+        XCTAssertEqual(figures[0].value, printed(2.4, 1))
+        XCTAssertEqual(figures[0].unit, "m/s")
+        XCTAssertEqual(figures[0].mark, .strike)
+        // No spin recorded: a stunned ball, which slides first, so its spin figure wears the sliding colour.
+        XCTAssertEqual(figures[1].amount, 0, accuracy: 1e-12)
+        XCTAssertEqual(figures[1].unit, "%")
+        XCTAssertEqual(figures[1].mark, .sliding)
+    }
+
+    func testHitThrowRailSkidAndDropFiguresAreTheSolversNumbers() {
+        // A hit: the mover's speed in, and the share of the energy before that the struck ball leaves with.
+        let hit = ballBall(mover: 2)
+        let share = hit.balls[1].energyAfter / (hit.balls[0].energyBefore + hit.balls[1].energyBefore) * 100
+        let hitFigures = captions([hit]).first?.figures ?? []
+        XCTAssertEqual(hitFigures.map(\.amount), [2, share])
+        XCTAssertEqual(hitFigures.map(\.value), [printed(2, 1), printed(share, 0)])
+        XCTAssertEqual(hitFigures.map(\.unit), ["m/s", "%"])
+
+        // A throw leads with its degrees, the throw sentence's number, in friction's colour.
+        let cutEvent = cut(throwDegrees: 2)
+        let thrown = CaptionEngine.throwFacts(cutEvent)?.degrees ?? 0
+        let throwFigures = captions([cutEvent]).first?.figures ?? []
+        XCTAssertEqual(throwFigures.count, 3)
+        XCTAssertEqual(throwFigures.first?.amount ?? 0, abs(thrown), accuracy: 1e-12)
+        XCTAssertEqual(throwFigures.first?.value, printed(abs(thrown), 1))
+        XCTAssertEqual(throwFigures.first?.unit, "°")
+        XCTAssertEqual(throwFigures.first?.mark, .friction)
+        XCTAssertEqual(throwFigures.first?.text, printed(abs(thrown), 1) + "°")
+
+        // A rail: the speed in and the share kept straight into it.
+        let rail = cushion(1.2)
+        let b = rail.balls[0]
+        let kept = b.velocityAfter.dot(rail.normal) / -b.velocityBefore.dot(rail.normal) * 100
+        let railFigures = captions([rail]).first?.figures ?? []
+        XCTAssertEqual(railFigures.count, 2)
+        XCTAssertEqual(railFigures.first?.amount ?? 0, 1.2, accuracy: 1e-12)
+        XCTAssertEqual(railFigures.last?.amount ?? 0, kept, accuracy: 1e-9)
+        XCTAssertEqual(railFigures.map(\.mark), [.cushion, .cushion])
+
+        // A skid on ice: its recorded length (0.2 s to 0.5 s), then the rolling speed in the rolling colour.
+        let skid = BallSegment(t0: 0.2, t1: 0.5, phase: .sliding, position0: Vec2(0.4, 0.6), velocity0: Vec2(1.5, 0),
+                               acceleration: .zero, omega0: .zero, alphaXY: .zero, spinDecay: 9,
+                               radius: TestShots.ballRadius, orientation0: .identity)
+        var waiting = TestShots.still(Vec2(0.4, 0.6))
+        waiting.t1 = 0.2
+        let skidFigures = captions([skidToRoll(1.5)], surface: .ice,
+                                   cue: [waiting, skid, TestShots.still(Vec2(0.85, 0.6))]).first?.figures ?? []
+        XCTAssertEqual(skidFigures.count, 2)
+        XCTAssertEqual(skidFigures.first?.amount ?? 0, 0.3, accuracy: 1e-9)
+        XCTAssertEqual(skidFigures.first?.value, printed(0.3, 2))
+        XCTAssertEqual(skidFigures.first?.unit, "s")
+        XCTAssertEqual(skidFigures.first?.mark, .sliding)
+        XCTAssertEqual(skidFigures.last?.amount ?? 0, 1.5, accuracy: 1e-12)
+        XCTAssertEqual(skidFigures.last?.mark, .rolling)
+
+        // A drop: the speed it entered at.
+        let drop = LensEvent(time: 1, kind: .pocket, point: .zero, normal: Vec2(1, 0),
+                             balls: [TestShots.ball(1, before: 0.5, after: 0)], pocket: 3)
+        let dropFigures = captions([drop]).first?.figures ?? []
+        XCTAssertEqual(dropFigures.map(\.value), [printed(0.5, 1)])
+        XCTAssertEqual(dropFigures.first?.text, printed(0.5, 1) + "\u{00A0}m/s")
+        XCTAssertEqual(dropFigures.first?.mark, .pocket)
     }
 }

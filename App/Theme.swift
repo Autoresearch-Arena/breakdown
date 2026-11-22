@@ -12,6 +12,9 @@
 //          and the Lens agrees. The room's own warm light, wood, balls and cloth are not interface and are unchanged.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation: Palette.whatIf, the violet of the other future in
 //          a what-if replay; frozen after the foundation commit.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: the caption figure styles (figure, figureUnit,
+//          figureLabel, figureChip: rounded, monospaced digits, all system text styles) and Palette.color(for:) for a
+//          FigureMark, so a figure's number wears the colour of the Lens mark it belongs to.)
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
 //          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
@@ -58,6 +61,15 @@ enum Theme {
     static var label: Font { .caption.weight(.semibold) }
     /// Live numbers: monospaced digits so they do not jitter as they change.
     static var number: Font { .caption.monospaced().monospacedDigit() }
+    /// A caption figure's number on its tile (0.7.6): large, rounded, with monospaced digits so a column of numbers
+    /// lines up and a number does not change width as it is read off a different moment.
+    static var figure: Font { .system(.title3, design: .rounded, weight: .bold).monospacedDigit() }
+    /// The unit beside a figure's number ("m/s"): smaller, on the number's baseline.
+    static var figureUnit: Font { .system(.caption, design: .rounded, weight: .semibold) }
+    /// The few words under a figure's number ("Launch speed").
+    static var figureLabel: Font { .caption2.weight(.medium) }
+    /// The lead figure in the title chip on the table: the chip's size, in the tile's rounded digits.
+    static var figureChip: Font { .system(.caption, design: .rounded, weight: .bold).monospacedDigit() }
 }
 
 // MARK: - Palette
@@ -99,6 +111,20 @@ struct Palette {
 
     func color(for accent: CaptionAccent) -> Color {
         switch accent {
+        case .strike: return strike
+        case .impact: return impact
+        case .cushion: return cushion
+        case .friction: return friction
+        case .pocket: return pocket
+        }
+    }
+
+    /// A caption figure's colour (0.7.6): the Lens trail colours for sliding (magenta) and rolling (cyan), the caption
+    /// colours for the event kinds, so a number on the card matches the mark it describes on the table.
+    func color(for mark: FigureMark) -> Color {
+        switch mark {
+        case .sliding: return slide
+        case .rolling: return accent
         case .strike: return strike
         case .impact: return impact
         case .cushion: return cushion
