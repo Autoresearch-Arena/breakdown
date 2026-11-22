@@ -5,6 +5,8 @@ PURPOSE: The plan for redesigning Breakdown's regular-iPhone layout, for a new s
          Boss's own notes, in his words, with his screenshots. Part 2 is what the phone screen is made of today (read in
          the code). Part 3 is the design: principles, the one text component, and every screen state. Part 4 is the
          order of work, each step with what done looks like and how it is checked. Design first, then build; no hacking.
+Edited: Claude Opus 5.5 High, 22-November-2026 (Parts 3 and 4 rewritten after the Boss asked for Liquid Glass and an
+         adversarial look: research, an inventory, three critiques, a draft and a skeptic's corrections).
 SRP/DRY check: Pass - checked plans/ (the 0.7.6 phone plan fixed bugs inside the existing cards; its "fixed room"
          explanation card is what the Boss rejected, and this replaces it on the phone) and the 0.7.6 code on branch
          claude/iphone-layout-overlap-7f3f27.
@@ -58,6 +60,14 @@ cards and on the space the table lost.
   that doesn't need a card that takes up... this looks like a fifth of the screen space at the center of the screen."
 - "You need to write an actual plan before you go hacking at the UI. Not random hacking."
 
+### On Liquid Glass and the controls
+
+- "Look at the design notes for Liquid Glass, because ideally all this should look fabulous on Liquid Glass and should
+  take advantage of the Liquid Glass transparent effects."
+- "This needs serious planning, because so far your UI here is just an absolute disaster. Those buttons at the bottom do
+  not need to be that gigantic, and the icons you're using for them are bad. They're meaningless, pretty much. Please
+  take an adversarial look at this."
+
 ### On working with him (applies to whoever does this)
 
 - Decide and do the work; no choice buttons or "this or that?" menus at the end of a turn.
@@ -95,82 +105,213 @@ table, and the table gets whatever height is left. The fix is structural, not a 
 
 ## Part 3. The design
 
-### Principles (each from his notes)
+Reference material: plans/22-Nov-2026-liquid-glass-brief.md (Apple's Liquid Glass rules and the SwiftUI calls, with
+sources) and plans/22-Nov-2026-phone-ui-critiques.md (every control on the phone today with its size and icon, three
+adversarial critiques of the Boss's screenshots, and the skeptic's corrections to the first draft, all applied below).
 
-1. The middle of the screen is the action's. Between the title row and a slim control strip at the bottom there is only
-   the table. Nothing is stacked under the table on a phone held upright.
-2. No cards for words. Words are blurbs: small, sized to their own text, placed where the action is not. No reserved
-   room, no empty plate, no full-width bar for a short line.
-3. Keep the plain sentence and the physics; make them look good. The figures are highlighted (colour, a monospaced
-   number); long text folds behind a tap ("a dot you can tap").
-4. Never shortchange the graphics: the camera comes in on the moment, and the Lens drawings stay large and clear.
-5. Calm and slow enough for a newcomer: the first minute stays as it is (racked table, one instruction, a normal break).
+Measurements are for the regular iPhone held upright, 402 x 874 points (top safe area to 62, bottom safe area from 840).
 
-### The one text component: Blurb
+### Principles (from the Boss's notes)
 
-A single SwiftUI view, used for every piece of text over the table on a phone (explanations, the trick's idea, a ruling,
-ball in hand, the first instruction, what-if results):
+1. The middle of the screen belongs to the action. Between the title row and a slim control strip there is only the
+   table.
+2. No cards for words. Words are blurbs sized to their text and placed where the action is not. No reserved room, no
+   empty plate, no bar for a short line.
+3. Keep the plain sentence and the physics, and make them look good: figures bold and monospaced, long text folded
+   behind a tappable dot.
+4. Never shortchange the graphics: the camera comes in on the moment, the Lens drawings stay large.
+5. Calm first minute: a racked table, one instruction, a normal-speed break. Nothing appears before it can be used.
+6. Small, clear controls: every control means something at a glance (Apple: "Make sure the meaning of each control is
+   clear. Don't make people guess"). App-specific ideas (Lens, Ride, Your shot) get WORDS, not invented icons. Standard
+   actions (back, play, pause, replay) keep their standard symbols. Hit areas stay at least 44 points; "not gigantic"
+   comes from shape and style, not from tiny targets.
 
-- A small rounded plate, dark and translucent with a light blur, a thin accent edge in the moment's colour; padding about
-  8 points; width = its text's natural width, capped at about 70 per cent of the screen; height = its content. No
-  minimum size.
-- Content slots, each optional, in this order: a small bold title with an optional lead figure after it ("Throw ·
-  2.1°"); up to three tiny figure chips; the sentence(s) in a small text style, at most three lines shown; the worked
-  equation as one tiny italic line (Show the maths on, or a headline beat); a row of at most two small buttons (a
-  ruling's Continue, "Watch it in the Lens"); a tiny "more" dot when text is folded.
-- Tap: opens to the full text in place (still a blurb, taller, scrolls past about half the screen); tapping again or
-  playing on closes it. While open, a held replay stays held.
-- Placement is given by the caller: anchored to a table point with a short leader line; or docked to the top or bottom
-  edge of the table area. A placement engine (one small function) chooses, for an anchored blurb, the side of the anchor
-  with room, never over a given "keep clear" rectangle (the moment's focus, the balls it names), never under the title
-  row or the control strip, and keeps it there for the whole beat (no jumping frame to frame).
-- Accessibility: VoiceOver reads the full text whatever is folded; Dynamic Type grows the text, and the cap grows with it.
+### Scope: the upright phone only, beside the shared views
 
-### The control strip
+The notebook side panel (iPad, Mac, the open folding phone) and the sideways phone's column reuse ShotPanel,
+PlaybackControls and LensLegendChip (App/NotebookPanel.swift, ShowpieceView's sideColumn). Those stay as they are. The
+upright phone gets NEW phone-only views next to them: Blurb, PhoneStrip (the control strip), PhoneAimPanel, PhoneTitleRow.
+"Remove" in this plan means "stop using on the upright phone", never "delete the shared view".
 
-At the bottom, one compact strip: play/pause (which becomes Continue while a moment is held), the scrub bar, speed,
-replay; then one row of small capsules: Lens, Ride, and the context action (Your shot, or Your turn during a trick or
-lesson replay, or Continue for a waiting ruling). Your shot's aiming panel (ShotPanel) opens from it as today but is
-tightened to its content. The strip's measured top is the bottom of the table's space.
+### Liquid Glass: what is glass and what is not
+
+- Content, never glass: the table, the Lens drawings, the event ring, every blurb, the title text.
+- Glass: the two title-row circles (back, menu), the control strip, the aiming panel (or the what-if nudge panel in its
+  place). Nothing else. No glass on glass.
+- Variants: the whole bottom strip and panel use REGULAR glass (they carry words), interactive. The two title circles use
+  CLEAR glass with a 35 per cent black dimming layer under it while the Lens is off (the warm table is bright and busy),
+  and plain clear glass while the Lens is on (the Lens view is dark).
+- Use glassEffect with the interactive variant on plain buttons everywhere (not a mix of glass button styles), so unions
+  and identities work the same way. Glass is the last appearance modifier; no custom backgrounds, borders or tints on
+  glass, except the one primary action below.
+- Grouping: the bottom strip and the aiming panel live in one GlassEffectContainer (spacing 8) inside a bottom safe-area
+  bar (safeAreaBar, edge bottom). The table view ignores the safe area and runs under it; the camera frames the table
+  between the title row and the bar's top, read from the bar's safe-area inset, not from a measured preference.
+- Unions: play/pause and replay join as one shape; Lens and Ride join as one shape. Text and symbols never share a union.
+- Morph: the primary action button and the aiming panel share one glass identity, so "Your shot" grows into the panel and
+  the panel shrinks back into it. The other strip pieces fade with the materialize transition. Animate with the smooth
+  animation.
+- Legibility: the table is not a scroll view, so the system's scroll edge effect does nothing for it. Draw a content-
+  layer gradient, black to clear, behind the title row (top 120 points) and behind the strip (bottom 160 points), so
+  white labels read over any cloth. With Reduce Transparency, glass becomes opaque and the gradients stay.
+- Colour: magenta and cyan mean only sliding and rolling, everywhere. The accent today is cyan (App/Theme.swift), so the
+  primary action must not be cyan: it is white glass with dark text (prominent style tinted white), the only tinted
+  control on screen. "Hard", "The idea" and other labels use the secondary text colour.
+
+### The Blurb (the one text component)
+
+- Material: thin material at least (white over green cloth needs it); regular material for opened or long text. Corner 12
+  (concentric when docked near a screen corner). No border, no accent bar, no tint.
+- Size: padding 10; width follows the text up to 260 (85 per cent of the width at accessibility sizes); height follows the
+  content, no minimum. Nothing smaller than 11 points.
+- Slots, in order, each optional: a title in subheadline semibold with the lead figure after it in bold monospaced white
+  ("Throw · 2.1°"); up to three figure chips in caption monospaced (Caption.figures, already built); the sentence in
+  subheadline, three lines at most; the worked equation in italic caption, only with Show the maths on or on a headline
+  beat; up to two small glass buttons, only for a choice that is not the primary action; a "more" dot when text is
+  folded.
+- Tap: opens in place (same side of its anchor) up to 370 wide and about half the screen high, then scrolls; a held
+  replay stays held while open; tap again or play to close. Appears and goes with a fade and a slight scale.
+- Placement on the upright phone: ANCHORED blurbs go above or below their anchor (never beside: with the moment framed in
+  the middle there is only about 185 points either side), centred on the anchor's x, kept inside a 16-point margin,
+  joined by a 2-point leader over a 4-point shadow (the Lens tips' line). While an anchored blurb shows, the moment
+  framing puts its focus at about 35 per cent of the table area's height so the blurb has room below. DOCKED blurbs stack
+  at the top of the table area, 6 apart, in this order top down: the Lens key, a ruling or notice, the first-minute
+  instruction, a Lens tip. The table framing starts below the lowest docked blurb. A blurb never moves during a beat.
+- The event ring stays; its title chip goes (it repeated the blurb's title and collided with it).
+- The Lens key is a one-line docked blurb (about 170 by 26): "Sliding" and "Rolling" with their glowing lines, only while
+  the Lens is on. It leaves the title row.
+- Accessibility: VoiceOver reads the whole text whatever is folded; Dynamic Type grows the text and the width cap.
+
+### The title row (y 62 to 106, 16 in from each side)
+
+- Back: the standard back chevron in a 44 clear circle at the left. No text; spoken "Back".
+- Title: plain headline, one line, at most about 258 wide, shrinking to 0.8 before truncating: the trick or lesson name,
+  "Break", the match's turn and score, or Ride's status words. A difficulty follows in the secondary colour ("The Called
+  Break · Hard"). The title is a button (VoiceOver: button trait, hint "Shows the idea") that opens the idea blurb.
+- Menu: the system "more" mark (ellipsis) in a 44 clear circle at the right, spoken "More". It holds: Surface (a submenu),
+  What if, Show the maths, All trick shots or All lessons, Watch again, Show the answer's path, and, at accessibility
+  sizes, anything the strip moved into it (below).
+- First minute only: a "Skip" text capsule left of the menu while the opening plays.
+- Ride's small table map does not fit here: it is a docked content blurb at the bottom-left above the strip (as the Ride
+  hand-over plan allows), while Ride's status words take the title.
+
+### The control strip (PhoneStrip)
+
+Everything in one row does not fit (about 392 points needed, 370 available, before a scrub bar), so two rows:
+
+- Scrub row (centre about y 772): the rail from x 16 to about 334, 6 high, unplayed white at 25 per cent, played white, a
+  2-point tick at each explained moment, no plate, a 44-high touch area, a 20-point knob. Then speed: a regular glass
+  capsule drawn 32 high with a 44 tap area, showing "Auto" or the fixed speed in monospaced text ("1×", "½×", "¼×",
+  "⅒×"); no symbol (none means speed). Its menu: Auto (the calm guided pace), 1×, ½×, ¼×, ⅒×. While Auto paces a
+  replay the label stays "Auto"; it never shows a rate that changes every frame.
+- Button row (y about 796 to 840), at most three groups:
+  - Transport (left): play.fill or pause.fill, and arrow.counterclockwise (Replay), two 44 circles in one union. While a
+    guided moment is held, the play button is the way on: the play symbol, spoken "Continue".
+  - Views: "Lens" and "Ride" as 44-high text capsules in subheadline semibold, no symbols, in one union. Lens on is shown
+    by a 3-point underline half magenta, half cyan (the key in miniature) and the selected state ("On" for VoiceOver);
+    the font weight never changes (a weight change would make the joined glass jump). Ride the same way.
+  - Primary action (right-aligned): one white prominent capsule, 44 high, text only, its word plus 16 a side. It shows
+    the first of these that applies: "Watch it" (a trick or lesson not yet watched), "Continue" (a match ruling waiting
+    for a tap), "Your turn" (during a trick or lesson replay; it stays "Your turn" for the whole replay, so its word
+    never changes under the thumb), "Try again" (after a missed attempt), "Next shot" (after a make), "Your shot" (after
+    the player's own shot). Hidden while a shot is live.
+- When each shows: Lens from the end of the first shot on; Ride for any finished shot whose struck ball hits another
+  ball, and during a trick's or lesson's replay as today; never in the first minute before the first shot ends.
+- Too wide (German at the default size, any accessibility size): move items into the title-row menu in this order: Ride,
+  then Lens, then speed, the last only once the rail would be under 160 points. The primary action never shortens its
+  word; transport symbols grow with the text style and stay at least 44.
+- Your shot stays a toggle on the model (the controller's Y button and the what-if open and close it,
+  App/ControllerInput.swift and App/WhatIfFork.swift): on the phone, at rest on your turn the panel is open; Y, or the
+  "Put away" chevron, puts it away into the "Your shot" button, which brings it back.
+
+### The aiming panel (PhoneAimPanel)
+
+x 16 to 386, ending at the bar's top, regular glass, concentric corners, padding 12, sized to its content.
+
+- Row 1: the tip picker (52) and the power bar filling the rest, with the power figure ("8.3 m/s") above it in headline
+  monospaced and "Swing speed" in caption. The "Calm zone ends" mark stays on the bar. Minus and plus leave the row
+  (the drag sets power); for VoiceOver the bar is adjustable in fixed steps.
+- Row 2: "Put away" (chevron.down, only when there is a shot to return to); the cue angle as a text capsule ("Level" or
+  its degrees); "Shot options" (slider.horizontal.3: Try again, Fine controls, Aim at nearest ball, Move cue ball, Undo,
+  Rack, Re-rack, Show the hint again; never the ellipsis, which the title row already uses); then "Break" or "Shoot",
+  the white prominent capsule, about 96 by 44, text only.
+- While calling a shot in a match, the call row (Safety, the chosen pocket, "Call it", from App/Match/CallControl.swift)
+  replaces row 2, and Shoot appears once the call is made.
+- What-if: its nudge controls take the panel's place, sized to their content; its result is an anchored blurb.
 
 ### Every phone state, upright
 
-- First minute: racked table filling the space; the instruction as a blurb docked at the top of the table area; the
-  strip at the bottom. Nothing else.
-- Aiming (Your shot open): the aiming panel above the strip, sized to its content; any notice (ball in hand, a stance
-  hint) is a blurb at the top of the table area.
-- A shot playing: only the table and the strip.
-- Guided Lens replay: the moment framing centres the action; the explanation is one anchored blurb beside the moment,
-  away from its focus; the trick's, lesson's or situation's name is a one-line blurb docked at the top, its idea behind a
-  tap; "Your turn" is in the strip.
-- Match: whose turn and the score in a one-line blurb docked at the top; a ruling as a blurb with its buttons; the call
-  control (pocket, safety) as a compact blurb above the strip while calling.
-- What-if: its nudge controls take the aiming panel's place above the strip; its result is a blurb.
-- Ride: as plans/22-Nov-2026-ride-handover-plan.md, with its status words and table map in the title row.
+- First minute: title "Break"; the docked instruction blurb, full sentence over two lines ("Drag on the table to aim. Pull
+  back from the white ball, then push through it."), fading once the break is struck (not on the first touch); the table
+  from the docked blurb to the panel; the panel without "Put away". Nothing else.
+- Aiming later: notices (ball in hand, a stance hint) as docked blurbs; the "1 Solid" label small and clear of the rack.
+- A shot playing: the table from the title row to the strip; transport, rail, speed, and Lens after the first shot.
+- Replay finished: the full strip, with the primary action.
+- Guided Lens replay: the table from the title row to the strip (about 640 points tall, against about 330 in the red-box
+  frame), framed on the moment; title "The Called Break · Hard"; the Lens key and the idea (folded to one line, with its
+  "more" dot) docked at the top; one anchored blurb for the explanation above or below the moment; the lead figure also
+  written beside its Lens drawing; primary action "Your turn".
+- Match: the title shows whose turn and the score; a ruling is a docked blurb with "Continue" as the primary action; a
+  ruling that is a choice keeps both its buttons in the blurb and hides the primary action.
+- Lens tips: docked blurbs with small glass "Not now" and "Next" or "Got it"; the pointer line stays.
+- Ride: as plans/22-Nov-2026-ride-handover-plan.md (built in 0.7.6), with its status words in the title and the map
+  docked bottom-left.
+
+### Where the critiques disagreed (decided)
+
+- Lens and Ride in the strip, not the title row: thumb reach, and long titles keep their room.
+- Lens on shown by a two-colour underline, not a fill: it is what the Lens draws.
+- Continue as a word on the primary action only for rulings; during a guided replay the play button continues.
+- Two-row aiming panel: the power figure and Break need room at large text.
+- The cue angle stays visible: it is physics.
+- New drawings (an angle arc, an energy bar) wait for their own plan; the lead figure beside the existing drawing is
+  enough now.
+
+### Stop using on the upright phone
+
+- App/CaptionViews.swift: CaptionStrip (its fixed room, hidden measuring copies, page-dot slot, figure tile row), the
+  accent bar, the ring's title chip; LensLegendChip in the title row.
+- App/ShowpieceView.swift: the bottom stack and its height budgets; the mode-card column; the status title's plate; the
+  surface picker circle; the lensReplayCompact slim forms (App/LayoutFlags.swift) once every card is a blurb.
+- The glassCard wrapper on the what-if, opening, trick, lesson, Behind the 8-Ball, match, free-play and stroke cards and
+  ContactArrivalLine: their content becomes blurb content.
+- App/PlaybackControls.swift's big capsule row and its fitting ladder; the scrub plate.
+- App/ShotPanel.swift's hint card and its bordered close, the power minus and plus, the glassCard wrapper, Try again in
+  the main row.
+- Symbols that mean nothing here: viewfinder (Lens), video (Ride), target (Your shot), forward.fill (Continue),
+  scribble.variable, slider.horizontal.below.rectangle, arrow.uturn.backward.circle. Re-rack uses
+  arrow.triangle.2.circlepath; the cue angle shows degrees.
+- Bordered buttons in App/WhatIfViews.swift and App/GhostOverlay.swift become glass.
 
 ### Not changing
 
-- The open folding phone, iPad and Mac keep the notebook side panel (words beside the table, never over it).
-- A phone turned sideways keeps its side column; blurbs there only where it is simple.
+The open folding phone, iPad, Mac and the sideways phone keep their side panels and the shared views.
 
 ## Part 4. Order of work
 
-Each step ends with screenshots on the iPhone 17 simulator (regular size) of the states it touches, compared against the
-principles above, before the next step starts.
+Every step ends with screenshots on the iPhone 17 simulator (402 x 874, the regular iPhone size) of the states it
+touches, checked against Part 3 before the next step starts. No step starts before the one before it is checked.
 
-0. Look first. Capture every state above on the iPhone 17 simulator as it is now (launch flags: -trickPlay called-break,
-   -pauseAt, -yourShotDemo, -aimDemo; a match from the menu). Keep them as the "before" set in plans/images.
-1. Design. One mock per state (drawn over the "before" screenshots or as a simple HTML page at 402 x 874), showing exactly
-   where each blurb sits and how big. Show the Boss the set once, as a picture, before building.
-2. Build the Blurb component and its placement function, with unit tests for placement (never over the keep-clear
-   rectangle, never under the title row or the strip, stable through a beat).
-3. The explanation: replace CaptionStrip and the title chip on the upright phone with the anchored blurb; Continue moves to
-   the play button; the camera's free space becomes title row to strip.
-4. The mode cards (trick, lesson, Behind the 8-Ball, match, free play, opening, stroke, what-if result, contact line):
-   each becomes a blurb docked or anchored as Part 3 says; delete the slim-card forms the blurbs replace.
-5. The control strip and the aiming panel tightened to their content.
-6. Check every state again on the iPhone 17 simulator, at the default and a large text size and in German; then the
-   first minute on a fresh install. Then the open folding phone, iPad and Mac once each, to confirm they are unchanged.
+0. Look first. Capture every state above as it is now (launch flags -trickPlay called-break, -pauseAt, -yourShotDemo,
+   -aimDemo; a match from the menu) as the "before" set in plans/images.
+1. Mock. One picture per state at 402 x 874 (a simple HTML page drawn to Part 3 over the "before" tables). Show the Boss
+   the whole set once, as pictures, before building anything.
+2. Blurb. The view and its placement function, with unit tests: never over the keep-clear rectangle, never under the
+   title row or the strip, docked stacking order, steady through a beat.
+3. Glass frame. PhoneTitleRow and its menu (the surface picker inside it); PhoneStrip in one glass container in the bottom
+   safe-area bar, with its unions and identities; the content gradients; the camera framing from the title row to the
+   bar's top, read from the safe-area inset.
+4. Explanation. The anchored blurb replaces CaptionStrip and the ring chip on the upright phone; the play button
+   continues a held moment; the Lens key becomes a docked blurb.
+5. Mode cards. Each becomes a docked or anchored blurb; the primary action takes the cards' main buttons in the order in
+   Part 3; the slim forms and lensReplayCompact go once nothing reads them.
+6. Aiming panel. PhoneAimPanel's two rows, the morph from and into "Your shot", Shot options, the call row; the power bar
+   adjustable for VoiceOver; the instruction as the docked blurb.
+7. Clean up. Everything in "Stop using on the upright phone" is unused on that path (the shared views still serve the
+   notebook and the sideways column).
+8. Check every state at the default and an accessibility text size, in German, with Reduce Transparency and with Increase
+   Contrast, on the brightest and the darkest surface. Then the first minute on a fresh install, and the open folding
+   phone, iPad and Mac once each, unchanged.
 
 ## Where the code is
 
