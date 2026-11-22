@@ -1182,9 +1182,17 @@ final class ShowpieceModel {
     }
 
     /// The clock was moved by hand (a scrub, Skip to result): no mount and no hold, just the act that belongs to that
-    /// clock, so the camera there is a function of the clock alone. A scrub during the rewind ends the rewind there.
+    /// clock, so the camera there is a function of the clock alone. A jump during the rewind skips the rest of it and
+    /// leaves the slow Lens replay it was leading to, from where the clock now is (no fixed speed, the Lens up), so a
+    /// trick shot's explanation is not lost to an impatient scrub.
     private func settleRideActsAfterJump() {
-        guard rideActive, rideAct != .rewind else { resetRideActs(); return }
+        if rideAct == .rewind {
+            resetRideActs()
+            chosenRate = nil
+            meltTarget = 1
+            return
+        }
+        guard rideActive else { resetRideActs(); return }
         rideHeldBeat = nil
         rideActProgress = 0
         rideActElapsed = 0
