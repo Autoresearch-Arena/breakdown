@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #33 and
+//          #62: Ball in hand never shows on the computer's turn (its button could do nothing there); "Cleared in %lld
+//          shots." is one catalog string with a count, so the catalog gives it real plural forms in every language.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream model-flow item 10: the intro-end card's Practice racks the pool table and opens Your shot, and its
 //          Trick shots opens that list alone (model.showList). Table cleared, the highlight card and the intro-end card
@@ -115,9 +118,12 @@ struct BallInHandCard: View {
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
 
-    /// Shown while the ball is lifted, and while ball in hand is owed but the player has not picked it up yet.
+    /// Shown while the ball is lifted, and while ball in hand is owed but the player has not picked it up yet. Never
+    /// while the ball in hand is the computer's (0.7.6, #33): the model copies the owed ball for its seat too, but the
+    /// person may not pick it up, so the card's button would do nothing.
     private var visible: Bool {
-        model.placingCueBall || (model.ballInHand != .none && model.aimReady && !model.tableCleared)
+        model.placingCueBall
+            || (model.ballInHand != .none && model.aimReady && !model.tableCleared && model.computerTurnStage == .none)
     }
 
     var body: some View {
@@ -351,9 +357,11 @@ struct TableClearedCard: View {
         .controlSize(.regular)
     }
 
+    /// One catalog string with the count (0.7.6, #62): the catalog's plural forms choose the noun ("one shot" in
+    /// English, the few and many forms in Russian, all six in Arabic) instead of a one-or-many branch here.
     private var shotsLine: String {
-        model.shotsThisRack == 1 ? String(localized: "Cleared in one shot.")
-                                 : String(localized: "Cleared in \(model.shotsThisRack) shots.")
+        String(localized: "Cleared in \(model.shotsThisRack) shots.",
+               comment: "Practice: the rack was cleared in this many shots. Needs plural forms; English one: Cleared in one shot.")
     }
 }
 

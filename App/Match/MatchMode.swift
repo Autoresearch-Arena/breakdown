@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #32:
+//          rulingWaitsForTap, the one test of a routine ruling that waits for a tap (its Lens offer is up), read by the
+//          beat here and by the match card, which then shows Continue beside the offer.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: one saved game per game, match-<kind>.json,
 //          the old match.json adopted; a computer shot is offered as worth watching only when rare or it scored).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
@@ -437,6 +440,15 @@ final class MatchMode {
         }
     }
 
+    /// True while a routine ruling waits for a tap instead of settling by itself: its "Watch it in the Lens" offer is up
+    /// (after a break; the model's offerLensReplay, which also needs the balls at rest). The card must then show a
+    /// button that moves on (0.7.6, #32: the slim card once showed only a bare heading here, and the match froze).
+    /// While the offered replay plays the offer is down, so this is false, and the beat does not run either (the balls
+    /// are moving).
+    var rulingWaitsForTap: Bool {
+        phase == .ruling && lastRulingShow == .banner && model.offerLensReplay
+    }
+
     /// A routine ruling showing in the banner: move on now instead of waiting out the beat (a tap on its line, or
     /// the model when the player reaches for the next stroke). Does nothing for a ruling that wants the card.
     func settleNow() {
@@ -574,10 +586,9 @@ final class MatchMode {
         // billiards' only). It only runs while the balls are at rest: a replay started from the card (the Lens on a
         // break) holds it, and it starts over once the replay has played out.
         if phase == .ruling, lastRulingShow == .banner {
-            // A break's ruling with "Watch it in the Lens" up waits for a tap (on the banner or the offer) instead of
-            // settling and taking the offer away before the player has read it.
-            let lensOfferWaits = model.currentAttempt?.isBreak == true && model.offerLensReplay
-            settleElapsed = model.aimReady && !lensOfferWaits
+            // A break's ruling with "Watch it in the Lens" up waits for a tap (rulingWaitsForTap: the card then shows
+            // Continue beside the offer) instead of settling and taking the offer away before the player has read it.
+            settleElapsed = model.aimReady && !rulingWaitsForTap
                 ? settleElapsed + MatchClock.seconds(forFrame: realSeconds) : 0
         }
         guard let shown = state.clockRemaining else { return }

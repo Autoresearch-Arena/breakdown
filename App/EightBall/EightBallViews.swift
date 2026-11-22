@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #41: the slim
+//          card's heading shows the replayed try's number during the Lens replay of a scored try, not the next try's.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (sound-lessons hook, bug plan item 36: a medal plays the made-it sound
 //          with its glow, the big one for gold.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the screens builder's pass: the full list with medals, best scores
@@ -340,7 +342,9 @@ struct EightBallCard: View {
     /// as called and Try again otherwise; the heading alone in any other phase.
     @ViewBuilder
     private func slim(_ s: EightBallSituation) -> some View {
-        header(s)
+        // A scored try's replay is headed by that try's number, as the scorecard it replaces was (0.7.6, #41), not the
+        // next try's.
+        if case .scored(let v) = mode.phase { header(s, tryNumber: v.tryNumber) } else { header(s) }
         if case .scored(let v) = mode.phase {
             buttons {
                 if v.madeAsCalled { nextButton } else { tryAgainButton(prominent: true) }
@@ -604,11 +608,13 @@ struct EightBallCard: View {
 
     // MARK: Pieces
 
-    private func header(_ s: EightBallSituation) -> some View {
+    /// The situation's heading with a try label: the next try's by default, or a given try's (the scored try being
+    /// replayed in the slim card).
+    private func header(_ s: EightBallSituation, tryNumber: Int? = nil) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(String(localized: "\(s.number). \(s.title)")).font(Theme.heading).lineLimit(2)
             Spacer(minLength: 0)
-            Text(tryLabel(mode.nextTry)).font(Theme.label).foregroundStyle(palette.slide)
+            Text(tryLabel(tryNumber ?? mode.nextTry)).font(Theme.label).foregroundStyle(palette.slide)
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)

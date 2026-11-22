@@ -14,6 +14,9 @@
 //          readable column (an iPad, a Mac window, an iPad in a large split) gets the notebook layout the folding phone
 //          had, chosen from the window's size alone (the maths is NotebookGeometry); ScreenLayout.panelColumns says when
 //          the notebook panel splits into two columns. isWide, isShort and fold are unchanged, so phones lay out as before.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #39:
+//          WrappingRow offers an over-wide child the row's width and never starts it left of the row, so a long one-line
+//          button label truncates inside its card instead of spilling past the card's leading edge.)
 // SRP/DRY check: Pass - checked the old view file, which repeated the panel background three times; they all use
 //          glassCard now. No other file builds surfaces.
 import SwiftUI
@@ -109,10 +112,20 @@ struct WrappingRow: Layout {
 
     private struct Line { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
 
+    /// A child's size as the row lays it out: its ideal size, but never wider than the row (0.7.6, #39). An over-wide
+    /// child (a one-line button label in a long language or at a large text size) is offered the row's width, so its
+    /// label truncates inside the card instead of spilling past the card's leading edge.
+    private func fittedSize(of subview: LayoutSubview, width: CGFloat) -> CGSize {
+        let ideal = subview.sizeThatFits(.unspecified)
+        guard width.isFinite, ideal.width > width else { return ideal }
+        let fitted = subview.sizeThatFits(ProposedViewSize(width: max(0, width), height: nil))
+        return CGSize(width: min(fitted.width, width), height: fitted.height)
+    }
+
     private func lines(width: CGFloat, subviews: Subviews) -> [Line] {
         var all = [Line()]
         for i in subviews.indices {
-            let size = subviews[i].sizeThatFits(.unspecified)
+            let size = fittedSize(of: subviews[i], width: width)
             let last = all.count - 1
             let needed = all[last].indices.isEmpty ? size.width : all[last].width + spacing + size.width
             if needed > width, !all[last].indices.isEmpty { all.append(Line()) }
@@ -133,9 +146,10 @@ struct WrappingRow: Layout {
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         var y = bounds.minY
         for line in lines(width: bounds.width, subviews: subviews) {
-            var x = bounds.maxX - line.width
+            // Trailing-aligned, but never starting left of the row: a line is at most the row's width (fittedSize).
+            var x = max(bounds.minX, bounds.maxX - line.width)
             for i in line.indices {
-                let size = subviews[i].sizeThatFits(.unspecified)
+                let size = fittedSize(of: subviews[i], width: bounds.width)
                 subviews[i].place(at: CGPoint(x: x, y: y + (line.height - size.height) / 2), proposal: ProposedViewSize(size))
                 x += size.width + spacing
             }

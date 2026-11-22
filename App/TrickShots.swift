@@ -18,6 +18,10 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream: a raised-cue shot carries the run of offered
 //          cue angles that make it (cueAngles, from AuthoredTricks.cueAngleBands), which the judge's cue-angle check
 //          reads; the massé, the jump and the carom are struck on angles the cue-angle menu offers.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #23: the
+//          pockets are named in table words that hold however the phone is held (the far corner on the 3's side of the
+//          rack, the corner nearest or beyond a ball), never screen words such as top-right, which were only right
+//          with the phone sideways. The rings on the cloth mark the same pockets.)
 // PURPOSE: The trick-shot library as the app shows it. Every shot has its id, title, a one-sentence hook, where
 //          the balls start (only the balls it uses; every other ball is off the table), the authored answer (aim, power,
 //          cue-tip height and side; cue elevation for the massé, the jump and the carom), the goal the app checks from
@@ -204,8 +208,8 @@ enum TrickShots {
     // MARK: 1. The Called Break
     static let calledBreak = make(
         AuthoredTricks.calledBreak, title: String(localized: "The Called Break"),
-        hook: String(localized: "Call it before you hit it: break the rack and send the 3 into the top-right corner."),
-        goalLine: String(localized: "Break and drop the 3 in the top-right corner."),
+        hook: String(localized: "Call it before you hit it: break the rack and send the 3 into the far corner on its side."),
+        goalLine: String(localized: "Break and drop the 3 in the far corner on its side of the rack."),
         idea: String(localized: "Where you strike the front ball decides which way the energy runs through the rack. Hit it a fraction off-centre and the push travels down one line of balls, out to the 3, and into the corner."),
         maths: String(localized: "each contact passes the push along the line of centres:  v′ = v · cos θ"),
         mathsSpoken: String(localized: "At each contact a ball passes on its speed times the cosine of the angle between its path and the line through the two centres."),
@@ -275,7 +279,7 @@ enum TrickShots {
     static let throwIt = make(
         AuthoredTricks.throwIt, title: String(localized: "Throw It In"),
         hook: String(localized: "The 2 and the 8 are touching, lined up to miss the pocket. Side spin drags the 8 in anyway."),
-        goalLine: String(localized: "Hit the 2 and throw the 8 into the bottom-left corner."),
+        goalLine: String(localized: "Hit the 2 and throw the 8 into the corner nearest the 8."),
         idea: String(localized: "Touching balls rub as they part. Left spin on the cue ball spins the 2, and the friction between the 2 and the 8 drags the 8 off its line and into the pocket."),
         maths: String(localized: "throw angle:  tan θ ≈ μ · v_slip / v_n"),
         mathsSpoken: String(localized: "The throw angle grows with the friction between the balls and how fast their surfaces slip past each other."),
@@ -285,7 +289,7 @@ enum TrickShots {
     static let masse = make(
         AuthoredTricks.masse, title: String(localized: "The Massé"),
         hook: String(localized: "The 4 blocks the way to the 9. Raise the cue, hit the side of the cue ball, and it bends round."),
-        goalLine: String(localized: "Curve round the 4 and pot the 9 in the top-right corner."),
+        goalLine: String(localized: "Curve round the 4 and pot the 9 in the corner beside it."),
         idea: String(localized: "A raised cue struck off-centre spins the cue ball about a tilted axis. As it slides, the cloth's friction pushes sideways on that spin and the path curves."),
         maths: String(localized: "sideways push:  F = μ m g, along the slip of the spinning contact point"),
         mathsSpoken: String(localized: "The cloth pushes with the ball's weight times the friction, in the direction its spinning contact point slips."),
@@ -295,7 +299,7 @@ enum TrickShots {
     static let jumpOver = make(
         AuthoredTricks.jumpOver, title: String(localized: "Jump the Blocker"),
         hook: String(localized: "The 6 sits right in the way. Hit down on the cue ball and it hops clean over to sink the 11."),
-        goalLine: String(localized: "Jump the 6 and pot the 11 in the top-right corner."),
+        goalLine: String(localized: "Jump the 6 and pot the 11 in the corner beyond it."),
         idea: String(localized: "A raised cue drives the cue ball down into the slate. The slate pushes back, the ball leaves the cloth, flies over the 6, bounces and rolls on into the 11."),
         maths: String(localized: "flight:  h = v_up² / 2g,  range = 2 · v_up · v_along / g"),
         mathsSpoken: String(localized: "The height is the upward speed squared over twice gravity, and the hop's length is twice the upward speed times the forward speed over gravity."),
@@ -317,7 +321,7 @@ enum TrickShots {
     static let squirt = make(
         AuthoredTricks.squirt, title: String(localized: "Squirt"),
         hook: String(localized: "A straight pot with a catch: it must be struck with strong left side, and side pushes the cue ball off the line of the cue."),
-        goalLine: String(localized: "Pot the 2 in the top-right corner, with strong left side."),
+        goalLine: String(localized: "Pot the 2 in the corner beyond it, with strong left side."),
         idea: String(localized: "A tip that strikes off-centre pushes the cue ball away from the side it hit. Strike it on the left and it leaves a little to the right of the cue's line, so aim a touch left to allow for it."),
         maths: String(localized: "off the cue's line:  tan θ = 2.5 x √(1 − x²) ÷ (1 + m ÷ mₛ + 2.5 x²),  x = side ÷ R"),
         mathsSpoken: String(localized: "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees."),
@@ -331,7 +335,7 @@ enum TrickShots {
     static let sideOffRail = make(
         AuthoredTricks.sideOffRail, title: String(localized: "Side Off the Rail"),
         hook: String(localized: "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail."),
-        goalLine: String(localized: "With strong left side, off one cushion, hit the 7 first and pot it in the bottom-right corner."),
+        goalLine: String(localized: "With strong left side, off one cushion, hit the 7 first and pot it in the corner nearest it."),
         idea: String(localized: "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in."),
         maths: String(localized: "along the rail:  Δv ≤ μ (1 + e) v⊥,  so running side leaves wider:  angle out > angle in"),
         mathsSpoken: String(localized: "The cushion's grip can change the ball's speed along the rail by at most the grip times one plus the bounce, times the speed straight into the rail. Running side spends that push speeding the ball along the rail, so it leaves at a wider angle than it came in."),

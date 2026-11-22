@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #64: the slim
+//          card shows the shot's one idea, two lines at most, beside Your turn while the answer is explained, instead of
+//          a lone button under empty glass.)
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (strings that are built in code, such as the card lines, the spoken row
 //          label and the "Coming next" line, are String(localized:); literal labels and buttons are already keys)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the -trickAim store-screenshot flag.)
@@ -289,11 +292,23 @@ struct TrickShotCard: View {
     /// The slim card (0.7.5, lensReplayCompact): the shot's heading and the one button that moves the shot on, so a
     /// guided Lens replay on a phone held upright keeps the table its height. Your turn while the answer is set up,
     /// played or explained; after a try, Next shot for a make and Try again for a miss; nothing more while aiming.
+    /// While the answer is explained (0.7.6, #64) the shot's one idea sits beside Your turn, at most two lines, so the
+    /// card carries what the replay is for and no empty glass; VoiceOver reads the whole idea.
     @ViewBuilder
     private func slim(_ shot: TrickShot) -> some View {
         header(shot)
         switch mode.phase {
-        case .ready, .watching, .explaining:
+        case .explaining:
+            if typeSize.isAccessibilitySize {
+                slimIdea(shot)
+                buttons { turnButton(prominent: true) }
+            } else {
+                HStack(alignment: .center, spacing: 10) {
+                    slimIdea(shot)
+                    turnButton(prominent: true).fixedSize().controlSize(.regular)
+                }
+            }
+        case .ready, .watching:
             buttons { turnButton(prominent: true) }
         case .judged(let verdict):
             buttons { if verdict.made { nextShotButton } else { tryAgainButton(prominent: true) } }
@@ -302,6 +317,19 @@ struct TrickShotCard: View {
         case .aiming, .off:
             EmptyView()
         }
+    }
+
+    /// The idea in the slim card: two lines at most, the light bulb before it as in the full card.
+    private func slimIdea(_ shot: TrickShot) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Image(systemName: "lightbulb.fill").foregroundStyle(palette.slide).accessibilityHidden(true)
+            Text(shot.idea)
+                .font(Theme.body)
+                .foregroundStyle(palette.paper.opacity(0.9))
+                .lineLimit(2)
+                .accessibilityLabel(shot.idea)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     // MARK: Pieces

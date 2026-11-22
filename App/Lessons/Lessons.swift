@@ -29,6 +29,9 @@
 //          stance), so no lesson opens with a card about a rest it never uses: stop and draw straight across the table
 //          into the top side pocket, follow into the top-right corner on a steep line from near the bottom rail, curve
 //          and jump a fifth of a metre nearer the head rail; all re-authored on the 0.7.0 physics.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #23: Cut and
+//          throw names its pocket in table words ("the corner nearest it"), not "top-right", which was only right with
+//          the phone sideways.)
 // SRP/DRY check: Pass - the app's types, words and lesson flow data; the numbers are read from the package library and
 //          converted by TrickShots' converters (TrickSettings(_:), TrickGoal(_:), TrickWindow(_:)). The judge is
 //          TrickShotJudge (each lesson exposes itself as a TrickShot for it, nothing is re-implemented); the search lives
@@ -217,7 +220,7 @@ enum Lessons {
     static let cut = make(
         AuthoredLessons.cut, title: String(localized: "Cut and throw"),
         hook: String(localized: "Hit the ball off-centre to send it off at an angle into the pocket."),
-        goalLine: String(localized: "Cut the 3 into the top-right corner."),
+        goalLine: String(localized: "Cut the 3 into the corner nearest it."),
         idea: String(localized: "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says."),
         praise: String(localized: "Cut in. You allowed for the throw."),
         control: .aim, moment: .contact, trickID: "throw-it")
