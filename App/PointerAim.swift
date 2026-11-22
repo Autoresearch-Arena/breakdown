@@ -11,6 +11,12 @@
 //          press. Scroll turns the line the way it looks on screen, like the arrow keys (AimProjector.turnSign). The
 //          pointer marks itself as the input in use (model.inputInUse), and nothing here acts while the person's
 //          controls are not live (the computer's turn, a solve in flight).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, item 2's pointer half: whether a press is on the cue
+//          ball is now the touch arbiter's own grab circle (TableTouch.grabRadius), and the click slop and the shortest
+//          pull are the touch layer's (TableTouch.slop, StrokeTracker.minimumBackswing). The old fixed 44-point circle
+//          disagreed with the arbiter's, so a press just off the ball could aim the line as it dragged and then play
+//          here on a release behind the ball. A pointer still plays only on a release behind the ball; a forward
+//          release is a change of mind.)
 // PURPOSE: Aiming with a pointer, a scroll wheel and an Apple Pencil held above the screen, shared by the Mac and the
 //          iPad (trackpad, mouse, Pencil hover). It is added to the touch aiming layer (AimOverlay) from the outside, as
 //          one modifier, so the touch gestures in that file are untouched and a finger plays exactly as before:
@@ -112,13 +118,22 @@ struct PointerAim: ViewModifier {
     /// every frame anyway, so a hover move need not re-render this layer, only switching the preview on or off does).
     @State private var previewing = false
 
-    /// Same as AimOverlay's: how close to the cue ball (points) a press must start to grab it.
-    private static let grabRadius: CGFloat = 44
-    /// Same as AimOverlay's: a drag shorter than this is a click, not a pull.
-    private static let pullSlop: CGFloat = 10
+    /// The touch layer's own slop: a drag shorter than this is a click, not a pull (TableTouch.slop).
+    private static var pullSlop: CGFloat { TableTouch.slop }
     /// A pull shorter than this behind the cue ball, in metres on the table, is a change of mind and takes no shot:
-    /// four per cent of the full pull (ShowpieceModel.pullReach, half a metre), below the softest deliberate shot.
-    private static let minimumPull = 0.02
+    /// four per cent of the full pull, below the softest deliberate shot. The touch stroke's backswing floor
+    /// (StrokeTracker.minimumBackswing), so a pointer and a finger need the same real pull.
+    private static let minimumPull = StrokeTracker.minimumBackswing
+
+    /// True when a screen point is inside the cue ball's grab circle: the very circle the touch arbiter grabs with and
+    /// the overlay draws (TableTouch.grabRadius, from the ball's size on screen with a 22-point floor). A fixed
+    /// 44-point circle here used to disagree with it: a press just outside the arbiter's circle but inside this one
+    /// aimed the line as it dragged, then fired here on a release behind the ball (item 2's pointer half).
+    private func onCueBall(_ point: CGPoint, _ proj: AimProjector) -> Bool {
+        guard let ball = proj.screen(model.aimOrigin) else { return false }
+        let radius = TableTouch.grabRadius(proj, centre: model.aimOrigin, ballRadius: model.timeline.table.ballRadius)
+        return hypot(ball.x - point.x, ball.y - point.y) <= radius
+    }
     /// Scroll distance (points of a trackpad slide) for one quarter-degree aim step: a slow, deliberate slide of about a
     /// finger's width (some 40 points) turns the line a degree and a half. A mouse wheel's notch counts as one step.
     private static let scrollPointsPerStep = 6.0
@@ -213,10 +228,7 @@ struct PointerAim: ViewModifier {
     /// where a press is a pull-back rather than an aim.
     private func previewAllowed(at point: CGPoint) -> Bool {
         guard state.press == nil, aimOpenNow, let proj = projector(), proj.table(at: point) != nil else { return false }
-        if let ball = proj.screen(model.aimOrigin), hypot(ball.x - point.x, ball.y - point.y) <= Self.grabRadius {
-            return false
-        }
-        return true
+        return !onCueBall(point, proj)
     }
 
     /// The direction a click at `spot` would aim, without moving the aim. For a shot, straight through the spot. For
@@ -296,9 +308,11 @@ struct PointerAim: ViewModifier {
         if isPointer { Self.noteInput(model) }
         state.previewPoint = nil
         previewing = false
+        // Inside the arbiter's grab circle, and only with a full layout (StrokeGestures.onCueBall asks the same), so a
+        // press this layer treats as a pull is exactly the one the arbiter made a pull.
         let onBall: Bool
-        if let proj = projector(), let ball = proj.screen(model.aimOrigin) {
-            onBall = hypot(ball.x - event.location.x, ball.y - event.location.y) <= Self.grabRadius
+        if let proj = projector(), model.layout.count == 16, NextShot.isOnTable(model.aimOrigin) {
+            onBall = onCueBall(event.location, proj)
         } else {
             onBall = false
         }
