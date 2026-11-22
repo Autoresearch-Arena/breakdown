@@ -70,6 +70,15 @@
 //          aim band and the stance), the ball in line is the guide's, and aiming at a ball or a pot goes through
 //          AimAccess so the launch line, not the bare cue line, runs through the chosen point. Replies to the Aim
 //          element's actions are spoken at once through ShotNarration.answer, not queued behind other speech.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, plan items 1, 24 and 50: before the first stroke, while
+//          the aiming tips have not been seen or the cue is being handed over, the stroke's groove is drawn faintly from
+//          the cue ball back along the cue for a finger or a pointer, so a newcomer sees where to pull. The line's stop
+//          and contact now come from AimGeometry.guideLine, the one rule the badge and the spoken aim use; with the Aim
+//          guide off the line is the cue's own straight line (the side-spin-bent line showed even then); with it on, side
+//          spin that turns the ball half a degree or more draws the fork, the cue's line beside the ball's, labelled
+//          "Cue aims here" and "Ball goes here" with the turn; and the object ball's line follows the solver's own impact,
+//          so it includes throw. Aiming at a ball or a pot, by tap or by the VoiceOver actions, turns the cue back by
+//          side spin's push through AimGeometry.cueAim(forLaunch:for:), so the ball itself leaves for the chosen spot.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: which gesture a touch is gets decided by the touch arbiter (StrokeGestures,
 //          App/Stroke/StrokeGesture.swift), which then calls this layer's handlers: a drag to aim swings the aim line to
@@ -254,11 +263,24 @@ struct AimOverlay: View {
     private var ballInLine: Int? { AimGeometry.guideContact(for: model)?.ball }
 
     /// Aim straight through a ball's centre (a full hit), and say the new aim. The ball's launch line, side spin's
-    /// push included, is what runs through the centre (AimAccess).
+    /// push included, is what runs through the centre (aimLaunch).
     private func aimAtBall(_ ball: Int) {
         guard model.layout.indices.contains(ball), NextShot.isOnTable(model.layout[ball]) else { return }
-        AimAccess.aim(model, toward: model.layout[ball])
+        aimLaunch(toward: model.layout[ball])
         ShotNarration.answer(spokenAim)
+    }
+
+    /// Aim so the struck ball itself leaves along the line through `point`, side spin's push allowed for (item 50):
+    /// the cue is turned back by the push through the guide's own inverse (AimGeometry.cueAim(forLaunch:for:)), so the
+    /// line the guide draws, the ball the badge rings and the words VoiceOver speaks all run through the chosen ball or
+    /// ghost spot. Every aim at a ball or a pot from this layer goes through here: the VoiceOver actions, the ball and
+    /// pocket elements and a sighted tap. The break aims at the rack by its offset instead (ShowpieceModel.aim(toward:)),
+    /// so it is passed straight on.
+    private func aimLaunch(toward point: Vec2) {
+        let origin = model.aimOrigin
+        let want = point - origin
+        guard !model.racked, want.lengthSquared > 1e-12 else { model.aim(toward: point); return }
+        model.aim(toward: origin + AimGeometry.cueAim(forLaunch: want, for: model))
     }
 
     /// Cycle through the balls that can be hit, by number, starting after the one in line now.
@@ -274,8 +296,8 @@ struct AimOverlay: View {
 
     /// Aim the ghost-ball pot of `ball` into `pocket`, and say the new aim (which names the pocket, or what blocks it).
     private func aimPot(_ pot: TableLines.PotAim) {
-        // Corrected for side spin's push, so the ball really leaves for the ghost spot (access stream, item 50).
-        AimAccess.aim(model, toward: pot.ghost)
+        // Corrected for side spin's push, so the ball really leaves for the ghost spot (item 50).
+        aimLaunch(toward: pot.ghost)
         ShotNarration.answer(spokenAim)
     }
 
@@ -336,7 +358,8 @@ struct AimOverlay: View {
                 if d <= pocketReach, best == nil || d < best!.distance { best = (d, nil, k) }
             }
         }
-        if let ball = best?.ball { model.aim(toward: layout[ball]) }
+        // A tap on a ball sends the ball, not the bare cue, at it, as the VoiceOver action does (item 50).
+        if let ball = best?.ball { aimLaunch(toward: layout[ball]) }
         else if let pocket = best?.pocket { aimToPot(pocket: pocket) }
     }
 
@@ -482,27 +505,33 @@ struct AimOverlay: View {
         let table = model.timeline.table
         let radius = table.ballRadius
         let origin = model.aimOrigin
-        // Where the ball really goes: the aim, bent by side spin on the new physics (AimGeometry.launchDirection).
-        let dir = AimGeometry.launchDirection(for: model)
-        guard dir.lengthSquared > 0.5, let cueScreen = proj.screen(origin) else { return }
+        guard model.aimDirection.lengthSquared > 0.5, let cueScreen = proj.screen(origin) else { return }
 
+        // The line and what stops it, from the one stop-and-contact rule the badge and the spoken aim also use
+        // (AimGeometry.guideLine): the first cushion, bumper, standing pin or hole ends it, and a ball behind that is not
+        // the contact. With the guide on it runs along the launch line, the aim bent by side spin (item 24). With the
+        // guide off it is the cue's own straight line: the player judges the angle and the push themselves, so the
+        // bent line, which used to show even then, would give away what the option hides.
+        let guide: GuideLine
+        if aimGuide {
+            guard let launched = AimGeometry.guideLine(for: model) else { return }
+            guide = launched
+        } else {
+            guide = AimGeometry.guideLine(layout: model.layout, origin: origin, direction: model.aimDirection, table: table)
+        }
+        let dir = guide.direction
         // Without the guide: no contact prediction drawn, and the line stops a short way out; it still never runs on
         // through the first ball in its way (it fades out there, look plan package 5).
-        // On the small tables a bumper, a standing pin or a hole can come first: the line stops there, and a ball
-        // behind it is not shown as the contact (other-tables plan package 1 step 4).
-        let wall = min(AimGeometry.cushionDistance(from: origin, direction: dir, table: table),
-                       AimGeometry.obstacleDistance(from: origin, direction: dir, table: table) ?? .greatestFiniteMagnitude)
-        let firstHit = AimGeometry.firstContact(layout: model.layout, from: origin, direction: dir, radius: radius)
-            .flatMap { ($0.ghost - origin).length <= wall ? $0 : nil }
+        let firstHit = guide.contact
         let contact = aimGuide ? firstHit : nil
-        let cushion = wall
         let toHit = firstHit.map { ($0.ghost - origin).length }
-        let reach = aimGuide ? (toHit ?? cushion) : min(0.35, cushion, toHit ?? .greatestFiniteMagnitude)
+        let reach = aimGuide ? guide.reach : min(Self.unguidedReach, guide.reach)
         let accent = palette.accent, amber = palette.slide, paper = palette.paper
 
         // The cue and the mechanical bridge are 3D models (CueRig); whenever the rest is in use (a shot that needs it,
         // or a stance out of reach), a small label names it beside its head.
-        if model.restInUse { drawBridgeLabel(&ctx, proj, origin: origin, dir: dir, size: size) }
+        // Along the cue's own line, where CueRig stands the rest's head, not the launch line side spin bends.
+        if model.restInUse { drawBridgeLabel(&ctx, proj, origin: origin, dir: model.aimDirection, size: size) }
 
         // A lesson's aim band: a faint fan from the cue ball between the two edge aims of the window, as far as the
         // first ball the middle of the band meets (or half a metre), so the line can be swung into it.
@@ -527,6 +556,13 @@ struct AimOverlay: View {
             ctx.stroke(line, with: shade(paper, 0.95), style: StrokeStyle(lineWidth: 2, lineCap: .round))
         }
 
+        // Side spin turning the ball half a degree or more off the cue's line (item 24): the cue's own line as well,
+        // and a label on each prong, so the player sees that the cue points one way and the ball leaves another.
+        // Only with the guide on; with it off the one line drawn is already the cue's.
+        if aimGuide, let fork = AimGeometry.fork(for: model) {
+            drawFork(&ctx, proj, fork: fork, guide: guide, radius: radius, size: size)
+        }
+
         if let hit = contact {
             // The ghost ball: the cue ball where it will touch.
             if let ghost = circle(proj, hit.ghost, radius) {
@@ -538,11 +574,16 @@ struct AimOverlay: View {
             if let touch = proj.screen((hit.ghost + hit.target) * 0.5) {
                 ctx.fill(Path(ellipseIn: CGRect(x: touch.x - 3, y: touch.y - 3, width: 6, height: 6)), with: .color(paper))
             }
-            // Where the two balls go next: the object ball along the line of centres (longer for a fuller hit), the cue
-            // ball at a right angle (longer for a thinner cut). Short guides, cut off at the cushion.
+            // Where the two balls go next: the object ball where the solver's own impact sends it (longer for a fuller
+            // hit), the cue ball at a right angle (longer for a thinner cut). Short guides, cut off at the cushion.
+            // The guide on is this game's full assist (there is no other assist level), so the object ball's line
+            // includes throw (item 24): the friction at contact drags a soft cut a few degrees off the line of centres,
+            // and a pot aimed on the bare line of centres would miss. The line of centres stands in when the solver
+            // gives no answer (a break, a miscue, a trial past its budget).
+            let objectDirection = AimGeometry.solvedImpact(for: model, contact: hit)?.objectDirection ?? hit.objectDirection
             let fullness = max(0, 1 - hit.cut * hit.cut).squareRoot()
-            let objectLength = min(0.15 + 0.6 * fullness, AimGeometry.cushionDistance(from: hit.target, direction: hit.objectDirection, table: table))
-            if let a = proj.screen(hit.target + hit.objectDirection * radius * 1.3), let b = proj.screen(hit.target + hit.objectDirection * (radius + objectLength)) {
+            let objectLength = min(0.15 + 0.6 * fullness, AimGeometry.cushionDistance(from: hit.target, direction: objectDirection, table: table))
+            if let a = proj.screen(hit.target + objectDirection * radius * 1.3), let b = proj.screen(hit.target + objectDirection * (radius + objectLength)) {
                 var path = Path(); path.move(to: a); path.addLine(to: b)
                 ctx.stroke(path, with: .linearGradient(Gradient(colors: [amber, amber.opacity(0.05)]), startPoint: a, endPoint: b),
                            style: StrokeStyle(lineWidth: 3, lineCap: .round))
@@ -562,6 +603,12 @@ struct AimOverlay: View {
 
         // The stroke's groove on the cloth and the finger's trace, while a stroke is drawn on the cue ball.
         StrokeDrawing.draw(&ctx, session: stroke, paper: paper, accent: accent)
+        // Before the first touch (item 1): the same groove, fainter and with no trace, laid from the cue ball back along
+        // the cue, so a newcomer sees where to pull. Its direction, length and width are the ones a stroke started now
+        // would lay (TableTouch.grooveFrame, as StrokeGestures uses), so the real groove lands where the hint was.
+        if showsGrooveHint, let groove = TableTouch.grooveFrame(proj, centre: origin, direction: model.aimDirection) {
+            StrokeDrawing.drawHint(&ctx, from: cueScreen, groove: groove, paper: paper)
+        }
 
         // The pull handle around the cue ball, drawn at the grab circle itself (TableTouch.grabRadius), so the ring the
         // player sees is exactly where a touch grabs the ball; and the live power read-out while pulling.
@@ -659,11 +706,74 @@ struct AimOverlay: View {
         let head = origin - dir * 0.30
         let halfWidth = 0.06
         guard let at = proj.screen(head + side * (halfWidth + 0.10), height: 0.002) else { return }
-        let label = ctx.resolve(Text("Bridge").font(.caption2.weight(.semibold)).foregroundStyle(Color.white))
-        let m = label.measure(in: size)
-        let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y - m.height / 2 - 2, width: m.width + 12, height: m.height + 4)
-        ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(.black.opacity(0.55)))
-        ctx.draw(label, at: CGPoint(x: box.midX, y: box.midY))
+        drawPill(&ctx, [Text("Bridge")], at: at, size: size)
+    }
+
+    /// A small white label on a dark pill, centred on a screen point: the bridge's name and the fork's prongs. Each
+    /// entry is one line, centred under the one before (a resolved Text in a Canvas cannot centre its own lines).
+    private func drawPill(_ ctx: inout GraphicsContext, _ lines: [Text], at centre: CGPoint, size: CGSize) {
+        let resolved = lines.map { ctx.resolve($0.font(.caption2.weight(.semibold)).foregroundStyle(Color.white)) }
+        let sizes = resolved.map { $0.measure(in: size) }
+        guard !sizes.isEmpty else { return }
+        let width = sizes.map(\.width).max() ?? 0
+        let height = sizes.map(\.height).reduce(0, +)
+        let box = CGRect(x: centre.x - width / 2 - 6, y: centre.y - height / 2 - 2, width: width + 12, height: height + 4)
+        // A one-line pill is fully rounded; a two-line one keeps a soft corner rather than turning into a lozenge.
+        ctx.fill(Path(roundedRect: box, cornerRadius: min(box.height / 2, 9)), with: .color(.black.opacity(0.55)))
+        var top = box.minY + 2
+        for (line, m) in zip(resolved, sizes) {
+            ctx.draw(line, at: CGPoint(x: box.midX, y: top + m.height / 2))
+            top += m.height
+        }
+    }
+
+    /// How far out the line runs with the Aim guide off, metres: a short line that shows which way the cue points and
+    /// leaves the angle to the player's eye (PointerAim's hover preview keeps the same length).
+    private static let unguidedReach = 0.35
+
+    /// The groove hint shows before the first stroke: the aiming tips have not been seen yet (first launch, or "Show
+    /// the aiming tips again" in Options) or the cue is being handed over in the first-launch opening, and the player
+    /// is on a finger or a pointer (the two that pull back from the ball; keys and a controller have no groove). Never
+    /// while a finger strokes or a pointer pulls: the real groove, or the pull's own ring, is drawn then.
+    private var showsGrooveHint: Bool {
+        guard !stroke.isTracking, !pulling else { return false }
+        guard !hintSeen || model.openingStage == .handOver else { return false }
+        return model.inputInUse == .touch || model.inputInUse == .pointer
+    }
+
+    /// The side-spin fork (item 24): the cue's straight line as a thin dashed prong beside the bright launch line the
+    /// guide already drew, "Cue aims here" at its end and "Ball goes here" with the turn ("2.4° left") at the launch
+    /// line's end. The cue's prong runs as far as the launch line does (its own first ball or cushion stops it sooner),
+    /// so both ends sit the same distance out and the gap between them is the push made visible. Each label is pushed
+    /// away from the other prong on screen, so the two never sit on top of each other.
+    private func drawFork(_ ctx: inout GraphicsContext, _ proj: AimProjector, fork: AimFork, guide: GuideLine,
+                          radius: Double, size: CGSize) {
+        let origin = guide.origin, table = model.timeline.table
+        let cueStop = AimGeometry.guideLine(layout: model.layout, origin: origin, direction: fork.cueLine, table: table).reach
+        let cueReach = min(guide.reach, cueStop)
+        guard cueReach > radius, guide.reach > radius,
+              let cueStart = proj.screen(origin + fork.cueLine * radius),
+              let cueEnd = proj.screen(origin + fork.cueLine * cueReach),
+              let ballEnd = proj.screen(origin + guide.direction * guide.reach) else { return }
+        var prong = Path(); prong.move(to: cueStart); prong.addLine(to: cueEnd)
+        ctx.stroke(prong, with: .color(palette.paper.opacity(0.6)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 4]))
+        // Which way is "away from the other prong" on screen: from the cue's end toward the ball's. When the two ends
+        // land on almost the same point (a short line seen end-on), square to the cue's prong instead.
+        var away = CGVector(dx: ballEnd.x - cueEnd.x, dy: ballEnd.y - cueEnd.y)
+        var length = hypot(away.dx, away.dy)
+        if length < 1 {
+            away = CGVector(dx: -(cueEnd.y - cueStart.y), dy: cueEnd.x - cueStart.x)
+            length = hypot(away.dx, away.dy)
+        }
+        guard length > 1e-3 else { return }
+        away = CGVector(dx: away.dx / length, dy: away.dy / length)
+        // Clear of the line's end by about a label's half height plus a gap; two lines for the ball's label.
+        let gap: CGFloat = 16
+        // The words are already localized by AimFork, so they are drawn verbatim (no second catalog lookup).
+        drawPill(&ctx, [Text(verbatim: AimFork.cueLabel)],
+                 at: CGPoint(x: cueEnd.x - away.dx * gap, y: cueEnd.y - away.dy * gap), size: size)
+        drawPill(&ctx, [Text(verbatim: AimFork.ballLabel), Text(verbatim: fork.turnWords)],
+                 at: CGPoint(x: ballEnd.x + away.dx * (gap + 8), y: ballEnd.y + away.dy * (gap + 8)), size: size)
     }
 
     /// A circle lying on the cloth at the ball's height, as a closed screen path (a squashed oval from a low camera).

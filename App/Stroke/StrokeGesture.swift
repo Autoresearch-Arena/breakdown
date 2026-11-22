@@ -15,6 +15,11 @@
 //          power alone in lesson steps not about power, honours "Shoot with the button only", and the Pencil's tilt
 //          steers the cue angle only past a writing grip, through the model's lock. A mouse or trackpad never strokes:
 //          its pull is the overlay's, its release PointerAim's.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, plan items 1, 2 and 45: the groove's lie on screen is
+//          worked out in one place (TableTouch.grooveFrame) and StrokeDrawing.drawHint lays it, at half strength and
+//          with no trace, from the cue ball before the first touch, so the hint sits exactly where the real groove will;
+//          a pointer sequence never plays by a push through the ball (an explicit guard in deliver); with "Shoot with
+//          the button only" a push with no backswing ends the stroke without a refusal card, since a push never plays.)
 // PURPOSE: The stroke by hand (plans/21-Nov-2026-stroke-and-power-plan.md), the touch side, and the one place that
 //          decides what a touch on the aiming layer is. Added to the aiming layer (AimOverlay) as one modifier, which
 //          hands the aim drag, a pointer's pull, carrying a lifted ball, letting go and taps back to the overlay through
@@ -82,6 +87,41 @@ enum TableTouch {
               let c = proj.screen(centre + Vec2(ballRadius, 0)) else { return grabFloor }
         let onScreen = max(hypot(a.x - b.x, a.y - b.y), hypot(a.x - c.x, a.y - c.y))
         return max(grabFloor, onScreen * 2)
+    }
+
+    /// Metres along the table the groove's directions are read over: a short step back along the cue and one to the
+    /// side, projected to the screen. Long enough to land on clearly different screen points from any camera, short
+    /// enough to stay on the table near the ball.
+    static let grooveProbe = 0.3
+
+    /// The groove's lie on screen for a stroke on the ball at `centre` aimed along `direction`: back along the cue (away
+    /// from the ball) and to the shooter's right, as unit screen vectors, and the screen length of a full pull
+    /// (StrokeTracker.fullPull). Shared by the stroke when it starts (StrokeGestures.beginStroke) and the groove hint
+    /// drawn before it (AimOverlay), so the hint lies exactly where the real groove will.
+    struct GrooveFrame {
+        var back: CGVector
+        var right: CGVector
+        var length: CGFloat
+    }
+
+    /// The groove's frame (above); nil when the camera cannot show it (behind the camera, or seen exactly end-on).
+    static func grooveFrame(_ proj: AimProjector, centre: Vec2, direction dir: Vec2) -> GrooveFrame? {
+        guard let ball = proj.screen(centre),
+              let behind = proj.screen(centre - dir * grooveProbe),
+              let rightward = proj.screen(centre + Vec2(dir.y, -dir.x) * grooveProbe) else { return nil }
+        let b = CGVector(dx: behind.x - ball.x, dy: behind.y - ball.y)
+        let bl = hypot(b.dx, b.dy)
+        guard bl > 1 else { return nil }
+        let back = CGVector(dx: b.dx / bl, dy: b.dy / bl)
+        // Right, made square to the groove on screen (the camera's perspective can skew the table's own right angle).
+        var r = CGVector(dx: rightward.x - ball.x, dy: rightward.y - ball.y)
+        let along = r.dx * back.dx + r.dy * back.dy
+        r = CGVector(dx: r.dx - along * back.dx, dy: r.dy - along * back.dy)
+        let rl = hypot(r.dx, r.dy)
+        guard rl > 1e-3 else { return nil }
+        // The probe's screen length scaled up to a full pull: the groove runs as far back as the pull reads power.
+        return GrooveFrame(back: back, right: CGVector(dx: r.dx / rl, dy: r.dy / rl),
+                           length: bl / CGFloat(grooveProbe) * CGFloat(StrokeTracker.fullPull))
     }
 
     /// True when a pull on the cue ball should move the power bar: the power control is open, and in a lesson only
@@ -607,22 +647,12 @@ struct StrokeGestures: ViewModifier {
 
     /// A touch on the cue ball starts a stroke. False when the groove cannot be laid (no camera yet, a pinch under way).
     private func beginStroke(_ event: Event) -> Bool {
-        guard model.layout.count == 16, bridge.table?.zoom.isGesturing != true,
-              let proj = projector(), let ball = proj.screen(model.aimOrigin) else { return false }
-        // The groove's directions on screen: back along the cue (away from the ball) and the shooter's right.
-        let dir = model.aimDirection
-        guard let behind = proj.screen(model.aimOrigin - dir * 0.3),
-              let rightward = proj.screen(model.aimOrigin + Vec2(dir.y, -dir.x) * 0.3) else { return false }
-        let b = CGVector(dx: behind.x - ball.x, dy: behind.y - ball.y)
-        let bl = hypot(b.dx, b.dy)
-        guard bl > 1 else { return false }
-        let back = CGVector(dx: b.dx / bl, dy: b.dy / bl)
-        // Right, made square to the groove on screen (the camera's perspective can skew the table's own right angle).
-        var r = CGVector(dx: rightward.x - ball.x, dy: rightward.y - ball.y)
-        let along = r.dx * back.dx + r.dy * back.dy
-        r = CGVector(dx: r.dx - along * back.dx, dy: r.dy - along * back.dy)
-        let rl = hypot(r.dx, r.dy)
-        guard rl > 1e-3 else { return false }
+        // The groove's directions on screen (back along the cue, away from the ball, and the shooter's right) and its
+        // length, read the same way as the hint drawn before the touch (TableTouch.grooveFrame).
+        guard model.layout.count == 16, bridge.table?.zoom.isGesturing != true, let proj = projector(),
+              let groove = TableTouch.grooveFrame(proj, centre: model.aimOrigin, direction: model.aimDirection) else {
+            return false
+        }
         session.strokeID = event.id
         session.tracker = StrokeTracker()
         // A new stroke starts on the automatic bridge until a finger rests on the cloth.
@@ -630,10 +660,10 @@ struct StrokeGestures: ViewModifier {
         session.bridgeSpot = nil
         model.strokeBridge = nil
         session.origin = event.location
-        session.back = back
-        session.right = CGVector(dx: r.dx / rl, dy: r.dy / rl)
+        session.back = groove.back
+        session.right = groove.right
         session.screenTrace = [event.location]
-        session.grooveLength = bl / 0.3 * CGFloat(StrokeTracker.fullPull)
+        session.grooveLength = groove.length
         session.sinceTick = 0
         session.pulled = false
         session.pencilSteering = false
@@ -656,9 +686,11 @@ struct StrokeGestures: ViewModifier {
         session.tracker = tracker
         session.screenTrace.append(p)
         pencil(event)
-        // A push through the ball with no backswing drawn first plays nothing; the card says why.
+        // A push through the ball with no backswing drawn first plays nothing; the card says why. Not with "Shoot with
+        // the button only" (item 45): there a push never plays anything, so a card saying it was refused would only
+        // confuse; the stroke simply ends.
         if tracker.tooShortPush {
-            model.refuse(.backswingTooShort)
+            if !buttonOnly { model.refuse(.backswingTooShort) }
             endStroke()
             session.owner = .done
             return
@@ -682,6 +714,12 @@ struct StrokeGestures: ViewModifier {
     private func deliver() {
         endStroke()
         session.owner = .done
+        // A mouse or trackpad never plays by pushing through the ball (item 2, contract section 4): only a release
+        // behind it plays (PointerAim), and a forward release is a change of mind. A pointer never reaches a stroke
+        // today (commitPointer makes it a pull, anotherFinger ignores it); this keeps that true if that ever changes.
+        guard !session.isPointer else { return }
+        // "Shoot with the button only" (item 45, GameSettings.buttonOnlyKey): the pull has set the power and the
+        // stroke has been measured (strokeMove did both before calling here), but only Shoot or Break plays it.
         guard !buttonOnly else { return }
         switch model.fireStroke() {
         case .refused:
@@ -793,29 +831,48 @@ enum StrokeDrawing {
     /// The groove and the finger's trace, while a stroke is on. Called from the aiming layer's Canvas.
     static func draw(_ ctx: inout GraphicsContext, session: StrokeSession, paper: Color, accent: Color) {
         guard let tracker = session.tracker else { return }
-        let o = session.origin, b = session.back, r = session.right
         // From a little ahead of the touch (toward the ball, the forward stroke's path) to a full pull behind it: the
         // pull's depth sets the power over the whole half metre, so the groove shows all of it. The bridge mark is
         // drawn beside the groove (AimOverlay), so nothing here runs over the bridge hand.
-        let ahead: CGFloat = 40
-        let length = session.grooveLength
-        let half = max(3, CGFloat(StrokeModel.steadyWander * max(tracker.strokeLength, StrokeTracker.shortestStroke)))
-        func at(_ s: CGFloat, _ t: CGFloat) -> CGPoint {
-            CGPoint(x: o.x + b.dx * s + r.dx * t, y: o.y + b.dy * s + r.dy * t)
-        }
-        var band = Path()
-        band.move(to: at(-ahead, -half))
-        band.addLine(to: at(length, -half))
-        band.addLine(to: at(length, half))
-        band.addLine(to: at(-ahead, half))
-        band.closeSubpath()
-        ctx.fill(band, with: .color(paper.opacity(0.10)))
-        var centre = Path()
-        centre.move(to: at(-ahead, 0)); centre.addLine(to: at(length, 0))
-        ctx.stroke(centre, with: .color(paper.opacity(0.22)), style: StrokeStyle(lineWidth: 1, dash: [2, 6]))
+        let groove = TableTouch.GrooveFrame(back: session.back, right: session.right, length: session.grooveLength)
+        band(&ctx, from: session.origin, groove: groove, ahead: 40,
+             half: CGFloat(StrokeModel.grooveHalfWidth(strokeLength: tracker.strokeLength)), paper: paper, strength: 1)
         guard session.screenTrace.count > 1 else { return }
         var trace = Path()
         trace.addLines(session.screenTrace)
         ctx.stroke(trace, with: .color(accent.opacity(0.7)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, lineJoin: .round))
+    }
+
+    /// How strong the hint is beside the live groove: half, so it reads as "pull here" without looking like a stroke
+    /// already under way.
+    static let hintStrength = 0.5
+
+    /// The groove before any touch (item 1): the band and its dashed centre line, at half strength and with no trace,
+    /// from the cue ball's screen point back along the cue. Starting at the ball itself, not ahead of it: there is no
+    /// forward stroke to show yet, and a band running on past the ball would read as part of the aim line. The width
+    /// is the one a stroke starting now would have (no length drawn yet), so the real groove lands where this was.
+    static func drawHint(_ ctx: inout GraphicsContext, from ball: CGPoint, groove: TableTouch.GrooveFrame, paper: Color) {
+        band(&ctx, from: ball, groove: groove, ahead: 0, half: CGFloat(StrokeModel.grooveHalfWidth(strokeLength: 0)),
+             paper: paper, strength: hintStrength)
+    }
+
+    /// The groove's band and dashed centre line from `o` (screen points), `ahead` points toward the ball and the full
+    /// pull's length behind it, `half` points either side. `strength` scales both inks (1 for the live groove).
+    private static func band(_ ctx: inout GraphicsContext, from o: CGPoint, groove: TableTouch.GrooveFrame,
+                             ahead: CGFloat, half: CGFloat, paper: Color, strength: Double) {
+        let b = groove.back, r = groove.right, length = groove.length
+        func at(_ s: CGFloat, _ t: CGFloat) -> CGPoint {
+            CGPoint(x: o.x + b.dx * s + r.dx * t, y: o.y + b.dy * s + r.dy * t)
+        }
+        var strip = Path()
+        strip.move(to: at(-ahead, -half))
+        strip.addLine(to: at(length, -half))
+        strip.addLine(to: at(length, half))
+        strip.addLine(to: at(-ahead, half))
+        strip.closeSubpath()
+        ctx.fill(strip, with: .color(paper.opacity(0.10 * strength)))
+        var centre = Path()
+        centre.move(to: at(-ahead, 0)); centre.addLine(to: at(length, 0))
+        ctx.stroke(centre, with: .color(paper.opacity(0.22 * strength)), style: StrokeStyle(lineWidth: 1, dash: [2, 6]))
     }
 }
