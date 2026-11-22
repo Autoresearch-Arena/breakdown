@@ -46,7 +46,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          item 4: the fine controls' Cue tip and Side readouts show the signed millimetres beside the word
 //          (tipReadout: "follow, +8.5 mm"), so the judge's millimetre advice can be followed; the readout column is wider
-//          to hold them. tipWord and sideWord are unchanged.)
+//          to hold them. tipWord and sideWord are unchanged. Review fix: a value a hair below zero no longer reads
+//          "-0.0 mm".)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -333,8 +334,11 @@ struct ShotPanel: View {
     /// the retry comparison (ShotAttempt) reads them as fixed identifiers.
     static func tipReadout(_ metres: Double, vertical: Bool) -> String {
         let word = shownWord(vertical ? tipWord(metres) : sideWord(metres))
-        // Rounded to the tenth first, so a value a hair either side of zero reads "0.0" with no sign.
-        let tenths = (metres * 10_000).rounded() / 10
+        // Rounded to the tenth first, so a value a hair either side of zero reads "0.0" with no sign. A hair below zero
+        // rounds to negative zero, which the number formatter writes as "-0.0"; the == 0 test is true for it, and
+        // assigning a plain 0 drops the sign bit.
+        var tenths = (metres * 10_000).rounded() / 10
+        if tenths == 0 { tenths = 0 }
         let mm = tenths.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always(includingZero: false)))
         return String(localized: "\(word), \(mm) mm")
     }
