@@ -17081,6 +17081,76 @@
         }
       }
     },
+    "Bank cross-side": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تسديدة بالحافة عبر الطاولة"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandenball quer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banda cruzada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doublé en travers"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponda incrociata"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クロスサイドバンク"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "크로스 사이드 뱅크"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bola de tabela cruzada"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bola de tabela cruzada"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дуплет поперёк"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对边翻袋"
+          }
+        }
+      }
+    },
     "Bank the 5 off the far cushion into the marked side pocket.": {
       "localizations": {
         "ar": {
@@ -24217,6 +24287,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "切进了。你算上了偏移。"
+          }
+        }
+      }
+    },
+    "Cut the 13 into the right rail just past the side pocket, so it banks straight back across the table into the left side pocket.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اقطع الكرة 13 نحو الحافة اليمنى بعد الجيب الجانبي مباشرة، فترتد عبر الطاولة إلى الجيب الجانبي الأيسر."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schneide die 13 knapp hinter der Mitteltasche an die rechte Bande, damit sie quer über den Tisch in die linke Mitteltasche zurückläuft."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corta la 13 contra la banda derecha justo pasada la tronera lateral, para que rebote y cruce la mesa hasta la tronera lateral izquierda."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coupe la 13 sur la bande droite juste après la poche du milieu, pour qu'elle revienne en travers de la table dans la poche du milieu gauche."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taglia la 13 sulla sponda destra appena oltre la buca centrale, così rimbalza dritta attraverso il tavolo nella buca centrale sinistra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "13番を右クッションのサイドポケットのすぐ先へカットし、台を横切って左サイドポケットへバンクさせる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "13번을 사이드 포켓 바로 지난 오른쪽 쿠션으로 깎아 보내서, 테이블을 가로질러 왼쪽 사이드 포켓으로 뱅크시켜요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corta a 13 contra a tabela direita logo depois da lateral, para que volte em linha reta pela mesa até à caçapa lateral esquerda."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corte a 13 contra a tabela direita logo depois da lateral, para que ela volte reto pela mesa até a caçapa lateral esquerda."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срежь 13 в правый борт чуть за средней лузой, чтобы она отскочила поперёк стола в левую среднюю лузу."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "把 13 号球切向右库中袋稍后处，让它直接横穿球台翻进左侧中袋。"
           }
         }
       }
@@ -40107,6 +40247,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "打右库中袋后第一个星点。母球从那里弹向 13 号球，13 号球撞右库后直接横穿进左侧中袋。"
+          }
+        }
+      }
+    },
+    "Kick off the foot rail just under half a diamond right of the middle. The cue ball comes back up and cuts the 13 into the right side pocket.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ارتدّ عن حافة القدم بأقل قليلاً من نصف ماسة يمين الوسطى. تعود الكرة البيضاء وتقطع الكرة 13 إلى الجيب الجانبي الأيمن."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorbänder an der Fußbande knapp einen halben Diamanten rechts der Mitte. Die Weiße kommt zurück und schneidet die 13 in die rechte Mitteltasche."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rebota en la banda del pie algo menos de medio diamante a la derecha del centro. La blanca vuelve y corta la 13 a la tronera lateral derecha."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bricole sur la bande du pied à un peu moins d'une demi-mouche à droite du milieu. La blanche remonte et coupe la 13 dans la poche du milieu droite."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimbalza sulla sponda di fondo poco meno di mezzo diamante a destra del centro. La bianca torna su e taglia la 13 nella buca centrale destra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フットクッションの中央から右へ半ポイント弱でキック。手球が戻り、13番を右サイドポケットへカット。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "풋 쿠션 가운데에서 반 포인트가 조금 안 되게 오른쪽으로 킥. 큐볼이 돌아와 13번을 오른쪽 사이드 포켓으로 깎아요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tabela na tabela do pé um pouco menos de meio diamante à direita do meio. A branca volta e corta a 13 para a caçapa lateral direita."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tabela na tabela do pé um pouco menos de meio diamante à direita do meio. A branca volta e corta a 13 na caçapa lateral direita."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Через нижний борт чуть меньше чем на полметки правее центра. Биток вернётся и срежет 13 в правую среднюю лузу."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打脚库中间偏右不到半个星点处。母球弹回，把 13 号球切进右侧中袋。"
           }
         }
       }
