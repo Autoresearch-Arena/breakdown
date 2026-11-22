@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6: no rolling sound at all. RollingVoices is gone; a ball travelling
+//          across the table is silent and only contacts sound. The Boss heard the rolling hiss as static.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (honours the Sound option).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (sound plan packages 1 to 4. Voices are now recipes of ringing
 //          partials and contact bursts (VoiceBook, at the top of this file), built at four strengths with seeded
@@ -353,7 +355,6 @@ final class SoundBoard {
     private let engine: AVAudioEngine
     private let mono: AVAudioFormat
     private let players: [AVAudioPlayerNode]
-    private let rolling: RollingVoices
     private var nextPlayer = 0
     /// False when muted; the engine is (re)started on demand while this is true.
     private var enabled = false
@@ -398,7 +399,6 @@ final class SoundBoard {
         self.engine = engine
         self.mono = mono
         self.players = pool
-        self.rolling = RollingVoices(engine: engine, output: dry, mono: mono, stereo: stereo)
 
         #if os(iOS)
         // Ambient: obeys the silent switch and mixes with the player's own music instead of stopping it.
@@ -418,9 +418,6 @@ final class SoundBoard {
 
     private func install(_ bank: VoiceBank) {
         voices = bank.voices.mapValues { layers in layers.map { variants in variants.compactMap { buffer($0) } } }
-        if let smooth = buffer(bank.rollSmooth), let grit = buffer(bank.rollGrit) {
-            rolling.install(smooth: smooth, grit: grit)
-        }
     }
 
     private func buffer(_ samples: [Float]) -> AVAudioPCMBuffer? {
@@ -439,7 +436,6 @@ final class SoundBoard {
         if engine.isRunning { return true }
         do {
             try engine.start()
-            rolling.restarted()
             return true
         } catch {
             // No output device or a refused start: stay quiet and try again at the next sound.
@@ -477,11 +473,9 @@ final class SoundBoard {
         // The playback loop never advances more than a twentieth of a second of real time per frame, so a forward
         // step larger than that (times the rate, with half again for a rate that changed within the frame) is a jump.
         let forward = playing && step > 0 && step <= max(0, rate) * (1.0 / 20.0) * 1.5 + 1e-4
-        guard forward, GameSettings.soundOn, ensureRunning() else {
-            rolling.silence()
-            return
-        }
-        rolling.update(timeline, clock: clock, rate: rate, surface: surfaceSound)
+        // 0.7.6: a travelling ball makes no sound at all (the Boss: the rolling hiss sounded like static). Only
+        // contacts sound; `forward` is kept because nothing else here needs it, so it is simply read and dropped.
+        _ = forward
     }
 
     private func voice(for kind: FeelKind) -> Voice {
