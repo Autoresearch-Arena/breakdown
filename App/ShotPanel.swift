@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: Try again falls back to its arrow alone when the
+//          row has no room, instead of being cut short).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (a Try again button beside Shoot once a shot of yours has played out:
 //          the balls go back where it started with the same settings, and the last try stays on the table as a ghost).
@@ -234,11 +236,17 @@ struct ShotPanel: View {
                 hintSeen = true
                 model.tryAgain()
             } label: {
-                Label("Try again", systemImage: "arrow.uturn.backward")
-                    .font(.headline)
-                    .lineLimit(1)
-                    .frame(minHeight: Self.buttonHeight)
+                // The words when the row has room, else the arrow alone (VoiceOver still hears "Try again"), so the
+                // label is never cut short beside Level and Shoot on a phone (0.7.5 coordinator).
+                ViewThatFits(in: .horizontal) {
+                    Label("Try again", systemImage: "arrow.uturn.backward")
+                    Label("Try again", systemImage: "arrow.uturn.backward").labelStyle(.iconOnly)
+                }
+                .font(.headline)
+                .lineLimit(1)
+                .frame(minHeight: Self.buttonHeight)
             }
+            .accessibilityLabel("Try again")
             .buttonStyle(.glass)
             .controlSize(.regular)
             .accessibilityHint("Puts the balls back where your last shot started, with the same aim, power and spin")

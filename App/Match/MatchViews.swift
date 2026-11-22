@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: while aiming with the Lens on, on an upright phone,
+//          the card shows the turn line only).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2
 //          and B3: the person is "you" on every line (MatchMode.you): "Your shot", "You have the solids.", "You win!",
 //          score and player rows labelled "You", and the names editor lists only the person's seat ("Your name"),
@@ -128,12 +130,14 @@ struct MatchCard: View {
     private func content(_ match: MatchMode) -> some View {
         switch match.phase {
         case .aiming:
-            TurnBanner(match: match, editingNames: $editingNames)
+            // Slim with the Lens on, on an upright phone (0.7.5 coordinator): the turn line alone, so the Lens table
+            // keeps its size; the score and the settled ruling come back when the Lens goes off.
+            TurnBanner(match: match, editingNames: $editingNames, compact: lensReplayCompact)
             if match.confirmingEnd {
                 endMatchConfirmation(match)
             } else {
                 // (No Lens offer here: the model only offers it while the ruling or the result is up.)
-                if let settled = match.settledRuling { settledSection(settled, match) }
+                if let settled = match.settledRuling, !lensReplayCompact { settledSection(settled, match) }
                 if match.computerSeatToAct != nil {
                     // The computer's decision: its choice prompt (if any) and that it is thinking or lining up;
                     // nothing to tap.

@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: the playback row is pinned under the phone's
+//          scrolling cards, and the match card goes slim whenever the Lens is on in a match).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: lensReplayCompact is false while the opening
 //          runs, so its guided slow replay neither slims the cards nor holds back Your shot in the first minute.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B5 and
@@ -422,8 +424,23 @@ struct ShowpieceView: View {
         // half of a landscape window and the phone's share of a portrait one.
         let squarish = geo.size.width / max(1, geo.size.height) > 0.65
         let share: CGFloat = wideWindow ? (geo.size.width > geo.size.height ? 0.45 : 0.62) : (squarish ? 0.74 : 0.62)
-        return FittingScroll(maxHeight: geo.size.height * share) {
+        // The playback row (play, scrub, speed; Lens, Ride, Your shot) is pinned under the scrolling cards, never
+        // inside them: tall cards scrolled it off the bottom of a phone, which left no way to turn the Lens off
+        // (0.7.5 coordinator). The cards get the share less the row's own height.
+        return VStack(spacing: 10) {
+        FittingScroll(maxHeight: max(0, geo.size.height * share - Self.playbackRowAllowance)) {
             VStack(spacing: 10) {
+                // Phone held upright: the explanation, first in the stack, right under the table (0.7.5 coordinator: a long
+                // caption grows upward, and lower in the stack it grew over Shoot and the cards' buttons; here it can only
+                // grow over the near rail), measured with the controls, so nothing covers the table. Its height is
+                // reserved (see CaptionStrip), so the table moves once when the Lens comes up and never between captions. Not gated on the menu: the whole stack is already hidden while
+                // the menu is up, and keeping it measured stops the table jumping behind the menu.
+                if !wide && model.lensOn && explanations {
+                    // A lower cap on a big window: the strip's three reserved lines are short there anyway, and at large
+                    // text sizes it scrolls inside the cap rather than taking a third of the window from the table.
+                    CaptionStrip(model: model, maxHeight: geo.size.height * (wideWindow ? 0.2 : 0.28))
+                        .transition(.opacity)
+                }
                 // The what-if card first: while it shows, the result cards below step aside (0.7.5).
                 if !wide { WhatIfCard(model: model) }
                 if !wide { ComparisonCard(model: model) }
@@ -442,22 +459,13 @@ struct ShowpieceView: View {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
                 }
-                // Phone held upright: the explanation, directly above the controls and measured with them, so nothing
-                // covers the table. Its height is reserved (see CaptionStrip), so the table moves once when the Lens
-                // comes up and never between captions. Not gated on the menu: the whole stack is already hidden while
-                // the menu is up, and keeping it measured stops the table jumping behind the menu.
-                if !wide && model.lensOn && explanations {
-                    // A lower cap on a big window: the strip's three reserved lines are short there anyway, and at large
-                    // text sizes it scrolls inside the cap rather than taking a third of the window from the table.
-                    CaptionStrip(model: model, maxHeight: geo.size.height * (wideWindow ? 0.2 : 0.28))
-                        .transition(.opacity)
-                }
-                PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
             }
+        }
+        PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
         }
         // Phone held upright, guided Lens replay: the mode cards show their slim form (heading and main button) so the
         // table keeps its height while the replay plays (B3, item 13).
-        .environment(\.lensReplayCompact, Self.lensReplayCompact(model, size: geo.size))
+        .environment(\.lensReplayCompact, Self.lensCardsSlim(model, size: geo.size))
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: model.retryComparison)
         .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
@@ -472,6 +480,18 @@ struct ShowpieceView: View {
     /// lensReplayCompact, and Your shot waits closed while it holds (0.7.5 layouts item 13). Never while the opening
     /// runs: its slow replay is guided too, but the first minute keeps its cards and Your shot exactly as they were
     /// (an opening request for Your shot must open it, not wait), so only a replay after the opening counts.
+    /// The height the pinned playback row takes on a phone (two rows of buttons and the gap above them).
+    static let playbackRowAllowance: CGFloat = 124
+
+    /// The cards' slim form on a phone held upright: during a guided Lens replay (lensReplayCompact), and whenever the
+    /// Lens is on in a match, where the match card's instruction, score and ruling otherwise shrink the Lens table to a
+    /// small diagram (0.7.5 coordinator, seen on the iPhone 17 Pro Max). The score and the ruling come back the moment
+    /// the Lens goes off. Your shot is not held closed for this: aiming in the Lens is a real use.
+    static func lensCardsSlim(_ model: ShowpieceModel, size: CGSize) -> Bool {
+        lensReplayCompact(model, size: size)
+            || (!ScreenLayout.isWide(size) && model.openingStage == .none && model.lensOn && model.match != nil)
+    }
+
     static func lensReplayCompact(_ model: ShowpieceModel, size: CGSize) -> Bool {
         !ScreenLayout.isWide(size) && model.openingStage == .none && model.lensOn && model.guided && !model.aimReady
     }

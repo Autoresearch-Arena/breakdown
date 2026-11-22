@@ -44,6 +44,8 @@
 //          StrokeModel.strikeZones, the delivery's own rule, and both pass isBreak: racked, so a break gets its own
 //          calm zone and the power bar's calm mark is where the strike's calm zone ends.)
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: in a match the cue first aims at the nearest ball
+//          the rules allow, never at a ball that would foul).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: hasSavedMatch(kind),
 //          continueSavedMatch(kind:), endMatch removes only its own game's save).
 // Edited: Claude Haiku 5.5 High, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
@@ -1437,10 +1439,23 @@ final class ShowpieceModel {
         return best?.ball
     }
 
-    /// Point the cue at the nearest ball still on the table.
+    /// Point the cue at the nearest ball still on the table. In a match, at the nearest ball the rules let the shooter
+    /// hit first (five-pin's other ball, eight-ball's group, nine-ball's lowest), so the opening aim never points
+    /// straight at a foul (0.7.5 coordinator: five-pin opened aimed at the red).
     func aimAtNearestBall() {
         guard layout.count == 16 else { return }
         let from = strikeBall
+        if let m = match {
+            let legal = m.targetBall(for: m.state.turn).map { [$0] }
+                ?? OpponentPlanner.legalTargets(rules: m.rules, state: m.state)
+            let near = legal.filter { $0 != from && layout.indices.contains($0) && NextShot.isOnTable(layout[$0]) }
+                .min { (layout[$0] - layout[from]).lengthSquared < (layout[$1] - layout[from]).lengthSquared }
+            if let near, (layout[near] - layout[from]).lengthSquared > 0 {
+                let d = (layout[near] - layout[from]).normalized
+                aimDegrees = atan2(d.y, d.x) * 180 / Double.pi
+                return
+            }
+        }
         if from == 0 {
             guard let d = NextShot.directionToNearestObjectBall(in: layout) else { return }
             aimDegrees = atan2(d.y, d.x) * 180 / Double.pi
@@ -1727,6 +1742,9 @@ final class ShowpieceModel {
         let m = MatchMode(model: self, restoring: saved)
         match = m
         m.resume()
+        // A resumed game aims at a ball the rules allow, as a fresh turn does (0.7.5 coordinator: it came back aimed
+        // wherever the last stroke left the cue).
+        if !m.isComputer(m.state.turn) { aimAtNearestBall() }
         setLens(false)
         return match != nil
     }
