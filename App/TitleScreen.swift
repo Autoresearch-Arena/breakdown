@@ -1,5 +1,14 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream menu, plans/22-Nov-2026-v076-phone-plan.md, bugs 54,
+//          55 and 57: turning the phone keeps the menu screen that was open. The menu's own screens (the Play list, the
+//          entrance, the How to play, Options and Tables sheets) live in one shared MenuScreenState instead of each
+//          TitleScreen's own state, and leaving the screen only forgets them when the menu has really closed, so the
+//          upright copy and the sideways copy show the same screen and the replace question survives the turn. With a
+//          page binding handed in, How to play, Options and Tables open as the screen's own page sheet, which never goes
+//          away when the phone turns. Play is its own catalog key, "Play a game", with a comment that it means a game,
+//          never playback, and the level picker's label is "Computer level", not the cue-angle word. Entry names wrap
+//          to two lines (all at the accessibility sizes) instead of ending in an ellipsis.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: the replace question asks only when that game
 //          has a save, and Keep plays that save).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: the saved line is read through a closure
@@ -123,6 +132,38 @@ struct MatchStartRequest: Equatable {
     }
 }
 
+// MARK: The menu's own screens, shared by every copy of the menu
+
+/// Which of the menu's own screens is open, kept outside any one TitleScreen (bug 54). Upright the menu is drawn on the
+/// stage; turned sideways it is a second TitleScreen over the whole window (ShowpieceView menuOnStage / menuOverWindow),
+/// and on a folding phone it moves into the notebook panel. Those are different views, so state kept in any one of them
+/// was thrown away when the phone turned: the Play list fell back to the main list, a sheet slid away and the card faded
+/// in again from nothing. Every TitleScreen reads this one shared instance instead, and it is forgotten only when the
+/// menu really closes (TitleScreen's onDisappear checks model.menuOpen), so the next opening starts on the main list.
+/// The replace question itself (MatchStartRequest) stays with ShowpieceView, which the Mac's Game menu also sets.
+@MainActor @Observable
+final class MenuScreenState {
+    static let shared = MenuScreenState()
+
+    /// The gentle entrance has played. Kept, so a turned phone shows the card at once instead of fading it in again.
+    var shown = false
+    /// How to play, Options or Tables as the menu's own sheet (used only when no page binding is handed in). One switch,
+    /// as ShowpieceView's own page is, since only one of them is ever open.
+    var sheet: NotebookPage?
+    /// The Play list (the computer's level and its four games, Practice, Straight stroke) replaces the main list
+    /// inside the same card. The level itself lives on the model (computerLevel), shared with the Tables pages.
+    var playListOpen = false
+
+    private init() {}
+
+    /// The menu closed: back to the main list, no sheet, and the entrance plays again next time.
+    func menuClosed() {
+        shown = false
+        sheet = nil
+        playListOpen = false
+    }
+}
+
 struct TitleScreen: View {
     let model: ShowpieceModel
     /// Play opens the aiming controls on the fresh rack; the screen owns that switch, so it is handed in.
@@ -132,6 +173,11 @@ struct TitleScreen: View {
     var onHowTo: (() -> Void)? = nil
     var onOptions: (() -> Void)? = nil
     var onTables: (() -> Void)? = nil
+    /// The screen's own page switch (ShowpieceView's NotebookPage, shown there as a sheet outside the notebook). When it
+    /// is handed in, How to play, Options and Tables open through it instead of this view's own sheets: that sheet hangs
+    /// from the screen, not from this menu copy, so turning the phone neither closes it nor loses the rules page or
+    /// table page open inside it (bug 54). Nil keeps the menu's own sheets.
+    var page: Binding<NotebookPage?>? = nil
     /// A new match waiting for a yes because it would replace the saved one (ShowpieceView owns it; the Mac's Game menu
     /// can set it too). While set, the card asks instead of listing.
     @Binding var pendingMatch: MatchStartRequest?
@@ -139,14 +185,38 @@ struct TitleScreen: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
-    /// Drives the gentle entrance; the same timing for the wordmark and the card, with the tagline a beat later.
-    @State private var shown = false
-    @State private var howToOpen = false
-    @State private var optionsOpen = false
-    @State private var tablesOpen = false
-    /// The Play list (the computer's level and its four games, Practice, Straight stroke) replaces the main list
-    /// inside the same card. The level itself lives on the model (computerLevel), shared with the Tables pages.
-    @State private var playListOpen = false
+    /// The menu's open screens and its entrance (see MenuScreenState). A computed read of the shared instance, so the
+    /// view's memberwise initializer is unchanged and Observation tracks every property the body reads.
+    private var state: MenuScreenState { .shared }
+
+    /// The menu's own sheet. Inline (the notebook) the panel shows these as its own pages, so a sheet left open before
+    /// the phone unfolded is remembered but never presented over the table.
+    private var sheetItem: Binding<NotebookPage?> {
+        Binding(get: { inline ? nil : state.sheet }, set: { state.sheet = $0 })
+    }
+
+    /// Opens How to play, Options or Tables: the panel's page inline, the screen's page sheet when one is handed in,
+    /// otherwise the menu's own sheet.
+    private func openPage(_ target: NotebookPage, inline handler: (() -> Void)?) {
+        if let handler { handler() } else if let page { page.wrappedValue = target } else { state.sheet = target }
+    }
+
+    /// One of the menu's own sheets, as ShowpieceView.pageSheet shows the same three.
+    @ViewBuilder private func menuSheet(_ shown: NotebookPage) -> some View {
+        let isOpen = Binding(get: { state.sheet != nil }, set: { if !$0 { state.sheet = nil } })
+        switch shown {
+        case .howTo: HowToPlaySheet(isOpen: isOpen, input: model.inputInUse)
+        case .options: OptionsSheet(isOpen: isOpen)
+        case .tables: TableList(model: model, onChosen: onPlay, onClose: { state.sheet = nil })
+        }
+    }
+
+    /// The main menu's Play, and the title of the list it opens (bug 55). Its own key: the plain "Play" is the playback
+    /// button's word and was translated as media playback ("Lecture", "Reproducir"), which is not what this opens.
+    private static var playTitle: String {
+        String(localized: "Play a game",
+               comment: "Main menu entry and the title of the list it opens: play a game against the computer, or practise. A game, never media playback.")
+    }
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
     /// -noTitle is there for anyone who wants the table straight away. The store scenes (StoreScene.flags) put their
@@ -186,18 +256,25 @@ struct TitleScreen: View {
             .defaultScrollAnchor(.center, for: .alignment)
             .scrollBounceBehavior(.basedOnSize)
         }
-        .opacity(shown ? 1 : 0)
+        .opacity(state.shown ? 1 : 0)
         .transition(.opacity)
         .animation(reduceMotion ? nil : .smooth(duration: 0.6), value: model.menuBackdropPlaying)
         .onAppear {
-            withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true }
+            // Only a menu that has just opened fades in; a copy built because the phone turned shows at once (bug 54).
+            guard !state.shown else { return }
+            withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { state.shown = true }
         }
-        // Back to the main list whenever the menu is opened again.
-        // A question left unanswered when the menu goes is dropped, so it never greets the player later.
-        .onDisappear { playListOpen = false; pendingMatch = nil }
-        .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen, input: model.inputInUse) }
-        .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
-        .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
+        // Back to the main list whenever the menu is opened again, and a question left unanswered when the menu goes
+        // is dropped, so it never greets the player later. Only when the menu has really closed: this copy also goes
+        // when the phone turns (the other layout builds its own copy) or when the notebook shows a page or list in its
+        // place, and then the open screen and the question must stay (bug 54). The removal follows the change that
+        // caused it, so model.menuOpen already says which it was.
+        .onDisappear {
+            guard !model.menuOpen else { return }
+            state.menuClosed()
+            pendingMatch = nil
+        }
+        .sheet(item: sheetItem) { shown in menuSheet(shown) }
     }
 
     private var card: some View {
@@ -214,8 +291,8 @@ struct TitleScreen: View {
                 Text("watch the physics think")
                     .font(Theme.tagline)
                     .foregroundStyle(palette.accent)
-                    .opacity(shown ? 1 : 0)
-                    .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: shown)
+                    .opacity(state.shown ? 1 : 0)
+                    .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: state.shown)
                 Text(Self.intro)
                     .font(Theme.copy)
                     .foregroundStyle(.secondary)
@@ -227,14 +304,14 @@ struct TitleScreen: View {
             Group {
                 if let request = pendingMatch {
                     replaceList(request)
-                } else if playListOpen {
+                } else if state.playListOpen {
                     playList
                 } else {
                     mainList
                 }
             }
             .transition(.opacity)
-            .animation(reduceMotion ? nil : .snappy, value: playListOpen)
+            .animation(reduceMotion ? nil : .snappy, value: state.playListOpen)
             .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
         }
         .padding(28)
@@ -264,8 +341,9 @@ struct TitleScreen: View {
                 }
                 .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
-            MenuRow(title: "Play", line: "Four games against the computer, or practise on your own.",
-                    symbol: "circle.grid.cross", prominent: playHighlighted) { playListOpen = true }
+            MenuRow(verbatimTitle: Self.playTitle,
+                    verbatimLine: String(localized: "Four games against the computer, or practise on your own."),
+                    symbol: "circle.grid.cross", prominent: playHighlighted) { state.playListOpen = true }
                 .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
             // 0.7.4: the trick shots sit directly under Play, where people look first: they are the coolest thing the
             // table shows. The lessons follow as an ordinary entry.
@@ -276,7 +354,7 @@ struct TitleScreen: View {
             MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
                     symbol: "8.circle.fill", mark: medalMark) { model.showList(.eightBall) }
             MenuRow(title: "Tables", line: "Other tables, each a game of its own.", symbol: "square.grid.2x2") {
-                if let onTables { onTables() } else { tablesOpen = true }
+                openPage(.tables, inline: onTables)
             }
             MenuRow(title: "Watch the intro", line: "The opening break again, slowed down under the Physics Lens.",
                     symbol: "sparkles") {
@@ -284,10 +362,10 @@ struct TitleScreen: View {
             }
             MenuRow(title: "How to play", line: "The controls, the Lens and the rules of each game.",
                     symbol: "questionmark.circle") {
-                if let onHowTo { onHowTo() } else { howToOpen = true }
+                openPage(.howTo, inline: onHowTo)
             }
             MenuRow(title: "Options", line: "Sound, vibration, the aim guide and the tips.", symbol: "gearshape") {
-                if let onOptions { onOptions() } else { optionsOpen = true }
+                openPage(.options, inline: onOptions)
             }
         }
     }
@@ -341,7 +419,7 @@ struct TitleScreen: View {
 
     // MARK: The Play list
 
-    private func listHeader(_ title: LocalizedStringKey, back: @escaping () -> Void) -> some View {
+    private func listHeader(_ title: String, back: @escaping () -> Void) -> some View {
         HStack {
             Button(action: back) {
                 Label("Back", systemImage: "chevron.backward")
@@ -350,7 +428,8 @@ struct TitleScreen: View {
             .buttonStyle(.glass)
             .controlSize(.regular)
             Spacer(minLength: 0)
-            Text(title)
+            // Already translated (the menu's own Play key, bug 55).
+            Text(verbatim: title)
                 .font(Theme.sectionTitle)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
@@ -365,7 +444,7 @@ struct TitleScreen: View {
     /// picked here is the one the Tables pages show, and the reverse.
     private var playList: some View {
         VStack(spacing: 10) {
-            listHeader("Play") { playListOpen = false }
+            listHeader(Self.playTitle) { state.playListOpen = false }
             if model.hasSavedMatch {
                 MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: true) { continueMatch() }
                     .keyboardShortcut(.defaultAction)
@@ -489,7 +568,10 @@ struct ComputerLevelPicker: View {
         VStack(alignment: leading ? .leading : .center, spacing: 10) {
             // An explicit binding, as the Mac's Tables and Surface pickers do: the view holds the model as a plain
             // constant (it is a class), so there is no projected $ binding to hand the picker.
-            Picker(String(localized: "Level"),
+            // Its own key (bug 55): the plain "Level" is the cue-angle word, translated as flat. Heard, not seen: a
+            // segmented picker does not draw its label.
+            Picker(String(localized: "Computer level",
+                          comment: "Label of the picker for how well the computer plays: Easy, Medium or Hard. Read aloud by VoiceOver."),
                    selection: Binding(get: { model.computerLevel }, set: { model.computerLevel = $0 })) {
                 ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
             }
@@ -524,6 +606,7 @@ private struct MenuRow: View {
     var mark: Mark? = nil
     let action: () -> Void
     @Environment(\.palette) private var palette
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     /// Fixed words, looked up in the string catalog. (Distinct labels for run-time words below, so a string literal
     /// never picks an unlocalized overload.)
@@ -565,10 +648,14 @@ private struct MenuRow: View {
                     .frame(width: 28)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
+                    // Wraps instead of ending in an ellipsis (bug 57): two lines, every line it needs at the
+                    // accessibility sizes. A name too long even for that shrinks a little before it is cut.
                     title
                         .font(Theme.heading)
-                        .lineLimit(1)
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 2)
                         .minimumScaleFactor(0.8)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
                     line
                         .font(Theme.body)
                         .opacity(0.75)
