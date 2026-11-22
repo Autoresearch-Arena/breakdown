@@ -21,6 +21,10 @@
 //          frames 07 and 08 show each table cropped to its own panel, side by side; duo-outer is the small closed
 //          screen, whose frames 07 and 08 show the tables cropped and stacked in a gentle zigzag, since three whole
 //          portrait screens side by side would be tiny. Crops are per device now (tableCrops).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, bug plan item 40: the ten frames are the new scene list of
+//          scripts/store-shots.sh, led by the Lens, with a match, a lesson, a ruling, the stroke drill, the three other
+//          tables keeping score and a Ride view; the two plain list screens are gone. The iPad table crop follows the
+//          notebook layout an upright iPad now has, the panel under the table instead of a column beside it.)
 // SRP/DRY check: Pass - framing only. Capturing is scripts/store-shots.sh and store-shot.sh; the words are in
 //          captions/<lang>.json. One row-layout routine serves single shots and the side-by-side composites on every
 //          device.
@@ -61,27 +65,30 @@ let devices: [String: Device] = [
 
 // Frame name -> raw scene files shown in it (left to right). The frame name is also the caption key.
 let frames: [(name: String, scenes: [String])] = [
-    ("01-jump", ["01-jump"]),
-    ("02-call", ["02-call"]),
-    ("03-score", ["03-score"]),
+    ("01-lens", ["01-lens"]),
+    ("02-match", ["02-match"]),
+    ("03-lesson", ["03-lesson"]),
     ("04-real-table", ["04-real-table"]),
-    ("05-lens", ["05-lens"]),
-    ("06-bridge", ["06-bridge"]),
+    ("05-ruling", ["05-ruling"]),
+    ("06-drill", ["06-drill"]),
     ("07-surfaces", ["07a-ice", "07b-moon"]),
     ("08-tables", ["08a-bumper", "08b-fivepin", "08c-bar"]),
-    ("09-tricks", ["09-tricks"]),
-    ("10-situations", ["10-situations"]),
+    ("09-ride", ["09-ride"]),
+    ("10-jump", ["10-jump"]),
 ]
 
-// iPad composites show only the table area of each raw shot. The iPad game screen puts the table on the leading side
-// and a card column on the trailing side (it starts at about 69% of the width), with the status bar and the back button
-// at the top and the camera buttons at the bottom. These fractions of the raw shot keep the whole table with its rails
-// and pockets and drop the rest; the layout is the same in every language, mirrored for Arabic.
-let tableCrop = (width: CGFloat(0.686), top: CGFloat(0.060), bottom: CGFloat(0.915))
+// iPad composites show only the table area of each raw shot. The iPad set is shot upright, and since 0.6.6 an upright
+// iPad shows the notebook layout: the table across the top and the notebook panel as a band under it
+// (App/NotebookGeometry.swift). On the 13-inch iPad (1032 x 1376 points upright) that band is belowShare 0.40 of the
+// height, 550 points, capped at belowMaximum 520, so the table's space is the top 856 points: 856 / 1376 = 0.622 of the
+// height. The table spans the whole width, so nothing is cut at the sides (and Arabic needs no mirroring). The top
+// 0.060, the status bar and the title row's buttons, is the measurement the earlier side-column crop used for the same
+// row.
+let tableCrop = (width: CGFloat(1.0), top: CGFloat(0.060), bottom: CGFloat(0.622))
 
 // Per-device crops for the composite frames (07 and 08). Each is fractions of the raw shot: width (kept from the
 // leading side, the trailing side for Arabic), top and bottom.
-//  - ipad-13: see tableCrop above.
+//  - ipad-13: see tableCrop above (the notebook band under the table is cut away).
 //  - duo-inner: the table panel left of the fold (the fold is at 48% of the width; the panel stops just short of its
 //    hairline), down to just above the home indicator. Nothing is drawn over the table on the Duo, so no buttons to cut.
 //  - duo-outer: the closed screen without its status column (the right 17%), from the top of the table down to above the
