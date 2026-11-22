@@ -50,6 +50,14 @@
 //          (tipReadout: "follow, +8.5 mm"), so the judge's millimetre advice can be followed; the readout column is wider
 //          to hold them. tipWord and sideWord are unchanged. Review fix: a value a hair below zero no longer reads
 //          "-0.0 mm".)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream aim, plans/22-Nov-2026-phone-bug-hunt.md #44, #47, #48,
+//          #49, #61: the equipment card keeps its room while the panel is open, so the table no longer slides as the
+//          stance row comes and goes with the aim; when the button row has no room the panel falls back to a layout
+//          with Shoot alone on a full-width row (at every text size, not only the accessibility sizes), and the
+//          cue-angle button shortens itself to its icon and degrees; on a phone the fine controls open inside the
+//          panel in place of the tip picture and power bar, as on the folding phone, so no sheet covers the table;
+//          each slider's name and readout sit on one line beside it where they fit and above it where they do not; the
+//          aim and break-aim readouts follow the player's number style.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -64,8 +72,16 @@ struct ShotPanel: View {
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSize
+    @Environment(\.verticalSizeClass) private var verticalSize
+    #endif
     /// Bumped by each refusal to pulse its line (a symbol bounce; nothing moves under Reduce Motion).
     @State private var refusalPulse = 0
+    /// The height of the fine controls when they open inside the panel on a phone (#48), points, scaled with the text:
+    /// the aim row and about three sliders show, the rest scroll. Shorter than the folding phone's 340, because here
+    /// the table shares the screen's height with the panel.
+    @ScaledMetric(relativeTo: .body) private var phoneFineHeight: CGFloat = 260
 
     var body: some View {
         VStack(spacing: 8) {
@@ -73,21 +89,27 @@ struct ShotPanel: View {
             if !hintSeen && model.openingStage != .handOver { hint }
             // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
             statusLine
-            // The stance, when it is not a square one. The notebook shows it among its cards (NotebookPanel).
-            if !inlinePages { EquipmentCard(model: model, embedded: true) }
-            Group {
-                if typeSize.isAccessibilitySize {
-                    stacked
-                } else {
-                    ViewThatFits(in: .horizontal) { oneRow; twoRows }
+            // The stance, when it is not a square one. The notebook shows it among its cards (NotebookPanel). Its room
+            // is kept while the panel is open, so the table does not slide as the stance changes with the aim (#44).
+            if !inlinePages { EquipmentCard(model: model, embedded: true, reservesRoom: true) }
+            // On a phone the open fine controls take the place of the tip picture and power bar (their sliders and
+            // Shoot are inside), so the panel grows by less and the table refits above it (#48).
+            if !(slidersOpen && phoneFine) {
+                Group {
+                    if typeSize.isAccessibilitySize {
+                        stacked
+                    } else {
+                        // Last, when neither row fits: Shoot alone on a full-width row, so it is never cut short (#47).
+                        ViewThatFits(in: .horizontal) { oneRow; twoRows; stacked }
+                    }
                 }
+                // The computer's turn: the person's controls stay visible but greyed out and still (item 16).
+                .disabled(!model.personControlsLive)
+                .opacity(model.personControlsLive ? 1 : 0.45)
             }
-            // The computer's turn: the person's controls stay visible but greyed out and still (item 16).
-            .disabled(!model.personControlsLive)
-            .opacity(model.personControlsLive ? 1 : 0.45)
-            if slidersOpen && inlinePages {
+            if slidersOpen && finesInline {
                 FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
-                    .frame(height: 340)
+                    .frame(height: inlinePages ? 340 : phoneFineHeight)
                     .transition(.opacity)
             }
         }
@@ -102,11 +124,26 @@ struct ShotPanel: View {
         }
         // Test hook: launch with -aimDemoSheet to open the fine controls straight away.
         .onAppear { if ProcessInfo.processInfo.arguments.contains("-aimDemoSheet") { slidersOpen = true } }
-        // On a folding phone the sliders open inside the panel (below), so no sheet covers the table.
-        .sheet(isPresented: Binding(get: { slidersOpen && !inlinePages }, set: { if !inlinePages { slidersOpen = $0 } })) {
+        // On a folding phone and on a phone the sliders open inside the panel (above), so no sheet covers the table;
+        // the sheet is left for the iPad and the Mac, where it opens beside or over a table with room to spare.
+        .sheet(isPresented: Binding(get: { slidersOpen && !finesInline }, set: { if !finesInline { slidersOpen = $0 } })) {
             FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
         }
     }
+
+    /// True on a phone (a compact width upright, a compact height sideways), where a half-height sheet covered a third
+    /// of the table, including the end being aimed at, and the table's framing did not know it was there (#48). The
+    /// fine controls open inside the panel there instead, which the framing measures with the rest of the panel.
+    private var phoneFine: Bool {
+        #if os(iOS)
+        return !inlinePages && (horizontalSize == .compact || verticalSize == .compact)
+        #else
+        return false
+        #endif
+    }
+
+    /// The fine controls open inside the panel: on the folding phone's side panel (inlinePages) and on a phone.
+    private var finesInline: Bool { inlinePages || phoneFine }
 
     // MARK: Layouts
 
@@ -116,7 +153,7 @@ struct ShotPanel: View {
             PowerGauge(model: model, open: open, zones: zones).frame(minWidth: 84)
             cueAngle
             tryAgainButton
-            fireButton
+            fireButton()
             moreMenu
         }
     }
@@ -132,12 +169,14 @@ struct ShotPanel: View {
                 cueAngle
                 Spacer(minLength: 0)
                 tryAgainButton
-                fireButton
+                fireButton()
             }
         }
     }
 
-    /// Largest text: the picture and gauge share a row, the buttons take the next, so the table keeps its room.
+    /// Largest text, or any size where the two rows above do not fit (a long translation of the cue angle or Try
+    /// again): the picture and gauge share a row, the small buttons the next, and Shoot has a full-width row of its own
+    /// under them, so its word is never cut to a few letters beside the others (#47).
     private var stacked: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
@@ -147,9 +186,10 @@ struct ShotPanel: View {
             HStack(spacing: 10) {
                 moreMenu
                 cueAngle
+                Spacer(minLength: 0)
                 tryAgainButton
-                fireButton.frame(maxWidth: .infinity)
             }
+            fireButton(wide: true)
         }
     }
 
@@ -160,7 +200,8 @@ struct ShotPanel: View {
     private var open: ShotControls { model.openControls }
     private var zones: LessonZones? { model.lessonZones }
 
-    private var fireButton: some View {
+    /// Break or Shoot. `wide` stretches the button itself across its row (the stacked layout's own row, #47).
+    private func fireButton(wide: Bool = false) -> some View {
         Button {
             hintSeen = true
             // A break hands the screen to its replay, so the panel closes; a shot keeps it open; a refusal says why.
@@ -169,7 +210,7 @@ struct ShotPanel: View {
             Text(model.racked ? "Break" : "Shoot")
                 .font(.headline)
                 .lineLimit(1)
-                .frame(minWidth: 48, minHeight: Self.buttonHeight)
+                .frame(minWidth: 48, maxWidth: wide ? .infinity : nil, minHeight: Self.buttonHeight)
         }
         .buttonStyle(.glassProminent)
         .foregroundStyle(palette.ground)   // dark text: white on bright cyan is too faint
@@ -375,7 +416,8 @@ private struct FineControls: View {
                     let open = model.openControls
                     if model.racked {
                         SliderRow(label: "Aim", value: $model.aimOffset, range: -ShowpieceModel.breakAimLimit...ShowpieceModel.breakAimLimit,
-                                  readout: String(format: "%+.0f mm", model.aimOffset * 1000))
+                                  // In the player's number style, as the other readouts are (#61).
+                                  readout: String(format: "%+.0f mm", locale: Locale.current, model.aimOffset * 1000))
                     } else {
                         aimRow.disabled(!open.contains(.aim)).lockedForStep(!open.contains(.aim))
                     }
@@ -433,7 +475,8 @@ private struct FineControls: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { sheetOpen = false } } }
         }
         .tint(palette.accent)
-        // Half height leaves the table in view above it, and the table stays touchable while the sheet is half open.
+        // As a sheet (iPad and Mac only since 0.7.6 #48; a phone shows these inside the panel): half height leaves the
+        // table in view above it, and the table stays touchable while the sheet is half open.
         .presentationDetents([.medium, .large])
         .presentationBackgroundInteraction(.enabled(upThrough: .medium))
         #if os(macOS)
@@ -447,7 +490,9 @@ private struct FineControls: View {
             HStack {
                 Text("Aim").font(Theme.label).foregroundStyle(.secondary).accessibilityHidden(true)
                 Spacer()
-                Text(String(format: "%+.1f°", model.aimDegrees)).font(Theme.number).accessibilityHidden(true)
+                // In the player's number style ("+12,5°" where a comma is the decimal mark), as Power and Cue tip
+                // below already are (#61).
+                Text(verbatim: Self.degreesReadout(model.aimDegrees)).font(Theme.number).accessibilityHidden(true)
             }
             HStack(spacing: 8) {
                 Button { model.aimDegrees -= 0.25 } label: { Image(systemName: "minus").frame(width: Self.nudgeSize, height: Self.nudgeSize) }
@@ -464,6 +509,14 @@ private struct FineControls: View {
         }
     }
 
+    /// The aim in degrees, signed, to a tenth, in the player's number style (#61): "+12.5°", "+12,5°". Rounded to the
+    /// tenth first so a hair below zero reads "0.0°", not "-0.0°" (as ShotPanel.tipReadout does).
+    private static func degreesReadout(_ degrees: Double) -> String {
+        var tenths = (degrees * 10).rounded() / 10
+        if tenths == 0 { tenths = 0 }
+        return tenths.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always(includingZero: false))) + "°"
+    }
+
     /// Icon frame for the nudge buttons: the bordered circle adds a little around it, so this lands on 44 points or
     /// more on a touch screen. The pointer on the Mac does not need it.
     #if os(iOS)
@@ -475,36 +528,49 @@ private struct FineControls: View {
 
 /// One labelled slider: name, system slider, and a readout in digits that do not jitter. The readout is also what
 /// VoiceOver says as the slider's value, in place of the default percentage.
+/// Two layouts (#49): the name, the slider and the readout side by side, with the name and the readout each kept on
+/// one line at their own width, where that leaves the slider room; otherwise the name and the readout on a line above
+/// the slider (the layout the accessibility sizes always use). The old fixed name and readout columns wrapped longer
+/// translations into two or three short lines.
 private struct SliderRow: View {
     let label: LocalizedStringKey
     @Binding var value: Double
     let range: ClosedRange<Double>
     let readout: String
     @Environment(\.dynamicTypeSize) private var typeSize
-    @ScaledMetric(relativeTo: .caption) private var labelWidth = 64
-    /// Wide enough for the tip and side readouts' word and millimetres ("follow, +8.5 mm", 0.7.5).
-    @ScaledMetric(relativeTo: .caption) private var readoutWidth = 112
+    /// The narrowest the slider may be in the side-by-side row before the row gives way to the stacked one, points.
+    @ScaledMetric(relativeTo: .caption) private var sliderMin: CGFloat = 110
 
     var body: some View {
         Group {
             if typeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 0) {
-                    HStack {
-                        name
-                        Spacer()
-                        readoutText
-                    }
-                    slider
-                }
+                stacked
             } else {
-                HStack(spacing: 8) {
-                    name.frame(width: labelWidth, alignment: .leading)
-                    slider
-                    readoutText.frame(width: readoutWidth, alignment: .trailing)
+                // The side-by-side row is chosen only when its ideal width (both words whole, the slider at sliderMin)
+                // fits; the slider then takes whatever width is left.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        name.fixedSize()
+                        slider.frame(minWidth: sliderMin, idealWidth: sliderMin, maxWidth: .infinity)
+                        readoutText.fixedSize()
+                    }
+                    stacked
                 }
             }
         }
         .frame(minHeight: 44)
+    }
+
+    /// The name and the readout on one line (the readout may wrap under a long name), the slider under them.
+    private var stacked: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .firstTextBaseline) {
+                name
+                Spacer(minLength: 8)
+                readoutText.multilineTextAlignment(.trailing)
+            }
+            slider
+        }
     }
 
     private var name: some View {

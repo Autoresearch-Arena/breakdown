@@ -33,6 +33,10 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          item 5: the tip picture snaps each axis to its centre line on its own (side within about 1.5 mm of zero
 //          becomes exactly zero while the height stays free, and the other way round), never on an axis a lesson marks.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream aim, plans/22-Nov-2026-phone-bug-hunt.md #53: the calm
+//          mark's label wraps to the bar's width instead of running past the plus button, the room kept under the bar
+//          follows the bar's and the label's real heights instead of a fixed 8 points, and at the accessibility text
+//          sizes only the caret shows, so the label never hangs over the panel's next row.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -218,6 +222,10 @@ struct PowerGauge: View {
     /// True while this showing of the gauge carries the label. Decided once per appearance (or when the mark first
     /// appears during one), never while the body is being drawn.
     @State private var labelsCalm = false
+    /// The calm label's measured height, points (one caption2 line, or two when it wraps to the bar's width), so the
+    /// room under the bar follows it (#53). Starts at one default line (defaultCalmLabelHeight).
+    @State private var calmLabelHeight: CGFloat = 13.5
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     /// The stored count behind the calm mark's label.
     static let calmLabelKey = "calmMarkLabelShows"
@@ -296,17 +304,26 @@ struct PowerGauge: View {
                                     .font(.system(size: 6))
                                     .foregroundStyle(.secondary)
                                     .offset(x: markX - 3, y: barHeight + 4)
-                                Text("Calm zone ends")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                    .lineLimit(1)
-                                    .fixedSize()
-                                    // The guide is minus the label's left edge: centred on the mark, then held inside
-                                    // the bar's width.
-                                    .alignmentGuide(.leading) { d in
-                                        -min(max(markX - d.width / 2, 0), max(0, geo.size.width - d.width))
-                                    }
-                                    .offset(y: barHeight + 10)
+                                // At the accessibility sizes the caret alone (0.7.6 #53): the words would be far
+                                // wider than the bar and hang over the row below.
+                                if !typeSize.isAccessibilitySize {
+                                    Text("Calm zone ends")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(2)
+                                        // Never wider than the bar (#53): a label longer than the bar wraps to a second
+                                        // line instead of running past the plus button. Its height is measured, so the
+                                        // room under the bar follows it.
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { calmLabelHeight = $0 }
+                                        // The guide is minus the label's left edge: centred on the mark, then held
+                                        // inside the bar's width.
+                                        .alignmentGuide(.leading) { d in
+                                            -min(max(markX - d.width / 2, 0), max(0, geo.size.width - d.width))
+                                        }
+                                        .offset(y: barHeight + 10)
+                                }
                             }
                         }
                         .allowsHitTesting(false)
@@ -318,8 +335,8 @@ struct PowerGauge: View {
             // Room under the bar for the calm mark's label while it shows. The bar sits in the middle of the 44-point
             // step buttons, so the label first falls beside them; this keeps its lower half clear of whatever the shot
             // panel puts under the gauge.
-            if labelsCalm, calm < 1 {
-                Color.clear.frame(height: Self.calmLabelRoom).accessibilityHidden(true)
+            if labelsCalm, calm < 1, calmLabelRoom > 0 {
+                Color.clear.frame(height: calmLabelRoom).accessibilityHidden(true)
             }
         }
         .padding(.vertical, 6)
@@ -357,9 +374,28 @@ struct PowerGauge: View {
 
     /// Extra height under the bar row while the calm label shows, points. At the default text size the label's line
     /// (caption2, about 13 points tall) starts 10 points below the bar's lower edge, and that edge is 16 points above
-    /// the 44-point buttons' lower edge, so the line runs about 7 points past the row; this plus the stack's own 6-point
-    /// gap keeps it inside the gauge.
-    private static let calmLabelRoom: CGFloat = 8
+    /// the 44-point buttons' lower edge, so the line runs about 7 points past the row; 8 points here plus the stack's
+    /// own 6-point gap keeps it inside the gauge (calmLabelRoomAtDefault).
+    /// Since 0.7.6 (#53) the room follows the real sizes instead of that fixed sum: a taller bar (barHeight is scaled
+    /// with the text, and its lower edge drops by half of any growth) and a taller label (larger text, or a second
+    /// line when it wraps to the bar's width) each add what they add. At the accessibility sizes only the caret shows,
+    /// which sits inside the row unless the bar has grown past half the buttons' height.
+    private var calmLabelRoom: CGFloat {
+        let barGrowth = (barHeight - Self.defaultBarHeight) / 2
+        if typeSize.isAccessibilitySize {
+            // The caret: about 6 points tall, 4 below the bar; at the default size it ends 6 points above the row's
+            // lower edge, so it needs room only once the bar has grown more than that (less the stack's gap).
+            return max(0, barGrowth - 6 - 6 + 2)
+        }
+        let labelGrowth = max(0, calmLabelHeight - Self.defaultCalmLabelHeight)
+        return max(0, Self.calmLabelRoomAtDefault + barGrowth + labelGrowth)
+    }
+
+    /// The fixed room the label was given at the default text size, and the bar and label heights it was worked out
+    /// for (barHeight's own default, a caption2 line).
+    private static let calmLabelRoomAtDefault: CGFloat = 8
+    private static let defaultBarHeight: CGFloat = 12
+    private static let defaultCalmLabelHeight: CGFloat = 13.5
 
     /// A launch speed as a share of the bar, 0 at its soft end, 1 at its hard end (the gauge's own fraction).
     private func powerFraction(_ speed: Double) -> CGFloat {
