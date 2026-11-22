@@ -165,17 +165,35 @@ final class MatchWordsTests: XCTestCase {
         let rules = EightBallRules()
         var state = rules.initialState(playerNames: names)
         state.players[1].computer = .hard
+        state.ballInHand = .none
+        state.turn = .second
         state.pendingChoice = PendingChoice(choice: .acceptTableOrRerack, chooser: .second)
         let take = rules.ruling(answering: .acceptTable, in: state)
         XCTAssertEqual(MatchWords.sentences(for: take, names: names, pocketed: [], firstBall: nil, you: .first),
                        [String(localized: "\(computer) takes the table as it lies.")])
         let rack = rules.ruling(answering: .rerack, in: state)
         XCTAssertEqual(MatchWords.sentences(for: rack, names: names, pocketed: [], firstBall: nil, you: .first),
-                       [String(localized: "\(computer) has it racked again and breaks.")])
+                       [String(localized: "\(computer) has it racked again and breaks.")],
+                       "the re-rack line already says who breaks; no ball-in-hand or shoots-again line follows")
         state.pendingChoice = PendingChoice(choice: .spotEightOrRerack, chooser: .second)
         let spot = rules.ruling(answering: .spotEight, in: state)
         XCTAssertEqual(MatchWords.sentences(for: spot, names: names, pocketed: [], firstBall: nil, you: .first),
                        [String(localized: "\(computer) has the 8 put back on its spot.")])
+
+        // Taking the table with ball in hand still says so after the choice.
+        state.pendingChoice = PendingChoice(choice: .acceptTableOrRerack, chooser: .second)
+        state.ballInHand = .anywhere
+        let withHand = rules.ruling(answering: .acceptTable, in: state)
+        XCTAssertEqual(MatchWords.sentences(for: withHand, names: names, pocketed: [], firstBall: nil, you: .first),
+                       [String(localized: "\(computer) takes the table as it lies."),
+                        String(localized: "Ball in hand for \(computer).")])
+        // Spotting the 8 hands the table to whoever's turn it was: that is said too.
+        state.ballInHand = .none
+        state.turn = .first
+        state.pendingChoice = PendingChoice(choice: .spotEightOrRerack, chooser: .second)
+        let handed = rules.ruling(answering: .spotEight, in: state)
+        XCTAssertEqual(MatchWords.sentences(for: handed, names: names, pocketed: [], firstBall: nil, you: .first),
+                       [String(localized: "\(computer) has the 8 put back on its spot."), String(localized: "Your shot.")])
     }
 
     // MARK: Fouls and ball in hand

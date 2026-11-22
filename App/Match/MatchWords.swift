@@ -239,15 +239,26 @@ enum MatchWords {
     static func sentences(for r: Ruling, names: [String], pocketed: [Int], firstBall: Int?,
                           kind: MatchKind = .eightBall, you: PlayerID? = nil, target: Int? = nil,
                           mentionTimeUp: Bool = true) -> [String] {
-        // An answered choice is one sentence naming who chose and what (the computer's answers settle into the
-        // banner): the re-rack, the spotted 8 and who breaks are all in it, so nothing else is said.
-        if r.reasons.contains(.choiceAnswered) {
-            return [choiceAnswered(r, names: names, you: you)]
-        }
         let shooter = name(r.shooter, in: names)
         let next = name(r.nextShooter, in: names)
         let shooterIsYou = r.shooter == you
         let nextIsYou = r.nextShooter == you
+        // An answered choice is one sentence naming who chose and what (the computer's answers settle into the
+        // banner), in place of the re-rack, spotted-ball and "shoots again" lines. What still follows is said after
+        // it: ball in hand (taking the table after a scratch keeps it), or the turn passing (spotting the 8 hands the
+        // table to whoever's turn it was). A re-rack says who breaks, and a break is always from behind the line, so
+        // nothing follows it.
+        if r.reasons.contains(.choiceAnswered) {
+            var out = [choiceAnswered(r, names: names, you: you)]
+            if !r.rerack {
+                if let hand = ballInHand(r.ballInHand, for: next, isYou: nextIsYou) {
+                    out.append(hand)
+                } else if r.turnPasses {
+                    out.append(nextIsYou ? String(localized: "Your shot.") : String(localized: "\(next) to shoot."))
+                }
+            }
+            return out
+        }
         // Pool balls by number; the other tables' balls by their names there.
         func balls(_ numbers: [Int]) -> String {
             kind.isTableGame ? TableGameWords.balls(numbers, kind: kind) : MatchWords.balls(numbers)
