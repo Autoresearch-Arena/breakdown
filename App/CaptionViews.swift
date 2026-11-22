@@ -519,12 +519,15 @@ private struct StripTitleRow: View {
     let continueState: ContinueState
     /// What VoiceOver reads for the whole card (title, detail, equation); nil in the hidden copies.
     var speech: (label: String, value: String)?
+    /// The sizer keeps two title lines whatever the title: beside the dots and Continue the title column is narrow,
+    /// and an ordinary English title ("The cue hands over its speed") already takes two lines there.
+    var reserveTwoLines = false
 
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             Text(verbatim: title)
                 .font(Theme.heading)
-                .lineLimit(2)
+                .lineLimit(2, reservesSpace: reserveTwoLines)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 // The card is read as one sentence here: the page text and equation are hidden from VoiceOver, so the
@@ -682,7 +685,9 @@ struct CaptionStrip: View {
                                       speech: (label: "\(caption.title). \(caption.detail)",
                                                value: showsEquation ? CaptionContent.equationLine(caption) : ""))
                         // The page's words; a page that is one sentence too tall for the room scrolls inside it.
-                        FittingScroll(maxHeight: detailRoom.height > 0 ? detailRoom.height : .greatestFiniteMagnitude) {
+                        // Before the twin has measured, the room itself caps the words, so nothing grows over the table.
+                        FittingScroll(maxHeight: detailRoom.height > 0 ? detailRoom.height
+                                                 : (room > 0 ? room : .greatestFiniteMagnitude)) {
                             Text(verbatim: layout?.text(index, detail: caption.detail) ?? caption.detail)
                                 .font(Theme.body)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -761,8 +766,9 @@ struct CaptionStrip: View {
     }
 }
 
-/// The strip's blank room at the current text size: the equation line when it is reserved, the title line with
-/// Continue's room, and CaptionStrip.detailLines lines of detail, plus the card's padding. Hidden and never spoken.
+/// The strip's blank room at the current text size: the equation line when it is reserved, two title lines beside
+/// Continue's room, and CaptionStrip.detailLines lines of detail, plus the card's padding. A one-line title leaves the
+/// words a little more (the layout twin measures it). Hidden and never spoken.
 private struct StripSizer: View {
     let model: ShowpieceModel
     let reserveEquation: Bool
@@ -770,7 +776,7 @@ private struct StripSizer: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             if reserveEquation { Text(verbatim: " ").font(CaptionStrip.equationFont).lineLimit(1) }
-            StripTitleRow(model: model, title: " ", dotsRoom: false, continueState: .hidden)
+            StripTitleRow(model: model, title: " ", dotsRoom: false, continueState: .hidden, reserveTwoLines: true)
             Text(verbatim: " ")
                 .font(Theme.body)
                 .lineLimit(CaptionStrip.detailLines, reservesSpace: true)

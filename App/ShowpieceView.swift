@@ -598,8 +598,8 @@ struct ShowpieceView: View {
                                 CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude,
                                             viewport: columnViewport)
                             default:
-                                // A Group, so each card is its own child of the column's stack, spaced as before.
-                                Group {
+                                // The cards in their own stack with the column's spacing.
+                                VStack(spacing: 12) {
                                     WhatIfCard(model: model)
                                     ComparisonCard(model: model)
                                     OpeningCard(model: model)
