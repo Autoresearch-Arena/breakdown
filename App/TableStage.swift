@@ -1,4 +1,5 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: the aim preview and 3D cue start from the striker).
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (no caption slot any more: captions float over the table's top edge
 //          and cost it nothing, so StageChrome and the camera request no longer carry a caption edge).
@@ -185,7 +186,9 @@ struct TableStage: View {
         var preview: AimPreview
         // After the first shot the guide line follows the aim slider from the cue ball's resting spot.
         if !model.racked, model.layout.count == 16 {
-            preview = AimPreview(from: model.layout[0], direction: model.shotAimDirection, length: 1.4, always: true)
+            // From the ball this player strikes (model.aimOrigin): ball 0 in pool, a player's own ball in five-pin and
+            // bumper pool.
+            preview = AimPreview(from: model.aimOrigin, direction: model.shotAimDirection, length: 1.4, always: true)
         } else {
             let positions = Rack.positions(parameters: PoolParameters(), seed: UInt64(10 + model.breakSerial + 1))
             let target = positions[1] + Vec2(0, model.aimOffset)

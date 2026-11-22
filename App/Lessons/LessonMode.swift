@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: a lesson plays on the standard cloth it was authored on and
+//          puts the player's surface back when it ends.)
 // PURPOSE: Lesson mode: walks the player through one lesson of the path (Lessons.swift) in the plan's beats
 //          (plans/21-Nov-2026-first-minute-and-lessons-plan.md, package 3), shaped like TrickShotMode:
 //            Ready      - the lesson's layout on the table, a card with what it teaches and Watch it.
@@ -61,6 +63,8 @@ final class LessonMode {
     @ObservationIgnored unowned let model: ShowpieceModel
 
     private(set) var current: Lesson?
+    /// The player's own surface from before the lessons, put back by end().
+    @ObservationIgnored private var surfaceBefore: PlaySurface?
     private(set) var phase: Phase = .off
     /// The list (a sheet, or a page of the notebook); opened from the menu's Learn.
     var listOpen = false
@@ -158,7 +162,13 @@ final class LessonMode {
 
     /// Put a lesson on the table, ready to watch. Closes the menu and the list; ends any other mode.
     func begin(_ lesson: Lesson) {
+        // Only on a fresh entry: moving from one lesson to the next must not record the lesson's cloth as the player's.
+        if current == nil { surfaceBefore = model.surface }
         model.enterLessonTable()
+        // Every lesson was authored on the standard cloth, and its targets only hold there (the stop shot finishes
+        // 27 cm off centre on the Moon, against a 5 cm zone). Through the model's own surface change, as Behind the
+        // 8-Ball does, so the Surface menu, the 3D cloth and the solver agree.
+        model.setSurface(.cloth)
         current = lesson
         listOpen = false
         playerSettings = nil
@@ -228,6 +238,8 @@ final class LessonMode {
 
     /// Leave lesson mode (another mode or free play has been chosen).
     func end() {
+        if let before = surfaceBefore { model.setSurface(before) }
+        surfaceBefore = nil
         current = nil
         phase = .off
         wantsAiming = false

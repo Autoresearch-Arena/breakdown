@@ -1,4 +1,6 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: the replay cue follows the ball the recording says was
+//          struck, not always ball 0).
 // Date: 21-November-2026
 // PURPOSE: The 3D cue and the mechanical bridge on the table, replacing the flat ones AimOverlay used to draw. Owns one
 //          root entity (a child of the warm table group, so it fades out with the table as the Physics Lens melts in)
@@ -151,10 +153,13 @@ final class CueRig {
         root.isEnabled = opacity > 0.001
     }
 
-    /// Where the cue ball started and the way it was sent, from its first recorded segment; nil when the shot did not
-    /// move it (the re-rack records a zero-speed strike so the rack shows) or it is not on the table.
+    /// Where the struck ball started and the way it was sent, from its first recorded segment; nil when the shot did
+    /// not move it (the re-rack records a zero-speed strike so the rack shows) or it is not on the table. The struck
+    /// ball is the one the recording's cue-strike event names (five-pin and bumper pool strike a ball other than 0);
+    /// ball 0 when a recording has no strike event.
     private static func strikeStart(_ timeline: Timeline) -> (position: Vec2, direction: Vec2)? {
-        guard timeline.ballCount > 0, let first = timeline.segments[0].first else { return nil }
+        let struck = timeline.events.first { $0.kind == .cueStrike }?.balls.first?.ball ?? 0
+        guard struck < timeline.ballCount, let first = timeline.segments[struck].first else { return nil }
         let v = first.velocity0
         guard v.length > 1e-4, NextShot.isOnTable(first.position0) else { return nil }
         return (first.position0, v.normalized)

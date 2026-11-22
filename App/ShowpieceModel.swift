@@ -90,6 +90,8 @@
 //          generation one with its old numbers for comparison (prepare and matchSolveParameters write those numbers in
 //          before the table and surface); the opening is pinned to the default; tip travel and the miscue ring follow
 //          the default's miscue limit in every mode.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: a surface change during a match applies from the next
+//          shot, so the shot being ruled is never re-solved or dropped and the turn cannot stick.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -1642,6 +1644,15 @@ final class ShowpieceModel {
     /// solved is dropped (it was struck on the old surface); the table stays where it was.
     func setSurface(_ s: PlaySurface) {
         guard s != surface else { return }
+        // In a match the shot on screen belongs to the rules: it was struck on the old surface and the match is waiting
+        // to rule on that very recording (MatchMode.update matches its version). Re-solving or dropping it would leave
+        // the shot unscored and the turn stuck, so a match takes the new surface from its next shot only.
+        if match != nil {
+            surface = s
+            UserDefaults.standard.set(s.rawValue, forKey: PlaySurface.storageKey)
+            surfaceVersion += 1
+            return
+        }
         cancelPendingSolve()
         surface = s
         UserDefaults.standard.set(s.rawValue, forKey: PlaySurface.storageKey)
