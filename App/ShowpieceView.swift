@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: lensReplayCompact is false while the opening
+//          runs, so its guided slow replay neither slims the cards nor holds back Your shot in the first minute.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B5 and
 //          stream layouts items 1, 2, 11, 13 and L-B: behind the menu the title row and the phone's bottom stack are
 //          disabled, so their Escape and Return go quiet, and the back button gives up Escape while the menu is open or
@@ -467,9 +469,11 @@ struct ShowpieceView: View {
 
     /// True on a phone held upright (not ScreenLayout.isWide) while a guided Lens replay plays: the Lens is up, guided
     /// pacing drives the clock, and the balls have not stopped. The bottom stack hands it to the cards as
-    /// lensReplayCompact, and Your shot waits closed while it holds (0.7.5 layouts item 13).
+    /// lensReplayCompact, and Your shot waits closed while it holds (0.7.5 layouts item 13). Never while the opening
+    /// runs: its slow replay is guided too, but the first minute keeps its cards and Your shot exactly as they were
+    /// (an opening request for Your shot must open it, not wait), so only a replay after the opening counts.
     static func lensReplayCompact(_ model: ShowpieceModel, size: CGSize) -> Bool {
-        !ScreenLayout.isWide(size) && model.lensOn && model.guided && !model.aimReady
+        !ScreenLayout.isWide(size) && model.openingStage == .none && model.lensOn && model.guided && !model.aimReady
     }
 
     /// True while a match or table-game card with its own main button is up (L-B): the full ruling card (Continue, or a

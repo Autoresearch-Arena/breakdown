@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: the notebook's Continue waits for the opening
+//          to end, so the first minute's notebook stays its one line; the opening's holds end by themselves.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 4, 7, 8 and 9, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          Continue for a held Lens moment sits at the top of the lower edge, above the playback controls (on the
 //          words half of the open Duo), so a guided replay can be moved on here as on a phone; the Lens colour key has
@@ -209,8 +211,9 @@ struct NotebookPanel: View {
         VStack(spacing: 10) {
             // A held moment is moved on from here: the notebook has no caption strip with its own Continue, and the
             // story's rows only jump the clock (0.7.5 layouts item 4). The same button and the same model call
-            // (nextBeat) as the strip on a phone; no Return shortcut, as there.
-            if model.holding {
+            // (nextBeat) as the strip on a phone; no Return shortcut, as there. Not while the opening runs: the first
+            // minute's notebook is its one line, and the opening's holds end by themselves (review fix).
+            if showsContinue {
                 HStack {
                     Spacer(minLength: 0)
                     ContinueButton(model: model)
@@ -223,15 +226,18 @@ struct NotebookPanel: View {
             PlaybackControls(model: model, shotPanelOpen: $showShotPanel, compact: true)
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
-        .animation(reduceMotion ? nil : .snappy, value: model.holding)
+        .animation(reduceMotion ? nil : .snappy, value: showsContinue)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomMeasured = $0 }
     }
 
     /// The lower edge's height before it has been measured once: the playback controls alone (90), or with the shot
     /// panel's two rows and its glass card (about 180), plus about one button's row (50) while Continue shows.
     private var bottomHeight: CGFloat {
-        bottomMeasured > 0 ? bottomMeasured : (showShotPanel ? 180 : 90) + (model.holding ? 50 : 0)
+        bottomMeasured > 0 ? bottomMeasured : (showShotPanel ? 180 : 90) + (showsContinue ? 50 : 0)
     }
+
+    /// Continue shows on the lower edge while a guided replay holds a moment, except during the opening (review fix).
+    private var showsContinue: Bool { model.holding && model.openingStage == .none }
 
     /// The Lens colour key, in its own row directly under the top bar whenever the Lens is up, whether Explanations is
     /// on or off (it used to sit in the story's header, so it vanished with the story). Measured for the height budgets.
