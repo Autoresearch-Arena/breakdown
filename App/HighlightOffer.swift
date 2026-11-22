@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 polish P1: offersComputerShot, the rule for a shot the computer
+//          played in a match or table game: offered only when its kind is rare or the shot scored. The person's own
+//          shots keep the rules below.)
 // PURPOSE: How often the "worth watching" card may appear in free play (plans/22-Nov-2026-v074-glow-up-plan.md, stream
 //          watch-invite, G3). Pure bookkeeping, no views and no model: ShowpieceModel keeps one HighlightOffer, tells it
 //          each shot (noteShot) and each fresh rack or mode (startRack), and asks it whether a judged highlight may be
@@ -10,7 +13,10 @@
 //              commonGap shots after the last common card (the break counts as common, so it comes once per rack);
 //            - startRack forgets the rack (which common kinds were offered and when the last common card was);
 //            - the trick link is offered once per kind per session (the model lives for the run of the app), and never
-//              for a trick shot the player has already made, nor for a kind no trick shot teaches.
+//              for a trick shot the player has already made, nor for a kind no trick shot teaches;
+//            - a shot the computer played (a match or table game, never free play) is offered only when its kind is
+//              rare or the shot scored (offersComputerShot, 0.7.5); the break keeps its own offer. MatchMode asks it
+//              before its own once-per-game rule (MatchMode.highlightShow).
 // SRP/DRY check: Pass - checked ShotHighlight.swift (kinds, rarity and trick ids live there and are read, not copied),
 //          MatchMode (a match keeps its own once-per-match set; the free-play frequency here does not apply to it) and
 //          TrickShotMode (doneIDs is the one record of made trick shots, passed in, never stored here).
@@ -62,5 +68,15 @@ struct HighlightOffer: Equatable {
     /// The player took the card's "Try the trick shot" for `kind`.
     mutating func noteTrickLinked(_ kind: HighlightKind) {
         linkedKinds.insert(kind)
+    }
+
+    /// Whether a highlight of `kind` on a shot the COMPUTER played may be offered at all (0.7.5 polish P1). Watching the
+    /// computer is worth a card only for a rare kind (a jump, a curve, a throw, a combination, a kick) or a shot that
+    /// scored (`scored`: ShotHighlightJudge.sentBallDown on the shot's facts and table); a common kind on a shot that
+    /// scored nothing is noise (a five-pin shot that knocked no pin was named "Drawn back"). The break keeps the offer
+    /// it has always had. Pure; the match's own once-per-game rule still applies after it. The person's own shots never
+    /// come here.
+    static func offersComputerShot(_ kind: HighlightKind, scored: Bool) -> Bool {
+        kind == .breakShot || kind.isRare || scored
     }
 }
