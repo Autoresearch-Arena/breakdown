@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3: the
+//          Lens offer follows the model's offerLensReplay and watchShotInLens (renamed from the break-only
+//          offerLensReplayOfBreak and watchBreakInLens): after a break as before, and after any shot by either seat that
+//          MatchMode offers as remarkable, whose card names the shot and its physics (HighlightWords) above the button.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: comment only - the hand-over card's heading is now whose shot
 //          it is, from MatchWords.handOver, no longer an instruction to pass the device.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: on the computer's turn the card shows "Thinking..."
@@ -29,14 +33,12 @@
 //          and bumper pool's and five-pin's banner lines show them. At the largest text sizes the banner's first line
 //          wraps freely and stacks above the game's name, and every row of buttons becomes a column (CardButtonRow,
 //          shared with the call card).)
-// PURPOSE: Everything the player sees of a match (eight-ball and nine-ball for two on one device or against the
-//          computer; the other tables' games use the same card), as ONE glass card whose content follows
-//          MatchMode.phase:
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hooks, 0.7.0 items 44 and 47: announcements go through the one speaker,
 //          ShotNarration.announce, the ruling itself is said once by the shot's narration, and Continue's arrow follows
 //          the reading direction.)
-// PURPOSE: Everything the player sees of a match (eight-ball and nine-ball for two on one device; the other tables'
-//          games use the same card), as ONE glass card whose content follows MatchMode.phase:
+// PURPOSE: Everything the player sees of a match (eight-ball and nine-ball against the computer; the other tables'
+//          games use the same card, and bar billiards is also played alone), as ONE glass card whose content follows
+//          MatchMode.phase:
 //            aiming   - the turn banner: who shoots (or breaks), the game, each player's group with their balls left
 //                       as small ball icons (eight-ball), the ball to hit first (nine-ball), running scores and the
 //                       clock where the game keeps them; the last routine ruling as a line; editable player names
@@ -46,8 +48,11 @@
 //            shooting - the banner, small, with the call, and "See the ruling".
 //            ruling   - a routine ruling: its header and sentences, settling by themselves; otherwise the card: the
 //                       ruling in plain words ("Foul: the cue ball hit the 11 first. Ball in hand for Sam."), then the
-//                       choice, or Continue.
-//            handOver - whose shot it is ("Sam to shoot.") and Ready, between two people on one device.
+//                       choice, or Continue. After a break, or a remarkable shot by either seat (MatchMode's
+//                       lensHighlight, which makes the ruling a card), "Watch it in the Lens", the remarkable shot named
+//                       with its physics above it.
+//            handOver - whose shot it is ("Sam to shoot.") and Ready; kept for the engine's seats, never reached
+//                       against the computer.
 //            over     - who won and why, the running scores, Rematch and Menu.
 //          Feedback (rules plan, package 6): the sound and haptic of a foul, a turn change and a win are played by
 //          MatchMode through SoundBoard.play (only felt with Vibration on); this card speaks the ruling to VoiceOver as
@@ -57,8 +62,8 @@
 //          opens a sheet (the End match confirmation is inside the card), so on the Duo nothing covers the table.
 //          Reads MatchMode (state, phase, rules, currentCall, lastRuling, lastRulingShow, settledRuling, the last
 //          shot's facts, playerNames) and calls setCall, acknowledgeRuling, settleNow, answer, rematch,
-//          setPlayerName; reads the model's match-shot calls (matchShotPlaying, seeRuling, offerLensReplayOfBreak,
-//          watchBreakInLens, computerTurnStage, endMatch).
+//          setPlayerName; reads the model's match-shot calls (matchShotPlaying, seeRuling, offerLensReplay,
+//          watchShotInLens, computerTurnStage, endMatch) and MatchMode.lensHighlight.
 // SRP/DRY check: Pass - words are in MatchWords, OpponentWords and TableGameWords, the call in CallControl, the
 //          cue-ball placement in FreePlayViews and PlayTableLayer, each table's ball looks in TableBallSet and their
 //          colours in BallTextures; card styling is the shared glassCard and the button rows follow TrickShotCard's.
@@ -309,19 +314,35 @@ struct MatchCard: View {
         }
     }
 
-    /// After a match break, a replay of it under the Lens for anyone who wants it (the break itself played at real
-    /// speed in the ordinary view; the model says when the offer stands).
+    /// After a match break, or a remarkable shot by either seat, a replay of it under the Lens for anyone who wants
+    /// it (every match shot plays at real speed in the ordinary view; the model says when the offer stands). A
+    /// remarkable shot that is not the break is named first: its title and the physics in one line (HighlightWords).
     @ViewBuilder
     private var lensOffer: some View {
-        if model.offerLensReplayOfBreak {
+        if model.offerLensReplay {
+            let highlight = model.match?.lensHighlight
+            // The break keeps its own hint and no title: the ruling card already says it was the break.
+            let named: ShotHighlight? = highlight?.kind == .breakShot ? nil : highlight
+            if let h = named {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(HighlightWords.title(h.kind))
+                        .font(Theme.label)
+                        .foregroundStyle(palette.accent)
+                        .fixedSize(horizontal: false, vertical: true)
+                    line(HighlightWords.line(h.kind))
+                }
+                .accessibilityElement(children: .combine)
+            }
             CardButtonRow {
-                Button { model.watchBreakInLens() } label: {
+                Button { model.watchShotInLens() } label: {
                     Label(String(localized: "Watch it in the Lens"), systemImage: "eye")
                         .font(.headline).lineLimit(1)
                         .frame(minHeight: CallMetrics.buttonHeight)
                 }
                 .buttonStyle(.glass)
-                .accessibilityHint(String(localized: "Replays the break slowly with the physics drawn on the table"))
+                .accessibilityHint(named == nil
+                    ? String(localized: "Replays the break slowly with the physics drawn on the table")
+                    : HighlightWords.watchHint)
             }
         }
     }

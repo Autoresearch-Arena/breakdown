@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3 and
+//          G4: two new cards in PlayCards, so they sit in the card slot and never over the table. HighlightCard offers a
+//          remarkable free-play shot (ShowpieceModel.highlightCard): its name and physics, Watch it in the Lens, Try the
+//          trick shot when allowed, and Close; no sound, no haptic, no praise. IntroEndCard closes Watch the intro with
+//          Trick shots and Practice. TableClearedCard gains Watch your best shot and stays up while that replay plays;
+//          its made-it sound is played once per rack by the model.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md item 9: any ball
 //          can be placed in free play, so the "No rack: place the balls" setup can be played. The card follows the
 //          lifted ball (ShowpieceModel.placingBall), not only the cue ball: it names it ("Move the 5"), its legality is
@@ -16,7 +22,12 @@
 //                              idea. For VoiceOver it is the complete route: Move up, down, left and right actions
 //                              (one ball radius a step, in table directions as seen from the head end) and the spot
 //                              spoken as distances from the head cushion and the nearer long cushion.
-//            TableClearedCard - free play with only the cue ball left: how many shots it took, Rack again, Menu.
+//            TableClearedCard - free play with only the cue ball left: how many shots it took, Rack again, Menu, and
+//                              Watch your best shot when the rack had a remarkable shot (kept up while it replays).
+//            HighlightCard    - free play after a remarkable shot, at rest: the shot named, its physics in a line,
+//                              Watch it in the Lens, Try the trick shot (once per kind, never for a made one), Close.
+//                              Gone for good at the first touch of aim, power, spin or cue angle.
+//            IntroEndCard     - the end of Watch the intro: a line, Trick shots, Practice and Close.
 //            MatchCard        - the match card (MatchViews.swift).
 //          The drag that moves the lifted ball lives in AimOverlay (a small addition there); the red tint and the head
 //          line are drawn by PlayTableLayer. Legality is asked of the package (NextShot.placement), the same check the
@@ -39,6 +50,8 @@ struct PlayCards: View {
             PlaceBallsCard(model: model)
             BallInHandCard(model: model)
             TableClearedCard(model: model)
+            HighlightCard(model: model)
+            IntroEndCard(model: model)
             MatchCard(model: model)
         }
     }
@@ -264,8 +277,9 @@ struct TableClearedCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
 
-    /// Free play only (a match ends with its own result card), once the last shot has played out.
-    private var visible: Bool { model.match == nil && model.tableCleared && model.aimReady }
+    /// Free play only (a match ends with its own result card), once the last shot has played out; kept up while
+    /// Watch your best shot replays (the other shot's balls are on the table meanwhile, so tableCleared is false).
+    private var visible: Bool { model.match == nil && ((model.tableCleared && model.aimReady) || model.replayingBest) }
 
     var body: some View {
         // The haptic sits on the always-present Group, so the change from hidden to shown is what fires it.
@@ -284,6 +298,17 @@ struct TableClearedCard: View {
                 .font(Theme.body)
                 .foregroundStyle(palette.paper.opacity(0.9))
                 .frame(maxWidth: .infinity, alignment: .leading)
+            // The rack's best remarkable shot, replayed in the Lens; Menu and Rack again end that replay first.
+            if model.canWatchBestShot {
+                CardButtonRow {
+                    Button { model.watchBestShot() } label: {
+                        Label(HighlightWords.watchBest, systemImage: "eye").font(.headline).lineLimit(1)
+                            .frame(minHeight: CallMetrics.buttonHeight)
+                    }
+                    .buttonStyle(.glass)
+                    .accessibilityHint(HighlightWords.watchHint)
+                }
+            }
             HStack(spacing: 8) {
                 Spacer(minLength: 0)
                 Button { model.openMenu() } label: {
@@ -311,5 +336,111 @@ struct TableClearedCard: View {
     private var shotsLine: String {
         model.shotsThisRack == 1 ? String(localized: "Cleared in one shot.")
                                  : String(localized: "Cleared in \(model.shotsThisRack) shots.")
+    }
+}
+
+// MARK: Worth watching (0.7.4)
+
+/// Free play after a remarkable shot (ShowpieceModel.highlightCard): one slim card in the card slot that names the
+/// physics and offers the Lens replay and the trick shot that teaches it. Styled like TableClearedCard. It plays no
+/// sound and no haptic and says no praise; it is spoken once to VoiceOver as it appears.
+struct HighlightCard: View {
+    let model: ShowpieceModel
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        if let offer = model.highlightCard {
+            let kind = offer.highlight.kind
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "eye.circle.fill").foregroundStyle(palette.accent).accessibilityHidden(true)
+                        Text(HighlightWords.title(kind)).font(Theme.heading).fixedSize(horizontal: false, vertical: true)
+                    }
+                    .accessibilityAddTraits(.isHeader)
+                    Spacer(minLength: 0)
+                    Button { model.dismissHighlight() } label: {
+                        Image(systemName: "xmark").frame(width: 30, height: 30)
+                    }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.circle)
+                    .accessibilityLabel(String(localized: "Close"))
+                }
+                Text(HighlightWords.line(kind))
+                    .font(Theme.body)
+                    .foregroundStyle(palette.paper.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                CardButtonRow {
+                    if offer.canTryTrick {
+                        Button { model.tryHighlightTrick() } label: {
+                            Label(String(localized: "Try the trick shot"), systemImage: "scope").font(.headline)
+                                .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                        }
+                        .buttonStyle(.glass)
+                    }
+                    if offer.canWatch {
+                        Button { model.watchHighlight() } label: {
+                            Label(String(localized: "Watch it in the Lens"), systemImage: "eye").font(.headline)
+                                .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                        }
+                        .buttonStyle(.glassProminent)
+                        .foregroundStyle(palette.ground)
+                        .accessibilityHint(HighlightWords.watchHint)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .glassCard(cornerRadius: 22, padding: 12)
+            .tint(palette.accent)
+            .onAppear { ShotNarration.announce(HighlightWords.title(kind)) }
+            .transition(.opacity)
+        }
+    }
+}
+
+/// The end of Watch the intro (ShowpieceModel.introEndOffered): instead of a frozen last frame, one small card that
+/// says every trick shot can be watched the same way and offers the trick shots or a fresh rack.
+struct IntroEndCard: View {
+    let model: ShowpieceModel
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        if model.introEndOffered {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "sparkles").foregroundStyle(palette.accent).accessibilityHidden(true)
+                    Text(HighlightWords.introEnd)
+                        .font(Theme.body)
+                        .foregroundStyle(palette.paper.opacity(0.9))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Button { model.dismissIntroEnd() } label: {
+                        Image(systemName: "xmark").frame(width: 30, height: 30)
+                    }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.circle)
+                    .accessibilityLabel(String(localized: "Close"))
+                }
+                CardButtonRow {
+                    Button { model.startGame() } label: {
+                        Label(String(localized: "Practice"), systemImage: "triangle").font(.headline).lineLimit(1)
+                            .frame(minHeight: CallMetrics.buttonHeight)
+                    }
+                    .buttonStyle(.glass)
+                    Button { model.trickMode.listOpen = true } label: {
+                        Label(String(localized: "Trick shots"), systemImage: "sparkles").font(.headline).lineLimit(1)
+                            .frame(minHeight: CallMetrics.buttonHeight)
+                    }
+                    .buttonStyle(.glassProminent)
+                    .foregroundStyle(palette.ground)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .glassCard(cornerRadius: 22, padding: 12)
+            .tint(palette.accent)
+            .onAppear { ShotNarration.announce(HighlightWords.introEnd) }
+            .transition(.opacity)
+        }
     }
 }

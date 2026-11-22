@@ -1,0 +1,1518 @@
+{
+ "keys": [
+  "The cue ball jumped",
+  "The path curved",
+  "Thrown in",
+  "A combination",
+  "A kick",
+  "A bank shot",
+  "Two at once",
+  "Drawn back",
+  "Stopped dead",
+  "Off a bumper",
+  "The red pin alone",
+  "Watch the cue ball hand its speed to the rack, ball to ball.",
+  "A downward hit bounced it off the slate and over the ball in the way.",
+  "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+  "Friction at the contact dragged the ball off the line of centres.",
+  "One ball passed its speed through another, along the line of centres.",
+  "The cue ball found its ball off the cushion, like light off a mirror.",
+  "The ball left the cushion at its mirror angle, into the pocket.",
+  "One stroke, more than one ball down.",
+  "Backspin outlasted the hit and pulled the cue ball back.",
+  "The spin ran out exactly at contact, so all the speed went on.",
+  "The ball crossed the hole faster than it could fall in.",
+  "A bumper turned the ball into the cup.",
+  "Only the red pin fell.",
+  "Replays the shot slowly with the physics drawn on the table",
+  "Watch your best shot",
+  "Every trick shot can be watched like this: the answer, then the Lens."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "The cue ball jumped",
+   "text": "La blanca saltó"
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball jumped",
+   "text": "La blanche a sauté"
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball jumped",
+   "text": "Die Weiße ist gesprungen"
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball jumped",
+   "text": "La bianca è saltata"
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball jumped",
+   "text": "A branca saltou"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball jumped",
+   "text": "A branca pulou"
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball jumped",
+   "text": "手球がジャンプした"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball jumped",
+   "text": "큐볼이 점프했어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball jumped",
+   "text": "母球跳起来了"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball jumped",
+   "text": "Биток подпрыгнул"
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball jumped",
+   "text": "قفزت الكرة البيضاء"
+  },
+  {
+   "culture": "es",
+   "key": "The path curved",
+   "text": "La trayectoria se curvó"
+  },
+  {
+   "culture": "fr",
+   "key": "The path curved",
+   "text": "La trajectoire s'est courbée"
+  },
+  {
+   "culture": "de",
+   "key": "The path curved",
+   "text": "Die Bahn hat sich gekrümmt"
+  },
+  {
+   "culture": "it",
+   "key": "The path curved",
+   "text": "La traiettoria si è curvata"
+  },
+  {
+   "culture": "pt",
+   "key": "The path curved",
+   "text": "A trajetória curvou"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The path curved",
+   "text": "A trajetória fez uma curva"
+  },
+  {
+   "culture": "ja",
+   "key": "The path curved",
+   "text": "軌道が曲がった"
+  },
+  {
+   "culture": "ko",
+   "key": "The path curved",
+   "text": "경로가 휘었어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The path curved",
+   "text": "路线弯了"
+  },
+  {
+   "culture": "ru",
+   "key": "The path curved",
+   "text": "Путь изогнулся"
+  },
+  {
+   "culture": "ar",
+   "key": "The path curved",
+   "text": "انحنى المسار"
+  },
+  {
+   "culture": "es",
+   "key": "Thrown in",
+   "text": "Metida por arrastre"
+  },
+  {
+   "culture": "fr",
+   "key": "Thrown in",
+   "text": "Rentrée par effet d'entraînement"
+  },
+  {
+   "culture": "de",
+   "key": "Thrown in",
+   "text": "Per Throw versenkt"
+  },
+  {
+   "culture": "it",
+   "key": "Thrown in",
+   "text": "Imbucata col throw"
+  },
+  {
+   "culture": "pt",
+   "key": "Thrown in",
+   "text": "Metida com throw"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Thrown in",
+   "text": "Encaçapada com throw"
+  },
+  {
+   "culture": "ja",
+   "key": "Thrown in",
+   "text": "スローで入った"
+  },
+  {
+   "culture": "ko",
+   "key": "Thrown in",
+   "text": "스로우로 들어갔어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Thrown in",
+   "text": "带偏入袋"
+  },
+  {
+   "culture": "ru",
+   "key": "Thrown in",
+   "text": "Забит с отбросом"
+  },
+  {
+   "culture": "ar",
+   "key": "Thrown in",
+   "text": "دخلت بالانحراف بالاحتكاك"
+  },
+  {
+   "culture": "es",
+   "key": "A combination",
+   "text": "Una combinación"
+  },
+  {
+   "culture": "fr",
+   "key": "A combination",
+   "text": "Une combinaison"
+  },
+  {
+   "culture": "de",
+   "key": "A combination",
+   "text": "Eine Kombination"
+  },
+  {
+   "culture": "it",
+   "key": "A combination",
+   "text": "Una combinazione"
+  },
+  {
+   "culture": "pt",
+   "key": "A combination",
+   "text": "Uma combinação"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A combination",
+   "text": "Uma combinação"
+  },
+  {
+   "culture": "ja",
+   "key": "A combination",
+   "text": "コンビネーション"
+  },
+  {
+   "culture": "ko",
+   "key": "A combination",
+   "text": "콤비네이션"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A combination",
+   "text": "组合球"
+  },
+  {
+   "culture": "ru",
+   "key": "A combination",
+   "text": "Комбинация"
+  },
+  {
+   "culture": "ar",
+   "key": "A combination",
+   "text": "تركيبة"
+  },
+  {
+   "culture": "es",
+   "key": "A kick",
+   "text": "Un rebote"
+  },
+  {
+   "culture": "fr",
+   "key": "A kick",
+   "text": "Une bricole"
+  },
+  {
+   "culture": "de",
+   "key": "A kick",
+   "text": "Ein Vorbänder"
+  },
+  {
+   "culture": "it",
+   "key": "A kick",
+   "text": "Un rimbalzo"
+  },
+  {
+   "culture": "pt",
+   "key": "A kick",
+   "text": "Uma tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A kick",
+   "text": "Uma tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "A kick",
+   "text": "キック"
+  },
+  {
+   "culture": "ko",
+   "key": "A kick",
+   "text": "킥"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A kick",
+   "text": "库边解球"
+  },
+  {
+   "culture": "ru",
+   "key": "A kick",
+   "text": "Через борт"
+  },
+  {
+   "culture": "ar",
+   "key": "A kick",
+   "text": "ارتداد"
+  },
+  {
+   "culture": "es",
+   "key": "A bank shot",
+   "text": "Un tiro por banda"
+  },
+  {
+   "culture": "fr",
+   "key": "A bank shot",
+   "text": "Un doublé"
+  },
+  {
+   "culture": "de",
+   "key": "A bank shot",
+   "text": "Ein Bandenball"
+  },
+  {
+   "culture": "it",
+   "key": "A bank shot",
+   "text": "Un tiro di sponda"
+  },
+  {
+   "culture": "pt",
+   "key": "A bank shot",
+   "text": "Uma bola de tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A bank shot",
+   "text": "Uma bola de tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "A bank shot",
+   "text": "バンクショット"
+  },
+  {
+   "culture": "ko",
+   "key": "A bank shot",
+   "text": "뱅크 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A bank shot",
+   "text": "翻袋"
+  },
+  {
+   "culture": "ru",
+   "key": "A bank shot",
+   "text": "Дуплет"
+  },
+  {
+   "culture": "ar",
+   "key": "A bank shot",
+   "text": "تسديدة بالحافة"
+  },
+  {
+   "culture": "es",
+   "key": "Two at once",
+   "text": "Dos de una vez"
+  },
+  {
+   "culture": "fr",
+   "key": "Two at once",
+   "text": "Deux d'un coup"
+  },
+  {
+   "culture": "de",
+   "key": "Two at once",
+   "text": "Zwei auf einmal"
+  },
+  {
+   "culture": "it",
+   "key": "Two at once",
+   "text": "Due in un colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "Two at once",
+   "text": "Duas de uma vez"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Two at once",
+   "text": "Duas de uma vez"
+  },
+  {
+   "culture": "ja",
+   "key": "Two at once",
+   "text": "一度に2つ"
+  },
+  {
+   "culture": "ko",
+   "key": "Two at once",
+   "text": "한 번에 두 개"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Two at once",
+   "text": "一杆两球"
+  },
+  {
+   "culture": "ru",
+   "key": "Two at once",
+   "text": "Два сразу"
+  },
+  {
+   "culture": "ar",
+   "key": "Two at once",
+   "text": "اثنتان دفعة واحدة"
+  },
+  {
+   "culture": "es",
+   "key": "Drawn back",
+   "text": "Retroceso"
+  },
+  {
+   "culture": "fr",
+   "key": "Drawn back",
+   "text": "Rétro"
+  },
+  {
+   "culture": "de",
+   "key": "Drawn back",
+   "text": "Zurückgezogen"
+  },
+  {
+   "culture": "it",
+   "key": "Drawn back",
+   "text": "Tirata indietro"
+  },
+  {
+   "culture": "pt",
+   "key": "Drawn back",
+   "text": "Recuou"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drawn back",
+   "text": "Voltou com recuo"
+  },
+  {
+   "culture": "ja",
+   "key": "Drawn back",
+   "text": "ドローで戻った"
+  },
+  {
+   "culture": "ko",
+   "key": "Drawn back",
+   "text": "끌려 돌아왔어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drawn back",
+   "text": "拉回来了"
+  },
+  {
+   "culture": "ru",
+   "key": "Drawn back",
+   "text": "Оттяжка"
+  },
+  {
+   "culture": "ar",
+   "key": "Drawn back",
+   "text": "سُحبت إلى الخلف"
+  },
+  {
+   "culture": "es",
+   "key": "Stopped dead",
+   "text": "Parada en seco"
+  },
+  {
+   "culture": "fr",
+   "key": "Stopped dead",
+   "text": "Arrêt net"
+  },
+  {
+   "culture": "de",
+   "key": "Stopped dead",
+   "text": "Wie angenagelt"
+  },
+  {
+   "culture": "it",
+   "key": "Stopped dead",
+   "text": "Ferma di colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "Stopped dead",
+   "text": "Parou a seco"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stopped dead",
+   "text": "Parou na hora"
+  },
+  {
+   "culture": "ja",
+   "key": "Stopped dead",
+   "text": "ピタリと止まった"
+  },
+  {
+   "culture": "ko",
+   "key": "Stopped dead",
+   "text": "딱 멈췄어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stopped dead",
+   "text": "定住了"
+  },
+  {
+   "culture": "ru",
+   "key": "Stopped dead",
+   "text": "Встал как вкопанный"
+  },
+  {
+   "culture": "ar",
+   "key": "Stopped dead",
+   "text": "توقفت تماماً"
+  },
+  {
+   "culture": "es",
+   "key": "Off a bumper",
+   "text": "Rebote en un tope"
+  },
+  {
+   "culture": "fr",
+   "key": "Off a bumper",
+   "text": "Par un plot"
+  },
+  {
+   "culture": "de",
+   "key": "Off a bumper",
+   "text": "Über einen Pfosten"
+  },
+  {
+   "culture": "it",
+   "key": "Off a bumper",
+   "text": "Di respingente"
+  },
+  {
+   "culture": "pt",
+   "key": "Off a bumper",
+   "text": "Pelo pino de borracha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Off a bumper",
+   "text": "Pelo pino de borracha"
+  },
+  {
+   "culture": "ja",
+   "key": "Off a bumper",
+   "text": "バンパーを使って"
+  },
+  {
+   "culture": "ko",
+   "key": "Off a bumper",
+   "text": "범퍼를 맞고"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Off a bumper",
+   "text": "借挡柱入洞"
+  },
+  {
+   "culture": "ru",
+   "key": "Off a bumper",
+   "text": "От столбика"
+  },
+  {
+   "culture": "ar",
+   "key": "Off a bumper",
+   "text": "عبر مصدّ"
+  },
+  {
+   "culture": "es",
+   "key": "The red pin alone",
+   "text": "El bolo rojo solo"
+  },
+  {
+   "culture": "fr",
+   "key": "The red pin alone",
+   "text": "La quille rouge seule"
+  },
+  {
+   "culture": "de",
+   "key": "The red pin alone",
+   "text": "Der rote Kegel allein"
+  },
+  {
+   "culture": "it",
+   "key": "The red pin alone",
+   "text": "Il birillo rosso da solo"
+  },
+  {
+   "culture": "pt",
+   "key": "The red pin alone",
+   "text": "O pino vermelho sozinho"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The red pin alone",
+   "text": "O pino vermelho sozinho"
+  },
+  {
+   "culture": "ja",
+   "key": "The red pin alone",
+   "text": "赤ピンだけ"
+  },
+  {
+   "culture": "ko",
+   "key": "The red pin alone",
+   "text": "빨간 핀만"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The red pin alone",
+   "text": "只倒红柱"
+  },
+  {
+   "culture": "ru",
+   "key": "The red pin alone",
+   "text": "Только красная кегля"
+  },
+  {
+   "culture": "ar",
+   "key": "The red pin alone",
+   "text": "الوتد الأحمر وحده"
+  },
+  {
+   "culture": "es",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Mira cómo la blanca pasa su velocidad al triángulo, bola a bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Regarde la blanche transmettre sa vitesse au triangle, bille après bille."
+  },
+  {
+   "culture": "de",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Sieh zu, wie die Weiße ihr Tempo Kugel für Kugel an das Dreieck weitergibt."
+  },
+  {
+   "culture": "it",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Guarda la bianca passare la sua velocità al triangolo, palla dopo palla."
+  },
+  {
+   "culture": "pt",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Vê a branca passar a velocidade ao triângulo, bola a bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Veja a branca passar a velocidade para o triângulo, bola a bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "手球が速さを球から球へと、ラックに渡していく様子を見よう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "큐볼이 공에서 공으로 랙에 속도를 넘겨주는 걸 봐."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "看母球如何把速度一颗接一颗地传给球堆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "Смотри, как биток передаёт скорость пирамиде, от шара к шару."
+  },
+  {
+   "culture": "ar",
+   "key": "Watch the cue ball hand its speed to the rack, ball to ball.",
+   "text": "شاهد الكرة البيضاء تنقل سرعتها إلى الرصّة، من كرة إلى كرة."
+  },
+  {
+   "culture": "es",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Un golpe hacia abajo la hizo rebotar en la pizarra y pasar por encima de la bola que estorbaba."
+  },
+  {
+   "culture": "fr",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Un coup vers le bas l'a fait rebondir sur l'ardoise et passer au-dessus de la bille qui gênait."
+  },
+  {
+   "culture": "de",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Ein Stoß nach unten ließ sie von der Platte abprallen und über die Kugel im Weg springen."
+  },
+  {
+   "culture": "it",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Un colpo verso il basso l'ha fatta rimbalzare sull'ardesia e passare sopra la palla che ostacolava."
+  },
+  {
+   "culture": "pt",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Uma pancada para baixo fê-la ressaltar na ardósia e passar por cima da bola no caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Uma tacada para baixo a fez quicar na ardósia e passar por cima da bola no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "下向きの打撃でスレートから跳ね、邪魔な球を飛び越えた。"
+  },
+  {
+   "culture": "ko",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "아래로 내려친 타격에 슬레이트에서 튀어 올라 길을 막은 공을 넘어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "向下的一击让它从石板上弹起，越过了挡路的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "Удар сверху вниз отбил его от плиты, и он перелетел шар на пути."
+  },
+  {
+   "culture": "ar",
+   "key": "A downward hit bounced it off the slate and over the ball in the way.",
+   "text": "ضربة نحو الأسفل جعلتها ترتد عن اللوح وتقفز فوق الكرة المعترضة."
+  },
+  {
+   "culture": "es",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Mientras la bola se deslizaba, el paño la arrastró en la dirección del deslizamiento de su efecto, no en la de su movimiento."
+  },
+  {
+   "culture": "fr",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Tant que la bille glissait, le tapis l'a tirée dans le sens du glissement de son effet, pas dans celui de son mouvement."
+  },
+  {
+   "culture": "de",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Solange die Kugel rutschte, zog das Tuch sie in Richtung des Rutschens ihres Effets, nicht in ihre Laufrichtung."
+  },
+  {
+   "culture": "it",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Mentre la palla strisciava, il panno l'ha tirata nella direzione dello slittamento del suo effetto, non del suo moto."
+  },
+  {
+   "culture": "pt",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Enquanto a bola deslizava, o pano puxou-a no sentido do deslize do efeito, não no do movimento."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Enquanto a bola deslizava, o pano a puxou no sentido do deslize do efeito, não no do movimento."
+  },
+  {
+   "culture": "ja",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "球が滑っている間、ラシャは進む向きではなく、回転による滑りの向きに球を引っぱった。"
+  },
+  {
+   "culture": "ko",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "공이 미끄러지는 동안, 천은 공을 움직이는 방향이 아니라 회전으로 미끄러지는 방향으로 끌었어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "球在滑动时，台布沿着它旋转造成的打滑方向拉它，而不是沿着它运动的方向。"
+  },
+  {
+   "culture": "ru",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "Пока шар скользил, сукно тянуло его по направлению проскальзывания от вращения, а не по направлению движения."
+  },
+  {
+   "culture": "ar",
+   "key": "While the ball slid, the cloth pulled it along the slip of its spin, not along its motion.",
+   "text": "بينما كانت الكرة تنزلق، سحبها الجوخ في اتجاه انزلاق دورانها، لا في اتجاه حركتها."
+  },
+  {
+   "culture": "es",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "La fricción en el contacto desvió la bola de la línea de centros."
+  },
+  {
+   "culture": "fr",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "Le frottement au contact a entraîné la bille hors de la ligne des centres."
+  },
+  {
+   "culture": "de",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "Die Reibung am Kontakt zog die Kugel von der Mittellinie weg."
+  },
+  {
+   "culture": "it",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "L'attrito al contatto ha trascinato la palla fuori dalla linea dei centri."
+  },
+  {
+   "culture": "pt",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "O atrito no contacto arrastou a bola para fora da linha dos centros."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "O atrito no contato arrastou a bola para fora da linha dos centros."
+  },
+  {
+   "culture": "ja",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "接触点の摩擦が、球を中心線から引きずり出した。"
+  },
+  {
+   "culture": "ko",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "접촉점의 마찰이 공을 중심선에서 끌어냈어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "接触点的摩擦把球拖离了中心连线。"
+  },
+  {
+   "culture": "ru",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "Трение в точке контакта увело шар с линии центров."
+  },
+  {
+   "culture": "ar",
+   "key": "Friction at the contact dragged the ball off the line of centres.",
+   "text": "سحب الاحتكاك عند نقطة التلامس الكرة بعيداً عن خط المركزين."
+  },
+  {
+   "culture": "es",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Una bola pasó su velocidad a través de otra, a lo largo de la línea de centros."
+  },
+  {
+   "culture": "fr",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Une bille a transmis sa vitesse à travers une autre, le long de la ligne des centres."
+  },
+  {
+   "culture": "de",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Eine Kugel gab ihr Tempo durch eine andere weiter, entlang der Mittellinie."
+  },
+  {
+   "culture": "it",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Una palla ha passato la sua velocità attraverso un'altra, lungo la linea dei centri."
+  },
+  {
+   "culture": "pt",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Uma bola passou a velocidade através de outra, ao longo da linha dos centros."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Uma bola passou a velocidade através de outra, ao longo da linha dos centros."
+  },
+  {
+   "culture": "ja",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "一つの球が、中心線に沿って別の球へと速さを受け渡した。"
+  },
+  {
+   "culture": "ko",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "한 공이 중심선을 따라 다른 공을 통해 속도를 전달했어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "一颗球沿着中心连线，把速度穿过另一颗球传了出去。"
+  },
+  {
+   "culture": "ru",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "Один шар передал скорость через другой, вдоль линии центров."
+  },
+  {
+   "culture": "ar",
+   "key": "One ball passed its speed through another, along the line of centres.",
+   "text": "نقلت كرة سرعتها عبر كرة أخرى، على امتداد خط المركزين."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "La blanca encontró su bola rebotando en la banda, como la luz en un espejo."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "La blanche a trouvé sa bille par la bande, comme la lumière sur un miroir."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "Die Weiße fand ihre Kugel über die Bande, wie Licht über einen Spiegel."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "La bianca ha trovato la sua palla di sponda, come la luce su uno specchio."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "A branca encontrou a sua bola pela tabela, como a luz num espelho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "A branca encontrou a bola dela pela tabela, como a luz num espelho."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "手球はクッションに当たって、鏡に反射する光のように狙いの球を捉えた。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "큐볼이 쿠션을 맞고, 거울에 반사되는 빛처럼 목표 공을 찾아갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "母球借库边找到了目标球，就像光在镜子上反射。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "Биток нашёл свой шар через борт, как свет от зеркала."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball found its ball off the cushion, like light off a mirror.",
+   "text": "وجدت الكرة البيضاء كرتها عبر الحافة، كالضوء المنعكس عن مرآة."
+  },
+  {
+   "culture": "es",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "La bola salió de la banda con su ángulo de espejo, hacia la tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "La bille a quitté la bande à son angle miroir, droit dans la poche."
+  },
+  {
+   "culture": "de",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "Die Kugel verließ die Bande im Spiegelwinkel, hinein in die Tasche."
+  },
+  {
+   "culture": "it",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "La palla ha lasciato la sponda con il suo angolo a specchio, dritta in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "A bola saiu da tabela no seu ângulo de espelho, para dentro da caçapa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "A bola saiu da tabela no ângulo de espelho, direto para a caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "球は鏡のような角度でクッションを離れ、ポケットへ。"
+  },
+  {
+   "culture": "ko",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "공이 거울 각도로 쿠션을 떠나 포켓으로 들어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "球以镜面角度离开库边，落入袋中。"
+  },
+  {
+   "culture": "ru",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "Шар ушёл от борта под зеркальным углом, прямо в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "The ball left the cushion at its mirror angle, into the pocket.",
+   "text": "غادرت الكرة الحافة بزاويتها المعكوسة، إلى داخل الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "One stroke, more than one ball down.",
+   "text": "Un golpe, más de una bola dentro."
+  },
+  {
+   "culture": "fr",
+   "key": "One stroke, more than one ball down.",
+   "text": "Un seul coup, plus d'une bille empochée."
+  },
+  {
+   "culture": "de",
+   "key": "One stroke, more than one ball down.",
+   "text": "Ein Stoß, mehr als eine Kugel versenkt."
+  },
+  {
+   "culture": "it",
+   "key": "One stroke, more than one ball down.",
+   "text": "Un colpo, più di una palla in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "One stroke, more than one ball down.",
+   "text": "Uma tacada, mais de uma bola dentro."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "One stroke, more than one ball down.",
+   "text": "Uma tacada, mais de uma bola encaçapada."
+  },
+  {
+   "culture": "ja",
+   "key": "One stroke, more than one ball down.",
+   "text": "一打で、2つ以上の球が落ちた。"
+  },
+  {
+   "culture": "ko",
+   "key": "One stroke, more than one ball down.",
+   "text": "한 번 쳐서 공이 두 개 이상 들어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "One stroke, more than one ball down.",
+   "text": "一杆，不止一颗球落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "One stroke, more than one ball down.",
+   "text": "Один удар, больше одного шара в лузе."
+  },
+  {
+   "culture": "ar",
+   "key": "One stroke, more than one ball down.",
+   "text": "ضربة واحدة، وأكثر من كرة في الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "El efecto de retroceso duró más que el golpe y tiró de la blanca hacia atrás."
+  },
+  {
+   "culture": "fr",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "L'effet rétro a survécu au choc et a ramené la blanche en arrière."
+  },
+  {
+   "culture": "de",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "Der Rückwärtsdrall überdauerte den Treffer und zog die Weiße zurück."
+  },
+  {
+   "culture": "it",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "L'effetto indietro è durato più dell'impatto e ha riportato indietro la bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "O efeito de recuo durou mais do que o impacto e puxou a branca para trás."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "O efeito de recuo durou mais que o impacto e puxou a branca para trás."
+  },
+  {
+   "culture": "ja",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "逆回転が衝突のあとも残り、手球を引き戻した。"
+  },
+  {
+   "culture": "ko",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "백스핀이 충돌 뒤에도 남아서 큐볼을 뒤로 끌어당겼어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "回旋比撞击持续得更久，把母球拉了回来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "Обратное вращение пережило удар и потянуло биток назад."
+  },
+  {
+   "culture": "ar",
+   "key": "Backspin outlasted the hit and pulled the cue ball back.",
+   "text": "صمد الدوران الخلفي بعد الاصطدام وسحب الكرة البيضاء إلى الوراء."
+  },
+  {
+   "culture": "es",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "El efecto se acabó justo en el contacto, así que toda la velocidad pasó a la otra bola."
+  },
+  {
+   "culture": "fr",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "L'effet s'est épuisé pile au contact, donc toute la vitesse est passée à l'autre bille."
+  },
+  {
+   "culture": "de",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "Der Effet war genau beim Kontakt aufgebraucht, also ging das ganze Tempo weiter."
+  },
+  {
+   "culture": "it",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "L'effetto si è esaurito proprio al contatto, così tutta la velocità è passata all'altra palla."
+  },
+  {
+   "culture": "pt",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "O efeito acabou mesmo no contacto, por isso toda a velocidade passou para a outra bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "O efeito acabou bem no contato, então toda a velocidade passou para a outra bola."
+  },
+  {
+   "culture": "ja",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "回転がちょうど接触の瞬間に尽きたので、速さはすべて相手の球へ渡った。"
+  },
+  {
+   "culture": "ko",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "회전이 딱 접촉 순간에 다 풀려서, 속도가 전부 다른 공으로 넘어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "旋转恰好在接触时耗尽，所以全部速度都传了出去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "Вращение кончилось ровно в момент контакта, и вся скорость ушла дальше."
+  },
+  {
+   "culture": "ar",
+   "key": "The spin ran out exactly at contact, so all the speed went on.",
+   "text": "نفد الدوران تماماً عند التلامس، فانتقلت السرعة كلها إلى الأمام."
+  },
+  {
+   "culture": "es",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "La bola cruzó el agujero más rápido de lo que podía caer."
+  },
+  {
+   "culture": "fr",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "La bille a traversé le trou plus vite qu'elle ne pouvait y tomber."
+  },
+  {
+   "culture": "de",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "Die Kugel lief schneller über das Loch, als sie hineinfallen konnte."
+  },
+  {
+   "culture": "it",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "La palla ha attraversato il buco più veloce di quanto potesse cadervi."
+  },
+  {
+   "culture": "pt",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "A bola atravessou o buraco mais depressa do que conseguia cair."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "A bola atravessou o buraco mais rápido do que conseguia cair."
+  },
+  {
+   "culture": "ja",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "球は落ちきれないほどの速さで穴を通り過ぎた。"
+  },
+  {
+   "culture": "ko",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "공이 떨어질 수 있는 것보다 빠르게 구멍을 지나갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "球越过洞口的速度太快，来不及落下去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "Шар пересёк лузу быстрее, чем успел в неё упасть."
+  },
+  {
+   "culture": "ar",
+   "key": "The ball crossed the hole faster than it could fall in.",
+   "text": "عبرت الكرة الحفرة أسرع من أن تسقط فيها."
+  },
+  {
+   "culture": "es",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Un tope desvió la bola hacia el hoyo."
+  },
+  {
+   "culture": "fr",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Un plot a dévié la bille dans le trou."
+  },
+  {
+   "culture": "de",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Ein Pfosten lenkte die Kugel ins Loch."
+  },
+  {
+   "culture": "it",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Un respingente ha deviato la palla nella buca."
+  },
+  {
+   "culture": "pt",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Um pino de borracha desviou a bola para o buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Um pino de borracha desviou a bola para o buraco."
+  },
+  {
+   "culture": "ja",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "バンパーが球の向きを変え、カップへ入れた。"
+  },
+  {
+   "culture": "ko",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "범퍼가 공의 방향을 바꿔 컵에 넣었어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "挡柱把球拐进了球洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "Столбик развернул шар в лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "A bumper turned the ball into the cup.",
+   "text": "حوّل مصدٌّ مسار الكرة إلى الحفرة."
+  },
+  {
+   "culture": "es",
+   "key": "Only the red pin fell.",
+   "text": "Solo cayó el bolo rojo."
+  },
+  {
+   "culture": "fr",
+   "key": "Only the red pin fell.",
+   "text": "Seule la quille rouge est tombée."
+  },
+  {
+   "culture": "de",
+   "key": "Only the red pin fell.",
+   "text": "Nur der rote Kegel ist gefallen."
+  },
+  {
+   "culture": "it",
+   "key": "Only the red pin fell.",
+   "text": "È caduto solo il birillo rosso."
+  },
+  {
+   "culture": "pt",
+   "key": "Only the red pin fell.",
+   "text": "Só caiu o pino vermelho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Only the red pin fell.",
+   "text": "Só o pino vermelho caiu."
+  },
+  {
+   "culture": "ja",
+   "key": "Only the red pin fell.",
+   "text": "倒れたのは赤ピンだけ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Only the red pin fell.",
+   "text": "빨간 핀만 쓰러졌어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Only the red pin fell.",
+   "text": "只有红柱倒下了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Only the red pin fell.",
+   "text": "Упала только красная кегля."
+  },
+  {
+   "culture": "ar",
+   "key": "Only the red pin fell.",
+   "text": "لم يسقط إلا الوتد الأحمر."
+  },
+  {
+   "culture": "es",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Repite el tiro a cámara lenta con la física dibujada sobre la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Rejoue le coup au ralenti avec la physique dessinée sur la table"
+  },
+  {
+   "culture": "de",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Zeigt den Stoß noch einmal langsam, mit der Physik auf den Tisch gezeichnet"
+  },
+  {
+   "culture": "it",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Rivedi il colpo al rallentatore con la fisica disegnata sul tavolo"
+  },
+  {
+   "culture": "pt",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Repete a jogada em câmara lenta com a física desenhada na mesa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Repete a tacada em câmera lenta com a física desenhada na mesa"
+  },
+  {
+   "culture": "ja",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "ショットを、物理を台に描いてスローで再生する"
+  },
+  {
+   "culture": "ko",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "샷을 테이블 위에 물리를 그려 느리게 다시 보여줘"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "慢放这一杆，并把物理画在球台上"
+  },
+  {
+   "culture": "ru",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "Повторяет удар замедленно, с физикой, нарисованной на столе"
+  },
+  {
+   "culture": "ar",
+   "key": "Replays the shot slowly with the physics drawn on the table",
+   "text": "يعيد الضربة ببطء مع رسم الفيزياء على الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "Watch your best shot",
+   "text": "Ver tu mejor tiro"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch your best shot",
+   "text": "Revoir ton meilleur coup"
+  },
+  {
+   "culture": "de",
+   "key": "Watch your best shot",
+   "text": "Deinen besten Stoß ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch your best shot",
+   "text": "Guarda il tuo colpo migliore"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch your best shot",
+   "text": "Ver a tua melhor jogada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch your best shot",
+   "text": "Ver sua melhor tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch your best shot",
+   "text": "ベストショットを見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch your best shot",
+   "text": "최고의 샷 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch your best shot",
+   "text": "观看你的最佳一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch your best shot",
+   "text": "Смотреть твой лучший удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch your best shot",
+   "text": "شاهد أفضل ضرباتك"
+  },
+  {
+   "culture": "es",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Cada tiro de truco se puede ver así: la solución y luego la Lente."
+  },
+  {
+   "culture": "fr",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Chaque coup spectaculaire peut se regarder comme ça : la solution, puis la Lentille."
+  },
+  {
+   "culture": "de",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Jeder Trickstoß lässt sich so ansehen: die Lösung, dann die Lens."
+  },
+  {
+   "culture": "it",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Ogni colpo spettacolare si può guardare così: la soluzione, poi la Lens."
+  },
+  {
+   "culture": "pt",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Cada jogada de efeito pode ser vista assim: a solução e depois a Lente."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Toda tacada de efeito pode ser vista assim: a solução e depois a Lente."
+  },
+  {
+   "culture": "ja",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "どのトリックショットもこうして見られる。まず答え、それからレンズで。"
+  },
+  {
+   "culture": "ko",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "모든 트릭 샷을 이렇게 볼 수 있어. 먼저 정답, 그다음 렌즈로."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "每个花式球都可以这样看：先看答案，再用透镜看。"
+  },
+  {
+   "culture": "ru",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "Любой трюковой удар можно посмотреть так: сначала решение, потом Линза."
+  },
+  {
+   "culture": "ar",
+   "key": "Every trick shot can be watched like this: the answer, then the Lens.",
+   "text": "يمكن مشاهدة كل ضربة خدعة هكذا: الحل أولاً، ثم العدسة."
+  }
+ ]
+}

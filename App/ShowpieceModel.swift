@@ -1,4 +1,14 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3 and
+//          G4: a marked "Worth watching" section. finishStrike, after everything it already did, judges a shot once
+//          (ShotHighlightJudge) when the opening is over and no authored mode or drill is up; free play offers the
+//          highlight through HighlightOffer's frequency rule (highlightCard, highlightOnOffer, watchHighlight,
+//          tryHighlightTrick, dismissHighlight), and any touch of aim, power, spin or cue angle hides it for good; a
+//          match keeps it for MatchMode, whose ruling offers it (offerLensReplay and watchShotInLens replace the break-only
+//          offerLensReplayOfBreak and watchBreakInLens). The rack's best remarkable shot is kept and Table cleared can
+//          replay it (watchBestShot), then puts the clearing shot back exactly; Table cleared sounds the bigger made-it
+//          once per rack. Watch the intro ends on a small card (introEndOffered). The foundation's block now sits
+//          before Guided pacing, so the doc comment of `holding` is next to it again.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1, the Boss's first look at 0.7.0: every launch starts on the pool
 //          table; the first launch goes straight to the table with the cue in hand, no opening replay; the first break
@@ -563,6 +573,8 @@ final class ShowpieceModel {
     /// Back to the main menu: pause whatever is on the table; Continue picks it up exactly where it was. Opening the
     /// menu during the first-launch opening ends the opening (the player has found the menu; it is not shown again).
     func openMenu() {
+        // The best shot's replay hands the cleared table back first, so Continue returns to it (0.7.4).
+        endBestReplay()
         playing = false
         menuOpen = true
         if openingStage != .none { finishOpening(showMenu: false) }
@@ -598,6 +610,9 @@ final class ShowpieceModel {
         menuOpen = false
         gameInProgress = true
         panelAfterBreakDue = false
+        // 0.7.4: a mode start for the highlight memory, and Watch the intro's end gets its card (noteIntroEnded).
+        startHighlightRack()
+        introWatchArmed = true
         // The showpiece break on the pool table; on another table, that table's default shot from its start layout.
         // Always the default generation (classic): the opening is authored on it.
         load(solve(physicsTable.openingShot, classic: true), showpiece: true)
@@ -666,6 +681,8 @@ final class ShowpieceModel {
 
     /// Fresh rack, ready for a new break (the panel's break sliders drive it). In a match the match racks instead.
     func rerack() {
+        // A fresh rack: free play's highlight memory for the rack starts again (0.7.4).
+        startHighlightRack()
         guard match == nil else { return }
         cancelPendingSolve()
         endPlacement(); ballInHand = .none
@@ -913,6 +930,9 @@ final class ShowpieceModel {
                 placementDue = true
             }
         }
+        // 0.7.4: last, so everything above is exactly as before. Judged only once the opening is over, outside the
+        // authored modes and the drill (judgeHighlight's own guard); the first break of a first launch never is.
+        judgeHighlight(tl, isBreak: s.isBreak)
     }
 
     /// The undo step for a free-play stroke about to be struck (nil outside free play).
@@ -1341,6 +1361,8 @@ final class ShowpieceModel {
     /// Put a recording on screen. `showpiece` is true only for the showpiece opening (Watch the intro), whose replay
     /// holds the opening's beats. Anything loaded ends the menu's backdrop: a table is going on screen.
     private func load(_ tl: Timeline, showpiece: Bool = false) {
+        // Anything else going on the table ends Watch your best shot's replay; the replay's own loads say so (0.7.4).
+        if replayingBest, !loadingKeptRecording { abandonBestReplay() }
         menuBackdropPlaying = false
         lensReplayStartedByPlayer = false
         // A new recording has no signature until its owner (a trick shot, a highlight) sets one (0.7.4).
@@ -1506,6 +1528,8 @@ final class ShowpieceModel {
 
     /// The table-cleared card's "Rack again": a fresh rack (or table start) in free play.
     func rackAgain() {
+        // End the best shot's replay first (0.7.4); the rack below replaces the cleared table anyway.
+        endBestReplay()
         menuOpen = false
         rerack()
         setLens(false)
@@ -1516,6 +1540,11 @@ final class ShowpieceModel {
     /// One step back: the table and the settings from before the last free-play shot (a break goes back to its rack).
     func undoLastShot() {
         guard canUndo, let u = undoStep else { return }
+        // Undo acts on the cleared table, so the best shot's replay hands it back first (0.7.4). A best shot played
+        // after the table being undone to is dropped, and the rack may sound Table cleared again.
+        endBestReplay()
+        if let best = bestShot, best.rackShot > u.shots { bestShot = nil }
+        clearedChimePlayed = false
         endPlacement(); ballInHand = .none
         showStill(u.layout, racked: u.racked)
         rackSeed = u.rackSeed
@@ -1546,6 +1575,7 @@ final class ShowpieceModel {
         gameInProgress = true
         panelAfterBreakDue = false
         endPlacement(); ballInHand = .none; undoStep = nil
+        startHighlightRack()
         let m = MatchMode(model: self, kind: kind, players: players, computer: computer)
         match = m
         m.start()
@@ -1568,6 +1598,7 @@ final class ShowpieceModel {
         menuOpen = false
         gameInProgress = true
         endPlacement(); ballInHand = .none; undoStep = nil
+        startHighlightRack()
         let m = MatchMode(model: self, restoring: saved)
         match = m
         m.resume()
@@ -1795,16 +1826,25 @@ final class ShowpieceModel {
 
     // MARK: A match shot on screen (plan item 14, contract 2.4)
 
-    /// After a match break has played out, its ruling card offers the Lens replay of it (a match break plays at real
-    /// speed in the ordinary view, so the slow Lens replay is the player's to ask for).
-    var offerLensReplayOfBreak: Bool {
-        guard let m = match, m.phase == .ruling || m.phase == .over, aimReady else { return false }
-        return currentAttempt?.isBreak == true && playerShotOnScreen
+    /// After a match shot has played out, its ruling card offers the Lens replay of it: always after a break (a match
+    /// break plays at real speed in the ordinary view, so the slow Lens replay is the player's to ask for), and after
+    /// any shot, by either seat, that MatchMode offered as remarkable (MatchMode.lensHighlight, for this recording).
+    /// Was offerLensReplayOfBreak before 0.7.4.
+    var offerLensReplay: Bool {
+        guard let m = match, m.phase == .ruling || m.phase == .over, aimReady, playerShotOnScreen else { return false }
+        if currentAttempt?.isBreak == true { return true }
+        return m.lensHighlight != nil && m.lensHighlightVersion == timelineVersion
     }
 
-    /// "Watch it in the Lens": the break on screen replayed slowly in the Lens, as a replay the player started.
-    func watchBreakInLens() {
-        guard offerLensReplayOfBreak else { return }
+    /// "Watch it in the Lens": the shot on screen replayed slowly in the Lens, as a replay the player started. A
+    /// highlight's signature beats are held (Ride goes off first, as guided pacing and Ride do not mix). Was
+    /// watchBreakInLens before 0.7.4.
+    func watchShotInLens() {
+        guard offerLensReplay else { return }
+        if let m = match, let h = m.lensHighlight, m.lensHighlightVersion == timelineVersion {
+            if rideOn { setRide(false) }
+            setPaceSignature(h.signatureEvents)
+        }
         replay(withLens: true)
         lensReplayStartedByPlayer = true
     }
@@ -2417,7 +2457,11 @@ final class ShowpieceModel {
                 step(dt)
             }
             // Not while a beat is being held: a beat stamped at the very end still gets its reading time.
-            if time >= duration, !holding { stage = .explore; playing = false; chosenRate = nil }
+            if time >= duration, !holding {
+                stage = .explore; playing = false; chosenRate = nil
+                // Watch the intro has ended: its card offers the trick shots and practice (0.7.4).
+                noteIntroEnded()
+            }
         case .explore:
             if guided {
                 // Paused, the hold's counter does not run: pausing on a beat keeps the full reading time.
@@ -2451,6 +2495,11 @@ final class ShowpieceModel {
             placementDue = false
             beginPlacingCueBall()
         }
+        // Worth watching (0.7.4): a touched control hides the highlight card for good, the best shot's replay hands
+        // the cleared table back when it ends, and Table cleared sounds once per rack.
+        latchHighlightTouch()
+        finishBestReplayIfDone()
+        chimeTableClearedIfDue()
     }
 
     private func step(_ dt: Double) {
@@ -2532,6 +2581,8 @@ final class ShowpieceModel {
     /// solved is dropped (it was struck on the old surface); the table stays where it was.
     func setSurface(_ s: PlaySurface) {
         guard s != surface else { return }
+        // A surface change while the best shot replays acts on the cleared table, put back first (0.7.4).
+        endBestReplay()
         // In a match the shot on screen belongs to the rules: it was struck on the old surface and the match is waiting
         // to rule on that very recording (MatchMode.update matches its version). Re-solving or dropping it would leave
         // the shot unscored and the turn stuck, so a match takes the new surface from its next shot only.
@@ -2599,6 +2650,7 @@ final class ShowpieceModel {
     /// so they go. While a trick shot or a match is up nothing on screen changes (they keep their own table).
     func setTable(_ k: TableKind) {
         guard k != tableKind else { return }
+        startHighlightRack()
         tableKind = k
         UserDefaults.standard.set(k.rawValue, forKey: TableKind.storageKey)
         guard !onPoolTableOnly, match == nil else { return }
@@ -2654,6 +2706,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a trick shot: the menu closes and Continue will come back here. A match in
     /// progress is left (it stays saved).
     func enterTrickTable() {
+        startHighlightRack()
         strokeDrillStorage?.end()
         leaveMatch()
         cancelPendingSolve()
@@ -2686,6 +2739,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a situation: the menu closes, any trick shot ends, Continue comes back here. A
     /// match in progress is left (it stays saved).
     func enterEightBallTable() {
+        startHighlightRack()
         strokeDrillStorage?.end()
         leaveMatch()
         cancelPendingSolve()
@@ -2733,6 +2787,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a lesson: the menu closes, any trick shot or situation ends, Continue comes back
     /// here. A match in progress is left (it stays saved).
     func enterLessonTable() {
+        startHighlightRack()
         leaveMatch()
         cancelPendingSolve()
         endPlacement(); ballInHand = .none; undoStep = nil
@@ -2864,6 +2919,7 @@ final class ShowpieceModel {
     /// Onto the table from the Play list for the drill: anything else on the table ends, the menu closes. The drill
     /// then puts its cue ball down (StrokeDrill.begin).
     func enterStrokeDrill() {
+        startHighlightRack()
         trickModeStorage?.end()
         eightBallModeStorage?.end()
         lessonModeStorage?.end()
@@ -2874,23 +2930,6 @@ final class ShowpieceModel {
         gameInProgress = true
     }
 
-    // MARK: Guided pacing
-
-    /// True while guided pacing drives the clock: the cold open's slow replay, or a Lens replay the player is watching
-    /// (Lens on or turning on, no fixed speed picked, Ride off: Ride keeps its own slow-motion curve, and the two do
-    /// not mix). A still table has no beats and is never guided. It stays true while paused, so the caption on a held
-    /// beat does not change when the player pauses on it.
-    var guided: Bool {
-        guard chosenRate == nil, pacePlan.hasBeats else { return false }
-        switch stage {
-        case .slowReplay: return true
-        case .explore: return (meltTarget ?? melt) > 0.5 && !rideActive
-        default: return false
-        }
-    }
-
-    /// True while the clock is stopped on a beat so its caption can be read. Worked out from stored state, so it is
-    /// false at once if guided pacing ends or the clock is moved off the beat (a scrub, a replay).
     // MARK: 0.7.4 foundation (plans/22-Nov-2026-v074-glow-up-plan.md, F6)
 
     /// Event indices the guided replay must hold as headline beats (a trick shot's or a highlight's signature).
@@ -2916,12 +2955,344 @@ final class ShowpieceModel {
     /// app runs).
     var computerLevel: ComputerLevel = .medium
 
-    /// The remarkable shot on offer for a Lens replay (stub; the watch-invite stream fills it, MacChrome reads it).
-    var highlightOnOffer: ShotHighlight? { nil }
+    // MARK: Worth watching (0.7.4, stream watch-invite; plan G3 and G4)
+    //
+    // One shot is judged once, in finishStrike, after everything finishStrike already did, and only when the opening
+    // is over (openingStage == .none: the first break of a first launch is never judged), no trick shot, situation
+    // or lesson is up and the stroke drill is not active. The result is stored with the timelineVersion it belongs
+    // to, so every read below is a cheap comparison of stored state (views and the Mac menu read them every frame).
+    // Free play offers it on one slim card in the card slot; a match hands it to MatchMode, which decides. Nothing
+    // here plays by itself, makes a sound or praises: every replay starts from a tap.
 
-    /// Replay the offered highlight in the Lens, holding its signature (stub; the watch-invite stream fills it).
-    func watchHighlight() {}
+    /// The aim, power, tip and cue angle, break and shot values both. Compared whole: any difference means the player
+    /// touched a control. Also what Watch your best shot puts back, because loading another recording re-aims.
+    private struct ControlValues: Equatable {
+        let aimDegrees: Double
+        let aimOffset: Double
+        let shotPower: Double
+        let power: Double
+        let shotTipUp: Double
+        let shotTipSide: Double
+        let tipHeight: Double
+        let breakTipSide: Double
+        let shotElevation: Double
+    }
 
+    private var controlValues: ControlValues {
+        ControlValues(aimDegrees: aimDegrees, aimOffset: aimOffset, shotPower: shotPower, power: power,
+                      shotTipUp: shotTipUp, shotTipSide: shotTipSide, tipHeight: tipHeight, breakTipSide: breakTipSide,
+                      shotElevation: shotElevation)
+    }
+
+    /// Written directly, not through the active setters: these are values the controls already held, and a lesson
+    /// lock or the computer's turn must not half-apply them.
+    private func restoreControlValues(_ c: ControlValues) {
+        aimDegrees = c.aimDegrees; aimOffset = c.aimOffset
+        shotPower = c.shotPower; power = c.power
+        shotTipUp = c.shotTipUp; shotTipSide = c.shotTipSide
+        tipHeight = c.tipHeight; breakTipSide = c.breakTipSide
+        shotElevation = c.shotElevation
+    }
+
+    /// A highlight judged on a recording: which recording (timelineVersion), and the controls as they stood when the
+    /// shot was put on screen (after load() re-aimed), so the card can tell the moment the player touches one.
+    private struct JudgedHighlight {
+        let highlight: ShotHighlight
+        let version: Int
+        let controls: ControlValues
+    }
+
+    /// The highlight of the last shot struck, while it is worth offering (free play: it passed HighlightOffer; a
+    /// match: every judged one, MatchMode decides). Nil for an ordinary shot.
+    private var judgedHighlight: JudgedHighlight?
+    /// The card's close button was used, or a control was touched (latched every frame by latchHighlightTouch).
+    private var highlightDismissed = false
+    /// Watch it in the Lens was used on this highlight: the card comes back without that button.
+    private var highlightWatched = false
+    /// How often free play's card may appear, and which trick shots a card has sent the player to this session.
+    private var highlightOffer = HighlightOffer()
+
+    /// What free play's highlight card shows now: the highlight, whether Watch it in the Lens is still offered, and
+    /// whether Try the trick shot is.
+    struct HighlightCardOffer: Equatable {
+        let highlight: ShotHighlight
+        let canWatch: Bool
+        let canTryTrick: Bool
+    }
+
+    /// True while free play is on the table: no match, no trick shot, situation or lesson, no drill, no opening.
+    private var freePlayUp: Bool {
+        match == nil && !authoredModeUp && strokeDrillStorage?.isActive != true && openingStage == .none
+    }
+
+    /// Free play's highlight card, or nil: the highlight belongs to the recording on screen, the balls are at rest,
+    /// it was not closed, the aim, power, tip and cue angle are exactly as the shot left them, nothing is being
+    /// placed, the table is not cleared (that card has its own button), the menu is closed, nothing is solving and the
+    /// best shot is not replaying. After a watch only "Try the trick shot" remains, and only when it is allowed.
+    /// (A retry's comparison card is never joined by this one: judgeHighlight keeps no highlight for a compared retry.)
+    var highlightCard: HighlightCardOffer? {
+        guard freePlayUp, let j = judgedHighlight, j.version == timelineVersion, aimReady, !highlightDismissed,
+              !menuOpen, !isSolving, !replayingBest, ballInHand == .none, !placingCueBall, !tableCleared,
+              controlValues == j.controls else { return nil }
+        let canTry = highlightOffer.mayLinkTrick(j.highlight.kind, done: trickMode.doneIDs)
+        guard !highlightWatched || canTry else { return nil }
+        return HighlightCardOffer(highlight: j.highlight, canWatch: !highlightWatched, canTryTrick: canTry)
+    }
+
+    /// The remarkable shot on offer for a Lens replay (free play's card while it still offers the watch). MacChrome's
+    /// Playback menu enables "Watch It in the Lens" from this.
+    var highlightOnOffer: ShotHighlight? {
+        guard let card = highlightCard, card.canWatch else { return nil }
+        return card.highlight
+    }
+
+    /// "Watch it in the Lens" on the card (or the Mac menu): the shot on screen replays slowly in the Lens, holding its
+    /// signature beats. Ride goes off first: guided pacing and the Ride camera do not mix (the replay would not hold).
+    func watchHighlight() {
+        guard let h = highlightOnOffer else { return }
+        if rideOn { setRide(false) }
+        setPaceSignature(h.signatureEvents)
+        replay(withLens: true)
+        lensReplayStartedByPlayer = true
+        highlightWatched = true
+    }
+
+    /// "Try the trick shot" on the card: the authored trick shot that teaches this kind (offered once per kind).
+    func tryHighlightTrick() {
+        guard let card = highlightCard, card.canTryTrick, let id = card.highlight.kind.trickID else { return }
+        highlightOffer.noteTrickLinked(card.highlight.kind)
+        trickMode.begin(id: id)
+    }
+
+    /// The card's close button: gone until the next remarkable shot.
+    func dismissHighlight() { highlightDismissed = true }
+
+    /// The judged highlight of the match shot on screen, for MatchMode.rule(); nil outside a match, for an ordinary
+    /// shot, and for any other recording.
+    var matchShotHighlight: ShotHighlight? {
+        guard match != nil, let j = judgedHighlight, j.version == timelineVersion else { return nil }
+        return j.highlight
+    }
+
+    /// Judge the shot finishStrike has just put on screen (called last there, so nothing it did changes). The
+    /// shot's facts and captions are the ones load() has just built for this very recording.
+    private func judgeHighlight(_ tl: Timeline, isBreak: Bool) {
+        judgedHighlight = nil
+        highlightDismissed = false
+        highlightWatched = false
+        // Nothing is judged before the first break of a first launch has finished, nor in an authored mode or the drill.
+        guard openingStage == .none, !authoredModeUp, strokeDrillStorage?.isActive != true, let facts = shotFacts else {
+            return
+        }
+        let freePlay = match == nil
+        if freePlay { highlightOffer.noteShot() }
+        guard let h = ShotHighlightJudge.judge(timeline: tl, facts: facts, captions: captions, table: solvedTable,
+                                               isBreak: isBreak) else { return }
+        if freePlay {
+            noteBestShot(h)
+            // Ask the frequency rule only when the card can really show: a scratch puts the cue ball in hand, a shot
+            // that cleared the table gets the Table cleared card (which offers the best shot) instead, and a retry's
+            // comparison card already speaks for the shot. Asking would use up a common kind for a card nobody saw.
+            let objectBallsLeft = layout.indices.contains { $0 != strikeBall && NextShot.isOnTable(layout[$0]) }
+            guard ballInHand == .none, objectBallsLeft, retryComparison == nil,
+                  highlightOffer.shouldOffer(h.kind) else { return }
+        }
+        judgedHighlight = JudgedHighlight(highlight: h, version: timelineVersion, controls: controlValues)
+    }
+
+    /// Every frame: a touch of aim, power, tip or cue angle hides free play's card for good (the values coming back
+    /// exactly, as a keyboard step and its opposite would, does not bring it back).
+    private func latchHighlightTouch() {
+        guard match == nil, !highlightDismissed, let j = judgedHighlight, j.version == timelineVersion,
+              controlValues != j.controls else { return }
+        highlightDismissed = true
+    }
+
+    /// A fresh rack, a new table, a match or any mode starting: free play's per-rack memory goes (HighlightOffer's
+    /// rack, the rack's best shot, the cleared chime).
+    private func startHighlightRack() {
+        highlightOffer.startRack()
+        bestShot = nil
+        clearedChimePlayed = false
+    }
+
+    // MARK: Worth watching: the rack's best shot (Table cleared)
+
+    /// The rack's best remarkable shot: the attempt exactly as it was struck and solved, its highlight, and the shot
+    /// count when it was played (an undo past it drops it).
+    private struct BestShot {
+        let attempt: ShotAttempt
+        let highlight: ShotHighlight
+        let rackShot: Int
+    }
+
+    /// The best remarkable shot of this rack (not a break, not a ball too fast for the pocket); nil when none.
+    private var bestShot: BestShot?
+
+    /// Everything Watch your best shot changes, as it stood on the cleared table, so it can be put back exactly: the
+    /// clearing attempt and what its recording was solved from, the controls (loading re-aims), the retry ghost and
+    /// comparison (hidden while another shot replays), the Lens, the speed and Ride.
+    private struct ClearedTable {
+        let attempt: ShotAttempt
+        let input: ShotInput?
+        let classic: Bool
+        let surface: PlaySurface
+        let table: TableKind
+        let generation: Int
+        let controls: ControlValues
+        let ghost: ShotAttempt?
+        let comparison: String?
+        let retryComparison: RetryComparison?
+        let lensOn: Bool
+        let chosenRate: Double?
+        let rideOn: Bool
+    }
+
+    @ObservationIgnored private var clearedTable: ClearedTable?
+    /// True while Watch your best shot replays: the Table cleared card stays up (without that button).
+    private(set) var replayingBest = false
+    /// True only while this section loads a kept recording itself, so load() does not take it for the table moving on.
+    @ObservationIgnored private var loadingKeptRecording = false
+    /// Table cleared has sounded on this rack (once per rack; an undo lets it sound again).
+    @ObservationIgnored private var clearedChimePlayed = false
+
+    /// Keep the shot just struck as the rack's best if it beats the best so far (a higher rank; a tie keeps the
+    /// earlier). Breaks and balls too fast for the pocket are not shots to show off.
+    private func noteBestShot(_ h: ShotHighlight) {
+        guard h.kind != .breakShot, h.kind != .rimSkip, let attempt = currentAttempt else { return }
+        if let best = bestShot, best.highlight.kind.rank >= h.kind.rank { return }
+        bestShot = BestShot(attempt: attempt, highlight: h, rackShot: shotsThisRack)
+    }
+
+    /// Table cleared offers "Watch your best shot" when the rack had a remarkable shot.
+    var canWatchBestShot: Bool { bestShot != nil && !replayingBest && tableCleared }
+
+    /// "Watch your best shot": remember the cleared table, put the best shot's recording on screen exactly as it was
+    /// solved, hold its signature and replay it slowly in the Lens. finishBestReplayIfDone puts the cleared table
+    /// back once it has played. Nothing is recorded or counted: no record(), no shot count, no undo step.
+    func watchBestShot() {
+        guard canWatchBestShot, let best = bestShot, let clearing = currentAttempt else { return }
+        clearedTable = ClearedTable(attempt: clearing, input: lastInput, classic: lastClassic, surface: solvedSurface,
+                                    table: solvedTable, generation: solvedGeneration, controls: controlValues,
+                                    ghost: ghost, comparison: comparison, retryComparison: retryComparison,
+                                    lensOn: (meltTarget ?? melt) > 0.5, chosenRate: chosenRate, rideOn: rideOn)
+        // Set before the load, so the cleared card never blinks off while the other shot goes on screen.
+        replayingBest = true
+        // The retry ghost belongs to the clearing shot; drawn over another shot's replay it would mislead.
+        if ghost != nil { ghostVersion += 1 }
+        ghost = nil; comparison = nil; retryComparison = nil
+        // A player's attempt is never the opening, so it was not pinned to the default generation (classic).
+        showKeptRecording(best.attempt, input: best.attempt.input, classic: false, surface: best.attempt.surface,
+                          table: best.attempt.table, generation: best.attempt.generation)
+        if rideOn { rideOn = false }
+        setPaceSignature(best.highlight.signatureEvents)
+        replay(withLens: true)
+        lensReplayStartedByPlayer = true
+    }
+
+    /// Put a kept attempt's recording on screen as it was solved: what it was solved from is written back first, so
+    /// load() makes the very captions, facts and layout it made then. The attempt becomes the one on screen without
+    /// going through record() (no retry comparison, nothing counted).
+    private func showKeptRecording(_ a: ShotAttempt, input: ShotInput?, classic: Bool, surface: PlaySurface,
+                                   table: TableKind, generation: Int) {
+        lastInput = input
+        lastClassic = classic
+        solvedSurface = surface
+        solvedTable = table
+        solvedGeneration = generation
+        loadingKeptRecording = true
+        load(a.timeline)
+        loadingKeptRecording = false
+        currentAttempt = a
+        attemptVersion = timelineVersion
+    }
+
+    /// Every frame: once the best shot's replay has reached its end (and is not holding a beat stamped there), the
+    /// cleared table comes back.
+    private func finishBestReplayIfDone() {
+        guard replayingBest, aimReady, !holding else { return }
+        endBestReplay()
+    }
+
+    /// Put the cleared table back exactly as it was before Watch your best shot: the clearing attempt's recording at
+    /// its end, still, as the attempt on screen; the controls, the ghost and comparison, the Lens, the speed and Ride
+    /// as they were. The shot count and the undo step were never touched. Menu, Rack again, a surface change and Undo
+    /// call this first, so they act on the cleared table.
+    private func endBestReplay() {
+        guard replayingBest else { return }
+        guard let c = clearedTable else { replayingBest = false; return }
+        showKeptRecording(c.attempt, input: c.input, classic: c.classic, surface: c.surface, table: c.table,
+                          generation: c.generation)
+        stage = .explore; stageTime = 0
+        time = duration; playing = false
+        chosenRate = c.chosenRate
+        meltTarget = c.lensOn ? 1 : 0
+        rideOn = c.rideOn
+        restoreControlValues(c.controls)
+        if c.ghost != nil { ghostVersion += 1 }
+        ghost = c.ghost; comparison = c.comparison; retryComparison = c.retryComparison
+        clearedTable = nil
+        replayingBest = false
+    }
+
+    /// Something else is going on the table (a new rack, a mode, a match): the best shot's replay simply ends; the
+    /// cleared table is not put back, because the caller is replacing it.
+    private func abandonBestReplay() {
+        clearedTable = nil
+        replayingBest = false
+    }
+
+    /// Every frame: Table cleared sounds the bigger made-it once per rack, as its card appears (Haptics gives the
+    /// made-it moments no pattern, so the card's own success haptic is the only one felt).
+    private func chimeTableClearedIfDue() {
+        guard !clearedChimePlayed, tableCleared else { return }
+        clearedChimePlayed = true
+        SoundBoard.play(.madeItBig)
+    }
+
+    // MARK: Worth watching: the end of Watch the intro
+
+    /// The recording on which Watch the intro ended (its slow replay reached the end), and whether its card was closed.
+    private var introEndVersion: Int?
+    private var introEndDismissed = false
+    /// Set by watchBreak() only, so the card follows Watch the intro and nothing else that plays the showpiece.
+    @ObservationIgnored private var introWatchArmed = false
+
+    /// The intro's slow replay has just moved to explore: remember that recording for the card.
+    private func noteIntroEnded() {
+        guard introWatchArmed, showpieceOnScreen, openingStage == .none, !menuBackdropPlaying else { return }
+        introWatchArmed = false
+        introEndVersion = timelineVersion
+        introEndDismissed = false
+    }
+
+    /// The card at the end of Watch the intro (Trick shots, Practice, close): while that recording is on screen, at
+    /// rest, the menu closed and the card not closed.
+    var introEndOffered: Bool {
+        guard let v = introEndVersion, v == timelineVersion, stage == .explore, aimReady, !menuOpen,
+              !introEndDismissed else { return false }
+        return true
+    }
+
+    func dismissIntroEnd() { introEndDismissed = true }
+
+    // MARK: Guided pacing
+
+    /// True while guided pacing drives the clock: the cold open's slow replay, or a Lens replay the player is watching
+    /// (Lens on or turning on, no fixed speed picked, Ride off: Ride keeps its own slow-motion curve, and the two do
+    /// not mix). A still table has no beats and is never guided. It stays true while paused, so the caption on a held
+    /// beat does not change when the player pauses on it.
+    var guided: Bool {
+        guard chosenRate == nil, pacePlan.hasBeats else { return false }
+        switch stage {
+        case .slowReplay: return true
+        case .explore: return (meltTarget ?? melt) > 0.5 && !rideActive
+        default: return false
+        }
+    }
+
+    /// True while the clock is stopped on a beat so its caption can be read. Worked out from stored state, so it is
+    /// false at once if guided pacing ends or the clock is moved off the beat (a scrub, a replay).
     var holding: Bool {
         guard guided, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return false }
         return abs(pacePlan.beats[h].time - time) <= Self.beatTolerance
