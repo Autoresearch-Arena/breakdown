@@ -25,7 +25,7 @@
 //          slim row under the shot panel, so watching your own shot slowly in the Lens no longer means closing the
 //          panel, replaying and opening it again. On a still table it still gives the panel its place.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: What if sits beside Replay in the scrub row (and
-//          after the time on the Mac); the speed list starts with Auto, which hands the pace back to the paced replay
+//          after the time on the Mac; a worded full-width row in the stacked buttons at the accessibility text sizes); the speed list starts with Auto, which hands the pace back to the paced replay
 //          (it used to drop that choice silently); Replay's hint no longer promises slow motion while Ride is on.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
 //          ToggleButton now serves both iPhone and iPad toggles.
@@ -197,7 +197,10 @@ struct PlaybackControls: View {
             // Physics Lens, Ride and Your shot on one line instead of leaving Your shot alone on a second row.
             ReplayButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
             // What if, beside Replay: only after the player's own shot has come to rest (it hides itself otherwise).
-            WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
+            // At the accessibility text sizes it is a worded full-width row in the stacked buttons instead.
+            if !typeSize.isAccessibilitySize {
+                WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
+            }
             #else
             if !typeSize.isAccessibilitySize { TimeReadout(model: model) }
             WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
@@ -285,6 +288,8 @@ struct PlaybackControls: View {
             }
             ride(fill: true)
             ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen, fill: true) { shotPanelOpen.toggle() }
+            // The what-if entry with its words, where the scrub row's icon-only buttons are hardest to read.
+            WhatIfButton(model: model, fill: true)
         }
     }
 }

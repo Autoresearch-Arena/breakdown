@@ -18,11 +18,14 @@ import SwiftUI
 /// The "What if" entry beside Replay; shown only while model.whatIf.canOpen and not already showing.
 struct WhatIfButton: View {
     let model: ShowpieceModel
+    /// Stretch the label to the full row (the stacked buttons at the accessibility text sizes).
+    var fill = false
 
     var body: some View {
         if model.whatIf.canOpen && !model.whatIf.isShowing {
             Button { model.whatIf.open() } label: {
                 Label(WhatIfWords.title, systemImage: "arrow.triangle.branch")
+                    .frame(maxWidth: fill ? .infinity : nil)
             }
             #if os(iOS)
             .frame(minWidth: 44, minHeight: 44)
