@@ -18,6 +18,10 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (reads the system's Differentiate Without Colour setting and names
 //          the notification for its change, beside the Increase Contrast reader, for the dashed sliding trails.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the sliding colour is magenta; one comment updated.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream drawings, bug list #15: a third picture, markLine, a
+//          centred line with a bright core about twice as wide, for the Lens marks (throw lines, contact drawing, spin
+//          marks), whose cores were a third of a strip already under a point wide on a phone; crossSection takes the
+//          core's edge as a parameter, defaulting to the old one, so the trails and soft lines are unchanged.)
 // SRP/DRY check: Pass - Lens picture generation only; colours arrive from Theme through the caller.
 import CoreGraphics
 import Foundation
@@ -73,12 +77,15 @@ enum LensTextures {
 
     /// Brightness (0 to 1) across a glowing line: `d` is 0 at the middle and 1 at the edge.
     /// A thin bright core plus a wider soft halo; `haloGain` scales the halo (lower when a real bloom pass adds its own).
-    static func crossSection(_ d: Double, haloGain: Double) -> (alpha: Double, whiten: Double) {
+    /// `coreEdge` is where the bright core gives way to the halo (the start and end of the ease, as shares of the
+    /// half-width): the trails and soft lines keep the narrow 0.26 to 0.42 core; the Lens marks' picture (markLine) widens it.
+    static func crossSection(_ d: Double, haloGain: Double,
+                             coreEdge: (start: Double, end: Double) = (0.26, 0.42)) -> (alpha: Double, whiten: Double) {
         func smooth(_ a: Double, _ b: Double, _ x: Double) -> Double {
             let t = min(1, max(0, (x - a) / (b - a)))
             return t * t * (3 - 2 * t)
         }
-        let core = 1 - smooth(0.26, 0.42, d)
+        let core = 1 - smooth(coreEdge.start, coreEdge.end, d)
         let halo = haloGain * 0.62 * exp(-(d / 0.62) * (d / 0.62))
         let taper = 1 - smooth(0.80, 1.0, d)
         return (max(core, halo) * taper, core)
@@ -143,6 +150,20 @@ enum LensTextures {
             let reach = max(peak, 1 - peak)
             let d = abs(v - peak) / reach
             let cs = crossSection(d, haloGain: haloGain)
+            return (1, 1, 1, cs.alpha)
+        }
+    }
+
+    /// The Lens marks' line picture (0.7.6 stream drawings, bug list #15): a centred line like softLine(peak: 0.5),
+    /// but with a bright core about twice as wide (out to about half the strip's half-width instead of a third), so a
+    /// mark held at the 2-point floor (LensMarkFloor.line) shows a solid line rather than a hairline inside a haze.
+    /// Used for the throw lines, the contact drawing and the spin marks; the trails, rings and velocity arrows keep the
+    /// softer picture.
+    static func markLine(haloGain: Double) -> TextureResource? {
+        texture(width: 4, height: 64) { _, y in
+            let v = (Double(y) + 0.5) / 64
+            let d = abs(v - 0.5) * 2
+            let cs = crossSection(d, haloGain: haloGain, coreEdge: (0.48, 0.62))
             return (1, 1, 1, cs.alpha)
         }
     }

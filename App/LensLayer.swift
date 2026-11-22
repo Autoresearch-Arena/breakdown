@@ -1,4 +1,17 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream drawings, plans/22-Nov-2026-v076-phone-plan.md and bug
+//          list #15, #16, #17, #65: the Lens marks at a readable size. The layer keeps a weak link to the table camera
+//          (`camera`, set once by TableScene) and asks it, at each mark's place, how many screen points a metre covers;
+//          LensMarkFloor (LensContactGeometry.swift) turns that into the scale each mark needs so no line is drawn under
+//          2 points wide and no arrowhead under 8. Velocity arrowheads, impact rings, jam crosses, the throw lines
+//          (lengthened so a one-degree throw opens 6 points at the far end, the angle never exaggerated), the contact
+//          drawing (posed every frame now, so it keeps its floor while the view glides in on the moment) and both spin
+//          marks all follow it. The slip belt also tips toward a camera looking nearly straight down, so from overhead
+//          it reads as a turning wheel instead of an edge-on bar. The dot under a flying ball became a ring on its ground
+//          spot, always a few points wider than the drawn ball and growing with height (#17). The marks draw with a
+//          wider-cored picture (LensTextures.markLine). With no camera (the scrub check, unit tests) every size is the
+//          table size it was, so the fingerprint is unchanged; with one, the sizes follow the camera, which itself
+//          follows the clock, so scrubbing still shows the same picture for the same time.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens review: the castle ring's transparency is built
 //          with the material's own opacity value, which the first version spelled as a scalar parameter that does not
 //          compile.)
@@ -141,6 +154,20 @@ final class LensLayer {
     /// The timeline event of the guided beat being held, set by TableScene each frame; nil when nothing is held;
     /// LensScrubCheck leaves it nil, so the scrub check stays a pure function of the clock (0.7.4 foundation).
     var heldEvent: Int?
+    /// The table camera (0.7.6 stream drawings), handed over once by TableScene, read every frame for how many screen
+    /// points a metre covers at a mark (see LensMarkFloor). Weak: TableScene owns it. Nil for a layer made on its own
+    /// (unit tests), where every mark keeps its table size; the in-app scrub self-test (-lensSelfTest) runs inside one
+    /// frame, while the camera stands still, so its fingerprints still compare like with like. TableScene applies the
+    /// Lens before it moves the camera each frame, so the figure is the last frame's: a frame late during a glide,
+    /// exact during a hold.
+    weak var camera: TableCamera?
+
+    /// Screen points per metre at world point `p` from the camera, or nil when there is no camera or the point is
+    /// behind it (LensMarkFloor.usable). Cheap: a dot product and a divide in TableCamera.
+    private func pointsPerMetre(at p: SIMD3<Float>) -> Float? {
+        guard let camera else { return nil }
+        return LensMarkFloor.usable(camera.pointsPerMetre(at: p))
+    }
 
     // MARK: Tunables
 
@@ -179,9 +206,37 @@ final class LensLayer {
     /// a few tens of centimetres; 3 cm on and 2 cm off still gives several dashes over the shortest hop.
     static let airDash = 0.03
     static let airGap = 0.02
-    /// The dot on the cloth under a flying ball: shown once the ball is a millimetre up (the solver's own minimumHop),
-    /// as wide as the ball, fading as it climbs so a high jump's dot reads as far below the ball.
+    /// The jump mark under a flying ball: shown once the ball is a millimetre up (the solver's own minimumHop). Since
+    /// 0.7.6 (#17) it is a ring on the ball's ground spot, not a ball-wide dot: from the Lens's straight-down view the
+    /// ball covered the dot completely. The ring's inner edge sits outside the drawn ball and it widens as the ball
+    /// climbs (jumpRingBase plus jumpRingGrowth times the height in ball diameters, at least LensMarkFloor's points).
     static let dotMinHeight = 0.001
+    /// The jump ring's inner edge as a share of its outer radius (the annulus it is drawn with), and its outer radius
+    /// in drawn-ball radii on the ground and how much that grows by two radii up, when no camera figure is known.
+    static let jumpRingInner: Float = 0.75
+    static let jumpRingBase: Float = 1.4
+    static let jumpRingGrowth: Float = 0.6
+    /// In the Lens the balls are drawn this much larger at full melt (TableScene.apply's lensScale, look plan package 5);
+    /// the jump ring clears the ball as drawn, not as recorded.
+    static let lensBallGrowth: Float = 0.08
+    /// The velocity arrow's head length and shaft width, metres (buildStatic), for their screen floors.
+    static let arrowHeadLength: Float = 0.034
+    static let arrowShaftWidth: Float = 0.042
+    /// The impact ring's inner edge as a share of its radius, and the jam cross's bar half-width as a share of its arm:
+    /// the band a ring or cross is drawn with is what LensMarkFloor.line holds above 2 points.
+    static let ringInner: Float = 0.62
+    static let crossHalfWidth: Float = 0.16
+    /// Throw lines' half-width, metres (their meshes are built with it, and the floor reads it).
+    static let throwLineHalfWidth: Float = 0.0035
+    /// How far the slip belt tips toward a camera looking almost straight down (#65): enough that from overhead its
+    /// circle shows as an open ellipse, so the eye reads a wheel turning one way rather than a bar across the ball.
+    static let beltTilt: Float = 50 * .pi / 180
+    /// The slip belt's and side ring's arc meshes (buildStatic): strip half-widths and arrowhead lengths as shares of
+    /// the arc's radius, for their floors.
+    static let beltHalfWidth: Float = 0.13
+    static let beltHeadLength: Float = 0.46
+    static let sideHalfWidth: Float = 0.09
+    static let sideHeadLength: Float = 0.40
     /// Clock seconds a jam's cross stays up: it marks balls brought to REST, so it holds still for longer than an
     /// impact ring's flash (two and a half ring spans, an even second) and then fades.
     static let jamMarkSpan = 1.0
@@ -209,6 +264,12 @@ final class LensLayer {
     static let contactHeadLength: Float = 0.022
     /// The right-angle mark's side, as a share of the ball radius.
     static let contactMarkSize: Float = 0.7
+    /// Half-widths of the contact drawing's parts (buildContact), metres, or for the right-angle mark a share of its
+    /// side; the screen floors (0.7.6) read them. The tangent's dashes are the thinnest line.
+    static let contactCentresHalf: Float = 0.003
+    static let contactTangentHalf: Float = 0.0025
+    static let contactShaftHalf: Float = 0.004
+    static let contactMarkHalf: Float = 0.09
 
     /// Smooth 0-to-1 ramp between `a` and `b`.
     private static func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
@@ -264,18 +325,24 @@ final class LensLayer {
         let grows: Bool
         /// Peak opacity of a held mark.
         let peak: Float
+        /// 0.7.6 screen floor: the narrowest band of this mark at its table size, metres (a ring's band, a cross's bar).
+        /// A miscue's two rings both carry the inner ring's band, so they grow by the same factor and stay one inside
+        /// the other. Zero: no floor.
+        var band: Float = 0
+        /// A throw line's throw, degrees (nil for every other mark): its length follows LensMarkFloor.throwLineLength.
+        var throwDegrees: Double? = nil
     }
     private var rings: [Flash] = []
-    private let ringMesh = LensLayer.annulus(segments: 72, inner: 0.62)
+    private let ringMesh = LensLayer.annulus(segments: 72, inner: LensLayer.ringInner)
     /// A skip over a hole: the same ring cut into twelve arcs with gaps, so its shape says "did not drop".
-    private let brokenRingMesh = LensLayer.annulus(segments: 72, inner: 0.62, arcs: 12)
+    private let brokenRingMesh = LensLayer.annulus(segments: 72, inner: LensLayer.ringInner, arcs: 12)
     /// A jam brought to rest: a flat cross on each wedged ball.
-    private let crossMesh = LensLayer.cross(halfWidth: 0.16)
+    private let crossMesh = LensLayer.cross(halfWidth: LensLayer.crossHalfWidth)
     /// Throw lines: one solid, one dashed, both a unit long along +x from the origin (scaled to length).
-    private let solidLineMesh = LensLayer.strip(dashes: 0, halfWidth: 0.0035)
-    private let dashedLineMesh = LensLayer.strip(dashes: 9, halfWidth: 0.0035)
+    private let solidLineMesh = LensLayer.strip(dashes: 0, halfWidth: LensLayer.throwLineHalfWidth)
+    private let dashedLineMesh = LensLayer.strip(dashes: 9, halfWidth: LensLayer.throwLineHalfWidth)
     private var markMaterial = UnlitMaterial()
-    /// The soft dot on the cloth under each ball, shown while it flies.
+    /// The jump mark under each ball, shown while it flies: a ring on its ground spot (0.7.6, #17; a soft dot before).
     private let dotRoot = Entity()
     private var dots: [ModelEntity] = []
     private var dotMaterial = UnlitMaterial()
@@ -323,6 +390,9 @@ final class LensLayer {
     /// The event the contact drawing is posed for and when (system uptime, seconds) it started to fade in (back-dated
     /// when a fade-in carries on from part-way, see applyContact).
     private var contactShown: (event: Int, since: TimeInterval)?
+    /// The hit the contact drawing is laid out for (0.7.6): kept so it is posed again every frame it shows, fade-out
+    /// included, with sizes from the camera of that frame (the view glides in on a held moment and back out after).
+    private var contactSource: (geometry: ContactGeometry, event: LensEvent)?
     /// The opacity the contact drawing was last shown at (0 when off), so a fade either way starts from it.
     private var contactOpacity: Float = 0
     /// Set while the drawing fades out after its hold ended (0.7.5): the opacity it started from and when.
@@ -382,25 +452,26 @@ final class LensLayer {
             let red = Self.miscueRGB
             miscueMaterial = ring(red.0, red.1, red.2)
         }
-        // The dot under a flying ball: the soft line picture with its peak at the centre of a disc (v runs centre to
-        // rim on the annulus), so it is brightest under the ball and soft at its edge.
-        if let dotTex = LensTextures.softLine(peak: 0.0, haloGain: haloGain) {
-            let p = Theme.paperRGB
-            dotMaterial = Self.glow(dotTex, tint: rgba(p.0, p.1, p.2))
-        }
         if let lineTex = LensTextures.softLine(peak: 0.5, haloGain: haloGain) {
+            arrowGlowMaterial = Self.glow(lineTex, tint: rgba(1.0, 0.93, 0.55))
+        }
+        // The marks (0.7.6): throw lines, spin marks, the contact drawing and the jump ring draw with the wider-cored
+        // mark picture, so at their 2-point floor they still show a solid line (bug list #15).
+        if let markTex = LensTextures.markLine(haloGain: haloGain) {
             // Throw lines in the Lens's light paper colour; the departure is solid, the line of centres dashed.
             let p = Theme.paperRGB
-            markMaterial = Self.glow(lineTex, tint: rgba(p.0, p.1, p.2))
-            arrowGlowMaterial = Self.glow(lineTex, tint: rgba(1.0, 0.93, 0.55))
+            markMaterial = Self.glow(markTex, tint: rgba(p.0, p.1, p.2))
+            // The jump ring under a flying ball (#17): the same paper colour as the airborne trail it belongs to. The
+            // ring mesh's v runs inner edge to outer edge, so the centred picture puts the bright line mid-band.
+            dotMaterial = Self.glow(markTex, tint: rgba(p.0, p.1, p.2))
             // Slip is sliding, so it wears the sliding magenta; side spin wears the cushion-ring blue used above.
-            slipMaterial = Self.glow(lineTex, tint: rgba(slide.0, slide.1, slide.2))
-            sideMaterial = Self.glow(lineTex, tint: rgba(0.45, 0.70, 1.0))
+            slipMaterial = Self.glow(markTex, tint: rgba(slide.0, slide.1, slide.2))
+            sideMaterial = Self.glow(markTex, tint: rgba(0.45, 0.70, 1.0))
             // Contact geometry: the tangent in the cushion blue (it is the line a ball would roll along a cushion
             // there), the outgoing arrows in the rolling cyan; the line of centres and the incoming arrow use the
             // paper colour of markMaterial, as the throw lines do.
-            tangentMaterial = Self.glow(lineTex, tint: rgba(0.45, 0.70, 1.0))
-            outgoingMaterial = Self.glow(lineTex, tint: rgba(cyan.0, cyan.1, cyan.2))
+            tangentMaterial = Self.glow(markTex, tint: rgba(0.45, 0.70, 1.0))
+            outgoingMaterial = Self.glow(markTex, tint: rgba(cyan.0, cyan.1, cyan.2))
         }
         var core = UnlitMaterial(color: rgba(1.0, 0.96, 0.78))
         core.faceCulling = .none
@@ -453,8 +524,8 @@ final class LensLayer {
     /// The shapes that do not depend on the recorded shot: one velocity arrow per ball, the grid, the aim line.
     func buildStatic(ballCount: Int, frame: TableFrame, table: TableSpec) {
         // Velocity arrow = a glowing ribbon shaft, a bright triangular head and a larger faint head behind it.
-        let shaftMesh = MeshResource.generatePlane(width: 1, depth: 0.042)
-        let headMesh = LensLayer.triangle(length: 0.034, halfWidth: 0.015)
+        let shaftMesh = MeshResource.generatePlane(width: 1, depth: Self.arrowShaftWidth)
+        let headMesh = LensLayer.triangle(length: Self.arrowHeadLength, halfWidth: 0.015)
         for _ in 0..<ballCount {
             let arrow = Entity()
             let shaft = ModelEntity(mesh: shaftMesh, materials: [arrowGlowMaterial])
@@ -477,8 +548,10 @@ final class LensLayer {
         }
 
         // Spin markers, one pair per ball, sharing two meshes. Both are unit-radius arcs scaled per frame.
-        let beltMesh = LensLayer.spinArc(flat: false, halfWidth: 0.13, headLength: 0.46, headHalfWidth: 0.24)
-        let flatMesh = LensLayer.spinArc(flat: true, halfWidth: 0.09, headLength: 0.40, headHalfWidth: 0.20)
+        let beltMesh = LensLayer.spinArc(flat: false, halfWidth: Self.beltHalfWidth, headLength: Self.beltHeadLength,
+                                         headHalfWidth: 0.24)
+        let flatMesh = LensLayer.spinArc(flat: true, halfWidth: Self.sideHalfWidth, headLength: Self.sideHeadLength,
+                                         headHalfWidth: 0.20)
         for _ in 0..<ballCount {
             let slip = ModelEntity(mesh: beltMesh, materials: [slipMaterial])
             slip.components.set(ModelSortGroupComponent(group: sortGroup, order: 25))
@@ -492,8 +565,8 @@ final class LensLayer {
             spinMarkers.append((slip, side))
         }
 
-        // The dot under each ball while it flies: a soft disc a ball wide, lying just above the grid.
-        let dotMesh = LensLayer.annulus(segments: 32, inner: 0)
+        // The jump mark under each ball while it flies (0.7.6, #17): a ring lying just above the grid, sized per frame.
+        let dotMesh = LensLayer.annulus(segments: 48, inner: Self.jumpRingInner)
         for _ in 0..<ballCount {
             let dot = ModelEntity(mesh: dotMesh, materials: [dotMaterial])
             dot.scale = SIMD3(frame.ballRadius, 1, frame.ballRadius)
@@ -649,9 +722,10 @@ final class LensLayer {
                 // expanding flash, because the event is balls stopping, not a hit.
                 for b in e.balls where b.ball < timeline.ballCount {
                     let at = timeline.state(ball: b.ball, at: e.time).position
-                    let mark = place(crossMesh, mat, at: at, scale: frame.ballRadius * 1.3, yaw: .pi / 4)
-                    rings.append(Flash(entity: mark, time: e.time, span: Self.jamMarkSpan, radius: frame.ballRadius * 1.3,
-                                       grows: false, peak: 0.85))
+                    let arm = frame.ballRadius * 1.3
+                    let mark = place(crossMesh, mat, at: at, scale: arm, yaw: .pi / 4)
+                    rings.append(Flash(entity: mark, time: e.time, span: Self.jamMarkSpan, radius: arm,
+                                       grows: false, peak: 0.85, band: 2 * Self.crossHalfWidth * arm))
                 }
                 continue
             }
@@ -660,9 +734,13 @@ final class LensLayer {
             // over a hole is one broken ring, again a shape no impact has.
             let sizes: [Float] = isMiscue ? [radius, radius * 0.6] : [radius]
             let mesh = e.kind == .rimSkip ? brokenRingMesh : ringMesh
+            // The screen floor is measured on the thinnest band (the miscue's inner ring), and both rings share it, so
+            // a floored miscue keeps its two rings one inside the other (0.7.6).
+            let band = (1 - Self.ringInner) * (sizes.min() ?? radius)
             for size in sizes {
                 let ring = place(mesh, mat, at: e.point, scale: size)
-                rings.append(Flash(entity: ring, time: e.time, span: Self.ringSpan, radius: size, grows: true, peak: 0.85))
+                rings.append(Flash(entity: ring, time: e.time, span: Self.ringSpan, radius: size, grows: true, peak: 0.85,
+                                   band: band))
             }
             // Throw: the line of centres (dashed) beside where the struck ball really went (solid), from that ball.
             if let t = CaptionEngine.throwFacts(e), t.object < timeline.ballCount {
@@ -671,10 +749,11 @@ final class LensLayer {
                     let dir = frame.direction(line)
                     let yaw = -atan2(dir.z, dir.x)
                     let mark = place(mesh, markMaterial, at: from, scale: 1, yaw: yaw, height: 0.009)
-                    // Long along the line, a unit wide across (the strip's own half-width is in metres already).
+                    // Long along the line, a unit wide across (the strip's own half-width is in metres already). The
+                    // frame loop lengthens and widens it to its screen floor (0.7.6, #16).
                     mark.scale = SIMD3(Self.throwLineLength, 1, 1)
                     rings.append(Flash(entity: mark, time: e.time, span: Self.throwMarkSpan, radius: 1, grows: false,
-                                       peak: peak))
+                                       peak: peak, throwDegrees: t.degrees))
                 }
             }
         }
@@ -954,23 +1033,42 @@ final class LensLayer {
                 // Above the ball wherever it is: a flying ball's arrow flies with it (height is zero on the cloth).
                 arrow.root.position = frame.world(s.position, height: R + 0.012 + Float(s.height))
                 arrow.root.orientation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
-                arrow.shaft.scale = SIMD3(len, 1, 1)
+                // Screen floors (0.7.6): the shaft at least 2 points wide, the head at least 8 long (its glow twin
+                // grows with it, being in the same holder). The length along the shaft is the speed and never changes.
+                let ppm = pointsPerMetre(at: arrow.root.position)
+                let wide = LensMarkFloor.scale(natural: Self.arrowShaftWidth, points: LensMarkFloor.line, pointsPerMetre: ppm)
+                let head = LensMarkFloor.scale(natural: Self.arrowHeadLength, points: LensMarkFloor.head, pointsPerMetre: ppm)
+                arrow.shaft.scale = SIMD3(len, 1, wide)
                 arrow.head.position = SIMD3(len + 0.012, 0, 0)
+                arrow.head.scale = SIMD3(head, 1, head)
             }
             // Spin markers reuse the state just read, so the Lens still asks the timeline once per ball per frame.
             if b < spinMarkers.count {
                 applySpin(ball: b, state: s, time: t, melt: m, timeline: timeline, frame: frame, visible: ballVisible[b])
             }
-            // The dot on the cloth under a flying ball: full under a low hop, fading to a third as the ball climbs a
-            // ball's diameter, so the gap between dot and ball reads as height.
+            // The jump mark (0.7.6, #17): a ring on the cloth under a flying ball, its inner edge always outside the
+            // ball as drawn (the Lens draws balls 8% larger), widening as the ball climbs, so from straight above its
+            // edge shows round the ball and how far it reaches out says how high the ball is. It dims a little with
+            // height, as the old dot did, but never so far that it is lost.
             if b < dots.count {
                 let dot = dots[b]
                 let flying = ballVisible[b] && !s.pocketed && s.height >= Self.dotMinHeight && m > 0.02
                 if flying {
                     let up = Float(min(1, s.height / (2 * Double(R))))
+                    let drawn = R * (1 + Self.lensBallGrowth * m)
+                    let ground = frame.world(s.position, height: 0.0012)
+                    var outer = drawn * (Self.jumpRingBase + Self.jumpRingGrowth * up)
+                    if let ppm = pointsPerMetre(at: ground) {
+                        // Inner edge a few points (more as it climbs) outside the drawn ball, and the band itself at
+                        // least the 2-point line.
+                        let clear = (drawn + (LensMarkFloor.jumpGap + LensMarkFloor.jumpGrowth * up) / ppm) / Self.jumpRingInner
+                        let band = LensMarkFloor.line / ((1 - Self.jumpRingInner) * ppm)
+                        outer = min(outer * LensMarkFloor.maxScale, max(outer, clear, band))
+                    }
                     dot.isEnabled = true
-                    dot.position = frame.world(s.position, height: 0.0012)
-                    dot.components.set(OpacityComponent(opacity: 0.8 * (1 - 0.66 * up)))
+                    dot.position = ground
+                    dot.scale = SIMD3(outer, 1, outer)
+                    dot.components.set(OpacityComponent(opacity: 0.85 * (1 - 0.35 * up)))
                 } else if dot.isEnabled {
                     dot.isEnabled = false
                 }
@@ -995,11 +1093,26 @@ final class LensLayer {
             if m > 0.002, tau >= 0, tau <= r.span {
                 let k = Float(tau / r.span)
                 r.entity.isEnabled = true
+                // Screen floors (0.7.6): a ring's or cross's band at least 2 points; the throw lines long enough to
+                // part visibly and 2 points wide (#16). With no camera each factor is 1, the sizes are exactly the old
+                // ones, and so is the fingerprint.
+                let ppm = pointsPerMetre(at: r.entity.position)
+                let bandScale = LensMarkFloor.scale(natural: r.band, points: LensMarkFloor.line, pointsPerMetre: ppm)
                 if r.grows {
-                    let grow = r.radius * (1 + 1.8 * k)
+                    let grow = r.radius * bandScale * (1 + 1.8 * k)
                     r.entity.scale = SIMD3(grow, 1, grow)
                     r.entity.components.set(OpacityComponent(opacity: r.peak * (1 - k) * (1 - k)))
                 } else {
+                    if let degrees = r.throwDegrees {
+                        let length = LensMarkFloor.throwLineLength(natural: Self.throwLineLength, degrees: degrees,
+                                                                   pointsPerMetre: ppm)
+                        let wide = LensMarkFloor.scale(natural: 2 * Self.throwLineHalfWidth, points: LensMarkFloor.line,
+                                                       pointsPerMetre: ppm)
+                        r.entity.scale = SIMD3(length, 1, wide)
+                    } else {
+                        let size = r.radius * bandScale
+                        r.entity.scale = SIMD3(size, 1, size)
+                    }
                     let fade: Float = k < 0.6 ? 1 : 1 - (k - 0.6) / 0.4
                     r.entity.components.set(OpacityComponent(opacity: r.peak * fade))
                 }
@@ -1062,13 +1175,37 @@ final class LensLayer {
             // Local frame of the belt: +y along the slip axis, +x straight up (so the arrowhead lies on top of the
             // ball, facing the camera), +z completing a right-handed set.
             let up = SIMD3<Float>(0, 1, 0)
-            let basis = simd_float3x3(columns: (up, axis, simd_cross(up, axis)))
-            let r = Rf * (1.30 + 0.10 * strength)
-            marker.slip.isEnabled = true
-            marker.slip.position = frame.world(s.position, height: Rf + lift)
-            marker.slip.orientation = simd_quatf(basis)
+            let travel = simd_cross(up, axis)
+            let basis = simd_float3x3(columns: (up, axis, travel))
+            let natural = Rf * (1.30 + 0.10 * strength)
+            let centre = frame.world(s.position, height: Rf + lift)
+            // Screen floors (0.7.6, #65): the whole belt grows until its arrowhead is 8 points long; then its width
+            // (local y) is held at 2 points or more. Growing it about the ball keeps the head on top of the ball.
+            let ppm = pointsPerMetre(at: centre)
+            let r = natural * LensMarkFloor.scale(natural: Self.beltHeadLength * natural, points: LensMarkFloor.head,
+                                                  pointsPerMetre: ppm)
             // The belt also grows wider (local y) with the amount, so a hard draw shot looks heavier than a trace.
-            marker.slip.scale = SIMD3(r, r * (0.75 + 0.6 * strength), r)
+            var across = r * (0.75 + 0.6 * strength)
+            across *= LensMarkFloor.scale(natural: 2 * Self.beltHalfWidth * across, points: LensMarkFloor.line,
+                                          pointsPerMetre: ppm)
+            // Tip the belt toward a camera looking nearly straight down (#65): turned about its own direction of travel
+            // (local z, level), the belt's circle opens from an edge-on bar into an ellipse seen from above, while the
+            // arrowhead stays on top pointing the way the top of the ball turns. Nothing tips in a low or level view
+            // (the warm table, the Ride camera), where the belt is already seen side-on. The camera is clock-driven, so
+            // the tip is too.
+            var tip: Float = 0
+            if let f = camera?.forward {
+                tip = Self.beltTilt * Float(Self.smoothstep(0.7, 0.95, Double(-f.y)))
+            }
+            // (Untipped, the orientation is exactly the table-size one, with no product to round.)
+            let standing = simd_quatf(basis)
+            // A floored belt is larger than the ball: its centre rises by the extra radius (times how upright it still
+            // stands), so its lowest point stays where the table-size belt's was instead of sinking under the cloth.
+            let rise = (r - natural) * cos(tip)
+            marker.slip.isEnabled = true
+            marker.slip.position = centre + SIMD3<Float>(0, rise, 0)
+            marker.slip.orientation = tip > 0 ? simd_quatf(angle: tip, axis: travel) * standing : standing
+            marker.slip.scale = SIMD3(r, across, r)
             marker.slip.components.set(OpacityComponent(opacity: Float(slipOpacity)))
         } else if marker.slip.isEnabled {
             marker.slip.isEnabled = false
@@ -1080,9 +1217,16 @@ final class LensLayer {
         let sideOpacity = Self.spinOpacity(sideAmount, Self.sideFade) * fade
         if sideOpacity > 0.004 {
             let strength = Float(Self.smoothstep(Self.sideFade.mid, Self.sideFade.full, sideAmount))
-            let r = Rf * (1.55 + 0.15 * strength)
+            let natural = Rf * (1.55 + 0.15 * strength)
+            let at = frame.world(s.position, height: 0.006 + lift)
+            // Screen floors (0.7.6, #65): the ring grows until its arrowhead is 8 points long and its band 2 points
+            // wide, whichever needs more, so clockwise and anticlockwise english can be told apart on a phone.
+            let ppm = pointsPerMetre(at: at)
+            let r = natural * max(
+                LensMarkFloor.scale(natural: Self.sideHeadLength * natural, points: LensMarkFloor.head, pointsPerMetre: ppm),
+                LensMarkFloor.scale(natural: 2 * Self.sideHalfWidth * natural, points: LensMarkFloor.line, pointsPerMetre: ppm))
             marker.side.isEnabled = true
-            marker.side.position = frame.world(s.position, height: 0.006 + lift)
+            marker.side.position = at
             // The ring's arrow turns about local +y; for clockwise spin flip it upside down (half turn about x).
             marker.side.orientation = wz >= 0 ? simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0))
                                                : simd_quatf(angle: Float.pi, axis: SIMD3<Float>(1, 0, 0))
@@ -1096,7 +1240,8 @@ final class LensLayer {
     // MARK: Contact geometry (0.7.4)
 
     /// Builds the contact drawing's parts once (from init): two lines, the tangent's dotted twin, three arrows and the
-    /// right-angle mark, all hidden. Per held hit only their poses change (poseContact); per frame only the fade.
+    /// right-angle mark, all hidden. Only their poses change (poseContact, every frame they show since 0.7.6, for the
+    /// screen floors) and the fade.
     private func buildContact() {
         /// One flat part lying on the cloth, with its own peak opacity (the parent's fade multiplies it).
         func part(_ mesh: MeshResource, _ material: UnlitMaterial, order: Int32, peak: Float) -> ModelEntity {
@@ -1109,12 +1254,12 @@ final class LensLayer {
         // Dash counts are per line (the meshes are a unit long and scaled to the line), so on any table the line of
         // centres has seven long dashes, the tangent twelve shorter ones, and the dotted tangent twenty dots about as
         // long as they are wide: shapes that never need colour to tell them apart.
-        centresLine = part(Self.strip(dashes: 7, halfWidth: 0.003), markMaterial, order: 26, peak: 0.8)
-        tangentDashed = part(Self.strip(dashes: 12, halfWidth: 0.0025), tangentMaterial, order: 26, peak: 0.7)
-        tangentDotted = part(Self.strip(dashes: 20, halfWidth: 0.003), tangentMaterial, order: 26, peak: 0.7)
-        squareMark = part(Self.cornerMark(halfWidth: 0.09), markMaterial, order: 27, peak: 0.9)
+        centresLine = part(Self.strip(dashes: 7, halfWidth: Self.contactCentresHalf), markMaterial, order: 26, peak: 0.8)
+        tangentDashed = part(Self.strip(dashes: 12, halfWidth: Self.contactTangentHalf), tangentMaterial, order: 26, peak: 0.7)
+        tangentDotted = part(Self.strip(dashes: 20, halfWidth: Self.contactCentresHalf), tangentMaterial, order: 26, peak: 0.7)
+        squareMark = part(Self.cornerMark(halfWidth: Self.contactMarkHalf), markMaterial, order: 27, peak: 0.9)
 
-        let shaftMesh = Self.strip(dashes: 0, halfWidth: 0.004)
+        let shaftMesh = Self.strip(dashes: 0, halfWidth: Self.contactShaftHalf)
         let headMesh = Self.triangle(length: Self.contactHeadLength, halfWidth: 0.011)
         let p = Theme.paperRGB, c = Theme.cyanRGB
         var paperHead = UnlitMaterial(color: rgba(p.0, p.1, p.2))
@@ -1148,12 +1293,14 @@ final class LensLayer {
 
     /// One frame of the contact drawing, in four cases (0.7.5 adds the fade-out):
     ///   - the Lens is out: cut at once;
-    ///   - a guided hold on a ball-to-ball hit: posed when the held event changes, faded in over `contactFadeIn` real
+    ///   - a guided hold on a ball-to-ball hit: laid out for that hit, faded in over `contactFadeIn` real
     ///     seconds, starting from whatever opacity it shows now (zero when hidden, part-way through a fade-out);
     ///   - a hold on anything else: cut at once (the drawing would explain the wrong moment);
-    ///   - no hold any more (the replay moved on with the Lens still in): kept in its last pose and faded from its
+    ///   - no hold any more (the replay moved on with the Lens still in): kept on its hit and faded from its
     ///     current opacity to zero over `contactFadeIn` real seconds, then switched off, so it leaves with the camera
     ///     instead of vanishing.
+    /// While it shows it is posed again every frame (0.7.6): the hit's place and directions never change, but its
+    /// screen-floored sizes follow the camera, which glides in on the held moment and back out as it ends.
     /// Real time, not the clock, throughout: the clock stands still while a beat is held. None of this is in
     /// fingerprint(), which covers only what the clock decides.
     private func applyContact(melt m: Float, timeline: Timeline, frame: TableFrame) {
@@ -1161,7 +1308,7 @@ final class LensLayer {
         let now = ProcessInfo.processInfo.systemUptime
         if let i = heldEvent, timeline.events.indices.contains(i), let g = ContactGeometry.at(timeline.events[i]) {
             if contactShown?.event != i || contactFadingOut != nil {
-                if contactShown?.event != i { poseContact(g, event: timeline.events[i], frame: frame) }
+                if contactShown?.event != i { contactSource = (g, timeline.events[i]) }
                 // Back-date the fade-in's start so it carries on from the opacity on screen now: from zero that is
                 // `now`, as before; part-way through a fade-out it is that much earlier, so nothing jumps.
                 contactShown = (i, now - Double(contactOpacity) * Self.contactFadeIn)
@@ -1169,6 +1316,7 @@ final class LensLayer {
             }
             let since = contactShown?.since ?? now
             setContactOpacity(Float(min(1, max(0, (now - since) / Self.contactFadeIn))))
+            if let source = contactSource { poseContact(source.geometry, event: source.event, frame: frame) }
             return
         }
         // Held on something that is not a hit, or nothing was showing: off at once.
@@ -1177,7 +1325,12 @@ final class LensLayer {
         if contactFadingOut == nil { contactFadingOut = (from: contactOpacity, since: now) }
         let fading = contactFadingOut ?? (from: contactOpacity, since: now)
         let left = fading.from * Float(max(0, 1 - (now - fading.since) / Self.contactFadeIn))
-        if left <= 0.001 { cutContact() } else { setContactOpacity(left) }
+        if left <= 0.001 {
+            cutContact()
+        } else {
+            setContactOpacity(left)
+            if let source = contactSource { poseContact(source.geometry, event: source.event, frame: frame) }
+        }
     }
 
     /// Shows the contact drawing at `opacity` and remembers it, so a fade that starts next can carry on from it.
@@ -1192,23 +1345,35 @@ final class LensLayer {
     private func cutContact() {
         if contactRoot.isEnabled { contactRoot.isEnabled = false }
         contactShown = nil
+        contactSource = nil
         contactFadingOut = nil
         contactOpacity = 0
     }
 
     /// Lays the contact drawing out for one hit (see CONTACT GEOMETRY in the header for what shows when).
     private func poseContact(_ g: ContactGeometry, event e: LensEvent, frame: TableFrame) {
-        let reach = Self.contactLineReach * 2 * frame.ballRadius
+        // Screen floors (0.7.6, #15), read once at the contact: the whole drawing is small next to a phone's view of
+        // the table, so one figure serves every part.
+        let ppm = pointsPerMetre(at: frame.world(g.point, height: 0.01))
+        // The two lines grow together, longer and wider by one factor, so the tangent's dashes and dots keep their
+        // shapes (a dot stretched only across would read as a dash): enough for the thinnest line (the tangent's
+        // dashes) to be 2 points wide and for each line to reach 40 points either side of the contact, clear of the
+        // caption ring round the ball.
+        let natural = Self.contactLineReach * 2 * frame.ballRadius
+        let lineScale = max(
+            LensMarkFloor.scale(natural: 2 * Self.contactTangentHalf, points: LensMarkFloor.line, pointsPerMetre: ppm),
+            LensMarkFloor.scale(natural: natural, points: LensMarkFloor.contactReach, pointsPerMetre: ppm))
+        let reach = natural * lineScale
         /// Turns a part about the vertical so its local +x runs along `d` (table plan): the yaw rule used throughout.
         func yaw(_ d: Vec2) -> simd_quatf {
             let w = frame.direction(d.normalized)
             return simd_quatf(angle: -atan2(w.z, w.x), axis: SIMD3<Float>(0, 1, 0))
         }
-        /// A unit strip laid through the contact along `d`, `reach` either side of it.
+        /// A unit strip laid through the contact along `d`, `reach` either side of it, `lineScale` times its own width.
         func through(_ entity: ModelEntity, along d: Vec2, height: Float) {
             entity.orientation = yaw(d)
             entity.position = frame.world(g.point, height: height) - frame.direction(d.normalized) * reach
-            entity.scale = SIMD3<Float>(2 * reach, 1, 1)
+            entity.scale = SIMD3<Float>(2 * reach, 1, lineScale)
         }
         // The throw lines already draw this hit's line of centres (from the struck ball); never a second one.
         centresLine.isEnabled = CaptionEngine.throwFacts(e) == nil
@@ -1224,6 +1389,13 @@ final class LensLayer {
         let k = longest > 1e-9 ? min(Self.contactArrowScale, Self.contactArrowMax / longest) : Self.contactArrowScale
         let legs: [(from: Vec2, vector: Vec2)] = [(g.point, g.incoming * k), (g.point, g.objectOut * k),
                                                   (g.point + g.objectOut * k, g.strikerOut * k)]
+        // The arrows keep their lengths (they are the speeds, one scale for all three, so the triangle closes); only
+        // their shafts widen to 2 points and their heads grow to 8 points (0.7.6).
+        let shaftWide = LensMarkFloor.scale(natural: 2 * Self.contactShaftHalf, points: LensMarkFloor.line, pointsPerMetre: ppm)
+        // The shortest head the screen allows, metres (zero with no camera, so the table-size rule below stands alone).
+        let headFloor: Float = LensMarkFloor.usable(ppm).map {
+            min(LensMarkFloor.head / $0, Self.contactHeadLength * LensMarkFloor.maxScale)
+        } ?? 0
         for (arrow, leg) in zip(contactArrows, legs) {
             let length = Float(leg.vector.length)
             // An arrow a few millimetres long (a ball left almost still) would be only a head: leave it out.
@@ -1231,12 +1403,15 @@ final class LensLayer {
             arrow.root.isEnabled = true
             arrow.root.position = frame.world(leg.from, height: 0.011)
             arrow.root.orientation = yaw(leg.vector)
-            // The head takes at most a little under half of a short arrow, shrinking with it.
-            let head = min(Self.contactHeadLength, length * 0.45)
+            // The head takes at most a little under half of a short arrow, shrinking with it; the screen floor may
+            // take more, up to the whole arrow (its tip always stays at the arrow's true end, so the triangle closes).
+            let head = min(length, max(min(Self.contactHeadLength, length * 0.45), headFloor))
             let h = head / Self.contactHeadLength
             arrow.head.scale = SIMD3<Float>(h, 1, h)
             arrow.head.position = SIMD3<Float>(length - head, 0.0003, 0)
-            arrow.shaft.scale = SIMD3<Float>(length - head, 1, 1)
+            let shaft = length - head
+            arrow.shaft.isEnabled = shaft > 1e-4
+            if arrow.shaft.isEnabled { arrow.shaft.scale = SIMD3<Float>(shaft, 1, shaftWide) }
         }
 
         squareMark.isEnabled = triangle && g.rightAngle
@@ -1246,7 +1421,10 @@ final class LensLayer {
             let q = yaw(g.objectOut)
             let strikerWay = frame.direction(g.strikerOut.normalized)
             let side: Float = simd_dot(q.act(SIMD3<Float>(0, 0, 1)), strikerWay) >= 0 ? 1 : -1
-            let size = Self.contactMarkSize * frame.ballRadius
+            // Its bars are a share of its side, so the whole mark grows until they are 2 points wide (0.7.6).
+            let natural = Self.contactMarkSize * frame.ballRadius
+            let size = natural * LensMarkFloor.scale(natural: 2 * Self.contactMarkHalf * natural, points: LensMarkFloor.line,
+                                                     pointsPerMetre: ppm)
             squareMark.position = frame.world(g.point, height: 0.0105)
             squareMark.orientation = q
             squareMark.scale = SIMD3<Float>(size, 1, size * side)
@@ -1287,11 +1465,12 @@ final class LensLayer {
     func fingerprint() -> UInt64 {
         var h = StableHasher()
         for phase in [MotionPhase.sliding, .rolling, .airborne] { h.combine(Double(trailOffsets[phase] ?? 0)) }
-        // The dots under flying balls (the rings loop below covers the throw lines and the jam crosses too).
+        // The jump rings under flying balls (the rings loop below covers the throw lines and the jam crosses too). Their
+        // size follows the ball's height since 0.7.6, so it is part of the picture.
         for dot in dots {
             h.combine(dot.isEnabled ? 1 : 0)
             guard dot.isEnabled else { continue }
-            h.combine(Double(dot.position.x)); h.combine(Double(dot.position.z))
+            h.combine(Double(dot.position.x)); h.combine(Double(dot.position.z)); h.combine(Double(dot.scale.x))
             h.combine(Double(dot.components[OpacityComponent.self]?.opacity ?? -1))
         }
         for r in rings {
