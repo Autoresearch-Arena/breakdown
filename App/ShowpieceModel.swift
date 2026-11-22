@@ -1602,40 +1602,16 @@ final class ShowpieceModel {
         return p
     }
 
-    /// The computer's stroke (MatchOpponent): put the cue ball on `placement` first when it has ball in hand (if that
-    /// spot is no longer legal the ball stays where it lies), then break or shoot with the given settings (a break
-    /// takes `breakAimOffset`, metres off the apex ball; a shot takes `aimDegrees`). The person's own power, tip and
-    /// cue elevation are put back once the stroke is struck, so their controls are as they left them. Returns whether
-    /// the stroke was struck. Only while the match says the computer is acting.
+    /// The computer's stroke, as MatchOpponent asked for it before 0.7.0. It now stages the stroke like
+    /// stageComputerStroke (the instant strike, with the cue jumping to its line and the balls already moving, was the
+    /// freeze plan item 16 removes), so the computer lines up visibly whichever name its caller uses. Returns true when
+    /// staging began; the strike follows on its own a beat later. Only while the match says the computer is acting.
     @discardableResult
     func playComputerStroke(placement: Vec2?, aimDegrees aim: Double, breakAimOffset: Double, power: Double,
                             tipUp: Double, tipSide: Double) -> Bool {
-        guard let m = match, m.computerActing, aimReady, !isSolving, !menuOpen, layout.count == 16 else { return false }
-        if let spot = placement {
-            if !placingCueBall { beginPlacingCueBall() }
-            if placingCueBall {
-                moveCueBallCandidate(to: spot)
-                if !confirmCueBallPlacement() { cancelPlacement() }
-            }
-        } else if placingCueBall {
-            cancelPlacement()
-        }
-        if racked {
-            let kept = (power: self.power, up: tipHeight, side: breakTipSide)
-            aimOffset = min(max(breakAimOffset, -Self.breakAimLimit), Self.breakAimLimit)
-            self.power = min(max(power, PlayerShotSpeed.rackBreak.lowerBound), PlayerShotSpeed.rackBreak.upperBound)
-            tipHeight = tipUp; breakTipSide = tipSide
-            breakNow()
-            self.power = kept.power; tipHeight = kept.up; breakTipSide = kept.side
-        } else {
-            let kept = (power: shotPower, up: shotTipUp, side: shotTipSide, elevation: shotElevation)
-            aimDegrees = aim
-            shotPower = min(max(power, PlayerShotSpeed.ordinary.lowerBound), PlayerShotSpeed.ordinary.upperBound)
-            shotTipUp = tipUp; shotTipSide = tipSide; shotElevation = 0
-            shootNow()
-            shotPower = kept.power; shotTipUp = kept.up; shotTipSide = kept.side; shotElevation = kept.elevation
-        }
-        return m.phase == .shooting
+        guard let m = match, m.computerActing else { return false }
+        return stageComputerStroke(placement: placement, aimDegrees: aim, breakAimOffset: breakAimOffset, power: power,
+                                   tipUp: tipUp, tipSide: tipSide)
     }
 
     // MARK: The computer's turn, staged (plan item 16, contract 2.4)
@@ -2025,6 +2001,8 @@ final class ShowpieceModel {
                 return .trickShot(title: shot.title)
             }
         }
+        // Reached only once every lesson and trick shot is done (the loop returns at the first step not done), so the
+        // stored record is read only for a player who has finished the path; contains stops at the first game found.
         let playedEasy = MatchKind.allCases.contains { kind in
             let r = MatchRecord.record(kind: kind, level: .easy)
             return r.won + r.lost > 0
