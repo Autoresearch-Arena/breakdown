@@ -1,4 +1,16 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: showList closes the other lists through
+//          closeAllLists, so opening one list never makes the other two modes; setAutoRate does nothing behind the menu,
+//          as setRate.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          stream model-flow and M-A: Practice and Watch the intro always go back to the pool table; the three mode
+//          lists open one at a time (showList) and every route into play closes them (closeAllLists); Continue match
+//          is offered only for a save that loads; the computer's level is remembered across launches; tableOnScreen
+//          names the free-play table the Tables list ticks; the intro's end card also follows a paused or scrubbed
+//          intro; Continue on the menu resumes the opening, Continue on a paused held moment plays on; the speed
+//          menu's Auto (setAutoRate); Ride is held off for a guided Lens replay and given back when it ends or is left
+//          (holdRideForGuidedReplay); the stroke, play, speed and Try again do nothing behind the menu; opening the
+//          menu ends a guided Lens replay and turns the Lens off, so it is not left drawn behind the menu.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F6:
 //          the what-if fork (whatIf, closed by every load), solverCopy pulled out of prepare unchanged, the kept strike
 //          (keptStrike, keepFuture, writeRetrySettings split out of tryAgain(restoring:)), authoredModeUp and
@@ -448,8 +460,10 @@ final class ShowpieceModel {
     // Matches.
     /// The match being played; nil outside a match.
     private(set) var match: MatchMode?
-    /// True when a match is saved on the device (Continue match on the menu).
-    private(set) var savedMatchExists = MatchMode.saveExists
+    /// True when a match is saved on the device (Continue match on the menu). Seeded from a save that really loads
+    /// (savedSummary decodes it), not from the file merely existing: a file that cannot be read, is in an old format
+    /// or holds a finished game must never offer a Continue that then does nothing (0.7.5).
+    private(set) var savedMatchExists = MatchMode.savedSummary() != nil
     /// The saved match named for the menu's Continue row (which game, against whom, whose shot); nil when none is
     /// saved. Refreshed whenever the save changes, as savedMatchExists is.
     private(set) var savedMatchSummary: SavedMatchSummary? = MatchMode.savedSummary()
@@ -592,6 +606,18 @@ final class ShowpieceModel {
     func openMenu() {
         // The best shot's replay hands the cleared table back first, so Continue returns to it (0.7.4).
         endBestReplay()
+        // A guided Lens replay the player was watching ends here (0.7.5, plan 5b M-A). The table behind the menu is
+        // frozen (advance returns early), so a Lens fading out through setLens alone would stay drawn behind the menu
+        // and greet the player again on Continue. The Lens goes off the way its button turns it off, then the blend
+        // is set straight to the table view, since the menu hides the fade anyway. Not during the intro's own slow
+        // replay (stage is not explore; Continue picks it up), and not over a trick shot's or lesson's own
+        // demonstration, which its card is still explaining.
+        if stage == .explore, guided, !modeDemonstrationPlaying {
+            setLens(false)
+            melt = 0; meltTarget = nil
+            resetPacing()
+            restoreHeldRide()
+        }
         playing = false
         menuOpen = true
         if openingStage != .none { finishOpening(showMenu: false) }
@@ -602,14 +628,23 @@ final class ShowpieceModel {
     func closeMenu() {
         menuOpen = false
         menuBackdropPlaying = false
+        // The intro paused by the menu plays on (0.7.5): openMenu stopped the clock, and the cold open has no Pause
+        // state of its own, so leaving it stopped showed Play on a replay that looked paused and silenced the rolling
+        // sound. Once on the ordinary table (explore) the replay stays as the player left it.
+        if stage != .explore { playing = true }
     }
 
     /// Play: a fresh rack, ready for the player's own break. The view opens the aiming controls. The cue keeps the
     /// elevation the player last set: free play allows a raised cue (rules-games plan package 2 step 4).
+    /// Always the pool table (0.7.5): Practice promises a rack and a break, so a table chosen earlier from the Tables
+    /// list is put back to the pool table first; the Tables list is how another table is played.
     func startGame() {
+        closeAllLists()
+        endPoolTableModes()
         lessonModeStorage?.end()
         strokeDrillStorage?.end()
         leaveMatch()
+        returnToPoolTable()
         menuOpen = false
         gameInProgress = true
         panelAfterBreakDue = false
@@ -617,12 +652,18 @@ final class ShowpieceModel {
         setLens(false)
     }
 
-    /// Watch the break: the showpiece opening, with the slow-motion Physics Lens replay, from the start.
+    /// Watch the break: the showpiece opening, with the slow-motion Physics Lens replay, from the start. Always the
+    /// pool table's opening (0.7.5): it is the intro the menu names, whatever table was chosen before.
     func watchBreak() {
+        closeAllLists()
+        endPoolTableModes()
         strokeDrillStorage?.end()
         cancelPendingSolve()
         lessonModeStorage?.end()
         leaveMatch()
+        // Before the load below: solve(_:) writes physicsTable's numbers into the parameters, so swapping only the
+        // opening shot would play the pool table's break on another table's physics.
+        returnToPoolTable()
         endPlacement(); ballInHand = .none; undoStep = nil
         menuOpen = false
         gameInProgress = true
@@ -630,8 +671,8 @@ final class ShowpieceModel {
         // 0.7.4: a mode start for the highlight memory, and Watch the intro's end gets its card (noteIntroEnded).
         startHighlightRack()
         introWatchArmed = true
-        // The showpiece break on the pool table; on another table, that table's default shot from its start layout.
-        // Always the default generation (classic): the opening is authored on it.
+        // The showpiece break, on the pool table since 0.7.5 (returnToPoolTable above; before that another chosen table
+        // played its own default shot here). Always the default generation (classic): the opening is authored on it.
         load(solve(physicsTable.openingShot, classic: true), showpiece: true)
         clearAttempts()
         startColdOpen()
@@ -983,6 +1024,9 @@ final class ShowpieceModel {
     /// Switching it on when the shot on screen has already finished plays that shot again from the start, so the
     /// ride is seen instead of nothing visibly happening.
     func setRide(_ on: Bool) {
+        // An explicit choice (the player's button, a mode's own camera) replaces any Ride held off for a guided
+        // replay: there is nothing left to give back (0.7.5).
+        rideHeldForGuidedReplay = false
         rideOn = on
         if on, stage == .explore, ridePlan.rideable, time >= duration - 1e-6 {
             time = 0
@@ -1022,6 +1066,8 @@ final class ShowpieceModel {
     /// that shot as the ghost. Change one thing and shoot again to see the difference. For the break this re-racks the
     /// identical rack (with the cue ball where it was placed).
     func tryAgain() {
+        // Behind the menu nothing moves (0.7.5): a key or controller button reaching here past the menu does nothing.
+        guard !menuOpen else { return }
         // While Watch your best shot replays, the attempt on screen is the replayed one; the retry is of the shot that
         // cleared the table, so that goes back first (0.7.4).
         endBestReplay()
@@ -1056,7 +1102,8 @@ final class ShowpieceModel {
     /// The last try's finger stroke is not brought back: it belonged to the player's settings, not these. For a
     /// break, `settings.aim` is metres off the apex ball, as TrickSettings says.
     func tryAgain(restoring settings: TrickSettings) {
-        guard let attempt = currentAttempt, aimReady, match == nil else { return }
+        // The menu check too, so the settings are never written over a retry tryAgain() refused (0.7.5).
+        guard !menuOpen, let attempt = currentAttempt, aimReady, match == nil else { return }
         tryAgain()
         writeRetrySettings(settings, isBreak: attempt.isBreak)
         pendingStroke = nil
@@ -1289,6 +1336,11 @@ final class ShowpieceModel {
     /// any refusal the reason is recorded (lastRefusal) and nothing is struck.
     @discardableResult
     func fireStroke() -> StrokeOutcome {
+        // Behind the menu (0.7.5): a backstop for any route that reaches here while the menu is up (a key, the
+        // controller, the Mac menu bar). Nothing is struck and no refusal is recorded, so no card pulses behind the
+        // menu; the outcome only tells the caller nothing was struck (every caller checks for .breakStruck). Not part
+        // of strokeRefusal on purpose: that drives the Shoot button's state and the spoken reasons.
+        if menuOpen { return .refused(.replayPlaying) }
         if let reason = strokeRefusal { return refused(reason) }
         if let m = match, m.mustCall, m.currentCall == nil, !m.adoptSuggestedCall() { return refused(.noCall) }
         if placingCueBall, !confirmCueBallPlacement() { return refused(.ballInHandNotPlaced) }
@@ -1415,6 +1467,8 @@ final class ShowpieceModel {
     private func load(_ tl: Timeline, showpiece: Bool = false) {
         // A new recording, a surface change, Try again, a menu choice: the what-if never outlives the recording it forked.
         whatIfStorage?.close()
+        // A guided Lens replay that held Ride off is left the moment anything else goes on screen: Ride comes back.
+        restoreHeldRide()
         // Anything else going on the table ends Watch your best shot's replay; the replay's own loads say so (0.7.4).
         if replayingBest, !loadingKeptRecording { abandonBestReplay() }
         // Anything but the showpiece going on screen means Watch the intro was left before its end (0.7.4).
@@ -1624,6 +1678,7 @@ final class ShowpieceModel {
     /// `players` is how many play (bar billiards also plays alone); nil is two. With `computer` set, the second seat
     /// is the computer at that level.
     func startMatch(_ kind: MatchKind, players: Int? = nil, computer: ComputerLevel? = nil) {
+        closeAllLists()
         strokeDrillStorage?.end()
         cancelPendingSolve()
         lessonModeStorage?.end()
@@ -1645,7 +1700,9 @@ final class ShowpieceModel {
 
     /// Back to the match: the live one if there is one, otherwise the saved one from the device. Returns whether a
     /// match is up afterwards (false when no save could be loaded), so the menu stays open when Continue fails.
+    /// A save that does not load also clears the Continue row (noteMatchSave), so it is not offered again.
     @discardableResult func continueSavedMatch() -> Bool {
+        closeAllLists()
         if match != nil { closeMenu(); return true }
         guard let saved = MatchMode.loadSaved() else { noteMatchSave(exists: false); return false }
         panelAfterBreakDue = false
@@ -1903,8 +1960,10 @@ final class ShowpieceModel {
     /// watchBreakInLens before 0.7.4.
     func watchShotInLens() {
         guard offerLensReplay else { return }
+        // Every branch is a guided replay (0.7.5): a plain break's too, which Ride used to turn into an unguided
+        // ride. Ride is held off and given back when the replay ends or is left.
+        holdRideForGuidedReplay()
         if let m = match, let h = m.lensHighlight, m.lensHighlightVersion == timelineVersion {
-            if rideOn { setRide(false) }
             setPaceSignature(h.signatureEvents)
         }
         replay(withLens: true)
@@ -1988,7 +2047,7 @@ final class ShowpieceModel {
     func learnAfterFirstBreak() {
         guard openingStage == .firstBreakCard else { return }
         finishOpening(showMenu: true)
-        lessonMode.listOpen = true
+        showList(.lessons)
     }
 
     /// The first-break card's "Keep playing": the opening ends, the menu stays closed and Your shot is asked to open,
@@ -2418,14 +2477,17 @@ final class ShowpieceModel {
     }
 
     func togglePlay() {
+        // Behind the menu the table holds still (0.7.5): Space or a controller button reaching past it does nothing.
+        guard !menuOpen else { return }
         finishColdOpen()
         if time >= duration - 1e-6 { time = 0; resetPacing() }
         playing.toggle()
     }
 
     /// A fixed speed from the speed menu. A chosen speed turns guided pacing off (guided needs chosenRate == nil),
-    /// and any hold in progress is let go so the clock moves at once.
+    /// and any hold in progress is let go so the clock moves at once. Nothing behind the menu (0.7.5).
     func setRate(_ r: Double) {
+        guard !menuOpen else { return }
         finishColdOpen()
         chosenRate = r
         resetPacing()
@@ -2438,6 +2500,9 @@ final class ShowpieceModel {
     }
 
     func replay(withLens: Bool) {
+        // A plain replay leaves any guided Lens replay that held Ride off, so Ride comes back for it (0.7.5). A Lens
+        // replay keeps it held: the guided callers hold Ride just before they call this.
+        if !withLens { restoreHeldRide() }
         finishColdOpen()
         time = 0; playing = true
         meltTarget = withLens ? 1 : 0
@@ -2447,16 +2512,22 @@ final class ShowpieceModel {
         // a lesson's own demonstration (LessonMode calls it as its Watch beat moves on to the replay); the
         // demonstration has the lesson's card over it, so it does not count as the player's. Nor does anything during
         // the first-launch opening, which has its own cards.
+        lensReplayStartedByPlayer = withLens && !modeDemonstrationPlaying && openingStage == .none
+        resetPacing()
+    }
+
+    /// True while a lesson's or a trick shot's own demonstration is on screen, with its card over it: a lesson's
+    /// Watch beat and its replay, or a trick shot's answer and its explanation (0.7.4: TrickShotMode sets .explaining
+    /// before it replays, so the Lens tips stay off over the answer's replay, as LensCallouts already says). Shared by
+    /// replay(withLens:) and openMenu (0.7.5), which leaves such a replay running for its card.
+    private var modeDemonstrationPlaying: Bool {
         let lessonDemonstration = lessonModeStorage.map {
             $0.current != nil && ($0.phase == .watching || $0.phase == .replaying)
         } ?? false
-        // A trick shot's own demonstration has its card over it too (0.7.4): TrickShotMode sets .explaining before it
-        // calls this, so the Lens tips stay off over the answer's replay, as LensCallouts already says.
         let trickDemonstration = trickModeStorage.map {
             $0.current != nil && ($0.phase == .watching || $0.phase == .explaining)
         } ?? false
-        lensReplayStartedByPlayer = withLens && !lessonDemonstration && !trickDemonstration && openingStage == .none
-        resetPacing()
+        return lessonDemonstration || trickDemonstration
     }
 
     /// Jump to the hand-over state: Lens on, clock where it is.
@@ -2561,6 +2632,12 @@ final class ShowpieceModel {
         // the cleared table back when it ends, and Table cleared sounds once per rack.
         latchHighlightTouch()
         finishBestReplayIfDone()
+        // 0.7.5: Watch the intro's end card also follows an intro that was paused or scrubbed, which moves it to the
+        // ordinary table (explore) without passing the slow replay's own end above. noteIntroEnded keeps its own
+        // guards (armed by watchBreak only, the showpiece on screen), so this is a cheap check every frame.
+        if aimReady && !holding { noteIntroEnded() }
+        // A guided Lens replay that held Ride off has played to its end: Ride comes back (holdRideForGuidedReplay).
+        if rideHeldForGuidedReplay, aimReady, !holding { restoreHeldRide() }
         chimeTableClearedIfDue()
     }
 
@@ -2780,20 +2857,91 @@ final class ShowpieceModel {
         return w
     }
 
-    // MARK: Lists, table on screen, Auto speed, Ride in guided replays - 0.7.5 foundation stubs model-flow fills
+    // MARK: Lists, table on screen, Auto speed, Ride in guided replays - 0.7.5 model-flow, Claude Opus 5.5 High
 
-    /// Open one mode list and close the other two (stub until model-flow fills it).
-    func showList(_ list: ModeList) {}
-    /// Close the trick, lesson and eight-ball lists (stub until model-flow fills it).
-    func closeAllLists() {}
-    /// The table the Tables list ticks: the free-play table on screen, nil while a pool-only mode or a match is up
-    /// (stub until model-flow fills it).
-    var tableOnScreen: TableKind? { nil }
-    /// The speed menu's Auto: back to the paced replay (stub until model-flow fills it).
-    func setAutoRate() {}
-    /// Turns Ride off for a guided Lens replay and remembers it; restored when the replay ends or is left
-    /// (stub until model-flow fills it).
-    func holdRideForGuidedReplay() {}
+    /// Open one mode list and close the other two, so the menu, the Mac menu bar and the notebook never stack two
+    /// lists (each list is its own sheet or notebook page, and the notebook shows only the first one open).
+    func showList(_ list: ModeList) {
+        // The others close through closeAllLists (the optional storage), so opening one list never creates the other
+        // two modes; only the list asked for is made if it is not yet.
+        closeAllLists()
+        switch list {
+        case .tricks: trickMode.listOpen = true
+        case .lessons: lessonMode.listOpen = true
+        case .eightBall: eightBallMode.listOpen = true
+        }
+    }
+
+    /// Close the trick, lesson and eight-ball lists. Every route into play calls it (Practice, Watch the intro,
+    /// Continue match, a match, the stroke drill, and the start of a trick shot, situation or lesson), so a list
+    /// left open never sits over, or comes back over, what was just started. Through the optional storage: a mode
+    /// never used has no list open, and asking must not create it.
+    func closeAllLists() {
+        trickModeStorage?.listOpen = false
+        lessonModeStorage?.listOpen = false
+        eightBallModeStorage?.listOpen = false
+    }
+
+    /// The table the Tables list (and the Mac's Game > Tables) ticks: the free-play table on screen, or nil while a
+    /// trick shot, lesson, Behind the 8-Ball situation, the stroke drill or a match is up, since then the table on
+    /// screen belongs to that mode, not to the player's choice.
+    var tableOnScreen: TableKind? {
+        guard !authoredModeUp, match == nil, strokeDrillStorage?.isActive != true else { return nil }
+        return physicsTable
+    }
+
+    /// The speed menu's Auto: no fixed speed, so a Lens replay is paced by its beats again (guided needs chosenRate
+    /// nil) and an ordinary replay plays at real speed. Like setRate it ends the cold open, lets any hold go, plays if
+    /// paused, and does nothing behind the menu.
+    func setAutoRate() {
+        // Nothing behind the menu, as setRate (0.7.5 review).
+        guard !menuOpen else { return }
+        finishColdOpen()
+        chosenRate = nil
+        resetPacing()
+        if !playing { playing = true }
+    }
+
+    /// Ride the player had on before a guided Lens replay turned it off; given back by restoreHeldRide. Not observed:
+    /// no view reads it (they read rideOn).
+    @ObservationIgnored private var rideHeldForGuidedReplay = false
+
+    /// Turns Ride off for a guided Lens replay and remembers it; restored when the replay ends or is left. Guided
+    /// pacing and the Ride camera do not mix (the replay would not hold its beats), but Ride is the player's choice,
+    /// so it must come back. Set rideOn directly, not through setRide, which would restart a finished shot and forget
+    /// the hold. Called again while held, it keeps the remembered Ride. Given back (restoreHeldRide) when the replay
+    /// plays to its end (advance), by a plain replay, by anything else going on screen (load), and when the menu ends
+    /// the replay; an explicit setRide replaces it.
+    func holdRideForGuidedReplay() {
+        guard rideOn else { return }
+        rideHeldForGuidedReplay = true
+        rideOn = false
+    }
+
+    /// Give Ride back if a guided replay held it off. Assigned directly, so nothing restarts.
+    private func restoreHeldRide() {
+        guard rideHeldForGuidedReplay else { return }
+        rideHeldForGuidedReplay = false
+        rideOn = true
+    }
+
+    /// End a trick shot or a Behind the 8-Ball situation that is up, so Practice and Watch the intro need no caller to
+    /// do it first (the menu did; the intro-end card and the Mac did not). Only one that is up: ending an idle trick
+    /// mode would still switch Ride off through its camera, and an idle situation has no cloth to give back.
+    private func endPoolTableModes() {
+        if trickModeStorage?.current != nil { trickModeStorage?.end() }
+        if eightBallModeStorage?.current != nil { eightBallModeStorage?.end() }
+    }
+
+    /// Free play back on the pool table, stored as the choice the way playTable stores one, with the rack memory
+    /// started again as setTable does (0.7.5). Nothing goes on screen here: Practice racks and Watch the intro loads
+    /// the opening right after.
+    private func returnToPoolTable() {
+        guard tableKind != .standard else { return }
+        startHighlightRack()
+        tableKind = .standard
+        UserDefaults.standard.set(TableKind.standard.rawValue, forKey: TableKind.storageKey)
+    }
 
     // MARK: Trick shots (TrickShotMode) - added by Claude Opus 5.5 High, 20-November-2026
 
@@ -2810,6 +2958,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a trick shot: the menu closes and Continue will come back here. A match in
     /// progress is left (it stays saved).
     func enterTrickTable() {
+        closeAllLists()
         startHighlightRack()
         strokeDrillStorage?.end()
         leaveMatch()
@@ -2843,6 +2992,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a situation: the menu closes, any trick shot ends, Continue comes back here. A
     /// match in progress is left (it stays saved).
     func enterEightBallTable() {
+        closeAllLists()
         startHighlightRack()
         strokeDrillStorage?.end()
         leaveMatch()
@@ -2891,6 +3041,7 @@ final class ShowpieceModel {
     /// Onto the table from the menu for a lesson: the menu closes, any trick shot or situation ends, Continue comes back
     /// here. A match in progress is left (it stays saved).
     func enterLessonTable() {
+        closeAllLists()
         startHighlightRack()
         leaveMatch()
         cancelPendingSolve()
@@ -3023,6 +3174,7 @@ final class ShowpieceModel {
     /// Onto the table from the Play list for the drill: anything else on the table ends, the menu closes. The drill
     /// then puts its cue ball down (StrokeDrill.begin).
     func enterStrokeDrill() {
+        closeAllLists()
         startHighlightRack()
         trickModeStorage?.end()
         eightBallModeStorage?.end()
@@ -3055,9 +3207,19 @@ final class ShowpieceModel {
         return c.id
     }
 
-    /// The level picked for a game against the computer, shared by the menu and the Tables pages (kept while the
-    /// app runs).
-    var computerLevel: ComputerLevel = .medium
+    /// The level picked for a game against the computer, shared by the menu and the Tables pages. Remembered on the
+    /// device (GameSettings.computerLevelKey, 0.7.5), so a later launch offers the level last chosen; Medium until one
+    /// is chosen, or if the stored value is not a level. Written on every change; reading it never writes.
+    var computerLevel: ComputerLevel {
+        get { storedComputerLevel }
+        set {
+            storedComputerLevel = newValue
+            UserDefaults.standard.set(newValue.rawValue, forKey: GameSettings.computerLevelKey)
+        }
+    }
+    /// The observed value behind computerLevel (the views redraw from it), read from the device once.
+    private var storedComputerLevel: ComputerLevel =
+        ComputerLevel(rawValue: UserDefaults.standard.string(forKey: GameSettings.computerLevelKey) ?? "") ?? .medium
 
     // MARK: Worth watching (0.7.4, stream watch-invite; plan G3 and G4)
     //
@@ -3157,7 +3319,8 @@ final class ShowpieceModel {
     /// signature beats. Ride goes off first: guided pacing and the Ride camera do not mix (the replay would not hold).
     func watchHighlight() {
         guard let h = highlightOnOffer else { return }
-        if rideOn { setRide(false) }
+        // Held, not switched off (0.7.5): Ride comes back when the replay ends or is left.
+        holdRideForGuidedReplay()
         setPaceSignature(h.signatureEvents)
         replay(withLens: true)
         lensReplayStartedByPlayer = true
@@ -3286,6 +3449,9 @@ final class ShowpieceModel {
     /// back once it has played. Nothing is recorded or counted: no record(), no shot count, no undo step.
     func watchBestShot() {
         guard canWatchBestShot, let best = bestShot, let clearing = currentAttempt else { return }
+        // Ride held off by an earlier guided replay comes back first, so the cleared table remembers the player's own
+        // Ride and endBestReplay gives that back (0.7.5).
+        restoreHeldRide()
         clearedTable = ClearedTable(attempt: clearing, input: lastInput, classic: lastClassic, surface: solvedSurface,
                                     table: solvedTable, generation: solvedGeneration, controls: controlValues,
                                     ghost: ghost, comparison: comparison, retryComparison: retryComparison,
@@ -3426,6 +3592,9 @@ final class ShowpieceModel {
         guard guided else { return }
         if holding, let h = heldBeat {
             finishHold(h)
+            // Continue on a held moment the player had paused plays on (0.7.5): ending the hold alone left the clock
+            // stopped, so Continue seemed to do nothing. Only on the ordinary table; the cold open runs its own clock.
+            if stage == .explore { playing = true }
             return
         }
         guard let i = upcomingBeat() else { return }

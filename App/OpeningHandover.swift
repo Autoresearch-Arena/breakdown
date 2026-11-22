@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, header only: since 0.7.1 the first launch goes
+//          straight to the hand-over, so the opening replay, its tap-to-skip (skipOpening) and the Skip intro button
+//          are no longer reached on a first launch, and the first break's card hands straight back to play. The
+//          PURPOSE below now says so; no code changed.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the hand-over is now the first thing a new player sees, so its
 //          line is just how to shoot, without "Your turn".)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 1, 3 and 6:
@@ -15,18 +19,19 @@
 //            stick, triggers and A (ControllerInput). Read by the hand-over card, the shot panel's hint, How to play and
 //            TableAccessLayer, so every place teaches the same thing.
 //          OpeningLayer - laid over the table, under the title row and the controls (ShowpieceView), so Continue, Pause,
-//            the scrub bar and Menu keep their own jobs. While the opening plays (.playing) a tap on the table skips it
-//            (ShowpieceModel.skipOpening, which goes straight to the hand-over); VoiceOver reads the layer as one
-//            "Skip the intro" button. At the hand-over (.handOver) it opens the aiming controls (the fresh rack in free
+//            the scrub bar and Menu keep their own jobs. Since 0.7.1 a first launch starts at the hand-over, with no
+//            opening replay, so the .playing stage (a tap on the table skipping to the hand-over through
+//            ShowpieceModel.skipOpening, read by VoiceOver as one "Skip the intro" button) is kept but not reached on a
+//            first launch. At the hand-over (.handOver) it opens the aiming controls (the fresh rack in free
 //            play) and draws the one glowing control: a soft halo round the cue ball, where the pull-back starts, and
 //            the groove the stroke travels along, faint, behind it. The halo breathes; with Reduce Motion it holds still
 //            at full strength, so the still path reads the same. It never takes touches at the hand-over.
-//          OpeningCard - the hand-over's one line ("Your turn." and the instruction for the input in use) and, once the
-//            player's first break has played out (.firstBreakCard), the first-break card: what the break did, "Learn
-//            the shots" (prominent) and "Keep playing" (reopens Your shot). Shown with the other mode cards (above the
-//            controls, in the side column, or in the notebook), so nothing covers the table. In the notebook, where the
-//            table panel is the only thing the tap-to-skip layer covers, it also carries a Skip intro button while the
-//            opening plays; the phone's title row says "Tap to skip" instead (ShowpieceView's ScreenHeader).
+//          OpeningCard - the hand-over's one line (the instruction for the input in use) and the first-break card: what
+//            the break did, "Learn the shots" (prominent) and "Keep playing" (reopens Your shot). Since 0.7.1 the model
+//            passes straight through .firstBreakCard into Keep playing, so the player carries on from the break and
+//            that card is not seen on a first launch. Shown with the other mode cards (above the controls, in the side
+//            column, or in the notebook), so nothing covers the table. Its Skip intro button (the notebook's version of
+//            the phone's "Tap to skip") belongs to the .playing stage, which a first launch no longer reaches.
 //          Reads only the contract names (docs/award-batch-contracts.md section 2.1, docs/v07-contracts.md sections 1.4
 //          and 2.3); the model decides when each stage starts and ends.
 // SRP/DRY check: Pass - checked AimOverlay (draws the pull handle itself; this only adds a glow round it, projected the

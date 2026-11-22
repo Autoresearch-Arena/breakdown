@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, first minute: EquipmentCard draws nothing during
+//          the first-launch hand-over, so no pulsing "Break cue picked" card sits beside the one instruction. The break
+//          cue is still picked, and EquipmentRows.current is unchanged, since it also feeds the spoken stance line.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: the card no longer announces the stance on every
 //          change; VoiceOver hears it inside the aim's words and after a finished shot, TableWords.stanceLine.)
 // PURPOSE: The reach ladder on screen (App/Stroke/Reach.swift), apart from the bridge mark on the cloth (AimOverlay):
@@ -84,7 +87,10 @@ struct EquipmentCard: View {
     private static let pulseLimit = 3
 
     var body: some View {
-        let rows = EquipmentRows.current(model)
+        // The first minute (0.7.5): during the hand-over the player sees a racked table and one instruction, nothing
+        // else. No rows means nothing is drawn, so onAppear never runs and no pulse is counted on the device; the cue
+        // pick itself (model.cueChoice) is untouched and the break is still struck with the break cue.
+        let rows = model.openingStage == .handOver ? [] : EquipmentRows.current(model)
         if !rows.isEmpty {
             let spoken = rows.map(\.line).joined(separator: ". ")
             content(rows)

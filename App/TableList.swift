@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          stream model-flow items 6 and 12: the ticked row is the table actually on screen (model.tableOnScreen), so
+//          none is ticked while a trick shot, lesson, situation, the stroke drill or a match is up; the Mac minimum
+//          size applies only in a sheet, not as a page of the notebook.)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens) - bumper pool, five-pin and bar billiards are games
 //          now: each entry also names its game and opens that game's page (TableGamePage: a match for two, bar
 //          billiards alone, practice on the table, and How to play). The pool table still plays at once, as before.
@@ -19,11 +23,12 @@ struct TableList: View {
     let onChosen: () -> Void
     let onClose: () -> Void
     @Environment(\.palette) private var palette
+    /// True when shown as a page of the notebook rather than a sheet (NotebookPanel sets it).
+    @Environment(\.inlinePages) private var inlinePages
 
-    /// The table on the screen right now, or nil while a mode that is always on the pool table is up.
-    private var current: TableKind? {
-        model.trickMode.isActive || model.eightBallMode.isActive ? nil : model.tableKind
-    }
+    /// The table on the screen right now, or nil while a trick shot, lesson, situation, the stroke drill or a match is
+    /// up (the model's one answer, which the Mac's Game > Tables reads too).
+    private var current: TableKind? { model.tableOnScreen }
 
     var body: some View {
         NavigationStack {
@@ -61,7 +66,8 @@ struct TableList: View {
         }
         .tint(palette.accent)
         #if os(macOS)
-        .frame(minWidth: 420, minHeight: 420)
+        // A sheet's minimum size only: as a notebook page a fixed minimum pushed the list past the panel (0.7.5).
+        .frame(minWidth: inlinePages ? nil : 420, minHeight: inlinePages ? nil : 420)
         #endif
     }
 
