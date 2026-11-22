@@ -7,50 +7,66 @@ Status: final draft for the Boss
 Reviewed: API check against local SDKs, physics check, Boss-fit check
 Edited: Claude Opus 5.5 High, 21-November-2026 (the status note below, per plans/21-Nov-2026-release-safety-plan.md
 package 4; the spec itself is unchanged and stays the design record).
+Edited: Claude Opus 5.5 High, 21-November-2026 (status note corrected for 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md
+item 55: the Physics Lens is no longer listed as built, because parts of section 4 are missing, the what-if fork
+first among them; the plans 0.6.6 finished moved from Planned to Built).
 
-## Status note, 21 November 2026: what is built, what is planned, what is dropped
+## Status note, 21 November 2026 (corrected for 0.7.0): what is built, what is missing, what is dropped
 
 The spec below is the design record and is not rewritten. This note says where each part stands, so nobody mistakes a
-design for a feature. "Planned" names the plan in the plans folder that builds it; the order of the plans is on
-[the front page](../plans/21-Nov-2026-award-gaps-order-plan.md).
+design for a feature. "Being fixed" names the plan in the plans folder that does it.
 
 Built:
 
 - Architecture (section 2): the native Swift app and the local package, with the event model, the recorded timeline,
-  the solver, and now a fourth module for the rules of match games.
+  the solver, and a fourth module for the rules of match games.
 - Physics model and events (3.1, 3.2): sliding, rolling, spinning in place, at rest and in the air, with exact event
-  times; ball-ball impacts with friction (3.3); pockets with jaws and knuckles that rattle and reject a clipped ball;
-  cue elevation, massé and jump; the numerics and determinism rules of 3.5 on one machine.
-- The Physics Lens (section 4), controls and camera on iPhone and Mac (section 5), sound and haptics (section 7), and
-  the iPhone Duo layout (section 14).
-- Game modes (section 6): the cold open, free play, and authored trick-shot challenges (ten shots), plus a mode the
-  spec did not have, Behind the 8-Ball (twelve escape puzzles). Also beyond the spec: three more tables (bumper pool,
-  five-pin, bar billiards), ten playing surfaces and twelve languages.
+  times; ball-ball impacts with friction (3.3); the Level A cushion with its nose above the ball's centre and a bounce
+  that depends on speed; the cue strike's speed loss with offset, squirt and miscue; pockets with jaws and knuckles
+  that rattle, reject a clipped ball and refuse a ball that comes in too fast; cue elevation, massé and jump; the jam
+  guard and the numerics and determinism rules of 3.5 on one machine. The numbers are tuned against real-table
+  behaviour and every authored shot was re-authored on them.
+- Controls and camera on iPhone, iPad and Mac (section 5), with a stroke you play with a finger (power is how hard you
+  swing); sound and haptics (section 7); the iPhone Duo layout (section 14), and a notebook layout on iPad and Mac.
+- Game modes (section 6): the cold open, free play, the lesson path (six lessons: stop, follow, draw, cut, curve,
+  jump), authored trick-shot challenges (eleven shots), and eight-ball and nine-ball against a friend or a computer
+  at three levels that shows why it chose its shot. Beyond the spec: Behind the 8-Ball (twelve escape puzzles), three
+  more tables that keep score (bumper pool, five-pin, bar billiards), ten playing surfaces, twelve languages, and
+  play by VoiceOver, a controller or one finger.
 - Tests (9.1): every item has a test or a written reason (the list is at the top of
-  Packages/BreakdownCore/Tests/BreakdownCoreTests/SpecItemTests.swift), except 3b, 4 and 12, which are written with
-  the rails and cue-strike work. The validation suite (9.1b) exists as RealWorldTests: eleven real-table checks with
-  stated bands, the ones waiting on that work marked as expected failures. All of them run before every upload.
+  Packages/BreakdownCore/Tests/BreakdownCoreTests/SpecItemTests.swift). The validation suite (9.1b) exists as
+  RealWorldTests: real-table checks with stated bands. The package tests, the authored-shot check, the app's own tests
+  and the translation check all run before every upload, and any failure stops it.
 
-Planned:
+Partly built: the Physics Lens (section 4). What works: the melt, the grid, path trails coloured by motion phase
+(amber sliding, cyan rolling, dashed for sliding when Differentiate Without Colour is on), impact rings, velocity
+arrows, spin markers read from the recorded orientation, captions chosen from event data, equations as a text card
+(shown with Show the maths), the scrub bar with a tick per event, pause, slow motion, and the last try drawn as a
+ghost for comparison. What is missing from section 4:
 
-- Physics switch, finished tests, real-table checks, then tuning every number marked "calibrate" and re-authoring the
-  content once: plans/21-Nov-2026-physics-proof-plan.md.
-- The Level A cushion as specified in 3.3 (nose above the ball's centre, speed-dependent bounce; today's rail is a flat
-  wall): plans/21-Nov-2026-rails-plan.md.
-- The cue strike's speed loss with offset, squirt and miscue (3.3; today side spin is free):
-  plans/21-Nov-2026-cue-strike-plan.md.
-- Pocket capture that can refuse a fast ball, entry speed and angle on the event (3.2, 3.3), and the jam guard of 3.5:
-  plans/21-Nov-2026-pockets-and-jams-plan.md.
-- Eight-ball and nine-ball for two, then a computer opponent (section 6): plans/21-Nov-2026-rules-games-plan.md.
-- The lesson path (section 6, milestone 4): plans/21-Nov-2026-first-minute-and-lessons-plan.md.
-- Accessibility and controller support (milestone 6): plans/21-Nov-2026-accessibility-plan.md. Mac and iPad as
-  themselves: plans/21-Nov-2026-ipad-and-mac-plan.md. Sound beyond today's: plans/21-Nov-2026-sound-plan.md.
+- The what-if fork (4.3): nudge the aim, spin or power after a shot, see the other future drawn beside the real one
+  with a marker where the two part and a caption naming the difference, and "Keep this one" to turn it into a retry.
+  Today the only ghost is the player's previous try. This is the single feature that would show the idea of the game
+  fastest, and it is not built.
+- The after-shot debrief against the player's prediction (4.3), which needs predict-the-shot (section 6).
+- Contact normals and tangents at each collision and the momentum triangle on the strongest impacts (4.1).
+- The violet spiral for a ball spinning in place, and the white dashed airborne path with its shadow dot (4.1).
+- Equations placed in the scene next to the thing they describe, and the "why" card from tapping one (4.1). The text
+  card replaced them; until 0.7.0 it showed no equation unless Show the maths was on.
+- The Clarity setting that lets the player lower the density ceiling (4.2).
 
-Not built and not planned yet: the eight- and seven-foot tables (3.4), predict-the-shot, the break challenge, the
-daily seeded challenge and the cross-device determinism it needs (milestone 5), rewards and the Physics Journal,
-clip export and challenge links, and scan-and-smash (section 12), which stays a later phase.
+Being fixed in 0.7.0 (plans/21-Nov-2026-bugs-after-0-6-6-plan.md): the opening's held beats become the headline
+moments (the cue ball handing its speed to the rack, skid turning into roll) with their equations shown on those beats
+even with Show the maths off, and the opening break is struck at centre height (item 55); the shorter replay of the
+opening behind the menu on later launches (section 6's "skippable shorter cut", item 52); the cues the game picks per
+shot and the mechanical rest (item 57).
 
-Dropped: the Level B cushion model (3.3). The rails plan builds Level A and says not to start Level B; tuned, Level A
+Not built and not planned yet: the what-if fork above, the eight- and seven-foot tables (3.4), predict-the-shot, the
+break challenge, the daily seeded challenge and the cross-device determinism it needs (milestone 5), rewards and the
+Physics Journal, clip export and challenge links, a computer opponent for the three other tables, and scan-and-smash
+(section 12), which stays a later phase.
+
+Dropped: the Level B cushion model (3.3). The rails plan built Level A and says not to start Level B; tuned, Level A
 is what good simulators ship.
 
 ---
