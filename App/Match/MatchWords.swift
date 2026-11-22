@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui review: a game ended by the clock says "Time ran
+//          out." once, without "Time is up." on the same card.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
 //          the person is "you". personSeat finds the one seat the person holding the device plays (the seat that is
 //          not the computer, or the only seat when playing alone); while that seat keeps its default name ("Player 1",
@@ -316,7 +318,10 @@ enum MatchWords {
             // Bar billiards: the white peg costs the break in progress, not every point of the turn so far.
             case .whitePegDown: out.append(String(localized: "The white peg went down: this break's points are lost."))
             case .blackPegDown: out.append(String(localized: "The black peg went down: the whole score is lost."))
-            case .timeUp: if mentionTimeUp { out.append(String(localized: "Time is up.")) }
+            // The shot that ends a game on the clock says "Time ran out." in its end line; "Time is up." as well would
+            // say the same thing twice on one card.
+            case .timeUp:
+                if mentionTimeUp, r.result?.reason != .timeExpired { out.append(String(localized: "Time is up.")) }
             case .gameOver:
                 // Why the game ended, so a game-ending card is never empty (an eight-ball loss has no other line).
                 if let result = r.result {
