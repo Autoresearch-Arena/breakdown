@@ -3,6 +3,8 @@
 # PURPOSE: Every push to main that changes the app is built on the Mac Mini's own runner and put on TestFlight by
 #          scripts/testflight.py (build, upload, retire older builds, public group, beta review). Modelled on the dog
 #          game's Mac Mini TestFlight workflow.
+# Edited: Claude Opus 5.5 High, 21-November-2026 (the script now also ships the Mac app and runs the app tests before
+#          upload, so the job may take up to three hours instead of two.)
 # SRP/DRY check: Pass - the only workflow in this repo; all release steps live in the script.
 # Safety: the repo is public, so this runs only on pushes to main and on a manual start from main. There is no
 #          pull_request trigger, and outside contributors' pull requests need approval before any workflow runs.
@@ -28,7 +30,8 @@ jobs:
       group: breakdown-testflight
       cancel-in-progress: false
     runs-on: [self-hosted, macOS, ARM64, breakdown-ios]
-    timeout-minutes: 120
+    # Three hours: the checks include the app tests, and the Mac app is archived and uploaded after the iPhone one.
+    timeout-minutes: 180
     steps:
       - name: Check out main
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
