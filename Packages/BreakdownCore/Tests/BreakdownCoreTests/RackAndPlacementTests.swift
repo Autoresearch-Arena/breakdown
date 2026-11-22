@@ -10,6 +10,7 @@
 //              pins, holes and balls, behind the head line when asked, and the order the reasons are checked in);
 //              spotting a ball on the foot spot or the nearest free place straight behind it (or in front when the
 //              line behind is full); and shot(from:...) handing the struck ball's index to the strike.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 55: the showpiece break's rack is seed 8.)
 // SRP/DRY check: Pass - checked PhysicsTests (which solves the showpiece break; this does not solve anything) and
 //          TableFeatureTests (the features' physics); these test layouts and legality only.
 import BreakdownLensModel
@@ -56,7 +57,8 @@ final class RackAndPlacementTests: XCTestCase {
             XCTAssertEqual(b.strike.speed, 9)
             XCTAssertEqual(b.strike.ballIndex, 0)
         }
-        XCTAssertEqual(Rack.showpieceBreak().positions, todayTriangle(parameters: p, seed: 3))
+        // The showpiece break racks with seed 8 since it was re-picked at centre height (bug plan after 0.6.6, item 55).
+        XCTAssertEqual(Rack.showpieceBreak().positions, todayTriangle(parameters: p, seed: 8))
     }
 
     // MARK: The nine-ball diamond

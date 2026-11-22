@@ -7,6 +7,9 @@
 //          the rest steady; the authored bound held on every rung (through StrokeModel, from real geometry); the same
 //          input always giving the same stance and the same delivery; and the retry comparison naming a changed stance
 //          without naming it as the cause when a setting changed too.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 23: the clearing angle clears every ball
+//          under the whole cue, tip to butt, by just enough, worked out by hand for a ball behind, one past the bridge
+//          under the thicker cue, one off the line, and none beside or beyond the cue.)
 // SRP/DRY check: Pass - checks only; every limit is read from the named constants in Reach, Stance and StrokeModel,
 //          never retyped. Shots are solved through TestShots, the app's own path.
 @testable import Breakdown
@@ -175,6 +178,56 @@ final class ReachTests: XCTestCase {
         XCTAssertTrue(StanceWords.raisedLine(over: 5, kind: nil).contains("5"))
         XCTAssertEqual(StanceWords.lines(raised, kind: nil), [StanceWords.raisedLine(over: 5, kind: nil)])
         XCTAssertTrue(StanceWords.lines(stance(cue: cue, aim: aim), kind: nil).isEmpty, "a square, clear stance says nothing")
+    }
+
+    // MARK: The clearing angle (bug plan after 0.6.6, item 23)
+
+    /// The squared distance from a ball's centre, `d` back and `l` across from the cue ball, to the cue's axis raised to
+    /// the sine `s` (the geometry clearingElevation states): d^2 s^2 + l^2.
+    private func clearance(_ d: Double, _ l: Double, sine s: Double) -> Double { (d * d * s * s + l * l).squareRoot() }
+
+    func testClearingElevationClearsEveryBallUnderTheWholeCue() {
+        let cue = Vec2(1.2, 0.6), aim = Vec2(1, 0)
+        let support = StrokeModel.automaticBridge, length = 1.47
+        func sine(_ others: [Int: Vec2]) -> Double {
+            Reach.clearingElevation(layout: layout(cue: cue, others), cueBall: 0, aim: aim, table: table,
+                                    support: support, cueLength: length)
+        }
+        // Nothing behind the cue ball, or only balls in front of it or well to the side: a level cue clears.
+        XCTAssertEqual(sine([:]), 0)
+        XCTAssertEqual(sine([3: Vec2(1.5, 0.6)]), 0, "a ball in front of the cue ball is not under the cue")
+        XCTAssertEqual(sine([3: Vec2(1.0, 0.6 + radius + Reach.shaftRadius + 0.001)]), 0, "beside the shaft, not under it")
+        // A ball straight behind, between the cue ball and the bridge: the shaft's radius, worked out by hand.
+        let d1 = 0.15
+        let s1 = sine([5: Vec2(cue.x - d1, 0.6)])
+        XCTAssertEqual(s1, (radius + Reach.shaftRadius) / d1, accuracy: 1e-12)
+        XCTAssertEqual(clearance(d1, 0, sine: s1), radius + Reach.shaftRadius, accuracy: 1e-12, "raised just enough")
+        // Past the bridge, under the thicker part of the cue toward the butt: it still counts (the old raisedOver looked
+        // only as far as the bridge), with the cue's radius there.
+        let d2 = 0.7
+        let r2 = Reach.cueRadius(at: d2, support: support, cueLength: length)
+        XCTAssertGreaterThan(r2, Reach.shaftRadius)
+        XCTAssertLessThan(r2, Reach.buttRadius)
+        XCTAssertEqual(sine([6: Vec2(cue.x - d2, 0.6)]), (radius + r2) / d2, accuracy: 1e-12)
+        // Off the line but under the cue: less raise than straight behind at the same distance.
+        let l3 = 0.02
+        let s3 = sine([7: Vec2(cue.x - d1, 0.6 + l3)])
+        XCTAssertLessThan(s3, s1)
+        XCTAssertEqual(clearance(d1, l3, sine: s3), radius + Reach.shaftRadius, accuracy: 1e-12)
+        // Beyond the butt: not under the cue at all.
+        XCTAssertEqual(sine([8: Vec2(cue.x - length - radius - 0.01, 0.6)]), 0)
+        // Several: the nearest ball behind needs the most raise, and it is the one returned.
+        XCTAssertEqual(sine([5: Vec2(cue.x - d1, 0.6), 6: Vec2(cue.x - d2, 0.6)]), s1, accuracy: 1e-12)
+        // The same input always gives the same angle; no cue ball, or no direction, gives level.
+        XCTAssertEqual(sine([5: Vec2(cue.x - d1, 0.6)]), s1)
+        XCTAssertEqual(Reach.clearingElevation(layout: layout(cue: NextShot.offTable), cueBall: 0, aim: aim, table: table,
+                                               support: support, cueLength: length), 0)
+        XCTAssertEqual(Reach.clearingElevation(layout: layout(cue: cue, [5: Vec2(1.05, 0.6)]), cueBall: 0, aim: .zero,
+                                               table: table, support: support, cueLength: length), 0)
+        // A ball frozen right behind: a steep cue, but never past the strike's own cap.
+        let frozen = sine([5: Vec2(cue.x - 2 * radius, 0.6)])
+        XCTAssertGreaterThan(frozen, 0.5)
+        XCTAssertLessThanOrEqual(frozen, 0.995)
     }
 
     // MARK: The cost of each rung

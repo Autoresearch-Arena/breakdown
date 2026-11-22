@@ -12,20 +12,28 @@
 //          are open this step; ShotPanel, AimGauges and AimOverlay read it, and ShowpieceModel refuses changes to a
 //          closed one) and LessonZones (the target bands drawn on the tip picture, the power bar, the aim and the cue
 //          angle menu).
-//          Every number below was printed by the package's dev tool, "BreakProbe lessons" (Packages/BreakdownCore/
-//          Sources/BreakProbe/LessonAuthoring.swift), first on physics generation 1, then checked and where needed
-//          re-authored on the tuned generation two, now the default ("BreakProbe tricks near", Reauthor.swift), seed 1,
-//          standard cloth, 21-Nov-2026; each lesson's comment records the runs. Windows are half-widths walked outward from the reference one small step
-//          at a time, so a window is an unbroken band. "BreakProbe verify" plays every lesson and the exercise (copied
-//          number for number into ContentVerify.swift; KEEP IN STEP) so a physics change that breaks one is caught.
+//          Every number (layout, reference, goal, window, cue angles) is the package library's
+//          (Packages/BreakdownCore/Sources/BreakdownAuthored/AuthoredLessons.swift), printed by the package's dev tool
+//          ("BreakProbe lessons", LessonAuthoring.swift, and "BreakProbe tricks near", Reauthor.swift) and played by
+//          "BreakProbe verify" before every upload, so a physics change that breaks one is caught; the runs are recorded
+//          beside the numbers there. Windows are half-widths walked outward from the reference one small step at a time,
+//          so a window is an unbroken band.
 //          Coordinates are table metres on the solver's plan, pockets numbered as in TrickShots.swift.
 //          Read by LessonMode (flow), LessonViews (words and drawing) and the judge through `trick`.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: every lesson and the exercise checked on the
 //          tuned generation-two physics; the stop shot, follow, draw, curve and the exercise re-authored with every tip
 //          inside the miscue limit, every window measured again; layouts kept except the exercise's distance.)
-// SRP/DRY check: Pass - data and the small types that carry it. The judge is TrickShotJudge (each lesson exposes itself
-//          as a TrickShot for it, nothing is re-implemented); TrickSettings, TrickGoal and TrickWindow are reused as they
-//          are; the search lives in the package's dev tool.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6: item 38, every number moved to the package's
+//          authored library (BreakdownAuthored, AuthoredLessons), which the content check plays too, so no copy can
+//          drift; item 10, every lesson re-laid on a line a standing player reaches (the reach ladder says a square
+//          stance), so no lesson opens with a card about a rest it never uses: stop and draw straight across the table
+//          into the top side pocket, follow into the top-right corner on a steep line from near the bottom rail, curve
+//          and jump a fifth of a metre nearer the head rail; all re-authored on the 0.7.0 physics.)
+// SRP/DRY check: Pass - the app's types, words and lesson flow data; the numbers are read from the package library and
+//          converted by TrickShots' converters (TrickSettings(_:), TrickGoal(_:), TrickWindow(_:)). The judge is
+//          TrickShotJudge (each lesson exposes itself as a TrickShot for it, nothing is re-implemented); the search lives
+//          in the package's dev tool.
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
@@ -162,177 +170,81 @@ struct LessonExercise: Equatable {
     }
 }
 
-/// Sixteen positions with only the named balls on the table (as TrickShots does).
-private func placed(_ balls: [Int: Vec2]) -> [Vec2] {
-    var out = [Vec2](repeating: NextShot.offTable, count: 16)
-    for (k, v) in balls { out[k] = v }
-    return out
-}
-
 enum Lessons {
     /// The path, in the order it is taught.
     static let all: [Lesson] = [stop, follow, draw, cut, curve, jump]
 
     static func lesson(id: String) -> Lesson? { all.first { $0.id == id } }
 
-    // Every straight pot below runs along the top-right corner's diagonal (about 26.6 degrees, the line from the middle
-    // of the table into that corner), so the pot itself is the one a player meets most often.
+    /// One lesson: the package library's numbers with this file's words, its control, its Watch moment and its trick.
+    /// A raised-cue lesson's reference elevation is the library's sine of its offered cue angle, the same formula as
+    /// CueAngleMenu.sine(forAngle:), so the control can set it exactly (LessonTests checks).
+    private static func make(_ a: AuthoredLesson, title: String, hook: String, goalLine: String, idea: String,
+                             praise: String, control: LessonControl, moment: LessonMoment, trickID: String) -> Lesson {
+        Lesson(id: a.id, number: a.number, title: title, hook: hook, goalLine: goalLine, idea: idea, praise: praise,
+               control: control, layout: a.layout, reference: TrickSettings(a.reference), goal: TrickGoal(a.goal),
+               window: TrickWindow(a.window), cueAngles: a.cueAngles, moment: moment, trickID: trickID)
+    }
 
     // MARK: 1. Stop shot
-    // BreakProbe lessons stop (21-Nov-2026): object ball 0.35 m from the corner, cue ball 0.25 m behind it; power 1.0 to
-    // 3.0 m/s and tip -20 to 0 mm swept over six layouts, 1,134 candidates, 206 passed, 72 survived the screen. Windows
-    // around the reference: aim 24.75 to 28.37 degrees, power 1.15 to 1.65 m/s, tip height -9.5 to -4.0 mm, any side.
-    // Re-authored on the tuned generation-two physics (21-Nov-2026): the old 1.40 m/s stroke still made it, but at that
-    // pace no stroke from further back could stop dead with the tip inside the miscue limit, so the second exercise had
-    // nowhere to go (a one-off scan of 1.4 to 2.9 m/s, in the proof plan's Measured section). At 1.90 m/s with the
-    // tip 3.5 mm low the lesson works and the exercise does from 0.5 to 0.6 m back. Windows walked from it: aim 25.27 to 27.95 degrees, power
-    // 1.20 to 2.80 m/s, tip height -6.0 to -1.0 mm, side -9.0 to +9.0 mm. The Watch beat stops at contact.
-    static let stop = Lesson(
-        id: "lesson-stop", number: 1, title: String(localized: "Stop shot"),
+    static let stop = make(
+        AuthoredLessons.stop, title: String(localized: "Stop shot"),
         hook: String(localized: "Pot the ball and make the cue ball stop dead where it hits."),
         goalLine: String(localized: "Pot the 3. The cue ball must stop where it hit."),
         idea: String(localized: "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops."),
         praise: String(localized: "It stopped dead. All of its speed went into the 3."),
-        control: .tipUp,
-        layout: placed([0: Vec2(2.0033, 1.0017), 3: Vec2(2.2270, 1.1135)]),
-        reference: TrickSettings(aim: 26.57, power: 1.90, tipUp: -0.0035, tipSide: 0),
-        goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)], cueZone: TrickZone(centre: Vec2(2.1758, 1.0879), radius: 0.05),
-                        firstHit: 3),
-        window: TrickWindow(aim: 1.30, power: 0.70, tipUp: 0.0025, tipSide: 0.0090),
-        cueAngles: nil, moment: .contact, trickID: "stop-dead")
+        control: .tipUp, moment: .contact, trickID: "stop-dead")
 
     // MARK: 2. Follow
-    // BreakProbe lessons follow: object ball 1.0 m out, cue ball 0.25 m behind it, finish zone 0.70 m past contact with
-    // a 0.15 m radius; kept only if a centre-ball hit misses. A 0.08 m zone first chose a centre hit with a half-
-    // millimetre tip window, and "lessons scan" showed each millimetre of tip moves the finish 0.1 to 0.2 m at 2 m/s
-    // but about 3 cm at 1.2 m/s, so the search moved to soft strokes. 1,088 candidates, 328 passed, 26 survived.
-    // Windows: aim 25.53 to 27.85 degrees, power 1.20 to 1.40 m/s, tip height +4.5 to +12.0 mm, side -4 to +4 mm.
-    // Re-authored on the tuned generation-two physics (BreakProbe tricks near, 21-Nov-2026: the old stroke stopped short
-    // of the zone, the slower roll of the tuned cloth; 12,705 strokes around it, 1,352 passed, 413 survived, still kept
-    // only if a centre hit misses). Windows: aim 25.57 to 27.85 degrees, power 1.65 to 2.00 m/s, tip height +5.5 to
-    // +14.0 mm (the top is the miscue limit), side -8.0 to +7.5 mm.
-    // The Watch beat stops where the cue ball, stopped for an instant at contact, has been driven on and starts to roll.
-    static let follow = Lesson(
-        id: "lesson-follow", number: 2, title: String(localized: "Follow"),
+    static let follow = make(
+        AuthoredLessons.follow, title: String(localized: "Follow"),
         hook: String(localized: "Strike above centre and the cue ball rolls on after the ball it pots."),
         goalLine: String(localized: "Pot the 3 and roll on into the marked circle."),
         idea: String(localized: "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls."),
         praise: String(localized: "Rolled on. The topspin carried it through."),
-        control: .tipUp,
-        layout: placed([0: Vec2(1.4220, 0.7110), 3: Vec2(1.6456, 0.8228)]),
-        reference: TrickSettings(aim: 26.71, power: 1.85, tipUp: 0.010, tipSide: 0),
-        goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)], cueZone: TrickZone(centre: Vec2(2.2206, 1.1103), radius: 0.15),
-                        firstHit: 3),
-        window: TrickWindow(aim: 1.14, power: 0.15, tipUp: 0.0040, tipSide: 0.0075),
-        cueAngles: nil, moment: .rollAfterContact, trickID: "follow-train")
+        control: .tipUp, moment: .rollAfterContact, trickID: "follow-train")
 
     // MARK: 3. Draw
-    // BreakProbe lessons draw: object ball 0.40 m out, cue ball 0.20 m behind it, finish zone 0.45 m behind contact with
-    // a 0.25 m radius ("come back between 0.2 and 0.7 m"); kept only if a centre-ball hit misses. 1,496 candidates, 330
-    // passed, 94 survived. Windows: aim 23.72 to 29.88 degrees, power 1.30 to 1.70 m/s, tip height -14.0 to -10.0 mm,
-    // any side. Re-authored on the tuned generation-two physics (BreakProbe tricks near, 21-Nov-2026: the old stroke no
-    // longer came back far enough, an off-centre hit now launching slower; 6,292 strokes around it, 2,429 passed, 993
-    // survived, still kept only if a centre hit misses). Windows: aim 24.32 to 29.66 degrees, power 1.75 to 2.50 m/s,
-    // tip height -14.0 to -7.5 mm (the low edge is the miscue limit), side -9.0 to +9.0 mm. The Watch beat stops where
-    // the drawn-back cue ball starts to roll.
-    static let draw = Lesson(
-        id: "lesson-draw", number: 3, title: String(localized: "Draw"),
+    static let draw = make(
+        AuthoredLessons.draw, title: String(localized: "Draw"),
         hook: String(localized: "Strike below centre and the cue ball comes back toward you after the pot."),
         goalLine: String(localized: "Pot the 3 and bring the cue ball back into the marked circle."),
         idea: String(localized: "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls."),
         praise: String(localized: "Drawn back. The backspin did the pulling."),
-        control: .tipUp,
-        layout: placed([0: Vec2(2.0033, 1.0017), 3: Vec2(2.1822, 1.0911)]),
-        reference: TrickSettings(aim: 27.04, power: 2.15, tipUp: -0.011, tipSide: 0),
-        goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)], cueZone: TrickZone(centre: Vec2(1.7286, 0.8643), radius: 0.25),
-                        firstHit: 3),
-        window: TrickWindow(aim: 2.62, power: 0.35, tipUp: 0.0030, tipSide: 0.0090),
-        cueAngles: nil, moment: .rollAfterContact, trickID: "bridge-draw")
+        control: .tipUp, moment: .rollAfterContact, trickID: "bridge-draw")
 
     // MARK: 4. Cut and throw
-    // BreakProbe lessons cut: a 30 degree cut, object ball 0.35 m from the corner, cue ball 0.45 m from the ghost-ball
-    // spot. 2,592 candidates, 912 passed, 528 survived. The reference aim, 57.13 degrees, is 0.57 degrees THINNER than
-    // the geometric ghost ball (56.565): friction at contact drags the 3 a little along the cue ball's path (throw), so
-    // the cut is overdone to allow for it. Windows: aim 56.37 to 57.89 degrees, power 0.70 to 3.65 m/s, any tip. Still
-    // made on the tuned generation-two physics with the same stroke (21-Nov-2026); windows walked again: aim 56.45 to
-    // 57.87 degrees, power 0.85 to 6.15 m/s, tip height -14.0 to +14.0 mm (the miscue limit both ways), side -7.5 to
-    // +3.0 mm.
-    // The Watch beat stops at contact.
-    static let cut = Lesson(
-        id: "lesson-cut", number: 4, title: String(localized: "Cut and throw"),
+    static let cut = make(
+        AuthoredLessons.cut, title: String(localized: "Cut and throw"),
         hook: String(localized: "Hit the ball off-centre to send it off at an angle into the pocket."),
         goalLine: String(localized: "Cut the 3 into the top-right corner."),
         idea: String(localized: "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says."),
         praise: String(localized: "Cut in. You allowed for the throw."),
-        control: .aim,
-        layout: placed([0: Vec2(1.9279, 0.7124), 3: Vec2(2.2270, 1.1135)]),
-        reference: TrickSettings(aim: 57.13, power: 2.15, tipUp: 0, tipSide: 0),
-        goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)], firstHit: 3),
-        window: TrickWindow(aim: 0.68, power: 1.30, tipUp: 0.0140, tipSide: 0.0030),
-        cueAngles: nil, moment: .contact, trickID: "throw-it")
+        control: .aim, moment: .contact, trickID: "throw-it")
 
     // MARK: 5. Curve
-    // BreakProbe lessons curve: the 9 0.55 m straight ahead, the 4 0.20 m ahead and 0.034 m (1.2 radii) to the right of
-    // the line, so it half-blocks it. Departure from the plan's picture of a ball dead in the way, on evidence: "lessons
-    // curvescan" shows a raised cue with right side bends the cue ball only 10 to 25 degrees on generation one, too
-    // little to pass a ball on the line and come back to it in half a metre (three runs with the blocker on the line
-    // never reached the target; the massé trick takes its extra turn from a cushion). 14,880 candidates, 187 passed, 28
-    // survived; kept only if the same strike with a level cue misses. Windows: aim 19.28 to 27.28 degrees, power 1.15 to
-    // 1.80 m/s, tip height -17.0 to -6.5 mm, side +12.1 to +19.6 mm; cue angles 25 to 30 degrees. Re-authored on the
-    // tuned generation-two physics (BreakProbe tricks near, 21-Nov-2026): the old 17.1 mm of side is past the miscue
-    // limit. Searched with moderate side (6 to 12 mm) and draw on the offered cue angles; kept only if a level cue misses,
-    // two neighbouring cue angles work and the side window is at least 2 mm either way. 206,112 strokes, 11,919 passed,
-    // 5,982 survived. Windows: aim 7.81 to 11.41 degrees, power 1.55 to 2.40 m/s, tip height -11.5 to -6.5 mm, side
-    // +6.0 to +11.0 mm; cue angles 25 to 30 degrees. The Watch beat stops where the cue ball starts to roll, which is
-    // where the bend ends.
-    static let curve = Lesson(
-        id: "lesson-curve", number: 5, title: String(localized: "Curve"),
+    static let curve = make(
+        AuthoredLessons.curve, title: String(localized: "Curve"),
         hook: String(localized: "Raise the cue and hit to one side: the cue ball bends round a ball in its way."),
         goalLine: String(localized: "Curve round the 4 and touch the 9 first."),
         idea: String(localized: "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight."),
         praise: String(localized: "Bent round the 4. That is a curve."),
-        control: .tipSide,
-        layout: placed([0: Vec2(1.0000, 0.6350), 4: Vec2(1.2000, 0.6007), 9: Vec2(1.5500, 0.6350)]),
-        reference: TrickSettings(aim: 9.47, power: 1.95, tipUp: -0.009, tipSide: 0.008,
-                                 elevation: CueAngleMenu.sine(forAngle: 25)),
-        goal: TrickGoal(drops: [], firstHit: 9),
-        window: TrickWindow(aim: 1.66, power: 0.40, tipUp: 0.0025, tipSide: 0.0020),
-        cueAngles: 25...30, moment: .firstRoll, trickID: "masse-curve")
+        control: .tipSide, moment: .firstRoll, trickID: "masse-curve")
 
     // MARK: 6. Jump
-    // BreakProbe lessons jump: the 6 0.25 m straight ahead, the 11 1.0 m ahead; cue angles 20 to 40 degrees, power 3 to
-    // 5.5 m/s; kept only if a level cue misses AND at least two neighbouring cue angles work (a first run chose a strike
-    // only 40 degrees made). 1,584 candidates, 468 passed, 258 survived. Windows: aim -2.26 to -0.10 degrees, power 3.35
-    // to 5.00 m/s, tip height -6.5 to +9.0 mm, side -2.5 to +1.0 mm; cue angles 40 to 70 degrees. Still made on the
-    // tuned generation-two physics with the same stroke (21-Nov-2026); windows walked again: aim -3.12 to +2.80
-    // degrees, power 3.40 to 5.05 m/s, tip height -10.0 to +10.5 mm, side -3.0 to +1.5 mm; cue angles 40 to 70 degrees.
-    // The Watch beat stops at the first landing, past the 6.
-    static let jump = Lesson(
-        id: "lesson-jump", number: 6, title: String(localized: "Jump"),
+    static let jump = make(
+        AuthoredLessons.jump, title: String(localized: "Jump"),
         hook: String(localized: "Raise the cue steeply and the cue ball hops over a ball in its way."),
         goalLine: String(localized: "Jump the 6 and touch the 11 first."),
         idea: String(localized: "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it."),
         praise: String(localized: "Clean over the top."),
-        control: .elevation,
-        layout: placed([0: Vec2(1.0000, 0.6350), 6: Vec2(1.2500, 0.6350), 11: Vec2(2.0000, 0.6350)]),
-        reference: TrickSettings(aim: -1.18, power: 4.20, tipUp: 0.0015, tipSide: 0,
-                                 elevation: CueAngleMenu.sine(forAngle: 40)),
-        goal: TrickGoal(drops: [], firstHit: 11),
-        window: TrickWindow(aim: 1.94, power: 0.80, tipUp: 0.0090, tipSide: 0.0015),
-        cueAngles: 40...70, moment: .firstLanding, trickID: "jump-over")
+        control: .elevation, moment: .firstLanding, trickID: "jump-over")
 
     // MARK: The stop shot's second exercise
-    // BreakProbe lessons stop-exercise: on the stop lesson's line, the cue ball 0.10 to 0.50 m behind the 3. Kept: the
-    // distance whose working tip band (at least 4 mm wide, with the lesson's own aim and power) is furthest from the
-    // lesson's tip, so copying the lesson misses clearly. Re-authored on the tuned generation-two physics with the
-    // re-authored stop lesson (1.90 m/s, tip -3.5 mm), searched further back than the lesson only, since the
-    // exercise's words say "further back": at 0.55 m copying misses (the cue ball rolls on) and tip heights -13.5 to
-    // -5.5 mm stop it. Windows: aim 0.88 degrees, power 0.10 m/s, tip height 4.0 mm, side 4.0 mm.
     static let stopExercise = LessonExercise(
-        layout: placed([0: Vec2(1.7350, 0.8676), 3: Vec2(2.2270, 1.1135)]),
-        reference: TrickSettings(aim: 26.57, power: 1.90, tipUp: -0.0095, tipSide: 0),
-        goal: TrickGoal(drops: [TrickDrop(ball: 3, pocket: 3)], cueZone: TrickZone(centre: Vec2(2.1759, 1.0880), radius: 0.05),
-                        firstHit: 3),
-        window: TrickWindow(aim: 0.88, power: 0.10, tipUp: 0.0040, tipSide: 0.0040),
+        layout: AuthoredLessons.stopExercise.layout,
+        reference: TrickSettings(AuthoredLessons.stopExercise.reference),
+        goal: TrickGoal(AuthoredLessons.stopExercise.goal),
+        window: TrickWindow(AuthoredLessons.stopExercise.window),
         praise: String(localized: "Stopped dead from further back. You changed the tip height instead of copying the lesson."))
 }

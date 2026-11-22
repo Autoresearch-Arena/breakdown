@@ -15,17 +15,23 @@
 //          cloth's cushions rise from 0.9 to 0.95 so they are no longer deader than the standard ones, and Dive-bar
 //          felt's from 0.65 to 0.8 so its dead rails keep a believable share of the energy; checked with BreakProbe
 //          surfaces, the results in plans/21-Nov-2026-physics-proof-plan.md.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, items 27 and 38: the numbers moved to the
+//          package (BreakdownAuthored's TableSurface), so the dev tool that authors and checks the Behind the 8-Ball
+//          situations reads the very numbers played here instead of a copy; and the two real cloths were re-tuned either
+//          side of the standard one so their words hold: tournament cloth slicker, faster and livelier, dive-bar felt
+//          grabbier, slower and deader. This file keeps the names, the words, the symbols and the stored choice.)
 // PURPOSE: The playing surfaces the same physics can be watched on: standard cloth, ice, glass, rubber, cork, carpet,
 //          sand and the Moon. Each surface is only a set of numbers written into PoolParameters before a shot is solved
-//          (the solver already takes every one of them from there): friction and bounce numbers for most, gravity for
-//          the Moon. So a surface changes how far balls skid, how soon they roll, how long they roll and spin, and how a
+//          (the solver already takes every one of them from there; the numbers and their reasons are in the package,
+//          TableSurface): friction and bounce numbers for most, gravity for the Moon. So a surface changes how far balls skid, how soon they roll, how long they roll and spin, and how a
 //          jump lands, and nothing else. Cushions stay rubber rails on every surface. The chosen surface is kept in
 //          UserDefaults under "optionSurface". ShowpieceModel applies it to every shot it solves (setSurface re-solves
 //          the shot on screen); the look of each surface lives in PlaySurfaceLook.swift; CaptionEngine reads
 //          `parameters` to explain, with the real numbers, what this surface does differently from cloth.
-// SRP/DRY check: Pass - checked Parameters.swift, Simulation.swift and Impacts.swift; this only picks numbers, it
-//          never copies solver logic. Changing any number changes the parameter hash, which is correct: a shot on ice is
-//          a different recording from the same shot on cloth.
+// SRP/DRY check: Pass - checked Parameters.swift, Simulation.swift and Impacts.swift; the numbers live once, in the
+//          package's TableSurface, and this applies them; it never copies solver logic. Changing any number changes the
+//          parameter hash, which is correct: a shot on ice is a different recording from the same shot on cloth.
+import BreakdownAuthored
 import BreakdownPhysics
 import Foundation
 
@@ -94,112 +100,47 @@ enum PlaySurface: String, CaseIterable, Identifiable, Sendable {
         return p
     }
 
-    /// Write this surface's numbers into the parameters. Cloth leaves the defaults untouched (so a cloth shot hashes
-    /// exactly as it always did). Only the surface-contact numbers change, plus gravity on the Moon and the cushions
-    /// on the two real cloths (tournament and dive bar); ball-ball contact and table geometry are the same everywhere.
-    ///
-    /// How the numbers act in the solver (Simulation.makeSegment): a sliding ball slows at slidingFriction * g and turns
-    /// to rolling after 2 * slip / (7 * slidingFriction * g) seconds; a rolling ball slows at rollingResistance * g and
-    /// stops after speed / (rollingResistance * g); a ball spinning in place stops after spin / spinDecay (no g: the
-    /// solver treats spin decay as its own constant). So the distance a ball skids goes as 1 / (slidingFriction * g)
-    /// and the distance it rolls as 1 / (rollingResistance * g). None of these divides by zero for any value below, and
-    /// the solver itself stops every shot at 90 seconds (PoolSolver.maxTime), so even ice and the Moon cannot run away.
-    func apply(to p: inout PoolParameters) {
+    /// The package's surface of the same name, whose numbers this one plays on.
+    var tableSurface: TableSurface {
         switch self {
-        case .cloth:
-            break   // defaults: sliding 0.15, rolling 0.015, spin decay 9.5, rails 0.95, slate 0.5 and 0.2, g 9.81
-        case .tournament:
-            // New worsted cloth (a tight napless weave), clean and dry: the slick, fast end of every measured range.
-            // Sliding 0.15 is the slick end (the tuned standard cloth sits there too since 21-Nov-2026); rolling 0.005
-            // means a ball rolls three times as far as on the standard cloth, so draw and follow carry on far once they
-            // take; spin 5 rad/s squared means side spin lives nearly twice as long; fresh cushions as lively as the
-            // tuned standard rails (0.95, the top of the real range). Checked against the real-table bands (BreakProbe
-            // surfaces, 21-Nov-2026): it passes nine of eleven and fails only the stop and draw bands, by drifting and
-            // drawing too far, which is what slick cloth does.
-            p.slidingFriction = 0.15
-            p.rollingResistance = 0.005
-            p.spinDecay = 5.0
-            p.cushionRestitution = 0.95
-        case .diveBar:
-            // Old woollen felt, napped, chalky and dirty, in a humid room: the sticky, slow end of the ranges. Sliding
-            // 0.3 grabs the ball, so a skid (and with it draw) is over in half the standard time; rolling 0.015 is the
-            // slow end (the tuned standard cloth sits there too); spin dies fast (14). The rubber is old and hard: 0.8
-            // of the speed comes back off a rail at walking pace instead of 0.95 (0.65 before the rails fell with
-            // speed, which now left only a quarter of the energy, far below any real table), and the dirty cloth on the
-            // nose grips the ball more (cushion friction 0.22), so side spin takes harder off the rail. Checked against
-            // the real-table bands (BreakProbe surfaces, 21-Nov-2026): it passes eight of eleven and fails the stop and
-            // draw bands (draw dies early) and the rail angle (the grippy nose), which is what dirty felt does.
-            p.slidingFriction = 0.3
-            p.rollingResistance = 0.015
-            p.spinDecay = 14.0
-            p.cushionRestitution = 0.8
-            p.cushionFriction = 0.22
-        case .ice:
-            // A phenolic ball on smooth ice: almost no grip, so a struck ball skids a long way before it rolls.
-            // Rolling resistance 0.002 is the top of the plausible range on purpose: a ball still rolling at 0.5 m/s
-            // after the cushions have taken their share stops in about 25 s (0.5 / (0.002 * 9.81)); anything smaller
-            // would leave the longest shots trailing on for most of the solver's 90 s cap.
-            // Spin decay 2: spin barely dies (a break's leftover 20 rad/s of side spin lasts about 10 s).
-            p.slidingFriction = 0.025
-            p.rollingResistance = 0.002
-            p.spinDecay = 2.0
-            p.slateFriction = 0.03      // a landing jump barely grips the ice
-        case .glass:
-            // Hard and smooth: little grip and little rolling loss, and a hard bed that throws a jumping ball back up.
-            p.slidingFriction = 0.09
-            p.rollingResistance = 0.0025
-            p.spinDecay = 3.0
-            p.slateRestitution = 0.7
-            p.slateFriction = 0.1
-        case .rubber:
-            // Very grabby: a skid turns to rolling almost at once (a quarter of the cloth's skid time), and the bed is
-            // springy, so jumps bounce high.
-            p.slidingFriction = 0.8
-            p.rollingResistance = 0.02
-            p.spinDecay = 12.0
-            p.slateRestitution = 0.75
-            p.slateFriction = 0.8
-        case .cork:
-            // A cork board: the grain grips (sliding 0.45, so a skid is over in under half the cloth's time) and the
-            // soft bed gives under the ball, so rolling loses three times what cloth does (0.03) and spin is scrubbed
-            // off fast (15). Cork is springy to the touch but dull to a hard ball: the dent soaks up the landing, so a
-            // jump comes back at only 0.3 of its fall speed, and the grippy face (0.45) takes most of the skid out of it.
-            p.slidingFriction = 0.45
-            p.rollingResistance = 0.03
-            p.spinDecay = 15.0
-            p.slateRestitution = 0.3
-            p.slateFriction = 0.45
-        case .carpet:
-            // Like a slow, thick cloth: more grip, about three and a half times the rolling loss, spin dies sooner.
-            p.slidingFriction = 0.3
-            p.rollingResistance = 0.035
-            p.spinDecay = 14.0
-        case .sand:
-            // Balls plough a furrow: heavy rolling loss (a 2 m/s roll is over in under two seconds), a grabby skid,
-            // spin scrubbed off fast, and a soft bed that swallows a jump.
-            p.slidingFriction = 0.5
-            p.rollingResistance = 0.13
-            p.spinDecay = 25.0
-            p.slateRestitution = 0.15
-            p.slateFriction = 0.5
-        case .moon:
-            // The teaching point: moon dust packed flat, with exactly the cloth's friction numbers, so gravity is the
-            // ONE thing that changes. Friction force is the friction number times the ball's weight, and weight is mass
-            // times g, so with g at 1.62 instead of 9.81 every friction deceleration is about six times weaker: a ball
-            // skids and rolls about six times as far and for six times as long.
-            // Checked in the solver (Simulation.swift, Impacts.swift) that a low g is safe: sliding and rolling segment
-            // lengths divide by g (never zero here); a jump's flight time is (vz + sqrt(vz^2 + 2 g h)) / g, so jumps
-            // fly about six times longer and higher; the minimum-hop test (rise vz^2 / 2g against minimumHop) lets
-            // smaller bounces count as hops, which is right under weak gravity. Spin in place decays at spinDecay,
-            // which has no g in it, so it dies as fast as on cloth. A cloth break of about 10 s runs about a minute
-            // here; the solver's 90 s cap ends anything longer, and playback has no short-shot assumptions.
-            p.gravity = 1.62
+        case .cloth: return .cloth
+        case .tournament: return .tournament
+        case .diveBar: return .diveBar
+        case .ice: return .ice
+        case .glass: return .glass
+        case .rubber: return .rubber
+        case .cork: return .cork
+        case .carpet: return .carpet
+        case .sand: return .sand
+        case .moon: return .moon
         }
+    }
+
+    /// The same surface from the package's name for it (the authored Behind the 8-Ball situations name theirs so).
+    init(_ surface: TableSurface) {
+        switch surface {
+        case .cloth: self = .cloth
+        case .tournament: self = .tournament
+        case .diveBar: self = .diveBar
+        case .ice: self = .ice
+        case .glass: self = .glass
+        case .rubber: self = .rubber
+        case .cork: self = .cork
+        case .carpet: self = .carpet
+        case .sand: self = .sand
+        case .moon: self = .moon
+        }
+    }
+
+    /// Write this surface's numbers into the parameters (TableSurface.apply, where each number's reason is written).
+    /// Cloth leaves the defaults untouched, so a cloth shot hashes exactly as it always did.
+    func apply(to p: inout PoolParameters) {
+        tableSurface.apply(to: &p)
     }
 
     /// True for the two other real cloths, whose cushions are covered in the same cloth as the bed (the standard cloth's
     /// cushions already are; every other surface keeps standard cloth on its rails).
-    var coversCushions: Bool { self == .tournament || self == .diveBar }
+    var coversCushions: Bool { tableSurface.coversCushions }
 
     static let storageKey = "optionSurface"
 

@@ -16,6 +16,10 @@
 //          friction figure, not a guess), and so are the pocket numbers (no real-table case constrains them yet).
 //          Threads: TrickSearch's parallelMap (three unless BREAKPROBE_THREADS says otherwise). Output goes to the
 //          terminal; redirect it to a file on the Team 4TB drive to keep it.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 26: "sweep rails" sweeps the coupled
+//          rail's grip along the rail and across the nose, how fast its bounce falls with pace, and its bounce at walking
+//          pace, against all twelve checks; its five runs are on the Team 4TB drive, breakdown-build/v07-sweep-rails-1.log
+//          to -5.log. The fifth chose the defaults in Parameters.swift.)
 // SRP/DRY check: Pass - the grid and the choice only; the cases are RealWorldCases.swift, the thread pool is
 //          TrickSearch's parallelMap.
 import BreakdownLensModel
@@ -60,13 +64,31 @@ let sweepGenerationTwo: [SweepAxis] = [
               set: { $0.shaftEndMass = $1 }),
 ]
 
+/// The rail sweep (bug plan after 0.6.6, item 26): the numbers that decide what a rail does to the spin a ball brings
+/// in, swept wider than the spec's ranges because the tuned values sat on the range walls. Rail grip is the nose's
+/// friction (spec 3.3 gives 0.14 to 0.2; swept 0.05 to 0.25 because less grip leaves more of the spin); bed friction is
+/// the slate's friction, which also acts in the rail's second impact as the nose drives the ball into the cloth (the
+/// jump's 0.2; swept 0.1 to 0.5); rail bounce and cloth grip around the tuned values, since they set how fast the ball
+/// leaves and how soon the spin it keeps takes hold.
+let sweepRail: [SweepAxis] = [
+    SweepAxis(name: "cushionFriction", low: 0.11, high: 0.19, reason: "rail grip along the rail, about spec 3.3's 0.14 to 0.2",
+              set: { $0.cushionFriction = $1 }),
+    SweepAxis(name: "railCrossGrip", low: 0.07, high: 0.13, reason: "rail grip up and down the nose's face",
+              set: { $0.railCrossGrip = $1 }),
+    SweepAxis(name: "railRestitutionSlope", low: 0.03, high: 0.04,
+              reason: "how fast the rail's bounce falls with pace, around the first rail sweep's 0.035",
+              set: { $0.railRestitutionSlope = $1 }),
+    SweepAxis(name: "cushionRestitution", low: 0.94, high: 0.98, reason: "rail bounce at walking pace",
+              set: { $0.cushionRestitution = $1 }),
+]
+
 /// One point of the grid: the level chosen on each axis (0 low, 1 middle, 2 high).
 struct SweepPoint: Sendable {
     var levels: [Int]
 }
 
-func runRealWorldSweep(quick: Bool) {
-    let axes = quick ? sweepGuessed : sweepGuessed + sweepGenerationTwo
+func runRealWorldSweep(quick: Bool, rails: Bool = false) {
+    let axes = rails ? sweepRail : (quick ? sweepGuessed : sweepGuessed + sweepGenerationTwo)
     // A constant, so the worker threads can share it.
     let base: PoolParameters = {
         var q = PoolParameters()

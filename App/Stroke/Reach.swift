@@ -26,6 +26,9 @@
 //          inside authoredAimBound, so every authored shot stays makeable.
 //          Read by: ShowpieceModel (stance, strokeBridgeLength, strokeZones and the strike's delivery), AimOverlay (the
 //          bridge mark on the cloth), StanceViews (the stance card) and the retry comparison (ShotAttempt.swift).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 23: clearingElevation, the least cue angle
+//          that clears every ball under the whole cue, tip to butt, which the model uses for the strike's elevation and
+//          the 3D cue, so a jacked-up stroke really is raised; cueRadius and buttRadius describe the cue it clears with.)
 // SRP/DRY check: Pass - checked StrokeModel (bridge lengths, the rear hand's distance and the mechanical bridge's setback
 //          are read from there, not retyped), TableBuilder (its cushion depth and rail width are restated below as
 //          Doubles because TableBuilder is a main-actor type; reconcile if those change), CueRig (the shaft's radius at
@@ -274,6 +277,58 @@ enum Reach {
 
     private static func nearer(_ a: (t: Double, rail: Rail), _ t: Double, _ rail: Rail) -> (t: Double, rail: Rail) {
         t < a.t ? (t, rail) : a
+    }
+
+    // MARK: The clearing angle (bug plan after 0.6.6, item 23)
+
+    /// The butt's radius at its end, metres. Stated assumption: a playing cue's butt is about 30 mm across at its end
+    /// (the house cue model's butt is drawn so); the shaft is restated above as shaftRadius. Between the support and the
+    /// butt the cue thickens evenly from one to the other.
+    static let buttRadius = 0.015
+
+    /// The cue's radius `distance` metres behind the cue ball (measured on the table plan): the shaft's (shaftRadius) up
+    /// to the support, where the cue rests, then thickening evenly to buttRadius at the butt, cueLength back.
+    static func cueRadius(at distance: Double, support: Double, cueLength: Double) -> Double {
+        guard distance > support, cueLength > support else { return shaftRadius }
+        let share = min(1, (distance - support) / (cueLength - support))
+        return shaftRadius + (buttRadius - shaftRadius) * share
+    }
+
+    /// Sine of the least cue angle above the table that clears every ball under the whole cue (contract 3.1), from the
+    /// tip at the cue ball back `cueLength` metres to the butt (not only up to the bridge: the stance card's "raised over
+    /// the 5" used to look only that far, finding 49), with the cue resting on its support `support` metres behind the
+    /// ball; 0 when a level cue clears. The model passes cueInHand.length and strokeBridgeLength.
+    ///
+    /// Geometry. The cue's axis runs through the cue ball's centre (a centre hit; height R above the cloth) and back up
+    /// at the angle a, direction b = (cos a along the line back, 0 across, sin a up). Another ball's centre sits at the
+    /// same height, d metres back along the line and l metres across it, so from the cue ball's centre it is v = (d, l,
+    /// 0) and its squared distance from the axis is |v|^2 - (v . b)^2 = d^2 + l^2 - d^2 cos^2 a = d^2 sin^2 a + l^2. The
+    /// cue clears it when that distance is at least R + r, r the cue's radius there (cueRadius at d), so
+    ///     sin a >= sqrt((R + r)^2 - l^2) / d,
+    /// and a ball farther across than R + r is never under the cue. Only balls behind the cue ball (d > 0) and no
+    /// farther back than the butt (d <= cueLength + R) count; the answer is the largest of their sines, capped at the
+    /// strike's own cap (0.995, CueStrike). The cue's radius is taken at the ball's distance on the table plan, which
+    /// for the gentle taper of a cue is the same to a fraction of a millimetre as the distance along the raised axis.
+    /// Pure, so it is tested directly (BreakdownTests/ReachTests.swift).
+    static func clearingElevation(layout: [Vec2], cueBall: Int, aim: Vec2, table: TableSpec, support: Double,
+                                  cueLength: Double) -> Double {
+        guard layout.indices.contains(cueBall), NextShot.isOnTable(layout[cueBall]), aim.lengthSquared > 1e-12 else {
+            return 0
+        }
+        let ball = layout[cueBall]
+        let back = -aim.normalized
+        let r = table.ballRadius
+        var sine = 0.0
+        for (i, p) in layout.enumerated() where i != cueBall && NextShot.isOnTable(p) {
+            let v = p - ball
+            let d = v.dot(back)
+            guard d > 0, d <= cueLength + r else { continue }
+            let l = abs(v.dot(back.perp))
+            let reach = r + cueRadius(at: d, support: support, cueLength: cueLength)
+            guard l < reach else { continue }
+            sine = max(sine, (reach * reach - l * l).squareRoot() / d)
+        }
+        return min(sine, 0.995)
     }
 
     /// The nearest ball (to the cue ball) lying under the cue between the cue ball and its support, or under the

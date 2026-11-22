@@ -20,6 +20,14 @@
 //          every authored shot. Every tip stays inside the miscue limit (tipReach, about half the radius).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: tip grids inside the miscue limit, the curve's
 //          side at 0.40 and 0.45 of the radius, so the lessons re-author on generation two.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 10: every lesson is laid on a line a
+//          standing player reaches. The first lessons ran along the top-right corner's diagonal from the middle of the
+//          table, so the bridge hand sat past even the sitting reach and the stance card said Rest. Now each candidate
+//          layout is kept only if the app's reach ladder would call its stance square (standingReach below, the app's
+//          Reach rule restated): stop, draw and the exercise run straight across the table into the top side pocket
+//          from near the bottom rail, follow runs into the top-right corner on a steep line from near the bottom rail,
+//          and curve and jump start a fifth of a metre nearer the head rail. The stop exercise reads the stop lesson from
+//          the package library, which the app reads too.)
 // SRP/DRY check: Pass - checked TrickAuthoring (its best(), placedOnPath and difficulty bands are reused, not copied)
 //          and TrickSearch (simulate, passes, the band walks and measured are reused). Only the lesson layouts, the
 //          side and cue-angle windows the trick report does not print, and the exercise check are new here.
@@ -27,6 +35,33 @@ import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
 import Foundation
+
+// MARK: Reach (the app's reach ladder, restated)
+
+/// The app's reach ladder (App/Stroke/Reach.swift) for the one case a lesson needs, standing behind the cue: the bridge
+/// hand rests StrokeModel.automaticBridge (0.20 m) behind the cue ball on the cue line, the player stands where that line,
+/// carried on backward, crosses the outer edge of the rail (the cushion's nose plus Reach.railOuter, 0.20 m), and the
+/// stance is square when that reach is at most Reach.squareReach (0.95 m). Restated here because the package cannot import
+/// the app; the app's LessonTests checks every shipped lesson with the real Reach.stance, so a drift here cannot ship.
+let lessonBridge = 0.20
+let lessonRailOuter = 0.20
+let lessonSquareReach = 0.95
+
+/// Metres from the bridge hand back along the cue line to the outer edge of the rail, for a cue ball at `cue` struck
+/// along the unit direction `u`.
+func standingReach(cue: Vec2, direction u: Vec2) -> Double {
+    let hand = cue - u * lessonBridge
+    let back = u * -1
+    var t = Double.infinity
+    if back.x > 1e-12 { t = min(t, (L + lessonRailOuter - hand.x) / back.x) }
+    if back.x < -1e-12 { t = min(t, (-lessonRailOuter - hand.x) / back.x) }
+    if back.y > 1e-12 { t = min(t, (W + lessonRailOuter - hand.y) / back.y) }
+    if back.y < -1e-12 { t = min(t, (-lessonRailOuter - hand.y) / back.y) }
+    return max(0, t)
+}
+
+/// True when a player stands square for this strike (nothing else on the table is behind the cue ball in a lesson).
+func standsSquare(cue: Vec2, direction u: Vec2) -> Bool { standingReach(cue: cue, direction: u) <= lessonSquareReach }
 
 /// The cue angles the app's cue-angle control offers, in degrees (App/CueAngleControl.swift, CueAngleMenu.angles,
 /// copied because the package cannot import app files). A lesson that raises the cue must use one of these, or the
@@ -78,30 +113,43 @@ func reportLesson(_ a: Authored) {
 
 // MARK: Straight pots: stop, follow, draw
 
-/// A straight-in pot into the top-right corner: the object ball `objectGap` from the pocket, the cue ball `cueGap`
-/// behind it on the same line. Returns the layout, the line's unit direction and the ghost-ball spot (where the cue
-/// ball is at contact).
-func straightPot(objectGap: Double, cueGap: Double, ball: Int = 3) -> (layout: [Vec2], u: Vec2, ghost: Vec2) {
-    let pocket = pockets[3]
-    // Along the corner's diagonal (at about 37 degrees, the table's own diagonal slope), so the pot is the one a
-    // player meets most often and the line is easy to read from any camera.
-    let u = unit(pocket - Vec2(L * 0.5, W * 0.5))
-    let a = pocket - u * objectGap
+/// A straight-in pot: the object ball `objectGap` from pocket `pocket`, the cue ball `cueGap` behind it on the same
+/// line, which reaches the pocket at `angle` degrees counter-clockwise from the long axis. Returns the layout, the
+/// line's unit direction and the ghost-ball spot (where the cue ball is at contact).
+/// Item 10: the line must leave the cue ball close enough to a rail that a player stands square to it (standsSquare);
+/// the stop and draw lessons use the top side pocket straight across the table (90 degrees), and follow, which needs
+/// a long run after the pot, the top-right corner on a steep line from near the bottom rail.
+func straightPot(objectGap: Double, cueGap: Double, ball: Int = 3, pocket: Int = 5, angle: Double = 90)
+    -> (layout: [Vec2], u: Vec2, ghost: Vec2) {
+    let u = Vec2(cos(angle * Double.pi / 180), sin(angle * Double.pi / 180))
+    let a = pockets[pocket] - u * objectGap
     let c = a - u * cueGap
     return (layoutOf([0: c, ball: a]), u, a - u * (2 * R))
+}
+
+/// Straight-pot lines to try, pocket and angle, kept only where the cue ball is on the cloth and the stance is square.
+func squareLines(objectGaps: [Double], cueGaps: [Double], lines: [(pocket: Int, angle: Double)])
+    -> [(og: Double, cg: Double, pocket: Int, angle: Double)] {
+    var out: [(og: Double, cg: Double, pocket: Int, angle: Double)] = []
+    for line in lines { for og in objectGaps { for cg in cueGaps {
+        let s = straightPot(objectGap: og, cueGap: cg, pocket: line.pocket, angle: line.angle)
+        guard clearOfRails(s.layout[0], pocketClear: 0.15), standsSquare(cue: s.layout[0], direction: s.u) else { continue }
+        out.append((og, cg, line.pocket, line.angle))
+    } } }
+    return out
 }
 
 /// Stop shot: the cue ball must stop within 5 cm (under a ball's width) of the spot where it struck.
 func authorLessonStop() -> Authored? {
     var cands: [Candidate] = []
-    for og in [0.35, 0.45] { for cg in [0.25, 0.32, 0.4] {
-        let s = straightPot(objectGap: og, cueGap: cg)
-        let goal = Goal(drops: [(3, 3)], cueZone: (s.ghost, 0.05), firstHit: 3)
-        for p in range(1.0, 3.0, 0.25) { for t in range(-0.014, 0.0, 0.001) {
+    for line in squareLines(objectGaps: [0.30, 0.35, 0.45], cueGaps: [0.25, 0.32, 0.4], lines: [(5, 90)]) {
+        let s = straightPot(objectGap: line.og, cueGap: line.cg, pocket: line.pocket, angle: line.angle)
+        let goal = Goal(drops: [(3, line.pocket)], cueZone: (s.ghost, 0.05), firstHit: 3)
+        for p in range(1.0, 3.0, 0.1) { for t in range(-0.014, 0.0, 0.001) {
             cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
-                                   goal: goal, note: String(format: "stop shot: object %.2f m from the pocket, cue %.2f m back", og, cg)))
+                                   goal: goal, note: String(format: "stop shot: object %.2f m from pocket %d, cue %.2f m back, line at %.0f deg", line.og, line.pocket, line.cg, line.angle)))
         } }
-    } }
+    }
     return best("lesson-stop", cands, .easy)
 }
 
@@ -113,14 +161,16 @@ func authorLessonStop() -> Authored? {
 /// at 1.2 m/s from 1 m out it moves about 3 cm, so the search was moved to soft strokes and a long run to the pocket.
 func authorLessonFollow() -> Authored? {
     var cands: [Candidate] = []
-    for og in [1.0, 1.1] { for cg in [0.25, 0.3] { for ahead in [0.7, 0.8] {
-        let s = straightPot(objectGap: og, cueGap: cg)
-        let goal = Goal(drops: [(3, 3)], cueZone: (s.ghost + s.u * ahead, 0.15), firstHit: 3)
-        for p in range(0.9, 2.0, 0.1) { for t in range(0.004, 0.014, 0.001) {
-            cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
-                                   goal: goal, note: String(format: "follow: object %.2f m out, cue %.2f m back, zone %.2f m past contact", og, cg, ahead)))
-        } }
-    } } }
+    for line in squareLines(objectGaps: [1.0, 1.1], cueGaps: [0.25, 0.3], lines: [(3, 40), (3, 45), (3, 50)]) {
+        for ahead in [0.7, 0.8] {
+            let s = straightPot(objectGap: line.og, cueGap: line.cg, pocket: line.pocket, angle: line.angle)
+            let goal = Goal(drops: [(3, line.pocket)], cueZone: (s.ghost + s.u * ahead, 0.15), firstHit: 3)
+            for p in range(0.9, 2.4, 0.1) { for t in range(0.004, 0.014, 0.001) {
+                cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
+                                       goal: goal, note: String(format: "follow: object %.2f m out, cue %.2f m back, zone %.2f m past contact, line at %.0f deg", line.og, line.cg, ahead, line.angle)))
+            } }
+        }
+    }
     return best("lesson-follow", cands, .easy) { a in
         var centre = a.strike; centre.tipUp = 0
         return !passes(a.goal, simulate(a.layout, centre))
@@ -133,14 +183,18 @@ func authorLessonFollow() -> Authored? {
 /// about 0.1 to 0.15 m per millimetre around the zone). Kept only when a centre-ball hit misses.
 func authorLessonDraw() -> Authored? {
     var cands: [Candidate] = []
-    for og in [0.4, 0.5] { for cg in [0.2, 0.25] { for back in [0.45, 0.5] {
-        let s = straightPot(objectGap: og, cueGap: cg)
-        let goal = Goal(drops: [(3, 3)], cueZone: (s.ghost - s.u * back, 0.25), firstHit: 3)
-        for p in range(1.0, 2.5, 0.1) { for t in range(-0.014, -0.004, 0.001) {
-            cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
-                                   goal: goal, note: String(format: "draw: object %.2f m out, cue %.2f m back, zone %.2f m behind contact", og, cg, back)))
-        } }
-    } } }
+    for line in squareLines(objectGaps: [0.4, 0.5], cueGaps: [0.2, 0.25], lines: [(5, 90)]) {
+        // Straight across the table the cue ball comes back toward the bottom rail: the zone stays on the cloth.
+        for back in [0.3, 0.35] {
+            let s = straightPot(objectGap: line.og, cueGap: line.cg, pocket: line.pocket, angle: line.angle)
+            guard clearOfRails(s.ghost - s.u * back, margin: 0.2, pocketClear: 0.2) else { continue }
+            let goal = Goal(drops: [(3, line.pocket)], cueZone: (s.ghost - s.u * back, 0.25), firstHit: 3)
+            for p in range(1.0, 2.8, 0.1) { for t in range(-0.014, -0.004, 0.001) {
+                cands.append(Candidate(layout: s.layout, strike: Strike(aim: degrees(of: s.u), power: p, tipUp: t, tipSide: 0),
+                                       goal: goal, note: String(format: "draw: object %.2f m out, cue %.2f m back, zone %.2f m behind contact, line at %.0f deg", line.og, line.cg, back, line.angle)))
+            } }
+        }
+    }
     return best("lesson-draw", cands, .easy) { a in
         var centre = a.strike; centre.tipUp = 0
         return !passes(a.goal, simulate(a.layout, centre))
@@ -185,7 +239,9 @@ func authorLessonCut() -> Authored? {
 /// blocker's centre about a radius right of the line, the cue ball only has to bow about a radius to the left.
 func authorLessonCurve() -> Authored? {
     var cands: [Candidate] = []
-    let c = Vec2(1.0, 0.635)
+    // Item 10: 0.8 m from the head cushion, so the bridge hand is 0.6 m in and the reach from the rail's outer edge
+    // 0.8 m, a square stance (from 1.0 m it was 1.0 m, a stretch).
+    let c = Vec2(0.8, 0.635)
     for reach in [0.45, 0.55] { for gap in [0.2, 0.25] { for shift in [0.8 * R, 1.2 * R] {
         let target = c + Vec2(reach, 0)
         let blocker = c + Vec2(gap, -shift)
@@ -223,7 +279,7 @@ func authorLessonCurve() -> Authored? {
 /// blocker and lands to touch the target first. Kept only if the same strike with a level cue hits the blocker.
 func authorLessonJump() -> Authored? {
     var cands: [Candidate] = []
-    let c = Vec2(1.0, 0.635)
+    let c = Vec2(0.8, 0.635)   // item 10: a square stance, as for the curve
     for gap in [0.25, 0.3] { for reach in [0.8, 1.0] {
         let layout = layoutOf([0: c, 6: c + Vec2(gap, 0), 11: c + Vec2(reach, 0)])
         for angle in [20, 25, 30, 40] { for p in range(3.0, 5.5, 0.25) { for da in range(-1, 1, 0.25) {
@@ -246,18 +302,21 @@ func authorLessonJump() -> Authored? {
 
 // MARK: The stop shot's second exercise (plan 14, section 4)
 
-/// The stop lesson as the app carries it (copied from App/Lessons/Lessons.swift once authored; KEEP IN STEP).
-/// Read by the exercise search below and by ContentVerify.
-let lessonStopForExercise = (layout: authoredLessons[0].layout, strike: authoredLessons[0].strike)
+/// The stop lesson as the package library holds it (the app reads the same). Read by the exercise search below.
+let lessonStopForExercise = (layout: authoredLessons[0].layout, strike: authoredLessons[0].strike,
+                             goal: authoredLessons[0].goal)
 
 /// On the stop lesson's own line, the cue ball moved to a different distance from the object ball. Copying the
 /// lesson's settings (same aim, power and tip) must miss the finish zone; a tip-height change alone must make it.
-func authorStopExercise() {
-    let lesson = lessonStopForExercise
+func authorStopExercise(lessonPower: Double? = nil) {
+    var lesson = lessonStopForExercise
+    // "lessons stop-exercise <power>": the lesson played at another power inside its window (the exercise locks the
+    // lesson's aim and power, so a power window of zero there would leave the judge's advice dividing by nothing).
+    if let p = lessonPower { lesson.strike.power = p }
     let a = lesson.layout[3], c0 = lesson.layout[0]
     let u = unit(a - c0)
     let ghost = a - u * (2 * R)
-    let goal = Goal(drops: [(3, 3)], cueZone: (ghost, 0.05), firstHit: 3)
+    let goal = Goal(drops: lesson.goal.drops, cueZone: (ghost, 0.05), firstHit: 3)
     print("== stop-exercise: the stop lesson strikes \(lesson.strike) from \(fmt(c0))")
     var bestFound: (gap: Double, band: (lo: Double, hi: Double), centre: Double)?
     // Further back than the lesson's 0.25 m only: the exercise's words say "the cue ball further back" (four
@@ -268,6 +327,11 @@ func authorStopExercise() {
     // proof plan's Measured section).
     for gap in [0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65] {
         let layout = layoutOf([0: a - u * gap, 3: a])
+        // Item 10: the exercise's cue ball must be reachable standing square too, and on the cloth.
+        guard clearOfRails(layout[0], pocketClear: 0.15), standsSquare(cue: layout[0], direction: u) else {
+            print(String(format: "   cue %.2f m back: off the cloth or not a square stance; skipped", gap))
+            continue
+        }
         let copy = passes(goal, simulate(layout, lesson.strike))
         // The band of tip heights that work with the lesson's own aim and power, walked from every millimetre so a
         // band anywhere in reach is found, then the widest kept.
@@ -285,6 +349,15 @@ func authorStopExercise() {
         // FURTHEST from the lesson's tip, so copying the demonstration misses clearly rather than by a millimetre and
         // the change a player has to make is one they can see on the cue-ball picture.
         guard b.hi - b.lo >= 0.004 - 1e-9 else { continue }
+        // And some room in power at the band's middle tip (a step of 0.05 m/s either way): the exercise locks the power,
+        // but the judge measures a miss in each setting's own window, and a window of nothing cannot measure one.
+        let mid = ((b.lo + b.hi) / 2 / 0.0005).rounded() * 0.0005
+        var atMid = lesson.strike; atMid.tipUp = mid
+        let roomy = [atMid.power - 0.05, atMid.power + 0.05].allSatisfy { v in
+            var t = atMid; t.power = v; return passes(goal, simulate(layout, t))
+        }
+        print(String(format: "      power room of 0.05 m/s at tip %+.4f: %@", mid, roomy ? "yes" : "no"))
+        guard roomy else { continue }
         func margin(_ x: (lo: Double, hi: Double)) -> Double {
             x.lo > lesson.strike.tipUp ? x.lo - lesson.strike.tipUp : lesson.strike.tipUp - x.hi
         }
@@ -319,7 +392,7 @@ func scanStraightPot(_ og: Double, _ cg: Double, _ power: Double) {
         let tl = simulate(s.layout, Strike(aim: degrees(of: s.u), power: power, tipUp: t, tipSide: 0))
         let along = (cueRest(tl) - s.ghost).dot(s.u)
         print(String(format: "   tip %+.3f: finish %+.3f m along the line, 3 %@, cue %@", t, along,
-                     pocketOf(3, tl) == 3 ? "in" : "up", tl.pocketTime[0] == nil ? "up" : "IN"))
+                     pocketOf(3, tl) != nil ? "in" : "up", tl.pocketTime[0] == nil ? "up" : "IN"))
     }
 }
 
@@ -358,5 +431,7 @@ func runLessonAuthoring(only: Set<String>, arguments: [String] = []) {
         if let a = author() { reportLesson(a) } else { print("== lesson-\(id): NO SOLUTION FOUND") }
         print(String(format: "   (search took %.1f s)", Date().timeIntervalSince(start)))
     }
-    if only.isEmpty || only.contains("stop-exercise") { authorStopExercise() }
+    if only.isEmpty || only.contains("stop-exercise") {
+        authorStopExercise(lessonPower: arguments.dropFirst().compactMap { Double($0) }.first)
+    }
 }

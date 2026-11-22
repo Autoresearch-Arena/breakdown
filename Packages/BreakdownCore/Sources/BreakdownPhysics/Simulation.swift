@@ -44,6 +44,12 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: at generation two a ball in the air that comes
 //          down below the cushion nose inside a hole's circle drops in (airborneCandidates); before, one that had
 //          entered the circle high flew through the hole and was put back on the rail from beyond the table's edge.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, generation two only. Item 25: a miscue's turn
+//          is a function of the stroke (miscueTangent), not of the seed, so the same miscue always goes the same way and
+//          launchDirection shows it. Item 29: a gentle ball-ball contact is a push, not a bounce (pushApart), which is
+//          what pinned the 7 and the 8 in the seed-5 test break; and a ball struck up from over a hole drops instead of
+//          looping at t = 0 (applyPocket), found by the jam sweep. Item 27: railRebound, what a rail gives back at a
+//          stated pace, worked out with the solver's own rail routine for the words a player reads.)
 //
 // THE GENERATION RULE (plans/21-Nov-2026-physics-proof-plan.md, package 1). PoolParameters.modelGeneration picks the
 // physics model. Generation 1 is this solver exactly as it was on 21 November 2026, and every trick shot and Behind
@@ -203,28 +209,24 @@ public enum PoolSolver {
         return ((d + d.perp * t) * (1 / norm), t / norm)
     }
 
-    /// The one place a CueStrike becomes a launch at generation 2 (both strike functions call it). With `seed` nil it
-    /// gives the miscue no random turn, which is what the aim guide wants (it cannot know a slip's direction).
+    /// The one place a CueStrike becomes a launch at generation 2 (both strike functions and the aim guide call it).
+    /// It is a pure function of the stroke: the same strike always launches the same way (bug plan after 0.6.6, item
+    /// 25: a miscue used to take a seeded random turn, so the same miscue played twice went two ways).
     /// - Speed: a centre hit launches at strike.speed; an off-centre one at
     ///   strike.speed * (M + m) / (M + m + 5/2 M b^2 / R^2), b^2 = tipUp^2 + tipSide^2 (spec 3.3's strike formula
     ///   divided by its centre-hit value, so "speed" keeps meaning the centre-hit launch speed).
     /// - Direction: turned away from the struck side by squirtTangent; only the side offset deflects.
     /// - Miscue: an offset past PoolParameters.miscueOffsetLimit slips. The ball leaves at miscueSpeedFraction of the
-    ///   centre-hit speed, turned by a seeded random ratio within +-miscueMaxDeflection (the shot's own seed through the
-    ///   seeded generator, mixed with a fixed word so it is not the rack's jitter stream), and the spin is what the tip
-    ///   could still give at the grip limit it slid from: the offsets scaled back onto the limit, at the reduced speed.
-    static func cueLaunch(_ strike: CueStrike, _ p: PoolParameters, seed: UInt64?) -> CueLaunch {
+    ///   centre-hit speed, and the spin is what the tip could still give at the grip limit it slid from: the offsets
+    ///   scaled back onto the limit, at the reduced speed. Its turn is miscueTangent: away from the side the tip slid
+    ///   off, growing with how far past the grip the tip struck.
+    static func cueLaunch(_ strike: CueStrike, _ p: PoolParameters) -> CueLaunch {
         let r2 = p.ballRadius * p.ballRadius
         let offset2 = strike.tipUp * strike.tipUp + strike.tipSide * strike.tipSide
         let limit = p.miscueOffsetLimit
         if offset2 > limit * limit {
             let back = (limit * limit / offset2).squareRoot()
-            var t = 0.0
-            if let seed {
-                var rng = SeededGenerator(seed: seed ^ 0x4D49_5343_5545)     // "MISCUE"
-                t = rng.signedUnit() * p.miscueMaxDeflection
-            }
-            let turn = turned(strike.direction, by: t)
+            let turn = turned(strike.direction, by: miscueTangent(strike, p))
             return CueLaunch(direction: turn.direction, speed: strike.speed * p.miscueSpeedFraction,
                              tipUp: strike.tipUp * back, tipSide: strike.tipSide * back, miscue: true,
                              deflectionSine: turn.sine)
@@ -236,13 +238,58 @@ public enum PoolSolver {
                          tipSide: strike.tipSide, miscue: false, deflectionSine: turn.sine)
     }
 
+    /// The turn of a miscue, as a signed sideways-over-forward ratio like squirtTangent (positive turns the ball LEFT of
+    /// the aim). Zero for a strike inside the grip.
+    /// Which way: the tip slides off the ball toward the side it struck, so it pushes the ball the other way, away from
+    /// that side, as side spin's push does (a hit right of centre goes left). Only the side part of the offset turns
+    /// the ball in the table plane: a tip that slides off the top or bottom sends the ball along the aim. So the turn
+    /// carries the side share of the offset, tipSide / offset, with the sign of squirtTangent.
+    /// How far: in proportion to how far past the grip the tip struck, (offset - limit) / (miscueFullTurnOvershoot * R),
+    /// capped at one, times miscueMaxDeflection.
+    public static func miscueTangent(_ strike: CueStrike, _ p: PoolParameters) -> Double {
+        let offset = (strike.tipUp * strike.tipUp + strike.tipSide * strike.tipSide).squareRoot()
+        let limit = p.miscueOffsetLimit
+        guard offset > limit, offset > 0 else { return 0 }
+        let full = p.miscueFullTurnOvershoot * p.ballRadius
+        var grow = full > 0 ? (offset - limit) / full : 1
+        if grow > 1 { grow = 1 }
+        return p.miscueMaxDeflection * grow * (strike.tipSide / offset)
+    }
+
+    /// What a rail gives back, for the words a player reads (bug plan after 0.6.6, item 27: the notebook and cards showed
+    /// the raw rail number, which since the speed-dependent rail no longer says what a ball keeps). A ball rolling
+    /// naturally straight into a long rail at `pace` metres per second is put through the solver's own rail routine
+    /// (Impacts.rail at generation 2, the flat Impacts.cushion at generation 1), exactly as a shot would be.
+    public struct RailRebound: Sendable, Equatable {
+        /// The pace the ball came in at, metres per second.
+        public let pace: Double
+        /// Its speed just after the rail over its speed into it (0 to 1).
+        public let speedKept: Double
+        /// Its energy of motion and spin just after the rail over the same just before (0 to 1).
+        public let energyKept: Double
+        /// The pace the words quote unless they say otherwise: 2 m/s, a medium stroke, the pace of real-table case 6.
+        public static let statedPace = 2.0
+    }
+
+    public static func railRebound(pace: Double = RailRebound.statedPace, parameters p: PoolParameters) -> RailRebound {
+        let v = pace > 0 ? pace : 0
+        // Rolling straight down into the bottom rail (inward normal +y): velocity (0, -v), natural roll omega_x = v / R.
+        let before = BodyState(position: Vec2(p.tableLength * 0.5, p.railContactDistance), velocity: Vec2(0, -v),
+                               omega: Vec3(v / p.ballRadius, 0, 0))
+        let after = (p.usesGenerationTwo ? Impacts.rail(before, normal: Vec2(0, 1), p)
+                                         : Impacts.cushion(before, normal: Vec2(0, 1), p)).states[0]
+        let eIn = Impacts.kineticEnergy(before, p)
+        return RailRebound(pace: v, speedKept: v > 0 ? after.velocity.length / v : 0,
+                           energyKept: eIn > 0 ? Impacts.kineticEnergy(after, p) / eIn : 0)
+    }
+
     /// The direction the struck ball really leaves in, for the aim guide (so the drawn line bends with side spin the
-    /// way the ball will). At generation 1 it is the aim itself. At generation 2 it is the aim turned by side spin; a
-    /// miscue's random turn cannot be known before the shot, so for an offset past the grip limit it is the aim.
-    /// Pure: the same function the solver uses, with no randomness.
+    /// way the ball will). At generation 1 it is the aim itself. At generation 2 it is the aim turned by side spin, or
+    /// for an offset past the grip limit by the miscue's turn, which is a function of the stroke, so the guide can show
+    /// a miscue's line before the shot. Pure: the same function the solver uses.
     public static func launchDirection(for strike: CueStrike, parameters p: PoolParameters) -> Vec2 {
         guard p.usesGenerationTwo else { return strike.direction }
-        return cueLaunch(strike, p, seed: nil).direction
+        return cueLaunch(strike, p).direction
     }
 }
 
@@ -476,7 +523,7 @@ private struct Simulation {
         // Generation 1: the old lines exactly (full speed, straight along the cue, no flags on the event). Generation 2:
         // the same spin formula, but with the launch the cue really gives (PoolSolver.cueLaunch): slower off centre,
         // turned by side spin, or a miscue. The spin is made in the cue's frame (d), the velocity goes along the launch.
-        let launch: PoolSolver.CueLaunch? = P.usesGenerationTwo ? PoolSolver.cueLaunch(s, P, seed: input.seed) : nil
+        let launch: PoolSolver.CueLaunch? = P.usesGenerationTwo ? PoolSolver.cueLaunch(s, P) : nil
         let speed = launch?.speed ?? s.speed
         let tipUp = launch?.tipUp ?? s.tipUp, tipSide = launch?.tipSide ?? s.tipSide
         let k = 2.5 * speed / (P.ballRadius * P.ballRadius)         // m * speed / I
@@ -505,7 +552,7 @@ private struct Simulation {
         let ball = struckBall
         let d = s.direction
         let e = s.elevation
-        let launch: PoolSolver.CueLaunch? = P.usesGenerationTwo ? PoolSolver.cueLaunch(s, P, seed: input.seed) : nil
+        let launch: PoolSolver.CueLaunch? = P.usesGenerationTwo ? PoolSolver.cueLaunch(s, P) : nil
         let speed = launch?.speed ?? s.speed
         let tipUp = launch?.tipUp ?? s.tipUp, tipSide = launch?.tipSide ?? s.tipSide
         let c = (1 - e * e).squareRoot()                             // cosine of the elevation
@@ -1131,11 +1178,15 @@ private struct Simulation {
         let st = bodyState(i, at: now)
         // Generation 2: every pocket event says how the ball came in, and a ball on the cloth that is too fast to fall
         // into the hole starts a crossing instead (no event yet: its rim skip is recorded when it leaves the circle).
-        // A ball in the air is caught as before: it is already falling.
+        // A ball in the air is caught as before: it is already falling. That includes the instant it takes off, when its
+        // height is still exactly zero: the jam sweep of 21-Nov-2026 (bug plan after 0.6.6, item 29) found free-play
+        // shots that hit the event limit at t = 0 because a ball struck down from over a hole was treated as on the
+        // cloth, marked as crossing and left untouched, and the air's hole test (which has no crossing mark) offered
+        // the same hole again, forever. So the test is the ball's phase, not its height.
         var how: PocketEntry?
         if P.usesGenerationTwo {
             let e = entry(k, st)
-            if st.height <= 0 && !captures(k, st) {
+            if !isAirborne(i) && st.height <= 0 && !captures(k, st) {
                 skip[i] = HoleSkip(hole: k, exited: false)
                 skipEntry[i] = e
                 return
@@ -1292,24 +1343,77 @@ private struct Simulation {
     private mutating func applyBallBall(_ i: Int, _ j: Int) {
         if isAirborne(i) || isAirborne(j) { applyBallBall3D(i, j); return }
         let a = bodyState(i, at: now), b = bodyState(j, at: now)
-        var res = Impacts.ballBall(a, b, P)
-        // Nudge apart by a tiny fixed amount if rounding left them closer than two radii.
         let n = (b.position - a.position).normalized
         let approach = (a.velocity - b.velocity).dot(n)
+        // Generation 2: a gentle contact is a push (see pushApart below), resolved with no bounce. Generation 1
+        // takes the old line exactly.
+        let push = P.usesGenerationTwo && approach < P.gentleContactSpeed
+        var res: ImpactResult
+        if push {
+            var q = P
+            q.ballBallRestitution = 0
+            res = Impacts.ballBall(a, b, q)
+        } else {
+            res = Impacts.ballBall(a, b, P)
+        }
         noteImpact(i, approach: approach > 0 ? approach : 0)
         noteImpact(j, approach: approach > 0 ? approach : 0)
+        // Nudge apart by a tiny fixed amount if rounding left them closer than two radii.
         let dist = (b.position - a.position).length
         let gap = 2 * P.ballRadius * (1 + 1e-12) - dist
         if gap > 0 {
             res.states[0].position = res.states[0].position - n * (gap * 0.5)
             res.states[1].position = res.states[1].position + n * (gap * 0.5)
         }
+        if push { pushApart(i, j, n, &res.states) }
         restart(i, at: now, with: res.states[0])
         restart(j, at: now, with: res.states[1])
         let mid = (a.position + b.position) * 0.5
         events.append(LensEvent(time: now, kind: .ballBall, point: mid, normal: n, normalImpulse: res.normalImpulse,
                                 frictionImpulse: res.frictionImpulse, slipSpeed: res.slipSpeed,
                                 balls: [impactBall(i, a, res.states[0]), impactBall(j, b, res.states[1])]))
+    }
+
+    /// Generation 2, a gentle contact (bug plan after 0.6.6, item 29: what pinned the pair in the seed-5 test break).
+    /// Two balls touching while the cloth presses them together, one rolling or sliding into the other as the other
+    /// slows, are a push: on a real table they move on together. An event solver cannot hold a lasting contact, so with
+    /// a bouncing restitution each touch re-opened a gap the cloth closed again a little sooner, a series of bounces
+    /// whose gaps shrink geometrically to nothing (the seed-5 break: about six hundred touches between the 7 and the 8
+    /// in a millisecond, until the jam guard stopped them). The fix is the ball-against-ball form of the slate's
+    /// minimumHop: a contact slower than gentleContactSpeed does not bounce (the pair shares its speed along the line
+    /// of centres), and when the cloth would press the pair straight back together, the two are set rackGap apart (a
+    /// micrometre, the gap the rack itself treats as touching), so the push goes on as a short series of gentle taps a
+    /// few milliseconds apart instead of a storm. The balls move by half a micrometre each, which no one can see. When
+    /// one of them already touches a third ball or the rubber behind it (a chain of balls being pushed, the jam sweep's
+    /// shot 3389), the other takes the whole micrometre instead; when neither can move (a true wedge), nothing moves and
+    /// the jam guard settles the wedge, which is its job.
+    private func pushApart(_ i: Int, _ j: Int, _ n: Vec2, _ states: inout [BodyState]) {
+        // Do the cloth's accelerations press the pair together? Worked out from the segments the two will start.
+        let si = Self.makeSegment(P, t0: now, position: states[0].position, velocity: states[0].velocity,
+                                  omega: states[0].omega, orientation: .identity)
+        let sj = Self.makeSegment(P, t0: now, position: states[1].position, velocity: states[1].velocity,
+                                  omega: states[1].omega, orientation: .identity)
+        guard (sj.acceleration - si.acceleration).dot(n) < 0 else { return }
+        let want = 2 * P.ballRadius + P.rackGap
+        let have = (states[1].position - states[0].position).length
+        guard have < want else { return }
+        let others = (0..<bodies.count).filter { $0 != i && $0 != j && bodies[$0].active }
+            .map { bodyState($0, at: now).position }
+        // A place is free when no other ball's centre is within two radii and it is out of the rubber.
+        func free(_ p: Vec2) -> Bool {
+            let touch = 2 * P.ballRadius
+            return others.allSatisfy { ($0 - p).lengthSquared >= touch * touch } && outOfRubber(p) == p
+        }
+        let d = want - have
+        // Both half way, else the leading ball the whole way, else the trailing one.
+        for (backI, onJ) in [(d * 0.5, d * 0.5), (0.0, d), (d, 0.0)] {
+            let pi = states[0].position - n * backI, pj = states[1].position + n * onJ
+            if (backI == 0 || free(pi)) && (onJ == 0 || free(pj)) {
+                states[0].position = pi
+                states[1].position = pj
+                return
+            }
+        }
     }
 
     /// Ball against ball with at least one in the air: the 3D impact, then each ball's vertical is settled (a ball on

@@ -4,11 +4,14 @@
 //          section 9.1). Spec 12: follow, draw, left and right spin the right way, a centre hit gives no spin, the launch
 //          speed matches the strike formula at five offsets, and the miscue limit sits where the formula says at three
 //          elevations. Deflection: none at centre or from top and bottom alone, away from the struck side, growing with
-//          offset, two to three degrees at half the radius. Miscue: the same seed gives the same miscue, different seeds
-//          differ, the speed is cut. The strike hits CueStrike.ballIndex at both generations, generation one strikes as
+//          offset, two to three degrees at half the radius. Miscue: its turn is a function of the stroke (any seed gives
+//          the same miscue), away from the side the tip slid off and growing with the overshoot; the speed is cut. The strike hits CueStrike.ballIndex at both generations, generation one strikes as
 //          it always did, and the aim guide's launch direction is the direction the solver really launches.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the generation-one checks use
 //          PoolParameters.generationOne now that the default is generation two.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 25: the miscue's turn is a function of
+//          the stroke, so its test checks that the seed changes nothing and that the turn goes away from the struck side,
+//          growing with the overshoot; the guide shows a miscue's real line.)
 // SRP/DRY check: Pass - checked PhysicsSwitchTests (the starting values' reasons) and JumpTests (raised strikes on
 //          generation 1). These are the generation-two strike checks; the proof stream may write spec 12 as an expected
 //          failure, and this file holds the real test (the coordinator keeps one copy).
@@ -115,25 +118,43 @@ final class CueStrikeModelTests: XCTestCase {
         XCTAssertLessThanOrEqual(degrees, 3)
     }
 
-    // Miscue: repeatable from the seed, different for different seeds, slower, and its turn within the stated range.
-    func testMiscueIsSeededAndSlow() {
+    // Miscue (bug plan after 0.6.6, item 25): the turn is a function of the stroke, not of the seed. The same stroke
+    // miscues the same way with any seed; it turns away from the side the tip slid off (struck right, it goes left);
+    // the turn grows with how far past the grip the tip struck, up to miscueMaxDeflection; a tip that slides off the
+    // top or the bottom sends the ball along the aim; and the ball leaves slower, with less spin than a good hit.
+    func testMiscueTurnIsAFunctionOfTheStroke() {
         let p = p2, R = p.ballRadius
+        let limit = p.miscueOffsetLimit
         let s = CueStrike(direction: Vec2(1, 0), speed: 4, tipUp: 0.1 * R, tipSide: 0.65 * R)
-        let a = strike(s, p, seed: 11), b = strike(s, p, seed: 11)
+        let a = strike(s, p, seed: 11), b = strike(s, p, seed: 4242)
         XCTAssertEqual(a.miscue, true)
-        XCTAssertEqual(a.deflectionSine, b.deflectionSine)
+        XCTAssertEqual(a.deflectionSine, b.deflectionSine, "the seed must not change a miscue")
         XCTAssertEqual(a.balls[0].velocityAfter, b.balls[0].velocityAfter)
-        let sines = Set((1...12).map { strike(s, p, seed: UInt64($0)).deflectionSine ?? 0 })
-        XCTAssertGreaterThan(sines.count, 6, "different seeds should give different miscues")
+        XCTAssertGreaterThan(a.deflectionSine ?? 0, 0, "struck on the right, the ball turns left")
+        let left = strike(CueStrike(direction: Vec2(1, 0), speed: 4, tipUp: 0.1 * R, tipSide: -0.65 * R), p)
+        XCTAssertEqual(left.deflectionSine ?? 0, -(a.deflectionSine ?? 0), accuracy: 1e-15)
+        // Growing with the overshoot, capped at the stated maximum.
         let maxSine = p.miscueMaxDeflection / (1 + p.miscueMaxDeflection * p.miscueMaxDeflection).squareRoot()
-        for sine in sines { XCTAssertLessThanOrEqual(abs(sine), maxSine + 1e-15) }
+        var last = 0.0
+        for over in [0.01, 0.03, 0.06, 0.1, 0.2] {
+            let e = strike(CueStrike(direction: Vec2(1, 0), speed: 3, tipSide: limit + over * R), p)
+            let sine = e.deflectionSine ?? 0
+            XCTAssertGreaterThanOrEqual(sine, last - 1e-15, "overshoot \(over)")
+            XCTAssertLessThanOrEqual(sine, maxSine + 1e-15)
+            last = sine
+        }
+        XCTAssertEqual(last, maxSine, accuracy: 1e-12, "a tip a tenth of the radius or more past the grip turns the most")
+        // Off the top or bottom: no turn in the table plane.
+        XCTAssertEqual(strike(CueStrike(direction: Vec2(1, 0), speed: 3, tipUp: 0.7 * R), p).deflectionSine, 0)
+        XCTAssertEqual(strike(CueStrike(direction: Vec2(1, 0), speed: 3, tipUp: -0.7 * R), p).deflectionSine, 0)
         XCTAssertEqual(a.balls[0].velocityAfter.length, 4 * p.miscueSpeedFraction, accuracy: 1e-12)
         // Less spin than a good hit at the limit with the full stroke would give.
-        let limit = p.miscueOffsetLimit
         XCTAssertLessThan(a.balls[0].omegaAfter.length, 2.5 * 4 * limit / (R * R))
-        // The whole recording repeats from the same seed.
-        let input = ShotInput(parameters: p, positions: lone(), strike: s, seed: 11)
-        XCTAssertEqual(PoolSolver.simulate(input).contentHash, PoolSolver.simulate(input).contentHash)
+        // The whole recording is the same whatever the seed (a lone ball: nothing else uses it).
+        let one = PoolSolver.simulate(ShotInput(parameters: p, positions: lone(), strike: s, seed: 11))
+        let two = PoolSolver.simulate(ShotInput(parameters: p, positions: lone(), strike: s, seed: 12))
+        XCTAssertEqual(one.events.count, two.events.count)
+        XCTAssertEqual(one.state(ball: 0, at: one.duration + 1).position, two.state(ball: 0, at: two.duration + 1).position)
     }
 
     // A raised cue: the same speed factor and miscue rule; the turn is in the table plane only.
@@ -141,7 +162,7 @@ final class CueStrikeModelTests: XCTestCase {
         let p = p2, R = p.ballRadius
         let e = 0.3
         let s = CueStrike(direction: Vec2(1, 0), speed: 2, tipUp: 0.1 * R, tipSide: 0.3 * R, elevation: e)
-        let launch = PoolSolver.cueLaunch(s, p, seed: 1)
+        let launch = PoolSolver.cueLaunch(s, p)
         XCTAssertEqual(launch.speed, 2 * factor(0.01 * R * R + 0.09 * R * R, p), accuracy: 1e-12)
         XCTAssertFalse(launch.miscue)
         let ev = strike(s, p)
@@ -182,7 +203,8 @@ final class CueStrikeModelTests: XCTestCase {
     }
 
     // The aim guide's direction is the solver's launch direction: the aim at generation one, the turned direction on
-    // generation two (equal to the recorded launch), and the cue's own line for a miscue (its turn is unknowable).
+    // generation two (equal to the recorded launch), and for a miscue its turn too, now that the turn is a function of
+    // the stroke (item 25), so the guide can show where a miscue goes.
     func testLaunchDirectionForTheAimGuide() {
         let R = PoolParameters().ballRadius
         let s = CueStrike(direction: Vec2(0.6, 0.8), speed: 2, tipSide: 0.4 * R)
@@ -193,6 +215,10 @@ final class CueStrikeModelTests: XCTestCase {
         XCTAssertEqual((v.normalized - guide).length, 0, accuracy: 1e-12)
         XCTAssertGreaterThan(s.direction.x * guide.y - s.direction.y * guide.x, 0, "right side turns the ball left")
         let miscue = CueStrike(direction: Vec2(0.6, 0.8), speed: 2, tipSide: 0.7 * R)
-        XCTAssertEqual(PoolSolver.launchDirection(for: miscue, parameters: p2), miscue.direction)
+        let miscueGuide = PoolSolver.launchDirection(for: miscue, parameters: p2)
+        let played = PoolSolver.simulate(ShotInput(parameters: p2, positions: lone(), strike: miscue, seed: 9))
+        let mv = played.events.first { $0.kind == .cueStrike }!.balls[0].velocityAfter
+        XCTAssertEqual((mv.normalized - miscueGuide).length, 0, accuracy: 1e-12, "the guide shows the miscue's real line")
+        XCTAssertGreaterThan(miscue.direction.x * miscueGuide.y - miscue.direction.y * miscueGuide.x, 0)
     }
 }

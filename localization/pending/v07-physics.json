@@ -1,0 +1,230 @@
+{
+ "keys": [
+  "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+  "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+  "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+  "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Manda la blanca a la banda de cabecera en el primer diamante desde la banda izquierda, luego a la banda izquierda justo pasado el segundo diamante, y mesa arriba para cortar la 3 a la esquina izquierda del pie."
+  },
+  {
+   "culture": "fr",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Envoie la blanche sur la bande de tête à la première mouche depuis la bande gauche, puis sur la bande gauche juste après la deuxième mouche, et elle remonte la table pour couper la 3 dans le coin gauche du pied."
+  },
+  {
+   "culture": "de",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Schick die Weiße an die Kopfbande am ersten Diamanten von der linken Bande aus, dann an die linke Bande knapp hinter dem zweiten Diamanten und den Tisch hinauf, um die 3 in die linke Fußecke zu schneiden."
+  },
+  {
+   "culture": "it",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Manda la bianca sulla sponda di testa al primo diamante dalla sponda sinistra, poi sulla sponda sinistra appena oltre il secondo diamante, e su per il tavolo a tagliare la 3 nell'angolo sinistro di fondo."
+  },
+  {
+   "culture": "pt",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Manda a branca à tabela da cabeceira no primeiro diamante a partir da tabela esquerda, depois à tabela esquerda logo depois do segundo diamante, e mesa acima para cortar a 3 para o canto esquerdo do pé."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Mande a branca na tabela da cabeceira no primeiro diamante a partir da tabela esquerda, depois na tabela esquerda logo depois do segundo diamante, e mesa acima para cortar a 3 no canto esquerdo do pé."
+  },
+  {
+   "culture": "ja",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "手球を左クッションから数えて1つ目のポイントでヘッドクッションへ、次に左クッションの2つ目のポイントのすぐ先へ。台を上って3番をフット左コーナーへカット。"
+  },
+  {
+   "culture": "ko",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "큐볼을 왼쪽 쿠션 쪽 첫 번째 포인트에서 헤드 쿠션으로, 그다음 왼쪽 쿠션 두 번째 포인트 바로 지나서 보내세요. 테이블을 올라가 3번을 풋 왼쪽 코너로 깎아 넣어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "把母球打向头库靠左库的第一个星点，再弹到左库第二个星点稍后处，然后往上走，把 3 号球切进脚端左角袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "Пошли биток в верхний борт у первой метки от левого борта, затем в левый борт чуть за второй меткой и вверх по столу, чтобы срезать 3 в левый нижний угол."
+  },
+  {
+   "culture": "ar",
+   "key": "Send the cue ball into the head rail at the first diamond from the left rail, then off the left rail just past the second diamond, and up the table to cut the 3 into the foot-left corner.",
+   "text": "أرسل الكرة البيضاء إلى حافة الرأس عند الماسة الأولى من الحافة اليسرى، ثم إلى الحافة اليسرى بعد الماسة الثانية بقليل، وصعوداً على الطاولة لتقطع الكرة 3 إلى زاوية القدم اليسرى."
+  },
+  {
+   "culture": "es",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Dar en la cabecera un poco demasiado a la derecha: la blanca vuelve muy por el centro y roza la 8."
+  },
+  {
+   "culture": "fr",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Toucher la bande de tête un peu trop à droite : la blanche revient trop près du milieu et frôle la 8."
+  },
+  {
+   "culture": "de",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Die Kopfbande etwas zu weit rechts treffen: Die Weiße kommt zu nah an der Mitte zurück und streift die 8."
+  },
+  {
+   "culture": "it",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Prendere la sponda di testa un po' troppo a destra: la bianca torna troppo vicino al centro e tocca la 8."
+  },
+  {
+   "culture": "pt",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Bater na cabeceira um pouco à direita demais: a branca volta perto demais do meio e toca na 8."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Bater na cabeceira um pouco à direita demais: a branca volta perto demais do meio e encosta na 8."
+  },
+  {
+   "culture": "ja",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "ヘッドクッションを少し右に外すと、手球が中央寄りに戻って8番をかすめる。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "헤드 쿠션을 조금 너무 오른쪽에 맞히면, 큐볼이 가운데 쪽으로 돌아와 8번을 스쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "头库打得稍微偏右：母球回来时太靠中间，擦到 8 号球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "Попадание в верхний борт чуть правее: биток возвращается слишком близко к центру и цепляет восьмёрку."
+  },
+  {
+   "culture": "ar",
+   "key": "Hitting the head rail a little too far right: the cue ball comes back too near the middle and clips the 8.",
+   "text": "إصابة حافة الرأس أبعد قليلاً إلى اليمين: تعود الكرة البيضاء قريبة جداً من الوسط وتلمس الكرة 8."
+  },
+  {
+   "culture": "es",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Banda derecha en el primer diamante, luego la cabecera, luego la banda izquierda justo antes del segundo diamante, y abajo hasta la 15."
+  },
+  {
+   "culture": "fr",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Bande droite à la première mouche, puis la bande de tête, puis la bande gauche juste avant la deuxième mouche, et on descend sur la 15."
+  },
+  {
+   "culture": "de",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Rechte Bande am ersten Diamanten, dann die Kopfbande, dann die linke Bande knapp vor dem zweiten Diamanten und hinunter auf die 15."
+  },
+  {
+   "culture": "it",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Sponda destra al primo diamante, poi la sponda di testa, poi la sinistra appena prima del secondo diamante, e giù sulla 15."
+  },
+  {
+   "culture": "pt",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Tabela direita no primeiro diamante, depois a cabeceira, depois a tabela esquerda logo antes do segundo diamante, e desce até à 15."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Tabela direita no primeiro diamante, depois a cabeceira, depois a tabela esquerda logo antes do segundo diamante, e desce até a 15."
+  },
+  {
+   "culture": "ja",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "右クッションの1つ目のポイント、次にヘッドクッション、次に左クッションの2つ目のポイントの少し手前、そして15番へ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "오른쪽 쿠션 첫 번째 포인트, 그다음 헤드 쿠션, 그다음 왼쪽 쿠션 두 번째 포인트 바로 앞, 그리고 15번으로 내려가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "右库第一个星点，然后头库，然后左库第二个星点稍前处，再下来打 15 号球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "Правый борт у первой метки, затем верхний борт, затем левый борт чуть не доходя второй метки и вниз на 15."
+  },
+  {
+   "culture": "ar",
+   "key": "Right rail at the first diamond, then the head rail, then the left rail just short of the second diamond, and down onto the 15.",
+   "text": "الحافة اليمنى عند الماسة الأولى، ثم حافة الرأس، ثم الحافة اليسرى قبل الماسة الثانية بقليل، ونزولاً إلى الكرة 15."
+  },
+  {
+   "culture": "es",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Banda del pie justo a la derecha del primer diamante, la banda izquierda cerca de la esquina, la banda derecha pasada la lateral, y luego mesa arriba hasta la 9."
+  },
+  {
+   "culture": "fr",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Bande du pied juste à droite de la première mouche, la bande gauche près du coin, la bande droite après la poche du milieu, puis on remonte la table jusqu'à la 9."
+  },
+  {
+   "culture": "de",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Fußbande knapp rechts vom ersten Diamanten, die linke Bande nahe der Ecke, die rechte Bande hinter der Mitteltasche, dann den Tisch hinauf zur 9."
+  },
+  {
+   "culture": "it",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Sponda di fondo appena a destra del primo diamante, la sponda sinistra vicino all'angolo, la destra oltre la centrale, poi su per il tavolo fino alla 9."
+  },
+  {
+   "culture": "pt",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Tabela do pé logo à direita do primeiro diamante, a tabela esquerda perto do canto, a tabela direita depois da lateral, e depois mesa acima até à 9."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Tabela do pé logo à direita do primeiro diamante, a tabela esquerda perto do canto, a tabela direita depois da lateral, e depois mesa acima até a 9."
+  },
+  {
+   "culture": "ja",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "フットクッションの1つ目のポイントのすぐ右、左クッションのコーナー近く、右クッションのサイドポケットの先、そして台を上って9番へ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "풋 쿠션 첫 번째 포인트 바로 오른쪽, 왼쪽 쿠션 코너 근처, 오른쪽 쿠션 사이드 포켓 지나서, 그리고 테이블을 올라가 9번으로."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "脚库第一个星点稍右处，再到左库靠近角袋处，再到右库中袋之后，然后往上走到 9 号球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "Нижний борт чуть правее первой метки, левый борт у угла, правый борт за средней лузой, затем вверх по столу к 9."
+  },
+  {
+   "culture": "ar",
+   "key": "Foot rail just right of the first diamond, the left rail near the corner, the right rail past the side pocket, then up the table to the 9.",
+   "text": "حافة القدم يمين الماسة الأولى مباشرة، ثم الحافة اليسرى قرب الزاوية، ثم الحافة اليمنى بعد الجيب الجانبي، ثم صعوداً إلى الكرة 9."
+  }
+ ]
+}

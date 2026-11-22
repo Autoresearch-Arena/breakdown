@@ -1,12 +1,14 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
-// PURPOSE: The eleven real-table checks of Tests/BreakdownCoreTests/RealWorldTests.swift as plain functions, so the
+// PURPOSE: The twelve real-table checks of Tests/BreakdownCoreTests/RealWorldTests.swift as plain functions, so the
 //          "sweep" command (RealWorldSweep.swift) can run them on any set of numbers and count how many bands pass.
 //          Each takes the parameters to try (generation two is set by the caller) and returns whether its band held
 //          and a one-line note of what it measured. The setups, measurements and bands are the test file's, line for
 //          line; the reasoning for every band is written there, not repeated here.
 //          KEEP IN STEP: this is a copy. A test target cannot be imported by a tool and the solver's module must not
 //          carry test setups, so when a case or band changes in RealWorldTests.swift, change it here in the same commit.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 26: case 7's slow rebound must be at least
+//          two degrees steeper, and case 12, the draw-stun-roll order off a rail, joins; the same changes as the tests.)
 // SRP/DRY check: Pass - a deliberate, minimal duplicate of RealWorldTests' setups (stated above); the solver call is
 //          PoolSolver directly, since TrickSearch's simulate() takes an aim in degrees and these shots use unit
 //          directions. Nothing else here exists elsewhere in BreakProbe.
@@ -26,7 +28,7 @@ let rwCases: [(number: Int, name: String, run: @Sendable (PoolParameters) -> RWO
     (1, "lag", rwLag), (2, "stop shot", rwStopShot), (3, "draw", rwDraw), (4, "thirty-degree rule", rwThirtyDegrees),
     (5, "throw", rwThrow), (6, "rail energy", rwRailEnergy), (7, "rail angle", rwRailAngle),
     (8, "table lengths", rwLengths), (9, "spin-down", rwSpinDown), (10, "squirt and speed loss", rwSquirt),
-    (11, "jump", rwJump),
+    (11, "jump", rwJump), (12, "rail rebound order", rwRailOrder),
 ]
 
 private func rwLayout(_ balls: [Int: Vec2]) -> [Vec2] {
@@ -158,8 +160,48 @@ private func rwTravelAfterHit(_ tl: Timeline, from: Double, _ q: PoolParameters)
         return atan2(abs(v.y), abs(v.x)) * 180 / Double.pi
     }
     let slow = exitAngle(1), fast = exitAngle(5)
-    return RWOutcome(passed: slow > 45 && fast < 45,
-                     note: String(format: "off the rail at %.1f deg slow (over 45), %.1f fast (under 45)", slow, fast))
+    return RWOutcome(passed: slow >= 47 && fast < 45,
+                     note: String(format: "off the rail at %.1f deg slow (at least 47), %.1f fast (under 45)", slow, fast))
+}
+
+/// Case 12 (bug plan after 0.6.6, item 26): straight into a rail from just in front of it, a drawn ball comes back
+/// farthest, a stun ball next and a naturally rolling ball the shortest, each clearly farther than the next.
+@Sendable func rwRailOrder(_ q: PoolParameters) -> RWOutcome {
+    var notes: [String] = []
+    var ok = true
+    for pace in [0.5, 1.0] {
+        let r = rwRailRebounds(q, pace: pace)
+        let clear = r.draw >= 1.15 * r.stun && r.stun >= 1.15 * r.roll
+        ok = ok && clear
+        notes.append(String(format: "%.1f m/s: draw %.3f, stun %.3f, roll %.3f m", pace, r.draw, r.stun, r.roll))
+    }
+    return RWOutcome(passed: ok, note: notes.joined(separator: "; ") + " (each at least 1.15 times the next)")
+}
+
+/// How far a drawn, a stunned and a naturally rolling ball come back off a rail, struck straight at it from 5 mm away
+/// at `pace` (the off-centre strokes at the stroke whose slower launch matches the stun's), measured where each would
+/// stop if nothing touched it again (the rolling law after its slide off the rail ends).
+func rwRailRebounds(_ q: PoolParameters, pace: Double) -> (draw: Double, stun: Double, roll: Double) {
+    let r = q.ballRadius
+    let start = Vec2(0.8, q.railContactDistance + 0.005)
+    let big = q.cueMass + q.ballMass
+    // 0.4 R off centre gives exactly the natural roll's spin, 5/2 * v * 0.4 R / R^2 = v / R, at the launch speed.
+    let factor = q.usesGenerationTwo ? big / (big + 2.5 * q.cueMass * 0.16) : 1
+    func rebound(_ tipUp: Double, _ speed: Double) -> Double {
+        let tl = rwSolve(q, [0: start], dir: Vec2(0, -1), speed: speed, up: tipUp)
+        guard let rail = tl.events.first(where: { $0.kind == .cushion }) else { return .nan }
+        let after = tl.events.filter { $0.time > rail.time && $0.balls.first?.ball == 0 }
+        guard let end = after.first(where: { $0.kind == .phaseTransition && $0.phaseFrom == .sliding }) else {
+            return tl.state(ball: 0, at: tl.duration + 1).position.y - start.y
+        }
+        var travel = end.point.y - q.railContactDistance
+        if end.phaseTo == .rolling {
+            let v = end.balls[0].velocityAfter.y
+            travel += (v < 0 ? -1 : 1) * v * v / (2 * q.rollingResistance * q.gravity)
+        }
+        return travel
+    }
+    return (rebound(-0.4 * r, pace / factor), rebound(0, pace), rebound(0.4 * r, pace / factor))
 }
 
 @Sendable func rwLengths(_ q: PoolParameters) -> RWOutcome {

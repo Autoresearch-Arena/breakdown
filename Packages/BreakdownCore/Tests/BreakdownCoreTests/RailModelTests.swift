@@ -11,6 +11,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: spec 3b passes on the tuned numbers, so its
 //          expected-failure wrapper is gone; the draw-stun-roll order now fails on them and is marked so, with the
 //          measurements; the generation-one comparison uses PoolParameters.generationOne.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 26: the rail is coupled, the cloth gripping
+//          during the rail's push, with separate grips along the rail and across the nose; the draw-stun-roll order now
+//          holds, so its expected-failure wrapper is gone, and 3b leaves at 47.1 degrees.)
 // SRP/DRY check: Pass - checked PhysicsTests (generation-1 cushion mirror, kept as it is), PocketTests and JumpTests
 //          (generation-1 sweeps). These are the generation-two rail checks only. The proof stream may also write tests
 //          3b and 4 as expected failures; this file holds the real ones (the coordinator keeps one copy).
@@ -66,7 +69,8 @@ final class RailModelTests: XCTestCase {
     // 0.14 to 0.2), or a livelier rail at walking pace; both are the proof plan's package 4 tuning (its case 7, "rail
     // angle: constrains rail grip"). The tuning raised the rail's bounce at walking pace to 0.95 (cloth grip 0.15), and
     // on those numbers the ball leaves at 45.55 degrees (package test run, 21-Nov-2026): steeper, as it should, so the
-    // expected-failure wrapper is gone.
+    // expected-failure wrapper is gone. With the coupled rail and the rail sweep's numbers (bug plan after 0.6.6, item
+    // 26) it leaves at 47.1 degrees, and real-table case 7 now asks for at least two degrees steeper.
     func testNaturalRollAtFortyFiveDegreesLeavesSteeper() {
         let p = p2
         let a = 1.0 / 2.0.squareRoot()
@@ -130,17 +134,13 @@ final class RailModelTests: XCTestCase {
         let stun = rebound(0, V)
         let roll = rebound(0.4 * R, V / factor)
         print(String(format: "RAIL topspin order: draw %.3f m, stun %.3f m, natural roll %.3f m", draw, stun, roll))
-        // Expected failure since the tuning (proof plan package 4, 21-Nov-2026): with the tuned numbers (rail bounce 0.95
-        // at walking pace, cloth grip 0.15) this setup gives draw 0.113 m, stun 0.108 m and natural roll 0.111 m, so
-        // natural roll passes stun by 3 mm. A scan of 5, 20 and 50 mm out at 0.3, 0.5 and 1 m/s found the full order in
-        // two of the nine setups (5 mm at 0.5 m/s, 50 mm at 1 m/s) and the reverse order at 5 and 20 mm at 1 m/s, so no
-        // setup was picked to make it pass. The order was met here on the starting numbers (bounce 0.85). Left
-        // for the rails plan to settle: either the order is not what a real rail does at these paces, or the rail's grip
-        // on spin needs work. Not strict, so it reports when it passes again.
-        XCTExpectFailure("Tuned rails break the draw-stun-roll rebound order here; see the comment above.", strict: false) {
-            XCTAssertGreaterThan(draw, stun)
-            XCTAssertGreaterThan(stun, roll)
-        }
+        // On the first tuning (proof plan package 4) this setup gave draw 0.113 m, stun 0.108 m and natural roll 0.111 m:
+        // the step-by-step rail took nearly all of the spin. With the coupled rail (the cloth grips during the rail's
+        // push) and the grip across the nose apart from the grip along the rail (bug plan after 0.6.6, item 26) it gives
+        // draw 0.115 m, stun 0.082 m, roll 0.077 m on the package run of 21-Nov-2026; real-table case 12 checks the
+        // same order, with a margin, at livelier paces.
+        XCTAssertGreaterThan(draw, stun)
+        XCTAssertGreaterThan(stun, roll)
     }
 
     // The rail is livelier at walking pace than at break speed: the share of speed kept, straight in, falls with speed.
@@ -166,6 +166,9 @@ final class RailModelTests: XCTestCase {
             p.cushionRestitution = 0.5 + rng.next() * 0.5
             p.cushionFriction = rng.next() * 0.4
             p.railRestitutionSlope = rng.next() * 0.05
+            // The coupled rail's other grips (bug plan after 0.6.6, item 26): across the nose, and the cloth's under it.
+            p.railCrossGrip = rng.next() * 0.4
+            p.slateFriction = rng.next() * 0.6
             let R = p.ballRadius
             let speed = 0.02 + rng.next() * 12
             let incidence = (rng.next() - 0.5) * 0.98 * Double.pi       // within +-88 degrees of the normal
