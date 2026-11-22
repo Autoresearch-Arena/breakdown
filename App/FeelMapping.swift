@@ -4,14 +4,20 @@
 //          happened at, for panning; new kinds for a pin knocked down, a post, a jump landing, a ball leaving the table,
 //          a rim skip, a miscue, balls settling in contact, the knocks of a ball settling in a pocket, and three match
 //          moments (foul, turn change, win); the pocket's settling knocks are timed from the ball's entry speed.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 36: two made-it moments, madeIt and madeItBig, for a
+//          lesson passed, the stop shot's exercise made, a trick shot made and a medal won; madeItBig for a gold medal and
+//          the sixth lesson. GameMoment.medal(_:) picks between them for a medal. Ordinary voices on every surface.)
 // PURPOSE: One pure place that turns the recorded impacts crossed in a frame into "feel cues" (what kind of
 //          thump or click, how strong, how long after the first, and where on the table). SoundBoard and Haptics
 //          both read these cues, so sight, sound and touch are all driven by the same recorded number and can never
 //          disagree. The break drops about thirty contacts at the same instant; this file collapses them into one
 //          sharp crack plus a few quieter scatter clicks, instead of thirty overlapping sounds. No audio or haptic
 //          framework is imported here, so the mapping is easy to log, reason about and test. Match screens use
-//          GameMoment (through SoundBoard.play(_:)) for the three moments that are not table impacts.
-// SRP/DRY check: Pass - mapping only; SoundBoard makes noise and Haptics makes touch. Replaces the strength
+//          GameMoment (through SoundBoard.play(_:)) for the three moments that are not table impacts; the lesson,
+//          trick-shot and Behind the 8-Ball screens use it for the two made-it moments, from the same place that starts
+//          their success glow (LessonTableLayer, TrickTableLayer, EightBallTableLayer).
+// SRP/DRY check: Pass - mapping only (GameMoment.medal only reads which medal it was, to choose the made-it; the medal
+//          rules stay in EightBallTypes); SoundBoard makes noise and Haptics makes touch. Replaces the strength
 //          formula that used to live inside SoundBoard. Physical constants (ball mass, gravity, pocket size) are read
 //          from PoolParameters, not copied.
 import BreakdownLensModel
@@ -36,12 +42,14 @@ enum FeelKind: String, Sendable {
     case foul       // match moment: a foul was called
     case turnChange // match moment: the other player is up
     case win        // match moment: the match is won
+    case madeIt     // a lesson passed, a trick shot made, a medal won
+    case madeItBig  // the bigger one: a gold medal, the sixth lesson
 
     /// True for sounds of the table itself (they come from a point on the table and stop the title music); false for
-    /// the match moments, which are the game speaking, centred.
+    /// the game's own moments, which are the game speaking, centred, and only dip the music.
     var isTableSound: Bool {
         switch self {
-        case .foul, .turnChange, .win: return false
+        case .foul, .turnChange, .win, .madeIt, .madeItBig: return false
         default: return true
         }
     }
@@ -56,26 +64,44 @@ struct FeelCue: Equatable, Sendable {
     var point: Vec2? = nil
 }
 
-/// The match moments a screen can sound, through SoundBoard.play(_:). Each plays its voice and its haptic together.
+/// The moments a screen can sound, through SoundBoard.play(_:). Each plays its voice and its haptic together (the two
+/// made-it moments have no haptic pattern of their own: Haptics explains why).
 enum GameMoment: Sendable {
     case foul, turnChange, win
+    /// A lesson passed, the stop shot's exercise made, a trick shot made, a medal won: played from the same change
+    /// that starts the screen's success glow, so the sound lands with the light.
+    case madeIt
+    /// The bigger made-it: a gold medal, and the sixth lesson (the end of the path).
+    case madeItBig
 
     var kind: FeelKind {
         switch self {
         case .foul: return .foul
         case .turnChange: return .turnChange
         case .win: return .win
+        case .madeIt: return .madeIt
+        case .madeItBig: return .madeItBig
         }
     }
 
     /// The strength each moment plays at (it picks the voice's strength layer and the haptic's intensity). A turn
-    /// change happens every few shots, so it is the softest; a foul must be noticed; a win is the one big moment.
+    /// change happens every few shots, so it is the softest; a foul must be noticed; a win is the one big moment. A
+    /// made-it sits in the third of the four layers (VoiceBook.strengths), a little darker than its big one, which
+    /// plays in the top layer like a win.
     var strength: Double {
         switch self {
         case .foul: return 0.6
         case .turnChange: return 0.35
         case .win: return 0.9
+        case .madeIt: return 0.6
+        case .madeItBig: return 0.9
         }
+    }
+
+    /// The made-it moment for a Behind the 8-Ball medal: the big one for gold, the ordinary one for silver and bronze
+    /// (and for no medal, which never celebrates, so it is never asked for).
+    static func medal(_ medal: EightBallMedal?) -> GameMoment {
+        medal == .gold ? .madeItBig : .madeIt
     }
 }
 

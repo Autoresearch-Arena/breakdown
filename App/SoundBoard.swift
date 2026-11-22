@@ -9,6 +9,9 @@
 //          balls rolling are heard (RollingVoices) through follow(), called every frame; the rail and landing voices
 //          follow the surface (SurfaceSound); the title music fades out at the first table sound and dips under the
 //          match moments; one shared board, so match screens can call SoundBoard.play(.foul) and the like.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 36: two made-it voices, madeIt and madeItBig, played
+//          through SoundBoard.play(_:) when a lesson is passed, a trick shot made or a medal won, the big one for a gold
+//          medal and the sixth lesson. Same voices on every surface: no special sound on the Moon.)
 // PURPOSE: All generated table audio, synthesised in code with Apple's audio framework (no sample files). Plays the
 //          feel cues chosen by FeelMapping (the break crack, ball clicks, the cue tock, rail thuds, pocket drops and
 //          their settling knocks, and the newer voices above) and the rolling hush of moving balls. One number drives
@@ -20,7 +23,9 @@
 //          a peak limiter (so a break never clips), then the output.
 //          Hooks for the rest of the app: SoundBoard.shared.play(cues, at:) for the frame's cues (ShowpieceModel),
 //          SoundBoard.shared.follow(...) once every frame for the rolling voices (ShowpieceModel.advance), and
-//          SoundBoard.play(.foul / .turnChange / .win) for match screens (sound and haptic together).
+//          SoundBoard.play(.foul / .turnChange / .win) for match screens (sound and haptic together), and
+//          SoundBoard.play(.madeIt / .madeItBig) for the lesson, trick-shot and Behind the 8-Ball successes, called by
+//          their table layers beside the success glow.
 //          Launching with -muteSound keeps the engine off and skips building the voices, so testing on a shared
 //          machine is silent; launching with -logFeel prints every cue as it fires.
 // SRP/DRY check: Pass - sound output only; FeelMapping decides what to play, the playback loop decides when,
@@ -78,6 +83,10 @@ enum VoiceBook {
         case .foul: return 0.5
         case .turnChange: return 0.35
         case .win: return 0.6
+        // A made-it comes far more often than a win (every lesson, every trick shot, every medal), so it sits under
+        // the win; the big one matches the win, since a gold medal or the end of the path is as big a moment.
+        case .madeIt: return 0.45
+        case .madeItBig: return 0.6
         }
     }
 
@@ -205,7 +214,49 @@ enum VoiceBook {
                 partials.append(Partial(f * 2.76, 0.2, fade: 8, bright: 0.6, at: at))
             }
             return VoiceRecipe(seconds: 1.1, partials: partials, bursts: [], pitchSpread: 0.004)
+        case .madeIt:
+            return madeIt()
+        case .madeItBig:
+            return madeItBig()
         }
+    }
+
+    /// The made-it: two quick notes rising a fourth (G then the C above), struck bells with the same off-key overtone
+    /// as the win (2.76 times the pitch, the first overtone of a ringing ball), so every success in the game sounds
+    /// like the same table. Shorter and plainer than the win, because it comes after every lesson and trick shot.
+    /// The second note follows by 90 ms, quick enough to read as one gesture with the glow's flash.
+    static func madeIt() -> VoiceRecipe {
+        let notes: [Double] = [783.99, 1_046.5]
+        var partials: [Partial] = []
+        for (i, f) in notes.enumerated() {
+            let at = 0.09 * Double(i)
+            partials.append(Partial(f, 0.55, fade: 5, at: at))
+            partials.append(Partial(f * 2.76, 0.18, fade: 9, bright: 0.6, at: at))
+        }
+        // A tiny tick of contact on the first note, the ball being struck, so it starts crisp rather than swelling.
+        return VoiceRecipe(seconds: 0.8, partials: partials, bursts: [Burst(0.04, fade: 300, tone: 0.4)],
+                           pitchSpread: 0.004)
+    }
+
+    /// The big made-it: the same rise carried on up (G, C, E, G, 80 ms apart), then a C major chord under it that rings
+    /// on for about a second (fade 2.5 per second: a third of its level is left after 0.4 s, a twelfth after 1 s), the
+    /// glow's whole fade. Bigger by length and by the held chord, not only by level.
+    static func madeItBig() -> VoiceRecipe {
+        let rise: [Double] = [783.99, 1_046.5, 1_318.5, 1_568.0]
+        var partials: [Partial] = []
+        for (i, f) in rise.enumerated() {
+            let at = 0.08 * Double(i)
+            partials.append(Partial(f, 0.5, fade: 5, at: at))
+            partials.append(Partial(f * 2.76, 0.16, fade: 9, bright: 0.6, at: at))
+        }
+        // The chord lands with the last note of the rise.
+        let chordAt = 0.08 * Double(rise.count - 1)
+        for f in [523.25, 659.25, 783.99] {
+            partials.append(Partial(f, 0.32, fade: 2.5, at: chordAt))
+            partials.append(Partial(f * 2.0, 0.1, fade: 4, bright: 0.7, at: chordAt))
+        }
+        return VoiceRecipe(seconds: 1.6, partials: partials, bursts: [Burst(0.04, fade: 300, tone: 0.4)],
+                           pitchSpread: 0.004)
     }
 
     /// The rail thud for each tone: a low knock with a sagging body. A bright rail (lively rubber, a hard bed) adds
@@ -288,8 +339,8 @@ final class SoundBoard {
     /// screens alike).
     static let shared = SoundBoard()
 
-    /// Match screens: play a moment (foul, turn change, win), its sound and its haptic together, at the moment's own
-    /// strength. Centred, not placed on the table.
+    /// Play a game moment (foul, turn change, win, made-it), its sound and its haptic together, at the moment's own
+    /// strength. Centred, not placed on the table. Honours the Sound and Vibration options as every cue does.
     static func play(_ moment: GameMoment) {
         let cue = FeelCue(kind: moment.kind, strength: moment.strength, delay: 0)
         shared.play([cue], at: 0)
@@ -451,14 +502,16 @@ final class SoundBoard {
         case .foul: return .foul
         case .turnChange: return .turnChange
         case .win: return .win
+        case .madeIt: return .madeIt
+        case .madeItBig: return .madeItBig
         }
     }
 
     private func fire(_ cue: FeelCue) {
         let chosen = voice(for: cue.kind)
         guard let layers = voices[chosen], !layers.isEmpty else { return }
-        // The title music never plays over the table: the first table sound sends it out fast. A match moment only
-        // dips it, in case a moment ever sounds while the menu's music is still up.
+        // The title music never plays over the table: the first table sound sends it out fast. A game moment (a match
+        // moment or a made-it) only dips it, in case a moment ever sounds while the menu's music is still up.
         if cue.kind.isTableSound {
             TitleMusic.shared.stop(fadeSeconds: VoiceBook.musicOutFade)
         } else {

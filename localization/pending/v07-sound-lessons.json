@@ -1,0 +1,57 @@
+{
+ "keys": [
+  "Back to the lesson's stroke",
+  "Puts the balls back with the lesson's own aim, power and spin",
+  "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.",
+  "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass."
+ ],
+ "translations": [
+  {"culture": "es", "key": "Back to the lesson's stroke", "text": "Volver al golpe de la lección"},
+  {"culture": "fr", "key": "Back to the lesson's stroke", "text": "Revenir au coup de la leçon"},
+  {"culture": "de", "key": "Back to the lesson's stroke", "text": "Zurück zum Stoß der Lektion"},
+  {"culture": "it", "key": "Back to the lesson's stroke", "text": "Torna al colpo della lezione"},
+  {"culture": "pt", "key": "Back to the lesson's stroke", "text": "Voltar à tacada da lição"},
+  {"culture": "pt-BR", "key": "Back to the lesson's stroke", "text": "Voltar à tacada da lição"},
+  {"culture": "ja", "key": "Back to the lesson's stroke", "text": "レッスンの撞き方に戻す"},
+  {"culture": "ko", "key": "Back to the lesson's stroke", "text": "레슨의 샷으로 돌아가기"},
+  {"culture": "zh-Hans", "key": "Back to the lesson's stroke", "text": "回到课上的击球"},
+  {"culture": "ru", "key": "Back to the lesson's stroke", "text": "Вернуть удар из урока"},
+  {"culture": "ar", "key": "Back to the lesson's stroke", "text": "العودة إلى ضربة الدرس"},
+
+  {"culture": "es", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Devuelve las bolas a su sitio con la puntería, la potencia y el efecto de la lección"},
+  {"culture": "fr", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Remet les billes en place avec la visée, la puissance et l'effet de la leçon"},
+  {"culture": "de", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Legt die Kugeln zurück, mit dem Ziel, der Kraft und dem Effet der Lektion"},
+  {"culture": "it", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Rimette a posto le palle con la mira, la potenza e l'effetto della lezione"},
+  {"culture": "pt", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Repõe as bolas com a pontaria, a força e o efeito da lição"},
+  {"culture": "pt-BR", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Recoloca as bolas com a mira, a força e o efeito da lição"},
+  {"culture": "ja", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "球を元の位置に戻し、レッスンの狙い・強さ・回転にします"},
+  {"culture": "ko", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "공을 제자리로 되돌리고 레슨의 조준·힘·회전으로 맞춥니다"},
+  {"culture": "zh-Hans", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "把球放回原位，换回课上的瞄准、力度和旋转"},
+  {"culture": "ru", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "Возвращает шары на место с прицелом, силой и вращением из урока"},
+  {"culture": "ar", "key": "Puts the balls back with the lesson's own aim, power and spin", "text": "يعيد الكرات إلى مكانها مع تصويب الدرس وقوته ودورانه"},
+
+  {"culture": "es", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Ahora todos los controles menos la potencia están libres y las marcas son tenues. La potencia se queda en la del golpe de la lección."},
+  {"culture": "fr", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Toutes les commandes sauf la puissance sont libres maintenant, et les repères sont pâles. La puissance reste celle du coup de la leçon."},
+  {"culture": "de", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Jetzt sind alle Regler außer der Kraft frei, und die Markierungen sind blass. Die Kraft bleibt die vom Stoß der Lektion."},
+  {"culture": "it", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Ora tutti i comandi tranne la potenza sono liberi e i segni sono tenui. La potenza resta quella del colpo della lezione."},
+  {"culture": "pt", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Agora todos os controlos menos a força estão livres e as marcas são ténues. A força fica a da tacada da lição."},
+  {"culture": "pt-BR", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Agora todos os controles menos a força estão livres e as marcas estão fracas. A força fica a da tacada da lição."},
+  {"culture": "ja", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "強さ以外の操作が自由になり、印は薄くなりました。強さはレッスンの撞き方のままです。"},
+  {"culture": "ko", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "이제 힘을 뺀 모든 조작이 열려 있고 표시는 흐려졌어요. 힘은 레슨의 샷 그대로예요."},
+  {"culture": "zh-Hans", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "现在除了力度，所有控制都可调，标记变淡了。力度保持课上击球的力度。"},
+  {"culture": "ru", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "Теперь открыты все настройки, кроме силы, а отметки бледные. Сила остаётся как в ударе из урока."},
+  {"culture": "ar", "key": "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.", "text": "كل أدوات التحكم مفتوحة الآن ما عدا القوة، والعلامات باهتة. تبقى القوة كما في ضربة الدرس."},
+
+  {"culture": "es", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Ya no hay marcas. Todo es tuyo menos la potencia, que se queda en la del golpe de la lección. Consíguelo tú solo para aprobar."},
+  {"culture": "fr", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Plus de repères. Tout est à toi sauf la puissance, qui reste celle du coup de la leçon. Réussis-le seul pour valider."},
+  {"culture": "de", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Jetzt keine Markierungen mehr. Alles außer der Kraft liegt bei dir, die Kraft bleibt die vom Stoß der Lektion. Schaff es allein, um zu bestehen."},
+  {"culture": "it", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Niente più segni. Tutto è in mano tua tranne la potenza, che resta quella del colpo della lezione. Riuscici da solo per superarla."},
+  {"culture": "pt", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Já sem marcas. Tudo é contigo menos a força, que fica a da tacada da lição. Consegue sozinho para passar."},
+  {"culture": "pt-BR", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Agora sem marcas. Tudo fica com você menos a força, que fica a da tacada da lição. Acerte sozinho para passar."},
+  {"culture": "ja", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "もう印はありません。強さ以外はすべて自分で決めよう。強さはレッスンの撞き方のままです。自分だけで決めて合格しよう。"},
+  {"culture": "ko", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "이제 표시가 없어요. 힘을 뺀 나머지는 모두 직접 정하고, 힘은 레슨의 샷 그대로예요. 혼자 성공해서 통과하세요."},
+  {"culture": "zh-Hans", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "现在没有标记了。除了力度，其他都由你来定，力度保持课上击球的力度。独立打成就能过关。"},
+  {"culture": "ru", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "Отметок больше нет. Всё, кроме силы, решаешь ты, а сила остаётся как в ударе из урока. Сделай сам, чтобы сдать."},
+  {"culture": "ar", "key": "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.", "text": "لا علامات الآن. كل شيء بيدك ما عدا القوة، فهي تبقى كما في ضربة الدرس. نفّذها بنفسك لتجتاز."}
+ ]
+}

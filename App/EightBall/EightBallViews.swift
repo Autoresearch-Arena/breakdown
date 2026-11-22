@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (sound-lessons hook, bug plan item 36: a medal plays the made-it sound
+//          with its glow, the big one for gold.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the screens builder's pass: the full list with medals, best scores
 //          and the running total, and a plain empty state; the card for every phase, the scorecard and the "On a real
 //          table" card; the rings and the tap-to-call on the table; VoiceOver labels and a complete call from the card
@@ -747,11 +749,9 @@ struct EightBallTableLayer: View {
         .onChange(of: mode.celebrations) { _, _ in
             glow = 1
             withAnimation(.easeOut(duration: reduceMotion ? 0.8 : 1.4)) { glow = 0 }
-            // A medal: the made-it sound timed to the glow (item 36, docs/v07-contracts.md 3.6), the big one for gold.
-            // SoundBoard.play sounds it and plays its haptic together, reading the Vibration option itself.
-            var gold = false
-            if case .scored(let v) = mode.phase, v.medal == .gold { gold = true }
-            SoundBoard.play(gold ? .madeItBig : .madeIt)
+            // Made-it sound with the glow, the big one for gold (sound-lessons hook, 0.7.0 item 36). lastVerdict is set
+            // before the medal bumps celebrations (EightBallMode.finishJudging), so it is this medal's verdict.
+            SoundBoard.play(GameMoment.medal(mode.lastVerdict?.medal))
         }
     }
 

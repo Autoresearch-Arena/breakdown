@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 36: the made-it moments are game moments, the big one is
+//          stronger, and a gold medal picks it.)
 // PURPOSE: FeelMapping (App/FeelMapping.swift), the one place that turns the impacts crossed in a frame into the sound
 //          and touch cues. Checks each rule the file states: the impulse-to-strength curve (0 at rest, full at 2 N s,
 //          never falling as the impulse grows), the break collapsing into one crack plus at most three quieter trailing
@@ -131,5 +133,16 @@ final class FeelMappingTests: XCTestCase {
         }
         // The rack bursting apart is the one moment the mapping exists to collapse: some frame must be the crack.
         XCTAssertTrue(sawCrack, "a 10 m/s break produced no crack in any frame")
+    }
+
+    /// The made-it moments (bug plan item 36): the game speaking, not the table, so they only dip the title music;
+    /// the big one plays stronger than the ordinary one; a gold medal picks the big one, any other medal the ordinary.
+    func testMadeItMoments() {
+        XCTAssertFalse(GameMoment.madeIt.kind.isTableSound)
+        XCTAssertFalse(GameMoment.madeItBig.kind.isTableSound)
+        XCTAssertGreaterThan(GameMoment.madeItBig.strength, GameMoment.madeIt.strength)
+        XCTAssertEqual(GameMoment.medal(.gold).kind, .madeItBig)
+        XCTAssertEqual(GameMoment.medal(.silver).kind, .madeIt)
+        XCTAssertEqual(GameMoment.medal(.bronze).kind, .madeIt)
     }
 }
