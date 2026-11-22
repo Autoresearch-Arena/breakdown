@@ -10,8 +10,11 @@ package 4; the spec itself is unchanged and stays the design record).
 Edited: Claude Opus 5.5 High, 21-November-2026 (status note corrected for 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md
 item 55: the Physics Lens is no longer listed as built, because parts of section 4 are missing, the what-if fork
 first among them; the plans 0.6.6 finished moved from Planned to Built).
+Edited: Claude Opus 5.5 High, 22-November-2026 (status note for 0.7.5, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+stream whatif item 10: the what-if fork is built, and the contact normals and tangents with the momentum triangle, built
+in 0.7.4, leave the missing list).
 
-## Status note, 21 November 2026 (corrected for 0.7.0): what is built, what is missing, what is dropped
+## Status note, 21 November 2026 (corrected for 0.7.0, updated for 0.7.5): what is built, what is missing, what is dropped
 
 The spec below is the design record and is not rewritten. This note says where each part stands, so nobody mistakes a
 design for a feature. "Being fixed" names the plan in the plans folder that does it.
@@ -42,14 +45,15 @@ Partly built: the Physics Lens (section 4). What works: the melt, the grid, path
 (amber sliding, cyan rolling, dashed for sliding when Differentiate Without Colour is on), impact rings, velocity
 arrows, spin markers read from the recorded orientation, captions chosen from event data, equations as a text card
 (shown with Show the maths), the scrub bar with a tick per event, pause, slow motion, and the last try drawn as a
-ghost for comparison. What is missing from section 4:
+ghost for comparison, the contact normals and tangents with the momentum triangle on the strongest impacts (0.7.4),
+and the what-if fork (4.3, built in 0.7.5): after the player's own shot in free play or a judged try at a trick shot, a
+lesson or a Behind the 8-Ball situation, one setting at a time (aim, power, follow or draw, side, or the cue angle on a
+raised shot) is nudged and the other future is drawn in violet beside the real one, with ghost balls that roll with
+the real ones, a marker where the two part, a few plain sentences naming the change and what it did, and "Keep this
+one" to turn it into the next try. Not in matches and not on breaks (see that plan's dropped list). What is missing from
+section 4:
 
-- The what-if fork (4.3): nudge the aim, spin or power after a shot, see the other future drawn beside the real one
-  with a marker where the two part and a caption naming the difference, and "Keep this one" to turn it into a retry.
-  Today the only ghost is the player's previous try. This is the single feature that would show the idea of the game
-  fastest, and it is not built.
 - The after-shot debrief against the player's prediction (4.3), which needs predict-the-shot (section 6).
-- Contact normals and tangents at each collision and the momentum triangle on the strongest impacts (4.1).
 - The violet spiral for a ball spinning in place, and the white dashed airborne path with its shadow dot (4.1).
 - Equations placed in the scene next to the thing they describe, and the "why" card from tapping one (4.1). The text
   card replaced them; until 0.7.0 it showed no equation unless Show the maths was on.
@@ -61,7 +65,7 @@ even with Show the maths off, and the opening break is struck at centre height (
 opening behind the menu on later launches (section 6's "skippable shorter cut", item 52); the cues the game picks per
 shot and the mechanical rest (item 57).
 
-Not built and not planned yet: the what-if fork above, the eight- and seven-foot tables (3.4), predict-the-shot, the
+Not built and not planned yet: the eight- and seven-foot tables (3.4), predict-the-shot, the
 break challenge, the daily seeded challenge and the cross-device determinism it needs (milestone 5), rewards and the
 Physics Journal, clip export and challenge links, a computer opponent for the three other tables, and scan-and-smash
 (section 12), which stays a later phase.

@@ -24,6 +24,9 @@
 //          whenever one of the shots struck at this table is on screen (ShowpieceModel.playerShotOnScreen). It sits as a
 //          slim row under the shot panel, so watching your own shot slowly in the Lens no longer means closing the
 //          panel, replaying and opening it again. On a still table it still gives the panel its place.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: What if sits beside Replay in the scrub row (and
+//          after the time on the Mac); the speed list starts with Auto, which hands the pace back to the paced replay
+//          (it used to drop that choice silently); Replay's hint no longer promises slow motion while Ride is on.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
 //          ToggleButton now serves both iPhone and iPad toggles.
 import SwiftUI
@@ -74,7 +77,9 @@ struct ReplayButton: View {
                 // Bounce once per tap; with Reduce Motion the trigger never changes, so nothing moves.
                 .symbolEffect(.bounce, value: reduceMotion ? 0 : taps)
             }
-        .accessibilityHint("Starts the shot again in slow motion with the Lens on")
+        // With Ride on the replay rides behind the cue ball at the chosen pace, so slow motion is not promised then.
+        .accessibilityHint(model.rideOn ? String(localized: "Starts the shot again with the Lens on")
+                                        : String(localized: "Starts the shot again in slow motion with the Lens on"))
     }
 }
 
@@ -120,12 +125,13 @@ struct SpeedPicker: View {
     var asMenu = false
 
     private var selection: Binding<Double?> {
-        // Nothing is selected while the cold open paces itself; the first tap hands the pace to the player.
-        Binding(get: { model.chosenRate }, set: { if let r = $0 { model.setRate(r) } })
+        // Auto (nil) while the replay paces itself; a fixed speed hands the pace to the player, and Auto hands it back.
+        Binding(get: { model.chosenRate }, set: { if let r = $0 { model.setRate(r) } else { model.setAutoRate() } })
     }
 
     private var picker: some View {
         Picker("Speed", selection: selection) {
+            Text(String(localized: "Auto")).tag(Double?.none)
             ForEach(PlaybackSpeed.rates, id: \.self) { r in
                 Text(PlaybackSpeed.label(r)).tag(Optional(r))
             }
@@ -190,8 +196,11 @@ struct PlaybackControls: View {
             // Replay lives in the scrub row too (it is a playback control), so the button row below has room for
             // Physics Lens, Ride and Your shot on one line instead of leaving Your shot alone on a second row.
             ReplayButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
+            // What if, beside Replay: only after the player's own shot has come to rest (it hides itself otherwise).
+            WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
             #else
             if !typeSize.isAccessibilitySize { TimeReadout(model: model) }
+            WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
             #endif
         }
         .padding(.leading, 8)

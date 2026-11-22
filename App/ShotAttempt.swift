@@ -14,6 +14,8 @@
 //          drifted strike. The comparison gains one fact, `stroke`: whether the retry's stroke was straighter or
 //          wandered more, judged from the two deliveries' aim drift, outside the controls so no setting is reported
 //          as changed by it. The words add the stroke's sentence.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: path(of:) and ShotComparison.list are internal,
+//          so the what-if overlay samples the other future's paths and its words join names the same way. No change.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the comparison gains a second fact beside the stroke, `setup`:
 //          the stance (App/Stroke/Reach.swift) and the bridge length each try was played from, when either changed. Like
 //          the stroke it is not a control and never enters inputChanges. A changed setup counts as one more thing that
@@ -152,7 +154,8 @@ struct ShotAttempt {
         (path(of: cueBall), firstStruck.map { path(of: $0) } ?? [])
     }
 
-    private func path(of ball: Int) -> [Vec2] {
+    /// One ball's path as table points (the ghost's sampling); internal for the what-if overlay (0.7.5).
+    func path(of ball: Int) -> [Vec2] {
         let end = timeline.pocketTime[ball] ?? timeline.duration
         let steps = max(2, Int(end * 60))
         var out: [Vec2] = []
@@ -468,7 +471,7 @@ enum ShotComparison {
     private static func names(_ balls: [Int]) -> String { list(balls.map { String(localized: "the \($0)") }) }
 
     /// Joins phrases into a list in the player's language. Two items read "A and B"; three or more read "A, B and C".
-    private static func list(_ items: [String]) -> String {
+    static func list(_ items: [String]) -> String {
         switch items.count {
         case 0: return ""
         case 1: return items[0]

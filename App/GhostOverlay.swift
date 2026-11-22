@@ -12,6 +12,10 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: the path, rest-ring and label drawing moved
 //          into TablePathStroke at the end of this file, unchanged in look, so the trick-shot layer draws the answer's
 //          path with the same code.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: the comparison card steps aside while a what-if
+//          shows; the contact mark reads the attempt's own cue ball (ball 0 only on the pool table); and a what-if
+//          future the player kept is drawn as a faint violet target of its cue-ball path under the last try, until the
+//          kept try is played.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
@@ -48,8 +52,10 @@ struct GhostOverlay: View {
             let p = g.ghostPaths()
             paths = (version, p.cue, p.object, g.cueBallScratched ? nil : g.cueRest)
             // Read at that recording's own contact time (plan 14, section 3), from its first cue-ball collision.
-            contact = g.timeline.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
-                .map { g.timeline.state(ball: 0, at: $0.time).position }
+            // The attempt's own cue ball: on the other tables the struck ball is not ball 0.
+            let cue = g.cueBall
+            contact = g.timeline.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == cue } }
+                .map { g.timeline.state(ball: cue, at: $0.time).position }
         }
     }
 
@@ -57,6 +63,12 @@ struct GhostOverlay: View {
         guard model.ghost != nil, !paths.cue.isEmpty, let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
         else { return }
+        // A kept what-if future (0.7.5): its cue-ball path, faint violet, as the target of the try about to be played.
+        // Only for the retry it was kept for (the same ghost) and only until that try is struck (an attempt exists).
+        if let kept = model.whatIf.keptPaths, kept.ghostVersion == model.ghostVersion, model.currentAttempt == nil {
+            TablePathStroke(points: kept.cue, colour: palette.whatIf.opacity(0.4), lineWidth: 2, dash: [1.5, 4],
+                            underlayWidth: 4).draw(in: &ctx, proj)
+        }
         let paper = palette.paper
         let radius = model.timeline.table.ballRadius
         // The two paths through the shared cloth-path drawing (TablePathStroke), with the same colours and dashes as
@@ -159,7 +171,7 @@ struct ComparisonCard: View {
     private var visible: Bool {
         guard model.retryComparison != nil, dismissedVersion != model.timelineVersion,
               !model.trickMode.isActive, !model.eightBallMode.isActive, !model.lessonMode.isActive,
-              model.match == nil else { return false }
+              model.match == nil, !model.whatIf.isShowing else { return false }
         // Only once the retry has played out, so it never talks over the shot; or while paused at the contact.
         return model.aimReady || seekedVersion == model.timelineVersion
     }

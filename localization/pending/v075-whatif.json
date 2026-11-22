@@ -1,0 +1,3366 @@
+{
+ "keys": [
+  "What if",
+  "Same stroke, more than one setting changed.",
+  "Same stroke, one setting changed.",
+  "Move one setting to see the other future.",
+  "This version runs too long to show.",
+  "With more than one change, this can't say which one did it.",
+  "Working out the other future",
+  "Follow or draw",
+  "Spin",
+  "the follow or draw",
+  "As played",
+  "%@ harder",
+  "%@ softer",
+  "%@ mm higher",
+  "%@ mm lower",
+  "This version is aimed %@ degrees further left.",
+  "This version is aimed %@ degrees further right.",
+  "This version is struck %@ percent harder.",
+  "This version is struck %@ percent softer.",
+  "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+  "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+  "This version strikes %@ millimetres further left on the cue ball.",
+  "This version strikes %@ millimetres further right on the cue ball.",
+  "This version strikes with a level cue.",
+  "This version raises the cue to %@ degrees.",
+  "This version lowers the cue to %@ degrees.",
+  "This version changes %@.",
+  "The cue had to rise to clear %@.",
+  "In this version %@ misses %@.",
+  "In this version %@ reaches %@.",
+  "In this version %@ meets %@ first, not %@.",
+  "At the hit, %@ leaves %@ degrees further left.",
+  "At the hit, %@ leaves %@ degrees further right.",
+  "At the hit, %@ leaves %@ metres per second faster.",
+  "At the hit, %@ leaves %@ metres per second slower.",
+  "After the hit, %@ comes off %@ degrees wider.",
+  "After the hit, %@ comes off %@ degrees narrower.",
+  "This time %@ drops.",
+  "This time %@ drop.",
+  "This time %@ stays out.",
+  "This time %@ stay out.",
+  "This time %@ drops instead of %@.",
+  "This time %@ drop instead of %@.",
+  "Same result: the shot has room for a change this size.",
+  "This time %@ stops %@.",
+  "The result is the same, but %@ stops %@ centimetres away.",
+  "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+  "This version makes the shot.",
+  "This version misses the shot.",
+  "This version still misses.",
+  "Shows what a small change to this shot would have done",
+  "Reset",
+  "Puts every setting back to the shot you played",
+  "Setting",
+  "Play both",
+  "Plays your shot again with the other future rolling beside it",
+  "Where they part",
+  "Keep this one",
+  "Sets up your next try with this version's settings",
+  "Starts the shot again with the Lens on"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "What if",
+   "text": "¿Y si…?"
+  },
+  {
+   "culture": "fr",
+   "key": "What if",
+   "text": "Et si…"
+  },
+  {
+   "culture": "de",
+   "key": "What if",
+   "text": "Was wäre, wenn"
+  },
+  {
+   "culture": "it",
+   "key": "What if",
+   "text": "E se…"
+  },
+  {
+   "culture": "pt",
+   "key": "What if",
+   "text": "E se…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "What if",
+   "text": "E se…"
+  },
+  {
+   "culture": "ja",
+   "key": "What if",
+   "text": "もしも"
+  },
+  {
+   "culture": "ko",
+   "key": "What if",
+   "text": "만약에"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "What if",
+   "text": "如果"
+  },
+  {
+   "culture": "ru",
+   "key": "What if",
+   "text": "А если"
+  },
+  {
+   "culture": "ar",
+   "key": "What if",
+   "text": "ماذا لو"
+  },
+  {
+   "culture": "es",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "El mismo golpe, con más de un ajuste cambiado."
+  },
+  {
+   "culture": "fr",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "Le même coup, avec plus d'un réglage changé."
+  },
+  {
+   "culture": "de",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "Derselbe Stoß, mehr als eine Einstellung geändert."
+  },
+  {
+   "culture": "it",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "Lo stesso colpo, con più di un'impostazione cambiata."
+  },
+  {
+   "culture": "pt",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "A mesma tacada, com mais de um ajuste mudado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "A mesma tacada, com mais de um ajuste mudado."
+  },
+  {
+   "culture": "ja",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "同じストロークで、複数の設定を変えています。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "같은 스트로크에서 설정을 둘 이상 바꿨어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "同样的击球，改了不止一项设置。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "Тот же удар, изменено больше одной настройки."
+  },
+  {
+   "culture": "ar",
+   "key": "Same stroke, more than one setting changed.",
+   "text": "الضربة نفسها، مع تغيير أكثر من إعداد."
+  },
+  {
+   "culture": "es",
+   "key": "Same stroke, one setting changed.",
+   "text": "El mismo golpe, con un solo ajuste cambiado."
+  },
+  {
+   "culture": "fr",
+   "key": "Same stroke, one setting changed.",
+   "text": "Le même coup, avec un seul réglage changé."
+  },
+  {
+   "culture": "de",
+   "key": "Same stroke, one setting changed.",
+   "text": "Derselbe Stoß, eine Einstellung geändert."
+  },
+  {
+   "culture": "it",
+   "key": "Same stroke, one setting changed.",
+   "text": "Lo stesso colpo, con una sola impostazione cambiata."
+  },
+  {
+   "culture": "pt",
+   "key": "Same stroke, one setting changed.",
+   "text": "A mesma tacada, com um só ajuste mudado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same stroke, one setting changed.",
+   "text": "A mesma tacada, com um só ajuste mudado."
+  },
+  {
+   "culture": "ja",
+   "key": "Same stroke, one setting changed.",
+   "text": "同じストロークで、設定をひとつだけ変えています。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same stroke, one setting changed.",
+   "text": "같은 스트로크에서 설정 하나만 바꿨어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same stroke, one setting changed.",
+   "text": "同样的击球，只改了一项设置。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same stroke, one setting changed.",
+   "text": "Тот же удар, изменена одна настройка."
+  },
+  {
+   "culture": "ar",
+   "key": "Same stroke, one setting changed.",
+   "text": "الضربة نفسها، مع تغيير إعداد واحد."
+  },
+  {
+   "culture": "es",
+   "key": "Move one setting to see the other future.",
+   "text": "Mueve un ajuste para ver el otro futuro."
+  },
+  {
+   "culture": "fr",
+   "key": "Move one setting to see the other future.",
+   "text": "Change un réglage pour voir l'autre avenir."
+  },
+  {
+   "culture": "de",
+   "key": "Move one setting to see the other future.",
+   "text": "Ändere eine Einstellung, um die andere Zukunft zu sehen."
+  },
+  {
+   "culture": "it",
+   "key": "Move one setting to see the other future.",
+   "text": "Cambia un'impostazione per vedere l'altro futuro."
+  },
+  {
+   "culture": "pt",
+   "key": "Move one setting to see the other future.",
+   "text": "Muda um ajuste para veres o outro futuro."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Move one setting to see the other future.",
+   "text": "Mude um ajuste para ver o outro futuro."
+  },
+  {
+   "culture": "ja",
+   "key": "Move one setting to see the other future.",
+   "text": "設定をひとつ動かすと、もうひとつの未来が見えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Move one setting to see the other future.",
+   "text": "설정 하나를 움직이면 다른 미래가 보여요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Move one setting to see the other future.",
+   "text": "调整一项设置，看看另一种结果。"
+  },
+  {
+   "culture": "ru",
+   "key": "Move one setting to see the other future.",
+   "text": "Измени одну настройку, чтобы увидеть другое будущее."
+  },
+  {
+   "culture": "ar",
+   "key": "Move one setting to see the other future.",
+   "text": "غيّر إعداداً واحداً لترى المستقبل الآخر."
+  },
+  {
+   "culture": "es",
+   "key": "This version runs too long to show.",
+   "text": "Esta versión dura demasiado para mostrarla."
+  },
+  {
+   "culture": "fr",
+   "key": "This version runs too long to show.",
+   "text": "Cette version dure trop longtemps pour être montrée."
+  },
+  {
+   "culture": "de",
+   "key": "This version runs too long to show.",
+   "text": "Diese Version dauert zu lange, um sie zu zeigen."
+  },
+  {
+   "culture": "it",
+   "key": "This version runs too long to show.",
+   "text": "Questa versione dura troppo per mostrarla."
+  },
+  {
+   "culture": "pt",
+   "key": "This version runs too long to show.",
+   "text": "Esta versão dura demasiado para ser mostrada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version runs too long to show.",
+   "text": "Esta versão dura demais para ser mostrada."
+  },
+  {
+   "culture": "ja",
+   "key": "This version runs too long to show.",
+   "text": "このバージョンは長すぎて表示できません。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version runs too long to show.",
+   "text": "이 버전은 너무 길어서 보여 줄 수 없어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version runs too long to show.",
+   "text": "这个版本太长，无法显示。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version runs too long to show.",
+   "text": "Этот вариант слишком длинный, чтобы его показать."
+  },
+  {
+   "culture": "ar",
+   "key": "This version runs too long to show.",
+   "text": "هذه النسخة أطول من أن تُعرض."
+  },
+  {
+   "culture": "es",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Con más de un cambio, no se puede decir cuál lo provocó."
+  },
+  {
+   "culture": "fr",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Avec plus d'un changement, impossible de dire lequel a compté."
+  },
+  {
+   "culture": "de",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Bei mehr als einer Änderung lässt sich nicht sagen, welche es war."
+  },
+  {
+   "culture": "it",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Con più di un cambiamento, non si può dire quale sia stato."
+  },
+  {
+   "culture": "pt",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Com mais de uma mudança, não dá para dizer qual delas foi."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Com mais de uma mudança, não dá para dizer qual delas foi."
+  },
+  {
+   "culture": "ja",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "変更が複数あるので、どれが効いたかは言えません。"
+  },
+  {
+   "culture": "ko",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "바꾼 것이 둘 이상이라 어느 것 때문인지 말할 수 없어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "改动不止一处，无法判断是哪一处起了作用。"
+  },
+  {
+   "culture": "ru",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "Изменений больше одного, поэтому нельзя сказать, какое сработало."
+  },
+  {
+   "culture": "ar",
+   "key": "With more than one change, this can't say which one did it.",
+   "text": "مع أكثر من تغيير، لا يمكن معرفة أيّها كان السبب."
+  },
+  {
+   "culture": "es",
+   "key": "Working out the other future",
+   "text": "Calculando el otro futuro"
+  },
+  {
+   "culture": "fr",
+   "key": "Working out the other future",
+   "text": "Calcul de l'autre avenir"
+  },
+  {
+   "culture": "de",
+   "key": "Working out the other future",
+   "text": "Die andere Zukunft wird berechnet"
+  },
+  {
+   "culture": "it",
+   "key": "Working out the other future",
+   "text": "Calcolo dell'altro futuro"
+  },
+  {
+   "culture": "pt",
+   "key": "Working out the other future",
+   "text": "A calcular o outro futuro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Working out the other future",
+   "text": "Calculando o outro futuro"
+  },
+  {
+   "culture": "ja",
+   "key": "Working out the other future",
+   "text": "もうひとつの未来を計算中"
+  },
+  {
+   "culture": "ko",
+   "key": "Working out the other future",
+   "text": "다른 미래를 계산하는 중"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Working out the other future",
+   "text": "正在计算另一种结果"
+  },
+  {
+   "culture": "ru",
+   "key": "Working out the other future",
+   "text": "Просчитываю другое будущее"
+  },
+  {
+   "culture": "ar",
+   "key": "Working out the other future",
+   "text": "جارٍ حساب المستقبل الآخر"
+  },
+  {
+   "culture": "es",
+   "key": "Follow or draw",
+   "text": "Efecto alto o bajo"
+  },
+  {
+   "culture": "fr",
+   "key": "Follow or draw",
+   "text": "Coulé ou rétro"
+  },
+  {
+   "culture": "de",
+   "key": "Follow or draw",
+   "text": "Nachläufer oder Rückläufer"
+  },
+  {
+   "culture": "it",
+   "key": "Follow or draw",
+   "text": "Avanti o indietro"
+  },
+  {
+   "culture": "pt",
+   "key": "Follow or draw",
+   "text": "Efeito alto ou baixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Follow or draw",
+   "text": "Efeito alto ou baixo"
+  },
+  {
+   "culture": "ja",
+   "key": "Follow or draw",
+   "text": "押し球・引き球"
+  },
+  {
+   "culture": "ko",
+   "key": "Follow or draw",
+   "text": "밀어치기 또는 끌어치기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Follow or draw",
+   "text": "高杆或低杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Follow or draw",
+   "text": "Накат или оттяжка"
+  },
+  {
+   "culture": "ar",
+   "key": "Follow or draw",
+   "text": "دفع أو سحب"
+  },
+  {
+   "culture": "es",
+   "key": "Spin",
+   "text": "Efecto"
+  },
+  {
+   "culture": "fr",
+   "key": "Spin",
+   "text": "Effet"
+  },
+  {
+   "culture": "de",
+   "key": "Spin",
+   "text": "Effet"
+  },
+  {
+   "culture": "it",
+   "key": "Spin",
+   "text": "Effetto"
+  },
+  {
+   "culture": "pt",
+   "key": "Spin",
+   "text": "Efeito"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Spin",
+   "text": "Efeito"
+  },
+  {
+   "culture": "ja",
+   "key": "Spin",
+   "text": "回転"
+  },
+  {
+   "culture": "ko",
+   "key": "Spin",
+   "text": "회전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Spin",
+   "text": "旋转"
+  },
+  {
+   "culture": "ru",
+   "key": "Spin",
+   "text": "Вращение"
+  },
+  {
+   "culture": "ar",
+   "key": "Spin",
+   "text": "الدوران"
+  },
+  {
+   "culture": "es",
+   "key": "the follow or draw",
+   "text": "el efecto alto o bajo"
+  },
+  {
+   "culture": "fr",
+   "key": "the follow or draw",
+   "text": "le coulé ou le rétro"
+  },
+  {
+   "culture": "de",
+   "key": "the follow or draw",
+   "text": "den Nachläufer oder Rückläufer"
+  },
+  {
+   "culture": "it",
+   "key": "the follow or draw",
+   "text": "l'effetto avanti o indietro"
+  },
+  {
+   "culture": "pt",
+   "key": "the follow or draw",
+   "text": "o efeito alto ou baixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "the follow or draw",
+   "text": "o efeito alto ou baixo"
+  },
+  {
+   "culture": "ja",
+   "key": "the follow or draw",
+   "text": "押し・引き"
+  },
+  {
+   "culture": "ko",
+   "key": "the follow or draw",
+   "text": "밀어치기나 끌어치기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "the follow or draw",
+   "text": "高低杆"
+  },
+  {
+   "culture": "ru",
+   "key": "the follow or draw",
+   "text": "накат или оттяжку"
+  },
+  {
+   "culture": "ar",
+   "key": "the follow or draw",
+   "text": "الدفع أو السحب"
+  },
+  {
+   "culture": "es",
+   "key": "As played",
+   "text": "Como lo jugaste"
+  },
+  {
+   "culture": "fr",
+   "key": "As played",
+   "text": "Comme joué"
+  },
+  {
+   "culture": "de",
+   "key": "As played",
+   "text": "Wie gespielt"
+  },
+  {
+   "culture": "it",
+   "key": "As played",
+   "text": "Come l'hai giocato"
+  },
+  {
+   "culture": "pt",
+   "key": "As played",
+   "text": "Como jogaste"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "As played",
+   "text": "Como você jogou"
+  },
+  {
+   "culture": "ja",
+   "key": "As played",
+   "text": "打ったとおり"
+  },
+  {
+   "culture": "ko",
+   "key": "As played",
+   "text": "친 그대로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "As played",
+   "text": "与实际相同"
+  },
+  {
+   "culture": "ru",
+   "key": "As played",
+   "text": "Как сыграно"
+  },
+  {
+   "culture": "ar",
+   "key": "As played",
+   "text": "كما لعبتها"
+  },
+  {
+   "culture": "es",
+   "key": "%@ harder",
+   "text": "%@ más fuerte"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ harder",
+   "text": "%@ plus fort"
+  },
+  {
+   "culture": "de",
+   "key": "%@ harder",
+   "text": "%@ fester"
+  },
+  {
+   "culture": "it",
+   "key": "%@ harder",
+   "text": "%@ più forte"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ harder",
+   "text": "%@ mais forte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ harder",
+   "text": "%@ mais forte"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ harder",
+   "text": "%@ 強く"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ harder",
+   "text": "%@ 더 세게"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ harder",
+   "text": "加力 %@"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ harder",
+   "text": "на %@ сильнее"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ harder",
+   "text": "أقوى بـ %@"
+  },
+  {
+   "culture": "es",
+   "key": "%@ softer",
+   "text": "%@ más suave"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ softer",
+   "text": "%@ plus doux"
+  },
+  {
+   "culture": "de",
+   "key": "%@ softer",
+   "text": "%@ sanfter"
+  },
+  {
+   "culture": "it",
+   "key": "%@ softer",
+   "text": "%@ più piano"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ softer",
+   "text": "%@ mais suave"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ softer",
+   "text": "%@ mais suave"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ softer",
+   "text": "%@ 弱く"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ softer",
+   "text": "%@ 더 약하게"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ softer",
+   "text": "减力 %@"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ softer",
+   "text": "на %@ мягче"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ softer",
+   "text": "أخف بـ %@"
+  },
+  {
+   "culture": "es",
+   "key": "%@ mm higher",
+   "text": "%@ mm más arriba"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ mm higher",
+   "text": "%@ mm plus haut"
+  },
+  {
+   "culture": "de",
+   "key": "%@ mm higher",
+   "text": "%@ mm höher"
+  },
+  {
+   "culture": "it",
+   "key": "%@ mm higher",
+   "text": "%@ mm più in alto"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ mm higher",
+   "text": "%@ mm mais acima"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ mm higher",
+   "text": "%@ mm mais acima"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ mm higher",
+   "text": "%@ mm 上"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ mm higher",
+   "text": "%@ mm 위로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ mm higher",
+   "text": "高 %@ 毫米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ mm higher",
+   "text": "на %@ мм выше"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ mm higher",
+   "text": "أعلى بـ %@ مم"
+  },
+  {
+   "culture": "es",
+   "key": "%@ mm lower",
+   "text": "%@ mm más abajo"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ mm lower",
+   "text": "%@ mm plus bas"
+  },
+  {
+   "culture": "de",
+   "key": "%@ mm lower",
+   "text": "%@ mm tiefer"
+  },
+  {
+   "culture": "it",
+   "key": "%@ mm lower",
+   "text": "%@ mm più in basso"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ mm lower",
+   "text": "%@ mm mais abaixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ mm lower",
+   "text": "%@ mm mais abaixo"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ mm lower",
+   "text": "%@ mm 下"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ mm lower",
+   "text": "%@ mm 아래로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ mm lower",
+   "text": "低 %@ 毫米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ mm lower",
+   "text": "на %@ мм ниже"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ mm lower",
+   "text": "أدنى بـ %@ مم"
+  },
+  {
+   "culture": "es",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "Esta versión apunta %@ grados más a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "Cette version vise %@ degrés plus à gauche."
+  },
+  {
+   "culture": "de",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "Diese Version zielt %@ Grad weiter links."
+  },
+  {
+   "culture": "it",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "Questa versione mira %@ gradi più a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "Esta versão aponta %@ graus mais para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "Esta versão mira %@ graus mais para a esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "このバージョンは %@ 度だけ左を狙っています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "이 버전은 %@도 더 왼쪽을 조준해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "这个版本的瞄准向左多偏 %@ 度。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "В этом варианте прицел на %@ градуса левее."
+  },
+  {
+   "culture": "ar",
+   "key": "This version is aimed %@ degrees further left.",
+   "text": "في هذه النسخة التصويب أكثر يساراً بـ %@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "Esta versión apunta %@ grados más a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "Cette version vise %@ degrés plus à droite."
+  },
+  {
+   "culture": "de",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "Diese Version zielt %@ Grad weiter rechts."
+  },
+  {
+   "culture": "it",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "Questa versione mira %@ gradi più a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "Esta versão aponta %@ graus mais para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "Esta versão mira %@ graus mais para a direita."
+  },
+  {
+   "culture": "ja",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "このバージョンは %@ 度だけ右を狙っています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "이 버전은 %@도 더 오른쪽을 조준해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "这个版本的瞄准向右多偏 %@ 度。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "В этом варианте прицел на %@ градуса правее."
+  },
+  {
+   "culture": "ar",
+   "key": "This version is aimed %@ degrees further right.",
+   "text": "في هذه النسخة التصويب أكثر يميناً بـ %@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "This version is struck %@ percent harder.",
+   "text": "Esta versión se golpea un %@ por ciento más fuerte."
+  },
+  {
+   "culture": "fr",
+   "key": "This version is struck %@ percent harder.",
+   "text": "Cette version est frappée %@ pour cent plus fort."
+  },
+  {
+   "culture": "de",
+   "key": "This version is struck %@ percent harder.",
+   "text": "Diese Version wird %@ Prozent fester gestoßen."
+  },
+  {
+   "culture": "it",
+   "key": "This version is struck %@ percent harder.",
+   "text": "Questa versione è colpita il %@ per cento più forte."
+  },
+  {
+   "culture": "pt",
+   "key": "This version is struck %@ percent harder.",
+   "text": "Esta versão é batida %@ por cento mais forte."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version is struck %@ percent harder.",
+   "text": "Esta versão é batida %@ por cento mais forte."
+  },
+  {
+   "culture": "ja",
+   "key": "This version is struck %@ percent harder.",
+   "text": "このバージョンは %@ パーセント強く打っています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version is struck %@ percent harder.",
+   "text": "이 버전은 %@퍼센트 더 세게 쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version is struck %@ percent harder.",
+   "text": "这个版本的力度大百分之 %@。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version is struck %@ percent harder.",
+   "text": "В этом варианте удар на %@ процентов сильнее."
+  },
+  {
+   "culture": "ar",
+   "key": "This version is struck %@ percent harder.",
+   "text": "في هذه النسخة الضربة أقوى بنسبة %@ بالمئة."
+  },
+  {
+   "culture": "es",
+   "key": "This version is struck %@ percent softer.",
+   "text": "Esta versión se golpea un %@ por ciento más suave."
+  },
+  {
+   "culture": "fr",
+   "key": "This version is struck %@ percent softer.",
+   "text": "Cette version est frappée %@ pour cent plus doucement."
+  },
+  {
+   "culture": "de",
+   "key": "This version is struck %@ percent softer.",
+   "text": "Diese Version wird %@ Prozent sanfter gestoßen."
+  },
+  {
+   "culture": "it",
+   "key": "This version is struck %@ percent softer.",
+   "text": "Questa versione è colpita il %@ per cento più piano."
+  },
+  {
+   "culture": "pt",
+   "key": "This version is struck %@ percent softer.",
+   "text": "Esta versão é batida %@ por cento mais suave."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version is struck %@ percent softer.",
+   "text": "Esta versão é batida %@ por cento mais suave."
+  },
+  {
+   "culture": "ja",
+   "key": "This version is struck %@ percent softer.",
+   "text": "このバージョンは %@ パーセント弱く打っています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version is struck %@ percent softer.",
+   "text": "이 버전은 %@퍼센트 더 약하게 쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version is struck %@ percent softer.",
+   "text": "这个版本的力度小百分之 %@。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version is struck %@ percent softer.",
+   "text": "В этом варианте удар на %@ процентов мягче."
+  },
+  {
+   "culture": "ar",
+   "key": "This version is struck %@ percent softer.",
+   "text": "في هذه النسخة الضربة أخف بنسبة %@ بالمئة."
+  },
+  {
+   "culture": "es",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "Esta versión golpea la blanca %@ milímetros más abajo, para más efecto bajo."
+  },
+  {
+   "culture": "fr",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "Cette version frappe la blanche %@ millimètres plus bas, pour plus de rétro."
+  },
+  {
+   "culture": "de",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "Diese Version trifft die Weiße %@ Millimeter tiefer, für mehr Rückläufer."
+  },
+  {
+   "culture": "it",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "Questa versione colpisce la bianca %@ millimetri più in basso, per più effetto indietro."
+  },
+  {
+   "culture": "pt",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "Esta versão bate na branca %@ milímetros mais abaixo, para mais efeito baixo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "Esta versão bate na branca %@ milímetros mais abaixo, para mais efeito baixo."
+  },
+  {
+   "culture": "ja",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "このバージョンは手球の %@ ミリ下を撞いて、引きを強めています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "이 버전은 큐볼을 %@밀리미터 더 아래로 쳐서 끌어치기를 더해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "这个版本击打白球低 %@ 毫米，低杆更多。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "В этом варианте удар по битку на %@ мм ниже, для большей оттяжки."
+  },
+  {
+   "culture": "ar",
+   "key": "This version strikes %@ millimetres lower on the cue ball, for more draw.",
+   "text": "في هذه النسخة تُضرب البيضاء أدنى بـ %@ مم، لسحب أكبر."
+  },
+  {
+   "culture": "es",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "Esta versión golpea la blanca %@ milímetros más arriba, para más efecto alto."
+  },
+  {
+   "culture": "fr",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "Cette version frappe la blanche %@ millimètres plus haut, pour plus de coulé."
+  },
+  {
+   "culture": "de",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "Diese Version trifft die Weiße %@ Millimeter höher, für mehr Nachläufer."
+  },
+  {
+   "culture": "it",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "Questa versione colpisce la bianca %@ millimetri più in alto, per più effetto avanti."
+  },
+  {
+   "culture": "pt",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "Esta versão bate na branca %@ milímetros mais acima, para mais efeito alto."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "Esta versão bate na branca %@ milímetros mais acima, para mais efeito alto."
+  },
+  {
+   "culture": "ja",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "このバージョンは手球の %@ ミリ上を撞いて、押しを強めています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "이 버전은 큐볼을 %@밀리미터 더 위로 쳐서 밀어치기를 더해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "这个版本击打白球高 %@ 毫米，高杆更多。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "В этом варианте удар по битку на %@ мм выше, для большего наката."
+  },
+  {
+   "culture": "ar",
+   "key": "This version strikes %@ millimetres higher on the cue ball, for more follow.",
+   "text": "في هذه النسخة تُضرب البيضاء أعلى بـ %@ مم، لدفع أكبر."
+  },
+  {
+   "culture": "es",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "Esta versión golpea la blanca %@ milímetros más a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "Cette version frappe la blanche %@ millimètres plus à gauche."
+  },
+  {
+   "culture": "de",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "Diese Version trifft die Weiße %@ Millimeter weiter links."
+  },
+  {
+   "culture": "it",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "Questa versione colpisce la bianca %@ millimetri più a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "Esta versão bate na branca %@ milímetros mais à esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "Esta versão bate na branca %@ milímetros mais à esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "このバージョンは手球の %@ ミリ左を撞いています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "이 버전은 큐볼을 %@밀리미터 더 왼쪽으로 쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "这个版本击打白球偏左 %@ 毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "В этом варианте удар по битку на %@ мм левее."
+  },
+  {
+   "culture": "ar",
+   "key": "This version strikes %@ millimetres further left on the cue ball.",
+   "text": "في هذه النسخة تُضرب البيضاء أكثر يساراً بـ %@ مم."
+  },
+  {
+   "culture": "es",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "Esta versión golpea la blanca %@ milímetros más a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "Cette version frappe la blanche %@ millimètres plus à droite."
+  },
+  {
+   "culture": "de",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "Diese Version trifft die Weiße %@ Millimeter weiter rechts."
+  },
+  {
+   "culture": "it",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "Questa versione colpisce la bianca %@ millimetri più a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "Esta versão bate na branca %@ milímetros mais à direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "Esta versão bate na branca %@ milímetros mais à direita."
+  },
+  {
+   "culture": "ja",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "このバージョンは手球の %@ ミリ右を撞いています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "이 버전은 큐볼을 %@밀리미터 더 오른쪽으로 쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "这个版本击打白球偏右 %@ 毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "В этом варианте удар по битку на %@ мм правее."
+  },
+  {
+   "culture": "ar",
+   "key": "This version strikes %@ millimetres further right on the cue ball.",
+   "text": "في هذه النسخة تُضرب البيضاء أكثر يميناً بـ %@ مم."
+  },
+  {
+   "culture": "es",
+   "key": "This version strikes with a level cue.",
+   "text": "Esta versión golpea con el taco horizontal."
+  },
+  {
+   "culture": "fr",
+   "key": "This version strikes with a level cue.",
+   "text": "Cette version frappe avec la queue à plat."
+  },
+  {
+   "culture": "de",
+   "key": "This version strikes with a level cue.",
+   "text": "Diese Version stößt mit flachem Queue."
+  },
+  {
+   "culture": "it",
+   "key": "This version strikes with a level cue.",
+   "text": "Questa versione colpisce con la stecca orizzontale."
+  },
+  {
+   "culture": "pt",
+   "key": "This version strikes with a level cue.",
+   "text": "Esta versão bate com o taco na horizontal."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version strikes with a level cue.",
+   "text": "Esta versão bate com o taco na horizontal."
+  },
+  {
+   "culture": "ja",
+   "key": "This version strikes with a level cue.",
+   "text": "このバージョンはキューを水平にして撞いています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version strikes with a level cue.",
+   "text": "이 버전은 큐를 수평으로 해서 쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version strikes with a level cue.",
+   "text": "这个版本用水平的球杆击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version strikes with a level cue.",
+   "text": "В этом варианте кий держится горизонтально."
+  },
+  {
+   "culture": "ar",
+   "key": "This version strikes with a level cue.",
+   "text": "في هذه النسخة تُضرب الكرة بعصا أفقية."
+  },
+  {
+   "culture": "es",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "Esta versión levanta el taco a %@ grados."
+  },
+  {
+   "culture": "fr",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "Cette version lève la queue à %@ degrés."
+  },
+  {
+   "culture": "de",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "Diese Version hebt das Queue auf %@ Grad."
+  },
+  {
+   "culture": "it",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "Questa versione alza la stecca a %@ gradi."
+  },
+  {
+   "culture": "pt",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "Esta versão levanta o taco para %@ graus."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "Esta versão levanta o taco para %@ graus."
+  },
+  {
+   "culture": "ja",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "このバージョンはキューを %@ 度まで上げています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "이 버전은 큐를 %@도로 들어 올려요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "这个版本把球杆抬到 %@ 度。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "В этом варианте кий поднят до %@ градусов."
+  },
+  {
+   "culture": "ar",
+   "key": "This version raises the cue to %@ degrees.",
+   "text": "في هذه النسخة تُرفع العصا إلى %@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "Esta versión baja el taco a %@ grados."
+  },
+  {
+   "culture": "fr",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "Cette version abaisse la queue à %@ degrés."
+  },
+  {
+   "culture": "de",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "Diese Version senkt das Queue auf %@ Grad."
+  },
+  {
+   "culture": "it",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "Questa versione abbassa la stecca a %@ gradi."
+  },
+  {
+   "culture": "pt",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "Esta versão baixa o taco para %@ graus."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "Esta versão abaixa o taco para %@ graus."
+  },
+  {
+   "culture": "ja",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "このバージョンはキューを %@ 度まで下げています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "이 버전은 큐를 %@도로 낮춰요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "这个版本把球杆放低到 %@ 度。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "В этом варианте кий опущен до %@ градусов."
+  },
+  {
+   "culture": "ar",
+   "key": "This version lowers the cue to %@ degrees.",
+   "text": "في هذه النسخة تُخفض العصا إلى %@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "This version changes %@.",
+   "text": "Esta versión cambia %@."
+  },
+  {
+   "culture": "fr",
+   "key": "This version changes %@.",
+   "text": "Cette version change %@."
+  },
+  {
+   "culture": "de",
+   "key": "This version changes %@.",
+   "text": "Diese Version ändert %@."
+  },
+  {
+   "culture": "it",
+   "key": "This version changes %@.",
+   "text": "Questa versione cambia %@."
+  },
+  {
+   "culture": "pt",
+   "key": "This version changes %@.",
+   "text": "Esta versão muda %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version changes %@.",
+   "text": "Esta versão muda %@."
+  },
+  {
+   "culture": "ja",
+   "key": "This version changes %@.",
+   "text": "このバージョンでは%@を変えています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version changes %@.",
+   "text": "이 버전은 %@을(를) 바꿔요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version changes %@.",
+   "text": "这个版本改变了%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version changes %@.",
+   "text": "В этом варианте изменено: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "This version changes %@.",
+   "text": "تغيّر هذه النسخة %@."
+  },
+  {
+   "culture": "es",
+   "key": "The cue had to rise to clear %@.",
+   "text": "El taco tuvo que levantarse para pasar por encima de %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue had to rise to clear %@.",
+   "text": "La queue a dû se lever pour passer au-dessus de %@."
+  },
+  {
+   "culture": "de",
+   "key": "The cue had to rise to clear %@.",
+   "text": "Das Queue musste angehoben werden, um über %@ zu kommen."
+  },
+  {
+   "culture": "it",
+   "key": "The cue had to rise to clear %@.",
+   "text": "La stecca ha dovuto alzarsi per superare %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue had to rise to clear %@.",
+   "text": "O taco teve de subir para passar por cima de %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue had to rise to clear %@.",
+   "text": "O taco teve que subir para passar por cima de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue had to rise to clear %@.",
+   "text": "%@を越えるため、キューを上げる必要がありました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue had to rise to clear %@.",
+   "text": "%@을(를) 넘기려고 큐를 들어야 했어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue had to rise to clear %@.",
+   "text": "为了越过%@，球杆不得不抬高。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue had to rise to clear %@.",
+   "text": "Кий пришлось поднять, чтобы пройти над: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue had to rise to clear %@.",
+   "text": "اضطرت العصا إلى الارتفاع لتتجاوز %@."
+  },
+  {
+   "culture": "es",
+   "key": "In this version %@ misses %@.",
+   "text": "En esta versión %1$@ no toca %2$@."
+  },
+  {
+   "culture": "fr",
+   "key": "In this version %@ misses %@.",
+   "text": "Dans cette version, %1$@ manque %2$@."
+  },
+  {
+   "culture": "de",
+   "key": "In this version %@ misses %@.",
+   "text": "In dieser Version verfehlt %1$@ %2$@."
+  },
+  {
+   "culture": "it",
+   "key": "In this version %@ misses %@.",
+   "text": "In questa versione %1$@ manca %2$@."
+  },
+  {
+   "culture": "pt",
+   "key": "In this version %@ misses %@.",
+   "text": "Nesta versão %1$@ falha %2$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In this version %@ misses %@.",
+   "text": "Nesta versão %1$@ erra %2$@."
+  },
+  {
+   "culture": "ja",
+   "key": "In this version %@ misses %@.",
+   "text": "このバージョンでは%1$@が%2$@に当たりません。"
+  },
+  {
+   "culture": "ko",
+   "key": "In this version %@ misses %@.",
+   "text": "이 버전에서는 %1$@이(가) %2$@을(를) 놓쳐요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In this version %@ misses %@.",
+   "text": "这个版本中，%1$@没有碰到%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "In this version %@ misses %@.",
+   "text": "В этом варианте %1$@ проходит мимо: %2$@."
+  },
+  {
+   "culture": "ar",
+   "key": "In this version %@ misses %@.",
+   "text": "في هذه النسخة تُخطئ %1$@ %2$@."
+  },
+  {
+   "culture": "es",
+   "key": "In this version %@ reaches %@.",
+   "text": "En esta versión %1$@ alcanza %2$@."
+  },
+  {
+   "culture": "fr",
+   "key": "In this version %@ reaches %@.",
+   "text": "Dans cette version, %1$@ atteint %2$@."
+  },
+  {
+   "culture": "de",
+   "key": "In this version %@ reaches %@.",
+   "text": "In dieser Version erreicht %1$@ %2$@."
+  },
+  {
+   "culture": "it",
+   "key": "In this version %@ reaches %@.",
+   "text": "In questa versione %1$@ raggiunge %2$@."
+  },
+  {
+   "culture": "pt",
+   "key": "In this version %@ reaches %@.",
+   "text": "Nesta versão %1$@ alcança %2$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In this version %@ reaches %@.",
+   "text": "Nesta versão %1$@ alcança %2$@."
+  },
+  {
+   "culture": "ja",
+   "key": "In this version %@ reaches %@.",
+   "text": "このバージョンでは%1$@が%2$@に届きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "In this version %@ reaches %@.",
+   "text": "이 버전에서는 %1$@이(가) %2$@에 닿아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In this version %@ reaches %@.",
+   "text": "这个版本中，%1$@碰到了%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "In this version %@ reaches %@.",
+   "text": "В этом варианте %1$@ достаёт: %2$@."
+  },
+  {
+   "culture": "ar",
+   "key": "In this version %@ reaches %@.",
+   "text": "في هذه النسخة تصل %1$@ إلى %2$@."
+  },
+  {
+   "culture": "es",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "En esta versión %1$@ toca primero %2$@, no %3$@."
+  },
+  {
+   "culture": "fr",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "Dans cette version, %1$@ touche d'abord %2$@, pas %3$@."
+  },
+  {
+   "culture": "de",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "In dieser Version trifft %1$@ zuerst %2$@, nicht %3$@."
+  },
+  {
+   "culture": "it",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "In questa versione %1$@ tocca prima %2$@, non %3$@."
+  },
+  {
+   "culture": "pt",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "Nesta versão %1$@ toca primeiro %2$@, não %3$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "Nesta versão %1$@ toca primeiro %2$@, não %3$@."
+  },
+  {
+   "culture": "ja",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "このバージョンでは%1$@が%3$@ではなく%2$@に先に当たります。"
+  },
+  {
+   "culture": "ko",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "이 버전에서는 %1$@이(가) %3$@이 아니라 %2$@에 먼저 맞아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "这个版本中，%1$@先碰到%2$@，而不是%3$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "В этом варианте %1$@ сначала касается другого шара: %2$@, а не %3$@."
+  },
+  {
+   "culture": "ar",
+   "key": "In this version %@ meets %@ first, not %@.",
+   "text": "في هذه النسخة تلمس %1$@ أولاً %2$@، لا %3$@."
+  },
+  {
+   "culture": "es",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "En el choque, %1$@ sale %2$@ grados más a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "Au choc, %1$@ part %2$@ degrés plus à gauche."
+  },
+  {
+   "culture": "de",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "Beim Treffer läuft %1$@ %2$@ Grad weiter links weg."
+  },
+  {
+   "culture": "it",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "All'urto, %1$@ parte %2$@ gradi più a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "No choque, %1$@ sai %2$@ graus mais para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "No choque, %1$@ sai %2$@ graus mais para a esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "当たった瞬間、%1$@は %2$@ 度だけ左へ出ます。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "맞는 순간 %1$@이(가) %2$@도 더 왼쪽으로 나가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "碰撞时，%1$@向左多偏 %2$@ 度离开。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "При ударе %1$@ уходит на %2$@ градуса левее."
+  },
+  {
+   "culture": "ar",
+   "key": "At the hit, %@ leaves %@ degrees further left.",
+   "text": "عند الاصطدام تنطلق %1$@ أكثر يساراً بـ %2$@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "En el choque, %1$@ sale %2$@ grados más a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "Au choc, %1$@ part %2$@ degrés plus à droite."
+  },
+  {
+   "culture": "de",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "Beim Treffer läuft %1$@ %2$@ Grad weiter rechts weg."
+  },
+  {
+   "culture": "it",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "All'urto, %1$@ parte %2$@ gradi più a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "No choque, %1$@ sai %2$@ graus mais para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "No choque, %1$@ sai %2$@ graus mais para a direita."
+  },
+  {
+   "culture": "ja",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "当たった瞬間、%1$@は %2$@ 度だけ右へ出ます。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "맞는 순간 %1$@이(가) %2$@도 더 오른쪽으로 나가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "碰撞时，%1$@向右多偏 %2$@ 度离开。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "При ударе %1$@ уходит на %2$@ градуса правее."
+  },
+  {
+   "culture": "ar",
+   "key": "At the hit, %@ leaves %@ degrees further right.",
+   "text": "عند الاصطدام تنطلق %1$@ أكثر يميناً بـ %2$@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "En el choque, %1$@ sale %2$@ metros por segundo más rápida."
+  },
+  {
+   "culture": "fr",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "Au choc, %1$@ part %2$@ mètre par seconde plus vite."
+  },
+  {
+   "culture": "de",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "Beim Treffer läuft %1$@ %2$@ Meter pro Sekunde schneller weg."
+  },
+  {
+   "culture": "it",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "All'urto, %1$@ parte %2$@ metri al secondo più veloce."
+  },
+  {
+   "culture": "pt",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "No choque, %1$@ sai %2$@ metros por segundo mais rápida."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "No choque, %1$@ sai %2$@ metros por segundo mais rápida."
+  },
+  {
+   "culture": "ja",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "当たった瞬間、%1$@は秒速 %2$@ メートル速く出ます。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "맞는 순간 %1$@이(가) 초속 %2$@미터 더 빠르게 나가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "碰撞时，%1$@离开的速度快了每秒 %2$@ 米。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "При ударе %1$@ уходит на %2$@ м/с быстрее."
+  },
+  {
+   "culture": "ar",
+   "key": "At the hit, %@ leaves %@ metres per second faster.",
+   "text": "عند الاصطدام تنطلق %1$@ أسرع بـ %2$@ متر في الثانية."
+  },
+  {
+   "culture": "es",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "En el choque, %1$@ sale %2$@ metros por segundo más lenta."
+  },
+  {
+   "culture": "fr",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "Au choc, %1$@ part %2$@ mètre par seconde moins vite."
+  },
+  {
+   "culture": "de",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "Beim Treffer läuft %1$@ %2$@ Meter pro Sekunde langsamer weg."
+  },
+  {
+   "culture": "it",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "All'urto, %1$@ parte %2$@ metri al secondo più lenta."
+  },
+  {
+   "culture": "pt",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "No choque, %1$@ sai %2$@ metros por segundo mais lenta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "No choque, %1$@ sai %2$@ metros por segundo mais lenta."
+  },
+  {
+   "culture": "ja",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "当たった瞬間、%1$@は秒速 %2$@ メートル遅く出ます。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "맞는 순간 %1$@이(가) 초속 %2$@미터 더 느리게 나가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "碰撞时，%1$@离开的速度慢了每秒 %2$@ 米。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "При ударе %1$@ уходит на %2$@ м/с медленнее."
+  },
+  {
+   "culture": "ar",
+   "key": "At the hit, %@ leaves %@ metres per second slower.",
+   "text": "عند الاصطدام تنطلق %1$@ أبطأ بـ %2$@ متر في الثانية."
+  },
+  {
+   "culture": "es",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "Tras el choque, %1$@ sale %2$@ grados más abierta."
+  },
+  {
+   "culture": "fr",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "Après le choc, %1$@ s'écarte de %2$@ degrés de plus."
+  },
+  {
+   "culture": "de",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "Nach dem Treffer läuft %1$@ %2$@ Grad weiter ab."
+  },
+  {
+   "culture": "it",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "Dopo l'urto, %1$@ si apre di %2$@ gradi in più."
+  },
+  {
+   "culture": "pt",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "Depois do choque, %1$@ abre %2$@ graus a mais."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "Depois do choque, %1$@ abre %2$@ graus a mais."
+  },
+  {
+   "culture": "ja",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "当たった後、%1$@は %2$@ 度だけ大きく開いて進みます。"
+  },
+  {
+   "culture": "ko",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "맞은 뒤 %1$@이(가) %2$@도 더 넓게 빠져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "碰撞后，%1$@的分离角大了 %2$@ 度。"
+  },
+  {
+   "culture": "ru",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "После удара %1$@ отходит на %2$@ градуса шире."
+  },
+  {
+   "culture": "ar",
+   "key": "After the hit, %@ comes off %@ degrees wider.",
+   "text": "بعد الاصطدام تنحرف %1$@ أكثر بـ %2$@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "Tras el choque, %1$@ sale %2$@ grados más cerrada."
+  },
+  {
+   "culture": "fr",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "Après le choc, %1$@ s'écarte de %2$@ degrés de moins."
+  },
+  {
+   "culture": "de",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "Nach dem Treffer läuft %1$@ %2$@ Grad enger ab."
+  },
+  {
+   "culture": "it",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "Dopo l'urto, %1$@ si apre di %2$@ gradi in meno."
+  },
+  {
+   "culture": "pt",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "Depois do choque, %1$@ abre %2$@ graus a menos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "Depois do choque, %1$@ abre %2$@ graus a menos."
+  },
+  {
+   "culture": "ja",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "当たった後、%1$@は %2$@ 度だけ小さく開いて進みます。"
+  },
+  {
+   "culture": "ko",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "맞은 뒤 %1$@이(가) %2$@도 더 좁게 빠져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "碰撞后，%1$@的分离角小了 %2$@ 度。"
+  },
+  {
+   "culture": "ru",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "После удара %1$@ отходит на %2$@ градуса уже."
+  },
+  {
+   "culture": "ar",
+   "key": "After the hit, %@ comes off %@ degrees narrower.",
+   "text": "بعد الاصطدام تنحرف %1$@ أقل بـ %2$@ درجة."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ drops.",
+   "text": "Esta vez %@ entra."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ drops.",
+   "text": "Cette fois, %@ tombe."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ drops.",
+   "text": "Diesmal fällt %@."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ drops.",
+   "text": "Questa volta %@ va in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ drops.",
+   "text": "Desta vez %@ entra."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ drops.",
+   "text": "Desta vez %@ cai."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ drops.",
+   "text": "今回は%@が落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ drops.",
+   "text": "이번에는 %@이(가) 들어가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ drops.",
+   "text": "这次%@落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ drops.",
+   "text": "На этот раз %@ падает."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ drops.",
+   "text": "هذه المرة تدخل %@."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ drop.",
+   "text": "Esta vez entran %@."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ drop.",
+   "text": "Cette fois, %@ tombent."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ drop.",
+   "text": "Diesmal fallen %@."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ drop.",
+   "text": "Questa volta %@ vanno in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ drop.",
+   "text": "Desta vez entram %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ drop.",
+   "text": "Desta vez caem %@."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ drop.",
+   "text": "今回は%@が落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ drop.",
+   "text": "이번에는 %@이(가) 들어가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ drop.",
+   "text": "这次%@落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ drop.",
+   "text": "На этот раз падают: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ drop.",
+   "text": "هذه المرة تدخل %@."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ stays out.",
+   "text": "Esta vez %@ se queda fuera."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ stays out.",
+   "text": "Cette fois, %@ reste dehors."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ stays out.",
+   "text": "Diesmal bleibt %@ draußen."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ stays out.",
+   "text": "Questa volta %@ resta fuori."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ stays out.",
+   "text": "Desta vez %@ fica de fora."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ stays out.",
+   "text": "Desta vez %@ fica de fora."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ stays out.",
+   "text": "今回は%@が落ちません。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ stays out.",
+   "text": "이번에는 %@이(가) 안 들어가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ stays out.",
+   "text": "这次%@没有落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ stays out.",
+   "text": "На этот раз %@ не падает."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ stays out.",
+   "text": "هذه المرة تبقى %@ خارجاً."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ stay out.",
+   "text": "Esta vez se quedan fuera %@."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ stay out.",
+   "text": "Cette fois, %@ restent dehors."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ stay out.",
+   "text": "Diesmal bleiben %@ draußen."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ stay out.",
+   "text": "Questa volta %@ restano fuori."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ stay out.",
+   "text": "Desta vez ficam de fora %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ stay out.",
+   "text": "Desta vez ficam de fora %@."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ stay out.",
+   "text": "今回は%@が落ちません。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ stay out.",
+   "text": "이번에는 %@이(가) 안 들어가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ stay out.",
+   "text": "这次%@没有落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ stay out.",
+   "text": "На этот раз не падают: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ stay out.",
+   "text": "هذه المرة تبقى %@ خارجاً."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ drops instead of %@.",
+   "text": "Esta vez entra %1$@ en lugar de %2$@."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ drops instead of %@.",
+   "text": "Cette fois, %1$@ tombe à la place de %2$@."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ drops instead of %@.",
+   "text": "Diesmal fällt %1$@ statt %2$@."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ drops instead of %@.",
+   "text": "Questa volta va in buca %1$@ invece di %2$@."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ drops instead of %@.",
+   "text": "Desta vez entra %1$@ em vez de %2$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ drops instead of %@.",
+   "text": "Desta vez cai %1$@ em vez de %2$@."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ drops instead of %@.",
+   "text": "今回は%2$@ではなく%1$@が落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ drops instead of %@.",
+   "text": "이번에는 %2$@ 대신 %1$@이(가) 들어가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ drops instead of %@.",
+   "text": "这次落袋的是%1$@，而不是%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ drops instead of %@.",
+   "text": "На этот раз падает %1$@, а не %2$@."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ drops instead of %@.",
+   "text": "هذه المرة تدخل %1$@ بدلاً من %2$@."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ drop instead of %@.",
+   "text": "Esta vez entran %1$@ en lugar de %2$@."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ drop instead of %@.",
+   "text": "Cette fois, %1$@ tombent à la place de %2$@."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ drop instead of %@.",
+   "text": "Diesmal fallen %1$@ statt %2$@."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ drop instead of %@.",
+   "text": "Questa volta vanno in buca %1$@ invece di %2$@."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ drop instead of %@.",
+   "text": "Desta vez entram %1$@ em vez de %2$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ drop instead of %@.",
+   "text": "Desta vez caem %1$@ em vez de %2$@."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ drop instead of %@.",
+   "text": "今回は%2$@ではなく%1$@が落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ drop instead of %@.",
+   "text": "이번에는 %2$@ 대신 %1$@이(가) 들어가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ drop instead of %@.",
+   "text": "这次落袋的是%1$@，而不是%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ drop instead of %@.",
+   "text": "На этот раз падают %1$@, а не %2$@."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ drop instead of %@.",
+   "text": "هذه المرة تدخل %1$@ بدلاً من %2$@."
+  },
+  {
+   "culture": "es",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "El mismo resultado: el tiro admite un cambio de este tamaño."
+  },
+  {
+   "culture": "fr",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "Même résultat : le coup tolère un changement de cette taille."
+  },
+  {
+   "culture": "de",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "Gleiches Ergebnis: Der Stoß verträgt eine Änderung dieser Größe."
+  },
+  {
+   "culture": "it",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "Stesso risultato: il tiro regge un cambiamento di questa misura."
+  },
+  {
+   "culture": "pt",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "O mesmo resultado: a tacada aguenta uma mudança deste tamanho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "O mesmo resultado: a tacada aguenta uma mudança deste tamanho."
+  },
+  {
+   "culture": "ja",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "結果は同じ：このショットはこの程度の変化なら許容できます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "결과는 같아요. 이 샷은 이 정도 변화는 견뎌요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "结果相同：这一杆能容得下这么大的改动。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "Результат тот же: удар выдерживает изменение такого размера."
+  },
+  {
+   "culture": "ar",
+   "key": "Same result: the shot has room for a change this size.",
+   "text": "النتيجة نفسها: الضربة تحتمل تغييراً بهذا الحجم."
+  },
+  {
+   "culture": "es",
+   "key": "This time %@ stops %@.",
+   "text": "Esta vez %1$@ se para %2$@."
+  },
+  {
+   "culture": "fr",
+   "key": "This time %@ stops %@.",
+   "text": "Cette fois, %1$@ s'arrête %2$@."
+  },
+  {
+   "culture": "de",
+   "key": "This time %@ stops %@.",
+   "text": "Diesmal bleibt %1$@ %2$@ liegen."
+  },
+  {
+   "culture": "it",
+   "key": "This time %@ stops %@.",
+   "text": "Questa volta %1$@ si ferma %2$@."
+  },
+  {
+   "culture": "pt",
+   "key": "This time %@ stops %@.",
+   "text": "Desta vez %1$@ para %2$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This time %@ stops %@.",
+   "text": "Desta vez %1$@ para %2$@."
+  },
+  {
+   "culture": "ja",
+   "key": "This time %@ stops %@.",
+   "text": "今回は%1$@が%2$@止まります。"
+  },
+  {
+   "culture": "ko",
+   "key": "This time %@ stops %@.",
+   "text": "이번에는 %1$@이(가) %2$@ 멈춰요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This time %@ stops %@.",
+   "text": "这次%1$@停在%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "This time %@ stops %@.",
+   "text": "На этот раз %1$@ останавливается %2$@."
+  },
+  {
+   "culture": "ar",
+   "key": "This time %@ stops %@.",
+   "text": "هذه المرة تتوقف %1$@ %2$@."
+  },
+  {
+   "culture": "es",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "El resultado es el mismo, pero %1$@ se para a %2$@ centímetros."
+  },
+  {
+   "culture": "fr",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "Le résultat est le même, mais %1$@ s'arrête à %2$@ centimètres de là."
+  },
+  {
+   "culture": "de",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "Das Ergebnis ist dasselbe, aber %1$@ bleibt %2$@ Zentimeter entfernt liegen."
+  },
+  {
+   "culture": "it",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "Il risultato è lo stesso, ma %1$@ si ferma a %2$@ centimetri."
+  },
+  {
+   "culture": "pt",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "O resultado é o mesmo, mas %1$@ para a %2$@ centímetros."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "O resultado é o mesmo, mas %1$@ para a %2$@ centímetros."
+  },
+  {
+   "culture": "ja",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "結果は同じですが、%1$@は %2$@ センチ離れて止まります。"
+  },
+  {
+   "culture": "ko",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "결과는 같지만 %1$@이(가) %2$@센티미터 떨어져 멈춰요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "结果相同，但%1$@停在相距 %2$@ 厘米的地方。"
+  },
+  {
+   "culture": "ru",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "Результат тот же, но %1$@ останавливается в %2$@ см оттуда."
+  },
+  {
+   "culture": "ar",
+   "key": "The result is the same, but %@ stops %@ centimetres away.",
+   "text": "النتيجة نفسها، لكن %1$@ تتوقف على بعد %2$@ سنتيمتر."
+  },
+  {
+   "culture": "es",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "En el primer choque las dos blancas estaban a %1$@ milímetros; se paran a %2$@ centímetros."
+  },
+  {
+   "culture": "fr",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "Au premier choc, les deux blanches étaient à %1$@ millimètres l'une de l'autre ; elles s'arrêtent à %2$@ centimètres."
+  },
+  {
+   "culture": "de",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "Beim ersten Treffer lagen die zwei Weißen %1$@ Millimeter auseinander; sie bleiben %2$@ Zentimeter auseinander liegen."
+  },
+  {
+   "culture": "it",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "Al primo urto le due bianche erano a %1$@ millimetri; si fermano a %2$@ centimetri."
+  },
+  {
+   "culture": "pt",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "No primeiro choque, as duas brancas estavam a %1$@ milímetros; param a %2$@ centímetros."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "No primeiro choque, as duas brancas estavam a %1$@ milímetros; param a %2$@ centímetros."
+  },
+  {
+   "culture": "ja",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "最初に当たった時、2つの手球の差は %1$@ ミリでした。止まった時は %2$@ センチ離れています。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "첫 충돌 때 두 큐볼은 %1$@밀리미터 떨어져 있었고, 멈출 때는 %2$@센티미터 떨어져 있어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "第一次碰撞时两颗白球相距 %1$@ 毫米；停下时相距 %2$@ 厘米。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "При первом ударе два битка были в %1$@ мм друг от друга; останавливаются они в %2$@ см."
+  },
+  {
+   "culture": "ar",
+   "key": "At the first hit the two cue balls were %@ millimetres apart; they stop %@ centimetres apart.",
+   "text": "عند أول اصطدام كانت الكرتان البيضاوان على بعد %1$@ مم؛ وتتوقفان على بعد %2$@ سم."
+  },
+  {
+   "culture": "es",
+   "key": "This version makes the shot.",
+   "text": "Esta versión consigue el tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "This version makes the shot.",
+   "text": "Cette version réussit le coup."
+  },
+  {
+   "culture": "de",
+   "key": "This version makes the shot.",
+   "text": "Diese Version schafft den Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "This version makes the shot.",
+   "text": "Questa versione riesce il tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "This version makes the shot.",
+   "text": "Esta versão acerta a tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version makes the shot.",
+   "text": "Esta versão acerta a tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "This version makes the shot.",
+   "text": "このバージョンはショットに成功します。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version makes the shot.",
+   "text": "이 버전은 샷에 성공해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version makes the shot.",
+   "text": "这个版本打成了。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version makes the shot.",
+   "text": "Этот вариант удаётся."
+  },
+  {
+   "culture": "ar",
+   "key": "This version makes the shot.",
+   "text": "هذه النسخة تنجح في الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "This version misses the shot.",
+   "text": "Esta versión falla el tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "This version misses the shot.",
+   "text": "Cette version rate le coup."
+  },
+  {
+   "culture": "de",
+   "key": "This version misses the shot.",
+   "text": "Diese Version verfehlt den Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "This version misses the shot.",
+   "text": "Questa versione sbaglia il tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "This version misses the shot.",
+   "text": "Esta versão falha a tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version misses the shot.",
+   "text": "Esta versão erra a tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "This version misses the shot.",
+   "text": "このバージョンはショットに失敗します。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version misses the shot.",
+   "text": "이 버전은 샷에 실패해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version misses the shot.",
+   "text": "这个版本没打成。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version misses the shot.",
+   "text": "Этот вариант не удаётся."
+  },
+  {
+   "culture": "ar",
+   "key": "This version misses the shot.",
+   "text": "هذه النسخة تُخفق في الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "This version still misses.",
+   "text": "Esta versión sigue fallando."
+  },
+  {
+   "culture": "fr",
+   "key": "This version still misses.",
+   "text": "Cette version rate encore."
+  },
+  {
+   "culture": "de",
+   "key": "This version still misses.",
+   "text": "Diese Version verfehlt immer noch."
+  },
+  {
+   "culture": "it",
+   "key": "This version still misses.",
+   "text": "Anche questa versione sbaglia."
+  },
+  {
+   "culture": "pt",
+   "key": "This version still misses.",
+   "text": "Esta versão continua a falhar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version still misses.",
+   "text": "Esta versão ainda erra."
+  },
+  {
+   "culture": "ja",
+   "key": "This version still misses.",
+   "text": "このバージョンでもまだ失敗します。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version still misses.",
+   "text": "이 버전도 여전히 실패해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version still misses.",
+   "text": "这个版本还是没打成。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version still misses.",
+   "text": "Этот вариант тоже не удаётся."
+  },
+  {
+   "culture": "ar",
+   "key": "This version still misses.",
+   "text": "هذه النسخة ما زالت تُخفق."
+  },
+  {
+   "culture": "es",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Muestra qué habría hecho un pequeño cambio en este tiro"
+  },
+  {
+   "culture": "fr",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Montre ce qu'un petit changement aurait fait à ce coup"
+  },
+  {
+   "culture": "de",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Zeigt, was eine kleine Änderung an diesem Stoß bewirkt hätte"
+  },
+  {
+   "culture": "it",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Mostra cosa avrebbe fatto un piccolo cambiamento a questo tiro"
+  },
+  {
+   "culture": "pt",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Mostra o que uma pequena mudança nesta tacada teria feito"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Mostra o que uma pequena mudança nesta tacada teria feito"
+  },
+  {
+   "culture": "ja",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "このショットを少し変えたらどうなったかを見せます"
+  },
+  {
+   "culture": "ko",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "이 샷을 조금 바꿨다면 어떻게 됐을지 보여 줘요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "显示对这一杆稍作改动会怎样"
+  },
+  {
+   "culture": "ru",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "Показывает, что сделало бы небольшое изменение удара"
+  },
+  {
+   "culture": "ar",
+   "key": "Shows what a small change to this shot would have done",
+   "text": "تُظهر ما كان سيحدث لو غيّرت الضربة قليلاً"
+  },
+  {
+   "culture": "es",
+   "key": "Reset",
+   "text": "Restablecer"
+  },
+  {
+   "culture": "fr",
+   "key": "Reset",
+   "text": "Réinitialiser"
+  },
+  {
+   "culture": "de",
+   "key": "Reset",
+   "text": "Zurücksetzen"
+  },
+  {
+   "culture": "it",
+   "key": "Reset",
+   "text": "Ripristina"
+  },
+  {
+   "culture": "pt",
+   "key": "Reset",
+   "text": "Repor"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Reset",
+   "text": "Redefinir"
+  },
+  {
+   "culture": "ja",
+   "key": "Reset",
+   "text": "リセット"
+  },
+  {
+   "culture": "ko",
+   "key": "Reset",
+   "text": "초기화"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Reset",
+   "text": "重置"
+  },
+  {
+   "culture": "ru",
+   "key": "Reset",
+   "text": "Сбросить"
+  },
+  {
+   "culture": "ar",
+   "key": "Reset",
+   "text": "إعادة الضبط"
+  },
+  {
+   "culture": "es",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Devuelve cada ajuste al tiro que jugaste"
+  },
+  {
+   "culture": "fr",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Remet chaque réglage comme dans le coup que tu as joué"
+  },
+  {
+   "culture": "de",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Setzt jede Einstellung auf den gespielten Stoß zurück"
+  },
+  {
+   "culture": "it",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Riporta ogni impostazione al tiro che hai giocato"
+  },
+  {
+   "culture": "pt",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Repõe cada ajuste como na tacada que jogaste"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Volta cada ajuste para a tacada que você jogou"
+  },
+  {
+   "culture": "ja",
+   "key": "Puts every setting back to the shot you played",
+   "text": "すべての設定を打ったショットに戻します"
+  },
+  {
+   "culture": "ko",
+   "key": "Puts every setting back to the shot you played",
+   "text": "모든 설정을 친 샷 그대로 되돌려요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Puts every setting back to the shot you played",
+   "text": "把所有设置恢复为你实际的击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Puts every setting back to the shot you played",
+   "text": "Возвращает все настройки к сыгранному удару"
+  },
+  {
+   "culture": "ar",
+   "key": "Puts every setting back to the shot you played",
+   "text": "تعيد كل إعداد إلى الضربة التي لعبتها"
+  },
+  {
+   "culture": "es",
+   "key": "Setting",
+   "text": "Ajuste"
+  },
+  {
+   "culture": "fr",
+   "key": "Setting",
+   "text": "Réglage"
+  },
+  {
+   "culture": "de",
+   "key": "Setting",
+   "text": "Einstellung"
+  },
+  {
+   "culture": "it",
+   "key": "Setting",
+   "text": "Impostazione"
+  },
+  {
+   "culture": "pt",
+   "key": "Setting",
+   "text": "Ajuste"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Setting",
+   "text": "Ajuste"
+  },
+  {
+   "culture": "ja",
+   "key": "Setting",
+   "text": "設定"
+  },
+  {
+   "culture": "ko",
+   "key": "Setting",
+   "text": "설정"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Setting",
+   "text": "设置"
+  },
+  {
+   "culture": "ru",
+   "key": "Setting",
+   "text": "Настройка"
+  },
+  {
+   "culture": "ar",
+   "key": "Setting",
+   "text": "الإعداد"
+  },
+  {
+   "culture": "es",
+   "key": "Play both",
+   "text": "Ver los dos"
+  },
+  {
+   "culture": "fr",
+   "key": "Play both",
+   "text": "Jouer les deux"
+  },
+  {
+   "culture": "de",
+   "key": "Play both",
+   "text": "Beide abspielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play both",
+   "text": "Riproduci entrambi"
+  },
+  {
+   "culture": "pt",
+   "key": "Play both",
+   "text": "Ver os dois"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play both",
+   "text": "Ver os dois"
+  },
+  {
+   "culture": "ja",
+   "key": "Play both",
+   "text": "両方を再生"
+  },
+  {
+   "culture": "ko",
+   "key": "Play both",
+   "text": "둘 다 재생"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play both",
+   "text": "同时播放"
+  },
+  {
+   "culture": "ru",
+   "key": "Play both",
+   "text": "Показать оба"
+  },
+  {
+   "culture": "ar",
+   "key": "Play both",
+   "text": "شغّل الاثنين"
+  },
+  {
+   "culture": "es",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Repite tu tiro con el otro futuro rodando a su lado"
+  },
+  {
+   "culture": "fr",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Rejoue ton coup avec l'autre avenir qui roule à côté"
+  },
+  {
+   "culture": "de",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Spielt deinen Stoß erneut ab, die andere Zukunft rollt daneben"
+  },
+  {
+   "culture": "it",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Ripete il tuo tiro con l'altro futuro che rotola accanto"
+  },
+  {
+   "culture": "pt",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Repete a tua tacada com o outro futuro a rolar ao lado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Repete sua tacada com o outro futuro rolando ao lado"
+  },
+  {
+   "culture": "ja",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "もうひとつの未来を並べて、あなたのショットを再生します"
+  },
+  {
+   "culture": "ko",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "다른 미래를 옆에 굴리며 내 샷을 다시 재생해요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "重播你的击球，另一种结果在旁边同时滚动"
+  },
+  {
+   "culture": "ru",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "Повторяет твой удар, а рядом катится другое будущее"
+  },
+  {
+   "culture": "ar",
+   "key": "Plays your shot again with the other future rolling beside it",
+   "text": "تعيد تشغيل ضربتك والمستقبل الآخر يتدحرج بجانبها"
+  },
+  {
+   "culture": "es",
+   "key": "Where they part",
+   "text": "Dónde se separan"
+  },
+  {
+   "culture": "fr",
+   "key": "Where they part",
+   "text": "Où ils divergent"
+  },
+  {
+   "culture": "de",
+   "key": "Where they part",
+   "text": "Wo sie sich trennen"
+  },
+  {
+   "culture": "it",
+   "key": "Where they part",
+   "text": "Dove si separano"
+  },
+  {
+   "culture": "pt",
+   "key": "Where they part",
+   "text": "Onde se separam"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Where they part",
+   "text": "Onde se separam"
+  },
+  {
+   "culture": "ja",
+   "key": "Where they part",
+   "text": "分かれる所"
+  },
+  {
+   "culture": "ko",
+   "key": "Where they part",
+   "text": "갈라지는 곳"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Where they part",
+   "text": "分岔处"
+  },
+  {
+   "culture": "ru",
+   "key": "Where they part",
+   "text": "Где они расходятся"
+  },
+  {
+   "culture": "ar",
+   "key": "Where they part",
+   "text": "حيث يفترقان"
+  },
+  {
+   "culture": "es",
+   "key": "Keep this one",
+   "text": "Quedarme con este"
+  },
+  {
+   "culture": "fr",
+   "key": "Keep this one",
+   "text": "Garder celui-ci"
+  },
+  {
+   "culture": "de",
+   "key": "Keep this one",
+   "text": "Diesen behalten"
+  },
+  {
+   "culture": "it",
+   "key": "Keep this one",
+   "text": "Tieni questo"
+  },
+  {
+   "culture": "pt",
+   "key": "Keep this one",
+   "text": "Ficar com este"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Keep this one",
+   "text": "Ficar com este"
+  },
+  {
+   "culture": "ja",
+   "key": "Keep this one",
+   "text": "これにする"
+  },
+  {
+   "culture": "ko",
+   "key": "Keep this one",
+   "text": "이걸로 할래요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Keep this one",
+   "text": "保留这个"
+  },
+  {
+   "culture": "ru",
+   "key": "Keep this one",
+   "text": "Оставить этот"
+  },
+  {
+   "culture": "ar",
+   "key": "Keep this one",
+   "text": "احتفظ بهذه"
+  },
+  {
+   "culture": "es",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Prepara tu próximo intento con los ajustes de esta versión"
+  },
+  {
+   "culture": "fr",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Prépare ton prochain essai avec les réglages de cette version"
+  },
+  {
+   "culture": "de",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Bereitet deinen nächsten Versuch mit den Einstellungen dieser Version vor"
+  },
+  {
+   "culture": "it",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Prepara il tuo prossimo tentativo con le impostazioni di questa versione"
+  },
+  {
+   "culture": "pt",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Prepara a tua próxima tentativa com os ajustes desta versão"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Prepara sua próxima tentativa com os ajustes desta versão"
+  },
+  {
+   "culture": "ja",
+   "key": "Sets up your next try with this version's settings",
+   "text": "このバージョンの設定で次の挑戦を用意します"
+  },
+  {
+   "culture": "ko",
+   "key": "Sets up your next try with this version's settings",
+   "text": "이 버전의 설정으로 다음 시도를 준비해요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Sets up your next try with this version's settings",
+   "text": "用这个版本的设置准备下一次尝试"
+  },
+  {
+   "culture": "ru",
+   "key": "Sets up your next try with this version's settings",
+   "text": "Готовит следующую попытку с настройками этого варианта"
+  },
+  {
+   "culture": "ar",
+   "key": "Sets up your next try with this version's settings",
+   "text": "تجهّز محاولتك التالية بإعدادات هذه النسخة"
+  },
+  {
+   "culture": "es",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Vuelve a empezar el tiro con la lente activada"
+  },
+  {
+   "culture": "fr",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Relance le coup avec la lentille activée"
+  },
+  {
+   "culture": "de",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Startet den Stoß noch einmal mit eingeschalteter Lens"
+  },
+  {
+   "culture": "it",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Fa ripartire il tiro con la Lens attiva"
+  },
+  {
+   "culture": "pt",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Repete a tacada com a Lente ligada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Repete a tacada com a Lente ligada"
+  },
+  {
+   "culture": "ja",
+   "key": "Starts the shot again with the Lens on",
+   "text": "レンズをオンにしてショットを最初から再生します"
+  },
+  {
+   "culture": "ko",
+   "key": "Starts the shot again with the Lens on",
+   "text": "렌즈를 켠 채로 샷을 처음부터 다시 재생해요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Starts the shot again with the Lens on",
+   "text": "开启透镜，重新播放这一击"
+  },
+  {
+   "culture": "ru",
+   "key": "Starts the shot again with the Lens on",
+   "text": "Заново запускает удар с включённой линзой"
+  },
+  {
+   "culture": "ar",
+   "key": "Starts the shot again with the Lens on",
+   "text": "تعيد بدء الضربة مع تشغيل العدسة"
+  }
+ ]
+}

@@ -9,6 +9,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a pin knocked down on another table ticks like an impact).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (generation-two kinds: a jam brought to rest ticks like an impact, a
 //          ball skipping over a hole gets a short tick in the pocket colour).
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: while a what-if shows, a violet diamond marks
+//          where the two futures part, with a VoiceOver action "Where they part"; the impact tick's haptic respects
+//          Vibration off; the Mac's time readout writes its decimals the way the player's language does.)
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -32,7 +35,8 @@ struct ScrubBar: View {
             track(width: max(1, geo.size.width))
         }
         .frame(height: hitHeight)
-        .sensoryFeedback(.impact(weight: .light), trigger: crossings)
+        // Vibration off silences the tick (GameSettings.hapticsOn); nil plays nothing.
+        .sensoryFeedback(trigger: crossings) { _, _ in GameSettings.hapticsOn ? .impact(weight: .light) : nil }
         // VoiceOver: one adjustable element instead of a canvas it cannot read.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Playback position")
@@ -47,6 +51,18 @@ struct ScrubBar: View {
         }
         .accessibilityAction(named: "Next impact") { if let t = impact(after: model.time) { model.scrub(to: t) } }
         .accessibilityAction(named: "Previous impact") { if let t = impact(before: model.time) { model.scrub(to: t) } }
+        // The what-if's parting point (0.7.5): the same jump as the card's Where they part.
+        .accessibilityActions {
+            if partingTime != nil {
+                Button(String(localized: "Where they part")) { model.whatIf.jumpToParting() }
+            }
+        }
+    }
+
+    /// Where the what-if's two futures part, while one shows (the fork's marker); nil otherwise.
+    private var partingTime: Double? {
+        guard model.whatIf.isShowing else { return nil }
+        return model.whatIf.result?.fork.marker?.time
     }
 
 
@@ -60,6 +76,7 @@ struct ScrubBar: View {
             Capsule().fill(palette.track).frame(height: railHeight)
             ticks(duration: d)
             Capsule().fill(palette.accent).frame(width: max(railHeight, x), height: railHeight)
+            partingMark(width: w, duration: d)
             Circle()
                 .fill(.white)
                 .frame(width: thumb, height: thumb)
@@ -114,6 +131,23 @@ struct ScrubBar: View {
         .accessibilityHidden(true)
     }
 
+    /// The what-if's diamond on the bar at the parting time, in the what-if violet with a dark edge (0.7.5).
+    @ViewBuilder
+    private func partingMark(width w: CGFloat, duration d: Double) -> some View {
+        if let t = partingTime {
+            let size: CGFloat = 10
+            let x = w * CGFloat(min(1, max(0, t / d)))
+            Rectangle()
+                .fill(palette.whatIf)
+                .frame(width: size, height: size)
+                .overlay(Rectangle().stroke(.black.opacity(0.55), lineWidth: 1))
+                .rotationEffect(.degrees(45))
+                .offset(x: min(max(0, x - size / 2), w - size))
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+
     // MARK: Impact lookups (also used by VoiceOver)
 
     private var impactTimes: [Double] {
@@ -138,11 +172,14 @@ struct TimeReadout: View {
     let model: ShowpieceModel
 
     var body: some View {
-        Text(String(format: "%.1f / %.1f s", model.time, model.duration))
+        // Formatted for the player's language, so the decimal mark is theirs (0.7.5).
+        Text(verbatim: "\(Self.seconds(model.time)) / \(Self.seconds(model.duration)) s")
             .font(Theme.number)
             .foregroundStyle(.secondary)
             .lineLimit(1)
             .fixedSize()
             .accessibilityHidden(true)   // the scrub bar already speaks it
     }
+
+    private static func seconds(_ t: Double) -> String { t.formatted(.number.precision(.fractionLength(1))) }
 }
