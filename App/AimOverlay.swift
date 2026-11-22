@@ -52,6 +52,10 @@
 //          Without Colour that also gets an inner ring, so it never rests on colour alone. It never moves by itself,
 //          so Reduce Motion has nothing to stop. Its length is read in the fine controls and the stance by the
 //          equipment card, both spoken; the drawing itself stays hidden from VoiceOver like the rest of this Canvas.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hooks, 0.7.0 items 47 and 50: the Aim element's words
+//          come from TableWords.spokenAim (the guide's launch line and contact, side spin included, with a lesson's
+//          aim band and the stance), the ball in line is the guide's, and aiming at a ball or a pot goes through
+//          AimAccess so the launch line, not the bare cue line, runs through the chosen point.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -233,15 +237,14 @@ struct AimOverlay: View {
     }
 
     /// The ball the aim line meets first now, if any.
-    private var ballInLine: Int? {
-        AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin, direction: model.aimDirection,
-                                 radius: model.timeline.table.ballRadius)?.ball
-    }
+    /// (Access stream hook, item 50: the ball the guide shows, along the launch line, not the bare cue line.)
+    private var ballInLine: Int? { AimGeometry.guideContact(for: model)?.ball }
 
-    /// Aim straight through a ball's centre (a full hit), and say the new aim.
+    /// Aim straight through a ball's centre (a full hit), and say the new aim. The ball's launch line, side spin's
+    /// push included, is what runs through the centre (AimAccess).
     private func aimAtBall(_ ball: Int) {
         guard model.layout.indices.contains(ball), NextShot.isOnTable(model.layout[ball]) else { return }
-        model.aim(toward: model.layout[ball])
+        AimAccess.aim(model, toward: model.layout[ball])
         ShotNarration.announce(spokenAim)
     }
 
@@ -258,7 +261,8 @@ struct AimOverlay: View {
 
     /// Aim the ghost-ball pot of `ball` into `pocket`, and say the new aim (which names the pocket, or what blocks it).
     private func aimPot(_ pot: TableLines.PotAim) {
-        model.aim(toward: pot.ghost)
+        // Corrected for side spin's push, so the ball really leaves for the ghost spot (access stream, item 50).
+        AimAccess.aim(model, toward: pot.ghost)
         ShotNarration.announce(spokenAim)
     }
 
@@ -463,18 +467,9 @@ struct AimOverlay: View {
     /// says what it will hit and where that ball goes (TableWords.aim), with the angle last for anyone who wants it.
     /// The target sentence is spoken even with the Aim guide option off: that option hides drawing for sighted
     /// players who want to judge the angle, and for a player who cannot see the table these words are the only view.
-    private var spokenAim: String {
-        if model.racked {
-            return String(localized: "\(String(format: "%+.0f", locale: Locale.current, model.aimOffset * 1000)) millimetres from the lead ball")
-        }
-        guard NextShot.isOnTable(model.aimOrigin), model.layout.count > 1 else {
-            return String(localized: "The cue ball is off the table.")
-        }
-        let target = TableWords.aim(layout: model.layout, from: model.aimOrigin, direction: model.aimDirection,
-                                    table: model.timeline.table)
-        let degrees = String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees")
-        return target + " " + degrees
-    }
+    /// (Access stream hook, 0.7.0 item 50: the words follow the launch line and contact the guide draws, side spin
+    /// included, and carry a lesson's aim band and the stance; built in TableWords.spokenAim.)
+    private var spokenAim: String { TableWords.spokenAim(for: model) }
 
     // MARK: Drawing
 

@@ -15,6 +15,7 @@
 //          match and free play reuse them: the ball chips, pocket menu and Safety button are CallBallChips,
 //          CallPocketMenu and CallSafetyButton (App/Match/CallControl.swift), the cue angle is CueAngleMenu
 //          (App/CueAngleControl.swift). This card drives them exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next's arrow follows the reading direction.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -471,7 +472,7 @@ struct EightBallCard: View {
                 .accessibilityLabel(String(localized: "Try again"))
                 .accessibilityHint(String(localized: "Puts the balls back, with the same call and your last settings"))
                 styled(Button { mode.next() } label: {
-                    Label("Next", systemImage: "arrow.right").font(.headline).lineLimit(1)
+                    Label("Next", systemImage: "arrow.forward").font(.headline).lineLimit(1)
                         .frame(minHeight: Self.buttonHeight)
                 }, prominent: true)
                 .keyboardShortcut(.defaultAction)

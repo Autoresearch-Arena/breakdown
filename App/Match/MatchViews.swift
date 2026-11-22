@@ -14,6 +14,9 @@
 //          card says what a one-player bar-billiards game did to the best score; VoiceOver hears the points and the
 //          scores with each ruling and the moment time runs out. The ruling card names the ball that was really
 //          struck (MatchMode.lastShotBall) and the other tables' balls by their names there.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hooks, 0.7.0 items 44 and 47: announcements go through the one speaker,
+//          ShotNarration.announce, the ruling itself is said once by the shot's narration, and Continue's arrow follows
+//          the reading direction.)
 // PURPOSE: Everything the player sees of a match (eight-ball and nine-ball for two on one device; the other tables'
 //          games use the same card), as ONE glass card whose content follows MatchMode.phase:
 //            aiming   - the turn banner: who shoots (or breaks), the game, each player's group with their balls left
@@ -67,7 +70,7 @@ struct MatchCard: View {
             }
             // Bar billiards: the moment the clock runs out, said aloud and felt (the banner shows the bar from then).
             .onChange(of: match.timeIsUp) { _, up in
-                if up { AccessibilityNotification.Announcement(TableGameWords.timeUpNow).post() }
+                if up { ShotNarration.announce(TableGameWords.timeUpNow) }
             }
             .sensoryFeedback(trigger: match.timeIsUp) { _, up in up && GameSettings.hapticsOn ? .warning : nil }
             .transition(.opacity)
@@ -208,7 +211,7 @@ struct MatchCard: View {
 
     private func continueButton(_ match: MatchMode) -> some View {
         Button { match.acknowledgeRuling() } label: {
-            Label("Continue", systemImage: "arrow.right").font(.headline).lineLimit(1)
+            Label("Continue", systemImage: "arrow.forward").font(.headline).lineLimit(1)
                 .frame(minHeight: CallMetrics.buttonHeight)
         }
         .buttonStyle(.glassProminent)
@@ -301,8 +304,9 @@ struct MatchCard: View {
         let text: String
         switch phase {
         case .ruling:
-            guard let r = match.lastRuling else { return }
-            text = spokenRuling(r, match)
+            // One ruling sentence: the shot's narration says it together with the summary (ShotNarration, access
+            // stream hook, 0.7.0 item 47), so the card does not say its own version over it.
+            return
         case .handOver:
             text = MatchWords.handOver(to: MatchWords.name(match.state.turn, in: match.playerNames))
         case .over:
@@ -316,7 +320,7 @@ struct MatchCard: View {
         case .aiming, .shooting:
             return
         }
-        AccessibilityNotification.Announcement(text).post()
+        ShotNarration.announce(text)
     }
 
     // MARK: Pieces (as TrickShotCard's)

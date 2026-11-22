@@ -4,6 +4,8 @@
 //          band (LessonZones.cueAngles) carry a target mark in the menu, and the label shows the mark while the chosen
 //          angle is inside it; a locked menu is disabled and marked "Locked for this step". Defaults leave every other
 //          caller exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 46: the spoken value says whether the angle is inside a
+//          lesson's marked angles, and each marked angle in the menu is read as marked.)
 // PURPOSE: The cue-angle control, shared. A small glass menu button that shows how far the cue is raised ("Level",
 //          "30° up") and offers the angles a player picks from: level for nearly every shot, a little raised for a
 //          jump, steep for a massé. It reads and writes the solver's own unit, the SINE of the cue's angle above the
@@ -60,7 +62,10 @@ struct CueAngleMenu: View {
                                       set: { sine = Self.sine(forAngle: $0) })) {
                 ForEach(Self.angles, id: \.self) { a in
                     if zone?.contains(a) == true {
-                        Label(Self.words(degrees: Double(a)), systemImage: "scope").tag(a)
+                        // "Marked" is said as well as drawn, so the band is heard (access stream hook, item 46).
+                        Label(Self.words(degrees: Double(a)), systemImage: "scope")
+                            .accessibilityLabel(TableWords.markedAngle(words: Self.words(degrees: Double(a))))
+                            .tag(a)
                     } else {
                         Text(Self.words(degrees: Double(a))).tag(a)
                     }
@@ -77,7 +82,7 @@ struct CueAngleMenu: View {
         .disabled(locked)
         .lockedForStep(locked)
         .accessibilityLabel(String(localized: "Cue angle"))
-        .accessibilityValue(Self.words(degrees: Double(angle)))
+        .accessibilityValue(TableWords.cueAngleValue(words: Self.words(degrees: Double(angle)), degrees: angle, band: zone))
         .accessibilityHint(String(localized: "Raise the cue to jump or curve the cue ball"))
     }
 }

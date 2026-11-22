@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: the placement and Table cleared announcements go
+//          through the one speaker, ShotNarration.announce.)
 // PURPOSE: The play cards that belong to free play and to matches, hosted together as PlayCards beside the trick-shot
 //          and 8-ball cards (ShowpieceView above the controls or in the side column, DuoPanel in the notebook panel):
 //            BallInHandCard  - while the cue ball is in hand (after a scratch in free play, after a foul in a match) or
@@ -169,7 +171,7 @@ struct BallInHandCard: View {
     private func place() {
         if !model.confirmCueBallPlacement() {
             let why = CueBallPlacement.problem(CueBallPlacement.legality(of: CueBallPlacement.spot(model), model))
-            AccessibilityNotification.Announcement(why ?? String(localized: "Not a legal spot")).post()
+            ShotNarration.announce(why ?? String(localized: "Not a legal spot"))
         }
     }
 
@@ -180,7 +182,7 @@ struct BallInHandCard: View {
         let r = model.timeline.table.ballRadius
         let spot = model.moveCueBallCandidate(to: CueBallPlacement.spot(model) + direction * r)
         let at = CueBallPlacement.spot(model)
-        AccessibilityNotification.Announcement(spoken(at, problem: CueBallPlacement.problem(spot))).post()
+        ShotNarration.announce(spoken(at, problem: CueBallPlacement.problem(spot)))
     }
 
     /// "38 centimetres from the head cushion and 20 centimetres from the left cushion. Touching the 5."
@@ -244,7 +246,7 @@ struct TableClearedCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .glassCard(cornerRadius: 22, padding: 12)
         .tint(palette.accent)
-        .onAppear { AccessibilityNotification.Announcement(String(localized: "Table cleared")).post() }
+        .onAppear { ShotNarration.announce(String(localized: "Table cleared")) }
         .transition(.opacity)
     }
 

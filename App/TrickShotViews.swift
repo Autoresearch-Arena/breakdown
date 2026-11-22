@@ -8,6 +8,7 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (learn from a retry: the Made it / Missed card also says the one
 //          difference from the last try (RetryWords) and offers See the contact (ContactButton), so a shot such as
 //          Stop Dead can be taken back to the contact from the card the player is already reading.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next shot's arrow follows the reading direction.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -190,7 +191,7 @@ struct TrickShotCard: View {
                 if verdict.made {
                     tryAgainButton(prominent: false)
                     Button { mode.next() } label: {
-                        Label("Next shot", systemImage: "arrow.right").font(.headline).lineLimit(1)
+                        Label("Next shot", systemImage: "arrow.forward").font(.headline).lineLimit(1)
                             .frame(minHeight: Self.buttonHeight)
                     }
                     .buttonStyle(.glassProminent).foregroundStyle(palette.ground)

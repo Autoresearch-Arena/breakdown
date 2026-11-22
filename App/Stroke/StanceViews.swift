@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: the card no longer announces the stance on every
+//          change; VoiceOver hears it inside the aim's words and after a finished shot, TableWords.stanceLine.)
 // PURPOSE: The reach ladder on screen (App/Stroke/Reach.swift), apart from the bridge mark on the cloth (AimOverlay):
 //          - EquipmentCard: the single equipment indicator. A small card beside the power and tip controls (inside the
 //            shot panel on a phone, among the notebook's cards on big screens and the open Duo) with a flat pictogram
@@ -72,12 +74,10 @@ struct EquipmentCard: View {
                 .scaleEffect(lifted ? 1.035 : 1)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(spoken)
-                // A VoiceOver player aiming by swipes hears the stance as it comes and as it changes.
-                .onAppear {
-                    pulseIfNew()
-                    ShotNarration.announce(spoken)
-                }
-                .onChange(of: spoken) { _, now in ShotNarration.announce(now) }
+                // VoiceOver hears the stance inside the Aim element's words and after a finished shot
+                // (TableWords.stanceLine), not as an announcement on every change, which talked over the aim
+                // (access stream hook, 0.7.0 item 47).
+                .onAppear { pulseIfNew() }
                 .transition(.opacity)
         }
     }

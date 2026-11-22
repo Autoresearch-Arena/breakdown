@@ -19,6 +19,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the cue-ball picture is to scale, so the dot's
 //          reach and the dashed miscue ring sit where the default physics puts them: the ring at the miscue limit,
 //          about half the radius, the dot a tenth of the radius beyond it.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hooks, 0.7.0 item 46: the tip picture's spoken value, band status and actions
+//          come from TipAccessActions, and the power value adds the lesson's band, TableWords.powerBandLine.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -103,14 +105,11 @@ struct TipPicker: View {
         })
         .accessibilityElement()
         .accessibilityLabel("Cue tip position")
-        .accessibilityValue(Self.spoken(up: model.activeTipUp, side: model.activeTipSide))
         .accessibilityHint("Drag on the ball to place the tip. Or use the actions.")
         .accessibilityAddTraits(.allowsDirectInteraction)
-        .accessibilityAction(named: "Follow") { model.activeTipUp = model.tipLimit * 0.6 }
-        .accessibilityAction(named: "Draw") { model.activeTipUp = -model.tipLimit * 0.6 }
-        .accessibilityAction(named: "Left spin") { model.activeTipSide = -model.tipLimit * 0.6 }
-        .accessibilityAction(named: "Right spin") { model.activeTipSide = model.tipLimit * 0.6 }
-        .accessibilityAction(named: "Centre") { model.activeTipUp = 0; model.activeTipSide = 0 }
+        // Access stream hook (0.7.0 item 46): the spoken amount and band, fine steps, band-aware quick actions and
+        // Into the marked band, none while locked (TableAccessLayer.swift).
+        .modifier(TipAccessActions(model: model, open: open, zones: zones))
         .help("Cue tip: drag to choose follow, draw or side")
         .lockedForStep(!tipOpen)
     }
@@ -221,7 +220,9 @@ struct PowerGauge: View {
         .frame(minHeight: 44)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
-        .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm))"))
+        // The lesson's power band, when one is marked, after the value (access stream hook, 0.7.0 item 46).
+        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm))"),
+                                              TableWords.powerBandLine(model, zones: zones)))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: model.powerFraction += 0.1

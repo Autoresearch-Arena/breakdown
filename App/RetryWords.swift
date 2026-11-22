@@ -7,6 +7,8 @@
 //          With no setting moved it is the sentence's change ("You changed your stance, and ..."), or one of several;
 //          with settings moved it joins the several-changes list, which never says which one did it; the stance each try
 //          was played from follows as a plain fact (StanceWords).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: See the contact's announcement goes through the one
+//          speaker, ShotNarration.announce.)
 // PURPOSE: Learn from a retry (plans/21-Nov-2026-learn-from-a-retry-plan.md, section 3), the view side.
 //          RetryWords   - the one sentence a result card shows after a retry, written from the facts the model
 //                         records (RetryComparison: which controls moved and which way, how far apart the two cue
@@ -121,8 +123,8 @@ struct ContactButton: View {
                 if reduceMotion && model.rideOn { model.setRide(false) }
                 model.seekToFirstContact()
                 onSeek()
-                AccessibilityNotification.Announcement(
-                    String(localized: "Paused where the cue ball first touched a ball. The faint line is your last try.")).post()
+                ShotNarration.announce(
+                    String(localized: "Paused where the cue ball first touched a ball. The faint line is your last try."))
             } label: {
                 Label(String(localized: "See the contact"), systemImage: "scope").labelStyle(.iconOnly)
                     .frame(minWidth: 30, minHeight: CallMetrics.buttonHeight)
