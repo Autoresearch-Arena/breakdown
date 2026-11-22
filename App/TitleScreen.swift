@@ -417,6 +417,11 @@ struct TitleScreen: View {
 
     // MARK: Replacing the saved match
 
+    /// The save a new game of this kind would replace (each game keeps its own, 0.7.5).
+    private func replacedLine(_ request: MatchStartRequest) -> String {
+        MatchMode.savedSummary(for: request.kind).map { MatchWords.savedLine($0) } ?? savedLine
+    }
+
     /// The one save slot is taken: say which game it holds and ask before a new one replaces it (item 18).
     private func replaceList(_ request: MatchStartRequest) -> some View {
         VStack(spacing: 10) {
@@ -424,15 +429,15 @@ struct TitleScreen: View {
                 .font(Theme.sectionTitle)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
-            Text(([savedLine, String(localized: "A new game ends it for good.")]).joined(separator: " "))
+            Text(([replacedLine(request), String(localized: "A new game ends it for good.")]).joined(separator: " "))
                 .font(Theme.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            MenuRow(verbatimTitle: String(localized: "Keep my saved game"), verbatimLine: savedLine, symbol: "play.fill",
-                    prominent: true) {
+            MenuRow(verbatimTitle: String(localized: "Keep my saved game"), verbatimLine: replacedLine(request),
+                    symbol: "play.fill", prominent: true) {
                 pendingMatch = nil
-                continueMatch()
+                continueMatch(kind: request.kind)
             }
             .keyboardShortcut(.defaultAction)
             MenuRow(verbatimTitle: String(localized: "Start the new game"),
@@ -449,7 +454,7 @@ struct TitleScreen: View {
 
     /// A new match: straight away when nothing is saved, otherwise after a yes on the card.
     private func start(_ request: MatchStartRequest) {
-        if model.hasSavedMatch {
+        if model.hasSavedMatch(request.kind) {
             pendingMatch = request
             return
         }
@@ -460,8 +465,8 @@ struct TitleScreen: View {
     /// Continue match: onto the table only when the saved match really loaded (0.7.5). A save that does not load
     /// leaves the menu up, and the model clears the row, so a Continue that does nothing is never left on offer. The
     /// model ends any trick shot or situation itself once the save loads, so a failed Continue ends nothing.
-    private func continueMatch() {
-        guard model.continueSavedMatch() else { return }
+    private func continueMatch(kind: MatchKind? = nil) {
+        guard model.continueSavedMatch(kind: kind) else { return }
         model.closeMenu()
         onPlay()
     }

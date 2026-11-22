@@ -231,8 +231,13 @@ struct PlaybackControls: View {
             .accessibilityLabel("Ride camera")
     }
 
+    /// The computer is thinking or shooting (0.7.5, L-A): Your shot is drawn plain and cannot be pressed, so it never
+    /// looks like the person's turn while it is not.
+    private var computersTurn: Bool { model.computerTurnStage != .none }
+
     private var shot: some View {
-        ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen) { shotPanelOpen.toggle() }
+        ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen && !computersTurn) { shotPanelOpen.toggle() }
+            .disabled(computersTurn)
     }
 
     private var buttons: some View {
@@ -287,7 +292,8 @@ struct PlaybackControls: View {
                 lens(full: false, fill: true)
             }
             ride(fill: true)
-            ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen, fill: true) { shotPanelOpen.toggle() }
+            ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen && !computersTurn, fill: true) { shotPanelOpen.toggle() }
+                .disabled(computersTurn)
             // The what-if entry with its words, where the scrub row's icon-only buttons are hardest to read.
             WhatIfButton(model: model, fill: true)
         }

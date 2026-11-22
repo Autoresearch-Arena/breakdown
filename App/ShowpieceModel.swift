@@ -1698,13 +1698,20 @@ final class ShowpieceModel {
     /// True when a match is saved on the device ("Continue match").
     var hasSavedMatch: Bool { savedMatchExists }
 
+    /// True when this game has a save of its own (0.7.5: one save per game). Read on a tap, not every frame: it reads
+    /// the file. A new game of this kind replaces that save, so the menus ask first only then.
+    func hasSavedMatch(_ kind: MatchKind) -> Bool { MatchMode.savedSummary(for: kind) != nil }
+
     /// Back to the match: the live one if there is one, otherwise the saved one from the device. Returns whether a
     /// match is up afterwards (false when no save could be loaded), so the menu stays open when Continue fails.
     /// A save that does not load also clears the Continue row (noteMatchSave), so it is not offered again.
-    @discardableResult func continueSavedMatch() -> Bool {
+    /// With a kind, that game's save (the live match when it is that game); without, the live match or the most
+    /// recently saved game. A live match of another game is left first; its save stays for later.
+    @discardableResult func continueSavedMatch(kind: MatchKind? = nil) -> Bool {
         closeAllLists()
-        if match != nil { closeMenu(); return true }
-        guard let saved = MatchMode.loadSaved() else { noteMatchSave(exists: false); return false }
+        if let live = match, kind == nil || live.state.kind == kind { closeMenu(); return true }
+        guard let saved = MatchMode.loadSaved(kind: kind) else { noteMatchSave(exists: false); return false }
+        leaveMatch()
         panelAfterBreakDue = false
         strokeDrillStorage?.end()
         cancelPendingSolve()
@@ -1724,7 +1731,7 @@ final class ShowpieceModel {
 
     /// End the match for good: its save is removed and free play's rack goes back on.
     func endMatch() {
-        MatchMode.deleteSave()
+        if let kind = match?.state.kind { MatchMode.deleteSave(kind: kind) }
         noteMatchSave(exists: false)
         leaveMatch()
         rerack()
@@ -1742,9 +1749,11 @@ final class ShowpieceModel {
     }
 
     /// MatchMode reports whether a save exists after each write or removal; the Continue row's summary is read again.
+    /// With one save per game (0.7.5) a removed save may leave another game's, so the row is read again either way;
+    /// `exists` is kept for the callers and no longer decides.
     func noteMatchSave(exists: Bool) {
-        savedMatchExists = exists
-        savedMatchSummary = exists ? MatchMode.savedSummary() : nil
+        savedMatchSummary = MatchMode.savedSummary()
+        savedMatchExists = savedMatchSummary != nil
     }
 
     /// The parameters a match shot is solved with right now, exactly as prepare(_:) builds them for a NextShot input

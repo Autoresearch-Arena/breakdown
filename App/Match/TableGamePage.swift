@@ -52,7 +52,7 @@ struct TableGamePage: View {
                     Text(TableGameWords.gameLine(game)).font(Theme.body)
                 }
                 .fixedSize(horizontal: false, vertical: true)
-                if let request = replacing, let saved = MatchMode.savedSummary() {
+                if let request = replacing, let saved = MatchMode.savedSummary(for: request.kind) {
                     replaceQuestion(saved, request: request)
                 }
                 // Bumper pool and five-pin are played against the computer (highlighted); bar billiards alone against
@@ -109,7 +109,7 @@ struct TableGamePage: View {
     /// A new match of this table's game, then hand over to the table. With a match saved (or one in play, which is
     /// saved too) the page asks first: the device keeps one saved match, and a new one would replace it.
     private func start(_ request: MatchStartRequest) {
-        if model.hasSavedMatch, MatchMode.savedSummary() != nil {
+        if model.hasSavedMatch(request.kind) {
             replacing = request
             return
         }
@@ -132,7 +132,11 @@ struct TableGamePage: View {
                 .font(Theme.body)
                 .fixedSize(horizontal: false, vertical: true)
             CardButtonRow {
-                Button { replacing = nil } label: {
+                // Keeping it plays it: this game's own save, picked up where it was left (0.7.5, one save per game).
+                Button {
+                    replacing = nil
+                    if model.continueSavedMatch(kind: request.kind) { onStarted() }
+                } label: {
                     Text(String(localized: "Keep my saved game")).font(.headline).lineLimit(1)
                 }
                 .buttonStyle(.glass)

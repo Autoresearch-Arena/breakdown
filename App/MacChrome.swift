@@ -246,7 +246,7 @@ struct GameCommands: Commands {
     /// replacing it, the same question the in-window menu asks; otherwise the match starts at once.
     private func start(_ request: MatchStartRequest) {
         guard let model else { return }
-        if model.hasSavedMatch, let pendingMatch {
+        if model.hasSavedMatch(request.kind), let pendingMatch {
             pendingMatch.wrappedValue = request
             // The card is the menu's main page: close any list or page that would sit over it.
             page?.wrappedValue = nil

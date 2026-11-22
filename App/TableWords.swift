@@ -643,7 +643,7 @@ enum TableWords {
     /// A ruling spoken: the fouls, a group taken, points, the other tables' events (pegs, time, balls back, pins up),
     /// ball in hand, a choice to make, and either the result or who shoots next, then everyone's score when `scores`
     /// is given (games that keep a running score). `names` are the players' names by seat.
-    static func ruling(_ r: Ruling, names: [String], scores: [Int]? = nil) -> String {
+    static func ruling(_ r: Ruling, names: [String], scores: [Int]? = nil, you: PlayerID? = nil) -> String {
         func name(_ p: PlayerID) -> String { names.indices.contains(p.index) ? names[p.index] : String(p.index + 1) }
         var out: [String] = []
         if !r.fouls.isEmpty {
@@ -672,7 +672,7 @@ enum TableWords {
         }
         if r.reasons.contains(.ballsReturned) { out.append(String(localized: "Balls come back to be played again.")) }
         if r.reasons.contains(.pinsReset) { out.append(String(localized: "The pins are stood up again.")) }
-        if let scores { out.append(TableGameWords.scores(scores, names: names)) }
+        if let scores { out.append(TableGameWords.scores(scores, names: names, you: you)) }
         if let result = r.result {
             if let winner = result.winner {
                 out.append(String(localized: "\(name(winner)) wins the game."))

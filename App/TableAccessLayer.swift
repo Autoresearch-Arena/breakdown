@@ -193,7 +193,8 @@ enum ShotNarration {
             if match.phase == .shooting { return }
             if let ruling = match.lastRuling {
                 text += " " + TableWords.ruling(ruling, names: match.playerNames,
-                                                scores: match.rules.keepsRunningScore ? match.state.scores : nil)
+                                                scores: match.rules.keepsRunningScore ? match.state.scores : nil,
+                                                you: MatchWords.you(in: match.state.players))
             }
             nextIsPerson = !match.isComputer(match.state.turn)
         }

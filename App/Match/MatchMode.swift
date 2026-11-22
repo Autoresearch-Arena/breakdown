@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: one saved game per game, match-<kind>.json,
+//          the old match.json adopted; a computer shot is offered as worth watching only when rare or it scored).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
 //          you (the seat the words call you, MatchWords.you) and personSeat for the views; targetBall for five-pin's
 //          wrong-ball words. A game the computer wins plays the foul moment, not the win (moment(for:winnerIsComputer:)
@@ -479,7 +481,14 @@ final class MatchMode {
         lastShotCall = shotCall
         lastCallWasSuggested = shotCallSuggested
         lastRulingShow = Self.rulingShow(for: ruling, after: after, hasComputer: hasComputer)
-        offerHighlight(model.matchShotHighlight, version: shotVersion)
+        // A shot by the computer is offered only when its kind is rare or it scored (0.7.5 polish P1): an ordinary
+        // draw that sent nothing down is not worth stopping the game for.
+        var offered = model.matchShotHighlight
+        if let h = offered, isComputer(before.turn),
+           !HighlightOffer.offersComputerShot(h.kind, scored: ShotHighlightJudge.sentBallDown(facts, table: model.solvedTable)) {
+            offered = nil
+        }
+        offerHighlight(offered, version: shotVersion)
         settleElapsed = 0
         settledRuling = nil
         state = after
@@ -774,11 +783,11 @@ final class MatchMode {
     /// file is removed instead.
     private func save() {
         if state.isOver {
-            Self.deleteSave()
+            Self.deleteSave(kind: state.kind)
             model.noteMatchSave(exists: false)
             return
         }
-        guard let url = Self.saveURL else { return }
+        guard let url = Self.saveURL(for: state.kind) else { return }
         // While aiming, the clock to the moment it really stands at, not the last whole second shown.
         if let exact = clockExact, state.clockRemaining != nil, phase == .aiming { state.clockRemaining = exact }
         let saved = SavedMatch(format: SavedMatch.currentFormat, state: state, setup: nextSetup ?? setup,
@@ -793,19 +802,50 @@ final class MatchMode {
         }
     }
 
-    /// Application Support/Breakdown/match.json (the app's support folder; created on first save).
-    static var saveURL: URL? {
+    /// The app's support folder, Application Support/Breakdown (created on first save).
+    private static var saveFolder: URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
             .appendingPathComponent("Breakdown", isDirectory: true)
-            .appendingPathComponent("match.json")
     }
 
-    static var saveExists: Bool { saveURL.map { FileManager.default.fileExists(atPath: $0.path) } ?? false }
+    /// One saved game per game (0.7.5): match-<kind>.json, so starting bumper pool no longer ends a five-pin game
+    /// that is still in progress.
+    static func saveURL(for kind: MatchKind) -> URL? {
+        saveFolder?.appendingPathComponent("match-\(kind.rawValue).json")
+    }
 
-    /// The saved game named for the menu's Continue row: which game, the computer's level when it plays, the
-    /// players' names and whose shot it is. Nil when there is no saved game that can be continued.
-    static func savedSummary() -> SavedMatchSummary? {
-        guard let saved = loadSaved() else { return nil }
+    /// Before 0.7.5 the device kept one save, match.json. It is moved to its own game's file the first time the saves
+    /// are looked at (or removed, when that game already has a newer file or it cannot be read).
+    private static func adoptOldSave() {
+        guard let old = saveFolder?.appendingPathComponent("match.json"),
+              FileManager.default.fileExists(atPath: old.path) else { return }
+        if let data = try? Data(contentsOf: old), let saved = try? JSONDecoder().decode(SavedMatch.self, from: data),
+           let target = saveURL(for: saved.state.kind), !FileManager.default.fileExists(atPath: target.path) {
+            do { try FileManager.default.moveItem(at: old, to: target); return } catch {
+                NSLog("MatchMode: could not move the old saved match to %@: %@", target.path, error.localizedDescription)
+            }
+        }
+        try? FileManager.default.removeItem(at: old)
+    }
+
+    /// The games with a save file, the most recently saved first.
+    static func savedKinds() -> [MatchKind] {
+        adoptOldSave()
+        func written(_ kind: MatchKind) -> Date? {
+            guard let url = saveURL(for: kind),
+                  let attributes = try? FileManager.default.attributesOfItem(atPath: url.path) else { return nil }
+            return attributes[.modificationDate] as? Date ?? .distantPast
+        }
+        return MatchKind.allCases.compactMap { kind in written(kind).map { (kind, $0) } }
+            .sorted { $0.1 > $1.1 }.map(\.0)
+    }
+
+    static var saveExists: Bool { !savedKinds().isEmpty }
+
+    /// The saved game named for a Continue row: which game, the computer's level when it plays, the players' names
+    /// and whose shot it is. With no kind, the most recently saved game that can be continued; nil when none can.
+    static func savedSummary(for kind: MatchKind? = nil) -> SavedMatchSummary? {
+        guard let saved = loadSaved(kind: kind) else { return nil }
         let s = saved.state
         let names = s.players.map(\.name)
         let computerToShoot = s.players.first { $0.id == s.turn }?.isComputer ?? false
@@ -813,13 +853,18 @@ final class MatchMode {
                                  turnName: MatchWords.name(s.turn, in: names), computerToShoot: computerToShoot)
     }
 
-    /// The saved match, or nil when there is none or it cannot be continued. A file that decodes but can never be
-    /// played on (another format, a finished game, or more than one seat with no computer: a game between two people
-    /// on one device, which nothing offers since 0.7.3), and a file that does not decode, is deleted, so the menu
-    /// never offers a Continue that cannot load. A file that cannot be read at all (the disk, not its contents) is
-    /// left alone: it may read next time.
-    static func loadSaved() -> SavedMatch? {
-        guard let url = saveURL, FileManager.default.fileExists(atPath: url.path) else { return nil }
+    /// The saved match of one game, or with no kind the most recently saved one that loads; nil when there is none or
+    /// it cannot be continued. A file that decodes but can never be played on (another format, a finished game, or
+    /// more than one seat with no computer: a game between two people on one device, which nothing offers since
+    /// 0.7.3), and a file that does not decode, is deleted, so the menu never offers a Continue that cannot load. A
+    /// file that cannot be read at all (the disk, not its contents) is left alone: it may read next time.
+    static func loadSaved(kind: MatchKind? = nil) -> SavedMatch? {
+        guard let kind else {
+            for k in savedKinds() { if let saved = loadSaved(kind: k) { return saved } }
+            return nil
+        }
+        adoptOldSave()
+        guard let url = saveURL(for: kind), FileManager.default.fileExists(atPath: url.path) else { return nil }
         let data: Data
         do {
             data = try Data(contentsOf: url)
@@ -831,22 +876,23 @@ final class MatchMode {
             let saved = try JSONDecoder().decode(SavedMatch.self, from: data)
             let s = saved.state
             let twoPeople = s.players.count > 1 && !s.players.contains(where: \.isComputer)
-            guard saved.format == SavedMatch.currentFormat, !s.isOver, !twoPeople else {
+            guard saved.format == SavedMatch.currentFormat, !s.isOver, !twoPeople, s.kind == kind else {
                 NSLog("MatchMode: the saved match at %@ cannot be continued and was removed", url.path)
-                deleteSave()
+                deleteSave(kind: kind)
                 return nil
             }
             return saved
         } catch {
             NSLog("MatchMode: the saved match at %@ could not be decoded and was removed: %@", url.path,
                   error.localizedDescription)
-            deleteSave()
+            deleteSave(kind: kind)
             return nil
         }
     }
 
-    static func deleteSave() {
-        guard let url = saveURL, FileManager.default.fileExists(atPath: url.path) else { return }
+    /// Remove one game's save; the other games' saves stay.
+    static func deleteSave(kind: MatchKind) {
+        guard let url = saveURL(for: kind), FileManager.default.fileExists(atPath: url.path) else { return }
         do { try FileManager.default.removeItem(at: url) } catch {
             NSLog("MatchMode: could not remove the saved match at %@: %@", url.path, error.localizedDescription)
         }
