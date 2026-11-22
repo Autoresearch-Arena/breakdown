@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-drawing, plans/22-Nov-2026-v074-glow-up-plan.md feature
+//          G2: closeUp(on:scale:) brings the view in on a point with the same clamping and spring as a double tap, for
+//          the gentle close-up on a held signature beat (SignatureCloseUp), and atFittedView says whether the hand's goal
+//          is still the fitted view, so that close-up never overrides a zoom the player chose.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: strokeHold, set while a stroke is drawn on the cue
 //          ball (StrokeGesture), keeps pinch and two-finger pan still, so a bridge finger resting on the cloth beside a
 //          moving stroke finger is not read as a zoom or a pan.)
@@ -143,6 +147,19 @@ final class TableZoom {
     func focus(on point: SIMD2<Float>, ball: Int) {
         setGoal(scale: Self.focusScale, offset: point)
         focusedBall = ball
+    }
+
+    /// True while the hand's goal is the fitted view: nothing pinched, panned, double-tapped or stepped in. The
+    /// signature close-up (SignatureCloseUp) only moves the view from here, so it never takes over a player's zoom.
+    var atFittedView: Bool { !isZoomed }
+
+    /// Ease in on a table point (world plan, metres): `scale` is how much larger the table looks, so 1.8 brings the
+    /// camera to 1 / 1.8 of the fitted distance. Goes through the same clamping as every other goal (never nearer than
+    /// `closest`, the look point kept on the playing surface) and the same spring in apply(). Not tied to a ball, so a
+    /// double tap afterwards behaves as from any other zoom.
+    func closeUp(on point: SIMD2<Float>, scale: Float) {
+        setGoal(scale: 1 / max(1, scale), offset: point)
+        focusedBall = nil
     }
 
     // MARK: Keys and menus
