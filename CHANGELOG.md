@@ -8,6 +8,15 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.2] - 22-November-2026
+
+Author: Claude Opus 5.5 High (coordinator), with three builders at Claude Opus 5.5 High
+
+- What: No more orange: the interface and the Lens use magenta for a sliding ball, cyan for a rolling one. The Lens draws every pocket as a real hole, so a lesson's table no longer looks like it has none. The approved momentum artwork is the app icon again, on iPhone, iPad and Mac. The game offers play against the computer: the Play list starts with its levels and eight-ball and nine-ball against it, and two players on one device is a plain last choice, no longer advertised anywhere.
+- Why: The Boss's look at 0.7.0 and 0.7.1: the orange read as another product's colour; the lesson tables looked pocketless; the icon had changed without his say (a 0.7.0 builder replaced it with a new layered icon, which the app folder then built in over the approved one); and passing one phone between two people is not the game's offer.
+- How: Theme's sliding colour and every interface use of it are magenta (the lamp, wood, balls and cloth keep their own colours; the bronze medal has its own bronze); the Lens grid picture draws each pocket and bed hole as an opaque dark disc at its capture size with a light rim, on a slightly lighter bed; App/AppIcon.icon and its renderer are gone and the asset catalog's icon is the approved picture byte for byte, with the Mac sizes made from it; TitleScreen, the Play list, the match words, the Mac Game menu, README and the store text lead with the computer, and the hand-over line says "Sam to shoot." instead of "Pass the device to Sam." Every changed line is translated in all twelve languages. The 0.7.0 entry's "a layered icon" is undone here.
+- Checked: on the iPhone 17 Pro Max simulator from a fresh install: the first screen is the pool table with the instruction and magenta in place of orange; a lesson's Lens table shows six holes; the menu leads with Play and the Play list with the computer. The iPhone and Mac builds, the app tests and the translation check pass.
+
 ## [0.7.1] - 21-November-2026
 
 Author: Claude Opus 5.5 High

@@ -10221,6 +10221,76 @@
         }
       }
     },
+    "A full game with turns and a score.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مباراة كاملة بالأدوار والنقاط."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine ganze Partie, abwechselnd und mit Punktestand."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una partida completa, con turnos y marcador."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une vraie partie, avec des tours et un score."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una partita completa, a turni e con il punteggio."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "順番と得点のある本格的な対戦。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "차례와 점수가 있는 정식 게임."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um jogo completo, à vez e com pontuação."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma partida completa, com revezamento e placar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Полная партия с очерёдностью и счётом."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完整对局，轮流击球并计分。"
+          }
+        }
+      }
+    },
     "A gentle roll.": {
       "localizations": {
         "ar": {
@@ -11061,72 +11131,72 @@
         }
       }
     },
-    "A pool table that shows its own physics. Play eight-ball or nine-ball against a friend or the computer, and see why every shot went where it did.": {
+    "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "طاولة بلياردو تُظهر فيزياءها بنفسها. العب الكرة الثامنة أو التاسعة ضد صديق أو ضد الكمبيوتر، وشاهد لماذا ذهبت كل ضربة إلى حيث ذهبت."
+            "value": "طاولة بلياردو تُظهر فيزياءها بنفسها. العب الكرة الثامنة أو التاسعة ضد الكمبيوتر، وشاهد لماذا ذهبت كل ضربة إلى حيث ذهبت."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein Billardtisch, der seine eigene Physik zeigt. Spiel 8-Ball oder 9-Ball gegen einen Freund oder den Computer und sieh, warum jeder Stoß dorthin ging, wo er hinging."
+            "value": "Ein Billardtisch, der seine eigene Physik zeigt. Spiel 8-Ball oder 9-Ball gegen den Computer und sieh, warum jeder Stoß dorthin ging, wo er hinging."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Una mesa de billar que muestra su propia física. Juega a la bola ocho o a la bola nueve contra un amigo o contra la máquina, y mira por qué cada tiro fue a donde fue."
+            "value": "Una mesa de billar que muestra su propia física. Juega a la bola ocho o a la bola nueve contra el ordenador, y mira por qué cada tiro fue a donde fue."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Une table de billard qui montre sa propre physique. Joue au huit ou au neuf contre un ami ou contre l'ordinateur, et vois pourquoi chaque coup est allé là où il est allé."
+            "value": "Une table de billard qui montre sa propre physique. Joue au huit ou au neuf contre l'ordinateur, et vois pourquoi chaque coup est allé là où il est allé."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un tavolo da biliardo che mostra la propria fisica. Gioca a palla 8 o palla 9 contro un amico o il computer, e scopri perché ogni colpo è andato dove è andato."
+            "value": "Un tavolo da biliardo che mostra la propria fisica. Gioca a palla 8 o palla 9 contro il computer, e scopri perché ogni colpo è andato dove è andato."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "自分の物理を見せてくれるビリヤード台。友だちやコンピューターとエイトボールやナインボールで遊び、どのショットもなぜそこへ行ったのかを見てみよう。"
+            "value": "自分の物理を見せてくれるビリヤード台。コンピューターとエイトボールやナインボールで遊び、どのショットもなぜそこへ行ったのかを見てみよう。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "자기 물리를 보여 주는 당구대. 친구나 컴퓨터와 에이트볼이나 나인볼을 치고, 샷마다 왜 그쪽으로 갔는지 확인해 보세요."
+            "value": "자기 물리를 보여 주는 당구대. 컴퓨터와 에이트볼이나 나인볼을 치고, 샷마다 왜 그쪽으로 갔는지 확인해 보세요."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uma mesa de snooker que mostra a sua própria física. Joga bola 8 ou bola 9 contra um amigo ou o computador, e vê porque cada tacada foi para onde foi."
+            "value": "Uma mesa de snooker que mostra a sua própria física. Joga bola 8 ou bola 9 contra o computador, e vê porque cada tacada foi para onde foi."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uma mesa de sinuca que mostra a própria física. Jogue bola 8 ou bola 9 contra um amigo ou o computador, e veja por que cada tacada foi para onde foi."
+            "value": "Uma mesa de sinuca que mostra a própria física. Jogue bola 8 ou bola 9 contra o computador, e veja por que cada tacada foi para onde foi."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Бильярдный стол, который показывает свою физику. Играй в восьмёрку или девятку с другом или с компьютером и смотри, почему каждый удар пошёл именно туда."
+            "value": "Бильярдный стол, который показывает свою физику. Играй в восьмёрку или девятку с компьютером и смотри, почему каждый удар пошёл именно туда."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "一张会展示自身物理的台球桌。和朋友或电脑打八球或九球，看看每一杆为什么会走到那里。"
+            "value": "一张会展示自身物理的台球桌。和电脑打八球或九球，看看每一杆为什么会走到那里。"
           }
         }
       }
@@ -14557,76 +14627,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "几乎没有抓地力：球要滑很远才开始滚动，然后滚个没完。"
-          }
-        }
-      }
-    },
-    "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "المسار الكهرماني: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bernsteinfarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trazo ámbar: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trace ambrée : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Traccia ambra: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "琥珀色の軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "호박색 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rasto âmbar: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rastro âmbar: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Янтарный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "琥珀色轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
           }
         }
       }
@@ -24571,72 +24571,72 @@
         }
       }
     },
-    "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.": {
+    "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "المسار الكهرماني المتقطع: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
+            "value": "المسار المتقطع بلون الماجنتا: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gestrichelte bernsteinfarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
+            "value": "Gestrichelte magentafarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trazo ámbar discontinuo: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
+            "value": "Trazo magenta discontinuo: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trace ambrée en pointillés : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
+            "value": "Trace magenta en pointillés : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Traccia ambra tratteggiata: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
+            "value": "Traccia magenta tratteggiata: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "琥珀色の破線の軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
+            "value": "マゼンタの破線の軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "호박색 점선 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
+            "value": "마젠타 점선 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rasto âmbar tracejado: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
+            "value": "Rasto magenta tracejado: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rastro âmbar tracejado: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
+            "value": "Rastro magenta tracejado: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Янтарный пунктирный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
+            "value": "Пурпурный пунктирный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "琥珀色虚线轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
+            "value": "品红色虚线轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
           }
         }
       }
@@ -26951,72 +26951,142 @@
         }
       }
     },
-    "Eight-ball or nine-ball against a computer player of your level.": {
+    "Eight-ball or nine-ball against the computer, or practise on your own.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الكرة ٨ أو الكرة ٩ ضد خصم من الكمبيوتر بمستواك."
+            "value": "الكرة ٨ أو الكرة ٩ ضد الكمبيوتر، أو تدرّب وحدك."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "8-Ball oder 9-Ball gegen einen Computergegner auf deinem Niveau."
+            "value": "8-Ball oder 9-Ball gegen den Computer, oder übe allein."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bola 8 o bola 9 contra un rival del ordenador a tu nivel."
+            "value": "Bola 8 o bola 9 contra el ordenador, o practica solo."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La 8 ou la 9 contre un adversaire informatique à ton niveau."
+            "value": "La 8 ou la 9 contre l'ordinateur, ou entraîne-toi seul."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Palla 8 o palla 9 contro un avversario computer al tuo livello."
+            "value": "Palla 8 o palla 9 contro il computer, oppure allenati da solo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "エイトボールかナインボールを、あなたのレベルに合ったコンピューターと。"
+            "value": "コンピューターとエイトボールやナインボールを。ひとりで練習もできます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "당신 수준에 맞는 컴퓨터 상대와 에잇볼이나 나인볼을."
+            "value": "컴퓨터와 에잇볼이나 나인볼을 하거나, 혼자 연습하세요."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bola 8 ou bola 9 contra um adversário do computador ao teu nível."
+            "value": "Bola 8 ou bola 9 contra o computador, ou treina sozinho."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bola 8 ou bola 9 contra um adversário do computador no seu nível."
+            "value": "Bola 8 ou bola 9 contra o computador, ou treine sozinho."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Восьмёрка или девятка против компьютера твоего уровня."
+            "value": "Восьмёрка или девятка против компьютера или тренировка в одиночку."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "与适合你水平的电脑对手打八球或九球。"
+            "value": "与电脑打八球、九球，或独自练习。"
+          }
+        }
+      }
+    },
+    "Eight-ball or nine-ball, taking turns.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الكرة ٨ أو الكرة ٩ بالتناوب."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8-Ball oder 9-Ball, abwechselnd."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bola 8 o bola 9, por turnos."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La 8 ou la 9, chacun son tour."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palla 8 o palla 9, a turno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイトボールかナインボールを交代で。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에잇볼이나 나인볼을 번갈아 칩니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bola 8 ou bola 9, à vez."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bola 8 ou bola 9, revezando."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Восьмёрка или девятка по очереди."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "八球或九球，轮流击球。"
           }
         }
       }
@@ -42631,142 +42701,142 @@
         }
       }
     },
-    "Lens colours: amber lines show a ball sliding, cyan lines a ball rolling": {
+    "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "ألوان العدسة: الخطوط العنبرية تُظهر كرة تنزلق، والخطوط السماوية تُظهر كرة تتدحرج"
+            "value": "ألوان العدسة: الخطوط بلون الماجنتا تُظهر كرة تنزلق، والخطوط السماوية تُظهر كرة تتدحرج"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lens-Farben: Bernsteinfarbene Linien zeigen eine rutschende Kugel, türkise Linien eine rollende Kugel"
+            "value": "Lens-Farben: Magentafarbene Linien zeigen eine rutschende Kugel, türkise Linien eine rollende Kugel"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Colores de la lente: las líneas ámbar muestran una bola deslizando, las cian una bola rodando"
+            "value": "Colores de la lente: las líneas magenta muestran una bola deslizando, las cian una bola rodando"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Couleurs de la lentille : les lignes ambre montrent une bille qui glisse, les lignes cyan une bille qui roule"
+            "value": "Couleurs de la lentille : les lignes magenta montrent une bille qui glisse, les lignes cyan une bille qui roule"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Colori della lente: le linee ambra mostrano una palla che scivola, quelle ciano una palla che rotola"
+            "value": "Colori della lente: le linee magenta mostrano una palla che scivola, quelle ciano una palla che rotola"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "レンズの色: 琥珀色の線は滑っている球、シアンの線は転がっている球を表します"
+            "value": "レンズの色: マゼンタの線は滑っている球、シアンの線は転がっている球を表します"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "렌즈 색상: 호박색 선은 미끄러지는 공, 청록색 선은 구르는 공을 나타냅니다"
+            "value": "렌즈 색상: 마젠타 선은 미끄러지는 공, 청록색 선은 구르는 공을 나타냅니다"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cores da lente: as linhas âmbar mostram uma bola a deslizar, as ciano uma bola a rolar"
+            "value": "Cores da lente: as linhas magenta mostram uma bola a deslizar, as ciano uma bola a rolar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cores da lente: as linhas âmbar mostram uma bola deslizando, as ciano uma bola rolando"
+            "value": "Cores da lente: as linhas magenta mostram uma bola deslizando, as ciano uma bola rolando"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Цвета линзы: янтарные линии — шар скользит, голубые — шар катится"
+            "value": "Цвета линзы: пурпурные линии — шар скользит, голубые — шар катится"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "镜片颜色：琥珀色线条表示球在滑动，青色线条表示球在滚动"
+            "value": "镜片颜色：品红色线条表示球在滑动，青色线条表示球在滚动"
           }
         }
       }
     },
-    "Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling": {
+    "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "خطوط العدسة: الخطوط الكهرمانية المتقطعة تُظهر كرة تنزلق، والخطوط السماوية المتصلة كرة تتدحرج"
+            "value": "خطوط العدسة: الخطوط المتقطعة بلون الماجنتا تُظهر كرة تنزلق، والخطوط السماوية المتصلة كرة تتدحرج"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Linien der Linse: gestrichelte bernsteinfarbene Linien zeigen eine gleitende Kugel, durchgehende cyanfarbene eine rollende"
+            "value": "Linien der Linse: gestrichelte magentafarbene Linien zeigen eine gleitende Kugel, durchgehende cyanfarbene eine rollende"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Líneas de la lente: las ámbar discontinuas muestran una bola deslizando, las cian continuas una bola rodando"
+            "value": "Líneas de la lente: las magenta discontinuas muestran una bola deslizando, las cian continuas una bola rodando"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lignes de la lentille : les ambrées en pointillés montrent une bille qui glisse, les cyan continues une bille qui roule"
+            "value": "Lignes de la lentille : les magenta en pointillés montrent une bille qui glisse, les cyan continues une bille qui roule"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Linee della lente: le ambra tratteggiate mostrano una palla che scivola, le ciano continue una palla che rotola"
+            "value": "Linee della lente: le magenta tratteggiate mostrano una palla che scivola, le ciano continue una palla che rotola"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "レンズの線：琥珀色の破線は滑っている球、シアンの実線は転がっている球"
+            "value": "レンズの線：マゼンタの破線は滑っている球、シアンの実線は転がっている球"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "렌즈 선: 호박색 점선은 미끄러지는 공, 청록색 실선은 구르는 공"
+            "value": "렌즈 선: 마젠타 점선은 미끄러지는 공, 청록색 실선은 구르는 공"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Linhas da lente: as âmbar tracejadas mostram uma bola a deslizar, as ciano contínuas uma bola a rolar"
+            "value": "Linhas da lente: as magenta tracejadas mostram uma bola a deslizar, as ciano contínuas uma bola a rolar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Linhas da lente: as âmbar tracejadas mostram uma bola deslizando, as ciano contínuas uma bola rolando"
+            "value": "Linhas da lente: as magenta tracejadas mostram uma bola deslizando, as ciano contínuas uma bola rolando"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Линии линзы: янтарный пунктир — шар скользит, сплошной голубой — шар катится"
+            "value": "Линии линзы: пурпурный пунктир — шар скользит, сплошной голубой — шар катится"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "透镜线条：琥珀色虚线表示球在滑动，青色实线表示球在滚动"
+            "value": "透镜线条：品红色虚线表示球在滑动，青色实线表示球在滚动"
           }
         }
       }
@@ -44447,6 +44517,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "进了，但很勉强。"
+          }
+        }
+      }
+    },
+    "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "المسار بلون الماجنتا: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magentafarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trazo magenta: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trace magenta : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traccia magenta: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マゼンタの軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마젠타 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rasto magenta: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rastro magenta: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пурпурный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "品红色轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
           }
         }
       }
@@ -55721,76 +55861,6 @@
         }
       }
     },
-    "Orange path: the ball is skidding. It slides over the cloth and its spin has not caught up yet.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "المسار البرتقالي: الكرة تنزلق. تنزلق فوق القماش ودورانها لم يلحق بها بعد."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orange Spur: Die Kugel rutscht. Sie gleitet über das Tuch, und ihr Drall hat noch nicht aufgeholt."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trazo naranja: la bola derrapa. Se desliza sobre el paño y su giro aún no la ha alcanzado."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trace orange : la bille dérape. Elle glisse sur le tapis et sa rotation n'a pas encore suivi."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Traccia arancione: la bilia slitta. Scivola sul panno e la sua rotazione non l'ha ancora raggiunta."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "オレンジの軌跡：球が滑っています。ラシャの上を滑り、回転がまだ追いついていません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "주황색 경로: 공이 미끄러지고 있습니다. 천 위를 미끄러지며 회전이 아직 따라오지 못했습니다."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rasto laranja: a bola derrapa. Desliza sobre o pano e a rotação ainda não a acompanhou."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rastro laranja: a bola está derrapando. Ela desliza sobre o pano e o giro ainda não acompanhou."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Оранжевый след: шар скользит. Он едет по сукну, и вращение ещё не догнало его."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "橙色轨迹：球在打滑。它在台呢上滑行，旋转还没跟上。"
-          }
-        }
-      }
-    },
     "Other tables, each a game of its own.": {
       "localizations": {
         "ar": {
@@ -55997,76 +56067,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "过关一杆"
-          }
-        }
-      }
-    },
-    "Pass the device to %@.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مرّر الجهاز إلى %@."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gib das Gerät an %@ weiter."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pasa el dispositivo a %@."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passe l'appareil à %@."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passa il dispositivo a %@."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "端末を%@に渡してください。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "기기를 %@ 님에게 넘겨주세요."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passe o dispositivo a %@."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passe o aparelho para %@."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Передай устройство: %@."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "请把设备交给 %@。"
           }
         }
       }
@@ -60757,76 +60757,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "可以练习"
-          }
-        }
-      }
-    },
-    "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تدرّب وحدك، أو العب الكرة ٨ أو الكرة ٩ مع صديق أو ضد الكمبيوتر."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Übe allein oder spiele 8-Ball oder 9-Ball mit Freunden oder gegen den Computer."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Practica solo, o juega a bola 8 o bola 9 con un amigo o contra el ordenador."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entraîne-toi seul, ou joue à la 8 ou à la 9 avec un ami ou contre l'ordinateur."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allenati da solo, oppure gioca a palla 8 o palla 9 con un amico o contro il computer."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ひとりで練習するか、友だちやコンピューターとエイトボールやナインボールを。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "혼자 연습하거나, 친구나 컴퓨터와 에잇볼이나 나인볼을 하세요."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Treina sozinho, ou joga bola 8 ou bola 9 com um amigo ou contra o computador."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Treine sozinho, ou jogue bola 8 ou bola 9 com um amigo ou contra o computador."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тренируйся в одиночку или играй в восьмёрку или девятку с другом или против компьютера."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "独自练习，或与朋友或电脑打八球、九球。"
           }
         }
       }
@@ -66781,72 +66711,72 @@
         }
       }
     },
-    "Score against the clock, alone or against a friend.": {
+    "Score as much as you can before the clock runs out.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "سجّل النقاط ضد الوقت، وحدك أو ضد صديق."
+            "value": "سجّل أكبر عدد من النقاط قبل أن ينتهي الوقت."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Punkte gegen die Uhr, allein oder gegen jemanden."
+            "value": "Hol so viele Punkte wie möglich, bevor die Uhr abläuft."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Puntúa contra el reloj, solo o contra un amigo."
+            "value": "Suma todos los puntos que puedas antes de que se acabe el tiempo."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Marque contre la montre, seul ou contre un ami."
+            "value": "Marque le plus de points possible avant la fin du temps."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fai punti contro il tempo, da solo o contro un amico."
+            "value": "Fai più punti che puoi prima che scada il tempo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "時間内に得点を狙います。1人でも、友だちとでも。"
+            "value": "時間切れまでに、できるだけ多く得点しよう。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "혼자서 또는 친구와, 시간 안에 점수를 냅니다."
+            "value": "시간이 끝나기 전에 최대한 많은 점수를 내세요."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Marca pontos contra o relógio, sozinho ou contra um amigo."
+            "value": "Marca o máximo de pontos antes de o tempo acabar."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Marque pontos contra o relógio, sozinho ou contra um amigo."
+            "value": "Marque o máximo de pontos antes que o tempo acabe."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Набирай очки на время — в одиночку или с другом."
+            "value": "Набери как можно больше очков, пока не вышло время."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在限时内得分，单人或与朋友对战。"
+            "value": "在时间耗尽前尽可能多得分。"
           }
         }
       }
@@ -77001,76 +76931,6 @@
         }
       }
     },
-    "Take turns on one device.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بالتناوب على جهاز واحد."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abwechselnd an einem Gerät."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Por turnos en un mismo dispositivo."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chacun son tour sur un seul appareil."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A turno su un solo dispositivo."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1台の端末で交代に打ちます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "기기 하나로 번갈아 칩니다."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "À vez, no mesmo dispositivo."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Revezando no mesmo dispositivo."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "По очереди на одном устройстве."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在同一台设备上轮流击球。"
-          }
-        }
-      }
-    },
     "Take your own shot (Command-Y)": {
       "localizations": {
         "ar": {
@@ -77281,72 +77141,72 @@
         }
       }
     },
-    "Tap Lens to see the physics: amber paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.": {
+    "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "انقر على العدسة لترى الفيزياء: المسارات الكهرمانية للكرات المنزلقة، والمسارات السماوية للكرات المتدحرجة، والأسمك أسرع. اسحب الشريط للتنقل في الضربة في الاتجاهين."
+            "value": "انقر على العدسة لترى الفيزياء: المسارات بلون الماجنتا للكرات المنزلقة، والمسارات السماوية للكرات المتدحرجة، والأسمك أسرع. اسحب الشريط للتنقل في الضربة في الاتجاهين."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tippe auf Lens, um die Physik zu sehen: Bernsteinfarbene Linien zeigen gleitende Kugeln, türkisfarbene Linien rollende Kugeln, dickere Linien sind schneller. Ziehe die Leiste, um den Stoß in beide Richtungen durchzugehen."
+            "value": "Tippe auf Lens, um die Physik zu sehen: Magentafarbene Linien zeigen gleitende Kugeln, türkisfarbene Linien rollende Kugeln, dickere Linien sind schneller. Ziehe die Leiste, um den Stoß in beide Richtungen durchzugehen."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca Lente para ver la física: las trayectorias ámbar son bolas deslizándose, las cian son bolas rodando; cuanto más gruesa, más rápida. Arrastra la barra para recorrer el tiro en cualquiera de los dos sentidos."
+            "value": "Toca Lente para ver la física: las trayectorias magenta son bolas deslizándose, las cian son bolas rodando; cuanto más gruesa, más rápida. Arrastra la barra para recorrer el tiro en cualquiera de los dos sentidos."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Touche Lentille pour voir la physique : les trajectoires ambre sont des billes qui glissent, les trajectoires cyan des billes qui roulent ; plus c'est épais, plus c'est rapide. Fais glisser la barre pour parcourir le coup dans les deux sens."
+            "value": "Touche Lentille pour voir la physique : les trajectoires magenta sont des billes qui glissent, les trajectoires cyan des billes qui roulent ; plus c'est épais, plus c'est rapide. Fais glisser la barre pour parcourir le coup dans les deux sens."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tocca Lens per vedere la fisica: le linee ambra indicano palle che scivolano, quelle turchesi palle che rotolano, quelle più spesse sono più veloci. Trascina la barra per scorrere il tiro in entrambe le direzioni."
+            "value": "Tocca Lens per vedere la fisica: le linee magenta indicano palle che scivolano, quelle turchesi palle che rotolano, quelle più spesse sono più veloci. Trascina la barra per scorrere il tiro in entrambe le direzioni."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "レンズをタップすると物理の動きが見られます。琥珀色の線は滑っている球、水色の線は転がっている球で、線が太いほど速く動いています。どちらでも、バーをドラッグするとショットを前後に確かめられます。"
+            "value": "レンズをタップすると物理の動きが見られます。マゼンタの線は滑っている球、水色の線は転がっている球で、線が太いほど速く動いています。バーをドラッグすると、ショットを前後どちらにもたどれます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "렌즈를 탭하면 물리 움직임이 보입니다. 호박색 선은 미끄러지는 공, 청록색 선은 구르는 공이고, 선이 굵을수록 빠릅니다. 어느 쪽이든 바를 드래그하면 샷을 앞뒤로 살펴볼 수 있습니다."
+            "value": "렌즈를 탭하면 물리 움직임이 보입니다. 자홍색 선은 미끄러지는 공, 청록색 선은 구르는 공이고, 선이 굵을수록 빠릅니다. 바를 드래그하면 샷을 앞뒤로 살펴볼 수 있습니다."
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca em Lente para ver a física: os trajetos âmbar são bolas a deslizar, os ciano são bolas a rolar, quanto mais grosso mais rápido. Arrasta a barra para percorrer a tacada nos dois sentidos."
+            "value": "Toca em Lente para ver a física: os trajetos magenta são bolas a deslizar, os ciano são bolas a rolar, quanto mais grosso mais rápido. Arrasta a barra para percorrer a tacada nos dois sentidos."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toque em Lente para ver a física: os trajetos âmbar são bolas deslizando, os ciano são bolas rolando, quanto mais grosso mais rápido. Arraste a barra para percorrer a tacada nos dois sentidos."
+            "value": "Toque em Lente para ver a física: os trajetos magenta são bolas deslizando, os ciano são bolas rolando, quanto mais grosso mais rápido. Arraste a barra para percorrer a tacada nos dois sentidos."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Нажми «Линза», чтобы увидеть физику: янтарные линии означают скользящие шары, голубые катящиеся, чем толще линия, тем быстрее. Перетащи полосу, чтобы просмотреть удар в любом направлении."
+            "value": "Нажми «Линза», чтобы увидеть физику: пурпурные линии означают скользящие шары, голубые катящиеся, чем толще линия, тем быстрее. Перетащи полосу, чтобы просмотреть удар в любом направлении."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "点击透镜查看物理现象：琥珀色轨迹是滑动的球，青色轨迹是滚动的球，线越粗速度越快。拖动进度条，可以向前或向后浏览整个击球过程。"
+            "value": "点击透镜查看物理现象：洋红色轨迹是滑动的球，青色轨迹是滚动的球，线越粗速度越快。拖动进度条，可以向前或向后浏览整个击球过程。"
           }
         }
       }
@@ -90651,76 +90511,6 @@
         }
       }
     },
-    "Two players share one table. One takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.": {
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لاعبان يتشاركان طاولة واحدة. يأخذ أحدهما الكرات السادة من 1 إلى 7، والآخر المخططة من 9 إلى 15. أدخل مجموعتك كلها ثم الكرة 8 لتفوز."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zwei Spieler teilen sich einen Tisch. Einer nimmt die Vollen, 1 bis 7, der andere die Halben, 9 bis 15. Räum deine Gruppe ab und versenk dann die 8 zum Sieg."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dos jugadores comparten mesa. Uno se queda las lisas, del 1 al 7, y el otro las rayadas, del 9 al 15. Mete todo tu grupo y luego la 8 para ganar."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deux joueurs se partagent la table. L'un prend les pleines, de 1 à 7, l'autre les rayées, de 9 à 15. Vide ton groupe, puis empoche la 8 pour gagner."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Due giocatori, un tavolo. Uno prende le piene, dall'1 al 7, l'altro le rigate, dal 9 al 15. Imbuca tutto il tuo gruppo, poi la 8 per vincere."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "2人で1つの台を使います。1人は1番から7番のソリッド、もう1人は9番から15番のストライプ。自分のグループを全部落とし、最後に8番を沈めれば勝ちです。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "두 사람이 한 테이블을 씁니다. 한 명은 1번부터 7번까지 솔리드, 다른 한 명은 9번부터 15번까지 스트라이프를 맡습니다. 내 그룹을 모두 넣고 8번을 넣으면 승리합니다."
-          }
-        },
-        "pt": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dois jogadores partilham uma mesa. Um fica com as lisas, de 1 a 7, o outro com as riscadas, de 9 a 15. Meta o seu grupo todo e depois a 8 para ganhar."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dois jogadores dividem uma mesa. Um fica com as lisas, de 1 a 7, o outro com as listradas, de 9 a 15. Encaçape seu grupo todo e depois a 8 para vencer."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Два игрока за одним столом. Один берёт сплошные, с 1 по 7, другой полосатые, с 9 по 15. Забей свою группу, затем восьмёрку, чтобы победить."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "两人共用一张球台。一人打 1 到 7 号全色球，另一人打 9 到 15 号花色球。打完自己的球组，再打进 8 号球即获胜。"
-          }
-        }
-      }
-    },
     "Two players, five balls each. Sink all five of yours in the cup at the far end from where they started, before the other player does.": {
       "localizations": {
         "ar": {
@@ -95127,6 +94917,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "你总是击打自己的球：带圆点的标记球还在台上时打它，之后按固定顺序逐个打其他球。球杆总是对准该打的那个球。"
+          }
+        }
+      }
+    },
+    "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أنت وخصمك تتشاركان طاولة واحدة. يأخذ أحدكما الكرات السادة من 1 إلى 7، والآخر المخططة من 9 إلى 15. أدخل مجموعتك كلها ثم الكرة 8 لتفوز."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du und dein Gegner teilt euch einen Tisch. Einer nimmt die Vollen, 1 bis 7, der andere die Halben, 9 bis 15. Räum deine Gruppe ab und versenk dann die 8 zum Sieg."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tú y tu rival compartís mesa. Uno se queda las lisas, del 1 al 7, y el otro las rayadas, del 9 al 15. Mete todo tu grupo y luego la 8 para ganar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Une seule table pour toi et ton adversaire. L'un prend les pleines, de 1 à 7, l'autre les rayées, de 9 à 15. Vide ton groupe, puis empoche la 8 pour gagner."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu e il tuo avversario, un solo tavolo. Uno prende le piene, dall'1 al 7, l'altro le rigate, dal 9 al 15. Imbuca tutto il tuo gruppo, poi la 8 per vincere."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたと相手で1つの台を使います。一方は1番から7番のソリッド、もう一方は9番から15番のストライプ。自分のグループを全部落とし、最後に8番を沈めれば勝ちです。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나와 상대가 한 테이블을 씁니다. 한쪽은 1번부터 7번까지 솔리드, 다른 쪽은 9번부터 15번까지 스트라이프를 맡습니다. 내 그룹을 모두 넣고 8번을 넣으면 승리합니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu e o teu adversário partilham uma mesa. Um fica com as lisas, de 1 a 7, o outro com as riscadas, de 9 a 15. Mete o teu grupo todo e depois a 8 para ganhar."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você e seu adversário dividem uma mesa. Um fica com as lisas, de 1 a 7, o outro com as listradas, de 9 a 15. Encaçape seu grupo todo e depois a 8 para vencer."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ты и соперник за одним столом. Один берёт сплошные, с 1 по 7, другой полосатые, с 9 по 15. Забей свою группу, затем восьмёрку, чтобы победить."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你和对手共用一张球台。一方打 1 到 7 号全色球，另一方打 9 到 15 号花色球。打完自己的球组，再打进 8 号球即获胜。"
           }
         }
       }

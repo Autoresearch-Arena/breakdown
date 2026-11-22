@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.2: the New Game submenus list the computer first and two
+//          players last.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Playback menu: Try Again, Command-T).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Ride camera: a Playback menu item, Command-E, and a toolbar toggle).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the toolbar's Lens toggle is labelled "Physics Lens", an existing
@@ -147,20 +149,22 @@ struct GameCommands: Commands {
             Menu("New Game") {
                 ForEach(MatchKind.allCases, id: \.self) { kind in
                     Menu(NotebookWords.gameName(kind)) {
-                        Button("Two Players") { start(MatchStartRequest(kind: kind, players: 2)) }
-                        // Bar billiards is also played alone, against the clock (TableGamePage offers the same).
-                        if kind == .barBilliards {
-                            Button("Play Alone") { start(MatchStartRequest(kind: kind, players: 1)) }
-                        }
-                        // The computer plays eight-ball and nine-ball only; the other tables are two-player games.
+                        // The computer first (0.7.2: the game's offer is play against the computer); it plays
+                        // eight-ball and nine-ball only.
                         if kind == .eightBall || kind == .nineBall {
-                            Divider()
                             ForEach(ComputerLevel.allCases, id: \.self) { level in
                                 Button(String(localized: "Against the Computer: \(level.title)")) {
                                     start(MatchStartRequest(kind: kind, computer: level))
                                 }
                             }
                         }
+                        // Bar billiards is also played alone, against the clock (TableGamePage offers the same).
+                        if kind == .barBilliards {
+                            Button("Play Alone") { start(MatchStartRequest(kind: kind, players: 1)) }
+                        }
+                        // Two players on one device: a plain last choice.
+                        Divider()
+                        Button("Two Players") { start(MatchStartRequest(kind: kind, players: 2)) }
                     }
                 }
             }
