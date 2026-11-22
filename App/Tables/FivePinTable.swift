@@ -8,8 +8,8 @@
 // PURPOSE: Five-pin billiards (Italian "cinque birilli"): a carom table with no
 //          pockets, five small turned pins standing in a cross (the "castle") on the centre spot, four white and the
 //          red one in the middle, two cue balls (white and yellow) and a red object ball. A player strikes their own
-//          ball onto the opponent's ball, which should then topple pins. Only the place to play is built here; the
-//          scoring comes later.
+//          ball onto the opponent's ball, which should then topple pins. The table and its props are built here; the
+//          scoring is FivePinRules' (BreakdownRules).
 //          Facts:
 //            - Table: playing surface 2.84 x 1.42 m (plus or minus 5 mm), cushion nose to cushion nose.
 //            - Pins: round, 25 mm high, 7 mm across at the base and at the head, 10 mm at the widest part; four white
@@ -27,9 +27,10 @@
 //          first touch is between the ball's lower surface and the pin's head; worked through the real profile in
 //          make_five_pin.py (contact_radius), the touch comes at 33.15 mm from the axis, so r = 2.4 mm, not the
 //          10 mm belly. The drawn pin keeps its true shape.
-//          Ball numbering (the app draws ball n with the pool palette): index 0 is drawn plain ivory (the white cue
-//          ball), index 1 yellow (the opponent's ball) and index 3 red (the object ball); every other slot is off the
-//          table. The yellow and red carry the small "1" and "3" number discs of pool balls.
+//          Ball slots: index 0 is the white cue ball, index 1 the yellow (the opponent's ball) and index 3 the red (the
+//          object ball); every other slot is off the table. Since 0.7.0 they are drawn as plain white, yellow and red
+//          balls with no number (TableBallSet.fivePin, drawn by BallTextures; corrected by Claude Opus 5.5 High,
+//          21-November-2026, look stream).
 //          Opening shot: the white at the edge of its half strikes the yellow a cut on its lower side, so the yellow
 //          goes off the short cushion, then the far long cushion, into the castle (two cushions, clear of the red).
 //          The aim was tuned on a step-by-step copy of the solver's sliding, rolling, cushion and ball-ball laws; the

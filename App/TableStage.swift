@@ -33,6 +33,12 @@
 //          the aiming layer carries the same elements. Each frame the update also reads a game controller
 //          (GameControllerInput) and lets ShotNarration speak a finished shot (and a match ruling) once; the bridge
 //          carries whether a screen reader is on and what has been said, so nothing here reads the clock in a body.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 23 and 34: the 3D cue is drawn at the angle the strike
+//          will really use (model.strikeElevation, which clears any ball under the cue) and on the mechanical rest
+//          whenever it is in use (model.restInUse, in every mode); the follow-through uses the recorded shot's angle and
+//          whether it was struck off the rest; the bridge mark is handed to the scene as a ring on the cloth (BridgeMark),
+//          left out while the rest stands there; and the showpiece opening's lamp shot is cued every frame before the
+//          clock moves, with the clock held until the camera has risen to the table.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -75,6 +81,8 @@ final class SceneBridge {
     var narratedVersion = -1
     /// "Ana to break" has been said for the match on the table.
     var matchStartSpoken = false
+    /// The system's Differentiate Without Colour setting, for the bridge ring (an awkward stance gets an inner ring).
+    var differentiateWithoutColour = false
 
     /// The free-space request for the camera, in the 3D view's own coordinates. Edges not measured yet (the first
     /// frame) fall back to the safe area plus a typical title row, which is replaced as soon as the real one arrives.
@@ -101,6 +109,7 @@ struct TableStage: View {
     let chrome: StageChrome
 
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
 
     var body: some View {
         RealityView { content in
@@ -119,14 +128,18 @@ struct TableStage: View {
                 MainActor.assumeIsolated {
                     // A game controller's sticks and triggers move the aim, power and tip before the frame is drawn.
                     GameControllerInput.shared.step(event.deltaTime, model: model)
-                    model.advance(event.deltaTime)
+                    // The showpiece opening starts with the camera low under the lamp (TableCamera's lamp shot); the
+                    // clock waits until it has risen to the table, so the break is watched from the table view.
+                    table.cueIntro(Self.showpieceStarting(model))
+                    model.advance(table.introHolding ? 0 : event.deltaTime)
                     // Speak a shot that has just played out (only with VoiceOver on; once per recording).
                     ShotNarration.frame(model: model, bridge: bridge)
                     let preview: AimPreview? = (bridge.showAim || bridge.showCue) ? Self.aim(for: model) : nil
                     let aim = bridge.showAim ? preview : nil
                     let cueAim = bridge.showCue ? preview : nil
                     table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim, cueAim: cueAim,
-                                stroke: Self.stroke(for: model), ride: model.rideActive)
+                                stroke: Self.stroke(for: model), ride: model.rideActive,
+                                bridgeMark: cueAim.flatMap { Self.bridgeMark(for: model, cue: $0, bridge: bridge) })
                     table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.
@@ -179,6 +192,7 @@ struct TableStage: View {
                 .accessibilityHidden(showCue)
         }
         .onChange(of: voiceOver, initial: true) { _, on in bridge.speaks = on }
+        .onChange(of: differentiateWithoutColor, initial: true) { _, on in bridge.differentiateWithoutColour = on }
         .onAppear { GameControllerInput.shared.start(model: model) }
     }
 
@@ -199,20 +213,41 @@ struct TableStage: View {
         // starts from, and the cue ball is on the table); the aim line itself keeps showing either way.
         preview.showsCue = model.aimReady && model.layout.count == 16 && NextShot.isOnTable(model.aimOrigin)
         preview.powerFraction = model.powerFraction
-        preview.elevation = model.racked ? 0 : model.shotElevation
+        // The angle the strike will use: the player's, raised to clear any ball under the whole cue (0 for a break).
+        preview.elevation = model.strikeElevation
         preview.tipUp = model.activeTipUp
         preview.tipSide = model.activeTipSide
-        preview.usesBridge = model.showsBridge
+        // The mechanical rest whenever the shot needs it or the stance is Rest, in every mode.
+        preview.usesBridge = model.restInUse
         return preview
     }
 
+    /// True while the showpiece opening is at its start: the first launch's opening or Watch the intro (no shot of the
+    /// player's on screen), in its lead-in or its break, with the menu closed. A player's own break goes through the
+    /// same stages but carries its attempt, so it never gets the lamp shot.
+    static func showpieceStarting(_ model: ShowpieceModel) -> Bool {
+        !model.menuOpen && model.currentAttempt == nil && (model.stage == .lead || model.stage == .normalBreak)
+    }
+
+    /// The bridge mark for the cue now shown at the aim: the bridge hand's spot, model.strokeBridgeLength behind the
+    /// cue ball along the cue, while the cue may show and the mechanical rest is not standing there itself.
+    static func bridgeMark(for model: ShowpieceModel, cue: AimPreview, bridge: SceneBridge) -> BridgeMark? {
+        guard cue.showsCue, !cue.usesBridge, cue.direction.lengthSquared > 0.5 else { return nil }
+        let back = cue.direction.normalized
+        let r = model.timeline.table.ballRadius
+        return BridgeMark(spot: cue.from - back * model.strokeBridgeLength, ballBack: cue.from - back * r,
+                          awkward: model.stance.map { !$0.isNormal } ?? false,
+                          innerRing: bridge.differentiateWithoutColour)
+    }
+
     /// How the shot on screen was struck, for the cue's follow-through. The player's shots and breaks are recorded as
-    /// attempts with their exact tip offsets; a raise and the bridge only ever belong to a shot (trick shots set them).
+    /// attempts with their exact tip offsets and the cue angle the strike used; the cue rested on the mechanical bridge
+    /// when the shot needs it (trick shots, situations) or the stance recorded with the stroke was the rest.
     /// The opening showpiece break has no attempt: a level cue through the centre.
     static func stroke(for model: ShowpieceModel) -> CueStroke {
         guard let shot = model.currentAttempt else { return CueStroke() }
         if shot.isBreak { return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide) }
-        return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide, elevation: model.shotElevation,
-                         usesBridge: model.strokeUsesBridge)
+        let onRest = model.strokeUsesBridge || shot.stroke?.stance?.rung == .rest
+        return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide, elevation: shot.elevation, usesBridge: onRest)
     }
 }
