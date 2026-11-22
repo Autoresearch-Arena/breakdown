@@ -1,0 +1,44 @@
+{
+ "keys": [
+  "Next: Lesson %lld, %@",
+  "Next: the trick shot %@",
+  "Next: a game against the easy computer"
+ ],
+ "translations": [
+  {"culture": "es", "key": "Next: Lesson %lld, %@", "text": "Lo siguiente: lección %lld, %@"},
+  {"culture": "fr", "key": "Next: Lesson %lld, %@", "text": "Ensuite : leçon %lld, %@"},
+  {"culture": "de", "key": "Next: Lesson %lld, %@", "text": "Als Nächstes: Lektion %lld, %@"},
+  {"culture": "it", "key": "Next: Lesson %lld, %@", "text": "Prossimo passo: lezione %lld, %@"},
+  {"culture": "pt", "key": "Next: Lesson %lld, %@", "text": "A seguir: lição %lld, %@"},
+  {"culture": "pt-BR", "key": "Next: Lesson %lld, %@", "text": "Próximo: lição %lld, %@"},
+  {"culture": "ja", "key": "Next: Lesson %lld, %@", "text": "次はレッスン%lld：%@"},
+  {"culture": "ko", "key": "Next: Lesson %lld, %@", "text": "다음: 레슨 %lld, %@"},
+  {"culture": "zh-Hans", "key": "Next: Lesson %lld, %@", "text": "下一步：第%lld课，%@"},
+  {"culture": "ru", "key": "Next: Lesson %lld, %@", "text": "Дальше: урок %lld, %@"},
+  {"culture": "ar", "key": "Next: Lesson %lld, %@", "text": "التالي: الدرس %lld، %@"},
+
+  {"culture": "es", "key": "Next: the trick shot %@", "text": "Lo siguiente: el tiro de truco %@"},
+  {"culture": "fr", "key": "Next: the trick shot %@", "text": "Ensuite : le coup spectaculaire %@"},
+  {"culture": "de", "key": "Next: the trick shot %@", "text": "Als Nächstes: der Trickstoß %@"},
+  {"culture": "it", "key": "Next: the trick shot %@", "text": "Prossimo passo: il colpo spettacolare %@"},
+  {"culture": "pt", "key": "Next: the trick shot %@", "text": "A seguir: a jogada de efeito %@"},
+  {"culture": "pt-BR", "key": "Next: the trick shot %@", "text": "Próximo: a tacada de efeito %@"},
+  {"culture": "ja", "key": "Next: the trick shot %@", "text": "次はトリックショット「%@」"},
+  {"culture": "ko", "key": "Next: the trick shot %@", "text": "다음: 트릭 샷 %@"},
+  {"culture": "zh-Hans", "key": "Next: the trick shot %@", "text": "下一步：花式球“%@”"},
+  {"culture": "ru", "key": "Next: the trick shot %@", "text": "Дальше: трюковой удар «%@»"},
+  {"culture": "ar", "key": "Next: the trick shot %@", "text": "التالي: ضربة الخدعة %@"},
+
+  {"culture": "es", "key": "Next: a game against the easy computer", "text": "Lo siguiente: una partida contra el ordenador en fácil"},
+  {"culture": "fr", "key": "Next: a game against the easy computer", "text": "Ensuite : une partie contre l'ordinateur en facile"},
+  {"culture": "de", "key": "Next: a game against the easy computer", "text": "Als Nächstes: ein Spiel gegen den Computer auf Leicht"},
+  {"culture": "it", "key": "Next: a game against the easy computer", "text": "Prossimo passo: una partita contro il computer facile"},
+  {"culture": "pt", "key": "Next: a game against the easy computer", "text": "A seguir: um jogo contra o computador no fácil"},
+  {"culture": "pt-BR", "key": "Next: a game against the easy computer", "text": "Próximo: uma partida contra o computador no fácil"},
+  {"culture": "ja", "key": "Next: a game against the easy computer", "text": "次はコンピューター（かんたん）と対戦"},
+  {"culture": "ko", "key": "Next: a game against the easy computer", "text": "다음: 쉬움 난이도 컴퓨터와 한 판"},
+  {"culture": "zh-Hans", "key": "Next: a game against the easy computer", "text": "下一步：和简单难度的电脑打一局"},
+  {"culture": "ru", "key": "Next: a game against the easy computer", "text": "Дальше: партия против компьютера на лёгком уровне"},
+  {"culture": "ar", "key": "Next: a game against the easy computer", "text": "التالي: مباراة ضد الكمبيوتر على المستوى السهل"}
+ ]
+}

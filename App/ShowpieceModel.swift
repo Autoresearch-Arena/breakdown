@@ -97,6 +97,23 @@
 //          whenever the shot shows the mechanical bridge). strokeBridgeLength is the rest's head when the stance needs
 //          the rest; strokeZones takes the stance's swing factor outside the authored modes; the strike's delivery is
 //          worked out with the stance, which the delivery keeps for the retry comparison.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 model stream, plans/21-Nov-2026-bugs-after-0-6-6-plan.md and
+//          docs/v07-contracts.md section 2. Every stroke route goes through fireStroke(), which says what happened and
+//          why a stroke was refused (strokeRefusal before a stroke starts, lastRefusal after); in eight-ball a stroke
+//          with no call plays the suggested call, and refuses only when there is none. The cue's angle has its lesson
+//          lock (activeElevation), and the strike and the 3D cue use the least angle that clears every ball under the
+//          whole cue (strikeElevation) outside the authored modes, with the cue the game picked (cueChoice,
+//          cueInHand); the rest is drawn whenever the stance needs it (restInUse). A touch can be undone exactly
+//          (aimSnapshot, restoreAim) and any ball can be lifted in free play (liftableBall). A match break plays at
+//          real speed in the ordinary view, with the Lens replay offered on its ruling and See the ruling while a
+//          match shot plays. The computer's turn is a stage the table shows (computerTurnStage): it thinks, then its
+//          aim swings to its choice and its cue draws back for a beat before it strikes (stageComputerStroke); the
+//          person's controls are not live meanwhile. The first launch holds three or four beats, and the opening's
+//          headline beats show their equations (holdingHeadline); the first break ends on its own card
+//          (firstBreakCard); after a break the shot panel reopens when the balls stop (shotPanelRequest). Later
+//          launches play the opening's slow Lens replay silently behind the menu (menuBackdropPlaying), and the menu
+//          names the next step (nextStep). A lesson's pass shot can go back to the lesson's stroke
+//          (tryAgain(restoring:)). Launch flags put each store scene up (StoreScene).)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -133,9 +150,116 @@ enum FreePlayRack: String, CaseIterable, Codable {
 
 /// The first-launch opening (plans/21-Nov-2026-first-minute-and-lessons-plan.md package 1): the showpiece break plays
 /// with the menu closed, then the cue is handed over on a fresh rack, then the player's own first break plays through
-/// the same opening, and only then does the menu appear. `.none` outside it.
+/// the same opening, then its short card is up (what the break did, Learn the shots, Keep playing), and only then does
+/// the menu appear. `.none` outside it. `firstBreakCard` was appended in 0.7.0 (item 3).
 enum OpeningStage: Equatable {
-    case none, playing, handOver, firstBreak
+    case none, playing, handOver, firstBreak, firstBreakCard
+}
+
+/// What a fire attempt did (ShowpieceModel.fireStroke).
+enum StrokeOutcome: Equatable {
+    case breakStruck, shotStruck, refused(ShotRefusal)
+}
+
+/// The aim and power at one instant (a touch landing), so a touch that turns out to be a pinch, a pan or a double tap
+/// can put them back exactly (ShowpieceModel.aimSnapshot and restoreAim; contract section 4).
+struct AimSnapshot: Equatable {
+    let racked: Bool
+    let aimDegrees: Double
+    let aimOffset: Double
+    let power: Double
+    let strokeBridge: Double?
+}
+
+/// The model asking the view to open, close or toggle "Your shot". The serial makes two requests for the same action
+/// two different values, so a view watching with onChange sees each one.
+struct ShotPanelRequest: Equatable {
+    enum Action: Equatable { case open, close, toggle }
+    let serial: Int
+    let action: Action
+}
+
+/// The next step on the path from stored progress, for the menu's highlighted entry (plan item 52).
+enum NextStep: Equatable, Sendable {
+    /// The first lesson not passed.
+    case lesson(number: Int, title: String)
+    /// That lesson's trick shot (Lesson.trickID), once the lesson is passed.
+    case trickShot(title: String)
+    /// Every lesson and its trick shot done, and no game finished against the easy computer yet.
+    case gameAgainstEasyComputer
+
+    /// The words on the menu's highlighted entry.
+    var sentence: String {
+        switch self {
+        case .lesson(let number, let title): return String(localized: "Next: Lesson \(number), \(title)")
+        case .trickShot(let title): return String(localized: "Next: the trick shot \(title)")
+        case .gameAgainstEasyComputer: return String(localized: "Next: a game against the easy computer")
+        }
+    }
+}
+
+/// The computer's turn, as the table shows it (plan item 16).
+enum ComputerTurnStage: Equatable, Sendable {
+    /// Not the computer's turn.
+    case none
+    /// MatchOpponent is planning (from the moment its turn is known, the ruling card before it still up).
+    case thinking
+    /// The aim line swings to its choice and the cue draws back for a beat.
+    case staging
+    /// Its stroke is struck and playing.
+    case striking
+}
+
+/// Launch flags for the store pictures and the preview video (plan item 40). Each skips the menu and the opening and
+/// puts its scene up, still. ShowpieceModel plays the scene's way there (startStoreSceneIfAsked); views that must
+/// open something for a scene (the match card's "Why that shot", the lesson card) read `requested`.
+enum StoreScene: Equatable, Sendable {
+    /// -storeMatch: eight-ball against the medium computer mid-game, after the computer's shot ("Why that shot").
+    case match
+    /// -storeRuling: a two-player eight-ball ruling card after a foul.
+    case ruling
+    /// -storeLesson <1...6>: that lesson held on its key moment in the Lens.
+    case lesson(Int)
+    /// -storeTableGame bumperPool|fivePin|barBilliards: a scored game a few shots in.
+    case tableGame(MatchKind)
+    /// -storeDrill: the straight-stroke drill with a measured stroke on its card.
+    case drill
+    /// -storeRide: a Ride replay held where the room and the lamp show.
+    case ride
+
+    /// The six flag names, for TitleScreen.launchSkipsTitle.
+    static let flags = ["-storeMatch", "-storeRuling", "-storeLesson", "-storeTableGame", "-storeDrill", "-storeRide"]
+
+    /// The scene the launch arguments ask for, parsed once; nil on an ordinary launch.
+    static var requested: StoreScene? { parsed }
+
+    private static let parsed: StoreScene? = parse(ProcessInfo.processInfo.arguments)
+
+    /// The first store flag among the arguments, with its value. A missing or unknown value falls back to the first
+    /// choice (lesson 1, bumper pool), so a typo still puts a scene up rather than the menu.
+    static func parse(_ args: [String]) -> StoreScene? {
+        func value(after flag: String) -> String? {
+            guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
+            return args[i + 1]
+        }
+        if args.contains("-storeMatch") { return .match }
+        if args.contains("-storeRuling") { return .ruling }
+        if args.contains("-storeLesson") {
+            let n = value(after: "-storeLesson").flatMap { Int($0) } ?? 1
+            return .lesson(min(max(n, 1), 6))
+        }
+        if args.contains("-storeTableGame") {
+            let kind = value(after: "-storeTableGame").flatMap { MatchKind(rawValue: $0) }
+            switch kind {
+            case .fivePin?: return .tableGame(.fivePin)
+            case .barBilliards?: return .tableGame(.barBilliards)
+            default: return .tableGame(.bumperPool)
+            }
+        }
+        if args.contains("-storeDrill") { return .drill }
+        if args.contains("-storeRide") { return .ride }
+        return nil
+    }
 }
 
 @MainActor
@@ -257,7 +381,8 @@ final class ShowpieceModel {
     /// What the background solve will finish once its timeline lands.
     @ObservationIgnored private var pendingStrike: PendingStrike?
     /// The package's reading of the shot on screen (built in load()); its first contact feeds firstContactTime.
-    @ObservationIgnored private var shotFacts: ShotFacts?
+    /// Observed (it changes once per recording), so the first-break card's words follow shotFactsOnScreen.
+    private var shotFacts: ShotFacts?
     /// When the cue ball first touched another ball in the recording on screen; nil when it touched nothing (and for a
     /// still table). The Lens's "go to contact" reads this.
     private(set) var firstContactTime: Double?
@@ -290,10 +415,56 @@ final class ShowpieceModel {
     private(set) var match: MatchMode?
     /// True when a match is saved on the device (Continue match on the menu).
     private(set) var savedMatchExists = MatchMode.saveExists
+    /// The saved match named for the menu's Continue row (which game, against whom, whose shot); nil when none is
+    /// saved. Refreshed whenever the save changes, as savedMatchExists is.
+    private(set) var savedMatchSummary: SavedMatchSummary? = MatchMode.savedSummary()
 
     // The opening for a first-time player.
     private(set) var openingStage: OpeningStage = .none
     private(set) var hasSeenOpening = UserDefaults.standard.bool(forKey: GameSettings.seenOpeningKey)
+
+    // Input and refusals (contract 2.1).
+    /// The input route in use; every route sets it on its first event. A pointer on the Mac, a finger elsewhere.
+    var inputInUse: PlayInput = {
+        #if os(macOS)
+        return .pointer
+        #else
+        return .touch
+        #endif
+    }()
+    /// The last refusal, for the shot card's line and the call card's pulse; cleared by the next accepted strike and by
+    /// clearRefusal(). refusalSerial is bumped on every refusal, so the same reason twice still pulses the card.
+    private(set) var lastRefusal: ShotRefusal?
+    private(set) var refusalSerial = 0
+    /// Bumped by every strike that reaches the solver, so fireStroke can tell a strike from a silent refusal.
+    @ObservationIgnored private var strikeSerial = 0
+
+    // The shot panel, the menu backdrop and the Lens tips (contract 2.3).
+    /// The model's last request to open, close or toggle "Your shot"; ShowpieceView acts on each new one.
+    private(set) var shotPanelRequest: ShotPanelRequest?
+    /// A break the player struck closed the shot panel; it is asked to open again once the balls stop on the
+    /// person's turn (plan item 8). Fires once, then clears.
+    @ObservationIgnored private var panelAfterBreakDue = false
+    /// Later launches: the opening's slow Lens replay plays behind the dimmed menu, silently (plan item 52).
+    private(set) var menuBackdropPlaying = false
+    /// True when the Lens replay on screen was started by the player (Replay with the Lens, Watch it in the Lens), not
+    /// by the opening or by a lesson's own demonstration; the Lens tips wait for the first guided hold of such a replay.
+    private(set) var lensReplayStartedByPlayer = false
+    /// While true, a held beat's reading time does not run out (the Lens tips are showing over it).
+    var holdForTips = false
+    /// True when the recording on screen is the showpiece opening (the cold open, Watch the intro, the menu backdrop),
+    /// so its pace plan holds the opening's beats.
+    @ObservationIgnored private var showpieceOnScreen = false
+    /// The timelineVersion of the recording the current attempt was struck into (playerShotOnScreen compares it).
+    private var attemptVersion = -1
+
+    // Matches and the computer (contract 2.4).
+    /// See the ruling was pressed while the match shot was still being solved: jump to its end as soon as it lands.
+    @ObservationIgnored private var rulingWanted = false
+    /// The computer's staged stroke in progress (its swing, draw-back and strike), advanced every frame. Not observed:
+    /// it changes every frame; views read computerTurnStage, which reads stagingActive.
+    @ObservationIgnored private var staging: ComputerStaging?
+    private var stagingActive = false
 
     private var stageTime = 0.0
     private let freezeTime: Double
@@ -318,7 +489,10 @@ final class ShowpieceModel {
         tableKind = startTable
         solvedTable = startTable
         captions = CaptionEngine.make(from: tl, surface: startSurface)
-        pacePlan = PacePlan(captions: captions, timeline: tl)
+        // The table starts on the showpiece opening: its pace plan holds the opening's beats (refreshPacePlan picks
+        // the first launch's shorter set once the opening is known to be starting).
+        showpieceOnScreen = true
+        pacePlan = PacePlan(captions: captions, timeline: tl, style: .opening)
         timelineVersion = 1
         lastInput = input
         lastClassic = true
@@ -328,6 +502,8 @@ final class ShowpieceModel {
         startRideDemoIfAsked()
         if ProcessInfo.processInfo.arguments.contains("-jumpDemo") { playJumpDemo() }
         startOpeningIfFirstLaunch()
+        startMenuBackdropIfLaterLaunch()
+        startStoreSceneIfAsked()
         runRetryCasesIfAsked()
     }
 
@@ -369,6 +545,7 @@ final class ShowpieceModel {
     func startColdOpen() {
         stage = .lead; stageTime = 0; time = 0; melt = 0; meltTarget = nil
         playing = true; chosenRate = nil
+        lensReplayStartedByPlayer = false
         resetPacing()
     }
 
@@ -382,8 +559,12 @@ final class ShowpieceModel {
         if openingStage != .none { finishOpening(showMenu: false) }
     }
 
-    /// Continue: close the menu and leave the table as it was.
-    func closeMenu() { menuOpen = false }
+    /// Continue: close the menu and leave the table as it was. The silent replay behind the menu stops being a
+    /// backdrop: whatever it was doing carries on as the ordinary replay on the table.
+    func closeMenu() {
+        menuOpen = false
+        menuBackdropPlaying = false
+    }
 
     /// Play: a fresh rack, ready for the player's own break. The view opens the aiming controls. The cue keeps the
     /// elevation the player last set: free play allows a raised cue (rules-games plan package 2 step 4).
@@ -393,6 +574,7 @@ final class ShowpieceModel {
         leaveMatch()
         menuOpen = false
         gameInProgress = true
+        panelAfterBreakDue = false
         rerack()
         setLens(false)
     }
@@ -406,9 +588,10 @@ final class ShowpieceModel {
         endPlacement(); ballInHand = .none; undoStep = nil
         menuOpen = false
         gameInProgress = true
+        panelAfterBreakDue = false
         // The showpiece break on the pool table; on another table, that table's default shot from its start layout.
         // Always the default generation (classic): the opening is authored on it.
-        load(solve(physicsTable.openingShot, classic: true))
+        load(solve(physicsTable.openingShot, classic: true), showpiece: true)
         clearAttempts()
         startColdOpen()
         stage = .normalBreak
@@ -444,8 +627,9 @@ final class ShowpieceModel {
         breakSerial = Int(seed) - 10
         // The untouched racks go through Rack's own helpers, exactly as every authored break was made; a rack whose
         // cue ball was placed by hand is the same strike from the layout (aim at the apex ball, nudged by aimOffset).
-        // The ball's launch speed for this swing with the cue in hand (exactly `power` with the house cue).
-        let launch = CueProfile.selected.launchSpeed(forPower: power)
+        // The ball's launch speed for this swing with the cue the game picked for the break (exactly `power` with the
+        // house cue; power is the swing, so a heavier break cue sends the ball faster).
+        let launch = cueInHand.launchSpeed(forPower: power)
         var input: ShotInput
         if choice == .nineBall, start == Rack.nineBallPositions(parameters: p, seed: seed) {
             input = Rack.nineBallBreakShot(parameters: p, seed: seed, aimOffset: aimOffset, speed: launch,
@@ -551,14 +735,20 @@ final class ShowpieceModel {
         retrySeed = nil
         // Trig lives here in the app; the solver only ever sees a unit vector.
         let a = aimDegrees * Double.pi / 180
-        // The launch speed for this swing with the cue in hand: exactly shotPower with the house cue.
+        // The launch speed for this swing with the cue the game picked: exactly shotPower with the house cue. The cue
+        // is struck at strikeElevation: the player's angle, raised to clear any ball under the cue outside the
+        // authored modes (plan item 23), so a jacked-up stroke dips and swerves as it would on a real table.
         var input = NextShot.shot(from: layout, direction: Vec2(cos(a), sin(a)),
-                                  speed: CueProfile.selected.launchSpeed(forPower: shotPower),
+                                  speed: cueInHand.launchSpeed(forPower: shotPower),
                                   tipUp: shotTipUp, tipSide: shotTipSide, seed: seed,
-                                  elevation: shotElevation, ballIndex: strikeBall)
+                                  elevation: strikeElevation, ballIndex: strikeBall)
         // The player's stroke drifts the strike before it is solved; a demonstration or scripted shot is struck clean.
         let delivery = strokeDue ? strokeDelivery(chosenUp: shotTipUp, chosenSide: shotTipSide) : nil
         delivery?.apply(to: &input.strike, ballRadius: physicsTable.parameters.ballRadius)
+        // The attempt keeps the player's own angle (shotElevation) as its setting, while its `input` holds the raised
+        // strike. A retry puts the player's angle back, and the same layout and aim raise it by the same clearing, so
+        // an untouched retry repeats exactly; recording the raised angle instead would leave the cue-angle control
+        // showing an angle the player never chose, and keep it raised after they aim along a clear line.
         let settings = StruckSettings(isBreak: false, breakSeed: 0, seed: seed, aim: aimDegrees, power: shotPower,
                                       range: powerRange, up: shotTipUp, side: shotTipSide, elevation: shotElevation,
                                       stroke: delivery)
@@ -631,6 +821,13 @@ final class ShowpieceModel {
         // The stroke measured for this strike, and its bridge, are used up; the next one is measured afresh.
         pendingStroke = nil
         strokeBridge = nil
+        // An accepted strike: any refusal line goes, and fireStroke can see that something was struck.
+        strikeSerial += 1
+        lastRefusal = nil
+        rulingWanted = false
+        // A break the player fired closes the shot panel (the cold open or the replay takes the screen); it is asked
+        // to open again once the balls stop on their turn. The first break of the opening has its own card instead.
+        if settings.isBreak, strokeDue, openingStage == .none { panelAfterBreakDue = true }
         match?.shotFired()
         let prepared = prepare(input)
         guard solvesInBackground else {
@@ -666,6 +863,7 @@ final class ShowpieceModel {
         solveToken += 1
         isSolving = false
         pendingStrike = nil
+        rulingWanted = false
         // The first break never happened: the opening goes back to waiting for it.
         if openingStage == .firstBreak { openingStage = .handOver }
         match?.shotCancelled()
@@ -679,16 +877,25 @@ final class ShowpieceModel {
                            aim: s.aim, power: s.power, powerRange: s.range, tipUp: s.up, tipSide: s.side,
                            elevation: s.elevation, seed: s.seed, input: prepared.input, surface: prepared.surface,
                            table: prepared.table, generation: prepared.generation, stroke: s.stroke))
-        if s.isBreak {
+        if s.isBreak, match == nil {
+            // A break outside a match (the first launch's, practice, a trick shot's rack) plays the full opening:
+            // the break, the freeze, the melt into the Lens, the rewind and the guided slow replay.
             startColdOpen()
             stage = .normalBreak
         } else {
+            // A shot, and in a match every break too (plan item 14): real speed in the ordinary view, the Lens left as
+            // the player had it. The match's ruling card offers the Lens replay of a break (watchBreakInLens).
             stage = .explore; stageTime = 0; time = 0; playing = true
             chosenRate = 1; displayRate = 1
             meltTarget = melt > 0.5 ? 1 : nil
         }
         if let m = match {
             m.shotLoaded(version: timelineVersion, start: prepared.input.positions)
+            // See the ruling was pressed while this shot was being solved: the ruling comes at once.
+            if rulingWanted {
+                rulingWanted = false
+                skipToResult()
+            }
         } else if !authoredModeUp {
             shotsThisRack += 1
             undoStep = undo
@@ -788,6 +995,25 @@ final class ShowpieceModel {
         retryPending = true
     }
 
+    /// The lesson pass shot's "Back to the lesson's stroke" (plan item 11): exactly as tryAgain() (the same start and
+    /// seed, the last try kept as the ghost and compared with the next), but with `settings` (the lesson's reference)
+    /// in place of the last try's own. The settings are written directly, so a lesson lock cannot half-apply them.
+    /// The last try's finger stroke is not brought back: it belonged to the player's settings, not these. For a
+    /// break, `settings.aim` is metres off the apex ball, as TrickSettings says.
+    func tryAgain(restoring settings: TrickSettings) {
+        guard let attempt = currentAttempt, aimReady, match == nil else { return }
+        tryAgain()
+        if attempt.isBreak {
+            aimOffset = min(max(settings.aim, -Self.breakAimLimit), Self.breakAimLimit)
+            power = settings.power; tipHeight = settings.tipUp; breakTipSide = settings.tipSide
+        } else {
+            aimDegrees = settings.aim; shotPower = settings.power
+            shotTipUp = settings.tipUp; shotTipSide = settings.tipSide
+            shotElevation = settings.elevation ?? 0
+        }
+        pendingStroke = nil
+    }
+
     /// Put the comparison card away; the ghost stays until the next fresh shot.
     func dismissComparison() { comparison = nil; retryComparison = nil }
 
@@ -811,6 +1037,7 @@ final class ShowpieceModel {
         }
         retryPending = false
         currentAttempt = attempt
+        attemptVersion = timelineVersion
         strokeDrillStorage?.attemptRecorded(attempt)
     }
 
@@ -888,12 +1115,33 @@ final class ShowpieceModel {
     /// it themselves); a break is always struck level.
     var elevationAllowed: Bool { !racked }
 
+    /// The steepest cue angle any route may set, as a sine: 0.995, about 84 degrees, where the cue rig stops pitching
+    /// the cue (the same limit CueAngleMenu clamps to).
+    static let maxElevation = 0.995
+
+    /// The cue's angle for the next shot (sine), with the lesson lock applied like power, tip and aim (plan item 12):
+    /// the setter does nothing unless the lesson leaves the cue angle open, a raised cue is allowed (not a break) and
+    /// the person may act. Every player-facing writer uses it (the Pencil, the cue-angle control); the authored modes
+    /// keep writing shotElevation directly. Reads 0 while racked: a break is struck level.
+    var activeElevation: Double {
+        get { racked ? 0 : shotElevation }
+        set {
+            guard openControls.contains(.elevation), elevationAllowed, personMayChangeControls else { return }
+            shotElevation = min(max(newValue, 0), Self.maxElevation)
+        }
+    }
+
+    /// False while the computer has the table (any stage of its turn): the person's aim, power, tip and cue angle
+    /// refuse every change, from every input route, as a lesson lock does. The computer's own stroke writes the stored
+    /// values directly (stageComputerStroke), so it is never refused here.
+    private var personMayChangeControls: Bool { computerTurnStage == .none }
+
     /// Launch speed for the next strike, metres per second, and the range it may take.
     var powerRange: ClosedRange<Double> { racked ? PlayerShotSpeed.rackBreak : PlayerShotSpeed.ordinary }
     var activePower: Double {
         get { racked ? power : shotPower }
         set {
-            guard openControls.contains(.power) else { return }
+            guard openControls.contains(.power), personMayChangeControls else { return }
             let v = min(max(newValue, powerRange.lowerBound), powerRange.upperBound); if racked { power = v } else { shotPower = v }
         }
     }
@@ -906,17 +1154,23 @@ final class ShowpieceModel {
     /// Cue-tip contact point on the cue ball, metres: up is follow, down is draw, right and left are side spin.
     var activeTipUp: Double {
         get { racked ? tipHeight : shotTipUp }
-        set { guard openControls.contains(.tipUp) else { return }; if racked { tipHeight = newValue } else { shotTipUp = newValue } }
+        set {
+            guard openControls.contains(.tipUp), personMayChangeControls else { return }
+            if racked { tipHeight = newValue } else { shotTipUp = newValue }
+        }
     }
     var activeTipSide: Double {
         get { racked ? breakTipSide : shotTipSide }
-        set { guard openControls.contains(.tipSide) else { return }; if racked { breakTipSide = newValue } else { shotTipSide = newValue } }
+        set {
+            guard openControls.contains(.tipSide), personMayChangeControls else { return }
+            if racked { breakTipSide = newValue } else { shotTipSide = newValue }
+        }
     }
 
     /// Aim so the cue travels through a spot on the table. For a shot that is any direction; for the break the
     /// strike is always at the rack, so the spot only chooses how far off the apex ball to hit.
     func aim(toward point: Vec2) {
-        guard layout.count == 16, openControls.contains(.aim) else { return }
+        guard layout.count == 16, openControls.contains(.aim), personMayChangeControls else { return }
         let from = aimOrigin
         let d = (point - from).normalized
         if d.lengthSquared < 0.5 { return }       // finger on the cue ball itself: no direction to read
@@ -934,7 +1188,7 @@ final class ShowpieceModel {
     /// Turn the aim by a small step: positive is counter-clockwise on the table plan. Steps are quarter degrees for a
     /// shot and a millimetre at the apex ball for the break.
     func nudgeAim(_ steps: Double) {
-        guard openControls.contains(.aim) else { return }
+        guard openControls.contains(.aim), personMayChangeControls else { return }
         if racked {
             aimOffset = min(max(aimOffset + steps * 0.001, -Self.breakAimLimit), Self.breakAimLimit)
         } else {
@@ -952,21 +1206,105 @@ final class ShowpieceModel {
         resetPacing()
     }
 
-    /// Break or shoot, whichever is next. Returns true when it was the break (the cue ball's cold open takes over the
-    /// screen, so the aiming controls close). A ball lifted for placing is put down first where it is, if that spot is
-    /// legal; otherwise nothing is struck. In a match nothing is struck until the match is ready (a call made, any
-    /// choice answered).
+    /// Break or shoot, whichever is next, reporting what happened (plan items 2 and 13). Every player route uses it:
+    /// the stroke's push, Shoot, Return, the Mac menu, the controller, VoiceOver. A ball lifted for placing is put down
+    /// first where it is, if that spot is legal. In eight-ball with no call made the suggested call is adopted and
+    /// played (the ruling card says it was the suggestion); with no suggestion the stroke is refused with .noCall. On
+    /// any refusal the reason is recorded (lastRefusal) and nothing is struck.
     @discardableResult
-    func fire() -> Bool {
-        guard !isSolving else { return false }
-        if placingCueBall, !confirmCueBallPlacement() { return false }
-        if let m = match, !m.readyToShoot { return false }
+    func fireStroke() -> StrokeOutcome {
+        if let reason = strokeRefusal { return refused(reason) }
+        if let m = match, m.mustCall, m.currentCall == nil, !m.adoptSuggestedCall() { return refused(.noCall) }
+        if placingCueBall, !confirmCueBallPlacement() { return refused(.ballInHandNotPlaced) }
+        let wasBreak = racked
+        let before = strikeSerial
         // The player's own stroke: the strike it starts is delivered with the stroke's drift (StrokeModel).
         strokeDue = true
         defer { strokeDue = false }
-        if racked { breakNow(); return true }
-        shootNow()
-        return false
+        if wasBreak { breakNow() } else { shootNow() }
+        // breakNow and shootNow keep their own guards; one that turned the stroke away still gets a reason on the card.
+        guard strikeSerial != before else { return refused(strokeRefusal ?? .replayPlaying) }
+        return wasBreak ? .breakStruck : .shotStruck
+    }
+
+    /// Kept for existing callers: true when the stroke fired was the break (the cue ball's cold open, or a match
+    /// break's replay, takes over the screen, so the aiming controls close).
+    @discardableResult
+    func fire() -> Bool { fireStroke() == .breakStruck }
+
+    private func refused(_ reason: ShotRefusal) -> StrokeOutcome {
+        refuse(reason)
+        return .refused(reason)
+    }
+
+    /// Why a stroke would be refused if fired now, or nil when one may be struck. Asked BEFORE a stroke starts (touch
+    /// at touch-down on the cue ball; the shot panel, the Mac menu and the controller to disable Shoot and say why).
+    /// Every case except .backswingTooShort, which only the input sees. .noCall only when no suggestion exists, because
+    /// fireStroke plays the suggestion otherwise.
+    var strokeRefusal: ShotRefusal? {
+        if isSolving { return .stillSolving }
+        if let m = match {
+            if m.state.isOver || m.phase == .over { return .gameOver }
+            if !m.personMayAct || stagingActive { return .notYourTurn }
+        }
+        if !aimReady { return .replayPlaying }
+        if let m = match {
+            if m.phase != .aiming { return .rulingPending }
+            if m.state.pendingChoice != nil { return .choicePending }
+        }
+        if placingCueBall {
+            guard let c = cueBallCandidate, placementSpot(c) == .legal else { return .ballInHandNotPlaced }
+        }
+        if let m = match, m.mustCall, m.currentCall == nil, m.suggestedCall == nil { return .noCall }
+        return nil
+    }
+
+    /// Input code reports a refusal it decided itself (the touch stroke's short backswing).
+    func refuse(_ reason: ShotRefusal) {
+        lastRefusal = reason
+        refusalSerial += 1
+    }
+
+    func clearRefusal() { lastRefusal = nil }
+
+    // MARK: Aim snapshot and lifting balls (contract 2.2, plan items 7 and 9)
+
+    /// The aim and power now, taken when a touch lands, so a touch that turns out to be a pinch, a pan or a double tap
+    /// can put them back exactly.
+    func aimSnapshot() -> AimSnapshot {
+        AimSnapshot(racked: racked, aimDegrees: aimDegrees, aimOffset: aimOffset, power: activePower,
+                    strokeBridge: strokeBridge)
+    }
+
+    /// Put a snapshot back. Written directly, not through the locked setters, so a lesson lock cannot half-restore it
+    /// (the snapshot only ever holds values the lock allowed). Ignored if the table changed meanwhile (a rack became a
+    /// shot or the other way round), when the stored values would land on the wrong stroke.
+    func restoreAim(_ snapshot: AimSnapshot) {
+        guard snapshot.racked == racked else { return }
+        aimDegrees = snapshot.aimDegrees
+        aimOffset = snapshot.aimOffset
+        if racked { power = snapshot.power } else { shotPower = snapshot.power }
+        strokeBridge = snapshot.strokeBridge
+    }
+
+    /// The ball at a table point that may be lifted now, nearest first within `radius` metres; nil when none. In free
+    /// play any ball on the table; in a match only the striking ball, and only with ball in hand (canPlaceCueBall says
+    /// when lifting is allowed at all). A ball already lifted counts where it is held now. Touch and pointer use the
+    /// same call, then beginPlacingBall(_:), moveCueBallCandidate(to:), confirmCueBallPlacement() and cancelPlacement().
+    func liftableBall(near point: Vec2, within radius: Double) -> Int? {
+        guard canPlaceCueBall, layout.count == 16 else { return nil }
+        var best: (ball: Int, distance: Double)?
+        func consider(_ ball: Int, at p: Vec2) {
+            let d = (p - point).length
+            guard d <= radius else { return }
+            if best == nil || d < best!.distance { best = (ball, d) }
+        }
+        if placingCueBall, let held = cueBallCandidate { consider(placingBall, at: held) }
+        let candidates = match == nil ? Array(layout.indices) : [strikeBall]
+        for ball in candidates where !(placingCueBall && ball == placingBall) && NextShot.isOnTable(layout[ball]) {
+            consider(ball, at: layout[ball])
+        }
+        return best?.ball
     }
 
     /// Point the cue at the nearest ball still on the table.
@@ -996,14 +1334,33 @@ final class ShowpieceModel {
         aimAtNearestBall()
     }
 
-    private func load(_ tl: Timeline) {
+    /// Put a recording on screen. `showpiece` is true only for the showpiece opening (Watch the intro), whose replay
+    /// holds the opening's beats. Anything loaded ends the menu's backdrop: a table is going on screen.
+    private func load(_ tl: Timeline, showpiece: Bool = false) {
+        menuBackdropPlaying = false
+        lensReplayStartedByPlayer = false
+        showpieceOnScreen = showpiece
         adoptLayout(after: tl)
         timeline = tl
         captions = CaptionEngine.make(from: tl, surface: solvedSurface)
-        pacePlan = PacePlan(captions: captions, timeline: tl)
+        pacePlan = PacePlan(captions: captions, timeline: tl, style: paceStyle)
         ridePlan = RidePlan(tl)
         readShot(tl)
         timelineVersion += 1
+        resetPacing()
+    }
+
+    /// Which beats the recording on screen holds: the first launch's few (the showpiece and the player's own first
+    /// break, while the opening runs), the opening's with its headline moments (the showpiece watched again), or the
+    /// usual ones (plan items 6 and 55).
+    private var paceStyle: PacePlan.Style {
+        if openingStage != .none { return .firstLaunch }
+        return showpieceOnScreen ? .opening : .standard
+    }
+
+    /// Re-make the pace plan of the recording on screen after its style changed (the first launch starting).
+    private func refreshPacePlan() {
+        pacePlan = PacePlan(captions: captions, timeline: timeline, style: paceStyle)
         resetPacing()
     }
 
@@ -1180,6 +1537,7 @@ final class ShowpieceModel {
         eightBallMode.end()
         menuOpen = false
         gameInProgress = true
+        panelAfterBreakDue = false
         endPlacement(); ballInHand = .none; undoStep = nil
         let m = MatchMode(model: self, kind: kind, players: players, computer: computer)
         match = m
@@ -1193,7 +1551,8 @@ final class ShowpieceModel {
     /// Back to the match: the live one if there is one, otherwise the saved one from the device.
     func continueSavedMatch() {
         if match != nil { closeMenu(); return }
-        guard let saved = MatchMode.loadSaved() else { savedMatchExists = false; return }
+        guard let saved = MatchMode.loadSaved() else { noteMatchSave(exists: false); return }
+        panelAfterBreakDue = false
         strokeDrillStorage?.end()
         cancelPendingSolve()
         lessonModeStorage?.end()
@@ -1211,7 +1570,7 @@ final class ShowpieceModel {
     /// End the match for good: its save is removed and free play's rack goes back on.
     func endMatch() {
         MatchMode.deleteSave()
-        savedMatchExists = false
+        noteMatchSave(exists: false)
         leaveMatch()
         rerack()
     }
@@ -1219,13 +1578,17 @@ final class ShowpieceModel {
     /// Step out of a live match into something else, keeping its save so the menu can offer it again.
     private func leaveMatch() {
         guard match != nil else { return }
+        abandonStaging()
         cancelPendingSolve()
         match = nil
         endPlacement(); ballInHand = .none
     }
 
-    /// MatchMode reports whether a save exists after each write or removal.
-    func noteMatchSave(exists: Bool) { savedMatchExists = exists }
+    /// MatchMode reports whether a save exists after each write or removal; the Continue row's summary is read again.
+    func noteMatchSave(exists: Bool) {
+        savedMatchExists = exists
+        savedMatchSummary = exists ? MatchMode.savedSummary() : nil
+    }
 
     /// The parameters a match shot is solved with right now, exactly as prepare(_:) builds them for a NextShot input
     /// (default parameters, then the table, then the surface, then the physics generation). The computer opponent
@@ -1275,6 +1638,208 @@ final class ShowpieceModel {
         return m.phase == .shooting
     }
 
+    // MARK: The computer's turn, staged (plan item 16, contract 2.4)
+
+    /// The computer's stroke between its plan and its strike: where the aim swings from and to, the stroke it will
+    /// play, and the person's own settings to put back once it is struck.
+    private struct ComputerStaging {
+        let match: ObjectIdentifier
+        let isBreak: Bool
+        /// Degrees for a shot, metres off the apex ball for a break.
+        let fromAim: Double
+        let toAim: Double
+        let power: Double
+        let tipUp: Double
+        let tipSide: Double
+        /// The person's power, tip and cue angle (break values for a break), restored after the strike.
+        let keptPower: Double
+        let keptUp: Double
+        let keptSide: Double
+        let keptElevation: Double
+        /// Real seconds since staging began; only counted while the table is live (advance stops behind the menu).
+        var elapsed = 0.0
+    }
+
+    /// The beats of a staged computer stroke, real seconds. The swing is long enough for the eye to follow a line
+    /// turning across the table (a quick glance takes about a fifth of a second; three of them is comfortable), the
+    /// draw-back a little shorter, as a player's backswing is, and the stillness at full draw is the short pause a
+    /// player makes before delivering. Together under two seconds, so the computer's turn never drags.
+    static let computerSwingTime = 0.7
+    static let computerDrawBackTime = 0.6
+    static let computerSetTime = 0.25
+
+    /// The computer's turn as the table shows it.
+    var computerTurnStage: ComputerTurnStage {
+        guard let m = match, m.hasComputer, !m.state.isOver else { return .none }
+        if stagingActive { return .staging }
+        switch m.phase {
+        case .aiming:
+            return m.computerSeatToAct != nil ? .thinking : .none
+        case .ruling:
+            // The ruling is in and the next decision is known while its card is still up: the computer may start
+            // thinking now (MatchOpponent does), and the person's controls are not theirs.
+            if let pending = m.state.pendingChoice { return m.isComputer(pending.chooser) ? .thinking : .none }
+            return m.isComputer(m.state.turn) ? .thinking : .none
+        case .shooting:
+            // The turn moves on only when the shot is ruled, so the shooter is still the one whose turn it is.
+            return m.isComputer(m.state.turn) ? .striking : .none
+        case .handOver, .over:
+            return .none
+        }
+    }
+
+    /// False while the person may not act on the table: the computer's turn (any stage but .none) or a solve in
+    /// flight. ShotPanel greys out, touch and pointer ignore the cloth, the controller and the Mac menu disable Shoot.
+    var personControlsLive: Bool { computerTurnStage == .none && !isSolving }
+
+    /// The computer's stroke, staged: places the cue ball (when it has ball in hand), then over the next beats swings
+    /// the aim to `aimDegrees` (or the break's `breakAimOffset`), draws the cue back, and strikes, setting
+    /// MatchMode.computerActing itself around the placement and the strike. Returns true when staging began; the strike
+    /// follows on its own from advance(_:). The person's power, tip and cue angle are put back once it is struck, as
+    /// playComputerStroke does. Replaces the instant playComputerStroke for MatchOpponent.
+    @discardableResult
+    func stageComputerStroke(placement: Vec2?, aimDegrees aim: Double, breakAimOffset: Double, power: Double,
+                             tipUp: Double, tipSide: Double) -> Bool {
+        guard let m = match, m.computerSeatToAct != nil, staging == nil, aimReady, !isSolving, !menuOpen,
+              layout.count == 16 else { return false }
+        let wasActing = m.computerActing
+        m.computerActing = true
+        if let spot = placement {
+            if !placingCueBall { beginPlacingCueBall() }
+            if placingCueBall {
+                moveCueBallCandidate(to: spot)
+                if !confirmCueBallPlacement() { cancelPlacement() }
+            }
+        } else if placingCueBall {
+            cancelPlacement()
+        }
+        m.computerActing = wasActing
+        let s: ComputerStaging
+        if racked {
+            s = ComputerStaging(match: ObjectIdentifier(m), isBreak: true, fromAim: aimOffset,
+                                toAim: min(max(breakAimOffset, -Self.breakAimLimit), Self.breakAimLimit),
+                                power: min(max(power, PlayerShotSpeed.rackBreak.lowerBound), PlayerShotSpeed.rackBreak.upperBound),
+                                tipUp: tipUp, tipSide: tipSide,
+                                keptPower: self.power, keptUp: tipHeight, keptSide: breakTipSide, keptElevation: shotElevation)
+            tipHeight = tipUp; breakTipSide = tipSide
+            self.power = PlayerShotSpeed.rackBreak.lowerBound
+        } else {
+            s = ComputerStaging(match: ObjectIdentifier(m), isBreak: false, fromAim: aimDegrees, toAim: aim,
+                                power: min(max(power, PlayerShotSpeed.ordinary.lowerBound), PlayerShotSpeed.ordinary.upperBound),
+                                tipUp: tipUp, tipSide: tipSide,
+                                keptPower: shotPower, keptUp: shotTipUp, keptSide: shotTipSide, keptElevation: shotElevation)
+            // The computer plays a level cue (its planner tries level strokes); the strike still clears any ball under
+            // the cue (strikeElevation), as the person's would.
+            shotTipUp = tipUp; shotTipSide = tipSide; shotElevation = 0
+            // The cue starts close to the ball and draws back once the aim has swung (the 3D cue's pull-back follows
+            // the power).
+            shotPower = PlayerShotSpeed.ordinary.lowerBound
+        }
+        staging = s
+        stagingActive = true
+        return true
+    }
+
+    /// One frame of a staged computer stroke: the aim eases round to its choice, then the cue draws back to the
+    /// stroke's power, then a short stillness, then the strike. Dropped (the person's settings put back) if anything
+    /// moved the table on meanwhile: the match left, the turn changed, a solve or a replay started.
+    private func advanceStaging(_ dt: Double) {
+        guard var s = staging else { return }
+        guard let m = match, ObjectIdentifier(m) == s.match, m.phase == .aiming, m.computerSeatToAct != nil,
+              aimReady, !isSolving, layout.count == 16, racked == s.isBreak else {
+            abandonStaging()
+            return
+        }
+        s.elapsed += dt
+        staging = s
+        let swing = Self.smoothstep(s.elapsed / Self.computerSwingTime)
+        if s.isBreak {
+            aimOffset = s.fromAim + (s.toAim - s.fromAim) * swing
+        } else {
+            // The short way round: never a swing of more than half a turn.
+            var delta = s.toAim - s.fromAim
+            while delta > 180 { delta -= 360 }
+            while delta < -180 { delta += 360 }
+            var a = s.fromAim + delta * swing
+            if a > 180 { a -= 360 } else if a < -180 { a += 360 }
+            aimDegrees = a
+        }
+        let draw = Self.smoothstep((s.elapsed - Self.computerSwingTime) / Self.computerDrawBackTime)
+        let low = s.isBreak ? PlayerShotSpeed.rackBreak.lowerBound : PlayerShotSpeed.ordinary.lowerBound
+        let pulled = low + (s.power - low) * draw
+        if s.isBreak { power = pulled } else { shotPower = pulled }
+        if s.elapsed >= Self.computerSwingTime + Self.computerDrawBackTime + Self.computerSetTime { strikeStaged(s, m) }
+    }
+
+    /// The staged stroke's strike: exactly the planned aim and power, struck while the match knows the computer is
+    /// acting, then the person's own settings back.
+    private func strikeStaged(_ s: ComputerStaging, _ m: MatchMode) {
+        staging = nil
+        stagingActive = false
+        if s.isBreak { aimOffset = s.toAim; power = s.power } else { aimDegrees = s.toAim; shotPower = s.power }
+        let wasActing = m.computerActing
+        m.computerActing = true
+        if s.isBreak { breakNow() } else { shootNow() }
+        m.computerActing = wasActing
+        restoreKept(s)
+        if m.phase != .shooting {
+            // Not struck (the match refused it): MatchOpponent sees its turn still due and plans again.
+            NSLog("ShowpieceModel: the computer's staged stroke was not struck; its turn is still due")
+        }
+    }
+
+    /// Stop a staged stroke without striking and put the person's settings back.
+    private func abandonStaging() {
+        guard let s = staging else { stagingActive = false; return }
+        staging = nil
+        stagingActive = false
+        restoreKept(s)
+    }
+
+    private func restoreKept(_ s: ComputerStaging) {
+        if s.isBreak {
+            power = s.keptPower; tipHeight = s.keptUp; breakTipSide = s.keptSide
+        } else {
+            shotPower = s.keptPower; shotTipUp = s.keptUp; shotTipSide = s.keptSide; shotElevation = s.keptElevation
+        }
+    }
+
+    /// 0 at x <= 0, 1 at x >= 1, eased in and out between, so the swing and the draw-back never jolt.
+    private static func smoothstep(_ x: Double) -> Double {
+        let u = min(1, max(0, x))
+        return u * u * (3 - 2 * u)
+    }
+
+    // MARK: A match shot on screen (plan item 14, contract 2.4)
+
+    /// After a match break has played out, its ruling card offers the Lens replay of it (a match break plays at real
+    /// speed in the ordinary view, so the slow Lens replay is the player's to ask for).
+    var offerLensReplayOfBreak: Bool {
+        guard let m = match, m.phase == .ruling || m.phase == .over, aimReady else { return false }
+        return currentAttempt?.isBreak == true && playerShotOnScreen
+    }
+
+    /// "Watch it in the Lens": the break on screen replayed slowly in the Lens, as a replay the player started.
+    func watchBreakInLens() {
+        guard offerLensReplayOfBreak else { return }
+        replay(withLens: true)
+        lensReplayStartedByPlayer = true
+    }
+
+    /// A match shot is still being solved or replayed: the "See the ruling" button shows.
+    var matchShotPlaying: Bool { match?.phase == .shooting }
+
+    /// "See the ruling": jump to the end of the match shot on screen, so the ruling comes at once. Pressed while the
+    /// shot is still being solved, the jump happens as soon as it lands.
+    func seeRuling() {
+        guard matchShotPlaying else { return }
+        if isSolving {
+            rulingWanted = true
+            return
+        }
+        skipToResult()
+    }
+
     /// The table a match rack starts from (positions from Rack, or the table's own start layout).
     func matchSetup(for rack: MatchRack, seed: UInt64) -> MatchTableSetup {
         let p = rackParameters
@@ -1291,6 +1856,7 @@ final class ShowpieceModel {
 
     /// Put a match's table on screen, still, for the shooter to aim from.
     func showMatchTable(_ s: MatchTableSetup) {
+        abandonStaging()
         cancelPendingSolve()
         endPlacement()
         // Ball in hand in a match is the state's; mirrored here so the views and the placement check read one value.
@@ -1310,25 +1876,47 @@ final class ShowpieceModel {
     /// menu stays closed and the same path Watch the break uses plays.
     private func startOpeningIfFirstLaunch() {
         let args = ProcessInfo.processInfo.arguments
-        guard !hasSeenOpening, !TitleScreen.launchSkipsTitle, !args.contains("-retryCases") else { return }
+        guard !hasSeenOpening, !TitleScreen.launchSkipsTitle, StoreScene.requested == nil,
+              !args.contains("-retryCases") else { return }
         menuOpen = false
         gameInProgress = true
         openingStage = .playing
+        // The first launch holds only the opening's few headline beats (plan item 6).
+        refreshPacePlan()
         startColdOpen()
     }
 
-    /// Skip ahead: from the opening break to the hand-over; from the hand-over or the first break to the menu.
+    /// Skip ahead: from the opening break to the hand-over; from the hand-over, the first break or its card to the menu.
     func skipOpening() {
         switch openingStage {
         case .none:
             return
         case .playing:
             beginHandOver()
-        case .handOver, .firstBreak:
+        case .handOver, .firstBreak, .firstBreakCard:
             cancelPendingSolve()
             finishOpening(showMenu: true)
         }
     }
+
+    /// The first-break card's "Learn the shots": the opening ends and the menu opens with the lesson list open.
+    func learnAfterFirstBreak() {
+        guard openingStage == .firstBreakCard else { return }
+        finishOpening(showMenu: true)
+        lessonMode.listOpen = true
+    }
+
+    /// The first-break card's "Keep playing": the opening ends, the menu stays closed and Your shot is asked to open,
+    /// so the player carries on from where their break left the balls.
+    func keepPlayingAfterFirstBreak() {
+        guard openingStage == .firstBreakCard else { return }
+        finishOpening(showMenu: false)
+        requestShotPanel(.open)
+    }
+
+    /// The package's reading of the shot on screen (what the break did: what dropped, a scratch), for the first-break
+    /// card's words. Nil for a still table or a recording with no kept start.
+    var shotFactsOnScreen: ShotFacts? { shotFacts }
 
     /// The opening's replay has ended: a fresh free-play rack, cue in hand (the hand-over view says what to do).
     private func beginHandOver() {
@@ -1350,10 +1938,98 @@ final class ShowpieceModel {
         case .playing where stage == .explore:
             beginHandOver()
         case .firstBreak where stage == .explore && !isSolving && currentAttempt != nil && time >= duration - 1e-6:
-            finishOpening(showMenu: true)
+            // The player's first break has played out: its short card comes up (plan item 3), and the menu only
+            // after it (Learn the shots, or Keep playing).
+            openingStage = .firstBreakCard
         default:
             break
         }
+    }
+
+    // MARK: The shot panel, the menu backdrop and the next step (plan items 8 and 52, contract 2.3)
+
+    /// Ask the view to open, close or toggle "Your shot" (ShowpieceView acts on each new request).
+    func requestShotPanel(_ action: ShotPanelRequest.Action) {
+        shotPanelRequest = ShotPanelRequest(serial: (shotPanelRequest?.serial ?? 0) + 1, action: action)
+    }
+
+    /// True while one of the shots struck at this table (a player's shot or break, or the computer's) is the
+    /// recording on screen: not a still table, not the showpiece opening. The slim playback row shows then.
+    var playerShotOnScreen: Bool { currentAttempt != nil && attemptVersion == timelineVersion }
+
+    /// After a break the player struck, Your shot opens again once the balls have stopped and it is the person's turn
+    /// (in a match, once the ruling is settled and the computer is not to play). Called every frame; fires once.
+    private func reopenPanelAfterBreakIfDue() {
+        guard panelAfterBreakDue, openingStage == .none, aimReady else { return }
+        // A trick shot's or a lesson's own card decides when the panel opens (their modes request it themselves).
+        if authoredModeUp { panelAfterBreakDue = false; return }
+        if let m = match {
+            guard m.phase == .aiming, m.computerSeatToAct == nil, !m.state.isOver else { return }
+        }
+        panelAfterBreakDue = false
+        requestShotPanel(.open)
+    }
+
+    /// Real seconds a beat is held behind the menu. Nobody reads a caption through the dimmed menu, so a beat is only
+    /// a pause that lets the hit land: twice the 0.6 s pause used with Explanations off, because the backdrop is there
+    /// to be glanced at, not followed.
+    static let backdropDwell = 1.2
+    /// The backdrop's speed when the showpiece has no beats to guide it (a table whose default shot is captionless):
+    /// the slow end of the guided replay's quiet-stretch speed.
+    static let backdropRate = 0.25
+
+    /// Later launches (the opening has been seen, and no launch flag asks for a specific screen): the showpiece's slow
+    /// Lens replay plays behind the dimmed menu, looping, with no table sounds and no haptics.
+    private func startMenuBackdropIfLaterLaunch() {
+        let args = ProcessInfo.processInfo.arguments
+        guard hasSeenOpening, menuOpen, openingStage == .none, !TitleScreen.launchSkipsTitle,
+              StoreScene.requested == nil, !args.contains("-retryCases") else { return }
+        beginBackdrop()
+    }
+
+    /// Put the showpiece on its slow Lens replay as the menu's backdrop, from the start.
+    private func beginBackdrop() {
+        menuBackdropPlaying = true
+        stage = .slowReplay; stageTime = 0; time = 0
+        melt = 1; meltTarget = nil
+        chosenRate = nil
+        lensReplayStartedByPlayer = false
+        resetPacing()
+    }
+
+    /// One frame of the backdrop. It runs on the table's clock only while the menu is up over the showpiece (nothing
+    /// else is on the table at launch, and anything that puts a table on screen ends it), so it keeps no clock of its
+    /// own to fall out of step with. Guided where the showpiece has beats; at the end it starts again.
+    private func advanceBackdrop(_ dt: Double) {
+        melt = 1; meltTarget = nil
+        if stage != .slowReplay { stage = .slowReplay }
+        if guided {
+            stepGuided(dt)
+        } else {
+            displayRate = Self.backdropRate
+            time = min(duration, time + dt * displayRate)
+        }
+        if time >= duration - 1e-6, !holding {
+            time = 0
+            resetPacing()
+        }
+    }
+
+    /// The next step from stored progress, for the menu's highlighted entry: the first lesson not passed; once it is
+    /// passed, that lesson's trick shot until it is made; then a game against the easy computer until one is finished.
+    /// Nil once the whole path is done.
+    var nextStep: NextStep? {
+        for lesson in Lessons.all {
+            if !lessonMode.isDone(lesson) { return .lesson(number: lesson.number, title: lesson.title) }
+            if let shot = TrickShots.shot(id: lesson.trickID), !trickMode.isDone(shot) {
+                return .trickShot(title: shot.title)
+            }
+        }
+        let playedEasy = MatchKind.allCases.contains { kind in
+            let r = MatchRecord.record(kind: kind, level: .easy)
+            return r.won + r.lost > 0
+        }
+        return playedEasy ? nil : .gameAgainstEasyComputer
     }
 
     // MARK: Retry cases (-retryCases)
@@ -1444,6 +2120,206 @@ final class ShowpieceModel {
         }
     }
 
+    // MARK: Store scenes (plan item 40, contract 2.6)
+
+    /// A store flag at launch: the menu and the opening are skipped and the scene is played to its still moment, no
+    /// taps needed, through the same calls a player's taps make. Started after a second, as the other demos are, so the
+    /// launch cover has faded and the first frames are drawn.
+    private func startStoreSceneIfAsked() {
+        guard let scene = StoreScene.requested else { return }
+        menuOpen = false
+        gameInProgress = true
+        openingStage = .none
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            await self?.playStoreScene(scene)
+        }
+    }
+
+    private func playStoreScene(_ scene: StoreScene) async {
+        switch scene {
+        case .match: await storeMatchScene()
+        case .ruling: await storeRulingScene()
+        case .lesson(let n): await storeLessonScene(n)
+        case .tableGame(let kind): await storeTableGameScene(kind)
+        case .drill: await storeDrillScene()
+        case .ride: storeRideScene()
+        }
+        NSLog("STORESCENE %@ ready", String(describing: scene))
+    }
+
+    /// The longest a store scene waits for one step (a solve, the computer's think, a replay), seconds. The
+    /// computer's plan is the slowest step: a couple of hundred trial solves, several seconds on a simulator; a
+    /// minute leaves a wide margin and still ends a stuck run.
+    private static let storeStepLimit = 60.0
+
+    /// Wait until `done` holds, checking every 50 ms, at most storeStepLimit seconds. While a shot plays on screen it
+    /// jumps to the shot's end, so the scene does not wait out real-time replays.
+    private func storeWait(_ done: () -> Bool) async {
+        let steps = Int(Self.storeStepLimit / 0.05)
+        for _ in 0..<steps {
+            if done() { return }
+            if !isSolving, !aimReady, staging == nil { skipToResult() }
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+        NSLog("STORESCENE: a step did not finish within %.0f seconds", Self.storeStepLimit)
+    }
+
+    /// The person's stroke in a scripted match: a break with the panel's own settings, or a firm shot at the nearest
+    /// ball on its suggested call (a safety when there is none). Struck clean, as every scripted strike is.
+    private func storePersonStroke(_ m: MatchMode) {
+        if racked { breakNow(); return }
+        aimAtNearestBall()
+        if m.mustCall, m.currentCall == nil, !m.adoptSuggestedCall() { m.setCall(.safety) }
+        if physicsTable != .standard { shotPower = min(max(physicsTable.defaultShot.power, 0.5), 8) } else { shotPower = 3 }
+        shootNow()
+    }
+
+    /// -storeMatch: eight-ball against the medium computer, played until the computer has struck a shot and that shot
+    /// is ruled, so its "Why that shot" has something to explain. The person's turns are played for them.
+    private func storeMatchScene() async {
+        startMatch(.eightBall, computer: .medium)
+        // Each pass is one decision; a dozen covers a break, a few person's shots and the computer's turn.
+        for _ in 0..<12 {
+            await storeWait { !isSolving && aimReady && staging == nil && match?.phase != .shooting }
+            guard let m = match, !m.state.isOver else { return }
+            let computerShot = m.lastRuling.map { m.isComputer($0.shooter) } ?? false
+            if computerShot, m.opponent?.lastShot != nil, m.phase != .aiming || m.computerSeatToAct == nil { return }
+            switch m.phase {
+            case .ruling, .handOver:
+                m.acknowledgeRuling()
+            case .aiming where m.computerSeatToAct != nil:
+                // The computer thinks and plays on its own (MatchOpponent through stageComputerStroke).
+                await storeWait { match?.phase != .aiming || match !== m }
+            case .aiming:
+                storePersonStroke(m)
+            default:
+                break
+            }
+        }
+    }
+
+    /// -storeRuling: two people at eight-ball, played until a foul is ruled; its card is the picture. After the break
+    /// the shooter plays the softest stroke along the clearest line on the table, which touches no ball: a foul.
+    private func storeRulingScene() async {
+        startMatch(.eightBall)
+        for _ in 0..<12 {
+            await storeWait { !isSolving && aimReady && match?.phase != .shooting }
+            guard let m = match, !m.state.isOver else { return }
+            if m.phase == .ruling, m.lastRuling?.fouled == true { return }
+            switch m.phase {
+            case .ruling, .handOver:
+                m.acknowledgeRuling()
+            case .aiming:
+                if racked { breakNow(); continue }
+                if placingCueBall { _ = confirmCueBallPlacement() }
+                if m.mustCall, m.currentCall == nil { m.setCall(.safety) }
+                aimDegrees = clearestHeading()
+                shotPower = PlayerShotSpeed.ordinary.lowerBound
+                shootNow()
+            default:
+                break
+            }
+        }
+    }
+
+    /// The heading, degrees, along which the striking ball travels furthest before its path meets another ball (a
+    /// sweep of every five degrees; any line that misses every ball counts as the length of the table).
+    private func clearestHeading() -> Double {
+        guard layout.indices.contains(strikeBall) else { return 0 }
+        let from = layout[strikeBall]
+        let clearance = 2 * physicsTable.parameters.ballRadius
+        var best = (heading: 0.0, clear: -1.0)
+        for step in 0..<72 {
+            let heading = Double(step) * 5
+            let d = Vec2(cos(heading * Double.pi / 180), sin(heading * Double.pi / 180))
+            var clear = physicsTable.parameters.tableLength
+            for i in layout.indices where i != strikeBall && NextShot.isOnTable(layout[i]) {
+                let rel = layout[i] - from
+                let along = rel.dot(d)
+                guard along > 0, abs(rel.dot(d.perp)) < clearance else { continue }
+                clear = min(clear, along)
+            }
+            if clear > best.clear { best = (heading, clear) }
+        }
+        return best.heading
+    }
+
+    /// -storeLesson n: the lesson's reference shot watched, then its Lens replay held on the lesson's moment, with the
+    /// card giving the idea.
+    private func storeLessonScene(_ number: Int) async {
+        guard let lesson = Lessons.all.first(where: { $0.number == number }) ?? Lessons.all.first else { return }
+        let mode = lessonMode
+        mode.begin(lesson)
+        mode.watch()
+        // A lesson is solved directly, so the demonstration is on screen now; the table layer moves the mode on too,
+        // but the scene does not wait on the view's timing.
+        skipToResult()
+        mode.update()
+        guard let t = mode.keyTime else { return }
+        scrub(to: t)
+        mode.tick()
+    }
+
+    /// -storeTableGame kind: a few shots of a scored game, each struck at the nearest ball with the table's own
+    /// default power, every ruling acknowledged, so the banner carries real scores. Bar billiards is played alone.
+    private func storeTableGameScene(_ kind: MatchKind) async {
+        startMatch(kind, players: kind == .barBilliards ? 1 : 2)
+        // Four shots: enough for scores to show on the banner, few enough that the table still looks mid-game.
+        var struck = 0
+        for _ in 0..<12 where struck < 4 {
+            await storeWait { !isSolving && aimReady && match?.phase != .shooting }
+            guard let m = match, !m.state.isOver else { return }
+            switch m.phase {
+            case .ruling, .handOver:
+                m.acknowledgeRuling()
+            case .aiming:
+                if placingCueBall { _ = confirmCueBallPlacement() }
+                storePersonStroke(m)
+                struck += 1
+            default:
+                break
+            }
+        }
+        await storeWait { !isSolving && aimReady && match?.phase != .shooting }
+        if let m = match, m.phase == .ruling || m.phase == .handOver { m.acknowledgeRuling() }
+    }
+
+    /// -storeDrill: one drill stroke with a measured finger stroke behind it, so the drill card shows a real reading.
+    private func storeDrillScene() async {
+        strokeDrill.begin()
+        pendingStroke = Self.storeDrillStroke(power: shotPower)
+        fire()
+        await settle()
+    }
+
+    /// A finger stroke for the drill picture: a gentle wander of four percent of the stroke to the right over its last
+    /// third (a steady but human stroke, inside the drill's "straight" grade), drawn back 12 cm behind the cue ball,
+    /// after two practice strokes. Only the store scene builds one; every real stroke is measured by StrokeTracker.
+    private static func storeDrillStroke(power: Double) -> StrokeRecord {
+        let samples = 12
+        let shape = (0...samples).map { k -> Vec2 in
+            let x = Double(k) / Double(samples)
+            return Vec2(x, 0.04 * x * x)
+        }
+        let start = Vec2(NextShot.headLineX(parameters: PoolParameters()), PoolParameters().tableWidth / 2)
+        let trace = shape.map { Vec2(start.x - 0.12 * $0.x, start.y - 0.12 * $0.y) }
+        return StrokeRecord(wander: 0.04, rhythm: 1, bridge: nil, power: power, trace: trace, shape: shape,
+                            practiceStrokes: 2)
+    }
+
+    /// -storeRide: the -rideDemo straight pot with Ride on, held a little after the first contact, when the camera has
+    /// begun its crane up and back and the far end of the room shows past the object ball's run (ShotCamera's ride).
+    private func storeRideScene() {
+        rideOn = true
+        load(solve(RideDemo.straightPot()))
+        clearAttempts()
+        stage = .explore; stageTime = 0; chosenRate = nil
+        // 0.4 s past the contact: the crane is under way but the rise to the overhead view has not started.
+        let hold = ridePlan.contactTime.map { min($0 + 0.4, ridePlan.riseStart) } ?? duration * 0.5
+        scrub(to: hold)
+    }
+
     // MARK: Player controls
 
     func scrub(to t: Double) {
@@ -1479,6 +2355,14 @@ final class ShowpieceModel {
         meltTarget = withLens ? 1 : 0
         // With the Lens the replay is guided (no fixed speed: it stops on each beat to be read); without, real speed.
         chosenRate = withLens ? nil : 1
+        // Who started it, for the Lens tips (contract 2.3). This one call serves the player's Replay with the Lens and
+        // a lesson's own demonstration (LessonMode calls it as its Watch beat moves on to the replay); the
+        // demonstration has the lesson's card over it, so it does not count as the player's. Nor does anything during
+        // the first-launch opening, which has its own cards.
+        let lessonDemonstration = lessonModeStorage.map {
+            $0.current != nil && ($0.phase == .watching || $0.phase == .replaying)
+        } ?? false
+        lensReplayStartedByPlayer = withLens && !lessonDemonstration && openingStage == .none
         resetPacing()
     }
 
@@ -1504,8 +2388,12 @@ final class ShowpieceModel {
         // Sound stream hook (21-Nov-2026): every frame, menu or not, the rolling voices follow the clock; they sound
         // only while it moves forward at playback pace, so a pause, a scrub, a rewind or the menu silences them.
         defer { sound.follow(timeline, clock: time, rate: displayRate, playing: playing && !menuOpen, surface: physicsSurface) }
-        // The menu freezes the table behind it, whatever stage it is in.
-        if menuOpen { return }
+        // The menu freezes the table behind it, whatever stage it is in; on a later launch the opening's slow Lens
+        // replay plays behind it instead, silently (plan item 52).
+        if menuOpen {
+            if menuBackdropPlaying { advanceBackdrop(dt) }
+            return
+        }
         defer {
             if let hold = Self.pauseAt, stage == .explore, playing, time >= hold { scrub(to: hold) }
         }
@@ -1558,10 +2446,13 @@ final class ShowpieceModel {
                 if melt == target { meltTarget = nil }
             }
         }
-        // Hand-offs that wait for the shot on screen to play out: the opening's next stage, a match's ruling, and a
-        // ball in hand that is lifted only once the balls are at rest.
+        // The computer's staged stroke moves on (its swing, draw-back and strike).
+        advanceStaging(dt)
+        // Hand-offs that wait for the shot on screen to play out: the opening's next stage, a match's ruling, the shot
+        // panel after a break, and a ball in hand that is lifted only once the balls are at rest.
         updateOpening()
         match?.update()
+        reopenPanelAfterBreakIfDue()
         // The bar-billiards clock counts real seconds (rawDt, not the step clamped for the physics replay); MatchMode
         // and MatchClock decide whether this frame counts. Never reached while the menu is open (returned above).
         match?.tickClock(realSeconds: rawDt)
@@ -1579,7 +2470,8 @@ final class ShowpieceModel {
     }
 
     private func fireSounds(from a: Double, to b: Double) {
-        guard b > a else { return }
+        // The replay behind the menu is silent and still in the hand: only the title music plays there.
+        guard b > a, !menuBackdropPlaying else { return }
         // Events are sorted by time, so scan only the span crossed this frame. Only live playback calls this
         // (scrubbing sets the time directly), so touch and sound never fire while dragging the scrubber. An event
         // stamped exactly zero (the cue tip strike) counts as crossed when playback starts from the very start.
@@ -1668,9 +2560,20 @@ final class ShowpieceModel {
         // solve again. Re-solving it would also undo the rack state (load re-reads the layout and clears `racked`).
         guard let input = lastInput, input.strike.speed > 0 else { return }
         let attempt = currentAttempt
+        let attemptOnScreen = playerShotOnScreen
         let inColdOpen = stage != .explore
-        load(solve(input, classic: lastClassic))
-        if let a = attempt { currentAttempt = a.resolved(on: timeline, surface: solvedSurface) }
+        let backdrop = menuBackdropPlaying
+        load(solve(input, classic: lastClassic), showpiece: showpieceOnScreen)
+        if let a = attempt {
+            currentAttempt = a.resolved(on: timeline, surface: solvedSurface)
+            // The re-solved attempt is the recording on screen only if the old one was.
+            if attemptOnScreen { attemptVersion = timelineVersion }
+        }
+        // A surface chosen from the menu's options while the backdrop plays: the backdrop carries on, on the new cloth.
+        if backdrop {
+            beginBackdrop()
+            return
+        }
         if inColdOpen {
             startColdOpen()
             stage = .normalBreak
@@ -1880,8 +2783,46 @@ final class ShowpieceModel {
     /// situation or lesson the stance does not move the calm top (StrokeModel.delivery's rule, so the bar shows what the
     /// strike will use).
     var strokeZones: StrokeZones {
-        StrokeModel.zones(cue: CueProfile.selected, bridge: strokeBridgeLength, stance: authoredModeUp ? nil : stance)
+        StrokeModel.zones(cue: cueInHand, bridge: strokeBridgeLength, stance: authoredModeUp ? nil : stance)
     }
+
+    // MARK: The strike's angle, the rest and the cue (plan items 23 and 57, contract 2.5)
+
+    /// The cue's elevation the next strike and the 3D cue use (sine). A break is struck level. In free play, matches
+    /// and the drill it is the larger of the player's angle and the least angle that clears every ball under the whole
+    /// cue, tip to butt, resting on its bridge (Reach.clearingElevation), so "cue raised over the 5" is a real raised
+    /// stroke that dips and swerves. A trick shot, a Behind the 8-Ball situation or a lesson keeps its authored angle:
+    /// their answers were measured with exactly that input, and a clearing raise would change them.
+    var strikeElevation: Double {
+        guard !racked else { return 0 }
+        guard !authoredModeUp else { return shotElevation }
+        return max(activeElevation, clearingElevation)
+    }
+
+    /// The least cue angle (sine) that clears every ball under the cue for the aim now; 0 when a level cue clears or
+    /// there is no striking ball on the table.
+    private var clearingElevation: Double {
+        guard layout.count == 16, layout.indices.contains(strikeBall), NextShot.isOnTable(layout[strikeBall]) else {
+            return 0
+        }
+        return Reach.clearingElevation(layout: layout, cueBall: strikeBall, aim: aimDirection, table: timeline.table,
+                                       support: strokeBridgeLength, cueLength: cueInHand.length)
+    }
+
+    /// The mechanical bridge (the swan-neck rest) is drawn and used: the mode shows the bridge, or the stance is the
+    /// rest because the cue ball is out of reach, in every mode. TableStage passes it to the cue rig.
+    var restInUse: Bool { showsBridge || stance?.rung == .rest }
+
+    /// The cue the game picked for the next strike (CueProfile.choice): from the break, the player's angle and the
+    /// tip. In a trick shot, situation or lesson it stays the house cue: power is the swing, so another cue would send
+    /// the ball at another speed, and every authored answer was measured with the house cue's launch speeds.
+    var cueChoice: CueChoice {
+        guard !authoredModeUp else { return .standard }
+        return CueProfile.choice(isBreak: racked, elevation: activeElevation, tipUp: activeTipUp, tipSide: activeTipSide)
+    }
+
+    /// That cue's profile: the launch speed, the power bar's zones, the drift and the readouts read it.
+    var cueInHand: CueProfile { CueProfile.profile(for: cueChoice.kind) }
 
     /// Where the player stands and leans for the next strike, from the balls on the table, the aim and the hand bridge
     /// now (the finger's while it rests on the cloth, else the automatic one). Nil when there is no cue ball on the
@@ -1907,7 +2848,7 @@ final class ShowpieceModel {
         let bridge = struckStance?.bridge(hand: hand)
             ?? StrokeModel.bridgeLength(finger: record?.bridge ?? strokeBridge, mechanical: showsBridge)
         var d = StrokeModel.delivery(power: activePower, fraction: powerFraction, record: record, bridge: bridge,
-                                     cue: CueProfile.selected, authored: authoredModeUp, stance: struckStance)
+                                     cue: cueInHand, authored: authoredModeUp, stance: struckStance)
         if activeModelGeneration >= 2 {
             let limit = physicsTable.parameters.miscueOffsetLimit
             let side = chosenSide + d.tipSideError
@@ -1995,7 +2936,14 @@ final class ShowpieceModel {
         // With Explanations off there is nothing to read, so the stop is only a short pause that lets the hit land.
         // An option never set reads as on (its default), hence the object lookup rather than bool(forKey:).
         let explanations = UserDefaults.standard.object(forKey: GameSettings.explanationsKey) as? Bool ?? true
-        holdDwell = explanations ? pacePlan.beats[i].dwell : 0.6
+        holdDwell = menuBackdropPlaying ? Self.backdropDwell : (explanations ? pacePlan.beats[i].dwell : 0.6)
+    }
+
+    /// True while the clock holds a headline beat of the opening (the cue ball handing its speed to the rack, skid
+    /// turning into roll): its equation shows with the event's own numbers even with Show the maths off (item 55).
+    var holdingHeadline: Bool {
+        guard holding, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return false }
+        return pacePlan.beats[h].headline
     }
 
     private func finishHold(_ i: Int) {
@@ -2018,6 +2966,8 @@ final class ShowpieceModel {
     private func stepGuided(_ dt: Double) {
         if heldBeat != nil {
             guard holding, let h = heldBeat else { resetPacing(); return }
+            // The Lens tips are showing over this beat: it waits for them (never behind the menu, where no tip shows).
+            if holdForTips, !menuBackdropPlaying { return }
             holdElapsed += dt
             if holdElapsed >= holdDwell { finishHold(h) }
             return
