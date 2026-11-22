@@ -1,0 +1,734 @@
+{
+ "keys": [
+  "Four games against the computer, or practise on your own.",
+  "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+  "Watch a shot that looks impossible, see why it works, then make it.",
+  "You against the computer. Bank your balls past the bumpers into your cup.",
+  "You against the computer. Drive its ball into the pins. First to %lld.",
+  "Watch the trick shots",
+  "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+  "Watch It in the Lens",
+  "Play the computer",
+  "Race the computer to sink all your balls in your cup.",
+  "Score off the pins and the red against the computer, first to %lld.",
+  "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+  "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Cuatro juegos contra el ordenador, o practica solo."
+  },
+  {
+   "culture": "fr",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Quatre jeux contre l'ordinateur, ou entraîne-toi seul."
+  },
+  {
+   "culture": "de",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Vier Spiele gegen den Computer, oder übe allein."
+  },
+  {
+   "culture": "it",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Quattro giochi contro il computer, oppure allenati da solo."
+  },
+  {
+   "culture": "pt",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Quatro jogos contra o computador, ou treina sozinho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Quatro jogos contra o computador, ou treine sozinho."
+  },
+  {
+   "culture": "ja",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "コンピューターと4つのゲームを。ひとりで練習もできます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "컴퓨터와 네 가지 게임을 하거나, 혼자 연습하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "与电脑玩四种游戏，或独自练习。"
+  },
+  {
+   "culture": "ru",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "Четыре игры против компьютера или тренировка в одиночку."
+  },
+  {
+   "culture": "ar",
+   "key": "Four games against the computer, or practise on your own.",
+   "text": "أربع ألعاب ضد الكمبيوتر، أو تدرّب وحدك."
+  },
+  {
+   "culture": "es",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Una mesa de billar que muestra su propia física. Juega a cuatro juegos contra el ordenador, y mira por qué cada tiro fue a donde fue."
+  },
+  {
+   "culture": "fr",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Une table de billard qui montre sa propre physique. Joue à quatre jeux contre l'ordinateur, et vois pourquoi chaque coup est allé là où il est allé."
+  },
+  {
+   "culture": "de",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Ein Billardtisch, der seine eigene Physik zeigt. Spiel vier Spiele gegen den Computer und sieh, warum jeder Stoß dorthin ging, wo er hinging."
+  },
+  {
+   "culture": "it",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Un tavolo da biliardo che mostra la propria fisica. Gioca a quattro giochi contro il computer, e scopri perché ogni colpo è andato dove è andato."
+  },
+  {
+   "culture": "pt",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Uma mesa de snooker que mostra a sua própria física. Joga quatro jogos contra o computador, e vê porque cada tacada foi para onde foi."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Uma mesa de sinuca que mostra a própria física. Jogue quatro jogos contra o computador, e veja por que cada tacada foi para onde foi."
+  },
+  {
+   "culture": "ja",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "自分の物理を見せてくれるビリヤード台。コンピューターと4つのゲームで遊び、どのショットもなぜそこへ行ったのかを見てみよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "자기 물리를 보여 주는 당구대. 컴퓨터와 네 가지 게임을 하고, 샷마다 왜 그쪽으로 갔는지 확인해 보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "一张会展示自身物理的台球桌。和电脑玩四种游戏，看看每一杆为什么会走到那里。"
+  },
+  {
+   "culture": "ru",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "Бильярдный стол, который показывает свою физику. Сыграй в четыре игры с компьютером и смотри, почему каждый удар пошёл именно туда."
+  },
+  {
+   "culture": "ar",
+   "key": "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.",
+   "text": "طاولة بلياردو تُظهر فيزياءها بنفسها. العب أربع ألعاب ضد الكمبيوتر، وشاهد لماذا ذهبت كل ضربة إلى حيث ذهبت."
+  },
+  {
+   "culture": "es",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Mira un tiro que parece imposible, descubre por qué funciona y luego hazlo tú."
+  },
+  {
+   "culture": "fr",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Regarde un coup qui semble impossible, vois pourquoi il marche, puis réussis-le."
+  },
+  {
+   "culture": "de",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Sieh dir einen Stoß an, der unmöglich aussieht, versteh, warum er klappt, und schaff ihn dann selbst."
+  },
+  {
+   "culture": "it",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Guarda un colpo che sembra impossibile, scopri perché funziona, poi fallo tu."
+  },
+  {
+   "culture": "pt",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Vê uma tacada que parece impossível, percebe porque resulta e depois fá-la tu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Veja uma tacada que parece impossível, entenda por que ela funciona e depois faça você mesmo."
+  },
+  {
+   "culture": "ja",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "ありえないように見えるショットを見て、なぜうまくいくのかを知り、自分で決めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "불가능해 보이는 샷을 보고, 왜 되는지 알아본 다음, 직접 성공해 보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "看一杆看似不可能的球，弄懂它为什么能成，然后亲手打进。"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "Посмотри удар, который кажется невозможным, пойми, почему он работает, и сделай его сам."
+  },
+  {
+   "culture": "ar",
+   "key": "Watch a shot that looks impossible, see why it works, then make it.",
+   "text": "شاهد ضربة تبدو مستحيلة، واعرف لماذا تنجح، ثم نفّذها بنفسك."
+  },
+  {
+   "culture": "es",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Tú contra el ordenador. Mete tus bolas en tu hoyo, rebotando en las bandas para esquivar los topes."
+  },
+  {
+   "culture": "fr",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Toi contre l'ordinateur. Fais passer tes billes par la bande, entre les plots, jusque dans ton trou."
+  },
+  {
+   "culture": "de",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Du gegen den Computer. Spiel deine Kugeln über die Banden an den Pfosten vorbei in dein Loch."
+  },
+  {
+   "culture": "it",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Tu contro il computer. Manda le tue bilie di sponda oltre i respingenti, nella tua buca."
+  },
+  {
+   "culture": "pt",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Tu contra o computador. Leva as tuas bolas pela tabela, para lá dos pinos de borracha, até ao teu buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Você contra o computador. Leve suas bolas pela tabela, passando pelos pinos de borracha, até o seu buraco."
+  },
+  {
+   "culture": "ja",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "あなた対コンピューター。クッションを使ってバンパーをかわし、自分のカップへ球を沈めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "당신 대 컴퓨터. 쿠션을 이용해 범퍼를 피해 자기 컵에 공을 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "你对战电脑。借库边绕过挡柱，把你的球打进自己的洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "Ты против компьютера. Отправляй свои шары от борта мимо столбиков в свою лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "You against the computer. Bank your balls past the bumpers into your cup.",
+   "text": "أنت ضد الكمبيوتر. ارتدّ بكراتك عن الحواف متجاوزًا المصدّات إلى حفرتك."
+  },
+  {
+   "culture": "es",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Tú contra el ordenador. Lanza su bola contra los bolos. Gana quien llegue a %lld."
+  },
+  {
+   "culture": "fr",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Toi contre l'ordinateur. Envoie sa bille dans les quilles. Le premier à %lld gagne."
+  },
+  {
+   "culture": "de",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Du gegen den Computer. Treib seine Kugel in die Kegel. Wer zuerst %lld hat, gewinnt."
+  },
+  {
+   "culture": "it",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Tu contro il computer. Manda la sua bilia contro i birilli. Vince chi arriva a %lld."
+  },
+  {
+   "culture": "pt",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Tu contra o computador. Atira a bola dele contra os pinos. Ganha quem chegar a %lld."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Você contra o computador. Jogue a bola dele contra os pinos. Ganha quem chegar a %lld."
+  },
+  {
+   "culture": "ja",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "あなた対コンピューター。相手の球をピンに当てよう。先に%lld点で勝ち。"
+  },
+  {
+   "culture": "ko",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "당신 대 컴퓨터. 상대 공을 핀으로 보내세요. 먼저 %lld점이면 승리."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "你对战电脑。把它的球撞向木柱。先到%lld分者胜。"
+  },
+  {
+   "culture": "ru",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "Ты против компьютера. Загоняй его шар в кегли. До %lld очков."
+  },
+  {
+   "culture": "ar",
+   "key": "You against the computer. Drive its ball into the pins. First to %lld.",
+   "text": "أنت ضد الكمبيوتر. ادفع كرته نحو الأوتاد. الفائز أول من يبلغ %lld."
+  },
+  {
+   "culture": "es",
+   "key": "Watch the trick shots",
+   "text": "Mira los tiros de truco"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch the trick shots",
+   "text": "Regarde les coups spectaculaires"
+  },
+  {
+   "culture": "de",
+   "key": "Watch the trick shots",
+   "text": "Sieh dir die Trickstöße an"
+  },
+  {
+   "culture": "it",
+   "key": "Watch the trick shots",
+   "text": "Guarda i colpi spettacolari"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch the trick shots",
+   "text": "Vê as jogadas de efeito"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch the trick shots",
+   "text": "Veja as tacadas de efeito"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch the trick shots",
+   "text": "トリックショットを見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch the trick shots",
+   "text": "트릭 샷 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch the trick shots",
+   "text": "看看花式球"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch the trick shots",
+   "text": "Посмотри трюковые удары"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch the trick shots",
+   "text": "شاهد ضربات الخدع"
+  },
+  {
+   "culture": "es",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Toca Tiros de truco para ver un tiro que parece imposible, descubrir en la Lente por qué funciona y luego hacerlo tú. En Aprender hay seis lecciones cortas para cuando las quieras."
+  },
+  {
+   "culture": "fr",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Touche Coups spectaculaires pour regarder un coup qui semble impossible, voir dans la Lentille pourquoi il marche, puis le réussir toi-même. Apprendre propose six courtes leçons, quand tu veux."
+  },
+  {
+   "culture": "de",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Tippe auf Trickstöße, um einen Stoß zu sehen, der unmöglich aussieht, in der Lens zu verstehen, warum er klappt, und ihn dann selbst zu schaffen. Unter Lernen warten sechs kurze Lektionen, wann immer du willst."
+  },
+  {
+   "culture": "it",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Tocca Colpi spettacolari per guardare un colpo che sembra impossibile, scoprire nella Lens perché funziona e poi farlo tu. In Impara ci sono sei brevi lezioni, quando vuoi."
+  },
+  {
+   "culture": "pt",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Toca em Jogadas de efeito para ver uma tacada que parece impossível, perceber na Lente porque resulta e depois fazê-la tu. Em Aprender há seis lições curtas, sempre que quiseres."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Toque em Tacadas de efeito para ver uma tacada que parece impossível, entender na Lente por que ela funciona e depois fazer você mesmo. Em Aprender há seis lições curtas, quando você quiser."
+  },
+  {
+   "culture": "ja",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "「トリックショット」をタップすると、ありえないように見えるショットを見て、レンズでなぜうまくいくのかを知り、自分で決められます。「学ぶ」には短いレッスンが6つあり、いつでも受けられます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "'트릭 샷'을 탭해 불가능해 보이는 샷을 보고, 렌즈로 왜 되는지 알아본 다음 직접 성공해 보세요. '배우기'에는 원할 때 언제든 볼 수 있는 짧은 레슨 여섯 개가 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "点击“花式球”，看一杆看似不可能的球，在透镜里弄懂它为什么能成，然后亲手打进。“学习”里有六节短课，想学随时都在。"
+  },
+  {
+   "culture": "ru",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "Нажми «Трюковые удары», чтобы посмотреть удар, который кажется невозможным, понять в Линзе, почему он работает, и сделать его самому. В «Учиться» есть шесть коротких уроков — когда захочешь."
+  },
+  {
+   "culture": "ar",
+   "key": "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.",
+   "text": "انقر على ضربات الخدع لتشاهد ضربة تبدو مستحيلة، وترى في العدسة لماذا تنجح، ثم تنفّذها بنفسك. وفي تعلّم ستة دروس قصيرة متى أردتها."
+  },
+  {
+   "culture": "es",
+   "key": "Watch It in the Lens",
+   "text": "Verlo en la Lente"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch It in the Lens",
+   "text": "Le revoir dans la Lentille"
+  },
+  {
+   "culture": "de",
+   "key": "Watch It in the Lens",
+   "text": "In der Lens ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch It in the Lens",
+   "text": "Guardalo nella Lens"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch It in the Lens",
+   "text": "Ver na Lente"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch It in the Lens",
+   "text": "Ver na Lente"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch It in the Lens",
+   "text": "レンズで見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch It in the Lens",
+   "text": "렌즈로 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch It in the Lens",
+   "text": "在透镜中观看"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch It in the Lens",
+   "text": "Смотреть в Линзе"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch It in the Lens",
+   "text": "شاهدها في العدسة"
+  },
+  {
+   "culture": "es",
+   "key": "Play the computer",
+   "text": "Juega contra el ordenador"
+  },
+  {
+   "culture": "fr",
+   "key": "Play the computer",
+   "text": "Joue contre l'ordinateur"
+  },
+  {
+   "culture": "de",
+   "key": "Play the computer",
+   "text": "Gegen den Computer spielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play the computer",
+   "text": "Gioca contro il computer"
+  },
+  {
+   "culture": "pt",
+   "key": "Play the computer",
+   "text": "Joga contra o computador"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play the computer",
+   "text": "Jogue contra o computador"
+  },
+  {
+   "culture": "ja",
+   "key": "Play the computer",
+   "text": "コンピューターと遊ぶ"
+  },
+  {
+   "culture": "ko",
+   "key": "Play the computer",
+   "text": "컴퓨터와 대전하기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play the computer",
+   "text": "和电脑对战"
+  },
+  {
+   "culture": "ru",
+   "key": "Play the computer",
+   "text": "Играть с компьютером"
+  },
+  {
+   "culture": "ar",
+   "key": "Play the computer",
+   "text": "العب ضد الكمبيوتر"
+  },
+  {
+   "culture": "es",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Compite con el ordenador por meter todas tus bolas en tu hoyo."
+  },
+  {
+   "culture": "fr",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Fais la course contre l'ordinateur pour rentrer toutes tes billes dans ton trou."
+  },
+  {
+   "culture": "de",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Versenk um die Wette mit dem Computer alle deine Kugeln in deinem Loch."
+  },
+  {
+   "culture": "it",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Fai a gara col computer a imbucare tutte le tue bilie nella tua buca."
+  },
+  {
+   "culture": "pt",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Compete com o computador para meter todas as tuas bolas no teu buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Dispute com o computador quem encaçapa primeiro todas as bolas no próprio buraco."
+  },
+  {
+   "culture": "ja",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "コンピューターと競って、自分の球を全部自分のカップに沈めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "컴퓨터와 겨뤄 내 공을 모두 내 컵에 먼저 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "和电脑比赛，看谁先把自己的球全部打进自己的洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "Соревнуйся с компьютером: кто первым загонит все свои шары в свою лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "Race the computer to sink all your balls in your cup.",
+   "text": "سابِق الكمبيوتر لإدخال كل كراتك في حفرتك."
+  },
+  {
+   "culture": "es",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Puntúa con los bolos y la roja contra el ordenador; gana quien llegue a %lld."
+  },
+  {
+   "culture": "fr",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Marque avec les quilles et la rouge contre l'ordinateur ; le premier à %lld gagne."
+  },
+  {
+   "culture": "de",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Punkte mit den Kegeln und der Roten gegen den Computer; wer zuerst %lld hat, gewinnt."
+  },
+  {
+   "culture": "it",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Fai punti con i birilli e la rossa contro il computer; vince chi arriva a %lld."
+  },
+  {
+   "culture": "pt",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Marca pontos com os pinos e a vermelha contra o computador; ganha quem chegar a %lld."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Marque pontos com os pinos e a vermelha contra o computador; ganha quem chegar a %lld."
+  },
+  {
+   "culture": "ja",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "コンピューターを相手にピンと赤球で得点し、先に%lld点で勝ち。"
+  },
+  {
+   "culture": "ko",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "컴퓨터를 상대로 핀과 빨간 공으로 점수를 내며, 먼저 %lld점이면 이깁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "和电脑对战，用木柱和红球得分，先到%lld分者胜。"
+  },
+  {
+   "culture": "ru",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "Набирай очки кеглями и красным шаром против компьютера, до %lld очков."
+  },
+  {
+   "culture": "ar",
+   "key": "Score off the pins and the red against the computer, first to %lld.",
+   "text": "سجّل النقاط بالأوتاد والكرة الحمراء ضد الكمبيوتر، والفائز أول من يبلغ %lld."
+  },
+  {
+   "culture": "es",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Tú y el ordenador, cinco bolas cada uno: blancas para ti, rojas para el ordenador. Mete tus cinco bolas en la copa del extremo opuesto a donde empezaron, antes que el ordenador."
+  },
+  {
+   "culture": "fr",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Toi et l'ordinateur, cinq billes chacun : les blanches pour toi, les rouges pour l'ordinateur. Rentre tes cinq billes dans le trou à l'autre bout de leur départ, avant l'ordinateur."
+  },
+  {
+   "culture": "de",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Du und der Computer, je fünf Kugeln: Weiß für dich, Rot für den Computer. Versenke alle fünf deiner Kugeln im Loch am anderen Ende ihres Startplatzes, bevor der Computer es schafft."
+  },
+  {
+   "culture": "it",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Tu e il computer, cinque bilie a testa: bianche per te, rosse per il computer. Imbuca tutte e cinque le tue nella buca all'estremità opposta a dove sono partite, prima del computer."
+  },
+  {
+   "culture": "pt",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Tu e o computador, cinco bolas cada um: brancas para ti, vermelhas para o computador. Mete as tuas cinco no buraco do lado oposto ao de onde partiram, antes do computador."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Você e o computador, cinco bolas cada um: brancas para você, vermelhas para o computador. Encaçape suas cinco no buraco do lado oposto ao de onde saíram, antes do computador."
+  },
+  {
+   "culture": "ja",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "あなたとコンピューターで、各自5個の球を使う。あなたは白、コンピューターは赤。スタート位置と反対側の穴に、コンピューターより先に自分の5個を全部沈めよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "당신과 컴퓨터가 각자 공 5개로 해. 당신은 흰 공, 컴퓨터는 빨간 공. 컴퓨터보다 먼저, 출발한 곳 반대편 구멍에 내 공 5개를 모두 넣어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "你和电脑，每方五个球：你用白球，电脑用红球。抢在电脑之前，把自己的五个球全部打进起点另一端的洞里。"
+  },
+  {
+   "culture": "ru",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "Ты и компьютер, по пять шаров: белые у тебя, красные у компьютера. Загони все свои пять в лузу на дальнем от старта конце раньше компьютера."
+  },
+  {
+   "culture": "ar",
+   "key": "You and the computer, five balls each: white for you, red for the computer. Sink all five of yours in the cup at the far end from where they started, before the computer does.",
+   "text": "أنت والكمبيوتر، لكل منكما خمس كرات: البيضاء لك والحمراء للكمبيوتر. أدخل كراتك الخمس كلها في الحفرة في الطرف المقابل لمكان بدايتها، قبل الكمبيوتر."
+  },
+  {
+   "culture": "es",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Tú y el ordenador: tú juegas con la blanca y el ordenador con la amarilla. La bola roja y los cinco bolos del centro son de los dos."
+  },
+  {
+   "culture": "fr",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Toi et l'ordinateur : tu joues la blanche, l'ordinateur la jaune. La bille rouge et les cinq quilles du centre sont communes."
+  },
+  {
+   "culture": "de",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Du und der Computer: Du spielst die Weiße, der Computer die Gelbe. Die rote Kugel und die fünf Kegel in der Mitte gehören beiden."
+  },
+  {
+   "culture": "it",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Tu e il computer: tu giochi la bianca, il computer la gialla. La bilia rossa e i cinque birilli al centro sono di entrambi."
+  },
+  {
+   "culture": "pt",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Tu e o computador: tu jogas com a branca, o computador com a amarela. A bola vermelha e os cinco pinos do meio são partilhados."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Você e o computador: você joga com a branca, o computador com a amarela. A bola vermelha e os cinco pinos do meio são compartilhados."
+  },
+  {
+   "culture": "ja",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "あなたとコンピューターで、あなたは白球、コンピューターは黄球を使います。赤球と中央の5本のピンは共通です。"
+  },
+  {
+   "culture": "ko",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "당신은 흰 공, 컴퓨터는 노란 공으로 칩니다. 빨간 공과 가운데 핀 5개는 함께 씁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "你和电脑：你用白球，电脑用黄球。红球和中间的五根木柱双方共用。"
+  },
+  {
+   "culture": "ru",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "Ты и компьютер: ты играешь белым, компьютер жёлтым. Красный шар и пять кеглей в центре общие."
+  },
+  {
+   "culture": "ar",
+   "key": "You and the computer: you play the white, the computer the yellow. The red ball and the five pins in the middle are shared.",
+   "text": "أنت والكمبيوتر: أنت تلعب بالبيضاء والكمبيوتر بالصفراء. الكرة الحمراء والأوتاد الخمسة في الوسط مشتركة."
+  }
+ ]
+}

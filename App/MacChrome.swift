@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: New Game offers bumper pool and five-pin against
+//          the computer at each level as well as eight-ball and nine-ball; bar billiards stays Play Alone. Playback
+//          gains Watch It in the Lens (Shift-Command-R), enabled while a remarkable shot is on offer.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: the New Game menu offers only what one person plays: the computer, or bar billiards alone)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.2: the New Game submenus list the computer first and two
 //          players last.)
@@ -30,15 +33,15 @@
 //          table has keyboard focus (ShowpieceView).)
 // PURPOSE: What makes the Mac build feel like a Mac app, and what an iPad gains with a hardware keyboard (the same menus
 //          appear in the iPad's menu bar and keyboard shortcut list, so the two share this code):
-//            - the menus and their shortcuts. Game: Continue Match, New Free Game (Command-N), New Game (each game
-//              for two players, against the computer at each level, bar billiards alone), Learn, Straight Stroke
-//              Drill, Trick Shots, Behind the 8-Ball, Watch the Intro, Main Menu, Tables, Surface. Shot: Your Shot
-//              (Command-Y), Shoot or
-//              Break (Command-Return), aim a quarter degree either way (Command-Left and Right), power (Command-Up and
+//            - the menus and their shortcuts. Game: Continue Match, New Free Game (Command-N), New Game (eight-ball,
+//              nine-ball, bumper pool and five-pin against the computer at each level, bar billiards alone), Learn,
+//              Straight Stroke Drill, Trick Shots, Behind the 8-Ball, Watch the Intro, Main Menu, Tables, Surface.
+//              Shot: Your Shot (Command-Y), Shoot or Break (Command-Return), aim a quarter degree either way (Command-Left and Right), power (Command-Up and
 //              Down), the cue tip (Option and the arrows, Option-0 to centre it), Call Pocket (Option-1 to 6, Option-S for
 //              a safety) when the game asks for a call. View: Physics Lens (Command-L), Ride Camera (Command-E), Show
 //              Notebook (Option-Command-I), Zoom In, Zoom Out, Actual Size (Command-plus, -minus, -0). Playback: Play or
-//              Pause (space while the table has focus), Replay with Lens (Command-R), the four
+//              Pause (space while the table has focus), Replay with Lens (Command-R), Watch It in the Lens
+//              (Shift-Command-R, while a remarkable shot is on offer), the four
 //              speeds (Command-1 to 4), Next and Previous Explained Moment (Command-] and Command-[), Try Again
 //              (Command-T). Help: How to Play (Command-?).
 //            - the Mac window toolbar (play, speed, replay, Lens, Ride, Your shot, the notebook), reusing the play, replay
@@ -148,13 +151,12 @@ struct GameCommands: Commands {
             .keyboardShortcut("n", modifiers: .command)
             .disabled(model == nil)
             Menu("New Game") {
-                // The games one person can play: eight-ball and nine-ball against the computer, bar billiards alone.
-                // Two players on one device is not offered (0.7.3).
-                ForEach([MatchKind.eightBall, .nineBall, .barBilliards], id: \.self) { kind in
+                // The games one person can play: four against the computer (0.7.4 adds bumper pool and five-pin),
+                // bar billiards alone. Two players on one device is not offered (0.7.3).
+                ForEach([MatchKind.eightBall, .nineBall, .bumperPool, .fivePin, .barBilliards], id: \.self) { kind in
                     Menu(NotebookWords.gameName(kind)) {
-                        // The computer first (0.7.2: the game's offer is play against the computer); it plays
-                        // eight-ball and nine-ball only.
-                        if kind == .eightBall || kind == .nineBall {
+                        // The computer plays every game but bar billiards, which stays a game played alone.
+                        if kind != .barBilliards {
                             ForEach(ComputerLevel.allCases, id: \.self) { level in
                                 Button(String(localized: "Against the Computer: \(level.title)")) {
                                     start(MatchStartRequest(kind: kind, computer: level))
@@ -357,6 +359,12 @@ struct PlaybackCommands: Commands {
             Button(isPlaying ? "Pause" : "Play") { model?.togglePlay() }
             Button("Replay with Lens") { model?.replay(withLens: true) }
                 .keyboardShortcut("r", modifiers: .command)
+            // The remarkable shot just played, replayed slowly in the Lens holding its key moment: the same as the
+            // "Watch it in the Lens" button on the highlight card (the model decides when one is on offer, and the
+            // item is greyed whenever the card is not showing). Shift-Command-R, beside Replay with Lens, is free.
+            Button("Watch It in the Lens") { model?.watchHighlight() }
+                .keyboardShortcut("r", modifiers: [.command, .shift])
+                .disabled(model?.highlightOnOffer == nil)
             Menu("Speed") {
                 ForEach(Array(PlaybackSpeed.rates.enumerated()), id: \.offset) { index, rate in
                     Button(PlaybackSpeed.label(rate)) { model?.setRate(rate) }

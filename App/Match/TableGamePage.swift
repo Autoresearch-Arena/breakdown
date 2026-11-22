@@ -1,15 +1,22 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
 // PURPOSE: A table's game page, pushed from its entry in the Tables list (plans/21-Nov-2026-other-tables-games-plan.md
-//          package 5): the game the table plays, ways to play it (bar billiards alone, for a best score kept on the
-//          device; practice on the table with no rules; or a match for two players), and the rules as numbered
-//          steps ("How to play"), with the plain note that these games vary from place to place and this is one common
-//          version. TableRulesPage is the rules alone, for the How to play sheet's Rules links.
+//          package 5): the game the table plays, ways to play it (bumper pool and five-pin against the computer at a
+//          chosen level, with the person's record at that level; bar billiards alone, for a best score kept on the
+//          device; practice on the table with no rules), and the rules as numbered steps ("How to play"), with the
+//          plain note that these games vary from place to place and this is one common version. TableRulesPage is the
+//          rules alone, for the How to play sheet's Rules links.
 //          Both are ordinary pages in the Tables list's NavigationStack, so on the open folding phone, iPad and Mac
 //          they are pages of the notebook side panel beside the table (the Tables list is a page there), and a sheet's
 //          page on a phone. Nothing here is drawn over the table.
-//          Starting a match calls ShowpieceModel.startMatch(kind, players:), which ends any trick shot or situation,
-//          closes the menu and puts the table's start layout on; practice is the list's existing playTable.
+//          Starting a match goes through MatchStartRequest.start(on:) (the route the main menu and the Mac's Game menu
+//          use), which ends any trick shot or situation, calls ShowpieceModel.startMatch and closes the menu; the
+//          match puts the table's start layout on. Practice is the list's existing playTable. The level is the
+//          model's shared computerLevel (ComputerLevelPicker in TitleScreen.swift).
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: bumper pool and five-pin get "Against the
+//          computer": the level picker shared with the main menu, that level's line, and "Play the computer" with the
+//          won-of-played record at that level when there is one; Practice follows, plain. A saved match is asked about
+//          with the whole request (MatchStartRequest) instead of a player count.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.3: no two-player game on one device)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the ways to play lead with the ones a person plays by
 //          themselves (bar billiards alone, then Practice, highlighted); Two players comes last, plain, with a line
@@ -30,9 +37,12 @@ struct TableGamePage: View {
     /// Called once play has started (the Tables list opens the aiming controls and closes itself).
     let onStarted: () -> Void
     @Environment(\.palette) private var palette
-    /// A new game was asked for while a match is saved: how many players it was for, until the player says whether
-    /// to replace the saved one.
-    @State private var replacingFor: Int?
+    /// A new game was asked for while a match is saved: the request, held until the player says whether to replace
+    /// the saved one.
+    @State private var replacing: MatchStartRequest?
+
+    /// The games the computer plays on these tables (0.7.4). Bar billiards stays a game played alone.
+    private var playsTheComputer: Bool { game == .bumperPool || game == .fivePin }
 
     var body: some View {
         ScrollView {
@@ -42,18 +52,32 @@ struct TableGamePage: View {
                     Text(TableGameWords.gameLine(game)).font(Theme.body)
                 }
                 .fixedSize(horizontal: false, vertical: true)
-                if let players = replacingFor, let saved = MatchMode.savedSummary() {
-                    replaceQuestion(saved, players: players)
+                if let request = replacing, let saved = MatchMode.savedSummary() {
+                    replaceQuestion(saved, request: request)
                 }
-                // These tables have no computer player: bar billiards is played alone against the clock (highlighted),
-                // and every table can be practised. Two players on one device is not offered (0.7.3).
-                VStack(spacing: 10) {
+                // Bumper pool and five-pin are played against the computer (highlighted); bar billiards alone against
+                // the clock (highlighted); every table can be practised, plain. Two players on one device is never
+                // offered.
+                VStack(alignment: .leading, spacing: 10) {
+                    if playsTheComputer {
+                        Text("Against the computer")
+                            .font(Theme.heading)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .accessibilityAddTraits(.isHeader)
+                        ComputerLevelPicker(model: model, leading: true)
+                        playButton(String(localized: "Play the computer"), line: recordLine,
+                                   symbol: "person.and.background.dotted", prominent: true) {
+                            start(MatchStartRequest(kind: game, computer: model.computerLevel))
+                        }
+                    }
                     if game == .barBilliards {
                         playButton(String(localized: "Play alone"), line: TableGameWords.best(BarBilliardsBest.best()),
-                                   symbol: "person.fill", prominent: true) { start(players: 1) }
+                                   symbol: "person.fill", prominent: true) {
+                            start(MatchStartRequest(kind: game, players: 1))
+                        }
                     }
                     playButton(String(localized: "Practice"), line: String(localized: "Knock the balls around with no turns and no score."),
-                               symbol: "scope", prominent: game != .barBilliards) {
+                               symbol: "scope", prominent: false) {
                         model.playTable(table)
                         onStarted()
                     }
@@ -73,37 +97,47 @@ struct TableGamePage: View {
         #endif
     }
 
-    /// A new match of this table's game with `players` players, then hand over to the table. With a match saved (or
-    /// one in play, which is saved too) the page asks first: the device keeps one saved match, and a new one would
-    /// replace it.
-    private func start(players: Int) {
-        if model.hasSavedMatch, MatchMode.savedSummary() != nil {
-            replacingFor = players
-            return
-        }
-        begin(players: players)
+    /// The person's record against the computer at the chosen level in this game ("2 won of 5 played"), or nil before
+    /// the first finished game (MatchRecord counts only games the rules finished).
+    private var recordLine: String? {
+        let r = MatchRecord.record(kind: game, level: model.computerLevel)
+        let played = r.won + r.lost
+        guard played > 0 else { return nil }
+        return String(localized: "\(r.won) won of \(played) played")
     }
 
-    private func begin(players: Int) {
-        replacingFor = nil
-        model.startMatch(game, players: players)
+    /// A new match of this table's game, then hand over to the table. With a match saved (or one in play, which is
+    /// saved too) the page asks first: the device keeps one saved match, and a new one would replace it.
+    private func start(_ request: MatchStartRequest) {
+        if model.hasSavedMatch, MatchMode.savedSummary() != nil {
+            replacing = request
+            return
+        }
+        begin(request)
+    }
+
+    /// Starts it through the same route as the main menu and the Mac's Game menu (MatchStartRequest.start: any trick
+    /// shot or situation ends, the match racks, the menu closes, which is harmless here), then hands over.
+    private func begin(_ request: MatchStartRequest) {
+        replacing = nil
+        request.start(on: model)
         onStarted()
     }
 
     /// The question, in the page itself (no alert, so on the open folding phone and big screens it stays in the side
     /// panel beside the table): which game is saved, and whether to replace it.
-    private func replaceQuestion(_ saved: SavedMatchSummary, players: Int) -> some View {
+    private func replaceQuestion(_ saved: SavedMatchSummary, request: MatchStartRequest) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(String(localized: "A new game replaces your saved one: \(MatchWords.savedLine(saved))"))
                 .font(Theme.body)
                 .fixedSize(horizontal: false, vertical: true)
             CardButtonRow {
-                Button { replacingFor = nil } label: {
+                Button { replacing = nil } label: {
                     Text(String(localized: "Keep my saved game")).font(.headline).lineLimit(1)
                 }
                 .buttonStyle(.glass)
                 .keyboardShortcut(.cancelAction)
-                Button(role: .destructive) { begin(players: players) } label: {
+                Button(role: .destructive) { begin(request) } label: {
                     Text(String(localized: "Start a new game")).font(.headline).lineLimit(1)
                 }
                 .buttonStyle(.glassProminent)
@@ -113,14 +147,18 @@ struct TableGamePage: View {
         .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.track.opacity(0.5)))
     }
 
-    private func playButton(_ title: String, line: String, symbol: String, prominent: Bool,
+    /// One way to play as a full-width button: symbol, name and an optional line under it (nil draws no line, as
+    /// "Play the computer" before its first finished game).
+    private func playButton(_ title: String, line: String?, symbol: String, prominent: Bool,
                             action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: symbol).font(.title3).frame(width: 28).accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(Theme.heading)
-                    Text(line).font(Theme.body).opacity(0.8).fixedSize(horizontal: false, vertical: true)
+                    if let line {
+                        Text(line).font(Theme.body).opacity(0.8).fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 Spacer(minLength: 0)
             }
