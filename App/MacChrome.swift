@@ -15,14 +15,27 @@
 //          has exactly one game window (a Window scene, set in BreakdownApp), which remembers its size and place
 //          (WindowFrameMemory) and never turns into tabs. Options open in the Mac's own Settings window
 //          (SettingsWindowContent). The toolbar gains a notebook switch.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 2, 13, 16, 18,
+//          19 and 32: the Game menu mirrors the main menu's Play list: Continue Match, New Free Game (which now keeps a
+//          saved match, as Practice does), a New Game submenu with each game for two players, eight-ball and nine-ball
+//          against the computer at each level, and bar billiards alone, then Learn, the Straight Stroke Drill and Watch
+//          the Intro. A new match that would replace the saved one is sent to the menu card, which asks first. Shoot
+//          goes through the model's fireStroke and is disabled while a stroke would be refused; the aim, power and tip
+//          keys do nothing on the computer's turn. The View menu gains Zoom In, Zoom Out and Actual Size (Command-plus,
+//          Command-minus, Command-0) through the scene bridge, a new focused value. Play and Pause leaves the bare
+//          space bar, which swallowed spaces typed into name fields; the space bar now plays and pauses only while the
+//          table has keyboard focus (ShowpieceView).)
 // PURPOSE: What makes the Mac build feel like a Mac app, and what an iPad gains with a hardware keyboard (the same menus
 //          appear in the iPad's menu bar and keyboard shortcut list, so the two share this code):
-//            - the menus and their shortcuts. Game: New Free Game (Command-N), a new match of each kind, Trick Shots,
-//              Behind the 8-Ball, Watch the Break, Main Menu, Tables, Surface. Shot: Your Shot (Command-Y), Shoot or
+//            - the menus and their shortcuts. Game: Continue Match, New Free Game (Command-N), New Game (each game
+//              for two players, against the computer at each level, bar billiards alone), Learn, Straight Stroke
+//              Drill, Trick Shots, Behind the 8-Ball, Watch the Intro, Main Menu, Tables, Surface. Shot: Your Shot
+//              (Command-Y), Shoot or
 //              Break (Command-Return), aim a quarter degree either way (Command-Left and Right), power (Command-Up and
 //              Down), the cue tip (Option and the arrows, Option-0 to centre it), Call Pocket (Option-1 to 6, Option-S for
 //              a safety) when the game asks for a call. View: Physics Lens (Command-L), Ride Camera (Command-E), Show
-//              Notebook (Option-Command-I). Playback: Play or Pause (space), Replay with Lens (Command-R), the four
+//              Notebook (Option-Command-I), Zoom In, Zoom Out, Actual Size (Command-plus, -minus, -0). Playback: Play or
+//              Pause (space while the table has focus), Replay with Lens (Command-R), the four
 //              speeds (Command-1 to 4), Next and Previous Explained Moment (Command-] and Command-[), Try Again
 //              (Command-T). Help: How to Play (Command-?).
 //            - the Mac window toolbar (play, speed, replay, Lens, Ride, Your shot, the notebook), reusing the play, replay
@@ -55,6 +68,10 @@ extension FocusedValues {
     @Entry var notebookPage: Binding<NotebookPage?>?
     /// The View menu's notebook switch.
     @Entry var notebookShown: Binding<Bool>?
+    /// The front window's scene bridge, so the View menu can zoom its table (TableZoom lives on the scene).
+    @Entry var sceneBridge: SceneBridge?
+    /// A new match waiting for a yes because it would replace the saved one; the menu card asks (TitleScreen).
+    @Entry var pendingMatchStart: Binding<MatchStartRequest?>?
 }
 
 // MARK: Shared shot keys
@@ -103,33 +120,65 @@ private enum ShotKeys {
 struct GameCommands: Commands {
     @FocusedValue(\.showpieceModel) private var model
     @FocusedValue(\.shotPanelOpen) private var shotPanelOpen
+    @FocusedValue(\.pendingMatchStart) private var pendingMatch
+    @FocusedValue(\.notebookPage) private var page
 
     var body: some Commands {
         // No second window: the game window is the only one (see BreakdownApp), so File's New Window goes.
         CommandGroup(replacing: .newItem) {}
         CommandMenu("Game") {
+            // The Play list's order: what is in progress, then a fresh table, then a new game of each kind.
+            Button("Continue Match") {
+                guard let model else { return }
+                model.trickMode.end(); model.eightBallMode.end()
+                model.continueSavedMatch()
+                model.closeMenu()
+                shotPanelOpen?.wrappedValue = true
+            }
+            .disabled(!(model?.hasSavedMatch ?? false))
+            // Practice: a fresh rack. A saved match stays saved, as the main menu's Practice leaves it (item 18).
             Button("New Free Game") {
                 guard let model else { return }
-                if model.match != nil { model.endMatch() }
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame()
                 shotPanelOpen?.wrappedValue = true
             }
             .keyboardShortcut("n", modifiers: .command)
             .disabled(model == nil)
-            ForEach(MatchKind.allCases, id: \.self) { kind in
-                Button(String(localized: "New \(NotebookWords.gameName(kind)) Game")) {
-                    guard let model else { return }
-                    model.trickMode.end(); model.eightBallMode.end()
-                    model.startMatch(kind)
+            Menu("New Game") {
+                ForEach(MatchKind.allCases, id: \.self) { kind in
+                    Menu(NotebookWords.gameName(kind)) {
+                        Button("Two Players") { start(MatchStartRequest(kind: kind, players: 2)) }
+                        // Bar billiards is also played alone, against the clock (TableGamePage offers the same).
+                        if kind == .barBilliards {
+                            Button("Play Alone") { start(MatchStartRequest(kind: kind, players: 1)) }
+                        }
+                        // The computer plays eight-ball and nine-ball only; the other tables are two-player games.
+                        if kind == .eightBall || kind == .nineBall {
+                            Divider()
+                            ForEach(ComputerLevel.allCases, id: \.self) { level in
+                                Button(String(localized: "Against the Computer: \(level.title)")) {
+                                    start(MatchStartRequest(kind: kind, computer: level))
+                                }
+                            }
+                        }
+                    }
                 }
-                .disabled(model == nil)
             }
+            .disabled(model == nil)
             Divider()
+            Button("Learn…") { model?.lessonMode.listOpen = true }
+                .disabled(model == nil)
+            Button("Straight Stroke Drill") {
+                guard let model else { return }
+                model.strokeDrill.begin()
+                shotPanelOpen?.wrappedValue = true
+            }
+            .disabled(model == nil)
             Button("Trick Shots…") { model?.trickMode.listOpen = true }
                 .disabled(model == nil)
             Button("Behind the 8-Ball…") { model?.eightBallMode.listOpen = true }
                 .disabled(model == nil)
-            Button("Watch the Break") {
+            Button("Watch the Intro") {
                 guard let model else { return }
                 model.trickMode.end(); model.eightBallMode.end(); model.watchBreak()
             }
@@ -154,6 +203,24 @@ struct GameCommands: Commands {
             .disabled(model == nil)
         }
     }
+
+    /// A new match from the menu bar. With a match saved (one slot), the main menu opens on the card that asks before
+    /// replacing it, the same question the in-window menu asks; otherwise the match starts at once.
+    private func start(_ request: MatchStartRequest) {
+        guard let model else { return }
+        if model.hasSavedMatch, let pendingMatch {
+            pendingMatch.wrappedValue = request
+            // The card is the menu's main page: close any list or page that would sit over it.
+            page?.wrappedValue = nil
+            model.trickMode.listOpen = false
+            model.lessonMode.listOpen = false
+            model.eightBallMode.listOpen = false
+            model.openMenu()
+            return
+        }
+        request.start(on: model)
+        shotPanelOpen?.wrappedValue = true
+    }
 }
 
 // MARK: Shot menu
@@ -168,32 +235,39 @@ struct ShotCommands: Commands {
                 .keyboardShortcut("y", modifiers: .command)
                 .disabled(shotPanelOpen == nil)
             Button((model?.racked ?? false) ? "Break" : "Shoot") {
-                guard let model, model.aimReady else { return }
+                guard let model else { return }
                 // The break hands the screen to its slow-motion opening, so the panel closes, as with the Break button.
-                if model.fire() { shotPanelOpen?.wrappedValue = false }
+                // A refusal is recorded by the model and its reason shows on the shot panel.
+                if model.fireStroke() == .breakStruck { shotPanelOpen?.wrappedValue = false }
             }
             .keyboardShortcut(.return, modifiers: .command)
-            .disabled(!(model?.aimReady ?? false))
+            // Disabled while a stroke would be refused: a replay still playing, a card or choice waiting, no call and
+            // no suggestion, the computer's turn, a solve in flight (items 2, 13 and 16).
+            .disabled(model == nil || model?.strokeRefusal != nil)
             Divider()
-            Button("Aim Anticlockwise") { act { $0.nudgeAim(1) } }
-                .keyboardShortcut(.leftArrow, modifiers: .command)
-            Button("Aim Clockwise") { act { $0.nudgeAim(-1) } }
-                .keyboardShortcut(.rightArrow, modifiers: .command)
-            Button("More Power") { act { $0.powerFraction += ShotKeys.powerStep } }
-                .keyboardShortcut(.upArrow, modifiers: .command)
-            Button("Less Power") { act { $0.powerFraction -= ShotKeys.powerStep } }
-                .keyboardShortcut(.downArrow, modifiers: .command)
-            Divider()
-            Button("Tip Higher (Follow)") { act { ShotKeys.moveTip($0, up: 1, side: 0) } }
-                .keyboardShortcut(.upArrow, modifiers: .option)
-            Button("Tip Lower (Draw)") { act { ShotKeys.moveTip($0, up: -1, side: 0) } }
-                .keyboardShortcut(.downArrow, modifiers: .option)
-            Button("Tip Left") { act { ShotKeys.moveTip($0, up: 0, side: -1) } }
-                .keyboardShortcut(.leftArrow, modifiers: .option)
-            Button("Tip Right") { act { ShotKeys.moveTip($0, up: 0, side: 1) } }
-                .keyboardShortcut(.rightArrow, modifiers: .option)
-            Button("Centre the Tip") { act { $0.activeTipUp = 0; $0.activeTipSide = 0 } }
-                .keyboardShortcut("0", modifiers: .option)
+            // On the computer's turn the person's shot keys do nothing (item 16), as the greyed shot panel shows.
+            Group {
+                Button("Aim Anticlockwise") { act { $0.nudgeAim(1) } }
+                    .keyboardShortcut(.leftArrow, modifiers: .command)
+                Button("Aim Clockwise") { act { $0.nudgeAim(-1) } }
+                    .keyboardShortcut(.rightArrow, modifiers: .command)
+                Button("More Power") { act { $0.powerFraction += ShotKeys.powerStep } }
+                    .keyboardShortcut(.upArrow, modifiers: .command)
+                Button("Less Power") { act { $0.powerFraction -= ShotKeys.powerStep } }
+                    .keyboardShortcut(.downArrow, modifiers: .command)
+                Divider()
+                Button("Tip Higher (Follow)") { act { ShotKeys.moveTip($0, up: 1, side: 0) } }
+                    .keyboardShortcut(.upArrow, modifiers: .option)
+                Button("Tip Lower (Draw)") { act { ShotKeys.moveTip($0, up: -1, side: 0) } }
+                    .keyboardShortcut(.downArrow, modifiers: .option)
+                Button("Tip Left") { act { ShotKeys.moveTip($0, up: 0, side: -1) } }
+                    .keyboardShortcut(.leftArrow, modifiers: .option)
+                Button("Tip Right") { act { ShotKeys.moveTip($0, up: 0, side: 1) } }
+                    .keyboardShortcut(.rightArrow, modifiers: .option)
+                Button("Centre the Tip") { act { $0.activeTipUp = 0; $0.activeTipSide = 0 } }
+                    .keyboardShortcut("0", modifiers: .option)
+            }
+            .disabled(!(model?.personControlsLive ?? false))
             Divider()
             callMenu
         }
@@ -219,9 +293,9 @@ struct ShotCommands: Commands {
         .disabled(!mustCall)
     }
 
-    /// Runs a shot key on the model after opening the aim to change (ShotKeys.prepare).
+    /// Runs a shot key on the model after opening the aim to change (ShotKeys.prepare). Nothing on the computer's turn.
     private func act(_ change: (ShowpieceModel) -> Void) {
-        guard let model else { return }
+        guard let model, model.personControlsLive else { return }
         ShotKeys.prepare(model, shotPanelOpen)
         change(model)
     }
@@ -232,6 +306,7 @@ struct ShotCommands: Commands {
 struct ViewCommands: Commands {
     @FocusedValue(\.showpieceModel) private var model
     @FocusedValue(\.notebookShown) private var notebookShown
+    @FocusedValue(\.sceneBridge) private var bridge
 
     var body: some Commands {
         CommandGroup(before: .toolbar) {
@@ -248,6 +323,18 @@ struct ViewCommands: Commands {
                 .keyboardShortcut("i", modifiers: [.command, .option])
                 .disabled(notebookShown == nil)
             Divider()
+            // Zoom by keyboard and menu (item 32), the same zoom a pinch drives (TableZoom). One step in or out per
+            // press; Actual Size is the fitted view of the whole table.
+            Button("Zoom In") { bridge?.table?.zoom.zoomStep(1) }
+                .keyboardShortcut("+", modifiers: .command)
+                .disabled(bridge?.table == nil)
+            Button("Zoom Out") { bridge?.table?.zoom.zoomStep(-1) }
+                .keyboardShortcut("-", modifiers: .command)
+                .disabled(bridge?.table == nil)
+            Button("Actual Size") { bridge?.table?.zoom.actualSize() }
+                .keyboardShortcut("0", modifiers: .command)
+                .disabled(bridge?.table == nil)
+            Divider()
         }
     }
 }
@@ -261,8 +348,9 @@ struct PlaybackCommands: Commands {
     var body: some Commands {
         CommandMenu("Playback") {
             let isPlaying = (model?.playing ?? false) && (model?.time ?? 0) < (model?.duration ?? 0)
+            // No key here: a bare space in the menu bar swallowed spaces typed into name fields (item 32). The space
+            // bar plays and pauses while the table has keyboard focus instead (ShowpieceView).
             Button(isPlaying ? "Pause" : "Play") { model?.togglePlay() }
-                .keyboardShortcut(.space, modifiers: [])
             Button("Replay with Lens") { model?.replay(withLens: true) }
                 .keyboardShortcut("r", modifiers: .command)
             Menu("Speed") {

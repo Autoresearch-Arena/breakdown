@@ -19,6 +19,11 @@
 //          column on a phone turned sideways; on the Mac it shows only the scrub bar because the toolbar has the buttons.
 //          Writes to the model only through its own play, rate, Lens and replay methods.
 // Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (compact: regular-size buttons for a narrow column, used by the iPhone Duo's panel.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md item 8: the scrub
+//          row (play and pause, the scrub bar, speed and Replay with the Lens) no longer steps aside for Your shot
+//          whenever one of the shots struck at this table is on screen (ShowpieceModel.playerShotOnScreen). It sits as a
+//          slim row under the shot panel, so watching your own shot slowly in the Lens no longer means closing the
+//          panel, replaying and opening it again. On a still table it still gives the panel its place.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
 //          ToggleButton now serves both iPhone and iPad toggles.
 import SwiftUI
@@ -159,8 +164,13 @@ struct PlaybackControls: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            // While aiming, the shot panel takes this place; the scrub row comes back when the panel closes.
-            if !shotPanelOpen { scrubRow }
+            // While aiming on a still table the shot panel takes this place. Whenever a shot struck at this table is on
+            // screen the row stays, slim, under the panel, so the player can replay and scrub their own shot (item 8).
+            if !shotPanelOpen {
+                scrubRow
+            } else if model.playerShotOnScreen {
+                scrubRow.controlSize(.small)
+            }
             #if os(iOS)
             buttons   // on the Mac these live in the window toolbar
             #endif

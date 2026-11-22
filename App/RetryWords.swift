@@ -7,6 +7,11 @@
 //          With no setting moved it is the sentence's change ("You changed your stance, and ..."), or one of several;
 //          with settings moved it joins the several-changes list, which never says which one did it; the stance each try
 //          was played from follows as a plain fact (StanceWords).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md item 53: See the
+//          contact shows its words where the row has room and has a symbol of its own (the crosshair was shared with
+//          Aim at nearest ball and the Aim guide option); on arrival a line on screen says what to look at, "Stopped at
+//          the first hit.", with "The faint ball is your last try." only when a last try is on the table
+//          (ContactArrivalLine, shown with the cards while the replay stays stopped there).)
 // PURPOSE: Learn from a retry (plans/21-Nov-2026-learn-from-a-retry-plan.md, section 3), the view side.
 //          RetryWords   - the one sentence a result card shows after a retry, written from the facts the model
 //                         records (RetryComparison: which controls moved and which way, how far apart the two cue
@@ -18,8 +23,12 @@
 //          ContactButton - "See the contact": pauses the replay at the moment the cue ball first touched a ball
 //                         (ShowpieceModel.seekToFirstContact), where the last try's faint trail and finish ring
 //                         (GhostOverlay) sit beside the live balls. Shown only when the shot on screen touched a ball.
-//                         With Reduce Motion it first turns the Ride camera off, so the jump is a cut and not a flight;
-//                         VoiceOver hears where the replay stopped.
+//                         Its words show where the row has room, the symbol alone where it has not. With Reduce Motion
+//                         it first turns the Ride camera off, so the jump is a cut and not a flight; VoiceOver hears
+//                         where the replay stopped.
+//          ContactArrivalLine - the line on screen after See the contact, with the cards (ShowpieceView, NotebookPanel):
+//                         what the stopped replay shows. It stays while the replay sits at the contact and goes as soon
+//                         as the replay moves on.
 //          Used by the free-play comparison card (GhostOverlay.swift) and the trick-shot result card
 //          (TrickShotViews.swift), which carries the sentence itself so only one result card is ever up.
 // SRP/DRY check: Pass - checked ShotAttempt.swift (the model stream owns the facts and RetryComparison; this file only
@@ -113,24 +122,103 @@ struct ContactButton: View {
     /// Called after seeking, so a card can stay up while the replay sits at the contact.
     var onSeek: () -> Void = {}
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// The button's own symbol: a small ball inside a ring, the moment one ball meets another. The crosshair ("scope")
+    /// it used to share means Aim at nearest ball and the Aim guide elsewhere in the app.
+    static let symbol = "smallcircle.filled.circle"
 
     var body: some View {
         if model.firstContactTime != nil {
-            Button {
-                // Reduce Motion: no camera flight to the moment; the Ride camera steps aside and the table view cuts.
-                if reduceMotion && model.rideOn { model.setRide(false) }
-                model.seekToFirstContact()
-                onSeek()
-                AccessibilityNotification.Announcement(
-                    String(localized: "Paused where the cue ball first touched a ball. The faint line is your last try.")).post()
-            } label: {
-                Label(String(localized: "See the contact"), systemImage: "scope").labelStyle(.iconOnly)
-                    .frame(minWidth: 30, minHeight: CallMetrics.buttonHeight)
+            Group {
+                if typeSize.isAccessibilitySize {
+                    // The largest text: the words would push the card's other buttons off the row; VoiceOver still
+                    // reads the full name.
+                    button(words: false)
+                } else {
+                    // Words where the row has room, the symbol alone where it has not.
+                    ViewThatFits(in: .horizontal) {
+                        button(words: true)
+                        button(words: false)
+                    }
+                }
             }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
             .accessibilityLabel(String(localized: "See the contact"))
             .accessibilityHint(String(localized: "Pauses the replay where the cue ball first touched a ball"))
+        }
+    }
+
+    private func button(words: Bool) -> some View {
+        Button {
+            // Reduce Motion: no camera flight to the moment; the Ride camera steps aside and the table view cuts.
+            if reduceMotion && model.rideOn { model.setRide(false) }
+            model.seekToFirstContact()
+            ContactArrival.shared.version = model.timelineVersion
+            onSeek()
+            AccessibilityNotification.Announcement(ContactArrivalLine.words(ghost: model.ghost != nil)).post()
+        } label: {
+            Group {
+                if words {
+                    Label(String(localized: "See the contact"), systemImage: Self.symbol)
+                        .font(.headline)
+                        .lineLimit(1)
+                        .fixedSize()
+                } else {
+                    Label(String(localized: "See the contact"), systemImage: Self.symbol).labelStyle(.iconOnly)
+                        .frame(minWidth: 30)
+                }
+            }
+            .frame(minHeight: CallMetrics.buttonHeight)
+        }
+        .buttonStyle(.glass)
+        .buttonBorderShape(words ? .capsule : .circle)
+    }
+}
+
+/// Which recording See the contact last stopped at, shared by the button (inside another stream's card) and the line
+/// shown with the cards. One per process: the app has one game window on the Mac and on iPad.
+@MainActor
+@Observable
+final class ContactArrival {
+    static let shared = ContactArrival()
+    /// The timeline version (ShowpieceModel.timelineVersion) the button stopped at; nil before any press.
+    var version: Int?
+    private init() {}
+}
+
+/// The line on screen once See the contact has stopped the replay: what to look at. Shown while the replay is still
+/// stopped at the first contact of the same recording, and gone the moment it plays or is scrubbed elsewhere.
+struct ContactArrivalLine: View {
+    let model: ShowpieceModel
+    @Environment(\.palette) private var palette
+
+    /// How close the clock must be to the contact to count as still there, seconds: the scrub puts it exactly on the
+    /// contact, and a millisecond is far less than one frame of the slowest replay, so any play or scrub leaves it.
+    private static let atContact = 1e-3
+
+    /// "Stopped at the first hit." and, only when a last try is on the table, "The faint ball is your last try."
+    static func words(ghost: Bool) -> String {
+        let first = String(localized: "Stopped at the first hit.")
+        return ghost ? first + " " + String(localized: "The faint ball is your last try.") : first
+    }
+
+    private var visible: Bool {
+        guard let t = model.firstContactTime, ContactArrival.shared.version == model.timelineVersion else { return false }
+        return !model.playing && abs(model.time - t) < Self.atContact
+    }
+
+    var body: some View {
+        if visible {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Image(systemName: ContactButton.symbol).foregroundStyle(palette.accent).accessibilityHidden(true)
+                Text(Self.words(ghost: model.ghost != nil))
+                    .font(Theme.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .glassCard(cornerRadius: 20, padding: 12)
+            .accessibilityElement(children: .combine)
+            .transition(.opacity)
         }
     }
 }

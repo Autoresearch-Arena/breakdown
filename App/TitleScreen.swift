@@ -40,12 +40,24 @@
 //          in progress and no lesson passed yet. Practice and Watch the intro end a lesson through the model.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: "Straight stroke" in the Play list's practice
 //          options, the drill that judges how straight the player strokes (StrokeDrill).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 1, 3, 18, 39
+//          and 52: the menu's own line says what the game is now (the table that shows its physics, six lessons, games
+//          against a friend or the computer); the next step from stored progress is named and highlighted ("Next:
+//          Lesson 2, Follow", then that lesson's trick shot, then a game against the easy computer), and a player with
+//          no lesson passed gets it highlighted even when Continue is offered; Continue names the game it continues
+//          (which game, against whom, whose shot); a new match that would replace the saved one asks first on the card
+//          (MatchStartRequest, the same route the Mac's Game menu uses); the win record is kept per level against the
+//          computer and left off the two-player rows; the veil lightens while the opening's replay plays behind the
+//          menu on a later launch. How to play starts from Learn and the stroke as the input in use plays it
+//          (FirstInstruction) and gains a Controls page: the push, the bridge finger, practice strokes, the Pencil, tap
+//          to aim, pinch, pan, double tap, the pointer and keys, and the controller. The store scenes' launch flags
+//          skip the menu.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
 //          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
 //          Behind the 8-Ball, Tables, Watch the intro (the showpiece opening with the slow-motion Physics Lens), How to
-//          play (the three steps and the rules, in a sheet) and Options (a sheet). Learn (the lessons) comes first after
-//          Continue.
+//          play (the steps, the controls and the rules, in a sheet) and Options (a sheet). The next step (a lesson, its
+//          trick shot, a game against the easy computer) comes first after Continue, then Learn (the lessons).
 //          It changes the model only through its menu methods (closeMenu, startGame, watchBreak, playTable via
 //          TableList) and the match methods of the model contract (startMatch, continueSavedMatch), and the modes'
 //          list switches and end(). Launch switches that open a specific screen for testing skip it, so the
@@ -57,6 +69,27 @@
 import BreakdownRules
 import SwiftUI
 
+// MARK: A new match that may replace the saved one
+
+/// A new match the player asked for. When a match is saved on the device (one save slot), the menu card asks before
+/// starting it (item 18); the Mac's Game menu sends its requests through the same card, so there is one place that
+/// asks. Held by ShowpieceView, handed to the menu and published to the menu bar as a focused value.
+struct MatchStartRequest: Equatable {
+    let kind: MatchKind
+    /// How many play (bar billiards also plays alone); nil is the game's usual two.
+    var players: Int? = nil
+    /// The computer's level for the second seat; nil for people only.
+    var computer: ComputerLevel? = nil
+
+    /// Starts it: any trick shot, situation or lesson ends, the model racks the match and closes the menu (closing it
+    /// here as well is harmless and keeps the table in view whatever the model does first).
+    @MainActor func start(on model: ShowpieceModel) {
+        model.trickMode.end(); model.eightBallMode.end()
+        model.startMatch(kind, players: players, computer: computer)
+        model.closeMenu()
+    }
+}
+
 struct TitleScreen: View {
     let model: ShowpieceModel
     /// Play opens the aiming controls on the fresh rack; the screen owns that switch, so it is handed in.
@@ -66,6 +99,9 @@ struct TitleScreen: View {
     var onHowTo: (() -> Void)? = nil
     var onOptions: (() -> Void)? = nil
     var onTables: (() -> Void)? = nil
+    /// A new match waiting for a yes because it would replace the saved one (ShowpieceView owns it; the Mac's Game menu
+    /// can set it too). While set, the card asks instead of listing.
+    @Binding var pendingMatch: MatchStartRequest?
     private var inline: Bool { onHowTo != nil }
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -83,22 +119,31 @@ struct TitleScreen: View {
     @State private var computerLevel: ComputerLevel = .medium
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
-    /// -noTitle is there for anyone who wants the table straight away.
+    /// -noTitle is there for anyone who wants the table straight away. The store scenes (StoreScene.flags) put their
+    /// own scene up still.
     static var launchSkipsTitle: Bool {
         let args = ProcessInfo.processInfo.arguments
         // -trick and -trickPlay open a trick shot on the table; -trickList is not here: its list opens over the menu.
         let switches = ["-noTitle", "-yourBreakDemo", "-yourShotDemo", "-aimDemo", "-aimDemoRack", "-retryDemo", "-jumpDemo",
-                        "-rideDemo", "-trick", "-trickPlay", "-trickAim", "-pauseAt"]
+                        "-rideDemo", "-trick", "-trickPlay", "-trickAim", "-pauseAt"] + StoreScene.flags
         return switches.contains { args.contains($0) }
     }
 
-    private static var intro: String { String(localized: "Learn trick shots that make people stop and stare, and see the physics that makes each one work.") }
+    /// The menu's own one line about the game: the same idea the store page leads with (item 39).
+    private static var intro: String {
+        String(localized: "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.")
+    }
+
+    /// How strongly the table is dimmed behind the menu. Lighter while the opening's slow Lens replay plays behind it on
+    /// a later launch (item 52), so the moving trails read through the glass; the card itself stays on its own glass,
+    /// so the words keep their contrast either way.
+    private var veilOpacity: Double { model.menuBackdropPlaying ? 0.5 : 0.62 }
 
     var body: some View {
         ZStack {
             // A dimmed veil over the table so the menu reads clearly and the room is still there behind it. Inline the
             // menu has its own panel and the table beside it stays bright.
-            if !inline { palette.ground.opacity(0.62).ignoresSafeArea() }
+            if !inline { palette.ground.opacity(veilOpacity).ignoresSafeArea() }
             ScrollView {
                 card
                     .padding(.horizontal, 16)
@@ -113,12 +158,14 @@ struct TitleScreen: View {
         }
         .opacity(shown ? 1 : 0)
         .transition(.opacity)
+        .animation(reduceMotion ? nil : .smooth(duration: 0.6), value: model.menuBackdropPlaying)
         .onAppear {
             withAnimation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.8)) { shown = true }
         }
         // Back to the main list whenever the menu is opened again.
-        .onDisappear { playListOpen = false; computerListOpen = false }
-        .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen) }
+        // A question left unanswered when the menu goes is dropped, so it never greets the player later.
+        .onDisappear { playListOpen = false; computerListOpen = false; pendingMatch = nil }
+        .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen, input: model.inputInUse) }
         .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
         .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
     }
@@ -148,11 +195,20 @@ struct TitleScreen: View {
             }
 
             Group {
-                if computerListOpen { computerList } else if playListOpen { playList } else { mainList }
+                if let request = pendingMatch {
+                    replaceList(request)
+                } else if computerListOpen {
+                    computerList
+                } else if playListOpen {
+                    playList
+                } else {
+                    mainList
+                }
             }
             .transition(.opacity)
             .animation(reduceMotion ? nil : .snappy, value: playListOpen)
             .animation(reduceMotion ? nil : .snappy, value: computerListOpen)
+            .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
         }
         .padding(28)
         .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
@@ -163,26 +219,42 @@ struct TitleScreen: View {
     /// Something to go back to: the game on the table, or after a relaunch the saved match.
     private var resumable: Bool { model.gameInProgress || model.hasSavedMatch }
 
+    /// The next step from stored progress gets the highlight (items 3 and 52). A player with no lesson passed always
+    /// sees Learn's first lesson highlighted, even when Continue is offered (item 3); once a lesson is passed, a game
+    /// left on the table keeps Continue highlighted, since the player came to the menu from it.
+    private var nextHighlighted: Bool {
+        guard model.nextStep != nil else { return false }
+        return model.lessonMode.passedCount == 0 || !model.gameInProgress
+    }
+
+    /// Continue is highlighted when something is there to go back to and the next step is not.
+    private var continueHighlighted: Bool { resumable && !nextHighlighted }
+
     private var mainList: some View {
         VStack(spacing: 10) {
-            // Continue first whenever something is in progress. Return continues on the Mac and with a keyboard.
+            // Continue first whenever something is in progress. Return presses whichever entry is highlighted.
             if model.gameInProgress {
-                MenuRow(title: "Continue", line: "Back to the table, just as you left it.", symbol: "play.fill",
-                        prominent: true) { model.closeMenu() }
-                    .keyboardShortcut(.defaultAction)
+                MenuRow(title: "Continue", verbatimLine: liveLine, symbol: "play.fill", prominent: continueHighlighted) {
+                    model.closeMenu()
+                }
+                .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             } else if model.hasSavedMatch {
-                MenuRow(title: "Continue match", line: "Pick up your saved match where you left it.",
-                        symbol: "play.fill", prominent: true) { continueMatch() }
-                    .keyboardShortcut(.defaultAction)
+                MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: continueHighlighted) {
+                    continueMatch()
+                }
+                .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
-            // Learn: first after Continue (first-minute plan, package 3). For a newcomer with nothing to continue and no
-            // lesson passed it is the highlighted entry; once a lesson is passed, Play takes that place again.
+            // The next step, named ("Next: Lesson 2, Follow"), straight into it.
+            if let next = model.nextStep {
+                MenuRow(verbatimTitle: next.sentence, verbatimLine: nextLine, symbol: "arrow.forward.circle.fill",
+                        prominent: nextHighlighted) { beginNextStep() }
+                    .keyboardShortcut(nextHighlighted ? KeyboardShortcut.defaultAction : nil)
+            }
             MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
-                    symbol: "graduationcap", prominent: learnFirst, mark: lessonMark) { model.lessonMode.listOpen = true }
-                .keyboardShortcut(learnFirst ? KeyboardShortcut.defaultAction : nil)
+                    symbol: "graduationcap", mark: lessonMark) { model.lessonMode.listOpen = true }
             MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
-                    symbol: "circle.grid.cross", prominent: !resumable && !learnFirst) { playListOpen = true }
-                .keyboardShortcut(resumable || learnFirst ? nil : KeyboardShortcut.defaultAction)
+                    symbol: "circle.grid.cross", prominent: playHighlighted) { playListOpen = true }
+                .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
             MenuRow(title: "Trick shots", line: "Shots that make people stare, easiest first.", symbol: "wand.and.sparkles",
                     mark: trickMark) { model.trickMode.listOpen = true }
             MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
@@ -204,8 +276,59 @@ struct TitleScreen: View {
         }
     }
 
-    /// Learn is the highlighted entry for a newcomer: nothing to continue and no lesson passed yet.
-    private var learnFirst: Bool { !resumable && model.lessonMode.passedCount == 0 }
+    /// Play is highlighted only when there is nothing to go back to and no next step left (the whole path is done).
+    private var playHighlighted: Bool { !resumable && model.nextStep == nil }
+
+    /// The live game's line: a match names itself (which game, against whom, whose shot); anything else is the table as
+    /// it was left.
+    private var liveLine: String {
+        if model.match != nil, let summary = model.savedMatchSummary { return Self.summaryLine(summary) }
+        return String(localized: "Back to the table, just as you left it.")
+    }
+
+    /// The saved match's line, named when the save can be read.
+    private var savedLine: String {
+        model.savedMatchSummary.map(Self.summaryLine) ?? String(localized: "Pick up your saved match where you left it.")
+    }
+
+    /// "Eight-ball against Computer (Easy). Player 1 to shoot." The saved game named for the Continue row (item 18).
+    static func summaryLine(_ s: SavedMatchSummary) -> String {
+        let game = NotebookWords.gameName(s.kind)
+        if let level = s.opponent {
+            return String(localized: "\(game) against \(OpponentWords.name(level)). \(s.turnName) to shoot.")
+        }
+        if s.playerNames.count > 1 {
+            return String(localized: "\(game) with \(s.playerNames.formatted(.list(type: .and))). \(s.turnName) to shoot.")
+        }
+        return String(localized: "\(game) on your own. \(s.turnName) to shoot.")
+    }
+
+    /// The short line under the next step's name. (The step's type is read from the model by inference rather than
+    /// named here, so this file does not depend on where the model declares it.)
+    private var nextLine: String {
+        guard let next = model.nextStep else { return "" }
+        switch next {
+        case .lesson: return String(localized: "A short lesson: watch the shot, then play it yourself.")
+        case .trickShot: return String(localized: "The trick shot built on the lesson you passed.")
+        case .gameAgainstEasyComputer: return String(localized: "Eight-ball against the easy computer. Ask it why it played each shot.")
+        }
+    }
+
+    /// Straight into the next step: the lesson, its trick shot, or a game against the easy computer.
+    private func beginNextStep() {
+        guard let next = model.nextStep else { return }
+        switch next {
+        case .lesson(let number, _):
+            if let lesson = Lessons.all.first(where: { $0.number == number }) { model.lessonMode.begin(lesson) }
+            else { model.lessonMode.listOpen = true }
+        case .trickShot(let title):
+            // The model names the trick shot by its title (NextStep carries no id); the list is the fallback.
+            if let shot = TrickShots.all.first(where: { $0.title == title }) { model.trickMode.begin(shot) }
+            else { model.trickMode.listOpen = true }
+        case .gameAgainstEasyComputer:
+            start(MatchStartRequest(kind: .eightBall, computer: .easy))
+        }
+    }
 
     /// Lessons passed out of the six.
     private var lessonMark: MenuRow.Mark {
@@ -237,26 +360,30 @@ struct TitleScreen: View {
 
     // MARK: The Play list
 
+    private func listHeader(_ title: LocalizedStringKey, back: @escaping () -> Void) -> some View {
+        HStack {
+            Button(action: back) {
+                Label("Back", systemImage: "chevron.backward")
+                    .font(.body.weight(.semibold))
+            }
+            .buttonStyle(.glass)
+            .controlSize(.regular)
+            Spacer(minLength: 0)
+            Text(title)
+                .font(Theme.sectionTitle)
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 0)
+            // Balances the Back button so the title sits in the middle.
+            Color.clear.frame(width: 44, height: 1).accessibilityHidden(true)
+        }
+    }
+
     private var playList: some View {
         VStack(spacing: 10) {
-            HStack {
-                Button { playListOpen = false } label: {
-                    Label("Back", systemImage: "chevron.backward")
-                        .font(.body.weight(.semibold))
-                }
-                .buttonStyle(.glass)
-                .controlSize(.regular)
-                Spacer(minLength: 0)
-                Text("Play")
-                    .font(Theme.sectionTitle)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer(minLength: 0)
-                // Balances the Back button so the title sits in the middle.
-                Color.clear.frame(width: 44, height: 1).accessibilityHidden(true)
-            }
+            listHeader("Play") { playListOpen = false }
             if model.hasSavedMatch {
-                MenuRow(title: "Continue match", line: "Pick up your saved match where you left it.",
-                        symbol: "play.fill", prominent: true) { continueMatch() }
+                MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: true) { continueMatch() }
                     .keyboardShortcut(.defaultAction)
             }
             MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle",
@@ -267,43 +394,31 @@ struct TitleScreen: View {
                     symbol: "arrow.up.and.down") {
                 model.strokeDrill.begin(); onPlay()
             }
+            // Two-player games carry no record: a mark counting wins by whoever sat first said nothing about the person
+            // holding the device (item 18). Records are kept per level against the computer, on its list.
             MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
-                    symbol: "8.circle", mark: recordMark(.eightBall)) { start(.eightBall) }
+                    symbol: "8.circle") { start(MatchStartRequest(kind: .eightBall)) }
             MenuRow(title: "Nine-ball", line: "Two players. Always hit the lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle", mark: recordMark(.nineBall)) { start(.nineBall) }
+                    symbol: "9.circle") { start(MatchStartRequest(kind: .nineBall)) }
             MenuRow(title: "Against the computer", line: "Eight-ball or nine-ball against a computer player of your level.",
                     symbol: "cpu") { computerListOpen = true }
         }
     }
 
-    /// Games won out of games played of one kind on this device; no mark before the first finished game.
-    private func recordMark(_ kind: MatchKind) -> MenuRow.Mark? {
-        let t = MatchRecord.load().tally(kind)
-        guard t.played > 0 else { return nil }
-        return MenuRow.Mark(symbol: "trophy.fill", text: String(localized: "\(t.won)/\(t.played)"),
-                            spoken: OpponentWords.recordSpoken(t))
+    /// Games won out of games finished against the computer at one level, for one game; no mark before the first.
+    private func recordMark(_ kind: MatchKind, level: ComputerLevel) -> MenuRow.Mark? {
+        let r = MatchRecord.record(kind: kind, level: level)
+        let played = r.won + r.lost
+        guard played > 0 else { return nil }
+        return MenuRow.Mark(symbol: "trophy.fill", text: String(localized: "\(r.won)/\(played)"),
+                            spoken: String(localized: "\(r.won) won of \(played) played"))
     }
 
     // MARK: Against the computer
 
     private var computerList: some View {
         VStack(spacing: 10) {
-            HStack {
-                Button { computerListOpen = false } label: {
-                    Label("Back", systemImage: "chevron.backward")
-                        .font(.body.weight(.semibold))
-                }
-                .buttonStyle(.glass)
-                .controlSize(.regular)
-                Spacer(minLength: 0)
-                Text("Against the computer")
-                    .font(Theme.sectionTitle)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer(minLength: 0)
-                // Balances the Back button so the title sits in the middle.
-                Color.clear.frame(width: 44, height: 1).accessibilityHidden(true)
-            }
+            listHeader("Against the computer") { computerListOpen = false }
             Picker(String(localized: "Level"), selection: $computerLevel) {
                 ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
             }
@@ -313,24 +428,56 @@ struct TitleScreen: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(OpponentWords.levelRecord(MatchRecord.load().tally(computerLevel), level: computerLevel))
-                .font(Theme.label)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
             MenuRow(title: "Eight-ball", line: "You against the computer. Claim a group, clear it, sink the 8.",
-                    symbol: "8.circle", prominent: true) { start(.eightBall, computer: computerLevel) }
+                    symbol: "8.circle", prominent: true, mark: recordMark(.eightBall, level: computerLevel)) {
+                start(MatchStartRequest(kind: .eightBall, computer: computerLevel))
+            }
             MenuRow(title: "Nine-ball", line: "You against the computer. Lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle") { start(.nineBall, computer: computerLevel) }
+                    symbol: "9.circle", mark: recordMark(.nineBall, level: computerLevel)) {
+                start(MatchStartRequest(kind: .nineBall, computer: computerLevel))
+            }
         }
     }
 
-    /// A new match of the given kind. The model racks it and closes the menu; closing it here as well is harmless and
-    /// keeps the table in view whatever the model does first.
-    private func start(_ kind: MatchKind, computer: ComputerLevel? = nil) {
-        model.trickMode.end(); model.eightBallMode.end()
-        model.startMatch(kind, computer: computer)
-        model.closeMenu()
+    // MARK: Replacing the saved match
+
+    /// The one save slot is taken: say which game it holds and ask before a new one replaces it (item 18).
+    private func replaceList(_ request: MatchStartRequest) -> some View {
+        VStack(spacing: 10) {
+            Text(String(localized: "Replace your saved game?"))
+                .font(Theme.sectionTitle)
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+            Text(([savedLine, String(localized: "A new game ends it for good.")]).joined(separator: " "))
+                .font(Theme.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            MenuRow(verbatimTitle: String(localized: "Keep my saved game"), verbatimLine: savedLine, symbol: "play.fill",
+                    prominent: true) {
+                pendingMatch = nil
+                continueMatch()
+            }
+            .keyboardShortcut(.defaultAction)
+            MenuRow(verbatimTitle: String(localized: "Start the new game"),
+                    verbatimLine: NotebookWords.gameName(request.kind), symbol: "arrow.triangle.2.circlepath") {
+                pendingMatch = nil
+                request.start(on: model)
+                onPlay()
+            }
+            Button(String(localized: "Cancel")) { pendingMatch = nil }
+                .buttonStyle(.glass)
+                .keyboardShortcut(.cancelAction)
+        }
+    }
+
+    /// A new match: straight away when nothing is saved, otherwise after a yes on the card.
+    private func start(_ request: MatchStartRequest) {
+        if model.hasSavedMatch {
+            pendingMatch = request
+            return
+        }
+        request.start(on: model)
         onPlay()
     }
 
@@ -355,13 +502,45 @@ private struct MenuRow: View {
         let spoken: String
     }
 
-    let title: LocalizedStringKey
-    let line: LocalizedStringKey
+    let title: Text
+    let line: Text
     let symbol: String
     var prominent = false
     var mark: Mark? = nil
     let action: () -> Void
     @Environment(\.palette) private var palette
+
+    /// Fixed words, looked up in the string catalog. (Distinct labels for run-time words below, so a string literal
+    /// never picks an unlocalized overload.)
+    init(title: LocalizedStringKey, line: LocalizedStringKey, symbol: String, prominent: Bool = false, mark: Mark? = nil,
+         action: @escaping () -> Void) {
+        self.init(titleText: Text(title), lineText: Text(line), symbol: symbol, prominent: prominent, mark: mark,
+                  action: action)
+    }
+
+    /// A fixed name with a line built at run time (already translated), such as the saved match's summary.
+    init(title: LocalizedStringKey, verbatimLine: String, symbol: String, prominent: Bool = false, mark: Mark? = nil,
+         action: @escaping () -> Void) {
+        self.init(titleText: Text(title), lineText: Text(verbatim: verbatimLine), symbol: symbol, prominent: prominent,
+                  mark: mark, action: action)
+    }
+
+    /// A name and line built at run time (already translated), such as the next step ("Next: Lesson 2, Follow").
+    init(verbatimTitle: String, verbatimLine: String, symbol: String, prominent: Bool = false, mark: Mark? = nil,
+         action: @escaping () -> Void) {
+        self.init(titleText: Text(verbatim: verbatimTitle), lineText: Text(verbatim: verbatimLine), symbol: symbol,
+                  prominent: prominent, mark: mark, action: action)
+    }
+
+    private init(titleText: Text, lineText: Text, symbol: String, prominent: Bool, mark: Mark?,
+                 action: @escaping () -> Void) {
+        self.title = titleText
+        self.line = lineText
+        self.symbol = symbol
+        self.prominent = prominent
+        self.mark = mark
+        self.action = action
+    }
 
     var body: some View {
         let button = Button(action: action) {
@@ -371,11 +550,11 @@ private struct MenuRow: View {
                     .frame(width: 28)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
+                    title
                         .font(Theme.heading)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
-                    Text(line)
+                    line
                         .font(Theme.body)
                         .opacity(0.75)
                         .multilineTextAlignment(.leading)
@@ -398,9 +577,9 @@ private struct MenuRow: View {
             .contentShape(Rectangle())
         }
         .controlSize(.large)
-        .accessibilityLabel(Text(title))
+        .accessibilityLabel(title)
         .accessibilityValue(mark.map { Text(verbatim: $0.spoken) } ?? Text(verbatim: ""))
-        .accessibilityHint(Text(line))
+        .accessibilityHint(line)
         if prominent {
             button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
         } else {
@@ -411,16 +590,22 @@ private struct MenuRow: View {
 
 // MARK: How to play
 
-/// The three steps of the game, in plain words, and the rules of the two pool games, in a sheet from the menu (a page
-/// of the side panel on a folding phone, which shows this same view).
+/// The steps of the game, in plain words, the controls for every input, and the rules of each game, in a sheet from
+/// the menu (a page of the side panel in the notebook, which shows this same view).
 struct HowToPlaySheet: View {
     @Binding var isOpen: Bool
+    /// The input in use, so "Take your shot" teaches the stroke for the way this player plays (FirstInstruction).
+    var input: PlayInput = FirstInstruction.platformDefault
     @Environment(\.palette) private var palette
 
-    private static var steps: [(title: String, detail: String)] {
+    private var steps: [(title: String, detail: String)] {
         [
-            (String(localized: "Pick a trick shot"),
-             String(localized: "Tap Trick shots and choose one. Watch it, then tap Your turn: drag on the table to aim, pull back from the white ball to set the power, touch the small cue-ball picture to add spin, and tap Shoot.")),
+            (String(localized: "Learn the shots"),
+             String(localized: "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.")),
+            // The same instruction as the hand-over card and the shot panel's hint, so every place teaches one stroke.
+            (String(localized: "Take your shot"),
+             FirstInstruction.line(for: input) + " "
+                + String(localized: "The small picture of the white ball sets where the cue strikes it, for spin.")),
             (String(localized: "Read the Lens"),
              String(localized: "Tap Lens to see the physics: amber paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
             (String(localized: "Try again"),
@@ -432,7 +617,12 @@ struct HowToPlaySheet: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    NumberedSteps(steps: Self.steps)
+                    NumberedSteps(steps: steps)
+                    NavigationLink {
+                        ControlsPage()
+                    } label: {
+                        rulesLink("Controls", line: "Every gesture, key and button.", symbol: "hand.tap")
+                    }
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Rules")
                             .font(Theme.sectionTitle)
@@ -496,6 +686,89 @@ struct HowToPlaySheet: View {
         .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.track.opacity(0.5)))
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
+    }
+}
+
+// MARK: Controls
+
+/// Every way to play, written from what the code does (item 1): the touch stroke and its push (StrokeGesture,
+/// StrokeTracker), the bridge finger and practice strokes, the Pencil's tilt, tap to aim (AimOverlay), pinch, pan and
+/// double tap (TableZoom); the pointer's hover, click and release (PointerAim), the keys (AimOverlay.handleKey, the
+/// View menu's zoom, the space bar on the table); and the controller as plan item 42 maps it (ControllerInput).
+private struct ControlsPage: View {
+    @Environment(\.palette) private var palette
+
+    private struct InputSection {
+        let title: String
+        let symbol: String
+        let rows: [(title: String, detail: String)]
+    }
+
+    private var sections: [InputSection] {
+        [
+            InputSection(title: String(localized: "Touch and stylus"), symbol: "hand.point.up.left", rows: [
+                (String(localized: "Aim"),
+                 String(localized: "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.")),
+                (String(localized: "The stroke"),
+                 String(localized: "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.")),
+                (String(localized: "Practice strokes"),
+                 String(localized: "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.")),
+                (String(localized: "Bridge finger"),
+                 String(localized: "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.")),
+                (String(localized: "Stylus"),
+                 String(localized: "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.")),
+                (String(localized: "Zoom"),
+                 String(localized: "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.")),
+            ]),
+            InputSection(title: String(localized: "Pointer and keyboard"), symbol: "cursorarrow", rows: [
+                (String(localized: "Aim"),
+                 String(localized: "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.")),
+                (String(localized: "The stroke"),
+                 String(localized: "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.")),
+                (String(localized: "Keys"),
+                 String(localized: "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.")),
+                (String(localized: "Zoom"),
+                 String(localized: "The View menu zooms in and out, and Actual Size shows the whole table again.")),
+            ]),
+            InputSection(title: String(localized: "Controller"), symbol: "gamecontroller", rows: [
+                (String(localized: "Aim and power"),
+                 String(localized: "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.")),
+                (String(localized: "Buttons"),
+                 String(localized: "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.")),
+                (String(localized: "Your shot and the menu"),
+                 String(localized: "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.")),
+            ]),
+        ]
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 28) {
+                ForEach(Array(sections.enumerated()), id: \.offset) { _, section in
+                    VStack(alignment: .leading, spacing: 14) {
+                        Label(section.title, systemImage: section.symbol)
+                            .font(Theme.sectionTitle)
+                            .foregroundStyle(palette.accent)
+                            .accessibilityAddTraits(.isHeader)
+                        ForEach(Array(section.rows.enumerated()), id: \.offset) { _, row in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(row.title).font(Theme.heading)
+                                Text(row.detail)
+                                    .font(Theme.copy)
+                                    .foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            .accessibilityElement(children: .combine)
+                        }
+                    }
+                }
+            }
+            .padding(24)
+        }
+        .navigationTitle("Controls")
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
 }
 
