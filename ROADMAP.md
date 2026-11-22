@@ -6,6 +6,8 @@ Edited: Claude Opus 5.5 High, 21-November-2026 (replaced with a pointer to the o
         elevation controls, trick shots, replay comparison) are removed rather than repeated here).
 Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0: the five steps of the 21 November order shipped in 0.6.6, so
         the next step is the bug plan for 0.7.0, then what the spec still lacks).
+Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the release item no longer promises a layered icon; the approved
+        momentum artwork is the icon again, on the Mac too).
 PURPOSE: Say in one place where the list of unfinished work lives and what is next, without duplicating the plans.
 SRP/DRY check: Pass - the plans folder holds the steps; this page only points at them and names the order.
 -->
@@ -23,7 +25,7 @@ and scores on the three other tables.
 
 1. **Version 0.7.0: every bug the review of 0.6.6 found** (the bug plan): the stroke and the first minute, touch and
    zoom, free play and lessons, matches and the computer, the three other tables, the physics the Lens shows, the Mac
-   and iPad pointer, the look and sound, the release (a layered icon, the Mac on TestFlight, the store page), the
+   and iPad pointer, the look and sound, the release (the approved icon on the Mac too, the Mac on TestFlight, the store page), the
    controller and translations, and VoiceOver last.
 2. **What the spec still lacks** (its status note): the what-if fork in the Lens first, then predict-the-shot and the
    break challenge, a daily challenge, and a computer opponent for the three other tables.
