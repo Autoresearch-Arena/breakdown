@@ -28,6 +28,9 @@
 //          before the hit. And an abandoned think stops early: the pool search checks Task.isCancelled after its sweep
 //          and before its ball-in-hand fallback and returns a cheap plan the token then discards (MatchOpponent.cancel
 //          cancels the task, and leaving a match calls it).)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens review: planFrom also checks Task.isCancelled
+//          before its sweep, so a ball-in-hand think cancelled during its refine no longer runs the whole search when
+//          it falls through to planFrom.)
 // PURPOSE: The computer opponent for eight-ball and nine-ball (plans/21-Nov-2026-rules-games-plan.md package 5), and
 //          since 0.7.4 the entry point for bumper pool and five-pin (BumperPoolPlanner, FivePinPlanner and their
 //          shared search, TableOpponentSearch, each in its own file under App/Match).
@@ -878,6 +881,12 @@ enum OpponentPlanner {
     static func planFrom(_ s: OpponentSnapshot, layout: [Vec2], placement: Vec2?) -> OpponentPlan {
         let cueBall = s.rules.cueBall(for: s.state.turn, in: s.state)
         let targets = legalTargets(rules: s.rules, state: s.state)
+        // Already abandoned before the sweep starts: no sweep at all. This is the path a ball-in-hand think takes when
+        // it is cancelled after its own sweep check (during its refine): planWithPlacement then falls through to here,
+        // and without this check the whole search would run before the next check.
+        if Task.isCancelled {
+            return fallback(s, layout: layout, cueBall: cueBall, targets: targets, placement: placement)
+        }
         // Only balls the cue ball may hit first straight from here (all of them, unless the ball in hand is behind
         // the head line); the fallback below keeps the whole legal list for its kick.
         let direct = directTargets(s, targets, layout: layout)
