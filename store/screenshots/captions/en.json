@@ -1,12 +1,12 @@
 {
-  "01-jump": "Stuck behind the 8? Jump it.",
-  "02-call": "Call your ball. Call your pocket.",
-  "03-score": "Scored for the make, difficulty and style",
+  "01-lens": "Watch the physics think",
+  "02-match": "Play the computer. See why it chose that shot.",
+  "03-lesson": "Six short lessons, from stop to jump",
   "04-real-table": "Then take it to a real table",
-  "05-lens": "Watch the physics think",
-  "06-bridge": "A real cue, a real bridge, real trick shots",
+  "05-ruling": "Real eight-ball and nine-ball rules",
+  "06-drill": "Power is how fast you swing",
   "07-surfaces": "Play on ice, glass, sand, even the Moon",
   "08-tables": "Bumper pool, five-pin and bar billiards",
-  "09-tricks": "Ten trick shots, shown step by step",
-  "10-situations": "Twelve real spots where you're hooked"
+  "09-ride": "Ride along with the cue ball",
+  "10-jump": "Stuck behind the 8? Jump it."
 }

@@ -1,12 +1,12 @@
 {
-  "01-jump": "Coincé derrière la 8 ? Saute-la.",
-  "02-call": "Annonce ta bille. Annonce ta poche.",
-  "03-score": "Des points pour la réussite, la difficulté et le style",
+  "01-lens": "Vois la physique à l'œuvre",
+  "02-match": "Affronte l'ordinateur et vois pourquoi il joue ce coup",
+  "03-lesson": "Six courtes leçons, de l'arrêt au saut",
   "04-real-table": "Puis passe à une vraie table",
-  "05-lens": "Vois la physique à l'œuvre",
-  "06-bridge": "Vraie queue, vrai chevalet, vrais coups de génie",
+  "05-ruling": "Les vraies règles du billard 8 et du billard 9",
+  "06-drill": "La puissance, c'est la vitesse de ton geste",
   "07-surfaces": "Joue sur glace, verre, sable et même sur la Lune",
   "08-tables": "Bumper pool, billard à cinq quilles et billard de bar",
-  "09-tricks": "Dix coups spectaculaires, expliqués pas à pas",
-  "10-situations": "Douze situations de jeu où tu es coincé"
+  "09-ride": "Suis la bille blanche de près",
+  "10-jump": "Coincé derrière la 8 ? Saute-la."
 }

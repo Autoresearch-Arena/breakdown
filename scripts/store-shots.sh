@@ -7,6 +7,11 @@
 #          then frames them with the headlines in store/screenshots/captions.json.
 #          Usage: [SCENES="06 07a"] [DEVICE_LOCALE=1] store-shots.sh <device id> <device name> <language> [language...]
 #          The app must already be installed on that simulator.
+# Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, bug plan items 40 and 54: ten frames led by the Lens, then a
+#          match against the computer, a lesson, the real-table card, a ruling, the stroke drill, the surfaces, the three
+#          other tables keeping score, a Ride view of the room and Behind the 8-Ball's jump. The new scenes use the
+#          app's -store launch flags (docs/v07-contracts.md 2.6). The real-table frame is captured first because the
+#          uploaded folding-phone copy states numbers the game no longer uses. The two plain list screens are gone.)
 # SRP/DRY check: Pass - the scene list only. Capturing is store-shot.sh; framing is compose.swift.
 set -e
 here=${0:A:h}
@@ -38,28 +43,36 @@ for lang in "$@"; do
     if [[ -n $SCENES ]] && [[ " $SCENES " != *" ${name%%-*} "* ]]; then return; fi
     "$here/store-shot.sh" "$device" "$lang" "$@"
   }
-  # 01 Behind the 8-Ball: the cue ball in the air over the 8, from the ride camera.
-  shot 7  "$out/01-jump.png"       -eight tucked-behind-the-8 -eightPlay B -eightRide -pauseAt 0.20
-  # 02 The call made (the 3, foot-left corner) and the cue raised for the jump.
-  shot 6  "$out/02-call.png"       -eight tucked-behind-the-8 -eightAim B
-  # 03 A full massé on tournament cloth, made as called: the gold-medal scorecard.
-  shot 16 "$out/03-score.png"      -eight masse-for-the-win -eightPlay B
-  # 04 The same shot's "On a real table" card, with the cloth's numbers.
+  # The scenes are the app's own launch flags. The six -store flags (StoreScene in App/ShowpieceModel.swift) open their
+  # scene straight away and hold it still, so they wait as long as the still aim scenes always have (6 to 8 seconds:
+  # the launch, the table's first frame and, for a match or a ruling, the shot that leads to it being solved).
+  #
+  # 04 first, on purpose (bug plan item 54): the "On a real table" card states the shot's aim, speed and tip and the
+  # cloth's numbers, and the set already uploaded for the folding phone shows numbers from before the physics retune.
+  # Re-shoot and re-upload this frame before any other: SCENES="04" scripts/store-shots.sh <duo id> duo-inner ...
+  # 04 Behind the 8-Ball's full massé, made as called, with its "On a real table" card and the cloth's numbers.
   shot 16 "$out/04-real-table.png" -eight masse-for-the-win -eightPlay B -eightRealTable
-  # 05 The Physics Lens explaining the opening break.
-  shot 10 "$out/05-lens.png"       -noTitle
-  # 06 The Long Bridge Draw lined up: the 3D cue resting on the bridge.
-  shot 7  "$out/06-bridge.png"     -trickAim bridge-draw
+  # 01 The Physics Lens on the opening break, held on a headline beat with its equation (the opening's slow replay;
+  #    the same wait the Lens frame has always used, to be checked against 0.7.0's held beats when the set is re-shot).
+  shot 10 "$out/01-lens.png"       -noTitle
+  # 02 Eight-ball against the medium computer, mid-game, with its "Why that shot" card open.
+  shot 8  "$out/02-match.png"      -storeMatch
+  # 03 A lesson held on its key moment with its target band up (lesson 3 of 6, draw: the cue ball comes back).
+  shot 7  "$out/03-lesson.png"     -storeLesson 3
+  # 05 A two-player eight-ball ruling card after a foul: ball in hand.
+  shot 8  "$out/05-ruling.png"     -storeRuling
+  # 06 The straight-stroke drill with a measured stroke on its card (power is swing speed).
+  shot 7  "$out/06-drill.png"      -storeDrill
   # 07 Two of the surfaces, framed side by side.
   shot 7  "$out/07a-ice.png"       -optionSurface ice -trickAim stop-dead
   shot 7  "$out/07b-moon.png"      -optionSurface moon -trickAim masse-curve
-  # 08 The three new tables, framed side by side.
-  shot 6  "$out/08a-bumper.png"    -optionTable bumperPool -aimDemoRack
-  shot 6  "$out/08b-fivepin.png"   -optionTable fivePin -aimDemoRack
-  shot 6  "$out/08c-bar.png"       -optionTable barBilliards -aimDemoRack
-  # 09 The trick-shot list, over a trick's table (over the main menu, the menu shows beside the sheet on iPad).
-  shot 6  "$out/09-tricks.png"     -trick called-break -trickList
-  # 10 The Behind the 8-Ball list, over a situation's table.
-  shot 6  "$out/10-situations.png" -eight tucked-behind-the-8 -eightList
+  # 08 The three other tables, each a scored game halfway through, framed side by side.
+  shot 8  "$out/08a-bumper.png"    -storeTableGame bumperPool
+  shot 8  "$out/08b-fivepin.png"   -storeTableGame fivePin
+  shot 8  "$out/08c-bar.png"       -storeTableGame barBilliards
+  # 09 A Ride replay held where the room and the lamp show.
+  shot 7  "$out/09-ride.png"       -storeRide
+  # 10 Behind the 8-Ball: the cue ball in the air over the 8, from the ride camera.
+  shot 7  "$out/10-jump.png"       -eight tucked-behind-the-8 -eightPlay B -eightRide -pauseAt 0.20
 done
 xcrun simctl terminate "$device" com.voynichlabs.breakdown >/dev/null 2>&1 || true
