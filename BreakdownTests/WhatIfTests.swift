@@ -11,6 +11,8 @@
 //          with nothing touched plays exactly the other future and the retry card names the one change; Keep is never
 //          offered in a lesson's try 1, for the power while a lesson holds it, or off a trick's start; and a trick
 //          what-if never judges or marks a trick done.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif-review: Keep is checked again with the clock left at
+//          the parting point by Where they part.)
 // SRP/DRY check: Pass - checked TestShots (its attempt() rebuilds the eight-ball judge's input, not the model's cue and
 //          clearing path, so the strike helper here follows shootNow instead), LessonTests and TrickShotJudgeTests
 //          (the modes' own verdicts); these test only the what-if.
@@ -279,6 +281,9 @@ final class WhatIfTests: XCTestCase {
         await solved(m.whatIf)
         guard let alternate = m.whatIf.result?.alternate else { return XCTFail("no other future") }
         XCTAssertTrue(m.whatIf.canKeep)
+        // Where they part leaves the clock part way through the shot: Keep stays offered and still arms the retry.
+        m.whatIf.jumpToParting()
+        XCTAssertTrue(m.whatIf.canKeep, "Keep must not drop out while the clock sits at the parting")
         m.whatIf.keep()
         XCTAssertFalse(m.whatIf.isShowing)
         XCTAssertNotNil(m.keptStrike, "the kept strike should be armed")

@@ -12,6 +12,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: while a what-if shows, a violet diamond marks
 //          where the two futures part, with a VoiceOver action "Where they part"; the impact tick's haptic respects
 //          Vibration off; the Mac's time readout writes its decimals the way the player's language does.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif-review: Next impact, Previous impact and Where they part
+//          are one list of named actions instead of two mechanisms side by side; same names, same jumps.)
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -49,10 +51,12 @@ struct ScrubBar: View {
             @unknown default: break
             }
         }
-        .accessibilityAction(named: "Next impact") { if let t = impact(after: model.time) { model.scrub(to: t) } }
-        .accessibilityAction(named: "Previous impact") { if let t = impact(before: model.time) { model.scrub(to: t) } }
-        // The what-if's parting point (0.7.5): the same jump as the card's Where they part.
+        // The named actions in one list, so the what-if's conditional one sits beside the impact jumps rather than in a
+        // second mechanism next to them.
         .accessibilityActions {
+            Button("Next impact") { if let t = impact(after: model.time) { model.scrub(to: t) } }
+            Button("Previous impact") { if let t = impact(before: model.time) { model.scrub(to: t) } }
+            // The what-if's parting point (0.7.5): the same jump as the card's Where they part.
             if partingTime != nil {
                 Button(String(localized: "Where they part")) { model.whatIf.jumpToParting() }
             }

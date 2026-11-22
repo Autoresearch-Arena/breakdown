@@ -3,6 +3,11 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream whatif item 3: the stub filled in. The API the other streams call is unchanged: isOpen, canOpen,
 //          isShowing, canKeep, open(), close(), keep().)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif-review: Keep no longer vanishes while Play both runs or
+//          after Where they part (canKeep does not read the clock; keep() puts the clock at the shot's end first, as
+//          the retry needs); a solve that lands after a cached result is already showing does not show and announce it
+//          twice; the click haptic counts clicks, not every change of the steps (a close is not a click); and the
+//          clearing raise is worked out only on a sixteen-ball layout, the same guard the model's own raise has.)
 // PURPOSE: The what-if replay's state (spec 4.3): one nudged copy of the player's own shot, solved beside the real one
 //          on the same start, seed and stroke. The player moves one setting at a time in clicks (aim, power, follow or
 //          draw, side, and the cue angle on a raised shot); each click builds the nudged input here on the main actor
@@ -159,6 +164,9 @@ import Observation
     private(set) var tooLong = false
     /// Bumped whenever a result is shown, so the overlay samples it once.
     private(set) var resultVersion = 0
+    /// Bumped by each click and by Reset: the card's selection haptic fires on this, so closing the card (which zeroes
+    /// the steps) never ticks.
+    private(set) var clicks = 0
     /// While Play both runs past the real shot's end, the wall-clock moment the real recording ended: the ghost balls
     /// keep rolling to the other future's own end from there. Cleared by any scrub back, a close or a new result.
     private(set) var tailStart: Date?
@@ -222,9 +230,12 @@ import Observation
     var isShowing: Bool { isOpen && model.timelineVersion == openedOn }
 
     /// "Keep this one" may be offered: a solved other future for the steps now, and a mode that can retry from the
-    /// real attempt's start with those settings.
+    /// real attempt's start with those settings. The clock is not read here (model.canTryAgain needs the shot played
+    /// out): Play both and Where they part move it, and Keep must not drop out of the card while they do. keep() puts
+    /// the clock back at the end before it retries.
     var canKeep: Bool {
-        guard isShowing, let real, let r = result, r.steps == steps, !steps.isZero, model.canTryAgain else { return false }
+        guard isShowing, let real, let r = result, r.steps == steps, !steps.isZero, model.currentAttempt != nil,
+              model.match == nil, !model.isSolving, !model.menuOpen else { return false }
         if model.trickMode.isActive { return model.trickMode.startsAtTrick(real) }
         if model.lessonMode.isActive {
             // Never in try 1 (everything is locked to the lesson's stroke); afterwards only settings the step leaves
@@ -275,6 +286,9 @@ import Observation
     func keep() {
         guard canKeep, let real, let alternate = result?.alternate else { return }
         close()
+        // Every mode's retry needs the shot played out (model.aimReady); Play both or Where they part may have left the
+        // clock part way. Nothing loads while the card is up, so the stage is still explore and nothing is solving.
+        if model.time < model.duration - 1e-6 { model.scrub(to: model.duration) }
         if model.trickMode.isActive {
             model.trickMode.tryAgain()
         } else if model.lessonMode.isActive {
@@ -340,6 +354,7 @@ import Observation
     func nudge(_ control: Control, by delta: Int) {
         guard canStep(control, by: delta) else { return }
         steps[control] += delta
+        clicks += 1
         resolve()
     }
 
@@ -347,6 +362,7 @@ import Observation
     func reset() {
         guard isShowing, !steps.isZero else { return }
         steps = Steps()
+        clicks += 1
         resolve()
     }
 
@@ -450,8 +466,9 @@ import Observation
             show(outcome)
         } else if steps.isZero {
             result = nil; tooLong = false
-        } else if let o = cached(steps) {
-            show(o)
+        } else if cached(steps) != nil {
+            // Nothing to do: with one solve in flight, steps that are cached now were cached when the player moved to
+            // them, so resolve() showed (and announced) that result already; showing it again would say it twice.
         } else {
             start(steps)
         }
@@ -554,9 +571,15 @@ import Observation
             let a = aim * Double.pi / 180
             let direction = Vec2(cos(a), sin(a))
             let support = real.stroke?.bridge ?? StrokeModel.automaticBridge
-            let clearing = Reach.clearingElevation(layout: real.start, cueBall: real.cueBall, aim: direction,
-                                                   table: real.timeline.table, support: support,
-                                                   cueLength: newProfile.length)
+            // The model raises the cue only on a sixteen-ball layout with the struck ball on the table
+            // (ShowpieceModel.clearingElevation); the other tables' layouts are struck at the chosen angle, and so is
+            // their other future.
+            let raisable = real.start.count == 16 && real.start.indices.contains(real.cueBall)
+                && NextShot.isOnTable(real.start[real.cueBall])
+            let clearing = raisable
+                ? Reach.clearingElevation(layout: real.start, cueBall: real.cueBall, aim: direction,
+                                          table: real.timeline.table, support: support, cueLength: newProfile.length)
+                : 0
             elevation = max(angle, clearing)
             // Named only when the raise is new to this version: the cue rose above the chosen angle, and above what
             // the real strike was struck at by a clear margin (the comparison's own 0.01 in sine).

@@ -2,6 +2,8 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream whatif item 6: the stubs filled in.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif-review: the click haptic follows WhatIfFork.clicks, so
+//          closing the card no longer ticks.)
 // PURPOSE: The what-if replay's controls. WhatIfButton is the entry in the playback row beside Replay (a branch
 //          symbol), shown only while model.whatIf.canOpen and the what-if is not already up. WhatIfCard is the card in
 //          the card slot (below the table on a phone, in the notebook on iPad, Mac and the open Duo, so nothing covers
@@ -44,11 +46,12 @@ struct WhatIfCard: View {
     private var fork: WhatIfFork { model.whatIf }
 
     var body: some View {
-        // The haptic sits on the always-present Group, so each click of the steps fires it once.
+        // The haptic sits on the always-present Group, so each click (or Reset) fires it once; a close, which also
+        // zeroes the steps, does not.
         Group {
             if fork.isShowing, let real = fork.real { card(real) }
         }
-        .sensoryFeedback(trigger: fork.steps) { _, _ in GameSettings.hapticsOn ? .selection : nil }
+        .sensoryFeedback(trigger: fork.clicks) { _, _ in GameSettings.hapticsOn ? .selection : nil }
     }
 
     private func card(_ real: ShotAttempt) -> some View {
