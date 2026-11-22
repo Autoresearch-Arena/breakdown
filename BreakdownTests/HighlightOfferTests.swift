@@ -119,6 +119,17 @@ final class HighlightOfferTests: XCTestCase {
         XCTAssertEqual(MatchMode.highlightShow(.breakShot, offered: [], current: .card), .card)
     }
 
+    /// "Try the trick shot" must open a real, playable trick shot: TrickShotMode.begin(id:) does nothing for an id it
+    /// cannot find, which would leave a dead button on the card.
+    func testEveryLinkedTrickShotExists() {
+        for kind in HighlightKind.allCases {
+            guard let id = kind.trickID else { continue }
+            let shot = TrickShots.shot(id: id)
+            XCTAssertNotNil(shot, "\(kind) links to \(id), which is not a trick shot")
+            XCTAssertEqual(shot?.pending, false, "\(kind) links to \(id), which cannot be played yet")
+        }
+    }
+
     func testEveryKindHasATitleAndALine() {
         for kind in HighlightKind.allCases {
             XCTAssertFalse(HighlightWords.title(kind).isEmpty, "\(kind) has no title")
