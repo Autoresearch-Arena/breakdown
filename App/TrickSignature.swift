@@ -2,6 +2,9 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-pacing: the body filled in, every shot mapped, the two
 //          new shots' ids included, read through the shared finders in ShotHighlightJudge.swift.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
+//          entry 5: The Called Break also holds the called ball dropping (the ball its goal names), so the moment the
+//          shot is about is a stop; before, only the push into the rack was, and the called ball went in unheld.)
 // PURPOSE: For each authored trick shot, the moments its guided Lens replay must stop on (plans/22-Nov-2026-v074-
 //          glow-up-plan.md, F4 and stream lens-pacing): the jump's take-off and landing, the end of the masse's bend,
 //          the throw contact and so on, found in whichever recording of that shot is on screen (the answer or the
@@ -30,8 +33,13 @@ enum TrickSignature {
         // Each shot's moments, in order of preference (ShotMoments.signature keeps the captioned ones, at most two).
         let candidates: [Int?]
         switch id {
-        case "called-break", "stop-dead", "squirt":
-            // The break's push into the rack; the dead stop; squirt's hit, where the off-line launch shows.
+        case "called-break":
+            // The break's push into the rack, then the called ball dropping (the ball the shot's goal names; nil when it
+            // did not drop in this recording, a missed try, and the push stands alone).
+            let called = TrickShots.shot(id: id)?.goal.drops.first?.ball
+            candidates = [first, called.flatMap { m.pocket(of: $0) }]
+        case "stop-dead", "squirt":
+            // The dead stop; squirt's hit, where the off-line launch shows.
             candidates = [first]
         case "bridge-draw":
             // The hit, then the moment the backspin takes hold and the cue ball rolls back.

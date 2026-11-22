@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
+//          entries 7 and 13: the tips start on a held beat after the strike, once the sliding trail they point at has
+//          been drawn; the third tip sits just above the playback row itself (model.playbackRowTop) instead of above
+//          the whole bottom stack, whose blank caption room left it floating over the table.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 10: with no title row on the stage (the open Duo's
 //          table half, beside the notebook) the bubble's fallback top edge is the safe area, not a phantom row.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 44
@@ -49,10 +53,15 @@ enum LensCallouts {
 
     /// When the tips start: the first guided hold of a Lens replay the player started themselves. Not the opening's
     /// replay, not a lesson's or trick shot's own replay (their cards are on screen), and not a finished break whose
-    /// trails have faded: a hold is always mid-replay, on a beat, with its trails fresh.
+    /// trails have faded: a hold is always mid-replay, on a beat, with its trails fresh. Not the strike's hold either
+    /// (0.7.6, entry 7): the strike is recorded at clock zero, before any trail exists, so the first two tips had
+    /// nothing to point at; they wait for the next beat (the first hit), when the sliding path has been drawn.
     @MainActor static func due(_ model: ShowpieceModel) -> Bool {
-        visible(model) && model.lensReplayStartedByPlayer && model.holding
+        visible(model) && model.lensReplayStartedByPlayer && model.holding && model.time > startAfter
     }
+
+    /// Clock seconds a held beat must be past the start for the tips to begin on it (anything after the strike).
+    static let startAfter = 1e-6
 
     /// The tip's words. `withoutColour` (Differentiate Without Colour) names each line's shape as well, the way the
     /// trails and the Lens key draw it then: sliding dashed, rolling solid. The colour words are the key's own, magenta
@@ -133,7 +142,11 @@ struct LensCalloutLayer: View {
         // No title row (the open Duo's table half, beside the notebook): the bubble starts under the safe area, not
         // under a row that is not there (0.7.5 layouts item 10).
         let top = CGFloat(chrome.headerBottom ?? chrome.safe.top + (chrome.hasHeader ? 44 : 0)) - origin.y + 12
-        let controlsTop = chrome.controlsTop.map { CGFloat($0) - origin.y }
+        // The playback row's own top where the view measured it (0.7.6, entry 13), else the bottom stack's top. Only
+        // where the controls sit under the table at all (controlsTop not nil); in the side column the arrow points
+        // sideways as before.
+        let rowTop = chrome.controlsTop.map { model.playbackRowTop ?? $0 }
+        let controlsTop = rowTop.map { CGFloat($0) - origin.y }
         // The bar: just above the control strip; where the controls live in the side column, near the bottom corner
         // on the column's side.
         let bottom = controlsTop.map { size.height - $0 + 12 } ?? CGFloat(chrome.safe.bottom) + 24
