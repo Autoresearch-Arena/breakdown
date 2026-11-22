@@ -1,4 +1,13 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: a ride is
+//          a scene in acts (RideAct, see RideStage.swift), run inside the ordinary table stage: the mount holds the
+//          clock at the strike while the camera comes down to the ball, the roll plays the shot, the ride holds two
+//          beats only (the first contact, with its explanation and Continue, and the struck ball's pocket or stop),
+//          the dismount holds the clock while the camera rises, and after a trick shot's Watch it the slow Lens replay
+//          is announced and rewound (replayInLensAfterRide) instead of starting in the same frame. rideStatus names
+//          each act for the title row; rideCue tells the camera. holding, heldCaption, the caption on screen, the page
+//          code and Continue also serve the ride's held beats. Scrubbing lands in the roll or the landed act, so the
+//          camera stays a function of the clock there.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
 //          entries 4, 6, 13, 56 and 58: a held beat's reading time counts the stroke sentence the card adds to the
 //          strike; with the Lens on but not guided (a fixed speed, Ride on) the card shows only the latest beat's
@@ -394,6 +403,24 @@ final class ShowpieceModel {
     private(set) var rideOn = false
     /// The key moments the ride and its slow motion read: first contact, struck ball, rise. Worked out once per shot.
     private(set) var ridePlan = RidePlan.none
+
+    // The ride's acts (0.7.6 stream ride; RideStage.swift says what each one is).
+    /// Where the ride is. Observed: it changes a handful of times per ride (the title row and the overlay read it).
+    private(set) var rideAct: RideAct = .none
+    /// 0 to 1 through the mount, the dismount or the rewind. Not observed: it changes every frame, and its readers
+    /// (the camera, the rings) redraw every frame anyway.
+    @ObservationIgnored private(set) var rideActProgress = 0.0
+    @ObservationIgnored private var rideActElapsed = 0.0
+    @ObservationIgnored private var rideActLength = 1.0
+    /// The ride beat (index into rideBeats) the clock is held on; nil when not holding. The hold's real-time counter
+    /// and length are the guided hold's own (holdElapsed, holdDwell), which a ride never uses at the same time.
+    @ObservationIgnored private var rideHeldBeat: Int?
+    /// Where the rewind before the slow Lens replay starts from (clock seconds).
+    @ObservationIgnored private var rideRewindFrom = 0.0
+    /// True for the first ride ever (RideTip): its mount is slower and its roll shows the tip once.
+    private var rideTipThisRide = false
+    /// The ride's two beats for the recording on screen, worked out once per recording (rideBeats).
+    @ObservationIgnored private var rideBeatsMemo: (version: Int, beats: [RideBeat]) = (-1, [])
 
     // Guided pacing (see PacePlan). Only which beat is being held, and for how long, is stored; the next beat is always
     // found from the clock itself, so the many places that set `time` directly never leave a stale "next beat" behind.
@@ -1065,6 +1092,9 @@ final class ShowpieceModel {
         // replay: there is nothing left to give back (0.7.5).
         rideHeldForGuidedReplay = false
         rideOn = on
+        // Any act in progress ends (a rewind already under way carries on: Watch it turns Ride off just before it).
+        // Switched on mid-shot, advance() picks the act up from the clock (the roll, no mount).
+        if rideAct != .rewind { resetRideActs() }
         if on, stage == .explore, ridePlan.rideable, time >= duration - 1e-6 {
             time = 0
             playing = true
@@ -1088,6 +1118,222 @@ final class ShowpieceModel {
             try? await Task.sleep(for: .seconds(1.6))
             self?.playing = true
         }
+    }
+
+    // MARK: The ride's acts (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md)
+    //
+    // How a ride runs, frame by frame (advance, the ordinary table stage, not guided):
+    //  - The clock at the strike with Ride on: the mount starts and holds the clock (it waits while paused).
+    //  - Ride switched on mid-shot, or the clock moved by hand: the roll (or landed, past the rise); no mount.
+    //  - The roll steps the clock at the ride's slow-motion curve, deepened toward a stop on the hit; crossing one of
+    //    the ride's two beats stops exactly on it and holds (its own reading time, Continue ends it); reaching the
+    //    rise stops there and runs the dismount; then landed, and the shot plays out at the ordinary speed.
+    //  - The pattern is the intro's freeze, melt and rewind: real-time counters while the clock stands still.
+
+    /// What the camera reads each frame: the act and its progress (TableStage hands it to TableScene.rideCue).
+    var rideCue: RideCue { RideCue(act: rideAct, progress: rideActProgress) }
+
+    /// The ride's two beats for the recording on screen (RideBeats), worked out once per recording.
+    var rideBeats: [RideBeat] {
+        if rideBeatsMemo.version != timelineVersion {
+            rideBeatsMemo = (timelineVersion, RideBeats.make(plan: ridePlan, timeline: timeline, captions: captions))
+        }
+        return rideBeatsMemo.beats
+    }
+
+    /// True while the title row shows the ride's map and the overlay its rings: from the mount to the end of the
+    /// dismount.
+    var rideShowsGuides: Bool {
+        switch rideAct {
+        case .mount, .roll, .hold, .dismount: return true
+        case .none, .landed, .rewind: return false
+        }
+    }
+
+    /// The ride's words for the title row's status slot, nil when the ride has nothing to say (plan work package 4).
+    var rideStatus: String? {
+        switch rideAct {
+        case .none, .landed: return nil
+        case .mount, .hold: return RideWords.riding(ball: ridePlan.cueBall, table: solvedTable)
+        // The first ride ever says once how to leave it (work package 9).
+        case .roll: return rideTipThisRide ? RideWords.tip : RideWords.riding(ball: ridePlan.cueBall, table: solvedTable)
+        case .dismount: return RideWords.backToTable
+        case .rewind: return RideWords.slowedDown
+        }
+    }
+
+    /// True while the clock is held on one of the ride's beats.
+    private var rideHolding: Bool { rideAct == .hold && rideHeldBeat != nil }
+
+    /// The caption of the ride beat being held (nil when none is held, or the beat has nothing to read).
+    private var rideHeldCaption: Caption? {
+        guard rideAct == .hold, let i = rideHeldBeat, rideBeats.indices.contains(i) else { return nil }
+        return rideBeats[i].caption
+    }
+
+    /// Back to no act: the next frame starts the ride again from the clock (a mount at the strike). Called when a new
+    /// recording loads and wherever the clock is sent back to the start to play again.
+    private func resetRideActs() {
+        if rideAct != .none { rideAct = .none }
+        rideActProgress = 0
+        rideActElapsed = 0
+        rideHeldBeat = nil
+        if rideTipThisRide { rideTipThisRide = false }
+    }
+
+    /// The clock was moved by hand (a scrub, Skip to result): no mount and no hold, just the act that belongs to that
+    /// clock, so the camera there is a function of the clock alone. A scrub during the rewind ends the rewind there.
+    private func settleRideActsAfterJump() {
+        guard rideActive, rideAct != .rewind else { resetRideActs(); return }
+        rideHeldBeat = nil
+        rideActProgress = 0
+        rideActElapsed = 0
+        let next: RideAct = time >= ridePlan.riseStart ? .landed : .roll
+        if rideAct != next { rideAct = next }
+    }
+
+    /// Start an act that holds the clock (the mount, the dismount, the rewind), with its real-time length.
+    private func beginRideAct(_ act: RideAct) {
+        rideAct = act
+        rideActElapsed = 0
+        rideActProgress = 0
+        switch act {
+        case .mount:
+            // The first ride ever: a slower mount, and the tip on its roll (RideTip, work package 9).
+            let first = !RideTip.shown
+            if rideTipThisRide != first { rideTipThisRide = first }
+            rideActLength = first ? RideTiming.firstMount : RideTiming.mount
+        case .dismount: rideActLength = RideTiming.dismount
+        case .rewind: rideActLength = RideTiming.rewind
+        case .none, .roll, .hold, .landed: rideActLength = 1
+        }
+    }
+
+    /// One frame of a ride. Returns true when the ride drove (or held) the clock itself this frame, false when the
+    /// ordinary step should run (no ride, or the ride has landed).
+    private func advanceRide(_ dt: Double) -> Bool {
+        guard rideActive else {
+            // Ride went off (or this shot cannot be ridden): any act ends; the camera eases out on its own.
+            if rideAct != .none { resetRideActs() }
+            return false
+        }
+        if rideAct == .none {
+            // A ride starts: at the strike with a mount, otherwise from wherever the clock is.
+            if time <= 1e-9 { beginRideAct(.mount) } else { rideAct = time >= ridePlan.riseStart ? .landed : .roll }
+        }
+        switch rideAct {
+        case .mount, .dismount:
+            displayRate = 0
+            // Paused, the move waits where it is.
+            guard playing else { return true }
+            rideActElapsed += dt
+            rideActProgress = min(1, rideActElapsed / max(0.01, rideActLength))
+            if rideActProgress >= 1 {
+                if rideAct == .mount {
+                    rideAct = .roll
+                    // The tip is on screen from now: remembered, so it never shows again.
+                    if rideTipThisRide { RideTip.shown = true }
+                } else {
+                    rideAct = .landed
+                }
+                rideActProgress = 0
+                rideActElapsed = 0
+            }
+            return true
+        case .hold:
+            displayRate = 0
+            guard playing else { return true }
+            guard rideHeldBeat != nil else { rideAct = .roll; return true }
+            holdElapsed += dt
+            if let id = heldCaptionID, holdPagesApply(caption: id) { followHoldPage() }
+            if holdElapsed >= holdDwell { finishRideHold() }
+            return true
+        case .roll:
+            if playing { stepRide(dt) } else { displayRate = (chosenRate ?? 1) * ridePlan.rateFactor(at: time) }
+            return true
+        case .landed, .none, .rewind:
+            return false
+        }
+    }
+
+    /// The roll: the clock at the ride's slow-motion curve (times any speed the player picked), stopping exactly on a
+    /// ride beat it reaches (and holding there) or on the start of the rise (and running the dismount).
+    private func stepRide(_ dt: Double) {
+        var rate = (chosenRate ?? 1) * ridePlan.rateFactor(at: time)
+        // Slow motion deepens toward a stop on the hit (Act 3): over the last quarter second of clock before the
+        // first contact the speed eases down to a quarter of the ride's slow motion, so the stop on it is gentle.
+        // Never zero, so the clock always reaches it.
+        if let c = ridePlan.contactTime, time < c {
+            rate *= 0.25 + 0.75 * RidePlan.smooth((c - time) / 0.25)
+        }
+        displayRate = rate
+        let old = time
+        var target = min(duration, time + dt * rate)
+        var hold: Int?
+        // A ride beat crossed this frame (strictly after the clock: a beat the clock sits on has just been held).
+        if let i = rideBeats.firstIndex(where: { $0.time > old + Self.beatTolerance && $0.time <= target }) {
+            target = rideBeats[i].time
+            hold = i
+        }
+        var dismount = false
+        if hold == nil, old < ridePlan.riseStart, target >= ridePlan.riseStart {
+            target = ridePlan.riseStart
+            dismount = true
+        }
+        time = target
+        // Sound and touch for everything crossed, the hit included, so it is heard as the clock stops on it.
+        fireSounds(from: old, to: time)
+        if let hold { beginRideHold(hold) } else if dismount { beginRideAct(.dismount) }
+        if time >= duration, hold == nil, !dismount { playing = false }
+    }
+
+    /// Hold the clock on ride beat `i`: its reading time when the explanation card is up (the card shows with the
+    /// Lens, and Explanations on), otherwise a short still beat. The guided hold's counter, length and pages are used
+    /// (a ride is never guided at the same time).
+    private func beginRideHold(_ i: Int) {
+        rideHeldBeat = i
+        rideAct = .hold
+        holdElapsed = 0
+        holdPage = 0
+        let explanations = UserDefaults.standard.object(forKey: GameSettings.explanationsKey) as? Bool ?? true
+        if explanations, lensOn, rideBeats.indices.contains(i), let c = rideBeats[i].caption {
+            holdDwell = pacePlan.dwell(for: c.detail)
+        } else {
+            holdDwell = RideTiming.stillHold
+        }
+    }
+
+    /// Let go of the ride's held beat: the roll plays on from it (both balls leaving slowly on the ride's curve).
+    private func finishRideHold() {
+        rideHeldBeat = nil
+        holdElapsed = 0
+        if rideAct == .hold { rideAct = .roll }
+    }
+
+    /// After a trick shot's Watch it (plan Act 4): the next scene is announced, "Now the same shot, slowed down",
+    /// and the clock runs back to the start over the intro's rewind time while the Lens comes in; then the slow Lens
+    /// replay starts (replay(withLens:)). Called instead of replay(withLens: true) right after the answer has played,
+    /// so it never starts in the same frame. With nothing to rewind (the clock at the start, the menu up) it is the
+    /// plain Lens replay.
+    func replayInLensAfterRide() {
+        guard stage == .explore, time > 0.05, !menuOpen else { replay(withLens: true); return }
+        resetPacing()
+        beginRideAct(.rewind)
+        rideRewindFrom = time
+        meltTarget = 1
+        playing = true
+    }
+
+    /// One frame of the rewind: the clock eases back to the start (set directly, like a scrub, so nothing sounds),
+    /// then the Lens replay starts from the strike.
+    private func advanceRideRewind(_ dt: Double) {
+        displayRate = 0
+        guard playing else { return }
+        rideActElapsed += dt
+        let x = min(1, rideActElapsed / max(0.01, rideActLength))
+        rideActProgress = x
+        time = rideRewindFrom * (1 - RidePlan.smooth(x))
+        if x >= 1 { replay(withLens: true) }
     }
 
     // MARK: Try again and compare
@@ -1364,6 +1610,7 @@ final class ShowpieceModel {
         playing = false
         time = duration
         resetPacing()
+        settleRideActsAfterJump()
     }
 
     /// Break or shoot, whichever is next, reporting what happened (plan items 2 and 13). Every player route uses it:
@@ -1540,6 +1787,8 @@ final class ShowpieceModel {
         readShot(tl)
         timelineVersion += 1
         resetPacing()
+        // A new recording starts its own ride (the mount, if Ride is on) from its strike.
+        resetRideActs()
     }
 
     /// Which beats the recording on screen holds: the first launch's few (the showpiece and the player's own first
@@ -2536,13 +2785,15 @@ final class ShowpieceModel {
         playing = false
         time = min(max(0, t), duration)
         resetPacing()
+        settleRideActsAfterJump()
     }
 
     func togglePlay() {
         // Behind the menu the table holds still (0.7.5): Space or a controller button reaching past it does nothing.
         guard !menuOpen else { return }
         finishColdOpen()
-        if time >= duration - 1e-6 { time = 0; resetPacing() }
+        // Played again from the start: a ride mounts again (0.7.6 stream ride).
+        if time >= duration - 1e-6 { time = 0; resetPacing(); resetRideActs() }
         playing.toggle()
     }
 
@@ -2567,6 +2818,8 @@ final class ShowpieceModel {
         if !withLens { restoreHeldRide() }
         finishColdOpen()
         time = 0; playing = true
+        // From the strike again: a plain replay with Ride on mounts again; a rewind that called this has ended.
+        resetRideActs()
         meltTarget = withLens ? 1 : 0
         // With the Lens the replay is guided (no fixed speed: it stops on each beat to be read); without, real speed.
         chosenRate = withLens ? nil : 1
@@ -2658,17 +2911,23 @@ final class ShowpieceModel {
                 noteIntroEnded()
             }
         case .explore:
-            if guided {
+            if rideAct == .rewind {
+                // The rewind before a trick shot's slow Lens replay drives the clock itself (0.7.6 stream ride).
+                advanceRideRewind(dt)
+            } else if guided {
                 // Paused, the hold's counter does not run: pausing on a beat keeps the full reading time.
                 if playing { stepGuided(dt) }
             } else {
                 // A hold left over from guided pacing (the Lens turned off, Ride turned on) is let go.
                 if heldBeat != nil { resetPacing() }
-                // With Ride on, playback eases into slow motion around the first contact and back out; the curve is a
-                // function of the clock, so it plays the same however the clock got there. Any speed the player picked
-                // still applies: the curve multiplies it.
-                displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
-                if playing { step(dt) }
+                // A ride's acts drive the clock themselves (0.7.6 stream ride); otherwise the ordinary step.
+                if !advanceRide(dt) {
+                    // With Ride on, playback eases into slow motion around the first contact and back out; the curve
+                    // is a function of the clock, so it plays the same however the clock got there. Any speed the
+                    // player picked still applies: the curve multiplies it.
+                    displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
+                    if playing { step(dt) }
+                }
             }
             if let target = meltTarget {
                 let speed = 1.8
@@ -3259,6 +3518,8 @@ final class ShowpieceModel {
 
     /// The caption of the beat being held right now (nil when not holding).
     var heldCaption: Caption? {
+        // The ride's held hit too (0.7.6 stream ride), so the Lens draws its held-hit marks as in a guided replay.
+        if rideHolding { return rideHeldCaption }
         guard holding, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return nil }
         return pacePlan.beats[h].caption
     }
@@ -3644,6 +3905,9 @@ final class ShowpieceModel {
     /// True while the clock is stopped on a beat so its caption can be read. Worked out from stored state, so it is
     /// false at once if guided pacing ends or the clock is moved off the beat (a scrub, a replay).
     var holding: Bool {
+        // A ride's held beat counts as a hold too (0.7.6 stream ride): the card's Continue, the notebook's and the
+        // controller's all end it through nextBeat.
+        if rideHolding { return true }
         guard guided, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return false }
         return abs(pacePlan.beats[h].time - time) <= Self.beatTolerance
     }
@@ -3651,6 +3915,16 @@ final class ShowpieceModel {
     /// Continue: end the current hold now; or, when not holding, jump straight to the next beat and hold there. The
     /// jump sets the clock directly, like a scrub, so the events skipped over make no sound. Does nothing unless guided.
     func nextBeat() {
+        // A ride's held beat (0.7.6 stream ride): the next page first, as below, then the ride plays on.
+        if rideHolding {
+            if let id = heldCaptionID, holdPagesApply(caption: id), holdPage + 1 < holdPageShares.count {
+                showHoldPage(holdPage + 1)
+            } else {
+                finishRideHold()
+            }
+            playing = true
+            return
+        }
         guard guided else { return }
         if holding, let h = heldBeat {
             // A caption split into pages: Continue shows the next page first, and its share of the hold starts now.
@@ -3737,22 +4011,49 @@ final class ShowpieceModel {
 
     /// Number of pages of the held caption (1 when it fits or nothing is held).
     var holdPageCount: Int {
-        guard holding, let h = heldBeat, holdPagesApply(to: h) else { return 1 }
+        guard holding, let id = heldCaptionID, holdPagesApply(caption: id) else { return 1 }
         return holdPageShares.count
     }
 
     /// Show page `i` of the held caption (a tapped page dot, or Continue): the hold's counter jumps to the start of that
     /// page's share, so the page then gets its full reading time. Going back a page is allowed the same way.
     func showHoldPage(_ i: Int) {
-        guard holding, let h = heldBeat, holdPagesApply(to: h), holdPageShares.indices.contains(i) else { return }
+        guard holding, let id = heldCaptionID, holdPagesApply(caption: id), holdPageShares.indices.contains(i) else { return }
         holdPage = i
         holdElapsed = holdPageShares.prefix(i).reduce(0, +) * holdDwell
     }
 
     /// True when the pages the card reported belong to beat `h`'s caption.
     private func holdPagesApply(to h: Int) -> Bool {
-        guard holdPageShares.count > 1, pacePlan.beats.indices.contains(h) else { return false }
-        return holdPagesCaption == pacePlan.beats[h].caption.id
+        guard pacePlan.beats.indices.contains(h) else { return false }
+        return holdPagesApply(caption: pacePlan.beats[h].caption.id)
+    }
+
+    /// True when the pages the card reported belong to the caption with event index `id` (0.7.6 stream ride: shared
+    /// by the guided hold and the ride's).
+    private func holdPagesApply(caption id: Int) -> Bool {
+        holdPageShares.count > 1 && holdPagesCaption == id
+    }
+
+    /// The event index of the caption being held now: the ride's held beat's, or the guided hold's; nil when nothing
+    /// with words is held.
+    private var heldCaptionID: Int? {
+        if rideHolding { return rideHeldCaption?.id }
+        guard holding, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return nil }
+        return pacePlan.beats[h].caption.id
+    }
+
+    /// Move the page on screen on to the one the hold's counter has reached (never back). Shared by the guided hold
+    /// and the ride's (0.7.6 stream ride).
+    private func followHoldPage() {
+        var end = 0.0
+        for (i, share) in holdPageShares.enumerated() {
+            end += share * holdDwell
+            if holdElapsed < end || i == holdPageShares.count - 1 {
+                if i > holdPage { holdPage = i }
+                break
+            }
+        }
     }
 
     private func finishHold(_ i: Int) {
@@ -3780,16 +4081,7 @@ final class ShowpieceModel {
             checkHoldDwell(h)
             holdElapsed += dt
             // The page follows the counter: each page gets its share of the reading time.
-            if holdPagesApply(to: h) {
-                var end = 0.0
-                for (i, share) in holdPageShares.enumerated() {
-                    end += share * holdDwell
-                    if holdElapsed < end || i == holdPageShares.count - 1 {
-                        if i > holdPage { holdPage = i }
-                        break
-                    }
-                }
-            }
+            if holdPagesApply(to: h) { followHoldPage() }
             if holdElapsed >= holdDwell { finishHold(h) }
             return
         }
@@ -3821,6 +4113,8 @@ final class ShowpieceModel {
     /// the beats count (0.7.6, entry 6), so a break at a fixed speed or under Ride shows a few steady cards instead of
     /// swapping its words many times a second.
     func activeCaption() -> Caption? {
+        // The ride's held beat shows its own caption for as long as it is held (0.7.6 stream ride).
+        if let c = rideHeldCaption { return c }
         let beats = pacePlan.beats
         if guided {
             if let h = heldBeat, holding { return beats[h].caption }

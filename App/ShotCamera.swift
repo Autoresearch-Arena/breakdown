@@ -12,6 +12,15 @@
 //          Replay eases into the ride, not only the first (#19); upright, the ride lens is about 64 degrees across and
 //          the ridden ball sits in the lower third of the free space (#20); the plan, the headings and the pose follow
 //          the struck ball (RidePlan.cueBall) instead of ball 0 (#21).)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: the
+//          camera follows the ride's acts (RideCue, set by TableScene from the model). Mount: the overhead view turns
+//          about the struck ball, the ball pinned on screen, into the chase view (mountPose, an orbit in heading, tilt
+//          and distance eased separately, the shortest way round). Roll and hold: the chase view at full weight, the
+//          crane now finishing as the clock reaches the first contact, so the held hit is seen from above both balls
+//          and Continue plays on without the crane jumping. Dismount: the rise to the overhead view by the act's own
+//          progress, the clock held. Landed: the overhead view. Reduce Motion: each act cuts. RidePlan.firstStruck
+//          names the first ball hit (the rings and the map). selfTest also checks the mount and the dismount: no turn
+//          faster than the ride's limit and the ball pinned during the orbit (RideCheck's new fields).)
 // PURPOSE: Ride the shot: a chase view of the cue ball. When Ride is on, the camera sits behind and above the cue
 //          ball, looks the way it is travelling and follows it for the whole shot (it never hands over to the ball it
 //          hits). After the first contact it cranes up and back so the rack opening, or the struck ball's run to its
@@ -53,6 +62,8 @@ struct RidePlan: Equatable {
     var rideable = false
     /// Clock time the cue ball first touches an object ball; nil when it hits none.
     var contactTime: Double?
+    /// The first ball the struck ball hits, whatever it does afterwards (the ride's rings and map); nil when it hits none.
+    var firstStruck: Int?
     /// The struck ball the ride hands over to; nil when there is no hand-off (no contact, or the struck ball barely
     /// moves, as the apex ball of a break does: then the camera holds behind the cue ball and watches the rack open).
     var objectBall: Int?
@@ -97,6 +108,7 @@ struct RidePlan: Equatable {
         let first = tl.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == cue } }
         contactTime = first?.time
         let struck = first?.balls.first { $0.ball != cue }?.ball
+        firstStruck = struck
         // The camera stays with the cue ball the whole way (the Boss: "you want to be the cue ball"), so its place is
         // followed until it stops or drops.
         cueSpan = 0...max(Self.window, cueStop)
@@ -257,15 +269,139 @@ final class ShotCamera {
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
         let goal = active && plan.rideable ? 1.0 : 0.0
+        // The mount is itself the way into the ride (0.7.6 stream ride): it starts from the overhead view, so the
+        // wall-clock ease is not stacked on top of it. One owner for the start of a shot: the mount when the model
+        // runs the acts, the half-second engage otherwise (Ride switched on mid-shot, the opening's slow replay).
+        let act = cue?.act ?? .none
+        let handOver = active && (cue?.handOver ?? false)
+        if handOver, act == .mount { engage = goal }
         if reduceMotion { engage = goal } else if engage < goal { engage = min(goal, engage + dt / 0.5) } else { engage = max(goal, engage - dt / 0.5) }
         flying = false
         guard engage > 0, let tl = timeline, let frame, let tracks, plan.rideable else { return overhead }
-        let weight = RidePlan.smooth(engage) * (1 - Self.riseWeight(at: clock, plan: plan, reduceMotion: reduceMotion))
+        let ride = Self.ridePose(at: clock, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
+                                 reduceMotion: reduceMotion, handOver: handOver)
+        let weight: Double
+        if handOver {
+            switch act {
+            case .mount:
+                // The orbit from the overhead view down to the chase view, ball pinned (mountPose).
+                let ball = frame.world(plan.cueStart, height: frame.ballRadius)
+                let w = Self.mountWeight(cue?.progress ?? 0, reduceMotion: reduceMotion)
+                flying = w > 0
+                return Self.mountPose(w, overhead: overhead, chase: ride, ball: ball, size: size)
+            case .dismount:
+                // The rise, by the act's own progress while the clock is held where the rise begins.
+                weight = RidePlan.smooth(engage) * (1 - Self.dismountRise(cue?.progress ?? 0, reduceMotion: reduceMotion))
+            case .landed:
+                weight = 0
+            default:
+                // Roll and hold: the chase at full weight until the rise; past it (a scrub lands there as landed, so
+                // this is a safety net) the overhead. Reduce Motion keeps its cut at the first contact.
+                let risen = reduceMotion ? Self.riseWeight(at: clock, plan: plan, reduceMotion: true)
+                                         : (clock >= plan.riseStart ? 1.0 : 0.0)
+                weight = RidePlan.smooth(engage) * (1 - risen)
+            }
+        } else {
+            weight = RidePlan.smooth(engage) * (1 - Self.riseWeight(at: clock, plan: plan, reduceMotion: reduceMotion))
+        }
         guard weight > 1e-4 else { return overhead }
         flying = true
-        let ride = Self.ridePose(at: clock, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
-                                 reduceMotion: reduceMotion)
         return Self.mix(overhead, ride, Float(weight), turn: Self.turn(from: overhead, to: ride, tracks: tracks, clock: clock))
+    }
+
+    /// The ride's act this frame (TableScene sets it from ShowpieceModel.rideCue); nil means no acts are running and
+    /// the ride behaves as in 0.7.5 (the rise follows the clock alone).
+    var cue: RideCue?
+
+    // MARK: Mount and dismount (0.7.6 stream ride; pure functions of the act's progress)
+
+    /// How far through the orbit the mount is, from its progress p (0 to 1 over the mount's real time): the overhead
+    /// view holds for the first 30 per cent (the ring pulses, the path is read), the orbit takes the next 55, and the
+    /// chase view holds still for the last 15 before the strike plays. Reduce Motion: one cut, at 60 per cent.
+    static func mountWeight(_ p: Double, reduceMotion: Bool) -> Double {
+        if reduceMotion { return p >= 0.6 ? 1 : 0 }
+        return min(1, max(0, (p - mountHoldShare) / mountOrbitShare))
+    }
+
+    static let mountHoldShare = 0.3
+    static let mountOrbitShare = 0.55
+
+    /// How far the dismount has risen (0 riding, 1 overhead) from its progress. Reduce Motion: a cut halfway.
+    static func dismountRise(_ p: Double, reduceMotion: Bool) -> Double {
+        reduceMotion ? (p >= 0.5 ? 1 : 0) : RidePlan.damped(p, length: 1)
+    }
+
+    /// A camera described about one point (the ridden ball): the heading and tilt it looks along, its field of view,
+    /// where the point sits on screen (-1 to 1 across and up, the way the lens sees it) and how far ahead of the eye
+    /// along the look direction the point is. Any camera with world up as its up is exactly one of these, and back.
+    struct Orbit {
+        var yaw: Float
+        var pitch: Float
+        var fov: Float
+        var nx: Float
+        var ny: Float
+        var depth: Float
+    }
+
+    /// The look direction for a heading and tilt, and the camera's right and up for it (world up as the up, as
+    /// TableCamera's look(at:from:upVector:) uses). The tilt never reaches straight down (the fitted view stops at
+    /// 89.5 degrees and the chase is far from it), so the right vector is always defined.
+    static func basis(yaw: Float, pitch: Float) -> (f: SIMD3<Float>, right: SIMD3<Float>, up: SIMD3<Float>) {
+        let f = SIMD3<Float>(cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw))
+        let right = simd_normalize(simd_cross(f, SIMD3(0, 1, 0)))
+        return (f, right, simd_cross(right, f))
+    }
+
+    /// A camera shot described about `ball` (see Orbit); nil when the ball is not in front of it.
+    static func orbit(of s: CameraShot, about ball: SIMD3<Float>, size: CGSize) -> Orbit? {
+        let f0 = simd_normalize(s.target - s.position)
+        guard let yaw = heading(f0) else { return nil }
+        let pitch = asin(min(1, max(-1, f0.y)))
+        let b = basis(yaw: yaw, pitch: pitch)
+        let d = ball - s.position
+        let depth = simd_dot(d, b.f)
+        guard depth > 0.02 else { return nil }
+        let kY = tan(s.fov * .pi / 360), kX = kY * Float(max(1, size.width)) / Float(max(1, size.height))
+        return Orbit(yaw: yaw, pitch: pitch, fov: s.fov, nx: simd_dot(d, b.right) / (depth * kX),
+                     ny: simd_dot(d, b.up) / (depth * kY), depth: depth)
+    }
+
+    /// The camera shot an Orbit about `ball` describes: the eye is put so the ball lands exactly at (nx, ny).
+    static func shot(_ o: Orbit, about ball: SIMD3<Float>, size: CGSize, near: Float) -> CameraShot {
+        let b = basis(yaw: o.yaw, pitch: o.pitch)
+        let kY = tan(o.fov * .pi / 360), kX = kY * Float(max(1, size.width)) / Float(max(1, size.height))
+        let eye = ball - b.right * (o.nx * kX * o.depth) - b.up * (o.ny * kY * o.depth) - b.f * o.depth
+        return CameraShot(position: eye, target: eye + b.f, fov: o.fov, near: near)
+    }
+
+    /// The mount (plan work package 2): from the overhead view to the first chase view, turning about the ball so it
+    /// stays pinned on screen while the table tips and turns round it. The turn (heading), the tilt and the distance
+    /// ease separately: the turn on a plain smooth step, the tilt a little ahead of it (the table tips as it starts to
+    /// turn), the distance a little behind (the camera comes down last); the ball glides in a straight line from
+    /// where the overhead view shows it to its place in the chase view. The heading takes the shorter way round, cut a
+    /// little off the exact half turn (turnBias) so a straight shot up an upright phone never wavers between sides.
+    /// Exactly the overhead view at w = 0 and exactly the chase view at w = 1; a pure function of w, so the self-test
+    /// can check it. If either end cannot see the ball (a hand zoom that put it behind the camera) it falls back to
+    /// the ordinary blend.
+    static func mountPose(_ w: Double, overhead a: CameraShot, chase b: CameraShot, ball: SIMD3<Float>,
+                          size: CGSize) -> CameraShot {
+        guard w > 0 else { return a }
+        guard w < 1 else { return b }
+        guard let oa = orbit(of: a, about: ball, size: size), let ob = orbit(of: b, about: ball, size: size) else {
+            return mix(a, b, Float(RidePlan.smooth(w)))
+        }
+        let turnShare = Float(RidePlan.smooth(w))
+        let tiltShare = Float(RidePlan.smooth(min(1, w / 0.85)))
+        let comeDown = Float(RidePlan.smooth(max(0, (w - 0.15) / 0.85)))
+        let turn = wrap(ob.yaw - oa.yaw - turnBias) + turnBias
+        let o = Orbit(yaw: oa.yaw + turn * turnShare,
+                      pitch: oa.pitch + (ob.pitch - oa.pitch) * tiltShare,
+                      fov: oa.fov + (ob.fov - oa.fov) * turnShare,
+                      nx: oa.nx + (ob.nx - oa.nx) * turnShare,
+                      ny: oa.ny + (ob.ny - oa.ny) * turnShare,
+                      // In proportion (log), so the long way down from the overhead does not rush at the end.
+                      depth: exp(log(oa.depth) + (log(ob.depth) - log(oa.depth)) * comeDown))
+        return shot(o, about: ball, size: size, near: w > 0.02 ? rideNear : a.near)
     }
 
     /// Blend two camera shots (0.7.6 #18): the eye moves in a straight line, and the view turns by its heading (round
@@ -340,8 +476,12 @@ final class ShotCamera {
     }
 
     /// The low ride pose for clock time t, before any blend with the overhead.
+    /// - handOver: the ride's acts are running (RideCue.handOver). The crane then finishes as the clock reaches the
+    ///   first contact instead of starting there, so the clock held on the hit shows the three-quarter view over both
+    ///   balls and Continue plays on from it without the camera dropping back (plan work package 6: "the crane holds
+    ///   still while the clock is held"). Still a pure function of the clock.
     static func ridePose(at t: Double, plan: RidePlan, tracks: RideTracks, timeline tl: Timeline, frame: TableFrame,
-                         free: FramingRect, size: CGSize, reduceMotion: Bool) -> CameraShot {
+                         free: FramingRect, size: CGSize, reduceMotion: Bool, handOver: Bool = false) -> CameraShot {
         let fov = rideFov(size)
         var shot: CameraShot
         if reduceMotion {
@@ -352,7 +492,8 @@ final class ShotCamera {
             // After the contact the camera cranes up and back (critically damped, from the contact time, so still a
             // pure function of the clock): close behind the cue ball on the way in, then high enough to see the
             // whole rack open or the struck ball run to its pocket.
-            let crane = Float(plan.contactTime.map { RidePlan.damped(t - $0, length: Self.craneTime) } ?? 0)
+            let lead = handOver ? Self.craneTime : 0
+            let crane = Float(plan.contactTime.map { RidePlan.damped(t - ($0 - lead), length: Self.craneTime) } ?? 0)
             shot = follow(centre: position(tl, ball: plan.cueBall, at: t, span: plan.cueSpan),
                           heading: tracks.cue.heading(at: t),
                           frame: frame, fov: fov,
@@ -455,6 +596,8 @@ final class ShotCamera {
     /// biggest jump of the eye per step, the lowest eye height, and whether the view ever pointed up.
     /// Returns what it measured (nil before any timeline is loaded), so the unit tests (BreakdownTests/RideCheckTests)
     /// assert on the same check the launch flag logs.
+    /// 0.7.6 stream ride: the sweep runs for both cranes (the 0.7.5 one and the hand-over's, which finishes at the
+    /// contact), and the mount and the dismount are stepped too (see checkActs).
     @discardableResult
     func selfTest(size: CGSize) -> RideCheck? {
         guard let tl = timeline, let frame else { return nil }
@@ -464,9 +607,9 @@ final class ShotCamera {
             return RideCheck(rideable: false, mismatches: 0, maxTurnPerStep: 0, maxTurnAt: 0, maxEyeStep: 0, minEye: 0,
                              upward: false, passed: true)
         }
-        func pose(_ t: Double) -> CameraShot {
+        func pose(_ t: Double, handOver: Bool = false) -> CameraShot {
             Self.ridePose(at: t, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
-                          reduceMotion: false)
+                          reduceMotion: false, handOver: handOver)
         }
         let d = tl.duration
         let times = [0, 0.1, 0.4, 0.8, 1.3, 2.0, d * 0.5, d * 0.8, d].map { min($0, d) }
@@ -478,28 +621,105 @@ final class ShotCamera {
             if pose(times[i]).target != first[i] { mismatches += 1 }
         }
         var maxTurn: Float = 0, maxTurnAt = 0.0, maxJump: Float = 0, minEye: Float = 10, upward = false
-        var prev = pose(0)
-        var t = 1.0 / 240
-        while t <= d {
-            let p = pose(t)
-            let fa = simd_normalize(prev.target - prev.position), fb = simd_normalize(p.target - p.position)
-            let turn = acos(min(1, simd_dot(fa, fb))) * 180 / .pi
-            if turn > maxTurn { maxTurn = turn; maxTurnAt = t }
-            maxJump = max(maxJump, simd_length(p.position - prev.position))
-            minEye = min(minEye, p.position.y)
-            if fb.y > 0 { upward = true }
-            prev = p
-            t += 1.0 / 240
+        for handOver in [false, true] {
+            var prev = pose(0, handOver: handOver)
+            var t = 1.0 / 240
+            while t <= d {
+                let p = pose(t, handOver: handOver)
+                let fa = simd_normalize(prev.target - prev.position), fb = simd_normalize(p.target - p.position)
+                let turn = acos(min(1, simd_dot(fa, fb))) * 180 / .pi
+                if turn > maxTurn { maxTurn = turn; maxTurnAt = t }
+                maxJump = max(maxJump, simd_length(p.position - prev.position))
+                minEye = min(minEye, p.position.y)
+                if fb.y > 0 { upward = true }
+                prev = p
+                t += 1.0 / 240
+            }
         }
-        // A turn of more than 4 degrees in 1/240 s of clock (about 1000 degrees a second) would read as a snap.
+        let acts = checkActs(size: size, free: free, tracks: tracks, timeline: tl, frame: frame)
+        minEye = min(minEye, acts.minEye)
+        if acts.upward { upward = true }
+        // A turn of more than 4 degrees in 1/240 s of clock (about 1000 degrees a second) would read as a snap. The
+        // mount and dismount are stepped in 1/240 s of real time against the same limit; the ball may drift no more
+        // than one point from its straight glide during the orbit.
         let pass = mismatches == 0 && !upward && minEye > 2 * frame.ballRadius && maxTurn < 4
+            && acts.mountTurn < 4 && acts.dismountTurn < 4 && acts.pinError < 1
         NSLog("RIDE-SELFTEST rideable=%@ contact=%@ object=%@ objectPocketed=%@ riseStart=%.2f duration=%.2f scrubMismatches=%d maxTurnPerStep=%.2fdeg(at %.3f) maxEyeStep=%.4fm minEye=%.3fm upward=%@ -> %@",
               plan.rideable ? "yes" : "no", plan.contactTime.map { String(format: "%.3f", $0) } ?? "none",
               plan.objectBall.map(String.init) ?? "none", plan.objectBall.flatMap { tl.pocketTime[$0] } != nil ? "yes" : "no",
               plan.riseStart, d, mismatches, maxTurn, maxTurnAt, maxJump, minEye,
               upward ? "YES" : "no", pass ? "PASS" : "FAIL")
+        NSLog("RIDE-SELFTEST acts mountMaxTurnPerStep=%.2fdeg dismountMaxTurnPerStep=%.2fdeg mountPinError=%.2fpt",
+              acts.mountTurn, acts.dismountTurn, acts.pinError)
         return RideCheck(rideable: plan.rideable, mismatches: mismatches, maxTurnPerStep: maxTurn, maxTurnAt: maxTurnAt,
-                         maxEyeStep: maxJump, minEye: minEye, upward: upward, passed: pass)
+                         maxEyeStep: maxJump, minEye: minEye, upward: upward, passed: pass,
+                         mountMaxTurnPerStep: acts.mountTurn, dismountMaxTurnPerStep: acts.dismountTurn,
+                         mountPinError: acts.pinError)
+    }
+
+    /// The mount and the dismount, stepped through their progress in 1/240 s of real time (the mount at its first-ride
+    /// length, the longer one, and at its usual length; the dismount at its length), from an overhead view like the
+    /// fitted one (the long side up an upright screen, about 80 degrees down, the whole table in view). Measures the
+    /// biggest turn of the look direction per step, the lowest eye, whether the view ever looked up, and, during the
+    /// orbit, how far the ball strays from its straight glide on screen (projected through CameraFraming.project, an
+    /// independent matrix). Pure: it only calls the pose functions.
+    private func checkActs(size: CGSize, free: FramingRect, tracks: RideTracks, timeline tl: Timeline,
+                           frame: TableFrame) -> (mountTurn: Float, dismountTurn: Float, pinError: Float, minEye: Float,
+                                                  upward: Bool) {
+        let portrait = size.width < size.height
+        let yaw: Float = portrait ? .pi / 2 : 0
+        let toward = SIMD2<Float>(sin(yaw), cos(yaw))
+        let elevation: Float = 80 * .pi / 180, reach: Float = 3.2
+        let eye = SIMD3<Float>(toward.x * reach * cos(elevation), reach * sin(elevation), toward.y * reach * cos(elevation))
+        let overhead = CameraShot(position: eye, target: .zero, fov: 45, near: Self.overheadNear)
+        let ball = frame.world(plan.cueStart, height: frame.ballRadius)
+        func chase(_ t: Double) -> CameraShot {
+            Self.ridePose(at: t, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
+                          reduceMotion: false, handOver: true)
+        }
+        func turn(_ a: CameraShot, _ b: CameraShot) -> Float {
+            let fa = simd_normalize(a.target - a.position), fb = simd_normalize(b.target - b.position)
+            return acos(min(1, simd_dot(fa, fb))) * 180 / .pi
+        }
+        func screen(_ s: CameraShot) -> CGPoint {
+            CameraFraming.project(ball, position: s.position, target: s.target, size: size, fovDegrees: s.fov)
+        }
+        var mountTurn: Float = 0, dismountTurn: Float = 0, pinError: Float = 0, minEye: Float = 10, upward = false
+        let start = chase(0)
+        let from = screen(overhead), to = screen(start)
+        for length in [RideTiming.mount, RideTiming.firstMount] {
+            var prev = overhead
+            var p = 0.0
+            while p <= 1 {
+                let w = Self.mountWeight(p, reduceMotion: false)
+                let s = Self.mountPose(w, overhead: overhead, chase: start, ball: ball, size: size)
+                mountTurn = max(mountTurn, turn(prev, s))
+                minEye = min(minEye, s.position.y)
+                if simd_normalize(s.target - s.position).y > 0 { upward = true }
+                // The ball's straight glide: from where the overhead shows it to its place in the chase, on the turn's
+                // own share (mountPose moves nx, ny with it).
+                let share = CGFloat(RidePlan.smooth(w))
+                let expected = CGPoint(x: from.x + (to.x - from.x) * share, y: from.y + (to.y - from.y) * share)
+                let seen = screen(s)
+                pinError = max(pinError, Float(hypot(seen.x - expected.x, seen.y - expected.y)))
+                prev = s
+                p += 1 / (240 * length)
+            }
+        }
+        // The dismount: the clock held where the rise begins, the camera rising by the act's progress.
+        let low = chase(plan.riseStart)
+        var prev = low
+        var p = 0.0
+        while p <= 1 {
+            let w = Float(1 - Self.dismountRise(p, reduceMotion: false))
+            let s = Self.mix(overhead, low, w, turn: Self.turn(from: overhead, to: low, tracks: tracks, clock: plan.riseStart))
+            dismountTurn = max(dismountTurn, turn(prev, s))
+            minEye = min(minEye, s.position.y)
+            if simd_normalize(s.target - s.position).y > 0 { upward = true }
+            prev = s
+            p += 1 / (240 * RideTiming.dismount)
+        }
+        return (mountTurn, dismountTurn, pinError, minEye, upward)
     }
 }
 
@@ -515,6 +735,12 @@ struct RideCheck: Equatable {
     var minEye: Float
     var upward: Bool
     var passed: Bool
+    /// 0.7.6 stream ride: the mount's and the dismount's biggest turn per 1/240 s of real time (degrees, under 4 each)
+    /// and how far the ball strayed from its straight glide on screen during the mount's orbit (points, under 1).
+    /// Defaulted so the checks written before them still build.
+    var mountMaxTurnPerStep: Float = 0
+    var dismountMaxTurnPerStep: Float = 0
+    var mountPinError: Float = 0
 }
 
 // MARK: Heading tracks
