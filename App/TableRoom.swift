@@ -1,5 +1,14 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 33, 34 and 56. Pockets: the generic cup is replaced by
+//          the other developer's hero corner pocket and the side pocket made from it (CornerPocket.usdz and
+//          SidePocket.usdz, Tools/blender/make_pockets.py): the liner round the back flush with the rail, the slate's
+//          cut edge and the funnel, each turned to face its pocket's back and fitted to the hole TableBuilder.pocketCuts
+//          draws from the solver's jaws and capture circle; once a model is in place it switches off the code-built
+//          stand-in. Walls: the plaster is now painted with the lamp's light falling on it (SurfaceTextures.
+//          wallSpillImage), unlit like the floor, so the far wall reads as a wall in the low Ride view instead of a
+//          near-black void, and the wainscot carries a faint glow of the same light; the overhead views and the Lens,
+//          which never see the walls, are unchanged.)
 // PURPOSE: The room around the table (look plan package 1) and the moulded pockets (package 2), as an extension of
 //          TableBuilder so everything the warm table group holds is still built by TableBuilder. Before this the low
 //          Ride camera saw solid black above the far rail: there was no room, no lamp, no wall, and the floor faded to
@@ -12,10 +21,8 @@
 //              has a visible source. It casts no shadow (the real key light is the spot light in addLights).
 //            - Three dim props: a cue rack on the far wall, a stool in a corner, a cube of chalk on a rail
 //              (CueRack.usdz, Stool.usdz, Chalk.usdz). Geometry from Blender, materials dressed here by part name.
-//            - The pocket liners: one moulded cup with a rolled lip (Pocket.usdz, Tools/blender/make_pocket.py) at
-//              each edge pocket, scaled across to that pocket's drawn mouth, so the mouth still follows the solver's
-//              jaws and capture circle (see the cut comment in makeTable). The old code-built wall and floor stay
-//              under it as the fallback while it loads.
+//            - The pockets: the corner model at each corner and the side model at each side (see the Edited line
+//              above), placed on the holes TableBuilder.pocketCuts draws, turned so their liner faces the rail.
 //          Everything here is a child of the warm table group, so it fades out as the Physics Lens melts in.
 //          Coordinates: world metres, y up, cloth at y = 0, the floor at TableBuilder.floorHeight.
 //          Room size: the table's outer half-size plus roomMargin on each side. The margin keeps a stool and a person's
@@ -49,8 +56,35 @@ extension TableBuilder {
     nonisolated static let shadeBottom: Float = 0.86
     /// Name of the entity holding the lamp shade (TableDetail fades it by camera height).
     nonisolated static let shadeName = "lamp-shade"
-    /// The mouth radius Pocket.usdz is authored for (REF_R in make_pocket.py).
-    nonisolated static let pocketModelRadius: Float = 0.075
+    /// One pocket model's contract with Tools/blender/make_pockets.py (its report prints these numbers): the hole
+    /// radius it is built round, the radius of its liner's lip (where the rail is cut), and how far round from the
+    /// pocket's back its liner reaches either side.
+    struct PocketModel: Sendable {
+        let file: String
+        let holeRadius: Float
+        let railRadius: Float
+        let linerHalfArc: Float
+    }
+    /// The hero corner pocket: built round the solver's 0.065 m corner capture circle, its lip 0.091 m out, its liner
+    /// 79 degrees either side of the back (measured from the hero model by make_pockets.py).
+    nonisolated static let cornerPocket = PocketModel(file: "CornerPocket", holeRadius: 0.065, railRadius: 0.091,
+                                                      linerHalfArc: 79 * .pi / 180)
+    /// The side pocket made from it: round the side hole pocketCuts draws on the standard table (0.06807 m), the same
+    /// 26 mm of lip, its liner as far round as its foot stays behind the cushion (58.5 degrees).
+    nonisolated static let sidePocket = PocketModel(file: "SidePocket", holeRadius: 0.06807, railRadius: 0.09407,
+                                                    linerHalfArc: 58.5 * .pi / 180)
+
+    /// The model for edge pocket k (corners first, then sides, as TableSpec lists them).
+    nonisolated static func pocketModel(_ k: Int) -> PocketModel { isCornerPocket(k) ? cornerPocket : sidePocket }
+
+    /// The way out of the table from a pocket's hole, in plan (world x, z): a corner's diagonal or a side's straight
+    /// out across the rail. Read from where the hole is: the table is centred on the origin, corner holes sit off both
+    /// axes and side holes on the middle of a long side.
+    nonisolated static func pocketBack(_ cut: Outline.Cut) -> SIMD2<Float> {
+        let sx: Float = abs(cut.center.x) < 1e-3 ? 0 : (cut.center.x < 0 ? -1 : 1)
+        let sz: Float = cut.center.y < 0 ? -1 : 1
+        return simd_normalize(SIMD2(sx, sz))
+    }
 
     /// Half the room's length and width (wall to wall), from half the table's outer length and width.
     nonisolated static func roomHalfExtent(tableHalf: SIMD2<Float>) -> SIMD2<Float> { tableHalf + roomMargin }
@@ -84,11 +118,19 @@ extension TableBuilder {
         room.addChild(floor)
 
         // Walls: one inward-facing plane each (a plane is seen from its front only, so from outside the room, during
-        // the launch pull-back, the near wall simply is not drawn). Dark painted plaster: a deep green-grey that keeps
-        // the lamp's warm pool the brightest thing, with enough roughness to stay matte.
-        var paint = PhysicallyBasedMaterial()
-        paint.baseColor = .init(tint: rgba(0.075, 0.085, 0.078))
-        paint.roughness = .init(floatLiteral: 0.9)
+        // the launch pull-back, the near wall simply is not drawn). Dark green-grey plaster with the lamp's light
+        // painted on (SurfaceTextures.wallSpillImage), unlit as the floor is. When the plaster was lit by the scene's
+        // lights it caught only the spot's fading cone edge and the weak fill, and the far wall read as a void above
+        // the rail in the low Ride view; painted, it holds the same quiet brightness from every angle and costs nothing
+        // per frame. The 256 by 128 picture is drawn here, once per wall per table build, in a few milliseconds.
+        let upper = roomHeight - waistRailHeight
+        func plaster(length: Float) -> UnlitMaterial {
+            var m = UnlitMaterial(color: rgba(0.075, 0.085, 0.078))
+            if let t = StartupAssets.texture(SurfaceTextures.wallSpillImage(length: length)) {
+                m.color = .init(tint: .white, texture: .init(t))
+            }
+            return m
+        }
         let walls = Entity()
         walls.name = "walls"
         // (centre, rotation about y that turns the plane's front, +Z, into the room, wall length)
@@ -102,6 +144,10 @@ extension TableBuilder {
         var wainscot = PhysicallyBasedMaterial()
         wainscot.baseColor = .init(tint: rgba(0.5, 0.46, 0.42), texture: wood.baseColor.texture)
         wainscot.roughness = .init(floatLiteral: 0.6)
+        // A faint glow of the lamp's spill on the boards (the same light the plaster above is painted with), so the
+        // wainscot reads as varnished wood in shadow rather than a black band: its own picture at about a tenth.
+        wainscot.emissiveColor = .init(color: rgba(0.10, 0.085, 0.065), texture: wood.baseColor.texture)
+        wainscot.emissiveIntensity = 1
         var ceiling = PhysicallyBasedMaterial()
         ceiling.baseColor = .init(tint: rgba(0.06, 0.055, 0.05))
         ceiling.roughness = .init(floatLiteral: 1)
@@ -109,11 +155,10 @@ extension TableBuilder {
         for (centre, yaw, length) in wallSpecs {
             let turn = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
             // Plaster above the waist rail.
-            let upper = roomHeight - waistRailHeight
-            let plaster = ModelEntity(mesh: .generatePlane(width: length, height: upper), materials: [paint])
-            plaster.orientation = turn
-            plaster.position = centre + SIMD3(0, floorY + waistRailHeight + upper * 0.5, 0)
-            walls.addChild(plaster)
+            let wall = ModelEntity(mesh: .generatePlane(width: length, height: upper), materials: [plaster(length: length)])
+            wall.orientation = turn
+            wall.position = centre + SIMD3(0, floorY + waistRailHeight + upper * 0.5, 0)
+            walls.addChild(wall)
             // Wainscot below it, standing a little proud of the wall.
             let inward = turn.act(SIMD3<Float>(0, 0, 1))
             let panel = ModelEntity(mesh: .generateBox(size: SIMD3(length, waistRailHeight, panelDepth)), materials: [wainscot])
@@ -211,28 +256,46 @@ extension TableBuilder {
 
     // MARK: Pocket liners
 
-    /// One moulded cup and rolled lip in each edge pocket, scaled across from the model's authored mouth to the
-    /// pocket's drawn mouth (`cuts`, the same circles the cloth and rail are cut with, so they follow the solver's
-    /// jaws and capture circles). The cup is dark leather and is drawn from both sides (it is seen from inside).
-    static func addPocketLiners(cuts: [Outline.Cut], to group: Entity, lightSource: Entity?) {
+    /// The pocket models: CornerPocket.usdz in each corner and SidePocket.usdz in each side (Tools/blender/
+    /// make_pockets.py), each copy on its pocket's drawn hole (`cuts`, from the solver's jaws and capture circles),
+    /// turned about the vertical so its liner faces that pocket's back, and scaled across (x and z) by the drawn hole
+    /// over the hole the model is built round (exactly 1 on the standard table). The liner, funnel and slate are dark
+    /// and drawn from both sides (they are open shells seen from inside).
+    /// - standIns: the code-built stand-in for the corners and for the sides (TableBuilder.makeTable); each model
+    ///   switches its own off once its copies are in place, so a model that fails to load leaves the stand-in up.
+    static func addPocketLiners(cuts: [Outline.Cut], to group: Entity, standIns: [Entity?], lightSource: Entity?) {
         guard !cuts.isEmpty else { return }
         let holder = Entity()
         holder.name = "pocket-liners"
         group.addChild(holder)
+        // The hero file's own finishes, as screen colours: "Black pocket liner" (linear 0.019, 0.014, 0.012, rough
+        // 0.56) for the liner and the funnel, "Side of slate" (linear 0.035, 0.041, 0.042, rough 0.83) for the slate.
+        let liner = TablePartLook(color: (0.15, 0.12, 0.11), roughness: 0.56)
         let looks: [String: TablePartLook] = [
-            "PocketLiner": TablePartLook(color: (0.045, 0.032, 0.025), roughness: 0.75),
-            "PocketLip": TablePartLook(color: (0.09, 0.06, 0.045), roughness: 0.55, clearcoat: 0.3, clearcoatRoughness: 0.4),
+            "PocketLiner": liner,
+            "PocketFunnel": liner,
+            "PocketSlate": TablePartLook(color: (0.20, 0.22, 0.22), roughness: 0.83),
         ]
-        loadDressed(named: "Pocket", looks: looks, into: holder, lightSource: lightSource) { model in
-            doubleSided(model)
-            // The model becomes the first pocket's liner; the others are clones of it.
-            for (k, cut) in cuts.enumerated() {
-                let liner = k == 0 ? model : model.clone(recursive: true)
-                let s = cut.radius / pocketModelRadius
-                liner.position = SIMD3(cut.center.x, 0, cut.center.y)
-                liner.scale = SIMD3(s, 1, s)
-                liner.name = "pocket-liner-\(k)"
-                holder.addChild(liner)
+        for (which, model) in [cornerPocket, sidePocket].enumerated() {
+            let pockets = cuts.indices.filter { pocketModel($0).file == model.file }
+            guard !pockets.isEmpty else { continue }
+            let standIn: Entity? = which < standIns.count ? standIns[which] : nil
+            loadDressed(named: model.file, looks: looks, into: holder, lightSource: lightSource) { [weak standIn] loaded in
+                doubleSided(loaded)
+                // The loaded model becomes the first of its pockets; the others are clones of it.
+                for (n, k) in pockets.enumerated() {
+                    let cut = cuts[k]
+                    let copy = n == 0 ? loaded : loaded.clone(recursive: true)
+                    let back = pocketBack(cut)
+                    let s = cut.radius / model.holeRadius
+                    copy.position = SIMD3(cut.center.x, 0, cut.center.y)
+                    // A turn about +Y by angle t carries the model's back (+Z) to (sin t, 0, cos t).
+                    copy.orientation = simd_quatf(angle: atan2(back.x, back.y), axis: SIMD3(0, 1, 0))
+                    copy.scale = SIMD3(s, 1, s)
+                    copy.name = "pocket-\(k)"
+                    holder.addChild(copy)
+                }
+                standIn?.isEnabled = false
             }
         }
     }

@@ -45,6 +45,11 @@
 //          table is built with the scene root as its light source, for the models that load later.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (release stream: the -lensSelfTest check moved, unchanged, into
 //          LensScrubCheck.run so the unit tests run the same check; this file now only logs its result.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 21, 23, 34 and 56, wiring only: the balls are dressed
+//          in the table's own ball set (TableDetail.dress, from TableBallSet) when the scene is made and again whenever
+//          the table kind changes; apply takes the bridge mark and hands it to TableDetail's ring; each ball's drawn
+//          radius is passed on so its picture follows its own size on screen; and the opening's lamp shot is cued and
+//          its hold read through cueIntro and introHolding (TableCamera).)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -124,6 +129,7 @@ final class TableScene {
         }
         detail = TableDetail(bodies: bodies)
         detail?.attach(to: tableGroup)
+        detail?.dress(TableBallSet.for(table: kind))
         dropHole = Self.dropHoles(timeline, frame: frame, table: builtTable)
         TableBuilder.addLights(to: root)
         if surface.coversCushions { dress(surface) }
@@ -190,6 +196,8 @@ final class TableScene {
         buildTable()
         lens.buildGrid(frame: frame, table: builtTable)
         if surface.coversCushions { dress(surface) }
+        // Each table is played with its own balls (bar billiards' whites and red, and so on): re-dress them.
+        detail?.dress(TableBallSet.for(table: kind))
     }
 
     /// Light the scene with the generated lamp picture so the glossy parts have something to reflect.
@@ -243,7 +251,9 @@ final class TableScene {
 
     /// - stroke: how the shot on screen was struck, for the cue's follow-through at the start of the clock.
     /// - ride: true while the Ride camera may fly (ShowpieceModel.rideActive); the follow-through hides then.
-    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?, cueAim: AimPreview? = nil, stroke: CueStroke? = nil, ride: Bool = false) {
+    /// - bridgeMark: where the bridge hand rests while aiming (BridgeRing); nil hides the ring.
+    func apply(time rawT: Double, melt rawMelt: Double, rate: Double, aim: AimPreview?, cueAim: AimPreview? = nil,
+               stroke: CueStroke? = nil, ride: Bool = false, bridgeMark: BridgeMark? = nil) {
         // Test hooks (launch flags): pin the clock and/or the melt so a screenshot shows one exact frame.
         var t = Self.launchValue("-lensDebugTime") ?? rawT
         // -lensDebugTour a,b,c: before settling on the pinned time, visit these clock times, one per frame, forward
@@ -301,12 +311,14 @@ final class TableScene {
             balls[b].position = pos
             balls[b].orientation = frame.orientation(s.orientation)
             balls[b].scale = SIMD3(repeating: scale * ballScale * lensScale)
-            detail?.ball(b, centre: pos, lift: lift, radius: R, onCloth: visible && !s.pocketed, tableHalf: tableHalf)
+            detail?.ball(b, centre: pos, lift: lift, radius: R, drawn: R * ballScale * lensScale,
+                         onCloth: visible && !s.pocketed, tableHalf: tableHalf)
             bodies[b].components.set(OpacityComponent(opacity: 1 - 0.55 * m))
             markers[b].components.set(OpacityComponent(opacity: m))
             visibility.append(visible)
         }
 
+        detail?.bridge(bridgeMark, frame: frame)
         applyPins(t)
         lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
         cueRig.update(aim: cueAim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
@@ -349,9 +361,16 @@ final class TableScene {
         shotCamera.active = ride
         camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
                       request: request, frame: frame, ride: shotCamera, zoom: zoom)
-        // With the camera placed: the lamp shade's fade and the ball pictures for the size a ball now is on screen.
-        detail?.view(eye: camera.eye, ballDiameter: 2 * frame.ballRadius * camera.pointsPerMetre)
+        // With the camera placed: the lamp shade's fade and each ball's picture for the size it now is on screen.
+        detail?.view(eye: camera.eye, forward: camera.forward, focal: camera.focal)
     }
+
+    /// Whether the showpiece opening is at its start (TableStage, every frame, before the clock moves): its rise from
+    /// under the lamp starts when this turns true (see TableCamera.cueIntro).
+    func cueIntro(_ on: Bool) { camera.cueIntro(on) }
+
+    /// True while the opening's lamp shot has not yet risen to the table; TableStage holds the clock meanwhile.
+    var introHolding: Bool { camera.introHolding }
 
     // MARK: Test hooks
 

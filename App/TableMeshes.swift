@@ -17,6 +17,10 @@
 //          normals, so callers only have to supply correct normals, never think about winding.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Outline.withHoles: one outline for a face with round holes in it,
 //          for another table's bed holes).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 56: every mesh now carries tangents and bitangents,
+//          worked out from each triangle's texture coordinates, so a normal map (the cloth's close-up relief on the bed
+//          and cushions) has the surface directions it needs to show; before, the meshes had positions, normals and
+//          texture coordinates only and the relief had nothing to bend. Also Outline.circle for whole round holes.)
 // SRP/DRY check: Pass - geometry only; no materials, no textures, no scene state. Checked TableScene and
 //          LensLayer: the Lens builds its own ribbons and shares nothing with this file.
 import Foundation
@@ -58,8 +62,55 @@ struct MeshBuilder {
         d.positions = MeshBuffers.Positions(positions)
         d.normals = MeshBuffers.Normals(normals)
         d.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
+        let frame = tangentFrame()
+        d.tangents = MeshBuffers.Tangents(frame.tangents)
+        d.bitangents = MeshBuffers.Tangents(frame.bitangents)
         d.primitives = .triangles(indices)
         return try? MeshResource.generate(from: [d])
+    }
+
+    /// One tangent and bitangent per vertex: the surface directions in which the texture's u and v grow, which a normal
+    /// map is read against. Each triangle's directions come from how its positions change with its texture
+    /// coordinates (the usual edge-and-uv solve); a vertex shared by several triangles sums theirs. Each tangent is
+    /// then made square to the vertex normal, and the bitangent is normal x tangent, flipped where the texture is
+    /// mirrored so it still points the way v grows. A vertex whose triangles have no usable texture stretch (every
+    /// flat part with all-zero coordinates, such as the diamonds and spots) gets any direction square to its normal:
+    /// those parts wear no normal map, so the choice cannot show. Every vertex gets a value, as the descriptor requires.
+    func tangentFrame() -> (tangents: [SIMD3<Float>], bitangents: [SIMD3<Float>]) {
+        var t = [SIMD3<Float>](repeating: .zero, count: positions.count)
+        var b = [SIMD3<Float>](repeating: .zero, count: positions.count)
+        var k = 0
+        while k + 2 < indices.count {
+            let i0 = Int(indices[k]), i1 = Int(indices[k + 1]), i2 = Int(indices[k + 2])
+            k += 3
+            let e1 = positions[i1] - positions[i0], e2 = positions[i2] - positions[i0]
+            let d1 = uvs[i1] - uvs[i0], d2 = uvs[i2] - uvs[i0]
+            let det = d1.x * d2.y - d2.x * d1.y
+            // No texture stretch on this triangle (all three share a coordinate, or they sit on a line): skip it.
+            guard abs(det) > 1e-12 else { continue }
+            let r = 1 / det
+            let su = (e1 * d2.y - e2 * d1.y) * r      // where position moves as u grows
+            let sv = (e2 * d1.x - e1 * d2.x) * r      // where position moves as v grows
+            for i in [i0, i1, i2] { t[i] += su; b[i] += sv }
+        }
+        var tangents = [SIMD3<Float>](), bitangents = [SIMD3<Float>]()
+        tangents.reserveCapacity(positions.count); bitangents.reserveCapacity(positions.count)
+        for i in 0..<positions.count {
+            let n = normals[i]
+            // Gram-Schmidt: take out the part along the normal.
+            var tangent = t[i] - n * simd_dot(n, t[i])
+            if simd_length_squared(tangent) < 1e-16 {
+                // Any direction square to the normal: world x, or world z when the normal itself lies along x.
+                let helper: SIMD3<Float> = abs(n.x) < 0.9 ? SIMD3(1, 0, 0) : SIMD3(0, 0, 1)
+                tangent = helper - n * simd_dot(n, helper)
+            }
+            tangent = simd_normalize(tangent)
+            var bitangent = simd_cross(n, tangent)
+            // A mirrored texture runs v the other way round the normal: keep the bitangent pointing where v grows.
+            if simd_dot(bitangent, b[i]) < 0 { bitangent = -bitangent }
+            tangents.append(tangent); bitangents.append(bitangent)
+        }
+        return (tangents, bitangents)
     }
 }
 
@@ -180,6 +231,12 @@ enum Outline {
 
     /// A circle that cuts a rectangle outline: centre and radius in plan.
     struct Cut { let center: SIMD2<Float>; let radius: Float }
+
+    /// A whole circle as an outline (no repeated closing point), started a little off angle zero so the rightmost
+    /// point of one hole never lines up exactly with another's (withHoles bridges from a hole's rightmost point).
+    static func circle(center: SIMD2<Float>, radius: Float, stepDegrees: Float = 10) -> [SIMD2<Float>] {
+        Array(arc(center: center, radius: radius, from: 0.0137, to: 0.0137 + 2 * .pi, stepDegrees: stepDegrees).dropLast())
+    }
 
     /// Walks the outline of the rectangle |x| <= hx, |z| <= hz in counter-clockwise order, replacing every stretch
     /// that falls inside one of `cuts` by the circle's arc. `arcsOutside` picks which way the arc bulges: false keeps

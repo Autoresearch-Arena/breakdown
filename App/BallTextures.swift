@@ -15,8 +15,15 @@
 //          when a ball is small on screen (ballImage(number:compact:)): a wider stripe, a larger number disc, a heavier
 //          numeral, a darker ring and deeper colours, so stripes and numbers still read on a phone held upright;
 //          TableDetail swaps to them below a measured on-screen size. Also colour(of:) for the aiming badge.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 21 and 35: the pool cue ball carries six flush oxblood
+//          marks, copied from the other developer's spotted cue ball (art/equipment/spotted-cue-ball.blend), so the ball's
+//          turning, which it already does with its recorded spin, shows draw, stun and follow in the ordinary view; and
+//          each table's own balls (TableBallSet): ballImage(look:compact:) draws a plain white, red or yellow ball and
+//          bumper pool's marked ball (one colour with a spot of the other side's colour at each end of one axis);
+//          swatch(_ look:) gives a look's main colour for flat icons, the contract's call for the match views.)
 // SRP/DRY check: Pass - ball and Lens-grid drawing only; table surfaces are in SurfaceTextures.swift and the
-//          timing of it all is in StartupAssets.swift.
+//          timing of it all is in StartupAssets.swift. Which ball wears which look is TableBallSet's; which picture a ball
+//          wears on screen is TableDetail's.
 import CoreGraphics
 import CoreText
 import Foundation
@@ -33,7 +40,7 @@ enum BallTextures {
     /// A ball's main colour, red-green-blue from 0 to 1: the solid's colour, or the stripe's band (9 to 15 reuse 1 to
     /// 7, as the pictures do); ball 0 is the cue ball's ivory. For small flat icons outside the 3D scene.
     static func swatch(number: Int) -> (Double, Double, Double) {
-        guard number > 0 else { return (0.96, 0.94, 0.88) }
+        guard number > 0 else { return ivoryRGB }
         let i = number <= 8 ? number - 1 : number - 9
         return palette[max(0, min(i, palette.count - 1))]
     }
@@ -42,6 +49,40 @@ enum BallTextures {
     static func colour(of number: Int) -> (Double, Double, Double) {
         swatch(number: number)
     }
+
+    /// The colours of the other tables' balls. White is the pool cue ball's ivory and red and yellow are the pool
+    /// palette's own (the 3 and the 1), so a table's balls sit in the same family as the pool set.
+    static func colour(_ c: BallColour) -> (Double, Double, Double) {
+        switch c {
+        case .white: return ivoryRGB
+        case .red: return palette[2]
+        case .yellow: return palette[0]
+        }
+    }
+
+    /// A look's main colour, red-green-blue from 0 to 1, for small flat icons (the match banner's ball icons, the
+    /// aiming badge): the pool ball's colour, a plain ball's colour, or a marked ball's body colour.
+    static func swatch(_ look: BallLook) -> (Double, Double, Double) {
+        switch look {
+        case .pool(let number): return swatch(number: number)
+        case .plain(let c): return colour(c)
+        case .spotted(let c, _): return colour(c)
+        }
+    }
+
+    private static let ivoryRGB = (0.96, 0.94, 0.88)
+
+    /// The cue ball's six marks, from the spotted cue ball the other developer modelled: oxblood (its material's
+    /// linear 0.46, 0.011, 0.032 as screen colour), each 4.5 mm across the face on a 28.6 mm ball, so 0.158 rad as an
+    /// angle round the ball. They sit on the six ends of three square axes turned 35 degrees about one of them (as in
+    /// that model), so no mark rests dead on top or dead in front and a turn about any axis carries some of them round.
+    private static let markColour = SIMD3<Float>(0.70, 0.12, 0.17)
+    private static let markAngle: Float = 0.158
+    private static let markAxes: [SIMD3<Float>] = {
+        let a = Float(35) * .pi / 180
+        let u = SIMD3<Float>(sin(a), cos(a), 0), v = SIMD3<Float>(cos(a), -sin(a), 0), w = SIMD3<Float>(0, 0, 1)
+        return [u, -u, v, -v, w, -w]
+    }()
 
     // MARK: Balls
 
@@ -92,7 +133,7 @@ enum BallTextures {
         return t * t * (3 - 2 * t)
     }
 
-    /// One ball's picture. Solid balls are one colour; stripes are ivory with a coloured band round the middle. Both
+    /// One ball's picture. The cue ball (0) is ivory with six flush oxblood marks (see markAxes). Solid balls are one colour; stripes are ivory with a coloured band round the middle. Both
     /// carry an ivory number disc at each end of the line through the band's middle, exactly as a real ball does,
     /// sized like the real one (a bit over half the ball's width). The disc is tilted toward the camera and turned a
     /// little differently for each ball, so in the resting rack most numbers face the viewer, as in a real rack.
@@ -114,7 +155,10 @@ enum BallTextures {
             raster[i * 4 + 2] = UInt8(max(0, min(255, c.z * 255 + 0.5)))
         }
         if number == 0 {
-            for i in 0..<(w * h) { put(i, ivory) }
+            // The spotted cue ball. The small-on-screen picture grows each mark by the same fifth the number discs
+            // grow (0.59 to 0.70 rad), so the marks still read on a ball twenty points across.
+            let angle = compact ? markAngle * 1.2 : markAngle
+            for i in 0..<(w * h) { put(i, ivory + (markColour - ivory) * marks(directionTable[i], angle: angle)) }
             return makeImage(raster: raster, w: w, h: h)
         }
         var base = rgb(palette[number <= 8 ? number - 1 : number - 9])
@@ -180,6 +224,66 @@ enum BallTextures {
             put(i, c)
         }
         return makeImage(raster: raster, w: w, h: h)
+    }
+
+    /// How much of the cue ball's mark covers direction `d`: 1 inside a mark, 0 outside, with a soft edge about half a
+    /// pixel of the picture wide so the round marks stay round when the picture is shrunk.
+    private static func marks(_ d: SIMD3<Float>, angle: Float) -> Float {
+        let edge = cos(angle)
+        var cover: Float = 0
+        for a in markAxes {
+            let c = simd_dot(d, a)
+            if c > edge - 0.02 { cover = max(cover, smooth(edge - 0.006, edge + 0.006, c)) }
+        }
+        return cover
+    }
+
+    /// A picture for any ball look (TableBallSet): the numbered pool picture, a plain ball, or a marked ball.
+    /// - compact: the high-contrast picture for a ball that is small on screen (see ballImage(number:compact:)).
+    static func ballImage(look: BallLook, compact: Bool = false) -> CGImage? {
+        switch look {
+        case .pool(let number):
+            return ballImage(number: max(0, min(15, number)), compact: compact)
+        case .plain(let c):
+            let body = bodyColour(c, compact: compact)
+            var raster = [UInt8](repeating: 255, count: ballW * ballH * 4)
+            for i in 0..<(ballW * ballH) { write(&raster, i, body) }
+            return makeImage(raster: raster, w: ballW, h: ballH)
+        case .spotted(let c, let spot):
+            let body = bodyColour(c, compact: compact), mark = bodyColour(spot, compact: compact)
+            // The spot axis: tilted toward the camera side like the pool balls' number discs (about 40 degrees from
+            // straight up), so in the resting position one spot faces the viewer. A spot at each end, so it shows
+            // whichever way the ball comes to rest. Its size: 0.45 rad round the ball (about 26 degrees), a little
+            // over three quarters of a number disc, large enough to read at the size a ball is on a phone; the
+            // small-on-screen picture grows it by the same fifth the number discs grow.
+            let tilt: Float = 40 * .pi / 180
+            let axis = SIMD3<Float>(sin(tilt), cos(tilt), 0)
+            let edge = cos(compact ? 0.54 : 0.45)
+            var raster = [UInt8](repeating: 255, count: ballW * ballH * 4)
+            for i in 0..<(ballW * ballH) {
+                let k = smooth(edge - 0.008, edge + 0.008, abs(simd_dot(directionTable[i], axis)))
+                write(&raster, i, body + (mark - body) * k)
+            }
+            return makeImage(raster: raster, w: ballW, h: ballH)
+        }
+    }
+
+    /// A plain colour as the ball pictures draw it; the compact picture deepens it the way the pool colours are
+    /// deepened (white stays ivory: deepening a near-grey colour would only darken it).
+    private static func bodyColour(_ c: BallColour, compact: Bool) -> SIMD3<Float> {
+        let rgb = colour(c)
+        var base = SIMD3<Float>(Float(rgb.0), Float(rgb.1), Float(rgb.2))
+        if compact, c != .white {
+            let grey = (base.x + base.y + base.z) / 3
+            base = simd_clamp(base + (base - SIMD3(repeating: grey)) * 0.15 - SIMD3(repeating: 0.03), .zero, SIMD3(repeating: 1))
+        }
+        return base
+    }
+
+    private static func write(_ raster: inout [UInt8], _ i: Int, _ c: SIMD3<Float>) {
+        raster[i * 4] = UInt8(max(0, min(255, c.x * 255 + 0.5)))
+        raster[i * 4 + 1] = UInt8(max(0, min(255, c.y * 255 + 0.5)))
+        raster[i * 4 + 2] = UInt8(max(0, min(255, c.z * 255 + 0.5)))
     }
 
     /// How far (metres) the Lens grid picture extends past the playing surface on every side. It fades to nothing

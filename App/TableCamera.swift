@@ -25,10 +25,18 @@
 //          replace the pose, field of view and near plane for a replay; the HUD anchor now uses the field of view in use).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 3: update takes the hand zoom (TableZoom), applied
 //          to the fitted pose as one more distance multiplier and a look-point offset, before Ride; after each update
-//          the camera reports where its eye is and how many screen points a metre of table spans at the look point,
-//          which TableDetail reads to fade the lamp shade and to pick the ball pictures for small balls).
+//          the camera reports where its eye is and how large things look (see focal), which TableDetail reads to fade the
+//          lamp shade and to pick the ball pictures for small balls).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 34 and 56: the opening's lamp shot. When the showpiece
+//          opening starts (the first launch and Watch the intro; TableStage says when, through cueIntro), the camera
+//          opens low beside the table under the lit lamp, with the shade at the top of the frame and the cloth beyond,
+//          holds there a moment, then rises into the normal view of the table; TableStage holds the playback clock until
+//          it has risen, so the break is watched from the table view. Reduce Motion holds the lamp view then cuts to the table; -noPushIn skips it. And the
+//          camera now reports its view direction and focal size instead of one size at the look point, so TableDetail
+//          can size every ball by its own distance.)
 // SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame;
-//          the ride camera's own logic is in ShotCamera, this file only applies its answer.
+//          the ride camera's own logic is in ShotCamera, this file only applies its answer (and reuses ShotCamera.mix to
+//          blend the lamp shot into the table view).
 import CoreGraphics
 import Foundation
 import RealityKit
@@ -49,7 +57,7 @@ final class TableCamera {
     /// Rail top height above the cloth, so the near rail's top edge is framed too.
     private static let railHeight: Float = 0.075
     /// Metres the playing area reaches past the cloth's cushion line: the corner pocket holes (0.065 radius round the
-    /// cloth corner) plus a little of their metal rim. This is what must never sit under the title row or the controls.
+    /// cloth corner) plus a little of the liner behind them. This is what must never sit under the title row or the controls.
     private static let playReach: Float = 0.08
     /// The one overhead-ish angle Reduce Motion holds, in degrees. Near the Lens angle so the cross-fade lines up.
     private static let reducedMotionElevation: Float = 80
@@ -73,9 +81,79 @@ final class TableCamera {
 
     /// Where the camera's eye was put by the last update (world metres), for the lamp shade's fade (TableDetail).
     private(set) var eye = SIMD3<Float>(0, 3, 0)
-    /// Screen points spanned by one metre of table at the camera's look point after the last update: the view height
-    /// over the height the field of view covers at that distance. A ball's on-screen diameter is 2R times this.
-    private(set) var pointsPerMetre: Float = 100
+    /// The unit direction the camera looked in at the last update.
+    private(set) var forward = SIMD3<Float>(0, -1, 0)
+    /// Screen points spanned by one metre seen square-on one metre in front of the camera at the last update: the view
+    /// height over the field of view's height at one metre. Something r metres across at depth d along `forward` is
+    /// r * focal / d points across on screen (TableDetail sizes each ball this way).
+    private(set) var focal: Float = 100
+
+    // MARK: The opening's lamp shot (bug plan item 34)
+
+    /// Wall-clock start of the lamp shot, nil when none is running.
+    private var lampStart: TimeInterval?
+    /// The last value cueIntro was given, so a shot starts only when the opening starts (false to true).
+    private var introCued = false
+    /// How long the lamp shot holds under the lamp, then how long it takes to rise to the table (wall seconds): long
+    /// enough to take in the lit shade and the room, then a rise slow enough to read as one deliberate move.
+    static let lampHold: TimeInterval = 1.2
+    static let lampRise: TimeInterval = 1.9
+    /// The lamp shot's eye height above the cloth: under the 0.61 m below which TableDetail shows the shade in full,
+    /// and low enough to look up into its lit opening.
+    static let lampEyeHeight: Float = 0.34
+    /// The shade's outer size (Tools/blender/make_room.py: a 1.30 by 0.36 m opening at the bottom, a 1.16 by 0.16 m
+    /// top, 0.17 m tall; TableRoom stretches its length with the table).
+    private static let shadeBottomHalf = SIMD2<Float>(0.65, 0.18)
+    private static let shadeTopHalf = SIMD2<Float>(0.58, 0.08)
+    private static let shadeHeight: Float = 0.17
+
+    /// Tell the camera whether the showpiece opening is at its start (TableStage, every frame). The lamp shot begins
+    /// when this turns true and stops at once if it turns false (the opening was skipped or left). Launched with
+    /// -noPushIn (exact screenshot comparisons) there is none.
+    func cueIntro(_ on: Bool) {
+        if on, !introCued, !Self.motionOff { lampStart = ProcessInfo.processInfo.systemUptime }
+        if !on { lampStart = nil }
+        introCued = on
+    }
+
+    /// How long the lamp shot lasts: the hold and the rise, or under Reduce Motion the hold alone, after which the
+    /// view cuts to the table (the room's one deliberate moment is kept, the camera move is not).
+    private static var lampLength: TimeInterval { reduceMotion ? lampHold : lampHold + lampRise }
+
+    /// True until the lamp shot has risen to the table: TableStage holds the playback clock meanwhile.
+    var introHolding: Bool {
+        guard let start = lampStart else { return false }
+        return ProcessInfo.processInfo.systemUptime - start < Self.lampLength
+    }
+
+    /// The lamp shot: on the side the normal view looks from, a little outside the rail, low, looking toward the
+    /// table's middle and tilted up just enough that the shade's top edge sits near the top of the frame. The eye
+    /// backs off from the rail until the shade's top and the middle of the cloth both fit in the field of view.
+    private static func lampShot(frame: TableFrame, yaw: Float) -> CameraShot {
+        let h = lampEyeHeight
+        let toward = SIMD2<Float>(sin(yaw), cos(yaw))                  // table centre to camera, in plan (x, z)
+        let alongTable = abs(toward.x) > 0.5                           // looking along the table's length
+        let stretch = max(0.4, frame.length / 2.54)
+        let bottomHalf = alongTable ? shadeBottomHalf.x * stretch : shadeBottomHalf.y
+        let topHalf = alongTable ? shadeTopHalf.x * stretch : shadeTopHalf.y
+        let tableHalf = alongTable ? frame.length * 0.5 : frame.width * 0.5
+        let shadeBottom = TableBuilder.shadeBottom, shadeTop = TableBuilder.shadeBottom + shadeHeight
+        let fovRad = fov * .pi / 180, margin: Float = 2 * .pi / 180
+        // Start a quarter metre outside the rail and step back 5 cm at a time (at most 1.5 m, well inside the room).
+        var d = tableHalf + railReach + 0.25
+        var up: Float = 0
+        for _ in 0..<30 {
+            let topAngle = max(atan((shadeTop - h) / max(0.05, d - topHalf)), atan((shadeBottom - h) / max(0.05, d - bottomHalf)))
+            let middleAngle = atan(h / d)
+            up = topAngle + margin
+            if up + middleAngle + margin <= fovRad { break }
+            d += 0.05
+        }
+        let pitch = up - fovRad * 0.5                                  // the view's centre, above the horizon
+        let eye = SIMD3<Float>(toward.x * d, h, toward.y * d)
+        let look = SIMD3<Float>(-toward.x * cos(pitch), sin(pitch), -toward.y * cos(pitch))
+        return CameraShot(position: eye, target: eye + look, fov: fov, near: ShotCamera.overheadNear)
+    }
 
     /// Wall-clock moment of the first camera update, for the launch pull-back.
     private var introStart: TimeInterval?
@@ -150,19 +228,26 @@ final class TableCamera {
             target = zoomed.target
         }
         // Ride the shot: ShotCamera returns this overhead pose untouched unless Ride is on for the replay.
-        let shot = ride?.override(position: position, target: target, fov: Self.fov, free: freeNow, size: size,
+        var shot = ride?.override(position: position, target: target, fov: Self.fov, free: freeNow, size: size,
                                   reduceMotion: reduce)
             ?? CameraShot(position: position, target: target, fov: Self.fov, near: ShotCamera.overheadNear)
+        // The opening's lamp shot: held under the lamp, then blended into the table view as it rises (under Reduce
+        // Motion it ends after the hold, so the next frame cuts to the table).
+        if let start = lampStart {
+            let t = now - start
+            if t >= Self.lampLength {
+                lampStart = nil
+            } else {
+                let w = Float(Self.smooth((t - Self.lampHold) / Self.lampRise))
+                shot = ShotCamera.mix(Self.lampShot(frame: frame, yaw: yaw), shot, w)
+            }
+        }
         if camera.camera.fieldOfViewInDegrees != shot.fov { camera.camera.fieldOfViewInDegrees = shot.fov }
         if camera.camera.near != shot.near { camera.camera.near = shot.near }
         camera.look(at: shot.target, from: shot.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
         eye = shot.position
-        // How large the table looks where the camera is looking: where the line of sight meets the cloth (or the look
-        // target itself for a view that does not look down), and the field of view's height at that distance.
-        let sight = simd_normalize(shot.target - shot.position)
-        let reach = sight.y < -1e-3 ? -shot.position.y / sight.y : simd_length(shot.target - shot.position)
-        let span = 2 * tan(shot.fov * .pi / 360) * max(0.05, reach)
-        pointsPerMetre = Float(size.height) / span
+        forward = simd_normalize(shot.target - shot.position)
+        focal = Float(size.height) / (2 * tan(shot.fov * .pi / 360))
         // Sound stream hook (21-Nov-2026): tell the sound which way screen-right runs across the table, for panning.
         // Screen-right is the view direction crossed with world up (SoundStage normalises it).
         SoundStage.listen(frame: frame, cameraRight: simd_cross(shot.target - shot.position, SIMD3<Float>(0, 1, 0)))

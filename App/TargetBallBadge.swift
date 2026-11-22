@@ -11,7 +11,13 @@
 //          guide is switched off to hide.
 //          Shown inside AimOverlay (so only while "Your shot" is open); decoration only: no touches, and hidden from
 //          VoiceOver, which reads the aim through the overlay's own adjustable element.
-//          Strings: "Solid", "Stripe", "Eight ball" (localization/pending/look.json).
+//          Strings: the ball words are TableBallSet.label's (localization/pending/look.json and v07-base.json).
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 21 and 50: the badge draws the ball as the table it is
+//          on draws it (TableBallSet: a numbered pool ball, a plain white, red or yellow ball, or bumper pool's marked
+//          ball with its spot) and names it in that table's words ("Stripe", "White", "Marked red"; TableBallSet.label),
+//          instead of calling every ball on every table Solid or Stripe; and the ball is the one the guide itself shows
+//          the cue ball hitting first, side-spin push included (AimGeometry.guideContact), so the badge, the guide and
+//          the spoken aim always agree.)
 // SRP/DRY check: Pass - checked CaptionViews (CaptionLeader projects a caption's ball and places a glass chip; this
 //          places a different chip for a different moment, reusing the same projection maths from AimGeometry rather
 //          than copying it), AimOverlay (draws the guide; the badge sits in its layer with one line) and BallTextures
@@ -37,7 +43,9 @@ struct TargetBallBadge: View {
         TimelineView(.animation) { _ in
             GeometryReader { geo in
                 if let target = target(in: geo.size) {
-                    BallBadgeChip(number: target.ball)
+                    // The table drawn on screen (the one the shot was solved on) says how the ball looks and is named.
+                    let set = TableBallSet.for(table: model.solvedTable)
+                    BallBadgeChip(look: set.look(of: target.ball), label: set.label(of: target.ball))
                         .onGeometryChange(for: CGSize.self) { $0.size } action: { badgeSize = $0 }
                         .position(place(target, in: geo.size))
                         .id(target.ball)
@@ -51,16 +59,15 @@ struct TargetBallBadge: View {
         .accessibilityHidden(true)
     }
 
-    /// The ball the aim will hit first and where it is on screen: its centre and its on-screen radius.
+    /// The ball the aim will hit first and where it is on screen: its centre and its on-screen radius. The same answer
+    /// the guide draws its ghost ball from (AimGeometry.guideContact: the launch direction, side-spin push included).
     private func target(in size: CGSize) -> (ball: Int, centre: CGPoint, radius: CGFloat)? {
         guard aimGuide, model.aimReady, model.layout.count == 16, NextShot.isOnTable(model.aimOrigin),
               let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
         else { return nil }
         let r = model.timeline.table.ballRadius
-        let dir = model.aimDirection
-        guard dir.lengthSquared > 0.5,
-              let hit = AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin, direction: dir, radius: r),
+        guard let hit = AimGeometry.guideContact(for: model),
               let centre = proj.screen(hit.target) else { return nil }
         let side = proj.screen(hit.target + Vec2(r, 0)).map { hypot($0.x - centre.x, $0.y - centre.y) } ?? 8
         return (hit.ball, centre, max(4, side))
@@ -79,39 +86,44 @@ struct TargetBallBadge: View {
     }
 }
 
-/// The badge itself: a small drawn ball with its number, and what kind of ball it is, on system glass.
+/// The badge itself: a small drawn ball as its table draws it, and that table's word for it, on system glass.
 private struct BallBadgeChip: View {
-    let number: Int
+    let look: BallLook
+    let label: String
     @ScaledMetric(relativeTo: .caption) private var ball: CGFloat = 22
 
-    private var kind: String {
-        switch number {
-        case 8: return String(localized: "Eight ball")
-        case 9...15: return String(localized: "Stripe")
-        default: return String(localized: "Solid")
-        }
-    }
+    private static func color(_ c: (Double, Double, Double)) -> Color { Color(red: c.0, green: c.1, blue: c.2) }
 
     var body: some View {
-        let c = BallTextures.colour(of: number)
-        let colour = Color(red: c.0, green: c.1, blue: c.2)
-        let ivory = Color(red: 0.96, green: 0.94, blue: 0.88)
+        let colour = Self.color(BallTextures.swatch(look))
+        let ivory = Self.color(BallTextures.colour(.white))
         HStack(spacing: 6) {
             ZStack {
-                // A stripe: ivory with a coloured band across the middle; a solid: all colour.
-                Circle().fill(number > 8 ? ivory : colour)
-                if number > 8 { Rectangle().fill(colour).frame(height: ball * 0.56) }
-                Circle().fill(ivory).frame(width: ball * 0.62, height: ball * 0.62)
-                Text(verbatim: "\(number)")
-                    .font(.system(size: ball * 0.40, weight: .heavy, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(Color.black)
-                    .minimumScaleFactor(0.6)
+                switch look {
+                case .pool(let number):
+                    // A stripe: ivory with a coloured band across the middle; a solid: all colour; then the number disc.
+                    Circle().fill(number > 8 ? ivory : colour)
+                    if number > 8 { Rectangle().fill(colour).frame(height: ball * 0.56) }
+                    if number > 0 {
+                        Circle().fill(ivory).frame(width: ball * 0.62, height: ball * 0.62)
+                        Text(verbatim: "\(number)")
+                            .font(.system(size: ball * 0.40, weight: .heavy, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(Color.black)
+                            .minimumScaleFactor(0.6)
+                    }
+                case .plain:
+                    Circle().fill(colour)
+                case .spotted(_, let spot):
+                    // The marked ball: its side's colour with the other side's spot, as the 3D ball wears it.
+                    Circle().fill(colour)
+                    Circle().fill(Self.color(BallTextures.colour(spot))).frame(width: ball * 0.42, height: ball * 0.42)
+                }
             }
             .frame(width: ball, height: ball)
             .clipShape(Circle())
             .overlay(Circle().stroke(Color.black.opacity(0.35), lineWidth: 0.75))
-            Text(kind)
+            Text(label)
                 .font(Theme.label)
                 .lineLimit(1)
                 .fixedSize()
