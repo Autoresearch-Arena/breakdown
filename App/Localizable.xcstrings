@@ -47391,6 +47391,76 @@
         }
       }
     },
+    "Raised a little, about 24 degrees, with lots of right side.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرفوعة قليلاً، نحو 24 درجة، مع لف يميني كثير."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leicht angehoben, etwa 24 Grad, mit viel Rechtseffet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un poco elevado, unos 24 grados, con mucho efecto a la derecha."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un peu levée, environ 24 degrés, avec beaucoup d'effet à droite."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un po' alzata, circa 24 gradi, con tanto effetto a destra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "少し上げて約24度、右ひねりをたっぷり。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "살짝 들어 약 24도, 오른쪽 회전을 많이."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um pouco levantado, uns 24 graus, com muito efeito à direita."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um pouco levantado, uns 24 graus, com muito efeito à direita."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чуть поднят, около 24 градусов, с сильным правым винтом."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稍微抬起约 24 度，加大量右塞。"
+          }
+        }
+      }
+    },
     "Raised steeply, about 53 degrees. Hit down through the centre with a short punch.": {
       "localizations": {
         "ar": {
@@ -47527,6 +47597,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "抬到约 24 度，加满左塞。"
+          }
+        }
+      }
+    },
+    "Raised to about 30 degrees, with full left side.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مرفوعة إلى نحو 30 درجة، مع لف يساري كامل."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf etwa 30 Grad angehoben, mit vollem Linkseffet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elevado a unos 30 grados, con todo el efecto a la izquierda."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levée à environ 30 degrés, avec plein effet à gauche."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alzata a circa 30 gradi, con effetto pieno a sinistra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "約30度に上げ、左ひねりいっぱい。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "약 30도로 들고, 왼쪽 회전을 끝까지."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levantado a uns 30 graus, com efeito máximo à esquerda."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levantado a uns 30 graus, com efeito máximo à esquerda."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подними примерно на 30 градусов, с полным левым винтом."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "抬到约 30 度，加满左塞。"
           }
         }
       }
@@ -55227,6 +55367,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "陡，约 53 度，杆头在中心明显偏右、略偏下。"
+          }
+        }
+      }
+    },
+    "Steep, about 53 degrees, tip well right of centre.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "حادة، نحو 53 درجة، ورأس العصا يمين المركز بكثير."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steil, etwa 53 Grad, Spitze deutlich rechts der Mitte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empinado, unos 53 grados, punta bien a la derecha del centro."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raide, environ 53 degrés, procédé bien à droite du centre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripido, circa 53 gradi, cuoio ben a destra del centro."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "急角度で約53度、タップは中心よりかなり右。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가파르게 약 53도, 팁은 중심보다 한참 오른쪽."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclinado, uns 53 graus, ponta bem à direita do centro."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclinado, uns 53 graus, ponta bem à direita do centro."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Круто, около 53 градусов, наклейка заметно правее центра."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "陡，约 53 度，杆头在中心明显偏右。"
           }
         }
       }
