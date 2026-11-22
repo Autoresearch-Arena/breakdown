@@ -1,4 +1,10 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (0.7.4 watch-invite review: a stroke, a break or Try again while
+//          Watch your best shot replays first puts the cleared table back, so nothing is struck from the replayed
+//          shot's resting balls; controls the player set during that replay are kept; a lifted ball is dropped. The
+//          break's card waits for the session's second free-play break (G3 "from the second rack on"). Watch the
+//          intro's end card is disarmed by any other recording going on screen. rerack resets the rack memory only
+//          in free play.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3 and
 //          G4: a marked "Worth watching" section. finishStrike, after everything it already did, judges a shot once
 //          (ShotHighlightJudge) when the opening is over and no authored mode or drill is up; free play offers the
@@ -632,6 +638,8 @@ final class ShowpieceModel {
     /// The player's own break: solve it, then run it through the same cold open. Breaks the rack on screen (its seed,
     /// and the cue ball wherever ball in hand put it); with no rack on screen, a fresh rack of the current choice.
     func breakNow() {
+        // A stroke while Watch your best shot replays is played on the cleared table, not the replayed shot's (0.7.4).
+        endBestReplay()
         guard !isSolving else { return }
         if placingCueBall, !confirmCueBallPlacement() { return }
         if let m = match, !m.readyToShoot { return }
@@ -681,9 +689,10 @@ final class ShowpieceModel {
 
     /// Fresh rack, ready for a new break (the panel's break sliders drive it). In a match the match racks instead.
     func rerack() {
-        // A fresh rack: free play's highlight memory for the rack starts again (0.7.4).
-        startHighlightRack()
         guard match == nil else { return }
+        // A fresh rack: free play's highlight memory for the rack starts again (0.7.4). Below the guard: a match racks
+        // itself and keeps its own memory (startMatch resets free play's).
+        startHighlightRack()
         cancelPendingSolve()
         endPlacement(); ballInHand = .none
         shotsThisRack = 0
@@ -748,6 +757,9 @@ final class ShowpieceModel {
     /// Take the next shot from the resting layout. Skips the cold open: straight to the recorded replay,
     /// at real speed, with the Lens left as the player had it.
     func shootNow() {
+        // A stroke while Watch your best shot replays is struck from the cleared table: `layout` meanwhile holds where
+        // the replayed shot's balls stopped, and striking from it would carry that old table into this rack (0.7.4).
+        endBestReplay()
         guard layout.count == 16, !racked, !isSolving else { return }
         if placingCueBall, !confirmCueBallPlacement() { return }
         if let m = match, !m.readyToShoot { return }
@@ -994,6 +1006,9 @@ final class ShowpieceModel {
     /// that shot as the ghost. Change one thing and shoot again to see the difference. For the break this re-racks the
     /// identical rack (with the cue ball where it was placed).
     func tryAgain() {
+        // While Watch your best shot replays, the attempt on screen is the replayed one; the retry is of the shot that
+        // cleared the table, so that goes back first (0.7.4).
+        endBestReplay()
         guard let attempt = currentAttempt, aimReady, match == nil else { return }
         endPlacement(); ballInHand = .none
         undoStep = nil
@@ -1363,6 +1378,8 @@ final class ShowpieceModel {
     private func load(_ tl: Timeline, showpiece: Bool = false) {
         // Anything else going on the table ends Watch your best shot's replay; the replay's own loads say so (0.7.4).
         if replayingBest, !loadingKeptRecording { abandonBestReplay() }
+        // Anything but the showpiece going on screen means Watch the intro was left before its end (0.7.4).
+        if !showpiece { introWatchArmed = false }
         menuBackdropPlaying = false
         lensReplayStartedByPlayer = false
         // A new recording has no signature until its owner (a trick shot, a highlight) sets one (0.7.4).
@@ -3011,6 +3028,9 @@ final class ShowpieceModel {
     private var highlightWatched = false
     /// How often free play's card may appear, and which trick shots a card has sent the player to this session.
     private var highlightOffer = HighlightOffer()
+    /// Free-play breaks struck while the app runs (the first launch's opening break included); the break's card
+    /// waits for the second (plan G3: "from the second rack on").
+    @ObservationIgnored private var freePlayBreaksStruck = 0
 
     /// What free play's highlight card shows now: the highlight, whether Watch it in the Lens is still offered, and
     /// whether Try the trick shot is.
@@ -3080,6 +3100,9 @@ final class ShowpieceModel {
         judgedHighlight = nil
         highlightDismissed = false
         highlightWatched = false
+        // Free play's breaks are counted before anything is judged, so the first launch's opening break counts too:
+        // the break's card comes from the second rack of the session on (plan G3), never on the first break.
+        if isBreak, match == nil, !authoredModeUp, strokeDrillStorage?.isActive != true { freePlayBreaksStruck += 1 }
         // Nothing is judged before the first break of a first launch has finished, nor in an authored mode or the drill.
         guard openingStage == .none, !authoredModeUp, strokeDrillStorage?.isActive != true, let facts = shotFacts else {
             return
@@ -3090,6 +3113,7 @@ final class ShowpieceModel {
                                                isBreak: isBreak) else { return }
         if freePlay {
             noteBestShot(h)
+            if h.kind == .breakShot, freePlayBreaksStruck < 2 { return }
             // Ask the frequency rule only when the card can really show: a scratch puts the cue ball in hand, a shot
             // that cleared the table gets the Table cleared card (which offers the best shot) instead, and a retry's
             // comparison card already speaks for the shot. Asking would use up a common kind for a card nobody saw.
@@ -3149,6 +3173,9 @@ final class ShowpieceModel {
     }
 
     @ObservationIgnored private var clearedTable: ClearedTable?
+    /// The controls right after the best shot went on screen: unchanged at the end of its replay, the cleared table's
+    /// are put back; changed, the player set them (a power for the stroke they are striking now) and they stay.
+    @ObservationIgnored private var bestReplayControls: ControlValues?
     /// True while Watch your best shot replays: the Table cleared card stays up (without that button).
     private(set) var replayingBest = false
     /// True only while this section loads a kept recording itself, so load() does not take it for the table moving on.
@@ -3184,6 +3211,8 @@ final class ShowpieceModel {
         // A player's attempt is never the opening, so it was not pinned to the default generation (classic).
         showKeptRecording(best.attempt, input: best.attempt.input, classic: false, surface: best.attempt.surface,
                           table: best.attempt.table, generation: best.attempt.generation)
+        // The controls as the load left them (it re-aims): endBestReplay keeps any the player has set since.
+        bestReplayControls = controlValues
         if rideOn { rideOn = false }
         setPaceSignature(best.highlight.signatureEvents)
         replay(withLens: true)
@@ -3221,6 +3250,10 @@ final class ShowpieceModel {
     private func endBestReplay() {
         guard replayingBest else { return }
         guard let c = clearedTable else { replayingBest = false; return }
+        // Read before the load below, which may re-aim.
+        let touched = bestReplayControls.map { $0 != controlValues } ?? false
+        // A ball lifted near the end of the replay was lifted on the replayed shot's table, not this one.
+        endPlacement()
         showKeptRecording(c.attempt, input: c.input, classic: c.classic, surface: c.surface, table: c.table,
                           generation: c.generation)
         stage = .explore; stageTime = 0
@@ -3228,7 +3261,8 @@ final class ShowpieceModel {
         chosenRate = c.chosenRate
         meltTarget = c.lensOn ? 1 : 0
         rideOn = c.rideOn
-        restoreControlValues(c.controls)
+        if !touched { restoreControlValues(c.controls) }
+        bestReplayControls = nil
         if c.ghost != nil { ghostVersion += 1 }
         ghost = c.ghost; comparison = c.comparison; retryComparison = c.retryComparison
         clearedTable = nil
@@ -3239,6 +3273,7 @@ final class ShowpieceModel {
     /// cleared table is not put back, because the caller is replacing it.
     private func abandonBestReplay() {
         clearedTable = nil
+        bestReplayControls = nil
         replayingBest = false
     }
 
