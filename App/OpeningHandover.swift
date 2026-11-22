@@ -12,6 +12,10 @@
 //          faintly behind the cue ball until the player first changes the aim or the power; the first break ends with
 //          one short card (what the break did, "Learn the shots", "Keep playing"); the skip layer is laid under the
 //          title row and the controls by ShowpieceView, so only the table itself skips.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream aim, plans/22-Nov-2026-phone-bug-hunt.md #46: the
+//          hand-over no longer draws its own groove. Its wide, tapering band sat on top of AimOverlay's groove hint (the
+//          one shaped like the real groove), so two grooves showed and the first touch changed which. The hint is now
+//          the one groove; the halo is unchanged, so the first minute is as calm as before.)
 // PURPOSE: What a first-time player sees around the opening, the view side of the model's OpeningStage.
 //          FirstInstruction - the one instruction for the input in use (PlayInput): on touch the cue ball is pulled
 //            back and pushed through (letting go plays nothing, StrokeGesture), with a pointer it is pulled back and
@@ -23,9 +27,9 @@
 //            opening replay, so the .playing stage (a tap on the table skipping to the hand-over through
 //            ShowpieceModel.skipOpening, read by VoiceOver as one "Skip the intro" button) is kept but not reached on a
 //            first launch. At the hand-over (.handOver) it opens the aiming controls (the fresh rack in free
-//            play) and draws the one glowing control: a soft halo round the cue ball, where the pull-back starts, and
-//            the groove the stroke travels along, faint, behind it. The halo breathes; with Reduce Motion it holds still
-//            at full strength, so the still path reads the same. It never takes touches at the hand-over.
+//            play) and draws the one glowing control: a soft halo round the cue ball, where the pull-back starts. The
+//            faint groove behind it is AimOverlay's groove hint, which the open controls lay. The halo breathes; with
+//            Reduce Motion it holds still at full strength. It never takes touches at the hand-over.
 //          OpeningCard - the hand-over's one line (the instruction for the input in use) and the first-break card: what
 //            the break did, "Learn the shots" (prominent) and "Keep playing" (reopens Your shot). Since 0.7.1 the model
 //            passes straight through .firstBreakCard into Keep playing, so the player carries on from the break and
@@ -35,8 +39,8 @@
 //          Reads only the contract names (docs/award-batch-contracts.md section 2.1, docs/v07-contracts.md sections 1.4
 //          and 2.3); the model decides when each stage starts and ends.
 // SRP/DRY check: Pass - checked AimOverlay (draws the pull handle itself; this only adds a glow round it, projected the
-//          same way through AimProjector), StrokeDrawing in StrokeGesture (the live groove while a stroke is on; this
-//          draws the same band, fainter, only before the first touch), TrickTableLayer and GhostOverlay (the same
+//          same way through AimProjector), StrokeDrawing in StrokeGesture (the live groove while a stroke is on, and
+//          the hint before it, which AimOverlay draws at the hand-over; this layer draws no groove), TrickTableLayer and GhostOverlay (the same
 //          Canvas-over-the-table pattern), ShotPanel (owns the aiming tips, which this does not repeat) and MatchWords
 //          (the ball list words are reused). Card styling is the shared glassCard.
 import BreakdownLensModel
@@ -82,11 +86,6 @@ struct OpeningLayer: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var cameraBox = AimProjector.CameraBox()
-    /// The aim and power the hand-over started with. The faint groove shows until either changes, which is the
-    /// player's first touch on the stroke or the aim.
-    @State private var handOverStart: HandOverStart?
-
-    private struct HandOverStart: Equatable { let aimOffset: Double; let power: Double }
 
     var body: some View {
         ZStack {
@@ -113,27 +112,18 @@ struct OpeningLayer: View {
         }
         .ignoresSafeArea()
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.4), value: model.openingStage)
-        // The hand-over is the player's own break on a fresh rack: open the aiming controls for it, and remember the
-        // aim and power it starts with so the groove can step aside at the first touch.
+        // The hand-over is the player's own break on a fresh rack: open the aiming controls for it. Opening them also
+        // lays the stroke's groove hint behind the cue ball (AimOverlay.showsGrooveHint passes at the hand-over), the
+        // one groove on screen (0.7.6 #46).
         .onChange(of: model.openingStage, initial: true) { _, stage in
-            if stage == .handOver {
-                shotPanelOpen = true
-                handOverStart = HandOverStart(aimOffset: model.aimOffset, power: model.power)
-            } else {
-                handOverStart = nil
-            }
+            if stage == .handOver { shotPanelOpen = true }
         }
     }
 
-    /// True until the player first changes the aim or the power, and only for the inputs that pull the cue back on
-    /// the table (a finger, the Pencil, a pointer).
-    private var showsGroove: Bool {
-        guard let start = handOverStart, model.inputInUse == .touch || model.inputInUse == .pointer else { return false }
-        return start == HandOverStart(aimOffset: model.aimOffset, power: model.power)
-    }
-
-    /// The halo round the cue ball and, before the first touch, the groove behind it. Projected each frame through the
-    /// live camera, so both stay on the ball as the camera settles after the replay.
+    /// The halo round the cue ball, projected each frame through the live camera, so it stays on the ball as the
+    /// camera settles. The groove behind the ball is not drawn here any more (0.7.6 #46): this layer's own wider,
+    /// tapering band sat on top of AimOverlay's groove hint, which is the shape the real groove takes, so the player
+    /// saw two grooves and the first touch changed which one showed. AimOverlay's hint is now the only one.
     private func drawHandOver(_ ctx: inout GraphicsContext, size: CGSize, at date: Date) {
         guard let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table)),
@@ -147,7 +137,6 @@ struct OpeningLayer: View {
         }
         // One slow breath every two seconds (calm, not a warning blink); Reduce Motion holds the brightest moment.
         let breath = reduceMotion ? 1.0 : 0.5 + 0.5 * sin(date.timeIntervalSinceReferenceDate * Double.pi)
-        if showsGroove { drawGroove(&ctx, proj: proj, centre: centre, ballRadius: r, breath: breath) }
         let accent = palette.accent
         // Three rings, widest and faintest outside: a glow without a blur filter, which a Canvas redrawn every frame
         // would pay for on every frame.
@@ -156,38 +145,6 @@ struct OpeningLayer: View {
             let ring = Path(ellipseIn: CGRect(x: centre.x - rr, y: centre.y - rr, width: rr * 2, height: rr * 2))
             ctx.stroke(ring, with: .color(accent.opacity(alpha * (0.6 + 0.4 * breath))), lineWidth: r * 0.55)
         }
-    }
-
-    /// The stroke's path, shown rather than read: a faint band from the cue ball straight back along the cue line, as
-    /// long as a full pull (ShowpieceModel.pullReach) and as wide as the ball on screen, with a dashed centre line, the
-    /// same look as the live groove StrokeDrawing draws once a stroke starts, only fainter.
-    private func drawGroove(_ ctx: inout GraphicsContext, proj: AimProjector, centre: CGPoint, ballRadius r: CGFloat,
-                            breath: Double) {
-        let dir = model.aimDirection
-        guard let end = proj.screen(model.aimOrigin - dir * ShowpieceModel.pullReach) else { return }
-        let dx = end.x - centre.x, dy = end.y - centre.y
-        let length = hypot(dx, dy)
-        guard length > 1 else { return }
-        let back = CGVector(dx: dx / length, dy: dy / length)
-        let side = CGVector(dx: -back.dy, dy: back.dx)
-        // Starts just behind the ball (past the halo's inner ring) so the band never sits on the ball itself.
-        let start = r * 1.6
-        func at(_ s: CGFloat, _ t: CGFloat) -> CGPoint {
-            CGPoint(x: centre.x + back.dx * s + side.dx * t, y: centre.y + back.dy * s + side.dy * t)
-        }
-        var band = Path()
-        band.move(to: at(start, -r))
-        band.addLine(to: at(length, -r * 0.6))
-        band.addLine(to: at(length, r * 0.6))
-        band.addLine(to: at(start, r))
-        band.closeSubpath()
-        let paper = palette.paper
-        // Faint and breathing with the halo, so it reads as part of the one glowing control, not a second thing.
-        ctx.fill(band, with: .color(paper.opacity(0.06 + 0.04 * breath)))
-        var line = Path()
-        line.move(to: at(start, 0))
-        line.addLine(to: at(length, 0))
-        ctx.stroke(line, with: .color(paper.opacity(0.18 + 0.08 * breath)), style: StrokeStyle(lineWidth: 1, dash: [2, 6]))
     }
 }
 

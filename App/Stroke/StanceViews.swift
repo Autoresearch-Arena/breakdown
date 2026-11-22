@@ -5,7 +5,13 @@
 //          cue is still picked, and EquipmentRows.current is unchanged, since it also feeds the spoken stance line.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: the card no longer announces the stance on every
 //          change; VoiceOver hears it inside the aim's words and after a finished shot, TableWords.stanceLine.)
-// PURPOSE: The reach ladder on screen (App/Stroke/Reach.swift), apart from the bridge mark on the cloth (AimOverlay):
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream aim, plans/22-Nov-2026-phone-bug-hunt.md #44: inside the
+//          shot panel the card keeps its room while Your shot is open (reservesRoom). Swinging the aim made the stance
+//          row come and go, the panel grew and shrank by a row, and the table slid under the finger. Now the room is at
+//          least one row and never shrinks while the panel is up; with nothing to say it is an empty faint plate. Not
+//          during the first-launch hand-over, which still draws nothing here.)
+// PURPOSE: The reach ladder on screen (App/Stroke/Reach.swift), apart from the bridge mark on the cloth (BridgeRing,
+//          placed by TableStage; AimOverlay's flat copy went in 0.7.6):
 //          - EquipmentCard: the single equipment indicator. A small card beside the power and tip controls (inside the
 //            shot panel on a phone, among the notebook's cards on big screens and the open Duo) with a flat pictogram
 //            drawn in code and one plain line for each thing worth saying about how the next strike is played: the
@@ -77,11 +83,22 @@ struct EquipmentCard: View {
     /// True inside the shot panel, which is already a glass card: the rows sit on a faint plate instead of a second
     /// glass card.
     var embedded = false
+    /// True where the card's height reaches the table's framing (the shot panel under or beside the table): the card
+    /// keeps its room while it is on screen, so the table does not slide as the stance row comes and goes with the aim
+    /// (0.7.6 #44). The room is at least one row (oneRowRoom) and never shrinks while the card is up (keptHeight);
+    /// with no rows an empty faint plate holds it.
+    var reservesRoom = false
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// How many times the card has pulsed on this device; it stops after `pulseLimit`.
     @AppStorage("equipmentCardPulses") private var pulses = 0
     @State private var lifted = false
+    /// The tallest the rows have been while this card has been up (reservesRoom only), points. It resets when the card
+    /// leaves the screen, which is when the shot panel closes.
+    @State private var keptHeight: CGFloat = 0
+    /// One row's height inside the shot panel at the default text size, points: the 30-point pictogram or a line of
+    /// body text, whichever is taller, plus the plate's padding. Scaled with the text.
+    @ScaledMetric(relativeTo: .body) private var oneRowRoom: CGFloat = 42
 
     /// The card pulses the first three times it appears: enough to be noticed, then it simply shows.
     private static let pulseLimit = 3
@@ -90,10 +107,20 @@ struct EquipmentCard: View {
         // The first minute (0.7.5): during the hand-over the player sees a racked table and one instruction, nothing
         // else. No rows means nothing is drawn, so onAppear never runs and no pulse is counted on the device; the cue
         // pick itself (model.cueChoice) is untouched and the break is still struck with the break cue.
-        let rows = model.openingStage == .handOver ? [] : EquipmentRows.current(model)
+        let handOver = model.openingStage == .handOver
+        let rows = handOver ? [] : EquipmentRows.current(model)
+        // The room kept while the card is up (reservesRoom, #44): never less than one row, never less than the rows
+        // have been. Both branches below take exactly this height, so a row coming or going moves nothing.
+        let room: CGFloat = reservesRoom && !handOver ? max(keptHeight, oneRowRoom) : 0
         if !rows.isEmpty {
             let spoken = rows.map(\.line).joined(separator: ". ")
             content(rows)
+                // The rows' own height, measured before the kept room is applied, so the kept height only ever
+                // follows what the rows needed (no feedback from the frame below).
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+                    if reservesRoom, height > keptHeight { keptHeight = height }
+                }
+                .frame(minHeight: room, alignment: .top)
                 .scaleEffect(lifted ? 1.035 : 1)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(spoken)
@@ -101,6 +128,15 @@ struct EquipmentCard: View {
                 // (TableWords.stanceLine), not as an announcement on every change, which talked over the aim
                 // (access stream hook, 0.7.0 item 47).
                 .onAppear { pulseIfNew() }
+                .transition(.opacity)
+        } else if room > 0 {
+            // Nothing to say: the same room as an empty faint plate (the rows' plate without its outline), so the
+            // panel keeps its height as the aim swings. Silent for VoiceOver.
+            RoundedRectangle(cornerRadius: 14)
+                .fill(palette.paper.opacity(0.03))
+                .frame(maxWidth: .infinity)
+                .frame(height: room)
+                .accessibilityHidden(true)
                 .transition(.opacity)
         }
     }
