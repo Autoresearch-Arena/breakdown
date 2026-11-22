@@ -1,0 +1,3086 @@
+{
+ "keys": [
+  "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+  "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+  "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+  "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+  "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+  "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+  "It leaves already spinning like a rolling ball (natural roll).",
+  "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+  "It also carries right-hand side spin, which shows at the next rail.",
+  "It also carries left-hand side spin, which shows at the next rail.",
+  "It came in with backspin.",
+  "It came in sliding, with almost no spin.",
+  "It came in with some topspin, less than rolling.",
+  "It came in rolling.",
+  "It came in with more topspin than rolling.",
+  "It leaves with backspin, which the cloth must wear off before it rolls.",
+  "It leaves with almost no topspin or backspin.",
+  "It leaves with some topspin, less than rolling.",
+  "It leaves rolling.",
+  "It leaves with more topspin than rolling.",
+  "It keeps %@ percent of its side spin.",
+  "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+  "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+  "%@ microjoules",
+  "%@ millijoules",
+  "%@ joules",
+  "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+  "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+  "Your aim",
+  "Your stroke",
+  "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+  "The cue comes down on the ball",
+  "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+  "At the top of its flight its lowest point is %@ cm above the cloth.",
+  "It passes over %@ with %@ cm to spare.",
+  "Off the slate",
+  "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+  "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+  "Lands",
+  "Off the table",
+  "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+  "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+  "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+  "Throw",
+  "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+  "The path bends",
+  "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+  "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+  "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+  "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+  "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+  "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+  "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+  "Rail keeps at %@ m/s",
+  "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "En la superficie %1$@ la fricción de deslizamiento es %2$@ y la resistencia a la rodadura %3$@ (paño: %4$@ y %5$@), así que una bola se desliza la misma distancia que en el paño antes de rodar, y luego rueda unas %6$@ veces la distancia del paño."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "Sur la surface %1$@, la friction de glissement vaut %2$@ et la résistance au roulement %3$@ (tapis : %4$@ et %5$@), donc une bille glisse sur la même distance que sur le tapis avant de rouler, puis roule sur environ %6$@ fois la distance du tapis."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "Auf %1$@ beträgt die Gleitreibung %2$@ und der Rollwiderstand %3$@ (Tuch: %4$@ und %5$@), also rutscht eine Kugel genauso weit wie auf dem Tuch, bevor sie rollt, und rollt dann etwa %6$@-mal so weit."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "Sulla superficie %1$@ l'attrito radente è %2$@ e la resistenza al rotolamento %3$@ (panno: %4$@ e %5$@), quindi una palla striscia quanto sul panno prima di rotolare, poi rotola per circa %6$@ volte la distanza sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "Na superfície %1$@ o atrito de deslizamento é %2$@ e a resistência ao rolamento %3$@ (pano: %4$@ e %5$@), por isso uma bola desliza a mesma distância que no pano antes de rolar, e depois rola cerca de %6$@ vezes a distância do pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "Na superfície %1$@ o atrito de deslizamento é %2$@ e a resistência ao rolamento %3$@ (pano: %4$@ e %5$@), então uma bola desliza a mesma distância que no pano antes de rolar, e depois rola cerca de %6$@ vezes a distância do pano."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "%1$@では滑り摩擦が%2$@、転がり抵抗が%3$@（ラシャは%4$@と%5$@）なので、球が転がり始めるまでに滑る距離はラシャと同じで、転がる距離は約%6$@倍になります。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "%1$@에서는 미끄럼 마찰 %2$@, 구름 저항 %3$@입니다(당구천: %4$@, %5$@). 그래서 공이 구르기 전까지 미끄러지는 거리는 당구천과 같고, 구르는 거리는 약 %6$@배입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "在%1$@上，滑动摩擦系数是 %2$@，滚动阻力是 %3$@（台呢：%4$@ 和 %5$@），所以球在开始滚动前的滑动距离和台呢上一样，滚动距离约为 %6$@ 倍。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "На поверхности «%1$@» трение скольжения равно %2$@, а сопротивление качению %3$@ (сукно: %4$@ и %5$@), поэтому до начала качения шар скользит столько же, сколько на сукне, а катится примерно в %6$@ раза дальше."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids the same distance as on cloth before it rolls, then rolls about %@ times as far.",
+   "text": "على سطح «%1$@» يبلغ احتكاك الانزلاق %2$@ ومقاومة التدحرج %3$@ (الجوخ: %4$@ و%5$@)، لذلك تنزلق الكرة قبل أن تتدحرج المسافة نفسها كما على الجوخ، ثم تتدحرج مسافة تعادل نحو %6$@ مرة مسافتها على الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "En la superficie %1$@ la fricción de deslizamiento es %2$@ y la resistencia a la rodadura %3$@ (paño: %4$@ y %5$@), así que una bola se desliza unas %6$@ veces la distancia del paño antes de rodar, y luego rueda la misma distancia que en el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "Sur la surface %1$@, la friction de glissement vaut %2$@ et la résistance au roulement %3$@ (tapis : %4$@ et %5$@), donc une bille glisse sur environ %6$@ fois la distance du tapis avant de rouler, puis roule sur la même distance que sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "Auf %1$@ beträgt die Gleitreibung %2$@ und der Rollwiderstand %3$@ (Tuch: %4$@ und %5$@), also rutscht eine Kugel etwa %6$@-mal so weit, bevor sie rollt, und rollt dann genauso weit wie auf dem Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "Sulla superficie %1$@ l'attrito radente è %2$@ e la resistenza al rotolamento %3$@ (panno: %4$@ e %5$@), quindi una palla striscia per circa %6$@ volte la distanza sul panno prima di rotolare, poi rotola quanto sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "Na superfície %1$@ o atrito de deslizamento é %2$@ e a resistência ao rolamento %3$@ (pano: %4$@ e %5$@), por isso uma bola desliza cerca de %6$@ vezes a distância do pano antes de rolar, e depois rola a mesma distância que no pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "Na superfície %1$@ o atrito de deslizamento é %2$@ e a resistência ao rolamento %3$@ (pano: %4$@ e %5$@), então uma bola desliza cerca de %6$@ vezes a distância do pano antes de rolar, e depois rola a mesma distância que no pano."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "%1$@では滑り摩擦が%2$@、転がり抵抗が%3$@（ラシャは%4$@と%5$@）なので、球が転がり始めるまでに滑る距離はラシャの約%6$@倍で、転がる距離はラシャと同じです。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "%1$@에서는 미끄럼 마찰 %2$@, 구름 저항 %3$@입니다(당구천: %4$@, %5$@). 그래서 공이 구르기 전까지 미끄러지는 거리는 당구천의 약 %6$@배이고, 구르는 거리는 당구천과 같습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "在%1$@上，滑动摩擦系数是 %2$@，滚动阻力是 %3$@（台呢：%4$@ 和 %5$@），所以球在开始滚动前的滑动距离约为台呢上的 %6$@ 倍，滚动距离和台呢上一样。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "На поверхности «%1$@» трение скольжения равно %2$@, а сопротивление качению %3$@ (сукно: %4$@ и %5$@), поэтому до начала качения шар скользит примерно в %6$@ раза дальше, чем на сукне, а катится столько же, сколько на сукне."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ the sliding friction is %@ and the rolling resistance %@ (cloth: %@ and %@), so a ball skids about %@ times as far before it rolls, then rolls the same distance as on cloth.",
+   "text": "على سطح «%1$@» يبلغ احتكاك الانزلاق %2$@ ومقاومة التدحرج %3$@ (الجوخ: %4$@ و%5$@)، لذلك تنزلق الكرة قبل أن تتدحرج مسافة تعادل نحو %6$@ مرة مسافتها على الجوخ، ثم تتدحرج المسافة نفسها كما على الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Una bola que rueda recta contra una banda a %1$@ m/s conserva aquí el %2$lld por ciento de su velocidad (mesa estándar: %3$lld por ciento)."
+  },
+  {
+   "culture": "fr",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Une bille qui roule droit dans une bande à %1$@ m/s garde ici %2$lld pour cent de sa vitesse (table standard : %3$lld pour cent)."
+  },
+  {
+   "culture": "de",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Eine Kugel, die mit %1$@ m/s gerade in eine Bande rollt, behält hier %2$lld Prozent ihres Tempos (Standardtisch: %3$lld Prozent)."
+  },
+  {
+   "culture": "it",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Una palla che rotola dritta contro una sponda a %1$@ m/s qui mantiene il %2$lld per cento della sua velocità (tavolo standard: %3$lld per cento)."
+  },
+  {
+   "culture": "pt",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Uma bola que rola direita contra uma tabela a %1$@ m/s mantém aqui %2$lld por cento da velocidade (mesa padrão: %3$lld por cento)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Uma bola que rola reto contra uma tabela a %1$@ m/s mantém aqui %2$lld por cento da velocidade (mesa padrão: %3$lld por cento)."
+  },
+  {
+   "culture": "ja",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "%1$@ m/sでクッションにまっすぐ転がり込んだ球は、ここでは速さの%2$lldパーセントを保ちます（標準の台：%3$lldパーセント）。"
+  },
+  {
+   "culture": "ko",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "%1$@ m/s로 쿠션에 똑바로 굴러 들어간 공은 여기서 속도의 %2$lld퍼센트를 유지합니다(표준 당구대: %3$lld퍼센트)."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "以 %1$@ m/s 笔直滚向库边的球，在这里保留百分之%2$lld的速度（标准球台：百分之%3$lld）。"
+  },
+  {
+   "culture": "ru",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "Шар, который катится прямо в борт со скоростью %1$@ m/s, сохраняет здесь %2$lld процентов скорости (стандартный стол: %3$lld процентов)."
+  },
+  {
+   "culture": "ar",
+   "key": "A ball rolling straight into a rail at %@ m/s keeps %lld percent of its speed here (standard table: %lld percent).",
+   "text": "الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %1$@ m/s تحتفظ هنا بـ%2$lld في المئة من سرعتها (الطاولة القياسية: %3$lld في المئة)."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Sale con efecto de retroceso (draw): el %@ por ciento del giro de una bola que rueda, pero hacia atrás."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Elle part avec de l'effet rétro : %@ pour cent de la rotation d'une bille qui roule, mais vers l'arrière."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Sie läuft mit Rückwärtseffet ab (Zieher): %@ Prozent des Dralls einer rollenden Kugel, aber rückwärts."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Parte con effetto a ritroso (draw): il %@ per cento della rotazione di una palla che rotola, ma all'indietro."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Sai com efeito de recuo (draw): %@ por cento da rotação de uma bola a rolar, mas para trás."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Sai com efeito de recuo (draw): %@ por cento do giro de uma bola rolando, mas para trás."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "バックスピン（引き球）で出ていきます。転がる球の回転の%@パーセントで、向きは逆です。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "백스핀(끌어치기)을 품고 나갑니다. 구르는 공 회전의 %@퍼센트이며, 방향은 반대입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "它带着回旋（缩杆）出去：相当于滚动球旋转的百分之%@，但方向向后。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "Он уходит с обратным вращением (оттяжка): %@ процентов вращения катящегося шара, но назад."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with backspin (draw): %@ percent of a rolling ball's spin, turning backwards.",
+   "text": "تنطلق بدوران خلفي (سحب): %@ في المئة من دوران كرة متدحرجة، لكن إلى الخلف."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Sale casi sin efecto alto ni bajo (stun): se desliza hasta que el paño la pone a girar."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Elle part presque sans effet haut ni bas (coup sec) : elle glisse jusqu'à ce que le tapis la fasse tourner."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Sie läuft fast ohne Vor- oder Rückwärtseffet ab (Stoppball): Sie rutscht, bis das Tuch sie in Drehung bringt."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Parte quasi senza effetto alto o basso (stun): striscia finché il panno non la fa girare."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Sai quase sem efeito alto nem baixo (stun): desliza até o pano a pôr a rodar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Sai quase sem efeito alto nem baixo (stun): desliza até o pano fazê-la girar."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "上下の回転がほぼない状態（ストップ）で出ていきます。ラシャが回転をつけるまで滑ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "윗회전도 아랫회전도 거의 없이(스턴) 나갑니다. 천이 회전을 걸어 줄 때까지 미끄러집니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "它几乎不带上旋或回旋（定杆）出去：一直滑行，直到台呢让它转起来。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "Он уходит почти без верхнего и нижнего вращения (стоп): скользит, пока сукно не раскрутит его."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up.",
+   "text": "تنطلق تقريباً بلا دوران أمامي أو خلفي (توقيف): تنزلق حتى يجعلها الجوخ تدور."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Sale con efecto alto (follow): el %@ por ciento del giro de una bola que rueda."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Elle part avec de l'effet coulé : %@ pour cent de la rotation d'une bille qui roule."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Sie läuft mit Vorwärtseffet ab (Nachläufer): %@ Prozent des Dralls einer rollenden Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Parte con effetto in avanti (follow): il %@ per cento della rotazione di una palla che rotola."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Sai com efeito alto (follow): %@ por cento da rotação de uma bola a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Sai com efeito alto (follow): %@ por cento do giro de uma bola rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "トップスピン（押し球）で出ていきます。転がる球の回転の%@パーセントです。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "탑스핀(밀어치기)을 품고 나갑니다. 구르는 공 회전의 %@퍼센트입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "它带着上旋（跟杆）出去：相当于滚动球旋转的百分之%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "Он уходит с верхним вращением (накат): %@ процентов вращения катящегося шара."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with topspin (follow): %@ percent of a rolling ball's spin.",
+   "text": "تنطلق بدوران أمامي (متابعة): %@ في المئة من دوران كرة متدحرجة."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Sale girando ya como una bola que rueda (rodadura natural)."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Elle part en tournant déjà comme une bille qui roule (roulement naturel)."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Sie läuft schon mit dem Drall einer rollenden Kugel ab (natürliches Rollen)."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Parte già girando come una palla che rotola (rotolamento naturale)."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Sai já a rodar como uma bola a rolar (rolamento natural)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Sai já girando como uma bola rolando (rolamento natural)."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "はじめから転がる球と同じ回転で出ていきます（自然な転がり）。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "처음부터 구르는 공처럼 회전하며 나갑니다(자연스러운 구름)."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "它一出去就像滚动的球一样旋转（自然滚动）。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "Он уходит, уже вращаясь как катящийся шар (естественное качение)."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves already spinning like a rolling ball (natural roll).",
+   "text": "تنطلق وهي تدور مسبقاً مثل كرة متدحرجة (تدحرج طبيعي)."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Sale con más efecto alto que una bola que rueda (el %@ por ciento): el paño la acelera hasta que rueda."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Elle part avec plus d'effet coulé qu'une bille qui roule (%@ pour cent) : le tapis l'accélère jusqu'à ce qu'elle roule."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Sie läuft mit mehr Vorwärtseffet ab als eine rollende Kugel (%@ Prozent): Das Tuch zieht sie schneller, bis sie rollt."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Parte con più effetto in avanti di una palla che rotola (il %@ per cento): il panno la accelera finché non rotola."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Sai com mais efeito alto do que uma bola a rolar (%@ por cento): o pano acelera-a até ela rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Sai com mais efeito alto do que uma bola rolando (%@ por cento): o pano a acelera até ela rolar."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "転がる球より強いトップスピンで出ていきます（%@パーセント）。転がり始めるまでラシャが球を加速させます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "구르는 공보다 강한 탑스핀으로 나갑니다(%@퍼센트). 구르기 시작할 때까지 천이 공을 더 빠르게 끌어당깁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "它带着比滚动球更强的上旋出去（百分之%@）：台呢会把它拉快，直到它滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "Он уходит с более сильным верхним вращением, чем у катящегося шара (%@ процентов): сукно разгоняет его, пока он не покатится."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with more topspin than a rolling ball (%@ percent): the cloth pulls it faster until it rolls.",
+   "text": "تنطلق بدوران أمامي أكثر من كرة متدحرجة (%@ في المئة): يسرّعها الجوخ حتى تتدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "También lleva efecto lateral a la derecha, que se notará en la próxima banda."
+  },
+  {
+   "culture": "fr",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "Elle emporte aussi de l'effet à droite, qui se verra à la prochaine bande."
+  },
+  {
+   "culture": "de",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "Sie trägt auch rechten Seiteneffet, der sich an der nächsten Bande zeigt."
+  },
+  {
+   "culture": "it",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "Porta anche effetto laterale a destra, che si vedrà alla prossima sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "Leva também efeito lateral à direita, que se vai ver na próxima tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "Leva também efeito lateral à direita, que vai aparecer na próxima tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "右の横回転もかかっていて、次のクッションで効いてきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "오른쪽 옆회전도 걸려 있어서 다음 쿠션에서 드러납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "它还带着右侧旋，会在下一次碰库时显现。"
+  },
+  {
+   "culture": "ru",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "Ещё у него правый боковой винт, который проявится у следующего борта."
+  },
+  {
+   "culture": "ar",
+   "key": "It also carries right-hand side spin, which shows at the next rail.",
+   "text": "وتحمل أيضاً دوراناً جانبياً إلى اليمين يظهر عند الحافة التالية."
+  },
+  {
+   "culture": "es",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "También lleva efecto lateral a la izquierda, que se notará en la próxima banda."
+  },
+  {
+   "culture": "fr",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "Elle emporte aussi de l'effet à gauche, qui se verra à la prochaine bande."
+  },
+  {
+   "culture": "de",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "Sie trägt auch linken Seiteneffet, der sich an der nächsten Bande zeigt."
+  },
+  {
+   "culture": "it",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "Porta anche effetto laterale a sinistra, che si vedrà alla prossima sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "Leva também efeito lateral à esquerda, que se vai ver na próxima tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "Leva também efeito lateral à esquerda, que vai aparecer na próxima tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "左の横回転もかかっていて、次のクッションで効いてきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "왼쪽 옆회전도 걸려 있어서 다음 쿠션에서 드러납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "它还带着左侧旋，会在下一次碰库时显现。"
+  },
+  {
+   "culture": "ru",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "Ещё у него левый боковой винт, который проявится у следующего борта."
+  },
+  {
+   "culture": "ar",
+   "key": "It also carries left-hand side spin, which shows at the next rail.",
+   "text": "وتحمل أيضاً دوراناً جانبياً إلى اليسار يظهر عند الحافة التالية."
+  },
+  {
+   "culture": "es",
+   "key": "It came in with backspin.",
+   "text": "Llegó con efecto de retroceso."
+  },
+  {
+   "culture": "fr",
+   "key": "It came in with backspin.",
+   "text": "Elle arrivait avec de l'effet rétro."
+  },
+  {
+   "culture": "de",
+   "key": "It came in with backspin.",
+   "text": "Sie kam mit Rückwärtseffet an."
+  },
+  {
+   "culture": "it",
+   "key": "It came in with backspin.",
+   "text": "È arrivata con effetto a ritroso."
+  },
+  {
+   "culture": "pt",
+   "key": "It came in with backspin.",
+   "text": "Chegou com efeito de recuo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It came in with backspin.",
+   "text": "Chegou com efeito de recuo."
+  },
+  {
+   "culture": "ja",
+   "key": "It came in with backspin.",
+   "text": "バックスピンがかかった状態で入ってきました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It came in with backspin.",
+   "text": "백스핀을 품고 들어왔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It came in with backspin.",
+   "text": "它带着回旋撞过来。"
+  },
+  {
+   "culture": "ru",
+   "key": "It came in with backspin.",
+   "text": "Он пришёл с обратным вращением."
+  },
+  {
+   "culture": "ar",
+   "key": "It came in with backspin.",
+   "text": "وصلت بدوران خلفي."
+  },
+  {
+   "culture": "es",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "Llegó deslizándose, casi sin efecto."
+  },
+  {
+   "culture": "fr",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "Elle arrivait en glissant, presque sans rotation."
+  },
+  {
+   "culture": "de",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "Sie kam rutschend an, fast ohne Drall."
+  },
+  {
+   "culture": "it",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "È arrivata strisciando, quasi senza rotazione."
+  },
+  {
+   "culture": "pt",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "Chegou a deslizar, quase sem rotação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "Chegou deslizando, quase sem giro."
+  },
+  {
+   "culture": "ja",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "ほとんど回転のないまま滑って入ってきました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "회전이 거의 없이 미끄러지며 들어왔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "它几乎没有旋转，滑着撞过来。"
+  },
+  {
+   "culture": "ru",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "Он пришёл скользя, почти без вращения."
+  },
+  {
+   "culture": "ar",
+   "key": "It came in sliding, with almost no spin.",
+   "text": "وصلت منزلقة، تقريباً بلا دوران."
+  },
+  {
+   "culture": "es",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "Llegó con algo de efecto alto, menos que rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "Elle arrivait avec un peu d'effet coulé, moins qu'en roulant."
+  },
+  {
+   "culture": "de",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "Sie kam mit etwas Vorwärtseffet an, weniger als beim Rollen."
+  },
+  {
+   "culture": "it",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "È arrivata con un po' di effetto in avanti, meno che rotolando."
+  },
+  {
+   "culture": "pt",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "Chegou com algum efeito alto, menos do que a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "Chegou com um pouco de efeito alto, menos do que rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "転がりより弱いトップスピンで入ってきました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "구를 때보다 약한 탑스핀을 품고 들어왔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "它带着一些上旋撞过来，比滚动时少。"
+  },
+  {
+   "culture": "ru",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "Он пришёл с небольшим верхним вращением, слабее, чем при качении."
+  },
+  {
+   "culture": "ar",
+   "key": "It came in with some topspin, less than rolling.",
+   "text": "وصلت ببعض الدوران الأمامي، أقل من التدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "It came in rolling.",
+   "text": "Llegó rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "It came in rolling.",
+   "text": "Elle arrivait en roulant."
+  },
+  {
+   "culture": "de",
+   "key": "It came in rolling.",
+   "text": "Sie kam rollend an."
+  },
+  {
+   "culture": "it",
+   "key": "It came in rolling.",
+   "text": "È arrivata rotolando."
+  },
+  {
+   "culture": "pt",
+   "key": "It came in rolling.",
+   "text": "Chegou a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It came in rolling.",
+   "text": "Chegou rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It came in rolling.",
+   "text": "転がりながら入ってきました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It came in rolling.",
+   "text": "구르며 들어왔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It came in rolling.",
+   "text": "它滚着撞过来。"
+  },
+  {
+   "culture": "ru",
+   "key": "It came in rolling.",
+   "text": "Он пришёл катясь."
+  },
+  {
+   "culture": "ar",
+   "key": "It came in rolling.",
+   "text": "وصلت متدحرجة."
+  },
+  {
+   "culture": "es",
+   "key": "It came in with more topspin than rolling.",
+   "text": "Llegó con más efecto alto que rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "It came in with more topspin than rolling.",
+   "text": "Elle arrivait avec plus d'effet coulé qu'en roulant."
+  },
+  {
+   "culture": "de",
+   "key": "It came in with more topspin than rolling.",
+   "text": "Sie kam mit mehr Vorwärtseffet an als beim Rollen."
+  },
+  {
+   "culture": "it",
+   "key": "It came in with more topspin than rolling.",
+   "text": "È arrivata con più effetto in avanti che rotolando."
+  },
+  {
+   "culture": "pt",
+   "key": "It came in with more topspin than rolling.",
+   "text": "Chegou com mais efeito alto do que a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It came in with more topspin than rolling.",
+   "text": "Chegou com mais efeito alto do que rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It came in with more topspin than rolling.",
+   "text": "転がりより強いトップスピンで入ってきました。"
+  },
+  {
+   "culture": "ko",
+   "key": "It came in with more topspin than rolling.",
+   "text": "구를 때보다 강한 탑스핀을 품고 들어왔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It came in with more topspin than rolling.",
+   "text": "它带着比滚动时更强的上旋撞过来。"
+  },
+  {
+   "culture": "ru",
+   "key": "It came in with more topspin than rolling.",
+   "text": "Он пришёл с более сильным верхним вращением, чем при качении."
+  },
+  {
+   "culture": "ar",
+   "key": "It came in with more topspin than rolling.",
+   "text": "وصلت بدوران أمامي أكثر من التدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Sale con efecto de retroceso, que el paño tiene que gastar antes de que ruede."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Elle repart avec de l'effet rétro, que le tapis doit user avant qu'elle roule."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Sie läuft mit Rückwärtseffet ab, den das Tuch erst abbauen muss, bevor sie rollt."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Riparte con effetto a ritroso, che il panno deve consumare prima che rotoli."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Sai com efeito de recuo, que o pano tem de gastar antes de ela rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Sai com efeito de recuo, que o pano precisa gastar antes de ela rolar."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "バックスピンを持って離れ、転がり始める前にラシャがそれを消さなければなりません。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "백스핀을 품고 떠나며, 구르기 전에 천이 그것을 닳게 해야 합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "它带着回旋离开，台呢要先把回旋磨掉它才会滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "Он уходит с обратным вращением, которое сукно должно погасить, прежде чем шар покатится."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with backspin, which the cloth must wear off before it rolls.",
+   "text": "تغادر بدوران خلفي يجب أن يستهلكه الجوخ قبل أن تتدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Sale casi sin efecto alto ni bajo."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Elle repart presque sans effet haut ni bas."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Sie läuft fast ohne Vor- oder Rückwärtseffet ab."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Riparte quasi senza effetto alto o basso."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Sai quase sem efeito alto nem baixo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Sai quase sem efeito alto nem baixo."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "上下の回転がほとんどないまま離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "윗회전도 아랫회전도 거의 없이 떠납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "它离开时几乎不带上旋或回旋。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "Он уходит почти без верхнего и нижнего вращения."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with almost no topspin or backspin.",
+   "text": "تغادر تقريباً بلا دوران أمامي أو خلفي."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Sale con algo de efecto alto, menos que rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Elle repart avec un peu d'effet coulé, moins qu'en roulant."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Sie läuft mit etwas Vorwärtseffet ab, weniger als beim Rollen."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Riparte con un po' di effetto in avanti, meno che rotolando."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Sai com algum efeito alto, menos do que a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Sai com um pouco de efeito alto, menos do que rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "転がりより弱いトップスピンで離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "구를 때보다 약한 탑스핀을 품고 떠납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "它带着一些上旋离开，比滚动时少。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "Он уходит с небольшим верхним вращением, слабее, чем при качении."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with some topspin, less than rolling.",
+   "text": "تغادر ببعض الدوران الأمامي، أقل من التدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves rolling.",
+   "text": "Sale rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves rolling.",
+   "text": "Elle repart en roulant."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves rolling.",
+   "text": "Sie läuft rollend ab."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves rolling.",
+   "text": "Riparte rotolando."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves rolling.",
+   "text": "Sai a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves rolling.",
+   "text": "Sai rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves rolling.",
+   "text": "転がりながら離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves rolling.",
+   "text": "구르며 떠납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves rolling.",
+   "text": "它滚着离开。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves rolling.",
+   "text": "Он уходит катясь."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves rolling.",
+   "text": "تغادر متدحرجة."
+  },
+  {
+   "culture": "es",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Sale con más efecto alto que rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Elle repart avec plus d'effet coulé qu'en roulant."
+  },
+  {
+   "culture": "de",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Sie läuft mit mehr Vorwärtseffet ab als beim Rollen."
+  },
+  {
+   "culture": "it",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Riparte con più effetto in avanti che rotolando."
+  },
+  {
+   "culture": "pt",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Sai com mais efeito alto do que a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Sai com mais efeito alto do que rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "転がりより強いトップスピンで離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "구를 때보다 강한 탑스핀을 품고 떠납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "它带着比滚动时更强的上旋离开。"
+  },
+  {
+   "culture": "ru",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "Он уходит с более сильным верхним вращением, чем при качении."
+  },
+  {
+   "culture": "ar",
+   "key": "It leaves with more topspin than rolling.",
+   "text": "تغادر بدوران أمامي أكثر من التدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Conserva el %@ por ciento de su efecto lateral."
+  },
+  {
+   "culture": "fr",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Elle garde %@ pour cent de son effet latéral."
+  },
+  {
+   "culture": "de",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Sie behält %@ Prozent ihres Seiteneffets."
+  },
+  {
+   "culture": "it",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Mantiene il %@ per cento del suo effetto laterale."
+  },
+  {
+   "culture": "pt",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Mantém %@ por cento do efeito lateral."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Mantém %@ por cento do efeito lateral."
+  },
+  {
+   "culture": "ja",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "横回転の%@パーセントを保ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "옆회전의 %@퍼센트를 유지합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "它保留了百分之%@的侧旋。"
+  },
+  {
+   "culture": "ru",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "Он сохраняет %@ процентов бокового винта."
+  },
+  {
+   "culture": "ar",
+   "key": "It keeps %@ percent of its side spin.",
+   "text": "تحتفظ بـ%@ في المئة من دورانها الجانبي."
+  },
+  {
+   "culture": "es",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Mientras %1$@ se deslizaba, su trayectoria se curvó %2$@ grados a la izquierda: el paño tira en la dirección en que resbala la base de la bola, no en la de su movimiento."
+  },
+  {
+   "culture": "fr",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Pendant que %1$@ glissait, sa trajectoire s'est courbée de %2$@ degrés vers la gauche : le tapis tire dans le sens où glisse le dessous de la bille, pas dans celui de son mouvement."
+  },
+  {
+   "culture": "de",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Während %1$@ rutschte, bog ihre Bahn um %2$@ Grad nach links ab: Das Tuch zieht in die Richtung, in die die Unterseite der Kugel rutscht, nicht in ihre Laufrichtung."
+  },
+  {
+   "culture": "it",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Mentre %1$@ strisciava, la sua traiettoria ha curvato di %2$@ gradi a sinistra: il panno tira nel verso in cui scivola la base della palla, non in quello del suo moto."
+  },
+  {
+   "culture": "pt",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Enquanto %1$@ deslizava, a trajetória curvou %2$@ graus para a esquerda: o pano puxa no sentido em que a base da bola escorrega, não no sentido do movimento."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Enquanto %1$@ deslizava, a trajetória curvou %2$@ graus para a esquerda: o pano puxa no sentido em que a base da bola escorrega, não no sentido do movimento."
+  },
+  {
+   "culture": "ja",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "%1$@が滑っている間に、進路が左へ%2$@度曲がりました。ラシャは球の動く向きではなく、球の底が滑る向きに引っ張るからです。"
+  },
+  {
+   "culture": "ko",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "%1$@(이)가 미끄러지는 동안 경로가 왼쪽으로 %2$@도 휘었습니다. 천은 공이 움직이는 방향이 아니라 공 아랫면이 미끄러지는 방향으로 당기기 때문입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "%1$@ 滑行时，路线向左弯了 %2$@ 度：台呢拉动的方向是球底打滑的方向，而不是球运动的方向。"
+  },
+  {
+   "culture": "ru",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Пока %1$@ скользил, его путь отклонился влево на %2$@ градусов: сукно тянет туда, куда проскальзывает низ шара, а не туда, куда он движется."
+  },
+  {
+   "culture": "ar",
+   "key": "While %@ slid, its path bent %@ degrees to the left: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "بينما كانت %1$@ تنزلق، انحنى مسارها %2$@ درجة إلى اليسار: يسحب الجوخ في اتجاه انزلاق أسفل الكرة، لا في اتجاه حركتها."
+  },
+  {
+   "culture": "es",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Mientras %1$@ se deslizaba, su trayectoria se curvó %2$@ grados a la derecha: el paño tira en la dirección en que resbala la base de la bola, no en la de su movimiento."
+  },
+  {
+   "culture": "fr",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Pendant que %1$@ glissait, sa trajectoire s'est courbée de %2$@ degrés vers la droite : le tapis tire dans le sens où glisse le dessous de la bille, pas dans celui de son mouvement."
+  },
+  {
+   "culture": "de",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Während %1$@ rutschte, bog ihre Bahn um %2$@ Grad nach rechts ab: Das Tuch zieht in die Richtung, in die die Unterseite der Kugel rutscht, nicht in ihre Laufrichtung."
+  },
+  {
+   "culture": "it",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Mentre %1$@ strisciava, la sua traiettoria ha curvato di %2$@ gradi a destra: il panno tira nel verso in cui scivola la base della palla, non in quello del suo moto."
+  },
+  {
+   "culture": "pt",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Enquanto %1$@ deslizava, a trajetória curvou %2$@ graus para a direita: o pano puxa no sentido em que a base da bola escorrega, não no sentido do movimento."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Enquanto %1$@ deslizava, a trajetória curvou %2$@ graus para a direita: o pano puxa no sentido em que a base da bola escorrega, não no sentido do movimento."
+  },
+  {
+   "culture": "ja",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "%1$@が滑っている間に、進路が右へ%2$@度曲がりました。ラシャは球の動く向きではなく、球の底が滑る向きに引っ張るからです。"
+  },
+  {
+   "culture": "ko",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "%1$@(이)가 미끄러지는 동안 경로가 오른쪽으로 %2$@도 휘었습니다. 천은 공이 움직이는 방향이 아니라 공 아랫면이 미끄러지는 방향으로 당기기 때문입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "%1$@ 滑行时，路线向右弯了 %2$@ 度：台呢拉动的方向是球底打滑的方向，而不是球运动的方向。"
+  },
+  {
+   "culture": "ru",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "Пока %1$@ скользил, его путь отклонился вправо на %2$@ градусов: сукно тянет туда, куда проскальзывает низ шара, а не туда, куда он движется."
+  },
+  {
+   "culture": "ar",
+   "key": "While %@ slid, its path bent %@ degrees to the right: the cloth pulls along the slip of the ball's bottom, not along its motion.",
+   "text": "بينما كانت %1$@ تنزلق، انحنى مسارها %2$@ درجة إلى اليمين: يسحب الجوخ في اتجاه انزلاق أسفل الكرة، لا في اتجاه حركتها."
+  },
+  {
+   "culture": "es",
+   "key": "%@ microjoules",
+   "text": "%@ microjulios"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ microjoules",
+   "text": "%@ microjoules"
+  },
+  {
+   "culture": "de",
+   "key": "%@ microjoules",
+   "text": "%@ Mikrojoule"
+  },
+  {
+   "culture": "it",
+   "key": "%@ microjoules",
+   "text": "%@ microjoule"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ microjoules",
+   "text": "%@ microjoules"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ microjoules",
+   "text": "%@ microjoules"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ microjoules",
+   "text": "%@マイクロジュール"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ microjoules",
+   "text": "%@마이크로줄"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ microjoules",
+   "text": "%@ 微焦"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ microjoules",
+   "text": "%@ микроджоулей"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ microjoules",
+   "text": "%@ ميكرو جول"
+  },
+  {
+   "culture": "es",
+   "key": "%@ millijoules",
+   "text": "%@ milijulios"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ millijoules",
+   "text": "%@ millijoules"
+  },
+  {
+   "culture": "de",
+   "key": "%@ millijoules",
+   "text": "%@ Millijoule"
+  },
+  {
+   "culture": "it",
+   "key": "%@ millijoules",
+   "text": "%@ millijoule"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ millijoules",
+   "text": "%@ milijoules"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ millijoules",
+   "text": "%@ milijoules"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ millijoules",
+   "text": "%@ミリジュール"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ millijoules",
+   "text": "%@밀리줄"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ millijoules",
+   "text": "%@ 毫焦"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ millijoules",
+   "text": "%@ миллиджоулей"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ millijoules",
+   "text": "%@ ملي جول"
+  },
+  {
+   "culture": "es",
+   "key": "%@ joules",
+   "text": "%@ julios"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ joules",
+   "text": "%@ joules"
+  },
+  {
+   "culture": "de",
+   "key": "%@ joules",
+   "text": "%@ Joule"
+  },
+  {
+   "culture": "it",
+   "key": "%@ joules",
+   "text": "%@ joule"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ joules",
+   "text": "%@ joules"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ joules",
+   "text": "%@ joules"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ joules",
+   "text": "%@ジュール"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ joules",
+   "text": "%@줄"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ joules",
+   "text": "%@ 焦"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ joules",
+   "text": "%@ джоулей"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ joules",
+   "text": "%@ جول"
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Tu golpe giró el taco %@ grados a la izquierda de donde apuntaste: la línea tenue es tu puntería y la brillante, la línea real del taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Ton coup a tourné la queue de %@ degrés à gauche de ta visée : la ligne pâle est ta visée, la ligne vive la vraie ligne de la queue."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Dein Stoß hat das Queue um %@ Grad links von deinem Ziel gedreht: Die blasse Linie ist dein Ziel, die helle die echte Linie des Queues."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Il tuo colpo ha girato la stecca di %@ gradi a sinistra rispetto alla tua mira: la linea tenue è la tua mira, quella brillante la vera linea della stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "A tua tacada rodou o taco %@ graus para a esquerda de onde apontaste: a linha ténue é a tua mira, a brilhante a linha real do taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Sua tacada girou o taco %@ graus para a esquerda de onde você mirou: a linha fraca é a sua mira, a brilhante é a linha real do taco."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "ストロークでキューが狙いより%@度左にずれました。薄い線が狙い、明るい線がキューの実際のラインです。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "스트로크 때문에 큐가 겨냥한 곳보다 %@도 왼쪽으로 돌아갔어요. 흐린 선이 겨냥한 선, 밝은 선이 큐의 실제 선이에요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "你的出杆让球杆比瞄准的方向偏左了 %@ 度：淡的线是你的瞄准线，亮的线是球杆的实际线路。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Твой удар повернул кий на %@ градусов левее, чем ты целился: бледная линия — твой прицел, яркая — настоящая линия кия."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke turned the cue %@ degrees to the left of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "أدار ضربُك العصا %@ درجة إلى يسار ما صوّبت إليه: الخط الباهت هو تصويبك، والخط الساطع هو خط العصا الحقيقي."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Tu golpe giró el taco %@ grados a la derecha de donde apuntaste: la línea tenue es tu puntería y la brillante, la línea real del taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Ton coup a tourné la queue de %@ degrés à droite de ta visée : la ligne pâle est ta visée, la ligne vive la vraie ligne de la queue."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Dein Stoß hat das Queue um %@ Grad rechts von deinem Ziel gedreht: Die blasse Linie ist dein Ziel, die helle die echte Linie des Queues."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Il tuo colpo ha girato la stecca di %@ gradi a destra rispetto alla tua mira: la linea tenue è la tua mira, quella brillante la vera linea della stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "A tua tacada rodou o taco %@ graus para a direita de onde apontaste: a linha ténue é a tua mira, a brilhante a linha real do taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Sua tacada girou o taco %@ graus para a direita de onde você mirou: a linha fraca é a sua mira, a brilhante é a linha real do taco."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "ストロークでキューが狙いより%@度右にずれました。薄い線が狙い、明るい線がキューの実際のラインです。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "스트로크 때문에 큐가 겨냥한 곳보다 %@도 오른쪽으로 돌아갔어요. 흐린 선이 겨냥한 선, 밝은 선이 큐의 실제 선이에요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "你的出杆让球杆比瞄准的方向偏右了 %@ 度：淡的线是你的瞄准线，亮的线是球杆的实际线路。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "Твой удар повернул кий на %@ градусов правее, чем ты целился: бледная линия — твой прицел, яркая — настоящая линия кия."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke turned the cue %@ degrees to the right of where you aimed: the faint line is your aim, the bright one the cue's real line.",
+   "text": "أدار ضربُك العصا %@ درجة إلى يمين ما صوّبت إليه: الخط الباهت هو تصويبك، والخط الساطع هو خط العصا الحقيقي."
+  },
+  {
+   "culture": "es",
+   "key": "Your aim",
+   "text": "Tu puntería"
+  },
+  {
+   "culture": "fr",
+   "key": "Your aim",
+   "text": "Ta visée"
+  },
+  {
+   "culture": "de",
+   "key": "Your aim",
+   "text": "Dein Ziel"
+  },
+  {
+   "culture": "it",
+   "key": "Your aim",
+   "text": "La tua mira"
+  },
+  {
+   "culture": "pt",
+   "key": "Your aim",
+   "text": "A tua mira"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your aim",
+   "text": "Sua mira"
+  },
+  {
+   "culture": "ja",
+   "key": "Your aim",
+   "text": "狙い"
+  },
+  {
+   "culture": "ko",
+   "key": "Your aim",
+   "text": "겨냥"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your aim",
+   "text": "你的瞄准"
+  },
+  {
+   "culture": "ru",
+   "key": "Your aim",
+   "text": "Твой прицел"
+  },
+  {
+   "culture": "ar",
+   "key": "Your aim",
+   "text": "تصويبك"
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke",
+   "text": "Tu golpe"
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke",
+   "text": "Ton coup"
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke",
+   "text": "Dein Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke",
+   "text": "Il tuo colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke",
+   "text": "A tua tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke",
+   "text": "Sua tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke",
+   "text": "実際のストローク"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke",
+   "text": "실제 스트로크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke",
+   "text": "你的出杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke",
+   "text": "Твой удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke",
+   "text": "ضربتك"
+  },
+  {
+   "culture": "es",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "El taco, levantado %1$@ grados, impulsa la bola a %2$@ m/s a lo largo de su propia línea: %3$@ m/s sobre el paño y %4$@ m/s hacia abajo, contra la pizarra. La pizarra la devuelve hacia arriba a %5$@ m/s, así que despega del paño."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "La queue, levée de %1$@ degrés, lance la bille à %2$@ m/s le long de sa propre ligne : %3$@ m/s à plat sur le tapis et %4$@ m/s vers le bas, dans l'ardoise. L'ardoise la renvoie vers le haut à %5$@ m/s, donc elle quitte le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "Das Queue, um %1$@ Grad angehoben, treibt die Kugel mit %2$@ m/s entlang seiner eigenen Linie: %3$@ m/s über das Tuch und %4$@ m/s nach unten in die Schieferplatte. Die Platte wirft sie mit %5$@ m/s wieder hoch, also hebt sie vom Tuch ab."
+  },
+  {
+   "culture": "it",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "La stecca, alzata di %1$@ gradi, spinge la palla a %2$@ m/s lungo la propria linea: %3$@ m/s sul panno e %4$@ m/s verso il basso, contro l'ardesia. L'ardesia la rilancia verso l'alto a %5$@ m/s, così si stacca dal panno."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "O taco, levantado %1$@ graus, empurra a bola a %2$@ m/s ao longo da sua própria linha: %3$@ m/s pelo pano e %4$@ m/s para baixo, contra a ardósia. A ardósia devolve-a para cima a %5$@ m/s, por isso ela sai do pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "O taco, levantado %1$@ graus, empurra a bola a %2$@ m/s ao longo da própria linha: %3$@ m/s pelo pano e %4$@ m/s para baixo, contra a ardósia. A ardósia a devolve para cima a %5$@ m/s, então ela sai do pano."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@度持ち上げたキューは、自分のライン沿いに球を%2$@ m/sで押し出します。ラシャに沿って%3$@ m/s、スレートに向かって下へ%4$@ m/sです。スレートが球を%5$@ m/sで跳ね上げるので、球はラシャから離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@도 들어 올린 큐는 자기 선을 따라 공을 %2$@ m/s로 밀어냅니다. 천을 따라 %3$@ m/s, 슬레이트 쪽 아래로 %4$@ m/s입니다. 슬레이트가 공을 %5$@ m/s로 튕겨 올려서 공이 천에서 떠오릅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "球杆抬起 %1$@ 度，沿着自身的线路以 %2$@ m/s 推出球：贴着台呢 %3$@ m/s，向下压向石板 %4$@ m/s。石板把它以 %5$@ m/s 弹起，于是它离开了台呢。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "Кий, поднятый на %1$@ градусов, гонит шар со скоростью %2$@ m/s вдоль своей линии: %3$@ m/s вдоль сукна и %4$@ m/s вниз, в плиту. Плита подбрасывает его вверх со скоростью %5$@ m/s, и он отрывается от сукна."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+   "text": "العصا، المرفوعة %1$@ درجة، تدفع الكرة بسرعة %2$@ m/s على امتداد خطها: %3$@ m/s على طول الجوخ و%4$@ m/s إلى الأسفل نحو اللوح الحجري. يقذفها اللوح إلى الأعلى بسرعة %5$@ m/s، فتغادر الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "The cue comes down on the ball",
+   "text": "El taco cae sobre la bola"
+  },
+  {
+   "culture": "fr",
+   "key": "The cue comes down on the ball",
+   "text": "La queue frappe la bille par le haut"
+  },
+  {
+   "culture": "de",
+   "key": "The cue comes down on the ball",
+   "text": "Das Queue trifft die Kugel von oben"
+  },
+  {
+   "culture": "it",
+   "key": "The cue comes down on the ball",
+   "text": "La stecca scende sulla palla"
+  },
+  {
+   "culture": "pt",
+   "key": "The cue comes down on the ball",
+   "text": "O taco desce sobre a bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue comes down on the ball",
+   "text": "O taco desce sobre a bola"
+  },
+  {
+   "culture": "ja",
+   "key": "The cue comes down on the ball",
+   "text": "キューが上から球を突く"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue comes down on the ball",
+   "text": "큐가 위에서 공을 내리친다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue comes down on the ball",
+   "text": "球杆从上方击球"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue comes down on the ball",
+   "text": "Кий бьёт по шару сверху"
+  },
+  {
+   "culture": "ar",
+   "key": "The cue comes down on the ball",
+   "text": "العصا تنزل على الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ golpea la pizarra bajando a %2$@ m/s y rebota hacia arriba a %3$@ m/s, así que despega del paño."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ frappe l'ardoise en descendant à %2$@ m/s et rebondit vers le haut à %3$@ m/s, donc elle quitte le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ trifft die Schieferplatte mit %2$@ m/s nach unten und springt mit %3$@ m/s wieder hoch, also hebt sie vom Tuch ab."
+  },
+  {
+   "culture": "it",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ colpisce l'ardesia scendendo a %2$@ m/s e rimbalza verso l'alto a %3$@ m/s, così si stacca dal panno."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ bate na ardósia a descer a %2$@ m/s e ressalta para cima a %3$@ m/s, por isso sai do pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ bate na ardósia descendo a %2$@ m/s e quica para cima a %3$@ m/s, então sai do pano."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@は%2$@ m/sで下向きにスレートに当たり、%3$@ m/sで上に跳ね返るので、ラシャから離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@(이)가 %2$@ m/s로 내려가며 슬레이트에 부딪히고 %3$@ m/s로 튀어 올라, 천에서 떠오릅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ 以 %2$@ m/s 向下撞上石板，又以 %3$@ m/s 向上弹起，于是离开了台呢。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ ударяется о плиту, двигаясь вниз со скоростью %2$@ m/s, и отскакивает вверх со скоростью %3$@ m/s, поэтому отрывается от сукна."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
+   "text": "%1$@ تصطدم باللوح الحجري نازلةً بسرعة %2$@ m/s وترتد إلى الأعلى بسرعة %3$@ m/s، فتغادر الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "En lo más alto del vuelo, su punto más bajo está a %@ cm sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "Au sommet de son vol, son point le plus bas est à %@ cm au-dessus du tapis."
+  },
+  {
+   "culture": "de",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "Am höchsten Punkt des Flugs ist ihre Unterseite %@ cm über dem Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "Al culmine del volo, il suo punto più basso è a %@ cm sopra il panno."
+  },
+  {
+   "culture": "pt",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "No ponto mais alto do voo, a base dela está a %@ cm acima do pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "No ponto mais alto do voo, a base dela está a %@ cm acima do pano."
+  },
+  {
+   "culture": "ja",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "飛行の頂点で、球のいちばん下はラシャから%@ cmの高さにあります。"
+  },
+  {
+   "culture": "ko",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "비행의 꼭대기에서 공의 가장 아랫부분은 천에서 %@ cm 위에 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "飞到最高点时，它的最低点离台呢 %@ cm。"
+  },
+  {
+   "culture": "ru",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "В верхней точке полёта его низ находится на высоте %@ cm над сукном."
+  },
+  {
+   "culture": "ar",
+   "key": "At the top of its flight its lowest point is %@ cm above the cloth.",
+   "text": "في أعلى نقطة من طيرانها تكون أدنى نقطة فيها على ارتفاع %@ cm فوق الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Pasa por encima de %1$@ con %2$@ cm de margen."
+  },
+  {
+   "culture": "fr",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Elle passe au-dessus de %1$@ avec %2$@ cm de marge."
+  },
+  {
+   "culture": "de",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Sie fliegt über %1$@ mit %2$@ cm Luft."
+  },
+  {
+   "culture": "it",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Passa sopra %1$@ con %2$@ cm di margine."
+  },
+  {
+   "culture": "pt",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Passa sobre %1$@ com %2$@ cm de folga."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Passa sobre %1$@ com %2$@ cm de folga."
+  },
+  {
+   "culture": "ja",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "%1$@の上を%2$@ cmの余裕で越えていきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "%1$@ 위를 %2$@ cm의 여유를 두고 넘어갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "它从 %1$@ 上方飞过，还留有 %2$@ cm 的余量。"
+  },
+  {
+   "culture": "ru",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "Он пролетает над шаром (%1$@) с запасом %2$@ cm."
+  },
+  {
+   "culture": "ar",
+   "key": "It passes over %@ with %@ cm to spare.",
+   "text": "تمرّ فوق %1$@ بفارق %2$@ cm."
+  },
+  {
+   "culture": "es",
+   "key": "Off the slate",
+   "text": "Despega de la pizarra"
+  },
+  {
+   "culture": "fr",
+   "key": "Off the slate",
+   "text": "Rebond sur l'ardoise"
+  },
+  {
+   "culture": "de",
+   "key": "Off the slate",
+   "text": "Abheben von der Platte"
+  },
+  {
+   "culture": "it",
+   "key": "Off the slate",
+   "text": "Si stacca dall'ardesia"
+  },
+  {
+   "culture": "pt",
+   "key": "Off the slate",
+   "text": "Salta da ardósia"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Off the slate",
+   "text": "Salta da ardósia"
+  },
+  {
+   "culture": "ja",
+   "key": "Off the slate",
+   "text": "スレートで跳ねる"
+  },
+  {
+   "culture": "ko",
+   "key": "Off the slate",
+   "text": "슬레이트에서 튀어 오름"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Off the slate",
+   "text": "从石板弹起"
+  },
+  {
+   "culture": "ru",
+   "key": "Off the slate",
+   "text": "Отскок от плиты"
+  },
+  {
+   "culture": "ar",
+   "key": "Off the slate",
+   "text": "ارتداد عن اللوح"
+  },
+  {
+   "culture": "es",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ cae a %2$@ cm de donde despegó del paño, a %3$@ m/s, y la pizarra la devuelve hacia arriba a %4$@ m/s."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ retombe à %2$@ cm de l'endroit où elle a quitté le tapis, à %3$@ m/s, et l'ardoise la renvoie vers le haut à %4$@ m/s."
+  },
+  {
+   "culture": "de",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ landet %2$@ cm von der Stelle, an der sie abhob, mit %3$@ m/s, und die Platte wirft sie mit %4$@ m/s wieder hoch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ ricade a %2$@ cm da dove si era staccata dal panno, a %3$@ m/s, e l'ardesia la rilancia verso l'alto a %4$@ m/s."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ cai a %2$@ cm do sítio onde saiu do pano, a %3$@ m/s, e a ardósia devolve-a para cima a %4$@ m/s."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ cai a %2$@ cm de onde saiu do pano, a %3$@ m/s, e a ardósia a devolve para cima a %4$@ m/s."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@はラシャを離れた所から%2$@ cm先に%3$@ m/sで落ち、スレートが%4$@ m/sで再び跳ね上げます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@(이)가 천을 떠난 곳에서 %2$@ cm 떨어진 곳에 %3$@ m/s로 내려오고, 슬레이트가 %4$@ m/s로 다시 튕겨 올립니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ 落在离起跳点 %2$@ cm 的地方，落下速度 %3$@ m/s，石板又以 %4$@ m/s 把它弹起。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ приземляется в %2$@ cm от места, где оторвался от сукна, на скорости %3$@ m/s, и плита снова подбрасывает его со скоростью %4$@ m/s."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and the slate sends it back up at %@ m/s.",
+   "text": "%1$@ تهبط على بُعد %2$@ cm من حيث غادرت الجوخ، بسرعة %3$@ m/s، ويعيدها اللوح إلى الأعلى بسرعة %4$@ m/s."
+  },
+  {
+   "culture": "es",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ cae a %2$@ cm de donde despegó del paño, a %3$@ m/s, y se queda sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ retombe à %2$@ cm de l'endroit où elle a quitté le tapis, à %3$@ m/s, et reste sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ landet %2$@ cm von der Stelle, an der sie abhob, mit %3$@ m/s und bleibt auf dem Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ ricade a %2$@ cm da dove si era staccata dal panno, a %3$@ m/s, e resta sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ cai a %2$@ cm do sítio onde saiu do pano, a %3$@ m/s, e fica no pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ cai a %2$@ cm de onde saiu do pano, a %3$@ m/s, e fica no pano."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@はラシャを離れた所から%2$@ cm先に%3$@ m/sで落ち、そのままラシャに留まります。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@(이)가 천을 떠난 곳에서 %2$@ cm 떨어진 곳에 %3$@ m/s로 내려와 천 위에 머무릅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ 落在离起跳点 %2$@ cm 的地方，落下速度 %3$@ m/s，然后留在台呢上。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ приземляется в %2$@ cm от места, где оторвался от сукна, на скорости %3$@ m/s и остаётся на сукне."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ comes down %@ cm from where it left the cloth, at %@ m/s, and stays on the cloth.",
+   "text": "%1$@ تهبط على بُعد %2$@ cm من حيث غادرت الجوخ، بسرعة %3$@ m/s، وتبقى على الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "Lands",
+   "text": "Aterriza"
+  },
+  {
+   "culture": "fr",
+   "key": "Lands",
+   "text": "Atterrissage"
+  },
+  {
+   "culture": "de",
+   "key": "Lands",
+   "text": "Landung"
+  },
+  {
+   "culture": "it",
+   "key": "Lands",
+   "text": "Atterra"
+  },
+  {
+   "culture": "pt",
+   "key": "Lands",
+   "text": "Aterra"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lands",
+   "text": "Aterrissa"
+  },
+  {
+   "culture": "ja",
+   "key": "Lands",
+   "text": "着地"
+  },
+  {
+   "culture": "ko",
+   "key": "Lands",
+   "text": "착지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lands",
+   "text": "落地"
+  },
+  {
+   "culture": "ru",
+   "key": "Lands",
+   "text": "Приземление"
+  },
+  {
+   "culture": "ar",
+   "key": "Lands",
+   "text": "الهبوط"
+  },
+  {
+   "culture": "es",
+   "key": "Off the table",
+   "text": "Fuera de la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Off the table",
+   "text": "Hors de la table"
+  },
+  {
+   "culture": "de",
+   "key": "Off the table",
+   "text": "Vom Tisch"
+  },
+  {
+   "culture": "it",
+   "key": "Off the table",
+   "text": "Fuori dal tavolo"
+  },
+  {
+   "culture": "pt",
+   "key": "Off the table",
+   "text": "Fora da mesa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Off the table",
+   "text": "Fora da mesa"
+  },
+  {
+   "culture": "ja",
+   "key": "Off the table",
+   "text": "台の外へ"
+  },
+  {
+   "culture": "ko",
+   "key": "Off the table",
+   "text": "당구대 밖으로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Off the table",
+   "text": "飞出球台"
+  },
+  {
+   "culture": "ru",
+   "key": "Off the table",
+   "text": "Со стола"
+  },
+  {
+   "culture": "ar",
+   "key": "Off the table",
+   "text": "خارج الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ pasa volando sobre la banda a %2$@ cm del paño, a %3$@ m/s, y sale de la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ passe au-dessus de la bande à %2$@ cm du tapis, à %3$@ m/s, et quitte la table."
+  },
+  {
+   "culture": "de",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ fliegt %2$@ cm über dem Tuch mit %3$@ m/s über die Bande und verlässt den Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ vola sopra la sponda a %2$@ cm dal panno, a %3$@ m/s, ed esce dal tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ passa a voar por cima da tabela a %2$@ cm do pano, a %3$@ m/s, e sai da mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ passa voando por cima da tabela a %2$@ cm do pano, a %3$@ m/s, e sai da mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@はラシャから%2$@ cmの高さで%3$@ m/sのままクッションを越え、台の外へ出ます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@(이)가 천에서 %2$@ cm 높이로 %3$@ m/s의 속도로 쿠션을 넘어 당구대 밖으로 나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ 在离台呢 %2$@ cm 的高度、以 %3$@ m/s 飞过库边，离开了球台。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ пролетает над бортом в %2$@ cm над сукном на скорости %3$@ m/s и покидает стол."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ sails over the cushion %@ cm above the cloth at %@ m/s and leaves the table.",
+   "text": "%1$@ تطير فوق الحافة على ارتفاع %2$@ cm فوق الجوخ بسرعة %3$@ m/s وتغادر الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "La fricción entre las bolas arrastró %1$@ %2$@ grados a la izquierda de la línea de centros: eso es el arrastre (throw), y por eso falla un corte suave apuntado sobre esa línea."
+  },
+  {
+   "culture": "fr",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "Le frottement entre les billes a entraîné %1$@ de %2$@ degrés à gauche de la ligne des centres : c'est l'effet d'entraînement (throw), et c'est pourquoi une coupe douce visée sur la ligne rate."
+  },
+  {
+   "culture": "de",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "Die Reibung zwischen den Kugeln hat %1$@ um %2$@ Grad links von der Mittellinie gezogen: Das ist der Throw, und deshalb verfehlt ein weicher Schnitt, der auf die Linie gezielt ist."
+  },
+  {
+   "culture": "it",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "L'attrito tra le palle ha trascinato %1$@ di %2$@ gradi a sinistra della linea dei centri: è il throw, ed è per questo che un taglio morbido mirato sulla linea sbaglia."
+  },
+  {
+   "culture": "pt",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a esquerda da linha dos centros: isso é o throw, e é por isso que um corte suave apontado na linha falha."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a esquerda da linha dos centros: isso é o throw, e é por isso que um corte suave mirado na linha erra."
+  },
+  {
+   "culture": "ja",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "球どうしの摩擦で、%1$@は中心線より%2$@度左へ引きずられました。これがスローで、線上を狙った弱いカットが外れる理由です。"
+  },
+  {
+   "culture": "ko",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "공끼리의 마찰이 %1$@(을)를 중심선보다 %2$@도 왼쪽으로 끌었습니다. 이것이 스로우이고, 선 위를 겨냥한 약한 컷이 빗나가는 이유입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "两球之间的摩擦把 %1$@ 拖到了中心连线左边 %2$@ 度：这就是“带偏”（throw），也是瞄在线上的轻切球会打偏的原因。"
+  },
+  {
+   "culture": "ru",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "Трение между шарами увело шар (%1$@) на %2$@ градусов левее линии центров: это и есть отброс (throw), и поэтому мягкая резка, нацеленная по линии, промахивается."
+  },
+  {
+   "culture": "ar",
+   "key": "Friction between the balls dragged %@ %@ degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "سحب الاحتكاك بين الكرتين %1$@ بمقدار %2$@ درجة إلى يسار خط المركزين: هذا هو الانحراف بالاحتكاك (throw)، ولهذا تخطئ ضربة القطع الخفيفة المصوَّبة على الخط."
+  },
+  {
+   "culture": "es",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "La fricción entre las bolas arrastró %1$@ %2$@ grados a la derecha de la línea de centros: eso es el arrastre (throw), y por eso falla un corte suave apuntado sobre esa línea."
+  },
+  {
+   "culture": "fr",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "Le frottement entre les billes a entraîné %1$@ de %2$@ degrés à droite de la ligne des centres : c'est l'effet d'entraînement (throw), et c'est pourquoi une coupe douce visée sur la ligne rate."
+  },
+  {
+   "culture": "de",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "Die Reibung zwischen den Kugeln hat %1$@ um %2$@ Grad rechts von der Mittellinie gezogen: Das ist der Throw, und deshalb verfehlt ein weicher Schnitt, der auf die Linie gezielt ist."
+  },
+  {
+   "culture": "it",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "L'attrito tra le palle ha trascinato %1$@ di %2$@ gradi a destra della linea dei centri: è il throw, ed è per questo che un taglio morbido mirato sulla linea sbaglia."
+  },
+  {
+   "culture": "pt",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a direita da linha dos centros: isso é o throw, e é por isso que um corte suave apontado na linha falha."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a direita da linha dos centros: isso é o throw, e é por isso que um corte suave mirado na linha erra."
+  },
+  {
+   "culture": "ja",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "球どうしの摩擦で、%1$@は中心線より%2$@度右へ引きずられました。これがスローで、線上を狙った弱いカットが外れる理由です。"
+  },
+  {
+   "culture": "ko",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "공끼리의 마찰이 %1$@(을)를 중심선보다 %2$@도 오른쪽으로 끌었습니다. 이것이 스로우이고, 선 위를 겨냥한 약한 컷이 빗나가는 이유입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "两球之间的摩擦把 %1$@ 拖到了中心连线右边 %2$@ 度：这就是“带偏”（throw），也是瞄在线上的轻切球会打偏的原因。"
+  },
+  {
+   "culture": "ru",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "Трение между шарами увело шар (%1$@) на %2$@ градусов правее линии центров: это и есть отброс (throw), и поэтому мягкая резка, нацеленная по линии, промахивается."
+  },
+  {
+   "culture": "ar",
+   "key": "Friction between the balls dragged %@ %@ degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.",
+   "text": "سحب الاحتكاك بين الكرتين %1$@ بمقدار %2$@ درجة إلى يمين خط المركزين: هذا هو الانحراف بالاحتكاك (throw)، ولهذا تخطئ ضربة القطع الخفيفة المصوَّبة على الخط."
+  },
+  {
+   "culture": "es",
+   "key": "Throw",
+   "text": "Arrastre (throw)"
+  },
+  {
+   "culture": "fr",
+   "key": "Throw",
+   "text": "Effet d'entraînement"
+  },
+  {
+   "culture": "de",
+   "key": "Throw",
+   "text": "Throw"
+  },
+  {
+   "culture": "it",
+   "key": "Throw",
+   "text": "Throw"
+  },
+  {
+   "culture": "pt",
+   "key": "Throw",
+   "text": "Throw"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Throw",
+   "text": "Throw"
+  },
+  {
+   "culture": "ja",
+   "key": "Throw",
+   "text": "スロー"
+  },
+  {
+   "culture": "ko",
+   "key": "Throw",
+   "text": "스로우"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Throw",
+   "text": "带偏（throw）"
+  },
+  {
+   "culture": "ru",
+   "key": "Throw",
+   "text": "Отброс"
+  },
+  {
+   "culture": "ar",
+   "key": "Throw",
+   "text": "انحراف بالاحتكاك"
+  },
+  {
+   "culture": "es",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ toca la banda a %2$@ m/s. El borde de la banda está por encima del centro de la bola, así que empuja hacia abajo además de hacia atrás, y el paño recibe %3$@ milinewton-segundos de ese empuje. Conserva el %4$@ por ciento de su velocidad en línea recta contra la banda."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ touche la bande à %2$@ m/s. Le nez de la bande est au-dessus du centre de la bille, donc il pousse vers le bas autant qu'en arrière, et le tapis reçoit %3$@ millinewtons-secondes de cette poussée. Elle garde %4$@ pour cent de sa vitesse en ligne droite contre la bande."
+  },
+  {
+   "culture": "de",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ trifft die Bande mit %2$@ m/s. Die Bandenkante liegt über dem Mittelpunkt der Kugel, also drückt sie nach unten und nach hinten, und das Tuch nimmt %3$@ Millinewtonsekunden dieses Stoßes auf. Sie behält %4$@ Prozent ihres Tempos in Richtung Bande."
+  },
+  {
+   "culture": "it",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ colpisce la sponda a %2$@ m/s. Il profilo della sponda è sopra il centro della palla, quindi spinge verso il basso oltre che indietro, e il panno riceve %3$@ millinewton-secondo di quella spinta. Mantiene il %4$@ per cento della sua velocità verso la sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ bate na tabela a %2$@ m/s. A aresta da tabela fica acima do centro da bola, por isso empurra para baixo e também para trás, e o pano recebe %3$@ milinewton-segundos desse impulso. Mantém %4$@ por cento da velocidade em direção à tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ bate na tabela a %2$@ m/s. A borda da tabela fica acima do centro da bola, então empurra para baixo e também para trás, e o pano recebe %3$@ milinewton-segundos desse impulso. Ela mantém %4$@ por cento da velocidade em direção à tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@は%2$@ m/sでクッションに当たります。クッションの先端はボールの中心より高いので、後ろだけでなく下にも押し、その押しのうち%3$@ミリニュートン秒をラシャが受け止めます。クッションに向かう速さの%4$@パーセントを保ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@(이)가 %2$@ m/s로 쿠션에 맞습니다. 쿠션의 끝은 공의 중심보다 높아서 뒤로뿐 아니라 아래로도 누르고, 그 힘 가운데 %3$@밀리뉴턴초를 천이 받아 냅니다. 쿠션을 향한 속도의 %4$@퍼센트를 유지합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ 以 %2$@ m/s 的速度撞上库边。库边的边沿高于球心，所以它不仅向后推，还向下压，台呢承受了其中 %3$@ 毫牛·秒的冲量。沿库边方向保留了百分之%4$@的速度。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ ударяется о борт на скорости %2$@ m/s. Кромка борта выше центра шара, поэтому она давит не только назад, но и вниз, и сукно принимает %3$@ миллиньютон-секунд этого толчка. Он сохраняет %4$@ процентов скорости в направлении борта."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ hits the rail at %@ m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes %@ millinewton-seconds of that push. It keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ يصطدم بالحافة بسرعة %2$@ m/s. طرف الحافة أعلى من مركز الكرة، فيدفعها إلى الأسفل وإلى الخلف معاً، ويتلقّى القماش %3$@ ملي نيوتن ثانية من هذه الدفعة. ويحتفظ بـ%4$@ في المئة من سرعته متجهاً مباشرةً نحو الحافة."
+  },
+  {
+   "culture": "es",
+   "key": "The path bends",
+   "text": "La trayectoria se curva"
+  },
+  {
+   "culture": "fr",
+   "key": "The path bends",
+   "text": "La trajectoire s'incurve"
+  },
+  {
+   "culture": "de",
+   "key": "The path bends",
+   "text": "Die Bahn biegt ab"
+  },
+  {
+   "culture": "it",
+   "key": "The path bends",
+   "text": "La traiettoria curva"
+  },
+  {
+   "culture": "pt",
+   "key": "The path bends",
+   "text": "A trajetória curva"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The path bends",
+   "text": "A trajetória curva"
+  },
+  {
+   "culture": "ja",
+   "key": "The path bends",
+   "text": "進路が曲がる"
+  },
+  {
+   "culture": "ko",
+   "key": "The path bends",
+   "text": "경로가 휜다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The path bends",
+   "text": "路线弯曲"
+  },
+  {
+   "culture": "ru",
+   "key": "The path bends",
+   "text": "Путь изгибается"
+  },
+  {
+   "culture": "ar",
+   "key": "The path bends",
+   "text": "المسار ينحني"
+  },
+  {
+   "culture": "es",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ quedó encajada contra la goma, rebotando en el sitio con rebotes demasiado pequeños para verse. Se deja en reposo, y los %2$@ que esos rebotes habrían convertido en calor se retiran de una vez."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ était coincée contre le caoutchouc et rebondissait sur place en rebonds trop petits pour être vus. Elle est immobilisée, et les %2$@ que ces rebonds auraient changés en chaleur sont retirés d'un coup."
+  },
+  {
+   "culture": "de",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ war am Gummi eingeklemmt und sprang auf der Stelle hin und her, zu klein, um es zu sehen. Sie wird zur Ruhe gebracht, und die %2$@, die diese Sprünge in Wärme verwandelt hätten, werden auf einmal herausgenommen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ era incastrata contro la gomma e rimbalzava sul posto con rimbalzi troppo piccoli per vederli. Viene fermata, e i %2$@ che quei rimbalzi avrebbero trasformato in calore vengono tolti in un colpo solo."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ ficou encravada contra a borracha, a ressaltar no mesmo sítio em ressaltos pequenos demais para se verem. É posta em repouso, e os %2$@ que esses ressaltos teriam transformado em calor são retirados de uma vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ ficou presa contra a borracha, quicando no lugar em quiques pequenos demais para ver. Ela é colocada em repouso, e os %2$@ que esses quiques teriam virado calor são retirados de uma vez."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@はゴムに挟まり、目に見えないほど小さな跳ね返りをその場で繰り返していました。静止させ、その跳ね返りが熱に変えるはずだった%2$@を一度に取り除きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@(이)가 고무에 끼어, 눈에 보이지 않을 만큼 작은 튕김을 제자리에서 반복하고 있었습니다. 멈추게 하고, 그 튕김이 열로 바꿨을 %2$@을 한꺼번에 덜어 냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ 卡在橡胶边上，原地做着小到看不见的反弹。它被直接停下，那些反弹本会变成热量的 %2$@ 能量被一次性扣除。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ зажат у резины и подпрыгивает на месте так мелко, что этого не видно. Его останавливают, а энергию, которую эти отскоки превратили бы в тепло (%2$@), убирают сразу."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$@ انحشرت عند المطاط، ترتدّ في مكانها ارتدادات أصغر من أن تُرى. تُوقَف في مكانها، وتُنزع دفعةً واحدة الطاقة التي كانت تلك الارتدادات ستحوّلها إلى حرارة (%2$@)."
+  },
+  {
+   "culture": "es",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld bolas quedaron encajadas, rebotando unas contra otras con rebotes demasiado pequeños para verse. Se dejan en reposo tocándose, y los %2$@ que esos rebotes habrían convertido en calor se retiran de una vez."
+  },
+  {
+   "culture": "fr",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld billes étaient coincées ensemble et rebondissaient l'une contre l'autre en rebonds trop petits pour être vus. Elles sont immobilisées au contact, et les %2$@ que ces rebonds auraient changés en chaleur sont retirés d'un coup."
+  },
+  {
+   "culture": "de",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld Kugeln waren ineinander verkeilt und prallten in Sprüngen aneinander, zu klein, um sie zu sehen. Sie werden einander berührend zur Ruhe gebracht, und die %2$@, die diese Sprünge in Wärme verwandelt hätten, werden auf einmal herausgenommen."
+  },
+  {
+   "culture": "it",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld palle erano incastrate tra loro e rimbalzavano l'una contro l'altra con rimbalzi troppo piccoli per vederli. Vengono fermate a contatto, e i %2$@ che quei rimbalzi avrebbero trasformato in calore vengono tolti in un colpo solo."
+  },
+  {
+   "culture": "pt",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld bolas ficaram encravadas umas contra as outras, a ressaltar em ressaltos pequenos demais para se verem. São postas em repouso encostadas, e os %2$@ que esses ressaltos teriam transformado em calor são retirados de uma vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld bolas ficaram presas umas contra as outras, quicando em quiques pequenos demais para ver. Elas são colocadas em repouso encostadas, e os %2$@ que esses quiques teriam virado calor são retirados de uma vez."
+  },
+  {
+   "culture": "ja",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld個の球が挟まり合い、目に見えないほど小さな跳ね返りを繰り返していました。触れ合ったまま静止させ、その跳ね返りが熱に変えるはずだった%2$@を一度に取り除きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "공 %1$lld개가 서로 끼어, 눈에 보이지 않을 만큼 작은 튕김으로 서로 부딪치고 있었습니다. 닿은 채로 멈추게 하고, 그 튕김이 열로 바꿨을 %2$@을 한꺼번에 덜어 냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "%1$lld 个球卡在一起，互相做着小到看不见的反弹。它们被直接停在彼此接触的位置，那些反弹本会变成热量的 %2$@ 能量被一次性扣除。"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "Шары (%1$lld) зажаты друг о друга и подпрыгивают так мелко, что этого не видно. Их останавливают вплотную, а энергию, которую эти отскоки превратили бы в тепло (%2$@), убирают сразу."
+  },
+  {
+   "culture": "ar",
+   "key": "%lld balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the %@ those bounces would have turned into heat are taken out at once.",
+   "text": "انحشرت %1$lld كرات معاً، ترتدّ إحداها عن الأخرى ارتدادات أصغر من أن تُرى. تُوقَف وهي متلامسة، وتُنزع دفعةً واحدة الطاقة التي كانت تلك الارتدادات ستحوّلها إلى حرارة (%2$@)."
+  },
+  {
+   "culture": "es",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trazo ámbar: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trace ambrée : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Bernsteinfarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Traccia ambra: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rasto âmbar: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rastro âmbar: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
+  },
+  {
+   "culture": "ja",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "琥珀色の軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "호박색 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "琥珀色轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
+  },
+  {
+   "culture": "ru",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Янтарный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
+  },
+  {
+   "culture": "ar",
+   "key": "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "المسار الكهرماني: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trazo ámbar discontinuo: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trace ambrée en pointillés : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Gestrichelte bernsteinfarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Traccia ambra tratteggiata: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rasto âmbar tracejado: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rastro âmbar tracejado: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
+  },
+  {
+   "culture": "ja",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "琥珀色の破線の軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "호박색 점선 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "琥珀色虚线轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
+  },
+  {
+   "culture": "ru",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Янтарный пунктирный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
+  },
+  {
+   "culture": "ar",
+   "key": "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "المسار الكهرماني المتقطع: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Trazo cian: la bola rueda. El paño ha igualado su giro con su velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Trace cyan : la bille roule. Le tapis a accordé sa rotation à sa vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Cyanfarbene Spur: Die Kugel rollt. Das Tuch hat ihren Drall an ihr Tempo angepasst."
+  },
+  {
+   "culture": "it",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Traccia ciano: la palla rotola. Il panno ha accordato la sua rotazione alla sua velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Rasto ciano: a bola rola. O pano igualou a rotação à velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Rastro ciano: a bola está rolando. O pano igualou o giro à velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "シアンの軌跡：球は転がっています。ラシャが回転を速さに合わせました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "청록색 경로: 공이 구르고 있어요. 천이 회전을 속도에 맞췄어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "青色轨迹：球在滚动。台呢已让它的旋转与速度一致。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Голубой след: шар катится. Сукно подогнало его вращение под скорость."
+  },
+  {
+   "culture": "ar",
+   "key": "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "المسار السماوي: الكرة تتدحرج. جعل الجوخ دورانها متوافقاً مع سرعتها."
+  },
+  {
+   "culture": "es",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Trazo cian continuo: la bola rueda. El paño ha igualado su giro con su velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Trace cyan continue : la bille roule. Le tapis a accordé sa rotation à sa vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Durchgezogene cyanfarbene Spur: Die Kugel rollt. Das Tuch hat ihren Drall an ihr Tempo angepasst."
+  },
+  {
+   "culture": "it",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Traccia ciano continua: la palla rotola. Il panno ha accordato la sua rotazione alla sua velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Rasto ciano contínuo: a bola rola. O pano igualou a rotação à velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Rastro ciano contínuo: a bola está rolando. O pano igualou o giro à velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "シアンの実線の軌跡：球は転がっています。ラシャが回転を速さに合わせました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "청록색 실선 경로: 공이 구르고 있어요. 천이 회전을 속도에 맞췄어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "青色实线轨迹：球在滚动。台呢已让它的旋转与速度一致。"
+  },
+  {
+   "culture": "ru",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "Голубой сплошной след: шар катится. Сукно подогнало его вращение под скорость."
+  },
+  {
+   "culture": "ar",
+   "key": "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.",
+   "text": "المسار السماوي المتصل: الكرة تتدحرج. جعل الجوخ دورانها متوافقاً مع سرعتها."
+  },
+  {
+   "culture": "es",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Bandas: una bola que llega rodando recta a %1$@ m/s conserva el %2$lld por ciento de su velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Bandes : une bille qui arrive droit en roulant à %1$@ m/s garde %2$lld pour cent de sa vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Banden: Eine Kugel, die mit %1$@ m/s gerade hineinrollt, behält %2$lld Prozent ihres Tempos."
+  },
+  {
+   "culture": "it",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Sponde: una palla che arriva dritta rotolando a %1$@ m/s mantiene il %2$lld per cento della sua velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Tabelas: uma bola que chega a rolar direita a %1$@ m/s mantém %2$lld por cento da velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Tabelas: uma bola que chega rolando reto a %1$@ m/s mantém %2$lld por cento da velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "クッション：%1$@ m/sでまっすぐ転がり込んだ球は、速さの%2$lldパーセントを保ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "쿠션: %1$@ m/s로 똑바로 굴러 들어간 공은 속도의 %2$lld퍼센트를 유지합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "库边：以 %1$@ m/s 笔直滚入的球保留百分之%2$lld的速度。"
+  },
+  {
+   "culture": "ru",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "Борта: шар, который катится прямо в борт со скоростью %1$@ m/s, сохраняет %2$lld процентов скорости."
+  },
+  {
+   "culture": "ar",
+   "key": "Rails: a ball rolling straight in at %@ m/s keeps %lld percent of its speed.",
+   "text": "الحواف: الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %1$@ m/s تحتفظ بـ%2$lld في المئة من سرعتها."
+  },
+  {
+   "culture": "es",
+   "key": "Rail keeps at %@ m/s",
+   "text": "La banda conserva a %@ m/s"
+  },
+  {
+   "culture": "fr",
+   "key": "Rail keeps at %@ m/s",
+   "text": "Gardé par la bande à %@ m/s"
+  },
+  {
+   "culture": "de",
+   "key": "Rail keeps at %@ m/s",
+   "text": "Bande behält bei %@ m/s"
+  },
+  {
+   "culture": "it",
+   "key": "Rail keeps at %@ m/s",
+   "text": "La sponda mantiene a %@ m/s"
+  },
+  {
+   "culture": "pt",
+   "key": "Rail keeps at %@ m/s",
+   "text": "A tabela mantém a %@ m/s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rail keeps at %@ m/s",
+   "text": "A tabela mantém a %@ m/s"
+  },
+  {
+   "culture": "ja",
+   "key": "Rail keeps at %@ m/s",
+   "text": "%@ m/sでクッションが保つ割合"
+  },
+  {
+   "culture": "ko",
+   "key": "Rail keeps at %@ m/s",
+   "text": "%@ m/s에서 쿠션이 남기는 비율"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rail keeps at %@ m/s",
+   "text": "%@ m/s 时库边保留"
+  },
+  {
+   "culture": "ru",
+   "key": "Rail keeps at %@ m/s",
+   "text": "Борт сохраняет при %@ m/s"
+  },
+  {
+   "culture": "ar",
+   "key": "Rail keeps at %@ m/s",
+   "text": "ما تحتفظ به الحافة عند %@ m/s"
+  },
+  {
+   "culture": "es",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Paño: %1$@. Fricción de deslizamiento %2$@, estándar %3$@. Resistencia a la rodadura %4$@, estándar %5$@. Una bola que rueda recta contra una banda a %6$@ metros por segundo conserva el %7$lld por ciento de su velocidad, estándar %8$lld por ciento."
+  },
+  {
+   "culture": "fr",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Tapis : %1$@. Friction de glissement %2$@, standard %3$@. Résistance au roulement %4$@, standard %5$@. Une bille qui roule droit dans une bande à %6$@ mètres par seconde garde %7$lld pour cent de sa vitesse, standard %8$lld pour cent."
+  },
+  {
+   "culture": "de",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Tuch: %1$@. Gleitreibung %2$@, Standard %3$@. Rollwiderstand %4$@, Standard %5$@. Eine Kugel, die mit %6$@ Metern pro Sekunde gerade in eine Bande rollt, behält %7$lld Prozent ihres Tempos, Standard %8$lld Prozent."
+  },
+  {
+   "culture": "it",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Panno: %1$@. Attrito radente %2$@, standard %3$@. Resistenza al rotolamento %4$@, standard %5$@. Una palla che rotola dritta contro una sponda a %6$@ metri al secondo mantiene il %7$lld per cento della sua velocità, standard %8$lld per cento."
+  },
+  {
+   "culture": "pt",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Pano: %1$@. Atrito de deslizamento %2$@, padrão %3$@. Resistência ao rolamento %4$@, padrão %5$@. Uma bola que rola direita contra uma tabela a %6$@ metros por segundo mantém %7$lld por cento da velocidade, padrão %8$lld por cento."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Pano: %1$@. Atrito de deslizamento %2$@, padrão %3$@. Resistência ao rolamento %4$@, padrão %5$@. Uma bola que rola reto contra uma tabela a %6$@ metros por segundo mantém %7$lld por cento da velocidade, padrão %8$lld por cento."
+  },
+  {
+   "culture": "ja",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "ラシャ：%1$@。滑り摩擦%2$@、標準%3$@。転がり抵抗%4$@、標準%5$@。秒速%6$@メートルでクッションにまっすぐ転がり込んだ球は速さの%7$lldパーセントを保ち、標準は%8$lldパーセントです。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "천: %1$@. 미끄럼 마찰 %2$@, 표준 %3$@. 구름 저항 %4$@, 표준 %5$@. 초속 %6$@미터로 쿠션에 똑바로 굴러 들어간 공은 속도의 %7$lld퍼센트를 유지하고, 표준은 %8$lld퍼센트입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "台呢：%1$@。滑动摩擦 %2$@，标准 %3$@。滚动阻力 %4$@，标准 %5$@。以每秒 %6$@ 米笔直滚向库边的球保留百分之%7$lld的速度，标准为百分之%8$lld。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "Сукно: %1$@. Трение скольжения %2$@, стандарт %3$@. Сопротивление качению %4$@, стандарт %5$@. Шар, который катится прямо в борт со скоростью %6$@ метров в секунду, сохраняет %7$lld процентов скорости, стандарт %8$lld процентов."
+  },
+  {
+   "culture": "ar",
+   "key": "Cloth: %@. Sliding friction %@, standard %@. Rolling resistance %@, standard %@. A ball rolling straight into a rail at %@ metres per second keeps %lld percent of its speed, standard %lld percent.",
+   "text": "الجوخ: %1$@. احتكاك الانزلاق %2$@، والقياسي %3$@. مقاومة التدحرج %4$@، والقياسية %5$@. الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %6$@ متر في الثانية تحتفظ بـ%7$lld في المئة من سرعتها، والقياسية %8$lld في المئة."
+  }
+ ]
+}

@@ -24,17 +24,102 @@
 //          Lens it no longer crowds the top controls.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 4: with Differentiate Without Colour on,
 //          the Lens key draws sliding as a dashed line and rolling as a solid one, matching the trails, and says so.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 4,
+//          53 and 55: (4) when the player's own stroke turned the cue, the Lens draws the line they aimed along (faint,
+//          dashed) beside the line the cue really took (bright) from the cue ball out to its first contact, labelled
+//          "Your aim" and "Your stroke", and the strike caption gains a sentence saying how far and which way
+//          (LensStroke, ShowpieceModel.displayedCaption); (53) while the Lens tips are up the caption card, strip and
+//          on-table ring stand back (model.holdForTips), so the tips are the one thing on screen; (55) the equation line
+//          shows the event's own numbers (Caption.worked) on the opening's headline beats (model.holdingHeadline) even
+//          with Show the maths off, and whenever Show the maths is on.)
 // PURPOSE: The caption and equation card, the fixed-height caption strip, the Continue button for guided pacing, the
 //          Physics Lens key chip, and the highlight ring, on-table title chip and thin leader line that tie the words to
 //          the ball they describe. On a phone held upright the words sit in CaptionStrip under the table (ShowpieceView
 //          puts it above the controls); everywhere else the card sits in the side column (CaptionArea). The ring
 //          position is the ball's place on the table, read from the recorded timeline and projected to the screen by
 //          the 3D view each frame. Reads the model; writes to it only through nextBeat() (the Continue button).
-// SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette.
+//          The player's stroke lines are drawn by CaptionLeader too: it already holds the per-frame projection.
+// SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette. The
+//          stroke lines reuse LeaderState's projection rather than a second per-frame overlay.
 import BreakdownLensModel
 import BreakdownTimeline
 import RealityKit
 import SwiftUI
+
+// MARK: The player's stroke in the Lens
+
+/// The player's stroke on the shot on screen, as the Lens draws it: where the cue ball was struck from, the line the
+/// cue really took, the line the player aimed along, and how far to draw them. Read from the attempt (its StrokeDelivery
+/// says how far the stroke turned the cue) and the recording (its cue-strike event's normal is the struck direction,
+/// because StrokeDelivery.apply turned the strike before it was solved). Nothing is drawn that was not recorded.
+struct LensStroke: Equatable {
+    let from: Vec2
+    let struck: Vec2
+    let aimed: Vec2
+    /// Metres along both lines: out to where the cue ball made its first contact, so the gap between their far ends is
+    /// the miss the stroke made there.
+    let length: Double
+    /// StrokeDelivery.aimError, radians, positive counter-clockwise (to the shooter's left).
+    let aimError: Double
+    /// Clock time of that first contact; the lines then fade over the same seconds a trail does.
+    let until: Double
+
+    /// Smallest gap between the two lines' far ends worth drawing, metres. A millimetre at the first ball moves the
+    /// contact point by a fifty-seventh of a ball's width, which turns a cut by about a degree: enough to miss a long
+    /// pot, so it is worth showing; anything finer is two lines drawn on top of each other.
+    static let minimumGap = 0.001
+    /// The shortest and longest lines drawn, metres: under 30 cm (a contact right in front of the ball) the two lines
+    /// cannot be told apart at the far end; past 2 m (the cue ball ran a table length untouched) they leave the cloth.
+    static let lengthRange = 0.3...2.0
+
+    /// The stroke to draw now, or nil: only in the Lens, only for one of the player's own strokes that the drift turned,
+    /// and only while that very recording is on screen (the attempt's recording matches the one being played).
+    @MainActor static func onScreen(_ model: ShowpieceModel) -> LensStroke? {
+        guard model.lensOn, !model.menuOpen, let attempt = model.currentAttempt, let d = attempt.stroke,
+              d.aimError != 0 else { return nil }
+        let tl = model.timeline
+        guard attempt.timeline.events.count == tl.events.count, attempt.timeline.duration == tl.duration,
+              let strike = tl.events.first(where: { $0.kind == .cueStrike }), let ball = strike.balls.first?.ball,
+              ball < tl.ballCount else { return nil }
+        let struck = strike.normal.normalized
+        guard struck.length > 0.5 else { return nil }
+        // The aimed line: the struck one turned back by the drift (StrokeDelivery.apply turned it by +aimError).
+        let c = cos(-d.aimError), s = sin(-d.aimError)
+        let aimed = Vec2(struck.x * c - struck.y * s, struck.x * s + struck.y * c)
+        // Out to the cue ball's first contact with anything (a ball, a rail, a jaw); phase changes are not contacts.
+        let first = tl.events.first {
+            $0.time > strike.time && $0.kind != .phaseTransition && $0.balls.contains { $0.ball == ball }
+        }
+        let until = first?.time ?? tl.duration
+        let reach = (tl.state(ball: ball, at: until).position - strike.point).length
+        let length = min(lengthRange.upperBound, max(lengthRange.lowerBound, reach))
+        guard length * abs(sin(d.aimError)) >= minimumGap else { return nil }
+        return LensStroke(from: strike.point, struck: struck, aimed: aimed, length: length, aimError: d.aimError,
+                          until: until)
+    }
+
+    /// How strongly to draw the lines at clock `t`: full until a trail's hold after the first contact, then fading out
+    /// with the trails (LensLayer's own hold and fade, read, not copied; LensLayer is main-actor, hence the mark).
+    @MainActor func opacity(at t: Double) -> Double {
+        let age = t - until
+        if age <= LensLayer.trailHold { return 1 }
+        if age >= LensLayer.trailFadeEnd { return 0 }
+        return 1 - (age - LensLayer.trailHold) / (LensLayer.trailFadeEnd - LensLayer.trailHold)
+    }
+}
+
+extension ShowpieceModel {
+    /// The caption the Lens shows now: the model's own (activeCaption), with one sentence added to the strike's
+    /// caption when the player's stroke turned the cue (the lines CaptionLeader draws are explained in words there).
+    func displayedCaption() -> Caption? {
+        guard let c = activeCaption() else { return nil }
+        guard timeline.events.indices.contains(c.id), timeline.events[c.id].kind == .cueStrike,
+              let stroke = LensStroke.onScreen(self) else { return c }
+        return Caption(id: c.id, time: c.time, title: c.title,
+                       detail: c.detail + " " + CaptionEngine.strokeSentence(aimError: stroke.aimError),
+                       equation: c.equation, accent: c.accent, importance: c.importance, worked: c.worked)
+    }
+}
 
 // MARK: Card
 
@@ -47,12 +132,16 @@ private struct CaptionContent: View {
     /// Reserved shape: every line keeps its room even when empty or short, so the strip's height never changes from
     /// caption to caption (the camera frames the table above the strip, so a height change would make the table jump).
     var reserved = false
+    /// A headline beat of the opening is held (model.holdingHeadline): the equation shows with its numbers even with
+    /// Show the maths off. (The strip reserves the equation's line only with Show the maths on, so on such a beat a
+    /// longer card grows upward over the rails, as any long caption does, instead of moving the table.)
+    var headline = false
     @AppStorage(GameSettings.mathsKey) private var maths = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
-            if maths {
-                Text(verbatim: caption?.equation ?? " ")
+            if maths || headline {
+                Text(verbatim: caption.map { CaptionContent.equationLine($0) } ?? " ")
                     .font(Theme.equation)
                     .foregroundStyle(accent)
                     .reservedLines(reserved ? 1 : nil)
@@ -66,6 +155,12 @@ private struct CaptionContent: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// The equation as shown: with the event's own numbers when the caption has them, else the bare formula. Also what
+    /// VoiceOver reads as the card's value, so the screen and the voice agree.
+    static func equationLine(_ caption: Caption) -> String {
+        caption.worked.isEmpty ? caption.equation : caption.worked
     }
 }
 
@@ -121,6 +216,8 @@ private struct ContinueButton: View {
 
 struct CaptionCard: View {
     let caption: Caption
+    /// A headline beat is held: the worked equation shows even with Show the maths off (CaptionContent.headline).
+    var headline = false
     @Environment(\.palette) private var palette
     @AppStorage(GameSettings.mathsKey) private var maths = false
     /// Inner padding of the glass card.
@@ -128,12 +225,12 @@ struct CaptionCard: View {
 
     var body: some View {
         let accent = palette.color(for: caption.accent)
-        CaptionContent(caption: caption, accent: accent)
+        CaptionContent(caption: caption, accent: accent, headline: headline)
             .captionGlass(accent: accent, palette: palette)
         // One spoken sentence per caption; the equation is read last because it is decoration for most listeners.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(caption.title). \(caption.detail)")
-        .accessibilityValue(maths ? caption.equation : "")
+        .accessibilityValue(maths || headline ? CaptionContent.equationLine(caption) : "")
         .accessibilityAddTraits(.updatesFrequently)
     }
 }
@@ -150,13 +247,15 @@ struct CaptionArea: View {
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
     var body: some View {
-        let showing = explanations && !model.menuOpen && model.lensOn && model.activeCaption() != nil
+        // While the Lens tips are up the card stands back, so the tips are the one thing to read (item 53).
+        let current = model.holdForTips ? nil : model.displayedCaption()
+        let showing = explanations && !model.menuOpen && model.lensOn && current != nil
         // A ZStack rather than a Group so the view (and the onChange below) exists even when no card shows.
         ZStack(alignment: .top) {
-            if showing, let caption = model.activeCaption() {
+            if showing, let caption = current {
                 VStack(alignment: .trailing, spacing: 8) {
                     FittingScroll(maxHeight: maxHeight) {
-                        CaptionCard(caption: caption)
+                        CaptionCard(caption: caption, headline: model.holdingHeadline)
                             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { leader.card = $0 }
                     }
                     if model.holding { ContinueButton(model: model).transition(.opacity) }
@@ -165,7 +264,7 @@ struct CaptionArea: View {
                 .id(caption.id)
             }
         }
-        .animation(.easeOut(duration: 0.2), value: model.activeCaption()?.id)
+        .animation(.easeOut(duration: 0.2), value: current?.id)
         .animation(.easeOut(duration: 0.2), value: model.holding)
         // With no card on screen the leader must not keep the last card's place: CaptionLeader hides the ring for any
         // ball inside that rectangle, so a stale one (explanations switched off, say) would swallow rings near the top.
@@ -194,8 +293,10 @@ struct CaptionStrip: View {
     @State private var reservedHeight: CGFloat = 0
 
     var body: some View {
-        let active = model.lensOn ? model.activeCaption() : nil
-        let caption = active ?? shown
+        // While the Lens tips are up the strip stands back (its room stays reserved, so the table does not move).
+        let active = model.lensOn && !model.holdForTips ? model.displayedCaption() : nil
+        let caption = model.holdForTips ? nil : (active ?? shown)
+        let headline = model.holdingHeadline
         let accent = palette.color(for: caption?.accent ?? .impact)
         let height = min(reservedHeight, maxHeight)
         // The room is reserved (so the camera frames the table above it and the table never jumps between captions),
@@ -208,11 +309,11 @@ struct CaptionStrip: View {
                 HStack(alignment: .bottom, spacing: 8) {
                     // At the accessibility text sizes a long detail scrolls inside the cap instead of growing.
                     FittingScroll(maxHeight: maxHeight) {
-                        CaptionContent(caption: caption, accent: accent)
+                        CaptionContent(caption: caption, accent: accent, headline: headline)
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(caption.title). \(caption.detail)")
-                    .accessibilityValue(maths ? caption.equation : "")
+                    .accessibilityValue(maths || headline ? CaptionContent.equationLine(caption) : "")
                     .accessibilityAddTraits(.updatesFrequently)
                     if model.holding { ContinueButton(model: model).transition(.opacity) }
                 }
@@ -236,9 +337,9 @@ struct CaptionStrip: View {
         .animation(.smooth(duration: 0.25), value: model.holding)
         // Remember the newest caption so it stays up between beats instead of leaving a blank card.
         .onChange(of: active?.id) { _, _ in
-            if model.lensOn, let now = model.activeCaption() { shown = now }
+            if model.lensOn, let now = model.displayedCaption() { shown = now }
         }
-        .onAppear { if model.lensOn { shown = model.activeCaption() } }
+        .onAppear { if model.lensOn { shown = model.displayedCaption() } }
     }
 }
 
@@ -316,14 +417,29 @@ final class LeaderState {
     var card: CGRect = .zero
     /// Bottom edge of the title row (StageSpace); the chip beside the ring stays below it.
     var topClear: CGFloat = 0
+    /// The player's stroke lines on screen (StageSpace), or nil (LensStroke.onScreen decides when).
+    var stroke: StrokeMarks?
+
+    /// The two stroke lines projected to the screen: from the cue ball out along the aimed line and the struck line.
+    struct StrokeMarks: Equatable {
+        var from: CGPoint
+        var aimedEnd: CGPoint
+        var struckEnd: CGPoint
+        /// 0 to 1, in steps of a twentieth, so a fade writes (and redraws) at most twenty times.
+        var opacity: Double
+    }
 
     /// Called by the 3D view every frame. Finds the ball the current caption is about, asks the view to project it
     /// to the screen, and keeps the previous point when the move is under half a point (so a still frame costs nothing).
     /// Every write is guarded by a comparison: this runs per frame, and an @Observable write redraws its readers.
     func refresh(model: ShowpieceModel, project: (SIMD3<Float>) -> CGPoint?) {
-        // Same gate as the caption card and strip (the Lens is up), so a ring never shows without its words.
-        guard model.lensOn, !model.menuOpen, let caption = model.activeCaption(), let world = Self.anchor(of: caption, in: model),
-              let point = project(world) else {
+        // The stroke lines first: they do not depend on a caption being up.
+        let marks = Self.strokeMarks(model: model, project: project)
+        if stroke != marks { stroke = marks }
+        // Same gate as the caption card and strip (the Lens is up, the tips are not), so a ring never shows without
+        // its words.
+        guard model.lensOn, !model.menuOpen, !model.holdForTips, let caption = model.activeCaption(),
+              let world = Self.anchor(of: caption, in: model), let point = project(world) else {
             if ring != nil { ring = nil }
             if title != nil { title = nil }
             return
@@ -332,6 +448,23 @@ final class LeaderState {
         if title != caption.title { title = caption.title }
         if let old = ring, hypot(old.x - point.x, old.y - point.y) < 0.5 { return }
         ring = point
+    }
+
+    /// The stroke lines for this frame: both lines lie on the cloth (2 mm up, under the balls and the Lens trails'
+    /// glow), projected with the same projection as the ring. Nil when there is nothing to draw or a point is behind
+    /// the camera.
+    private static func strokeMarks(model: ShowpieceModel, project: (SIMD3<Float>) -> CGPoint?) -> StrokeMarks? {
+        guard let s = LensStroke.onScreen(model) else { return nil }
+        let opacity = (s.opacity(at: model.time) * 20).rounded() / 20
+        guard opacity > 0 else { return nil }
+        let frame = TableFrame(model.timeline.table)
+        let lift: Float = 0.002
+        guard let from = project(frame.world(s.from, height: lift)),
+              let aimed = project(frame.world(s.from + s.aimed * s.length, height: lift)),
+              let struck = project(frame.world(s.from + s.struck * s.length, height: lift)) else { return nil }
+        // Whole points: sub-point camera jitter must not rewrite the marks every frame.
+        func snap(_ p: CGPoint) -> CGPoint { CGPoint(x: p.x.rounded(), y: p.y.rounded()) }
+        return StrokeMarks(from: snap(from), aimedEnd: snap(aimed), struckEnd: snap(struck), opacity: opacity)
     }
 
     /// The ball a caption is about, in the 3D scene's world space: the ball's own place at the playback time, or the
@@ -394,10 +527,41 @@ struct CaptionLeader: View {
         return c
     }
 
+    /// The player's stroke (item 4): the aimed line faint and dashed, the line the cue really took bright and solid,
+    /// both from the cue ball, each labelled at its far end. The labels are pushed apart across the two ends, so they
+    /// never sit on each other however small the gap.
+    private func drawStroke(_ m: LeaderState.StrokeMarks, in ctx: inout GraphicsContext) {
+        let o = m.opacity
+        var aimed = Path(); aimed.move(to: m.from); aimed.addLine(to: m.aimedEnd)
+        var struck = Path(); struck.move(to: m.from); struck.addLine(to: m.struckEnd)
+        ctx.stroke(aimed, with: .color(palette.paper.opacity(0.6 * o)),
+                   style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 5]))
+        ctx.stroke(struck, with: .color(.black.opacity(0.35 * o)), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+        ctx.stroke(struck, with: .color(palette.paper.opacity(o)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+        // Which way to push each label: away from the other line's end; if the ends sit on one point, across the line.
+        var nx = m.aimedEnd.x - m.struckEnd.x, ny = m.aimedEnd.y - m.struckEnd.y
+        var len = hypot(nx, ny)
+        if len < 1 {
+            nx = -(m.struckEnd.y - m.from.y); ny = m.struckEnd.x - m.from.x
+            len = max(1, hypot(nx, ny))
+        }
+        nx /= len; ny /= len
+        let push: CGFloat = 14
+        let aimedAt = CGPoint(x: m.aimedEnd.x + nx * push, y: m.aimedEnd.y + ny * push)
+        let struckAt = CGPoint(x: m.struckEnd.x - nx * push, y: m.struckEnd.y - ny * push)
+        ctx.draw(Text(verbatim: String(localized: "Your aim")).font(Theme.label)
+                    .foregroundStyle(palette.paper.opacity(0.75 * o)), at: aimedAt, anchor: .center)
+        ctx.draw(Text(verbatim: String(localized: "Your stroke")).font(Theme.label.weight(.semibold))
+                    .foregroundStyle(palette.paper.opacity(o)), at: struckAt, anchor: .center)
+    }
+
     var body: some View {
         GeometryReader { geo in
+            // Read here, in the body, so the layer redraws when the stroke marks change (as the ring does below).
+            let marks = leader.stroke
             ZStack(alignment: .topLeading) {
                 Canvas { ctx, _ in
+                    if let marks { drawStroke(marks, in: &ctx) }
                     guard let ring = visibleRing else { return }
                     let color = palette.color(for: leader.accent)
                     let card = leader.card

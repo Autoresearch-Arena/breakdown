@@ -15,6 +15,12 @@
 //          match and free play reuse them: the ball chips, pocket menu and Safety button are CallBallChips,
 //          CallPocketMenu and CallSafetyButton (App/Match/CallControl.swift), the cue angle is CueAngleMenu
 //          (App/CueAngleControl.swift). This card drives them exactly as before.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md: item 27,
+//          the "On a real table" cloth row says what a ball rolling straight into a rail at a stated pace keeps
+//          (RailKeep) instead of the raw "cushion bounce"; item 53, the card stands back while the Lens tips show
+//          (model.holdForTips); item 36 by the contract (docs/v07-contracts.md 3.6), a medal plays the made-it sound
+//          with the glow, the big one for gold, through SoundBoard, which also plays its haptic, so the card's own
+//          success haptic is gone rather than doubled.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -204,7 +210,9 @@ struct EightBallCard: View {
     private var mode: EightBallMode { model.eightBallMode }
 
     var body: some View {
-        if let s = mode.current, mode.isActive {
+        // While the Lens tips are up (the player's own Lens replay of this try) the card stands back, so the tips are
+        // the one thing to read; it returns as soon as they are done.
+        if let s = mode.current, mode.isActive, !model.holdForTips {
             VStack(alignment: .leading, spacing: 8) {
                 content(s)
             }
@@ -213,8 +221,8 @@ struct EightBallCard: View {
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: mode.phase)
             .animation(reduceMotion ? nil : .snappy, value: mode.showingRealTable)
-            // One success haptic per medal; the Vibration option is read at the moment it fires.
-            .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
+            // The medal's sound and its buzz are played together by SoundBoard (EightBallTableLayer, beside the glow),
+            // so the card no longer adds a haptic of its own on top.
             .transition(.opacity)
         }
     }
@@ -524,10 +532,15 @@ struct EightBallCard: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// This cloth's numbers next to the standard cloth's, so the player sees why their table plays differently.
+    /// This cloth's numbers next to the standard cloth's, so the player sees why their table plays differently. The
+    /// rails are said as what a ball rolling straight in at a stated pace keeps (RailKeep, the solver's rail rules),
+    /// not as the raw restitution, which the tuned rail no longer makes equal to what a ball gets back.
     private func clothRow(_ n: RealTableNumbers) -> some View {
         let std = PlaySurface.cloth.parameters
         let d = EightBallFormat.decimal
+        let pace = d(RailKeep.pace, 0)
+        let keeps = RailKeep.percent(parameters: n.surface.parameters)
+        let keepsStd = RailKeep.percent(parameters: std)
         return VStack(alignment: .leading, spacing: 2) {
             Text(String(localized: "Cloth: \(n.surface.title)")).font(Theme.label).foregroundStyle(palette.slide)
             Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 12, verticalSpacing: 2) {
@@ -547,14 +560,17 @@ struct EightBallCard: View {
                     Text(d(std.rollingResistance, 3)).font(Theme.number).foregroundStyle(.secondary)
                 }
                 GridRow {
-                    Text(String(localized: "Cushion bounce")).font(.caption)
-                    Text(d(n.cushionRestitution, 2)).font(Theme.number)
-                    Text(d(std.cushionRestitution, 2)).font(Theme.number).foregroundStyle(.secondary)
+                    Text(String(localized: "Rail keeps at \(pace) m/s")).font(.caption)
+                    // The player's own percent style (the sign's place and spacing differ by language).
+                    Text(verbatim: (Double(keeps) / 100).formatted(.percent.precision(.fractionLength(0))))
+                        .font(Theme.number)
+                    Text(verbatim: (Double(keepsStd) / 100).formatted(.percent.precision(.fractionLength(0))))
+                        .font(Theme.number).foregroundStyle(.secondary)
                 }
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(String(localized: "Cloth: \(n.surface.title). Sliding friction \(d(n.slidingFriction, 2)), standard \(d(std.slidingFriction, 2)). Rolling resistance \(d(n.rollingResistance, 3)), standard \(d(std.rollingResistance, 3)). Cushion bounce \(d(n.cushionRestitution, 2)), standard \(d(std.cushionRestitution, 2))."))
+        .accessibilityLabel(String(localized: "Cloth: \(n.surface.title). Sliding friction \(d(n.slidingFriction, 2)), standard \(d(std.slidingFriction, 2)). Rolling resistance \(d(n.rollingResistance, 3)), standard \(d(std.rollingResistance, 3)). A ball rolling straight into a rail at \(pace) metres per second keeps \(keeps) percent of its speed, standard \(keepsStd) percent."))
     }
 
     // MARK: Pieces
@@ -731,6 +747,11 @@ struct EightBallTableLayer: View {
         .onChange(of: mode.celebrations) { _, _ in
             glow = 1
             withAnimation(.easeOut(duration: reduceMotion ? 0.8 : 1.4)) { glow = 0 }
+            // A medal: the made-it sound timed to the glow (item 36, docs/v07-contracts.md 3.6), the big one for gold.
+            // SoundBoard.play sounds it and plays its haptic together, reading the Vibration option itself.
+            var gold = false
+            if case .scored(let v) = mode.phase, v.medal == .gold { gold = true }
+            SoundBoard.play(gold ? .madeItBig : .madeIt)
         }
     }
 

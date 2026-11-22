@@ -4,11 +4,15 @@
 //          NotebookNumbers, NotebookSurfaceCard and NotebookDossier (they were DuoNumbers, DuoSurfaceCard, DuoDossier).
 //          On a big screen (notebookRoomy) the number tiles' labels follow the reader's text size instead of a fixed
 //          10 points; the folding phone keeps the size its narrow tiles were laid out for.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md item 27: the
+//          surface card no longer shows the raw cushion restitution "e", which the tuned rail no longer makes equal to
+//          what a ball keeps; it says what a ball rolling straight into a rail at a stated pace keeps, worked out with
+//          the solver's rail rules (RailKeep in Captions.swift).)
 // PURPOSE: The two information strips of the notebook panel (NotebookPanel), on the open folding phone and on iPad and
 //          Mac windows:
 //          NotebookNumbers - the shot at a glance, in tiles (the cue's launch speed, how many ball hits, rail hits and
-//            pocketed balls the recording holds), and the surface and table it was played on with the four numbers
-//            that decide how a ball moves (sliding friction, rolling resistance, the cushions' bounce, gravity).
+//            pocketed balls the recording holds), and the surface and table it was played on with the numbers that
+//            decide how a ball moves (sliding friction, rolling resistance, gravity) and what its rails give back.
 //            Every figure is counted or read from the recorded timeline or the surface's own parameters, the values the
 //            solver was given; none is typed in.
 //          NotebookDossier - what the mode on the table has to say beyond its card. Trick shots: the idea and its equation
@@ -123,9 +127,15 @@ struct NotebookSurfaceCard: View {
             HStack(spacing: 0) {
                 constant("μ", p.slidingFriction)
                 constant("c", p.rollingResistance)
-                constant("e", p.cushionRestitution)
                 constant("g", p.gravity)
             }
+            // The rails as what a ball gets from them, worked out with the solver's rail rules at a stated pace
+            // (RailKeep), not the raw restitution: the tilted nose and the bounce that falls with speed mean the raw
+            // number is no longer what a ball keeps.
+            Text(String(localized: "Rails: a ball rolling straight in at \(Self.pace) m/s keeps \(RailKeep.percent(parameters: p)) percent of its speed."))
+                .font(Theme.body)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             // The standard table needs no introduction; any other table is described, since it changes the whole game.
             if detailed && model.tableKind != .standard {
                 HStack(spacing: 8) {
@@ -146,6 +156,9 @@ struct NotebookSurfaceCard: View {
         .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
         .accessibilityElement(children: .combine)
     }
+
+    /// The stated pace for the rails line, in the player's number style.
+    private static var pace: String { String(format: "%.0f", locale: Locale.current, RailKeep.pace) }
 
     /// One physical constant: its symbol (the one the equations use) and its value to three significant figures.
     private func constant(_ symbol: String, _ value: Double) -> some View {

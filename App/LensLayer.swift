@@ -52,7 +52,17 @@
 //          generation-two events now leave a visible mark like the others: a red double ring where the cue MISCUED (the
 //          one place a sound alone would carry it), a pocket-coloured ring where a ball skipped over a hole, and an
 //          impact ring where a jam was brought to rest.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 22,
+//          24 and 28: a ball in the air leaves its own trail, white and dashed, drawn at the ball's own height, with a
+//          soft dot on the cloth under it while it flies and a white ring where it lands; its velocity arrow rides at
+//          its height instead of on the cloth. A skip over a hole is a BROKEN ring (dashed arcs) so its shape, not
+//          only its colour, says "did not drop"; a jam brought to rest gets a cross on each wedged ball that holds
+//          still and fades instead of expanding like an impact. Throw: at a ball-to-ball contact where friction sent
+//          the struck ball half a degree or more off the line of centres (CaptionEngine.throwFacts, the same rule the
+//          caption uses), the line of centres is drawn dashed beside the real departure, from the struck ball, for a
+//          short span of clock. Every new mark is a function of the clock alone and is in the fingerprint.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
+//          The throw rule is CaptionEngine's (one rule for the words and the drawing).
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
@@ -113,6 +123,25 @@ final class LensLayer {
     static let markerStrength: Float = 1.0
     /// Miscue ring colour: the warm red that ends the power bar (AimGauges), the app's one "too far" colour.
     static let miscueRGB: (Double, Double, Double) = (1.0, 0.30, 0.25)
+    /// An airborne trail rides this far above the ball's lowest point: between the sliding (1.6 mm) and rolling
+    /// (4.6 mm) lifts, so where a flight starts and ends on the cloth it joins the cloth trails without fighting them
+    /// for depth, and in the air it climbs with the ball.
+    static let airborneLift: Float = 0.0031
+    /// Airborne dashes: shorter than the sliding ones (6 cm on, 4 cm off) because a jump's whole flight is often only
+    /// a few tens of centimetres; 3 cm on and 2 cm off still gives several dashes over the shortest hop.
+    static let airDash = 0.03
+    static let airGap = 0.02
+    /// The dot on the cloth under a flying ball: shown once the ball is a millimetre up (the solver's own minimumHop),
+    /// as wide as the ball, fading as it climbs so a high jump's dot reads as far below the ball.
+    static let dotMinHeight = 0.001
+    /// Clock seconds a jam's cross stays up: it marks balls brought to REST, so it holds still for longer than an
+    /// impact ring's flash (two and a half ring spans, an even second) and then fades.
+    static let jamMarkSpan = 1.0
+    /// Throw marks: how long they stay (clock seconds; a guided hold stops the clock on the hit, so they stay for the
+    /// whole hold) and how long they are drawn. Half a metre opens a one-degree throw to about 9 mm at the far end, a
+    /// third of a ball's width, which reads at the normal camera distance.
+    static let throwMarkSpan = 1.5
+    static let throwLineLength: Float = 0.5
 
     /// Smooth 0-to-1 ramp between `a` and `b`.
     private static func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
@@ -158,8 +187,31 @@ final class LensLayer {
     private let gridEntity = ModelEntity()
     private let aimLine = ModelEntity()
     private var arrows: [(root: Entity, shaft: Entity, head: Entity, glow: Entity)] = []
-    private var rings: [(entity: ModelEntity, event: LensEvent, radius: Float)] = []
+    /// One timed mark on the table: an impact ring (grows and fades) or a held mark (a jam's cross, a throw line:
+    /// stays its size, holds, then fades). All are driven by the clock alone.
+    private struct Flash {
+        let entity: ModelEntity
+        let time: Double
+        let span: Double
+        let radius: Float
+        let grows: Bool
+        /// Peak opacity of a held mark.
+        let peak: Float
+    }
+    private var rings: [Flash] = []
     private let ringMesh = LensLayer.annulus(segments: 72, inner: 0.62)
+    /// A skip over a hole: the same ring cut into twelve arcs with gaps, so its shape says "did not drop".
+    private let brokenRingMesh = LensLayer.annulus(segments: 72, inner: 0.62, arcs: 12)
+    /// A jam brought to rest: a flat cross on each wedged ball.
+    private let crossMesh = LensLayer.cross(halfWidth: 0.16)
+    /// Throw lines: one solid, one dashed, both a unit long along +x from the origin (scaled to length).
+    private let solidLineMesh = LensLayer.strip(dashes: 0, halfWidth: 0.0035)
+    private let dashedLineMesh = LensLayer.strip(dashes: 9, halfWidth: 0.0035)
+    private var markMaterial = UnlitMaterial()
+    /// The soft dot on the cloth under each ball, shown while it flies.
+    private let dotRoot = Entity()
+    private var dots: [ModelEntity] = []
+    private var dotMaterial = UnlitMaterial()
 
     /// One entity per trail colour, each holding every ball's path of that colour.
     private var trailEntities: [MotionPhase: ModelEntity] = [:]
@@ -213,7 +265,9 @@ final class LensLayer {
         let haloGain = bloomActive ? 0.55 : 1.0
 
         let amber = Theme.amberRGB, cyan = Theme.cyanRGB
-        let phaseColours: [MotionPhase: (Double, Double, Double)] = [.sliding: amber, .rolling: cyan]
+        // A flight is white (the spec's airborne trail): neither sliding nor rolling, because nothing touches the cloth.
+        let phaseColours: [MotionPhase: (Double, Double, Double)] = [.sliding: amber, .rolling: cyan,
+                                                                     .airborne: Theme.paperRGB]
         for (phase, c) in phaseColours {
             if let tex = LensTextures.trail(color: c, haloGain: haloGain, brightness: { Self.trailBrightness(age: $0) }, width: { Self.trailWidth(age: $0) }) {
                 trailMaterials[phase] = Self.glow(tex)
@@ -223,13 +277,24 @@ final class LensLayer {
         if let ringTex = LensTextures.softLine(peak: 0.85, haloGain: haloGain) {
             func ring(_ r: Double, _ g: Double, _ b: Double) -> UnlitMaterial { Self.glow(ringTex, tint: rgba(r, g, b)) }
             ringMaterials = [.ballBall: ring(1.0, 0.97, 0.80), .cushion: ring(0.45, 0.70, 1.0),
+                             // White: a landing (the only phase change that leaves a ring), the airborne trail's colour.
                              .pocket: ring(1.0, 0.82, 0.25), .cueStrike: ring(1.0, 0.97, 0.80), .phaseTransition: ring(1, 1, 1),
-                             // A skip over a hole wears the pocket colour; a jam brought to rest the impact colour.
+                             // A skip over a hole wears the pocket colour (on a broken ring); a jam brought to rest the
+                             // impact colour (on a cross). Their shapes, not these colours, set them apart.
                              .rimSkip: ring(1.0, 0.82, 0.25), .settledInContact: ring(1.0, 0.97, 0.80)]
             let red = Self.miscueRGB
             miscueMaterial = ring(red.0, red.1, red.2)
         }
+        // The dot under a flying ball: the soft line picture with its peak at the centre of a disc (v runs centre to
+        // rim on the annulus), so it is brightest under the ball and soft at its edge.
+        if let dotTex = LensTextures.softLine(peak: 0.0, haloGain: haloGain) {
+            let p = Theme.paperRGB
+            dotMaterial = Self.glow(dotTex, tint: rgba(p.0, p.1, p.2))
+        }
         if let lineTex = LensTextures.softLine(peak: 0.5, haloGain: haloGain) {
+            // Throw lines in the Lens's light paper colour; the departure is solid, the line of centres dashed.
+            let p = Theme.paperRGB
+            markMaterial = Self.glow(lineTex, tint: rgba(p.0, p.1, p.2))
             arrowGlowMaterial = Self.glow(lineTex, tint: rgba(1.0, 0.93, 0.55))
             // Slip is sliding, so it wears the sliding amber; side spin wears the cushion-ring blue used above.
             slipMaterial = Self.glow(lineTex, tint: rgba(amber.0, amber.1, amber.2))
@@ -240,6 +305,7 @@ final class LensLayer {
         arrowMaterial = core
 
         root.addChild(gridEntity)
+        root.addChild(dotRoot)
         root.addChild(trailRoot)
         root.addChild(ringRoot)
         root.addChild(spinRoot)
@@ -319,6 +385,18 @@ final class LensLayer {
             spinMarkers.append((slip, side))
         }
 
+        // The dot under each ball while it flies: a soft disc a ball wide, lying just above the grid.
+        let dotMesh = LensLayer.annulus(segments: 32, inner: 0)
+        for _ in 0..<ballCount {
+            let dot = ModelEntity(mesh: dotMesh, materials: [dotMaterial])
+            dot.scale = SIMD3(frame.ballRadius, 1, frame.ballRadius)
+            dot.components.set(ModelSortGroupComponent(group: sortGroup, order: 5))
+            dot.components.set(OpacityComponent(opacity: 0))
+            dot.isEnabled = false
+            dotRoot.addChild(dot)
+            dots.append(dot)
+        }
+
         buildGrid(frame: frame, table: table)
 
         // Aim line for the player's own break.
@@ -352,40 +430,78 @@ final class LensLayer {
         builtDashed = LensTextures.differentiateWithoutColor
 
         // Gather every ball's ribbons into one mesh per colour.
-        var builders: [MotionPhase: RibbonBuilder] = [.sliding: RibbonBuilder(), .rolling: RibbonBuilder()]
+        var builders: [MotionPhase: RibbonBuilder] = [.sliding: RibbonBuilder(), .rolling: RibbonBuilder(),
+                                                      .airborne: RibbonBuilder()]
         for b in 0..<timeline.ballCount {
             addTrails(for: b, timeline: timeline, frame: frame, dashSliding: builtDashed, into: &builders)
         }
         for (phase, builder) in builders {
             guard let mesh = builder.mesh(), let mat = trailMaterials[phase] else { continue }
             let e = ModelEntity(mesh: mesh, materials: [mat])
-            e.components.set(ModelSortGroupComponent(group: sortGroup, order: phase == .sliding ? 10 : 11))
+            let order: Int32 = phase == .sliding ? 10 : (phase == .rolling ? 11 : 12)
+            e.components.set(ModelSortGroupComponent(group: sortGroup, order: order))
             trailRoot.addChild(e)
             trailEntities[phase] = e
         }
 
+        /// One mark lying on the table at `point`, hidden until the clock reaches it.
+        func place(_ mesh: MeshResource, _ mat: UnlitMaterial, at point: Vec2, scale: Float, yaw: Float = 0,
+                   height: Float = 0.008) -> ModelEntity {
+            let mark = ModelEntity(mesh: mesh, materials: [mat])
+            mark.scale = SIMD3(scale, 1, scale)
+            mark.position = frame.world(point, height: height)
+            if yaw != 0 { mark.orientation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0)) }
+            mark.isEnabled = false
+            mark.components.set(OpacityComponent(opacity: 0))
+            mark.components.set(ModelSortGroupComponent(group: sortGroup, order: 20))
+            ringRoot.addChild(mark)
+            return mark
+        }
+
         for e in timeline.events {
             // Which events leave a ring: every impact and drop as before, plus the generation-two moments (a jam
-            // brought to rest, a skip over a hole) and a miscue, which a player could otherwise only hear.
+            // brought to rest, a skip over a hole), a miscue, which a player could otherwise only hear, and a landing
+            // from a jump (only that phase change: skid-to-roll and take-off leave no ring).
             let isMiscue = e.kind == .cueStrike && e.miscue == true
+            let isLanding = e.kind == .phaseTransition && e.flight == .landing
             let ringed: Set<LensEventKind> = [.ballBall, .cushion, .pocket, .rimSkip, .settledInContact]
-            guard ringed.contains(e.kind) || isMiscue else { continue }
+            guard ringed.contains(e.kind) || isMiscue || isLanding else { continue }
             let recorded = Float(min(1.5, max(0.1, e.normalImpulse)))
             let strength = (isMiscue || e.kind == .rimSkip) ? Self.markerStrength : recorded
             let radius = 0.022 + 0.034 * strength
             guard let mat = isMiscue ? miscueMaterial : ringMaterials[e.kind] else { continue }
+            if e.kind == .settledInContact {
+                // A jam brought to rest: a cross on each wedged ball where it came to rest, held still, not an
+                // expanding flash, because the event is balls stopping, not a hit.
+                for b in e.balls where b.ball < timeline.ballCount {
+                    let at = timeline.state(ball: b.ball, at: e.time).position
+                    let mark = place(crossMesh, mat, at: at, scale: frame.ballRadius * 1.3, yaw: .pi / 4)
+                    rings.append(Flash(entity: mark, time: e.time, span: Self.jamMarkSpan, radius: frame.ballRadius * 1.3,
+                                       grows: false, peak: 0.85))
+                }
+                continue
+            }
             // A miscue is drawn as two rings, one inside the other, so its shape (not only its red) sets it apart
-            // from every impact ring; the inner one is 0.6 of the outer, a gap wider than the ring's own band.
+            // from every impact ring; the inner one is 0.6 of the outer, a gap wider than the ring's own band. A skip
+            // over a hole is one broken ring, again a shape no impact has.
             let sizes: [Float] = isMiscue ? [radius, radius * 0.6] : [radius]
+            let mesh = e.kind == .rimSkip ? brokenRingMesh : ringMesh
             for size in sizes {
-                let ring = ModelEntity(mesh: ringMesh, materials: [mat])
-                ring.scale = SIMD3(size, 1, size)
-                ring.position = frame.world(e.point, height: 0.008)
-                ring.isEnabled = false
-                ring.components.set(OpacityComponent(opacity: 0))
-                ring.components.set(ModelSortGroupComponent(group: sortGroup, order: 20))
-                ringRoot.addChild(ring)
-                rings.append((ring, e, size))
+                let ring = place(mesh, mat, at: e.point, scale: size)
+                rings.append(Flash(entity: ring, time: e.time, span: Self.ringSpan, radius: size, grows: true, peak: 0.85))
+            }
+            // Throw: the line of centres (dashed) beside where the struck ball really went (solid), from that ball.
+            if let t = CaptionEngine.throwFacts(e), t.object < timeline.ballCount {
+                let from = timeline.state(ball: t.object, at: e.time).position
+                for (line, mesh, peak) in [(t.lineOfCentres, dashedLineMesh, Float(0.7)), (t.departure, solidLineMesh, Float(0.9))] {
+                    let dir = frame.direction(line)
+                    let yaw = -atan2(dir.z, dir.x)
+                    let mark = place(mesh, markMaterial, at: from, scale: 1, yaw: yaw, height: 0.009)
+                    // Long along the line, a unit wide across (the strip's own half-width is in metres already).
+                    mark.scale = SIMD3(Self.throwLineLength, 1, 1)
+                    rings.append(Flash(entity: mark, time: e.time, span: Self.throwMarkSpan, radius: 1, grows: false,
+                                       peak: peak))
+                }
             }
         }
     }
@@ -472,16 +588,18 @@ final class LensLayer {
         // The line is wider where the ball is faster, so a still frame shows speed. Half-width of the whole
         // ribbon (core and halo together) in metres: about 3 points on a phone at the slowest, 6 at a break.
         func half(_ speed: Double) -> Float { 0.013 + 0.0016 * Float(min(speed, 8)) }
-        for seg in segs where seg.phase == .sliding || seg.phase == .rolling {
+        for seg in segs where seg.phase == .sliding || seg.phase == .rolling || seg.phase == .airborne {
             let tEnd = min(seg.t1, tLimit)
             guard tEnd > seg.t0 else { continue }
             var t = seg.t0
             var pts: [SIMD3<Float>] = [], times: [Double] = [], halves: [Float] = []
             // Each colour rides at its own height (rolling 3 mm above sliding) so overlapping paths never fight over depth.
-            let lift: Float = seg.phase == .rolling ? 0.0046 : 0.0016
+            // A flight climbs with the ball: its lift is added to the ball's own height above the cloth at each point.
+            let airborne = seg.phase == .airborne
+            let lift: Float = airborne ? Self.airborneLift : (seg.phase == .rolling ? 0.0046 : 0.0016)
             func add(_ time: Double) {
                 let k = seg.kinematics(at: time)
-                let p = frame.world(k.position, height: lift)
+                let p = frame.world(k.position, height: lift + (airborne ? Float(k.height) : 0))
                 // Points closer than 2 mm add nothing but a noisy ribbon direction; skip them (the last point always stays).
                 if let last = pts.last, simd_distance(last, p) < 0.002, time < tEnd { return }
                 pts.append(p); times.append(time); halves.append(half(k.velocity.length))
@@ -494,7 +612,14 @@ final class LensLayer {
                 t = min(tEnd, t + dt)
                 add(t)
             }
-            if dashSliding && seg.phase == .sliding {
+            if airborne {
+                // A flight is always dashed and white (the spec's airborne trail), so it never reads as either
+                // phase on the cloth, with or without colour. The dash is measured along the path in three
+                // dimensions, so a steep hop still gets even dashes.
+                for dash in Self.dashes(pts, times: times, halves: halves, on: Self.airDash, off: Self.airGap) {
+                    builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
+                }
+            } else if dashSliding && seg.phase == .sliding {
                 // Differentiate Without Colour: sliding is dashed, rolling solid (the legend chip matches).
                 for dash in Self.dashes(pts, times: times, halves: halves, on: Self.dashLength, off: Self.dashGap) {
                     builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
@@ -506,7 +631,10 @@ final class LensLayer {
     }
 
     /// A flat unit-radius ring (annulus) lying on the table; scaled per impact. UV v runs inner (0) to outer (1) edge.
-    private static func annulus(segments: Int, inner: Float) -> MeshResource {
+    /// `arcs` above zero cuts it into that many arcs with equal gaps between them (the rim skip's broken ring): the
+    /// circle is split into 2 * arcs equal parts and only every other part is filled. `segments` should be a multiple
+    /// of 2 * arcs so every arc has the same number of pieces (72 and 12 give three each).
+    private static func annulus(segments: Int, inner: Float, arcs: Int = 0) -> MeshResource {
         var positions: [SIMD3<Float>] = []
         var uvs: [SIMD2<Float>] = []
         var indices: [UInt32] = []
@@ -516,10 +644,55 @@ final class LensLayer {
             positions.append(SIMD3(cos(a) * inner, 0, sin(a) * inner)); uvs.append(SIMD2(0.5, 0))
         }
         for i in 0..<segments {
+            // Which of the 2 * arcs parts this piece falls in; odd parts are the gaps.
+            if arcs > 0, (i * 2 * arcs / segments) % 2 == 1 { continue }
             let k = UInt32(i * 2)
             indices += [k, k + 1, k + 2, k + 1, k + 3, k + 2]
         }
         var d = MeshDescriptor(name: "ring")
+        d.positions = MeshBuffers.Positions(positions)
+        d.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
+        d.primitives = .triangles(indices)
+        return try! MeshResource.generate(from: [d])
+    }
+
+    /// A flat cross lying on the table: two bars from -1 to 1 through the origin, along x and along z, each
+    /// `halfWidth` wide either side (unit scale). UV v runs across each bar so the soft line picture puts its bright
+    /// core down the middle.
+    private static func cross(halfWidth w: Float) -> MeshResource {
+        var positions: [SIMD3<Float>] = []
+        var uvs: [SIMD2<Float>] = []
+        var indices: [UInt32] = []
+        for along in [SIMD3<Float>(1, 0, 0), SIMD3<Float>(0, 0, 1)] {
+            let across = SIMD3<Float>(-along.z, 0, along.x) * w
+            let base = UInt32(positions.count)
+            positions += [-along + across, -along - across, along + across, along - across]
+            uvs += [SIMD2(0.5, 0), SIMD2(0.5, 1), SIMD2(0.5, 0), SIMD2(0.5, 1)]
+            indices += [base, base + 1, base + 2, base + 1, base + 3, base + 2]
+        }
+        var d = MeshDescriptor(name: "cross")
+        d.positions = MeshBuffers.Positions(positions)
+        d.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
+        d.primitives = .triangles(indices)
+        return try! MeshResource.generate(from: [d])
+    }
+
+    /// A flat line one unit long along +x from the origin, `halfWidth` metres either side, lying on the table.
+    /// `dashes` above zero cuts it into that many dashes with equal gaps (2 * dashes - 1 equal parts, every other one
+    /// drawn, so it starts and ends with a dash). UV v runs across.
+    private static func strip(dashes: Int, halfWidth w: Float) -> MeshResource {
+        var positions: [SIMD3<Float>] = []
+        var uvs: [SIMD2<Float>] = []
+        var indices: [UInt32] = []
+        let parts = dashes > 0 ? 2 * dashes - 1 : 1
+        for p in stride(from: 0, to: parts, by: dashes > 0 ? 2 : 1) {
+            let x0 = Float(p) / Float(parts), x1 = Float(p + 1) / Float(parts)
+            let base = UInt32(positions.count)
+            positions += [SIMD3(x0, 0, w), SIMD3(x0, 0, -w), SIMD3(x1, 0, w), SIMD3(x1, 0, -w)]
+            uvs += [SIMD2(0.5, 0), SIMD2(0.5, 1), SIMD2(0.5, 0), SIMD2(0.5, 1)]
+            indices += [base, base + 1, base + 2, base + 1, base + 3, base + 2]
+        }
+        var d = MeshDescriptor(name: dashes > 0 ? "dashedLine" : "line")
         d.positions = MeshBuffers.Positions(positions)
         d.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
         d.primitives = .triangles(indices)
@@ -598,7 +771,8 @@ final class LensLayer {
                 let len = Float(min(0.8, 0.02 + 0.05 * speed))
                 let dir = frame.direction(s.velocity.normalized)
                 let yaw = -atan2(dir.z, dir.x)
-                arrow.root.position = frame.world(s.position, height: R + 0.012)
+                // Above the ball wherever it is: a flying ball's arrow flies with it (height is zero on the cloth).
+                arrow.root.position = frame.world(s.position, height: R + 0.012 + Float(s.height))
                 arrow.root.orientation = simd_quatf(angle: yaw, axis: SIMD3(0, 1, 0))
                 arrow.shaft.scale = SIMD3(len, 1, 1)
                 arrow.head.position = SIMD3(len + 0.012, 0, 0)
@@ -606,6 +780,20 @@ final class LensLayer {
             // Spin markers reuse the state just read, so the Lens still asks the timeline once per ball per frame.
             if b < spinMarkers.count {
                 applySpin(ball: b, state: s, time: t, melt: m, timeline: timeline, frame: frame, visible: ballVisible[b])
+            }
+            // The dot on the cloth under a flying ball: full under a low hop, fading to a third as the ball climbs a
+            // ball's diameter, so the gap between dot and ball reads as height.
+            if b < dots.count {
+                let dot = dots[b]
+                let flying = ballVisible[b] && !s.pocketed && s.height >= Self.dotMinHeight && m > 0.02
+                if flying {
+                    let up = Float(min(1, s.height / (2 * Double(R))))
+                    dot.isEnabled = true
+                    dot.position = frame.world(s.position, height: 0.0012)
+                    dot.components.set(OpacityComponent(opacity: 0.8 * (1 - 0.66 * up)))
+                } else if dot.isEnabled {
+                    dot.isEnabled = false
+                }
             }
         }
 
@@ -620,16 +808,21 @@ final class LensLayer {
             trailOffsets[phase] = shift
         }
 
-        // Rings: expand and fade for a fixed span of clock time after each impact.
-        let span = Self.ringSpan
+        // Rings: expand and fade for a fixed span of clock time after each impact. Held marks (a jam's cross, the throw
+        // lines) keep their size, stay at their peak for the first three fifths of their span, then fade.
         for r in rings {
-            let tau = t - r.event.time
-            if m > 0.002, tau >= 0, tau <= span {
-                let k = Float(tau / span)
+            let tau = t - r.time
+            if m > 0.002, tau >= 0, tau <= r.span {
+                let k = Float(tau / r.span)
                 r.entity.isEnabled = true
-                let grow = r.radius * (1 + 1.8 * k)
-                r.entity.scale = SIMD3(grow, 1, grow)
-                r.entity.components.set(OpacityComponent(opacity: 0.85 * (1 - k) * (1 - k)))
+                if r.grows {
+                    let grow = r.radius * (1 + 1.8 * k)
+                    r.entity.scale = SIMD3(grow, 1, grow)
+                    r.entity.components.set(OpacityComponent(opacity: r.peak * (1 - k) * (1 - k)))
+                } else {
+                    let fade: Float = k < 0.6 ? 1 : 1 - (k - 0.6) / 0.4
+                    r.entity.components.set(OpacityComponent(opacity: r.peak * fade))
+                }
             } else if r.entity.isEnabled {
                 r.entity.isEnabled = false
             }
@@ -723,7 +916,14 @@ final class LensLayer {
     /// every arrow and the layer's own opacity. Two calls with the same clock must give the same fingerprint.
     func fingerprint() -> UInt64 {
         var h = StableHasher()
-        for phase in [MotionPhase.sliding, .rolling] { h.combine(Double(trailOffsets[phase] ?? 0)) }
+        for phase in [MotionPhase.sliding, .rolling, .airborne] { h.combine(Double(trailOffsets[phase] ?? 0)) }
+        // The dots under flying balls (the rings loop below covers the throw lines and the jam crosses too).
+        for dot in dots {
+            h.combine(dot.isEnabled ? 1 : 0)
+            guard dot.isEnabled else { continue }
+            h.combine(Double(dot.position.x)); h.combine(Double(dot.position.z))
+            h.combine(Double(dot.components[OpacityComponent.self]?.opacity ?? -1))
+        }
         for r in rings {
             // A hidden ring keeps its last size and opacity; they are not visible, so they are not part of the picture.
             h.combine(r.entity.isEnabled ? 1 : 0)
