@@ -18,7 +18,8 @@
 //              toward the pointer (or the hovering Pencil tip), as far as the first ball or cushion it would meet, with
 //              a faint ring there. It is a preview only: the aim itself does not move. Drawn thin and dashed, with no
 //              glow, so it never reads as the set line (the overlay's bright line). Over the cue ball itself, where a
-//              press is a pull-back, no preview is drawn.
+//              press is a pull-back, no preview is drawn. With the Aim guide option off the preview is the overlay's
+//              short line with no ring, so a hover never shows the contact the option hides.
 //            - Click or press-drag on the cloth: sets the aim. The overlay's own drag and tap do this for every input; a
 //              plain click on bare cloth that the overlay left alone is aimed here, after the overlay has had its turn,
 //              so a click on a ball or a pocket keeps the overlay's snap to it.
