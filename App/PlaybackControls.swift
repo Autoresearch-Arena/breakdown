@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: Your shot is plain and disabled during the
+//          computer's turn on iPhone and iPad).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Replay moved into the scrub row beside the speed menu, so Physics
 //          Lens, Ride and Your shot share one centred row instead of leaving Your shot alone on a second row).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).

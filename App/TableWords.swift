@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: the spoken ruling's scores say "You" for the
+//          person's seat).
 // PURPOSE: The table in words, for a player who cannot see it (accessibility plan, packages 1 to 3). Every sentence
 //          VoiceOver says about the balls, the aim and the shot is built here, from the same numbers the screen draws:
 //          - ballLabel / place / ballValue: each ball's name ("3 ball, solid") and where it is in the terms a player

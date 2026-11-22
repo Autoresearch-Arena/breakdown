@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: asks to replace only this game's save; Keep
+//          my saved game plays it).
 // PURPOSE: A table's game page, pushed from its entry in the Tables list (plans/21-Nov-2026-other-tables-games-plan.md
 //          package 5): the game the table plays, ways to play it (bumper pool and five-pin against the computer at a
 //          chosen level, with the person's record at that level; bar billiards alone, for a best score kept on the

@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: passes the person's seat to the spoken
+//          ruling).
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, one hook: the spoken ruling ends with everyone's
 //          score in games that keep one, five-pin and bar billiards.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hook: a finished shot's summary is followed by the

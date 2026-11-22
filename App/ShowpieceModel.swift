@@ -44,6 +44,8 @@
 //          StrokeModel.strikeZones, the delivery's own rule, and both pass isBreak: racked, so a break gets its own
 //          calm zone and the power bar's calm mark is where the strike's calm zone ends.)
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: hasSavedMatch(kind),
+//          continueSavedMatch(kind:), endMatch removes only its own game's save).
 // Edited: Claude Haiku 5.5 High, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: every player shot and break is kept as a
 //          ShotAttempt; tryAgain() puts the balls back where it started with the same settings, keeps it as the ghost,

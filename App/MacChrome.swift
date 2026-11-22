@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: a new match from the menu bar asks only when
+//          that game has a save).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 3 and half of L-A,
 //          plans/22-Nov-2026-v075-whatif-and-gaps-plan.md: the Shot and Playback menus and the toolbar's play, replay,
 //          speed and Your shot do nothing while the main menu is open; Learn, Trick Shots and Behind the 8-Ball open

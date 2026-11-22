@@ -1,5 +1,7 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: the replace question asks only when that game
+//          has a save, and Keep plays that save).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: the saved line is read through a closure
 //          rather than by passing MatchWords.savedLine itself, so no actor-isolation conversion is asked of map.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
