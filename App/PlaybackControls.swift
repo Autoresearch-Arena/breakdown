@@ -29,6 +29,10 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream: What if sits beside Replay in the scrub row (and
 //          after the time on the Mac; a worded full-width row in the stacked buttons at the accessibility text sizes); the speed list starts with Auto, which hands the pace back to the paced replay
 //          (it used to drop that choice silently); Replay's hint no longer promises slow motion while Ride is on.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bugs 12 and 31 of
+//          plans/22-Nov-2026-phone-bug-hunt.md: the speed button in the scrub row says Auto with its own short catalog
+//          key, so a long translation of the menu's Auto no longer squeezes the scrub bar; the list row and VoiceOver
+//          keep the full word. The What if button keeps its slot in the scrub row, so the bar never changes width.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
 //          ToggleButton now serves both iPhone and iPad toggles.
 import SwiftUI
@@ -140,6 +144,12 @@ struct SpeedPicker: View {
         }
     }
 
+    /// The speed button's label while the replay paces itself.
+    static var autoShort: String {
+        String(localized: "Speed: Auto", defaultValue: "Auto",
+               comment: "Short label on the speed button beside the scrub bar while the replay sets its own pace; one short word")
+    }
+
     var body: some View {
         Group {
             if asMenu {
@@ -147,7 +157,9 @@ struct SpeedPicker: View {
                 Menu {
                     picker.pickerStyle(.inline)
                 } label: {
-                    Text(model.chosenRate.map(PlaybackSpeed.label) ?? String(localized: "Auto"))
+                    // Its own key (0.7.6, bug 12): one short word in every language, where the list row's Auto may be
+                    // a long one ("Automatisch").
+                    Text(model.chosenRate.map(PlaybackSpeed.label) ?? Self.autoShort)
                         .lineLimit(1)
                         .monospacedDigit()
                 }
@@ -198,14 +210,15 @@ struct PlaybackControls: View {
             // Replay lives in the scrub row too (it is a playback control), so the button row below has room for
             // Physics Lens, Ride and Your shot on one line instead of leaving Your shot alone on a second row.
             ReplayButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
-            // What if, beside Replay: only after the player's own shot has come to rest (it hides itself otherwise).
-            // At the accessibility text sizes it is a worded full-width row in the stacked buttons instead.
+            // What if, beside Replay: only after the player's own shot has come to rest (invisible otherwise, its
+            // slot kept so the scrub bar does not change width; 0.7.6, bug 31). At the accessibility text sizes it is a
+            // worded full-width row in the stacked buttons instead.
             if !typeSize.isAccessibilitySize {
-                WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
+                WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
             }
             #else
             if !typeSize.isAccessibilitySize { TimeReadout(model: model) }
-            WhatIfButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain)
+            WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
             #endif
         }
         .padding(.leading, 8)
