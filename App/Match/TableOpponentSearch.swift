@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent review: the aim window is now measured with
+//          the planner's own success test on each refined trial (Spec.succeeds) instead of a bar on the value. The
+//          value also carries position terms, so a cup shot of a ball that started near its cup scored below the cup's
+//          10 once the ball's lost nearness was taken off, and every such shot reported no window at all; hard
+//          five-pin's leave term did the same to its scoring strokes.)
 // PURPOSE: The stroke search the computer uses on the tables without pockets to aim at: bumper pool and five-pin
 //          (plans/22-Nov-2026-v074-glow-up-plan.md, feature R, table-opponent brief item 3). Pool's planner can list
 //          its candidate shots by geometry (a ball, a pocket, a ghost ball); here the scoring shots are banks off
@@ -20,7 +25,7 @@
 //          Easy stops after the fan and plays its raw best (no smoothing, refining or noise check). Every phase is
 //          capped by a count of solves, never by clock time, so a plan is the same on every device, and each phase
 //          checks Task.isCancelled so an abandoned think stops early (MatchOpponent.cancel cancels the task).
-//          Read by BumperPoolPlanner and FivePinPlanner, which supply the fan, the value and the success mark, and
+//          Read by BumperPoolPlanner and FivePinPlanner, which supply the fan, the value and the success test, and
 //          turn the result into an OpponentPlan. Nothing here runs on the main actor.
 // SRP/DRY check: Pass - the solve-and-rule step repeats OpponentPlanner.trial's recipe on purpose but returns this
 //          search's own reading (a value and the route counts), which that pool-shaped trial (keeps, safety, next
@@ -115,14 +120,18 @@ enum TableOpponentSearch {
     /// The planner's value of one solved stroke for the shooter: higher is better.
     typealias Value = @Sendable (Ruling, ShotFacts) -> Double
 
+    /// Whether one noise-free trial did what the stroke is for (a ball in its cup, a scoring stroke): the aim window
+    /// counts the refined aims that pass. A test on the trial, not a bar on the value, because the value also carries
+    /// position terms that can pull a real success below any fixed mark.
+    typealias Success = @Sendable (TableTrial) -> Bool
+
     /// What a planner hands the search.
     struct Spec: Sendable {
         var fan: TableFan
-        /// The value a stroke must reach, struck perfectly, to count towards the aim window (a cup, a scoring stroke).
-        var successValue: Double
         /// Bumper pool's own cup; nil on five-pin.
         var ownCup: OwnCup?
         var value: Value
+        var succeeds: Success
     }
 
     /// The chosen stroke.
@@ -134,7 +143,7 @@ enum TableOpponentSearch {
         /// Its mean points (TableTrial.points) over the noise check, the same way.
         var expectedPoints: Double
         /// The width of the unbroken run of refined aims at the chosen speed and tip, round the chosen aim, whose
-        /// noise-free value reaches the success mark; degrees. Nil when the chosen stroke itself does not reach it or
+        /// noise-free trial passes the spec's success test; degrees. Nil when the chosen stroke itself does not pass or
         /// there was no refine.
         var window: Double?
         /// How many strokes were solved.
@@ -380,7 +389,7 @@ enum TableOpponentSearch {
         let picked = Array(candidates.prefix(max(depth.noiseKeep, 1)))
         guard let top = picked.first else { return nil }
         if depth.noiseKeep <= 0 || depth.noiseSamples <= 0 || Task.isCancelled {
-            return plain(refineTrials[top], window: window(top, refineValues, spec.successValue, cols: cols),
+            return plain(refineTrials[top], window: window(top, refineTrials, spec.succeeds, cols: cols),
                          solves: solves)
         }
 
@@ -410,18 +419,18 @@ enum TableOpponentSearch {
         guard let w = best(meanValues, picked.map { refineStrokes[$0] }) else { return nil }
         let chosen = picked[w]
         return Result(trial: refineTrials[chosen], expected: meanValues[w], expectedPoints: meanPoints[w],
-                      window: window(chosen, refineValues, spec.successValue, cols: cols), solves: solves)
+                      window: window(chosen, refineTrials, spec.succeeds, cols: cols), solves: solves)
     }
 
     /// The aim window of refined stroke `i`: the unbroken run of its row (same seed, speed and tip) round it whose
-    /// noise-free value reaches `success`, each aim standing for one refineStep slice. Nil when `i` itself does not
-    /// reach it.
-    private static func window(_ i: Int, _ values: [Double], _ success: Double, cols: Int) -> Double? {
-        guard values.indices.contains(i), values[i] >= success, cols > 0 else { return nil }
+    /// noise-free trial passes `succeeds`, each aim standing for one refineStep slice. Nil when `i` itself does not
+    /// pass.
+    private static func window(_ i: Int, _ trials: [TableTrial], _ succeeds: Success, cols: Int) -> Double? {
+        guard trials.indices.contains(i), cols > 0, succeeds(trials[i]) else { return nil }
         let rowStart = (i / cols) * cols, rowEnd = rowStart + cols - 1
         var lo = i, hi = i
-        while lo > rowStart && values[lo - 1] >= success { lo -= 1 }
-        while hi < rowEnd && values[hi + 1] >= success { hi += 1 }
+        while lo > rowStart && succeeds(trials[lo - 1]) { lo -= 1 }
+        while hi < rowEnd && succeeds(trials[hi + 1]) { hi += 1 }
         return Double(hi - lo + 1) * refineStep
     }
 }

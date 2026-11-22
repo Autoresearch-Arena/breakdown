@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent review: the foul test lets through a foul
+//          that also sinks one of the computer's own balls in its cup, which the plan's value rightly prefers to a
+//          clean roll; any other planned foul while a legal stroke exists still fails.)
 // PURPOSE: The computer at bumper pool and five-pin (App/Match/BumperPoolPlanner.swift, FivePinPlanner.swift and their
 //          shared search, TableOpponentSearch.swift) as unit tests, from plans/22-Nov-2026-v074-glow-up-plan.md
 //          (table-opponent stream): bumper pool finds a cup shot from the start and a wide one near its cup, and never
@@ -121,13 +124,21 @@ final class TableOpponentTests: XCTestCase {
     }
 
     func testBumperNeverChoosesAFoulWhenALegalStrokeExists() {
+        // A foul that also drops one of the computer's own balls in its own cup is not a mistake under the plan's
+        // value: the ball stays down (+10) and the foul costs 8, so it beats a clean roll, and BumperPoolRules keeps
+        // the sunk ball down on a foul. Only a foul with no ball of its own in its cup must never be chosen while a
+        // legal stroke exists.
         for k in 0..<5 {
             let l = randomBumperLayout(seed: 0xB0B0 + UInt64(k))
             let onTable = BumperPoolRules.sides.flatMap { $0 }.filter { NextShot.isOnTable(l[$0]) }
             for level in ComputerLevel.allCases {
                 let s = bumper(l, level: level, ballsLeft: onTable)
                 let plan = OpponentPlanner.plan(s)
-                guard solve(s, plan.stroke).ruling.fouled else { continue }
+                let (facts, ruling) = solve(s, plan.stroke)
+                guard ruling.fouled else { continue }
+                let own = Set(BumperPoolRules.sides[s.state.turn.index])
+                let cup = BumperPoolRules.targetHole[s.state.turn.index]
+                if facts.holeDrops.contains(where: { own.contains($0.ball) && $0.hole == cup }) { continue }
                 XCTAssertFalse(someLegalStroke(s, speeds: [0.9, 1.8]),
                                "layout \(k), \(level): the plan fouls although a legal stroke exists")
             }

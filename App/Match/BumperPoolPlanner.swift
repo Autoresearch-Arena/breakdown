@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent review: the aim window is measured with
+//          sinksOwn on each refined trial, not a value of 10, which a cup shot of a ball near its cup never reached.)
 // PURPOSE: How the computer chooses its stroke at bumper pool (plans/22-Nov-2026-v074-glow-up-plan.md, feature R,
 //          table-opponent brief item 4). OpponentPlanner.plan hands a bumper-pool snapshot here; this file says what a
 //          stroke is worth to the computer and how widely to search, runs TableOpponentSearch, and turns its choice
@@ -13,7 +15,8 @@
 //              where nearness is the sum over a side's balls on the table of max(0, 1 - d / 0.6 m), d the distance to
 //              that side's cup, measured from the snapshot's layout to where the balls came to rest.
 //          The fan: every degree round the ball at 0.6, 0.9, 1.3, 1.8 and 2.4 m/s, the middle of the ball (hard adds
-//          the reference touch of draw); the success mark is 10 (one ball in its cup). The speeds stay low because the
+//          the reference touch of draw); the aim window counts the aims that drop one of its own balls in its own cup
+//          with no foul (sinksOwn). The speeds stay low because the
 //          cups refuse fast balls: the newer physics lets a ball skip over a cup it crosses too fast, and these cups
 //          catch only about 18 mm round their centre. Easy plays the raw best of a fan two degrees apart at 0.9, 1.4
 //          and 2.0 m/s (540 solves). Nothing here builds on mirror-image geometry: the design probe found the mirror
@@ -47,8 +50,6 @@ enum BumperPoolPlanner {
     static let speeds = [0.6, 0.9, 1.3, 1.8, 2.4]
     static let step = 1.0
     static let tipUp = 0.0
-    /// One ball in its own cup, struck perfectly: what the aim window is measured against.
-    static let successValue = cupValue
     static let easySpeeds = [0.9, 1.4, 2.0]
     static let easyStep = 2.0
     /// The fallback stroke when the search has nothing (the struck ball not on the table): a gentle roll at its cup.
@@ -70,13 +71,14 @@ enum BumperPoolPlanner {
         // Plain values for the @Sendable value closure (the search runs it on many threads at once).
         let start = s.layout, inPlay = Set(s.state.ballsLeft), p = s.parameters
         let spec = TableOpponentSearch.Spec(
-            fan: fan, successValue: successValue,
+            fan: fan,
             ownCup: TableOpponentSearch.OwnCup(balls: Set(BumperPoolRules.sides[seat]),
                                                hole: BumperPoolRules.targetHole[seat]),
             value: { ruling, facts in
                 BumperPoolPlanner.value(ruling: ruling, facts: facts, seat: seat, other: other, start: start,
                                         inPlay: inPlay, parameters: p)
-            })
+            },
+            succeeds: { BumperPoolPlanner.sinksOwn($0) })
         guard let found = TableOpponentSearch.search(s, spec: spec, depth: TableSearchDepth.of(s.level)) else {
             return fallback(s, cueBall: cueBall)
         }
@@ -105,6 +107,13 @@ enum BumperPoolPlanner {
     }
 
     // MARK: The value
+
+    /// What the aim window is measured against: the stroke, struck perfectly, drops one of the shooter's own balls in
+    /// its own cup without a foul. A test on the trial rather than a bar on the value: sinking a ball that started
+    /// near its cup also takes that ball's nearness off the position term, so a real cup shot can value below 10.
+    static func sinksOwn(_ t: TableTrial) -> Bool {
+        t.ownDrop != nil && t.ruling?.fouled == false
+    }
 
     /// The value of one solved stroke for seat `seat` against seat `other` (see the header). `start` is the layout
     /// the stroke was played from, `inPlay` the balls still in the game before it (MatchState.ballsLeft).

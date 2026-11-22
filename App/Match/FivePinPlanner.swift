@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 table-opponent review: the aim window is measured on each
+//          refined trial's points, not its value, so hard's leave term no longer hides a real scoring window.)
 // PURPOSE: How the computer chooses its stroke at five-pin billiards (plans/22-Nov-2026-v074-glow-up-plan.md, feature
 //          R, table-opponent brief item 5). OpponentPlanner.plan hands a five-pin snapshot here. The computer strikes
 //          its own ball (the yellow, seat 1) onto the other player's, which should then knock pins down; a miss, the
@@ -45,7 +47,8 @@ enum FivePinPlanner {
     /// The reference touch of draw, 7 mm below centre (EightBallJudge.referenceTipUp).
     static let tipUp = EightBallJudge.referenceTipUp
     static let extraStep = 0.1
-    /// A white pin's worth (FivePinRules.whitePinPoints), struck perfectly: what the aim window is measured against.
+    /// A white pin's worth (FivePinRules.whitePinPoints), struck perfectly: what the aim window is measured against,
+    /// on the trial's points rather than its value (hard's leave term would otherwise pull a real score below it).
     static let successValue = Double(FivePinRules.whitePinPoints)
 
     // MARK: Easy, by eye
@@ -76,11 +79,14 @@ enum FivePinPlanner {
                            extraAims: extras, extraStep: extraStep)
         let hard = s.level == .hard
         let spec = TableOpponentSearch.Spec(
-            fan: fan, successValue: successValue, ownCup: nil,
+            fan: fan, ownCup: nil,
             value: { ruling, facts in
                 FivePinPlanner.value(ruling: ruling, facts: facts, seat: seat, other: other, ownBall: own,
                                      castle: castle, leave: hard)
-            })
+            },
+            // Scored at least a white pin's worth: TableTrial.points is the shooter's points less the other's, so a
+            // foul (which gives the other player the points) never passes. Hard's leave term is left out on purpose.
+            succeeds: { $0.points >= FivePinPlanner.successValue })
         guard let found = TableOpponentSearch.search(s, spec: spec, depth: TableSearchDepth.of(s.level)) else {
             return easyPlan(s)
         }
