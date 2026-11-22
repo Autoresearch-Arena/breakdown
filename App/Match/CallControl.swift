@@ -199,7 +199,8 @@ struct MatchCallControl: View {
         }
     }
 
-    /// Two quick flashes of the outline.
+    /// Two quick flashes of the outline (on the main actor, where the view and its state live).
+    @MainActor
     private func pulse() {
         Task { @MainActor in
             for _ in 0..<2 {

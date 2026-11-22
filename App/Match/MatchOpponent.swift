@@ -361,6 +361,8 @@ enum OpponentPlanner {
             if s.state.ballInHand != .none, let first = placements(s).first, s.layout.indices.contains(cueBall) {
                 var l = s.layout
                 l[cueBall] = first.spot
+                // easyPlan looks at the table afresh from there, so it may shoot another ball than the one the spot
+                // was chosen for if that one now looks easier: still a pot picked by eye, which is easy's way.
                 return easyPlan(s, layout: l, placement: first.spot)
             }
             return easyPlan(s, layout: s.layout, placement: nil)
