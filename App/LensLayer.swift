@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens review: the castle ring's transparency is built
+//          with the material's own opacity value, which the first version spelled as a scalar parameter that does not
+//          compile.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          item 9 and R-A: the hit diagram no longer vanishes when a held hit ends - it keeps its pose and fades out over
 //          the same quarter second it fades in, and a new held hit during that fade carries on from the opacity on
@@ -575,7 +578,8 @@ final class LensLayer {
             let radius = Float(outer + Self.castleRingGap)
             let inner = max(0, 1 - Self.castleRingWidth / radius)
             var faint = UnlitMaterial(color: rgba(Theme.paperRGB.0, Theme.paperRGB.1, Theme.paperRGB.2))
-            faint.blending = .transparent(opacity: .float(Self.castleRingStrength))
+            // The blending opacity is PhysicallyBasedMaterial.Opacity (a struct with a scale), not a scalar parameter.
+            faint.blending = .transparent(opacity: .init(scale: Self.castleRingStrength))
             faint.faceCulling = .none
             let ring = ModelEntity(mesh: Self.annulus(segments: 96, inner: inner), materials: [faint])
             ring.scale = SIMD3(radius, 1, radius)
