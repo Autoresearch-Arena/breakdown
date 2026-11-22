@@ -1,6 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
-// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6: only ball, cushion and pocket hits sound; no room reverb.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6: no room reverb; every hit and moment sound plays dry.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6: no rolling sound at all. RollingVoices is gone; a ball travelling
 //          across the table is silent and only contacts sound. The Boss heard the rolling hiss as static.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (honours the Sound option).
@@ -503,19 +503,7 @@ final class SoundBoard {
         }
     }
 
-    /// The only sounds the game makes (0.7.6, the Boss: "I only want to hear the break of the balls and the clanking
-    /// against the table"): balls hitting balls, the break, a ball against a cushion, post, pin or the edge of a hole,
-    /// and a ball dropping and knocking in a pocket. No cue tip, no landing or floor thud, no miscue, no settle, and
-    /// none of the game's own moment chimes (foul, turn, win, made it); their haptics still play.
-    static func isAllowed(_ kind: FeelKind) -> Bool {
-        switch kind {
-        case .crack, .click, .cushion, .pocket, .knock, .pin, .post, .rimSkip: return true
-        case .tock, .landing, .offTable, .miscue, .settle, .foul, .turnChange, .win, .madeIt, .madeItBig: return false
-        }
-    }
-
     private func fire(_ cue: FeelCue) {
-        guard Self.isAllowed(cue.kind) else { return }
         let chosen = voice(for: cue.kind)
         guard let layers = voices[chosen], !layers.isEmpty else { return }
         // The title music never plays over the table: the first table sound sends it out fast. A game moment (a match
