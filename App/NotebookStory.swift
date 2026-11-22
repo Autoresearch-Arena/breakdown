@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 6 and 7, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
+//          during the opening (and its hand-over) the story shows only its one line, not the surface card's friction
+//          constants and rail percentage, so the first screen is a racked table and one instruction; the Lens colour
+//          key left this header for its own row under the notebook's top bar (NotebookPanel), shown with the Lens up
+//          whether Explanations is on or off.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (renamed NotebookStory, file NotebookStory.swift (it was DuoStory, DuoStory.swift): it is the notebook's
 //          commentary on every big screen now, not only across a folding phone's hinge. On a big screen
 //          (notebookRoomy) each sentence is set a size larger for reading at arm's length or at a desk; rows brighten
@@ -46,14 +51,18 @@ struct NotebookStory: View {
             VStack(alignment: .leading, spacing: 8) {
                 header
                 if captions.isEmpty {
-                    // Before any shot: what is coming, and the surface and table it will be played on.
+                    // Before any shot: what is coming, and the surface and table it will be played on. While the opening
+                    // runs (the first minute's break and hand-over) only the one line shows: the numbers wait until the
+                    // player is playing, so nothing competes with the hand-over's one instruction.
                     ScrollView {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Once the balls move, every hit is explained here.")
                                 .font(Theme.body)
                                 .foregroundStyle(.secondary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            NotebookSurfaceCard(model: model, detailed: true)
+                            if model.openingStage == .none {
+                                NotebookSurfaceCard(model: model, detailed: true)
+                            }
                         }
                     }
                     .scrollBounceBehavior(.basedOnSize)
@@ -72,16 +81,14 @@ struct NotebookStory: View {
 
     private var showsLeader: Bool { model.lensOn && activeID != nil }
 
+    /// The list's heading. The Lens colour key is not here: it has its own row under the panel's top bar, so it shows
+    /// with Explanations off too (NotebookPanel, 0.7.5).
     private var header: some View {
-        HStack(alignment: .center, spacing: 8) {
-            Text("Step by step")
-                .font(Theme.label)
-                .textCase(.uppercase)
-                .foregroundStyle(.secondary)
-            Spacer(minLength: 0)
-            if model.lensOn { LensLegendChip().transition(.opacity) }
-        }
-        .animation(.easeOut(duration: 0.25), value: model.lensOn)
+        Text("Step by step")
+            .font(Theme.label)
+            .textCase(.uppercase)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var list: some View {

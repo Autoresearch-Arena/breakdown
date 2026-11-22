@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 4 and 12, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
+//          ContinueButton is internal, so the notebook shows it for a held moment too; LeaderState.stageRect, the
+//          table's own frame, bounds the on-table caption chip, so on the open Duo the chip stays on the table half.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the strip under the table hugs its words: the room stays reserved
 //          for the camera, title and three lines, but the glass card is only as tall as the caption and sits on the
 //          controls; nothing is drawn before the first caption; a longer one grows upward instead of moving the table).
@@ -189,8 +192,8 @@ private extension View {
 
 /// While guided pacing holds the replay on a beat for reading: the button that moves on to the next beat now.
 /// Uses the existing "Continue" string; at the accessibility text sizes only its arrow shows (VoiceOver still reads
-/// "Continue") so it does not squeeze the caption's words.
-private struct ContinueButton: View {
+/// "Continue") so it does not squeeze the caption's words. Internal: the notebook's lower edge shows it too (0.7.5).
+struct ContinueButton: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -419,6 +422,10 @@ final class LeaderState {
     var card: CGRect = .zero
     /// Bottom edge of the title row (StageSpace); the chip beside the ring stays below it.
     var topClear: CGFloat = 0
+    /// The table's own frame (StageSpace), reported by ShowpieceView's stage on change. The chip beside the ring stays
+    /// inside it, so on the open Duo it never crosses the hinge onto the words half. Zero until measured, then the
+    /// whole overlay is used (0.7.5 layouts item 12).
+    var stageRect: CGRect = .zero
     /// The player's stroke lines on screen (StageSpace), or nil (LensStroke.onScreen decides when).
     var stroke: StrokeMarks?
 
@@ -512,21 +519,25 @@ struct CaptionLeader: View {
         return ring
     }
 
-    /// Where the chip's centre goes: to the right of the ring, flipped to the left when that would leave the screen
-    /// or land on the card, then clamped so it is always fully visible. Vertically centred on the ball.
+    /// Where the chip's centre goes: to the right of the ring, flipped to the left when that would leave the table
+    /// or land on the card, then clamped so it is always fully visible on the table. Vertically centred on the ball.
+    /// "The table" is the stage's frame (leader.stageRect): the whole screen on a phone, the table half on the open Duo
+    /// and beside the notebook, so the chip never sits on the words; before it is measured, the whole overlay.
     private func chipCenter(ring: CGPoint, in size: CGSize) -> CGPoint {
         let w = chipSize.width, h = chipSize.height
+        let bounds = leader.stageRect.isEmpty ? CGRect(origin: .zero, size: size) : leader.stageRect
         let right = CGPoint(x: ring.x + ringRadius + gap + w / 2, y: ring.y)
         let left = CGPoint(x: ring.x - ringRadius - gap - w / 2, y: ring.y)
         func fits(_ c: CGPoint) -> Bool {
             let rect = CGRect(x: c.x - w / 2, y: c.y - h / 2, width: w, height: h)
-            let onScreen = rect.minX >= gap && rect.maxX <= size.width - gap
-            return onScreen && (leader.card.isEmpty || !leader.card.intersects(rect))
+            let onTable = rect.minX >= bounds.minX + gap && rect.maxX <= bounds.maxX - gap
+            return onTable && (leader.card.isEmpty || !leader.card.intersects(rect))
         }
         var c = fits(right) || !fits(left) ? right : left
-        c.x = min(max(c.x, gap + w / 2), max(gap + w / 2, size.width - gap - w / 2))
-        let top = max(gap, leader.topClear + gap) + h / 2
-        c.y = min(max(c.y, top), max(top, size.height - gap - h / 2))
+        let minX = bounds.minX + gap + w / 2
+        c.x = min(max(c.x, minX), max(minX, bounds.maxX - gap - w / 2))
+        let top = max(bounds.minY + gap, leader.topClear + gap) + h / 2
+        c.y = min(max(c.y, top), max(top, bounds.maxY - gap - h / 2))
         return c
     }
 

@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 5, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
+//          while a page is up (the menu, or the trick, lesson or eight-ball list) A, B, X, Y, the shoulders, the d-pad
+//          and the sticks leave the table alone, so the system's controller focus drives the menu and the lists; the
+//          menu button opens the menu, or closes it when a game is in progress; A continues a held Lens moment when no
+//          card's button comes first; the options button is Try again and a right stick click Replay with the Lens
+//          (Watch it in the Lens when a remarkable shot is on offer), on controllers that have them.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 item 42: controller play no longer stops after the first shot.
 //          A presses the main button of whatever card is up (Continue, Ready, the first answer of a choice, Rematch,
 //          See the ruling, Place it, Pick up the cue ball, Rack again, Watch it, Your turn, Next step, Try again, Next,
@@ -16,8 +22,9 @@
 //            right trigger / left trigger . more / less power (by how hard each is squeezed; power is the swing)
 //            right stick ................... moves the cue tip on the cue ball (follow, draw, side); it stays put when
 //                                            the stick is let go, like the tip picker
-//            A ............................ the main button of the card on screen; with no card up, shoot while Your
-//                                            shot is open, open Your shot when it is closed, or play or pause a replay
+//            A ............................ the main button of the card on screen; with no card up, continue a held
+//                                            Lens moment, shoot while Your shot is open, open Your shot when it is
+//                                            closed, or play or pause a replay
 //            B ............................ skip to where the balls came to rest (ready to aim)
 //            X ............................ Physics Lens on or off
 //            Y ............................ open or close Your shot
@@ -26,7 +33,12 @@
 //                                            otherwise left and right turn the aim a quarter degree, up and down step
 //                                            the cue angle through the angles the cue-angle menu offers
 //            right / left shoulder ......... step the replay to the next / previous explained moment (read aloud)
-//            menu button ................... open the menu
+//            options button ................ try again (where the controller has one)
+//            right stick click ............. replay with the Lens; Watch it in the Lens when a remarkable shot is on
+//                                            offer (where the controller has one)
+//            menu button ................... open the menu, or close it when a game is in progress
+//          While a page is up (the menu, or a trick, lesson or eight-ball list) only the menu button acts here; the
+//          system's controller focus moves through the page.
 //          Nothing needs a button held for a time: every press is one action, and the sticks and triggers only move
 //          values the player can also set with a touch, the keyboard or VoiceOver.
 //          "The card on screen" is read from the model and the modes, not from the views: each card's main button
@@ -95,7 +107,7 @@ final class GameControllerInput {
             Mapping(control: String(localized: "Right stick"),
                     action: String(localized: "Moves the tip on the cue ball: follow, draw and side.")),
             Mapping(control: String(localized: "A button"),
-                    action: String(localized: "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.")),
+                    action: String(localized: "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.")),
             Mapping(control: String(localized: "B button"),
                     action: String(localized: "Skips to where the balls stop.")),
             Mapping(control: String(localized: "X button"),
@@ -106,8 +118,12 @@ final class GameControllerInput {
                     action: String(localized: "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.")),
             Mapping(control: String(localized: "Shoulder buttons"),
                     action: String(localized: "Step through the explained moments of the shot, forwards or back.")),
+            Mapping(control: String(localized: "Options button"),
+                    action: String(localized: "Tries the shot again, where the controller has this button.")),
+            Mapping(control: String(localized: "Right stick click"),
+                    action: String(localized: "Replays the shot with the Physics Lens, where the controller has this button.")),
             Mapping(control: String(localized: "Menu button"),
-                    action: String(localized: "Opens the menu.")),
+                    action: String(localized: "Opens or closes the menu.")),
         ]
     }
 
@@ -152,17 +168,20 @@ final class GameControllerInput {
 
     /// Which button was pressed: a plain value, so the framework's handler can hand it to the main actor.
     private enum Button: Sendable {
-        case a, b, x, y, menu, rightShoulder, leftShoulder, left, right, up, down
+        case a, b, x, y, menu, options, rightStick, rightShoulder, leftShoulder, left, right, up, down
     }
 
     /// Buttons: one action per press (pressed changes from false to true), never a hold.
     private func configure(_ controller: GCController) {
         guard let pad = controller.extendedGamepad else { return }
-        let buttons: [(GCControllerButtonInput, Button)] = [
+        var buttons: [(GCControllerButtonInput, Button)] = [
             (pad.buttonA, .a), (pad.buttonB, .b), (pad.buttonX, .x), (pad.buttonY, .y), (pad.buttonMenu, .menu),
             (pad.rightShoulder, .rightShoulder), (pad.leftShoulder, .leftShoulder),
             (pad.dpad.left, .left), (pad.dpad.right, .right), (pad.dpad.up, .up), (pad.dpad.down, .down),
         ]
+        // Not every controller has these two (the framework gives nil then); the mapping says "where it has one".
+        if let options = pad.buttonOptions { buttons.append((options, .options)) }
+        if let stick = pad.rightThumbstickButton { buttons.append((stick, .rightStick)) }
         for (input, button) in buttons {
             input.pressedChangedHandler = { _, _, pressed in
                 guard pressed else { return }
@@ -171,18 +190,38 @@ final class GameControllerInput {
         }
     }
 
+    /// True while a page covers play: the main menu, or a trick-shot, lesson or eight-ball list. The system's
+    /// controller focus moves through the page then, so every button but Menu leaves the table alone (0.7.5).
+    private func pageUp(_ model: ShowpieceModel) -> Bool {
+        model.menuOpen || model.trickMode.listOpen || model.lessonMode.listOpen || model.eightBallMode.listOpen
+    }
+
     private func press(_ button: Button) {
         guard let model else { return }
         noteUse(model)
+        // The menu button works over a page (it is how a page is left for the menu or the menu for the game);
+        // nothing else does.
+        if button != .menu, pageUp(model) { return }
         switch button {
         case .a: pressA(model)
         case .b: model.skipToResult()
         case .x: model.setLens(!model.lensOn)
-        case .y:
-            guard !model.menuOpen else { return }
-            model.requestShotPanel(.toggle)
-        case .menu:
-            if !model.menuOpen { model.openMenu() }
+        case .y: model.requestShotPanel(.toggle)
+        case .menu: pressMenu(model)
+        case .options:
+            // Try again, as the shot panel's button and the Mac's Command-T do: the retry, then Your shot opens so
+            // the restored aim can be changed.
+            guard model.canTryAgain else { return }
+            model.tryAgain()
+            model.requestShotPanel(.open)
+        case .rightStick:
+            // Replay with the Lens; when a remarkable shot is on offer, its own slow Lens replay instead (the
+            // highlight card's Watch it in the Lens). Only with a shot on screen: a still table has nothing to replay.
+            if model.highlightOnOffer != nil {
+                model.watchHighlight()
+            } else if NotebookStory.hasShot(model) {
+                model.replay(withLens: true)
+            }
         case .rightShoulder: ShotNarration.step(model, forward: true)
         case .leftShoulder: ShotNarration.step(model, forward: false)
         case .left: pressDpad(model, x: -1, y: 0)
@@ -198,6 +237,22 @@ final class GameControllerInput {
         if model.inputInUse != .controller { model.inputInUse = .controller }
     }
 
+    /// The menu button toggles: it opens the menu over play, and over the menu it goes back to the game when one is in
+    /// progress (the menu's own Continue). With a list up (opened from the menu or the Mac's Game menu) it closes the
+    /// lists and leaves the menu on screen, so a list is never left standing over play or hidden behind the menu.
+    private func pressMenu(_ model: ShowpieceModel) {
+        if model.trickMode.listOpen || model.lessonMode.listOpen || model.eightBallMode.listOpen {
+            model.closeAllLists()
+            if !model.menuOpen { model.openMenu() }
+            return
+        }
+        if model.menuOpen {
+            if model.gameInProgress { model.closeMenu() }
+            return
+        }
+        model.openMenu()
+    }
+
     // MARK: A
 
     /// A: the card's main button when a card is up; otherwise the shot.
@@ -205,6 +260,12 @@ final class GameControllerInput {
         // The menu's own rows are moved through by the system's controller focus; A does nothing to the table.
         guard !model.menuOpen else { return }
         if pressCardButton(model) { return }
+        // A guided Lens replay holding a moment for reading: A is its Continue (before the play and pause fallbacks
+        // below, which would only pause the held clock).
+        if model.holding {
+            model.nextBeat()
+            return
+        }
         if let shoot {
             // Your shot is open: shoot when the balls are ready, otherwise play or pause the shot on screen.
             if model.aimReady { shoot() } else { model.togglePlay() }
@@ -463,7 +524,7 @@ final class GameControllerInput {
     /// computer's turn), the same rule as the aim drag.
     func step(_ dt: Double, model: ShowpieceModel) {
         guard let pad = GCController.current?.extendedGamepad ?? GCController.controllers().first?.extendedGamepad,
-              model.aimReady, !model.menuOpen, model.personControlsLive else { return }
+              model.aimReady, !pageUp(model), model.personControlsLive else { return }
         let dt = min(dt, 1.0 / 20.0)
         func live(_ v: Float) -> Double { abs(v) < Self.deadZone ? 0 : Double(v) }
 
