@@ -26,6 +26,9 @@
 // SRP/DRY check: Pass - checked AimOverlay (the pull-back's depth formula and its 10-point slop are the same here) and
 //          PointerAim (its 2 cm minimum pull is the same "change of mind" floor used for a backswing). The drift that
 //          the wander causes is StrokeModel's; this file only measures.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke-model hook, 0.7.0 item 4: record(power:bridge:) hands the
+//          drawn groove's half-width, as a share of this stroke's length, to the record, so a finger inside the groove
+//          counts as straight.)
 import BreakdownLensModel
 import Foundation
 
@@ -203,7 +206,10 @@ struct StrokeTracker {
     /// The measured stroke for the model, or nil before the finger has drawn anything worth measuring.
     func record(power: Double, bridge: Double?) -> StrokeRecord? {
         guard strokeLength >= Self.shortestStroke else { return nil }
+        // The groove's half-width as a share of this stroke's length (stroke-model hook, 0.7.0 item 4): the wander
+        // inside it is forgiven (StrokeModel.beyondGroove).
         return StrokeRecord(wander: wander, rhythm: rhythmFactor, bridge: bridge, power: power,
-                            trace: samples.compactMap(\.spot), shape: shape, practiceStrokes: practiceStrokes)
+                            trace: samples.compactMap(\.spot), shape: shape, practiceStrokes: practiceStrokes,
+                            grooveHalfWidth: StrokeModel.grooveShare(strokeLength: strokeLength))
     }
 }

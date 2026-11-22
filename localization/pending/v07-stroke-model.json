@@ -1,0 +1,1070 @@
+{
+ "keys": [
+  "Your stroke turned the cue a little left.",
+  "Your stroke turned the cue a little right.",
+  "Your stroke turned the cue left.",
+  "Your stroke turned the cue right.",
+  "Played straight, it would have hit a different ball first.",
+  "Played straight, the pot would have dropped.",
+  "Played straight, the cue ball would have stayed on the table.",
+  "Played straight, that ball would have stayed up.",
+  "Played straight, the cue ball would have gone in.",
+  "At full power every stroke wanders most.",
+  "Past the calm zone every stroke wanders more.",
+  "Your stroke slid the tip off the ball.",
+  "Practise the straight stroke",
+  "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+  "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+  "Played without a finger stroke, so this one stays out of your record.",
+  "Shoot with the button only",
+  "Stroke",
+  "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "Tu golpe giró el taco un poco a la izquierda."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "Tu golpe giró el taco un poco a la derecha."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke turned the cue left.",
+   "text": "Tu golpe giró el taco a la izquierda."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke turned the cue right.",
+   "text": "Tu golpe giró el taco a la derecha."
+  },
+  {
+   "culture": "es",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "Con un golpe recto, habría tocado primero otra bola."
+  },
+  {
+   "culture": "es",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "Con un golpe recto, la bola habría entrado."
+  },
+  {
+   "culture": "es",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "Con un golpe recto, la bola blanca se habría quedado en la mesa."
+  },
+  {
+   "culture": "es",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "Con un golpe recto, esa bola no habría entrado."
+  },
+  {
+   "culture": "es",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "Con un golpe recto, la bola blanca habría entrado."
+  },
+  {
+   "culture": "es",
+   "key": "At full power every stroke wanders most.",
+   "text": "A toda potencia, cualquier golpe se desvía al máximo."
+  },
+  {
+   "culture": "es",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "Más allá de la zona tranquila, cualquier golpe se desvía más."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "Tu golpe hizo resbalar la suela de la bola."
+  },
+  {
+   "culture": "es",
+   "key": "Practise the straight stroke",
+   "text": "Practica el golpe recto"
+  },
+  {
+   "culture": "es",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Empieza el ejercicio de golpe recto: solo la bola blanca, de ida y vuelta por la mesa"
+  },
+  {
+   "culture": "es",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Mide un golpe hecho con el dedo en la pantalla. Un tiro hecho de otra forma muestra adónde fue la bola, pero no cuenta para tu récord."
+  },
+  {
+   "culture": "es",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Tiro sin golpe de dedo, así que este no cuenta para tu récord."
+  },
+  {
+   "culture": "es",
+   "key": "Shoot with the button only",
+   "text": "Tirar solo con el botón"
+  },
+  {
+   "culture": "es",
+   "key": "Stroke",
+   "text": "Golpe"
+  },
+  {
+   "culture": "es",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Tirar hacia atrás desde la bola blanca sigue fijando la potencia y midiendo tu golpe, pero empujar a través de ella ya no lanza el tiro. Solo lo hacen los botones Tirar o Saque."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "Ton coup a tourné la queue un peu vers la gauche."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "Ton coup a tourné la queue un peu vers la droite."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke turned the cue left.",
+   "text": "Ton coup a tourné la queue vers la gauche."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke turned the cue right.",
+   "text": "Ton coup a tourné la queue vers la droite."
+  },
+  {
+   "culture": "fr",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "Joué droit, il aurait touché une autre bille en premier."
+  },
+  {
+   "culture": "fr",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "Joué droit, la bille serait rentrée."
+  },
+  {
+   "culture": "fr",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "Joué droit, la bille blanche serait restée sur la table."
+  },
+  {
+   "culture": "fr",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "Joué droit, cette bille ne serait pas rentrée."
+  },
+  {
+   "culture": "fr",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "Joué droit, la bille blanche serait tombée dans une poche."
+  },
+  {
+   "culture": "fr",
+   "key": "At full power every stroke wanders most.",
+   "text": "À pleine puissance, chaque coup dévie au maximum."
+  },
+  {
+   "culture": "fr",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "Au-delà de la zone calme, chaque coup dévie davantage."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "Ton coup a fait glisser le procédé sur la bille."
+  },
+  {
+   "culture": "fr",
+   "key": "Practise the straight stroke",
+   "text": "Entraîne-toi au coup droit"
+  },
+  {
+   "culture": "fr",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Lance l'exercice du coup droit : la bille blanche seule, envoyée au bout de la table et retour"
+  },
+  {
+   "culture": "fr",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Il mesure un coup donné du doigt sur l'écran. Un coup joué autrement montre où est allée la bille, mais ne compte pas dans ton record."
+  },
+  {
+   "culture": "fr",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Joué sans coup du doigt, donc celui-ci ne compte pas dans ton record."
+  },
+  {
+   "culture": "fr",
+   "key": "Shoot with the button only",
+   "text": "Tirer seulement avec le bouton"
+  },
+  {
+   "culture": "fr",
+   "key": "Stroke",
+   "text": "Coup"
+  },
+  {
+   "culture": "fr",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Tirer le doigt en arrière depuis la bille blanche règle toujours la puissance et mesure ton coup, mais pousser à travers ne joue plus le coup. Seuls les boutons Tirer ou Casse le font."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "Dein Stoß hat das Queue etwas nach links gedreht."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "Dein Stoß hat das Queue etwas nach rechts gedreht."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke turned the cue left.",
+   "text": "Dein Stoß hat das Queue nach links gedreht."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke turned the cue right.",
+   "text": "Dein Stoß hat das Queue nach rechts gedreht."
+  },
+  {
+   "culture": "de",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "Mit geradem Stoß hätte die Weiße zuerst eine andere Kugel getroffen."
+  },
+  {
+   "culture": "de",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "Mit geradem Stoß wäre die Kugel gefallen."
+  },
+  {
+   "culture": "de",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "Mit geradem Stoß wäre die weiße Kugel auf dem Tisch geblieben."
+  },
+  {
+   "culture": "de",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "Mit geradem Stoß wäre diese Kugel nicht gefallen."
+  },
+  {
+   "culture": "de",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "Mit geradem Stoß wäre die weiße Kugel in eine Tasche gefallen."
+  },
+  {
+   "culture": "de",
+   "key": "At full power every stroke wanders most.",
+   "text": "Mit voller Kraft weicht jeder Stoß am stärksten ab."
+  },
+  {
+   "culture": "de",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "Jenseits der ruhigen Zone weicht jeder Stoß stärker ab."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "Dein Stoß hat die Pomeranze von der Kugel abrutschen lassen."
+  },
+  {
+   "culture": "de",
+   "key": "Practise the straight stroke",
+   "text": "Übe den geraden Stoß"
+  },
+  {
+   "culture": "de",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Startet die Übung zum geraden Stoß: nur die weiße Kugel, den Tisch hinauf und zurück"
+  },
+  {
+   "culture": "de",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Sie misst einen Stoß mit dem Finger auf dem Bildschirm. Ein anders gespielter Stoß zeigt, wohin die Kugel lief, zählt aber nicht für deinen Rekord."
+  },
+  {
+   "culture": "de",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Ohne Fingerstoß gespielt, darum zählt dieser nicht für deinen Rekord."
+  },
+  {
+   "culture": "de",
+   "key": "Shoot with the button only",
+   "text": "Nur mit der Taste stoßen"
+  },
+  {
+   "culture": "de",
+   "key": "Stroke",
+   "text": "Stoß"
+  },
+  {
+   "culture": "de",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Ziehst du von der weißen Kugel zurück, stellst du weiter die Kraft ein und dein Stoß wird gemessen, aber Durchschieben spielt den Stoß nicht mehr. Das machen nur die Tasten Stoßen oder Break."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "Il tuo colpo ha girato la stecca un po' a sinistra."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "Il tuo colpo ha girato la stecca un po' a destra."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke turned the cue left.",
+   "text": "Il tuo colpo ha girato la stecca a sinistra."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke turned the cue right.",
+   "text": "Il tuo colpo ha girato la stecca a destra."
+  },
+  {
+   "culture": "it",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "Con un colpo dritto, avrebbe toccato prima un'altra bilia."
+  },
+  {
+   "culture": "it",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "Con un colpo dritto, la bilia sarebbe andata in buca."
+  },
+  {
+   "culture": "it",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "Con un colpo dritto, la bilia battente sarebbe rimasta sul tavolo."
+  },
+  {
+   "culture": "it",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "Con un colpo dritto, quella bilia non sarebbe andata in buca."
+  },
+  {
+   "culture": "it",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "Con un colpo dritto, la bilia battente sarebbe finita in buca."
+  },
+  {
+   "culture": "it",
+   "key": "At full power every stroke wanders most.",
+   "text": "A tutta potenza, ogni colpo devia al massimo."
+  },
+  {
+   "culture": "it",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "Oltre la zona tranquilla, ogni colpo devia di più."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "Il tuo colpo ha fatto scivolare il cuoio sulla bilia."
+  },
+  {
+   "culture": "it",
+   "key": "Practise the straight stroke",
+   "text": "Allenati sul colpo dritto"
+  },
+  {
+   "culture": "it",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Avvia l'esercizio del colpo dritto: solo la bilia battente, lungo il tavolo e ritorno"
+  },
+  {
+   "culture": "it",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Misura un colpo dato col dito sullo schermo. Un tiro fatto in un altro modo mostra dove è andata la bilia, ma resta fuori dal tuo record."
+  },
+  {
+   "culture": "it",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Giocato senza un colpo col dito, quindi questo resta fuori dal tuo record."
+  },
+  {
+   "culture": "it",
+   "key": "Shoot with the button only",
+   "text": "Tira solo con il pulsante"
+  },
+  {
+   "culture": "it",
+   "key": "Stroke",
+   "text": "Colpo"
+  },
+  {
+   "culture": "it",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Tirare indietro dalla bilia battente imposta ancora la potenza e misura il tuo colpo, ma spingere attraverso non gioca più il tiro. Lo fanno solo i pulsanti Tira o Break."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "A tua tacada rodou o taco um pouco para a esquerda."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "A tua tacada rodou o taco um pouco para a direita."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke turned the cue left.",
+   "text": "A tua tacada rodou o taco para a esquerda."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke turned the cue right.",
+   "text": "A tua tacada rodou o taco para a direita."
+  },
+  {
+   "culture": "pt",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "Com uma tacada direita, teria tocado primeiro noutra bola."
+  },
+  {
+   "culture": "pt",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "Com uma tacada direita, a bola teria entrado."
+  },
+  {
+   "culture": "pt",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "Com uma tacada direita, a bola branca teria ficado na mesa."
+  },
+  {
+   "culture": "pt",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "Com uma tacada direita, essa bola não teria entrado."
+  },
+  {
+   "culture": "pt",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "Com uma tacada direita, a bola branca teria caído num buraco."
+  },
+  {
+   "culture": "pt",
+   "key": "At full power every stroke wanders most.",
+   "text": "Com força máxima, todas as tacadas desviam ao máximo."
+  },
+  {
+   "culture": "pt",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "Para lá da zona calma, todas as tacadas desviam mais."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "A tua tacada fez a sola escorregar na bola."
+  },
+  {
+   "culture": "pt",
+   "key": "Practise the straight stroke",
+   "text": "Pratica a tacada direita"
+  },
+  {
+   "culture": "pt",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Começa o exercício da tacada direita: só a bola branca, mesa acima e de volta"
+  },
+  {
+   "culture": "pt",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Mede uma tacada feita com o dedo no ecrã. Uma tacada jogada de outra forma mostra para onde foi a bola, mas fica fora do teu recorde."
+  },
+  {
+   "culture": "pt",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Jogada sem tacada de dedo, por isso esta fica fora do teu recorde."
+  },
+  {
+   "culture": "pt",
+   "key": "Shoot with the button only",
+   "text": "Tacar só com o botão"
+  },
+  {
+   "culture": "pt",
+   "key": "Stroke",
+   "text": "Tacada"
+  },
+  {
+   "culture": "pt",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Puxar para trás a partir da bola branca continua a definir a força e a medir a tua tacada, mas empurrar através dela já não joga a tacada. Só os botões Tacar ou Abertura o fazem."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "Sua tacada girou o taco um pouco para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "Sua tacada girou o taco um pouco para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke turned the cue left.",
+   "text": "Sua tacada girou o taco para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke turned the cue right.",
+   "text": "Sua tacada girou o taco para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "Com uma tacada reta, teria batido primeiro em outra bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "Com uma tacada reta, a bola teria entrado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "Com uma tacada reta, a bola branca teria ficado na mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "Com uma tacada reta, essa bola não teria entrado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "Com uma tacada reta, a bola branca teria caído na caçapa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "At full power every stroke wanders most.",
+   "text": "Com força máxima, toda tacada desvia ao máximo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "Além da zona calma, toda tacada desvia mais."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "Sua tacada fez o couro escorregar na bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Practise the straight stroke",
+   "text": "Pratique a tacada reta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Começa o exercício da tacada reta: só a bola branca, pela mesa e de volta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Ele mede uma tacada feita com o dedo na tela. Uma tacada feita de outro jeito mostra para onde a bola foi, mas fica fora do seu recorde."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Jogada sem tacada com o dedo, então esta fica fora do seu recorde."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shoot with the button only",
+   "text": "Tacar só com o botão"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stroke",
+   "text": "Tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Puxar para trás a partir da bola branca ainda define a força e mede sua tacada, mas empurrar através dela não joga mais a tacada. Só os botões Tacar ou Abertura fazem isso."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "ストロークでキューが少し左に向いた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "ストロークでキューが少し右に向いた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke turned the cue left.",
+   "text": "ストロークでキューが左に向いた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke turned the cue right.",
+   "text": "ストロークでキューが右に向いた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "まっすぐ撞いていたら、最初に別の球に当たっていた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "まっすぐ撞いていたら、球はポケットに入っていた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "まっすぐ撞いていたら、手球は台に残っていた。"
+  },
+  {
+   "culture": "ja",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "まっすぐ撞いていたら、その球は入らなかった。"
+  },
+  {
+   "culture": "ja",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "まっすぐ撞いていたら、手球はポケットに落ちていた。"
+  },
+  {
+   "culture": "ja",
+   "key": "At full power every stroke wanders most.",
+   "text": "全力だと、どのストロークもいちばんぶれる。"
+  },
+  {
+   "culture": "ja",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "落ち着いた範囲を超えると、どのストロークもぶれやすくなる。"
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "ストロークでタップが球の上で滑った。"
+  },
+  {
+   "culture": "ja",
+   "key": "Practise the straight stroke",
+   "text": "まっすぐなストロークを練習"
+  },
+  {
+   "culture": "ja",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "まっすぐなストロークの練習を始める:手球だけを台の奥まで撞いて戻す"
+  },
+  {
+   "culture": "ja",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "画面上の指のストロークを測る。ほかの方法で撞いたショットは球の行き先を見せるけど、記録には入らない。"
+  },
+  {
+   "culture": "ja",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "指のストロークなしで撞いたので、このショットは記録に入らない。"
+  },
+  {
+   "culture": "ja",
+   "key": "Shoot with the button only",
+   "text": "ボタンだけでショット"
+  },
+  {
+   "culture": "ja",
+   "key": "Stroke",
+   "text": "ストローク"
+  },
+  {
+   "culture": "ja",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "手球から指を引くと今までどおりパワーが決まってストロークも測られるけど、押し出してもショットにはならない。撞けるのはショットかブレイクのボタンだけ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "스트로크 때문에 큐가 왼쪽으로 조금 돌아갔어요."
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "스트로크 때문에 큐가 오른쪽으로 조금 돌아갔어요."
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke turned the cue left.",
+   "text": "스트로크 때문에 큐가 왼쪽으로 돌아갔어요."
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke turned the cue right.",
+   "text": "스트로크 때문에 큐가 오른쪽으로 돌아갔어요."
+  },
+  {
+   "culture": "ko",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "곧게 쳤다면 다른 공을 먼저 맞혔을 거예요."
+  },
+  {
+   "culture": "ko",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "곧게 쳤다면 공이 들어갔을 거예요."
+  },
+  {
+   "culture": "ko",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "곧게 쳤다면 수구가 테이블에 남았을 거예요."
+  },
+  {
+   "culture": "ko",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "곧게 쳤다면 그 공은 들어가지 않았을 거예요."
+  },
+  {
+   "culture": "ko",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "곧게 쳤다면 수구가 포켓에 빠졌을 거예요."
+  },
+  {
+   "culture": "ko",
+   "key": "At full power every stroke wanders most.",
+   "text": "최대 세기에서는 모든 스트로크가 가장 많이 흔들려요."
+  },
+  {
+   "culture": "ko",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "안정 구간을 넘으면 모든 스트로크가 더 흔들려요."
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "스트로크 때문에 팁이 공에서 미끄러졌어요."
+  },
+  {
+   "culture": "ko",
+   "key": "Practise the straight stroke",
+   "text": "곧은 스트로크 연습하기"
+  },
+  {
+   "culture": "ko",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "곧은 스트로크 연습을 시작해요: 수구 하나만 테이블 끝까지 쳐서 돌아오게 해요"
+  },
+  {
+   "culture": "ko",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "화면에서 손가락으로 한 스트로크를 재요. 다른 방법으로 친 샷은 공이 어디로 갔는지 보여 주지만 기록에는 들어가지 않아요."
+  },
+  {
+   "culture": "ko",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "손가락 스트로크 없이 쳐서 이번 샷은 기록에 들어가지 않아요."
+  },
+  {
+   "culture": "ko",
+   "key": "Shoot with the button only",
+   "text": "버튼으로만 샷하기"
+  },
+  {
+   "culture": "ko",
+   "key": "Stroke",
+   "text": "스트로크"
+  },
+  {
+   "culture": "ko",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "수구에서 뒤로 당기면 여전히 세기가 정해지고 스트로크도 재지만, 앞으로 밀어도 샷이 나가지 않아요. 샷이나 브레이크 버튼으로만 칠 수 있어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "你的出杆让球杆稍微偏向了左边。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "你的出杆让球杆稍微偏向了右边。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke turned the cue left.",
+   "text": "你的出杆让球杆偏向了左边。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke turned the cue right.",
+   "text": "你的出杆让球杆偏向了右边。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "如果出杆够直，会先碰到另一颗球。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "如果出杆够直，这颗球本来能进袋。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "如果出杆够直，母球本来会留在台上。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "如果出杆够直，那颗球本来不会进。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "如果出杆够直，母球本来会落袋。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "At full power every stroke wanders most.",
+   "text": "全力出杆时，每一杆都偏得最多。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "超出平稳区后，每一杆都会偏得更多。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "你的出杆让杆头从球上滑脱了。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Practise the straight stroke",
+   "text": "练习直线出杆"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "开始直线出杆练习：只有母球，打到台子另一头再回来"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "它测量的是你在屏幕上用手指出杆。用其他方式击球会显示球去了哪里，但不计入你的记录。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "这一杆没有用手指出杆，所以不计入你的记录。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shoot with the button only",
+   "text": "只用按钮击球"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stroke",
+   "text": "出杆"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "从母球往后拉仍会设定力度并测量你的出杆，但向前推过母球不再击球。只有击球或开球按钮能击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "Твой удар чуть повернул кий влево."
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "Твой удар чуть повернул кий вправо."
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke turned the cue left.",
+   "text": "Твой удар повернул кий влево."
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke turned the cue right.",
+   "text": "Твой удар повернул кий вправо."
+  },
+  {
+   "culture": "ru",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "При прямом ударе биток сначала попал бы в другой шар."
+  },
+  {
+   "culture": "ru",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "При прямом ударе шар упал бы в лузу."
+  },
+  {
+   "culture": "ru",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "При прямом ударе биток остался бы на столе."
+  },
+  {
+   "culture": "ru",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "При прямом ударе этот шар не упал бы."
+  },
+  {
+   "culture": "ru",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "При прямом ударе биток упал бы в лузу."
+  },
+  {
+   "culture": "ru",
+   "key": "At full power every stroke wanders most.",
+   "text": "На полной силе любой удар уводит сильнее всего."
+  },
+  {
+   "culture": "ru",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "За пределами спокойной зоны любой удар уводит сильнее."
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "Из-за твоего удара наклейка соскользнула с шара."
+  },
+  {
+   "culture": "ru",
+   "key": "Practise the straight stroke",
+   "text": "Потренируй прямой удар"
+  },
+  {
+   "culture": "ru",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "Запускает упражнение на прямой удар: только биток, вдоль стола и обратно"
+  },
+  {
+   "culture": "ru",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "Оно измеряет удар пальцем по экрану. Удар, сыгранный иначе, показывает, куда пошёл шар, но не идёт в твой рекорд."
+  },
+  {
+   "culture": "ru",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "Сыграно без удара пальцем, поэтому этот удар не идёт в твой рекорд."
+  },
+  {
+   "culture": "ru",
+   "key": "Shoot with the button only",
+   "text": "Бить только кнопкой"
+  },
+  {
+   "culture": "ru",
+   "key": "Stroke",
+   "text": "Удар"
+  },
+  {
+   "culture": "ru",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "Если тянуть палец назад от битка, сила по-прежнему задаётся и удар измеряется, но толчок вперёд больше не бьёт. Бьют только кнопки «Ударить» и «Разбить»."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke turned the cue a little left.",
+   "text": "ضربتك أدارت العصا قليلًا إلى اليسار."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke turned the cue a little right.",
+   "text": "ضربتك أدارت العصا قليلًا إلى اليمين."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke turned the cue left.",
+   "text": "ضربتك أدارت العصا إلى اليسار."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke turned the cue right.",
+   "text": "ضربتك أدارت العصا إلى اليمين."
+  },
+  {
+   "culture": "ar",
+   "key": "Played straight, it would have hit a different ball first.",
+   "text": "لو ضربت باستقامة، لأصابت كرة أخرى أولًا."
+  },
+  {
+   "culture": "ar",
+   "key": "Played straight, the pot would have dropped.",
+   "text": "لو ضربت باستقامة، لدخلت الكرة."
+  },
+  {
+   "culture": "ar",
+   "key": "Played straight, the cue ball would have stayed on the table.",
+   "text": "لو ضربت باستقامة، لبقيت الكرة البيضاء على الطاولة."
+  },
+  {
+   "culture": "ar",
+   "key": "Played straight, that ball would have stayed up.",
+   "text": "لو ضربت باستقامة، لما دخلت تلك الكرة."
+  },
+  {
+   "culture": "ar",
+   "key": "Played straight, the cue ball would have gone in.",
+   "text": "لو ضربت باستقامة، لسقطت الكرة البيضاء في الجيب."
+  },
+  {
+   "culture": "ar",
+   "key": "At full power every stroke wanders most.",
+   "text": "بكامل القوة، تنحرف كل ضربة أكثر ما يمكن."
+  },
+  {
+   "culture": "ar",
+   "key": "Past the calm zone every stroke wanders more.",
+   "text": "بعد المنطقة الهادئة، تنحرف كل ضربة أكثر."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke slid the tip off the ball.",
+   "text": "ضربتك جعلت رأس العصا ينزلق عن الكرة."
+  },
+  {
+   "culture": "ar",
+   "key": "Practise the straight stroke",
+   "text": "تدرّب على الضربة المستقيمة"
+  },
+  {
+   "culture": "ar",
+   "key": "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back",
+   "text": "يبدأ تمرين الضربة المستقيمة: الكرة البيضاء وحدها، على طول الطاولة وعودة"
+  },
+  {
+   "culture": "ar",
+   "key": "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.",
+   "text": "يقيس التمرين ضربة بالإصبع على الشاشة. الضربة بطريقة أخرى تُظهر أين ذهبت الكرة، لكنها لا تُحسب في سجلك."
+  },
+  {
+   "culture": "ar",
+   "key": "Played without a finger stroke, so this one stays out of your record.",
+   "text": "لُعبت دون ضربة بالإصبع، لذلك لا تُحسب هذه في سجلك."
+  },
+  {
+   "culture": "ar",
+   "key": "Shoot with the button only",
+   "text": "اضرب بالزر فقط"
+  },
+  {
+   "culture": "ar",
+   "key": "Stroke",
+   "text": "الضربة"
+  },
+  {
+   "culture": "ar",
+   "key": "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.",
+   "text": "السحب للخلف من الكرة البيضاء ما زال يحدد القوة ويقيس ضربتك، لكن الدفع عبرها لم يعد يلعب الضربة. زرّا «اضرب» و«افتتاح» وحدهما يفعلان ذلك."
+  }
+ ]
+}

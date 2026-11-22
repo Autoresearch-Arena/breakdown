@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Edited: GPT 6.2 Astra High, 21-November-2026, shared higher player launch-speed limits.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (stroke-model hook, 0.7.0 items 3 and 5: strokeZones uses
+//          StrokeModel.strikeZones, the delivery's own rule, and both pass isBreak: racked, so a break gets its own
+//          calm zone and the power bar's calm mark is where the strike's calm zone ends.)
 // Date: 13-November-2026
 // Edited: Claude Haiku 5.5 High, 18-November-2026 (the opening now waits on the title screen until beginFromTitle is called; launch switches that open a specific screen skip it).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (Try again and compare: every player shot and break is kept as a
@@ -2759,9 +2762,10 @@ final class ShowpieceModel {
 
     /// The calm and warm zones of the power bar now, for the cue in hand, the bridge and the stance. In a trick shot,
     /// situation or lesson the stance does not move the calm top (StrokeModel.delivery's rule, so the bar shows what the
-    /// strike will use).
+    /// strike will use). A break has its own calm zone (stroke-model hook, 0.7.0 item 3: StrokeModel.strikeZones).
     var strokeZones: StrokeZones {
-        StrokeModel.zones(cue: cueInHand, bridge: strokeBridgeLength, stance: authoredModeUp ? nil : stance)
+        StrokeModel.strikeZones(cue: cueInHand, bridge: strokeBridgeLength, stance: stance,
+                                authored: authoredModeUp, isBreak: racked)
     }
 
     // MARK: The strike's angle, the rest and the cue (plan items 23 and 57, contract 2.5)
@@ -2826,7 +2830,8 @@ final class ShowpieceModel {
         let bridge = struckStance?.bridge(hand: hand)
             ?? StrokeModel.bridgeLength(finger: record?.bridge ?? strokeBridge, mechanical: showsBridge)
         var d = StrokeModel.delivery(power: activePower, fraction: powerFraction, record: record, bridge: bridge,
-                                     cue: cueInHand, authored: authoredModeUp, stance: struckStance)
+                                     cue: cueInHand, authored: authoredModeUp, stance: struckStance,
+                                     isBreak: racked)
         if activeModelGeneration >= 2 {
             let limit = physicsTable.parameters.miscueOffsetLimit
             let side = chosenSide + d.tipSideError

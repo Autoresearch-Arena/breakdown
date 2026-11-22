@@ -9,6 +9,11 @@
 //          comparison's stroke fact; and the drill's judge on real solved shots.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the authored-bound test gains a stance case, every rung of the
 //          reach ladder with and without a raised cue, which must stay inside the same bound; ReachTests holds the rest.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 items 3, 4, 5 and 45: a finger inside the drawn groove is a
+//          straight stroke and plays exactly as the keys do, the groove's floor widens it on a short stroke; the break's
+//          own calm zone covers the default break; a long bridge raises the calm top, the rest does not; the result
+//          line's comparison of the shot as played and as aimed, and the strike as aimed undoes the drift; the button-
+//          only option is off on a fresh install.)
 // SRP/DRY check: Pass - checks only; every limit is read from the named constants in CueProfile, StrokeModel,
 //          StrokeTracker and StrokeDrill, never retyped. Shots are solved through TestShots, the app's own path.
 @testable import Breakdown
@@ -27,9 +32,9 @@ final class StrokeTests: XCTestCase {
     }
 
     private func delivery(power: Double, wander: Double?, bridge: Double = StrokeModel.automaticBridge,
-                          authored: Bool = false) -> StrokeDelivery {
+                          authored: Bool = false, isBreak: Bool = false) -> StrokeDelivery {
         StrokeModel.delivery(power: power, fraction: 0.5, record: wander.map { record($0, power: power) },
-                             bridge: bridge, cue: house, authored: authored)
+                             bridge: bridge, cue: house, authored: authored, isBreak: isBreak)
     }
 
     /// The calm zone's top as a power, with the automatic bridge.
@@ -74,8 +79,96 @@ final class StrokeTests: XCTestCase {
         // The calm zone ends at the swing that launches the softest break, and every authored shot is inside it.
         XCTAssertEqual(calmTopPower, PlayerShotSpeed.rackBreak.lowerBound, accuracy: 1e-12)
         XCTAssertGreaterThan(calmTopPower, 6.60, "The Called Break's window reaches 6.60 m/s and must stay calm")
-        XCTAssertEqual(StrokeModel.zones(cue: house, bridge: StrokeModel.mechanicalBridge).calmTopSwing,
-                       house.comfortableTopSwing, "the mechanical bridge does not shorten the calm zone")
+        XCTAssertGreaterThanOrEqual(StrokeModel.zones(cue: house, bridge: StrokeModel.mechanicalBridge).calmTopSwing,
+                                    house.comfortableTopSwing, "the mechanical bridge does not shorten the calm zone")
+    }
+
+    func testTheBreakHasItsOwnCalmZone() {
+        let ordinary = StrokeModel.zones(cue: house, bridge: StrokeModel.automaticBridge)
+        let breakZones = StrokeModel.zones(cue: house, bridge: StrokeModel.automaticBridge, isBreak: true)
+        XCTAssertEqual(breakZones.calmTopSwing / ordinary.calmTopSwing, StrokeModel.breakCalmFactor, accuracy: 1e-12)
+        // Part-way up the break range: above the default break (11 m/s, ShowpieceModel.power), below the hardest.
+        let range = PlayerShotSpeed.rackBreak
+        XCTAssertGreaterThan(breakZones.calmTopPower, 11)
+        XCTAssertLessThan(breakZones.calmTopPower, range.upperBound)
+        XCTAssertGreaterThan(breakZones.calmTopPower, range.lowerBound + (range.upperBound - range.lowerBound) / 3)
+        // A tapped break at the default power: no drift at all, so nothing to scold.
+        XCTAssertTrue(delivery(power: 11, wander: nil, isBreak: true).isZero)
+        XCTAssertFalse(delivery(power: 11, wander: nil, isBreak: true).warm)
+        // A finger break that stays in the groove is just as calm.
+        XCTAssertTrue(delivery(power: 11, wander: StrokeModel.steadyWander * 0.9, isBreak: true).isZero)
+        // The hardest break is still warm and still drifts.
+        let hardest = delivery(power: range.upperBound, wander: nil, isBreak: true)
+        XCTAssertTrue(hardest.warm)
+        XCTAssertFalse(hardest.isZero)
+        // The same power as an ordinary shot is warm: only a break gets the body's longer stroke.
+        XCTAssertTrue(delivery(power: 11, wander: nil).warm)
+        // The strike's rule and the bar's are the same function.
+        XCTAssertEqual(StrokeModel.strikeZones(cue: house, bridge: StrokeModel.automaticBridge, stance: nil,
+                                               authored: false, isBreak: true), breakZones)
+    }
+
+    func testALongBridgeRaisesTheCalmTop() {
+        let auto = StrokeModel.zones(cue: house, bridge: StrokeModel.automaticBridge).calmTopSwing
+        let longest = StrokeModel.zones(cue: house, bridge: StrokeModel.bridgeRange.upperBound).calmTopSwing
+        XCTAssertEqual(longest / auto, (StrokeModel.bridgeRange.upperBound / StrokeModel.automaticBridge).squareRoot(),
+                       accuracy: 1e-12)
+        // Never past the longest bridge in range, whatever length is passed.
+        XCTAssertEqual(StrokeModel.zones(cue: house, bridge: 2).calmTopSwing, longest, accuracy: 1e-12)
+        // A power that is warm off the automatic bridge is calm off a long one...
+        let between = (CueProfile.power(forSwing: auto) + CueProfile.power(forSwing: longest)) / 2
+        XCTAssertTrue(delivery(power: between, wander: nil).warm)
+        XCTAssertFalse(delivery(power: between, wander: nil, bridge: StrokeModel.bridgeRange.upperBound).warm)
+        // ...and the long lever still moves the tip further for the same wander (the trade).
+        let short = delivery(power: 3, wander: 0.06), long = delivery(power: 3, wander: 0.06, bridge: 0.32)
+        XCTAssertGreaterThan(abs(long.tipSideError), abs(short.tipSideError))
+        // The rest gets no raise: its own rung sets how hard a stroke over its head can go.
+        let rest = Stance(rung: .rest, raisedOver: nil, reach: 0, rail: .head, standing: Vec2(-Reach.railOuter, 0))
+        XCTAssertEqual(StrokeModel.zones(cue: house, bridge: StrokeModel.mechanicalBridge, stance: rest).calmTopSwing,
+                       house.comfortableTopSwing * Stance.Rung.rest.swingFactor, accuracy: 1e-12)
+    }
+
+    // MARK: The groove
+
+    func testAStrokeInsideTheGrooveIsStraight() {
+        let groove = StrokeModel.steadyWander
+        // Calm: anywhere inside the groove is no drift at all, either side.
+        for w in [0, groove * 0.5, -groove * 0.5, groove, -groove] {
+            XCTAssertTrue(delivery(power: 3, wander: w).isZero, "calm wander \(w) inside the groove drifted")
+        }
+        // Warm: inside the groove a finger plays exactly as the keys do.
+        let keys = delivery(power: 11, wander: nil)
+        for w in [0, groove * 0.5, -groove * 0.5] {
+            let finger = delivery(power: 11, wander: w)
+            XCTAssertEqual(finger.aimError, keys.aimError, accuracy: 1e-15)
+            XCTAssertEqual(finger.tipSideError, keys.tipSideError, accuracy: 1e-15)
+        }
+        // Past the groove's edge only the part outside counts.
+        let a = delivery(power: 3, wander: groove + 0.01), b = delivery(power: 3, wander: groove + 0.02)
+        XCTAssertFalse(a.isZero)
+        XCTAssertEqual(b.aimError / a.aimError, 2, accuracy: 1e-9)
+        // On a short stroke the drawn groove's floor widens it, and the finger is forgiven what it can see.
+        let short = 60.0
+        XCTAssertEqual(StrokeModel.grooveHalfWidth(strokeLength: short), StrokeModel.grooveFloor)
+        XCTAssertEqual(StrokeModel.grooveShare(strokeLength: short), StrokeModel.grooveFloor / short, accuracy: 1e-15)
+        XCTAssertEqual(StrokeModel.grooveShare(strokeLength: 400), groove, accuracy: 1e-15)
+        var wide = record(0.04, power: 3)
+        wide.grooveHalfWidth = StrokeModel.grooveShare(strokeLength: short)
+        XCTAssertTrue(StrokeModel.delivery(power: 3, fraction: 0.2, record: wide, bridge: StrokeModel.automaticBridge,
+                                           cue: house, authored: false).isZero)
+        // The tracker hands the groove's share over with the stroke it measured.
+        var t = StrokeTracker()
+        for i in 0...30 {
+            let k = Double(i) / 30
+            t.add(.init(time: k * 0.6, depth: 0.3 * k, along: short * k, across: 2 * k, spot: nil))
+        }
+        let measured = t.record(power: 3, bridge: nil)
+        XCTAssertEqual(measured?.grooveHalfWidth ?? 0, StrokeModel.grooveShare(strokeLength: short), accuracy: 1e-15)
+        if let measured {
+            XCTAssertTrue(StrokeModel.delivery(power: 3, fraction: 0.2, record: measured,
+                                               bridge: StrokeModel.automaticBridge, cue: house, authored: false).isZero,
+                          "two points off on a 60-point stroke is inside the drawn groove")
+        }
     }
 
     // MARK: Drift
@@ -101,9 +194,10 @@ final class StrokeTests: XCTestCase {
     }
 
     func testDriftGrowsWithWander() {
+        // Past the groove's edge (inside it the stroke is straight, testAStrokeInsideTheGrooveIsStraight).
         for (power, authored) in [(3.0, false), (3.0, true), (11.0, false), (11.0, true)] {
             var previous = -1.0
-            for w in stride(from: 0.0, through: 0.3, by: 0.01) {
+            for w in stride(from: StrokeModel.steadyWander + 0.01, through: 0.3, by: 0.01) {
                 let d = delivery(power: power, wander: w, authored: authored)
                 XCTAssertGreaterThan(abs(d.aimError), previous, "aim drift did not grow at wander \(w), \(power) m/s")
                 previous = abs(d.aimError)
@@ -113,7 +207,10 @@ final class StrokeTests: XCTestCase {
         let right = delivery(power: 11, wander: 0.05), left = delivery(power: 11, wander: -0.05)
         XCTAssertGreaterThan(right.aimError, 0)
         XCTAssertLessThan(right.tipSideError, 0)
-        XCTAssertEqual(left.aimError, -right.aimError, accuracy: 1e-15)
+        XCTAssertLessThan(left.aimError, 0)
+        // Past the calm zone the steady stroke's strain (always to the right) is added to either side's own wander,
+        // so the two sides' drifts sum to twice the keys' fixed drift.
+        XCTAssertEqual(left.aimError + right.aimError, 2 * delivery(power: 11, wander: nil).aimError, accuracy: 1e-15)
     }
 
     func testWarmDriftGrowsFasterThanTheSwing() {
@@ -319,5 +416,73 @@ final class StrokeTests: XCTestCase {
         let soft = TrickSettings(aim: 0, power: 0.5, tipUp: 0, tipSide: 0)
         let c = TestShots.attempt(start: layout, timeline: TestShots.shot(from: layout, soft), soft)
         XCTAssertEqual(StrokeDrill.judge(c), .noRail)
+    }
+
+    func testShootWithTheButtonOnlyIsOffOnAFreshInstall() {
+        // The push through the ball is the game's own way to shoot: a missing key reads as off.
+        let defaults = UserDefaults.standard
+        let saved = defaults.object(forKey: GameSettings.buttonOnlyKey)
+        defaults.removeObject(forKey: GameSettings.buttonOnlyKey)
+        XCTAssertFalse(GameSettings.shootWithButtonOnly)
+        defaults.set(true, forKey: GameSettings.buttonOnlyKey)
+        XCTAssertTrue(GameSettings.shootWithButtonOnly)
+        if let saved { defaults.set(saved, forKey: GameSettings.buttonOnlyKey) } else {
+            defaults.removeObject(forKey: GameSettings.buttonOnlyKey)
+        }
+    }
+
+    // MARK: Did the stroke change what happened
+
+    func testTheResultLineComparesTheShotAsPlayedAndAsAimed() {
+        typealias O = StrokeEffect.Outcome
+        let base = O(firstBall: 3, pocketed: [3], scratched: false)
+        XCTAssertNil(StrokeEffect.change(actual: base, straight: base, isBreak: false), "same outcome: nothing to say")
+        XCTAssertEqual(StrokeEffect.change(actual: O(firstBall: 5, pocketed: [], scratched: false), straight: base,
+                                           isBreak: false), .firstBall)
+        XCTAssertEqual(StrokeEffect.change(actual: O(firstBall: 3, pocketed: [], scratched: false), straight: base,
+                                           isBreak: false), .potMissed)
+        XCTAssertEqual(StrokeEffect.change(actual: O(firstBall: 3, pocketed: [3], scratched: true), straight: base,
+                                           isBreak: false), .scratched)
+        XCTAssertEqual(StrokeEffect.change(actual: O(firstBall: 3, pocketed: [3, 7], scratched: false), straight: base,
+                                           isBreak: false), .potMade)
+        XCTAssertEqual(StrokeEffect.change(actual: base, straight: O(firstBall: 3, pocketed: [3], scratched: true),
+                                           isBreak: false), .scratchAvoided)
+        // A break's pots are a scatter the smallest change reshuffles: only its first ball is put down to the stroke.
+        XCTAssertNil(StrokeEffect.change(actual: O(firstBall: 1, pocketed: [2, 9], scratched: true),
+                                         straight: O(firstBall: 1, pocketed: [4], scratched: false), isBreak: true))
+        XCTAssertEqual(StrokeEffect.change(actual: O(firstBall: 2, pocketed: [], scratched: false),
+                                           straight: O(firstBall: 1, pocketed: [], scratched: false), isBreak: true),
+                       .firstBall)
+        // The words: the turn, what the aimed shot would have done, and why past the calm zone.
+        let calm = delivery(power: 3, wander: 0.06)
+        let line = StrokeWords.resultLine(calm, change: .potMissed)
+        XCTAssertTrue(line.hasPrefix(StrokeWords.turnLine(calm) ?? "-"))
+        XCTAssertTrue(line.contains(StrokeWords.consequence(.potMissed) ?? "-"))
+        XCTAssertNil(StrokeWords.warmReason(calm), "no hard-swing reason inside the calm zone")
+        XCTAssertNotNil(StrokeWords.warmReason(delivery(power: 11, wander: 0.06)))
+        XCTAssertNil(StrokeWords.turnLine(delivery(power: 3, wander: 0)), "a straight stroke turned nothing")
+    }
+
+    func testTheShotAsAimedTakesTheStrokeBackOff() {
+        var layout = [Vec2](repeating: NextShot.offTable, count: 16)
+        layout[0] = Vec2(0.6, 0.6); layout[1] = Vec2(1.5, 0.65)
+        let s = TrickSettings(aim: 3, power: 9, tipUp: 0, tipSide: 0.004)
+        let aimed = TestShots.attempt(start: layout, timeline: TestShots.shot(from: layout, s), s)
+        let d = delivery(power: 9, wander: 0.08)
+        XCTAssertFalse(d.isZero)
+        var drifted = aimed.input
+        d.apply(to: &drifted.strike, ballRadius: TestShots.ballRadius)
+        var played = ShotAttempt(isBreak: false, breakSeed: 0, start: aimed.start, timeline: aimed.timeline,
+                                 aim: aimed.aim, power: aimed.power, powerRange: aimed.powerRange, tipUp: aimed.tipUp,
+                                 tipSide: aimed.tipSide, elevation: aimed.elevation, seed: aimed.seed, input: drifted,
+                                 surface: aimed.surface, table: aimed.table, generation: aimed.generation)
+        XCTAssertNil(StrokeEffect.straightInput(of: played), "no stroke: nothing to take back off")
+        played.stroke = d
+        guard let straight = StrokeEffect.straightInput(of: played) else { return XCTFail("a drifted stroke") }
+        XCTAssertEqual(straight.strike.direction.x, aimed.input.strike.direction.x, accuracy: 1e-12)
+        XCTAssertEqual(straight.strike.direction.y, aimed.input.strike.direction.y, accuracy: 1e-12)
+        XCTAssertEqual(straight.strike.tipSide, aimed.input.strike.tipSide, accuracy: 1e-15)
+        XCTAssertEqual(straight.strike.speed, aimed.input.strike.speed, accuracy: 1e-15)
+        XCTAssertEqual(straight.parameters.modelGeneration, aimed.generation)
     }
 }

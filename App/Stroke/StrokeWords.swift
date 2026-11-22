@@ -1,14 +1,20 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, items 4 and 45 of plans/21-Nov-2026-bugs-after-0-6-6-plan.md:
+//          the result line no longer waits for the warm zone. It shows whenever the stroke changed what happened (the
+//          first ball, a pot made or missed, the cue ball lost or kept, worked out by StrokeEffect) in either zone, and
+//          says it plainly: "Your stroke turned the cue a little left. Played straight, the pot would have dropped.",
+//          with why when the swing was past the calm zone. The drill's own line names the turn on every drifted stroke,
+//          and says when a shot stays out of the record because no finger stroke played it.)
 // PURPOSE: The stroke in words (plans/21-Nov-2026-stroke-and-power-plan.md): the power readout as a swing with the ball
-//          speed kept on hand, the result line after a hard shot whose drift mattered ("Full power: the tip landed
-//          left of where you aimed."), the retry comparison's stroke sentence ("Your stroke was straighter this
-//          time"), and the straight-stroke drill's verdicts and progress. Every sentence a player reads is here, for
-//          the screen and VoiceOver alike.
+//          speed kept on hand, the result line when the stroke changed what happened ("Your stroke turned the cue a
+//          little left. Played straight, the pot would have dropped."), the retry comparison's stroke sentence ("Your
+//          stroke was straighter this time"), and the straight-stroke drill's verdicts and progress. Every sentence a
+//          player reads is here, for the screen and VoiceOver alike.
 // SRP/DRY check: Pass - checked PowerWords (the plain word, soft to hard, still comes from there and is decided by the
 //          ball's speed, which its bands were written for), RetryWords (the comparison's outcome half is its own; this
-//          file only adds the stroke half) and ShotComparison.isDescribable (its 0.15 degree aim threshold is reused
-//          for "the drift mattered").
+//          file only adds the stroke half), StrokeEffect (decides whether the stroke changed what happened; this file
+//          only words its answer) and ShowpieceModel.nudgeAim (its quarter-degree aim step sets "a little").
 import Foundation
 
 enum StrokeWords {
@@ -40,31 +46,82 @@ enum StrokeWords {
 
     // MARK: The result line
 
-    /// Smallest aim drift worth a sentence, radians: the 0.15 degrees the retry comparison already uses for "aimed a
-    /// little to the left" (ShotComparison.isDescribable).
-    static let aimWorthSaying = 0.15 * Double.pi / 180
-    /// Smallest tip drift worth a sentence, metres: half the 2 mm that separates the tip words (ShotPanel.sideWord).
-    static let tipWorthSaying = 0.001
+    /// Radians: a turn smaller than this is "a little". Two of the aim's quarter-degree steps (ShowpieceModel.nudgeAim):
+    /// a turn a nudge or two of the aim would put back.
+    static let bigTurn = 0.5 * Double.pi / 180
 
-    /// True when a hard shot's drift mattered: past the calm zone, and the aim or the tip moved enough to say, or the
-    /// drift made a miscue.
-    static func mattered(_ d: StrokeDelivery) -> Bool {
-        d.warm && (d.pushedPastGrip || abs(d.aimError) >= aimWorthSaying || abs(d.tipSideError) >= tipWorthSaying)
+    /// Which way and how far the stroke turned the cue, or nil for no turn. The tip and the aim always drift the same
+    /// way (the cue turns about the bridge), so one side is named; a positive aim error is counter-clockwise on the
+    /// table plan, the shooter's left.
+    static func turnLine(_ d: StrokeDelivery) -> String? {
+        guard !d.isZero else { return nil }
+        let left = d.aimError > 0 || (d.aimError == 0 && d.tipSideError < 0)
+        let little = abs(d.aimError) < bigTurn
+        switch (left, little) {
+        case (true, true): return String(localized: "Your stroke turned the cue a little left.")
+        case (false, true): return String(localized: "Your stroke turned the cue a little right.")
+        case (true, false): return String(localized: "Your stroke turned the cue left.")
+        case (false, false): return String(localized: "Your stroke turned the cue right.")
+        }
     }
 
-    /// The result line for a delivered strike, or nil when the drift did not matter. The tip and the aim always drift
-    /// the same way (the cue turns about the bridge), so one side is named.
-    static func resultLine(_ d: StrokeDelivery?) -> String? {
-        guard let d, mattered(d) else { return nil }
-        let left = d.tipSideError < 0 || (d.tipSideError == 0 && d.aimError > 0)
-        switch (d.fullPower, d.pushedPastGrip, left) {
-        case (true, true, _): return String(localized: "Full power: the tip slid off the ball.")
-        case (true, false, true): return String(localized: "Full power: the tip landed left of where you aimed.")
-        case (true, false, false): return String(localized: "Full power: the tip landed right of where you aimed.")
-        case (false, true, _): return String(localized: "Swinging hard: the tip slid off the ball.")
-        case (false, false, true): return String(localized: "Swinging hard: the tip landed left of where you aimed.")
-        case (false, false, false): return String(localized: "Swinging hard: the tip landed right of where you aimed.")
+    /// What the turn changed, said as the shot that was aimed. Nil for the miscue, which has its own whole line.
+    static func consequence(_ change: StrokeEffect.Change) -> String? {
+        switch change {
+        case .miscue: return nil
+        case .firstBall: return String(localized: "Played straight, it would have hit a different ball first.")
+        case .potMissed: return String(localized: "Played straight, the pot would have dropped.")
+        case .scratched: return String(localized: "Played straight, the cue ball would have stayed on the table.")
+        case .potMade: return String(localized: "Played straight, that ball would have stayed up.")
+        case .scratchAvoided: return String(localized: "Played straight, the cue ball would have gone in.")
         }
+    }
+
+    /// Why the stroke wandered as much as it did, when the swing was past the calm zone; nil inside it.
+    static func warmReason(_ d: StrokeDelivery) -> String? {
+        if d.fullPower && d.warm { return String(localized: "At full power every stroke wanders most.") }
+        if d.warm { return String(localized: "Past the calm zone every stroke wanders more.") }
+        return nil
+    }
+
+    /// The miscue the stroke made, said for the zone it was made in.
+    private static func miscueLine(_ d: StrokeDelivery) -> String {
+        if d.fullPower && d.warm { return String(localized: "Full power: the tip slid off the ball.") }
+        if d.warm { return String(localized: "Swinging hard: the tip slid off the ball.") }
+        return String(localized: "Your stroke slid the tip off the ball.")
+    }
+
+    /// The whole line for a stroke that changed what happened: the turn, what the aimed shot would have done, and why
+    /// when the swing was hard. Sentences are whole and joined, so each translates on its own.
+    static func resultLine(_ d: StrokeDelivery, change: StrokeEffect.Change) -> String {
+        if change == .miscue { return miscueLine(d) }
+        return [turnLine(d), consequence(change), warmReason(d)].compactMap { $0 }.joined(separator: " ")
+    }
+
+    /// The result line for an attempt on screen, or nil when its stroke changed nothing a player would see (or that is
+    /// still being worked out). Asks StrokeEffects for the answer when it is not known yet.
+    @MainActor
+    static func resultLine(for attempt: ShotAttempt?) -> String? {
+        guard let attempt, let d = attempt.stroke, let change = StrokeEffects.shared.change(for: attempt) else {
+            return nil
+        }
+        return resultLine(d, change: change)
+    }
+
+    /// The result line for the shot whose delivery this is (the spoken summary holds the delivery, not the attempt):
+    /// the same words the card shows, once the answer is known.
+    @MainActor
+    static func resultLine(_ d: StrokeDelivery?) -> String? {
+        guard let d, let change = StrokeEffects.shared.change(for: d) else { return nil }
+        return resultLine(d, change: change)
+    }
+
+    /// The drill's own line under its verdict: the drill is about the turn itself, so every drifted stroke names it
+    /// (and why, past the calm zone), whatever it changed. Nil for a stroke that did not turn the cue.
+    static func drillLine(_ d: StrokeDelivery?) -> String? {
+        guard let d, !d.isZero else { return nil }
+        if d.pushedPastGrip { return miscueLine(d) }
+        return [turnLine(d), warmReason(d)].compactMap { $0 }.joined(separator: " ")
     }
 
     // MARK: The retry comparison
@@ -115,5 +172,15 @@ enum StrokeWords {
         case .dropped:
             return String(localized: "The cue ball dropped in a pocket.")
         }
+    }
+
+    /// The drill measures a finger stroke; said on its card before the first stroke.
+    static var drillMeasuresFinger: String {
+        String(localized: "It measures a finger stroke on the screen. A shot played another way shows where the ball went but stays out of your record.")
+    }
+
+    /// Under the verdict of a drill shot played with no finger stroke (Shoot, a key, a controller, VoiceOver).
+    static var notCounted: String {
+        String(localized: "Played without a finger stroke, so this one stays out of your record.")
     }
 }

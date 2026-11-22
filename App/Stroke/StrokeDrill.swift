@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, item 45 of plans/21-Nov-2026-bugs-after-0-6-6-plan.md: the drill
+//          measures a finger stroke, so a shot played with no finger stroke (Shoot, a key, a controller, VoiceOver: no
+//          StrokeRecord on its delivery) is still judged and shown but never counts toward the best return or the
+//          dead-straight count (lastCounted). Item 4: every attempt the model reports here is also handed to
+//          StrokeEffects, which works out whether the stroke changed what happened.)
 // PURPOSE: "Straight stroke", the drill in the Play list's practice options (plans/21-Nov-2026-stroke-and-power-plan.md).
 //          The cue ball alone on the head spot, aimed straight up the table over the spot: stroke it up to the far rail
 //          and back, and the drill judges how close it returns to the cue line (the line the cue was aimed along
@@ -53,6 +58,9 @@ final class StrokeDrill {
     private(set) var last: Result?
     private(set) var lastStroke: StrokeDelivery?
     private(set) var lastWasBest = false
+    /// True when the latest drill stroke was a finger stroke and went into the record; false for a shot played another
+    /// way, which the card says stays out of it.
+    private(set) var lastCounted = false
     /// What the device remembers (GameSettings keys).
     private(set) var best: Double? = UserDefaults.standard.object(forKey: GameSettings.strokeDrillBestKey) as? Double
     private(set) var straightCount = UserDefaults.standard.integer(forKey: GameSettings.strokeDrillStraightKey)
@@ -69,7 +77,7 @@ final class StrokeDrill {
     func begin() {
         model.enterStrokeDrill()
         active = true
-        last = nil; lastStroke = nil; lastWasBest = false
+        last = nil; lastStroke = nil; lastWasBest = false; lastCounted = false
         let p = PoolParameters()
         var layout = [Vec2](repeating: NextShot.offTable, count: 16)
         layout[0] = Vec2(NextShot.headLineX(parameters: p), p.tableWidth / 2)
@@ -92,14 +100,19 @@ final class StrokeDrill {
 
     func end() { active = false }
 
-    /// The model reports every attempt it records; a drill stroke (from the drill's start) is judged and remembered.
+    /// The model reports every attempt it records. Every one goes to StrokeEffects, so the result line knows whether
+    /// the stroke changed what happened; a drill stroke (from the drill's start) is judged too, and remembered when a
+    /// finger played it. A shot with no finger stroke has no measured wander and no drift in the calm zone, so it
+    /// would always come back dead straight: it is shown, never counted.
     func attemptRecorded(_ attempt: ShotAttempt) {
+        StrokeEffects.shared.request(attempt)
         guard isActive, !attempt.isBreak, attempt.start == start else { return }
         let result = Self.judge(attempt)
         last = result
         lastStroke = attempt.stroke
         lastWasBest = false
-        guard case .back(let off, let grade) = result else { return }
+        lastCounted = attempt.stroke?.record != nil
+        guard lastCounted, case .back(let off, let grade) = result else { return }
         if best == nil || off < best! {
             best = off
             lastWasBest = true
