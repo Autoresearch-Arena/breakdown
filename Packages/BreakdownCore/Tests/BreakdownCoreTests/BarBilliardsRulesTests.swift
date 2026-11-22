@@ -9,6 +9,10 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 20: a timed game that ends with several whites still
 //          resting on the bed, and the banner's count of whites left to play (whitesLeftToPlay) counting down only the
 //          whites on the D and in the tray, never the ones on the bed.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens: no ball is left standing inside a peg - a white
+//          on a white peg's spot, the same when that white is the next striker and a spare from the tray inherits its
+//          place, the red on the black peg's spot, and the last layout of a finished game - and a game with the bar
+//          down ends as soon as the bed is empty, with the shot's points counted, even with whites left in the tray.)
 // SRP/DRY check: Pass - BarBilliardsRules only; the shot reading is ShotFactsTests', the shared bookkeeping
 //          MatchContractTests'.
 import BreakdownLensModel
@@ -313,5 +317,101 @@ final class BarBilliardsRulesTests: XCTestCase {
         XCTAssertEqual(s.result?.reason, .timeExpired)
         XCTAssertEqual(s.result?.winner, .first)
         XCTAssertEqual(s.ballsLeft.filter { BarBilliardsRules.whiteBalls.contains($0) }, [])
+    }
+
+    // MARK: Nothing rests inside a peg (0.7.5)
+
+    /// True when no ball in `layout` stands where a peg must stand again.
+    private func clearOfPegs(_ layout: [Vec2]) -> Bool {
+        !layout.contains { TableSpots.blocksAPin($0, table: table) }
+    }
+
+    func testAWhiteOnAWhitePegsSpotIsMovedOffIt() {
+        let s = fresh()
+        // A white (ball 1) already on the bed is knocked onto white peg 1's spot, taking the peg down; the striking
+        // white stops elsewhere.
+        var layout = start
+        layout[1] = Vec2(0.9, 0.6)
+        let peg = table.pins[1].center
+        let f = shot(s, from: layout, ends: [1: peg, 0: Vec2(0.8, 0.2)], [.contact(0.2, 0, 1), .pin(0.6, ball: 1, pin: 1)])
+        XCTAssertTrue(TableSpots.blocksAPin(f.resting[1], table: table), "the recording leaves it inside the peg")
+        let out = next(f, s)
+        XCTAssertTrue(ShotFacts.isOnTable(out[1]), "moved, not sent to the tray")
+        XCTAssertFalse(TableSpots.blocksAPin(out[1], table: table))
+        XCTAssertLessThan((out[1] - peg).length, 4 * table.ballRadius * 2, "it stays near where it stopped")
+        XCTAssertTrue(clearOfPegs(out))
+        XCTAssertEqual(out[0], d, "the next white is still set on the D")
+    }
+
+    func testTheNextStrikersSpareIsMovedOffAPegToo() {
+        let s = fresh()
+        // The striking white itself stops on white peg 2's spot. It is the next striker, so it goes to the D and a
+        // white from the tray (ball 1) takes its place on the bed: that spare must not stand inside the peg either.
+        let peg = table.pins[2].center
+        let f = shot(s, ends: [0: peg], [.contact(0.2, 0, 3), .pin(0.7, ball: 0, pin: 2)])
+        let out = next(f, s)
+        XCTAssertEqual(out[0], d)
+        XCTAssertTrue(ShotFacts.isOnTable(out[1]), "the spare took the striker's place on the bed")
+        XCTAssertFalse(TableSpots.blocksAPin(out[1], table: table))
+        XCTAssertTrue(clearOfPegs(out))
+    }
+
+    func testTheRedOnTheBlackPegsSpotGoesBackNearItsOwnSpot() {
+        let s = fresh()
+        let f = shot(s, ends: [3: table.pins[BarBilliardsRules.blackPeg].center, 0: Vec2(0.9, 0.7)],
+                     [.contact(0.2, 0, 3), .pin(0.6, ball: 3, pin: BarBilliardsRules.blackPeg)])
+        let out = next(f, s)
+        XCTAssertFalse(TableSpots.blocksAPin(out[3], table: table))
+        XCTAssertEqual(out[3], redSpot, "its spot is free, so it goes straight back there")
+        XCTAssertTrue(clearOfPegs(out))
+    }
+
+    func testTheLastLayoutOfAFinishedGameIsClearOfThePegs() {
+        var s = fresh()
+        s.clockRemaining = 0
+        s.ballsLeft = [0, 3]
+        var layout = TableShot.empty()
+        layout[0] = d
+        layout[3] = Vec2(0.85, 0.4)
+        // The last white drops; the red ends on the black peg's spot. The game is over, and the table it ends on
+        // has no ball inside a peg.
+        let f = shot(s, from: layout, ends: [3: table.pins[BarBilliardsRules.blackPeg].center],
+                     [.contact(0.2, 0, 3), .hole(0.9, ball: 0, hole: 2)])
+        XCTAssertNotNil(rules.ruling(for: f, call: nil, in: s).result)
+        let out = next(f, s)
+        XCTAssertTrue(ShotFacts.isOnTable(out[3]))
+        XCTAssertTrue(clearOfPegs(out))
+    }
+
+    // MARK: An empty bed ends the game (0.7.5)
+
+    func testAnEmptyBedAfterTimeIsUpEndsTheGameWithTheRightScore() {
+        var s = fresh()
+        s.clockRemaining = 0
+        s.scores = [100, 150]
+        // Whites 1 and 2 still wait in the tray; the red and the striking white are the only balls on the bed.
+        s.ballsLeft = [0, 1, 2, 3]
+        var layout = TableShot.empty()
+        layout[0] = d
+        layout[3] = Vec2(0.85, 0.4)
+        // The red drops in the 100 (200 for the red) and the white follows it into the far 10: nothing is left to hit.
+        let f = shot(s, from: layout, [.contact(0.2, 0, 3), .hole(0.8, ball: 3, hole: 1), .hole(1.0, ball: 0, hole: 6)])
+        let r = rules.ruling(for: f, call: nil, in: s)
+        XCTAssertEqual(r.points, [210, 0])
+        XCTAssertEqual(r.result, MatchResult(winner: .first, reason: .timeExpired))
+        XCTAssertEqual(r.reasons.last, .gameOver)
+        let after = rules.applying(r, facts: f, to: s)
+        XCTAssertEqual(after.scores, [310, 150])
+        XCTAssertTrue(after.isOver)
+
+        // Before time is up the red comes back on its spot, so the bed is not empty and the game goes on.
+        var early = s
+        early.clockRemaining = 60
+        XCTAssertNil(rules.ruling(for: f, call: nil, in: early).result)
+        // And with a white left resting on the bed there is still a ball to hit.
+        var withWhite = layout
+        withWhite[1] = Vec2(1.0, 0.2)
+        let g = shot(s, from: withWhite, [.contact(0.2, 0, 3), .hole(0.8, ball: 3, hole: 1), .hole(1.0, ball: 0, hole: 6)])
+        XCTAssertNil(rules.ruling(for: g, call: nil, in: s).result)
     }
 }

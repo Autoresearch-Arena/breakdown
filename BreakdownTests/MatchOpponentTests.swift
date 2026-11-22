@@ -12,6 +12,10 @@
 //          pots the best-looking ball with no solves and never plays safe, the thresholds of medium and hard), which
 //          rulings settle by themselves and which keep the card (MatchMode.rulingShow), and the record counting only
 //          games against the computer, from the person's side, per game and level, with an old record still loading.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens: with ball in hand behind the head line the
+//          computer never aims a direct shot at a ball that is also behind the line - no placement, pot, safety or
+//          plain hit on it, at every level - and when every legal ball is behind the line it still plays a stroke: a
+//          kick off the foot cushion that crosses the line before the hit, so the head-line foul is not called.)
 // SRP/DRY check: Pass - no opponent logic here; layouts are hand-made, parameters come from TestShots.parameters.
 @testable import Breakdown
 import BreakdownLensModel
@@ -213,6 +217,51 @@ final class MatchOpponentTests: XCTestCase {
         let behind = OpponentPlanner.placements(snapshot(l, s))
         let line = NextShot.headLineX(parameters: snap.parameters)
         XCTAssertTrue(behind.allSatisfy { $0.spot.x <= line })
+    }
+
+    func testWithBallInHandBehindTheLineItNeverAimsAtABallBehindTheLine() {
+        // The 1 is behind the head line, the 2 beyond it; the cue ball is in hand behind the line.
+        var s = eightBallState(left: [1, 2, 8])
+        s.ballInHand = .behindHeadLine
+        let p = TestShots.parameters()
+        let line = NextShot.headLineX(parameters: p)
+        let l = layout([1: Vec2(0.40, 0.30), 2: Vec2(1.90, 0.40), 8: Vec2(1.2, 1.05)], cue: Vec2(0.30, 0.635))
+        XCTAssertLessThanOrEqual(l[1].x, line)
+        XCTAssertGreaterThan(l[2].x, line)
+        XCTAssertEqual(OpponentPlanner.directTargets(snapshot(l, s), [1, 2], layout: l), [2])
+        XCTAssertTrue(OpponentPlanner.placements(snapshot(l, s)).allSatisfy { $0.ball != 1 },
+                      "no placement sets up a pot on a ball behind the line")
+        for level in ComputerLevel.allCases {
+            let plan = OpponentPlanner.plan(snapshot(l, s, level: level))
+            switch plan.kind {
+            case .pot(let ball, _, _): XCTAssertNotEqual(ball, 1, "\(level) potted a ball behind the line")
+            case .safety(let ball), .hit(let ball): XCTAssertNotEqual(ball, 1, "\(level) played at a ball behind the line")
+            default: break
+            }
+            XCTAssertGreaterThan(plan.stroke.speed, 0, "\(level) still plays a stroke")
+        }
+        // With ball in hand anywhere the 1 is fair game again.
+        s.ballInHand = .anywhere
+        XCTAssertEqual(OpponentPlanner.directTargets(snapshot(l, s), [1, 2], layout: l), [1, 2])
+    }
+
+    func testWhenEveryLegalBallIsBehindTheLineItKicksOffTheFootCushion() {
+        // Open table with only the 1 to hit (the 8 is not legal yet), and the 1 behind the head line.
+        var s = eightBallState(left: [1, 8])
+        s.ballInHand = .behindHeadLine
+        let l = layout([1: Vec2(0.40, 0.30), 8: Vec2(1.6, 1.05)], cue: Vec2(0.30, 0.80))
+        let snap = snapshot(l, s, level: .easy)
+        let plan = OpponentPlanner.plan(snap)
+        XCTAssertEqual(plan.kind, .hit(ball: 1))
+        XCTAssertGreaterThan(plan.stroke.direction.x, 0, "aimed up the table, at the 1's image in the foot cushion")
+        // Solved as struck, the cue ball crosses the head line before its first hit, so that foul is not called.
+        let input = NextShot.shot(from: l, direction: plan.stroke.direction, speed: plan.stroke.speed,
+                                  tipUp: plan.stroke.tipUp, tipSide: plan.stroke.tipSide, seed: 1,
+                                  parameters: snap.parameters)
+        let tl = PoolSolver.simulate(input)
+        let facts = ShotFacts(timeline: tl, start: l)
+        XCTAssertGreaterThan(facts.cueBallFarthestBeforeContact ?? 0, NextShot.headLineX(parameters: snap.parameters))
+        XCTAssertFalse(EightBallRules().ruling(for: facts, call: .safety, in: s).fouls.contains(.cueBallBehindHeadLine))
     }
 
     func testChoices() {

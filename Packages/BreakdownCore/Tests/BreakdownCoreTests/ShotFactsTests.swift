@@ -7,6 +7,9 @@
 //          a tie broken in favour of a legal ball, pockets in order, the cue ball pocketed or off the table, object
 //          balls off the table, a rail (or a pocket) after contact, a frozen ball that does not count, object balls
 //          reaching a rail, resting places, pins in order, posts, bed-hole drops, rim skips, and another cue ball.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens: the three head-line readings - where each
+//          first-touched ball started, the cue ball's farthest point along the table before its first contact, worked
+//          out exactly from a moving segment including a turn-back inside it, and the table's length.)
 // SRP/DRY check: Pass - checked PhysicsTests, PocketTests, JumpTests and TableFeatureTests: those solve shots and check
 //          the physics; these check only the reading of a recording, on recordings built by hand.
 import BreakdownLensModel
@@ -281,5 +284,45 @@ final class ShotFactsTests: XCTestCase {
         XCTAssertEqual(f.firstContact, ShotFacts.Contact(ball: 3, time: 0.2))
         XCTAssertFalse(f.cueBallScratched)
         XCTAssertEqual(f.objectBallsOffTable, [0])
+    }
+    // MARK: The head-line readings (0.7.5)
+
+    /// A ball moving from `p` at velocity `v` with constant acceleration `a` from `t0` to `t1`.
+    private func sliding(_ p: Vec2, _ v: Vec2, _ a: Vec2, from t0: Double, to t1: Double) -> BallSegment {
+        BallSegment(t0: t0, t1: t1, phase: .sliding, position0: p, velocity0: v, acceleration: a, omega0: .zero,
+                    alphaXY: .zero, spinDecay: 9, radius: r, orientation0: .identity)
+    }
+
+    func testTheCueBallsFarthestPointBeforeItsFirstContact() {
+        // The cue ball runs up the table from x 0.6 at 2 m/s while slowing at 4 m/s^2, so its x turns back at 0.5 s,
+        // at 0.6 + 2 * 0.5 - 2 * 0.25 = 1.1 m, then comes back down and touches ball 2 at 0.8 s. Its farthest point is
+        // the turn inside the segment, not either end (0.6 at the start, 0.92 at the contact).
+        var segs = stillBalls()
+        segs[0] = [sliding(start[0], Vec2(2, 0), Vec2(-4, 0), from: 0, to: 0.8), still(Vec2(0.92, 0.6), from: 0.8)]
+        let f = ShotFacts(timeline: recording(segs, [contact(0.8, 0, 2)]), start: start)
+        XCTAssertEqual(f.cueBallFarthestBeforeContact ?? 0, 1.1, accuracy: 1e-12)
+        XCTAssertEqual(f.tableLength, 2.54)
+        XCTAssertEqual(f.firstContactStarts, [start[2]])
+        XCTAssertEqual(f.firstContactStart(of: 2), start[2])
+        XCTAssertNil(f.firstContactStart(of: 1), "ball 1 was not touched first")
+
+        // Only the time up to the first contact counts: after it the cue ball may go anywhere.
+        var later = stillBalls()
+        later[0] = [sliding(start[0], Vec2(1, 0), .zero, from: 0, to: 2), still(Vec2(2.6, 0.6), from: 2)]
+        let g = ShotFacts(timeline: recording(later, [contact(0.2, 0, 1)]), start: start)
+        XCTAssertEqual(g.cueBallFarthestBeforeContact ?? 0, 0.8, accuracy: 1e-12)
+    }
+
+    func testTheHeadLineReadingsWithNoContactAndInATie() {
+        // Nothing touched: there is no "before the first contact", and no starts.
+        let none = ShotFacts(timeline: recording(stillBalls(), []), start: start)
+        XCTAssertNil(none.cueBallFarthestBeforeContact)
+        XCTAssertEqual(none.firstContactStarts, [])
+        // A tie: both balls touched inside sameInstant, each with its own start, in event order.
+        let tl = recording(stillBalls(), [contact(0.2, 0, 3), contact(0.2 + 5e-6, 0, 1)])
+        let tie = ShotFacts(timeline: tl, start: start)
+        XCTAssertEqual(tie.firstContactBalls, [3, 1])
+        XCTAssertEqual(tie.firstContactStarts, [start[3], start[1]])
+        XCTAssertEqual(tie.cueBallFarthestBeforeContact, start[0].x, "a cue ball standing still never moved along")
     }
 }

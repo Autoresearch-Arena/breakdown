@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 1: three more readings for the "ball in hand behind the head line" rule, with no rule attached:
+//          firstContactStarts (where each ball the cue ball touched first started), cueBallFarthestBeforeContact (the
+//          farthest the cue ball got along the table's length before that first contact, worked out exactly from the
+//          recorded segments) and tableLength (the recorded table's length, so the rules can place the head line
+//          without the physics module). Additive only: no existing field changes.)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - appended ballContacts: every ball-to-ball contact
 //          of the shot, in time order, and touched(_:_:), because five-pin scores the opponent's ball hitting the red,
 //          which is not a contact of the cue ball. Additive only: no existing field changes.
@@ -16,7 +22,9 @@
 //              contact" test of a legal pool shot), and which balls reached a rail, so rules can count object balls
 //              driven to a rail on a break;
 //            - where every ball came to rest (the off-table parking spot for a ball that is gone);
-//            - pins knocked down, in order, with the ball that did it; posts touched; balls that skipped over a hole.
+//            - pins knocked down, in order, with the ball that did it; posts touched; balls that skipped over a hole;
+//            - where each first-touched ball started, how far along the table's length the cue ball got before it
+//              touched anything, and the table's length (eight-ball's head-line foul reads these three).
 //          "The cue ball" is a parameter (default ball 0), so tables where each player strikes their own ball work.
 //          Read by App/EightBall/EightBallJudge.swift (its first-contact, rail-after-contact, scratch and off-table
 //          checks) and by the match rules in the BreakdownRules module.
@@ -138,6 +146,18 @@ public struct ShotFacts: Sendable, Equatable {
     public let rimSkips: [Drop]
     /// Every ball-to-ball contact of the shot (not only the cue ball's), in time order.
     public let ballContacts: [BallPair]
+    /// Where each ball of firstContactBalls started, in the same order (the parking spot for a ball the start layout
+    /// does not cover). Kept per ball, not only for the first, because a rule that breaks a tie its own way
+    /// (firstContact(preferring:)) must look up the start of the ball it chose. Empty when nothing was touched.
+    public let firstContactStarts: [Vec2]
+    /// The largest x (metres along the table's length, from the head rail) the cue ball's centre reached from the
+    /// strike up to its first contact with another ball; nil when it touched no ball. Exact, not sampled: each recorded
+    /// segment moves with constant acceleration, so its largest x is at one of its ends or where its x speed is zero.
+    /// The head-line rule reads it: a cue ball whose largest x never passed the line never crossed it.
+    public let cueBallFarthestBeforeContact: Double?
+    /// The recorded table's length (Timeline.table.length), metres. The rules module cannot import the physics module
+    /// where the head line is defined, so it places the line on this.
+    public let tableLength: Double
 
     /// Reads a recorded shot.
     /// - timeline: the recording.
@@ -163,6 +183,9 @@ public struct ShotFacts: Sendable, Equatable {
         } else {
             firstContactBalls = []
         }
+        firstContactStarts = firstContactBalls.map { b in start.indices.contains(b) ? start[b] : ShotFacts.offTable }
+        tableLength = tl.table.length
+        cueBallFarthestBeforeContact = t0.flatMap { ShotFacts.farthestX(of: cueBall, until: $0, in: tl) }
 
         // Drops, in event (time) order; bed holes listed again with their hole number.
         var drops: [Drop] = [], skips: [Drop] = [], posts: [PostTouch] = [], pairs: [BallPair] = []
@@ -235,6 +258,34 @@ public struct ShotFacts: Sendable, Equatable {
         }
     }
 
+    /// The largest x a ball's centre reaches from the start of the recording up to time `end`; nil when the ball is
+    /// not in the recording. Every segment is position0 + v0 t + a t^2 / 2 along x (the stationary and spinning ones
+    /// stand still at position0), so on [t0, min(t1, end)] the largest x is at an end of that span or at the turning
+    /// point t = -v0x / ax when it lies inside. A ball that drops before `end` stops counting at its drop.
+    static func farthestX(of ball: Int, until end: Double, in tl: Timeline) -> Double? {
+        guard ball >= 0, ball < tl.ballCount, tl.segments.indices.contains(ball) else { return nil }
+        let stop = min(end, tl.pocketTime[ball] ?? end)
+        var best: Double?
+        for seg in tl.segments[ball] where seg.t0 <= stop {
+            let to = min(seg.t1, stop)
+            var times = [seg.t0, to]
+            switch seg.phase {
+            case .sliding, .rolling, .airborne:
+                if seg.acceleration.x != 0 {
+                    let turn = seg.t0 - seg.velocity0.x / seg.acceleration.x
+                    if turn > seg.t0, turn < to { times.append(turn) }
+                }
+            case .stationary, .spinning:
+                times = [seg.t0]
+            }
+            for t in times {
+                let x = seg.kinematics(at: t).position.x
+                if best == nil || x > best! { best = x }
+            }
+        }
+        return best
+    }
+
     /// The first ball the cue ball touched, and when; nil when it touched none.
     public var firstContact: Contact? {
         guard let t = firstContactTime, let b = firstContactBalls.first else { return nil }
@@ -257,6 +308,11 @@ public struct ShotFacts: Sendable, Equatable {
 
     /// True when balls `a` and `b` touched each other at any time in the shot.
     public func touched(_ a: Int, _ b: Int) -> Bool { ballContacts.contains { $0.involves(a, b) } }
+
+    /// Where `ball` started, if it was one of the balls the cue ball touched first; nil otherwise.
+    public func firstContactStart(of ball: Int) -> Vec2? {
+        firstContactBalls.firstIndex(of: ball).map { firstContactStarts[$0] }
+    }
 
     /// Where `ball` dropped, if it did (its first drop; a ball drops at most once in a shot).
     public func pocket(of ball: Int) -> Int? { pocketed.first { $0.ball == ball }?.pocket }

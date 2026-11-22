@@ -1,0 +1,790 @@
+{
+ "keys": [
+  "The bumper throws it back",
+  "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+  "Peg down",
+  "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+  "The black peg down costs the whole score.",
+  "A white peg down costs the points of this break.",
+  "Into the hole",
+  "Into the cup",
+  "%@ drops into the hole at %@ m/s.",
+  "%@ drops into the cup at %@ m/s.",
+  "Too fast for the hole",
+  "Too fast for the cup",
+  "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+  "Side spin pushes the ball off line"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "The bumper throws it back",
+   "text": "El tope la devuelve"
+  },
+  {
+   "culture": "fr",
+   "key": "The bumper throws it back",
+   "text": "Le plot la renvoie"
+  },
+  {
+   "culture": "de",
+   "key": "The bumper throws it back",
+   "text": "Der Puffer wirft sie zurück"
+  },
+  {
+   "culture": "it",
+   "key": "The bumper throws it back",
+   "text": "Il respingente la rimanda indietro"
+  },
+  {
+   "culture": "pt",
+   "key": "The bumper throws it back",
+   "text": "O amortecedor devolve-a"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The bumper throws it back",
+   "text": "O amortecedor a devolve"
+  },
+  {
+   "culture": "ja",
+   "key": "The bumper throws it back",
+   "text": "バンパーが跳ね返す"
+  },
+  {
+   "culture": "ko",
+   "key": "The bumper throws it back",
+   "text": "범퍼가 튕겨 낸다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The bumper throws it back",
+   "text": "挡柱把它弹回来"
+  },
+  {
+   "culture": "ru",
+   "key": "The bumper throws it back",
+   "text": "Отбойник отбрасывает его"
+  },
+  {
+   "culture": "ar",
+   "key": "The bumper throws it back",
+   "text": "المصدّ يردّها"
+  },
+  {
+   "culture": "es",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ toca el tope a %2$@ m/s y conserva el %3$@ por ciento de su velocidad en línea recta contra él."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ touche le plot à %2$@ m/s et garde %3$@ pour cent de sa vitesse en ligne droite contre lui."
+  },
+  {
+   "culture": "de",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ trifft den Puffer mit %2$@ m/s und behält %3$@ Prozent seines Tempos in Richtung Puffer."
+  },
+  {
+   "culture": "it",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ colpisce il respingente a %2$@ m/s e mantiene il %3$@ per cento della sua velocità verso di esso."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ bate no amortecedor a %2$@ m/s e mantém %3$@ por cento da sua velocidade em linha reta contra ele."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ bate no amortecedor a %2$@ m/s e mantém %3$@ por cento da sua velocidade em linha reta contra ele."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@は%2$@ m/sでバンパーに当たり、速さの%3$@パーセントを保ったまま真っすぐ跳ね返ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@이(가) %2$@ m/s로 범퍼에 맞고, 범퍼 쪽 속도의 %3$@퍼센트를 유지해."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@以%2$@ m/s撞上挡柱，正对挡柱方向的速度保留百分之%3$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ ударяется об отбойник на скорости %2$@ м/с и сохраняет %3$@ процентов скорости, направленной прямо в него."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ hits the bumper at %@ m/s and keeps %@ percent of its speed straight into it.",
+   "text": "%1$@ يصطدم بالمصدّ بسرعة %2$@ m/s ويحتفظ بـ%3$@ في المئة من سرعته متجهاً مباشرةً نحوه."
+  },
+  {
+   "culture": "es",
+   "key": "Peg down",
+   "text": "Palito derribado"
+  },
+  {
+   "culture": "fr",
+   "key": "Peg down",
+   "text": "Champignon tombé"
+  },
+  {
+   "culture": "de",
+   "key": "Peg down",
+   "text": "Pilz gefallen"
+  },
+  {
+   "culture": "it",
+   "key": "Peg down",
+   "text": "Funghetto abbattuto"
+  },
+  {
+   "culture": "pt",
+   "key": "Peg down",
+   "text": "Pino derrubado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Peg down",
+   "text": "Pino derrubado"
+  },
+  {
+   "culture": "ja",
+   "key": "Peg down",
+   "text": "ペグが倒れた"
+  },
+  {
+   "culture": "ko",
+   "key": "Peg down",
+   "text": "페그가 쓰러졌다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Peg down",
+   "text": "木桩倒了"
+  },
+  {
+   "culture": "ru",
+   "key": "Peg down",
+   "text": "Грибок сбит"
+  },
+  {
+   "culture": "ar",
+   "key": "Peg down",
+   "text": "سقط الوتد"
+  },
+  {
+   "culture": "es",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ derriba el palito a %2$@ m/s y sigue rodando a %3$@ m/s."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ renverse le champignon à %2$@ m/s et continue à rouler à %3$@ m/s."
+  },
+  {
+   "culture": "de",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ wirft den Pilz mit %2$@ m/s um und rollt mit %3$@ m/s weiter."
+  },
+  {
+   "culture": "it",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ abbatte il funghetto a %2$@ m/s e continua a rotolare a %3$@ m/s."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ derruba o pino a %2$@ m/s e continua a rolar a %3$@ m/s."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ derruba o pino a %2$@ m/s e continua rolando a %3$@ m/s."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@は%2$@ m/sでペグを倒し、%3$@ m/sで転がり続けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@이(가) %2$@ m/s로 페그를 쓰러뜨리고 %3$@ m/s로 계속 굴러가."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@以%2$@ m/s撞倒木桩，并以%3$@ m/s继续滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ сбивает грибок на скорости %2$@ м/с и катится дальше со скоростью %3$@ м/с."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ knocks the peg over at %@ m/s and rolls on at %@ m/s.",
+   "text": "%1$@ يُسقط الوتد بسرعة %2$@ m/s ويواصل التدحرج بسرعة %3$@ m/s."
+  },
+  {
+   "culture": "es",
+   "key": "The black peg down costs the whole score.",
+   "text": "Derribar el palito negro cuesta toda la puntuación."
+  },
+  {
+   "culture": "fr",
+   "key": "The black peg down costs the whole score.",
+   "text": "Le champignon noir tombé coûte tout le score."
+  },
+  {
+   "culture": "de",
+   "key": "The black peg down costs the whole score.",
+   "text": "Fällt der schwarze Pilz, ist der ganze Punktestand weg."
+  },
+  {
+   "culture": "it",
+   "key": "The black peg down costs the whole score.",
+   "text": "Il funghetto nero abbattuto costa tutto il punteggio."
+  },
+  {
+   "culture": "pt",
+   "key": "The black peg down costs the whole score.",
+   "text": "Derrubar o pino preto custa a pontuação inteira."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The black peg down costs the whole score.",
+   "text": "Derrubar o pino preto custa a pontuação inteira."
+  },
+  {
+   "culture": "ja",
+   "key": "The black peg down costs the whole score.",
+   "text": "黒いペグを倒すと、得点がすべて失われます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The black peg down costs the whole score.",
+   "text": "검은 페그가 쓰러지면 점수 전체를 잃어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The black peg down costs the whole score.",
+   "text": "撞倒黑色木桩会失去全部得分。"
+  },
+  {
+   "culture": "ru",
+   "key": "The black peg down costs the whole score.",
+   "text": "Сбитый чёрный грибок стоит всего счёта."
+  },
+  {
+   "culture": "ar",
+   "key": "The black peg down costs the whole score.",
+   "text": "سقوط الوتد الأسود يكلّف النتيجة كلها."
+  },
+  {
+   "culture": "es",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Derribar un palito blanco cuesta los puntos de esta tacada."
+  },
+  {
+   "culture": "fr",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Un champignon blanc tombé coûte les points de cette série."
+  },
+  {
+   "culture": "de",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Fällt ein weißer Pilz, sind die Punkte dieser Serie weg."
+  },
+  {
+   "culture": "it",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Un funghetto bianco abbattuto costa i punti di questa serie."
+  },
+  {
+   "culture": "pt",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Derrubar um pino branco custa os pontos desta série."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Derrubar um pino branco custa os pontos desta série."
+  },
+  {
+   "culture": "ja",
+   "key": "A white peg down costs the points of this break.",
+   "text": "白いペグを倒すと、この連続の得点が失われます。"
+  },
+  {
+   "culture": "ko",
+   "key": "A white peg down costs the points of this break.",
+   "text": "흰 페그가 쓰러지면 이번 연속 득점을 잃어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A white peg down costs the points of this break.",
+   "text": "撞倒白色木桩会失去这一轮连击的得分。"
+  },
+  {
+   "culture": "ru",
+   "key": "A white peg down costs the points of this break.",
+   "text": "Сбитый белый грибок стоит очков этой серии."
+  },
+  {
+   "culture": "ar",
+   "key": "A white peg down costs the points of this break.",
+   "text": "سقوط وتد أبيض يكلّف نقاط هذه السلسلة."
+  },
+  {
+   "culture": "es",
+   "key": "Into the hole",
+   "text": "Al agujero"
+  },
+  {
+   "culture": "fr",
+   "key": "Into the hole",
+   "text": "Dans le trou"
+  },
+  {
+   "culture": "de",
+   "key": "Into the hole",
+   "text": "Ins Loch"
+  },
+  {
+   "culture": "it",
+   "key": "Into the hole",
+   "text": "Nella buca"
+  },
+  {
+   "culture": "pt",
+   "key": "Into the hole",
+   "text": "No buraco"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Into the hole",
+   "text": "No buraco"
+  },
+  {
+   "culture": "ja",
+   "key": "Into the hole",
+   "text": "穴に入った"
+  },
+  {
+   "culture": "ko",
+   "key": "Into the hole",
+   "text": "구멍으로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Into the hole",
+   "text": "进洞"
+  },
+  {
+   "culture": "ru",
+   "key": "Into the hole",
+   "text": "В лунку"
+  },
+  {
+   "culture": "ar",
+   "key": "Into the hole",
+   "text": "في الفتحة"
+  },
+  {
+   "culture": "es",
+   "key": "Into the cup",
+   "text": "A la copa"
+  },
+  {
+   "culture": "fr",
+   "key": "Into the cup",
+   "text": "Dans la coupe"
+  },
+  {
+   "culture": "de",
+   "key": "Into the cup",
+   "text": "In den Becher"
+  },
+  {
+   "culture": "it",
+   "key": "Into the cup",
+   "text": "Nella coppa"
+  },
+  {
+   "culture": "pt",
+   "key": "Into the cup",
+   "text": "Na taça"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Into the cup",
+   "text": "Na caçapa"
+  },
+  {
+   "culture": "ja",
+   "key": "Into the cup",
+   "text": "カップに入った"
+  },
+  {
+   "culture": "ko",
+   "key": "Into the cup",
+   "text": "컵으로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Into the cup",
+   "text": "进杯"
+  },
+  {
+   "culture": "ru",
+   "key": "Into the cup",
+   "text": "В лузу-чашу"
+  },
+  {
+   "culture": "ar",
+   "key": "Into the cup",
+   "text": "في الكأس"
+  },
+  {
+   "culture": "es",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ cae en el agujero a %2$@ m/s."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ tombe dans le trou à %2$@ m/s."
+  },
+  {
+   "culture": "de",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ fällt mit %2$@ m/s ins Loch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ cade nella buca a %2$@ m/s."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ cai no buraco a %2$@ m/s."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ cai no buraco a %2$@ m/s."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@が%2$@ m/sで穴に落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@이(가) %2$@ m/s로 구멍에 떨어져."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@以%2$@ m/s的速度落进洞里。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ падает в лунку на скорости %2$@ м/с."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ drops into the hole at %@ m/s.",
+   "text": "%1$@ تسقط في الفتحة بسرعة %2$@ m/s."
+  },
+  {
+   "culture": "es",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ cae en la copa a %2$@ m/s."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ tombe dans la coupe à %2$@ m/s."
+  },
+  {
+   "culture": "de",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ fällt mit %2$@ m/s in den Becher."
+  },
+  {
+   "culture": "it",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ cade nella coppa a %2$@ m/s."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ cai na taça a %2$@ m/s."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ cai na caçapa a %2$@ m/s."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@が%2$@ m/sでカップに落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@이(가) %2$@ m/s로 컵에 떨어져."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@以%2$@ m/s的速度落进杯里。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ падает в лузу-чашу на скорости %2$@ м/с."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ drops into the cup at %@ m/s.",
+   "text": "%1$@ تسقط في الكأس بسرعة %2$@ m/s."
+  },
+  {
+   "culture": "es",
+   "key": "Too fast for the hole",
+   "text": "Demasiado rápida para el agujero"
+  },
+  {
+   "culture": "fr",
+   "key": "Too fast for the hole",
+   "text": "Trop rapide pour le trou"
+  },
+  {
+   "culture": "de",
+   "key": "Too fast for the hole",
+   "text": "Zu schnell für das Loch"
+  },
+  {
+   "culture": "it",
+   "key": "Too fast for the hole",
+   "text": "Troppo veloce per la buca"
+  },
+  {
+   "culture": "pt",
+   "key": "Too fast for the hole",
+   "text": "Rápida demais para o buraco"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Too fast for the hole",
+   "text": "Rápida demais para o buraco"
+  },
+  {
+   "culture": "ja",
+   "key": "Too fast for the hole",
+   "text": "速すぎて穴に入らない"
+  },
+  {
+   "culture": "ko",
+   "key": "Too fast for the hole",
+   "text": "구멍에 들어가기엔 너무 빠르다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Too fast for the hole",
+   "text": "太快了，进不了洞"
+  },
+  {
+   "culture": "ru",
+   "key": "Too fast for the hole",
+   "text": "Слишком быстро для лунки"
+  },
+  {
+   "culture": "ar",
+   "key": "Too fast for the hole",
+   "text": "أسرع من أن تدخل الفتحة"
+  },
+  {
+   "culture": "es",
+   "key": "Too fast for the cup",
+   "text": "Demasiado rápida para la copa"
+  },
+  {
+   "culture": "fr",
+   "key": "Too fast for the cup",
+   "text": "Trop rapide pour la coupe"
+  },
+  {
+   "culture": "de",
+   "key": "Too fast for the cup",
+   "text": "Zu schnell für den Becher"
+  },
+  {
+   "culture": "it",
+   "key": "Too fast for the cup",
+   "text": "Troppo veloce per la coppa"
+  },
+  {
+   "culture": "pt",
+   "key": "Too fast for the cup",
+   "text": "Rápida demais para a taça"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Too fast for the cup",
+   "text": "Rápida demais para a caçapa"
+  },
+  {
+   "culture": "ja",
+   "key": "Too fast for the cup",
+   "text": "速すぎてカップに入らない"
+  },
+  {
+   "culture": "ko",
+   "key": "Too fast for the cup",
+   "text": "컵에 들어가기엔 너무 빠르다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Too fast for the cup",
+   "text": "太快了，进不了杯"
+  },
+  {
+   "culture": "ru",
+   "key": "Too fast for the cup",
+   "text": "Слишком быстро для лузы-чаши"
+  },
+  {
+   "culture": "ar",
+   "key": "Too fast for the cup",
+   "text": "أسرع من أن تدخل الكأس"
+  },
+  {
+   "culture": "es",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ llega a la copa a %2$@ m/s, demasiado rápida para caer: la cruza antes de que la gravedad la baje lo suficiente para engancharse en el borde opuesto, y sigue a %3$@ m/s."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ arrive à la coupe à %2$@ m/s, trop vite pour tomber : elle l'a traversée avant que la gravité l'ait assez fait descendre pour accrocher le bord opposé, et elle continue à %3$@ m/s."
+  },
+  {
+   "culture": "de",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ erreicht den Becher mit %2$@ m/s, zu schnell zum Fallen: Sie ist hinüber, bevor die Schwerkraft sie tief genug ziehen kann, um an der anderen Kante hängen zu bleiben, und läuft mit %3$@ m/s weiter."
+  },
+  {
+   "culture": "it",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ arriva alla coppa a %2$@ m/s, troppo veloce per cadere: la attraversa prima che la gravità la tiri giù abbastanza da agganciare il bordo opposto, e prosegue a %3$@ m/s."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ chega à taça a %2$@ m/s, rápida demais para cair: atravessa-a antes de a gravidade a puxar o suficiente para prender na borda oposta, e continua a %3$@ m/s."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ chega à caçapa a %2$@ m/s, rápida demais para cair: ela atravessa antes que a gravidade a puxe o suficiente para prender na borda oposta, e segue a %3$@ m/s."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@は%2$@ m/sでカップに来ましたが、速すぎて落ちません。重力が向こう側の縁に引っかかるほど引き下げる前に渡りきってしまい、%3$@ m/sで進み続けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@(이)가 %2$@ m/s로 컵에 이르지만 너무 빨라 떨어지지 않습니다. 중력이 반대편 가장자리에 걸릴 만큼 끌어내리기 전에 건너가 버리고, %3$@ m/s로 계속 굴러갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ 以 %2$@ m/s 的速度来到杯口，太快了掉不进去：重力还没把它拉低到能卡住对面边缘，它就已经越过去了，然后以 %3$@ m/s 继续前进。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ подходит к лузе-чаше на скорости %2$@ м/с — слишком быстро, чтобы упасть: шар пересекает её раньше, чем сила тяжести опустит его достаточно, чтобы зацепиться за дальний край, и катится дальше на %3$@ м/с."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ reaches the cup at %@ m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at %@ m/s.",
+   "text": "%1$@ تصل إلى الكأس بسرعة %2$@ m/s، أسرع من أن تسقط: تعبرها قبل أن تسحبها الجاذبية إلى أسفل بما يكفي لتعلق بالحافة البعيدة، وتواصل بسرعة %3$@ m/s."
+  },
+  {
+   "culture": "es",
+   "key": "Side spin pushes the ball off line",
+   "text": "El efecto lateral desvía la bola"
+  },
+  {
+   "culture": "fr",
+   "key": "Side spin pushes the ball off line",
+   "text": "L'effet latéral dévie la bille"
+  },
+  {
+   "culture": "de",
+   "key": "Side spin pushes the ball off line",
+   "text": "Seitlicher Effet drückt die Kugel von der Linie"
+  },
+  {
+   "culture": "it",
+   "key": "Side spin pushes the ball off line",
+   "text": "L'effetto laterale sposta la bilia dalla linea"
+  },
+  {
+   "culture": "pt",
+   "key": "Side spin pushes the ball off line",
+   "text": "O efeito lateral desvia a bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Side spin pushes the ball off line",
+   "text": "O efeito lateral desvia a bola"
+  },
+  {
+   "culture": "ja",
+   "key": "Side spin pushes the ball off line",
+   "text": "横回転で球がラインからずれる"
+  },
+  {
+   "culture": "ko",
+   "key": "Side spin pushes the ball off line",
+   "text": "옆회전이 공을 선 밖으로 민다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Side spin pushes the ball off line",
+   "text": "侧旋把球推离瞄准线"
+  },
+  {
+   "culture": "ru",
+   "key": "Side spin pushes the ball off line",
+   "text": "Боковой винт уводит шар с линии"
+  },
+  {
+   "culture": "ar",
+   "key": "Side spin pushes the ball off line",
+   "text": "الدوران الجانبي يدفع الكرة عن خطها"
+  }
+ ]
+}

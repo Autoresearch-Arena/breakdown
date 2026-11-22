@@ -7,9 +7,16 @@
 //          pocketed, the call and keeping the turn, every foul, a safety, a tie for the first contact, which balls may
 //          be called, the win, every loss on the 8 and the order of that table, a scripted full game, and the
 //          suggested call.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens: ball in hand behind the head line. A first hit on
+//          a ball that started behind the line, with the cue ball never crossing it, is .cueBallBehindHeadLine; a ball
+//          on the line counts as behind; crossing first is legal; a tie with a ball beyond the line goes to the shooter;
+//          ball in hand anywhere is unaffected; the rules' head line is the placement check's line (NextShot.headLineX).
+//          These shots move the cue ball, so they are built here rather than with ShotScript, whose cue ball stands
+//          still.)
 // SRP/DRY check: Pass - new; MatchContractTests covers the bookkeeping shared by every game, these cover eight-ball's
 //          own rules on top of it.
 import BreakdownLensModel
+import BreakdownPhysics
 import BreakdownRules
 import BreakdownTimeline
 import XCTest
@@ -380,5 +387,109 @@ final class EightBallRulesTests: XCTestCase {
         // Nothing to call on the break.
         XCTAssertNil(rules.suggestedCall(positions: positions, aim: dir, pockets: pockets,
                                          ballRadius: ShotScript.radius, in: fresh()))
+    }
+    // MARK: Ball in hand behind the head line (0.7.5)
+
+    /// A shot from ball in hand behind the head line on ShotScript's 2.54 m table (head line at 0.635 m): the cue ball
+    /// starts at `cue`, rolls straight to `via` when given (taking 0.1 s) and then to where it touches `target` (at
+    /// 0.2 s), and the target, standing at `at`, drops in the foot-left corner, so the shot is legal on every other
+    /// count and only the head-line rule can foul it. `tie` adds a second ball touched 5 microseconds later.
+    private func fromTheKitchen(cue: Vec2, via: Vec2? = nil, target: Int = 3, at: Vec2,
+                                tie: (ball: Int, at: Vec2)? = nil) -> ShotFacts {
+        let r = ShotScript.radius
+        var start = [Vec2](repeating: ShotFacts.offTable, count: 16)
+        start[0] = cue
+        start[target] = at
+        if let t = tie { start[t.ball] = t.at }
+        // Where the cue ball's centre is when it touches the target: two radii back from the target along its run in.
+        let from = via ?? cue
+        let touch = at - (at - from).normalized * (2 * r)
+        func moving(_ p: Vec2, to q: Vec2, from t0: Double, to t1: Double) -> BallSegment {
+            BallSegment(t0: t0, t1: t1, phase: .rolling, position0: p, velocity0: (q - p) * (1 / (t1 - t0)),
+                        acceleration: .zero, omega0: .zero, alphaXY: .zero, spinDecay: 9, radius: r,
+                        orientation0: .identity)
+        }
+        func still(_ p: Vec2, from t0: Double = 0) -> BallSegment {
+            BallSegment(t0: t0, t1: .infinity, phase: .stationary, position0: p, velocity0: .zero, acceleration: .zero,
+                        omega0: .zero, alphaXY: .zero, spinDecay: 9, radius: r, orientation0: .identity)
+        }
+        var segments = start.map { [still($0)] }
+        if let via {
+            segments[0] = [moving(cue, to: via, from: 0, to: 0.1), moving(via, to: touch, from: 0.1, to: 0.2),
+                           still(touch, from: 0.2)]
+        } else {
+            segments[0] = [moving(cue, to: touch, from: 0, to: 0.2), still(touch, from: 0.2)]
+        }
+        func impact(_ b: Int) -> ImpactBall {
+            ImpactBall(ball: b, velocityBefore: Vec2(1, 0), velocityAfter: Vec2(0.5, 0), omegaBefore: .zero,
+                       omegaAfter: .zero, translationalBefore: 0.085, rotationalBefore: 0, translationalAfter: 0.02,
+                       rotationalAfter: 0)
+        }
+        var events = [LensEvent(time: 0.2, kind: .ballBall, point: .zero, normal: Vec2(1, 0),
+                                balls: [impact(0), impact(target)]),
+                      LensEvent(time: 0.6, kind: .pocket, point: at, normal: Vec2(1, 0), balls: [impact(target)],
+                                pocket: EightBallPocket.footLeft.rawValue)]
+        if let t = tie {
+            events.append(LensEvent(time: 0.2 + 5e-6, kind: .ballBall, point: .zero, normal: Vec2(1, 0),
+                                    balls: [impact(0), impact(t.ball)]))
+        }
+        events.sort { $0.time < $1.time }
+        var pocketTime = [Double?](repeating: nil, count: 16)
+        pocketTime[target] = 0.6
+        let spec = TableSpec(length: 2.54, width: 1.27, ballRadius: r, pockets: [], pocketCaptureRadius: [])
+        let tl = Timeline(table: spec, seed: 1, parameterHash: 1, segments: segments, events: events,
+                          pocketTime: pocketTime, duration: 1.1)
+        return ShotFacts(timeline: tl, start: start, cueBall: 0)
+    }
+
+    /// The open table after a scratch on the break: Ada to shoot with ball in hand behind the head line.
+    private func kitchen(_ hand: BallInHand = .behindHeadLine) -> MatchState {
+        var s = openTable(ballsLeft: [3, 8, 10, 12])
+        s.ballInHand = hand
+        return s
+    }
+
+    func testTheRulesHeadLineIsThePlacementChecksLine() {
+        let p = PoolParameters()
+        XCTAssertEqual(EightBallRules.headLineX(tableLength: p.tableLength), NextShot.headLineX(parameters: p))
+    }
+
+    func testFromBehindTheLineABallBehindItCannotBeHitFirstWithoutCrossing() {
+        // The 3 sits behind the line (x 0.5 < 0.635); the cue ball goes straight at it and never crosses.
+        let f = fromTheKitchen(cue: Vec2(0.25, 0.6), at: Vec2(0.5, 0.4))
+        let r = rules.ruling(for: f, call: .ball(3, pocket: .footLeft), in: kitchen())
+        XCTAssertEqual(r.fouls, [.cueBallBehindHeadLine])
+        XCTAssertEqual(r.nextShooter, .second)
+        XCTAssertEqual(r.ballInHand, .anywhere, "the foul gives the other player ball in hand anywhere")
+        // A ball whose centre is on the line is behind it, as in the placement check.
+        let onLine = fromTheKitchen(cue: Vec2(0.25, 0.6), at: Vec2(0.635, 0.4))
+        XCTAssertEqual(rules.ruling(for: onLine, call: .ball(3, pocket: .footLeft), in: kitchen()).fouls,
+                       [.cueBallBehindHeadLine])
+    }
+
+    func testCrossingTheLineFirstIsLegal() {
+        // Off the foot end and back: the cue ball passes x 1.2 before it comes back to the 3.
+        let f = fromTheKitchen(cue: Vec2(0.25, 0.6), via: Vec2(1.2, 0.9), at: Vec2(0.5, 0.4))
+        XCTAssertGreaterThan(f.cueBallFarthestBeforeContact ?? 0, EightBallRules.headLineX(tableLength: 2.54))
+        let r = rules.ruling(for: f, call: .ball(3, pocket: .footLeft), in: kitchen())
+        XCTAssertEqual(r.fouls, [])
+        XCTAssertEqual(r.reasons, [.legalPot, .groupsAssigned])
+        // A ball beyond the line hit straight is legal too (the cue ball crosses on its way there).
+        let beyond = fromTheKitchen(cue: Vec2(0.25, 0.6), at: Vec2(1.0, 0.5))
+        XCTAssertEqual(rules.ruling(for: beyond, call: .ball(3, pocket: .footLeft), in: kitchen()).fouls, [])
+    }
+
+    func testATieWithABallBeyondTheLineGoesToTheShooter() {
+        // The 3 (behind) and the 10 (beyond, touched within sameInstant): the shooter gets the benefit of the doubt.
+        let f = fromTheKitchen(cue: Vec2(0.25, 0.6), at: Vec2(0.5, 0.4), tie: (10, Vec2(0.7, 0.42)))
+        XCTAssertEqual(f.firstContactBalls, [3, 10])
+        XCTAssertFalse(rules.ruling(for: f, call: .ball(3, pocket: .footLeft), in: kitchen()).fouls
+                        .contains(.cueBallBehindHeadLine))
+    }
+
+    func testBallInHandAnywhereIsUnaffected() {
+        let f = fromTheKitchen(cue: Vec2(0.25, 0.6), at: Vec2(0.5, 0.4))
+        XCTAssertEqual(rules.ruling(for: f, call: .ball(3, pocket: .footLeft), in: kitchen(.anywhere)).fouls, [])
+        XCTAssertEqual(rules.ruling(for: f, call: .ball(3, pocket: .footLeft), in: kitchen(.none)).fouls, [])
     }
 }

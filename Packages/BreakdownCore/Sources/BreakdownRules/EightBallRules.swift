@@ -1,6 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
-// PURPOSE: The rules of eight-ball for two players on one device (plans/21-Nov-2026-rules-games-plan.md package 3),
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 1: ball in hand behind the head line now has its rule. From behind the line, the cue ball may not hit
+//          first a ball that also started behind the line unless it crossed the line before that hit
+//          (MatchFoul.cueBallBehindHeadLine). The header no longer says the game is for two people on one device: it is
+//          played against the computer.)
+// PURPOSE: The rules of eight-ball, played against the computer (plans/21-Nov-2026-rules-games-plan.md package 3),
 //          in our own words:
 //            - The break. The breaker places the cue ball behind the head line. A legal break pockets an object ball
 //              or drives at least four object balls to a rail; otherwise the other player chooses to take the table
@@ -15,6 +20,9 @@
 //              the 8 once the group is gone), and then pockets a ball or sends some ball to a rail. A shot that
 //              touches nothing, scratches, or sends an object ball off the table is a foul too.
 //            - A foul gives the other player ball in hand anywhere. Balls pocketed on a foul stay down.
+//            - With ball in hand behind the head line (after a scratch on the break), the cue ball may not hit first a
+//              ball that also started behind the line unless it crossed the line before that hit. A ball whose centre
+//              is on the line is behind it, as in the placement check (NextShot.headLineX).
 //            - The shooter keeps shooting while they legally pocket the ball they called in the pocket they called.
 //              Any other ball that drops stays down, but does not keep the turn.
 //            - The game is won by legally pocketing the 8 in the called pocket once the group is gone, and lost by
@@ -45,6 +53,27 @@ public struct EightBallRules: MatchRules {
     /// How many object balls must reach a rail for a break that pockets nothing to be legal.
     public static let breakRailCount = 4
 
+    /// The head line's distance from the head rail as a share of the table's length. A restatement on purpose:
+    /// NextShot.headLineX (BreakdownPhysics) owns this line for the placement drag and the rack, but this module may
+    /// not import the physics module (Package.swift layers it beside Physics, on Timeline only). If the head line ever
+    /// moves there, this must move with it; EightBallRulesTests pins the two together on the standard table.
+    public static let headLineShare = 0.25
+
+    /// The head line on the recorded table, metres from the head rail.
+    public static func headLineX(tableLength: Double) -> Double { tableLength * headLineShare }
+
+    /// True when the shot broke the behind-the-line rule: the cue ball never got past the head line before its first
+    /// contact, and the ball it touched first started behind the line (on the line counts as behind, as in the
+    /// placement check). A tie inside ShotFacts.sameInstant is counted for the shooter, the way firstContact(preferring:)
+    /// counts a legal ball: it is a foul only when every ball touched at that instant started behind the line.
+    /// Read only when the shooter had ball in hand behind the head line.
+    static func hitBehindHeadLine(_ facts: ShotFacts) -> Bool {
+        guard let reach = facts.cueBallFarthestBeforeContact, !facts.firstContactStarts.isEmpty else { return false }
+        let line = headLineX(tableLength: facts.tableLength)
+        if reach > line { return false }
+        return facts.firstContactStarts.allSatisfy { ShotFacts.isOnTable($0) && $0.x <= line }
+    }
+
     // MARK: Which balls are legal
 
     /// The balls the shooter must hit first, and may call: their group's balls still on the table; the 8 once those
@@ -72,12 +101,15 @@ public struct EightBallRules: MatchRules {
     }
 
     /// The fouls an ordinary shot can make, in MatchFoul's order. A tie for the first contact counts the legal ball.
-    func shotFouls(_ facts: ShotFacts, legal: Set<Int>) -> [MatchFoul] {
+    /// `ballInHand` is the hand the shooter had for this shot (MatchState.ballInHand before it is applied): behind the
+    /// head line it adds the behind-the-line check.
+    func shotFouls(_ facts: ShotFacts, legal: Set<Int>, ballInHand: BallInHand = .none) -> [MatchFoul] {
         var found = Set<MatchFoul>()
         if facts.cueBallScratched { found.insert(.scratch) }
         if let first = facts.firstContact(preferring: legal) {
             if !legal.contains(first.ball) { found.insert(.wrongBallFirst) }
             if !facts.railOrPocketAfterContact { found.insert(.noRailAfterContact) }
+            if ballInHand == .behindHeadLine, Self.hitBehindHeadLine(facts) { found.insert(.cueBallBehindHeadLine) }
         } else {
             found.insert(.noBallHit)
         }
@@ -122,7 +154,7 @@ public struct EightBallRules: MatchRules {
     private func shotRuling(_ facts: ShotFacts, call: EightBallCall?, in state: MatchState) -> Ruling {
         let shooter = state.turn, opponent = other(state)
         let legal = legalBalls(in: state)
-        let fouls = shotFouls(facts, legal: legal)
+        let fouls = shotFouls(facts, legal: legal, ballInHand: state.ballInHand)
         let open: [RulingReason] = state.tableOpen ? [.tableOpen] : []
 
         // The 8 first: a loss ends the game whatever else happened; otherwise an 8 that dropped is the win.
