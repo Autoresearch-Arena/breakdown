@@ -1,5 +1,12 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream card, plans/22-Nov-2026-v076-phone-plan.md, bugs #10,
+//          #11, #36, #45, #50: the phone's bottom stack is the explanation's fixed room, the scrolling cards, Your shot
+//          and the playback row, with the room, Your shot and the playback row pinned and measured, so the cards get
+//          the share less their real heights and Shoot is never below the fold; Your shot waits closed while a newly
+//          struck shot rolls and comes back when the balls stop. Sideways, the playback row is always pinned under the
+//          column, the explanation leads the column during a guided Lens replay, the column scrolls to Your shot when
+//          it opens, and the caption card tells the leader only the part of it the column shows.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: the playback row is pinned under the phone's
 //          scrolling cards, and the match card goes slim whenever the Lens is on in a match).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: lensReplayCompact is false while the opening
@@ -138,6 +145,17 @@ struct ShowpieceView: View {
     /// card with its own button); it opens again when that reason goes (0.7.5 layouts items 13 and L-B). One flag for
     /// both reasons, so a replay and a card that overlap cannot reopen or forget the panel twice.
     @State private var panelWaiting = false
+    /// A shot struck after the opening is rolling (0.7.6, #45): set when a new recording starts playing on the ordinary
+    /// table, cleared when the balls stop. Your shot waits closed meanwhile (its controls cannot be used until then),
+    /// so the rolling balls get the room. Set from the new recording only, so a scrub or a replay never shuts the panel.
+    @State private var shotRolling = false
+    /// Measured on a phone held upright (0.7.6, #10, #36): the playback row's frame (StageSpace), the explanation room's
+    /// height and Your shot's height, all pinned outside the scrolling cards, so the cards get what is really left.
+    @State private var playbackFrame: CGRect = .zero
+    @State private var stripHeight: CGFloat = 0
+    @State private var shotPanelHeight: CGFloat = 0
+    /// The side column's visible scroll area (StageSpace), so the caption card there reports only what is on screen.
+    @State private var columnViewport: CGRect = .zero
 
     var body: some View {
         GeometryReader { geo in
@@ -161,9 +179,10 @@ struct ShowpieceView: View {
             // The side column beside the table with no notebook (a phone turned sideways, a small window): the menu is
             // laid over the whole window there, not only over the table (0.7.5 layouts item 2).
             let menuOverWindow = split && division == nil
-            // Your shot waits closed on a phone held upright while a guided Lens replay plays (item 13) or a match
-            // card with its own button is up (L-B); see panelWaiting.
-            let panelWaits = !wide && division == nil && (Self.lensReplayCompact(model, size: geo.size) || matchCardWaits)
+            // Your shot waits closed on a phone held upright while a guided Lens replay plays (item 13), a match
+            // card with its own button is up (L-B), or a newly struck shot rolls (0.7.6, #45); see panelWaiting.
+            let panelWaits = !wide && division == nil
+                && (Self.lensReplayCompact(model, size: geo.size) || matchCardWaits || shotRolling)
             ZStack {
                 palette.ground.ignoresSafeArea()
                 // One container for every layout, so the table keeps its identity (and its built 3D scene) when the
@@ -227,6 +246,13 @@ struct ShowpieceView: View {
                     showShotPanel = true
                 }
             }
+            // #45: a new recording that starts rolling on the ordinary table after the opening (the player's shot, the
+            // computer's, a re-solve on another surface) makes Your shot wait; the balls stopping lets it back. The first
+            // minute and anything behind the menu are left exactly as they were.
+            .onChange(of: model.timelineVersion) { _, _ in
+                shotRolling = model.openingStage == .none && !model.menuOpen && model.stage == .explore && !model.aimReady
+            }
+            .onChange(of: model.aimReady) { _, ready in if ready { shotRolling = false } }
             .onChange(of: showShotPanel) { _, open in
                 guard open else { return }
                 if panelWaits {
@@ -424,23 +450,28 @@ struct ShowpieceView: View {
         // half of a landscape window and the phone's share of a portrait one.
         let squarish = geo.size.width / max(1, geo.size.height) > 0.65
         let share: CGFloat = wideWindow ? (geo.size.width > geo.size.height ? 0.45 : 0.62) : (squarish ? 0.74 : 0.62)
-        // The playback row (play, scrub, speed; Lens, Ride, Your shot) is pinned under the scrolling cards, never
-        // inside them: tall cards scrolled it off the bottom of a phone, which left no way to turn the Lens off
-        // (0.7.5 coordinator). The cards get the share less the row's own height.
+        // Phone held upright: the explanation's room, right under the table. Not gated on the menu: the whole stack is
+        // already hidden while the menu is up, and keeping it measured stops the table jumping behind the menu.
+        let showStrip = !wide && model.lensOn && explanations
+        let showPanel = showShotPanel && !wide
+        // Pinned outside the scrolling cards, each measured (0.7.6, #10, #36): the explanation's room, Your shot and the
+        // playback row (play, scrub, speed; Lens, Ride, Your shot), which in long languages or at large text sizes is two
+        // rows or a stack, not the one row the old fixed allowance assumed. The cards get the share less what these
+        // really take, with a floor so a card is never squeezed to nothing (it scrolls in that floor instead).
+        let playback = playbackFrame.height > 0 ? playbackFrame.height + 10 : Self.playbackRowAllowance
+        let pinned = playback + (showStrip ? stripHeight + 10 : 0) + (showPanel ? shotPanelHeight + 10 : 0)
+        let cardsCap = max(geo.size.height * Self.cardsFloorShare, geo.size.height * share - pinned)
         return VStack(spacing: 10) {
-        FittingScroll(maxHeight: max(0, geo.size.height * share - Self.playbackRowAllowance)) {
+        if showStrip {
+            // Its room is fixed (see CaptionStrip): the table moves once when the Lens comes up and never between
+            // captions, and nothing in it grows over the table. A lower cap on a big window, where the room's lines are
+            // short anyway; at large text sizes the words page and scroll inside the cap.
+            CaptionStrip(model: model, leader: leader, maxHeight: geo.size.height * (wideWindow ? 0.2 : 0.28))
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { stripHeight = $0 }
+                .transition(.opacity)
+        }
+        FittingScroll(maxHeight: cardsCap) {
             VStack(spacing: 10) {
-                // Phone held upright: the explanation, first in the stack, right under the table (0.7.5 coordinator: a long
-                // caption grows upward, and lower in the stack it grew over Shoot and the cards' buttons; here it can only
-                // grow over the near rail), measured with the controls, so nothing covers the table. Its height is
-                // reserved (see CaptionStrip), so the table moves once when the Lens comes up and never between captions. Not gated on the menu: the whole stack is already hidden while
-                // the menu is up, and keeping it measured stops the table jumping behind the menu.
-                if !wide && model.lensOn && explanations {
-                    // A lower cap on a big window: the strip's three reserved lines are short there anyway, and at large
-                    // text sizes it scrolls inside the cap rather than taking a third of the window from the table.
-                    CaptionStrip(model: model, maxHeight: geo.size.height * (wideWindow ? 0.2 : 0.28))
-                        .transition(.opacity)
-                }
                 // The what-if card first: while it shows, the result cards below step aside (0.7.5).
                 if !wide { WhatIfCard(model: model) }
                 if !wide { ComparisonCard(model: model) }
@@ -455,13 +486,21 @@ struct ShowpieceView: View {
                 if !wide { StrokeCards(model: model) }
                 // What See the contact stopped on (RetryWords).
                 if !wide { ContactArrivalLine(model: model) }
-                if showShotPanel && !wide {
-                    ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
-                        .transition(.opacity)
-                }
             }
         }
+        // Your shot between the cards and the playback row, never inside the scroll, so Shoot is always on screen
+        // however tall the match or trick card above it is (#36).
+        if showPanel {
+            ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { shotPanelHeight = $0 }
+                .transition(.opacity)
+        }
         PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
+            // Its real frame: the height for the cards' cap above. Its top (StageSpace) is where the third Lens tip's
+            // bubble should sit (stream pacing reads it once the model carries it; see the 0.7.6 hand-off).
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
+                if playbackFrame != frame { playbackFrame = frame }
+            }
         }
         // Phone held upright, guided Lens replay: the mode cards show their slim form (heading and main button) so the
         // table keeps its height while the replay plays (B3, item 13).
@@ -475,13 +514,12 @@ struct ShowpieceView: View {
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
     }
 
-    /// True on a phone held upright (not ScreenLayout.isWide) while a guided Lens replay plays: the Lens is up, guided
-    /// pacing drives the clock, and the balls have not stopped. The bottom stack hands it to the cards as
-    /// lensReplayCompact, and Your shot waits closed while it holds (0.7.5 layouts item 13). Never while the opening
-    /// runs: its slow replay is guided too, but the first minute keeps its cards and Your shot exactly as they were
-    /// (an opening request for Your shot must open it, not wait), so only a replay after the opening counts.
-    /// The height the pinned playback row takes on a phone (two rows of buttons and the gap above them).
+    /// The height the pinned playback row takes on a phone (two rows of buttons and the gap above them), used only until
+    /// the row's real height is measured (0.7.6).
     static let playbackRowAllowance: CGFloat = 124
+    /// The least share of the screen's height the scrolling cards keep on a phone held upright, however much the pinned
+    /// pieces take at the largest text sizes, so a card is never squeezed to nothing (0.7.6).
+    static let cardsFloorShare: CGFloat = 0.12
 
     /// The cards' slim form on a phone held upright: during a guided Lens replay (lensReplayCompact), and whenever the
     /// Lens is on in a match, where the match card's instruction, score and ruling otherwise shrink the Lens table to a
@@ -492,6 +530,11 @@ struct ShowpieceView: View {
             || (!ScreenLayout.isWide(size) && model.openingStage == .none && model.lensOn && model.match != nil)
     }
 
+    /// True on a phone held upright (not ScreenLayout.isWide) while a guided Lens replay plays: the Lens is up, guided
+    /// pacing drives the clock, and the balls have not stopped. The bottom stack hands it to the cards as
+    /// lensReplayCompact, and Your shot waits closed while it holds (0.7.5 layouts item 13). Never while the opening
+    /// runs: its slow replay is guided too, but the first minute keeps its cards and Your shot exactly as they were
+    /// (an opening request for Your shot must open it, not wait), so only a replay after the opening counts.
     static func lensReplayCompact(_ model: ShowpieceModel, size: CGSize) -> Bool {
         !ScreenLayout.isWide(size) && model.openingStage == .none && model.lensOn && model.guided && !model.aimReady
     }
@@ -534,33 +577,68 @@ struct ShowpieceView: View {
 
     /// `width` is nil when the column spans the screen (under the table on a folding phone propped like a laptop);
     /// `divider` is the edge that meets the table and gets the hairline.
+    /// The two movable parts of the side column, in a ForEach so swapping their order moves them rather than rebuilding
+    /// them (the caption card keeps its identity, so the leader's card frame is never cleared by a stale disappear);
+    /// and the id the column scrolls to when Your shot opens.
+    private enum ColumnPart: Hashable { case cards, caption, shotPanel }
+
     private func sideColumn(geo: GeometryProxy, controlsInColumn: Bool, width: CGFloat?, divider: Edge) -> some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(spacing: 12) {
-                    WhatIfCard(model: model)
-                    ComparisonCard(model: model)
-                    OpeningCard(model: model)
-                    // Trick shots: the shot's card at the top of the column.
-                    TrickShotCard(model: model)
-                    LessonCard(model: model)
-                    EightBallCard(model: model)
-                    PlayCards(model: model)
-                    StrokeCards(model: model)
-                    ContactArrivalLine(model: model)
-                    CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
-                    if showShotPanel {
-                        ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
-                            .transition(.opacity)
-                        // With the panel open there is no room to pin the controls too, so they scroll with it.
-                        if controlsInColumn { PlaybackControls(model: model, shotPanelOpen: $showShotPanel) }
+        // While a guided Lens replay plays (after the opening, which keeps its column as it was) the explanation and its
+        // Continue lead the column: below a tall trick or what-if card they were out of sight while the replay held and
+        // moved on (#11).
+        let captionFirst = model.openingStage == .none && model.lensOn && model.guided
+        let order: [ColumnPart] = captionFirst ? [.caption, .cards] : [.cards, .caption]
+        return VStack(spacing: 0) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: 12) {
+                        ForEach(order, id: \.self) { part in
+                            switch part {
+                            case .caption:
+                                CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude,
+                                            viewport: columnViewport)
+                            default:
+                                // A Group, so each card is its own child of the column's stack, spaced as before.
+                                Group {
+                                    WhatIfCard(model: model)
+                                    ComparisonCard(model: model)
+                                    OpeningCard(model: model)
+                                    // Trick shots: the shot's card at the top of the column.
+                                    TrickShotCard(model: model)
+                                    LessonCard(model: model)
+                                    EightBallCard(model: model)
+                                    PlayCards(model: model)
+                                    StrokeCards(model: model)
+                                    ContactArrivalLine(model: model)
+                                }
+                            }
+                        }
+                        if showShotPanel {
+                            ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+                                .id(ColumnPart.shotPanel)
+                                .transition(.opacity)
+                                // Opened below the cards, out of sight in a short column: the column brings it into
+                                // view (#50).
+                                .onAppear {
+                                    withAnimation(reduceMotion ? nil : .snappy) {
+                                        proxy.scrollTo(ColumnPart.shotPanel, anchor: .bottom)
+                                    }
+                                }
+                        }
                     }
+                    .padding(16)
+                    .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
+                    .animation(reduceMotion ? nil : .snappy, value: captionFirst)
                 }
-                .padding(16)
-                .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
+                .scrollBounceBehavior(.basedOnSize)
+                // The column's visible area, so the caption card reports only what of it is on screen (#11).
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
+                    if columnViewport != frame { columnViewport = frame }
+                }
             }
-            .scrollBounceBehavior(.basedOnSize)
-            if controlsInColumn && !showShotPanel {
+            // The playback row is always pinned under the column, Your shot open or not: inside the scroll it slid
+            // below the bottom of a short column, with Lens, Ride and the scrub bar out of reach (#50).
+            if controlsInColumn {
                 PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 12)

@@ -1,5 +1,15 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream card, plans/22-Nov-2026-v076-phone-plan.md, bugs #1, #2,
+//          #3, #8, #9, #11, #59, #60: the phone's CaptionStrip is a fixed room (equation line when the replay has
+//          headline beats or Show the maths is on, the title line with Continue at its end, four detail lines, capped)
+//          that nothing inside may overflow; a caption longer than the room is split into pages at sentence ends,
+//          reported to the model (setHoldPages) and turned by Continue or small page dots; Continue keeps its room for
+//          the whole guided replay; the worked equation is decided by the caption, one line, shrinking to fit; the strip
+//          reports its glass to leader.card. The ring and title chip: a Throw caption marks the thrown ball, the chip is
+//          kept above the card, never on the ring (above or below it when neither side fits) and capped to the stage's
+//          width on two lines. CaptionArea reports only the part of its card the side column shows. displayedCaption
+//          keeps the caption's sentences. One new phrase, the page dots' spoken "Page %lld of %lld".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 4 and 12, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          ContinueButton is internal, so the notebook shows it for a held moment too; LeaderState.stageRect, the
 //          table's own frame, bounds the on-table caption chip, so on the open Duo the chip stays on the table half.)
@@ -120,10 +130,24 @@ extension ShowpieceModel {
         guard let c = activeCaption() else { return nil }
         guard timeline.events.indices.contains(c.id), timeline.events[c.id].kind == .cueStrike,
               let stroke = LensStroke.onScreen(self) else { return c }
+        let sentence = CaptionEngine.strokeSentence(aimError: stroke.aimError)
+        // The sentences carry over with the stroke's own added as the last one (0.7.6): without them the phone card
+        // could not page the strike caption, the one most often too long for its room.
         return Caption(id: c.id, time: c.time, title: c.title,
-                       detail: c.detail + " " + CaptionEngine.strokeSentence(aimError: stroke.aimError),
-                       equation: c.equation, accent: c.accent, importance: c.importance, worked: c.worked)
+                       detail: c.detail + " " + sentence,
+                       equation: c.equation, accent: c.accent, importance: c.importance, worked: c.worked,
+                       sentences: (c.sentences.isEmpty ? [c.detail] : c.sentences) + [sentence])
     }
+
+    /// True when `caption` is the caption of one of this replay's headline beats (0.7.6, #60): its worked equation shows
+    /// whether or not the hold is still on, so the equation line never drops out of a caption still on screen.
+    func isHeadline(_ caption: Caption) -> Bool {
+        holdingHeadline || pacePlan.beats.contains { $0.headline && $0.caption.id == caption.id }
+    }
+
+    /// The replay on screen has a headline beat: the phone's strip keeps the equation's line for the whole replay, so
+    /// its room does not change from caption to caption.
+    var hasHeadlineBeats: Bool { pacePlan.beats.contains { $0.headline } }
 }
 
 // MARK: Card
@@ -137,9 +161,9 @@ private struct CaptionContent: View {
     /// Reserved shape: every line keeps its room even when empty or short, so the strip's height never changes from
     /// caption to caption (the camera frames the table above the strip, so a height change would make the table jump).
     var reserved = false
-    /// A headline beat of the opening is held (model.holdingHeadline): the equation shows with its numbers even with
-    /// Show the maths off. (The strip reserves the equation's line only with Show the maths on, so on such a beat a
-    /// longer card grows upward over the rails, as any long caption does, instead of moving the table.)
+    /// The caption is a headline beat's (model.isHeadline): the equation shows with its numbers even with Show the
+    /// maths off. (The phone's strip lays its own lines out since 0.7.6; this view is the side column's and the
+    /// notebook-free card's.)
     var headline = false
     @AppStorage(GameSettings.mathsKey) private var maths = false
 
@@ -177,9 +201,18 @@ private extension View {
 
     /// The caption card's glass and accent bar, shared by the side-column card and the strip under the table.
     func captionGlass(accent: Color, palette: Palette) -> some View {
+        captionGlassPadding().captionGlassSurface(accent: accent)
+    }
+
+    /// The card's inner padding alone (the accent bar's room on the leading side), so the strip's hidden sizer and
+    /// layout twin measure exactly the room the real card's words get (0.7.6).
+    func captionGlassPadding() -> some View {
+        self.padding(.leading, 4).padding(CaptionCard.padding)
+    }
+
+    /// The card's glass and accent bar alone, without the padding.
+    func captionGlassSurface(accent: Color) -> some View {
         self
-            .padding(.leading, 4)
-            .padding(CaptionCard.padding)
             // Plain system Liquid Glass, untinted, like every other panel in the app (the Boss: "all of it should be
             // liquid glass, Apple native"). The card now sits below the table, not over the Lens grid, so the system's
             // own glass keeps the words readable; Reduce Transparency still turns it solid.
@@ -248,20 +281,43 @@ struct CaptionArea: View {
     let leader: LeaderState
     /// The most height the card may take before it scrolls (large text sizes).
     let maxHeight: CGFloat
+    /// The part of the screen the side column's scroll area shows (StageSpace), or zero outside a scroll area. The card
+    /// the leader is told about is only the part of it inside this, so a card scrolled out of sight neither hides rings
+    /// nor draws a line off the edge of the column (0.7.6, #11).
+    var viewport: CGRect = .zero
 
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
+    /// The card's whole frame (StageSpace), as last laid out.
+    @State private var cardFrame: CGRect = .zero
+
+    // While the Lens tips are up the card stands back, so the tips are the one thing to read (item 53).
+    private var current: Caption? { model.holdForTips ? nil : model.displayedCaption() }
+    private var showing: Bool { explanations && !model.menuOpen && model.lensOn && current != nil }
+
+    /// Tells the leader where the visible part of the card is (nothing when it is scrolled away or not showing).
+    private func publish() {
+        guard showing, !cardFrame.isEmpty else { return }
+        let visible = viewport.isEmpty ? cardFrame : cardFrame.intersection(viewport)
+        let card = visible.isNull || visible.height < 1 ? .zero : visible
+        if leader.card != card { leader.card = card }
+    }
 
     var body: some View {
-        // While the Lens tips are up the card stands back, so the tips are the one thing to read (item 53).
-        let current = model.holdForTips ? nil : model.displayedCaption()
+        // Read once per body: the caption is worked out from the clock.
+        let current = self.current
         let showing = explanations && !model.menuOpen && model.lensOn && current != nil
         // A ZStack rather than a Group so the view (and the onChange below) exists even when no card shows.
         ZStack(alignment: .top) {
             if showing, let caption = current {
                 VStack(alignment: .trailing, spacing: 8) {
                     FittingScroll(maxHeight: maxHeight) {
-                        CaptionCard(caption: caption, headline: model.holdingHeadline)
-                            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { leader.card = $0 }
+                        // The equation is decided by the caption, not by the hold, so it does not drop out of a caption
+                        // still on screen when the hold ends (#60).
+                        CaptionCard(caption: caption, headline: model.isHeadline(caption))
+                            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: {
+                                cardFrame = $0
+                                publish()
+                            }
                     }
                     if model.holding { ContinueButton(model: model).transition(.opacity) }
                 }
@@ -274,77 +330,455 @@ struct CaptionArea: View {
         // With no card on screen the leader must not keep the last card's place: CaptionLeader hides the ring for any
         // ball inside that rectangle, so a stale one (explanations switched off, say) would swallow rings near the top.
         .onChange(of: showing) { _, now in if !now { leader.card = .zero } }
+        // The column scrolled or resized: the visible part of the card changed even if the card did not move in it.
+        .onChange(of: viewport) { _, _ in publish() }
         // Turning the device to the upright layout removes this view without the onChange above firing.
         .onDisappear { leader.card = .zero }
     }
 }
 
-/// Phone held upright: the explanation in a strip of FIXED height directly above the playback controls, so it never
-/// covers the table. ShowpieceView puts it inside the measured bottom stack, so the camera frames the table above it;
-/// because its height is reserved (title one line, detail four lines, equation one line with Show the maths on) the
-/// table moves once when the Lens comes up and never again from caption to caption. Between captions the last one
-/// stays (guided pacing keeps a caption until the next beat anyway); before the first one the card is blank. At the
-/// accessibility text sizes a long detail scrolls inside the same height instead of growing it.
-/// Deliberately does NOT write leader.card: the card is far below the table, and the leader draws no line to it here.
+// MARK: Pages of a long caption (0.7.6)
+
+/// How a caption is cut into pages for the phone's fixed room: whole sentences, packed greedily. Pure text work; the
+/// heights come from hidden copies the strip measures (CaptionStrip), so every language and text size is measured, not
+/// guessed.
+enum CaptionPaging {
+    /// The most sentences measured together as one page. A page of more than this many is never formed (the room holds
+    /// four lines; eight sentences would be under half a line each).
+    static let maxSpan = 8
+
+    /// The caption's sentences, each with the space that followed it, so the chunks put back together are exactly the
+    /// detail. Caption.sentences are the whole translated pieces the detail was joined from; a piece that holds two
+    /// sentences ("... m/s. Its momentum is ...") is cut again at its sentence ends, so a page can end between them.
+    static func chunks(of caption: Caption) -> [String] {
+        let pieces = caption.sentences.isEmpty ? [caption.detail] : caption.sentences
+        var out: [String] = []
+        for (k, piece) in pieces.enumerated() {
+            var parts = splitSentences(piece)
+            // The detail joins its pieces with one space: it goes on the end of the piece's last sentence.
+            if k < pieces.count - 1, !parts.isEmpty { parts[parts.count - 1] += " " }
+            out += parts
+        }
+        return out
+    }
+
+    /// Sentence ends followed by a space ("." "!" "?", the Arabic question mark, the danda), and the full-width ones that
+    /// need no space after them (Chinese and Japanese).
+    private static let ends: Set<Character> = [".", "!", "?", "؟", "।"]
+    private static let wideEnds: Set<Character> = ["。", "！", "？"]
+
+    /// `s` cut after each sentence end, each part keeping the spaces after it, so the parts joined are `s` again. A
+    /// point inside a number ("2.4") has no space after it and is not an end; a point followed by a lower-case word is
+    /// an abbreviation carrying on, not an end.
+    static func splitSentences(_ s: String) -> [String] {
+        let chars = Array(s)
+        var out: [String] = []
+        var current = ""
+        var i = 0
+        while i < chars.count {
+            let c = chars[i]
+            current.append(c)
+            i += 1
+            if wideEnds.contains(c) {
+                while i < chars.count, chars[i].isWhitespace { current.append(chars[i]); i += 1 }
+                if i < chars.count { out.append(current); current = "" }
+            } else if ends.contains(c), i < chars.count, chars[i].isWhitespace {
+                var j = i
+                while j < chars.count, chars[j].isWhitespace { j += 1 }
+                if j < chars.count, !chars[j].isLowercase {
+                    current.append(contentsOf: chars[i..<j])
+                    i = j
+                    out.append(current)
+                    current = ""
+                }
+            }
+        }
+        if !current.isEmpty { out.append(current) }
+        return out
+    }
+
+    /// The words of chunks `r`, as one paragraph, without the trailing space.
+    static func text(_ chunks: [String], _ r: Range<Int>) -> String {
+        var s = chunks[r].joined()
+        while let last = s.last, last.isWhitespace { s.removeLast() }
+        return s
+    }
+
+    /// How much reading a page holds, for sharing the hold's reading time between pages: its word count, or its
+    /// characters over six where words are not separated by spaces (Chinese, Japanese), whichever is more.
+    static func weight(_ text: String) -> Double {
+        let words = Double(text.split(whereSeparator: \.isWhitespace).count)
+        return max(words, Double(text.count) / 6)
+    }
+
+    /// Every run of two to maxSpan chunks: the ones whose height decides where a page ends.
+    static func spans(count n: Int) -> [Range<Int>] {
+        var out: [Range<Int>] = []
+        for s in 0..<max(0, n) {
+            var e = s + 2
+            while e <= min(n, s + maxSpan) { out.append(s..<e); e += 1 }
+        }
+        return out
+    }
+
+    /// Pages packed greedily: each page takes the next sentence, then as many more as still fit `room` points high.
+    /// A single sentence taller than the room is a page of its own (it scrolls inside the room). Nil while a height it
+    /// needs is not measured yet, so a half-measured caption is never reported as pages.
+    static func pages(count n: Int, room: CGFloat, height: (Range<Int>) -> CGFloat?) -> [Range<Int>]? {
+        guard n > 0 else { return nil }
+        var out: [Range<Int>] = []
+        var start = 0
+        while start < n {
+            var end = start + 1
+            while end < n, end - start < maxSpan {
+                guard let h = height(start..<(end + 1)) else { return nil }
+                if h > room + 0.5 { break }
+                end += 1
+            }
+            out.append(start..<end)
+            start = end
+        }
+        return out
+    }
+}
+
+/// The hidden copies the strip measures its pages with: every run of sentences that could be one page, laid out as the
+/// page would be (same font, same width), each reporting its height (written only when it changes). Their words and
+/// width stay the same while a caption is up, so SwiftUI keeps their layout from frame to frame.
+private struct SpanMeasurer: View {
+    let texts: [String]
+    let width: CGFloat
+    @Binding var heights: [String: CGFloat]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(texts, id: \.self) { t in
+                Text(verbatim: t)
+                    .font(Theme.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(width: width, alignment: .leading)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { h in
+                        if heights[t] != h { heights[t] = h }
+                    }
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .hidden()
+        .accessibilityHidden(true)
+    }
+}
+
+/// Small dots beside the caption's title, one per page, the current one in the caption's colour. Each is a button that
+/// shows its page (VoiceOver: "Page 2 of 3"). Always the same width, so the title beside them never re-wraps.
+private struct PageDots: View {
+    let count: Int
+    let page: Int
+    let accent: Color
+    let onPage: (Int) -> Void
+    @Environment(\.palette) private var palette
+
+    /// The room the dots keep on the title line whenever the caption could have pages.
+    static let width: CGFloat = 48
+
+    var body: some View {
+        HStack(spacing: 0) {
+            if count > 1 {
+                ForEach(0..<count, id: \.self) { i in
+                    Button { onPage(i) } label: {
+                        Circle()
+                            .fill(i == page ? accent : palette.paper.opacity(0.35))
+                            .frame(width: 6, height: 6)
+                            // The touch area is the dot's share of the row, as tall as the title line.
+                            .frame(width: Self.width / CGFloat(max(count, 3)), height: 30)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Page \(i + 1) of \(count)"))
+                    .accessibilityAddTraits(i == page ? .isSelected : [])
+                }
+            }
+        }
+        .frame(width: Self.width)
+    }
+}
+
+/// The strip's title line: the caption's title (up to two lines), the page dots' room when the caption could have
+/// pages, and Continue at the trailing end. Shared by the real card, its hidden layout twin and the sizer, so all three
+/// lay the line out identically.
+private struct StripTitleRow: View {
+    enum ContinueState { case hidden, waiting, live }
+
+    let model: ShowpieceModel
+    let title: String
+    let dotsRoom: Bool
+    var pageCount = 1
+    var page = 0
+    var accent: Color = .clear
+    var onPage: (Int) -> Void = { _ in }
+    /// Continue keeps its room in every state: gone (no guided replay), faded and disabled (guided, not holding), live.
+    let continueState: ContinueState
+    /// What VoiceOver reads for the whole card (title, detail, equation); nil in the hidden copies.
+    var speech: (label: String, value: String)?
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 8) {
+            Text(verbatim: title)
+                .font(Theme.heading)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                // The card is read as one sentence here: the page text and equation are hidden from VoiceOver, so the
+                // whole detail is read whatever page is on screen.
+                .accessibilityLabel(speech?.label ?? title)
+                .accessibilityValue(speech?.value ?? "")
+                .accessibilityAddTraits(.updatesFrequently)
+                .accessibilityHidden(speech == nil)
+            if dotsRoom {
+                PageDots(count: pageCount, page: page, accent: accent, onPage: onPage)
+            }
+            ContinueButton(model: model)
+                .opacity(continueState == .live ? 1 : (continueState == .waiting ? 0.35 : 0))
+                .disabled(continueState != .live)
+                .accessibilityHidden(continueState == .hidden)
+        }
+    }
+}
+
+/// Phone held upright: the explanation in a room of FIXED height directly above the scrolling cards, pinned under the
+/// table (ShowpieceView), so the camera frames the table above it and nothing in it ever covers the table (0.7.6). The
+/// room: the worked-equation line (whenever Show the maths is on or the replay has headline beats), the title line with
+/// Continue at its trailing end, and four lines of detail at the current text size, capped at a share of the screen.
+/// A caption longer than its four lines is split into pages at sentence ends; the model shares the hold's reading time
+/// between the pages, Continue turns them, and small dots beside the title show and pick them. A single sentence taller
+/// than the room scrolls inside it. Between captions the last one stays; before the first the room is blank. While a
+/// guided replay plays the glass fills the room so Continue never moves under the thumb; otherwise it hugs its words
+/// at the bottom of the room. The glass's frame goes to leader.card, so the ring hides under it and the title chip
+/// stays above it (#1).
 struct CaptionStrip: View {
     let model: ShowpieceModel
+    let leader: LeaderState
     /// Cap on the reserved height (the accessibility text sizes would otherwise reserve half the screen).
     let maxHeight: CGFloat
 
     @Environment(\.palette) private var palette
     @AppStorage(GameSettings.mathsKey) private var maths = false
     @State private var shown: Caption?
-    /// Height of the blank reserved lines at the current text size, measured from a hidden copy.
+    /// Height of the blank room at the current text size, measured from a hidden copy (StripSizer).
     @State private var reservedHeight: CGFloat = 0
+    /// The size left for the detail's words in the room with this caption's title line, from the hidden layout twin.
+    @State private var detailRoom: CGSize = .zero
+    /// Measured heights of runs of sentences at the detail's width (SpanMeasurer), keyed by their words.
+    @State private var spanHeights: [String: CGFloat] = [:]
+    /// A page the player picked with a dot while no hold was running, for that caption only.
+    @State private var loose: LoosePage?
+    /// The glass frame this strip last gave the leader, so clearing never wipes a frame another card has written since.
+    @State private var reportedCard: CGRect = .zero
+
+    /// Detail lines in the room at any text size (the cap may take some back at the largest sizes).
+    static let detailLines = 4
+    /// The strip's worked equation: a smaller serif than the side card's, on one line, shrinking to fit (#60).
+    static var equationFont: Font { .system(.callout, design: .serif, weight: .medium).italic() }
+
+    private struct LoosePage: Equatable { let caption: Int; let page: Int }
+    private struct PageReport: Equatable { let caption: Int; let weights: [Double]; let holding: Bool }
+
+    /// One caption cut into pages for the room as it is now.
+    private struct PageLayout {
+        let chunks: [String]
+        /// Nil until every height it needs is measured (or when the caption is one sentence): then the whole detail shows.
+        let pages: [Range<Int>]?
+        /// Every run of sentences the measurer must lay out, each once.
+        let spanTexts: [String]
+        var count: Int { pages?.count ?? 1 }
+        func text(_ i: Int, detail: String) -> String {
+            guard let pages, pages.indices.contains(i) else { return detail }
+            return CaptionPaging.text(chunks, pages[i])
+        }
+        var weights: [Double] {
+            guard let pages else { return [1] }
+            return pages.map { CaptionPaging.weight(CaptionPaging.text(chunks, $0)) }
+        }
+    }
+
+    private func pageLayout(for caption: Caption) -> PageLayout {
+        let chunks = CaptionPaging.chunks(of: caption)
+        guard chunks.count > 1 else { return PageLayout(chunks: chunks, pages: nil, spanTexts: []) }
+        var seen = Set<String>()
+        let spanTexts = CaptionPaging.spans(count: chunks.count).map { CaptionPaging.text(chunks, $0) }
+            .filter { seen.insert($0).inserted }
+        let room = detailRoom.height
+        let pages = room > 0
+            ? CaptionPaging.pages(count: chunks.count, room: room) { spanHeights[CaptionPaging.text(chunks, $0)] }
+            : nil
+        return PageLayout(chunks: chunks, pages: pages, spanTexts: spanTexts)
+    }
+
+    /// The page on screen: the model's while a hold runs with these pages, a page the player picked, the last page once
+    /// a guided hold has let go (so the words do not jump back to the start after Continue), otherwise the first.
+    private func pageIndex(for caption: Caption, count: Int, guided: Bool, holding: Bool) -> Int {
+        guard count > 1 else { return 0 }
+        if holding, model.holdPageCount > 1 { return min(model.holdPage, count - 1) }
+        if let loose, loose.caption == caption.id { return min(loose.page, count - 1) }
+        return guided && !holding ? count - 1 : 0
+    }
+
+    /// A tapped page dot: during a hold the model moves its reading clock to that page; otherwise the strip just shows it.
+    private func turn(to i: Int, caption: Caption) {
+        if model.holding, model.holdPageCount > 1 {
+            model.showHoldPage(i)
+        } else {
+            loose = LoosePage(caption: caption.id, page: i)
+        }
+    }
+
+    private func report(card frame: CGRect) {
+        reportedCard = frame
+        if leader.card != frame { leader.card = frame }
+    }
+
+    private func clearCard() {
+        if leader.card == reportedCard { leader.card = .zero }
+        reportedCard = .zero
+    }
 
     var body: some View {
         // While the Lens tips are up the strip stands back (its room stays reserved, so the table does not move).
         let active = model.lensOn && !model.holdForTips ? model.displayedCaption() : nil
         let caption = model.holdForTips ? nil : (active ?? shown)
-        let headline = model.holdingHeadline
+        // One decision for the equation's line, handed to the sizer, the twin and the card alike, so the room and the
+        // card never disagree (#2, #60): kept for the whole replay when it has headline beats or the maths is on.
+        let reserveEquation = maths || model.hasHeadlineBeats
+        let showsEquation = maths || (caption.map { model.isHeadline($0) } ?? false)
         let accent = palette.color(for: caption?.accent ?? .impact)
-        let height = min(reservedHeight, maxHeight)
-        // The room is reserved (so the camera frames the table above it and the table never jumps between captions),
-        // but the glass is not: the card hugs its words and sits at the bottom of the room, right on the controls, so
-        // a short caption is a short card and nothing is drawn at all before the first one. A caption longer than the
-        // room grows upward over the rails rather than pushing the table. (The Boss: the old fixed card covered the
-        // table and left a lot of empty glass.)
+        let room = min(reservedHeight, maxHeight)
+        let guided = model.guided
+        let holding = model.holding
+        let layout = caption.map { pageLayout(for: $0) }
+        let count = layout?.count ?? 1
+        let index = caption.map { pageIndex(for: $0, count: count, guided: guided, holding: holding) } ?? 0
+        // The dots' room depends only on the caption (more than one sentence), never on how it was paged, so the title's
+        // width and the detail's room cannot change because of the pages they decide.
+        let dotsRoom = (layout?.chunks.count ?? 0) > 1
+        let continueState: StripTitleRow.ContinueState = guided ? (holding ? .live : .waiting) : .hidden
         ZStack(alignment: .bottom) {
             if let caption {
-                HStack(alignment: .bottom, spacing: 8) {
-                    // At the accessibility text sizes a long detail scrolls inside the cap instead of growing.
-                    FittingScroll(maxHeight: maxHeight) {
-                        CaptionContent(caption: caption, accent: accent, headline: headline)
+                ZStack(alignment: .topLeading) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        if reserveEquation {
+                            // A blank line of the same font underneath keeps the line's height when the equation shrinks.
+                            ZStack(alignment: .leading) {
+                                Text(verbatim: " ").font(Self.equationFont).hidden()
+                                Text(verbatim: showsEquation ? CaptionContent.equationLine(caption) : " ")
+                                    .font(Self.equationFont)
+                                    .foregroundStyle(accent)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                            }
+                            .accessibilityHidden(true)
+                        }
+                        StripTitleRow(model: model, title: caption.title, dotsRoom: dotsRoom, pageCount: count,
+                                      page: index, accent: accent, onPage: { turn(to: $0, caption: caption) },
+                                      continueState: continueState,
+                                      speech: (label: "\(caption.title). \(caption.detail)",
+                                               value: showsEquation ? CaptionContent.equationLine(caption) : ""))
+                        // The page's words; a page that is one sentence too tall for the room scrolls inside it.
+                        FittingScroll(maxHeight: detailRoom.height > 0 ? detailRoom.height : .greatestFiniteMagnitude) {
+                            Text(verbatim: layout?.text(index, detail: caption.detail) ?? caption.detail)
+                                .font(Theme.body)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .contentTransition(.opacity)
+                        }
+                        .accessibilityHidden(true)
                     }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("\(caption.title). \(caption.detail)")
-                    .accessibilityValue(maths || headline ? CaptionContent.equationLine(caption) : "")
-                    .accessibilityAddTraits(.updatesFrequently)
-                    if model.holding { ContinueButton(model: model).transition(.opacity) }
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    // A new caption cross-fades inside the same glass.
+                    .id(caption.id)
+                    .transition(.opacity)
                 }
-                .captionGlass(accent: accent, palette: palette)
+                .captionGlassPadding()
+                // Guided: the glass is the whole room, so Continue and the dots stay put from page to page.
+                .frame(height: guided && room > 0 ? room : nil, alignment: .top)
+                .captionGlassSurface(accent: accent)
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { report(card: $0) }
                 .transition(.opacity)
-                .id(caption.id)
             }
         }
-        .frame(maxWidth: .infinity, minHeight: height, maxHeight: height, alignment: .bottom)
-        // The hidden sizer: same fonts and spacing as the real lines plus the card's padding, every line reserved,
-        // never drawn or spoken.
+        .frame(maxWidth: .infinity, minHeight: room, maxHeight: room, alignment: .bottom)
+        // The hidden sizer: the blank room, every line reserved, never drawn or spoken.
         .background(alignment: .bottom) {
-            CaptionContent(caption: nil, accent: accent, reserved: true)
-                .padding(.vertical, CaptionCard.padding)
-                .fixedSize(horizontal: false, vertical: true)
-                .hidden()
-                .accessibilityHidden(true)
+            StripSizer(model: model, reserveEquation: reserveEquation)
                 .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { reservedHeight = $0 }
         }
+        // The hidden layout twin: this caption's equation and title lines in the room, measuring what is left for the
+        // words (a two-line title leaves less).
+        .background(alignment: .bottom) {
+            if let caption {
+                VStack(alignment: .leading, spacing: 3) {
+                    if reserveEquation { Text(verbatim: " ").font(Self.equationFont).lineLimit(1) }
+                    StripTitleRow(model: model, title: caption.title, dotsRoom: dotsRoom, continueState: .hidden)
+                    Color.clear
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onGeometryChange(for: CGSize.self) { $0.size } action: { detailRoom = $0 }
+                }
+                .captionGlassPadding()
+                .frame(height: room)
+                .hidden()
+                .accessibilityHidden(true)
+            }
+        }
+        // The hidden copies the pages are measured with.
+        .background(alignment: .topLeading) {
+            if let layout, !layout.spanTexts.isEmpty, detailRoom.width > 0 {
+                SpanMeasurer(texts: layout.spanTexts, width: detailRoom.width, heights: $spanHeights)
+            }
+        }
         .animation(.smooth(duration: 0.3), value: caption?.id)
-        .animation(.smooth(duration: 0.25), value: model.holding)
+        .animation(.smooth(duration: 0.25), value: holding)
+        .animation(.smooth(duration: 0.25), value: guided)
+        .animation(.easeOut(duration: 0.2), value: index)
+        // The model learns how the caption was split (one weight per page), again whenever a hold starts on it, so the
+        // hold's reading time is shared out between its pages and Continue turns them. Never from the body itself.
+        .onChange(of: caption.map { PageReport(caption: $0.id, weights: layout?.weights ?? [1], holding: holding) },
+                  initial: true) { _, pages in
+            if let pages { model.setHoldPages(caption: pages.caption, weights: pages.weights) }
+        }
+        .onChange(of: caption?.id) { _, _ in
+            loose = nil
+            // Keep only the current caption's measurements once they pile up over many shots.
+            if spanHeights.count > 200 {
+                let keep = Set(layout?.spanTexts ?? [])
+                spanHeights = spanHeights.filter { keep.contains($0.key) }
+            }
+        }
+        .onChange(of: holding) { _, _ in loose = nil }
+        .onChange(of: caption == nil) { _, none in if none { clearCard() } }
+        .onDisappear { clearCard() }
         // Remember the newest caption so it stays up between beats instead of leaving a blank card.
         .onChange(of: active?.id) { _, _ in
             if model.lensOn, let now = model.displayedCaption() { shown = now }
         }
         .onAppear { if model.lensOn { shown = model.displayedCaption() } }
+    }
+}
+
+/// The strip's blank room at the current text size: the equation line when it is reserved, the title line with
+/// Continue's room, and CaptionStrip.detailLines lines of detail, plus the card's padding. Hidden and never spoken.
+private struct StripSizer: View {
+    let model: ShowpieceModel
+    let reserveEquation: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            if reserveEquation { Text(verbatim: " ").font(CaptionStrip.equationFont).lineLimit(1) }
+            StripTitleRow(model: model, title: " ", dotsRoom: false, continueState: .hidden)
+            Text(verbatim: " ")
+                .font(Theme.body)
+                .lineLimit(CaptionStrip.detailLines, reservesSpace: true)
+        }
+        .captionGlassPadding()
+        .fixedSize(horizontal: false, vertical: true)
+        .hidden()
+        .accessibilityHidden(true)
     }
 }
 
@@ -483,8 +917,11 @@ final class LeaderState {
         guard timeline.events.indices.contains(caption.id) else { return nil }
         let event = timeline.events[caption.id]
         let frame = TableFrame(timeline.table)
-        // For a collision, follow the faster ball: that is the one the caption's words are about.
-        let ball = event.balls.max { $0.velocityBefore.length < $1.velocityBefore.length }?.ball
+        // For a collision, follow the faster ball: that is the one the caption's words are about. Except a Throw caption
+        // (CaptionEngine gives one exactly when throwFacts finds a throw): its words are about the ball that was at rest
+        // and was dragged off the line of centres, so the ring and title go on that one (#8).
+        let ball = CaptionEngine.throwFacts(event)?.object
+            ?? event.balls.max { $0.velocityBefore.length < $1.velocityBefore.length }?.ball
         if event.kind != .pocket, let ball, ball < timeline.ballCount {
             let s = timeline.state(ball: ball, at: model.time)
             // At the ball's centre wherever it is: a flying ball's ring rides with it, not on the dot under it.
@@ -506,6 +943,8 @@ struct CaptionLeader: View {
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     /// The chip's measured size, for keeping it on screen.
     @State private var chipSize: CGSize = .zero
+    /// The chip title's width on one line, measured from a hidden copy, so the chip is only as wide as its words.
+    @State private var titleWidth: CGFloat = 0
 
     private let ringRadius: CGFloat = 20
     /// Gap between the ring and the chip, and the least distance the chip keeps from the screen's edges.
@@ -519,26 +958,50 @@ struct CaptionLeader: View {
         return ring
     }
 
-    /// Where the chip's centre goes: to the right of the ring, flipped to the left when that would leave the table
-    /// or land on the card, then clamped so it is always fully visible on the table. Vertically centred on the ball.
-    /// "The table" is the stage's frame (leader.stageRect): the whole screen on a phone, the table half on the open Duo
+    /// "The table": the stage's frame (leader.stageRect), the whole screen on a phone, the table half on the open Duo
     /// and beside the notebook, so the chip never sits on the words; before it is measured, the whole overlay.
+    private func stageBounds(_ size: CGSize) -> CGRect {
+        leader.stageRect.isEmpty ? CGRect(origin: .zero, size: size) : leader.stageRect
+    }
+
+    /// Where the chip's centre goes (0.7.6, #1 and #59): to the right of the ring, else to its left, else above it, else
+    /// below it, whichever first lies wholly on the table, under the title row, above a card that runs across the
+    /// table below the ring (the phone's strip), clear of the card and clear of the ring itself. Beside the ring it is
+    /// level with the ball, moved up or down only as far as the limits ask. If nothing fits (a tiny stage), the place
+    /// that covers the least of the ring, held inside the limits. Never on top of the ball it names.
     private func chipCenter(ring: CGPoint, in size: CGSize) -> CGPoint {
         let w = chipSize.width, h = chipSize.height
-        let bounds = leader.stageRect.isEmpty ? CGRect(origin: .zero, size: size) : leader.stageRect
-        let right = CGPoint(x: ring.x + ringRadius + gap + w / 2, y: ring.y)
-        let left = CGPoint(x: ring.x - ringRadius - gap - w / 2, y: ring.y)
-        func fits(_ c: CGPoint) -> Bool {
-            let rect = CGRect(x: c.x - w / 2, y: c.y - h / 2, width: w, height: h)
-            let onTable = rect.minX >= bounds.minX + gap && rect.maxX <= bounds.maxX - gap
-            return onTable && (leader.card.isEmpty || !leader.card.intersects(rect))
+        let bounds = stageBounds(size)
+        let card = leader.card
+        let top = max(bounds.minY + gap, leader.topClear + gap)
+        var bottom = bounds.maxY - gap
+        // A card across the table's width below the ring (the strip under an upright phone's table): the chip stays
+        // above its top. A card beside the table (the side column) does not overlap it sideways and sets no limit.
+        if !card.isEmpty, card.minX < bounds.maxX, card.maxX > bounds.minX, card.minY > ring.y {
+            bottom = min(bottom, card.minY - gap)
         }
-        var c = fits(right) || !fits(left) ? right : left
-        let minX = bounds.minX + gap + w / 2
-        c.x = min(max(c.x, minX), max(minX, bounds.maxX - gap - w / 2))
-        let top = max(bounds.minY + gap, leader.topClear + gap) + h / 2
-        c.y = min(max(c.y, top), max(top, bounds.maxY - gap - h / 2))
-        return c
+        let minX = bounds.minX + gap, maxX = bounds.maxX - gap
+        func clampX(_ x: CGFloat) -> CGFloat { min(max(x, minX + w / 2), max(minX + w / 2, maxX - w / 2)) }
+        func clampY(_ y: CGFloat) -> CGFloat { min(max(y, top + h / 2), max(top + h / 2, bottom - h / 2)) }
+        func rect(_ c: CGPoint) -> CGRect { CGRect(x: c.x - w / 2, y: c.y - h / 2, width: w, height: h) }
+        let ringBox = CGRect(x: ring.x - ringRadius, y: ring.y - ringRadius, width: ringRadius * 2, height: ringRadius * 2)
+        func fits(_ c: CGPoint) -> Bool {
+            let r = rect(c)
+            return r.minX >= minX - 0.5 && r.maxX <= maxX + 0.5 && r.minY >= top - 0.5 && r.maxY <= bottom + 0.5
+                && !r.intersects(ringBox) && (card.isEmpty || !card.intersects(r))
+        }
+        let level = clampY(ring.y)
+        let right = CGPoint(x: ring.x + ringRadius + gap + w / 2, y: level)
+        let left = CGPoint(x: ring.x - ringRadius - gap - w / 2, y: level)
+        let above = CGPoint(x: clampX(ring.x), y: ring.y - ringRadius - gap - h / 2)
+        let below = CGPoint(x: clampX(ring.x), y: ring.y + ringRadius + gap + h / 2)
+        for c in [right, left, above, below] where fits(c) { return c }
+        func covered(_ c: CGPoint) -> CGFloat {
+            let i = rect(c).intersection(ringBox)
+            return i.isNull ? 0 : i.width * i.height
+        }
+        let held = [above, below, right, left].map { CGPoint(x: clampX($0.x), y: clampY($0.y)) }
+        return held.min { covered($0) < covered($1) } ?? above
     }
 
     /// The player's stroke (item 4): the aimed line faint and dashed, the line the cue really took bright and solid,
@@ -597,10 +1060,25 @@ struct CaptionLeader: View {
                 // The chip is a SwiftUI view, not drawn in the Canvas, because a Canvas cannot host Liquid Glass.
                 if explanations, let ring = visibleRing, let title = leader.title {
                     let color = palette.color(for: leader.accent)
+                    // At most the stage's width less the edge gaps and the chip's own padding; a longer title (a long
+                    // translation, a large text size) wraps onto a second line instead of running off the screen (#59).
+                    let cap = max(40, stageBounds(geo.size).width - 2 * gap - 20)
                     Text(verbatim: title)
                         .font(Theme.label)
-                        .lineLimit(1)
-                        .fixedSize()
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        // Its own one-line width when that fits, the cap otherwise (measured below, so a short title
+                        // keeps a short chip).
+                        .frame(width: titleWidth > 0 ? min(titleWidth.rounded(.up) + 1, cap) : nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .background {
+                            Text(verbatim: title)
+                                .font(Theme.label)
+                                .lineLimit(1)
+                                .fixedSize()
+                                .hidden()
+                                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { titleWidth = $0 }
+                        }
                         // The words keep the player's reading direction; only the placement is in screen points.
                         .environment(\.layoutDirection, layoutDirection)
                         .padding(.horizontal, 10)
