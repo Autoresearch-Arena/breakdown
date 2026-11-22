@@ -88,6 +88,9 @@ private final class PointerAimState {
     let cameraBox = AimProjector.CameraBox()
     var size = CGSize(width: 1, height: 1)
     var hovering = false
+    /// Where the pointer or the Pencil hovers over the cloth, in the layer's own points, while a preview may be drawn;
+    /// nil otherwise.
+    var previewPoint: CGPoint?
     var press: Press?
     /// Scroll distance not yet turned into whole aim steps, so slow trackpad slides still add up.
     var scrollCarry = 0.0
@@ -103,9 +106,10 @@ struct PointerAim: ViewModifier {
     @AppStorage("aimHintSeen") private var hintSeen = false
     @Environment(\.palette) private var palette
     @State private var state = PointerAimState()
-    /// Where the pointer or the Pencil hovers over the cloth, in the layer's own points, while a preview may be drawn;
-    /// nil otherwise. State, so a hover move redraws the preview.
-    @State private var preview: CGPoint?
+    @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
+    /// True while a hover preview may be drawn (the point itself is on the state object: the preview's Canvas redraws
+    /// every frame anyway, so a hover move need not re-render this layer, only switching the preview on or off does).
+    @State private var previewing = false
 
     /// Same as AimOverlay's: how close to the cue ball (points) a press must start to grab it.
     private static let grabRadius: CGFloat = 44
@@ -124,7 +128,7 @@ struct PointerAim: ViewModifier {
             // The hover preview, over the aiming layer's own drawing; it never takes a touch or a click. Redrawn every
             // frame while it shows, so it follows the camera if the table is zoomed under a still pointer.
             .overlay {
-                if preview != nil {
+                if previewing {
                     TimelineView(.animation) { _ in
                         Canvas { ctx, size in drawPreview(&ctx, size: size) }
                     }
@@ -187,11 +191,13 @@ struct PointerAim: ViewModifier {
             #if os(macOS)
             Self.noteInput(model)
             #endif
-            let next: CGPoint? = previewAllowed(at: point) ? point : nil
-            if next != preview { preview = next }
+            state.previewPoint = previewAllowed(at: point) ? point : nil
+            let on = state.previewPoint != nil
+            if on != previewing { previewing = on }
         case .ended:
             state.hovering = false
-            preview = nil
+            state.previewPoint = nil
+            previewing = false
         }
     }
 
@@ -232,24 +238,30 @@ struct PointerAim: ViewModifier {
         return (apex + Vec2(0, offset) - from).normalized
     }
 
+    /// The overlay's short line with the Aim guide off (AimOverlay's draw: 0.35 m), so the preview tells no more than
+    /// the set line would: with the guide off the player judges the angle, and a hover must not show the contact.
+    private static let unguidedReach = 0.35
+
     /// The faint preview: a thin dashed line from the cue ball's edge to the first ball, cushion, bumper, pin or hole it
     /// would meet (the guide's own stop rule, AimGeometry.guideLine), and a faint dashed ring where the cue ball would
     /// be at that moment. Along the cue's line: it shows where a click points the cue; the overlay's guide then bends
-    /// with side spin as usual.
+    /// with side spin as usual. With the Aim guide option off it follows the overlay's rule instead: a short line that
+    /// still stops at anything in its way, and no ring.
     private func drawPreview(_ ctx: inout GraphicsContext, size: CGSize) {
-        guard let point = preview, state.press == nil, aimOpenNow,
+        guard let point = state.previewPoint, state.press == nil, aimOpenNow,
               let proj = AimProjector(camera: bridge.table.flatMap { state.cameraBox.find(in: $0.root) }, size: size,
                                       frame: TableFrame(model.timeline.table)),
               let spot = proj.table(at: point), let direction = previewDirection(toward: spot) else { return }
         let table = model.timeline.table
         let r = table.ballRadius
         let guide = AimGeometry.guideLine(layout: model.layout, origin: model.aimOrigin, direction: direction, table: table)
-        let reach = guide.reach
+        let reach = aimGuide ? guide.reach : min(Self.unguidedReach, guide.reach)
         guard reach > r, let a = proj.screen(model.aimOrigin + direction * r),
               let b = proj.screen(model.aimOrigin + direction * reach) else { return }
         var line = Path(); line.move(to: a); line.addLine(to: b)
         let ink = palette.paper
         ctx.stroke(line, with: .color(ink.opacity(0.45)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [5, 5]))
+        guard aimGuide else { return }
         // Where the cue ball would be when the line ends: at the ghost ball if a ball is met, at the stop otherwise.
         let end = model.aimOrigin + direction * reach
         var ring = Path()
@@ -281,7 +293,8 @@ struct PointerAim: ViewModifier {
     private func begin(_ event: SpatialEventCollection.Event) {
         let isPointer = Self.isPointer(event)
         if isPointer { Self.noteInput(model) }
-        preview = nil
+        state.previewPoint = nil
+        previewing = false
         let onBall: Bool
         if let proj = projector(), let ball = proj.screen(model.aimOrigin) {
             onBall = hypot(ball.x - event.location.x, ball.y - event.location.y) <= Self.grabRadius
@@ -337,9 +350,12 @@ struct PointerAim: ViewModifier {
         if model.fireStroke() == .breakStruck { isOpen = false }
     }
 
-    /// A pointer click on the cloth (it hardly moved): aim through the spot. The overlay's tap runs on the same release
-    /// and snaps the aim to a ball or a pocket under the click; that snap must win, so this waits one turn of the main
-    /// actor and aims only if the aim is still what it was at the press (the overlay did nothing with this click).
+    /// A pointer click on the cloth (it hardly moved): aim through the spot. Usually inert: the overlay's own drag aims
+    /// at the press for every input today, so by now the aim has changed and this does nothing. It is the fallback for
+    /// an overlay that waits before aiming (contract section 4's undecided touch, whose tap on bare cloth may do
+    /// nothing), so a click always sets the aim. The overlay's tap runs on the same release and snaps the aim to a ball
+    /// or a pocket under the click; that snap must win, so this waits one turn of the main actor and aims only if the
+    /// aim is still what it was at the press (the overlay did nothing with this click).
     private func click(_ press: PointerAimState.Press, at location: CGPoint) {
         guard press.ready, aimOpenNow, let spot = projector()?.table(at: location) else { return }
         let model = self.model
