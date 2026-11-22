@@ -1,8 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
 // PURPOSE: A table's game page, pushed from its entry in the Tables list (plans/21-Nov-2026-other-tables-games-plan.md
-//          package 5): the game the table plays, ways to play it (a match for two players; bar billiards also alone,
-//          for a best score kept on the device; or practice on the table with no rules), and the rules as numbered
+//          package 5): the game the table plays, ways to play it (bar billiards alone, for a best score kept on the
+//          device; practice on the table with no rules; or a match for two players), and the rules as numbered
 //          steps ("How to play"), with the plain note that these games vary from place to place and this is one common
 //          version. TableRulesPage is the rules alone, for the How to play sheet's Rules links.
 //          Both are ordinary pages in the Tables list's NavigationStack, so on the open folding phone, iPad and Mac
@@ -10,6 +10,9 @@
 //          page on a phone. Nothing here is drawn over the table.
 //          Starting a match calls ShowpieceModel.startMatch(kind, players:), which ends any trick shot or situation,
 //          closes the menu and puts the table's start layout on; practice is the list's existing playTable.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the ways to play lead with the ones a person plays by
+//          themselves (bar billiards alone, then Practice, highlighted); Two players comes last, plain, with a line
+//          that says what the game is rather than offering to pass the device around.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 18: starting a game here while a match is saved asks
 //          first, inside the page, naming the saved game (MatchMode.savedSummary, MatchWords.savedLine), instead of
 //          silently throwing it away.)
@@ -41,18 +44,20 @@ struct TableGamePage: View {
                 if let players = replacingFor, let saved = MatchMode.savedSummary() {
                     replaceQuestion(saved, players: players)
                 }
+                // These tables have no computer player, so what one person can play comes first: bar billiards alone
+                // (highlighted), else Practice (highlighted). Two players stays as the last, plain choice.
                 VStack(spacing: 10) {
-                    playButton(String(localized: "Two players"), line: String(localized: "Take turns on one device."),
-                               symbol: "person.2.fill", prominent: true) { start(players: 2) }
                     if game == .barBilliards {
                         playButton(String(localized: "Play alone"), line: TableGameWords.best(BarBilliardsBest.best()),
-                                   symbol: "person.fill", prominent: false) { start(players: 1) }
+                                   symbol: "person.fill", prominent: true) { start(players: 1) }
                     }
                     playButton(String(localized: "Practice"), line: String(localized: "Knock the balls around with no turns and no score."),
-                               symbol: "scope", prominent: false) {
+                               symbol: "scope", prominent: game != .barBilliards) {
                         model.playTable(table)
                         onStarted()
                     }
+                    playButton(String(localized: "Two players"), line: String(localized: "A full game with turns and a score."),
+                               symbol: "person.2", prominent: false) { start(players: 2) }
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     Text("How to play")

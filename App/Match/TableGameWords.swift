@@ -15,6 +15,8 @@
 //          bumper pool's balls are named by their side's colour as TableBallSet draws them (white for the first
 //          player, red for the second, a spot on each marked ball) instead of by pool numbers nobody can see, in
 //          sentences, lists, the turn banner and the rules page.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: bar billiards' line in the Tables list says what the game is,
+//          a score against the clock, without offering it as a game against a friend.)
 // SRP/DRY check: Pass - checked MatchWords (the shared ruling sentences, game names and player names are reused from
 //          there, not repeated) and TableKind (table names and summaries reused). Nothing else words these games.
 import BreakdownRules
@@ -218,7 +220,7 @@ enum TableGameWords {
         switch kind {
         case .bumperPool: return String(localized: "Two players race to sink five balls each in the far cup.")
         case .fivePin: return String(localized: "Two players score with the pins and the red, first to \(FivePinRules.standardTarget).")
-        case .barBilliards: return String(localized: "Score against the clock, alone or against a friend.")
+        case .barBilliards: return String(localized: "Score as much as you can before the clock runs out.")
         case .eightBall, .nineBall: return ""
         }
     }

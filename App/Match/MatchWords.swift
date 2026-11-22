@@ -8,6 +8,8 @@
 //          foul words instead of "no ball reached a rail after the hit", which was wrong whenever some balls did, and
 //          the separate break line is not repeated after it; a shot played on the suggested call says which call that
 //          was; the menu's Continue row can name the saved game (savedLine).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the hand-over between two people on one device names whose
+//          shot it is ("Sam to shoot.") instead of telling them to pass the device.)
 // PURPOSE: Every word a match says, in one place. The rules (package module BreakdownRules) speak only in codes:
 //          MatchFoul, RulingReason, MatchEndReason, MatchChoice, BallInHand. This file turns them into plain sentences
 //          a player reads after each shot ("Foul: the cue ball hit the 11 first. Ball in hand for Sam."), the game
@@ -242,7 +244,9 @@ enum MatchWords {
 
     // MARK: Between turns
 
-    static func handOver(to name: String) -> String { String(localized: "Pass the device to \(name).") }
+    /// The hand-over card's heading (and what VoiceOver says) in a game between two people: whose shot comes next.
+    /// The same words as a ruling's "Sam to shoot." line, so the catalog already has them in every language.
+    static func handOver(to name: String) -> String { String(localized: "\(name) to shoot.") }
 
     // MARK: The saved game
 

@@ -1,5 +1,10 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: playing the computer is the game's offer. The menu's intro and
+//          the Play row's line name the computer, not a friend; the Play list opens on the computer's level and its
+//          Eight-ball and Nine-ball rows, then Practice and Straight stroke, and two players on one device is a plain
+//          "Two players" row at the end that opens its own short list. How to play calls the sliding paths magenta,
+//          the Lens's colour now, and eight-ball's rules speak of you and your opponent.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the "Next: Lesson ..." row is gone and Play, or Continue, is
 //          the highlighted entry and sits above Learn; the intro line no longer says to learn first; the lessons are
 //          offered, never pushed.)
@@ -57,7 +62,8 @@
 //          skip the menu.)
 // PURPOSE: The main menu the app opens on, laid over the live table, dimmed, so the room stays visible behind it. It
 //          names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the table,
-//          or the saved match after a relaunch), Play (Practice, Eight-ball, Nine-ball, Continue match), Trick shots,
+//          or the saved match after a relaunch), Play (Continue match, then Eight-ball and Nine-ball against the
+//          computer at a chosen level, Practice, Straight stroke, and Two players last), Trick shots,
 //          Behind the 8-Ball, Tables, Watch the intro (the showpiece opening with the slow-motion Physics Lens), How to
 //          play (the steps, the controls and the rules, in a sheet) and Options (a sheet). The next step (a lesson, its
 //          trick shot, a game against the easy computer) comes first after Continue, then Learn (the lessons).
@@ -114,10 +120,11 @@ struct TitleScreen: View {
     @State private var howToOpen = false
     @State private var optionsOpen = false
     @State private var tablesOpen = false
-    /// The Play list (Practice, Eight-ball, Nine-ball) replaces the main list inside the same card.
+    /// The Play list (the computer's games, Practice, Straight stroke, Two players) replaces the main list inside the
+    /// same card.
     @State private var playListOpen = false
-    /// The against-the-computer list replaces the Play list inside the same card.
-    @State private var computerListOpen = false
+    /// The two-player list (Eight-ball and Nine-ball on one device) replaces the Play list inside the same card.
+    @State private var twoPlayerListOpen = false
     /// The level picked for a game against the computer (kept while the app runs).
     @State private var computerLevel: ComputerLevel = .medium
 
@@ -134,7 +141,7 @@ struct TitleScreen: View {
 
     /// The menu's own one line about the game: the same idea the store page leads with (item 39).
     private static var intro: String {
-        String(localized: "A pool table that shows its own physics. Play eight-ball or nine-ball against a friend or the computer, and see why every shot went where it did.")
+        String(localized: "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.")
     }
 
     /// How strongly the table is dimmed behind the menu. Lighter while the opening's slow Lens replay plays behind it on
@@ -167,7 +174,7 @@ struct TitleScreen: View {
         }
         // Back to the main list whenever the menu is opened again.
         // A question left unanswered when the menu goes is dropped, so it never greets the player later.
-        .onDisappear { playListOpen = false; computerListOpen = false; pendingMatch = nil }
+        .onDisappear { playListOpen = false; twoPlayerListOpen = false; pendingMatch = nil }
         .sheet(isPresented: $howToOpen) { HowToPlaySheet(isOpen: $howToOpen, input: model.inputInUse) }
         .sheet(isPresented: $optionsOpen) { OptionsSheet(isOpen: $optionsOpen) }
         .sheet(isPresented: $tablesOpen) { TableList(model: model, onChosen: onPlay, onClose: { tablesOpen = false }) }
@@ -200,8 +207,8 @@ struct TitleScreen: View {
             Group {
                 if let request = pendingMatch {
                     replaceList(request)
-                } else if computerListOpen {
-                    computerList
+                } else if twoPlayerListOpen {
+                    twoPlayerList
                 } else if playListOpen {
                     playList
                 } else {
@@ -210,7 +217,7 @@ struct TitleScreen: View {
             }
             .transition(.opacity)
             .animation(reduceMotion ? nil : .snappy, value: playListOpen)
-            .animation(reduceMotion ? nil : .snappy, value: computerListOpen)
+            .animation(reduceMotion ? nil : .snappy, value: twoPlayerListOpen)
             .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
         }
         .padding(28)
@@ -245,7 +252,7 @@ struct TitleScreen: View {
                 }
                 .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
-            MenuRow(title: "Play", line: "Practise on your own, or play eight-ball or nine-ball with a friend or the computer.",
+            MenuRow(title: "Play", line: "Eight-ball or nine-ball against the computer, or practise on your own.",
                     symbol: "circle.grid.cross", prominent: playHighlighted) { playListOpen = true }
                 .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
             MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
@@ -348,6 +355,9 @@ struct TitleScreen: View {
         }
     }
 
+    /// The computer first: its level and its two games lead the list, so one tap on Play and one on a game starts a
+    /// match against it. Practice and the stroke drill follow, and two players on one device is the last row, a plain
+    /// way in to its own list rather than an offer.
     private var playList: some View {
         VStack(spacing: 10) {
             listHeader("Play") { playListOpen = false }
@@ -355,22 +365,39 @@ struct TitleScreen: View {
                 MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: true) { continueMatch() }
                     .keyboardShortcut(.defaultAction)
             }
-            MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle",
-                    prominent: !model.hasSavedMatch) {
+            Text("Against the computer")
+                .font(Theme.heading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityAddTraits(.isHeader)
+            Picker(String(localized: "Level"), selection: $computerLevel) {
+                ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
+            }
+            .pickerStyle(.segmented)
+            Text(computerLevel.line)
+                .font(Theme.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            // Highlighted (and on Return) when no saved match is waiting; with one, Continue match keeps both.
+            MenuRow(title: "Eight-ball", line: "You against the computer. Claim a group, clear it, sink the 8.",
+                    symbol: "8.circle", prominent: !model.hasSavedMatch, mark: recordMark(.eightBall, level: computerLevel)) {
+                start(MatchStartRequest(kind: .eightBall, computer: computerLevel))
+            }
+            .keyboardShortcut(model.hasSavedMatch ? nil : KeyboardShortcut.defaultAction)
+            MenuRow(title: "Nine-ball", line: "You against the computer. Lowest ball first; sink the 9 to win.",
+                    symbol: "9.circle", mark: recordMark(.nineBall, level: computerLevel)) {
+                start(MatchStartRequest(kind: .nineBall, computer: computerLevel))
+            }
+            MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle") {
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
             }
             MenuRow(title: "Straight stroke", line: "Send the cue ball up the table and back. Does it return to the cue?",
                     symbol: "arrow.up.and.down") {
                 model.strokeDrill.begin(); onPlay()
             }
-            // Two-player games carry no record: a mark counting wins by whoever sat first said nothing about the person
-            // holding the device (item 18). Records are kept per level against the computer, on its list.
-            MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
-                    symbol: "8.circle") { start(MatchStartRequest(kind: .eightBall)) }
-            MenuRow(title: "Nine-ball", line: "Two players. Always hit the lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle") { start(MatchStartRequest(kind: .nineBall)) }
-            MenuRow(title: "Against the computer", line: "Eight-ball or nine-ball against a computer player of your level.",
-                    symbol: "cpu") { computerListOpen = true }
+            MenuRow(title: "Two players", line: "Eight-ball or nine-ball, taking turns.", symbol: "person.2") {
+                twoPlayerListOpen = true
+            }
         }
     }
 
@@ -383,28 +410,18 @@ struct TitleScreen: View {
                             spoken: String(localized: "\(r.won) won of \(played) played"))
     }
 
-    // MARK: Against the computer
+    // MARK: Two players
 
-    private var computerList: some View {
+    /// Eight-ball and Nine-ball for two people on one device. Two-player games carry no record: a mark counting wins by
+    /// whoever sat first said nothing about the person holding the device (item 18). Records are kept per level
+    /// against the computer, on the Play list.
+    private var twoPlayerList: some View {
         VStack(spacing: 10) {
-            listHeader("Against the computer") { computerListOpen = false }
-            Picker(String(localized: "Level"), selection: $computerLevel) {
-                ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
-            }
-            .pickerStyle(.segmented)
-            Text(computerLevel.line)
-                .font(Theme.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-            MenuRow(title: "Eight-ball", line: "You against the computer. Claim a group, clear it, sink the 8.",
-                    symbol: "8.circle", prominent: true, mark: recordMark(.eightBall, level: computerLevel)) {
-                start(MatchStartRequest(kind: .eightBall, computer: computerLevel))
-            }
-            MenuRow(title: "Nine-ball", line: "You against the computer. Lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle", mark: recordMark(.nineBall, level: computerLevel)) {
-                start(MatchStartRequest(kind: .nineBall, computer: computerLevel))
-            }
+            listHeader("Two players") { twoPlayerListOpen = false }
+            MenuRow(title: "Eight-ball", line: "Two players. Claim solids or stripes, clear them, then sink the 8.",
+                    symbol: "8.circle") { start(MatchStartRequest(kind: .eightBall)) }
+            MenuRow(title: "Nine-ball", line: "Two players. Always hit the lowest ball first; sink the 9 to win.",
+                    symbol: "9.circle") { start(MatchStartRequest(kind: .nineBall)) }
         }
     }
 
@@ -576,7 +593,7 @@ struct HowToPlaySheet: View {
              FirstInstruction.line(for: input) + " "
                 + String(localized: "The small picture of the white ball sets where the cue strikes it, for spin.")),
             (String(localized: "Read the Lens"),
-             String(localized: "Tap Lens to see the physics: amber paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
+             String(localized: "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
             (String(localized: "Try again"),
              String(localized: "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare.")),
         ]
@@ -788,7 +805,7 @@ private struct RulesPage: View {
     static var eightBall: [(title: String, detail: String)] {
         [
             (String(localized: "The idea"),
-             String(localized: "Two players share one table. One takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.")),
+             String(localized: "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.")),
             (String(localized: "The break"),
              String(localized: "A good break sinks a ball or drives at least four balls to a cushion. If it does neither, your opponent may play the table as it lies or have it racked again. Sink the cue ball on the break and your opponent places it anywhere behind the head line.")),
             (String(localized: "The 8 on the break"),

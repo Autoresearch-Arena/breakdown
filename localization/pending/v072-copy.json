@@ -1,0 +1,398 @@
+{
+ "keys": [
+  "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+  "Eight-ball or nine-ball against the computer, or practise on your own.",
+  "Eight-ball or nine-ball, taking turns.",
+  "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+  "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+  "A full game with turns and a score.",
+  "Score as much as you can before the clock runs out."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Una mesa de billar que muestra su propia física. Juega a la bola ocho o a la bola nueve contra el ordenador, y mira por qué cada tiro fue a donde fue."
+  },
+  {
+   "culture": "fr",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Une table de billard qui montre sa propre physique. Joue au huit ou au neuf contre l'ordinateur, et vois pourquoi chaque coup est allé là où il est allé."
+  },
+  {
+   "culture": "de",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Ein Billardtisch, der seine eigene Physik zeigt. Spiel 8-Ball oder 9-Ball gegen den Computer und sieh, warum jeder Stoß dorthin ging, wo er hinging."
+  },
+  {
+   "culture": "it",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Un tavolo da biliardo che mostra la propria fisica. Gioca a palla 8 o palla 9 contro il computer, e scopri perché ogni colpo è andato dove è andato."
+  },
+  {
+   "culture": "pt",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Uma mesa de snooker que mostra a sua própria física. Joga bola 8 ou bola 9 contra o computador, e vê porque cada tacada foi para onde foi."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Uma mesa de sinuca que mostra a própria física. Jogue bola 8 ou bola 9 contra o computador, e veja por que cada tacada foi para onde foi."
+  },
+  {
+   "culture": "ja",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "自分の物理を見せてくれるビリヤード台。コンピューターとエイトボールやナインボールで遊び、どのショットもなぜそこへ行ったのかを見てみよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "자기 물리를 보여 주는 당구대. 컴퓨터와 에이트볼이나 나인볼을 치고, 샷마다 왜 그쪽으로 갔는지 확인해 보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "一张会展示自身物理的台球桌。和电脑打八球或九球，看看每一杆为什么会走到那里。"
+  },
+  {
+   "culture": "ru",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "Бильярдный стол, который показывает свою физику. Играй в восьмёрку или девятку с компьютером и смотри, почему каждый удар пошёл именно туда."
+  },
+  {
+   "culture": "ar",
+   "key": "A pool table that shows its own physics. Play eight-ball or nine-ball against the computer, and see why every shot went where it did.",
+   "text": "طاولة بلياردو تُظهر فيزياءها بنفسها. العب الكرة الثامنة أو التاسعة ضد الكمبيوتر، وشاهد لماذا ذهبت كل ضربة إلى حيث ذهبت."
+  },
+  {
+   "culture": "es",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "Bola 8 o bola 9 contra el ordenador, o practica solo."
+  },
+  {
+   "culture": "fr",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "La 8 ou la 9 contre l'ordinateur, ou entraîne-toi seul."
+  },
+  {
+   "culture": "de",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "8-Ball oder 9-Ball gegen den Computer, oder übe allein."
+  },
+  {
+   "culture": "it",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "Palla 8 o palla 9 contro il computer, oppure allenati da solo."
+  },
+  {
+   "culture": "pt",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "Bola 8 ou bola 9 contra o computador, ou treina sozinho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "Bola 8 ou bola 9 contra o computador, ou treine sozinho."
+  },
+  {
+   "culture": "ja",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "コンピューターとエイトボールやナインボールを。ひとりで練習もできます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "컴퓨터와 에잇볼이나 나인볼을 하거나, 혼자 연습하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "与电脑打八球、九球，或独自练习。"
+  },
+  {
+   "culture": "ru",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "Восьмёрка или девятка против компьютера или тренировка в одиночку."
+  },
+  {
+   "culture": "ar",
+   "key": "Eight-ball or nine-ball against the computer, or practise on your own.",
+   "text": "الكرة ٨ أو الكرة ٩ ضد الكمبيوتر، أو تدرّب وحدك."
+  },
+  {
+   "culture": "es",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "Bola 8 o bola 9, por turnos."
+  },
+  {
+   "culture": "fr",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "La 8 ou la 9, chacun son tour."
+  },
+  {
+   "culture": "de",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "8-Ball oder 9-Ball, abwechselnd."
+  },
+  {
+   "culture": "it",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "Palla 8 o palla 9, a turno."
+  },
+  {
+   "culture": "pt",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "Bola 8 ou bola 9, à vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "Bola 8 ou bola 9, revezando."
+  },
+  {
+   "culture": "ja",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "エイトボールかナインボールを交代で。"
+  },
+  {
+   "culture": "ko",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "에잇볼이나 나인볼을 번갈아 칩니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "八球或九球，轮流击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "Восьмёрка или девятка по очереди."
+  },
+  {
+   "culture": "ar",
+   "key": "Eight-ball or nine-ball, taking turns.",
+   "text": "الكرة ٨ أو الكرة ٩ بالتناوب."
+  },
+  {
+   "culture": "es",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Toca Lente para ver la física: las trayectorias magenta son bolas deslizándose, las cian son bolas rodando; cuanto más gruesa, más rápida. Arrastra la barra para recorrer el tiro en cualquiera de los dos sentidos."
+  },
+  {
+   "culture": "fr",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Touche Lentille pour voir la physique : les trajectoires magenta sont des billes qui glissent, les trajectoires cyan des billes qui roulent ; plus c'est épais, plus c'est rapide. Fais glisser la barre pour parcourir le coup dans les deux sens."
+  },
+  {
+   "culture": "de",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Tippe auf Lens, um die Physik zu sehen: Magentafarbene Linien zeigen gleitende Kugeln, türkisfarbene Linien rollende Kugeln, dickere Linien sind schneller. Ziehe die Leiste, um den Stoß in beide Richtungen durchzugehen."
+  },
+  {
+   "culture": "it",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Tocca Lens per vedere la fisica: le linee magenta indicano palle che scivolano, quelle turchesi palle che rotolano, quelle più spesse sono più veloci. Trascina la barra per scorrere il tiro in entrambe le direzioni."
+  },
+  {
+   "culture": "pt",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Toca em Lente para ver a física: os trajetos magenta são bolas a deslizar, os ciano são bolas a rolar, quanto mais grosso mais rápido. Arrasta a barra para percorrer a tacada nos dois sentidos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Toque em Lente para ver a física: os trajetos magenta são bolas deslizando, os ciano são bolas rolando, quanto mais grosso mais rápido. Arraste a barra para percorrer a tacada nos dois sentidos."
+  },
+  {
+   "culture": "ja",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "レンズをタップすると物理の動きが見られます。マゼンタの線は滑っている球、水色の線は転がっている球で、線が太いほど速く動いています。バーをドラッグすると、ショットを前後どちらにもたどれます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "렌즈를 탭하면 물리 움직임이 보입니다. 자홍색 선은 미끄러지는 공, 청록색 선은 구르는 공이고, 선이 굵을수록 빠릅니다. 바를 드래그하면 샷을 앞뒤로 살펴볼 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "点击透镜查看物理现象：洋红色轨迹是滑动的球，青色轨迹是滚动的球，线越粗速度越快。拖动进度条，可以向前或向后浏览整个击球过程。"
+  },
+  {
+   "culture": "ru",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Нажми «Линза», чтобы увидеть физику: пурпурные линии означают скользящие шары, голубые катящиеся, чем толще линия, тем быстрее. Перетащи полосу, чтобы просмотреть удар в любом направлении."
+  },
+  {
+   "culture": "ar",
+   "key": "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "انقر على العدسة لترى الفيزياء: المسارات بلون الماجنتا للكرات المنزلقة، والمسارات السماوية للكرات المتدحرجة، والأسمك أسرع. اسحب الشريط للتنقل في الضربة في الاتجاهين."
+  },
+  {
+   "culture": "es",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Tú y tu rival compartís mesa. Uno se queda las lisas, del 1 al 7, y el otro las rayadas, del 9 al 15. Mete todo tu grupo y luego la 8 para ganar."
+  },
+  {
+   "culture": "fr",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Ton adversaire et toi partagez la table. L'un prend les pleines, de 1 à 7, l'autre les rayées, de 9 à 15. Vide ton groupe, puis empoche la 8 pour gagner."
+  },
+  {
+   "culture": "de",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Du und dein Gegner teilt euch einen Tisch. Einer nimmt die Vollen, 1 bis 7, der andere die Halben, 9 bis 15. Räum deine Gruppe ab und versenk dann die 8 zum Sieg."
+  },
+  {
+   "culture": "it",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Tu e il tuo avversario, un solo tavolo. Uno prende le piene, dall'1 al 7, l'altro le rigate, dal 9 al 15. Imbuca tutto il tuo gruppo, poi la 8 per vincere."
+  },
+  {
+   "culture": "pt",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Tu e o teu adversário partilham uma mesa. Um fica com as lisas, de 1 a 7, o outro com as riscadas, de 9 a 15. Mete o teu grupo todo e depois a 8 para ganhar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Você e seu adversário dividem uma mesa. Um fica com as lisas, de 1 a 7, o outro com as listradas, de 9 a 15. Encaçape seu grupo todo e depois a 8 para vencer."
+  },
+  {
+   "culture": "ja",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "あなたと相手で1つの台を使います。一方は1番から7番のソリッド、もう一方は9番から15番のストライプ。自分のグループを全部落とし、最後に8番を沈めれば勝ちです。"
+  },
+  {
+   "culture": "ko",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "나와 상대가 한 테이블을 씁니다. 한쪽은 1번부터 7번까지 솔리드, 다른 쪽은 9번부터 15번까지 스트라이프를 맡습니다. 내 그룹을 모두 넣고 8번을 넣으면 승리합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "你和对手共用一张球台。一方打 1 到 7 号全色球，另一方打 9 到 15 号花色球。打完自己的球组，再打进 8 号球即获胜。"
+  },
+  {
+   "culture": "ru",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "Ты и соперник за одним столом. Один берёт сплошные, с 1 по 7, другой полосатые, с 9 по 15. Забей свою группу, затем восьмёрку, чтобы победить."
+  },
+  {
+   "culture": "ar",
+   "key": "You and your opponent share one table. One of you takes the solids, 1 to 7, the other the stripes, 9 to 15. Clear your group, then sink the 8 to win.",
+   "text": "أنت وخصمك تتشاركان طاولة واحدة. يأخذ أحدكما الكرات السادة من 1 إلى 7، والآخر المخططة من 9 إلى 15. أدخل مجموعتك كلها ثم الكرة 8 لتفوز."
+  },
+  {
+   "culture": "es",
+   "key": "A full game with turns and a score.",
+   "text": "Una partida completa, con turnos y marcador."
+  },
+  {
+   "culture": "fr",
+   "key": "A full game with turns and a score.",
+   "text": "Une vraie partie, avec des tours et un score."
+  },
+  {
+   "culture": "de",
+   "key": "A full game with turns and a score.",
+   "text": "Eine ganze Partie, abwechselnd und mit Punktestand."
+  },
+  {
+   "culture": "it",
+   "key": "A full game with turns and a score.",
+   "text": "Una partita completa, a turni e con il punteggio."
+  },
+  {
+   "culture": "pt",
+   "key": "A full game with turns and a score.",
+   "text": "Um jogo completo, à vez e com pontuação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A full game with turns and a score.",
+   "text": "Uma partida completa, com revezamento e placar."
+  },
+  {
+   "culture": "ja",
+   "key": "A full game with turns and a score.",
+   "text": "順番と得点のある本格的な対戦。"
+  },
+  {
+   "culture": "ko",
+   "key": "A full game with turns and a score.",
+   "text": "차례와 점수가 있는 정식 게임."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A full game with turns and a score.",
+   "text": "完整对局，轮流击球并计分。"
+  },
+  {
+   "culture": "ru",
+   "key": "A full game with turns and a score.",
+   "text": "Полная партия с очерёдностью и счётом."
+  },
+  {
+   "culture": "ar",
+   "key": "A full game with turns and a score.",
+   "text": "مباراة كاملة بالأدوار والنقاط."
+  },
+  {
+   "culture": "es",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Suma todos los puntos que puedas antes de que se acabe el tiempo."
+  },
+  {
+   "culture": "fr",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Marque le plus de points possible avant la fin du temps."
+  },
+  {
+   "culture": "de",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Hol so viele Punkte wie möglich, bevor die Uhr abläuft."
+  },
+  {
+   "culture": "it",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Fai più punti che puoi prima che scada il tempo."
+  },
+  {
+   "culture": "pt",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Marca o máximo de pontos antes de o tempo acabar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Marque o máximo de pontos antes que o tempo acabe."
+  },
+  {
+   "culture": "ja",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "時間切れまでに、できるだけ多く得点しよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "시간이 끝나기 전에 최대한 많은 점수를 내세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "在时间耗尽前尽可能多得分。"
+  },
+  {
+   "culture": "ru",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "Набери как можно больше очков, пока не вышло время."
+  },
+  {
+   "culture": "ar",
+   "key": "Score as much as you can before the clock runs out.",
+   "text": "سجّل أكبر عدد من النقاط قبل أن ينتهي الوقت."
+  }
+ ]
+}
