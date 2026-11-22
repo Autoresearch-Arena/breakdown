@@ -7,6 +7,8 @@ Edited: Claude Opus 5.5 High, 21-November-2026 (rewritten to describe the game a
 Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, bug plan item 39: the lessons, the matches against a friend or
         the computer, the scored side tables and the stroke are in the game, so they move from "under way" to what you
         can play; eleven trick shots, not ten; the plan being worked on now is the 0.7.0 bug plan).
+Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the real games are played against the computer; the
+        two-player option is no longer offered here as a selling point).
 PURPOSE: Explain the working game, how it is built and checked, how to build it, and where the project documents are.
 SRP/DRY check: Pass - checked the app's code, the CHANGELOG, the spec and the plans; detail stays in those documents
         and is linked, not repeated.
@@ -32,7 +34,7 @@ Hosting under Autoresearch-Arena does not, by itself, establish legal ownership.
 - **Lessons.** Six short lessons (stop, follow, draw, cut, curve, jump), each showing the shot and why it works, then
   handing you the cue until you can play it yourself.
 - **Real games.** Eight-ball and nine-ball with the full rules (calls, fouls, ball in hand, the 8 on the break), against
-  a friend on the same device or the computer at easy, medium or hard, which shows why it chose each shot.
+  the computer at easy, medium or hard, which shows why it chose each shot.
 - **The stroke.** Power is how fast you swing: on a touch screen you pull back from the white ball and push through
   it, and a rushed or crooked stroke drifts. A straight-stroke drill measures yours.
 - **Trick shots.** Eleven authored shots, each teaching one piece of physics: a called break, a stop shot, a long draw
