@@ -33,9 +33,10 @@
 //          the aiming layer carries the same elements. Each frame the update also reads a game controller
 //          (GameControllerInput) and lets ShotNarration speak a finished shot (and a match ruling) once; the bridge
 //          carries whether a screen reader is on and what has been said, so nothing here reads the clock in a body.)
-// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 57 and 23: the aim preview carries
-//          the cue the game picked, model.cueChoice.kind, so CueRig draws that cue, and the bridge's length, so the
-//          drawn pull-back stops in front of the bridge hand; two lines.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 10, 23 and 57: the aim preview
+//          carries the cue the game picked, model.cueChoice.kind, so CueRig draws that cue, and the bridge's length, so
+//          the drawn pull-back stops in front of the bridge hand; its elevation is model.strikeElevation and its rest
+//          flag model.restInUse, as docs/v07-contracts.md 2.5 says.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -206,10 +207,12 @@ struct TableStage: View {
         preview.cue = model.cueChoice.kind
         preview.bridgeLength = model.strokeBridgeLength
         preview.powerFraction = model.powerFraction
-        preview.elevation = model.racked ? 0 : model.shotElevation
+        // The strike's own angle (the player's or the least that clears every ball under the cue; 0 for a break), and
+        // the rest whenever the model uses it, in every mode (plan items 10 and 23; docs/v07-contracts.md 2.5).
+        preview.elevation = model.strikeElevation
         preview.tipUp = model.activeTipUp
         preview.tipSide = model.activeTipSide
-        preview.usesBridge = model.showsBridge
+        preview.usesBridge = model.restInUse
         return preview
     }
 
