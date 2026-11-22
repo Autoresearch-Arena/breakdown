@@ -8,6 +8,9 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (learn from a retry: the Made it / Missed card also says the one
 //          difference from the last try (RetryWords) and offers See the contact (ContactButton), so a shot such as
 //          Stop Dead can be taken back to the contact from the card the player is already reading.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 36 and 53: a make plays the made-it sound with the glow
+//          (SoundBoard.play); the card steps back while the Lens tips are up (model.holdForTips), so the tips never
+//          stack on the explanation card.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the ten trick shots, in a sheet from the menu: number (or a tick once made),
 //            title, hook and difficulty; the two that wait on new physics show as "Coming next" and cannot be opened.
@@ -110,7 +113,9 @@ struct TrickShotCard: View {
     private var mode: TrickShotMode { model.trickMode }
 
     var body: some View {
-        if let shot = mode.current, mode.isActive {
+        // While the Lens tips are showing over a held beat (model.holdForTips, set by the tips themselves), they are the
+        // one card: this card steps back and returns when they are done, so the idea is never stacked under the tips.
+        if let shot = mode.current, mode.isActive, !model.holdForTips {
             VStack(alignment: .leading, spacing: 8) {
                 content(shot)
             }
@@ -118,7 +123,8 @@ struct TrickShotCard: View {
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: mode.phase)
-            // One success haptic per make; the Vibration option is read at the moment it fires.
+            // One success haptic per make, with the glow and the made-it sound (TrickTableLayer); the Vibration option
+            // is read at the moment it fires.
             .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
             .transition(.opacity)
         }
@@ -339,6 +345,9 @@ struct TrickTableLayer: View {
         .onChange(of: mode.celebrations) { _, _ in
             glow = 1
             withAnimation(.easeOut(duration: reduceMotion ? 0.8 : 1.4)) { glow = 0 }
+            // The made-it sound starts with the glow's flash (the card's success haptic fires on the same change).
+            // SoundBoard honours the Sound option.
+            SoundBoard.play(.madeIt)
         }
     }
 

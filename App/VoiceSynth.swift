@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (sound-lessons hook, bug plan item 36: the two made-it voices appended
+//          to Voice and to the end of Voice.all, so every earlier voice keeps its seeded variants.)
 // PURPOSE: The synthesiser behind every table sound (sound plan package 1). Turns a voice recipe (a small table of
 //          ringing partials plus short noise bursts, written at the top of SoundBoard.swift in VoiceBook) into plain
 //          sample arrays: four strength layers per voice, each in two or three variants with small seeded changes of
@@ -55,11 +57,14 @@ struct VoiceRecipe: Sendable {
 enum Voice: Hashable, Sendable {
     case crack, click, tock, rail(BedTone), pocketDrop, knock, pin, post, landing(BedTone), offTable, rimSkip, miscue,
          settle, foul, turnChange, win
+    case madeIt, madeItBig   // the made-it moments (sound-lessons, 0.7.0 item 36); recipes in VoiceBook
 
     static var all: [Voice] {
         var v: [Voice] = [.crack, .click, .tock, .pocketDrop, .knock, .pin, .post, .offTable, .rimSkip, .miscue,
                           .settle, .foul, .turnChange, .win]
         for t in BedTone.allCases { v.append(.rail(t)); v.append(.landing(t)) }
+        // Appended last, after the bed tones, so every earlier voice keeps its place and its seeded variants.
+        v += [.madeIt, .madeItBig]
         return v
     }
 }

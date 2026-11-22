@@ -2,6 +2,11 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: a lesson plays on the standard cloth it was authored on and
 //          puts the player's surface back when it ends.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 11 and 36: in try 3 and the pass shot of a lesson that
+//          is not about power, the power is held at the lesson's stroke through the locks, so a pull-back plays the shot
+//          without moving it; the bands handed to the controls are only the part each control can reach; the pass
+//          shot's "Back to the lesson's stroke" (model.tryAgain(restoring:)); celebrationMoment says which made-it
+//          sound the screen plays with the glow, the big one for the sixth lesson and the pass that completes the path.)
 // PURPOSE: Lesson mode: walks the player through one lesson of the path (Lessons.swift) in the plan's beats
 //          (plans/21-Nov-2026-first-minute-and-lessons-plan.md, package 3), shaped like TrickShotMode:
 //            Ready      - the lesson's layout on the table, a card with what it teaches and Watch it.
@@ -9,10 +14,12 @@
 //                         (replaying) and pauses on the lesson's moment (keyMoment) while the card gives the idea.
 //            Try 1      - aim, power, tip and cue angle set to the reference and locked: the player only shoots.
 //            Try 2      - only the lesson's own control is open, starting from neutral, with its target band drawn.
-//            Try 3      - every control open, starting from the player's own try-2 settings, the bands faint.
-//            Pass shot  - no bands, nothing locked, from the player's own settings. Made: the lesson is marked passed
-//                         (stored like trick-shot progress) and the card suggests the trick shot that uses the idea; the
-//                         stop shot also offers its second exercise (plan 14, section 4).
+//            Try 3      - every control open, starting from the player's own try-2 settings, the bands faint. In a
+//                         lesson that is not about power, the power stays held at the lesson's stroke (see powerHeld).
+//            Pass shot  - no bands, from the player's own settings, the power held as in try 3. Made: the lesson is
+//                         marked passed (stored like trick-shot progress) and the card suggests the trick shot that uses
+//                         the idea; the stop shot also offers its second exercise (plan 14, section 4). Missed: besides
+//                         Try again, "Back to the lesson's stroke" puts the reference stroke back.
 //          After every guided try the card says made or missed with the judge's one line, and offers Try again (same
 //          start, same settings, the last try kept as a ghost for the retry comparison) or the next step. Nothing is
 //          gated: the next step is offered whether the try was made or not, and every lesson can be opened any time.
@@ -68,8 +75,12 @@ final class LessonMode {
     private(set) var phase: Phase = .off
     /// The list (a sheet, or a page of the notebook); opened from the menu's Learn.
     var listOpen = false
-    /// Bumped on every pass, so the views fire one haptic and one glow per lesson passed.
+    /// Bumped on every pass (and the stop shot's exercise made), so the views fire one haptic, one glow and one made-it
+    /// sound per success.
     private(set) var celebrations = 0
+    /// Which made-it sound goes with the latest celebration: the big one when the sixth lesson is passed or a pass
+    /// completes the whole path. Set before celebrations is bumped, so the table layer reads it in the same change.
+    private(set) var celebrationMoment: GameMoment = .madeIt
     /// What the shot panel should be: open while it is the player's turn. Bumped requests make the screen apply it.
     private(set) var wantsAiming = false
     private(set) var aimingRequests = 0
@@ -112,20 +123,37 @@ final class LessonMode {
         switch step {
         case .try1: return []
         case .try2: return lesson.control.controls
-        case .try3, .pass: return .all
+        // The power is closed while it is held (powerHeld): the model then refuses every change to it, so the touch
+        // stroke's pull-back still plays the shot but no longer moves the power (StrokeGesture reads the same set).
+        case .try3, .pass: return powerHeld ? ShotControls.all.subtracting(.power) : .all
         // The exercise checks what was learnt about tip height: aim and power stay at the lesson's own values.
         case .exercise: return .tipUp
         }
     }
 
-    /// The target bands drawn on the controls: try 2 marks the lesson's own control clearly, try 3 marks every
-    /// control faintly, nothing else is marked. Read from the lesson's measured windows, never typed in.
+    /// True in try 3 and the pass shot of a lesson that is not about power: the power stays at the lesson's own stroke.
+    /// The reason (review of 0.6.6): the full pull spans the whole ordinary speed range, so a pull-back in those steps
+    /// quietly moved the power out of a window a few tenths of a metre per second wide (follow: 1.70 to 2.00 m/s),
+    /// Try again then brought the wrong power back, and the bar's plus and minus steps are wider than that window. A
+    /// lesson about tip, side, aim or cue angle should not be lost on a power the lesson never asked about.
+    var powerHeld: Bool {
+        guard let lesson = current, lesson.control != .power, let step else { return false }
+        return step == .try3 || step == .pass
+    }
+
+    /// The target bands drawn on the controls: try 2 marks the lesson's own control clearly, try 3 marks every open
+    /// control faintly, nothing else is marked. Read from the lesson's measured windows, never typed in and never
+    /// widened (a wider band would mark settings that miss). Each band is cut to the part its control can actually
+    /// reach: the tip dot's travel (model.tipLimit) and the ordinary power range. So every marked setting can be set,
+    /// and the middle of a band, where the tip picture puts a dot released inside it, is always a reachable setting that
+    /// makes the shot. Keeping the picture's snap-to-centre out of a band is the picture's own rule (AimGauges).
     var zones: LessonZones? {
         guard let lesson = current, let step else { return nil }
         let r = lesson.reference, w = lesson.window
-        let tipUp = (r.tipUp - w.tipUp)...(r.tipUp + w.tipUp)
-        let tipSide = (r.tipSide - w.tipSide)...(r.tipSide + w.tipSide)
-        let power = (r.power - w.power)...(r.power + w.power)
+        let tipReach = -model.tipLimit...model.tipLimit
+        let tipUp = Self.reachable((r.tipUp - w.tipUp)...(r.tipUp + w.tipUp), within: tipReach)
+        let tipSide = Self.reachable((r.tipSide - w.tipSide)...(r.tipSide + w.tipSide), within: tipReach)
+        let power = Self.reachable((r.power - w.power)...(r.power + w.power), within: model.powerRange)
         let aim = (r.aim - w.aim)...(r.aim + w.aim)
         switch step {
         case .try2:
@@ -137,9 +165,10 @@ final class LessonMode {
             case .elevation: return LessonZones(cueAngles: lesson.cueAngles)
             }
         case .try3:
-            // Faint: a third of try 2's strength, enough to find again, too little to read as an instruction.
-            return LessonZones(tipUp: tipUp, tipSide: tipSide, power: power, aim: aim, cueAngles: lesson.cueAngles,
-                               strength: 0.35)
+            // Faint: a third of try 2's strength, enough to find again, too little to read as an instruction. A held
+            // power is not a target, so its band is left off.
+            return LessonZones(tipUp: tipUp, tipSide: tipSide, power: powerHeld ? nil : power, aim: aim,
+                               cueAngles: lesson.cueAngles, strength: 0.35)
         default:
             return nil
         }
@@ -219,6 +248,25 @@ final class LessonMode {
         }
     }
 
+    /// The pass shot's "Back to the lesson's stroke": same start, the last try kept as a ghost and compared as Try
+    /// again does, but with the lesson's own reference stroke (aim, power, tip, cue angle) instead of the player's last
+    /// settings, for a player whose own settings have wandered off. Only offered after a missed pass shot.
+    func backToLessonStroke() {
+        guard let lesson = current, let step, step == .pass else { return }
+        let stroke = lesson.reference
+        // The next plain Try again or fresh start of the step begins from here too, until the next judged attempt.
+        playerSettings = stroke
+        if model.canTryAgain, let attempt = model.currentAttempt, starts(attempt, at: step) {
+            model.tryAgain(restoring: stroke)
+        } else {
+            // No attempt from this step's start to keep as the ghost: lay the step out afresh with the stroke.
+            load(lesson.layout, stroke)
+            model.setLens(false)
+        }
+        phase = .aiming(step)
+        requestAiming(true)
+    }
+
     /// The next lesson in the path, or the list after the last one.
     func nextLesson() {
         guard let lesson = current, let i = Lessons.all.firstIndex(of: lesson), i + 1 < Lessons.all.count else {
@@ -272,7 +320,10 @@ final class LessonMode {
             phase = .judged(step, verdict)
             requestAiming(false)
             if verdict.made && step == .pass { markDone(lesson) }
-            if verdict.made && step == .exercise { celebrations += 1 }
+            if verdict.made && step == .exercise {
+                celebrationMoment = .madeIt
+                celebrations += 1
+            }
         default:
             break
         }
@@ -309,7 +360,11 @@ final class LessonMode {
             // A neutral aim is straight at the ball: a full hit, which the cut has to be turned away from.
             if lesson.control == .aim { model.aimAtNearestBall() }
         case .try3, .pass:
-            load(lesson.layout, playerSettings ?? lesson.reference)
+            var s = playerSettings ?? lesson.reference
+            // A held power is the lesson's own, whatever the last try left. Read from the lesson, not from powerHeld:
+            // while start() runs, phase still names the step before.
+            if lesson.control != .power { s.power = lesson.reference.power }
+            load(lesson.layout, s)
         case .exercise:
             // The lesson's own stroke, copied: aim, power and tip as they were. Only the tip can change.
             load(exercise.layout, TrickSettings(aim: exercise.reference.aim, power: lesson.reference.power,
@@ -348,10 +403,23 @@ final class LessonMode {
     }
 
     private func markDone(_ lesson: Lesson) {
+        let firstPass = !doneIDs.contains(lesson.id)
+        if firstPass {
+            doneIDs.insert(lesson.id)
+            UserDefaults.standard.set(doneIDs.sorted().joined(separator: ","), forKey: Self.doneKey)
+        }
+        // The big made-it for the sixth lesson, the end of the path, and for the pass that completes all six in
+        // whatever order they were taken; the ordinary one for every other pass.
+        let completesPath = firstPass && Lessons.all.allSatisfy { doneIDs.contains($0.id) }
+        celebrationMoment = (lesson.id == Lessons.all.last?.id || completesPath) ? .madeItBig : .madeIt
         celebrations += 1
-        guard !doneIDs.contains(lesson.id) else { return }
-        doneIDs.insert(lesson.id)
-        UserDefaults.standard.set(doneIDs.sorted().joined(separator: ","), forKey: Self.doneKey)
+    }
+
+    /// The part of a band a control can reach, or nil when none of it can be (then nothing is marked).
+    private static func reachable(_ band: ClosedRange<Double>,
+                                  within reach: ClosedRange<Double>) -> ClosedRange<Double>? {
+        let low = max(band.lowerBound, reach.lowerBound), high = min(band.upperBound, reach.upperBound)
+        return low <= high ? low...high : nil
     }
 
     private func requestAiming(_ open: Bool) {

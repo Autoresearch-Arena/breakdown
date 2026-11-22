@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 11, 36 and 53: the made-it sound plays with the pass
+//          glow (SoundBoard.play, the big one for the sixth lesson); a missed pass shot also offers "Back to the lesson's
+//          stroke"; the try-3 and pass-shot lines say when the power is held at the lesson's stroke; the card steps back
+//          while the Lens tips are up (model.holdForTips), so the tips never stack on the lesson's own card.)
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
@@ -103,7 +107,10 @@ struct LessonCard: View {
     private var mode: LessonMode { model.lessonMode }
 
     var body: some View {
-        if let lesson = mode.current, mode.isActive {
+        // While the Lens tips are showing over a held beat (model.holdForTips, set by the tips themselves), they are the
+        // one card: this card steps back and returns when they are done, so the key moment's idea is never stacked
+        // under the tips (review of 0.6.6, item 53). The replay cannot reach the key moment meanwhile: the clock holds.
+        if let lesson = mode.current, mode.isActive, !model.holdForTips {
             VStack(alignment: .leading, spacing: 8) {
                 content(lesson)
             }
@@ -111,7 +118,8 @@ struct LessonCard: View {
             .glassCard(cornerRadius: 22, padding: 12)
             .tint(palette.accent)
             .animation(reduceMotion ? nil : .snappy, value: mode.phase)
-            // One success haptic per pass; the Vibration option is read at the moment it fires.
+            // One success haptic per pass, with the glow and the made-it sound (LessonTableLayer); the Vibration option
+            // is read at the moment it fires.
             .sensoryFeedback(trigger: mode.celebrations) { _, _ in GameSettings.hapticsOn ? .success : nil }
             .transition(.opacity)
         }
@@ -204,6 +212,13 @@ struct LessonCard: View {
                 }, prominent: true)
                 .keyboardShortcut(.defaultAction)
             } else if step == .pass || step == .exercise {
+                // A missed pass shot: Try again keeps the player's own settings; this puts the lesson's stroke back.
+                if step == .pass && !verdict.made {
+                    plainButton(String(localized: "Back to the lesson's stroke"), symbol: "arrow.counterclockwise") {
+                        mode.backToLessonStroke()
+                    }
+                    .accessibilityHint(String(localized: "Puts the balls back with the lesson's own aim, power and spin"))
+                }
                 tryAgainButton(prominent: !verdict.made)
                 if verdict.made { listButton }
             } else {
@@ -243,10 +258,16 @@ struct LessonCard: View {
             case .power: return String(localized: "Only the power is open. Set it inside the marked part of the bar.")
             case .elevation: return String(localized: "Only the cue angle is open. Pick one of the marked angles.")
             }
+        // In a lesson not about power, try 3 and the pass shot hold the power at the lesson's stroke (LessonMode.powerHeld),
+        // and the line says so: the power bar shows a lock.
         case .try3:
-            return String(localized: "Every control is open now, and the marks are faint.")
+            return mode.powerHeld
+                ? String(localized: "Every control but the power is open now, and the marks are faint. The power stays at the lesson's stroke.")
+                : String(localized: "Every control is open now, and the marks are faint.")
         case .pass:
-            return String(localized: "No marks and nothing locked. Make it on your own to pass.")
+            return mode.powerHeld
+                ? String(localized: "No marks now. Everything but the power is yours, and the power stays at the lesson's stroke. Make it on your own to pass.")
+                : String(localized: "No marks and nothing locked. Make it on your own to pass.")
         case .exercise:
             return String(localized: "Same line, the cue ball further back, your lesson stroke set up. Before you shoot, say where the cue ball will go. Then change only the tip height to stop it dead.")
         }
@@ -389,6 +410,9 @@ struct LessonTableLayer: View {
         .onChange(of: mode.celebrations) { _, _ in
             glow = 1
             withAnimation(.easeOut(duration: reduceMotion ? 0.8 : 1.4)) { glow = 0 }
+            // The made-it sound starts with the glow's flash (the card's success haptic fires on the same change); the
+            // mode says whether it is the big one. SoundBoard honours the Sound option.
+            SoundBoard.play(mode.celebrationMoment)
         }
     }
 

@@ -9,6 +9,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: the stroke's own feel, strokeTexture while the finger
 //          runs along the groove and strokeContact when a pushed stroke plays the shot; outside the feel-cue list
 //          because they follow the finger, not the recording.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 36: the two made-it moments have no pattern here; the
+//          screens that sound them already give the system's success haptic on the same change, explained below.)
 // PURPOSE: Core Haptics for the break. Takes the same feel cues that drive sound (FeelMapping) and plays a
 //          short pattern per cue: a sharp hit with a low rumble for the break crack, light taps for ball
 //          contacts, a duller thump for the rail, a thud with a rattle for a pocket. Strength scales intensity.
@@ -157,6 +159,11 @@ final class Haptics {
         case .win:
             // Four rising taps, one per note of the arpeggio, each a little crisper.
             return (0..<4).map { i in tap(0.3 + 0.5 * s, 0.4 + 0.15 * Double(i), at: d + 0.1 * Double(i)) }
+        case .madeIt, .madeItBig:
+            // Felt already: the lesson, trick-shot and Behind the 8-Ball cards give the system's success haptic
+            // (sensoryFeedback) on the same celebration change that starts the glow and this sound. A pattern here
+            // would buzz a second time on top of it.
+            return []
         }
     }
 }
