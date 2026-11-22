@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Edited: GPT 6.2 Astra High, 21-November-2026, shared higher player launch-speed limits.
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 polish P2: five-pin's menu symbol is a cluster of dots, not a
+//          bowling figure.)
 // Date: 21-November-2026
 // PURPOSE: Which table the game is played on: the standard nine-foot pool table, bumper pool, Italian five-pin
 //          billiards (cinque birilli) or bar billiards. Picked from the Surface menu's "Tables" section and kept in
@@ -87,12 +89,14 @@ enum TableKind: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    /// SF Symbol for menus.
+    /// SF Symbol for menus. Each is a plain shape, never a figure or a person. Five-pin's is a small cluster of dots
+    /// for the pins (SF Symbols 3, so on every iOS 26 and macOS 26 system); the closer five-dot cross is the menu's
+    /// Play button (TitleScreen) and the square grids are bumper pool's and the cork surface's, so it is not reused.
     var symbol: String {
         switch self {
         case .standard: return "rectangle"
         case .bumperPool: return "circle.grid.2x2"
-        case .fivePin: return "figure.bowling"
+        case .fivePin: return "circle.hexagongrid"
         case .barBilliards: return "smallcircle.filled.circle"
         }
     }

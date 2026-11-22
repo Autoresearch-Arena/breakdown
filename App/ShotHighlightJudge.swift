@@ -5,6 +5,9 @@
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (0.7.4 lens-pacing review: the throw rule's note was attached to
 //          drawDistance's doc comment; it now sits on throwDegrees, and the thresholds' group note is a plain comment.
 //          The per-drop rules stop at the first drop whose moment is kept, so an uncaptioned one cannot hide a later.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 polish P1: a draw counts only when the shot also sent something
+//          down that scores (sentBallDown) or the cue ball came back twice drawDistance; a five-pin shot that scored
+//          nothing was being offered as "Drawn back". sentBallDown is shared with HighlightOffer's computer rule.)
 // PURPOSE: Reads a recorded shot and says which remarkable moments it had (plans/22-Nov-2026-v074-glow-up-plan.md,
 //          F3 and stream lens-pacing): a jump, a curve, a thrown pot, a combination, a kick, a bank, two at once, a
 //          big draw, a dead stop, a ball too fast for the pocket, a bumper into the cup, the red pin alone, or a break.
@@ -282,10 +285,29 @@ enum ShotHighlightJudge {
     static let throwDegrees = 1.5
     /// A drawn cue ball must come to rest at least this far behind where it hit, metres, along its way in.
     static let drawDistance = 0.6
+    /// ...and, when the shot sent nothing down that scores (sentBallDown), at least this many times drawDistance
+    /// (0.7.5 polish P1). A plain draw of a little over half a metre is an ordinary positional shot, and the card
+    /// offered it on shots that did nothing else (a five-pin shot by the computer that scored nothing was named
+    /// "Drawn back"); a draw that also pots, or one that comes back well over a metre, is still worth a look.
+    static let plainDrawFactor = 2.0
     /// A dead stop needs at least this speed into the hit, m/s, so a dribble that dies beside the ball is not one. The
     /// plan's first figure was 1.2; the authored Stop Dead answer arrives at about 1.14 m/s (checked against a real
     /// solve on 22-Nov-2026), so the gate is a round 1.0 with room under the shot that teaches it.
     static let stopSpeed = 1.0
+
+    /// True when the shot sent down something that scores (0.7.5 polish P1): an object ball into a pocket, cup or bed
+    /// hole; the struck ball into a bed hole (bar billiards' holes and bumper pool's cups score with the struck ball,
+    /// and the pool table has no bed holes, so a scratch never counts); or, on the five-pin table, a pin knocked down by
+    /// a ball other than the struck one (the struck ball knocking pins is a foul there, FivePinRules). Bar billiards'
+    /// pegs only ever cost, so they never count. It reads only the recording and the table, not whose cup or ball is
+    /// whose, so a ball into the wrong bumper cup counts too: rare, and it can only let a card through, never hide one.
+    /// ShotFacts.pocketed holds the bed-hole drops as well as the edge pockets, so objectBallsPocketed already covers an
+    /// object ball into a hole; holeDrops is read only for the struck ball's own drop.
+    /// Read by the draw rule below and by HighlightOffer.offersComputerShot's caller (a match shot by the computer).
+    static func sentBallDown(_ facts: ShotFacts, table: TableKind) -> Bool {
+        if !facts.objectBallsPocketed.isEmpty || !facts.holeDrops.isEmpty { return true }
+        return table == .fivePin && facts.pinsDown.contains { $0.ball != facts.cueBall }
+    }
 
     /// Every remarkable moment of a recorded shot, strongest (HighlightKind.rank) first; empty for an ordinary shot. Pure.
     /// A moment whose signature has no captioned event is left out: a replay could not hold on it.
@@ -389,8 +411,12 @@ enum ShotHighlightJudge {
             let at = timeline.state(ball: cue, at: events[f].time).position
             let rest = facts.resting[cue]
             let way = mine.velocityBefore.normalized
-            // Drawn back: it came to rest well behind the hit, measured along the way it came in.
-            if way.length > 0.5, -(rest - at).dot(way) >= drawDistance {
+            // Drawn back: it came to rest well behind the hit, measured along the way it came in, and the shot either
+            // sent something down that scores or the draw was twice as long (plainDrawFactor). This only narrows the
+            // old rule, so no shot that offered nothing before can offer a draw now.
+            let behind = -(rest - at).dot(way)
+            if way.length > 0.5, behind >= drawDistance,
+               sentBallDown(facts, table: table) || behind >= plainDrawFactor * drawDistance {
                 add(.drawBack, [f, m.firstRoll(of: cue, after: f)], ball: cue)
             }
             // Stopped dead: a firm hit, the ball it met went down, and it stayed within one ball radius of the spot.

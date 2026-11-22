@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 polish P4: each drawing is a small table, not a thin outline:
+//          the bed filled with the cloth's green at low brightness, the six pockets as dark dots, the start balls as
+//          filled discs in their own colours (the cue ball white) and the paths a little thicker. Same size, same
+//          hidden-from-VoiceOver drawing, same data.)
 // PURPOSE: The trick-shot gallery's small drawings (plans/22-Nov-2026-v074-glow-up-plan.md, G5): beside each row of the
 //          trick-shot list, the answer's real solved path, so the massé's curve and the jump's hop are seen before
 //          anything is tapped. Three parts:
@@ -11,10 +15,11 @@
 //          - TrickPathCache, the shared store the list reads: it solves every answer once per run, off the main actor,
 //            one after another, and only when the list first appears (never at launch). A shot whose solve fails (or
 //            that is not a laid-out shot) is remembered as failed and its row shows as it did before 0.7.4.
-//          - TrickPathThumb, the drawing: a Canvas at the table's own aspect with the cloth's outline, six pocket marks,
-//            the cue-ball path magenta while sliding, cyan while rolling and white dashed while in the air (the Lens's
-//            own colours, from the palette; never orange), the other balls' paths thin white, and the start balls on
-//            top. Hidden from VoiceOver: the row's spoken label already says what the shot is.
+//          - TrickPathThumb, the drawing: a Canvas at the table's own aspect, a small table (the bed in a dim cloth
+//            green, six dark pocket dots), the cue-ball path magenta while sliding, cyan while rolling and white dashed
+//            while in the air (the Lens's own colours, from the palette; never orange), the other balls' paths thin
+//            white, and the start balls on top as filled discs in their own colours. Hidden from VoiceOver: the row's
+//            spoken label already says what the shot is.
 //          Read by TrickShotList (TrickShotViews.swift).
 // SRP/DRY check: Pass - checked ShotAttempt.ghostPaths (samples a recording into plain points for the ghost, with no
 //          motion kinds, so it cannot colour by phase), LensLayer (draws live trails in 3D from the clock) and
@@ -187,6 +192,21 @@ struct TrickPathThumb: View {
     let path: TrickPath
     @Environment(\.palette) private var palette
 
+    /// The bed: the table cloth's green (SurfaceTextures.clothImage's base, 0.045, 0.40, 0.31) at a little over half its
+    /// brightness, so the light paths and balls stand off it and the row still sits calmly on the dark glass. A fixed
+    /// colour on purpose: every trick shot is played on the standard cloth, and the game is always dark (Palette).
+    private static let bed = Color(red: 0.03, green: 0.22, blue: 0.17)
+    /// The rail round the bed: a dark wood-brown edge, so the table's outline reads without a bright line.
+    private static let rail = Color(red: 0.10, green: 0.07, blue: 0.05)
+
+    /// A ball's colour for the drawing: the cue ball's ivory, every other ball its own colour (a stripe its band), from
+    /// the palette the 3D balls use (BallTextures), so the drawing and the table never disagree. Trick shots are laid
+    /// out on the pool table, so pool numbers are the right reading.
+    private static func colour(of ball: Int) -> Color {
+        let c = BallTextures.swatch(number: ball)
+        return Color(red: c.0, green: c.1, blue: c.2)
+    }
+
     var body: some View {
         Canvas { ctx, size in draw(&ctx, size: size) }
             .aspectRatio(path.length / path.width, contentMode: .fit)
@@ -207,43 +227,45 @@ struct TrickPathThumb: View {
             for (i, p) in pts.enumerated() { if i == 0 { out.move(to: at(p)) } else { out.addLine(to: at(p)) } }
             return out
         }
+        // The table: a rail edge drawn outside the bed (the inset leaves room for it), the bed filled in cloth green,
+        // and a faint light line on the cushion nose so the bed's edge still reads against the rail.
         let cloth = CGRect(x: ox, y: oy, width: length * scale, height: width * scale)
-        ctx.fill(Path(roundedRect: cloth, cornerRadius: 3), with: .color(palette.paper.opacity(0.06)))
-        ctx.stroke(Path(roundedRect: cloth, cornerRadius: 3), with: .color(palette.paper.opacity(0.35)), lineWidth: 1)
-        // Pocket marks: a dark dot ringed faintly, big enough to read at this size whatever the real hole's size.
+        let railWidth: CGFloat = 2
+        ctx.fill(Path(roundedRect: cloth.insetBy(dx: -railWidth, dy: -railWidth), cornerRadius: 3.5),
+                 with: .color(Self.rail))
+        ctx.fill(Path(roundedRect: cloth, cornerRadius: 2), with: .color(Self.bed))
+        ctx.stroke(Path(roundedRect: cloth, cornerRadius: 2), with: .color(palette.paper.opacity(0.18)), lineWidth: 0.5)
+        // Pocket marks: a dark dot, big enough to read at this size whatever the real hole's size.
         for p in path.pockets {
             let c = at(p)
-            let dot = Path(ellipseIn: CGRect(x: c.x - 2.4, y: c.y - 2.4, width: 4.8, height: 4.8))
-            ctx.fill(dot, with: .color(.black.opacity(0.85)))
-            ctx.stroke(dot, with: .color(palette.paper.opacity(0.4)), lineWidth: 0.6)
+            ctx.fill(Path(ellipseIn: CGRect(x: c.x - 2.6, y: c.y - 2.6, width: 5.2, height: 5.2)),
+                     with: .color(.black.opacity(0.9)))
         }
         for pts in path.objects {
-            ctx.stroke(line(pts), with: .color(palette.paper.opacity(0.55)),
-                       style: StrokeStyle(lineWidth: 0.8, lineCap: .round, lineJoin: .round))
+            ctx.stroke(line(pts), with: .color(palette.paper.opacity(0.6)),
+                       style: StrokeStyle(lineWidth: 1.0, lineCap: .round, lineJoin: .round))
         }
         for s in path.cue {
             switch s.motion {
             case .sliding:
-                ctx.stroke(line(s.points), with: .color(palette.slide), style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+                ctx.stroke(line(s.points), with: .color(palette.slide), style: StrokeStyle(lineWidth: 2.0, lineCap: .round, lineJoin: .round))
             case .rolling:
-                ctx.stroke(line(s.points), with: .color(palette.accent), style: StrokeStyle(lineWidth: 1.6, lineCap: .round, lineJoin: .round))
+                ctx.stroke(line(s.points), with: .color(palette.accent), style: StrokeStyle(lineWidth: 2.0, lineCap: .round, lineJoin: .round))
             case .airborne:
                 ctx.stroke(line(s.points), with: .color(palette.paper),
-                           style: StrokeStyle(lineWidth: 1.4, lineCap: .round, lineJoin: .round, dash: [2.5, 2]))
+                           style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round, dash: [3, 2.2]))
             }
         }
-        // The start balls on top: real size when that is visible, never smaller than a readable dot. The cue ball is
-        // solid; the others are hollow, so the two are told apart without colour.
-        let r: CGFloat = max(2.2, CGFloat(path.ballRadius) * scale)
+        // The start balls on top: real size when that is visible, never smaller than a readable dot, each filled in its
+        // own colour. A thin dark edge keeps a ball apart from a path under it and the 8's near-black off the dim bed
+        // (a light edge there); the cue ball, the lightest disc, is the one without a number colour.
+        let r: CGFloat = max(2.4, CGFloat(path.ballRadius) * scale)
         for b in path.balls {
             let c = at(b.position)
             let disc = Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
-            if b.ball == 0 {
-                ctx.fill(disc, with: .color(palette.paper))
-            } else {
-                ctx.fill(disc, with: .color(palette.ground.opacity(0.85)))
-                ctx.stroke(disc, with: .color(palette.paper.opacity(0.9)), lineWidth: 0.9)
-            }
+            ctx.fill(disc, with: .color(Self.colour(of: b.ball)))
+            let darkBall = b.ball == 8
+            ctx.stroke(disc, with: .color(darkBall ? palette.paper.opacity(0.7) : Color.black.opacity(0.55)), lineWidth: 0.6)
         }
     }
 }
