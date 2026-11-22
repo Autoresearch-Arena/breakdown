@@ -16,6 +16,9 @@
 //          rule is kept here: the first window to appear holds the game (GameWindowClaim); any further window the
 //          system opens shows a short card instead of a second game, with "Play here" (the game moves to this window)
 //          and "Close this window". Two windows can never run two games that overwrite one saved match.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 14, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
+//          "Play here" says what it does: the game starts here and the one in the other window ends, a saved match
+//          kept to continue. The game is not carried across windows; the hint no longer says it moves.)
 // SRP/DRY check: Pass - shell only. Note SwiftUI.Scene is qualified because RealityKit also defines Scene.
 //          The colours come from Theme (palette.ground) and the timing from StartupAssets; nothing is repeated here.
 import SwiftUI
@@ -158,7 +161,9 @@ private struct OtherWindowNotice: View {
                     Text(String(localized: "Play here")).font(.headline).frame(maxWidth: 280)
                 }
                 .buttonStyle(.glassProminent)
-                .accessibilityHint(String(localized: "Moves the game to this window"))
+                // Says what really happens: this window builds a fresh game and the other window's ends (the game
+                // itself does not move across windows; a saved match is kept and can be continued here).
+                .accessibilityHint(String(localized: "Plays here. The game in the other window ends; a saved match can be continued."))
                 if let session {
                     Button {
                         UIApplication.shared.requestSceneSessionDestruction(session, options: nil) { error in

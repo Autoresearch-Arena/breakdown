@@ -1,5 +1,14 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B5 and
+//          stream layouts items 1, 2, 11, 13 and L-B: behind the menu the title row and the phone's bottom stack are
+//          disabled, so their Escape and Return go quiet, and the back button gives up Escape while the menu is open or
+//          End-this-game is asking; in the side-column layout the menu is laid over the whole window and the column
+//          goes blank and quiet behind it (its width kept, so the table does not move); with the notebook put away on a
+//          wide window the controls take a smaller share of the height and the title row reaches the corners; on a
+//          phone held upright a guided Lens replay slims the mode cards (lensReplayCompact) and Your shot waits closed
+//          while it plays, and in a match it also waits closed while a card with its own button is up, opening again
+//          when the reason goes; opening Your shot closes a what-if; the stage reports its frame for the caption chip.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F11:
 //          the what-if mounts. While a what-if shows, the last-try ghost and the stroke trace step aside and
 //          WhatIfOverlay draws the other future; WhatIfCard leads the bottom stack's and the side column's cards.)
@@ -121,6 +130,10 @@ struct ShowpieceView: View {
     @State private var pendingMatch: MatchStartRequest?
     /// The table has keyboard focus: the space bar plays and pauses only then (item 32).
     @FocusState private var tableFocused: Bool
+    /// Your shot was open when something on a phone held upright made it wait closed (a guided Lens replay, or a match
+    /// card with its own button); it opens again when that reason goes (0.7.5 layouts items 13 and L-B). One flag for
+    /// both reasons, so a replay and a card that overlap cannot reopen or forget the panel twice.
+    @State private var panelWaiting = false
 
     var body: some View {
         GeometryReader { geo in
@@ -141,14 +154,20 @@ struct ShowpieceView: View {
             let laptopFold = division.flatMap { $0.height > $0.width ? nil : $0 }
             let split = (wide && !tableOnly) || division != nil
             let controlsInColumn = division != nil || short
+            // The side column beside the table with no notebook (a phone turned sideways, a small window): the menu is
+            // laid over the whole window there, not only over the table (0.7.5 layouts item 2).
+            let menuOverWindow = split && division == nil
+            // Your shot waits closed on a phone held upright while a guided Lens replay plays (item 13) or a match
+            // card with its own button is up (L-B); see panelWaiting.
+            let panelWaits = !wide && division == nil && (Self.lensReplayCompact(model, size: geo.size) || matchCardWaits)
             ZStack {
                 palette.ground.ignoresSafeArea()
                 // One container for every layout, so the table keeps its identity (and its built 3D scene) when the
                 // phone turns, folds or unfolds; only its frame and its neighbours change. The hinge itself stays empty.
                 (laptopFold != nil ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))) {
                     stage(geo: geo, wide: split, controlsInColumn: controlsInColumn,
-                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil), menuOnStage: division == nil,
-                          header: division == nil)
+                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil),
+                          menuOnStage: division == nil && !menuOverWindow, header: division == nil)
                         // Folding phone or notebook: the table owns the whole side before the division.
                         .frame(width: bookFold.map { max(0, $0.minX) }, height: laptopFold.map { max(0, $0.minY) })
                     if let division {
@@ -166,14 +185,47 @@ struct ShowpieceView: View {
                         // The side column beside the table (Mac, iPad, a phone turned sideways).
                         sideColumn(geo: geo, controlsInColumn: controlsInColumn,
                                    width: min(columnWidth, geo.size.width * 0.45), divider: .leading)
+                            // Behind the menu the column is blank and quiet: no cards or Shoot showing through the
+                            // veil, no Return or Escape from its buttons, nothing read aloud. Its width stays, so the
+                            // table does not move when the menu comes or goes (item 2).
+                            .opacity(model.menuOpen ? 0 : 1)
+                            .allowsHitTesting(!model.menuOpen)
+                            .disabled(model.menuOpen)
+                            .accessibilityHidden(model.menuOpen)
                     }
                 }
                 // Lists, menus and option sheets stay out of sheets in the notebook: they are pages of its panel.
                 .environment(\.inlinePages, division != nil)
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
                 CaptionLeader(leader: leader, showLine: split)
+                // The main menu over the whole window in the side-column layout, so its veil and card span the window
+                // and not just the table beside a busy column (item 2). Above the leader line.
+                if model.menuOpen && menuOverWindow {
+                    TitleScreen(model: model, onPlay: { showShotPanel = true }, pendingMatch: $pendingMatch)
+                }
             }
             .coordinateSpace(name: StageSpace.name)
+            // The menu comes and goes with the system's smooth motion, as it does over the table (stage()).
+            .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
+            // Items 13 and L-B: Your shot steps aside while the reason holds and comes back when it goes, if it was
+            // open. The player opening it in between takes it over (see the showShotPanel change below).
+            .onChange(of: panelWaits) { _, waits in
+                if waits {
+                    if showShotPanel { showShotPanel = false; panelWaiting = true }
+                } else if panelWaiting {
+                    panelWaiting = false
+                    showShotPanel = true
+                }
+            }
+            .onChange(of: showShotPanel) { _, open in
+                guard open else { return }
+                // Opened by the player, the model or the waiting above: nothing is waiting any more.
+                panelWaiting = false
+                // The what-if card and Your shot share the card slot; aiming the next shot ends the what-if (item 13).
+                // Only an open one: "Keep this one" closes the what-if itself and then asks for this panel, and the kept
+                // future's faint target it leaves on the table must survive that.
+                if model.whatIf.isOpen { model.whatIf.close() }
+            }
             // How to play, Options and Tables outside the notebook (the Help menu, or a page left open when the window
             // shrank below the notebook): a sheet, as the main menu opens them on a phone.
             .sheet(item: Binding(get: { division == nil ? page : nil }, set: { page = $0 })) { shown in
@@ -211,7 +263,8 @@ struct ShowpieceView: View {
                 guard let request else { return }
                 switch request.action {
                 case .open: showShotPanel = true
-                case .close: showShotPanel = false
+                // The model closing the panel outranks a panel waiting to come back (0.7.5 layouts).
+                case .close: showShotPanel = false; panelWaiting = false
                 case .toggle: showShotPanel.toggle()
                 }
             }
@@ -245,7 +298,10 @@ struct ShowpieceView: View {
         let chrome = StageChrome(safe: FramingInsets(top: i.top, left: rtl ? trailingInset : leadingInset,
                                                      bottom: columnEdge == .bottom ? 0 : i.bottom,
                                                      right: rtl ? leadingInset : trailingInset),
-                                 headerBottom: header ? headerBottom : nil, controlsTop: controlsInColumn ? nil : controlsTop)
+                                 headerBottom: header ? headerBottom : nil, controlsTop: controlsInColumn ? nil : controlsTop,
+                                 // No title row on the Duo's table half and beside the notebook: the camera must not
+                                 // keep room for one while the real edge is unmeasured (0.7.5 layouts item 10).
+                                 hasHeader: header)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, showCue: showShotPanel, chrome: chrome)
@@ -283,18 +339,22 @@ struct ShowpieceView: View {
                         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
                 }
                 Spacer(minLength: 0)
-                // Hidden (but still measured, so the table does not jump) while the menu is up.
+                // Hidden (but still measured, so the table does not jump) while the menu is up. Disabled too, so the
+                // cards' Return and Escape shortcuts do not fire behind the menu (0.7.5 layouts item 1).
                 if !controlsInColumn {
                     bottomStack(geo: geo, wide: wide)
                         .opacity(model.menuOpen ? 0 : 1)
                         .allowsHitTesting(!model.menuOpen)
+                        .disabled(model.menuOpen)
                         .accessibilityHidden(model.menuOpen)
+                        // The controls keep a readable width on a big window; the title row above is not capped, so
+                        // its buttons reach the corners (item 11).
+                        .frame(maxWidth: 760)
                 }
             }
             .padding(.horizontal, 16)
             .padding(.top, 4)
             .padding(.bottom, 6)
-            .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
             // The Lens callouts.
             LensCalloutLayer(model: model, bridge: bridge)
@@ -318,18 +378,31 @@ struct ShowpieceView: View {
             model.togglePlay()
             return .handled
         }
-        // With the menu on the other panel of a folding phone nothing covers the table, so the table panel stops
-        // taking touches itself: no aiming, and no tapping the hidden title-row buttons, behind an open menu.
+        // The stage's frame in StageSpace (the table's half on the open Duo and beside the notebook, the whole window
+        // on a phone) bounds the caption chip, so the chip never crosses onto the words half (0.7.5 layouts item 12).
+        // Written on change only.
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
+            if leader.stageRect != frame { leader.stageRect = frame }
+        }
+        // With the menu elsewhere (the other panel of a folding phone, the notebook, or laid over the whole window
+        // beside the side column) the table stops taking touches itself: no aiming, and no tapping the hidden
+        // title-row buttons, behind an open menu.
         .allowsHitTesting(menuOnStage || !model.menuOpen)
         // The menu comes and goes with the system's smooth motion, not a cut.
         .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
     }
 
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
+        // `wide` is the split layout, which is false with the notebook put away on a big window, so the window's own
+        // shape is read here for the height caps (0.7.5 layouts item 11).
+        let wideWindow = ScreenLayout.isWide(geo.size)
         // A phone this wide for its height (the closed Duo: nearly two thirds as wide as tall) has no height to spare for the
-        // table anyway, and a taller stack keeps a scorecard and its controls from being cut at the bottom.
+        // table anyway, and a taller stack keeps a scorecard and its controls from being cut at the bottom. Only on phone
+        // widths: a big window with the notebook put away has height to spare for the table, so the controls get under
+        // half of a landscape window and the phone's share of a portrait one.
         let squarish = geo.size.width / max(1, geo.size.height) > 0.65
-        return FittingScroll(maxHeight: geo.size.height * (squarish ? 0.74 : 0.62)) {
+        let share: CGFloat = wideWindow ? (geo.size.width > geo.size.height ? 0.45 : 0.62) : (squarish ? 0.74 : 0.62)
+        return FittingScroll(maxHeight: geo.size.height * share) {
             VStack(spacing: 10) {
                 // The what-if card first: while it shows, the result cards below step aside (0.7.5).
                 if !wide { WhatIfCard(model: model) }
@@ -354,12 +427,17 @@ struct ShowpieceView: View {
                 // comes up and never between captions. Not gated on the menu: the whole stack is already hidden while
                 // the menu is up, and keeping it measured stops the table jumping behind the menu.
                 if !wide && model.lensOn && explanations {
-                    CaptionStrip(model: model, maxHeight: geo.size.height * 0.28)
+                    // A lower cap on a big window: the strip's three reserved lines are short there anyway, and at large
+                    // text sizes it scrolls inside the cap rather than taking a third of the window from the table.
+                    CaptionStrip(model: model, maxHeight: geo.size.height * (wideWindow ? 0.2 : 0.28))
                         .transition(.opacity)
                 }
                 PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
             }
         }
+        // Phone held upright, guided Lens replay: the mode cards show their slim form (heading and main button) so the
+        // table keeps its height while the replay plays (B3, item 13).
+        .environment(\.lensReplayCompact, Self.lensReplayCompact(model, size: geo.size))
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: model.retryComparison)
         .animation(reduceMotion ? nil : .snappy, value: model.trickMode.isActive)
@@ -367,6 +445,26 @@ struct ShowpieceView: View {
         .animation(reduceMotion ? nil : .snappy, value: model.eightBallMode.isActive)
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: model.lensOn)
         .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { controlsTop = $0 }
+    }
+
+    /// True on a phone held upright (not ScreenLayout.isWide) while a guided Lens replay plays: the Lens is up, guided
+    /// pacing drives the clock, and the balls have not stopped. The bottom stack hands it to the cards as
+    /// lensReplayCompact, and Your shot waits closed while it holds (0.7.5 layouts item 13).
+    static func lensReplayCompact(_ model: ShowpieceModel, size: CGSize) -> Bool {
+        !ScreenLayout.isWide(size) && model.lensOn && model.guided && !model.aimReady
+    }
+
+    /// True while a match or table-game card with its own main button is up (L-B): the full ruling card (Continue, or a
+    /// person's choice), the hand-over (Ready) and the result (Rematch). The routine ruling's banner has no button and
+    /// settles by itself, so it does not count; aiming and a shot playing never count. On a phone held upright Your
+    /// shot waits closed meanwhile, so the card and the Shoot row do not crowd the table to its top third.
+    private var matchCardWaits: Bool {
+        guard let match = model.match else { return false }
+        switch match.phase {
+        case .ruling: return match.lastRuling == nil || match.lastRulingShow == .card
+        case .handOver, .over: return true
+        case .aiming, .shooting: return false
+        }
     }
 
     /// How to play, Options or Tables as a sheet, for the layouts without the notebook panel.
@@ -484,6 +582,8 @@ private struct ScreenHeader: View {
             }
         }
         .opacity(model.menuOpen ? 0 : 1)
+        // Disabled behind the menu, so the hidden back button's Escape and the skip button do nothing there (0.7.5).
+        .disabled(model.menuOpen)
         .accessibilityHidden(model.menuOpen)
         .animation(.easeOut(duration: 0.25), value: model.stage)
         .animation(.easeOut(duration: 0.25), value: model.lensOn)
@@ -496,6 +596,9 @@ private struct ScreenHeader: View {
 struct MenuBackButton: View {
     let model: ShowpieceModel
 
+    /// The back button claims Escape only when nothing else on screen is using it.
+    private var escapeIsMine: Bool { !model.menuOpen && model.match?.confirmingEnd != true }
+
     var body: some View {
         Button { model.openMenu() } label: {
             Label("Menu", systemImage: "chevron.backward")
@@ -506,8 +609,9 @@ struct MenuBackButton: View {
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
         .controlSize(.regular)
-        // Escape opens the menu on the Mac and with a hardware keyboard.
-        .keyboardShortcut(.cancelAction)
+        // Escape opens the menu on the Mac and with a hardware keyboard, except while the menu is already open or the
+        // match card's End-this-game is asking: Escape is then theirs (it cancels), claimed once (0.7.5 layouts item 1).
+        .keyboardShortcut(escapeIsMine ? KeyboardShortcut.cancelAction : nil)
         .hoverHighlight()
         .accessibilityLabel("Menu")
         .accessibilityHint("Pauses the game and opens the main menu")

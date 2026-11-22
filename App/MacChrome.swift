@@ -1,5 +1,15 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 3 and half of L-A,
+//          plans/22-Nov-2026-v075-whatif-and-gaps-plan.md: the Shot and Playback menus and the toolbar's play, replay,
+//          speed and Your shot do nothing while the main menu is open; Learn, Trick Shots and Behind the 8-Ball open
+//          their list at once and close the other lists and any page (model.showList); Continue Match, New Free Game,
+//          the Straight Stroke Drill and Watch the Intro close any page, and a Continue Match whose save does not load
+//          leaves the menu as it is; Game > Tables is a list of items, each re-racking its table every time, ticked
+//          for the table actually on screen (none in a pool-only mode or a match); Next Explained Moment moves a
+//          guided Lens replay on to its next held moment; Speed gains Auto (the paced replay); Playback gains What
+//          If... (Shift-Command-T) after Try Again; the toolbar's Your shot is plain and disabled on the computer's
+//          turn.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 menus-entries: New Game offers bumper pool and five-pin against
 //          the computer at each level as well as eight-ball and nine-ball; bar billiards stays Play Alone. Playback
 //          gains Watch It in the Lens (Shift-Command-R), enabled while a remarkable shot is on offer.)
@@ -42,8 +52,10 @@
 //              Notebook (Option-Command-I), Zoom In, Zoom Out, Actual Size (Command-plus, -minus, -0). Playback: Play or
 //              Pause (space while the table has focus), Replay with Lens (Command-R), Watch It in the Lens
 //              (Shift-Command-R, while a remarkable shot is on offer), the four
-//              speeds (Command-1 to 4), Next and Previous Explained Moment (Command-] and Command-[), Try Again
-//              (Command-T). Help: How to Play (Command-?).
+//              speeds (Command-1 to 4) and Auto, Next and Previous Explained Moment (Command-] and Command-[), Try
+//              Again (Command-T), What If... (Shift-Command-T). Help: How to Play (Command-?).
+//            - behind the main menu the Shot and Playback menus and the toolbar's playback controls are disabled, so
+//              nothing acts on the table the menu covers.
 //            - the Mac window toolbar (play, speed, replay, Lens, Ride, Your shot, the notebook), reusing the play, replay
 //              and speed controls from PlaybackControls and the system's own toggle buttons;
 //            - the Mac window's single-window rule and its remembered frame, and the Settings window's content;
@@ -136,8 +148,10 @@ struct GameCommands: Commands {
             // The Play list's order: what is in progress, then a fresh table, then a new game of each kind.
             Button("Continue Match") {
                 guard let model else { return }
+                page?.wrappedValue = nil
                 model.trickMode.end(); model.eightBallMode.end()
-                model.continueSavedMatch()
+                // A save that does not load is dropped by the model and the menu stays as it is (0.7.5).
+                guard model.continueSavedMatch() else { return }
                 model.closeMenu()
                 shotPanelOpen?.wrappedValue = true
             }
@@ -145,6 +159,8 @@ struct GameCommands: Commands {
             // Practice: a fresh rack. A saved match stays saved, as the main menu's Practice leaves it (item 18).
             Button("New Free Game") {
                 guard let model else { return }
+                // Any page (How to play, Tables) gives way to the table, as start(_:) does for a new match.
+                page?.wrappedValue = nil
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame()
                 shotPanelOpen?.wrappedValue = true
             }
@@ -172,20 +188,24 @@ struct GameCommands: Commands {
             }
             .disabled(model == nil)
             Divider()
-            Button("Learn…") { model?.lessonMode.listOpen = true }
+            // The three lists open at once and close each other (model.showList) and any page, so the list asked for is
+            // the one on screen, never one hidden behind another (0.7.5).
+            Button("Learn…") { open(.lessons) }
                 .disabled(model == nil)
             Button("Straight Stroke Drill") {
                 guard let model else { return }
+                page?.wrappedValue = nil
                 model.strokeDrill.begin()
                 shotPanelOpen?.wrappedValue = true
             }
             .disabled(model == nil)
-            Button("Trick Shots…") { model?.trickMode.listOpen = true }
+            Button("Trick Shots…") { open(.tricks) }
                 .disabled(model == nil)
-            Button("Behind the 8-Ball…") { model?.eightBallMode.listOpen = true }
+            Button("Behind the 8-Ball…") { open(.eightBall) }
                 .disabled(model == nil)
             Button("Watch the Intro") {
                 guard let model else { return }
+                page?.wrappedValue = nil
                 model.trickMode.end(); model.eightBallMode.end(); model.watchBreak()
             }
             .disabled(model == nil)
@@ -195,9 +215,15 @@ struct GameCommands: Commands {
             Divider()
             // A table is a different game; a surface changes what the bed is made of. The same choices as the main
             // menu's Tables page and the round Surface button.
-            Picker(String(localized: "Tables"), selection: Binding(get: { model?.tableKind ?? .standard }, set: { model?.playTable($0) })) {
+            // Tables: one item per table rather than a Picker, because a Picker ignores a pick of the ticked row, and
+            // every pick must re-rack (0.7.5). Each item is a Toggle only for the menu's own tick: whatever the click
+            // asks, it plays that table. The tick is the table actually on screen (model.tableOnScreen), so none is
+            // ticked while a trick shot, lesson, situation, drill or match is up.
+            Menu(String(localized: "Tables")) {
                 ForEach(TableKind.allCases) { kind in
-                    Label(kind.title, systemImage: kind.symbol).tag(kind)
+                    Toggle(isOn: Binding(get: { model?.tableOnScreen == kind }, set: { _ in model?.playTable(kind) })) {
+                        Label(kind.title, systemImage: kind.symbol)
+                    }
                 }
             }
             .disabled(model == nil)
@@ -208,6 +234,12 @@ struct GameCommands: Commands {
             }
             .disabled(model == nil)
         }
+    }
+
+    /// Opens one of the three mode lists from the menu bar: any page gives way and the other lists close.
+    private func open(_ list: ModeList) {
+        page?.wrappedValue = nil
+        model?.showList(list)
     }
 
     /// A new match from the menu bar. With a match saved (one slot), the main menu opens on the card that asks before
@@ -237,46 +269,54 @@ struct ShotCommands: Commands {
 
     var body: some Commands {
         CommandMenu("Shot") {
-            Button("Your Shot") { shotPanelOpen?.wrappedValue.toggle() }
-                .keyboardShortcut("y", modifiers: .command)
-                .disabled(shotPanelOpen == nil)
-            Button((model?.racked ?? false) ? "Break" : "Shoot") {
-                guard let model else { return }
-                // The break hands the screen to its slow-motion opening, so the panel closes, as with the Break button.
-                // A refusal is recorded by the model and its reason shows on the shot panel.
-                if model.fireStroke() == .breakStruck { shotPanelOpen?.wrappedValue = false }
-            }
-            .keyboardShortcut(.return, modifiers: .command)
-            // Disabled while a stroke would be refused: a replay still playing, a card or choice waiting, no call and
-            // no suggestion, the computer's turn, a solve in flight (items 2, 13 and 16).
-            .disabled(model == nil || model?.strokeRefusal != nil)
-            Divider()
-            // On the computer's turn the person's shot keys do nothing (item 16), as the greyed shot panel shows.
-            Group {
-                Button("Aim Anticlockwise") { act { $0.nudgeAim(1) } }
-                    .keyboardShortcut(.leftArrow, modifiers: .command)
-                Button("Aim Clockwise") { act { $0.nudgeAim(-1) } }
-                    .keyboardShortcut(.rightArrow, modifiers: .command)
-                Button("More Power") { act { $0.powerFraction += ShotKeys.powerStep } }
-                    .keyboardShortcut(.upArrow, modifiers: .command)
-                Button("Less Power") { act { $0.powerFraction -= ShotKeys.powerStep } }
-                    .keyboardShortcut(.downArrow, modifiers: .command)
-                Divider()
-                Button("Tip Higher (Follow)") { act { ShotKeys.moveTip($0, up: 1, side: 0) } }
-                    .keyboardShortcut(.upArrow, modifiers: .option)
-                Button("Tip Lower (Draw)") { act { ShotKeys.moveTip($0, up: -1, side: 0) } }
-                    .keyboardShortcut(.downArrow, modifiers: .option)
-                Button("Tip Left") { act { ShotKeys.moveTip($0, up: 0, side: -1) } }
-                    .keyboardShortcut(.leftArrow, modifiers: .option)
-                Button("Tip Right") { act { ShotKeys.moveTip($0, up: 0, side: 1) } }
-                    .keyboardShortcut(.rightArrow, modifiers: .option)
-                Button("Centre the Tip") { act { $0.activeTipUp = 0; $0.activeTipSide = 0 } }
-                    .keyboardShortcut("0", modifiers: .option)
-            }
-            .disabled(!(model?.personControlsLive ?? false))
-            Divider()
-            callMenu
+            // Behind the main menu every item here is disabled (the outer disabled wins over each item's own), so no
+            // key aims, shoots or opens Your shot on a table the menu covers (0.7.5).
+            Group { shotItems }
+                .disabled(model?.menuOpen ?? false)
         }
+    }
+
+    @ViewBuilder private var shotItems: some View {
+        // Not on the computer's turn: Your shot is the person's (L-A), as the toolbar's toggle shows.
+        Button("Your Shot") { shotPanelOpen?.wrappedValue.toggle() }
+            .keyboardShortcut("y", modifiers: .command)
+            .disabled(shotPanelOpen == nil || (model.map { $0.computerTurnStage != .none } ?? false))
+        Button((model?.racked ?? false) ? "Break" : "Shoot") {
+            guard let model else { return }
+            // The break hands the screen to its slow-motion opening, so the panel closes, as with the Break button.
+            // A refusal is recorded by the model and its reason shows on the shot panel.
+            if model.fireStroke() == .breakStruck { shotPanelOpen?.wrappedValue = false }
+        }
+        .keyboardShortcut(.return, modifiers: .command)
+        // Disabled while a stroke would be refused: a replay still playing, a card or choice waiting, no call and
+        // no suggestion, the computer's turn, a solve in flight (items 2, 13 and 16).
+        .disabled(model == nil || model?.strokeRefusal != nil)
+        Divider()
+        // On the computer's turn the person's shot keys do nothing (item 16), as the greyed shot panel shows.
+        Group {
+            Button("Aim Anticlockwise") { act { $0.nudgeAim(1) } }
+                .keyboardShortcut(.leftArrow, modifiers: .command)
+            Button("Aim Clockwise") { act { $0.nudgeAim(-1) } }
+                .keyboardShortcut(.rightArrow, modifiers: .command)
+            Button("More Power") { act { $0.powerFraction += ShotKeys.powerStep } }
+                .keyboardShortcut(.upArrow, modifiers: .command)
+            Button("Less Power") { act { $0.powerFraction -= ShotKeys.powerStep } }
+                .keyboardShortcut(.downArrow, modifiers: .command)
+            Divider()
+            Button("Tip Higher (Follow)") { act { ShotKeys.moveTip($0, up: 1, side: 0) } }
+                .keyboardShortcut(.upArrow, modifiers: .option)
+            Button("Tip Lower (Draw)") { act { ShotKeys.moveTip($0, up: -1, side: 0) } }
+                .keyboardShortcut(.downArrow, modifiers: .option)
+            Button("Tip Left") { act { ShotKeys.moveTip($0, up: 0, side: -1) } }
+                .keyboardShortcut(.leftArrow, modifiers: .option)
+            Button("Tip Right") { act { ShotKeys.moveTip($0, up: 0, side: 1) } }
+                .keyboardShortcut(.rightArrow, modifiers: .option)
+            Button("Centre the Tip") { act { $0.activeTipUp = 0; $0.activeTipSide = 0 } }
+                .keyboardShortcut("0", modifiers: .option)
+        }
+        .disabled(!(model?.personControlsLive ?? false))
+        Divider()
+        callMenu
     }
 
     /// Calling a pocket for the ball the aim line meets first, in games that ask for a call. Disabled otherwise.
@@ -299,9 +339,10 @@ struct ShotCommands: Commands {
         .disabled(!mustCall)
     }
 
-    /// Runs a shot key on the model after opening the aim to change (ShotKeys.prepare). Nothing on the computer's turn.
+    /// Runs a shot key on the model after opening the aim to change (ShotKeys.prepare). Nothing on the computer's turn,
+    /// and nothing behind the main menu (a backstop to the disabled menu, 0.7.5).
     private func act(_ change: (ShowpieceModel) -> Void) {
-        guard let model, model.personControlsLive else { return }
+        guard let model, model.personControlsLive, !model.menuOpen else { return }
         ShotKeys.prepare(model, shotPanelOpen)
         change(model)
     }
@@ -353,39 +394,58 @@ struct PlaybackCommands: Commands {
 
     var body: some Commands {
         CommandMenu("Playback") {
-            let isPlaying = (model?.playing ?? false) && (model?.time ?? 0) < (model?.duration ?? 0)
-            // No key here: a bare space in the menu bar swallowed spaces typed into name fields (item 32). The space
-            // bar plays and pauses while the table has keyboard focus instead (ShowpieceView).
-            Button(isPlaying ? "Pause" : "Play") { model?.togglePlay() }
-            Button("Replay with Lens") { model?.replay(withLens: true) }
-                .keyboardShortcut("r", modifiers: .command)
-            // The remarkable shot just played, replayed slowly in the Lens holding its key moment: the same as the
-            // "Watch it in the Lens" button on the highlight card (the model decides when one is on offer, and the
-            // item is greyed whenever the card is not showing). Shift-Command-R, beside Replay with Lens, is free.
-            Button("Watch It in the Lens") { model?.watchHighlight() }
-                .keyboardShortcut("r", modifiers: [.command, .shift])
-                .disabled(model?.highlightOnOffer == nil)
-            Menu("Speed") {
-                ForEach(Array(PlaybackSpeed.rates.enumerated()), id: \.offset) { index, rate in
-                    Button(PlaybackSpeed.label(rate)) { model?.setRate(rate) }
-                        .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .command)
-                }
-            }
-            Divider()
-            // The explained moments are the Lens captions; stepping to one pauses the replay there and lights it in
-            // the notebook's story, as clicking its row does.
-            Button("Next Explained Moment") { step(forward: true) }
-                .keyboardShortcut("]", modifiers: .command)
-                .disabled(moment(forward: true) == nil)
-            Button("Previous Explained Moment") { step(forward: false) }
-                .keyboardShortcut("[", modifiers: .command)
-                .disabled(moment(forward: false) == nil)
-            Divider()
-            // Same as the Try again button in the shot panel; opens the panel so the restored aim can be changed.
-            Button("Try Again") { model?.tryAgain(); shotPanelOpen?.wrappedValue = true }
-                .keyboardShortcut("t", modifiers: .command)
-                .disabled(!(model?.canTryAgain ?? false))
+            // Behind the main menu every item here is disabled, as in the Shot menu (0.7.5).
+            Group { playbackItems }
+                .disabled(model?.menuOpen ?? false)
         }
+    }
+
+    @ViewBuilder private var playbackItems: some View {
+        let isPlaying = (model?.playing ?? false) && (model?.time ?? 0) < (model?.duration ?? 0)
+        // No key here: a bare space in the menu bar swallowed spaces typed into name fields (item 32). The space
+        // bar plays and pauses while the table has keyboard focus instead (ShowpieceView).
+        Button(isPlaying ? "Pause" : "Play") { model?.togglePlay() }
+        Button("Replay with Lens") { model?.replay(withLens: true) }
+            .keyboardShortcut("r", modifiers: .command)
+        // The remarkable shot just played, replayed slowly in the Lens holding its key moment: the same as the
+        // "Watch it in the Lens" button on the highlight card (the model decides when one is on offer, and the
+        // item is greyed whenever the card is not showing). Shift-Command-R, beside Replay with Lens, is free.
+        Button("Watch It in the Lens") { model?.watchHighlight() }
+            .keyboardShortcut("r", modifiers: [.command, .shift])
+            .disabled(model?.highlightOnOffer == nil)
+        Menu("Speed") {
+            // Auto: back to the paced replay that slows for each explained moment (0.7.5). No key: Command-0 is
+            // the View menu's Actual Size.
+            Button("Auto") { model?.setAutoRate() }
+            ForEach(Array(PlaybackSpeed.rates.enumerated()), id: \.offset) { index, rate in
+                Button(PlaybackSpeed.label(rate)) { model?.setRate(rate) }
+                    .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .command)
+            }
+        }
+        Divider()
+        // The explained moments are the Lens captions; stepping to one pauses the replay there and lights it in
+        // the notebook's story, as clicking its row does. While a guided Lens replay drives the clock, Next is its
+        // Continue instead (model.nextBeat): it ends a held moment or goes on to the next one and holds there, so
+        // the Mac can move a guided replay on as the Continue button does (0.7.5).
+        Button("Next Explained Moment") {
+            guard let model else { return }
+            if model.guided { model.nextBeat() } else { step(forward: true) }
+        }
+        .keyboardShortcut("]", modifiers: .command)
+        .disabled(!(model?.guided ?? false) && moment(forward: true) == nil)
+        Button("Previous Explained Moment") { step(forward: false) }
+            .keyboardShortcut("[", modifiers: .command)
+            .disabled(moment(forward: false) == nil)
+        Divider()
+        // Same as the Try again button in the shot panel; opens the panel so the restored aim can be changed.
+        Button("Try Again") { model?.tryAgain(); shotPanelOpen?.wrappedValue = true }
+            .keyboardShortcut("t", modifiers: .command)
+            .disabled(!(model?.canTryAgain ?? false))
+        // The what-if (spec 4.3): the same as the What if button in the playback row. Enabled exactly when the
+        // button shows (WhatIfFork.canOpen); the card opens in the notebook or the card slot, never on the table.
+        Button("What If…") { model?.whatIf.open() }
+            .keyboardShortcut("t", modifiers: [.command, .shift])
+            .disabled(!(model?.whatIf.canOpen ?? false))
     }
 
     /// The clock time of the next (or previous) caption from the playback clock, or nil when there is none that way.
@@ -428,12 +488,19 @@ struct ShowpieceToolbar: ToolbarContent {
     @Binding var notebookShown: Bool
 
     var body: some ToolbarContent {
+        // Behind the main menu the playback controls and Your shot are disabled, so a click in the toolbar does
+        // nothing to the table the menu covers (0.7.5). The Lens, Ride and the notebook switch stay: they change
+        // the view, not the game.
         ToolbarItemGroup(placement: .navigation) {
             PlayPauseButton(model: model).labelStyle(.iconOnly).help("Play or pause (space)")
+                .disabled(model.menuOpen)
             ReplayButton(model: model).labelStyle(.iconOnly).help("Replay with the Lens (Command-R)")
+                .disabled(model.menuOpen)
         }
         ToolbarItem(placement: .principal) {
-            SpeedPicker(model: model).frame(minWidth: 220).help("Playback speed (Command-1 to 4)")
+            SpeedPicker(model: model).frame(minWidth: 220)
+                .help("Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)")
+                .disabled(model.menuOpen)
         }
         ToolbarItemGroup(placement: .primaryAction) {
             // Real toggles: the system draws the pressed state, so on and off are visible in the toolbar.
@@ -447,14 +514,22 @@ struct ShowpieceToolbar: ToolbarContent {
             }
             .toggleStyle(.button)
             .help("Ride camera: the replay follows the balls at table height (Command-E)")
-            Toggle(isOn: $shotPanelOpen) { Label("Your shot", systemImage: "target") }
-                .toggleStyle(.button)
-                .help("Take your own shot (Command-Y)")
+            // On the computer's turn Your shot is not the person's: drawn off (not lit) and disabled, though the panel
+            // itself may still be open, greyed (L-A).
+            Toggle(isOn: Binding(get: { shotPanelOpen && !computersTurn }, set: { shotPanelOpen = $0 })) {
+                Label("Your shot", systemImage: "target")
+            }
+            .toggleStyle(.button)
+            .help("Take your own shot (Command-Y)")
+            .disabled(model.menuOpen || computersTurn)
             Toggle(isOn: $notebookShown) { Label("Notebook", systemImage: "sidebar.trailing") }
                 .toggleStyle(.button)
                 .help("Show or hide the notebook beside the table (Option-Command-I)")
         }
     }
+
+    /// The computer's turn as the table shows it (thinking, lining up or striking, or its ruling due next).
+    private var computersTurn: Bool { model.computerTurnStage != .none }
 }
 
 // MARK: The one game window (Mac)

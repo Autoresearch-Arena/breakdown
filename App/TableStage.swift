@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 10, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
+//          StageChrome.hasHeader. Where the table has no title row (the open Duo's table half, beside the notebook) the
+//          camera keeps only the safe area at the top, not a phantom 40-point row, so the table is a little larger.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.1: the opening's lamp shot is switched off; it looked broken.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: the aim preview and 3D cue start from the striker).
@@ -65,6 +68,9 @@ struct StageChrome: Equatable {
     var headerBottom: Double?
     /// Top edge of the control strip; nil where the controls live in the side column.
     var controlsTop: Double?
+    /// False where the stage has no title row at all (the open Duo's table half, the table beside the notebook): an
+    /// unmeasured headerBottom then means "nothing there", not "a row not measured yet" (0.7.5 layouts item 10).
+    var hasHeader = true
 }
 
 /// Values the per-frame closure needs that change after the scene is built.
@@ -90,11 +96,12 @@ final class SceneBridge {
     /// The system's Differentiate Without Colour setting, for the bridge ring (an awkward stance gets an inner ring).
     var differentiateWithoutColour = false
 
-    /// The free-space request for the camera, in the 3D view's own coordinates. Edges not measured yet (the first
-    /// frame) fall back to the safe area plus a typical title row, which is replaced as soon as the real one arrives.
+    /// The free-space request for the camera, in the 3D view's own coordinates. A title row not measured yet (the first
+    /// frame) falls back to the safe area plus a typical row, which is replaced as soon as the real one arrives; with no
+    /// title row at all the top edge is the safe area alone (chrome.hasHeader false).
     func request() -> FramingRequest {
         let oy = Double(viewOrigin.y)
-        let header = chrome.headerBottom.map { $0 - oy } ?? (chrome.safe.top + 40)
+        let header = chrome.headerBottom.map { $0 - oy } ?? (chrome.safe.top + (chrome.hasHeader ? 40 : 0))
         let q = FramingRequest(size: viewSize, safe: chrome.safe, headerBottom: header,
                                controlsTop: chrome.controlsTop.map { $0 - oy })
         // Test hook: launch with -frameDebug to print the measured request whenever it changes.

@@ -1,0 +1,510 @@
+{
+ "keys": [
+  "What If…",
+  "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+  "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+  "Options button",
+  "Tries the shot again, where the controller has this button.",
+  "Right stick click",
+  "Replays the shot with the Physics Lens, where the controller has this button.",
+  "Opens or closes the menu.",
+  "Plays here. The game in the other window ends; a saved match can be continued."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "What If…",
+   "text": "¿Y si…?"
+  },
+  {
+   "culture": "fr",
+   "key": "What If…",
+   "text": "Et si…"
+  },
+  {
+   "culture": "de",
+   "key": "What If…",
+   "text": "Was wäre, wenn…"
+  },
+  {
+   "culture": "it",
+   "key": "What If…",
+   "text": "E se…"
+  },
+  {
+   "culture": "pt",
+   "key": "What If…",
+   "text": "E se…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "What If…",
+   "text": "E se…"
+  },
+  {
+   "culture": "ja",
+   "key": "What If…",
+   "text": "もしも…"
+  },
+  {
+   "culture": "ko",
+   "key": "What If…",
+   "text": "만약에…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "What If…",
+   "text": "如果……"
+  },
+  {
+   "culture": "ru",
+   "key": "What If…",
+   "text": "Что, если…"
+  },
+  {
+   "culture": "ar",
+   "key": "What If…",
+   "text": "ماذا لو…"
+  },
+  {
+   "culture": "es",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Velocidad de reproducción: Auto frena en cada momento explicado, o elige una velocidad fija (Comando-1 a 4)"
+  },
+  {
+   "culture": "fr",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Vitesse de lecture : Auto ralentit à chaque moment expliqué, ou choisis une vitesse fixe (Commande-1 à 4)"
+  },
+  {
+   "culture": "de",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Wiedergabegeschwindigkeit: Automatisch bremst bei jedem erklärten Moment, oder wähle ein festes Tempo (Befehl-1 bis 4)"
+  },
+  {
+   "culture": "it",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Velocità di riproduzione: Automatico rallenta a ogni momento spiegato, oppure scegli una velocità fissa (Comando-1 a 4)"
+  },
+  {
+   "culture": "pt",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Velocidade de reprodução: Automático abranda em cada momento explicado, ou escolhe uma velocidade fixa (Comando-1 a 4)"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Velocidade de reprodução: Automático desacelera em cada momento explicado, ou escolha uma velocidade fixa (Comando-1 a 4)"
+  },
+  {
+   "culture": "ja",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "再生速度：自動は説明する場面ごとにゆっくりになります。固定の速度も選べます（⌘1～4）"
+  },
+  {
+   "culture": "ko",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "재생 속도: 자동은 설명하는 순간마다 느려져요. 고정 속도를 고를 수도 있어요 (⌘1~4)"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "回放速度：自动会在每个讲解的时刻放慢，也可以选固定速度（⌘1 至 4）"
+  },
+  {
+   "culture": "ru",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "Скорость воспроизведения: «Авто» замедляет каждый объяснённый момент, или выбери постоянную скорость (⌘1–4)"
+  },
+  {
+   "culture": "ar",
+   "key": "Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)",
+   "text": "سرعة التشغيل: «تلقائي» يبطئ عند كل لحظة مشروحة، أو اختر سرعة ثابتة (⌘1 إلى ⌘4)"
+  },
+  {
+   "culture": "es",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Pulsa el botón principal de la tarjeta en pantalla. Sin tarjeta, continúa un momento detenido de una repetición con la lente, tira mientras Tu tiro está abierto y abre Tu tiro cuando está cerrado."
+  },
+  {
+   "culture": "fr",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Appuie sur le bouton principal de la carte à l'écran. Sans carte, il poursuit un moment arrêté d'un replay avec la lentille, tire quand Ton coup est ouvert et ouvre Ton coup quand il est fermé."
+  },
+  {
+   "culture": "de",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Drückt die Haupttaste der Karte auf dem Bildschirm. Ohne Karte setzt sie einen angehaltenen Moment einer Lens-Wiederholung fort, stößt, solange Dein Stoß offen ist, und öffnet sonst Dein Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Preme il pulsante principale della scheda sullo schermo. Senza schede, fa proseguire un momento fermo di una ripetizione con la Lens, tira quando Il tuo tiro è aperto e apre Il tuo tiro quando è chiuso."
+  },
+  {
+   "culture": "pt",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Carrega no botão principal do cartão no ecrã. Sem cartão, continua um momento parado de uma repetição com a Lente, taca enquanto A tua tacada está aberta e abre A tua tacada quando está fechada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Aperta o botão principal do cartão na tela. Sem cartão, continua um momento parado de uma repetição com a Lente, taca enquanto Sua tacada está aberta e abre Sua tacada quando está fechada."
+  },
+  {
+   "culture": "ja",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "画面に出ているカードのメインボタンを押します。カードがないときは、レンズのリプレイで止まっている場面を先に進め、「あなたのショット」が開いていればショットし、閉じていれば開きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "화면에 뜬 카드의 주 버튼을 눌러요. 카드가 없으면 렌즈 리플레이에서 멈춘 순간을 이어 가고, 내 샷이 열려 있을 때 샷을 하고, 닫혀 있으면 내 샷을 열어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "按下屏幕上卡片的主按钮。没有卡片时，它会让透镜重放中停住的时刻继续，若“你的击球”已打开则击球，关闭时则打开“你的击球”。"
+  },
+  {
+   "culture": "ru",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "Нажимает главную кнопку карточки на экране. Если карточки нет: продолжает остановленный момент повтора с линзой, бьёт, когда открыт «Твой удар», и открывает «Твой удар», когда он закрыт."
+  },
+  {
+   "culture": "ar",
+   "key": "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.",
+   "text": "يضغط الزر الرئيسي للبطاقة الظاهرة. وإن لم تظهر بطاقة، يُكمل لحظة متوقفة في إعادة العرض بالعدسة، ويضرب حين تكون «ضربتك» مفتوحة، ويفتح «ضربتك» حين تكون مغلقة."
+  },
+  {
+   "culture": "es",
+   "key": "Options button",
+   "text": "Botón de opciones"
+  },
+  {
+   "culture": "fr",
+   "key": "Options button",
+   "text": "Bouton Options"
+  },
+  {
+   "culture": "de",
+   "key": "Options button",
+   "text": "Optionstaste"
+  },
+  {
+   "culture": "it",
+   "key": "Options button",
+   "text": "Tasto Opzioni"
+  },
+  {
+   "culture": "pt",
+   "key": "Options button",
+   "text": "Botão de opções"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Options button",
+   "text": "Botão de opções"
+  },
+  {
+   "culture": "ja",
+   "key": "Options button",
+   "text": "オプションボタン"
+  },
+  {
+   "culture": "ko",
+   "key": "Options button",
+   "text": "옵션 버튼"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Options button",
+   "text": "选项键"
+  },
+  {
+   "culture": "ru",
+   "key": "Options button",
+   "text": "Кнопка параметров"
+  },
+  {
+   "culture": "ar",
+   "key": "Options button",
+   "text": "زر الخيارات"
+  },
+  {
+   "culture": "es",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Vuelve a intentar el tiro, si el mando tiene este botón."
+  },
+  {
+   "culture": "fr",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Rejoue le coup, si la manette a ce bouton."
+  },
+  {
+   "culture": "de",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Versucht den Stoß noch einmal, wenn der Controller diese Taste hat."
+  },
+  {
+   "culture": "it",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Riprova il tiro, se il controller ha questo tasto."
+  },
+  {
+   "culture": "pt",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Tenta a tacada outra vez, se o comando tiver este botão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Tenta a tacada de novo, se o controle tiver este botão."
+  },
+  {
+   "culture": "ja",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "ショットをもう一度試します（このボタンがあるコントローラーのみ）。"
+  },
+  {
+   "culture": "ko",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "샷을 다시 시도해요 (이 버튼이 있는 컨트롤러에서)."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "再试一次这一杆（控制器有此键时）。"
+  },
+  {
+   "culture": "ru",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "Повторяет удар, если на контроллере есть эта кнопка."
+  },
+  {
+   "culture": "ar",
+   "key": "Tries the shot again, where the controller has this button.",
+   "text": "يعيد محاولة الضربة، إن كان في وحدة التحكم هذا الزر."
+  },
+  {
+   "culture": "es",
+   "key": "Right stick click",
+   "text": "Pulsar el stick derecho"
+  },
+  {
+   "culture": "fr",
+   "key": "Right stick click",
+   "text": "Clic du stick droit"
+  },
+  {
+   "culture": "de",
+   "key": "Right stick click",
+   "text": "Rechten Stick drücken"
+  },
+  {
+   "culture": "it",
+   "key": "Right stick click",
+   "text": "Clic della levetta destra"
+  },
+  {
+   "culture": "pt",
+   "key": "Right stick click",
+   "text": "Clique do manípulo direito"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Right stick click",
+   "text": "Clique do analógico direito"
+  },
+  {
+   "culture": "ja",
+   "key": "Right stick click",
+   "text": "右スティック押し込み"
+  },
+  {
+   "culture": "ko",
+   "key": "Right stick click",
+   "text": "오른쪽 스틱 누르기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Right stick click",
+   "text": "按下右摇杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Right stick click",
+   "text": "Нажатие правого стика"
+  },
+  {
+   "culture": "ar",
+   "key": "Right stick click",
+   "text": "ضغط العصا اليمنى"
+  },
+  {
+   "culture": "es",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Repite el tiro con la Lente de física, si el mando tiene este botón."
+  },
+  {
+   "culture": "fr",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Rejoue le coup avec la Lentille physique, si la manette a ce bouton."
+  },
+  {
+   "culture": "de",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Spielt den Stoß mit der Physik-Lens noch einmal ab, wenn der Controller diese Taste hat."
+  },
+  {
+   "culture": "it",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Ripete il tiro con la Lens di fisica, se il controller ha questo tasto."
+  },
+  {
+   "culture": "pt",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Repete a tacada com a Lente de Física, se o comando tiver este botão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Repete a tacada com a Lente de Física, se o controle tiver este botão."
+  },
+  {
+   "culture": "ja",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "物理レンズ付きでショットをリプレイします（このボタンがあるコントローラーのみ）。"
+  },
+  {
+   "culture": "ko",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "물리 렌즈와 함께 샷을 리플레이해요 (이 버튼이 있는 컨트롤러에서)."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "用物理透镜重放这一杆（控制器有此键时）。"
+  },
+  {
+   "culture": "ru",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "Повторяет удар с физической линзой, если на контроллере есть эта кнопка."
+  },
+  {
+   "culture": "ar",
+   "key": "Replays the shot with the Physics Lens, where the controller has this button.",
+   "text": "يعيد عرض الضربة بعدسة الفيزياء، إن كان في وحدة التحكم هذا الزر."
+  },
+  {
+   "culture": "es",
+   "key": "Opens or closes the menu.",
+   "text": "Abre o cierra el menú."
+  },
+  {
+   "culture": "fr",
+   "key": "Opens or closes the menu.",
+   "text": "Ouvre ou ferme le menu."
+  },
+  {
+   "culture": "de",
+   "key": "Opens or closes the menu.",
+   "text": "Öffnet oder schließt das Menü."
+  },
+  {
+   "culture": "it",
+   "key": "Opens or closes the menu.",
+   "text": "Apre o chiude il menu."
+  },
+  {
+   "culture": "pt",
+   "key": "Opens or closes the menu.",
+   "text": "Abre ou fecha o menu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Opens or closes the menu.",
+   "text": "Abre ou fecha o menu."
+  },
+  {
+   "culture": "ja",
+   "key": "Opens or closes the menu.",
+   "text": "メニューを開いたり閉じたりします。"
+  },
+  {
+   "culture": "ko",
+   "key": "Opens or closes the menu.",
+   "text": "메뉴를 열거나 닫아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Opens or closes the menu.",
+   "text": "打开或关闭菜单。"
+  },
+  {
+   "culture": "ru",
+   "key": "Opens or closes the menu.",
+   "text": "Открывает или закрывает меню."
+  },
+  {
+   "culture": "ar",
+   "key": "Opens or closes the menu.",
+   "text": "يفتح القائمة أو يغلقها."
+  },
+  {
+   "culture": "es",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Juega aquí. La partida de la otra ventana termina; una partida guardada se puede continuar."
+  },
+  {
+   "culture": "fr",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Joue ici. La partie de l'autre fenêtre se termine ; une partie enregistrée peut être reprise."
+  },
+  {
+   "culture": "de",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Spielt hier. Das Spiel im anderen Fenster endet; ein gespeichertes Match lässt sich fortsetzen."
+  },
+  {
+   "culture": "it",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Gioca qui. La partita nell'altra finestra finisce; una partita salvata si può continuare."
+  },
+  {
+   "culture": "pt",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Joga aqui. O jogo na outra janela termina; uma partida guardada pode ser continuada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Joga aqui. O jogo na outra janela termina; uma partida salva pode ser continuada."
+  },
+  {
+   "culture": "ja",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "ここでプレイします。ほかのウインドウのゲームは終わります。保存した試合は続けられます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "여기서 플레이해요. 다른 창의 게임은 끝나요. 저장한 경기는 이어서 할 수 있어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "在这里玩。另一个窗口中的游戏会结束；已保存的比赛可以继续。"
+  },
+  {
+   "culture": "ru",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "Играть здесь. Игра в другом окне закончится; сохранённую партию можно продолжить."
+  },
+  {
+   "culture": "ar",
+   "key": "Plays here. The game in the other window ends; a saved match can be continued.",
+   "text": "يلعب هنا. تنتهي اللعبة في النافذة الأخرى؛ ويمكن متابعة المباراة المحفوظة."
+  }
+ ]
+}

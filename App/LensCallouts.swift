@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 10: with no title row on the stage (the open Duo's
+//          table half, beside the notebook) the bubble's fallback top edge is the safe area, not a phantom row.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 44
 //          and 53: the tips use the Lens key's own words, magenta and cyan, and with Differentiate Without Colour on
 //          "dashed magenta" and "solid cyan", matching the trails and LensLegendChip; they no longer appear over a finished
@@ -128,7 +130,9 @@ struct LensCalloutLayer: View {
         let chrome = bridge.chrome
         let bar = step == 2
         // StageSpace edges turned into this layer's own coordinates (the layer runs under the safe areas).
-        let top = CGFloat(chrome.headerBottom ?? chrome.safe.top + 44) - origin.y + 12
+        // No title row (the open Duo's table half, beside the notebook): the bubble starts under the safe area, not
+        // under a row that is not there (0.7.5 layouts item 10).
+        let top = CGFloat(chrome.headerBottom ?? chrome.safe.top + (chrome.hasHeader ? 44 : 0)) - origin.y + 12
         let controlsTop = chrome.controlsTop.map { CGFloat($0) - origin.y }
         // The bar: just above the control strip; where the controls live in the side column, near the bottom corner
         // on the column's side.

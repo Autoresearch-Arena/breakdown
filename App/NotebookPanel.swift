@@ -1,5 +1,12 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 4, 7, 8 and 9, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
+//          Continue for a held Lens moment sits at the top of the lower edge, above the playback controls (on the
+//          words half of the open Duo), so a guided replay can be moved on here as on a phone; the Lens colour key has
+//          its own row under the top bar in both layouts, shown whenever the Lens is up (Explanations on or off), and
+//          its height is taken out of the one-column budget; the panel clips to its frame, so nothing it holds draws
+//          over the table; and in two columns, when the story would leave the second column empty (Explanations off),
+//          the cards move there, above the numbers when they show, instead of leaving a blank half.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F11:
 //          WhatIfCard first among the cards, so a what-if lives in the notebook and never covers the table.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the folding phone's panel becomes the notebook of every big screen:
@@ -98,12 +105,17 @@ struct NotebookPanel: View {
     /// when their buttons wrap onto two rows.
     @State private var bottomMeasured: CGFloat = 0
     @State private var numbersMeasured: CGFloat = 0
+    /// Measured height of the Lens colour key's row (0.7.5); it wraps onto more lines at large text sizes.
+    @State private var keyMeasured: CGFloat = 0
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
     var body: some View {
         GeometryReader { geo in
             content(size: geo.size)
                 .frame(width: geo.size.width, height: geo.size.height)
+                // Nothing the panel holds may draw past its edge onto the table beside it (a list page's minimum
+                // frame, a card mid-transition): the table half is the table's alone (0.7.5 layouts item 8).
+                .clipped()
         }
         .background(palette.ground)
         .environment(\.notebookRoomy, !onHinge)
@@ -190,46 +202,85 @@ struct NotebookPanel: View {
         }
     }
 
-    /// The panel's lower edge: the aiming controls (tip picture, power gauge, Shoot) while "Your shot" is open, and the
-    /// playback controls. At the bottom so a thumb reaches them while the other hand aims on the table.
+    /// The panel's lower edge: Continue while a guided Lens replay holds a moment, the aiming controls (tip picture,
+    /// power gauge, Shoot) while "Your shot" is open, and the playback controls. At the bottom so a thumb reaches them
+    /// while the other hand aims on the table.
     private var lowerEdge: some View {
         VStack(spacing: 10) {
+            // A held moment is moved on from here: the notebook has no caption strip with its own Continue, and the
+            // story's rows only jump the clock (0.7.5 layouts item 4). The same button and the same model call
+            // (nextBeat) as the strip on a phone; no Return shortcut, as there.
+            if model.holding {
+                HStack {
+                    Spacer(minLength: 0)
+                    ContinueButton(model: model)
+                }
+                .transition(.opacity)
+            }
             if showShotPanel {
                 ShotPanel(model: model, isOpen: $showShotPanel).glassCard().transition(.opacity)
             }
             PlaybackControls(model: model, shotPanelOpen: $showShotPanel, compact: true)
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
+        .animation(reduceMotion ? nil : .snappy, value: model.holding)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomMeasured = $0 }
     }
 
     /// The lower edge's height before it has been measured once: the playback controls alone (90), or with the shot
-    /// panel's two rows and its glass card (about 180).
+    /// panel's two rows and its glass card (about 180), plus about one button's row (50) while Continue shows.
     private var bottomHeight: CGFloat {
-        bottomMeasured > 0 ? bottomMeasured : (showShotPanel ? 180 : 90)
+        bottomMeasured > 0 ? bottomMeasured : (showShotPanel ? 180 : 90) + (model.holding ? 50 : 0)
     }
 
-    private var showsNumbers: Bool { !modeActive && !showShotPanel && !typeSize.isAccessibilitySize }
+    /// The Lens colour key, in its own row directly under the top bar whenever the Lens is up, whether Explanations is
+    /// on or off (it used to sit in the story's header, so it vanished with the story). Measured for the height budgets.
+    @ViewBuilder
+    private var keyRow: some View {
+        if model.lensOn {
+            LensLegendChip()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { keyMeasured = $0 }
+                .transition(.opacity)
+        }
+    }
+
+    /// The key row's height in a budget: nothing with the Lens down; before the first measurement, one chip row (34).
+    private var keyHeight: CGFloat {
+        model.lensOn ? (keyMeasured > 0 ? keyMeasured : 34) : 0
+    }
+
+    /// The cards block, reporting its natural height (for the commentary's room and the fade at the bottom).
+    private var measuredCards: some View {
+        cards.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardsHeight = $0 }
+    }
+
+    /// The numbers strip shows in free play and matches with Your shot closed, and never while the opening runs: its
+    /// surface card carries the friction figures, and the first minute is one instruction beside a racked table
+    /// (0.7.5 layouts item 6, with NotebookStory's one line).
+    private var showsNumbers: Bool {
+        !modeActive && !showShotPanel && !typeSize.isAccessibilitySize && model.openingStage == .none
+    }
 
     /// One column, read like a book: top bar, cards, the commentary taking all the room left, the numbers, then the
     /// aiming and playback controls at the lower edge. The cards come first and keep all the height they need; the
     /// commentary gets what remains, and is left out (so the cards are not squeezed) when less than a few rows' worth
     /// remains, as while aiming a trick shot.
     private func oneColumn(_ size: CGSize) -> some View {
-        // The fixed parts: padding (32), top bar (40), the lower edge, the numbers, the gaps between blocks.
+        // The fixed parts: padding (32), top bar (40), the Lens key's row, the lower edge, the numbers, and the gaps
+        // between blocks (one more while the key row shows).
         let numbersHeight: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) : 0
-        let gaps = CGFloat(showsNumbers ? 4 : 3) * 12
-        let free = size.height - 32 - 40 - bottomHeight - numbersHeight - gaps
+        let gaps = CGFloat((showsNumbers ? 4 : 3) + (model.lensOn ? 1 : 0)) * 12
+        let free = size.height - 32 - 40 - keyHeight - bottomHeight - numbersHeight - gaps
         let storyMinimum: CGFloat = 140
         let showsStory = explanations && free - cardsHeight >= storyMinimum
         let cardsMax = max(120, showsStory ? free - storyMinimum : free)
         let overflows = cardsHeight > cardsMax
         return VStack(spacing: 12) {
             NotebookTopBar(model: model)
-            FittingScroll(maxHeight: cardsMax) {
-                cards.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardsHeight = $0 }
-            }
-            .fadesAtBottom(overflows)
+            keyRow
+            FittingScroll(maxHeight: cardsMax) { measuredCards }
+                .fadesAtBottom(overflows)
             if showsStory {
                 NotebookStory(model: model, leader: leader).frame(maxHeight: .infinity)
             } else {
@@ -241,6 +292,7 @@ struct NotebookPanel: View {
             }
             lowerEdge
         }
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.lensOn)
         // Slightly narrower side padding than the other layouts: the trick-shot and 8-ball cards keep their buttons on
         // one row only if the column is a few points wider.
         .padding(.horizontal, onHinge ? 10 : 16)
@@ -250,16 +302,25 @@ struct NotebookPanel: View {
     /// Two columns: the top bar, cards and the controls on the leading side, the commentary and the numbers on the
     /// other. Used when the panel is short and wide (the folding phone propped like a laptop, the band under the table
     /// on an iPad held upright) or wide enough for two readable columns (a large Mac window, a 13-inch iPad sideways).
+    /// With Explanations off the commentary is not drawn, which left the second column blank (or holding only the
+    /// numbers at its foot): the cards move there instead, above the numbers when they show, and the first column
+    /// keeps the top bar, the key and the controls (0.7.5 layouts item 9).
     private func twoColumns(_ size: CGSize) -> some View {
-        // Padding (28), top bar (40), the lower edge and the gaps (30) are fixed; the cards take the rest.
-        let cardsMax = max(120, size.height - 28 - 40 - bottomHeight - 30)
+        let cardsBesideStory = explanations
+        // Padding (28), top bar (40), the key row and its gap, the lower edge and the gaps (30) are fixed; the cards
+        // take the rest.
+        let cardsMax = max(120, size.height - 28 - 40 - keyHeight - (model.lensOn ? 10 : 0) - bottomHeight - 30)
+        // In the second column the cards have the whole height but the padding and, when shown, the numbers and a gap.
+        let numbersRoom: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) + 10 : 0
+        let cardsMaxAlone = max(120, size.height - 28 - numbersRoom)
         return HStack(alignment: .top, spacing: 14) {
             VStack(spacing: 10) {
                 NotebookTopBar(model: model)
-                FittingScroll(maxHeight: cardsMax) {
-                    cards.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardsHeight = $0 }
+                keyRow
+                if cardsBesideStory {
+                    FittingScroll(maxHeight: cardsMax) { measuredCards }
+                        .fadesAtBottom(cardsHeight > cardsMax)
                 }
-                .fadesAtBottom(cardsHeight > cardsMax)
                 Spacer(minLength: 0)
                 lowerEdge
             }
@@ -267,11 +328,21 @@ struct NotebookPanel: View {
             // phone keeps the share it was laid out with.
             .frame(width: size.width * (onHinge ? 0.44 : 0.5))
             VStack(spacing: 10) {
-                NotebookStory(model: model, leader: leader)
-                    .frame(maxHeight: .infinity)
-                if showsNumbers { NotebookNumbers(model: model) }
+                if cardsBesideStory {
+                    NotebookStory(model: model, leader: leader)
+                        .frame(maxHeight: .infinity)
+                } else {
+                    FittingScroll(maxHeight: cardsMaxAlone) { measuredCards }
+                        .fadesAtBottom(cardsHeight > cardsMaxAlone)
+                    Spacer(minLength: 0)
+                }
+                if showsNumbers {
+                    NotebookNumbers(model: model)
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { numbersMeasured = $0 }
+                }
             }
         }
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.lensOn)
         .padding(14)
     }
 }
