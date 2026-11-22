@@ -1,5 +1,9 @@
 # Author: Claude Opus 5.5 High
 # Date: 21-November-2026
+# Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment, plan item 57: retired. The app no longer ships or
+#          loads Cue.usdz; it draws the other developer's six cues, exported by Tools/blender/export_equipment.py
+#          (CueHouse.usdz and the rest). Kept as the record of how the first code-built cue was made; running it writes
+#          a file nothing reads.)
 # PURPOSE: Builds the Breakdown pool cue as a 3D model in Blender and writes App/Models/Cue.usdz, which the
 #          RealityKit scene loads by name from the app bundle. The cue is a body of revolution: every part is a
 #          side profile (radius against distance along the cue) spun once around the cue's axis. Nine parts are

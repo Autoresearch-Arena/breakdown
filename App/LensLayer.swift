@@ -61,6 +61,8 @@
 //          the struck ball half a degree or more off the line of centres (CaptionEngine.throwFacts, the same rule the
 //          caption uses), the line of centres is drawn dashed beside the real departure, from the struck ball, for a
 //          short span of clock. Every new mark is a function of the clock alone and is in the fingerprint.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 57 and 23: AimPreview carries the
+//          picked cue and the bridge's length for CueRig; two appended fields with defaults.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 //          The throw rule is CaptionEngine's (one rule for the words and the drawing).
 import BreakdownLensModel
@@ -90,6 +92,12 @@ struct AimPreview {
     var tipSide = 0.0
     /// The cue rests on the mechanical bridge.
     var usesBridge = false
+    /// Which cue CueRig draws: the one the game picked for the shot (model.cueChoice.kind; plan item 57, the
+    /// equipment stream's hook, appended with a default like the rest).
+    var cue: CueKind = .house
+    /// Metres from the cue ball's centre back to the bridge hand (model.strokeBridgeLength): CueRig stops the drawn
+    /// pull-back in front of it (plan item 23). Nil: the automatic bridge.
+    var bridgeLength: Double? = nil
 }
 
 @MainActor

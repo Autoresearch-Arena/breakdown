@@ -1,0 +1,454 @@
+{
+ "keys": [
+  "Break cue",
+  "Jump cue",
+  "Massé cue",
+  "Rosewood cue",
+  "Cobalt cue",
+  "Break cue picked: heavier, so the same swing hits harder",
+  "Jump cue picked: short and light, for a steep stab",
+  "Massé cue picked: short and heavy, steady for a steep curve"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Break cue",
+   "text": "Taco de saque"
+  },
+  {
+   "culture": "fr",
+   "key": "Break cue",
+   "text": "Queue de casse"
+  },
+  {
+   "culture": "de",
+   "key": "Break cue",
+   "text": "Break-Queue"
+  },
+  {
+   "culture": "it",
+   "key": "Break cue",
+   "text": "Stecca da break"
+  },
+  {
+   "culture": "pt",
+   "key": "Break cue",
+   "text": "Taco de abertura"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Break cue",
+   "text": "Taco de abertura"
+  },
+  {
+   "culture": "ja",
+   "key": "Break cue",
+   "text": "ブレイクキュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Break cue",
+   "text": "브레이크 큐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Break cue",
+   "text": "开球杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Break cue",
+   "text": "Кий для разбоя"
+  },
+  {
+   "culture": "ar",
+   "key": "Break cue",
+   "text": "عصا الافتتاح"
+  },
+  {
+   "culture": "es",
+   "key": "Jump cue",
+   "text": "Taco de salto"
+  },
+  {
+   "culture": "fr",
+   "key": "Jump cue",
+   "text": "Queue de saut"
+  },
+  {
+   "culture": "de",
+   "key": "Jump cue",
+   "text": "Sprungqueue"
+  },
+  {
+   "culture": "it",
+   "key": "Jump cue",
+   "text": "Stecca da salto"
+  },
+  {
+   "culture": "pt",
+   "key": "Jump cue",
+   "text": "Taco de salto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Jump cue",
+   "text": "Taco de pulo"
+  },
+  {
+   "culture": "ja",
+   "key": "Jump cue",
+   "text": "ジャンプキュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Jump cue",
+   "text": "점프 큐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Jump cue",
+   "text": "跳球杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Jump cue",
+   "text": "Кий для прыжка"
+  },
+  {
+   "culture": "ar",
+   "key": "Jump cue",
+   "text": "عصا القفز"
+  },
+  {
+   "culture": "es",
+   "key": "Massé cue",
+   "text": "Taco de massé"
+  },
+  {
+   "culture": "fr",
+   "key": "Massé cue",
+   "text": "Queue de massé"
+  },
+  {
+   "culture": "de",
+   "key": "Massé cue",
+   "text": "Massé-Queue"
+  },
+  {
+   "culture": "it",
+   "key": "Massé cue",
+   "text": "Stecca da massé"
+  },
+  {
+   "culture": "pt",
+   "key": "Massé cue",
+   "text": "Taco de massé"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Massé cue",
+   "text": "Taco de massé"
+  },
+  {
+   "culture": "ja",
+   "key": "Massé cue",
+   "text": "マッセキュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Massé cue",
+   "text": "마세 큐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Massé cue",
+   "text": "马塞杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Massé cue",
+   "text": "Кий для массе"
+  },
+  {
+   "culture": "ar",
+   "key": "Massé cue",
+   "text": "عصا الماسيه"
+  },
+  {
+   "culture": "es",
+   "key": "Rosewood cue",
+   "text": "Taco de palisandro"
+  },
+  {
+   "culture": "fr",
+   "key": "Rosewood cue",
+   "text": "Queue en palissandre"
+  },
+  {
+   "culture": "de",
+   "key": "Rosewood cue",
+   "text": "Palisander-Queue"
+  },
+  {
+   "culture": "it",
+   "key": "Rosewood cue",
+   "text": "Stecca in palissandro"
+  },
+  {
+   "culture": "pt",
+   "key": "Rosewood cue",
+   "text": "Taco de pau-rosa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rosewood cue",
+   "text": "Taco de jacarandá"
+  },
+  {
+   "culture": "ja",
+   "key": "Rosewood cue",
+   "text": "ローズウッドのキュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Rosewood cue",
+   "text": "로즈우드 큐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rosewood cue",
+   "text": "玫瑰木球杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Rosewood cue",
+   "text": "Кий из палисандра"
+  },
+  {
+   "culture": "ar",
+   "key": "Rosewood cue",
+   "text": "عصا خشب الورد"
+  },
+  {
+   "culture": "es",
+   "key": "Cobalt cue",
+   "text": "Taco cobalto"
+  },
+  {
+   "culture": "fr",
+   "key": "Cobalt cue",
+   "text": "Queue cobalt"
+  },
+  {
+   "culture": "de",
+   "key": "Cobalt cue",
+   "text": "Kobalt-Queue"
+  },
+  {
+   "culture": "it",
+   "key": "Cobalt cue",
+   "text": "Stecca cobalto"
+  },
+  {
+   "culture": "pt",
+   "key": "Cobalt cue",
+   "text": "Taco cobalto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cobalt cue",
+   "text": "Taco cobalto"
+  },
+  {
+   "culture": "ja",
+   "key": "Cobalt cue",
+   "text": "コバルトのキュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Cobalt cue",
+   "text": "코발트 큐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cobalt cue",
+   "text": "钴蓝球杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Cobalt cue",
+   "text": "Кобальтовый кий"
+  },
+  {
+   "culture": "ar",
+   "key": "Cobalt cue",
+   "text": "عصا الكوبالت"
+  },
+  {
+   "culture": "es",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Taco de saque elegido: más pesado, así el mismo golpe pega más fuerte"
+  },
+  {
+   "culture": "fr",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Queue de casse choisie : plus lourde, le même geste frappe plus fort"
+  },
+  {
+   "culture": "de",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Break-Queue gewählt: schwerer, derselbe Schwung trifft härter"
+  },
+  {
+   "culture": "it",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Stecca da break scelta: più pesante, lo stesso colpo picchia più forte"
+  },
+  {
+   "culture": "pt",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Taco de abertura escolhido: mais pesado, o mesmo movimento bate com mais força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Taco de abertura escolhido: mais pesado, a mesma tacada bate mais forte"
+  },
+  {
+   "culture": "ja",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "ブレイクキューを選択：重いので同じ振りでも強く当たる"
+  },
+  {
+   "culture": "ko",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "브레이크 큐 선택: 더 무거워서 같은 스윙에도 더 세게 맞아"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "已选开球杆：更重，同样的挥杆打得更狠"
+  },
+  {
+   "culture": "ru",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "Выбран кий для разбоя: он тяжелее, тот же замах бьёт сильнее"
+  },
+  {
+   "culture": "ar",
+   "key": "Break cue picked: heavier, so the same swing hits harder",
+   "text": "اخترنا عصا الافتتاح: أثقل، فالضربة نفسها تصيب بقوة أكبر"
+  },
+  {
+   "culture": "es",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Taco de salto elegido: corto y ligero, para un golpe seco desde arriba"
+  },
+  {
+   "culture": "fr",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Queue de saut choisie : courte et légère, pour un coup sec plongeant"
+  },
+  {
+   "culture": "de",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Sprungqueue gewählt: kurz und leicht, für einen steilen, kurzen Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Stecca da salto scelta: corta e leggera, per un colpo secco dall'alto"
+  },
+  {
+   "culture": "pt",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Taco de salto escolhido: curto e leve, para um toque seco de cima"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Taco de pulo escolhido: curto e leve, para uma tacada seca de cima"
+  },
+  {
+   "culture": "ja",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "ジャンプキューを選択：短く軽いので、上から鋭く突ける"
+  },
+  {
+   "culture": "ko",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "점프 큐 선택: 짧고 가벼워서 위에서 날카롭게 찌르기 좋아"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "已选跳球杆：短而轻，适合从上方陡直一戳"
+  },
+  {
+   "culture": "ru",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "Выбран кий для прыжка: короткий и лёгкий, для резкого удара сверху"
+  },
+  {
+   "culture": "ar",
+   "key": "Jump cue picked: short and light, for a steep stab",
+   "text": "اخترنا عصا القفز: قصيرة وخفيفة، لطعنة حادة من الأعلى"
+  },
+  {
+   "culture": "es",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Taco de massé elegido: corto y pesado, firme para una curva pronunciada"
+  },
+  {
+   "culture": "fr",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Queue de massé choisie : courte et lourde, stable pour une courbe prononcée"
+  },
+  {
+   "culture": "de",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Massé-Queue gewählt: kurz und schwer, ruhig für eine starke Kurve"
+  },
+  {
+   "culture": "it",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Stecca da massé scelta: corta e pesante, stabile per una curva stretta"
+  },
+  {
+   "culture": "pt",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Taco de massé escolhido: curto e pesado, firme para uma curva acentuada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Taco de massé escolhido: curto e pesado, firme para uma curva fechada"
+  },
+  {
+   "culture": "ja",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "マッセキューを選択：短く重いので、大きなカーブでもぶれない"
+  },
+  {
+   "culture": "ko",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "마세 큐 선택: 짧고 무거워서 크게 휘는 샷에도 흔들림이 없어"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "已选马塞杆：短而重，打大弧线也稳"
+  },
+  {
+   "culture": "ru",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "Выбран кий для массе: короткий и тяжёлый, устойчив для крутой дуги"
+  },
+  {
+   "culture": "ar",
+   "key": "Massé cue picked: short and heavy, steady for a steep curve",
+   "text": "اخترنا عصا الماسيه: قصيرة وثقيلة، ثابتة لمنحنى حاد"
+  }
+ ]
+}

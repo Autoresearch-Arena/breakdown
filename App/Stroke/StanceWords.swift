@@ -5,6 +5,8 @@
 //          controls read it ("20 cm, automatic bridge"), and the retry comparison's sentences when the stance or the
 //          bridge changed between tries. Every sentence a player reads or hears about reach is here, for the screen and
 //          VoiceOver alike.
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment, plan item 57: cueLine, the stance card's one-line
+//          indicator naming the cue the game picked for the shot and why.)
 // SRP/DRY check: Pass - checked StrokeWords (its distance() formats the bridge's length, reused, not copied),
 //          TableGameWords.ball (names the ball the cue is raised over, so other tables' balls read as they do elsewhere)
 //          and RetryWords / ShotComparison (they decide when a setup sentence is said; this file only words it).
@@ -29,6 +31,19 @@ enum StanceWords {
     /// Free play, trick shots and lessons are pool balls, named by number.
     static func raisedLine(over ball: Int, kind: MatchKind?) -> String {
         String(localized: "Cue raised over \(TableGameWords.ball(ball, kind: kind ?? .eightBall))")
+    }
+
+    /// The stance card's indicator for the automatic cue pick (plan item 57): which cue the game picked and why, in
+    /// one line, so a player never wonders why the cue in the picture changed. Nil for the house cue on an ordinary
+    /// shot, which needs no word. The "same swing" wording is the physics the pick changes: power is swing speed, so
+    /// a heavier cue sends the ball faster and a lighter one slower at the same pull.
+    static func cueLine(_ choice: CueChoice) -> String? {
+        switch choice.reason {
+        case .standard: return nil
+        case .breakShot: return String(localized: "Break cue picked: heavier, so the same swing hits harder")
+        case .jump: return String(localized: "Jump cue picked: short and light, for a steep stab")
+        case .steepMasse: return String(localized: "Massé cue picked: short and heavy, steady for a steep curve")
+        }
     }
 
     /// Every line a stance has to say: its rung unless it is a square stance, then the raised cue if any. Empty for a

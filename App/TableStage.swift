@@ -39,6 +39,10 @@
 //          whether it was struck off the rest; the bridge mark is handed to the scene as a ring on the cloth (BridgeMark),
 //          left out while the rest stands there; and the showpiece opening's lamp shot is cued every frame before the
 //          clock moves, with the clock held until the camera has risen to the table.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 10, 23 and 57: the aim preview
+//          carries the cue the game picked, model.cueChoice.kind, so CueRig draws that cue, and the bridge's length, so
+//          the drawn pull-back stops in front of the bridge hand; its elevation is model.strikeElevation and its rest
+//          flag model.restInUse, as docs/v07-contracts.md 2.5 says.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -212,6 +216,10 @@ struct TableStage: View {
         // The 3D cue: shown on the same rule the old flat cue used (the balls on screen are the ones the next shot
         // starts from, and the cue ball is on the table); the aim line itself keeps showing either way.
         preview.showsCue = model.aimReady && model.layout.count == 16 && NextShot.isOnTable(model.aimOrigin)
+        // The cue the game picked for this shot is the one drawn, its pull-back stopped short of the bridge hand
+        // (plan items 57 and 23; equipment's hook).
+        preview.cue = model.cueChoice.kind
+        preview.bridgeLength = model.strokeBridgeLength
         preview.powerFraction = model.powerFraction
         // The angle the strike will use: the player's, raised to clear any ball under the whole cue (0 for a break).
         preview.elevation = model.strikeElevation
