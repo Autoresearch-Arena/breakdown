@@ -19,6 +19,13 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the cue-ball picture is to scale, so the dot's
 //          reach and the dashed miscue ring sit where the default physics puts them: the ring at the miscue limit,
 //          about half the radius, the dot a tenth of the radius beyond it.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, gauges-pointer stream, items 1 and 11 of
+//          plans/21-Nov-2026-bugs-after-0-6-6-plan.md: the power bar's calm mark carries a short label, "Calm zone ends",
+//          the first three times the mark shows, so the white line is explained where it is seen. While a lesson marks a
+//          tip band, the centre snap is off (it swallowed part of the stop band) and a dot let go inside a band, or
+//          touching it, settles on the band's middle, so a band narrower than the dot can still be hit. While a lesson
+//          marks a power band, a tap of minus or plus (and a VoiceOver adjust) moves a third of that band, never more
+//          than the usual step, so the window cannot be stepped over. The help names the cue in hand (model.cueInHand).)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -82,25 +89,33 @@ struct TipPicker: View {
             Circle()
                 .fill(palette.accent)
                 .overlay(Circle().strokeBorder(.black.opacity(0.7), lineWidth: 1.5))
-                .frame(width: 13, height: 13)
+                .frame(width: Self.dot, height: Self.dot)
                 .offset(x: CGFloat(across) * limit, y: CGFloat(-up) * limit)
         }
         .frame(width: size, height: size)
         .contentShape(Circle())
-        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local).onChanged { value in
-            // Locked in this lesson step: the touch does nothing (the model would refuse the change too).
-            guard tipOpen else { return }
-            // Touch position relative to the middle, as a fraction of the reachable disc, then clamped to the disc.
-            var x = Double((value.location.x - radius) / limit)
-            var y = Double(-(value.location.y - radius) / limit)
-            let len = (x * x + y * y).squareRoot()
-            if len > 1 { x /= len; y /= len }
-            // A tiny region around the middle snaps to exactly centre so "centre" is easy to hit.
-            if len < 0.12 { x = 0; y = 0 }
-            // Only the open one of the two moves when a lesson has opened just one: the other stays where it was set.
-            if open.contains(.tipSide) { model.activeTipSide = x * model.tipLimit }
-            if open.contains(.tipUp) { model.activeTipUp = y * model.tipLimit }
-        })
+        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .onChanged { value in
+                // Locked in this lesson step: the touch does nothing (the model would refuse the change too).
+                guard tipOpen else { return }
+                // Touch position relative to the middle, as a fraction of the reachable disc, then clamped to the disc.
+                var x = Double((value.location.x - radius) / limit)
+                var y = Double(-(value.location.y - radius) / limit)
+                let len = (x * x + y * y).squareRoot()
+                if len > 1 { x /= len; y /= len }
+                // A tiny region around the middle snaps to exactly centre so "centre" is easy to hit, but never while a
+                // lesson marks a tip band: the stop band sits a couple of millimetres below centre, inside this region.
+                if len < Self.centreSnap, !hasTipBand { x = 0; y = 0 }
+                // Only the open one of the two moves when a lesson has opened just one: the other stays where it was set.
+                if open.contains(.tipSide) { model.activeTipSide = x * model.tipLimit }
+                if open.contains(.tipUp) { model.activeTipUp = y * model.tipLimit }
+            }
+            .onEnded { _ in
+                guard tipOpen else { return }
+                // The dot is drawn `dot` points wide; in metres of tip travel, half of that is how far outside a band
+                // the dot's centre can be while the dot still visibly overlaps it.
+                settleInBand(tolerance: Double(Self.dot / 2 / max(1, limit)) * model.tipLimit)
+            })
         .accessibilityElement()
         .accessibilityLabel("Cue tip position")
         .accessibilityValue(Self.spoken(up: model.activeTipUp, side: model.activeTipSide))
@@ -117,6 +132,34 @@ struct TipPicker: View {
 
     /// True when at least one of the picture's two values may change in this step.
     private var tipOpen: Bool { open.contains(.tipUp) || open.contains(.tipSide) }
+
+    /// The chalked tip's drawn width, points: big enough to see under a fingertip's edge on the 52-point picture.
+    private static let dot: CGFloat = 13
+    /// The centre snap's reach, as a share of the dot's travel: about two millimetres of tip on the default physics,
+    /// a fingertip's wobble on the picture, so "centre" is easy to hit outside a lesson band.
+    private static let centreSnap = 0.12
+
+    /// True while the lesson marks a tip band (height, side or both).
+    private var hasTipBand: Bool { zones?.tipUp != nil || zones?.tipSide != nil }
+
+    /// A dot let go inside a lesson's tip band, or touching it (within `tolerance` metres), settles on the band's
+    /// middle, for each banded value this step lets the player change. The bands are a few millimetres wide, narrower
+    /// than the dot itself, so a finger that lands the dot on the band has done what the lesson asks; the middle is
+    /// where the shot works best. A dot that ends off the band is left exactly where it was put.
+    private func settleInBand(tolerance: Double) {
+        guard let z = zones else { return }
+        let upBand = open.contains(.tipUp) ? z.tipUp : nil
+        let sideBand = open.contains(.tipSide) ? z.tipSide : nil
+        guard upBand != nil || sideBand != nil else { return }
+        func touches(_ value: Double, _ band: ClosedRange<Double>) -> Bool {
+            value >= band.lowerBound - tolerance && value <= band.upperBound + tolerance
+        }
+        // Both marked values must be on their bands (a rectangle on the picture) before either moves.
+        if let band = upBand, !touches(model.activeTipUp, band) { return }
+        if let band = sideBand, !touches(model.activeTipSide, band) { return }
+        if let band = upBand { model.activeTipUp = (band.lowerBound + band.upperBound) / 2 }
+        if let band = sideBand { model.activeTipSide = (band.lowerBound + band.upperBound) / 2 }
+    }
 
     /// The band to draw, in the picture's own points: the marked tip-height range across the whole ball, the marked
     /// side range down it, or the rectangle where both meet. Nil when nothing is marked.
@@ -156,6 +199,19 @@ struct PowerGauge: View {
     var zones: LessonZones? = nil
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 12
+    /// How many times the calm mark has been shown with its label (item 1). Stored on the device, so the label stops
+    /// for good after the first few showings; the store-picture scripts can pin it (key in calmLabelKey).
+    @AppStorage(PowerGauge.calmLabelKey) private var calmLabelShows = 0
+    /// True while this showing of the gauge carries the label. Decided once per appearance (or when the mark first
+    /// appears during one), never while the body is being drawn.
+    @State private var labelsCalm = false
+
+    /// The stored count behind the calm mark's label.
+    static let calmLabelKey = "calmMarkLabelShows"
+    /// Showings of the calm mark that carry its label: enough for a newcomer to read it over the hand-over, the first
+    /// break and the first shot after it (the first three times the shot panel shows the mark), after which the mark
+    /// alone is familiar and the label would only take room from the panel.
+    static let calmLabelShowings = 3
 
     var body: some View {
         let fraction = model.powerFraction
@@ -173,7 +229,7 @@ struct PowerGauge: View {
             }
             HStack(spacing: 6) {
                 // One-finger power without a drag: a tap a step down, a tap a step up (accessibility plan, package 5).
-                stepButton(-Self.tapStep, systemImage: "minus", label: "Less power")
+                stepButton(-1, systemImage: "minus", label: "Less power")
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule().fill(palette.track)
@@ -214,26 +270,81 @@ struct PowerGauge: View {
                     })
                 }
                 .frame(height: barHeight)
-                stepButton(Self.tapStep, systemImage: "plus", label: "More power")
+                // The calm mark's label, the first few times the mark shows (item 1): a small caret under the mark and
+                // "Calm zone ends" centred on it, slid back inside the bar if it would hang over an end. Laid over the
+                // bar rather than in the layout, so it measures against the bar's own width and the bar and buttons stay
+                // exactly where they always are.
+                .overlay(alignment: .topLeading) {
+                    if labelsCalm, calm < 1 {
+                        GeometryReader { geo in
+                            let markX = geo.size.width * calm
+                            ZStack(alignment: .topLeading) {
+                                Image(systemName: "arrowtriangle.up.fill")
+                                    .font(.system(size: 6))
+                                    .foregroundStyle(.secondary)
+                                    .offset(x: markX - 3, y: barHeight + 4)
+                                Text("Calm zone ends")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+                                    .fixedSize()
+                                    // The guide is minus the label's left edge: centred on the mark, then held inside
+                                    // the bar's width.
+                                    .alignmentGuide(.leading) { d in
+                                        -min(max(markX - d.width / 2, 0), max(0, geo.size.width - d.width))
+                                    }
+                                    .offset(y: barHeight + 10)
+                            }
+                        }
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                    }
+                }
+                stepButton(1, systemImage: "plus", label: "More power")
+            }
+            // Room under the bar for the calm mark's label while it shows. The bar sits in the middle of the 44-point
+            // step buttons, so the label first falls beside them; this keeps its lower half clear of whatever the shot
+            // panel puts under the gauge.
+            if labelsCalm, calm < 1 {
+                Color.clear.frame(height: Self.calmLabelRoom).accessibilityHidden(true)
             }
         }
         .padding(.vertical, 6)
         .frame(minHeight: 44)
+        .onAppear { noteCalmMark() }
+        .onChange(of: calm < 1) { noteCalmMark() }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
         .accessibilityValue(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm))"))
         .accessibilityAdjustableAction { direction in
+            // A tenth of the bar per swipe, or the lesson band's finer step while one is up (see tapStep).
+            let swipe = min(Self.adjustStep, bandStep ?? Self.adjustStep)
             switch direction {
-            case .increment: model.powerFraction += 0.1
-            case .decrement: model.powerFraction -= 0.1
+            case .increment: model.powerFraction += swipe
+            case .decrement: model.powerFraction -= swipe
             @unknown default: break
             }
         }
         .help(Text(verbatim: StrokeWords.ballReadout(power: model.activePower, racked: model.racked) + " · "
-                   + String(localized: "Cue: \(CueProfile.selected.name). Pull back from the cue ball on the table, or drag here.")))
+                   + String(localized: "Cue: \(model.cueInHand.name). Pull back from the cue ball on the table, or drag here.")))
         .disabled(!open.contains(.power))
         .lockedForStep(!open.contains(.power))
     }
+
+    /// Decide whether this showing of the gauge labels the calm mark: only while the mark is on the bar, only for the
+    /// first calmLabelShowings showings, and counted once per showing. Called from onAppear and when the mark first
+    /// appears (a break hands over to a shot, whose calm zone ends inside the bar), never from the body itself.
+    private func noteCalmMark() {
+        guard !labelsCalm, calmFraction < 1, calmLabelShows < Self.calmLabelShowings else { return }
+        labelsCalm = true
+        calmLabelShows += 1
+    }
+
+    /// Extra height under the bar row while the calm label shows, points. At the default text size the label's line
+    /// (caption2, about 13 points tall) starts 10 points below the bar's lower edge, and that edge is 16 points above
+    /// the 44-point buttons' lower edge, so the line runs about 7 points past the row; this plus the stack's own 6-point
+    /// gap keeps it inside the gauge.
+    private static let calmLabelRoom: CGFloat = 8
 
     /// A launch speed as a share of the bar, 0 at its soft end, 1 at its hard end (the gauge's own fraction).
     private func powerFraction(_ speed: Double) -> CGFloat {
@@ -252,12 +363,24 @@ struct PowerGauge: View {
     private static let hot = Color(red: 1.0, green: 0.30, blue: 0.25)
 
     /// Power change per tap of the step buttons: a twentieth of the range, fine enough to set a soft roll by
-    /// tapping and coarse enough to cross the bar in a handful of taps. (VoiceOver's adjust keeps its tenth.)
+    /// tapping and coarse enough to cross the bar in a handful of taps.
     private static let tapStep = 0.05
+    /// Power change per VoiceOver swipe outside a lesson band: a tenth of the range, so the bar is crossed in ten swipes.
+    private static let adjustStep = 0.1
 
-    /// A small round minus or plus button beside the bar. Each tap is one step; nothing repeats while held.
-    private func stepButton(_ step: Double, systemImage: String, label: LocalizedStringKey) -> some View {
-        Button { model.powerFraction += step } label: {
+    /// While a lesson marks a power band and power may change: a third of that band's share of the bar, so at least
+    /// three taps land inside it and no single tap can jump from one side of the window to the other (the follow
+    /// lesson's window is narrower than the usual step, finding 60). Nil with no band, or a band of no width.
+    private var bandStep: Double? {
+        guard open.contains(.power), let band = zones?.power else { return nil }
+        let width = Double(powerFraction(band.upperBound) - powerFraction(band.lowerBound))
+        return width > 0 ? width / 3 : nil
+    }
+
+    /// A small round minus or plus button beside the bar (`direction` -1 or +1). Each tap is one step, the usual step
+    /// or a lesson band's finer one, whichever is smaller; nothing repeats while held.
+    private func stepButton(_ direction: Double, systemImage: String, label: LocalizedStringKey) -> some View {
+        Button { model.powerFraction += direction * min(Self.tapStep, bandStep ?? Self.tapStep) } label: {
             Image(systemName: systemImage).font(Theme.label).frame(width: 30, height: 30)
         }
         .buttonStyle(.bordered)

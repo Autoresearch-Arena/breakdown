@@ -1,0 +1,286 @@
+{
+ "keys": [
+  "Calm zone ends",
+  "Cue aims here",
+  "Ball goes here",
+  "%@° left",
+  "%@° right"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Calm zone ends",
+   "text": "Fin de la zona tranquila"
+  },
+  {
+   "culture": "fr",
+   "key": "Calm zone ends",
+   "text": "Fin de la zone calme"
+  },
+  {
+   "culture": "de",
+   "key": "Calm zone ends",
+   "text": "Ende der ruhigen Zone"
+  },
+  {
+   "culture": "it",
+   "key": "Calm zone ends",
+   "text": "Fine della zona tranquilla"
+  },
+  {
+   "culture": "pt",
+   "key": "Calm zone ends",
+   "text": "Fim da zona calma"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Calm zone ends",
+   "text": "Fim da zona calma"
+  },
+  {
+   "culture": "ja",
+   "key": "Calm zone ends",
+   "text": "落ち着いた範囲はここまで"
+  },
+  {
+   "culture": "ko",
+   "key": "Calm zone ends",
+   "text": "안정 구간 끝"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Calm zone ends",
+   "text": "平稳区到此为止"
+  },
+  {
+   "culture": "ru",
+   "key": "Calm zone ends",
+   "text": "Конец спокойной зоны"
+  },
+  {
+   "culture": "ar",
+   "key": "Calm zone ends",
+   "text": "نهاية المنطقة الهادئة"
+  },
+  {
+   "culture": "es",
+   "key": "Cue aims here",
+   "text": "El taco apunta aquí"
+  },
+  {
+   "culture": "fr",
+   "key": "Cue aims here",
+   "text": "La queue vise ici"
+  },
+  {
+   "culture": "de",
+   "key": "Cue aims here",
+   "text": "Hier zielt das Queue"
+  },
+  {
+   "culture": "it",
+   "key": "Cue aims here",
+   "text": "La stecca mira qui"
+  },
+  {
+   "culture": "pt",
+   "key": "Cue aims here",
+   "text": "O taco aponta aqui"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cue aims here",
+   "text": "O taco mira aqui"
+  },
+  {
+   "culture": "ja",
+   "key": "Cue aims here",
+   "text": "キューの狙い"
+  },
+  {
+   "culture": "ko",
+   "key": "Cue aims here",
+   "text": "큐가 겨누는 곳"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cue aims here",
+   "text": "球杆瞄准这里"
+  },
+  {
+   "culture": "ru",
+   "key": "Cue aims here",
+   "text": "Сюда смотрит кий"
+  },
+  {
+   "culture": "ar",
+   "key": "Cue aims here",
+   "text": "العصا تصوّب هنا"
+  },
+  {
+   "culture": "es",
+   "key": "Ball goes here",
+   "text": "La bola va aquí"
+  },
+  {
+   "culture": "fr",
+   "key": "Ball goes here",
+   "text": "La bille part ici"
+  },
+  {
+   "culture": "de",
+   "key": "Ball goes here",
+   "text": "Hier läuft die Kugel"
+  },
+  {
+   "culture": "it",
+   "key": "Ball goes here",
+   "text": "La bilia va qui"
+  },
+  {
+   "culture": "pt",
+   "key": "Ball goes here",
+   "text": "A bola vai para aqui"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Ball goes here",
+   "text": "A bola vai pra cá"
+  },
+  {
+   "culture": "ja",
+   "key": "Ball goes here",
+   "text": "ボールが進む先"
+  },
+  {
+   "culture": "ko",
+   "key": "Ball goes here",
+   "text": "공이 가는 곳"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Ball goes here",
+   "text": "球往这里走"
+  },
+  {
+   "culture": "ru",
+   "key": "Ball goes here",
+   "text": "Шар пойдёт сюда"
+  },
+  {
+   "culture": "ar",
+   "key": "Ball goes here",
+   "text": "الكرة تذهب هنا"
+  },
+  {
+   "culture": "es",
+   "key": "%@° left",
+   "text": "%@° a la izquierda"
+  },
+  {
+   "culture": "fr",
+   "key": "%@° left",
+   "text": "%@° à gauche"
+  },
+  {
+   "culture": "de",
+   "key": "%@° left",
+   "text": "%@° nach links"
+  },
+  {
+   "culture": "it",
+   "key": "%@° left",
+   "text": "%@° a sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "%@° left",
+   "text": "%@° para a esquerda"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@° left",
+   "text": "%@° para a esquerda"
+  },
+  {
+   "culture": "ja",
+   "key": "%@° left",
+   "text": "左へ%@°"
+  },
+  {
+   "culture": "ko",
+   "key": "%@° left",
+   "text": "왼쪽으로 %@°"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@° left",
+   "text": "向左 %@°"
+  },
+  {
+   "culture": "ru",
+   "key": "%@° left",
+   "text": "%@° влево"
+  },
+  {
+   "culture": "ar",
+   "key": "%@° left",
+   "text": "%@° لليسار"
+  },
+  {
+   "culture": "es",
+   "key": "%@° right",
+   "text": "%@° a la derecha"
+  },
+  {
+   "culture": "fr",
+   "key": "%@° right",
+   "text": "%@° à droite"
+  },
+  {
+   "culture": "de",
+   "key": "%@° right",
+   "text": "%@° nach rechts"
+  },
+  {
+   "culture": "it",
+   "key": "%@° right",
+   "text": "%@° a destra"
+  },
+  {
+   "culture": "pt",
+   "key": "%@° right",
+   "text": "%@° para a direita"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@° right",
+   "text": "%@° para a direita"
+  },
+  {
+   "culture": "ja",
+   "key": "%@° right",
+   "text": "右へ%@°"
+  },
+  {
+   "culture": "ko",
+   "key": "%@° right",
+   "text": "오른쪽으로 %@°"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@° right",
+   "text": "向右 %@°"
+  },
+  {
+   "culture": "ru",
+   "key": "%@° right",
+   "text": "%@° вправо"
+  },
+  {
+   "culture": "ar",
+   "key": "%@° right",
+   "text": "%@° لليمين"
+  }
+ ]
+}

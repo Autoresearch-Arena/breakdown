@@ -1,28 +1,49 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, gauges-pointer stream, item 31 and the pointer half of item 2
+//          of plans/21-Nov-2026-bugs-after-0-6-6-plan.md, following docs/v07-contracts.md section 4. Hover no longer
+//          writes the aim: moving the pointer to the Shoot button, the tip picture or the cue ball dragged the line with
+//          it. Hover now only draws a faint dashed preview of where a click would aim; a click or press-drag on the cloth
+//          sets the aim, and a set aim never moves when the pointer leaves. The Pencil's hover follows the same rule. A
+//          pointer release behind the cue ball plays through ShowpieceModel.fireStroke(); a release ahead of the ball,
+//          short of the backswing or after hardly moving is a change of mind that puts the aim and power back as they
+//          were at the press (aimSnapshot / restoreAim), with no card. No release plays while a ball was lifted at the
+//          press. Scroll turns the line the way it looks on screen, like the arrow keys (AimProjector.turnSign). The
+//          pointer marks itself as the input in use (model.inputInUse), and nothing here acts while the person's
+//          controls are not live (the computer's turn, a solve in flight).)
 // PURPOSE: Aiming with a pointer, a scroll wheel and an Apple Pencil held above the screen, shared by the Mac and the
 //          iPad (trackpad, mouse, Pencil hover). It is added to the touch aiming layer (AimOverlay) from the outside, as
 //          one modifier, so the touch gestures in that file are untouched and a finger plays exactly as before:
-//            - Hover: while "Your shot" is open and the balls are at rest, the aim line follows the pointer (or the
-//              hovering Pencil tip) across the table before anything is clicked. It sets the same aim a drag would
-//              (ShowpieceModel.aim(toward:)), so the overlay's own drawing shows the line, ghost ball and guides. Close
-//              to the cue ball the aim holds still: there a tiny movement would swing the line wildly, and it is the
-//              path the pointer takes to grab the ball.
+//            - Hover: while "Your shot" is open and the balls are at rest, a faint dashed line runs from the cue ball
+//              toward the pointer (or the hovering Pencil tip), as far as the first ball or cushion it would meet, with
+//              a faint ring there. It is a preview only: the aim itself does not move. Drawn thin and dashed, with no
+//              glow, so it never reads as the set line (the overlay's bright line). Over the cue ball itself, where a
+//              press is a pull-back, no preview is drawn. With the Aim guide option off the preview is the overlay's
+//              short line with no ring, so a hover never shows the contact the option hides.
+//            - Click or press-drag on the cloth: sets the aim. The overlay's own drag and tap do this for every input; a
+//              plain click on bare cloth that the overlay left alone is aimed here, after the overlay has had its turn,
+//              so a click on a ball or a pocket keeps the overlay's snap to it.
 //            - Press on the cue ball, drag back, release: the overlay's own pull-back sets the power while dragging (as
-//              for a finger); with a pointer, letting go also takes the shot, the way a mouse player expects. Letting
-//              go after dragging forward of the ball, or after hardly moving, takes no shot (a change of mind). A finger
-//              or the Pencil touching the glass keeps the touch rule: letting go keeps the power for the Shoot button.
+//              for a finger); with a pointer, letting go behind the ball also takes the shot, the way a mouse player
+//              expects. Letting go ahead of the ball, short of a real pull, or after hardly moving, is a change of mind:
+//              aim and power go back to what they were at the press. A finger or the Pencil touching the glass keeps the
+//              touch rule: letting go keeps the power for the Shoot button (or a push through the ball plays it).
 //            - Scroll (a mouse wheel or a two-finger slide on a trackpad) turns the aim a quarter degree at a time for
-//              fine tuning, the same step as the arrow keys (ShowpieceModel.nudgeAim).
+//              fine tuning, the same step and the same on-screen sense as the arrow keys (ShowpieceModel.nudgeAim).
 //          Also HoverHighlight, the small brightening every pointer-reachable control of the notebook and the title row
 //          gets under the pointer, so the Mac and an iPad with a trackpad show what a click will hit.
-//          Reads the camera through AimProjector (AimGeometry.swift), like the overlay does; writes the model only
-//          through aim(toward:), nudgeAim(_:) and fire().
-//          Not verified on a device in this change (written without building, per the batch rules): the hover, scroll
-//          and release paths need a Mac and an iPad with a trackpad and a hover-capable Pencil to try.
-// SRP/DRY check: Pass - checked AimOverlay (touch drag, arrow keys, drawing; reused through the model, not copied) and
-//          AimGeometry (the projector, reused). The grab radius and pull slop match the overlay's on purpose.
+//          Reads the camera through AimProjector and the guide's stop rule through AimGeometry.guideLine
+//          (AimGeometry.swift), like the overlay does; writes the model only through aim(toward:), nudgeAim(_:),
+//          fireStroke(), restoreAim(_:) and inputInUse.
+//          Not verified on a device in this change (written without building, per the batch rules): the hover preview,
+//          the click, the scroll and the release paths need a Mac, an iPad with a trackpad and a hover-capable Pencil.
+// SRP/DRY check: Pass - checked AimOverlay (touch drag, tap, arrow keys, drawing; reused through the model, not copied),
+//          AimGeometry (the projector, the guide's stop rule and the turn sign, reused) and StrokeGesture (the measured
+//          stroke; this file only decides what a pointer's release means). The grab radius and pull slop match the
+//          overlay's on purpose. The break's spot-to-offset rule in previewDirection mirrors ShowpieceModel.aim(toward:)
+//          for drawing only, because asking the model would move the aim.
 import BreakdownLensModel
+import BreakdownPhysics
 import SwiftUI
 #if os(macOS)
 import AppKit
@@ -54,11 +75,23 @@ private final class PointerAimState {
         var onBall: Bool
         /// A mouse or trackpad click (not a finger or the Pencil on the glass).
         var isPointer: Bool
+        /// A ball was lifted when the press began: this press carries that ball or puts it down (the overlay's job),
+        /// and its release is never a shot or an aim.
+        var placing: Bool
+        /// The balls were at rest and the person's controls live when the press began.
+        var ready: Bool
+        /// Puts the aim and power back exactly as they were at the press (the model's snapshot), and tells whether
+        /// they still are. Closures, so this file needs no name for the snapshot's type.
+        var restore: @MainActor () -> Void
+        var unchanged: @MainActor () -> Bool
     }
 
     let cameraBox = AimProjector.CameraBox()
     var size = CGSize(width: 1, height: 1)
     var hovering = false
+    /// Where the pointer or the Pencil hovers over the cloth, in the layer's own points, while a preview may be drawn;
+    /// nil otherwise.
+    var previewPoint: CGPoint?
     var press: Press?
     /// Scroll distance not yet turned into whole aim steps, so slow trackpad slides still add up.
     var scrollCarry = 0.0
@@ -72,16 +105,17 @@ struct PointerAim: ViewModifier {
     let bridge: SceneBridge
     @Binding var isOpen: Bool
     @AppStorage("aimHintSeen") private var hintSeen = false
+    @Environment(\.palette) private var palette
     @State private var state = PointerAimState()
+    @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
+    /// True while a hover preview may be drawn (the point itself is on the state object: the preview's Canvas redraws
+    /// every frame anyway, so a hover move need not re-render this layer, only switching the preview on or off does).
+    @State private var previewing = false
 
     /// Same as AimOverlay's: how close to the cue ball (points) a press must start to grab it.
     private static let grabRadius: CGFloat = 44
     /// Same as AimOverlay's: a drag shorter than this is a click, not a pull.
     private static let pullSlop: CGFloat = 10
-    /// Inside this distance of the cue ball (points) hovering leaves the aim alone. The aim's angle changes by about
-    /// (sideways move / distance) radians, so at 110 points a 2-point wobble is about one degree; much closer the line
-    /// would jump about as the pointer is brought onto the ball to pull back.
-    private static let holdRadius: CGFloat = 110
     /// A pull shorter than this behind the cue ball, in metres on the table, is a change of mind and takes no shot:
     /// four per cent of the full pull (ShowpieceModel.pullReach, half a metre), below the softest deliberate shot.
     private static let minimumPull = 0.02
@@ -92,6 +126,20 @@ struct PointerAim: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onGeometryChange(for: CGSize.self) { $0.size } action: { state.size = $0 }
+            // The hover preview, over the aiming layer's own drawing; it never takes a touch or a click. Redrawn every
+            // frame while it shows, so it follows the camera if the table is zoomed under a still pointer.
+            .overlay {
+                if previewing {
+                    TimelineView(.animation) { _ in
+                        Canvas { ctx, size in drawPreview(&ctx, size: size) }
+                    }
+                    // The aiming layer fills the screen past the safe area; so must this, or its points would be
+                    // offset from the layer's by the safe-area inset.
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+                }
+            }
             .onContinuousHover(coordinateSpace: .local) { phase in hover(phase) }
             // Alongside the overlay's own drag, never instead of it: this only watches which device pressed and where,
             // and acts when a pointer lets go.
@@ -102,7 +150,9 @@ struct PointerAim: ViewModifier {
             )
             #if os(iOS)
             .gesture(ScrollWheelAim { delta in
-                _ = Self.applyScroll(Double(delta), precise: true, state: state, model: model)
+                Self.noteInput(model)
+                let sign = Self.turnSign(state: state, bridge: bridge, model: model)
+                _ = Self.applyScroll(Double(delta), precise: true, sign: sign, state: state, model: model)
             })
             #else
             .onAppear(perform: installScrollMonitor)
@@ -110,9 +160,25 @@ struct PointerAim: ViewModifier {
             #endif
     }
 
-    private func projector() -> AimProjector? {
+    /// The camera maths for this layer, from the live camera entity; nil before the scene exists.
+    private static func projector(state: PointerAimState, bridge: SceneBridge, model: ShowpieceModel) -> AimProjector? {
         guard let root = bridge.table?.root else { return nil }
         return AimProjector(camera: state.cameraBox.find(in: root), size: state.size, frame: TableFrame(model.timeline.table))
+    }
+
+    private func projector() -> AimProjector? { Self.projector(state: state, bridge: bridge, model: model) }
+
+    /// The sign that makes a scroll turn the line the way it looks on screen, from the camera now (see
+    /// AimProjector.turnSign). +1 before the scene exists.
+    private static func turnSign(state: PointerAimState, bridge: SceneBridge, model: ShowpieceModel) -> Double {
+        projector(state: state, bridge: bridge, model: model)?
+            .turnSign(origin: model.aimOrigin, direction: model.aimDirection) ?? 1
+    }
+
+    /// The pointer (mouse, trackpad) is the input in use: the first-minute line and the hints follow it (item 1). Only
+    /// written when it changes, so a stream of hover moves does not keep invalidating the views that read it.
+    private static func noteInput(_ model: ShowpieceModel) {
+        if model.inputInUse != .pointer { model.inputInUse = .pointer }
     }
 
     // MARK: Hover
@@ -121,15 +187,93 @@ struct PointerAim: ViewModifier {
         switch phase {
         case .active(let point):
             state.hovering = true
-            // Never while a button is held (that drag belongs to the overlay), and only once the balls are at rest: the
-            // guide is drawn from where they stopped.
-            guard state.press == nil, model.aimReady, let proj = projector() else { return }
-            if let ball = proj.screen(model.aimOrigin), hypot(ball.x - point.x, ball.y - point.y) < Self.holdRadius { return }
-            guard let spot = proj.table(at: point) else { return }
-            model.aim(toward: spot)
+            // On the Mac every hover is a pointer. On the iPad a trackpad's pointer and a hovering Pencil both arrive
+            // here and cannot be told apart, so only a pointer's click or scroll marks the input there.
+            #if os(macOS)
+            Self.noteInput(model)
+            #endif
+            state.previewPoint = previewAllowed(at: point) ? point : nil
+            let on = state.previewPoint != nil
+            if on != previewing { previewing = on }
         case .ended:
             state.hovering = false
+            state.previewPoint = nil
+            previewing = false
         }
+    }
+
+    /// The shot can be aimed now, by this person, and nothing is lifted or held: the conditions for a preview (and, at
+    /// release, for a click to aim).
+    private var aimOpenNow: Bool {
+        model.aimReady && !model.placingCueBall && model.personControlsLive && model.openControls.contains(.aim)
+            && model.layout.count == 16 && NextShot.isOnTable(model.aimOrigin)
+    }
+
+    /// A preview is drawn for a hover over the cloth while the aim may be set by a click, and not over the cue ball,
+    /// where a press is a pull-back rather than an aim.
+    private func previewAllowed(at point: CGPoint) -> Bool {
+        guard state.press == nil, aimOpenNow, let proj = projector(), proj.table(at: point) != nil else { return false }
+        if let ball = proj.screen(model.aimOrigin), hypot(ball.x - point.x, ball.y - point.y) <= Self.grabRadius {
+            return false
+        }
+        return true
+    }
+
+    /// The direction a click at `spot` would aim, without moving the aim. For a shot, straight through the spot. For
+    /// the break the click only chooses how far off the apex ball to hit (ShowpieceModel.aim(toward:)): where the line
+    /// through the spot crosses the apex ball's column, held inside the break's aim limit.
+    private func previewDirection(toward spot: Vec2) -> Vec2? {
+        let from = model.aimOrigin
+        let d = (spot - from).normalized
+        guard d.lengthSquared > 0.5 else { return nil }
+        guard model.racked, model.layout.count > 1 else { return d }
+        let apex = model.layout[1]
+        let limit = ShowpieceModel.breakAimLimit
+        let offset: Double
+        if d.x > 0.05 {
+            let y = from.y + d.y * ((apex.x - from.x) / d.x)
+            offset = min(max(y - apex.y, -limit), limit)
+        } else {
+            offset = d.y >= 0 ? limit : -limit
+        }
+        return (apex + Vec2(0, offset) - from).normalized
+    }
+
+    /// The overlay's short line with the Aim guide off (AimOverlay's draw: 0.35 m), so the preview tells no more than
+    /// the set line would: with the guide off the player judges the angle, and a hover must not show the contact.
+    private static let unguidedReach = 0.35
+
+    /// The faint preview: a thin dashed line from the cue ball's edge to the first ball, cushion, bumper, pin or hole it
+    /// would meet (the guide's own stop rule, AimGeometry.guideLine), and a faint dashed ring where the cue ball would
+    /// be at that moment. Along the cue's line: it shows where a click points the cue; the overlay's guide then bends
+    /// with side spin as usual. With the Aim guide option off it follows the overlay's rule instead: a short line that
+    /// still stops at anything in its way, and no ring.
+    private func drawPreview(_ ctx: inout GraphicsContext, size: CGSize) {
+        guard let point = state.previewPoint, state.press == nil, aimOpenNow,
+              let proj = AimProjector(camera: bridge.table.flatMap { state.cameraBox.find(in: $0.root) }, size: size,
+                                      frame: TableFrame(model.timeline.table)),
+              let spot = proj.table(at: point), let direction = previewDirection(toward: spot) else { return }
+        let table = model.timeline.table
+        let r = table.ballRadius
+        let guide = AimGeometry.guideLine(layout: model.layout, origin: model.aimOrigin, direction: direction, table: table)
+        let reach = aimGuide ? guide.reach : min(Self.unguidedReach, guide.reach)
+        guard reach > r, let a = proj.screen(model.aimOrigin + direction * r),
+              let b = proj.screen(model.aimOrigin + direction * reach) else { return }
+        var line = Path(); line.move(to: a); line.addLine(to: b)
+        let ink = palette.paper
+        ctx.stroke(line, with: .color(ink.opacity(0.45)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [5, 5]))
+        guard aimGuide else { return }
+        // Where the cue ball would be when the line ends: at the ghost ball if a ball is met, at the stop otherwise.
+        let end = model.aimOrigin + direction * reach
+        var ring = Path()
+        let steps = 32
+        for i in 0..<steps {
+            let t = Double(i) / Double(steps) * 2 * Double.pi
+            guard let p = proj.screen(end + Vec2(cos(t), sin(t)) * r) else { return }
+            if i == 0 { ring.move(to: p) } else { ring.addLine(to: p) }
+        }
+        ring.closeSubpath()
+        ctx.stroke(ring, with: .color(ink.opacity(0.35)), style: StrokeStyle(lineWidth: 1, dash: [3, 4]))
     }
 
     // MARK: Press and release
@@ -137,14 +281,7 @@ struct PointerAim: ViewModifier {
     private func track(_ events: SpatialEventCollection, ended: Bool = false) {
         for event in events {
             if state.press == nil, event.phase == .active, !ended {
-                let onBall: Bool
-                if let proj = projector(), let ball = proj.screen(model.aimOrigin) {
-                    onBall = hypot(ball.x - event.location.x, ball.y - event.location.y) <= Self.grabRadius
-                } else {
-                    onBall = false
-                }
-                state.press = PointerAimState.Press(id: event.id, start: event.location, onBall: onBall,
-                                                    isPointer: Self.isPointer(event))
+                begin(event)
             } else if let press = state.press, press.id == event.id, event.phase != .active || ended {
                 state.press = nil
                 if event.phase != .cancelled { release(press, at: event.location) }
@@ -152,7 +289,30 @@ struct PointerAim: ViewModifier {
         }
     }
 
-    /// A mouse or trackpad. On the Mac every press is one; on the iPad a finger and the Pencil report themselves apart.
+    /// The first device down: remember where, what kind, whether it grabbed the cue ball, whether a ball was lifted,
+    /// and the aim and power as they were (contract section 4's snapshot, so a change of mind can put them back).
+    private func begin(_ event: SpatialEventCollection.Event) {
+        let isPointer = Self.isPointer(event)
+        if isPointer { Self.noteInput(model) }
+        state.previewPoint = nil
+        previewing = false
+        let onBall: Bool
+        if let proj = projector(), let ball = proj.screen(model.aimOrigin) {
+            onBall = hypot(ball.x - event.location.x, ball.y - event.location.y) <= Self.grabRadius
+        } else {
+            onBall = false
+        }
+        let model = self.model
+        let snapshot = model.aimSnapshot()
+        state.press = PointerAimState.Press(
+            id: event.id, start: event.location, onBall: onBall, isPointer: isPointer,
+            placing: model.placingCueBall, ready: model.aimReady && model.personControlsLive,
+            restore: { model.restoreAim(snapshot) },
+            unchanged: { model.aimSnapshot() == snapshot })
+    }
+
+    /// A mouse or trackpad. On the Mac every press is one; on the iPad a finger and the Pencil report themselves apart
+    /// (the Pencil on the glass is .pencil, so it keeps the touch rules).
     private static func isPointer(_ event: SpatialEventCollection.Event) -> Bool {
         #if os(macOS)
         return true
@@ -161,33 +321,68 @@ struct PointerAim: ViewModifier {
         #endif
     }
 
-    /// A pointer let go after pulling back from the cue ball: take the shot at the power the pull set.
+    /// What a pointer's release means. A finger or the Pencil is the overlay's and the stroke's business, and a press
+    /// that began with a ball lifted only carried or put down that ball (the overlay puts it down on release; firing
+    /// here as well would also take the shot, depending on which handler ran first).
     private func release(_ press: PointerAimState.Press, at location: CGPoint) {
-        guard press.isPointer, press.onBall, model.aimReady,
-              hypot(location.x - press.start.x, location.y - press.start.y) > Self.pullSlop,
-              let proj = projector(), let spot = proj.table(at: location) else { return }
+        guard press.isPointer, !press.placing else { return }
+        let moved = hypot(location.x - press.start.x, location.y - press.start.y) > Self.pullSlop
+        if press.onBall {
+            releasePull(press, at: location, moved: moved)
+        } else if !moved {
+            click(press, at: location)
+        }
+    }
+
+    /// A pointer let go after pressing on the cue ball. Behind the ball, past a real pull: take the shot at the power the
+    /// pull set. Anything else (ahead of the ball, too short a pull, hardly moved) is a change of mind: the aim and power
+    /// go back to the press, and no card is shown.
+    private func releasePull(_ press: PointerAimState.Press, at location: CGPoint, moved: Bool) {
+        // Only while nothing has been struck since the press (a push through the ball may already have played it) and
+        // nothing has been lifted; otherwise this release means nothing.
+        guard press.ready, model.aimReady, !model.placingCueBall, model.personControlsLive else { return }
+        guard moved, let spot = projector()?.table(at: location) else { press.restore(); return }
         // How far behind the cue ball the pointer ended, along the aim line: the same measure the overlay's pull uses.
         let behind = (model.aimOrigin - spot).dot(model.aimDirection)
-        guard behind >= Self.minimumPull else { return }
+        guard behind >= Self.minimumPull else { press.restore(); return }
         hintSeen = true
-        // The break hands the screen to its slow-motion opening, so the panel closes, as with the Break button.
-        if model.fire() { isOpen = false }
+        // The break hands the screen to its slow-motion opening, so the panel closes, as with the Break button. A refused
+        // stroke records its reason on the model, and the shot card says it.
+        if model.fireStroke() == .breakStruck { isOpen = false }
+    }
+
+    /// A pointer click on the cloth (it hardly moved): aim through the spot. Usually inert: the overlay's own drag aims
+    /// at the press for every input today, so by now the aim has changed and this does nothing. It is the fallback for
+    /// an overlay that waits before aiming (contract section 4's undecided touch, whose tap on bare cloth may do
+    /// nothing), so a click always sets the aim. The overlay's tap runs on the same release and snaps the aim to a ball
+    /// or a pocket under the click; that snap must win, so this waits one turn of the main actor and aims only if the
+    /// aim is still what it was at the press (the overlay did nothing with this click).
+    private func click(_ press: PointerAimState.Press, at location: CGPoint) {
+        guard press.ready, aimOpenNow, let spot = projector()?.table(at: location) else { return }
+        let model = self.model
+        let unchanged = press.unchanged
+        Task { @MainActor in
+            guard unchanged(), model.aimReady, !model.placingCueBall, model.personControlsLive else { return }
+            model.aim(toward: spot)
+        }
     }
 
     // MARK: Scroll
 
     /// Turns a scroll into whole aim steps and applies them. `precise` scrolls (trackpads) are in points; a mouse
-    /// wheel's are in notches. Shared by the iPad's recogniser and the Mac's event monitor. Returns false when the aim
-    /// is not open to change (the balls are still moving), so the Mac lets the scroll go on to the window.
+    /// wheel's are in notches. `sign` makes the turn follow the screen (AimProjector.turnSign): scrolling up turns the
+    /// line anticlockwise as the player sees it, as the left arrow does. Shared by the iPad's recogniser and the Mac's
+    /// event monitor. Returns false when the aim is not open to change (the balls are still moving, a ball is lifted,
+    /// it is not the person's turn), so the Mac lets the scroll go on to the window.
     @discardableResult
-    fileprivate static func applyScroll(_ delta: Double, precise: Bool, state: PointerAimState, model: ShowpieceModel) -> Bool {
-        guard state.press == nil, model.aimReady else { return false }
+    fileprivate static func applyScroll(_ delta: Double, precise: Bool, sign: Double, state: PointerAimState,
+                                        model: ShowpieceModel) -> Bool {
+        guard state.press == nil, model.aimReady, !model.placingCueBall, model.personControlsLive else { return false }
         state.scrollCarry += precise ? delta / scrollPointsPerStep : delta
         let steps = state.scrollCarry.rounded(.towardZero)
         if steps != 0 {
             state.scrollCarry -= steps
-            // Scrolling up (or sliding two fingers up) turns the line anticlockwise on the table plan.
-            model.nudgeAim(steps)
+            model.nudgeAim(steps * sign)
         }
         return true
     }
@@ -199,6 +394,7 @@ struct PointerAim: ViewModifier {
         guard state.scrollMonitor == nil else { return }
         let state = self.state
         let model = self.model
+        let bridge = self.bridge
         state.scrollMonitor = NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { event in
             // Read the plain numbers here; the model is touched on the main actor, where AppKit delivers these anyway.
             let dx = Double(event.scrollingDeltaX), dy = Double(event.scrollingDeltaY)
@@ -207,7 +403,9 @@ struct PointerAim: ViewModifier {
             let delta = abs(dy) >= abs(dx) ? dy : -dx
             let handled = MainActor.assumeIsolated { () -> Bool in
                 guard state.hovering else { return false }
-                return PointerAim.applyScroll(delta, precise: precise, state: state, model: model)
+                PointerAim.noteInput(model)
+                let sign = PointerAim.turnSign(state: state, bridge: bridge, model: model)
+                return PointerAim.applyScroll(delta, precise: precise, sign: sign, state: state, model: model)
             }
             return handled ? nil : event
         }
