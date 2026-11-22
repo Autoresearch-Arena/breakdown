@@ -1,0 +1,4038 @@
+{
+ "keys": [
+  "Actual Size",
+  "Continue Match",
+  "Learn…",
+  "Play Alone",
+  "Straight Stroke Drill",
+  "Two Players",
+  "Watch the Intro",
+  "Zoom In",
+  "Zoom Out",
+  "New Game",
+  "Against the Computer: %@",
+  "A new game ends it for good.",
+  "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+  "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+  "A short lesson: watch the shot, then play it yourself.",
+  "Aim and power",
+  "Arrow keys aim and set the power. Return plays the shot.",
+  "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+  "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+  "Bridge finger",
+  "Buttons",
+  "Click the table to aim. Pull back from the white ball and let go.",
+  "Controller",
+  "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+  "Drag on the table to aim. Pull back from the white ball, then push through it.",
+  "Drag the %lld to a free spot, then let go.",
+  "Eight-ball against the easy computer. Ask it why it played each shot.",
+  "Keep my saved game",
+  "Keep playing",
+  "Keys",
+  "Learn the shots",
+  "Left stick aims, the triggers set the power, A plays the shot.",
+  "Move the %lld",
+  "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+  "Nothing dropped, but the rack is open.",
+  "Opens Your shot on this table",
+  "Opens the six lessons",
+  "Stylus",
+  "Touch and stylus",
+  "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+  "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+  "Place the balls",
+  "Pointer and keyboard",
+  "Practice strokes",
+  "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+  "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+  "Replace your saved game?",
+  "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+  "Start the new game",
+  "Stopped at the first hit.",
+  "Take your shot",
+  "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+  "Tap to skip",
+  "The View menu zooms in and out, and Actual Size shows the whole table again.",
+  "The faint ball is your last try.",
+  "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+  "The small picture of the white ball sets where the cue strikes it, for spin.",
+  "The stroke",
+  "The trick shot built on the lesson you passed.",
+  "The white ball went in too, so you put it back by hand.",
+  "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+  "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+  "Your break sank %@.",
+  "Your first break",
+  "Your shot and the menu",
+  "Your turn. %@",
+  "Zoom",
+  "%@ against %@. %@ to shoot.",
+  "%@ on your own. %@ to shoot.",
+  "%@ with %@. %@ to shoot.",
+  "Controls",
+  "Every gesture, key and button."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Actual Size",
+   "text": "Tamaño real"
+  },
+  {
+   "culture": "fr",
+   "key": "Actual Size",
+   "text": "Taille réelle"
+  },
+  {
+   "culture": "de",
+   "key": "Actual Size",
+   "text": "Originalgröße"
+  },
+  {
+   "culture": "it",
+   "key": "Actual Size",
+   "text": "Dimensioni reali"
+  },
+  {
+   "culture": "pt",
+   "key": "Actual Size",
+   "text": "Tamanho real"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Actual Size",
+   "text": "Tamanho real"
+  },
+  {
+   "culture": "ja",
+   "key": "Actual Size",
+   "text": "実際のサイズ"
+  },
+  {
+   "culture": "ko",
+   "key": "Actual Size",
+   "text": "실제 크기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Actual Size",
+   "text": "实际大小"
+  },
+  {
+   "culture": "ru",
+   "key": "Actual Size",
+   "text": "Реальный размер"
+  },
+  {
+   "culture": "ar",
+   "key": "Actual Size",
+   "text": "الحجم الفعلي"
+  },
+  {
+   "culture": "es",
+   "key": "Continue Match",
+   "text": "Continuar partida"
+  },
+  {
+   "culture": "fr",
+   "key": "Continue Match",
+   "text": "Reprendre la partie"
+  },
+  {
+   "culture": "de",
+   "key": "Continue Match",
+   "text": "Partie fortsetzen"
+  },
+  {
+   "culture": "it",
+   "key": "Continue Match",
+   "text": "Continua la partita"
+  },
+  {
+   "culture": "pt",
+   "key": "Continue Match",
+   "text": "Continuar partida"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Continue Match",
+   "text": "Continuar partida"
+  },
+  {
+   "culture": "ja",
+   "key": "Continue Match",
+   "text": "試合を続ける"
+  },
+  {
+   "culture": "ko",
+   "key": "Continue Match",
+   "text": "경기 이어 하기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Continue Match",
+   "text": "继续比赛"
+  },
+  {
+   "culture": "ru",
+   "key": "Continue Match",
+   "text": "Продолжить матч"
+  },
+  {
+   "culture": "ar",
+   "key": "Continue Match",
+   "text": "متابعة المباراة"
+  },
+  {
+   "culture": "es",
+   "key": "Learn…",
+   "text": "Aprender…"
+  },
+  {
+   "culture": "fr",
+   "key": "Learn…",
+   "text": "Apprendre…"
+  },
+  {
+   "culture": "de",
+   "key": "Learn…",
+   "text": "Lernen…"
+  },
+  {
+   "culture": "it",
+   "key": "Learn…",
+   "text": "Impara…"
+  },
+  {
+   "culture": "pt",
+   "key": "Learn…",
+   "text": "Aprender…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Learn…",
+   "text": "Aprender…"
+  },
+  {
+   "culture": "ja",
+   "key": "Learn…",
+   "text": "学ぶ…"
+  },
+  {
+   "culture": "ko",
+   "key": "Learn…",
+   "text": "배우기…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Learn…",
+   "text": "学习…"
+  },
+  {
+   "culture": "ru",
+   "key": "Learn…",
+   "text": "Учиться…"
+  },
+  {
+   "culture": "ar",
+   "key": "Learn…",
+   "text": "تعلّم…"
+  },
+  {
+   "culture": "es",
+   "key": "Play Alone",
+   "text": "Jugar solo"
+  },
+  {
+   "culture": "fr",
+   "key": "Play Alone",
+   "text": "Jouer seul"
+  },
+  {
+   "culture": "de",
+   "key": "Play Alone",
+   "text": "Allein spielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play Alone",
+   "text": "Gioca da solo"
+  },
+  {
+   "culture": "pt",
+   "key": "Play Alone",
+   "text": "Jogar sozinho"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play Alone",
+   "text": "Jogar sozinho"
+  },
+  {
+   "culture": "ja",
+   "key": "Play Alone",
+   "text": "1人で遊ぶ"
+  },
+  {
+   "culture": "ko",
+   "key": "Play Alone",
+   "text": "혼자 하기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play Alone",
+   "text": "单人游戏"
+  },
+  {
+   "culture": "ru",
+   "key": "Play Alone",
+   "text": "Играть одному"
+  },
+  {
+   "culture": "ar",
+   "key": "Play Alone",
+   "text": "العب وحدك"
+  },
+  {
+   "culture": "es",
+   "key": "Straight Stroke Drill",
+   "text": "Ejercicio de golpe recto"
+  },
+  {
+   "culture": "fr",
+   "key": "Straight Stroke Drill",
+   "text": "Exercice du coup droit"
+  },
+  {
+   "culture": "de",
+   "key": "Straight Stroke Drill",
+   "text": "Übung: gerader Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Straight Stroke Drill",
+   "text": "Esercizio del colpo dritto"
+  },
+  {
+   "culture": "pt",
+   "key": "Straight Stroke Drill",
+   "text": "Exercício de tacada direita"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Straight Stroke Drill",
+   "text": "Exercício de tacada reta"
+  },
+  {
+   "culture": "ja",
+   "key": "Straight Stroke Drill",
+   "text": "まっすぐストロークの練習"
+  },
+  {
+   "culture": "ko",
+   "key": "Straight Stroke Drill",
+   "text": "직선 스트로크 연습"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Straight Stroke Drill",
+   "text": "直线出杆练习"
+  },
+  {
+   "culture": "ru",
+   "key": "Straight Stroke Drill",
+   "text": "Упражнение: прямой удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Straight Stroke Drill",
+   "text": "تمرين الضربة المستقيمة"
+  },
+  {
+   "culture": "es",
+   "key": "Two Players",
+   "text": "Dos jugadores"
+  },
+  {
+   "culture": "fr",
+   "key": "Two Players",
+   "text": "Deux joueurs"
+  },
+  {
+   "culture": "de",
+   "key": "Two Players",
+   "text": "Zwei Spieler"
+  },
+  {
+   "culture": "it",
+   "key": "Two Players",
+   "text": "Due giocatori"
+  },
+  {
+   "culture": "pt",
+   "key": "Two Players",
+   "text": "Dois jogadores"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Two Players",
+   "text": "Dois jogadores"
+  },
+  {
+   "culture": "ja",
+   "key": "Two Players",
+   "text": "2人で"
+  },
+  {
+   "culture": "ko",
+   "key": "Two Players",
+   "text": "2인"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Two Players",
+   "text": "双人"
+  },
+  {
+   "culture": "ru",
+   "key": "Two Players",
+   "text": "Два игрока"
+  },
+  {
+   "culture": "ar",
+   "key": "Two Players",
+   "text": "لاعبان"
+  },
+  {
+   "culture": "es",
+   "key": "Watch the Intro",
+   "text": "Ver la introducción"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch the Intro",
+   "text": "Revoir l'intro"
+  },
+  {
+   "culture": "de",
+   "key": "Watch the Intro",
+   "text": "Intro ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch the Intro",
+   "text": "Guarda l'introduzione"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch the Intro",
+   "text": "Ver a introdução"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch the Intro",
+   "text": "Ver a introdução"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch the Intro",
+   "text": "イントロを見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch the Intro",
+   "text": "인트로 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch the Intro",
+   "text": "观看开场"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch the Intro",
+   "text": "Смотреть вступление"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch the Intro",
+   "text": "شاهد المقدمة"
+  },
+  {
+   "culture": "es",
+   "key": "Zoom In",
+   "text": "Acercar"
+  },
+  {
+   "culture": "fr",
+   "key": "Zoom In",
+   "text": "Zoom avant"
+  },
+  {
+   "culture": "de",
+   "key": "Zoom In",
+   "text": "Vergrößern"
+  },
+  {
+   "culture": "it",
+   "key": "Zoom In",
+   "text": "Ingrandisci"
+  },
+  {
+   "culture": "pt",
+   "key": "Zoom In",
+   "text": "Ampliar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Zoom In",
+   "text": "Ampliar"
+  },
+  {
+   "culture": "ja",
+   "key": "Zoom In",
+   "text": "拡大"
+  },
+  {
+   "culture": "ko",
+   "key": "Zoom In",
+   "text": "확대"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Zoom In",
+   "text": "放大"
+  },
+  {
+   "culture": "ru",
+   "key": "Zoom In",
+   "text": "Увеличить"
+  },
+  {
+   "culture": "ar",
+   "key": "Zoom In",
+   "text": "تكبير"
+  },
+  {
+   "culture": "es",
+   "key": "Zoom Out",
+   "text": "Alejar"
+  },
+  {
+   "culture": "fr",
+   "key": "Zoom Out",
+   "text": "Zoom arrière"
+  },
+  {
+   "culture": "de",
+   "key": "Zoom Out",
+   "text": "Verkleinern"
+  },
+  {
+   "culture": "it",
+   "key": "Zoom Out",
+   "text": "Riduci"
+  },
+  {
+   "culture": "pt",
+   "key": "Zoom Out",
+   "text": "Reduzir"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Zoom Out",
+   "text": "Reduzir"
+  },
+  {
+   "culture": "ja",
+   "key": "Zoom Out",
+   "text": "縮小"
+  },
+  {
+   "culture": "ko",
+   "key": "Zoom Out",
+   "text": "축소"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Zoom Out",
+   "text": "缩小"
+  },
+  {
+   "culture": "ru",
+   "key": "Zoom Out",
+   "text": "Уменьшить"
+  },
+  {
+   "culture": "ar",
+   "key": "Zoom Out",
+   "text": "تصغير"
+  },
+  {
+   "culture": "es",
+   "key": "New Game",
+   "text": "Nueva partida"
+  },
+  {
+   "culture": "fr",
+   "key": "New Game",
+   "text": "Nouvelle partie"
+  },
+  {
+   "culture": "de",
+   "key": "New Game",
+   "text": "Neue Partie"
+  },
+  {
+   "culture": "it",
+   "key": "New Game",
+   "text": "Nuova partita"
+  },
+  {
+   "culture": "pt",
+   "key": "New Game",
+   "text": "Nova partida"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "New Game",
+   "text": "Nova partida"
+  },
+  {
+   "culture": "ja",
+   "key": "New Game",
+   "text": "新しい試合"
+  },
+  {
+   "culture": "ko",
+   "key": "New Game",
+   "text": "새 경기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "New Game",
+   "text": "新比赛"
+  },
+  {
+   "culture": "ru",
+   "key": "New Game",
+   "text": "Новая партия"
+  },
+  {
+   "culture": "ar",
+   "key": "New Game",
+   "text": "مباراة جديدة"
+  },
+  {
+   "culture": "es",
+   "key": "Against the Computer: %@",
+   "text": "Contra el ordenador: %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Against the Computer: %@",
+   "text": "Contre l'ordinateur : %@"
+  },
+  {
+   "culture": "de",
+   "key": "Against the Computer: %@",
+   "text": "Gegen den Computer: %@"
+  },
+  {
+   "culture": "it",
+   "key": "Against the Computer: %@",
+   "text": "Contro il computer: %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Against the Computer: %@",
+   "text": "Contra o computador: %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Against the Computer: %@",
+   "text": "Contra o computador: %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Against the Computer: %@",
+   "text": "コンピュータと対戦：%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Against the Computer: %@",
+   "text": "컴퓨터와 대결: %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Against the Computer: %@",
+   "text": "对战电脑：%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Against the Computer: %@",
+   "text": "Против компьютера: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Against the Computer: %@",
+   "text": "ضد الحاسوب: %@"
+  },
+  {
+   "culture": "es",
+   "key": "A new game ends it for good.",
+   "text": "Una partida nueva la termina para siempre."
+  },
+  {
+   "culture": "fr",
+   "key": "A new game ends it for good.",
+   "text": "Une nouvelle partie la termine pour de bon."
+  },
+  {
+   "culture": "de",
+   "key": "A new game ends it for good.",
+   "text": "Eine neue Partie beendet sie endgültig."
+  },
+  {
+   "culture": "it",
+   "key": "A new game ends it for good.",
+   "text": "Una nuova partita la chiude per sempre."
+  },
+  {
+   "culture": "pt",
+   "key": "A new game ends it for good.",
+   "text": "Uma nova partida termina-a de vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A new game ends it for good.",
+   "text": "Uma nova partida encerra essa de vez."
+  },
+  {
+   "culture": "ja",
+   "key": "A new game ends it for good.",
+   "text": "新しい試合を始めると、保存した試合は完全に終わります。"
+  },
+  {
+   "culture": "ko",
+   "key": "A new game ends it for good.",
+   "text": "새 경기를 시작하면 저장된 경기는 완전히 끝납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A new game ends it for good.",
+   "text": "开始新比赛会永久结束它。"
+  },
+  {
+   "culture": "ru",
+   "key": "A new game ends it for good.",
+   "text": "Новая партия завершит её насовсем."
+  },
+  {
+   "culture": "ar",
+   "key": "A new game ends it for good.",
+   "text": "المباراة الجديدة تنهيها نهائياً."
+  },
+  {
+   "culture": "es",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A juega el tiro o pulsa el botón principal de la tarjeta en pantalla. B salta a donde se pararon las bolas. X activa o desactiva la Lente de física. Los gatillos superiores recorren los momentos explicados."
+  },
+  {
+   "culture": "fr",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A joue le coup ou appuie sur le bouton principal de la carte à l'écran. B saute là où les billes se sont arrêtées. X active ou désactive la Lentille physique. Les boutons de tranche parcourent les moments expliqués."
+  },
+  {
+   "culture": "de",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A spielt den Stoß oder drückt den Hauptknopf der Karte auf dem Bildschirm. B springt dorthin, wo die Kugeln liegen geblieben sind. X schaltet die Physik-Lens ein oder aus. Die Schultertasten gehen die erklärten Momente durch."
+  },
+  {
+   "culture": "it",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A gioca il tiro o preme il pulsante principale della scheda sullo schermo. B salta a dove si sono fermate le palle. X attiva o disattiva la Lens di fisica. I tasti dorsali scorrono i momenti spiegati."
+  },
+  {
+   "culture": "pt",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A joga a tacada ou carrega no botão principal do cartão no ecrã. B salta para onde as bolas pararam. X liga ou desliga a Lente de Física. Os botões de ombro percorrem os momentos explicados."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A dá a tacada ou aperta o botão principal do cartão na tela. B pula para onde as bolas pararam. X liga ou desliga a Lente de Física. Os botões de ombro percorrem os momentos explicados."
+  },
+  {
+   "culture": "ja",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "Aでショット、または画面のカードのメインボタンを押します。Bは球が止まったところへ進みます。Xで物理レンズのオンとオフを切り替えます。ショルダーボタンで解説された瞬間を順に移動します。"
+  },
+  {
+   "culture": "ko",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A는 샷을 치거나 화면 카드의 주 버튼을 누릅니다. B는 공이 멈춘 곳으로 건너뜁니다. X는 물리 렌즈를 켜고 끕니다. 숄더 버튼으로 설명된 순간을 차례로 넘깁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A 击球，或按下屏幕上卡片的主按钮。B 跳到球停下的地方。X 打开或关闭物理透镜。肩键在讲解的时刻之间切换。"
+  },
+  {
+   "culture": "ru",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "A делает удар или нажимает главную кнопку карточки на экране. B переносит туда, где остановились шары. X включает и выключает физическую линзу. Плечевые кнопки листают объяснённые моменты."
+  },
+  {
+   "culture": "ar",
+   "key": "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.",
+   "text": "الزر A يلعب الضربة أو يضغط الزر الرئيسي للبطاقة على الشاشة. الزر B يقفز إلى حيث توقفت الكرات. الزر X يشغّل عدسة الفيزياء أو يطفئها. أزرار الكتف تنتقل بين اللحظات المشروحة."
+  },
+  {
+   "culture": "es",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Una mesa de billar que muestra su propia física. Aprende los tiros en seis lecciones y luego juega a la bola 8 o a la bola 9 contra un amigo o el ordenador."
+  },
+  {
+   "culture": "fr",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Une table de billard qui montre sa propre physique. Apprends les coups en six leçons, puis joue au 8 ou au 9 contre un ami ou l'ordinateur."
+  },
+  {
+   "culture": "de",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Ein Billardtisch, der seine eigene Physik zeigt. Lerne die Stöße in sechs Lektionen und spiel dann 8-Ball oder 9-Ball gegen Freunde oder den Computer."
+  },
+  {
+   "culture": "it",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Un tavolo da biliardo che mostra la sua fisica. Impara i colpi in sei lezioni, poi gioca a palla 8 o palla 9 contro un amico o il computer."
+  },
+  {
+   "culture": "pt",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Uma mesa de bilhar que mostra a sua própria física. Aprende as tacadas em seis lições e depois joga bola 8 ou bola 9 contra um amigo ou o computador."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Uma mesa de sinuca que mostra a própria física. Aprenda as tacadas em seis lições e depois jogue bola 8 ou bola 9 contra um amigo ou o computador."
+  },
+  {
+   "culture": "ja",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "自らの物理を見せてくれるビリヤード台。6つのレッスンでショットを学び、友だちやコンピュータとエイトボールやナインボールで対戦しましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "스스로 물리를 보여 주는 당구대. 여섯 개의 레슨으로 샷을 배우고, 친구나 컴퓨터와 에이트볼이나 나인볼을 겨뤄 보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "一张会展示自身物理的球桌。用六节课学会击球，再和朋友或电脑打八球或九球。"
+  },
+  {
+   "culture": "ru",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "Бильярдный стол, который показывает свою физику. Освой удары за шесть уроков, а потом сыграй в восьмёрку или девятку с другом или компьютером."
+  },
+  {
+   "culture": "ar",
+   "key": "A pool table that shows its own physics. Learn the shots in six lessons, then play eight-ball or nine-ball against a friend or the computer.",
+   "text": "طاولة بلياردو تُظهر فيزياءها بنفسها. تعلّم الضربات في ست دروس، ثم العب البلياردو بالكرة 8 أو 9 ضد صديق أو ضد الحاسوب."
+  },
+  {
+   "culture": "es",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Una lección corta: mira el tiro y luego juégalo tú."
+  },
+  {
+   "culture": "fr",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Une courte leçon : regarde le coup, puis joue-le toi-même."
+  },
+  {
+   "culture": "de",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Eine kurze Lektion: Schau dir den Stoß an und spiel ihn dann selbst."
+  },
+  {
+   "culture": "it",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Una breve lezione: guarda il tiro, poi giocalo tu."
+  },
+  {
+   "culture": "pt",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Uma lição curta: vê a tacada e depois joga-a tu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Uma lição curta: veja a tacada e depois jogue você."
+  },
+  {
+   "culture": "ja",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "短いレッスン：ショットを見てから、自分で打ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "짧은 레슨: 샷을 본 다음 직접 쳐 보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "一节短课：先看这一杆，再自己打。"
+  },
+  {
+   "culture": "ru",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "Короткий урок: посмотри удар, потом сыграй его сам."
+  },
+  {
+   "culture": "ar",
+   "key": "A short lesson: watch the shot, then play it yourself.",
+   "text": "درس قصير: شاهد الضربة ثم العبها بنفسك."
+  },
+  {
+   "culture": "es",
+   "key": "Aim and power",
+   "text": "Puntería y potencia"
+  },
+  {
+   "culture": "fr",
+   "key": "Aim and power",
+   "text": "Visée et puissance"
+  },
+  {
+   "culture": "de",
+   "key": "Aim and power",
+   "text": "Zielen und Kraft"
+  },
+  {
+   "culture": "it",
+   "key": "Aim and power",
+   "text": "Mira e potenza"
+  },
+  {
+   "culture": "pt",
+   "key": "Aim and power",
+   "text": "Mira e força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Aim and power",
+   "text": "Mira e força"
+  },
+  {
+   "culture": "ja",
+   "key": "Aim and power",
+   "text": "狙いと強さ"
+  },
+  {
+   "culture": "ko",
+   "key": "Aim and power",
+   "text": "조준과 세기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Aim and power",
+   "text": "瞄准与力度"
+  },
+  {
+   "culture": "ru",
+   "key": "Aim and power",
+   "text": "Прицел и сила"
+  },
+  {
+   "culture": "ar",
+   "key": "Aim and power",
+   "text": "التصويب والقوة"
+  },
+  {
+   "culture": "es",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "Las flechas apuntan y ajustan la potencia. Intro juega el tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "Les flèches visent et règlent la puissance. Entrée joue le coup."
+  },
+  {
+   "culture": "de",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "Die Pfeiltasten zielen und stellen die Kraft ein. Return spielt den Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "Le frecce mirano e regolano la potenza. Invio gioca il tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "As setas apontam e definem a força. Enter joga a tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "As setas miram e definem a força. Return dá a tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "矢印キーで狙いと強さを決め、Returnでショットします。"
+  },
+  {
+   "culture": "ko",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "화살표 키로 조준하고 세기를 정합니다. Return으로 샷을 칩니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "方向键瞄准并设定力度，回车键击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "Стрелки целятся и задают силу. Return делает удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Arrow keys aim and set the power. Return plays the shot.",
+   "text": "مفاتيح الأسهم تصوّب وتحدد القوة. مفتاح Return يلعب الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "Las flechas giran la puntería y ajustan la potencia; con Mayúsculas, en pasos más grandes. Intro juega el tiro. Espacio reproduce o pausa la repetición mientras la mesa está seleccionada."
+  },
+  {
+   "culture": "fr",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "Les flèches tournent la visée et règlent la puissance, avec Maj pour de plus grands pas. Entrée joue le coup. Espace lance ou met en pause le replay quand la table est sélectionnée."
+  },
+  {
+   "culture": "de",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "Die Pfeiltasten drehen die Zielrichtung und stellen die Kraft ein, mit Umschalt in größeren Schritten. Return spielt den Stoß. Die Leertaste startet oder pausiert die Wiederholung, solange der Tisch ausgewählt ist."
+  },
+  {
+   "culture": "it",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "Le frecce ruotano la mira e regolano la potenza, con Maiusc a passi più grandi. Invio gioca il tiro. Spazio avvia o mette in pausa il replay mentre il tavolo è selezionato."
+  },
+  {
+   "culture": "pt",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "As setas rodam a mira e definem a força, com Shift em passos maiores. Enter joga a tacada. Espaço reproduz ou pausa a repetição enquanto a mesa está selecionada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "As setas giram a mira e definem a força, com Shift em passos maiores. Return dá a tacada. Espaço reproduz ou pausa o replay enquanto a mesa estiver selecionada."
+  },
+  {
+   "culture": "ja",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "矢印キーで狙いを回し強さを決めます。Shiftを押すと大きく動きます。Returnでショット。台を選択している間、スペースでリプレイを再生・一時停止します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "화살표 키로 조준을 돌리고 세기를 정합니다. Shift를 누르면 더 크게 움직입니다. Return으로 샷을 칩니다. 테이블이 선택된 동안 스페이스로 리플레이를 재생하거나 멈춥니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "方向键转动瞄准并设定力度，按住 Shift 步幅更大。回车键击球。选中球桌时，空格键播放或暂停回放。"
+  },
+  {
+   "culture": "ru",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "Стрелки поворачивают прицел и задают силу, с Shift шаги крупнее. Return делает удар. Пробел запускает и ставит на паузу повтор, пока выбран стол."
+  },
+  {
+   "culture": "ar",
+   "key": "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.",
+   "text": "مفاتيح الأسهم تدير التصويب وتحدد القوة، ومع Shift بخطوات أكبر. مفتاح Return يلعب الضربة. المسافة تشغّل الإعادة أو توقفها مؤقتاً ما دامت الطاولة محددة."
+  },
+  {
+   "culture": "es",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Antes del último empuje, mueve el taco adelante y atrás unas veces sin llegar a la bola. Si mantienes el mismo ritmo, el tiro sale más firme."
+  },
+  {
+   "culture": "fr",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Avant la dernière poussée, fais quelques allers-retours sans toucher la bille. Garde le même rythme et le coup sera plus sûr."
+  },
+  {
+   "culture": "de",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Mach vor dem letzten Stoß ein paar Probeschwünge vor und zurück, ohne die Kugel zu erreichen. Bleib im selben Rhythmus, dann wird der Stoß ruhiger."
+  },
+  {
+   "culture": "it",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Prima dell'ultima spinta, fai qualche va e vieni senza arrivare alla palla. Mantieni lo stesso ritmo e il tiro esce più stabile."
+  },
+  {
+   "culture": "pt",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Antes do último empurrão, faz alguns vaivéns sem chegar à bola. Mantém o mesmo ritmo e a tacada sai mais firme."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Antes do último empurrão, faça alguns vaivéns sem chegar à bola. Mantenha o mesmo ritmo e a tacada sai mais firme."
+  },
+  {
+   "culture": "ja",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "最後に押し出す前に、球の手前で何度か前後に素振りします。同じリズムを保つと、ショットが安定します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "마지막으로 밀기 전에 공에 닿지 않게 몇 번 앞뒤로 연습 스트로크를 하세요. 같은 리듬을 유지하면 샷이 더 안정됩니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "在最后一推之前，在球前来回空推几次。保持同样的节奏，击球会更稳。"
+  },
+  {
+   "culture": "ru",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "Перед последним толчком сделай несколько движений вперёд-назад, не доходя до шара. Держи тот же ритм, и удар выйдет ровнее."
+  },
+  {
+   "culture": "ar",
+   "key": "Before the last push, stroke back and forth short of the ball a few times. Keep the same rhythm and the shot comes out steadier.",
+   "text": "قبل الدفعة الأخيرة، حرّك العصا ذهاباً وإياباً بضع مرات دون أن تبلغ الكرة. حافظ على الإيقاع نفسه فتخرج الضربة أثبت."
+  },
+  {
+   "culture": "es",
+   "key": "Bridge finger",
+   "text": "Dedo puente"
+  },
+  {
+   "culture": "fr",
+   "key": "Bridge finger",
+   "text": "Doigt de pont"
+  },
+  {
+   "culture": "de",
+   "key": "Bridge finger",
+   "text": "Brückenfinger"
+  },
+  {
+   "culture": "it",
+   "key": "Bridge finger",
+   "text": "Dito del ponte"
+  },
+  {
+   "culture": "pt",
+   "key": "Bridge finger",
+   "text": "Dedo de ponte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Bridge finger",
+   "text": "Dedo de ponte"
+  },
+  {
+   "culture": "ja",
+   "key": "Bridge finger",
+   "text": "ブリッジの指"
+  },
+  {
+   "culture": "ko",
+   "key": "Bridge finger",
+   "text": "브리지 손가락"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Bridge finger",
+   "text": "手架手指"
+  },
+  {
+   "culture": "ru",
+   "key": "Bridge finger",
+   "text": "Палец-мостик"
+  },
+  {
+   "culture": "ar",
+   "key": "Bridge finger",
+   "text": "إصبع الجسر"
+  },
+  {
+   "culture": "es",
+   "key": "Buttons",
+   "text": "Botones"
+  },
+  {
+   "culture": "fr",
+   "key": "Buttons",
+   "text": "Boutons"
+  },
+  {
+   "culture": "de",
+   "key": "Buttons",
+   "text": "Tasten"
+  },
+  {
+   "culture": "it",
+   "key": "Buttons",
+   "text": "Pulsanti"
+  },
+  {
+   "culture": "pt",
+   "key": "Buttons",
+   "text": "Botões"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Buttons",
+   "text": "Botões"
+  },
+  {
+   "culture": "ja",
+   "key": "Buttons",
+   "text": "ボタン"
+  },
+  {
+   "culture": "ko",
+   "key": "Buttons",
+   "text": "버튼"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Buttons",
+   "text": "按钮"
+  },
+  {
+   "culture": "ru",
+   "key": "Buttons",
+   "text": "Кнопки"
+  },
+  {
+   "culture": "ar",
+   "key": "Buttons",
+   "text": "الأزرار"
+  },
+  {
+   "culture": "es",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Haz clic en la mesa para apuntar. Tira hacia atrás desde la bola blanca y suelta."
+  },
+  {
+   "culture": "fr",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Clique sur la table pour viser. Tire depuis la bille blanche et relâche."
+  },
+  {
+   "culture": "de",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Klick auf den Tisch, um zu zielen. Zieh von der weißen Kugel zurück und lass los."
+  },
+  {
+   "culture": "it",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Fai clic sul tavolo per mirare. Tira indietro dalla palla bianca e lascia andare."
+  },
+  {
+   "culture": "pt",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Clica na mesa para mirar. Puxa para trás a partir da bola branca e larga."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Clique na mesa para mirar. Puxe para trás a partir da bola branca e solte."
+  },
+  {
+   "culture": "ja",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "台をクリックして狙いを定めます。手球から手前に引いて離します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "테이블을 클릭해 조준하세요. 큐볼에서 뒤로 당긴 뒤 놓으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "点击球桌瞄准。从白球处往后拉，然后松开。"
+  },
+  {
+   "culture": "ru",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "Щёлкни по столу, чтобы прицелиться. Оттяни от белого шара и отпусти."
+  },
+  {
+   "culture": "ar",
+   "key": "Click the table to aim. Pull back from the white ball and let go.",
+   "text": "انقر على الطاولة للتصويب. اسحب للخلف من الكرة البيضاء ثم أفلت."
+  },
+  {
+   "culture": "es",
+   "key": "Controller",
+   "text": "Mando"
+  },
+  {
+   "culture": "fr",
+   "key": "Controller",
+   "text": "Manette"
+  },
+  {
+   "culture": "de",
+   "key": "Controller",
+   "text": "Controller"
+  },
+  {
+   "culture": "it",
+   "key": "Controller",
+   "text": "Controller"
+  },
+  {
+   "culture": "pt",
+   "key": "Controller",
+   "text": "Comando"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Controller",
+   "text": "Controle"
+  },
+  {
+   "culture": "ja",
+   "key": "Controller",
+   "text": "コントローラ"
+  },
+  {
+   "culture": "ko",
+   "key": "Controller",
+   "text": "컨트롤러"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Controller",
+   "text": "手柄"
+  },
+  {
+   "culture": "ru",
+   "key": "Controller",
+   "text": "Геймпад"
+  },
+  {
+   "culture": "ar",
+   "key": "Controller",
+   "text": "وحدة التحكم"
+  },
+  {
+   "culture": "es",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Arrastra sobre el paño para mover la línea de puntería. Toca una bola para apuntar directo a ella, o una tronera para apuntar la entrada."
+  },
+  {
+   "culture": "fr",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Fais glisser sur le tapis pour déplacer la ligne de visée. Touche une bille pour viser droit dessus, ou une poche pour viser l'empochage."
+  },
+  {
+   "culture": "de",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Zieh über das Tuch, um die Ziellinie zu schwenken. Tippe auf eine Kugel, um direkt auf sie zu zielen, oder auf eine Tasche, um den Versenker anzuvisieren."
+  },
+  {
+   "culture": "it",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Trascina sul panno per spostare la linea di mira. Tocca una palla per mirarla dritto, o una buca per mirare l'imbucata."
+  },
+  {
+   "culture": "pt",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Arrasta no pano para rodar a linha de mira. Toca numa bola para apontar direto a ela, ou num buraco para apontar a entrada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Arraste no pano para girar a linha de mira. Toque numa bola para mirar direto nela, ou numa caçapa para mirar a encaçapada."
+  },
+  {
+   "culture": "ja",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "ラシャの上をドラッグして狙いの線を動かします。球をタップするとその球をまっすぐ狙い、ポケットをタップするとそこへ入れる狙いになります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "천 위를 드래그해 조준선을 돌리세요. 공을 탭하면 그 공을 바로 겨누고, 포켓을 탭하면 그 포켓에 넣도록 겨눕니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "在台呢上拖动来转动瞄准线。轻点一颗球就直接瞄准它，轻点一个袋口就瞄准进袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "Веди по сукну, чтобы поворачивать линию прицела. Коснись шара, чтобы целиться прямо в него, или лузы, чтобы целиться в забивание."
+  },
+  {
+   "culture": "ar",
+   "key": "Drag on the cloth to swing the aim line. Tap a ball to aim straight at it, or a pocket to aim the pot.",
+   "text": "اسحب على القماش لتحريك خط التصويب. انقر على كرة للتصويب نحوها مباشرة، أو على جيب للتصويب لإدخالها فيه."
+  },
+  {
+   "culture": "es",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Arrastra sobre la mesa para apuntar. Tira hacia atrás desde la bola blanca y luego empuja a través de ella."
+  },
+  {
+   "culture": "fr",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Fais glisser sur la table pour viser. Tire depuis la bille blanche, puis pousse à travers elle."
+  },
+  {
+   "culture": "de",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Zieh über den Tisch, um zu zielen. Zieh von der weißen Kugel zurück und stoß dann durch sie hindurch."
+  },
+  {
+   "culture": "it",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Trascina sul tavolo per mirare. Tira indietro dalla palla bianca, poi spingi attraverso di essa."
+  },
+  {
+   "culture": "pt",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Arrasta na mesa para mirar. Puxa para trás a partir da bola branca e depois empurra através dela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Arraste na mesa para mirar. Puxe para trás a partir da bola branca e depois empurre através dela."
+  },
+  {
+   "culture": "ja",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "台をドラッグして狙いを定めます。手球から手前に引いてから、手球を突き抜けるように押し出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "테이블을 드래그해 조준하세요. 큐볼에서 뒤로 당긴 다음 공을 뚫고 지나가듯 밀어내세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "在球桌上拖动以瞄准。从白球处往后拉，再向前推穿过白球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "Веди по столу, чтобы прицелиться. Оттяни от белого шара, а потом толкни сквозь него."
+  },
+  {
+   "culture": "ar",
+   "key": "Drag on the table to aim. Pull back from the white ball, then push through it.",
+   "text": "اسحب على الطاولة للتصويب. اسحب للخلف من الكرة البيضاء، ثم ادفع عبرها."
+  },
+  {
+   "culture": "es",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Arrastra la %lld a un sitio libre y suelta."
+  },
+  {
+   "culture": "fr",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Fais glisser la %lld vers une place libre, puis relâche."
+  },
+  {
+   "culture": "de",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Zieh die %lld an eine freie Stelle und lass los."
+  },
+  {
+   "culture": "it",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Trascina la %lld in un punto libero, poi lascia andare."
+  },
+  {
+   "culture": "pt",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Arrasta a %lld para um sítio livre e larga."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Arraste a %lld para um lugar livre e solte."
+  },
+  {
+   "culture": "ja",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "%lld番を空いている場所までドラッグして離します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "%lld번 공을 빈 자리로 드래그한 뒤 놓으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "把 %lld 号球拖到空位，然后松开。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "Перетащи %lld-й на свободное место и отпусти."
+  },
+  {
+   "culture": "ar",
+   "key": "Drag the %lld to a free spot, then let go.",
+   "text": "اسحب الكرة %lld إلى مكان فارغ ثم أفلتها."
+  },
+  {
+   "culture": "es",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "Bola 8 contra el ordenador fácil. Pregúntale por qué jugó cada tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "Le 8 contre l'ordinateur facile. Demande-lui pourquoi il a joué chaque coup."
+  },
+  {
+   "culture": "de",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "8-Ball gegen den leichten Computer. Frag ihn, warum er jeden Stoß gespielt hat."
+  },
+  {
+   "culture": "it",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "Palla 8 contro il computer facile. Chiedigli perché ha giocato ogni tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "Bola 8 contra o computador fácil. Pergunta-lhe porque jogou cada tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "Bola 8 contra o computador fácil. Pergunte por que ele jogou cada tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "やさしいコンピュータとのエイトボール。それぞれのショットを選んだ理由を聞けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "쉬움 컴퓨터와 에이트볼. 샷마다 왜 그렇게 쳤는지 물어보세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "和简单难度电脑打八球。可以问它每一杆为什么这么打。"
+  },
+  {
+   "culture": "ru",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "Восьмёрка против лёгкого компьютера. Спроси, почему он сыграл каждый удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Eight-ball against the easy computer. Ask it why it played each shot.",
+   "text": "البلياردو بالكرة 8 ضد الحاسوب السهل. اسأله لماذا لعب كل ضربة."
+  },
+  {
+   "culture": "es",
+   "key": "Keep my saved game",
+   "text": "Mantener mi partida guardada"
+  },
+  {
+   "culture": "fr",
+   "key": "Keep my saved game",
+   "text": "Garder ma partie enregistrée"
+  },
+  {
+   "culture": "de",
+   "key": "Keep my saved game",
+   "text": "Gespeicherte Partie behalten"
+  },
+  {
+   "culture": "it",
+   "key": "Keep my saved game",
+   "text": "Tieni la partita salvata"
+  },
+  {
+   "culture": "pt",
+   "key": "Keep my saved game",
+   "text": "Manter a minha partida guardada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Keep my saved game",
+   "text": "Manter minha partida salva"
+  },
+  {
+   "culture": "ja",
+   "key": "Keep my saved game",
+   "text": "保存した試合を残す"
+  },
+  {
+   "culture": "ko",
+   "key": "Keep my saved game",
+   "text": "저장된 경기 유지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Keep my saved game",
+   "text": "保留已保存的比赛"
+  },
+  {
+   "culture": "ru",
+   "key": "Keep my saved game",
+   "text": "Оставить сохранённую партию"
+  },
+  {
+   "culture": "ar",
+   "key": "Keep my saved game",
+   "text": "احتفظ بمباراتي المحفوظة"
+  },
+  {
+   "culture": "es",
+   "key": "Keep playing",
+   "text": "Seguir jugando"
+  },
+  {
+   "culture": "fr",
+   "key": "Keep playing",
+   "text": "Continuer à jouer"
+  },
+  {
+   "culture": "de",
+   "key": "Keep playing",
+   "text": "Weiterspielen"
+  },
+  {
+   "culture": "it",
+   "key": "Keep playing",
+   "text": "Continua a giocare"
+  },
+  {
+   "culture": "pt",
+   "key": "Keep playing",
+   "text": "Continuar a jogar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Keep playing",
+   "text": "Continuar jogando"
+  },
+  {
+   "culture": "ja",
+   "key": "Keep playing",
+   "text": "このまま続ける"
+  },
+  {
+   "culture": "ko",
+   "key": "Keep playing",
+   "text": "계속하기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Keep playing",
+   "text": "继续打"
+  },
+  {
+   "culture": "ru",
+   "key": "Keep playing",
+   "text": "Играть дальше"
+  },
+  {
+   "culture": "ar",
+   "key": "Keep playing",
+   "text": "واصل اللعب"
+  },
+  {
+   "culture": "es",
+   "key": "Keys",
+   "text": "Teclas"
+  },
+  {
+   "culture": "fr",
+   "key": "Keys",
+   "text": "Touches"
+  },
+  {
+   "culture": "de",
+   "key": "Keys",
+   "text": "Tasten"
+  },
+  {
+   "culture": "it",
+   "key": "Keys",
+   "text": "Tasti"
+  },
+  {
+   "culture": "pt",
+   "key": "Keys",
+   "text": "Teclas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Keys",
+   "text": "Teclas"
+  },
+  {
+   "culture": "ja",
+   "key": "Keys",
+   "text": "キー"
+  },
+  {
+   "culture": "ko",
+   "key": "Keys",
+   "text": "키"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Keys",
+   "text": "按键"
+  },
+  {
+   "culture": "ru",
+   "key": "Keys",
+   "text": "Клавиши"
+  },
+  {
+   "culture": "ar",
+   "key": "Keys",
+   "text": "المفاتيح"
+  },
+  {
+   "culture": "es",
+   "key": "Learn the shots",
+   "text": "Aprende los tiros"
+  },
+  {
+   "culture": "fr",
+   "key": "Learn the shots",
+   "text": "Apprends les coups"
+  },
+  {
+   "culture": "de",
+   "key": "Learn the shots",
+   "text": "Lerne die Stöße"
+  },
+  {
+   "culture": "it",
+   "key": "Learn the shots",
+   "text": "Impara i colpi"
+  },
+  {
+   "culture": "pt",
+   "key": "Learn the shots",
+   "text": "Aprende as tacadas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Learn the shots",
+   "text": "Aprenda as tacadas"
+  },
+  {
+   "culture": "ja",
+   "key": "Learn the shots",
+   "text": "ショットを学ぶ"
+  },
+  {
+   "culture": "ko",
+   "key": "Learn the shots",
+   "text": "샷 배우기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Learn the shots",
+   "text": "学习击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Learn the shots",
+   "text": "Освой удары"
+  },
+  {
+   "culture": "ar",
+   "key": "Learn the shots",
+   "text": "تعلّم الضربات"
+  },
+  {
+   "culture": "es",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "El stick izquierdo apunta, los gatillos ajustan la potencia y A juega el tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "Le stick gauche vise, les gâchettes règlent la puissance, A joue le coup."
+  },
+  {
+   "culture": "de",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "Der linke Stick zielt, die Trigger stellen die Kraft ein, A spielt den Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "Lo stick sinistro mira, i grilletti regolano la potenza, A gioca il tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "O manípulo esquerdo aponta, os gatilhos definem a força e A joga a tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "O analógico esquerdo mira, os gatilhos definem a força e A dá a tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "左スティックで狙い、トリガーで強さを決め、Aでショットします。"
+  },
+  {
+   "culture": "ko",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "왼쪽 스틱으로 조준하고, 트리거로 세기를 정하고, A로 샷을 칩니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "左摇杆瞄准，扳机键设定力度，A 键击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "Левый стик целится, курки задают силу, A делает удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Left stick aims, the triggers set the power, A plays the shot.",
+   "text": "العصا اليسرى تصوّب، والزنادان يحددان القوة، والزر A يلعب الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "Move the %lld",
+   "text": "Mueve la %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Move the %lld",
+   "text": "Déplace la %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Move the %lld",
+   "text": "Versetze die %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Move the %lld",
+   "text": "Sposta la %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Move the %lld",
+   "text": "Move a %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Move the %lld",
+   "text": "Mova a %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Move the %lld",
+   "text": "%lld番を動かす"
+  },
+  {
+   "culture": "ko",
+   "key": "Move the %lld",
+   "text": "%lld번 공 옮기기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Move the %lld",
+   "text": "移动 %lld 号球"
+  },
+  {
+   "culture": "ru",
+   "key": "Move the %lld",
+   "text": "Передвинь %lld-й"
+  },
+  {
+   "culture": "ar",
+   "key": "Move the %lld",
+   "text": "حرّك الكرة %lld"
+  },
+  {
+   "culture": "es",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Mueve el puntero para ver la línea y luego haz clic o arrastra sobre el paño para fijarla. Desplaza para afinar."
+  },
+  {
+   "culture": "fr",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Déplace le pointeur pour voir la ligne, puis clique ou fais glisser sur le tapis pour la fixer. Fais défiler pour affiner."
+  },
+  {
+   "culture": "de",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Beweg den Zeiger, um die Linie zu sehen, und klick oder zieh dann auf dem Tuch, um sie festzulegen. Scrolle zum Feinjustieren."
+  },
+  {
+   "culture": "it",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Muovi il puntatore per vedere la linea, poi fai clic o trascina sul panno per fissarla. Scorri per regolare di fino."
+  },
+  {
+   "culture": "pt",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Move o ponteiro para ver a linha e depois clica ou arrasta no pano para a fixar. Desliza para afinar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Mova o ponteiro para ver a linha e depois clique ou arraste no pano para fixá-la. Role para ajustar."
+  },
+  {
+   "culture": "ja",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "ポインタを動かすと線が見えます。ラシャをクリックかドラッグして決めます。スクロールで微調整します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "포인터를 움직여 선을 본 다음, 천을 클릭하거나 드래그해 정하세요. 스크롤로 미세 조정합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "移动指针查看瞄准线，再在台呢上点击或拖动来确定。滚动可微调。"
+  },
+  {
+   "culture": "ru",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "Двигай указатель, чтобы увидеть линию, потом щёлкни или веди по сукну, чтобы задать её. Прокрутка уточняет."
+  },
+  {
+   "culture": "ar",
+   "key": "Move the pointer to see the line, then click or drag on the cloth to set it. Scroll to fine-tune.",
+   "text": "حرّك المؤشر لترى الخط، ثم انقر أو اسحب على القماش لتثبيته. مرّر للضبط الدقيق."
+  },
+  {
+   "culture": "es",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "No entró ninguna, pero el triángulo está abierto."
+  },
+  {
+   "culture": "fr",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "Rien n'est tombé, mais le triangle est ouvert."
+  },
+  {
+   "culture": "de",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "Nichts ist gefallen, aber das Dreieck ist offen."
+  },
+  {
+   "culture": "it",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "Non è entrato niente, ma il triangolo è aperto."
+  },
+  {
+   "culture": "pt",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "Nada entrou, mas o triângulo está aberto."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "Nada caiu, mas o triângulo está aberto."
+  },
+  {
+   "culture": "ja",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "何も入りませんでしたが、ラックは崩れました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "들어간 공은 없지만 랙은 흩어졌습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "没有球进袋，但球堆已经打开了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "Ничего не упало, но пирамида раскрыта."
+  },
+  {
+   "culture": "ar",
+   "key": "Nothing dropped, but the rack is open.",
+   "text": "لم تدخل أي كرة، لكن المثلث انفتح."
+  },
+  {
+   "culture": "es",
+   "key": "Opens Your shot on this table",
+   "text": "Abre Tu tiro en esta mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Opens Your shot on this table",
+   "text": "Ouvre Ton coup sur cette table"
+  },
+  {
+   "culture": "de",
+   "key": "Opens Your shot on this table",
+   "text": "Öffnet „Dein Stoß“ an diesem Tisch"
+  },
+  {
+   "culture": "it",
+   "key": "Opens Your shot on this table",
+   "text": "Apre Il tuo tiro su questo tavolo"
+  },
+  {
+   "culture": "pt",
+   "key": "Opens Your shot on this table",
+   "text": "Abre A tua tacada nesta mesa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Opens Your shot on this table",
+   "text": "Abre Sua tacada nesta mesa"
+  },
+  {
+   "culture": "ja",
+   "key": "Opens Your shot on this table",
+   "text": "この台で「あなたのショット」を開きます"
+  },
+  {
+   "culture": "ko",
+   "key": "Opens Your shot on this table",
+   "text": "이 테이블에서 '내 샷'을 엽니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Opens Your shot on this table",
+   "text": "在这张球桌上打开“你的击球”"
+  },
+  {
+   "culture": "ru",
+   "key": "Opens Your shot on this table",
+   "text": "Открывает «Твой удар» на этом столе"
+  },
+  {
+   "culture": "ar",
+   "key": "Opens Your shot on this table",
+   "text": "يفتح «ضربتك» على هذه الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "Opens the six lessons",
+   "text": "Abre las seis lecciones"
+  },
+  {
+   "culture": "fr",
+   "key": "Opens the six lessons",
+   "text": "Ouvre les six leçons"
+  },
+  {
+   "culture": "de",
+   "key": "Opens the six lessons",
+   "text": "Öffnet die sechs Lektionen"
+  },
+  {
+   "culture": "it",
+   "key": "Opens the six lessons",
+   "text": "Apre le sei lezioni"
+  },
+  {
+   "culture": "pt",
+   "key": "Opens the six lessons",
+   "text": "Abre as seis lições"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Opens the six lessons",
+   "text": "Abre as seis lições"
+  },
+  {
+   "culture": "ja",
+   "key": "Opens the six lessons",
+   "text": "6つのレッスンを開きます"
+  },
+  {
+   "culture": "ko",
+   "key": "Opens the six lessons",
+   "text": "레슨 여섯 개를 엽니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Opens the six lessons",
+   "text": "打开六节课"
+  },
+  {
+   "culture": "ru",
+   "key": "Opens the six lessons",
+   "text": "Открывает шесть уроков"
+  },
+  {
+   "culture": "ar",
+   "key": "Opens the six lessons",
+   "text": "يفتح الدروس الستة"
+  },
+  {
+   "culture": "es",
+   "key": "Stylus",
+   "text": "Lápiz"
+  },
+  {
+   "culture": "fr",
+   "key": "Stylus",
+   "text": "Stylet"
+  },
+  {
+   "culture": "de",
+   "key": "Stylus",
+   "text": "Stift"
+  },
+  {
+   "culture": "it",
+   "key": "Stylus",
+   "text": "Penna"
+  },
+  {
+   "culture": "pt",
+   "key": "Stylus",
+   "text": "Caneta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stylus",
+   "text": "Caneta"
+  },
+  {
+   "culture": "ja",
+   "key": "Stylus",
+   "text": "ペン"
+  },
+  {
+   "culture": "ko",
+   "key": "Stylus",
+   "text": "펜"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stylus",
+   "text": "触控笔"
+  },
+  {
+   "culture": "ru",
+   "key": "Stylus",
+   "text": "Стилус"
+  },
+  {
+   "culture": "ar",
+   "key": "Stylus",
+   "text": "القلم"
+  },
+  {
+   "culture": "es",
+   "key": "Touch and stylus",
+   "text": "Táctil y lápiz"
+  },
+  {
+   "culture": "fr",
+   "key": "Touch and stylus",
+   "text": "Tactile et stylet"
+  },
+  {
+   "culture": "de",
+   "key": "Touch and stylus",
+   "text": "Touch und Stift"
+  },
+  {
+   "culture": "it",
+   "key": "Touch and stylus",
+   "text": "Tocco e penna"
+  },
+  {
+   "culture": "pt",
+   "key": "Touch and stylus",
+   "text": "Toque e caneta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Touch and stylus",
+   "text": "Toque e caneta"
+  },
+  {
+   "culture": "ja",
+   "key": "Touch and stylus",
+   "text": "タッチとペン"
+  },
+  {
+   "culture": "ko",
+   "key": "Touch and stylus",
+   "text": "터치와 펜"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Touch and stylus",
+   "text": "触控与触控笔"
+  },
+  {
+   "culture": "ru",
+   "key": "Touch and stylus",
+   "text": "Касание и стилус"
+  },
+  {
+   "culture": "ar",
+   "key": "Touch and stylus",
+   "text": "اللمس والقلم"
+  },
+  {
+   "culture": "es",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Un lápiz golpea como un dedo. Donde se permite levantar el taco, inclínalo más allá de como lo sujetas para escribir y el taco se levanta."
+  },
+  {
+   "culture": "fr",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Un stylet joue comme un doigt. Là où une queue relevée est permise, redresse-le au-delà d'une prise d'écriture pour lever la queue."
+  },
+  {
+   "culture": "de",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Ein Stift stößt wie ein Finger. Wo ein angehobenes Queue erlaubt ist, kipp ihn steiler als beim Schreiben, um das Queue anzuheben."
+  },
+  {
+   "culture": "it",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Una penna colpisce come un dito. Dove la stecca alzata è permessa, inclinala oltre l'impugnatura da scrittura per alzare la stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Uma caneta joga como um dedo. Onde um taco levantado é permitido, inclina-a para lá da posição de escrita para levantar o taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Uma caneta joga como um dedo. Onde o taco levantado é permitido, incline-a além da posição de escrita para levantar o taco."
+  },
+  {
+   "culture": "ja",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "ペンは指と同じように打てます。キューを立てられる場面では、書くときより立てて傾けるとキューが上がります。"
+  },
+  {
+   "culture": "ko",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "펜은 손가락처럼 칩니다. 큐를 세울 수 있는 곳에서는 글씨 쓸 때보다 더 세워 기울이면 큐가 올라갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "触控笔和手指一样出杆。在允许抬杆的地方，把笔立得比写字时更高，球杆就会抬起。"
+  },
+  {
+   "culture": "ru",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "Стилус бьёт как палец. Где можно поднять кий, наклони стилус круче, чем держишь при письме, и кий поднимется."
+  },
+  {
+   "culture": "ar",
+   "key": "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.",
+   "text": "يضرب القلم كما يضرب الإصبع. حيث يُسمح برفع العصا، أمِله أكثر من وضعية الكتابة لترفع العصا."
+  },
+  {
+   "culture": "es",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Pellizca para hacer zoom y arrastra con dos dedos para moverte. Toca dos veces una bola para acercarte y otra vez para volver."
+  },
+  {
+   "culture": "fr",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Pince pour zoomer et fais glisser à deux doigts pour te déplacer. Touche deux fois une bille pour zoomer dessus, et encore pour revenir."
+  },
+  {
+   "culture": "de",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Zieh zwei Finger auseinander zum Zoomen und schieb mit zwei Fingern, um dich zu bewegen. Tippe zweimal auf eine Kugel, um sie heranzuholen, und noch einmal, um zurückzugehen."
+  },
+  {
+   "culture": "it",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Pizzica per lo zoom e trascina con due dita per spostarti. Tocca due volte una palla per avvicinarti, e di nuovo per tornare indietro."
+  },
+  {
+   "culture": "pt",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Faz pinça para ampliar e arrasta com dois dedos para te deslocares. Toca duas vezes numa bola para a aproximar, e outra vez para voltar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Faça pinça para dar zoom e arraste com dois dedos para se mover. Toque duas vezes numa bola para aproximar, e de novo para voltar."
+  },
+  {
+   "culture": "ja",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "ピンチで拡大・縮小、2本指のドラッグで移動します。球をダブルタップするとその球に寄り、もう一度で戻ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "핀치로 확대하고 두 손가락으로 드래그해 이동하세요. 공을 두 번 탭하면 그 공을 확대하고, 다시 두 번 탭하면 돌아옵니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "双指捏合缩放，双指拖动来移动。双击一颗球放大它，再双击一次回到原样。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "Сведи или разведи пальцы для масштаба и веди двумя пальцами, чтобы двигаться. Дважды коснись шара, чтобы приблизить его, и ещё раз, чтобы вернуться."
+  },
+  {
+   "culture": "ar",
+   "key": "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.",
+   "text": "قرّب إصبعين أو باعدهما للتكبير، واسحب بإصبعين للتنقل. انقر مرتين على كرة لتكبيرها، ومرة أخرى للرجوع."
+  },
+  {
+   "culture": "es",
+   "key": "Place the balls",
+   "text": "Coloca las bolas"
+  },
+  {
+   "culture": "fr",
+   "key": "Place the balls",
+   "text": "Place les billes"
+  },
+  {
+   "culture": "de",
+   "key": "Place the balls",
+   "text": "Leg die Kugeln hin"
+  },
+  {
+   "culture": "it",
+   "key": "Place the balls",
+   "text": "Posiziona le palle"
+  },
+  {
+   "culture": "pt",
+   "key": "Place the balls",
+   "text": "Coloca as bolas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Place the balls",
+   "text": "Posicione as bolas"
+  },
+  {
+   "culture": "ja",
+   "key": "Place the balls",
+   "text": "球を置く"
+  },
+  {
+   "culture": "ko",
+   "key": "Place the balls",
+   "text": "공 놓기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Place the balls",
+   "text": "摆放球"
+  },
+  {
+   "culture": "ru",
+   "key": "Place the balls",
+   "text": "Расставь шары"
+  },
+  {
+   "culture": "ar",
+   "key": "Place the balls",
+   "text": "ضع الكرات"
+  },
+  {
+   "culture": "es",
+   "key": "Pointer and keyboard",
+   "text": "Puntero y teclado"
+  },
+  {
+   "culture": "fr",
+   "key": "Pointer and keyboard",
+   "text": "Pointeur et clavier"
+  },
+  {
+   "culture": "de",
+   "key": "Pointer and keyboard",
+   "text": "Zeiger und Tastatur"
+  },
+  {
+   "culture": "it",
+   "key": "Pointer and keyboard",
+   "text": "Puntatore e tastiera"
+  },
+  {
+   "culture": "pt",
+   "key": "Pointer and keyboard",
+   "text": "Ponteiro e teclado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pointer and keyboard",
+   "text": "Ponteiro e teclado"
+  },
+  {
+   "culture": "ja",
+   "key": "Pointer and keyboard",
+   "text": "ポインタとキーボード"
+  },
+  {
+   "culture": "ko",
+   "key": "Pointer and keyboard",
+   "text": "포인터와 키보드"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pointer and keyboard",
+   "text": "指针与键盘"
+  },
+  {
+   "culture": "ru",
+   "key": "Pointer and keyboard",
+   "text": "Указатель и клавиатура"
+  },
+  {
+   "culture": "ar",
+   "key": "Pointer and keyboard",
+   "text": "المؤشر ولوحة المفاتيح"
+  },
+  {
+   "culture": "es",
+   "key": "Practice strokes",
+   "text": "Golpes de práctica"
+  },
+  {
+   "culture": "fr",
+   "key": "Practice strokes",
+   "text": "Coups d'essai"
+  },
+  {
+   "culture": "de",
+   "key": "Practice strokes",
+   "text": "Probeschwünge"
+  },
+  {
+   "culture": "it",
+   "key": "Practice strokes",
+   "text": "Colpi di prova"
+  },
+  {
+   "culture": "pt",
+   "key": "Practice strokes",
+   "text": "Tacadas de ensaio"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Practice strokes",
+   "text": "Tacadas de ensaio"
+  },
+  {
+   "culture": "ja",
+   "key": "Practice strokes",
+   "text": "素振り"
+  },
+  {
+   "culture": "ko",
+   "key": "Practice strokes",
+   "text": "연습 스트로크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Practice strokes",
+   "text": "空杆练习"
+  },
+  {
+   "culture": "ru",
+   "key": "Practice strokes",
+   "text": "Пробные движения"
+  },
+  {
+   "culture": "ar",
+   "key": "Practice strokes",
+   "text": "ضربات تمرين"
+  },
+  {
+   "culture": "es",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Pulsa sobre la bola blanca, arrastra hacia atrás para ajustar la potencia y suelta para jugar. Suelta por delante de la bola si cambias de idea."
+  },
+  {
+   "culture": "fr",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Appuie sur la bille blanche, tire en arrière pour régler la puissance et relâche pour jouer. Relâche devant la bille pour changer d'avis."
+  },
+  {
+   "culture": "de",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Drück auf die weiße Kugel, zieh zurück, um die Kraft einzustellen, und lass los, um zu spielen. Lass vor der Kugel los, wenn du es dir anders überlegst."
+  },
+  {
+   "culture": "it",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Premi sulla palla bianca, trascina indietro per regolare la potenza e lascia andare per giocare. Lascia davanti alla palla per cambiare idea."
+  },
+  {
+   "culture": "pt",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Carrega na bola branca, arrasta para trás para definir a força e larga para jogar. Larga à frente da bola para mudares de ideias."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Pressione a bola branca, arraste para trás para definir a força e solte para jogar. Solte na frente da bola para mudar de ideia."
+  },
+  {
+   "culture": "ja",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "手球を押して手前にドラッグして強さを決め、離すとショットします。球より前で離すと取りやめになります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "큐볼을 누르고 뒤로 드래그해 세기를 정한 뒤 놓으면 칩니다. 공 앞쪽에서 놓으면 취소됩니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "按住白球往后拖设定力度，松开就击球。在球的前方松开则取消。"
+  },
+  {
+   "culture": "ru",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "Нажми на белый шар, оттяни назад, чтобы задать силу, и отпусти, чтобы ударить. Отпусти перед шаром, если передумал."
+  },
+  {
+   "culture": "ar",
+   "key": "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.",
+   "text": "اضغط على الكرة البيضاء واسحب للخلف لتحديد القوة ثم أفلت لتلعب. أفلت أمام الكرة إن غيّرت رأيك."
+  },
+  {
+   "culture": "es",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Pon un dedo en la bola blanca, tira hacia atrás para ajustar la potencia y luego empuja hacia delante a través de la bola para jugar. Si levantas el dedo sin empujar, se guarda la potencia y no se juega nada; entonces lo juega Saque o Tirar."
+  },
+  {
+   "culture": "fr",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Pose un doigt sur la bille blanche, tire en arrière pour régler la puissance, puis pousse vers l'avant à travers la bille pour jouer. Lever le doigt sans pousser garde la puissance et ne joue rien ; Casse ou Tirer joue alors le coup."
+  },
+  {
+   "culture": "de",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Leg einen Finger auf die weiße Kugel, zieh zurück, um die Kraft einzustellen, und stoß dann nach vorn durch die Kugel, um zu spielen. Hebst du den Finger ohne Stoß, bleibt die Kraft eingestellt und nichts wird gespielt; dann spielt Break oder Stoßen."
+  },
+  {
+   "culture": "it",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Metti un dito sulla palla bianca, tira indietro per regolare la potenza, poi spingi in avanti attraverso la palla per giocare. Se alzi il dito senza spingere, la potenza resta e non si gioca nulla; allora gioca Break o Tira."
+  },
+  {
+   "culture": "pt",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Põe um dedo na bola branca, puxa para trás para definir a força e depois empurra para a frente através da bola para jogar. Levantar o dedo sem empurrar mantém a força e não joga nada; aí joga Abertura ou Tacar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Ponha um dedo na bola branca, puxe para trás para definir a força e depois empurre para a frente através da bola para jogar. Levantar o dedo sem empurrar mantém a força e não joga nada; aí Abertura ou Tacar dá a tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "手球に指を置き、手前に引いて強さを決めてから、球を突き抜けるように前へ押し出すとショットします。押し出さずに指を離すと、強さはそのままでショットはしません。そのときはブレイクかショットのボタンで打てます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "큐볼에 손가락을 올리고 뒤로 당겨 세기를 정한 다음, 공을 뚫고 지나가듯 앞으로 밀면 샷을 칩니다. 밀지 않고 손가락을 떼면 세기는 유지되고 아무것도 치지 않습니다. 그때는 브레이크나 샷 버튼으로 칩니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "把一根手指放在白球上，往后拉设定力度，再向前推穿过白球就会击球。不推就抬起手指，力度会保留但不会击球；这时用“开球”或“击球”按钮出杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "Поставь палец на белый шар, оттяни назад, чтобы задать силу, потом толкни вперёд сквозь шар, чтобы ударить. Если поднять палец без толчка, сила сохранится, но удара не будет; тогда ударит кнопка «Разбить» или «Ударить»."
+  },
+  {
+   "culture": "ar",
+   "key": "Put a finger on the white ball, pull back to set the power, then push forward through the ball to play. Lifting the finger without pushing keeps the power and plays nothing; Break or Shoot plays it then.",
+   "text": "ضع إصبعاً على الكرة البيضاء، واسحب للخلف لتحديد القوة، ثم ادفع للأمام عبر الكرة لتلعب. رفع الإصبع دون دفع يحفظ القوة ولا يلعب شيئاً؛ وعندها يلعبها زر افتتاح أو اضرب."
+  },
+  {
+   "culture": "es",
+   "key": "Replace your saved game?",
+   "text": "¿Reemplazar tu partida guardada?"
+  },
+  {
+   "culture": "fr",
+   "key": "Replace your saved game?",
+   "text": "Remplacer ta partie enregistrée ?"
+  },
+  {
+   "culture": "de",
+   "key": "Replace your saved game?",
+   "text": "Gespeicherte Partie ersetzen?"
+  },
+  {
+   "culture": "it",
+   "key": "Replace your saved game?",
+   "text": "Sostituire la partita salvata?"
+  },
+  {
+   "culture": "pt",
+   "key": "Replace your saved game?",
+   "text": "Substituir a tua partida guardada?"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Replace your saved game?",
+   "text": "Substituir sua partida salva?"
+  },
+  {
+   "culture": "ja",
+   "key": "Replace your saved game?",
+   "text": "保存した試合を置き換えますか？"
+  },
+  {
+   "culture": "ko",
+   "key": "Replace your saved game?",
+   "text": "저장된 경기를 바꿀까요?"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Replace your saved game?",
+   "text": "要替换已保存的比赛吗？"
+  },
+  {
+   "culture": "ru",
+   "key": "Replace your saved game?",
+   "text": "Заменить сохранённую партию?"
+  },
+  {
+   "culture": "ar",
+   "key": "Replace your saved game?",
+   "text": "هل تستبدل مباراتك المحفوظة؟"
+  },
+  {
+   "culture": "es",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Apoya un segundo dedo en el paño detrás de la bola blanca mientras golpeas. Es tu mano puente: su distancia a la bola es tu puente."
+  },
+  {
+   "culture": "fr",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Pose un deuxième doigt sur le tapis derrière la bille blanche pendant que tu joues. C'est ta main de pont : sa distance à la bille est ton pont."
+  },
+  {
+   "culture": "de",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Leg beim Stoßen einen zweiten Finger hinter der weißen Kugel aufs Tuch. Das ist deine Brückenhand: Ihr Abstand zur Kugel ist deine Brücke."
+  },
+  {
+   "culture": "it",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Appoggia un secondo dito sul panno dietro la palla bianca mentre colpisci. È la tua mano del ponte: la sua distanza dalla palla è il tuo ponte."
+  },
+  {
+   "culture": "pt",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Apoia um segundo dedo no pano atrás da bola branca enquanto jogas. É a tua mão de ponte: a distância dela à bola é a tua ponte."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Apoie um segundo dedo no pano atrás da bola branca enquanto joga. É a sua mão de ponte: a distância dela até a bola é a sua ponte."
+  },
+  {
+   "culture": "ja",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "打つ間、手球の後ろのラシャに2本目の指を置きます。それがブリッジの手で、球からの距離がブリッジの長さになります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "스트로크하는 동안 큐볼 뒤쪽 천에 두 번째 손가락을 얹으세요. 그게 브리지 손이고, 공과의 거리가 브리지 길이입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "出杆时，把第二根手指放在白球后方的台呢上。那就是你的手架，它离球的距离就是手架长度。"
+  },
+  {
+   "culture": "ru",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "Во время удара положи второй палец на сукно позади белого шара. Это твоя рука-мостик: её расстояние до шара и есть мостик."
+  },
+  {
+   "culture": "ar",
+   "key": "Rest a second finger on the cloth behind the white ball while you stroke. It is your bridge hand: how far it sits from the ball is your bridge.",
+   "text": "أثناء الضرب، ضع إصبعاً ثانياً على القماش خلف الكرة البيضاء. إنها يد الجسر: بُعدها عن الكرة هو طول جسرك."
+  },
+  {
+   "culture": "es",
+   "key": "Start the new game",
+   "text": "Empezar la partida nueva"
+  },
+  {
+   "culture": "fr",
+   "key": "Start the new game",
+   "text": "Commencer la nouvelle partie"
+  },
+  {
+   "culture": "de",
+   "key": "Start the new game",
+   "text": "Neue Partie beginnen"
+  },
+  {
+   "culture": "it",
+   "key": "Start the new game",
+   "text": "Inizia la nuova partita"
+  },
+  {
+   "culture": "pt",
+   "key": "Start the new game",
+   "text": "Começar a nova partida"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Start the new game",
+   "text": "Começar a nova partida"
+  },
+  {
+   "culture": "ja",
+   "key": "Start the new game",
+   "text": "新しい試合を始める"
+  },
+  {
+   "culture": "ko",
+   "key": "Start the new game",
+   "text": "새 경기 시작"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Start the new game",
+   "text": "开始新比赛"
+  },
+  {
+   "culture": "ru",
+   "key": "Start the new game",
+   "text": "Начать новую партию"
+  },
+  {
+   "culture": "ar",
+   "key": "Start the new game",
+   "text": "ابدأ المباراة الجديدة"
+  },
+  {
+   "culture": "es",
+   "key": "Stopped at the first hit.",
+   "text": "Parado en el primer golpe."
+  },
+  {
+   "culture": "fr",
+   "key": "Stopped at the first hit.",
+   "text": "Arrêté au premier contact."
+  },
+  {
+   "culture": "de",
+   "key": "Stopped at the first hit.",
+   "text": "Angehalten beim ersten Treffer."
+  },
+  {
+   "culture": "it",
+   "key": "Stopped at the first hit.",
+   "text": "Fermato al primo contatto."
+  },
+  {
+   "culture": "pt",
+   "key": "Stopped at the first hit.",
+   "text": "Parado no primeiro toque."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Stopped at the first hit.",
+   "text": "Parado no primeiro toque."
+  },
+  {
+   "culture": "ja",
+   "key": "Stopped at the first hit.",
+   "text": "最初に当たった瞬間で止めました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Stopped at the first hit.",
+   "text": "첫 충돌에서 멈췄습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Stopped at the first hit.",
+   "text": "停在第一次碰撞处。"
+  },
+  {
+   "culture": "ru",
+   "key": "Stopped at the first hit.",
+   "text": "Остановлено на первом касании."
+  },
+  {
+   "culture": "ar",
+   "key": "Stopped at the first hit.",
+   "text": "توقّف عند أول اصطدام."
+  },
+  {
+   "culture": "es",
+   "key": "Take your shot",
+   "text": "Haz tu tiro"
+  },
+  {
+   "culture": "fr",
+   "key": "Take your shot",
+   "text": "Joue ton coup"
+  },
+  {
+   "culture": "de",
+   "key": "Take your shot",
+   "text": "Spiel deinen Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Take your shot",
+   "text": "Fai il tuo tiro"
+  },
+  {
+   "culture": "pt",
+   "key": "Take your shot",
+   "text": "Faz a tua tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Take your shot",
+   "text": "Faça sua tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Take your shot",
+   "text": "ショットを打つ"
+  },
+  {
+   "culture": "ko",
+   "key": "Take your shot",
+   "text": "샷 치기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Take your shot",
+   "text": "出杆击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Take your shot",
+   "text": "Сделай удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Take your shot",
+   "text": "العب ضربتك"
+  },
+  {
+   "culture": "es",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Toca Aprender para seis lecciones cortas: retroceso cero, seguimiento, retroceso, corte, curva y salto. Cada una muestra el tiro y luego te pasa el taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Touche Apprendre pour six courtes leçons : l'arrêt, le suivi, le rétro, la coupe, la courbe et le saut. Chacune montre le coup, puis te passe la queue."
+  },
+  {
+   "culture": "de",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Tippe auf Lernen für sechs kurze Lektionen: Stopp, Nachläufer, Rückläufer, Schnitt, Kurve und Sprung. Jede zeigt den Stoß und gibt dir dann das Queue."
+  },
+  {
+   "culture": "it",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Tocca Impara per sei brevi lezioni: fermo, seguito, ritorno, taglio, curva e salto. Ognuna mostra il tiro, poi ti passa la stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Toca em Aprender para seis lições curtas: paragem, seguimento, puxe, corte, curva e salto. Cada uma mostra a tacada e depois passa-te o taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Toque em Aprender para seis lições curtas: parada, siga, puxada, corte, curva e salto. Cada uma mostra a tacada e depois passa o taco para você."
+  },
+  {
+   "culture": "ja",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "「学ぶ」をタップすると、ストップ、フォロー、ドロー、カット、カーブ、ジャンプの6つの短いレッスンがあります。それぞれショットを見せてから、キューを渡してくれます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "'배우기'를 탭하면 스톱, 밀어치기, 끌어치기, 컷, 커브, 점프의 짧은 레슨 여섯 개가 있습니다. 각 레슨은 샷을 보여 준 뒤 큐를 넘겨 줍니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "点击“学习”，有六节短课：定杆、跟杆、缩杆、切球、弧线球和跳球。每节课先演示，再把球杆交给你。"
+  },
+  {
+   "culture": "ru",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "Нажми «Учиться» — там шесть коротких уроков: стоп, накат, оттяжка, срез, кривая и прыжок. Каждый показывает удар, а потом даёт тебе кий."
+  },
+  {
+   "culture": "ar",
+   "key": "Tap Learn for six short lessons: stop, follow, draw, cut, curve and jump. Each one shows the shot, then hands you the cue.",
+   "text": "انقر على تعلّم لتجد ستة دروس قصيرة: التوقف والمتابعة والسحب والقطع والانحناء والقفز. كل درس يعرض الضربة ثم يسلّمك العصا."
+  },
+  {
+   "culture": "es",
+   "key": "Tap to skip",
+   "text": "Toca para saltar"
+  },
+  {
+   "culture": "fr",
+   "key": "Tap to skip",
+   "text": "Touche pour passer"
+  },
+  {
+   "culture": "de",
+   "key": "Tap to skip",
+   "text": "Tippen zum Überspringen"
+  },
+  {
+   "culture": "it",
+   "key": "Tap to skip",
+   "text": "Tocca per saltare"
+  },
+  {
+   "culture": "pt",
+   "key": "Tap to skip",
+   "text": "Toca para saltar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tap to skip",
+   "text": "Toque para pular"
+  },
+  {
+   "culture": "ja",
+   "key": "Tap to skip",
+   "text": "タップでスキップ"
+  },
+  {
+   "culture": "ko",
+   "key": "Tap to skip",
+   "text": "탭하여 건너뛰기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tap to skip",
+   "text": "轻点跳过"
+  },
+  {
+   "culture": "ru",
+   "key": "Tap to skip",
+   "text": "Коснись, чтобы пропустить"
+  },
+  {
+   "culture": "ar",
+   "key": "Tap to skip",
+   "text": "انقر للتخطي"
+  },
+  {
+   "culture": "es",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "El menú Visualización acerca y aleja, y Tamaño real vuelve a mostrar toda la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "Le menu Présentation zoome en avant et en arrière, et Taille réelle remontre toute la table."
+  },
+  {
+   "culture": "de",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "Im Menü „Darstellung“ zoomst du hinein und heraus, und „Originalgröße“ zeigt wieder den ganzen Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "Il menu Vista ingrandisce e riduce, e Dimensioni reali mostra di nuovo tutto il tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "O menu Visualização amplia e reduz, e Tamanho real volta a mostrar a mesa toda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "O menu Visualizar amplia e reduz, e Tamanho real mostra a mesa inteira de novo."
+  },
+  {
+   "culture": "ja",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "「表示」メニューで拡大・縮小し、「実際のサイズ」で台全体に戻ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "보기 메뉴에서 확대하고 축소하며, 실제 크기로 테이블 전체를 다시 봅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "“显示”菜单可以放大和缩小，“实际大小”会重新显示整张球桌。"
+  },
+  {
+   "culture": "ru",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "Меню «Вид» увеличивает и уменьшает, а «Реальный размер» снова показывает весь стол."
+  },
+  {
+   "culture": "ar",
+   "key": "The View menu zooms in and out, and Actual Size shows the whole table again.",
+   "text": "قائمة العرض تكبّر وتصغّر، والحجم الفعلي يعرض الطاولة كلها من جديد."
+  },
+  {
+   "culture": "es",
+   "key": "The faint ball is your last try.",
+   "text": "La bola tenue es tu último intento."
+  },
+  {
+   "culture": "fr",
+   "key": "The faint ball is your last try.",
+   "text": "La bille pâle est ton dernier essai."
+  },
+  {
+   "culture": "de",
+   "key": "The faint ball is your last try.",
+   "text": "Die blasse Kugel ist dein letzter Versuch."
+  },
+  {
+   "culture": "it",
+   "key": "The faint ball is your last try.",
+   "text": "La palla sbiadita è il tuo ultimo tentativo."
+  },
+  {
+   "culture": "pt",
+   "key": "The faint ball is your last try.",
+   "text": "A bola esbatida é a tua última tentativa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The faint ball is your last try.",
+   "text": "A bola apagada é a sua última tentativa."
+  },
+  {
+   "culture": "ja",
+   "key": "The faint ball is your last try.",
+   "text": "薄い球が前回の挑戦です。"
+  },
+  {
+   "culture": "ko",
+   "key": "The faint ball is your last try.",
+   "text": "흐린 공이 지난 시도입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The faint ball is your last try.",
+   "text": "淡色的球是你上一次的尝试。"
+  },
+  {
+   "culture": "ru",
+   "key": "The faint ball is your last try.",
+   "text": "Бледный шар — твоя прошлая попытка."
+  },
+  {
+   "culture": "ar",
+   "key": "The faint ball is your last try.",
+   "text": "الكرة الباهتة هي محاولتك الأخيرة."
+  },
+  {
+   "culture": "es",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "El stick izquierdo gira la puntería. El gatillo derecho añade potencia y el izquierdo la quita. El stick derecho mueve la punta sobre la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "Le stick gauche tourne la visée. La gâchette droite ajoute de la puissance et la gauche en retire. Le stick droit déplace le procédé sur la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "Der linke Stick dreht die Zielrichtung. Der rechte Trigger gibt Kraft dazu, der linke nimmt sie weg. Der rechte Stick bewegt die Spitze auf der weißen Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "Lo stick sinistro ruota la mira. Il grilletto destro aggiunge potenza e il sinistro la toglie. Lo stick destro sposta la punta sulla palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "O manípulo esquerdo roda a mira. O gatilho direito acrescenta força e o esquerdo tira. O manípulo direito move a ponta na bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "O analógico esquerdo gira a mira. O gatilho direito aumenta a força e o esquerdo diminui. O analógico direito move a ponta na bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "左スティックで狙いを回します。右トリガーで強さを上げ、左トリガーで下げます。右スティックで手球を突く位置を動かします。"
+  },
+  {
+   "culture": "ko",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "왼쪽 스틱으로 조준을 돌립니다. 오른쪽 트리거는 세기를 올리고 왼쪽 트리거는 내립니다. 오른쪽 스틱으로 큐볼의 타점을 옮깁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "左摇杆转动瞄准。右扳机增加力度，左扳机减小力度。右摇杆移动白球上的击球点。"
+  },
+  {
+   "culture": "ru",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "Левый стик поворачивает прицел. Правый курок добавляет силу, левый убавляет. Правый стик двигает точку удара на белом шаре."
+  },
+  {
+   "culture": "ar",
+   "key": "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.",
+   "text": "العصا اليسرى تدير التصويب. الزناد الأيمن يزيد القوة والأيسر ينقصها. العصا اليمنى تحرّك نقطة الضرب على الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "La pequeña imagen de la bola blanca fija dónde la golpea el taco, para darle efecto."
+  },
+  {
+   "culture": "fr",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "La petite image de la bille blanche règle où la queue la frappe, pour l'effet."
+  },
+  {
+   "culture": "de",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "Das kleine Bild der weißen Kugel legt fest, wo das Queue sie trifft, für den Effet."
+  },
+  {
+   "culture": "it",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "La piccola immagine della palla bianca decide dove la colpisce la stecca, per l'effetto."
+  },
+  {
+   "culture": "pt",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "A pequena imagem da bola branca define onde o taco lhe bate, para dar efeito."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "A pequena imagem da bola branca define onde o taco bate nela, para dar efeito."
+  },
+  {
+   "culture": "ja",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "手球の小さな絵で、キューが当たる位置を決めて回転をかけます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "큐볼의 작은 그림에서 큐가 맞는 위치를 정해 회전을 줍니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "白球的小图用来设定球杆击打的位置，打出旋转。"
+  },
+  {
+   "culture": "ru",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "Маленькая картинка белого шара задаёт, куда бьёт кий, для вращения."
+  },
+  {
+   "culture": "ar",
+   "key": "The small picture of the white ball sets where the cue strikes it, for spin.",
+   "text": "الصورة الصغيرة للكرة البيضاء تحدد أين تضربها العصا، لإعطائها دوراناً."
+  },
+  {
+   "culture": "es",
+   "key": "The stroke",
+   "text": "El golpe"
+  },
+  {
+   "culture": "fr",
+   "key": "The stroke",
+   "text": "Le coup"
+  },
+  {
+   "culture": "de",
+   "key": "The stroke",
+   "text": "Der Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "The stroke",
+   "text": "Il colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "The stroke",
+   "text": "A tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The stroke",
+   "text": "A tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "The stroke",
+   "text": "ストローク"
+  },
+  {
+   "culture": "ko",
+   "key": "The stroke",
+   "text": "스트로크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The stroke",
+   "text": "出杆"
+  },
+  {
+   "culture": "ru",
+   "key": "The stroke",
+   "text": "Удар"
+  },
+  {
+   "culture": "ar",
+   "key": "The stroke",
+   "text": "الضربة"
+  },
+  {
+   "culture": "es",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "El tiro de truco basado en la lección que superaste."
+  },
+  {
+   "culture": "fr",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "Le coup spectaculaire bâti sur la leçon que tu as réussie."
+  },
+  {
+   "culture": "de",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "Der Trickstoß, der auf der bestandenen Lektion aufbaut."
+  },
+  {
+   "culture": "it",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "Il colpo spettacolare basato sulla lezione che hai superato."
+  },
+  {
+   "culture": "pt",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "A jogada de efeito baseada na lição que passaste."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "A tacada de efeito baseada na lição que você passou."
+  },
+  {
+   "culture": "ja",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "合格したレッスンをもとにしたトリックショットです。"
+  },
+  {
+   "culture": "ko",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "통과한 레슨을 바탕으로 한 트릭 샷입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "基于你已通过的那节课的花式球。"
+  },
+  {
+   "culture": "ru",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "Трюковой удар на основе урока, который ты прошёл."
+  },
+  {
+   "culture": "ar",
+   "key": "The trick shot built on the lesson you passed.",
+   "text": "ضربة الخدعة المبنية على الدرس الذي اجتزته."
+  },
+  {
+   "culture": "es",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "La bola blanca también entró, así que la vuelves a colocar con la mano."
+  },
+  {
+   "culture": "fr",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "La bille blanche est tombée aussi, alors tu la replaces à la main."
+  },
+  {
+   "culture": "de",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "Die weiße Kugel ist auch gefallen, also legst du sie von Hand wieder hin."
+  },
+  {
+   "culture": "it",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "Anche la palla bianca è entrata, quindi la rimetti a mano."
+  },
+  {
+   "culture": "pt",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "A bola branca também entrou, por isso voltas a colocá-la à mão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "A bola branca também caiu, então você a recoloca com a mão."
+  },
+  {
+   "culture": "ja",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "手球も入ったので、手で置き直します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "큐볼도 들어가서 손으로 다시 놓습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "白球也进袋了，所以你要用手把它放回去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "Белый шар тоже упал, поэтому ты ставишь его рукой."
+  },
+  {
+   "culture": "ar",
+   "key": "The white ball went in too, so you put it back by hand.",
+   "text": "دخلت الكرة البيضاء أيضاً، فتعيدها بيدك."
+  },
+  {
+   "culture": "es",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Toca o haz clic en cualquier bola para levantarla y arrástrala adonde quieras. Colocar la deja."
+  },
+  {
+   "culture": "fr",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Touche ou clique sur une bille pour la prendre, puis fais-la glisser où tu veux. Poser la dépose."
+  },
+  {
+   "culture": "de",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Tippe oder klick auf eine Kugel, um sie aufzunehmen, und zieh sie dann, wohin du willst. „Ablegen“ legt sie hin."
+  },
+  {
+   "culture": "it",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Tocca o fai clic su una palla per prenderla, poi trascinala dove vuoi. Posiziona la mette giù."
+  },
+  {
+   "culture": "pt",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Toca ou clica em qualquer bola para a pegar e depois arrasta-a para onde quiseres. Colocar pousa-a."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Toque ou clique em qualquer bola para pegá-la e depois arraste para onde quiser. Posicionar a coloca na mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "どの球でもタッチかクリックで持ち上げ、好きな場所へドラッグします。「置く」で置きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "아무 공이나 터치하거나 클릭해 집은 다음, 원하는 곳으로 드래그하세요. '놓기'로 내려놓습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "轻点或点击任意一颗球将它拿起，再拖到你想要的位置。点“放下”把它放好。"
+  },
+  {
+   "culture": "ru",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "Коснись или щёлкни любой шар, чтобы взять его, и перетащи куда хочешь. «Поставить» ставит его."
+  },
+  {
+   "culture": "ar",
+   "key": "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down.",
+   "text": "المس أي كرة أو انقر عليها لترفعها، ثم اسحبها إلى حيث تريد. زر ضعها يضعها."
+  },
+  {
+   "culture": "es",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y abre y cierra Tu tiro. El botón Menú abre el menú principal. La cruceta mueve la bola en mano y recorre el aviso del tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y ouvre et ferme Ton coup. Le bouton Menu ouvre le menu principal. La croix directionnelle déplace la bille en main et parcourt l'annonce."
+  },
+  {
+   "culture": "de",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y öffnet und schließt „Dein Stoß“. Die Menütaste öffnet das Hauptmenü. Das Steuerkreuz bewegt den Ball in der Hand und geht die Ansage durch."
+  },
+  {
+   "culture": "it",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y apre e chiude Il tuo tiro. Il tasto Menu apre il menu principale. La croce direzionale sposta la bilia in mano e scorre la chiamata."
+  },
+  {
+   "culture": "pt",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y abre e fecha A tua tacada. O botão Menu abre o menu principal. O direcional move a bola na mão e percorre a marcação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y abre e fecha Sua tacada. O botão Menu abre o menu principal. O direcional move a bola na mão e percorre a cantada."
+  },
+  {
+   "culture": "ja",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Yで「あなたのショット」を開閉します。メニューボタンでメインメニューを開きます。方向パッドでボールインハンドの球を動かし、コールを切り替えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y는 '내 샷'을 열고 닫습니다. 메뉴 버튼은 메인 메뉴를 엽니다. 방향 패드는 볼 인 핸드의 공을 옮기고 콜을 넘깁니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y 打开或关闭“你的击球”。菜单键打开主菜单。方向键移动自由球并切换叫球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "Y открывает и закрывает «Твой удар». Кнопка меню открывает главное меню. Крестовина двигает биток с руки и листает заказ."
+  },
+  {
+   "culture": "ar",
+   "key": "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.",
+   "text": "الزر Y يفتح «ضربتك» ويغلقها. زر القائمة يفتح القائمة الرئيسية. لوحة الاتجاهات تحرّك الكرة في اليد وتتنقل بين خيارات التسمية."
+  },
+  {
+   "culture": "es",
+   "key": "Your break sank %@.",
+   "text": "Tu saque metió %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Your break sank %@.",
+   "text": "Ta casse a empoché %@."
+  },
+  {
+   "culture": "de",
+   "key": "Your break sank %@.",
+   "text": "Dein Break hat %@ versenkt."
+  },
+  {
+   "culture": "it",
+   "key": "Your break sank %@.",
+   "text": "Il tuo break ha imbucato %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Your break sank %@.",
+   "text": "A tua abertura meteu %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your break sank %@.",
+   "text": "Sua abertura encaçapou %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Your break sank %@.",
+   "text": "ブレイクで%@が入りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your break sank %@.",
+   "text": "브레이크로 %@이(가) 들어갔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your break sank %@.",
+   "text": "你的开球打进了%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your break sank %@.",
+   "text": "Твоё разбитие забило %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Your break sank %@.",
+   "text": "أدخلت ضربة الافتتاح %@."
+  },
+  {
+   "culture": "es",
+   "key": "Your first break",
+   "text": "Tu primer saque"
+  },
+  {
+   "culture": "fr",
+   "key": "Your first break",
+   "text": "Ta première casse"
+  },
+  {
+   "culture": "de",
+   "key": "Your first break",
+   "text": "Dein erster Break"
+  },
+  {
+   "culture": "it",
+   "key": "Your first break",
+   "text": "Il tuo primo break"
+  },
+  {
+   "culture": "pt",
+   "key": "Your first break",
+   "text": "A tua primeira abertura"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your first break",
+   "text": "Sua primeira abertura"
+  },
+  {
+   "culture": "ja",
+   "key": "Your first break",
+   "text": "はじめてのブレイク"
+  },
+  {
+   "culture": "ko",
+   "key": "Your first break",
+   "text": "첫 브레이크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your first break",
+   "text": "你的第一次开球"
+  },
+  {
+   "culture": "ru",
+   "key": "Your first break",
+   "text": "Твоё первое разбитие"
+  },
+  {
+   "culture": "ar",
+   "key": "Your first break",
+   "text": "أول افتتاح لك"
+  },
+  {
+   "culture": "es",
+   "key": "Your shot and the menu",
+   "text": "Tu tiro y el menú"
+  },
+  {
+   "culture": "fr",
+   "key": "Your shot and the menu",
+   "text": "Ton coup et le menu"
+  },
+  {
+   "culture": "de",
+   "key": "Your shot and the menu",
+   "text": "Dein Stoß und das Menü"
+  },
+  {
+   "culture": "it",
+   "key": "Your shot and the menu",
+   "text": "Il tuo tiro e il menu"
+  },
+  {
+   "culture": "pt",
+   "key": "Your shot and the menu",
+   "text": "A tua tacada e o menu"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your shot and the menu",
+   "text": "Sua tacada e o menu"
+  },
+  {
+   "culture": "ja",
+   "key": "Your shot and the menu",
+   "text": "あなたのショットとメニュー"
+  },
+  {
+   "culture": "ko",
+   "key": "Your shot and the menu",
+   "text": "내 샷과 메뉴"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your shot and the menu",
+   "text": "你的击球与菜单"
+  },
+  {
+   "culture": "ru",
+   "key": "Your shot and the menu",
+   "text": "Твой удар и меню"
+  },
+  {
+   "culture": "ar",
+   "key": "Your shot and the menu",
+   "text": "ضربتك والقائمة"
+  },
+  {
+   "culture": "es",
+   "key": "Your turn. %@",
+   "text": "Te toca. %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Your turn. %@",
+   "text": "À toi. %@"
+  },
+  {
+   "culture": "de",
+   "key": "Your turn. %@",
+   "text": "Du bist dran. %@"
+  },
+  {
+   "culture": "it",
+   "key": "Your turn. %@",
+   "text": "Tocca a te. %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Your turn. %@",
+   "text": "É a tua vez. %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your turn. %@",
+   "text": "Sua vez. %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Your turn. %@",
+   "text": "あなたの番です。%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Your turn. %@",
+   "text": "당신 차례입니다. %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your turn. %@",
+   "text": "轮到你了。%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Your turn. %@",
+   "text": "Твой ход. %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Your turn. %@",
+   "text": "دورك. %@"
+  },
+  {
+   "culture": "es",
+   "key": "Zoom",
+   "text": "Zoom"
+  },
+  {
+   "culture": "fr",
+   "key": "Zoom",
+   "text": "Zoom"
+  },
+  {
+   "culture": "de",
+   "key": "Zoom",
+   "text": "Zoom"
+  },
+  {
+   "culture": "it",
+   "key": "Zoom",
+   "text": "Zoom"
+  },
+  {
+   "culture": "pt",
+   "key": "Zoom",
+   "text": "Zoom"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Zoom",
+   "text": "Zoom"
+  },
+  {
+   "culture": "ja",
+   "key": "Zoom",
+   "text": "ズーム"
+  },
+  {
+   "culture": "ko",
+   "key": "Zoom",
+   "text": "확대/축소"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Zoom",
+   "text": "缩放"
+  },
+  {
+   "culture": "ru",
+   "key": "Zoom",
+   "text": "Масштаб"
+  },
+  {
+   "culture": "ar",
+   "key": "Zoom",
+   "text": "التكبير"
+  },
+  {
+   "culture": "es",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ contra %@. Tira %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ contre %@. %@ joue."
+  },
+  {
+   "culture": "de",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ gegen %@. %@ ist am Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ contro %@. Tira %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ contra %@. Joga %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ contra %@. Vez de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@：%@と対戦。%@の番です。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@: %@와 대결. %@ 차례입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@，对手：%@。轮到%@击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ против %@. Бьёт %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ against %@. %@ to shoot.",
+   "text": "%@ ضد %@. الدور على %@."
+  },
+  {
+   "culture": "es",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ en solitario. Tira %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ en solo. %@ joue."
+  },
+  {
+   "culture": "de",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ allein. %@ ist am Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ da solo. Tira %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ sozinho. Joga %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ sozinho. Vez de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@（1人）。%@の番です。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ 혼자 하기. %@ 차례입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@（单人）。轮到%@击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ в одиночку. Бьёт %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ on your own. %@ to shoot.",
+   "text": "%@ وحدك. الدور على %@."
+  },
+  {
+   "culture": "es",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ con %@. Tira %@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ avec %@. %@ joue."
+  },
+  {
+   "culture": "de",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ mit %@. %@ ist am Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ con %@. Tira %@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ com %@. Joga %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ com %@. Vez de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@：%@。%@の番です。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@: %@. %@ 차례입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@：%@。轮到%@击球。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@: %@. Бьёт %@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ with %@. %@ to shoot.",
+   "text": "%@ مع %@. الدور على %@."
+  },
+  {
+   "culture": "es",
+   "key": "Controls",
+   "text": "Controles"
+  },
+  {
+   "culture": "fr",
+   "key": "Controls",
+   "text": "Commandes"
+  },
+  {
+   "culture": "de",
+   "key": "Controls",
+   "text": "Steuerung"
+  },
+  {
+   "culture": "it",
+   "key": "Controls",
+   "text": "Comandi"
+  },
+  {
+   "culture": "pt",
+   "key": "Controls",
+   "text": "Controlos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Controls",
+   "text": "Controles"
+  },
+  {
+   "culture": "ja",
+   "key": "Controls",
+   "text": "操作方法"
+  },
+  {
+   "culture": "ko",
+   "key": "Controls",
+   "text": "조작법"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Controls",
+   "text": "操作"
+  },
+  {
+   "culture": "ru",
+   "key": "Controls",
+   "text": "Управление"
+  },
+  {
+   "culture": "ar",
+   "key": "Controls",
+   "text": "عناصر التحكم"
+  },
+  {
+   "culture": "es",
+   "key": "Every gesture, key and button.",
+   "text": "Cada gesto, tecla y botón."
+  },
+  {
+   "culture": "fr",
+   "key": "Every gesture, key and button.",
+   "text": "Chaque geste, touche et bouton."
+  },
+  {
+   "culture": "de",
+   "key": "Every gesture, key and button.",
+   "text": "Jede Geste, Taste und Schaltfläche."
+  },
+  {
+   "culture": "it",
+   "key": "Every gesture, key and button.",
+   "text": "Ogni gesto, tasto e pulsante."
+  },
+  {
+   "culture": "pt",
+   "key": "Every gesture, key and button.",
+   "text": "Cada gesto, tecla e botão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every gesture, key and button.",
+   "text": "Cada gesto, tecla e botão."
+  },
+  {
+   "culture": "ja",
+   "key": "Every gesture, key and button.",
+   "text": "すべてのジェスチャ、キー、ボタン。"
+  },
+  {
+   "culture": "ko",
+   "key": "Every gesture, key and button.",
+   "text": "모든 제스처, 키, 버튼."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every gesture, key and button.",
+   "text": "所有手势、按键和按钮。"
+  },
+  {
+   "culture": "ru",
+   "key": "Every gesture, key and button.",
+   "text": "Все жесты, клавиши и кнопки."
+  },
+  {
+   "culture": "ar",
+   "key": "Every gesture, key and button.",
+   "text": "كل إيماءة ومفتاح وزر."
+  }
+ ]
+}

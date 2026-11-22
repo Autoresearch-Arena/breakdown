@@ -35,6 +35,14 @@
 //          sits at the top of the panel, beside the tip and power controls, when the stance is not a square one; in the
 //          notebook it is one of the notebook's cards instead, so it is never shown twice. The fine controls read the
 //          bridge's length (BridgeReadout) under the power slider.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 1, 2, 5, 12,
+//          13 and 16: the one-time hint is the first instruction for the input in use (FirstInstruction) and stays
+//          hidden during the hand-over, so one line teaches; Break and Shoot go through the model's fireStroke and are
+//          disabled with the reason while a stroke would be refused (strokeRefusal); a refused stroke's reason shows
+//          on the panel as one line, pulsing each time (lastRefusal, refusalSerial); on the computer's turn the
+//          person's controls are greyed out with a line saying whose turn it is (personControlsLive); the cue-angle
+//          control writes through activeElevation, where a lesson's lock applies; the fine controls gain a bridge
+//          slider beside the bridge readout.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -48,17 +56,28 @@ struct ShotPanel: View {
     @Environment(\.inlinePages) private var inlinePages
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Bumped by each refusal to pulse its line (a symbol bounce; nothing moves under Reduce Motion).
+    @State private var refusalPulse = 0
 
     var body: some View {
         VStack(spacing: 8) {
-            if !hintSeen { hint }
+            // The hand-over card already says the one thing to do; the hint waits until after it (item 1).
+            if !hintSeen && model.openingStage != .handOver { hint }
+            // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
+            statusLine
             // The stance, when it is not a square one. The notebook shows it among its cards (NotebookPanel).
             if !inlinePages { EquipmentCard(model: model, embedded: true) }
-            if typeSize.isAccessibilitySize {
-                stacked
-            } else {
-                ViewThatFits(in: .horizontal) { oneRow; twoRows }
+            Group {
+                if typeSize.isAccessibilitySize {
+                    stacked
+                } else {
+                    ViewThatFits(in: .horizontal) { oneRow; twoRows }
+                }
             }
+            // The computer's turn: the person's controls stay visible but greyed out and still (item 16).
+            .disabled(!model.personControlsLive)
+            .opacity(model.personControlsLive ? 1 : 0.45)
             if slidersOpen && inlinePages {
                 FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
                     .frame(height: 340)
@@ -66,6 +85,14 @@ struct ShotPanel: View {
             }
         }
         .tint(palette.accent)
+        .animation(reduceMotion ? nil : .snappy, value: model.personControlsLive)
+        // Each refusal pulses the line once, even the same reason twice in a row (refusalSerial), and is spoken.
+        .onChange(of: model.refusalSerial) { _, _ in
+            if let reason = model.lastRefusal {
+                AccessibilityNotification.Announcement(reason.sentence).post()
+                if !reduceMotion { refusalPulse += 1 }
+            }
+        }
         // Test hook: launch with -aimDemoSheet to open the fine controls straight away.
         .onAppear { if ProcessInfo.processInfo.arguments.contains("-aimDemoSheet") { slidersOpen = true } }
         // On a folding phone the sliders open inside the panel (below), so no sheet covers the table.
@@ -129,7 +156,8 @@ struct ShotPanel: View {
     private var fireButton: some View {
         Button {
             hintSeen = true
-            if model.fire() { isOpen = false }
+            // A break hands the screen to its replay, so the panel closes; a shot keeps it open; a refusal says why.
+            if model.fireStroke() == .breakStruck { isOpen = false }
         } label: {
             Text(model.racked ? "Break" : "Shoot")
                 .font(.headline)
@@ -139,18 +167,34 @@ struct ShotPanel: View {
         .buttonStyle(.glassProminent)
         .foregroundStyle(palette.ground)   // dark text: white on bright cyan is too faint
         .controlSize(.regular)
-        // While the last shot is still playing the guide is hidden; touching the table jumps to its end.
-        .disabled(!canFire)
-        .accessibilityHint(needsCall ? String(localized: "Make your call first")
-                                     : (model.racked ? String(localized: "Plays your own break") : String(localized: "Plays your shot")))
+        // Disabled while a stroke would be refused (the replay still playing, a ruling or choice waiting, no call and no
+        // suggestion, the computer's turn, a solve in flight); the reason is the hint, so VoiceOver hears why.
+        .disabled(model.strokeRefusal != nil)
+        .accessibilityHint(model.strokeRefusal?.sentence
+                           ?? (model.racked ? String(localized: "Plays your own break") : String(localized: "Plays your shot")))
     }
 
-    /// A match that wants a call (eight-ball after the break) and has none yet.
-    private var needsCall: Bool { (model.match?.mustCall ?? false) && model.match?.currentCall == nil }
-
-    /// Shoot is offered once the balls on screen are where the next shot starts, the cue ball is not lifted, no shot
-    /// is being solved, and any call the match wants has been made.
-    private var canFire: Bool { model.aimReady && !model.placingCueBall && !model.isSolving && !needsCall }
+    /// One line above the controls: on the computer's turn, that it is its turn; otherwise the reason the last stroke
+    /// was refused, until the next stroke is accepted (the model clears it). Nothing when there is nothing to say.
+    @ViewBuilder private var statusLine: some View {
+        // personControlsLive is false on the computer's turn or while a solve is in flight; without the solve it is the
+        // computer's turn (read this way so no comparison with a case named "none" can be taken for an optional's).
+        let computer = !model.personControlsLive && !model.isSolving
+        if let text = computer ? Optional(ShotRefusal.notYourTurn.sentence) : model.lastRefusal?.sentence {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Image(systemName: computer ? "cpu" : "exclamationmark.circle")
+                    .foregroundStyle(computer ? palette.accent : palette.slide)
+                    .symbolEffect(.bounce, value: refusalPulse)
+                    .accessibilityHidden(true)
+                Text(text)
+                    .font(Theme.body)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+            }
+            .accessibilityElement(children: .combine)
+            .transition(.opacity)
+        }
+    }
 
     /// True in plain free play: no match, no trick shot, no Behind the 8-Ball situation on the table.
     private var freePlay: Bool {
@@ -160,7 +204,9 @@ struct ShotPanel: View {
     /// The raised cue, where the model allows it (free play and matches) and for a shot rather than the break.
     @ViewBuilder private var cueAngle: some View {
         if model.elevationAllowed && !model.racked {
-            CueAngleMenu(sine: $model.shotElevation, minHeight: Self.buttonHeight, zone: zones?.cueAngles,
+            // Through activeElevation, where a lesson's lock applies like power, tip and aim (item 12).
+            CueAngleMenu(sine: Binding(get: { model.activeElevation }, set: { model.activeElevation = $0 }),
+                         minHeight: Self.buttonHeight, zone: zones?.cueAngles,
                          zoneStrength: zones?.strength ?? 1, locked: !open.contains(.elevation))
                 .controlSize(.regular)
         }
@@ -232,19 +278,15 @@ struct ShotPanel: View {
         .controlSize(.regular)
     }
 
-    /// The one-time hint. Dismissed by its own button; also marked seen by the first pull or shot.
+    /// The one-time hint: the first instruction for the input in use. Dismissed by its own button; also marked seen by
+    /// the first pull or shot.
     private var hint: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "hand.draw").font(.title3).foregroundStyle(palette.accent).accessibilityHidden(true)
-            #if os(macOS)
-            Text(String(localized: "Drag on the table to aim. Pull back from the white ball to set power, then click \(ShotPanel.actionWord(racked: model.racked)). Arrow keys fine-tune."))
+            // The same one instruction the hand-over card gives, for the input in use (FirstInstruction).
+            Text(FirstInstruction.line(for: model.inputInUse))
                 .font(Theme.body)
                 .fixedSize(horizontal: false, vertical: true)
-            #else
-            Text(String(localized: "Drag on the table to aim. Pull back from the white ball to set power, then tap \(ShotPanel.actionWord(racked: model.racked))."))
-                .font(Theme.body)
-                .fixedSize(horizontal: false, vertical: true)
-            #endif
             Spacer(minLength: 0)
             Button { hintSeen = true } label: {
                 Image(systemName: "xmark").frame(width: 30, height: 30)
@@ -312,8 +354,17 @@ private struct FineControls: View {
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
                               range: model.powerRange, readout: StrokeWords.ballReadout(power: model.activePower, racked: model.racked))
                         .disabled(!open.contains(.power)).lockedForStep(!open.contains(.power))
-                    // The bridge's length: read here, set on the table by a resting second finger.
+                    // The bridge's length: read here, set on the table by a resting second finger, or here with the
+                    // slider (item 5). The rest fixes its own length, so the slider waits while the rest is in use.
                     BridgeReadout(model: model)
+                    SliderRow(label: "Bridge",
+                              value: Binding(get: { model.strokeBridge ?? StrokeModel.automaticBridge },
+                                             set: { model.strokeBridge = $0 }),
+                              range: StrokeModel.bridgeRange,
+                              readout: Measurement(value: ((model.strokeBridge ?? StrokeModel.automaticBridge) * 100).rounded(),
+                                                   unit: UnitLength.centimeters)
+                                  .formatted(.measurement(width: .abbreviated, usage: .asProvided)))
+                        .disabled(model.restInUse)
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
                               range: -model.tipLimit...model.tipLimit, readout: ShotPanel.shownWord(ShotPanel.tipWord(model.activeTipUp)))
                         .disabled(!open.contains(.tipUp)).lockedForStep(!open.contains(.tipUp))
@@ -324,22 +375,23 @@ private struct FineControls: View {
                         // Degrees on the slider, the sine in the model (the solver's unit). The top is the last angle
                         // the cue-angle menu offers, short of where the cue rig stops pitching the cue.
                         SliderRow(label: "Cue angle",
-                                  value: Binding(get: { asin(min(max(model.shotElevation, 0), 0.995)) * 180 / .pi },
-                                                 set: { model.shotElevation = $0 < 0.5 ? 0 : sin($0 * .pi / 180) }),
+                                  value: Binding(get: { asin(min(max(model.activeElevation, 0), 0.995)) * 180 / .pi },
+                                                 set: { model.activeElevation = $0 < 0.5 ? 0 : sin($0 * .pi / 180) }),
                                   range: 0...Double(CueAngleMenu.angles.last ?? 80),
-                                  readout: CueAngleMenu.words(degrees: asin(min(max(model.shotElevation, 0), 0.995)) * 180 / .pi))
+                                  readout: CueAngleMenu.words(degrees: asin(min(max(model.activeElevation, 0), 0.995)) * 180 / .pi))
                         .disabled(!open.contains(.elevation)).lockedForStep(!open.contains(.elevation))
                     }
                     Button {
                         sheetOpen = false
-                        if model.fire() { isOpen = false }
+                        if model.fireStroke() == .breakStruck { isOpen = false }
                     } label: {
                         Text(ShotPanel.actionWord(racked: model.racked)).frame(maxWidth: .infinity, minHeight: 30)
                     }
                     .buttonStyle(.glassProminent)
                     .foregroundStyle(palette.ground)
                     .controlSize(.large)
-                    .disabled(!model.aimReady || model.placingCueBall || model.isSolving)
+                    .disabled(model.strokeRefusal != nil)
+                    .accessibilityHint(model.strokeRefusal?.sentence ?? "")
                     .padding(.top, 12)
                 }
                 .padding(16)

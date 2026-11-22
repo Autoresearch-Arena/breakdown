@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md item 9: any ball
+//          can be placed in free play, so the "No rack: place the balls" setup can be played. The card follows the
+//          lifted ball (ShowpieceModel.placingBall), not only the cue ball: it names it ("Move the 5"), its legality is
+//          checked for that ball, and Place it and Cancel put it down or back. On that setup, with nothing lifted, a
+//          short card says how to pick a ball up. The touch and pointer lift live in AimOverlay and PointerAim, through
+//          ShowpieceModel.liftableBall.)
 // PURPOSE: The play cards that belong to free play and to matches, hosted together as PlayCards beside the trick-shot
 //          and 8-ball cards (ShowpieceView above the controls or in the side column, DuoPanel in the notebook panel):
 //            BallInHandCard  - while the cue ball is in hand (after a scratch in free play, after a foul in a match) or
@@ -28,6 +34,7 @@ struct PlayCards: View {
 
     var body: some View {
         Group {
+            PlaceBallsCard(model: model)
             BallInHandCard(model: model)
             TableClearedCard(model: model)
             MatchCard(model: model)
@@ -41,8 +48,16 @@ struct PlayCards: View {
 /// that spot is legal.
 @MainActor
 enum CueBallPlacement {
-    /// The ball being placed: the match's striking ball (another table may strike a different one), else the cue ball.
-    static func cueIndex(_ model: ShowpieceModel) -> Int { model.match?.cueBallIndex ?? 0 }
+    /// The ball being placed: while one is lifted, that ball (any ball in free play, item 9); otherwise the match's
+    /// striking ball (another table may strike a different one), else the cue ball.
+    static func cueIndex(_ model: ShowpieceModel) -> Int {
+        model.placingCueBall ? model.placingBall : (model.match?.cueBallIndex ?? 0)
+    }
+
+    /// True while the lifted ball is an object ball rather than the ball the player strikes.
+    static func liftedObjectBall(_ model: ShowpieceModel) -> Bool {
+        model.placingCueBall && model.placingBall != (model.match?.cueBallIndex ?? 0)
+    }
 
     /// Where the lifted ball is now: the candidate once it has moved, else where the ball sits, else the head spot
     /// (a quarter of the length from the head cushion, across the middle: where NextShot re-spots a scratch).
@@ -91,8 +106,7 @@ struct BallInHandCard: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
                     Image(systemName: "hand.raised.fill").foregroundStyle(palette.accent).accessibilityHidden(true)
-                    Text(model.ballInHand == .none ? String(localized: "Move the cue ball") : String(localized: "Ball in hand"))
-                        .font(Theme.heading)
+                    Text(heading).font(Theme.heading)
                 }
                 .accessibilityAddTraits(.isHeader)
                 Text(instructions)
@@ -107,7 +121,7 @@ struct BallInHandCard: View {
                         .font(Theme.label)
                         .foregroundStyle(problem == nil ? palette.accent : Color.red)
                         .accessibilityElement(children: .ignore)
-                        .accessibilityLabel(String(localized: "Cue ball"))
+                        .accessibilityLabel(objectBall ? MatchWords.balls([model.placingBall]) : String(localized: "Cue ball"))
                         .accessibilityValue(spoken(spot, problem: problem))
                         .accessibilityHint(String(localized: "Use the actions to move it. Up is toward the foot of the table, seen from the head end."))
                         .accessibilityAction(named: String(localized: "Move up")) { nudge(Vec2(1, 0)) }
@@ -124,8 +138,17 @@ struct BallInHandCard: View {
         }
     }
 
+    /// True while the lifted ball is an object ball (free play's place-balls setup, or arranging a practice shot).
+    private var objectBall: Bool { CueBallPlacement.liftedObjectBall(model) }
+
+    private var heading: String {
+        if objectBall { return String(localized: "Move the \(model.placingBall)") }
+        return model.ballInHand == .none ? String(localized: "Move the cue ball") : String(localized: "Ball in hand")
+    }
+
     private var instructions: String {
         guard model.placingCueBall else { return String(localized: "Pick up the cue ball and put it anywhere free.") }
+        if objectBall { return String(localized: "Drag the \(model.placingBall) to a free spot, then let go.") }
         return model.ballInHand == .behindHeadLine
             ? String(localized: "Drag the cue ball to a free spot behind the head line, then let go.")
             : String(localized: "Drag the cue ball to a free spot, then let go.")
@@ -195,6 +218,41 @@ struct BallInHandCard: View {
             ? String(localized: "\(length(p.x)) from the head cushion and \(length(t.width - p.y)) from the left cushion")
             : String(localized: "\(length(p.x)) from the head cushion and \(length(p.y)) from the right cushion")
         return [place, problem ?? String(localized: "Free spot")].joined(separator: ". ")
+    }
+}
+
+// MARK: Place the balls
+
+/// Free play's "No rack: place the balls" with nothing lifted: one short card saying how to arrange the row of balls.
+/// It steps aside while a ball is lifted (the ball-in-hand card above takes over) and once the first shot is played.
+struct PlaceBallsCard: View {
+    let model: ShowpieceModel
+    @Environment(\.palette) private var palette
+
+    private var visible: Bool {
+        model.match == nil && model.freePlayRack == .placeBalls && model.shotsThisRack == 0 && model.aimReady
+            && !model.placingCueBall && model.ballInHand == .none && !model.tableCleared
+            && !model.trickMode.isActive && !model.eightBallMode.isActive && !model.lessonMode.isActive
+    }
+
+    var body: some View {
+        if visible {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "hand.raised").foregroundStyle(palette.accent).accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(String(localized: "Place the balls")).font(Theme.heading)
+                    Text(String(localized: "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down."))
+                        .font(Theme.body)
+                        .foregroundStyle(palette.paper.opacity(0.9))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .glassCard(cornerRadius: 22, padding: 12)
+            .accessibilityElement(children: .combine)
+            .transition(.opacity)
+        }
     }
 }
 

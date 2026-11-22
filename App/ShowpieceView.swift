@@ -80,6 +80,14 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream hooks: the stroke's faint trace over the table during
 //          the replay (StrokeTraceOverlay), and the stroke's cards (the result line, the straight-stroke drill) beside
 //          the other cards in the phone's bottom stack and the side column.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 3, 6, 8, 18,
+//          32: the opening's tap-to-skip layer now lies under the title row and the controls, so Continue, Pause, the
+//          scrub bar and Menu do their own jobs, and the phone's title row says "Tap to skip" while the opening plays;
+//          the model's requests to open, close or toggle Your shot (after a break once the balls stop, Keep playing,
+//          the controller) are acted on here, the one owner of that switch; a new match that would replace a saved one
+//          waits for a yes on the menu card (MatchStartRequest, shared with the Mac's Game menu through a focused
+//          value); the scene bridge is a focused value so the View menu can zoom the table; the space bar plays and
+//          pauses only while the table has keyboard focus, so it never swallows a space typed into a name field.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -105,6 +113,11 @@ struct ShowpieceView: View {
     @State private var page: NotebookPage?
     /// The View menu's "Show Notebook": off gives the table the whole window on a screen that would have the notebook.
     @AppStorage(NotebookPanel.shownKey) private var panelShown = true
+    /// A new match waiting for a yes because it would replace the saved one (item 18). Set by the menu card or the Mac's
+    /// Game menu; the menu card asks.
+    @State private var pendingMatch: MatchStartRequest?
+    /// The table has keyboard focus: the space bar plays and pauses only then (item 32).
+    @FocusState private var tableFocused: Bool
 
     var body: some View {
         GeometryReader { geo in
@@ -142,7 +155,7 @@ struct ShowpieceView: View {
                     if division != nil {
                         // The other side: the whole notebook, menus and lists included.
                         NotebookPanel(model: model, leader: leader, showShotPanel: $showShotPanel, page: $page,
-                                      onHinge: fold != nil)
+                                      pendingMatch: $pendingMatch, onHinge: fold != nil)
                             .frame(width: bookFold.map { max(0, geo.size.width - $0.maxX) },
                                    height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
                             .overlay(alignment: laptopFold != nil ? .top : .leading) { panelHairline(top: laptopFold != nil) }
@@ -189,8 +202,20 @@ struct ShowpieceView: View {
                 if open { TitleMusic.shared.start() } else { TitleMusic.shared.stop() }
             }
             .onChange(of: soundOption) { _, on in if !on { TitleMusic.shared.stop() } }
+            // The model asks for Your shot to open, close or toggle (after a break once the balls stop on the person's
+            // turn, the first-break card's Keep playing, the controller); this view owns the switch, so it acts here.
+            .onChange(of: model.shotPanelRequest) { _, request in
+                guard let request else { return }
+                switch request.action {
+                case .open: showShotPanel = true
+                case .close: showShotPanel = false
+                case .toggle: showShotPanel.toggle()
+                }
+            }
         }
         .focusedSceneValue(\.showpieceModel, model)
+        .focusedSceneValue(\.sceneBridge, bridge)
+        .focusedSceneValue(\.pendingMatchStart, $pendingMatch)
         .focusedSceneValue(\.shotPanelOpen, $showShotPanel)
         .focusedSceneValue(\.notebookPage, $page)
         .focusedSceneValue(\.notebookShown, $panelShown)
@@ -241,6 +266,9 @@ struct ShowpieceView: View {
                     // of a pointer pull-back takes the shot (PointerAim). A finger plays exactly as before.
                     .pointerAim(model: model, bridge: bridge, isOpen: $showShotPanel)
             }
+            // First minute: tap the table to skip the opening, the cue ball's glow and groove at the hand-over. Under the
+            // title row and the controls, so their buttons keep their own jobs while the opening plays (item 6).
+            OpeningLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             VStack(spacing: 6) {
                 if header {
                     ScreenHeader(model: model)
@@ -260,11 +288,27 @@ struct ShowpieceView: View {
             .padding(.bottom, 6)
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
-            // First minute: tap anywhere skips the opening, the cue ball glows at the hand-over, the Lens callouts.
-            OpeningLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
+            // The Lens callouts.
             LensCalloutLayer(model: model, bridge: bridge)
             // The main menu, over everything, until the player picks something (and again from the back button).
-            if model.menuOpen && menuOnStage { TitleScreen(model: model, onPlay: { showShotPanel = true }) }
+            if model.menuOpen && menuOnStage {
+                TitleScreen(model: model, onPlay: { showShotPanel = true }, pendingMatch: $pendingMatch)
+            }
+        }
+        // The space bar plays and pauses the replay while the table has keyboard focus (a click on it gives it focus,
+        // and it has it from the start). A name field elsewhere keeps its spaces: a focused text field handles the key
+        // itself, so it never reaches here. The aiming layer inside keeps its own arrow keys and Return.
+        .focusable()
+        .focusEffectDisabled()
+        .focused($tableFocused)
+        .onAppear { tableFocused = true }
+        // The aiming layer takes focus while Your shot is open (its arrows and Return); a space pressed there passes up
+        // to this handler. When the panel closes the layer goes, so focus comes back to the table.
+        .onChange(of: showShotPanel) { _, open in if !open { tableFocused = true } }
+        .onKeyPress(.space) {
+            guard !model.menuOpen else { return .ignored }
+            model.togglePlay()
+            return .handled
         }
         // With the menu on the other panel of a folding phone nothing covers the table, so the table panel stops
         // taking touches itself: no aiming, and no tapping the hidden title-row buttons, behind an open menu.
@@ -289,6 +333,8 @@ struct ShowpieceView: View {
                 if !wide { PlayCards(model: model) }
                 // The stroke: the hard shot's result line and the straight-stroke drill.
                 if !wide { StrokeCards(model: model) }
+                // What See the contact stopped on (RetryWords).
+                if !wide { ContactArrivalLine(model: model) }
                 if showShotPanel && !wide {
                     ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
                         .transition(.opacity)
@@ -317,7 +363,7 @@ struct ShowpieceView: View {
     @ViewBuilder private func pageSheet(_ shown: NotebookPage) -> some View {
         let isOpen = Binding(get: { page != nil }, set: { if !$0 { page = nil } })
         switch shown {
-        case .howTo: HowToPlaySheet(isOpen: isOpen)
+        case .howTo: HowToPlaySheet(isOpen: isOpen, input: model.inputInUse)
         case .options: OptionsSheet(isOpen: isOpen)
         case .tables: TableList(model: model, onChosen: { showShotPanel = true }, onClose: { page = nil })
         }
@@ -350,6 +396,7 @@ struct ShowpieceView: View {
                     EightBallCard(model: model)
                     PlayCards(model: model)
                     StrokeCards(model: model)
+                    ContactArrivalLine(model: model)
                     CaptionArea(model: model, leader: leader, maxHeight: .greatestFiniteMagnitude)
                     if showShotPanel {
                         ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
@@ -398,6 +445,20 @@ private struct ScreenHeader: View {
                 LensLegendChip().transition(.opacity)
             }
             Spacer(minLength: 0)
+            // While the opening plays, a tap on the table skips it; on the phone nothing else says so (item 6). The words
+            // are also a button, for anyone who taps them rather than the table.
+            if model.openingStage == .playing {
+                Button { model.skipOpening() } label: {
+                    Label(String(localized: "Tap to skip"), systemImage: "forward.end.fill")
+                        .font(Theme.label)
+                        .lineLimit(1)
+                }
+                .buttonStyle(.glass)
+                .controlSize(.small)
+                .accessibilityHint("Goes straight to your own break")
+                .transition(.opacity)
+                Spacer(minLength: 0)
+            }
             SurfaceMenuButton(model: model)
             if model.stage != .explore && model.stage != .lead {
                 Text(model.stageTitle)
@@ -415,6 +476,7 @@ private struct ScreenHeader: View {
         .accessibilityHidden(model.menuOpen)
         .animation(.easeOut(duration: 0.25), value: model.stage)
         .animation(.easeOut(duration: 0.25), value: model.lensOn)
+        .animation(.easeOut(duration: 0.25), value: model.openingStage)
     }
 }
 

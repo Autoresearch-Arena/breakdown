@@ -17,6 +17,10 @@
 //          table and nothing covers it.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the equipment card (the stance, App/Stroke/StanceViews.swift)
 //          is one of the cards while "Your shot" is open; the shot panel in the lower edge leaves it out here.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 1, 18 and 53:
+//          the menu page asks before a new match replaces the saved one (the pending request is handed in by
+//          ShowpieceView, the same one the Mac's Game menu sets); How to play teaches the stroke for the input in use;
+//          the line See the contact leaves on arrival is one of the cards.)
 // PURPOSE: The notebook: the side of the screen that is not the table, on the open folding phone (across the hinge) and
 //          on every screen big enough for the table plus a readable column (an iPad either way up, a large iPad split or
 //          Stage Manager window, a Mac window). The table fills the other side and nothing is drawn over it: no title
@@ -76,6 +80,8 @@ struct NotebookPanel: View {
     @Binding var showShotPanel: Bool
     /// How to play, Options or Tables while one is open; owned by ShowpieceView so the Help menu reaches it.
     @Binding var page: NotebookPage?
+    /// A new match waiting for a yes because it would replace the saved one (owned by ShowpieceView).
+    @Binding var pendingMatch: MatchStartRequest?
     /// True across a folding phone's hinge, where the panel's original column rule and text sizes stay as designed.
     let onHinge: Bool
     @Environment(\.palette) private var palette
@@ -121,7 +127,7 @@ struct NotebookPanel: View {
     private func content(size: CGSize) -> some View {
         if let page {
             switch page {
-            case .howTo: HowToPlaySheet(isOpen: pageBinding)
+            case .howTo: HowToPlaySheet(isOpen: pageBinding, input: model.inputInUse)
             case .options: OptionsSheet(isOpen: pageBinding)
             case .tables: TableList(model: model, onChosen: { showShotPanel = true }, onClose: { self.page = nil })
             }
@@ -134,7 +140,7 @@ struct NotebookPanel: View {
         } else if model.menuOpen {
             TitleScreen(model: model, onPlay: { showShotPanel = true },
                         onHowTo: { page = .howTo }, onOptions: { openOptions() },
-                        onTables: { page = .tables })
+                        onTables: { page = .tables }, pendingMatch: $pendingMatch)
         } else {
             play(size: size)
         }
@@ -174,6 +180,8 @@ struct NotebookPanel: View {
             EightBallCard(model: model)
             PlayCards(model: model)
             StrokeCards(model: model)
+            // What See the contact stopped on (RetryWords).
+            ContactArrivalLine(model: model)
             if showShotPanel { EquipmentCard(model: model) }
             NotebookDossier(model: model)
         }
