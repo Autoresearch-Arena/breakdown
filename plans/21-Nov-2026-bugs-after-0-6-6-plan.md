@@ -270,6 +270,90 @@ end is compiled, tested and fixed. Then version 0.6.7 goes to TestFlight with on
 50. The spoken aim, the target badge and Aim to pot ignore the side-spin push: one shared helper for what the guide shows.
 51. The first-minute line speaks only to touch: choose it by the input in use and announce it.
 
+## Part 13. What the first version of this plan dropped (added 21-Nov-2026, Claude Opus 5.5 High)
+
+The review had seven readers. Checking all their findings against Parts 1 to 12 found these left out:
+
+52. **Later launches open on a still table, and the menu never names the next step.** The planned silent replay of the
+    opening behind the dimmed menu was never built, and the highlighted entry only ever says Learn or Play. Fix: on
+    later launches play the opening's slow Lens replay behind the dimmed menu on its own clock with no table sounds (the
+    music plays), and highlight the next step from stored progress ("Next: Lesson 2, Follow", then that lesson's trick
+    shot, then a match against the easy computer). Files: TitleScreen.swift, ShowpieceModel.swift.
+53. **Two teaching aids misfire.** The Lens tips first appear over a finished break whose trails have faded, or on a
+    lesson's key moment on top of the lesson's own card; See the contact is an unlabelled crosshair sharing its symbol
+    with two other controls and, pressed, stops the replay with nothing saying what to look at. Fix: show the tips on
+    the first guided hold of a Lens replay the player started, hold the beat while they show, keep other cards back;
+    give See the contact its words where there is room, its own symbol, and an on-screen line on arrival ("Stopped at
+    the first hit. The faint ball is your last try.", the second sentence only when a last try exists).
+    Files: LensCallouts.swift, RetryWords.swift, ShotPanel.swift.
+54. **The uploaded folding-phone store pictures state physics the game no longer does.** "Then take it to a real
+    table" gives an aim, speed, tip and cloth numbers from before the retune. Replace that set first, before the rest
+    of item 40.
+55. **The opening shows no maths.** Its first held beat is a footnote about off-centre hits (the opening break is struck
+    slightly low), and every equation is hidden unless Show the maths is on. Fix: hold the headline moments (the cue
+    ball handing its speed to the rack, skid turning into roll) and show their equations with the event's own numbers
+    on those beats even with Show the maths off; strike the opening break at centre height. Correct the spec's status
+    note, which calls the Lens section finished and does not list the what-if fork as missing.
+    Files: PacePlan.swift, CaptionViews.swift, Rack.swift (with a re-check of the opening), docs spec.
+56. **The look was never seen, and four pieces are likely wrong by reading the code.** Fix in code: give the hand-built
+    meshes tangent data so the close-up cloth relief can show; switch ball pictures per ball by its own size on screen
+    instead of all sixteen at once; check which way the reflection picture maps and lay the lamp's window along the
+    table; light the far wall so the low Ride view is not a void. Add the look to 0.6.6's not-checked line in the
+    changelog. Files: TableMeshes.swift, TableDetail.swift, TableBuilder.swift, TableRoom.swift, CHANGELOG.md.
+57. **The cues and rest never reached the game, although the Boss decided they should** (cues only ever added, the
+    game picks the cue for the shot and says clearly that it did). Fix: export the other developer's cues and the
+    swan-neck rest through the Blender export-and-verify route; list them in the cue profiles with their weights; pick
+    the cue per shot (jump cue for a jump, massé cue for a steep massé, break cue for a break, house cue otherwise) and
+    name the pick on the stance card; the rest model is the one drawn when the stance is Rest. Power stays swing speed,
+    so a heavier cue sends the ball faster at the same swing. Files: Stroke/CueProfile.swift, Stroke/StanceViews.swift,
+    CueRig.swift, App/Models.
+58. **Zoom has no screen-reader route** (VoiceOver, so last): "Zoom in on the cue ball" and "Zoom out" actions on the
+    table element. File: TableAccessLayer.swift.
+
+The other table games' rules stay as built until the Boss says otherwise (the decision below), so nothing waits on it.
+
+## How 0.7.0 is built (added 21-Nov-2026)
+
+The Boss asked for version 0.7.0: everything added in 0.6.6 plus every fix above. The plan is ordered by what the Boss
+hits first; the work is cut by file, so each file has exactly one builder.
+
+1. A short foundation step writes docs/v07-contracts.md and the small shared types every seam needs: how a touch is
+   handed between aim, stroke, bridge and zoom; the shot-refusal reason the card shows; routine versus card-worthy
+   rulings; each table's ball set; the cue pick; and every new model call the views will use, with its exact name.
+2. Builders run in parallel, each in its own worktree and branch, code only, no compiling, owning these files:
+   - physics: the solver, BreakProbe, package tests, PlaySurface.swift, Stroke/Reach.swift and the authored shots
+     (TrickShots.swift, Lessons/Lessons.swift, EightBall/EightBallSituations.swift). Items 10 (lines), 23 (the clearing
+     angle), 25, 26, 27 (cloth tuning), 29, 30, 38 (one shared library), 55 (opening strike). This one builder may run
+     the package tests and BreakProbe, because tuning and re-authoring need them: physics changes first, then every
+     authored shot re-authored and the content check passing.
+   - touch: StrokeTracker, StrokeGesture, AimOverlay, TableZoom. Items 2, 5, 7, 9, 11 (pull), 12, 13 (refuse before the
+     stroke), 23 (the drawn pull-back), 32 (pan keys).
+   - gauges and pointer: AimGauges, PointerAim, AimGeometry. Items 1 (calm mark), 11 (tip picture), 24, 31, 50.
+   - stroke model: StrokeModel, StrokeWords, StrokeViews, StrokeDrill, GameSettings. Items 3, 4, 5 (long bridge), 45.
+   - model: ShowpieceModel, ShotAttempt, PacePlan. Items 6, 8, 11 (pass shot), 12, 13, 14, 16, 23 (strike), 40 (launch
+     flags), 52, 55 (beats).
+   - match: Match/*, the bar billiards rules and tests, BreakdownApp.swift. Items 13 (call card), 14, 15, 16, 17, 18,
+     20, 21 (words and icons), 43.
+   - menu: OpeningHandover, TitleScreen, ShowpieceView, PlaybackControls, ShotPanel, MacChrome, FreePlayViews,
+     RetryWords, NotebookPanel. Items 1, 3, 6, 8, 9 (Place it), 16 (grey out), 18, 19, 32 (menus), 39 (menu line),
+     52, 53 (See the contact).
+   - lens: LensLayer, Captions, LensCallouts, CaptionViews, NotebookInfo, EightBallViews, LensTextures. Items 4, 22,
+     24, 26 (caption), 27 (words), 28, 29 (caption), 44 (tip words), 53 (tips), 55 (equations).
+   - look: BallTextures, TableScene, TargetBallBadge, TableBuilder, TableRoom, TableMeshes, TableDetail, ShotCamera,
+     TableCamera, TableStage, SurfaceTextures, the pocket in Tools/blender and App/Models. Items 21, 23 (bridge ring),
+     33, 34, 35, 56.
+   - equipment: CueProfile, StanceViews, CueRig, the cues and rest in App/Models. Items 10 and 23 (the rest), 23 (the
+     3D cue's angle), 57.
+   - sound and lessons: SoundBoard, FeelMapping, Haptics, LessonMode, LessonViews, TrickShotMode, TrickShotViews.
+     Items 11 (lesson side), 36.
+   - access and controller: ControllerInput, TableAccessLayer, TableWords, VoiceSynth, the translation check, and the
+     existing translations in the string catalog. Items 42, 44 (register), 46 to 51, 58.
+   - release: scripts/testflight.py, the entitlements, store/listing, the icon, scripts/store-shots.sh, the spec's
+     status note. Items 37, 38 (upload gate), 39, 40 (scene list), 54.
+3. The coordinator merges every branch, merges the new strings, compiles once (iPhone, Mac, package tests, app tests),
+   fixes what breaks, runs the content check, writes the 0.7.0 changelog and pushes to main, which ships to TestFlight.
+4. Then the store: the support and privacy pages, the store record, and every picture and the video re-shot.
+
 ## Decision for the Boss
 
 The rule sheets for bumper pool, five-pin and bar billiards were built without your yes. Three questions: may a
