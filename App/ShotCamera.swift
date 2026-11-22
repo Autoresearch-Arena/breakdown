@@ -6,6 +6,12 @@
 //          so the app's unit tests assert on the same check the -rideSelfTest flag logs; the check itself is unchanged).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 foundation: RidePlan takes the struck ball, cueBall, so the
 //          ride can follow whichever ball the player strikes; the ride itself still reads ball 0 until stream camera).
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera, plans/22-Nov-2026-phone-bug-hunt.md #18-#21:
+//          the blend between the table camera and the ride turns the view by its heading and tilt instead of mixing
+//          look directions, so it never passes through straight down and never flips (#18); every new shot and every
+//          Replay eases into the ride, not only the first (#19); upright, the ride lens is about 64 degrees across and
+//          the ridden ball sits in the lower third of the free space (#20); the plan, the headings and the pose follow
+//          the struck ball (RidePlan.cueBall) instead of ball 0 (#21).)
 // PURPOSE: Ride the shot: a chase view of the cue ball. When Ride is on, the camera sits behind and above the cue
 //          ball, looks the way it is travelling and follows it for the whole shot (it never hands over to the ball it
 //          hits). After the first contact it cranes up and back so the rack opening, or the struck ball's run to its
@@ -18,7 +24,8 @@
 //          turns smoothly through a cushion bounce instead of snapping when the velocity flips. The crane after the
 //          contact and the rise at the end are critically damped blends computed from event times.
 //          The one piece of wall-clock state is `engage`: switching Ride on or off mid-shot eases in over half a
-//          second instead of jumping (under Reduce Motion it cuts).
+//          second instead of jumping (under Reduce Motion it cuts), and since 0.7.6 so does every new shot and every
+//          Replay (engage goes back to 0 on load and when the clock jumps back to the start).
 //          Reduce Motion: no ride. The camera holds one still low angle behind the cue ball where it starts, then cuts
 //          to the overhead at the first contact.
 //          Also here: the slow-motion curve Ride adds around the first contact (RidePlan.rateFactor, read by
@@ -74,19 +81,22 @@ struct RidePlan: Equatable {
 
     init(_ tl: Timeline, cueBall: Int = 0) {
         self.cueBall = cueBall
-        guard tl.ballCount > 0, tl.duration > 0.3 else { return }
+        guard tl.ballCount > 0, cueBall >= 0, cueBall < tl.ballCount, tl.duration > 0.3 else { return }
         let duration = tl.duration
-        cueStart = tl.state(ball: 0, at: 0).position
-        let v0 = tl.state(ball: 0, at: 0).velocity
+        // `cue` is the struck ball throughout (0.7.6 #21): ball 0 on the pool tables, another ball at bumper pool, bar
+        // billiards and five-pin's second seat.
+        let cue = cueBall
+        cueStart = tl.state(ball: cue, at: 0).position
+        let v0 = tl.state(ball: cue, at: 0).velocity
         if v0.length > 1e-6 { strikeDirection = v0.normalized }
         // Nothing to ride without a real strike (a re-rack records a still table).
         guard v0.length > 0.05 else { return }
-        let cueStop = Self.travelEnd(tl, ball: 0)
+        let cueStop = Self.travelEnd(tl, ball: cue)
 
         // First ball-ball event that involves the cue ball: the contact time and the struck ball.
-        let first = tl.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }
+        let first = tl.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == cue } }
         contactTime = first?.time
-        let struck = first?.balls.first { $0.ball != 0 }?.ball
+        let struck = first?.balls.first { $0.ball != cue }?.ball
         // The camera stays with the cue ball the whole way (the Boss: "you want to be the cue ball"), so its place is
         // followed until it stops or drops.
         cueSpan = 0...max(Self.window, cueStop)
@@ -94,7 +104,7 @@ struct RidePlan: Equatable {
         // A cue ball that stops dead or sits in the middle of a break keeps looking the way it came, at the balls it
         // sent off, instead of swinging round to stare at the rail behind it.
         if let c = contactTime {
-            let after = (tl.state(ball: 0, at: cueStop).position - tl.state(ball: 0, at: c).position).length
+            let after = (tl.state(ball: cue, at: cueStop).position - tl.state(ball: cue, at: c).position).length
             headingSpan = after > Self.followOn ? cueSpan : 0...max(Self.window, c)
         } else {
             headingSpan = cueSpan
@@ -102,7 +112,7 @@ struct RidePlan: Equatable {
 
         // Stay low until the cue ball and the ball it hit have both finished their runs, so the camera watches the
         // struck ball roll away (and drop) from behind the cue ball. Never for more than a few seconds after contact.
-        var rideEnd = tl.pocketTime[0] != nil ? cueStop + 0.35 : cueStop + 0.2
+        var rideEnd = tl.pocketTime[cue] != nil ? cueStop + 0.35 : cueStop + 0.2
         if let c = contactTime {
             if let b = struck {
                 let end = Self.travelEnd(tl, ball: b)
@@ -193,9 +203,16 @@ final class ShotCamera {
     var clock = 0.0
     /// True when the model says Ride is on and playback is a replay the ride may take over.
     var active = false
-    /// 0 to 1: how far Ride is switched in, eased in wall time so a mid-shot toggle does not jump.
+    /// 0 to 1: how far Ride is switched in, eased in wall time so a mid-shot toggle does not jump. Back to 0 whenever a
+    /// new shot is loaded or the clock jumps back to the start (a Replay), so every ride eases in (0.7.6 #19).
     private var engage = 0.0
     private var lastTick: TimeInterval?
+    /// The clock the last override saw, to notice a jump back to the start.
+    private var lastClock = 0.0
+    /// True when the last override gave the ride pose any say over the view (not when Ride is merely on: between
+    /// shots, while the player aims, the ride has risen and the view is the ordinary table). The hand zoom waits only
+    /// while this is true (TableZoom.rideHold, bug #24).
+    private(set) var flying = false
 
     /// Near plane while riding: the eye is about half a metre from the ball it chases, so two centimetres clears
     /// everything near it while keeping good depth precision on the cloth and rails.
@@ -207,18 +224,23 @@ final class ShotCamera {
     /// rail height: the cue ball filled half the screen and the rack was a wall (the Boss found it "a weird view").
     static let eyeHeight: Float = 0.42
     static let back: Float = 0.62
-    /// The point on the cloth the camera looks at, this far ahead of the cue ball.
-    static let ahead: Float = 0.38
     /// Where the camera cranes to after the first contact, and how long that takes (clock seconds).
     static let craneHeight: Float = 0.85
     static let craneBack: Float = 0.95
     static let craneTime = 0.45
+    /// Where the ridden ball sits in the free space, as a share of its height from the top (0.7.6 #20): in the lower
+    /// third, so the balls it is heading for have the room above it, but clear of the cards' edge below.
+    static let ballPlace = 0.72
 
-    func load(_ tl: Timeline, frame: TableFrame) {
+    /// - cueBall: the ball the player struck (the model's RidePlan.cueBall); the ride follows it (0.7.6 #21).
+    func load(_ tl: Timeline, frame: TableFrame, cueBall: Int = 0) {
         timeline = tl
         self.frame = frame
-        plan = RidePlan(tl)
+        plan = RidePlan(tl, cueBall: cueBall)
         tracks = plan.rideable ? RideTracks(tl, plan: plan) : nil
+        // Every new shot eases into the ride from the table view (0.7.6 #19): with Ride left on, engage sat at 1
+        // between shots and the strike cut straight into the chase view.
+        engage = 0
     }
 
     /// TableCamera's hook. Takes the normal overhead camera and returns the one to use this frame: unchanged when
@@ -226,31 +248,85 @@ final class ShotCamera {
     func override(position: SIMD3<Float>, target: SIMD3<Float>, fov: Float, free: FramingRect, size: CGSize,
                   reduceMotion: Bool) -> CameraShot {
         let overhead = CameraShot(position: position, target: target, fov: fov, near: Self.overheadNear)
+        // A Replay (the clock jumped back to the start) eases in again too (0.7.6 #19). Kept out of ridePose, which
+        // stays a pure function of the clock.
+        if clock < 0.05, lastClock > 0.3 { engage = 0 }
+        lastClock = clock
         // Switching in and out: half a second of wall time, or a cut under Reduce Motion.
         let now = ProcessInfo.processInfo.systemUptime
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
         let goal = active && plan.rideable ? 1.0 : 0.0
         if reduceMotion { engage = goal } else if engage < goal { engage = min(goal, engage + dt / 0.5) } else { engage = max(goal, engage - dt / 0.5) }
+        flying = false
         guard engage > 0, let tl = timeline, let frame, let tracks, plan.rideable else { return overhead }
         let weight = RidePlan.smooth(engage) * (1 - Self.riseWeight(at: clock, plan: plan, reduceMotion: reduceMotion))
         guard weight > 1e-4 else { return overhead }
+        flying = true
         let ride = Self.ridePose(at: clock, plan: plan, tracks: tracks, timeline: tl, frame: frame, free: free, size: size,
                                  reduceMotion: reduceMotion)
-        return Self.mix(overhead, ride, Float(weight))
+        return Self.mix(overhead, ride, Float(weight), turn: Self.turn(from: overhead, to: ride, tracks: tracks, clock: clock))
     }
 
-    /// Blend two camera shots: the eye moves in a straight line, the look direction turns between the two.
-    static func mix(_ a: CameraShot, _ b: CameraShot, _ w: Float) -> CameraShot {
+    /// Blend two camera shots (0.7.6 #18): the eye moves in a straight line, and the view turns by its heading (round
+    /// the vertical) and its tilt (up and down) separately, each a straight share of the way, always with world up as
+    /// its up. The old blend mixed the two look directions; upright, the table camera and a ride down the table look
+    /// opposite ways, so partway through the mix pointed straight down, where "up" is undefined, and the picture
+    /// flipped. Turning heading and tilt instead never reaches straight down (the tilt stays between the two ends, and
+    /// neither end looks straight down) and the picture turns round smoothly instead.
+    /// - turn: the signed heading change from a to b (radians), when the caller knows which way round to go; nil
+    ///   takes the shorter way. The ride passes it (see turn(from:to:tracks:clock:)) so a shot heading exactly the
+    ///   opposite way to the table camera never wavers between turning left and turning right.
+    static func mix(_ a: CameraShot, _ b: CameraShot, _ w: Float, turn: Float? = nil) -> CameraShot {
         let fa = simd_normalize(a.target - a.position), fb = simd_normalize(b.target - b.position)
         let pos = a.position + (b.position - a.position) * w
-        var f = fa + (fb - fa) * w
-        if simd_length(f) < 1e-4 { f = fb }        // opposite directions never happen here, but never divide by zero
-        f = simd_normalize(f)
+        let ya = heading(fa) ?? heading(fb) ?? 0, yb = heading(fb) ?? ya
+        let pa = asin(min(1, max(-1, fa.y))), pb = asin(min(1, max(-1, fb.y)))
+        let yaw = ya + (turn ?? wrap(yb - ya)) * w
+        let pitch = pa + (pb - pa) * w
+        let f = SIMD3<Float>(cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw))
         // The near plane follows whichever end is closer to the balls as soon as the ride has any say.
         return CameraShot(position: pos, target: pos + f, fov: a.fov + (b.fov - a.fov) * w,
                           near: w > 0.02 ? rideNear : a.near)
     }
+
+    /// A look direction's heading round the vertical (atan2 of its z over its x, radians), nil when it looks straight
+    /// up or down and has none.
+    static func heading(_ f: SIMD3<Float>) -> Float? {
+        simd_length(SIMD2(f.x, f.z)) > 1e-6 ? atan2(f.z, f.x) : nil
+    }
+
+    /// An angle brought into (-pi, pi].
+    static func wrap(_ a: Float) -> Float {
+        var x = a.truncatingRemainder(dividingBy: 2 * .pi)
+        if x > .pi { x -= 2 * .pi }
+        if x <= -.pi { x += 2 * .pi }
+        return x
+    }
+
+    /// Which way round, and how far, the view turns from the table camera to the ride (radians), chosen once per shot
+    /// and then followed continuously, so it can never jump from turning one way to the other mid-blend.
+    /// The ride's heading is read from the cue ball's heading track, whose angle is unwrapped along the whole shot
+    /// (no jump at a half turn). Only one choice is made: how the strike's own heading relates to the table camera's.
+    /// That choice is cut a little off the exact half turn (by `turnBias`), because a straight break up the table on
+    /// an upright phone is exactly a half turn, and a cut there would let rounding pick a different side each frame.
+    static func turn(from a: CameraShot, to b: CameraShot, tracks: RideTracks, clock: Double) -> Float? {
+        guard let ya = heading(simd_normalize(a.target - a.position)),
+              let yb = heading(simd_normalize(b.target - b.position)) else { return nil }
+        // A table angle a points along world (cos a, 0, -sin a) (TableFrame flips the across-table axis), whose
+        // heading is -a.
+        let rideYaw = -Float(tracks.cue.angle(at: clock))
+        let startYaw = -Float(tracks.cue.angle(at: tracks.cue.start))
+        // How far the strike's heading is from the table camera's, in (-pi + bias, pi + bias].
+        let fromStart = startYaw - ya
+        let chosen = wrap(fromStart - turnBias) + turnBias
+        // The ride's heading followed continuously from the strike, plus the small difference between the track and
+        // the pose's real heading (the free-space framing turns the view a few degrees).
+        return chosen + (rideYaw - startYaw) + wrap(yb - rideYaw)
+    }
+
+    /// How far off the exact half turn the turn-direction cut sits (radians, about six degrees).
+    static let turnBias: Float = 0.1
 
     // MARK: Pure pose maths (functions of the clock only)
 
@@ -277,14 +353,17 @@ final class ShotCamera {
             // pure function of the clock): close behind the cue ball on the way in, then high enough to see the
             // whole rack open or the struck ball run to its pocket.
             let crane = Float(plan.contactTime.map { RidePlan.damped(t - $0, length: Self.craneTime) } ?? 0)
-            shot = follow(centre: position(tl, ball: 0, at: t, span: plan.cueSpan), heading: tracks.cue.heading(at: t),
+            shot = follow(centre: position(tl, ball: plan.cueBall, at: t, span: plan.cueSpan),
+                          heading: tracks.cue.heading(at: t),
                           frame: frame, fov: fov,
                           height: eyeHeight + (craneHeight - eyeHeight) * crane, back: back + (craneBack - back) * crane)
         }
         return frameInFreeSpace(shot, free: free, size: size)
     }
 
-    /// The camera a couple of ball widths behind a ball at `centre`, looking along `heading` at the cloth ahead.
+    /// The camera a couple of ball widths behind a ball at `centre`, heading along `heading`. Its target is the ball
+    /// itself (its centre): frameInFreeSpace then turns the view so the ball lands in the lower third of the free space
+    /// (0.7.6 #20; before, a point 0.38 m ahead was centred and the ball itself sat at the cards' edge).
     static func follow(centre c: Vec2, heading h: Vec2, frame: TableFrame, fov: Float,
                        height: Float = eyeHeight, back: Float = back) -> CameraShot {
         let r = frame.ballRadius
@@ -296,31 +375,34 @@ final class ShotCamera {
         var eye = frame.world(eye2, height: height + lift)
         // Belt and braces: never lower than the ball tops plus the near plane, whatever the constants become.
         eye.y = max(eye.y, 2 * r + rideNear * 2)
-        let look = frame.world(c + h * Double(ahead), height: 0)
-        return CameraShot(position: eye, target: look, fov: fov, near: rideNear)
+        let ball = frame.world(c, height: r)
+        return CameraShot(position: eye, target: ball, fov: fov, near: rideNear)
     }
 
-    /// A wide lens for the ride: about 64 degrees across the narrow side of the screen where that fits, kept between
-    /// 46 and 62 degrees tall. A phone held upright hits the 62-degree ceiling, which keeps less empty room above the
-    /// far rail in view than a taller lens would.
+    /// A wide lens for the ride: about 64 degrees across the narrow side of the screen, kept between 46 and 106
+    /// degrees tall (the field of view is vertical). 0.7.6 #20: the ceiling was 62, so a phone held upright (402 by
+    /// 874, which needs about 107 tall for 64 across) got only about 31 degrees across, a narrow view that lost the
+    /// object ball off the side within a few tenths of a second. At 106 the upright phone is about 63 across.
+    /// Sideways the 46-degree floor decides, as before (about 85 across).
     static func rideFov(_ size: CGSize) -> Float {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let vertical = 2 * atan(tan(32 * Float.pi / 180) * h / w) * 180 / .pi
-        return min(62, max(46, vertical))
+        return min(106, max(46, vertical))
     }
 
-    /// Turn the ride's look direction so its centre lands in the middle of the free space (between the title, the
-    /// caption slot and the controls) rather than the middle of the screen, and keep it pointing down at the cloth:
-    /// the view ray never rises above a few degrees below the horizon, so it never looks over or through the table.
+    /// Turn the ride's look direction so the shot's target (the ridden ball) lands across the middle of the free space
+    /// (between the title row and the cards) and `ballPlace` of the way down it, in its lower third, rather than at the
+    /// middle of the screen; and keep the view pointing down at the cloth: the view ray never rises above a few degrees
+    /// below the horizon, so it never looks over or through the table.
     static func frameInFreeSpace(_ s: CameraShot, free: FramingRect, size: CGSize) -> CameraShot {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let kY = tan(s.fov * .pi / 360), kX = kY * w / h
         let nx = Float(free.centerX) / w * 2 - 1
-        let ny = 1 - Float(free.centerY) / h * 2
+        let ny = 1 - Float(free.top + free.height * ballPlace) / h * 2
         var f = simd_normalize(s.target - s.position)
         let right = simd_normalize(simd_cross(f, SIMD3(0, 1, 0)))
         let up = simd_cross(right, f)
-        // To make the old centre appear at (nx, ny) on screen, look the opposite way by the matching angles.
+        // To make the target appear at (nx, ny) on screen, look the opposite way by the matching angles.
         let pitch = atan(ny * kY), yaw = atan(nx * kX)
         f = simd_normalize(f * cos(pitch) - up * sin(pitch))
         f = simd_normalize(f * cos(yaw) - right * sin(yaw))
@@ -442,7 +524,7 @@ struct RideTracks {
     let cue: HeadingTrack
 
     init(_ tl: Timeline, plan: RidePlan) {
-        cue = HeadingTrack(tl, ball: 0, span: plan.headingSpan, fallback: plan.strikeDirection)
+        cue = HeadingTrack(tl, ball: plan.cueBall, span: plan.headingSpan, fallback: plan.strikeDirection)
     }
 }
 
@@ -497,11 +579,17 @@ struct HeadingTrack {
     }
 
     func heading(at t: Double) -> Vec2 {
+        let a = angle(at: t)
+        return Vec2(cos(a), sin(a))
+    }
+
+    /// The heading as a table angle (radians), unwrapped along the whole shot: it never jumps by a full turn, so the
+    /// ride blend can follow it continuously (ShotCamera.turn).
+    func angle(at t: Double) -> Double {
         let x = min(max((t - start) / Self.step, 0), Double(angles.count - 1))
         let i = min(Int(x), angles.count - 2)
         let f = x - Double(i)
-        let a = angles[i] + (angles[i + 1] - angles[i]) * f
-        return Vec2(cos(a), sin(a))
+        return angles[i] + (angles[i + 1] - angles[i]) * f
     }
 }
 

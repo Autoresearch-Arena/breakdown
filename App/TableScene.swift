@@ -51,6 +51,11 @@
 //          the table kind changes; apply takes the bridge mark and hands it to TableDetail's ring; each ball's drawn
 //          radius is passed on so its picture follows its own size on screen; and the opening's lamp shot is cued and
 //          its hold read through cueIntro and introHolding (TableCamera).)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera, wiring only: owns the moment framing's gate
+//          (MomentFrame) and hands its answer to the camera each frame from the request TableStage sets (moment); the
+//          Ride camera is loaded with the struck ball (bug #21); the hand zoom is told while Ride flies (rideHold, bug
+//          #24); and the Lens is now drawn after the camera has moved, in updateCamera, so its drawings can read this
+//          frame's on-screen scale (TableCamera.pointsPerMetre, through tableCamera).)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -109,6 +114,15 @@ final class TableScene {
     private var detail: TableDetail?
     /// Per ball: the plan point (world x, z) of the hole it drops into in this shot, nil if it stays up.
     private var dropHole: [SIMD2<Float>?] = []
+    /// The moment framing of a guided Lens replay (see MomentFrame): its gate lives here, its request comes from
+    /// TableStage every frame (nil: no moment framing).
+    private let momentFrame = MomentFrame()
+    var moment: MomentRequest?
+    /// The camera, for the Lens drawings' on-screen scale (TableCamera.pointsPerMetre(at:)), read after it has moved.
+    var tableCamera: TableCamera { camera }
+    /// The Lens inputs of this frame, set by apply() and drawn by updateCamera() once the camera has moved, so the
+    /// drawings can size themselves for this frame's view (0.7.6). Nil when nothing is waiting.
+    private var pendingLens: (time: Double, melt: Double, aim: AimPreview?, visibility: [Bool])?
 
     init(timeline: Timeline, surface: PlaySurface, table kind: TableKind = .standard) {
         self.timeline = timeline
@@ -211,7 +225,8 @@ final class TableScene {
 
     /// Rebuild the Lens trails and rings for a new recorded shot.
     /// - kind: the table the timeline was solved on (ShowpieceModel.solvedTable); a change rebuilds the warm table.
-    func load(_ timeline: Timeline, version: Int, kind: TableKind = .standard) {
+    /// - cueBall: the ball the player struck (the model's RidePlan.cueBall), which the Ride camera follows.
+    func load(_ timeline: Timeline, version: Int, kind: TableKind = .standard, cueBall: Int = 0) {
         guard version != loadedVersion else { return }
         loadedVersion = version
         self.timeline = timeline
@@ -219,7 +234,8 @@ final class TableScene {
         syncTable(kind)
         flewOff = (0..<timeline.ballCount).map { timeline.flewOffTable($0) }
         lens.rebuild(timeline: timeline, frame: frame)
-        shotCamera.load(timeline, frame: frame)
+        shotCamera.load(timeline, frame: frame, cueBall: cueBall)
+        momentFrame.reset()
         dropHole = Self.dropHoles(timeline, frame: frame, table: builtTable)
         // Every new shot is watched from the normal view: a hand zoom springs back.
         zoom.springBack()
@@ -324,8 +340,8 @@ final class TableScene {
 
         detail?.bridge(bridgeMark, frame: frame)
         applyPins(t)
-        lens.heldEvent = lensHeldEvent
-        lens.apply(time: t, melt: melt, aim: aim, timeline: timeline, frame: frame, ballVisible: visibility)
+        // The Lens itself is drawn in updateCamera, right after the camera moves (see pendingLens).
+        pendingLens = (t, melt, aim, visibility)
         cueRig.update(aim: cueAim, stroke: stroke, clock: t, timeline: timeline, frame: frame, ride: ride)
     }
 
@@ -364,10 +380,22 @@ final class TableScene {
     func updateCamera(melt: Double, request: FramingRequest, ride: Bool = false) {
         shotCamera.clock = lastClock
         shotCamera.active = ride
+        // The moment framing for this clock (a pure function of it once its gate is open; see MomentFrame).
+        let focus = momentFrame.focus(clock: lastClock, request: moment, handAtFit: zoom.atFittedView, frame: frame,
+                                      reduceMotion: TableCamera.reduceMotion)
         camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
-                      request: request, frame: frame, ride: shotCamera, zoom: zoom)
+                      request: request, frame: frame, ride: shotCamera, zoom: zoom, moment: focus)
+        // The hand zoom ignores pinches, pans and double taps while the ride has the view (bug #24); not merely while
+        // Ride is on, which it stays while the player aims the next shot from the ordinary table view.
+        zoom.rideHold = shotCamera.flying
         // With the camera placed: the lamp shade's fade and each ball's picture for the size it now is on screen.
         detail?.view(eye: camera.eye, forward: camera.forward, focal: camera.focal)
+        // And the Lens, for this frame's clock and this frame's view.
+        if let p = pendingLens {
+            pendingLens = nil
+            lens.heldEvent = lensHeldEvent
+            lens.apply(time: p.time, melt: p.melt, aim: p.aim, timeline: timeline, frame: frame, ballVisible: p.visibility)
+        }
     }
 
     /// Whether the showpiece opening is at its start (TableStage, every frame, before the clock moves): its rise from

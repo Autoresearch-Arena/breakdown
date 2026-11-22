@@ -34,6 +34,12 @@
 //          it has risen, so the break is watched from the table view. Reduce Motion holds the lamp view then cuts to the table; -noPushIn skips it. And the
 //          camera now reports its view direction and focal size instead of one size at the look point, so TableDetail
 //          can size every ball by its own distance.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera, plans/22-Nov-2026-v076-phone-plan.md: the moment
+//          framing (MomentFrame) is applied after the fitted pose and before the hand zoom, as one more multiplier on
+//          the fit; the cloth point under the middle of the free space is worked out once here and handed to both it
+//          and the hand zoom, which now scales about that point (bug #14); the ride blend's view no longer passes
+//          straight down (ShotCamera.mix, bug #18), so the fixed world up stays safe; pointsPerMetre(at:) gives the
+//          Lens drawings the on-screen scale; -frameDebug also logs where the moment and the zoom's look point land.)
 // SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame;
 //          the ride camera's own logic is in ShotCamera, this file only applies its answer (and reuses ShotCamera.mix to
 //          blend the lamp shot into the table view).
@@ -87,6 +93,13 @@ final class TableCamera {
     /// height over the field of view's height at one metre. Something r metres across at depth d along `forward` is
     /// r * focal / d points across on screen (TableDetail sizes each ball this way).
     private(set) var focal: Float = 100
+
+    /// Screen points spanned by one table metre at world point `p`, seen square-on, with the camera as the last update
+    /// left it: focal over p's depth along the line of sight (0.7.6, for the Lens drawings' size floors). Cheap: one
+    /// dot product. A point at or behind the eye is treated as a centimetre in front of it.
+    func pointsPerMetre(at p: SIMD3<Float>) -> Float {
+        focal / max(0.01, simd_dot(p - eye, forward))
+    }
 
     // MARK: The opening's lamp shot (bug plan item 34)
 
@@ -171,8 +184,10 @@ final class TableCamera {
     /// - request: the measured free space (see FramingRequest); in the view's own coordinates.
     /// - ride: the Ride camera (ShotCamera), which takes over during a replay when Ride is on; nil leaves the camera alone.
     /// - zoom: the hand zoom (pinch, pan, double tap); applied to the fitted pose, under Ride.
+    /// - moment: the moment framing of a guided Lens replay (MomentFrame), applied to the fitted pose before the hand
+    ///   zoom; nil leaves the fitted view whole.
     func update(melt: Double, clock: Double, duration: Double, request q: FramingRequest, frame: TableFrame,
-                ride: ShotCamera? = nil, zoom: TableZoom? = nil) {
+                ride: ShotCamera? = nil, zoom: TableZoom? = nil, moment: MomentFocus? = nil) {
         let size = q.size
         let reduce = Self.reduceMotion
         let m = Float(melt)
@@ -219,10 +234,32 @@ final class TableCamera {
         }
         let pose = CameraFraming.pose(size: size, framing: free, yaw: yaw, elevation: elevation, table: table,
                                       fovDegrees: Self.fov, distanceScale: scale)
-        // The hand zoom (TableZoom): closer to, and moved across, the fitted view; the look point stays on the cloth.
         var position = pose.position, target = pose.target
+        // The cloth point under the middle of the free space (0.7.6): the point the moment framing and the hand zoom
+        // both move and scale about, worked out once here. From the un-eased rectangle, so it depends on the layout
+        // and the clock alone (scrubbing shows the same view). In the fitted view it is about the table's middle.
+        let freeCentre = CGPoint(x: freeNow.centerX, y: freeNow.centerY)
+        let fitPivot = MomentFraming.clothPoint(position: position, forward: simd_normalize(target - position),
+                                                at: freeCentre, size: size, fovDegrees: Self.fov)
+        var lookPivot = fitPivot
+        // The moment framing: in on the moment a guided Lens replay is about, a multiplier on the fit (MomentFrame).
+        var momentLog: (focus: MomentFocus, magnification: Float)?
+        zoom?.momentLook = nil
+        if let moment, let q = fitPivot {
+            let framed = MomentFraming.frame(moment, position: position, target: target, pivot: q, free: freeNow,
+                                             size: size, fovDegrees: Self.fov, ballTop: 2 * frame.ballRadius)
+            position = framed.position
+            target = framed.target
+            lookPivot = q + SIMD3(framed.offset.x, 0, framed.offset.y)
+            // Offered to the hand zoom, so a pinch or double tap now takes this view over where it is.
+            if moment.weight > 0.01 { zoom?.momentLook = (framed.scale, framed.offset) }
+            momentLog = (moment, framed.magnification)
+        }
+        // The hand zoom (TableZoom): closer to, and moved across, the fitted view, about the point under the middle of
+        // the free space (bug #14); the look point stays on the cloth.
         if let zoom {
-            let zoomed = zoom.apply(position: position, target: target,
+            let zoomed = zoom.apply(position: position, target: target, pivot: lookPivot,
+                                    fitPivot: fitPivot.map { SIMD2($0.x, $0.z) },
                                     tableHalf: SIMD2(frame.length * 0.5, frame.width * 0.5), reduceMotion: reduce)
             position = zoomed.position
             target = zoomed.target
@@ -244,6 +281,9 @@ final class TableCamera {
         }
         if camera.camera.fieldOfViewInDegrees != shot.fov { camera.camera.fieldOfViewInDegrees = shot.fov }
         if camera.camera.near != shot.near { camera.camera.near = shot.near }
+        // World up is safe here: every pose and blend looks below the horizon but never straight down (the fit stops
+        // at 89.5 degrees, and ShotCamera.mix turns heading and tilt separately, so the blended view keeps a heading
+        // of its own), so the view's roll is always defined and never flips (bug #18).
         camera.look(at: shot.target, from: shot.position, upVector: SIMD3(0, 1, 0), relativeTo: nil)
         eye = shot.position
         forward = simd_normalize(shot.target - shot.position)
@@ -251,7 +291,37 @@ final class TableCamera {
         // Sound stream hook (21-Nov-2026): tell the sound which way screen-right runs across the table, for panning.
         // Screen-right is the view direction crossed with world up (SoundStage normalises it).
         SoundStage.listen(frame: frame, cameraRight: simd_cross(shot.target - shot.position, SIMD3<Float>(0, 1, 0)))
-        if Self.frameDebug { logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation) }
+        if Self.frameDebug {
+            logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation)
+            logLanding(shot: shot, size: size, freeCentre: freeCentre, moment: momentLog, zoom: zoom)
+        }
+    }
+
+    private var lastLandingLog = ""
+
+    /// Test hook (-frameDebug, with -pauseAt to hold a moment): where the moment framing's focus centre and the hand
+    /// zoom's look point really land on screen, projected through CameraFraming.project with the camera as placed, next
+    /// to the middle of the free space they should land on. Only logs when the rounded numbers change.
+    private func logLanding(shot: CameraShot, size: CGSize, freeCentre: CGPoint,
+                            moment: (focus: MomentFocus, magnification: Float)?, zoom: TableZoom?) {
+        var parts: [String] = []
+        func land(_ p: SIMD2<Float>) -> String {
+            let s = CameraFraming.project(SIMD3(p.x, 0, p.y), position: shot.position, target: shot.target, size: size,
+                                          fovDegrees: shot.fov)
+            return String(format: "(%.0f,%.0f)", s.x, s.y)
+        }
+        if let m = moment {
+            parts.append(String(format: "MOMENT w=%.2f m=%.2f focus=(%.2f,%.2f) lands=%@", m.focus.weight, m.magnification,
+                                m.focus.centre.x, m.focus.centre.y, land(m.focus.centre)))
+        }
+        if let zoom, zoom.isZoomed {
+            let look = zoom.fitPivot + zoom.goalOffset
+            parts.append(String(format: "ZOOM scale=%.2f look=(%.2f,%.2f) lands=%@", zoom.goalScale, look.x, look.y,
+                                land(look)))
+        }
+        guard !parts.isEmpty else { return }
+        let line = parts.joined(separator: " ") + String(format: " freeCentre=(%.0f,%.0f)", freeCentre.x, freeCentre.y)
+        if line != lastLandingLog { lastLandingLog = line; NSLog("%@", line) }
     }
 
     // MARK: Measuring (launch with -frameDebug)

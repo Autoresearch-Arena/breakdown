@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera, plans/22-Nov-2026-phone-bug-hunt.md #14 and #24:
+//          the zoom scales and moves the camera about the cloth point under the middle of the free space (TableCamera
+//          passes it in each frame as the pivot), keeping the look direction, and every offset is measured from that
+//          point; a double-tapped ball now lands in the middle of the free space instead of high under the title row,
+//          a pinch stays under the fingers, and the clamp keeps the real look point on the table. Pinch, pan, double
+//          tap and the menu zoom do nothing while the Ride camera flies (rideHold). And a gesture made while the moment
+//          framing (MomentFrame) is in takes over its view exactly where it is (momentLook), so nothing jumps.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-drawing, plans/22-Nov-2026-v074-glow-up-plan.md feature
 //          G2: closeUp(on:scale:) brings the view in on a point with the same clamping and spring as a double tap, for
 //          the gentle close-up on a held signature beat (SignatureCloseUp), and atFittedView says whether the hand's goal
@@ -59,6 +66,10 @@ final class TableZoom {
     static let easeTime: Double = 0.16
 
     /// Where the hand wants the camera: distance multiplier (1 is the fitted view) and look-point offset (metres).
+    /// The offset is measured from `fitPivot`, the cloth point under the middle of the free space in the fitted view
+    /// (0.7.6 #14): the look point the zoomed view puts at the middle of the free space is fitPivot + offset. Before,
+    /// producers treated the offset as an absolute table point while apply() added it to the point under the screen's
+    /// centre, so a double-tapped ball landed well above the free space's middle.
     private(set) var goalScale: Float = 1
     private(set) var goalOffset = SIMD2<Float>.zero
     /// Where the camera is now, eased toward the goal.
@@ -67,6 +78,17 @@ final class TableZoom {
     private var lastTick: TimeInterval?
     /// Half the playing surface (set by TableCamera each frame from the table), the bound for the look point.
     private var bound = SIMD2<Float>(1.27, 0.635)
+    /// The cloth point (world plan x, z) under the middle of the free space in the fitted view, from the last frame
+    /// (TableCamera, through apply). Offsets are measured from it. About the table's middle; zero until the first frame.
+    private(set) var fitPivot = SIMD2<Float>.zero
+    /// True while the Ride camera flies (TableScene sets it every frame): pinch, pan, double tap and the menu zoom do
+    /// nothing then (0.7.6 #24), since the ride ignores the hand zoom and the view would land zoomed after it.
+    var rideHold = false
+    /// The moment framing's contribution this frame, in the zoom's own terms (TableCamera sets it every frame; nil
+    /// while it is out). The first gesture made while it is in adopts it as the hand's own zoom, so the view stays
+    /// exactly where it is and the player carries on from there; MomentFrame then steps out at once because the hand
+    /// is no longer at the fitted view.
+    var momentLook: (scale: Float, offset: SIMD2<Float>)?
     /// The ball a double tap last zoomed onto, so a second double tap on it comes back out.
     private(set) var focusedBall: Int?
     /// True while fingers are on a pinch or a two-finger drag: the aiming layer ignores its own drag meanwhile.
@@ -101,21 +123,38 @@ final class TableZoom {
 
     private func setGoal(scale s: Float, offset o: SIMD2<Float>) {
         goalScale = min(1, max(Self.closest, s))
-        goalOffset = simd_clamp(o, -bound, bound)
+        goalOffset = clampOffset(o)
+    }
+
+    /// Keeps the real look point (fitPivot + offset) on the playing surface, so the table can never leave the screen.
+    /// Written with min and max rather than simd_clamp, so a pivot that strays past the bound can never hand it an
+    /// inside-out range.
+    private func clampOffset(_ o: SIMD2<Float>) -> SIMD2<Float> {
+        simd_min(simd_max(o, -bound - fitPivot), bound - fitPivot)
+    }
+
+    /// Before any hand gesture: if the moment framing has the view in on a moment and the hand is still at the fitted
+    /// view, take that view over as the hand's own (the camera's current place and the goal alike, so nothing jumps;
+    /// a moment nearer than `closest` eases out to it).
+    private func adoptMoment() {
+        guard let look = momentLook, atFittedView, !isGesturing else { return }
+        momentLook = nil
+        scale = look.scale; offset = look.offset
+        setGoal(scale: look.scale, offset: look.offset)
     }
 
     /// A pinch moved: `magnification` is relative to its start (above 1 spreads the fingers, zooming in). `anchor`, the
     /// table point under the fingers when the pinch began (world plan), stays under them as the view scales about it.
     func pinchChanged(magnification: CGFloat, anchor: SIMD2<Float>?) {
-        guard !strokeHold else { return }
+        guard !strokeHold, !rideHold else { return }
+        if pinchStart == nil { adoptMoment(); pinchStart = (goalScale, goalOffset) }
         isGesturing = true
-        if pinchStart == nil { pinchStart = (goalScale, goalOffset) }
         guard let start = pinchStart else { return }
         let s = min(1, max(Self.closest, start.scale / Float(max(0.05, magnification))))
         var o = start.offset
-        // Scaling about the anchor P: the look point T moves to P + (T - P) * (new / old). The fitted look point is
-        // taken as the table's middle (the framing centres the table), so T is the offset itself.
-        if let p = anchor { o = p + (start.offset - p) * (s / start.scale) }
+        // Scaling about the anchor P: the look point T moves to P + (T - P) * (new / old). Both are measured from
+        // fitPivot (the anchor arrives as an absolute table point), so T is the offset itself and P the anchor less it.
+        if let anchor { let p = anchor - fitPivot; o = p + (start.offset - p) * (s / start.scale) }
         setGoal(scale: s, offset: o)
         focusedBall = nil
     }
@@ -129,9 +168,9 @@ final class TableZoom {
 
     /// A two-finger drag moved by `delta` (world plan metres, the way the table under the fingers moved).
     func panChanged(by delta: SIMD2<Float>) {
-        guard !strokeHold else { return }
+        guard !strokeHold, !rideHold else { return }
+        if panStart == nil { adoptMoment(); panStart = goalOffset }
         isGesturing = true
-        if panStart == nil { panStart = goalOffset }
         guard let start = panStart else { return }
         // Dragging the table one way moves the look point the other way.
         setGoal(scale: goalScale, offset: start - delta)
@@ -143,22 +182,26 @@ final class TableZoom {
         isGesturing = pinchStart != nil
     }
 
-    /// Centre on a ball and zoom in on it (a double tap).
+    /// Centre on a ball and zoom in on it (a double tap). `point` is the ball's absolute world plan point; it lands in
+    /// the middle of the free space.
     func focus(on point: SIMD2<Float>, ball: Int) {
-        setGoal(scale: Self.focusScale, offset: point)
+        guard !rideHold else { return }
+        adoptMoment()
+        setGoal(scale: Self.focusScale, offset: point - fitPivot)
         focusedBall = ball
     }
 
     /// True while the hand's goal is the fitted view: nothing pinched, panned, double-tapped or stepped in. The
-    /// signature close-up (SignatureCloseUp) only moves the view from here, so it never takes over a player's zoom.
+    /// moment framing (MomentFrame) only moves the view from here, so it never takes over a player's zoom.
     var atFittedView: Bool { !isZoomed }
 
-    /// Ease in on a table point (world plan, metres): `scale` is how much larger the table looks, so 1.8 brings the
-    /// camera to 1 / 1.8 of the fitted distance. Goes through the same clamping as every other goal (never nearer than
-    /// `closest`, the look point kept on the playing surface) and the same spring in apply(). Not tied to a ball, so a
-    /// double tap afterwards behaves as from any other zoom.
+    /// Ease in on a table point (world plan, metres, absolute): `scale` is how much larger the table looks, so 1.8
+    /// brings the camera to 1 / 1.8 of the fitted distance. Goes through the same clamping as every other goal (never
+    /// nearer than `closest`, the look point kept on the playing surface) and the same spring in apply(). Not tied to a
+    /// ball, so a double tap afterwards behaves as from any other zoom. (Its 0.7.4 caller, the signature close-up, was
+    /// retired in 0.7.6 for MomentFrame; kept for the tests and any later caller.)
     func closeUp(on point: SIMD2<Float>, scale: Float) {
-        setGoal(scale: 1 / max(1, scale), offset: point)
+        setGoal(scale: 1 / max(1, scale), offset: point - fitPivot)
         focusedBall = nil
     }
 
@@ -167,7 +210,8 @@ final class TableZoom {
     /// Zoom by whole steps about the middle of the view: positive comes in, negative goes out (View menu Zoom In and
     /// Zoom Out). Coming out to near the fitted view snaps to it, as a pinch let go there does.
     func zoomStep(_ steps: Int) {
-        guard steps != 0 else { return }
+        guard steps != 0, !rideHold else { return }
+        adoptMoment()
         let s = goalScale / pow(Self.keyZoomFactor, Float(steps))
         if s > 0.95 { setGoal(scale: 1, offset: .zero) } else { setGoal(scale: s, offset: goalOffset) }
         focusedBall = nil
@@ -179,6 +223,8 @@ final class TableZoom {
     /// Arrow keys while zoomed: move the view the way the arrow points on screen (x right, y up; -1, 0 or 1 each), so
     /// what lies that way comes into view. Nothing in the fitted view, which already shows the whole table.
     func panStep(_ direction: SIMD2<Float>) {
+        guard !rideHold else { return }
+        adoptMoment()
         guard goalScale < 0.999, simd_length(direction) > 1e-4 else { return }
         let step = Self.panStepShare * viewDistance
         let move = (planRight * direction.x + planUp * direction.y) * step
@@ -204,12 +250,19 @@ final class TableZoom {
         return now - lastTap > 0.2
     }
 
-    /// Applies the zoom to a camera pose. The pose's look point on the cloth (where its line of sight meets y = 0) is
-    /// moved by the offset, and the camera is brought toward it by the scale. Called by TableCamera every frame.
+    /// Applies the zoom to a camera pose, keeping its look direction (0.7.6 #14): the camera is moved across by the
+    /// offset and brought toward the pivot by the scale, newPosition = pivot + offset + (position - pivot) * scale, so
+    /// the point pivot + offset sits where the pivot did (the middle of the free space) and the view is larger about
+    /// it. Called by TableCamera every frame.
+    /// - pivot: the cloth point (world, y = 0) under the middle of the free space for this pose; nil falls back to
+    ///   where the line of sight meets the cloth.
+    /// - fitPivot: the same point for the fitted view (world plan x, z), which offsets are measured from.
     /// - tableHalf: half the playing surface, metres; the look point is kept inside it.
-    func apply(position: SIMD3<Float>, target: SIMD3<Float>, tableHalf: SIMD2<Float>, reduceMotion: Bool) -> (position: SIMD3<Float>, target: SIMD3<Float>) {
+    func apply(position: SIMD3<Float>, target: SIMD3<Float>, pivot: SIMD3<Float>? = nil, fitPivot: SIMD2<Float>? = nil,
+               tableHalf: SIMD2<Float>, reduceMotion: Bool) -> (position: SIMD3<Float>, target: SIMD3<Float>) {
         bound = tableHalf
-        goalOffset = simd_clamp(goalOffset, -bound, bound)
+        if let fitPivot { self.fitPivot = fitPivot }
+        goalOffset = clampOffset(goalOffset)
         let now = ProcessInfo.processInfo.systemUptime
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
@@ -223,14 +276,21 @@ final class TableZoom {
             offset += (goalOffset - offset) * k
         }
         if abs(scale - 1) < 1e-4, simd_length(offset) < 1e-5 { return (position, target) }
-        // Where the line of sight meets the cloth; a view that does not look down at all is left alone.
+        // The pivot: the point under the free space's middle, or where the line of sight meets the cloth; a view that
+        // does not look down at all is left alone.
         let dir = simd_normalize(target - position)
-        guard dir.y < -1e-3 else { return (position, target) }
-        let pivot = position + dir * (-position.y / dir.y)
-        let newPivot = pivot + SIMD3(offset.x, 0, offset.y)
-        let newPosition = newPivot + (position - pivot) * scale
+        let centre: SIMD3<Float>
+        if let pivot {
+            centre = pivot
+        } else {
+            guard dir.y < -1e-3 else { return (position, target) }
+            centre = position + dir * (-position.y / dir.y)
+        }
+        let newPivot = centre + SIMD3(offset.x, 0, offset.y)
+        let newPosition = newPivot + (position - centre) * scale
         viewDistance = simd_length(newPosition - newPivot)
-        return (newPosition, newPivot)
+        // The look direction is kept (the old code looked at the moved pivot, which turned the camera a little).
+        return (newPosition, newPosition + dir)
     }
 
     /// Keeps the camera's screen directions on the cloth for panStep (see planRight). With world up as the camera's up
@@ -295,7 +355,8 @@ struct TableZoomGestures: ViewModifier {
     /// Double tap a ball: centre and zoom on it. Double tap it again, or anywhere off a ball, to come back.
     private var doubleTap: some Gesture {
         SpatialTapGesture(count: 2).onEnded { value in
-            guard let zoom = zoom, zoom.takeDoubleTap(), let proj = projector() else { return }
+            // Nothing while the Ride camera flies (0.7.6 #24): the ride ignores the hand zoom.
+            guard let zoom = zoom, !zoom.rideHold, zoom.takeDoubleTap(), let proj = projector() else { return }
             // The aiming layer puts back the aim from before the first tap and drops that tap (item 7).
             zoom.onDoubleTap?()
             let timeline = model.timeline

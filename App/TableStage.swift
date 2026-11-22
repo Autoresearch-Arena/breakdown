@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera: each frame hands the scene the moment framing's
+//          request (MomentFrame.allowed and the pace plan) in place of the retired signature close-up's step, and the
+//          scene is loaded with the struck ball so the Ride camera follows it (bug #21).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 10, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          StageChrome.hasHeader. Where the table has no title row (the open Duo's table half, beside the notebook) the
 //          camera keeps only the safe area at the top, not a phantom 40-point row, so the table is a little larger.)
@@ -132,7 +135,8 @@ struct TableStage: View {
             let table = TableScene(timeline: model.timeline, surface: model.physicsSurface, table: model.solvedTable)
             content.add(table.root)
             bridge.table = table
-            table.load(model.timeline, version: model.timelineVersion, kind: model.solvedTable)
+            table.load(model.timeline, version: model.timelineVersion, kind: model.solvedTable,
+                       cueBall: model.ridePlan.cueBall)
             // Reflections: lights the glossy parts from a generated lamp picture.
             await table.installEnvironment()
             // A copy of the content that the per-frame closure may keep: it is only used to project points to the screen.
@@ -154,7 +158,8 @@ struct TableStage: View {
                     table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim, cueAim: cueAim,
                                 stroke: Self.stroke(for: model), ride: model.rideActive,
                                 bridgeMark: cueAim.flatMap { Self.bridgeMark(for: model, cue: $0, bridge: bridge) })
-                    SignatureCloseUp.step(model: model, table: table)
+                    // The moment framing of a guided Lens replay (MomentFrame): the camera glides in on each beat.
+                    table.moment = MomentRequest(allowed: MomentFrame.allowed(for: model), plan: model.pacePlan)
                     table.updateCamera(melt: model.melt, request: bridge.request(), ride: model.rideActive)
                     // The camera has just moved, so project after it: the ring must sit on this frame's ball.
                     // Project into the 3D view's own space, then shift by where that view sits on the stage.
@@ -171,7 +176,8 @@ struct TableStage: View {
             })
         } update: { _ in
             if let table = bridge.table, model.timelineVersion >= 0 {
-                table.load(model.timeline, version: model.timelineVersion, kind: model.solvedTable)
+                table.load(model.timeline, version: model.timelineVersion, kind: model.solvedTable,
+                           cueBall: model.ridePlan.cueBall)
             }
             // The bed shows the surface the shot is actually solved on: the chosen one, or cloth while a trick shot is
             // up (trick shots are always played on cloth). Reading it here makes the view update when it changes.
