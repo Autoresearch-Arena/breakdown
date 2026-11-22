@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: showList closes the other lists through
+//          closeAllLists, so opening one list never makes the other two modes; setAutoRate does nothing behind the menu,
+//          as setRate.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream model-flow and M-A: Practice and Watch the intro always go back to the pool table; the three mode
 //          lists open one at a time (showList) and every route into play closes them (closeAllLists); Continue match
@@ -2859,9 +2862,14 @@ final class ShowpieceModel {
     /// Open one mode list and close the other two, so the menu, the Mac menu bar and the notebook never stack two
     /// lists (each list is its own sheet or notebook page, and the notebook shows only the first one open).
     func showList(_ list: ModeList) {
-        trickMode.listOpen = list == .tricks
-        lessonMode.listOpen = list == .lessons
-        eightBallMode.listOpen = list == .eightBall
+        // The others close through closeAllLists (the optional storage), so opening one list never creates the other
+        // two modes; only the list asked for is made if it is not yet.
+        closeAllLists()
+        switch list {
+        case .tricks: trickMode.listOpen = true
+        case .lessons: lessonMode.listOpen = true
+        case .eightBall: eightBallMode.listOpen = true
+        }
     }
 
     /// Close the trick, lesson and eight-ball lists. Every route into play calls it (Practice, Watch the intro,
@@ -2883,9 +2891,11 @@ final class ShowpieceModel {
     }
 
     /// The speed menu's Auto: no fixed speed, so a Lens replay is paced by its beats again (guided needs chosenRate
-    /// nil) and an ordinary replay plays at real speed. Like setRate it ends the cold open, lets any hold go and plays
-    /// if paused.
+    /// nil) and an ordinary replay plays at real speed. Like setRate it ends the cold open, lets any hold go, plays if
+    /// paused, and does nothing behind the menu.
     func setAutoRate() {
+        // Nothing behind the menu, as setRate (0.7.5 review).
+        guard !menuOpen else { return }
         finishColdOpen()
         chosenRate = nil
         resetPacing()

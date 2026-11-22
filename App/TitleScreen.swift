@@ -1,5 +1,7 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: the saved line is read through a closure
+//          rather than by passing MatchWords.savedLine itself, so no actor-isolation conversion is asked of map.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream model-flow items 3, 4, 5 and 11: Trick shots, Learn and Behind the 8-Ball open their list alone
 //          (model.showList), so two lists never stack; Continue match closes the menu and goes to the table only when
@@ -302,7 +304,9 @@ struct TitleScreen: View {
     /// the Tables pages show, so the menu and those pages name a saved game alike (which game, against whom, whose
     /// shot).
     private var savedLine: String {
-        model.savedMatchSummary.map(MatchWords.savedLine) ?? String(localized: "Pick up your saved match where you left it.")
+        // An explicit closure rather than the function itself, so no actor-isolation conversion is asked of map.
+        model.savedMatchSummary.map { MatchWords.savedLine($0) }
+            ?? String(localized: "Pick up your saved match where you left it.")
     }
 
     /// Lessons passed out of the six.
@@ -467,8 +471,8 @@ struct TitleScreen: View {
 
 /// The computer's level (Easy, Medium, Hard) as a segmented choice, and one line on what that level plays like. Bound
 /// to the model's computerLevel, so the main menu's Play list and the Tables pages of bumper pool and five-pin show and
-/// set one shared choice, remembered on the device across launches (0.7.5). The model is @Observable, so reading computerLevel here redraws
-/// the picker and the line whichever screen changed it.
+/// set one shared choice, remembered on the device across launches (0.7.5). The model is @Observable, so reading
+/// computerLevel here redraws the picker and the line whichever screen changed it.
 struct ComputerLevelPicker: View {
     let model: ShowpieceModel
     /// Centred in the menu's card; leading on a Tables page, where everything else is leading.

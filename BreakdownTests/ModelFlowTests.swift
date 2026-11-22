@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: the saved match files are kept and put back
+//          too, since the table-on-screen test starts and ends a match and the lists test continues any save; Auto is
+//          checked behind the menu; BreakdownTimeline imported for the timeline's members.)
 // PURPOSE: Checks for the 0.7.5 model-flow fixes in ShowpieceModel (plans/22-Nov-2026-v075-whatif-and-gaps-plan.md,
 //          stream model-flow, and the coordinator's addition M-A), run against the real model and real solves:
 //          Practice and Watch the intro go back to the pool table after another table was played; the three mode
@@ -10,12 +13,14 @@
 //          menu ends a guided Lens replay; Ride held off for a guided replay comes back when it ends or a plain replay
 //          starts.
 //          Each test saves and restores the device settings it touches (the opening seen, the chosen table, the
-//          computer's level, free play's rack), so running the tests leaves the simulator's app as it found it. The
+//          computer's level, free play's rack) and the saved match files, so running the tests leaves the simulator's
+//          app as it found it (and another suite's saved match is not lost to these). The
 //          opening is marked seen before each model is made, so no first-launch hand-over is running underneath.
 // SRP/DRY check: Pass - checks only. Every action goes through the model's own methods; shots are the model's own
 //          solves (the -jumpDemo shot, a trick shot's layout, the racks), nothing is built here.
 @testable import Breakdown
 import BreakdownRules
+import BreakdownTimeline
 import Foundation
 import XCTest
 
@@ -27,6 +32,22 @@ final class ModelFlowTests: XCTestCase {
     private static let touchedKeys = [GameSettings.seenOpeningKey, TableKind.storageKey, GameSettings.computerLevelKey,
                                       GameSettings.freePlayRackKey]
     private var savedDefaults: [String: Any] = [:]
+    /// The saved match files as they were (name to contents), kept by prepareDevice and put back by restoreDevice.
+    private var savedMatchFiles: [String: Data] = [:]
+
+    /// The app's support folder, where MatchMode keeps its saved match ("match.json", or one per game). Worked out
+    /// here rather than through MatchMode's own URL, so the backup covers every saved match file whatever it is named.
+    private static var supportFolder: URL? {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("Breakdown", isDirectory: true)
+    }
+
+    /// The saved match files in the support folder now: JSON files whose name starts with "match".
+    private static func matchFiles() -> [URL] {
+        guard let folder = supportFolder,
+              let names = try? FileManager.default.contentsOfDirectory(atPath: folder.path) else { return [] }
+        return names.filter { $0.hasPrefix("match") && $0.hasSuffix(".json") }.map { folder.appendingPathComponent($0) }
+    }
 
     /// Keep the touched settings, then set a later launch (no first-launch hand-over under the test) with free play's
     /// default rack, the fifteen-ball triangle, so Practice lays out a rack to break.
@@ -34,6 +55,10 @@ final class ModelFlowTests: XCTestCase {
         savedDefaults = [:]
         for key in Self.touchedKeys {
             if let value = UserDefaults.standard.object(forKey: key) { savedDefaults[key] = value }
+        }
+        savedMatchFiles = [:]
+        for url in Self.matchFiles() {
+            if let data = try? Data(contentsOf: url) { savedMatchFiles[url.lastPathComponent] = data }
         }
         UserDefaults.standard.set(true, forKey: GameSettings.seenOpeningKey)
         UserDefaults.standard.removeObject(forKey: GameSettings.freePlayRackKey)
@@ -47,6 +72,12 @@ final class ModelFlowTests: XCTestCase {
             } else {
                 UserDefaults.standard.removeObject(forKey: key)
             }
+        }
+        // Saved matches: whatever the test wrote goes, and what was there before comes back byte for byte.
+        for url in Self.matchFiles() { try? FileManager.default.removeItem(at: url) }
+        if let folder = Self.supportFolder, !savedMatchFiles.isEmpty {
+            try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+            for (name, data) in savedMatchFiles { try? data.write(to: folder.appendingPathComponent(name)) }
         }
     }
 
@@ -169,7 +200,7 @@ final class ModelFlowTests: XCTestCase {
         model.startMatch(.barBilliards, players: 1)
         XCTAssertNotNil(model.match)
         XCTAssertNil(model.tableOnScreen, "a match is up, so no table is the player's")
-        // The match saved itself when it started; ending it removes that save again.
+        // The match saved itself when it started; ending it removes that save (restoreDevice puts any older one back).
         model.endMatch()
         XCTAssertEqual(model.tableOnScreen, .fivePin, "after the match free play's own table is back")
     }
@@ -223,6 +254,10 @@ final class ModelFlowTests: XCTestCase {
         let rate = model.chosenRate
         model.setRate(2)
         XCTAssertEqual(model.chosenRate, rate, "the speed changed behind the menu")
+        // Auto would start a paused replay; behind the menu it does nothing (openMenu left the clock stopped).
+        XCTAssertFalse(model.playing)
+        model.setAutoRate()
+        XCTAssertFalse(model.playing, "Auto started the clock behind the menu")
 
         // Try again: a trick shot's layout is solved directly, so a played attempt is on screen at once.
         let trick = try XCTUnwrap(layoutTrick, "no playable trick shot")
