@@ -31,6 +31,7 @@
   "Your aim",
   "Your stroke",
   "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
+  "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
   "The cue comes down on the ball",
   "%@ hits the slate going down at %@ m/s and bounces up at %@ m/s, so it leaves the cloth.",
   "At the top of its flight its lowest point is %@ cm above the cloth.",
@@ -1761,6 +1762,61 @@
    "culture": "ar",
    "key": "The cue, raised %@ degrees, drives the ball at %@ m/s along its own line: %@ m/s across the cloth and %@ m/s down into the slate. The slate throws it back up at %@ m/s, so it leaves the cloth.",
    "text": "العصا، المرفوعة %1$@ درجة، تدفع الكرة بسرعة %2$@ m/s على امتداد خطها: %3$@ m/s على طول الجوخ و%4$@ m/s إلى الأسفل نحو اللوح الحجري. يقذفها اللوح إلى الأعلى بسرعة %5$@ m/s، فتغادر الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "El taco, levantado %1$@ grados, empuja la bola contra la pizarra además de hacia delante. El empuje hacia abajo es demasiado pequeño para hacerla saltar, así que el paño lo absorbe y la bola sale a %2$@ m/s sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "La queue, levée de %1$@ degrés, pousse la bille vers l'ardoise autant que vers l'avant. La poussée vers le bas est trop faible pour la faire sauter, donc le tapis l'absorbe et la bille part à %2$@ m/s sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "Das Queue, um %1$@ Grad angehoben, drückt die Kugel nach unten in die Platte und zugleich nach vorn. Der Druck nach unten ist zu klein, um sie springen zu lassen, also schluckt ihn das Tuch, und die Kugel läuft mit %2$@ m/s über das Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "La stecca, alzata di %1$@ gradi, spinge la palla contro l'ardesia oltre che in avanti. La spinta verso il basso è troppo piccola per farla saltare, quindi il panno la assorbe e la palla parte a %2$@ m/s sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "O taco, levantado %1$@ graus, empurra a bola contra a ardósia e também para a frente. O empurrão para baixo é pequeno demais para a fazer saltar, por isso o pano absorve-o e a bola sai a %2$@ m/s pelo pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "O taco, levantado %1$@ graus, empurra a bola contra a ardósia e também para a frente. O empurrão para baixo é pequeno demais para fazê-la saltar, então o pano o absorve e a bola sai a %2$@ m/s pelo pano."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "%1$@度持ち上げたキューは、球を前へ押すと同時にスレートへ押し付けます。下向きの押しは小さすぎて球を跳ねさせられないので、ラシャがそれを吸収し、球はラシャの上を%2$@ m/sで出ていきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "%1$@도 들어 올린 큐는 공을 앞으로 미는 동시에 슬레이트 쪽으로 누릅니다. 아래로 누르는 힘이 너무 작아 공을 튀어 오르게 하지 못해서 천이 그것을 흡수하고, 공은 천 위로 %2$@ m/s로 나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "球杆抬起 %1$@ 度，在把球向前推的同时也把它压向石板。向下的压力太小，不足以让球跳起，于是被台呢吸收，球以 %2$@ m/s 贴着台呢出去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "Кий, поднятый на %1$@ градусов, вдавливает шар в плиту и одновременно толкает вперёд. Толчок вниз слишком слаб, чтобы шар подпрыгнул, поэтому сукно его гасит, и шар уходит по сукну со скоростью %2$@ m/s."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue, raised %@ degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at %@ m/s across the cloth.",
+   "text": "العصا، المرفوعة %1$@ درجة، تدفع الكرة نحو اللوح الحجري وإلى الأمام معاً. الدفعة إلى الأسفل أصغر من أن تجعلها تقفز، فيمتصها الجوخ وتنطلق الكرة على الجوخ بسرعة %2$@ m/s."
   },
   {
    "culture": "es",

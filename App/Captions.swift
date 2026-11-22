@@ -27,7 +27,8 @@
 //          - the strike's spin words come from the recorded spin against the direction of travel (draw, stun, follow,
 //            natural roll, overspin, and which side), on every strike caption, never "spin over 20 means backspin";
 //          - a raised strike gets its own caption with the cue's angle and its speed along its own line, split into
-//            the part across the cloth and the part down into the slate, and what the slate gave back;
+//            the part across the cloth and the part down into the slate, and what the slate gave back; one that did
+//            not hop reads its angle from the solved strike, which make(from:surface:strike:) now takes;
 //          - jumps: take-off (with the top of the flight and its clearance over the ball it passes), landing and
 //            flying off the table are captioned from the recorded vertical speeds and segment heights;
 //          - a path that bends while the ball slides (a masse, a curve after a cut) is named: which way and how many
@@ -173,14 +174,16 @@ enum CaptionEngine {
     }
 
     /// `surface` is the one the timeline was solved on (ShowpieceModel.physicsSurface), so the numbers explained are
-    /// the numbers used.
-    static func make(from timeline: Timeline, surface: PlaySurface) -> [Caption] {
+    /// the numbers used. `strike` is the strike that was solved (the model's input for this recording), when known: the
+    /// cue's angle of a raised strike that did not make the ball hop is in no event, so it is read from there.
+    static func make(from timeline: Timeline, surface: PlaySurface, strike: CueStrike? = nil) -> [Caption] {
         let facts = SurfaceFacts(surface: surface, p: surface.parameters, cloth: PlaySurface.cloth.parameters)
         // Bends are found per sliding segment, then said in the caption of the event that ends each one.
         let bendsAt = bends(in: timeline)
         var all: [Caption] = []
         for (index, e) in timeline.events.enumerated() {
-            if let c = caption(for: e, id: index, timeline: timeline, facts: facts, bends: bendsAt[index] ?? []) {
+            if let c = caption(for: e, id: index, timeline: timeline, facts: facts, bends: bendsAt[index] ?? [],
+                               strike: strike) {
                 all.append(c)
             }
         }
@@ -385,15 +388,21 @@ enum CaptionEngine {
     }
 
     /// Every bend, keyed by the index of the event that ended its sliding segment (the event at the segment's end time
-    /// that names the ball), with the ball and the signed degrees.
+    /// that names the ball), with the ball and the signed degrees. When the slide ended in the skid turning into roll,
+    /// that event is chosen even if another event names the ball at the same instant, because the skid-to-roll caption
+    /// reads its own bend from the segment (so the two agree, and the bend is said once). A bend whose event earns no
+    /// caption (a rail touch under the rail's speed gate) is not said.
     private static func bends(in timeline: Timeline) -> [Int: [(ball: Int, degrees: Double)]] {
         var out: [Int: [(ball: Int, degrees: Double)]] = [:]
         for ball in timeline.segments.indices {
             for seg in timeline.segments[ball] {
                 guard let turn = bend(of: seg) else { continue }
-                guard let i = timeline.events.firstIndex(where: {
-                    abs($0.time - seg.t1) < 1e-9 && $0.balls.contains { $0.ball == ball }
-                }) else { continue }
+                let atEnd: (LensEvent) -> Bool = { abs($0.time - seg.t1) < 1e-9 && $0.balls.contains { $0.ball == ball } }
+                let toRoll = timeline.events.firstIndex {
+                    atEnd($0) && $0.kind == .phaseTransition && $0.flight == .none && $0.phaseFrom == .sliding
+                        && $0.phaseTo == .rolling
+                }
+                guard let i = toRoll ?? timeline.events.firstIndex(where: atEnd) else { continue }
                 out[i, default: []].append((ball: ball, degrees: turn))
             }
         }
@@ -641,7 +650,7 @@ enum CaptionEngine {
     // MARK: Every event
 
     private static func caption(for e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts,
-                                bends: [(ball: Int, degrees: Double)]) -> Caption? {
+                                bends: [(ball: Int, degrees: Double)], strike: CueStrike?) -> Caption? {
         let R = timeline.table.ballRadius
         /// The bend sentences for this event, appended to its caption (a slide that ended in a hit or at a rail).
         func withBends(_ detail: String) -> String {
@@ -652,6 +661,15 @@ enum CaptionEngine {
             guard let b = e.balls.first else { return nil }
             if e.miscue != true, let up = strikeTakeOff(e, ball: b.ball, in: timeline),
                let raised = raisedCaption(e, takeOff: up, id: id, R: R) { return raised }
+            // A raised strike that did not hop: the slate took the push down without a bounce, so no event carries the
+            // angle; the solved strike does (its elevation is the sine of the cue's angle).
+            if e.miscue != true, let s = strike, s.elevation > 0, s.ballIndex == b.ball {
+                let angle = asin(min(1, s.elevation)) * 180 / Double.pi
+                var detail = String(localized: "The cue, raised \(f(angle, 0)) degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at \(f(b.velocityAfter.length)) m/s across the cloth.")
+                if let spin = strikeSpinSentence(b, radius: R) { detail += " " + spin }
+                return Caption(id: id, time: e.time, title: String(localized: "The cue comes down on the ball"),
+                               detail: detail, equation: "v↓ = v · sin θ", accent: .strike, importance: 1e9)
+            }
             if let special = strikeCaption(for: e, id: id, timeline: timeline, facts: facts) { return special }
             let speed = b.velocityAfter.length
             var detail = String(localized: "The cue sends the ball off at \(f(speed)) metres per second. Its momentum is mass times speed.")
@@ -750,10 +768,11 @@ enum CaptionEngine {
             if e.flight != .none { return flightCaption(e, id: id, timeline: timeline, facts: facts) }
             guard e.phaseFrom == .sliding, e.phaseTo == .rolling, let b = e.balls.first else { return nil }
             let v = b.velocityAfter.length
-            // A bent path is worth naming even when the ball rolls on slowly (a masse often does).
-            let bend = bends.first { $0.ball == b.ball }
-            guard v > 0.7 || bend != nil else { return nil }
+            // A bent path is worth naming even when the ball rolls on slowly (a masse often does). Read straight from
+            // the sliding segment that closes here, the same source the tests restate.
             let seg = skidSegment(ball: b.ball, endingAt: e.time, in: timeline)
+            let bend = seg.flatMap { Self.bend(of: $0) }
+            guard v > 0.7 || bend != nil else { return nil }
             var detail: String
             if facts.surface == .cloth {
                 detail = String(localized: "Friction with the cloth slowed \(name(b.ball)) and spun it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.")
@@ -781,7 +800,7 @@ enum CaptionEngine {
                 }
             }
             if let bend {
-                detail = bendSentence(ball: b.ball, degrees: bend.degrees) + " " + detail
+                detail = bendSentence(ball: b.ball, degrees: bend) + " " + detail
                 return Caption(id: id, time: e.time, title: String(localized: "The path bends"), detail: detail,
                                equation: "t = 2·Δv / (7·μ·g)", accent: .friction, importance: max(v, 0.7) * 0.12,
                                worked: worked)
@@ -791,7 +810,7 @@ enum CaptionEngine {
         case .pocket:
             let b = e.balls[0]
             return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),
-                           detail: String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s."),
+                           detail: withBends(String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(f(b.velocityBefore.length)) m/s.")),
                            equation: "ΔKE → 0", accent: .pocket, importance: 3)
         case .rimSkip:
             // Generation 2: the ball crossed the hole too fast to fall far enough to catch the far edge (the solver's
@@ -799,7 +818,7 @@ enum CaptionEngine {
             let b = e.balls[0]
             let vin = e.entry?.speed ?? b.velocityBefore.length
             return Caption(id: id, time: e.time, title: String(localized: "Too fast for the pocket"),
-                           detail: String(localized: "\(name(b.ball).capitalizedFirst) reaches the hole at \(f(vin)) m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at \(f(b.velocityAfter.length)) m/s."),
+                           detail: withBends(String(localized: "\(name(b.ball).capitalizedFirst) reaches the hole at \(f(vin)) m/s, too fast to drop: it is across before gravity can pull it far enough down to catch the far edge, and it carries on at \(f(b.velocityAfter.length)) m/s.")),
                            equation: "h = g · t² / 2", accent: .pocket, importance: 2.5)
         case .settledInContact:
             // The jam guard (any generation): wedged balls chattering in bounces too small to see were brought to rest

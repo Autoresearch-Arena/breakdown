@@ -478,7 +478,8 @@ final class LeaderState {
         let ball = event.balls.max { $0.velocityBefore.length < $1.velocityBefore.length }?.ball
         if event.kind != .pocket, let ball, ball < timeline.ballCount {
             let s = timeline.state(ball: ball, at: model.time)
-            if !s.pocketed { return frame.world(s.position, height: frame.ballRadius) }
+            // At the ball's centre wherever it is: a flying ball's ring rides with it, not on the dot under it.
+            if !s.pocketed { return frame.world(s.position, height: frame.ballRadius + Float(s.height)) }
         }
         return frame.world(event.point, height: frame.ballRadius)
     }
