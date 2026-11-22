@@ -192,6 +192,7 @@ struct ShowpieceView: View {
                             .allowsHitTesting(!model.menuOpen)
                             .disabled(model.menuOpen)
                             .accessibilityHidden(model.menuOpen)
+                            .animation(menuMotion, value: model.menuOpen)
                     }
                 }
                 // Lists, menus and option sheets stay out of sheets in the notebook: they are pages of its panel.
@@ -199,16 +200,21 @@ struct ShowpieceView: View {
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
                 CaptionLeader(leader: leader, showLine: split)
                 // The main menu over the whole window in the side-column layout, so its veil and card span the window
-                // and not just the table beside a busy column (item 2). Above the leader line.
-                if model.menuOpen && menuOverWindow {
-                    TitleScreen(model: model, onPlay: { showShotPanel = true }, pendingMatch: $pendingMatch)
+                // and not just the table beside a busy column (item 2). Above the leader line. It comes and goes with
+                // the system's smooth motion, as it does over the table (stage()); the animation is on this container
+                // only, so the notebook's own page cross-fade and the stage keep theirs.
+                ZStack {
+                    if model.menuOpen && menuOverWindow {
+                        TitleScreen(model: model, onPlay: { showShotPanel = true }, pendingMatch: $pendingMatch)
+                            .transition(.opacity)
+                    }
                 }
+                .animation(menuMotion, value: model.menuOpen)
             }
             .coordinateSpace(name: StageSpace.name)
-            // The menu comes and goes with the system's smooth motion, as it does over the table (stage()).
-            .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
             // Items 13 and L-B: Your shot steps aside while the reason holds and comes back when it goes, if it was
-            // open. The player opening it in between takes it over (see the showShotPanel change below).
+            // open. While the reason holds, any opening (a tap, the controller, the model, the Mac) is remembered
+            // instead of shown (see the showShotPanel change below), so the panel never ends up under the card.
             .onChange(of: panelWaits) { _, waits in
                 if waits {
                     if showShotPanel { showShotPanel = false; panelWaiting = true }
@@ -219,6 +225,12 @@ struct ShowpieceView: View {
             }
             .onChange(of: showShotPanel) { _, open in
                 guard open else { return }
+                if panelWaits {
+                    // Deferred, not refused: it opens when the replay ends or the card goes.
+                    showShotPanel = false
+                    panelWaiting = true
+                    return
+                }
                 // Opened by the player, the model or the waiting above: nothing is waiting any more.
                 panelWaiting = false
                 // The what-if card and Your shot share the card slot; aiming the next shot ends the what-if (item 13).
@@ -389,7 +401,13 @@ struct ShowpieceView: View {
         // title-row buttons, behind an open menu.
         .allowsHitTesting(menuOnStage || !model.menuOpen)
         // The menu comes and goes with the system's smooth motion, not a cut.
-        .animation(reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7), value: model.menuOpen)
+        .animation(menuMotion, value: model.menuOpen)
+    }
+
+    /// How the menu comes and goes: the system's smooth motion, a short plain fade with Reduce Motion. Shared by the
+    /// menu over the table, the menu over the whole window and the side column stepping aside for it.
+    private var menuMotion: Animation {
+        reduceMotion ? .easeInOut(duration: 0.3) : .smooth(duration: 0.7)
     }
 
     private func bottomStack(geo: GeometryProxy, wide: Bool) -> some View {
