@@ -1,5 +1,14 @@
 // Author: Claude Sonnet 5.5 High
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-drawing, feature G2 "see the hit": while a guided replay
+//          holds on a ball-to-ball hit (heldEvent), the Lens draws its contact geometry on the cloth: the line of
+//          centres dashed through both balls, the tangent at the contact with a finer dash (dotted with Differentiate
+//          Without Colour on), and the momentum triangle (the striking ball's speed in, white; the struck ball's and
+//          the striking ball's speeds out, cyan, head to tail), plus a small square mark when the two outgoing paths are
+//          square. The geometry comes from ContactGeometry (LensContactGeometry.swift). The parts are built once and
+//          reused, posed when the held event changes and faded in over a quarter second of real time; with heldEvent
+//          nil they are all off, so every unheld frame and the scrub check (which never sets heldEvent) are unchanged.
+//          See CONTACT GEOMETRY below.)
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the colour legend left the 3D scene: it is a SwiftUI glass chip in
 //          the title row now (LensLegendChip in CaptionViews), which follows Dynamic Type and VoiceOver and costs the
@@ -44,6 +53,15 @@
 //          slide). The vertical part of the spin, english, gets its own flat ring on the cloth in the cushion blue,
 //          since cushions are where side spin shows itself. Each ball owns one belt and one ring built once; per frame only their pose and
 //          opacity change.
+//
+//          CONTACT GEOMETRY (0.7.4). The one part of the Lens NOT driven by the clock alone: it appears only while the
+//          model holds a guided beat on a ball-to-ball hit (TableScene hands the held event over each frame), and it fades
+//          in over real time, because the clock stands still during a hold. It is therefore left out of fingerprint();
+//          LensScrubCheck leaves heldEvent nil, so the parts stay hidden there and the check is exactly as before.
+//          The triangle is drawn at one scale for all three arrows (0.12 m per m/s, smaller if the longest would pass
+//          0.35 m), so it still closes; arrows clamped one by one would not. When the struck ball was already moving
+//          only the two lines are drawn, and when the throw lines already show this hit's line of centres (throwFacts)
+//          the contact's own line of centres is left out, so it is never drawn twice.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Lens grid is built by buildGrid, which TableScene calls again
 //          when the table changes; it also marks the holes in another table's bed).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 4: with Differentiate Without Colour on,
@@ -158,6 +176,19 @@ final class LensLayer {
     /// third of a ball's width, which reads at the normal camera distance.
     static let throwMarkSpan = 1.5
     static let throwLineLength: Float = 0.5
+    /// Contact geometry (0.7.4): the line of centres and the tangent reach this many ball diameters either side of the
+    /// contact (two: through both balls and a ball's width beyond each).
+    static let contactLineReach: Float = 2
+    /// Momentum triangle scale, metres of arrow per m/s, and the longest any arrow may be drawn (the whole triangle is
+    /// scaled down together to keep the longest inside it, so it still closes).
+    static let contactArrowScale = 0.12
+    static let contactArrowMax = 0.35
+    /// Real seconds the contact drawing takes to fade in when a held hit begins.
+    static let contactFadeIn = 0.25
+    /// Arrowhead length of the triangle's arrows, metres (shortened on a very short arrow).
+    static let contactHeadLength: Float = 0.022
+    /// The right-angle mark's side, as a share of the ball radius.
+    static let contactMarkSize: Float = 0.7
 
     /// Smooth 0-to-1 ramp between `a` and `b`.
     private static func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
@@ -248,6 +279,25 @@ final class LensLayer {
     private var spinMarkers: [(slip: ModelEntity, side: ModelEntity)] = []
     private var slipMaterial = UnlitMaterial()
     private var sideMaterial = UnlitMaterial()
+    /// Contact geometry of a held hit (0.7.4, see CONTACT GEOMETRY in the header): its own parent, so it fades as one.
+    private let contactRoot = Entity()
+    private var centresLine = ModelEntity()
+    /// The tangent in two dashes: a finer dash normally, dots with Differentiate Without Colour on (only one shows).
+    private var tangentDashed = ModelEntity()
+    private var tangentDotted = ModelEntity()
+    /// One arrow of the momentum triangle: a flat glowing shaft (a unit strip scaled to length) and a solid head.
+    private struct ContactArrow {
+        let root: Entity
+        let shaft: ModelEntity
+        let head: ModelEntity
+    }
+    /// Incoming (white), the struck ball out (cyan), the striking ball out (cyan), in that order.
+    private var contactArrows: [ContactArrow] = []
+    private var squareMark = ModelEntity()
+    /// The event the contact drawing is posed for and when (system uptime, seconds) it started to fade in.
+    private var contactShown: (event: Int, since: TimeInterval)?
+    private var tangentMaterial = UnlitMaterial()
+    private var outgoingMaterial = UnlitMaterial()
 
     /// True when the system bloom pass is on for the Lens (iOS 27 / macOS 27 and not turned off by -noBloom).
     private(set) var bloomActive = false
@@ -315,6 +365,11 @@ final class LensLayer {
             // Slip is sliding, so it wears the sliding magenta; side spin wears the cushion-ring blue used above.
             slipMaterial = Self.glow(lineTex, tint: rgba(slide.0, slide.1, slide.2))
             sideMaterial = Self.glow(lineTex, tint: rgba(0.45, 0.70, 1.0))
+            // Contact geometry: the tangent in the cushion blue (it is the line a ball would roll along a cushion
+            // there), the outgoing arrows in the rolling cyan; the line of centres and the incoming arrow use the
+            // paper colour of markMaterial, as the throw lines do.
+            tangentMaterial = Self.glow(lineTex, tint: rgba(0.45, 0.70, 1.0))
+            outgoingMaterial = Self.glow(lineTex, tint: rgba(cyan.0, cyan.1, cyan.2))
         }
         var core = UnlitMaterial(color: rgba(1.0, 0.96, 0.78))
         core.faceCulling = .none
@@ -325,8 +380,10 @@ final class LensLayer {
         root.addChild(trailRoot)
         root.addChild(ringRoot)
         root.addChild(spinRoot)
+        root.addChild(contactRoot)
         root.addChild(arrowRoot)
         root.addChild(aimLine)
+        buildContact()
 
         // Differentiate Without Colour switched while the app runs: rebuild the trails dashed or solid at once.
         let change = LensTextures.differentiateWithoutColorChanged
@@ -337,6 +394,8 @@ final class LensLayer {
 
     /// Rebuild the current trails when the dashed setting no longer matches how they were built.
     private func rebuildIfSettingChanged() {
+        // A held hit's tangent switches between dashes and dots at once too (it is not rebuilt, only swapped).
+        pickTangent()
         guard LensTextures.differentiateWithoutColor != builtDashed, let last = lastBuild else { return }
         rebuild(timeline: last.timeline, frame: last.frame)
     }
@@ -449,6 +508,9 @@ final class LensLayer {
         for child in Array(ringRoot.children) { child.removeFromParent() }
         trailEntities = [:]; trailOffsets = [:]; rings = []
         lastBuild = (timeline, frame)
+        // A new recording: any contact drawing belonged to the old one (its event index means nothing here).
+        contactShown = nil
+        contactRoot.isEnabled = false
         builtDashed = LensTextures.differentiateWithoutColor
 
         // Gather every ball's ribbons into one mesh per colour.
@@ -850,6 +912,9 @@ final class LensLayer {
             }
         }
 
+        // The held hit's contact geometry (0.7.4): off unless a guided hold is on a ball-to-ball event.
+        applyContact(melt: m, timeline: timeline, frame: frame)
+
         // Aim line for the player's break.
         if let aim, m < 0.5 || aim.always {
             aimLine.isEnabled = true
@@ -932,10 +997,168 @@ final class LensLayer {
         }
     }
 
+    // MARK: Contact geometry (0.7.4)
+
+    /// Builds the contact drawing's parts once (from init): two lines, the tangent's dotted twin, three arrows and the
+    /// right-angle mark, all hidden. Per held hit only their poses change (poseContact); per frame only the fade.
+    private func buildContact() {
+        /// One flat part lying on the cloth, with its own peak opacity (the parent's fade multiplies it).
+        func part(_ mesh: MeshResource, _ material: UnlitMaterial, order: Int32, peak: Float) -> ModelEntity {
+            let e = ModelEntity(mesh: mesh, materials: [material])
+            e.components.set(ModelSortGroupComponent(group: sortGroup, order: order))
+            e.components.set(OpacityComponent(opacity: peak))
+            contactRoot.addChild(e)
+            return e
+        }
+        // Dash counts are per line (the meshes are a unit long and scaled to the line), so on any table the line of
+        // centres has seven long dashes, the tangent twelve shorter ones, and the dotted tangent twenty dots about as
+        // long as they are wide: shapes that never need colour to tell them apart.
+        centresLine = part(Self.strip(dashes: 7, halfWidth: 0.003), markMaterial, order: 26, peak: 0.8)
+        tangentDashed = part(Self.strip(dashes: 12, halfWidth: 0.0025), tangentMaterial, order: 26, peak: 0.7)
+        tangentDotted = part(Self.strip(dashes: 20, halfWidth: 0.003), tangentMaterial, order: 26, peak: 0.7)
+        squareMark = part(Self.cornerMark(halfWidth: 0.09), markMaterial, order: 27, peak: 0.9)
+
+        let shaftMesh = Self.strip(dashes: 0, halfWidth: 0.004)
+        let headMesh = Self.triangle(length: Self.contactHeadLength, halfWidth: 0.011)
+        let p = Theme.paperRGB, c = Theme.cyanRGB
+        var paperHead = UnlitMaterial(color: rgba(p.0, p.1, p.2))
+        paperHead.faceCulling = .none
+        var cyanHead = UnlitMaterial(color: rgba(c.0, c.1, c.2))
+        cyanHead.faceCulling = .none
+        // Incoming in paper white, both outgoing arrows in cyan (the plan's colours for in and out).
+        let looks: [(shaft: UnlitMaterial, head: UnlitMaterial)] = [(markMaterial, paperHead), (outgoingMaterial, cyanHead),
+                                                                    (outgoingMaterial, cyanHead)]
+        for look in looks {
+            let root = Entity()
+            let shaft = ModelEntity(mesh: shaftMesh, materials: [look.shaft])
+            shaft.components.set(ModelSortGroupComponent(group: sortGroup, order: 28))
+            let head = ModelEntity(mesh: headMesh, materials: [look.head])
+            head.components.set(ModelSortGroupComponent(group: sortGroup, order: 29))
+            root.addChild(shaft); root.addChild(head)
+            root.components.set(OpacityComponent(opacity: 0.95))
+            contactRoot.addChild(root)
+            contactArrows.append(ContactArrow(root: root, shaft: shaft, head: head))
+        }
+        contactRoot.isEnabled = false
+    }
+
+    /// Shows the tangent as dots with Differentiate Without Colour on and as finer dashes otherwise, if it shows at all.
+    private func pickTangent() {
+        let shown = tangentDashed.isEnabled || tangentDotted.isEnabled
+        let dotted = LensTextures.differentiateWithoutColor
+        tangentDotted.isEnabled = shown && dotted
+        tangentDashed.isEnabled = shown && !dotted
+    }
+
+    /// One frame of the contact drawing: hidden unless the held event is a ball-to-ball hit and the Lens is in; posed
+    /// when the held event changes; faded in over `contactFadeIn` real seconds from then.
+    private func applyContact(melt m: Float, timeline: Timeline, frame: TableFrame) {
+        guard m > 0.02, let i = heldEvent, timeline.events.indices.contains(i),
+              let g = ContactGeometry.at(timeline.events[i]) else {
+            if contactRoot.isEnabled { contactRoot.isEnabled = false }
+            contactShown = nil
+            return
+        }
+        // Real time, not the clock: the clock stands still while the beat is held.
+        let now = ProcessInfo.processInfo.systemUptime
+        if contactShown?.event != i {
+            poseContact(g, event: timeline.events[i], frame: frame)
+            contactShown = (i, now)
+        }
+        let since = contactShown?.since ?? now
+        let fade = Float(min(1, max(0, (now - since) / Self.contactFadeIn)))
+        contactRoot.isEnabled = true
+        contactRoot.components.set(OpacityComponent(opacity: fade))
+    }
+
+    /// Lays the contact drawing out for one hit (see CONTACT GEOMETRY in the header for what shows when).
+    private func poseContact(_ g: ContactGeometry, event e: LensEvent, frame: TableFrame) {
+        let reach = Self.contactLineReach * 2 * frame.ballRadius
+        /// Turns a part about the vertical so its local +x runs along `d` (table plan): the yaw rule used throughout.
+        func yaw(_ d: Vec2) -> simd_quatf {
+            let w = frame.direction(d.normalized)
+            return simd_quatf(angle: -atan2(w.z, w.x), axis: SIMD3<Float>(0, 1, 0))
+        }
+        /// A unit strip laid through the contact along `d`, `reach` either side of it.
+        func through(_ entity: ModelEntity, along d: Vec2, height: Float) {
+            entity.orientation = yaw(d)
+            entity.position = frame.world(g.point, height: height) - frame.direction(d.normalized) * reach
+            entity.scale = SIMD3<Float>(2 * reach, 1, 1)
+        }
+        // The throw lines already draw this hit's line of centres (from the struck ball); never a second one.
+        centresLine.isEnabled = CaptionEngine.throwFacts(e) == nil
+        if centresLine.isEnabled { through(centresLine, along: g.normal, height: 0.0095) }
+        through(tangentDashed, along: g.tangent, height: 0.0094)
+        through(tangentDotted, along: g.tangent, height: 0.0094)
+        tangentDashed.isEnabled = true
+        pickTangent()
+
+        // The momentum triangle and the square mark only when the struck ball was at rest.
+        let triangle = !g.objectWasMoving
+        let longest = max(g.incoming.length, g.objectOut.length, g.strikerOut.length)
+        let k = longest > 1e-9 ? min(Self.contactArrowScale, Self.contactArrowMax / longest) : Self.contactArrowScale
+        let legs: [(from: Vec2, vector: Vec2)] = [(g.point, g.incoming * k), (g.point, g.objectOut * k),
+                                                  (g.point + g.objectOut * k, g.strikerOut * k)]
+        for (arrow, leg) in zip(contactArrows, legs) {
+            let length = Float(leg.vector.length)
+            // An arrow a few millimetres long (a ball left almost still) would be only a head: leave it out.
+            guard triangle, length > 0.004 else { arrow.root.isEnabled = false; continue }
+            arrow.root.isEnabled = true
+            arrow.root.position = frame.world(leg.from, height: 0.011)
+            arrow.root.orientation = yaw(leg.vector)
+            // The head takes at most a little under half of a short arrow, shrinking with it.
+            let head = min(Self.contactHeadLength, length * 0.45)
+            let h = head / Self.contactHeadLength
+            arrow.head.scale = SIMD3<Float>(h, 1, h)
+            arrow.head.position = SIMD3<Float>(length - head, 0.0003, 0)
+            arrow.shaft.scale = SIMD3<Float>(length - head, 1, 1)
+        }
+
+        squareMark.isEnabled = triangle && g.rightAngle
+        if squareMark.isEnabled {
+            // The mark's corner sits on the contact with one side along the struck ball's way out (local +x) and the
+            // other along the striking ball's (local +z), mirrored across when that lies on the other side.
+            let q = yaw(g.objectOut)
+            let strikerWay = frame.direction(g.strikerOut.normalized)
+            let side: Float = simd_dot(q.act(SIMD3<Float>(0, 0, 1)), strikerWay) >= 0 ? 1 : -1
+            let size = Self.contactMarkSize * frame.ballRadius
+            squareMark.position = frame.world(g.point, height: 0.0105)
+            squareMark.orientation = q
+            squareMark.scale = SIMD3<Float>(size, 1, size * side)
+        }
+    }
+
+    /// A right-angle mark lying on the table: the two far sides of a unit square whose near corner is the origin, from
+    /// (1, 0, 0) to (1, 0, 1) and from (0, 0, 1) to (1, 0, 1), each `halfWidth` either side (unit scale). The square's
+    /// other two sides lie along the lines it marks, so they are not drawn. UV v runs across each bar.
+    private static func cornerMark(halfWidth w: Float) -> MeshResource {
+        var positions: [SIMD3<Float>] = []
+        var uvs: [SIMD2<Float>] = []
+        var indices: [UInt32] = []
+        let bars: [(start: SIMD3<Float>, end: SIMD3<Float>, across: SIMD3<Float>)] = [
+            (SIMD3<Float>(1, 0, 0), SIMD3<Float>(1, 0, 1 + w), SIMD3<Float>(w, 0, 0)),
+            (SIMD3<Float>(0, 0, 1), SIMD3<Float>(1 + w, 0, 1), SIMD3<Float>(0, 0, w)),
+        ]
+        for bar in bars {
+            let base = UInt32(positions.count)
+            positions += [bar.start + bar.across, bar.start - bar.across, bar.end + bar.across, bar.end - bar.across]
+            uvs += [SIMD2<Float>(0.5, 0), SIMD2<Float>(0.5, 1), SIMD2<Float>(0.5, 0), SIMD2<Float>(0.5, 1)]
+            indices += [base, base + 1, base + 2, base + 1, base + 3, base + 2]
+        }
+        var d = MeshDescriptor(name: "rightAngle")
+        d.positions = MeshBuffers.Positions(positions)
+        d.textureCoordinates = MeshBuffers.TextureCoordinates(uvs)
+        d.primitives = .triangles(indices)
+        return try! MeshResource.generate(from: [d])
+    }
+
     // MARK: Self-check (launch with -lensSelfTest)
 
     /// A fingerprint of everything the Lens shows that depends on the clock: the trail picture offsets, every ring,
     /// every arrow and the layer's own opacity. Two calls with the same clock must give the same fingerprint.
+    /// The contact geometry of a held hit (0.7.4) is deliberately left out: it depends on the held beat and fades in
+    /// over real time, not on the clock, and the scrub check never sets heldEvent, so it is hidden there anyway.
+    /// Folding it in would make the check depend on wall time.
     func fingerprint() -> UInt64 {
         var h = StableHasher()
         for phase in [MotionPhase.sliding, .rolling, .airborne] { h.combine(Double(trailOffsets[phase] ?? 0)) }
