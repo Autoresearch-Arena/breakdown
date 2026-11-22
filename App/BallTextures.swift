@@ -258,7 +258,7 @@ enum BallTextures {
             // small-on-screen picture grows it by the same fifth the number discs grow.
             let tilt: Float = 40 * .pi / 180
             let axis = SIMD3<Float>(sin(tilt), cos(tilt), 0)
-            let edge = cos(compact ? 0.54 : 0.45)
+            let edge = Float(cos(compact ? 0.54 : 0.45))
             var raster = [UInt8](repeating: 255, count: ballW * ballH * 4)
             for i in 0..<(ballW * ballH) {
                 let k = smooth(edge - 0.008, edge + 0.008, abs(simd_dot(directionTable[i], axis)))
