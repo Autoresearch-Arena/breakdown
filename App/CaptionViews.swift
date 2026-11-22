@@ -1,5 +1,13 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: the caption's physics figures (Caption.figures)
+//          as a row of compact tiles under the title line, each number large in rounded monospaced digits in the colour
+//          of the Lens mark it describes, its label small under it. The phone strip keeps the row's place in its fixed
+//          room in all three of its layouts (the card, the hidden sizer and the layout twin), so the room's height never
+//          changes and the pages are cut for the room the row leaves; the side-column card shows the same row. The title
+//          chip on the table adds the lead figure after the title when both fit on one line, in its tile's colour
+//          (LeaderState.figure). VoiceOver reads the figures after the detail, label then value. displayedCaption keeps
+//          the figures. New words: the spoken unit names.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream card, plans/22-Nov-2026-v076-phone-plan.md, bugs #1, #2,
 //          #3, #8, #9, #11, #59, #60: the phone's CaptionStrip is a fixed room (equation line when the replay has
 //          headline beats or Show the maths is on, the title line with Continue at its end, four detail lines, capped)
@@ -136,7 +144,8 @@ extension ShowpieceModel {
         return Caption(id: c.id, time: c.time, title: c.title,
                        detail: c.detail + " " + sentence,
                        equation: c.equation, accent: c.accent, importance: c.importance, worked: c.worked,
-                       sentences: (c.sentences.isEmpty ? [c.detail] : c.sentences) + [sentence])
+                       sentences: (c.sentences.isEmpty ? [c.detail] : c.sentences) + [sentence],
+                       figures: c.figures)
     }
 
     /// True when `caption` is the caption of one of this replay's headline beats (0.7.6, #60): its worked equation shows
@@ -178,6 +187,11 @@ private struct CaptionContent: View {
             Text(verbatim: caption?.title ?? " ")
                 .font(Theme.heading)
                 .reservedLines(reserved ? 1 : nil)
+            // The physics figures (0.7.6), only when the caption has some: this card keeps its natural height.
+            if let caption, !caption.figures.isEmpty {
+                CaptionFigureRow(figures: caption.figures)
+                    .padding(.vertical, 2)
+            }
             Text(verbatim: caption?.detail ?? " ")
                 .font(Theme.body)
                 .reservedLines(reserved ? 3 : nil)
@@ -190,6 +204,91 @@ private struct CaptionContent: View {
     /// VoiceOver reads as the card's value, so the screen and the voice agree.
     static func equationLine(_ caption: Caption) -> String {
         caption.worked.isEmpty ? caption.equation : caption.worked
+    }
+
+    /// What VoiceOver reads for a caption's words (0.7.6): the title, the detail, then each figure, label then value
+    /// ("Launch speed, 5.1 metres per second."). The tiles themselves are hidden from VoiceOver, so nothing is read twice.
+    static func spokenLabel(_ caption: Caption) -> String {
+        let figures = caption.figures.map { "\($0.label), \($0.spoken)." }
+        return (["\(caption.title). \(caption.detail)"] + figures).joined(separator: " ")
+    }
+}
+
+// MARK: Physics figures (0.7.6)
+
+extension CaptionFigure {
+    /// The value with its unit said in words, for VoiceOver (a symbol such as "m/s" is not read as the unit's name).
+    var spoken: String {
+        switch unit {
+        case "m/s": return "\(value) " + String(localized: "metres per second")
+        case "%": return "\(value) " + String(localized: "percent")
+        case "°": return "\(value) " + String(localized: "degrees")
+        case "cm": return "\(value) " + String(localized: "centimetres")
+        case "s": return "\(value) " + String(localized: "seconds")
+        default: return text
+        }
+    }
+}
+
+/// A caption's figures as a row of compact tiles: always three equal columns, the empty ones blank, so the row is the
+/// same height and every tile the same width whatever the caption holds. With no figures it is a blank band of exactly
+/// the row's height, which is how the phone strip's sizer and layout twin reserve its place. Hidden from VoiceOver: the
+/// card's own spoken label reads the figures after the detail.
+struct CaptionFigureRow: View {
+    let figures: [CaptionFigure]
+
+    var body: some View {
+        HStack(spacing: 6) {
+            ForEach(0..<CaptionEngine.maxFigures, id: \.self) { i in
+                if figures.indices.contains(i) {
+                    FigureTile(figure: figures[i])
+                } else {
+                    // A blank tile of the same build keeps the column and the row's height.
+                    FigureTile(figure: nil).hidden()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityHidden(true)
+    }
+}
+
+/// One figure: the number large in rounded monospaced digits with its unit smaller on the same baseline, both in the
+/// colour of the Lens mark the number describes, the label small underneath, on a faint wash of that colour. The number
+/// and unit are one Text (an AttributedString with two fonts) so they shrink together when a column is narrow, never
+/// wrapping or cutting the number. nil draws the same build blank.
+private struct FigureTile: View {
+    let figure: CaptionFigure?
+    @Environment(\.palette) private var palette
+
+    private var reading: AttributedString {
+        var number = AttributedString(figure?.value ?? " ")
+        number.font = Theme.figure
+        // The degree and percent signs hug their number, as in the figure's own text; other units sit after a no-break
+        // space.
+        let unit = figure?.unit ?? " "
+        var tail = AttributedString(unit == "°" || unit == "%" ? unit : "\u{00A0}" + unit)
+        tail.font = Theme.figureUnit
+        return number + tail
+    }
+
+    var body: some View {
+        let color = figure.map { palette.color(for: $0.mark) } ?? .clear
+        VStack(alignment: .leading, spacing: 1) {
+            Text(reading)
+                .foregroundStyle(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+            Text(verbatim: figure?.label ?? " ")
+                .font(Theme.figureLabel)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 5)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(color.opacity(0.14), in: .rect(cornerRadius: 10, style: .continuous))
     }
 }
 
@@ -267,7 +366,7 @@ struct CaptionCard: View {
             .captionGlass(accent: accent, palette: palette)
         // One spoken sentence per caption; the equation is read last because it is decoration for most listeners.
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(caption.title). \(caption.detail)")
+        .accessibilityLabel(CaptionContent.spokenLabel(caption))
         .accessibilityValue(maths || headline ? CaptionContent.equationLine(caption) : "")
         .accessibilityAddTraits(.updatesFrequently)
     }
@@ -550,7 +649,8 @@ private struct StripTitleRow: View {
 /// Phone held upright: the explanation in a room of FIXED height directly above the scrolling cards, pinned under the
 /// table (ShowpieceView), so the camera frames the table above it and nothing in it ever covers the table (0.7.6). The
 /// room: the worked-equation line (whenever Show the maths is on or the replay has headline beats), the title line with
-/// Continue at its trailing end, and four lines of detail at the current text size, capped at a share of the screen.
+/// Continue at its trailing end, the row of physics figures (0.7.6, always reserved, blank for a caption without
+/// figures), and four lines of detail at the current text size, capped at a share of the screen.
 /// A caption longer than its four lines is split into pages at sentence ends; the model shares the hold's reading time
 /// between the pages, Continue turns them, and small dots beside the title show and pick them. A single sentence taller
 /// than the room scrolls inside it. Between captions the last one stays; before the first the room is blank. While a
@@ -682,8 +782,11 @@ struct CaptionStrip: View {
                         StripTitleRow(model: model, title: caption.title, dotsRoom: dotsRoom, pageCount: count,
                                       page: index, accent: accent, onPage: { turn(to: $0, caption: caption) },
                                       continueState: continueState,
-                                      speech: (label: "\(caption.title). \(caption.detail)",
+                                      speech: (label: CaptionContent.spokenLabel(caption),
                                                value: showsEquation ? CaptionContent.equationLine(caption) : ""))
+                        // The physics figures: the row's place is in the room whether or not this caption has any, so
+                        // the words below start at the same height on every caption and the measured pages fit.
+                        CaptionFigureRow(figures: caption.figures)
                         // The page's words; a page that is one sentence too tall for the room scrolls inside it.
                         // Before the twin has measured, the room itself caps the words, so nothing grows over the table.
                         FittingScroll(maxHeight: detailRoom.height > 0 ? detailRoom.height
@@ -721,6 +824,7 @@ struct CaptionStrip: View {
                 VStack(alignment: .leading, spacing: 3) {
                     if reserveEquation { Text(verbatim: " ").font(Self.equationFont).lineLimit(1) }
                     StripTitleRow(model: model, title: caption.title, dotsRoom: dotsRoom, continueState: .hidden)
+                    CaptionFigureRow(figures: [])
                     Color.clear
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .onGeometryChange(for: CGSize.self) { $0.size } action: { detailRoom = $0 }
@@ -767,7 +871,7 @@ struct CaptionStrip: View {
 }
 
 /// The strip's blank room at the current text size: the equation line when it is reserved, two title lines beside
-/// Continue's room, and CaptionStrip.detailLines lines of detail, plus the card's padding. A one-line title leaves the
+/// Continue's room, the figure row (0.7.6), and CaptionStrip.detailLines lines of detail, plus the card's padding. A one-line title leaves the
 /// words a little more (the layout twin measures it). Hidden and never spoken.
 private struct StripSizer: View {
     let model: ShowpieceModel
@@ -777,6 +881,7 @@ private struct StripSizer: View {
         VStack(alignment: .leading, spacing: 3) {
             if reserveEquation { Text(verbatim: " ").font(CaptionStrip.equationFont).lineLimit(1) }
             StripTitleRow(model: model, title: " ", dotsRoom: false, continueState: .hidden, reserveTwoLines: true)
+            CaptionFigureRow(figures: [])
             Text(verbatim: " ")
                 .font(Theme.body)
                 .lineLimit(CaptionStrip.detailLines, reservesSpace: true)
@@ -859,6 +964,8 @@ final class LeaderState {
     var accent: CaptionAccent = .impact
     /// The current caption's short title, drawn as a chip beside the ring (already localized by Captions.swift).
     var title: String?
+    /// The current caption's lead figure (0.7.6), shown after the title in the chip when both fit on one line.
+    var figure: CaptionFigure?
     var card: CGRect = .zero
     /// Bottom edge of the title row (StageSpace); the chip beside the ring stays below it.
     var topClear: CGFloat = 0
@@ -891,10 +998,13 @@ final class LeaderState {
               let world = Self.anchor(of: caption, in: model), let point = project(world) else {
             if ring != nil { ring = nil }
             if title != nil { title = nil }
+            if figure != nil { figure = nil }
             return
         }
         if accent != caption.accent { accent = caption.accent }
         if title != caption.title { title = caption.title }
+        let lead = caption.figures.first
+        if figure != lead { figure = lead }
         if let old = ring, hypot(old.x - point.x, old.y - point.y) < 0.5 { return }
         ring = point
     }
@@ -951,10 +1061,14 @@ struct CaptionLeader: View {
     @State private var chipSize: CGSize = .zero
     /// The chip title's width on one line, measured from a hidden copy, so the chip is only as wide as its words.
     @State private var titleWidth: CGFloat = 0
+    /// The lead figure's width on one line (0.7.6), measured the same way, to decide whether it fits after the title.
+    @State private var figureWidth: CGFloat = 0
 
     private let ringRadius: CGFloat = 20
     /// Gap between the ring and the chip, and the least distance the chip keeps from the screen's edges.
     private let gap: CGFloat = 8
+    /// Space between the title and the lead figure in the chip.
+    private let figureSpacing: CGFloat = 6
 
     /// The ring point, unless the ball is under the card: a ring drawn over the card would strike through its words.
     private var visibleRing: CGPoint? {
@@ -1069,34 +1183,60 @@ struct CaptionLeader: View {
                     // At most the stage's width less the edge gaps and the chip's own padding; a longer title (a long
                     // translation, a large text size) wraps onto a second line instead of running off the screen (#59).
                     let cap = max(40, stageBounds(geo.size).width - 2 * gap - 20)
-                    Text(verbatim: title)
-                        .font(Theme.label)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.center)
-                        // Its own one-line width when that fits, the cap otherwise (measured below, so a short title
-                        // keeps a short chip).
-                        .frame(width: titleWidth > 0 ? min(titleWidth.rounded(.up) + 1, cap) : nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .background {
-                            Text(verbatim: title)
-                                .font(Theme.label)
+                    let figure = leader.figure
+                    let titleRoom = titleWidth.rounded(.up) + 1
+                    // The lead figure (0.7.6) joins the title only when both fit on one line inside the cap; otherwise it
+                    // is left off rather than wrapped, and the card's tile still shows it.
+                    let withFigure = figure != nil && titleWidth > 0 && figureWidth > 0
+                        && titleRoom + figureSpacing + figureWidth.rounded(.up) + 1 <= cap
+                    HStack(spacing: figureSpacing) {
+                        Text(verbatim: title)
+                            .font(Theme.label)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
+                            // Its own one-line width when that fits, the cap otherwise (measured below, so a short title
+                            // keeps a short chip).
+                            .frame(width: titleWidth > 0 ? min(titleRoom, cap) : nil)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if withFigure, let figure {
+                            // The same number as the card's tile, in the tile's colour.
+                            Text(verbatim: figure.text)
+                                .font(Theme.figureChip)
+                                .foregroundStyle(palette.color(for: figure.mark))
                                 .lineLimit(1)
                                 .fixedSize()
-                                .hidden()
-                                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { titleWidth = $0 }
                         }
-                        // The words keep the player's reading direction; only the placement is in screen points.
-                        .environment(\.layoutDirection, layoutDirection)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        // System glass; the caption's colour shows only as a faint tint, so it reads as native glass.
-                        .glassEffect(.regular.tint(color.opacity(0.15)), in: .capsule)
-                        .onGeometryChange(for: CGSize.self) { $0.size } action: { chipSize = $0 }
-                        .position(chipCenter(ring: ring, in: geo.size))
-                        // A new caption's chip fades in at its own ball rather than sliding across the table; an
-                        // opacity fade is also what Reduce Motion asks for.
-                        .id(title)
-                        .transition(.opacity)
+                    }
+                    .background {
+                        Text(verbatim: title)
+                            .font(Theme.label)
+                            .lineLimit(1)
+                            .fixedSize()
+                            .hidden()
+                            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { titleWidth = $0 }
+                    }
+                    .background {
+                        // The figure measured on its own line, in the font the chip draws it with.
+                        Text(verbatim: figure?.text ?? "")
+                            .font(Theme.figureChip)
+                            .lineLimit(1)
+                            .fixedSize()
+                            .hidden()
+                            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { figureWidth = $0 }
+                    }
+                    // The words keep the player's reading direction (the figure follows the title in it); only the
+                    // placement is in screen points.
+                    .environment(\.layoutDirection, layoutDirection)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    // System glass; the caption's colour shows only as a faint tint, so it reads as native glass.
+                    .glassEffect(.regular.tint(color.opacity(0.15)), in: .capsule)
+                    .onGeometryChange(for: CGSize.self) { $0.size } action: { chipSize = $0 }
+                    .position(chipCenter(ring: ring, in: geo.size))
+                    // A new caption's chip fades in at its own ball rather than sliding across the table; an
+                    // opacity fade is also what Reduce Motion asks for.
+                    .id(title + (figure?.text ?? ""))
+                    .transition(.opacity)
                 }
             }
             .animation(.easeOut(duration: 0.2), value: leader.title)
