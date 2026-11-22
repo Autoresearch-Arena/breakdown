@@ -1,5 +1,13 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
+//          you (the seat the words call you, MatchWords.you) and personSeat for the views; targetBall for five-pin's
+//          wrong-ball words. A game the computer wins plays the foul moment, not the win (moment(for:winnerIsComputer:)
+//          reads the after-state at both call sites). The computer's answer to a choice stays as the settled line in
+//          the banner. A sitting tally (wins per seat, in memory only, carried by rematch) for the result card. A
+//          break's routine ruling with its Lens offer up does not settle by itself: it waits for a tap. A computer
+//          seat's name cannot be changed. The saved summary says whether the computer shoots next, and a save that
+//          cannot be continued (undecodable, another format, finished, or two people with no computer) is deleted.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F9:
 //          confirmingEnd, so the menu back button can give up Escape while End this game is asking.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3: a
@@ -92,6 +100,9 @@ struct SavedMatchSummary: Equatable {
     let playerNames: [String]
     /// The name of whoever shoots next.
     let turnName: String
+    /// The next shot is the computer's (the turn seat is a computer seat), so the line says "The computer's shot."
+    /// rather than a seat's name.
+    let computerToShoot: Bool
 }
 
 @MainActor
@@ -247,6 +258,24 @@ final class MatchMode {
 
     /// True when the computer plays one of the seats (no hand-over between turns: the device stays with the person).
     var hasComputer: Bool { state.players.contains(where: \.isComputer) }
+
+    /// The seat the person holding the device plays (MatchWords.personSeat): the seat that is not the computer, or
+    /// the only seat when playing alone. Wins and losses on the cards are told from this seat.
+    var personSeat: PlayerID? { MatchWords.personSeat(in: state.players) }
+
+    /// The seat the words call "you": the person's seat while its name is still the default. Read fresh from the
+    /// state every time, so a name typed in the names editor takes over at once and emptying it brings "you" back.
+    var you: PlayerID? { MatchWords.you(in: state.players) }
+
+    /// The ball a seat must hit first where the table fixes one (five-pin: the other player's ball), for the
+    /// wrong-ball foul's words; nil on every other table.
+    func targetBall(for seat: PlayerID) -> Int? { (rules as? FivePinRules)?.targetBall(for: seat) }
+
+    /// Games won in this sitting, per seat: counted when the rules finish a game, carried by rematch(), never saved
+    /// (a new match, or ending this one, starts from nothing). The result card shows it from the second game on.
+    private(set) var sittingWins: [Int] = []
+    /// Games finished in this sitting (a game with no winner counts here and in nobody's wins).
+    private(set) var sittingGames = 0
 
     // MARK: The call (item 13)
 
@@ -458,8 +487,8 @@ final class MatchMode {
         lastRuling = ruling
         currentCall = nil
         phase = .ruling
-        Self.playMoment(for: ruling)
-        if state.isOver { MatchRecord.noteFinished(state) }
+        Self.playMoment(for: ruling, after: after)
+        if state.isOver { noteFinished() }
         if after.isOver, after.kind == .barBilliards, after.players.count == 1, let score = after.scores.first {
             bestOutcome = BarBilliardsBest.record(score)
         }
@@ -494,16 +523,29 @@ final class MatchMode {
     }
 
     /// The match moment a ruling sounds and is felt (SoundBoard.play plays its voice and its haptic together): a win
-    /// for the end of the game, a foul, a turn change; nothing when the shooter simply carries on.
-    static func moment(for r: Ruling) -> GameMoment? {
-        if r.result != nil { return .win }
+    /// for the end of the game, a foul, a turn change; nothing when the shooter simply carries on. A game the
+    /// computer wins sounds the foul moment, not the win: the win sound is only ever the person's (a game with no
+    /// named winner, such as bar billiards alone, keeps the win).
+    static func moment(for r: Ruling, winnerIsComputer: Bool = false) -> GameMoment? {
+        if r.result != nil { return winnerIsComputer ? .foul : .win }
         if r.fouled { return .foul }
         if r.turnPasses { return .turnChange }
         return nil
     }
 
-    private static func playMoment(for r: Ruling) {
-        if let m = moment(for: r) { SoundBoard.play(m) }
+    /// Plays a ruling's moment, reading who won from the state the ruling left (`after`; the seats never change).
+    private static func playMoment(for r: Ruling, after: MatchState) {
+        let winnerIsComputer = r.result?.winner.map { w in after.players.contains { $0.id == w && $0.isComputer } }
+            ?? false
+        if let m = moment(for: r, winnerIsComputer: winnerIsComputer) { SoundBoard.play(m) }
+    }
+
+    /// A game the rules finished: counted in the on-device record (MatchRecord) and in this sitting's tally.
+    private func noteFinished() {
+        MatchRecord.noteFinished(state)
+        if sittingWins.count != state.players.count { sittingWins = Array(repeating: 0, count: state.players.count) }
+        sittingGames += 1
+        if let w = state.result?.winner, sittingWins.indices.contains(w.index) { sittingWins[w.index] += 1 }
     }
 
     /// The first ball a given striking ball touched in a recording, or nil when it touched none.
@@ -523,7 +565,11 @@ final class MatchMode {
         // billiards' only). It only runs while the balls are at rest: a replay started from the card (the Lens on a
         // break) holds it, and it starts over once the replay has played out.
         if phase == .ruling, lastRulingShow == .banner {
-            settleElapsed = model.aimReady ? settleElapsed + MatchClock.seconds(forFrame: realSeconds) : 0
+            // A break's ruling with "Watch it in the Lens" up waits for a tap (on the banner or the offer) instead of
+            // settling and taking the offer away before the player has read it.
+            let lensOfferWaits = model.currentAttempt?.isBreak == true && model.offerLensReplay
+            settleElapsed = model.aimReady && !lensOfferWaits
+                ? settleElapsed + MatchClock.seconds(forFrame: realSeconds) : 0
         }
         guard let shown = state.clockRemaining else { return }
         // The shot's first showing is the replay moving past anything already seen of this shot.
@@ -578,8 +624,10 @@ final class MatchMode {
         let before = state
         let ruling = rules.ruling(answering: answer, in: before)
         let after = rules.applying(ruling, facts: nil, to: before)
-        // The answer is the latest word on the table; the banner no longer carries the shot's settled line.
-        settledRuling = nil
+        // The answer is the latest word on the table; the banner no longer carries the shot's settled line. The
+        // computer's answer becomes that line itself ("Computer (Hard) takes the table as it lies."), so the person
+        // sees what it chose; a person's own answer needs no telling.
+        settledRuling = isComputer(pending.chooser) ? ruling : nil
         let s: MatchTableSetup
         if ruling.rerack {
             s = model.matchSetup(for: rules.rack, seed: Self.freshSeed())
@@ -591,8 +639,8 @@ final class MatchMode {
         state = after
         lastRuling = ruling
         show(s)
-        Self.playMoment(for: ruling)
-        if state.isOver { MatchRecord.noteFinished(state) }
+        Self.playMoment(for: ruling, after: after)
+        if state.isOver { noteFinished() }
         save()
         if state.isOver {
             phase = .over
@@ -635,8 +683,10 @@ final class MatchMode {
         start()
     }
 
+    /// A person's seat takes a typed name; an emptied field puts the default back (so the words say "you" again). The
+    /// computer's seat is never renamed: its name says its level.
     func setPlayerName(_ name: String, for player: PlayerID) {
-        guard state.players.indices.contains(player.index) else { return }
+        guard state.players.indices.contains(player.index), !state.players[player.index].isComputer else { return }
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         state.players[player.index].name = trimmed.isEmpty ? Self.defaultName(seat: player.index) : trimmed
         save()
@@ -758,19 +808,39 @@ final class MatchMode {
         guard let saved = loadSaved() else { return nil }
         let s = saved.state
         let names = s.players.map(\.name)
+        let computerToShoot = s.players.first { $0.id == s.turn }?.isComputer ?? false
         return SavedMatchSummary(kind: s.kind, opponent: s.players.compactMap(\.computer).first, playerNames: names,
-                                 turnName: MatchWords.name(s.turn, in: names))
+                                 turnName: MatchWords.name(s.turn, in: names), computerToShoot: computerToShoot)
     }
 
-    /// The saved match, or nil when there is none, it cannot be read, or it was written in another format.
+    /// The saved match, or nil when there is none or it cannot be continued. A file that decodes but can never be
+    /// played on (another format, a finished game, or more than one seat with no computer: a game between two people
+    /// on one device, which nothing offers since 0.7.3), and a file that does not decode, is deleted, so the menu
+    /// never offers a Continue that cannot load. A file that cannot be read at all (the disk, not its contents) is
+    /// left alone: it may read next time.
     static func loadSaved() -> SavedMatch? {
         guard let url = saveURL, FileManager.default.fileExists(atPath: url.path) else { return nil }
+        let data: Data
         do {
-            let saved = try JSONDecoder().decode(SavedMatch.self, from: Data(contentsOf: url))
-            guard saved.format == SavedMatch.currentFormat, !saved.state.isOver else { return nil }
-            return saved
+            data = try Data(contentsOf: url)
         } catch {
             NSLog("MatchMode: the saved match at %@ could not be read: %@", url.path, error.localizedDescription)
+            return nil
+        }
+        do {
+            let saved = try JSONDecoder().decode(SavedMatch.self, from: data)
+            let s = saved.state
+            let twoPeople = s.players.count > 1 && !s.players.contains(where: \.isComputer)
+            guard saved.format == SavedMatch.currentFormat, !s.isOver, !twoPeople else {
+                NSLog("MatchMode: the saved match at %@ cannot be continued and was removed", url.path)
+                deleteSave()
+                return nil
+            }
+            return saved
+        } catch {
+            NSLog("MatchMode: the saved match at %@ could not be decoded and was removed: %@", url.path,
+                  error.localizedDescription)
+            deleteSave()
             return nil
         }
     }
