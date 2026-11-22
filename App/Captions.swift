@@ -43,6 +43,9 @@
 //          - every caption whose equation can be filled with the event's own numbers carries that worked line
 //            (Caption.worked), shown on the opening's headline beats even with Show the maths off;
 //          - strokeSentence: the line the Lens adds to the strike caption when the player's stroke turned the cue.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-pacing, plans/22-Nov-2026-v074-glow-up-plan.md G1: the
+//          bend lookup is readable as bendEvents(in:), so PacePlan, the trick signatures and the highlight judge find
+//          the event that ends a bent slide from this one place. No wording changed.)
 // PURPOSE: Turns solver events into the plain-language captions and equations the Physics Lens shows. Every
 //          number in a caption is read from the recorded event (pillar one: nothing is drawn that the solver
 //          did not compute). Every event that clears its speed gate gets a caption, sorted by time; choosing which
@@ -179,7 +182,7 @@ enum CaptionEngine {
     static func make(from timeline: Timeline, surface: PlaySurface, strike: CueStrike? = nil) -> [Caption] {
         let facts = SurfaceFacts(surface: surface, p: surface.parameters, cloth: PlaySurface.cloth.parameters)
         // Bends are found per sliding segment, then said in the caption of the event that ends each one.
-        let bendsAt = bends(in: timeline)
+        let bendsAt = bendEvents(in: timeline)
         var all: [Caption] = []
         for (index, e) in timeline.events.enumerated() {
             if let c = caption(for: e, id: index, timeline: timeline, facts: facts, bends: bendsAt[index] ?? [],
@@ -391,8 +394,9 @@ enum CaptionEngine {
     /// that names the ball), with the ball and the signed degrees. When the slide ended in the skid turning into roll,
     /// that event is chosen even if another event names the ball at the same instant, because the skid-to-roll caption
     /// reads its own bend from the segment (so the two agree, and the bend is said once). A bend whose event earns no
-    /// caption (a rail touch under the rail's speed gate) is not said.
-    private static func bends(in timeline: Timeline) -> [Int: [(ball: Int, degrees: Double)]] {
+    /// caption (a rail touch under the rail's speed gate) is not said. Read by make(from:surface:strike:) for the words,
+    /// and by PacePlan, TrickSignature and ShotHighlightJudge (0.7.4) to find the event a bend's beat is held on.
+    static func bendEvents(in timeline: Timeline) -> [Int: [(ball: Int, degrees: Double)]] {
         var out: [Int: [(ball: Int, degrees: Double)]] = [:]
         for ball in timeline.segments.indices {
             for seg in timeline.segments[ball] {
