@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 foundation, plans/22-Nov-2026-v076-phone-plan.md: the held
+//          caption can be split into pages (holdPage, setHoldPages, showHoldPage; Continue turns the page before it ends
+//          the hold), the ride plan is built on the ball that was struck, and Ride only counts as active on a shot it can
+//          ride.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: showList closes the other lists through
 //          closeAllLists, so opening one list never makes the other two modes; setAutoRate does nothing behind the menu,
 //          as setRate.)
@@ -396,6 +400,16 @@ final class ShowpieceModel {
     /// The beat whose hold has just finished while the clock still sits exactly on it (so it is not held again, and a
     /// simultaneous beat after it is). Ignored as soon as the clock has moved off that time.
     private var passedBeat: Int?
+    /// Pages of the held caption (0.7.6). On a phone the explanation card has a fixed room; CaptionStrip splits a caption
+    /// that does not fit into pages and tells the model how much reading each page holds (setHoldPages). The hold's
+    /// reading time is shared out between the pages in that proportion, the page on screen follows the hold's own
+    /// real-time counter, and Continue turns the page before it ends the hold. Observed, but it changes only when the
+    /// page turns. A caption that fits is one page and nothing changes.
+    private(set) var holdPage = 0
+    /// Share of the hold each page gets (sums to 1), and the caption they belong to (pages for another caption are
+    /// ignored, so a late report from the card cannot page the wrong moment).
+    @ObservationIgnored private var holdPageShares: [Double] = [1]
+    @ObservationIgnored private var holdPagesCaption: Int?
 
     // Playing surface (see PlaySurface).
     /// The surface the player chose: every shot outside trick-shot mode is solved on it. Stored in UserDefaults.
@@ -552,7 +566,7 @@ final class ShowpieceModel {
         timelineVersion = 1
         lastInput = input
         lastClassic = true
-        ridePlan = RidePlan(tl)
+        ridePlan = RidePlan(tl, cueBall: input.strike.ballIndex)
         readShot(tl)
         adoptLayout(after: tl)
         startRideDemoIfAsked()
@@ -1023,7 +1037,8 @@ final class ShowpieceModel {
 
     /// True while the Ride camera may fly: Ride is on and a replay is playing (the player's shots, replays and the
     /// cold open's slow-motion replay; not the cold open's first run, freeze, melt or rewind).
-    var rideActive: Bool { rideOn && (stage == .explore || stage == .slowReplay) }
+    /// Ride is on and this shot can be ridden (a still table or an unstruck ball has nothing to follow).
+    var rideActive: Bool { rideOn && ridePlan.rideable && (stage == .explore || stage == .slowReplay) }
 
     /// Switch the Ride camera on or off. The trick-shot mode calls this before playing a shot so it plays riding.
     /// Switching it on when the shot on screen has already finished plays that shot again from the start, so the
@@ -1503,7 +1518,8 @@ final class ShowpieceModel {
         captions = CaptionEngine.make(from: tl, surface: solvedSurface, strike: lastInput?.strike,
                                       table: solvedTable, striker: lastInput?.strike.ballIndex)
         pacePlan = PacePlan(captions: captions, timeline: tl, style: paceStyle, signature: paceSignature)
-        ridePlan = RidePlan(tl)
+        // Ride follows the ball that was struck (bumper pool, bar billiards and five-pin's second seat strike others).
+        ridePlan = RidePlan(tl, cueBall: lastInput?.strike.ballIndex ?? 0)
         readShot(tl)
         timelineVersion += 1
         resetPacing()
@@ -3620,6 +3636,12 @@ final class ShowpieceModel {
     func nextBeat() {
         guard guided else { return }
         if holding, let h = heldBeat {
+            // A caption split into pages: Continue shows the next page first, and its share of the hold starts now.
+            if holdPagesApply(to: h), holdPage + 1 < holdPageShares.count {
+                showHoldPage(holdPage + 1)
+                if stage == .explore { playing = true }
+                return
+            }
             finishHold(h)
             // Continue on a held moment the player had paused plays on (0.7.5): ending the hold alone left the clock
             // stopped, so Continue seemed to do nothing. Only on the ordinary table; the cold open runs its own clock.
@@ -3648,6 +3670,7 @@ final class ShowpieceModel {
     private func beginHold(_ i: Int) {
         heldBeat = i
         holdElapsed = 0
+        holdPage = 0
         // With Explanations off there is nothing to read, so the stop is only a short pause that lets the hit land.
         // An option never set reads as on (its default), hence the object lookup rather than bool(forKey:).
         let explanations = UserDefaults.standard.object(forKey: GameSettings.explanationsKey) as? Bool ?? true
@@ -3659,6 +3682,41 @@ final class ShowpieceModel {
     var holdingHeadline: Bool {
         guard holding, let h = heldBeat, pacePlan.beats.indices.contains(h) else { return false }
         return pacePlan.beats[h].headline
+    }
+
+    /// The card says how the caption with event index `id` is split: one weight per page (its reading length, any unit).
+    /// Called by CaptionStrip whenever its layout of the caption changes; one page, or a caption not being held, simply
+    /// resets to a single page.
+    func setHoldPages(caption id: Int, weights: [Double]) {
+        let total = weights.reduce(0, +)
+        guard weights.count > 1, total > 0 else {
+            holdPageShares = [1]; holdPagesCaption = nil
+            if holdPage != 0 { holdPage = 0 }
+            return
+        }
+        holdPageShares = weights.map { $0 / total }
+        holdPagesCaption = id
+        if holdPage >= weights.count { holdPage = weights.count - 1 }
+    }
+
+    /// Number of pages of the held caption (1 when it fits or nothing is held).
+    var holdPageCount: Int {
+        guard holding, let h = heldBeat, holdPagesApply(to: h) else { return 1 }
+        return holdPageShares.count
+    }
+
+    /// Show page `i` of the held caption (a tapped page dot, or Continue): the hold's counter jumps to the start of that
+    /// page's share, so the page then gets its full reading time. Going back a page is allowed the same way.
+    func showHoldPage(_ i: Int) {
+        guard holding, let h = heldBeat, holdPagesApply(to: h), holdPageShares.indices.contains(i) else { return }
+        holdPage = i
+        holdElapsed = holdPageShares.prefix(i).reduce(0, +) * holdDwell
+    }
+
+    /// True when the pages the card reported belong to beat `h`'s caption.
+    private func holdPagesApply(to h: Int) -> Bool {
+        guard holdPageShares.count > 1, pacePlan.beats.indices.contains(h) else { return false }
+        return holdPagesCaption == pacePlan.beats[h].caption.id
     }
 
     private func finishHold(_ i: Int) {
@@ -3684,6 +3742,17 @@ final class ShowpieceModel {
             // The Lens tips are showing over this beat: it waits for them (never behind the menu, where no tip shows).
             if holdForTips, !menuBackdropPlaying { return }
             holdElapsed += dt
+            // The page follows the counter: each page gets its share of the reading time.
+            if holdPagesApply(to: h) {
+                var end = 0.0
+                for (i, share) in holdPageShares.enumerated() {
+                    end += share * holdDwell
+                    if holdElapsed < end || i == holdPageShares.count - 1 {
+                        if i > holdPage { holdPage = i }
+                        break
+                    }
+                }
+            }
             if holdElapsed >= holdDwell { finishHold(h) }
             return
         }

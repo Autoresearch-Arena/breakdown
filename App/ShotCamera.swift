@@ -4,6 +4,8 @@
 //          higher and further back, no hand-over to the struck ball, a crane up after the first contact).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (release stream: selfTest also returns what it measured as a RideCheck,
 //          so the app's unit tests assert on the same check the -rideSelfTest flag logs; the check itself is unchanged).
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 foundation: RidePlan takes the struck ball, cueBall, so the
+//          ride can follow whichever ball the player strikes; the ride itself still reads ball 0 until stream camera).
 // PURPOSE: Ride the shot: a chase view of the cue ball. When Ride is on, the camera sits behind and above the cue
 //          ball, looks the way it is travelling and follows it for the whole shot (it never hands over to the ball it
 //          hits). After the first contact it cranes up and back so the rack opening, or the struck ball's run to its
@@ -66,7 +68,12 @@ struct RidePlan: Equatable {
 
     init() {}
 
-    init(_ tl: Timeline) {
+    /// The ball the player struck (ball 0 on the pool tables; another ball at bumper pool, bar billiards and five-pin's
+    /// second seat). The ride follows this ball.
+    var cueBall = 0
+
+    init(_ tl: Timeline, cueBall: Int = 0) {
+        self.cueBall = cueBall
         guard tl.ballCount > 0, tl.duration > 0.3 else { return }
         let duration = tl.duration
         cueStart = tl.state(ball: 0, at: 0).position

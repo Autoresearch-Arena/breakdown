@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 foundation: Caption.sentences, the detail's sentences one by
+//          one, for the phone card's pages; filled in by stream card).
 // Date: 03-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 rules-lens, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          items 7 and 8. Balls are named the way the table they were solved on names them (TableWords.ballName with
@@ -90,6 +92,10 @@ struct Caption: Identifiable, Equatable {
     /// when the equation has nothing from the event to fill in. Shown on the headline beats even with Show the maths
     /// off (CaptionViews), and in place of the bare equation whenever Show the maths is on.
     var worked: String = ""
+    /// The detail's whole sentences in order (0.7.6), each one complete and translated on its own, so a phone card can
+    /// split a long explanation into pages at sentence ends. `detail` stays exactly these joined by spaces. Empty means
+    /// "not split yet": a view then treats the whole detail as one sentence.
+    var sentences: [String] = []
 }
 
 // MARK: What a rail keeps
