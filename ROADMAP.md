@@ -8,6 +8,8 @@ Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0: the five steps of the 21 
         the next step is the bug plan for 0.7.0, then what the spec still lacks).
 Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the release item no longer promises a layered icon; the approved
         momentum artwork is the icon again, on the Mac too).
+Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5: the what-if fork and the other tables' computer are built, so
+        the list names what is left).
 PURPOSE: Say in one place where the list of unfinished work lives and what is next, without duplicating the plans.
 SRP/DRY check: Pass - the plans folder holds the steps; this page only points at them and names the order.
 -->
@@ -27,8 +29,9 @@ and scores on the three other tables.
    zoom, free play and lessons, matches and the computer, the three other tables, the physics the Lens shows, the Mac
    and iPad pointer, the look and sound, the release (the approved icon on the Mac too, the Mac on TestFlight, the store page), the
    controller and translations, and VoiceOver last.
-2. **What the spec still lacks** (its status note): the what-if fork in the Lens first, then predict-the-shot and the
-   break challenge, a daily challenge, and a computer opponent for the three other tables.
+2. **What the spec still lacks** (its status note): the what-if fork shipped in 0.7.5 and the computer plays bumper pool
+   and five-pin since 0.7.4; next are predict-the-shot and the break challenge, a daily challenge, trick shots on the
+   other tables, and a computer for bar billiards (played alone against the clock today).
 
 ## Later
 
