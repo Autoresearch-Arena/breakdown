@@ -287,7 +287,8 @@ final class TrickShotMode {
             guard let attempt = model.currentAttempt, model.timelineVersion != judgedVersion,
                   model.timelineVersion != solutionVersion else { return }
             judgedVersion = model.timelineVersion
-            guard startsAtTrick(attempt) else { phase = .offScript; return }
+            // Off script closes the panel too, as a verdict does, so the strip can offer Try again (22-Nov-2026).
+            guard startsAtTrick(attempt) else { phase = .offScript; requestAiming(false); return }
             // The cue angle too (0.7.5): without it, Your turn after Watch it put a raised cue back to level.
             playerSettings[shot.id] = TrickSettings(aim: attempt.aim, power: attempt.power, tipUp: attempt.tipUp,
                                                     tipSide: attempt.tipSide,

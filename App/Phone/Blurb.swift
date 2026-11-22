@@ -293,12 +293,13 @@ struct Blurb: View {
                         .lineLimit(1)
                         .padding(.horizontal, 12)
                         .frame(minHeight: 32)
-                        .contentShape(Capsule())
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                        // Inside the label, so the button itself is 44 high to touch (a frame outside a Button does
+                        // not widen what it takes).
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .glassEffect(.regular.interactive(), in: .capsule)
-                .frame(minHeight: 44)
-                .contentShape(Rectangle())
                 .accessibilityHint(Text(verbatim: b.hint ?? ""))
             }
         }

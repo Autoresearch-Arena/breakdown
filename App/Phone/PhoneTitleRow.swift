@@ -79,7 +79,7 @@ struct PhoneTitleRow: View {
                 // Status words (Ride, the opening) are read as a status, not offered as a button.
                 text.accessibilityLabel(Text(verbatim: String(localized: "Status: \(line.title)")))
             } else {
-                Button { ideaOpen.toggle() } label: { text.contentShape(Rectangle()) }
+                Button { ideaOpen.toggle() } label: { text.frame(minHeight: 44).contentShape(Rectangle()) }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(verbatim: line.spoken))
                     .accessibilityHint(String(localized: "Shows the idea"))
@@ -233,7 +233,7 @@ struct PhoneTitleRow: View {
         }
         if overflow.ride && PhoneStrip.showsRide(model) {
             Toggle(isOn: Binding(get: { model.rideOn }, set: { model.setRide($0) })) {
-                Text(String(localized: "Ride"))
+                Text(String(localized: "Ride camera"))
             }
         }
         if overflow.speed {

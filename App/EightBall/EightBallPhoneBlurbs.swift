@@ -140,7 +140,7 @@ struct EightBallPhoneBlurbs: View {
         let words = [EightBallWords.callPrompt(mode, s), mode.callNote].compactMap { $0 }.joined(separator: " ")
         return VStack(alignment: .leading, spacing: BlurbPlacement.dockSpacing) {
             Blurb(sentence: words, startsFolded: false,
-                  buttons: [BlurbButton(String(localized: "Back")) { mode.cancelCalling() }])
+                  buttons: [BlurbButton(String(localized: "Cancel")) { mode.cancelCalling() }])
             CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
                 .frame(maxWidth: Blurb.openWidth, alignment: .leading)
             HStack(spacing: 8) {

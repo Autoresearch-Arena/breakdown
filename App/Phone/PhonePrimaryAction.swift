@@ -42,6 +42,8 @@ struct PhonePrimaryAction {
         // With the aiming panel open its own white Break or Shoot is the one primary action: the strip's button has
         // grown into the panel (they share a glass identity), so nothing else white shows beside it.
         guard !shotLive, !shotPanelOpen, !model.menuOpen else { return nil }
+        // A match choice that is the person's to answer carries its own two buttons: no white button beside them.
+        if PhonePrimaryAction.matchHoldsPrimary(model) { return nil }
         // The plan's order; each provider returns nil when its mode has nothing to offer.
         if let a = PhonePrimaryAction.match(model) { return a }
         if let a = PhonePrimaryAction.eightBall(model) { return a }

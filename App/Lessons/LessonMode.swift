@@ -337,7 +337,8 @@ final class LessonMode {
             guard let attempt = model.currentAttempt, model.timelineVersion != judgedVersion,
                   model.timelineVersion != demoVersion else { return }
             judgedVersion = model.timelineVersion
-            guard starts(attempt, at: step) else { phase = .offScript(step); return }
+            // Off script closes the panel too, as a verdict does, so the strip can offer Try again (22-Nov-2026).
+            guard starts(attempt, at: step) else { phase = .offScript(step); requestAiming(false); return }
             playerSettings = TrickSettings(aim: attempt.aim, power: attempt.power, tipUp: attempt.tipUp,
                                            tipSide: attempt.tipSide, elevation: attempt.elevation)
             let verdict = judge(lesson, step, attempt)

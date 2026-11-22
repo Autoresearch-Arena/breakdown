@@ -226,7 +226,13 @@ struct StrokePhoneBlurbs: View {
     @ViewBuilder private var drillBlurb: some View {
         let drill = model.strokeDrill
         if drill.isActive {
-            Blurb(folded: $drillFolded, accessibilityText: drillSpoken) { open in
+            // "Again" on the blurb itself once a stroke is judged: the aiming panel stays open through a drill, and with it open
+            // the strip shows no white button, so the drill's own reset would otherwise be out of reach (22-Nov-2026).
+            Blurb(folded: $drillFolded, accessibilityText: drillSpoken,
+                  buttons: model.aimReady && drill.last != nil
+                      ? [BlurbButton(String(localized: "Again"),
+                                     hint: String(localized: "Puts the cue ball back on the head spot")) { drill.again() }]
+                      : []) { open in
                 VStack(alignment: .leading, spacing: 4) {
                     Text(String(localized: "Straight stroke")).font(Theme.blurbTitle)
                     if model.aimReady, let result = drill.last {

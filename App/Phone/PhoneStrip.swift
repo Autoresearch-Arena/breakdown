@@ -120,8 +120,10 @@ struct PhoneStrip: View {
     /// rail would be under 160 points. Before anything is measured, nothing moves.
     private func wanted(primary: PhonePrimaryAction?) -> PhoneStripOverflow {
         guard rowWidth > 0 else { return PhoneStripOverflow() }
-        var fixed = circle * 2
-        if primary != nil { fixed += Self.spacing + primaryWidth }
+        // The transport counts only when it shows (with the panel open and no shot of the player's on screen it is
+        // gone, and counting it pushed Ride and Lens into the menu for nothing in long languages).
+        var fixed: CGFloat = showsPlayback ? circle * 2 : 0
+        if primary != nil { fixed += (fixed > 0 ? Self.spacing : 0) + primaryWidth }
         let lens = Self.showsLens(model) ? lensWidth : 0
         let ride = Self.showsRide(model) ? rideWidth : 0
         var result = PhoneStripOverflow()

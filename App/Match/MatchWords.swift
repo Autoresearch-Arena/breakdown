@@ -122,7 +122,7 @@ enum MatchWords {
     /// The banner's heading. `isBreak` is only passed true for a pool rack's break (the other tables have no break,
     /// so their first shot is a plain "to shoot"); `isYou` says it to the person ("Your break", "Your shot").
     static func toShoot(_ name: String, isBreak: Bool, isYou: Bool = false) -> String {
-        if isYou { return isBreak ? String(localized: "Your break") : String(localized: "Your shot") }
+        if isYou { return isBreak ? String(localized: "Your break") : String(localized: "Status: Your shot", defaultValue: "Your shot") }
         return isBreak ? String(localized: "\(name) to break") : String(localized: "\(name) to shoot")
     }
 

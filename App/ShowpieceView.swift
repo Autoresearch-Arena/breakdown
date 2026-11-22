@@ -588,7 +588,10 @@ struct ShowpieceView: View {
                            shotLive: shotRolling && model.playerShotOnScreen
                                // A trick's or lesson's own demonstration is never the player's live shot: its "Your
                                // turn" stays for the whole watch, Ride included (seen missing on the iPhone 17).
-                               && model.trickMode.phase != .watching && model.lessonMode.phase != .watching,
+                               && model.trickMode.phase != .watching && model.lessonMode.phase != .watching
+                               // A match shot has its own button ("See the ruling", gated on the shot playing), the
+                               // computer's above all, so it is never held back here.
+                               && model.match?.phase != .shooting,
                            overflow: $stripOverflow)
             }
         }
