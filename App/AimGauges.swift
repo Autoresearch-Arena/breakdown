@@ -28,6 +28,8 @@
 //          than the usual step, so the window cannot be stepped over. The help names the cue in hand (model.cueInHand).)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hooks, 0.7.0 item 46: the tip picture's spoken value, band status and actions
 //          come from TipAccessActions, and the power value adds the lesson's band, TableWords.powerBandLine.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, item 57: the power readout, its spoken value and the
+//          help's ball speed are worked out for the cue the game picked (model.cueInHand), the cue the help names.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -220,7 +222,7 @@ struct PowerGauge: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("Power").font(Theme.label).foregroundStyle(.secondary)
                 Spacer(minLength: 4)
-                Text(StrokeWords.readout(power: model.activePower, racked: model.racked))
+                Text(StrokeWords.readout(power: model.activePower, racked: model.racked, cue: model.cueInHand))
                     .font(Theme.number)
                     .foregroundStyle(.primary)
                     .lineLimit(1)
@@ -315,7 +317,7 @@ struct PowerGauge: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
         // The lesson's power band, when one is marked, after the value (access stream hook, 0.7.0 item 46).
-        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm))"),
+        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm, cue: model.cueInHand))"),
                                               TableWords.powerBandLine(model, zones: zones)))
         .accessibilityAdjustableAction { direction in
             // A tenth of the bar per swipe, or the lesson band's finer step while one is up (see tapStep).
@@ -326,7 +328,7 @@ struct PowerGauge: View {
             @unknown default: break
             }
         }
-        .help(Text(verbatim: StrokeWords.ballReadout(power: model.activePower, racked: model.racked) + " · "
+        .help(Text(verbatim: StrokeWords.ballReadout(power: model.activePower, racked: model.racked, cue: model.cueInHand) + " · "
                    + String(localized: "Cue: \(model.cueInHand.name). Pull back from the cue ball on the table, or drag here.")))
         .disabled(!open.contains(.power))
         .lockedForStep(!open.contains(.power))

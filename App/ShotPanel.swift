@@ -352,7 +352,7 @@ private struct FineControls: View {
                         aimRow.disabled(!open.contains(.aim)).lockedForStep(!open.contains(.aim))
                     }
                     SliderRow(label: "Power", value: Binding(get: { model.activePower }, set: { model.activePower = $0 }),
-                              range: model.powerRange, readout: StrokeWords.ballReadout(power: model.activePower, racked: model.racked))
+                              range: model.powerRange, readout: StrokeWords.ballReadout(power: model.activePower, racked: model.racked, cue: model.cueInHand))
                         .disabled(!open.contains(.power)).lockedForStep(!open.contains(.power))
                     // The bridge's length: read here, set on the table by a resting second finger, or here with the
                     // slider (item 5). The rest fixes its own length, so the slider waits while the rest is in use.
