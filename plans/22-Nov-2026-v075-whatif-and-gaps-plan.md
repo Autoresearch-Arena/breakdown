@@ -356,6 +356,12 @@ New Stream: polish
 - P3. On the five-pin table the pins and castle are nearly invisible from the playing camera. Visual only, physics untouched (never change pin radius, positions or anything in parameters): give the pins a brighter, higher-contrast look (white with a clear red for the red pin) and paint a faint castle mark on the cloth under them (a thin ring and the five spot marks, cloth-toned a little lighter), so the target reads on a phone from the default camera. Keep it calm; no glow, no orange.
 - P4. Trick-shot gallery thumbnails read as a thin empty outline on a phone. Make each thumbnail a small table: the bed filled with the cloth's green at low brightness, the six pockets as dark dots, the balls at their start as filled discs in their own colours (cue ball white), and the path strokes a little thicker. Keep the same size and accessibility label.
 
+- Polish also owns BreakdownTests/ShotHighlightJudgeTests.swift (P1 changes .drawBack; keep every trick-kind expectation passing, add the no-score cases there or in HighlightNoiseTests).
+
+Coordinator, after the merge (not a stream): one saved game per game kind. Today starting bumper pool wipes a five-pin match in progress ("A new game ends it for good"). MatchMode saves to match-<kind>.json (the old match.json is read as its own kind once and renamed); savedSummary() and Continue use the most recent save; starting a game asks to replace only when that same game has a save; the Play list and Tables pages name each table's saved game. Done by the coordinator after all streams merge, because it crosses MatchMode, TableGamePage (match-ui), ShowpieceModel, TitleScreen (model-flow) and MacChrome (layouts).
+
+Dropped by the coordinator: the few seconds of black before the menu on a cold launch in the simulator. The simulator renders in software and builds the scene slower than a phone; the startup log marks (StartupLog) are the place to look if the Boss sees it on his phone.
+
 6. FIRST-MINUTE CHECK
 
 This release does change the first minute, only by taking things away:
