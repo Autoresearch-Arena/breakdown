@@ -344,16 +344,18 @@ enum TableWords {
         return String(localized: "\(amount(along)) diamonds from \(railPhrase(endRail)) and \(amount(across)) diamonds from \(railPhrase(sideRail))")
     }
 
-    /// Where a point is on any table. The pool table keeps its pockets and diamonds; a small table has no diamonds, so
-    /// a point is placed by the nearest hole, cup, peg, pin or bumper when one is within `nearPocketWidths`
-    /// ball-widths, and otherwise in ball-widths from the nearer end and side cushions (a ball-width is the unit a
-    /// player can measure by eye on any table). `excluding` leaves one fixed thing out, so a hole's own element is
-    /// placed by its neighbours and the cushions, never as "right beside" itself.
-    static func place(_ p: Vec2, table: TableSpec, kind: TableKind, excluding: Feature.Kind? = nil) -> String {
-        guard kind != .standard else { return place(p, table: table) }
+    /// Where a point is on a small table, as a whole sentence (the pool table's place is a phrase; use the pool
+    /// `place` there). A small table has no diamonds, so a point is placed by the nearest hole, cup, peg, pin or
+    /// bumper when one is within `nearPocketWidths` ball-widths ("The 200 hole is about 2 ball-widths away."), and
+    /// otherwise in ball-widths from the nearer end and side cushions (a ball-width is the unit a player can measure by
+    /// eye on any table). The fixed thing is the sentence's subject on purpose: its name then never has to bend after
+    /// a preposition, which in many of the game's languages would change with each thing's gender and case.
+    /// `excluding` leaves one fixed thing out, so a hole's own element is placed by its neighbours and the cushions,
+    /// never as "right beside" itself.
+    static func placeSentence(_ p: Vec2, table: TableSpec, kind: TableKind, excluding: Feature.Kind? = nil) -> String {
         let r = table.ballRadius
         let width = 2 * r
-        // 1. Beside a fixed thing: measured from its edge, so a ball touching a peg reads "right beside the black peg".
+        // 1. Beside a fixed thing: measured from its edge, so a ball touching a peg reads "right beside" it.
         var nearest: (feature: Feature, gap: Double)?
         for f in features(of: table, kind: kind) where f.kind != excluding {
             let edge: Double
@@ -366,8 +368,8 @@ enum TableWords {
             if nearest == nil || gap < nearest!.gap { nearest = (f, gap) }
         }
         if let n = nearest, n.gap <= nearPocketWidths {
-            if n.gap < 0.5 { return String(localized: "right beside \(n.feature.phrase)") }
-            return String(localized: "about \(amount(n.gap)) ball-widths from \(n.feature.phrase)")
+            if n.gap < 0.5 { return capitalized(String(localized: "\(n.feature.phrase) is right beside it.")) }
+            return capitalized(String(localized: "\(n.feature.phrase) is about \(amount(n.gap)) ball-widths away."))
         }
         // 2. Ball-widths from the nearer end cushion and the nearer side cushion, edge to cushion.
         let fromNear = p.x <= table.length / 2
@@ -377,12 +379,12 @@ enum TableWords {
         let toEnd = max(0, (fromNear ? p.x : table.length - p.x) - r) / width
         let toSide = max(0, (fromRight ? p.y : table.width - p.y) - r) / width
         if toSide <= againstRailWidths {
-            return String(localized: "against \(railPhrase(sideRail, kind: kind)), \(amount(toEnd)) ball-widths from \(railPhrase(endRail, kind: kind))")
+            return String(localized: "It is against \(railPhrase(sideRail, kind: kind)), \(amount(toEnd)) ball-widths from \(railPhrase(endRail, kind: kind)).")
         }
         if toEnd <= againstRailWidths {
-            return String(localized: "against \(railPhrase(endRail, kind: kind)), \(amount(toSide)) ball-widths from \(railPhrase(sideRail, kind: kind))")
+            return String(localized: "It is against \(railPhrase(endRail, kind: kind)), \(amount(toSide)) ball-widths from \(railPhrase(sideRail, kind: kind)).")
         }
-        return String(localized: "\(amount(toEnd)) ball-widths from \(railPhrase(endRail, kind: kind)) and \(amount(toSide)) from \(railPhrase(sideRail, kind: kind))")
+        return String(localized: "It is \(amount(toEnd)) ball-widths from \(railPhrase(endRail, kind: kind)) and \(amount(toSide)) from \(railPhrase(sideRail, kind: kind)).")
     }
 
     /// An object ball's element value: where it is, then what blocks the straight line from the cue ball to it
@@ -390,20 +392,22 @@ enum TableWords {
     static func ballValue(_ ball: Int, cueBall: Int = 0, layout: [Vec2], table: TableSpec,
                           kind: TableKind = .standard) -> String {
         guard layout.indices.contains(ball) else { return "" }
-        let spot = place(layout[ball], table: table, kind: kind)
+        let pool = kind == .standard
+        let spot = pool ? place(layout[ball], table: table) : placeSentence(layout[ball], table: table, kind: kind)
         guard ball != cueBall, layout.indices.contains(cueBall), NextShot.isOnTable(layout[cueBall]) else { return spot }
         let others = layout.indices.filter { $0 != ball && $0 != cueBall && NextShot.isOnTable(layout[$0]) }
         // A line from the cue ball's centre to this ball's centre, blocked by any ball within a ball's width of it.
         let blocking = TableLines.blockers(from: layout[cueBall], to: layout[ball], past: others, in: layout,
                                            radius: table.ballRadius)
         guard let first = blocking.first else { return spot }
-        if kind == .standard {
+        if pool {
             let blocker = ballName(first, cueBall: cueBall)
             return spot + ". " + capitalized(String(localized: "\(blocker) is in the way from the cue ball."))
         }
+        // The small tables' place is already a sentence.
         let blocker = ballName(first, cueBall: cueBall, table: kind)
         let striker = ballName(cueBall, cueBall: cueBall, table: kind)
-        return spot + ". " + capitalized(String(localized: "\(blocker) is in the way from \(striker)."))
+        return spot + " " + String(localized: "In the way from \(striker): \(blocker).")
     }
 
     /// One line for the whole table: how many balls are on it.
@@ -433,10 +437,11 @@ enum TableWords {
         let mover = kind == .standard ? String(localized: "the cue ball") : ballName(striker, cueBall: striker, table: kind)
         if let met = firstFeature(from: origin, direction: direction, table: table, kind: kind, pinsDown: pinsDown),
            met.distance < toHit, met.distance < toWall {
+            // The thing is named after a colon, never after a preposition (see placeSentence).
             if case .hole = met.feature.kind {
-                return capitalized(String(localized: "\(mover) drops into \(met.feature.phrase) first."))
+                return String(localized: "First in its path: \(met.feature.phrase), and it drops in.")
             }
-            return capitalized(String(localized: "\(mover) runs into \(met.feature.phrase) first."))
+            return String(localized: "First in its path: \(met.feature.phrase).")
         }
         guard let hit, toHit <= toWall + 1e-9 else {
             let rail = TableLines.heading(from: origin, direction: direction, table: table, window: 0)
@@ -484,10 +489,10 @@ enum TableWords {
             let toWall = AimGeometry.cushionDistance(from: from, direction: direction, table: table)
             if let met = firstFeature(from: from, direction: direction, table: table, kind: kind, pinsDown: pinsDown),
                met.distance < toWall {
-                return String(localized: "It heads for \(met.feature.phrase).")
+                return String(localized: "Next in its path: \(met.feature.phrase).")
             }
             if case .rail(let k) = TableLines.heading(from: from, direction: direction, table: table) {
-                return String(localized: "It heads for \(railPhrase(k, kind: kind)).")
+                return String(localized: "Next in its path: \(railPhrase(k, kind: kind)).")
             }
             return ""
         }
@@ -575,8 +580,9 @@ enum TableWords {
             let names = drops.map { name($0.ball) }.formatted(.list(type: .and))
             out.append(String(localized: "\(drops.count) balls dropped: \(names)."))
         } else {
+            // The hole after a colon, never after a preposition (see placeSentence).
             for d in drops {
-                out.append(capitalized(String(localized: "\(name(d.ball)) dropped in \(holePhrase(d.pocket, table: table, kind: kind)).")))
+                out.append(capitalized(String(localized: "\(name(d.ball)) dropped: \(holePhrase(d.pocket, table: table, kind: kind)).")))
             }
         }
         if !facts.pinsDown.isEmpty {
@@ -584,11 +590,12 @@ enum TableWords {
                                              : String(localized: "\(facts.pinsDown.count) pins down."))
         }
         if let k = facts.pocket(of: cueBall) {
-            out.append(capitalized(String(localized: "\(striker) went in \(holePhrase(k, table: table, kind: kind)).")))
+            out.append(capitalized(String(localized: "\(striker) dropped: \(holePhrase(k, table: table, kind: kind)).")))
         } else if facts.cueBallOffTable {
             out.append(capitalized(String(localized: "\(striker) left the table.")))
         } else if facts.resting.indices.contains(cueBall), ShotFacts.isOnTable(facts.resting[cueBall]) {
-            out.append(capitalized(String(localized: "\(striker) came to rest \(place(facts.resting[cueBall], table: table, kind: kind)).")))
+            out.append(capitalized(String(localized: "\(striker) came to rest.")))
+            out.append(placeSentence(facts.resting[cueBall], table: table, kind: kind))
         }
         return out.joined(separator: " ")
     }

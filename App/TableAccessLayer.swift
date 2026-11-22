@@ -575,7 +575,7 @@ struct TableAccessLayer: View {
         case .post:
             break
         }
-        parts.append(TableWords.capitalized(TableWords.place(f.centre, table: table, kind: kind, excluding: f.kind)))
+        parts.append(TableWords.placeSentence(f.centre, table: table, kind: kind, excluding: f.kind))
         return parts.joined(separator: " ")
     }
 

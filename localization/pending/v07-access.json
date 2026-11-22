@@ -1,0 +1,7174 @@
+{
+  "keys": [
+    "Left stick",
+    "Turns the aim. Push further to turn faster.",
+    "Triggers",
+    "Right trigger swings harder, left trigger softer.",
+    "Right stick",
+    "Moves the tip on the cue ball: follow, draw and side.",
+    "A button",
+    "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+    "B button",
+    "Skips to where the balls stop.",
+    "X button",
+    "Turns the Physics Lens on or off.",
+    "Y button",
+    "Opens or closes Your shot.",
+    "D-pad",
+    "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+    "Shoulder buttons",
+    "Step through the explained moments of the shot, forwards or back.",
+    "Menu button",
+    "Opens the menu.",
+    "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+    "Up a little",
+    "Down a little",
+    "Left a little",
+    "Right a little",
+    "Into the marked band",
+    "Zoom in on the cue ball",
+    "Zoom out",
+    "Zoomed out.",
+    "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+    "Zoomed in on the cue ball.",
+    "Your cup: sink your balls here.",
+    "The other side's cup.",
+    "Knocked down.",
+    "Aims straight at it",
+    "the marked red",
+    "the marked white",
+    "a red",
+    "%@, the ball you strike",
+    "the near cushion",
+    "the far cushion",
+    "the right cushion",
+    "the left cushion",
+    "%lld hole",
+    "the %lld hole",
+    "Near cup",
+    "Far cup",
+    "the near cup",
+    "the far cup",
+    "Hole",
+    "Black peg",
+    "the black peg",
+    "White peg, left",
+    "White peg, right",
+    "the left white peg",
+    "the right white peg",
+    "Red pin",
+    "the red pin",
+    "White pin, near",
+    "White pin, far",
+    "the near white pin",
+    "the far white pin",
+    "White pin, left",
+    "White pin, right",
+    "the left white pin",
+    "the right white pin",
+    "Pin",
+    "a pin",
+    "Bumper",
+    "a bumper",
+    "%@ is right beside it.",
+    "%@ is about %@ ball-widths away.",
+    "It is against %@, %@ ball-widths from %@.",
+    "It is %@ ball-widths from %@ and %@ from %@.",
+    "In the way from %@: %@.",
+    "First in its path: %@, and it drops in.",
+    "First in its path: %@.",
+    "Next in its path: %@.",
+    "%@ hits no ball and runs to %@.",
+    "%@ hits no ball.",
+    "%@ hit %@ first.",
+    "%@ hit no ball.",
+    "%@ dropped: %@.",
+    "%lld pegs down.",
+    "%@ left the table.",
+    "%@ came to rest.",
+    "%@ millimetres above centre",
+    "%@ millimetres below centre",
+    "%@ millimetres right of centre",
+    "%@ millimetres left of centre",
+    "a little above centre",
+    "halfway up",
+    "well above centre",
+    "a little below centre",
+    "halfway down",
+    "well below centre",
+    "%@, %@ millimetres",
+    "a little right of centre",
+    "halfway to the right",
+    "well to the right",
+    "a little left of centre",
+    "halfway to the left",
+    "well to the left",
+    "Centre of the cue ball",
+    "Height inside the marked band.",
+    "Raise the tip %@ millimetres to reach the marked band.",
+    "Lower the tip %@ millimetres to reach the marked band.",
+    "Side inside the marked band.",
+    "Move the tip %@ millimetres right to reach the marked band.",
+    "Move the tip %@ millimetres left to reach the marked band.",
+    "Inside the marked band.",
+    "Add %@ percent to reach the marked band.",
+    "Take off %@ percent to reach the marked band.",
+    "Inside the marked fan.",
+    "Turn the aim %@ degrees left to reach the marked fan.",
+    "Turn the aim %@ degrees right to reach the marked fan.",
+    "Inside the marked angles.",
+    "The marked angles are %lld to %lld degrees up.",
+    "%@, marked",
+    "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+    "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+    "The band runs from %@ to %@.",
+    "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+    "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+    "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+    "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+    "Every control is open now. Each one still says whether it is inside its band.",
+    "The marked circle for the cue ball is %@."
+  ],
+  "translations": [
+    {
+      "culture": "es",
+      "key": "Left stick",
+      "text": "Stick izquierdo"
+    },
+    {
+      "culture": "fr",
+      "key": "Left stick",
+      "text": "Stick gauche"
+    },
+    {
+      "culture": "de",
+      "key": "Left stick",
+      "text": "Linker Stick"
+    },
+    {
+      "culture": "it",
+      "key": "Left stick",
+      "text": "Levetta sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "Left stick",
+      "text": "Manípulo esquerdo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Left stick",
+      "text": "Analógico esquerdo"
+    },
+    {
+      "culture": "ja",
+      "key": "Left stick",
+      "text": "左スティック"
+    },
+    {
+      "culture": "ko",
+      "key": "Left stick",
+      "text": "왼쪽 스틱"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Left stick",
+      "text": "左摇杆"
+    },
+    {
+      "culture": "ru",
+      "key": "Left stick",
+      "text": "Левый стик"
+    },
+    {
+      "culture": "ar",
+      "key": "Left stick",
+      "text": "العصا اليسرى"
+    },
+    {
+      "culture": "es",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Gira la puntería. Empuja más para girar más rápido."
+    },
+    {
+      "culture": "fr",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Tourne la visée. Pousse plus loin pour tourner plus vite."
+    },
+    {
+      "culture": "de",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Dreht das Ziel. Weiter drücken dreht schneller."
+    },
+    {
+      "culture": "it",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Ruota la mira. Spingi di più per ruotare più in fretta."
+    },
+    {
+      "culture": "pt",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Roda a mira. Empurra mais para rodar mais depressa."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Gira a mira. Empurre mais para girar mais rápido."
+    },
+    {
+      "culture": "ja",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "狙いを回します。深く倒すほど速く回ります。"
+    },
+    {
+      "culture": "ko",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "조준을 돌려요. 더 밀수록 빨리 돌아요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "转动瞄准。推得越远转得越快。"
+    },
+    {
+      "culture": "ru",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "Поворачивает прицел. Чем сильнее наклонишь, тем быстрее."
+    },
+    {
+      "culture": "ar",
+      "key": "Turns the aim. Push further to turn faster.",
+      "text": "يدير التصويب. ادفعها أكثر ليدور أسرع."
+    },
+    {
+      "culture": "es",
+      "key": "Triggers",
+      "text": "Gatillos"
+    },
+    {
+      "culture": "fr",
+      "key": "Triggers",
+      "text": "Gâchettes"
+    },
+    {
+      "culture": "de",
+      "key": "Triggers",
+      "text": "Trigger"
+    },
+    {
+      "culture": "it",
+      "key": "Triggers",
+      "text": "Grilletti"
+    },
+    {
+      "culture": "pt",
+      "key": "Triggers",
+      "text": "Gatilhos"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Triggers",
+      "text": "Gatilhos"
+    },
+    {
+      "culture": "ja",
+      "key": "Triggers",
+      "text": "トリガー"
+    },
+    {
+      "culture": "ko",
+      "key": "Triggers",
+      "text": "트리거"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Triggers",
+      "text": "扳机键"
+    },
+    {
+      "culture": "ru",
+      "key": "Triggers",
+      "text": "Курки"
+    },
+    {
+      "culture": "ar",
+      "key": "Triggers",
+      "text": "الزنادان"
+    },
+    {
+      "culture": "es",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "El gatillo derecho da un golpe más fuerte; el izquierdo, más suave."
+    },
+    {
+      "culture": "fr",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "La gâchette droite frappe plus fort, la gauche plus doucement."
+    },
+    {
+      "culture": "de",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "Rechter Trigger: härter ausholen, linker: sanfter."
+    },
+    {
+      "culture": "it",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "Il grilletto destro dà un colpo più forte, il sinistro più morbido."
+    },
+    {
+      "culture": "pt",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "O gatilho direito dá uma tacada mais forte, o esquerdo mais suave."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "O gatilho direito dá uma tacada mais forte, o esquerdo mais suave."
+    },
+    {
+      "culture": "ja",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "右トリガーで強く、左トリガーで弱く振ります。"
+    },
+    {
+      "culture": "ko",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "오른쪽 트리거는 더 세게, 왼쪽 트리거는 더 약하게 쳐요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "右扳机挥杆更重，左扳机更轻。"
+    },
+    {
+      "culture": "ru",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "Правый курок — замах сильнее, левый — мягче."
+    },
+    {
+      "culture": "ar",
+      "key": "Right trigger swings harder, left trigger softer.",
+      "text": "الزناد الأيمن يجعل الضربة أقوى، والأيسر أخف."
+    },
+    {
+      "culture": "es",
+      "key": "Right stick",
+      "text": "Stick derecho"
+    },
+    {
+      "culture": "fr",
+      "key": "Right stick",
+      "text": "Stick droit"
+    },
+    {
+      "culture": "de",
+      "key": "Right stick",
+      "text": "Rechter Stick"
+    },
+    {
+      "culture": "it",
+      "key": "Right stick",
+      "text": "Levetta destra"
+    },
+    {
+      "culture": "pt",
+      "key": "Right stick",
+      "text": "Manípulo direito"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Right stick",
+      "text": "Analógico direito"
+    },
+    {
+      "culture": "ja",
+      "key": "Right stick",
+      "text": "右スティック"
+    },
+    {
+      "culture": "ko",
+      "key": "Right stick",
+      "text": "오른쪽 스틱"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Right stick",
+      "text": "右摇杆"
+    },
+    {
+      "culture": "ru",
+      "key": "Right stick",
+      "text": "Правый стик"
+    },
+    {
+      "culture": "ar",
+      "key": "Right stick",
+      "text": "العصا اليمنى"
+    },
+    {
+      "culture": "es",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Mueve la punta sobre la bola blanca: avance, retroceso y efecto lateral."
+    },
+    {
+      "culture": "fr",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Déplace la pointe sur la bille blanche : avant, rétro et effet latéral."
+    },
+    {
+      "culture": "de",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Bewegt die Spitze auf der weißen Kugel: Nachlauf, Rückzug und Seitendrall."
+    },
+    {
+      "culture": "it",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Sposta la punta sulla palla bianca: avanti, indietro ed effetto laterale."
+    },
+    {
+      "culture": "pt",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Move a ponta na bola branca: avanço, recuo e efeito lateral."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Move a ponta na bola branca: avanço, recuo e efeito lateral."
+    },
+    {
+      "culture": "ja",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "手球上の先端の位置を動かします：フォロー、ドロー、横回転。"
+    },
+    {
+      "culture": "ko",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "큐볼 위 팁 위치를 옮겨요: 밀어치기, 끌어치기, 옆 회전."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "移动杆头在白球上的位置：高杆、低杆和侧旋。"
+    },
+    {
+      "culture": "ru",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "Двигает точку удара по белому шару: накат, оттяжка и боковое вращение."
+    },
+    {
+      "culture": "ar",
+      "key": "Moves the tip on the cue ball: follow, draw and side.",
+      "text": "يحرّك موضع الرأس على الكرة البيضاء: دفع وسحب ولف جانبي."
+    },
+    {
+      "culture": "es",
+      "key": "A button",
+      "text": "Botón A"
+    },
+    {
+      "culture": "fr",
+      "key": "A button",
+      "text": "Bouton A"
+    },
+    {
+      "culture": "de",
+      "key": "A button",
+      "text": "A-Taste"
+    },
+    {
+      "culture": "it",
+      "key": "A button",
+      "text": "Tasto A"
+    },
+    {
+      "culture": "pt",
+      "key": "A button",
+      "text": "Botão A"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "A button",
+      "text": "Botão A"
+    },
+    {
+      "culture": "ja",
+      "key": "A button",
+      "text": "Aボタン"
+    },
+    {
+      "culture": "ko",
+      "key": "A button",
+      "text": "A 버튼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "A button",
+      "text": "A 键"
+    },
+    {
+      "culture": "ru",
+      "key": "A button",
+      "text": "Кнопка A"
+    },
+    {
+      "culture": "ar",
+      "key": "A button",
+      "text": "الزر A"
+    },
+    {
+      "culture": "es",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Pulsa el botón principal de la tarjeta en pantalla. Sin tarjeta, tira mientras Tu tiro está abierto y lo abre cuando está cerrado."
+    },
+    {
+      "culture": "fr",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Appuie sur le bouton principal de la carte à l'écran. Sans carte, il tire quand Ton coup est ouvert et l'ouvre quand il est fermé."
+    },
+    {
+      "culture": "de",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Drückt die Haupttaste der Karte auf dem Bildschirm. Ohne Karte wird gestoßen, solange Dein Stoß offen ist; sonst öffnet sie Dein Stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Preme il pulsante principale della scheda sullo schermo. Senza schede, tira quando Il tuo tiro è aperto e lo apre quando è chiuso."
+    },
+    {
+      "culture": "pt",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Carrega no botão principal do cartão no ecrã. Sem cartão, taca enquanto A tua tacada está aberta e abre-a quando está fechada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Aperta o botão principal do cartão na tela. Sem cartão, taca enquanto Sua tacada está aberta e a abre quando está fechada."
+    },
+    {
+      "culture": "ja",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "画面に出ているカードのメインボタンを押します。カードがないときは、「あなたのショット」が開いていればショットし、閉じていれば開きます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "화면에 뜬 카드의 주 버튼을 눌러요. 카드가 없으면 내 샷이 열려 있을 때 샷을 하고, 닫혀 있으면 열어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "按下屏幕上卡片的主按钮。没有卡片时，若“你的击球”已打开则击球，关闭时则打开它。"
+    },
+    {
+      "culture": "ru",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "Нажимает главную кнопку карточки на экране. Если карточки нет: бьёт, когда открыт «Твой удар», и открывает его, когда он закрыт."
+    },
+    {
+      "culture": "ar",
+      "key": "Presses the main button of the card on screen. With no card up, it shoots while Your shot is open and opens it when it is closed.",
+      "text": "يضغط الزر الرئيسي للبطاقة الظاهرة. وإن لم تظهر بطاقة، يضرب حين تكون «ضربتك» مفتوحة، ويفتحها حين تكون مغلقة."
+    },
+    {
+      "culture": "es",
+      "key": "B button",
+      "text": "Botón B"
+    },
+    {
+      "culture": "fr",
+      "key": "B button",
+      "text": "Bouton B"
+    },
+    {
+      "culture": "de",
+      "key": "B button",
+      "text": "B-Taste"
+    },
+    {
+      "culture": "it",
+      "key": "B button",
+      "text": "Tasto B"
+    },
+    {
+      "culture": "pt",
+      "key": "B button",
+      "text": "Botão B"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "B button",
+      "text": "Botão B"
+    },
+    {
+      "culture": "ja",
+      "key": "B button",
+      "text": "Bボタン"
+    },
+    {
+      "culture": "ko",
+      "key": "B button",
+      "text": "B 버튼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "B button",
+      "text": "B 键"
+    },
+    {
+      "culture": "ru",
+      "key": "B button",
+      "text": "Кнопка B"
+    },
+    {
+      "culture": "ar",
+      "key": "B button",
+      "text": "الزر B"
+    },
+    {
+      "culture": "es",
+      "key": "Skips to where the balls stop.",
+      "text": "Salta al momento en que se paran las bolas."
+    },
+    {
+      "culture": "fr",
+      "key": "Skips to where the balls stop.",
+      "text": "Saute jusqu'à l'arrêt des billes."
+    },
+    {
+      "culture": "de",
+      "key": "Skips to where the balls stop.",
+      "text": "Springt dorthin, wo die Kugeln liegen bleiben."
+    },
+    {
+      "culture": "it",
+      "key": "Skips to where the balls stop.",
+      "text": "Salta a quando le palle si fermano."
+    },
+    {
+      "culture": "pt",
+      "key": "Skips to where the balls stop.",
+      "text": "Salta para quando as bolas param."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Skips to where the balls stop.",
+      "text": "Pula para quando as bolas param."
+    },
+    {
+      "culture": "ja",
+      "key": "Skips to where the balls stop.",
+      "text": "球が止まるところまで飛ばします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Skips to where the balls stop.",
+      "text": "공이 멈추는 곳으로 건너뛰어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Skips to where the balls stop.",
+      "text": "跳到球停下的时刻。"
+    },
+    {
+      "culture": "ru",
+      "key": "Skips to where the balls stop.",
+      "text": "Перематывает до остановки шаров."
+    },
+    {
+      "culture": "ar",
+      "key": "Skips to where the balls stop.",
+      "text": "يقفز إلى حيث تتوقف الكرات."
+    },
+    {
+      "culture": "es",
+      "key": "X button",
+      "text": "Botón X"
+    },
+    {
+      "culture": "fr",
+      "key": "X button",
+      "text": "Bouton X"
+    },
+    {
+      "culture": "de",
+      "key": "X button",
+      "text": "X-Taste"
+    },
+    {
+      "culture": "it",
+      "key": "X button",
+      "text": "Tasto X"
+    },
+    {
+      "culture": "pt",
+      "key": "X button",
+      "text": "Botão X"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "X button",
+      "text": "Botão X"
+    },
+    {
+      "culture": "ja",
+      "key": "X button",
+      "text": "Xボタン"
+    },
+    {
+      "culture": "ko",
+      "key": "X button",
+      "text": "X 버튼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "X button",
+      "text": "X 键"
+    },
+    {
+      "culture": "ru",
+      "key": "X button",
+      "text": "Кнопка X"
+    },
+    {
+      "culture": "ar",
+      "key": "X button",
+      "text": "الزر X"
+    },
+    {
+      "culture": "es",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Activa o desactiva la lente de física."
+    },
+    {
+      "culture": "fr",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Active ou désactive la Lentille physique."
+    },
+    {
+      "culture": "de",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Schaltet die Physik-Lens ein oder aus."
+    },
+    {
+      "culture": "it",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Attiva o disattiva la Lens di fisica."
+    },
+    {
+      "culture": "pt",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Liga ou desliga a Lente de Física."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Liga ou desliga a Lente de Física."
+    },
+    {
+      "culture": "ja",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "物理レンズのオン・オフを切り替えます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "물리 렌즈를 켜거나 꺼요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "打开或关闭物理透镜。"
+    },
+    {
+      "culture": "ru",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "Включает и выключает «Физическую линзу»."
+    },
+    {
+      "culture": "ar",
+      "key": "Turns the Physics Lens on or off.",
+      "text": "يشغّل عدسة الفيزياء أو يوقفها."
+    },
+    {
+      "culture": "es",
+      "key": "Y button",
+      "text": "Botón Y"
+    },
+    {
+      "culture": "fr",
+      "key": "Y button",
+      "text": "Bouton Y"
+    },
+    {
+      "culture": "de",
+      "key": "Y button",
+      "text": "Y-Taste"
+    },
+    {
+      "culture": "it",
+      "key": "Y button",
+      "text": "Tasto Y"
+    },
+    {
+      "culture": "pt",
+      "key": "Y button",
+      "text": "Botão Y"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Y button",
+      "text": "Botão Y"
+    },
+    {
+      "culture": "ja",
+      "key": "Y button",
+      "text": "Yボタン"
+    },
+    {
+      "culture": "ko",
+      "key": "Y button",
+      "text": "Y 버튼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Y button",
+      "text": "Y 键"
+    },
+    {
+      "culture": "ru",
+      "key": "Y button",
+      "text": "Кнопка Y"
+    },
+    {
+      "culture": "ar",
+      "key": "Y button",
+      "text": "الزر Y"
+    },
+    {
+      "culture": "es",
+      "key": "Opens or closes Your shot.",
+      "text": "Abre o cierra Tu tiro."
+    },
+    {
+      "culture": "fr",
+      "key": "Opens or closes Your shot.",
+      "text": "Ouvre ou ferme Ton coup."
+    },
+    {
+      "culture": "de",
+      "key": "Opens or closes Your shot.",
+      "text": "Öffnet oder schließt Dein Stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Opens or closes Your shot.",
+      "text": "Apre o chiude Il tuo tiro."
+    },
+    {
+      "culture": "pt",
+      "key": "Opens or closes Your shot.",
+      "text": "Abre ou fecha A tua tacada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Opens or closes Your shot.",
+      "text": "Abre ou fecha Sua tacada."
+    },
+    {
+      "culture": "ja",
+      "key": "Opens or closes Your shot.",
+      "text": "「あなたのショット」を開閉します。"
+    },
+    {
+      "culture": "ko",
+      "key": "Opens or closes Your shot.",
+      "text": "내 샷을 열거나 닫아요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Opens or closes Your shot.",
+      "text": "打开或关闭“你的击球”。"
+    },
+    {
+      "culture": "ru",
+      "key": "Opens or closes Your shot.",
+      "text": "Открывает и закрывает «Твой удар»."
+    },
+    {
+      "culture": "ar",
+      "key": "Opens or closes Your shot.",
+      "text": "يفتح «ضربتك» أو يغلقها."
+    },
+    {
+      "culture": "es",
+      "key": "D-pad",
+      "text": "Cruceta"
+    },
+    {
+      "culture": "fr",
+      "key": "D-pad",
+      "text": "Croix directionnelle"
+    },
+    {
+      "culture": "de",
+      "key": "D-pad",
+      "text": "Steuerkreuz"
+    },
+    {
+      "culture": "it",
+      "key": "D-pad",
+      "text": "Croce direzionale"
+    },
+    {
+      "culture": "pt",
+      "key": "D-pad",
+      "text": "Botões direcionais"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "D-pad",
+      "text": "Direcional"
+    },
+    {
+      "culture": "ja",
+      "key": "D-pad",
+      "text": "方向パッド"
+    },
+    {
+      "culture": "ko",
+      "key": "D-pad",
+      "text": "방향 패드"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "D-pad",
+      "text": "方向键"
+    },
+    {
+      "culture": "ru",
+      "key": "D-pad",
+      "text": "Крестовина"
+    },
+    {
+      "culture": "ar",
+      "key": "D-pad",
+      "text": "لوحة الاتجاهات"
+    },
+    {
+      "culture": "es",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Mueve la bola en mano. En la bola 8, izquierda y derecha eligen la bola que cantas, y arriba y abajo la tronera. Si no, izquierda y derecha giran la puntería con precisión, y arriba y abajo suben o bajan el taco."
+    },
+    {
+      "culture": "fr",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Déplace la bille en main. Au jeu de la 8, gauche et droite choisissent la bille à annoncer, haut et bas la poche. Sinon, gauche et droite affinent la visée, haut et bas lèvent ou baissent la queue."
+    },
+    {
+      "culture": "de",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Bewegt den Ball in der Hand. Beim 8-Ball wählen links und rechts die anzusagende Kugel, oben und unten die Tasche. Sonst drehen links und rechts das Ziel fein, oben und unten heben oder senken das Queue."
+    },
+    {
+      "culture": "it",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Sposta la palla in mano. Nella palla 8, sinistra e destra scelgono la palla da chiamare, su e giù la buca. Altrimenti sinistra e destra regolano la mira di fino, su e giù alzano o abbassano la stecca."
+    },
+    {
+      "culture": "pt",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Move a bola na mão. Na bola 8, esquerda e direita escolhem a bola a cantar, cima e baixo o bolso. Caso contrário, esquerda e direita afinam a mira, cima e baixo levantam ou baixam o taco."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Move a bola na mão. Na bola 8, esquerda e direita escolhem a bola a cantar, cima e baixo a caçapa. Fora isso, esquerda e direita ajustam a mira com precisão, cima e baixo levantam ou abaixam o taco."
+    },
+    {
+      "culture": "ja",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "ボールインハンドの球を動かします。エイトボールでは、左右でコールする球を、上下でポケットを選びます。それ以外では、左右で狙いを細かく回し、上下でキューを上げ下げします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "볼 인 핸드 공을 옮겨요. 에잇볼에서는 좌우로 콜할 공을, 위아래로 포켓을 골라요. 그 밖에는 좌우로 조준을 미세하게 돌리고, 위아래로 큐를 올리거나 내려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "移动自由球。在八球中，左右选择要叫的球，上下选择袋口。其他时候，左右微调瞄准，上下抬高或放低球杆。"
+    },
+    {
+      "culture": "ru",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "Двигает шар с руки. В восьмёрке влево-вправо выбирают шар для заказа, вверх-вниз — лузу. В остальное время влево-вправо точно поворачивают прицел, вверх-вниз поднимают и опускают кий."
+    },
+    {
+      "culture": "ar",
+      "key": "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.",
+      "text": "يحرّك الكرة في اليد. في لعبة الكرة 8، يختار اليمين واليسار الكرة التي تعلنها، والأعلى والأسفل الجيب. وفي غير ذلك، يدير اليمين واليسار التصويب بدقة، ويرفع الأعلى والأسفل العصا أو يخفضانها."
+    },
+    {
+      "culture": "es",
+      "key": "Shoulder buttons",
+      "text": "Botones superiores"
+    },
+    {
+      "culture": "fr",
+      "key": "Shoulder buttons",
+      "text": "Boutons de tranche"
+    },
+    {
+      "culture": "de",
+      "key": "Shoulder buttons",
+      "text": "Schultertasten"
+    },
+    {
+      "culture": "it",
+      "key": "Shoulder buttons",
+      "text": "Tasti dorsali"
+    },
+    {
+      "culture": "pt",
+      "key": "Shoulder buttons",
+      "text": "Botões de ombro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Shoulder buttons",
+      "text": "Botões de ombro"
+    },
+    {
+      "culture": "ja",
+      "key": "Shoulder buttons",
+      "text": "ショルダーボタン"
+    },
+    {
+      "culture": "ko",
+      "key": "Shoulder buttons",
+      "text": "숄더 버튼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Shoulder buttons",
+      "text": "肩键"
+    },
+    {
+      "culture": "ru",
+      "key": "Shoulder buttons",
+      "text": "Плечевые кнопки"
+    },
+    {
+      "culture": "ar",
+      "key": "Shoulder buttons",
+      "text": "أزرار الكتف"
+    },
+    {
+      "culture": "es",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Recorren los momentos explicados del tiro, hacia delante o hacia atrás."
+    },
+    {
+      "culture": "fr",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Parcourent les moments expliqués du coup, en avant ou en arrière."
+    },
+    {
+      "culture": "de",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Gehen die erklärten Momente des Stoßes durch, vorwärts oder zurück."
+    },
+    {
+      "culture": "it",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Scorrono i momenti spiegati del colpo, avanti o indietro."
+    },
+    {
+      "culture": "pt",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Percorrem os momentos explicados da tacada, para a frente ou para trás."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Percorrem os momentos explicados da tacada, para a frente ou para trás."
+    },
+    {
+      "culture": "ja",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "ショットの解説の場面を前後に順にたどります。"
+    },
+    {
+      "culture": "ko",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "샷의 설명 장면을 앞뒤로 넘겨요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "前后逐一浏览击球中被讲解的时刻。"
+    },
+    {
+      "culture": "ru",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "Переходят по разобранным моментам удара вперёд или назад."
+    },
+    {
+      "culture": "ar",
+      "key": "Step through the explained moments of the shot, forwards or back.",
+      "text": "تنقلك بين لحظات الضربة المشروحة، للأمام أو للخلف."
+    },
+    {
+      "culture": "es",
+      "key": "Menu button",
+      "text": "Botón de menú"
+    },
+    {
+      "culture": "fr",
+      "key": "Menu button",
+      "text": "Bouton Menu"
+    },
+    {
+      "culture": "de",
+      "key": "Menu button",
+      "text": "Menütaste"
+    },
+    {
+      "culture": "it",
+      "key": "Menu button",
+      "text": "Tasto Menu"
+    },
+    {
+      "culture": "pt",
+      "key": "Menu button",
+      "text": "Botão de menu"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Menu button",
+      "text": "Botão de menu"
+    },
+    {
+      "culture": "ja",
+      "key": "Menu button",
+      "text": "メニューボタン"
+    },
+    {
+      "culture": "ko",
+      "key": "Menu button",
+      "text": "메뉴 버튼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Menu button",
+      "text": "菜单键"
+    },
+    {
+      "culture": "ru",
+      "key": "Menu button",
+      "text": "Кнопка меню"
+    },
+    {
+      "culture": "ar",
+      "key": "Menu button",
+      "text": "زر القائمة"
+    },
+    {
+      "culture": "es",
+      "key": "Opens the menu.",
+      "text": "Abre el menú."
+    },
+    {
+      "culture": "fr",
+      "key": "Opens the menu.",
+      "text": "Ouvre le menu."
+    },
+    {
+      "culture": "de",
+      "key": "Opens the menu.",
+      "text": "Öffnet das Menü."
+    },
+    {
+      "culture": "it",
+      "key": "Opens the menu.",
+      "text": "Apre il menu."
+    },
+    {
+      "culture": "pt",
+      "key": "Opens the menu.",
+      "text": "Abre o menu."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Opens the menu.",
+      "text": "Abre o menu."
+    },
+    {
+      "culture": "ja",
+      "key": "Opens the menu.",
+      "text": "メニューを開きます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Opens the menu.",
+      "text": "메뉴를 열어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Opens the menu.",
+      "text": "打开菜单。"
+    },
+    {
+      "culture": "ru",
+      "key": "Opens the menu.",
+      "text": "Открывает меню."
+    },
+    {
+      "culture": "ar",
+      "key": "Opens the menu.",
+      "text": "يفتح القائمة."
+    },
+    {
+      "culture": "es",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Desliza arriba o abajo sobre Apuntar para girar la puntería, y sobre Potencia para fijar el golpe. Luego toca dos veces Saque."
+    },
+    {
+      "culture": "fr",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Glisse vers le haut ou le bas sur Viser pour tourner la visée, et sur Puissance pour régler l'élan. Puis touche deux fois Casse."
+    },
+    {
+      "culture": "de",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Wisch auf Zielen nach oben oder unten, um zu zielen, und auf Kraft, um den Schwung einzustellen. Dann tipp doppelt auf Break."
+    },
+    {
+      "culture": "it",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Scorri su o giù su Mira per ruotare la mira, e su Potenza per regolare il colpo. Poi tocca due volte Break."
+    },
+    {
+      "culture": "pt",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Desliza para cima ou para baixo em Mira para rodar a mira, e em Força para definir o balanço. Depois toca duas vezes em Abertura."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Deslize para cima ou para baixo em Mira para girar a mira, e em Força para definir o balanço. Depois toque duas vezes em Abertura."
+    },
+    {
+      "culture": "ja",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "「照準」で上下にスワイプして狙いを回し、「強さ」で振りを決めます。それから「ブレイク」をダブルタップします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "조준에서 위아래로 스와이프해 조준을 돌리고, 세기에서 스윙을 정해요. 그다음 브레이크를 두 번 탭하세요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "在“瞄准”上上下滑动转动瞄准，在“力度”上设定挥杆。然后连按两下“开球”。"
+    },
+    {
+      "culture": "ru",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "Проводи вверх или вниз по «Прицелу», чтобы повернуть прицел, и по «Силе», чтобы задать замах. Потом дважды коснись «Разбить»."
+    },
+    {
+      "culture": "ar",
+      "key": "Swipe up or down on Aim to turn the aim, and on Power to set the swing. Then double-tap Break.",
+      "text": "مرّر لأعلى أو لأسفل على «التصويب» لتدوير التصويب، وعلى «القوة» لضبط الضربة. ثم انقر مرتين على «افتتاح»."
+    },
+    {
+      "culture": "es",
+      "key": "Up a little",
+      "text": "Un poco arriba"
+    },
+    {
+      "culture": "fr",
+      "key": "Up a little",
+      "text": "Un peu plus haut"
+    },
+    {
+      "culture": "de",
+      "key": "Up a little",
+      "text": "Etwas höher"
+    },
+    {
+      "culture": "it",
+      "key": "Up a little",
+      "text": "Un po' più su"
+    },
+    {
+      "culture": "pt",
+      "key": "Up a little",
+      "text": "Um pouco acima"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Up a little",
+      "text": "Um pouco acima"
+    },
+    {
+      "culture": "ja",
+      "key": "Up a little",
+      "text": "少し上へ"
+    },
+    {
+      "culture": "ko",
+      "key": "Up a little",
+      "text": "조금 위로"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Up a little",
+      "text": "稍微往上"
+    },
+    {
+      "culture": "ru",
+      "key": "Up a little",
+      "text": "Чуть выше"
+    },
+    {
+      "culture": "ar",
+      "key": "Up a little",
+      "text": "أعلى قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "Down a little",
+      "text": "Un poco abajo"
+    },
+    {
+      "culture": "fr",
+      "key": "Down a little",
+      "text": "Un peu plus bas"
+    },
+    {
+      "culture": "de",
+      "key": "Down a little",
+      "text": "Etwas tiefer"
+    },
+    {
+      "culture": "it",
+      "key": "Down a little",
+      "text": "Un po' più giù"
+    },
+    {
+      "culture": "pt",
+      "key": "Down a little",
+      "text": "Um pouco abaixo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Down a little",
+      "text": "Um pouco abaixo"
+    },
+    {
+      "culture": "ja",
+      "key": "Down a little",
+      "text": "少し下へ"
+    },
+    {
+      "culture": "ko",
+      "key": "Down a little",
+      "text": "조금 아래로"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Down a little",
+      "text": "稍微往下"
+    },
+    {
+      "culture": "ru",
+      "key": "Down a little",
+      "text": "Чуть ниже"
+    },
+    {
+      "culture": "ar",
+      "key": "Down a little",
+      "text": "أسفل قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "Left a little",
+      "text": "Un poco a la izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "Left a little",
+      "text": "Un peu à gauche"
+    },
+    {
+      "culture": "de",
+      "key": "Left a little",
+      "text": "Etwas nach links"
+    },
+    {
+      "culture": "it",
+      "key": "Left a little",
+      "text": "Un po' a sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "Left a little",
+      "text": "Um pouco à esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Left a little",
+      "text": "Um pouco à esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "Left a little",
+      "text": "少し左へ"
+    },
+    {
+      "culture": "ko",
+      "key": "Left a little",
+      "text": "조금 왼쪽으로"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Left a little",
+      "text": "稍微往左"
+    },
+    {
+      "culture": "ru",
+      "key": "Left a little",
+      "text": "Чуть левее"
+    },
+    {
+      "culture": "ar",
+      "key": "Left a little",
+      "text": "يسارًا قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "Right a little",
+      "text": "Un poco a la derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "Right a little",
+      "text": "Un peu à droite"
+    },
+    {
+      "culture": "de",
+      "key": "Right a little",
+      "text": "Etwas nach rechts"
+    },
+    {
+      "culture": "it",
+      "key": "Right a little",
+      "text": "Un po' a destra"
+    },
+    {
+      "culture": "pt",
+      "key": "Right a little",
+      "text": "Um pouco à direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Right a little",
+      "text": "Um pouco à direita"
+    },
+    {
+      "culture": "ja",
+      "key": "Right a little",
+      "text": "少し右へ"
+    },
+    {
+      "culture": "ko",
+      "key": "Right a little",
+      "text": "조금 오른쪽으로"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Right a little",
+      "text": "稍微往右"
+    },
+    {
+      "culture": "ru",
+      "key": "Right a little",
+      "text": "Чуть правее"
+    },
+    {
+      "culture": "ar",
+      "key": "Right a little",
+      "text": "يمينًا قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "Into the marked band",
+      "text": "A la franja marcada"
+    },
+    {
+      "culture": "fr",
+      "key": "Into the marked band",
+      "text": "Dans la bande marquée"
+    },
+    {
+      "culture": "de",
+      "key": "Into the marked band",
+      "text": "In den markierten Bereich"
+    },
+    {
+      "culture": "it",
+      "key": "Into the marked band",
+      "text": "Nella fascia segnata"
+    },
+    {
+      "culture": "pt",
+      "key": "Into the marked band",
+      "text": "Para a faixa marcada"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Into the marked band",
+      "text": "Para a faixa marcada"
+    },
+    {
+      "culture": "ja",
+      "key": "Into the marked band",
+      "text": "マークした帯の中へ"
+    },
+    {
+      "culture": "ko",
+      "key": "Into the marked band",
+      "text": "표시된 구간 안으로"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Into the marked band",
+      "text": "移入标记区"
+    },
+    {
+      "culture": "ru",
+      "key": "Into the marked band",
+      "text": "В отмеченную полосу"
+    },
+    {
+      "culture": "ar",
+      "key": "Into the marked band",
+      "text": "إلى النطاق المحدد"
+    },
+    {
+      "culture": "es",
+      "key": "Zoom in on the cue ball",
+      "text": "Acercar a la bola blanca"
+    },
+    {
+      "culture": "fr",
+      "key": "Zoom in on the cue ball",
+      "text": "Zoomer sur la bille blanche"
+    },
+    {
+      "culture": "de",
+      "key": "Zoom in on the cue ball",
+      "text": "Auf die weiße Kugel zoomen"
+    },
+    {
+      "culture": "it",
+      "key": "Zoom in on the cue ball",
+      "text": "Ingrandisci sulla palla bianca"
+    },
+    {
+      "culture": "pt",
+      "key": "Zoom in on the cue ball",
+      "text": "Aproximar à bola branca"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Zoom in on the cue ball",
+      "text": "Aproximar na bola branca"
+    },
+    {
+      "culture": "ja",
+      "key": "Zoom in on the cue ball",
+      "text": "手球にズームイン"
+    },
+    {
+      "culture": "ko",
+      "key": "Zoom in on the cue ball",
+      "text": "큐볼 확대"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Zoom in on the cue ball",
+      "text": "放大白球"
+    },
+    {
+      "culture": "ru",
+      "key": "Zoom in on the cue ball",
+      "text": "Приблизить белый шар"
+    },
+    {
+      "culture": "ar",
+      "key": "Zoom in on the cue ball",
+      "text": "تكبير على الكرة البيضاء"
+    },
+    {
+      "culture": "es",
+      "key": "Zoom out",
+      "text": "Alejar"
+    },
+    {
+      "culture": "fr",
+      "key": "Zoom out",
+      "text": "Dézoomer"
+    },
+    {
+      "culture": "de",
+      "key": "Zoom out",
+      "text": "Herauszoomen"
+    },
+    {
+      "culture": "it",
+      "key": "Zoom out",
+      "text": "Riduci"
+    },
+    {
+      "culture": "pt",
+      "key": "Zoom out",
+      "text": "Afastar"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Zoom out",
+      "text": "Afastar"
+    },
+    {
+      "culture": "ja",
+      "key": "Zoom out",
+      "text": "ズームアウト"
+    },
+    {
+      "culture": "ko",
+      "key": "Zoom out",
+      "text": "축소"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Zoom out",
+      "text": "缩小"
+    },
+    {
+      "culture": "ru",
+      "key": "Zoom out",
+      "text": "Отдалить"
+    },
+    {
+      "culture": "ar",
+      "key": "Zoom out",
+      "text": "تصغير"
+    },
+    {
+      "culture": "es",
+      "key": "Zoomed out.",
+      "text": "Vista alejada."
+    },
+    {
+      "culture": "fr",
+      "key": "Zoomed out.",
+      "text": "Vue dézoomée."
+    },
+    {
+      "culture": "de",
+      "key": "Zoomed out.",
+      "text": "Herausgezoomt."
+    },
+    {
+      "culture": "it",
+      "key": "Zoomed out.",
+      "text": "Vista ridotta."
+    },
+    {
+      "culture": "pt",
+      "key": "Zoomed out.",
+      "text": "Vista afastada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Zoomed out.",
+      "text": "Vista afastada."
+    },
+    {
+      "culture": "ja",
+      "key": "Zoomed out.",
+      "text": "ズームアウトしました。"
+    },
+    {
+      "culture": "ko",
+      "key": "Zoomed out.",
+      "text": "축소했어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Zoomed out.",
+      "text": "已缩小。"
+    },
+    {
+      "culture": "ru",
+      "key": "Zoomed out.",
+      "text": "Вид отдалён."
+    },
+    {
+      "culture": "ar",
+      "key": "Zoomed out.",
+      "text": "تم التصغير."
+    },
+    {
+      "culture": "es",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Acciones: recorrer el tiro paso a paso, decir qué pasó, acercar a la bola blanca."
+    },
+    {
+      "culture": "fr",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Actions : parcourir le coup pas à pas, dire ce qui s'est passé, zoomer sur la bille blanche."
+    },
+    {
+      "culture": "de",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Aktionen: Stoß Schritt für Schritt, sagen, was passiert ist, auf die weiße Kugel zoomen."
+    },
+    {
+      "culture": "it",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Azioni: scorri il colpo passo per passo, di' cosa è successo, ingrandisci sulla palla bianca."
+    },
+    {
+      "culture": "pt",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Ações: percorrer a tacada passo a passo, dizer o que aconteceu, aproximar à bola branca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Ações: percorrer a tacada passo a passo, dizer o que aconteceu, aproximar na bola branca."
+    },
+    {
+      "culture": "ja",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "アクション：ショットを順に見る、何が起きたかを読み上げる、手球にズームイン。"
+    },
+    {
+      "culture": "ko",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "동작: 샷을 단계별로 보기, 무슨 일이 있었는지 읽기, 큐볼 확대."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "操作：逐步查看击球、说出发生了什么、放大白球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "Действия: пройти удар по шагам, рассказать, что произошло, приблизить белый шар."
+    },
+    {
+      "culture": "ar",
+      "key": "Actions: step through the shot, say what happened, zoom in on the cue ball.",
+      "text": "الإجراءات: استعراض الضربة خطوة بخطوة، قل ما حدث، تكبير على الكرة البيضاء."
+    },
+    {
+      "culture": "es",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Vista acercada a la bola blanca."
+    },
+    {
+      "culture": "fr",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Zoom sur la bille blanche."
+    },
+    {
+      "culture": "de",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Auf die weiße Kugel gezoomt."
+    },
+    {
+      "culture": "it",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Vista ingrandita sulla palla bianca."
+    },
+    {
+      "culture": "pt",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Vista aproximada da bola branca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Vista aproximada na bola branca."
+    },
+    {
+      "culture": "ja",
+      "key": "Zoomed in on the cue ball.",
+      "text": "手球にズームインしました。"
+    },
+    {
+      "culture": "ko",
+      "key": "Zoomed in on the cue ball.",
+      "text": "큐볼을 확대했어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Zoomed in on the cue ball.",
+      "text": "已放大白球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Zoomed in on the cue ball.",
+      "text": "Белый шар приближен."
+    },
+    {
+      "culture": "ar",
+      "key": "Zoomed in on the cue ball.",
+      "text": "تم التكبير على الكرة البيضاء."
+    },
+    {
+      "culture": "es",
+      "key": "Your cup: sink your balls here.",
+      "text": "Tu hoyo: mete aquí tus bolas."
+    },
+    {
+      "culture": "fr",
+      "key": "Your cup: sink your balls here.",
+      "text": "Ton trou : rentre tes billes ici."
+    },
+    {
+      "culture": "de",
+      "key": "Your cup: sink your balls here.",
+      "text": "Dein Loch: Hier versenkst du deine Kugeln."
+    },
+    {
+      "culture": "it",
+      "key": "Your cup: sink your balls here.",
+      "text": "La tua buca: manda qui le tue palle."
+    },
+    {
+      "culture": "pt",
+      "key": "Your cup: sink your balls here.",
+      "text": "O teu buraco: mete aqui as tuas bolas."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Your cup: sink your balls here.",
+      "text": "Seu buraco: encaçape suas bolas aqui."
+    },
+    {
+      "culture": "ja",
+      "key": "Your cup: sink your balls here.",
+      "text": "あなたのカップ：ここに自分の球を入れます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Your cup: sink your balls here.",
+      "text": "내 컵: 여기에 내 공을 넣어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Your cup: sink your balls here.",
+      "text": "你的球洞：把你的球打进这里。"
+    },
+    {
+      "culture": "ru",
+      "key": "Your cup: sink your balls here.",
+      "text": "Твоя лунка: загоняй свои шары сюда."
+    },
+    {
+      "culture": "ar",
+      "key": "Your cup: sink your balls here.",
+      "text": "حفرتك: أدخل كراتك هنا."
+    },
+    {
+      "culture": "es",
+      "key": "The other side's cup.",
+      "text": "El hoyo del otro bando."
+    },
+    {
+      "culture": "fr",
+      "key": "The other side's cup.",
+      "text": "Le trou de l'autre camp."
+    },
+    {
+      "culture": "de",
+      "key": "The other side's cup.",
+      "text": "Das Loch der anderen Seite."
+    },
+    {
+      "culture": "it",
+      "key": "The other side's cup.",
+      "text": "La buca dell'altra squadra."
+    },
+    {
+      "culture": "pt",
+      "key": "The other side's cup.",
+      "text": "O buraco do outro lado."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "The other side's cup.",
+      "text": "O buraco do outro lado."
+    },
+    {
+      "culture": "ja",
+      "key": "The other side's cup.",
+      "text": "相手側のカップ。"
+    },
+    {
+      "culture": "ko",
+      "key": "The other side's cup.",
+      "text": "상대 쪽 컵."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "The other side's cup.",
+      "text": "对方的球洞。"
+    },
+    {
+      "culture": "ru",
+      "key": "The other side's cup.",
+      "text": "Лунка другой стороны."
+    },
+    {
+      "culture": "ar",
+      "key": "The other side's cup.",
+      "text": "حفرة الطرف الآخر."
+    },
+    {
+      "culture": "es",
+      "key": "Knocked down.",
+      "text": "Ya cayó."
+    },
+    {
+      "culture": "fr",
+      "key": "Knocked down.",
+      "text": "À terre."
+    },
+    {
+      "culture": "de",
+      "key": "Knocked down.",
+      "text": "Umgefallen."
+    },
+    {
+      "culture": "it",
+      "key": "Knocked down.",
+      "text": "È già caduto."
+    },
+    {
+      "culture": "pt",
+      "key": "Knocked down.",
+      "text": "Derrubado."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Knocked down.",
+      "text": "Derrubado."
+    },
+    {
+      "culture": "ja",
+      "key": "Knocked down.",
+      "text": "倒れています。"
+    },
+    {
+      "culture": "ko",
+      "key": "Knocked down.",
+      "text": "쓰러졌어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Knocked down.",
+      "text": "已倒下。"
+    },
+    {
+      "culture": "ru",
+      "key": "Knocked down.",
+      "text": "Лежит."
+    },
+    {
+      "culture": "ar",
+      "key": "Knocked down.",
+      "text": "ساقط."
+    },
+    {
+      "culture": "es",
+      "key": "Aims straight at it",
+      "text": "Apunta directo hacia ahí"
+    },
+    {
+      "culture": "fr",
+      "key": "Aims straight at it",
+      "text": "Vise droit dessus"
+    },
+    {
+      "culture": "de",
+      "key": "Aims straight at it",
+      "text": "Zielt direkt darauf"
+    },
+    {
+      "culture": "it",
+      "key": "Aims straight at it",
+      "text": "Mira dritto lì"
+    },
+    {
+      "culture": "pt",
+      "key": "Aims straight at it",
+      "text": "Aponta direto para lá"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Aims straight at it",
+      "text": "Mira direto ali"
+    },
+    {
+      "culture": "ja",
+      "key": "Aims straight at it",
+      "text": "これをまっすぐ狙います"
+    },
+    {
+      "culture": "ko",
+      "key": "Aims straight at it",
+      "text": "이곳을 정면으로 조준합니다"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Aims straight at it",
+      "text": "正对它瞄准"
+    },
+    {
+      "culture": "ru",
+      "key": "Aims straight at it",
+      "text": "Целится прямо сюда"
+    },
+    {
+      "culture": "ar",
+      "key": "Aims straight at it",
+      "text": "يصوّب مباشرة نحوه"
+    },
+    {
+      "culture": "es",
+      "key": "the marked red",
+      "text": "la roja marcada"
+    },
+    {
+      "culture": "fr",
+      "key": "the marked red",
+      "text": "la rouge marquée"
+    },
+    {
+      "culture": "de",
+      "key": "the marked red",
+      "text": "die markierte Rote"
+    },
+    {
+      "culture": "it",
+      "key": "the marked red",
+      "text": "la rossa segnata"
+    },
+    {
+      "culture": "pt",
+      "key": "the marked red",
+      "text": "a vermelha marcada"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the marked red",
+      "text": "a vermelha marcada"
+    },
+    {
+      "culture": "ja",
+      "key": "the marked red",
+      "text": "印付きの赤球"
+    },
+    {
+      "culture": "ko",
+      "key": "the marked red",
+      "text": "표시된 빨간 공"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the marked red",
+      "text": "带标记的红球"
+    },
+    {
+      "culture": "ru",
+      "key": "the marked red",
+      "text": "красный с меткой"
+    },
+    {
+      "culture": "ar",
+      "key": "the marked red",
+      "text": "الكرة الحمراء المعلّمة"
+    },
+    {
+      "culture": "es",
+      "key": "the marked white",
+      "text": "la blanca marcada"
+    },
+    {
+      "culture": "fr",
+      "key": "the marked white",
+      "text": "la blanche marquée"
+    },
+    {
+      "culture": "de",
+      "key": "the marked white",
+      "text": "die markierte Weiße"
+    },
+    {
+      "culture": "it",
+      "key": "the marked white",
+      "text": "la bianca segnata"
+    },
+    {
+      "culture": "pt",
+      "key": "the marked white",
+      "text": "a branca marcada"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the marked white",
+      "text": "a branca marcada"
+    },
+    {
+      "culture": "ja",
+      "key": "the marked white",
+      "text": "印付きの白球"
+    },
+    {
+      "culture": "ko",
+      "key": "the marked white",
+      "text": "표시된 흰 공"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the marked white",
+      "text": "带标记的白球"
+    },
+    {
+      "culture": "ru",
+      "key": "the marked white",
+      "text": "белый с меткой"
+    },
+    {
+      "culture": "ar",
+      "key": "the marked white",
+      "text": "الكرة البيضاء المعلّمة"
+    },
+    {
+      "culture": "es",
+      "key": "a red",
+      "text": "una roja"
+    },
+    {
+      "culture": "fr",
+      "key": "a red",
+      "text": "une rouge"
+    },
+    {
+      "culture": "de",
+      "key": "a red",
+      "text": "eine Rote"
+    },
+    {
+      "culture": "it",
+      "key": "a red",
+      "text": "una rossa"
+    },
+    {
+      "culture": "pt",
+      "key": "a red",
+      "text": "uma vermelha"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a red",
+      "text": "uma vermelha"
+    },
+    {
+      "culture": "ja",
+      "key": "a red",
+      "text": "赤球1個"
+    },
+    {
+      "culture": "ko",
+      "key": "a red",
+      "text": "빨간 공 하나"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a red",
+      "text": "一个红球"
+    },
+    {
+      "culture": "ru",
+      "key": "a red",
+      "text": "красный шар"
+    },
+    {
+      "culture": "ar",
+      "key": "a red",
+      "text": "كرة حمراء"
+    },
+    {
+      "culture": "es",
+      "key": "%@, the ball you strike",
+      "text": "%@, la bola que golpeas"
+    },
+    {
+      "culture": "fr",
+      "key": "%@, the ball you strike",
+      "text": "%@, la bille que tu joues"
+    },
+    {
+      "culture": "de",
+      "key": "%@, the ball you strike",
+      "text": "%@, die Kugel, die du spielst"
+    },
+    {
+      "culture": "it",
+      "key": "%@, the ball you strike",
+      "text": "%@, la palla che colpisci"
+    },
+    {
+      "culture": "pt",
+      "key": "%@, the ball you strike",
+      "text": "%@, a bola que jogas"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@, the ball you strike",
+      "text": "%@, a bola que você joga"
+    },
+    {
+      "culture": "ja",
+      "key": "%@, the ball you strike",
+      "text": "%@、あなたが突く球"
+    },
+    {
+      "culture": "ko",
+      "key": "%@, the ball you strike",
+      "text": "%@, 내가 칠 공"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@, the ball you strike",
+      "text": "%@，你要击打的球"
+    },
+    {
+      "culture": "ru",
+      "key": "%@, the ball you strike",
+      "text": "%@ — шар, которым ты бьёшь"
+    },
+    {
+      "culture": "ar",
+      "key": "%@, the ball you strike",
+      "text": "%@، الكرة التي تضربها"
+    },
+    {
+      "culture": "es",
+      "key": "the near cushion",
+      "text": "la banda cercana"
+    },
+    {
+      "culture": "fr",
+      "key": "the near cushion",
+      "text": "la bande proche"
+    },
+    {
+      "culture": "de",
+      "key": "the near cushion",
+      "text": "Bande vorn"
+    },
+    {
+      "culture": "it",
+      "key": "the near cushion",
+      "text": "sponda vicina"
+    },
+    {
+      "culture": "pt",
+      "key": "the near cushion",
+      "text": "tabela próxima"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the near cushion",
+      "text": "tabela próxima"
+    },
+    {
+      "culture": "ja",
+      "key": "the near cushion",
+      "text": "手前のクッション"
+    },
+    {
+      "culture": "ko",
+      "key": "the near cushion",
+      "text": "가까운 쿠션"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the near cushion",
+      "text": "近端库边"
+    },
+    {
+      "culture": "ru",
+      "key": "the near cushion",
+      "text": "ближний борт"
+    },
+    {
+      "culture": "ar",
+      "key": "the near cushion",
+      "text": "الحافة القريبة"
+    },
+    {
+      "culture": "es",
+      "key": "the far cushion",
+      "text": "la banda del fondo"
+    },
+    {
+      "culture": "fr",
+      "key": "the far cushion",
+      "text": "la bande du fond"
+    },
+    {
+      "culture": "de",
+      "key": "the far cushion",
+      "text": "Bande hinten"
+    },
+    {
+      "culture": "it",
+      "key": "the far cushion",
+      "text": "sponda di fondo"
+    },
+    {
+      "culture": "pt",
+      "key": "the far cushion",
+      "text": "tabela do fundo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the far cushion",
+      "text": "tabela do fundo"
+    },
+    {
+      "culture": "ja",
+      "key": "the far cushion",
+      "text": "奥のクッション"
+    },
+    {
+      "culture": "ko",
+      "key": "the far cushion",
+      "text": "먼 쿠션"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the far cushion",
+      "text": "远端库边"
+    },
+    {
+      "culture": "ru",
+      "key": "the far cushion",
+      "text": "дальний борт"
+    },
+    {
+      "culture": "ar",
+      "key": "the far cushion",
+      "text": "الحافة البعيدة"
+    },
+    {
+      "culture": "es",
+      "key": "the right cushion",
+      "text": "la banda derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "the right cushion",
+      "text": "la bande droite"
+    },
+    {
+      "culture": "de",
+      "key": "the right cushion",
+      "text": "Bande rechts"
+    },
+    {
+      "culture": "it",
+      "key": "the right cushion",
+      "text": "sponda destra"
+    },
+    {
+      "culture": "pt",
+      "key": "the right cushion",
+      "text": "tabela direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the right cushion",
+      "text": "tabela direita"
+    },
+    {
+      "culture": "ja",
+      "key": "the right cushion",
+      "text": "右のクッション"
+    },
+    {
+      "culture": "ko",
+      "key": "the right cushion",
+      "text": "오른쪽 쿠션"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the right cushion",
+      "text": "右侧库边"
+    },
+    {
+      "culture": "ru",
+      "key": "the right cushion",
+      "text": "правый борт"
+    },
+    {
+      "culture": "ar",
+      "key": "the right cushion",
+      "text": "الحافة اليمنى"
+    },
+    {
+      "culture": "es",
+      "key": "the left cushion",
+      "text": "la banda izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "the left cushion",
+      "text": "la bande gauche"
+    },
+    {
+      "culture": "de",
+      "key": "the left cushion",
+      "text": "Bande links"
+    },
+    {
+      "culture": "it",
+      "key": "the left cushion",
+      "text": "sponda sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "the left cushion",
+      "text": "tabela esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the left cushion",
+      "text": "tabela esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "the left cushion",
+      "text": "左のクッション"
+    },
+    {
+      "culture": "ko",
+      "key": "the left cushion",
+      "text": "왼쪽 쿠션"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the left cushion",
+      "text": "左侧库边"
+    },
+    {
+      "culture": "ru",
+      "key": "the left cushion",
+      "text": "левый борт"
+    },
+    {
+      "culture": "ar",
+      "key": "the left cushion",
+      "text": "الحافة اليسرى"
+    },
+    {
+      "culture": "es",
+      "key": "%lld hole",
+      "text": "Agujero de %lld"
+    },
+    {
+      "culture": "fr",
+      "key": "%lld hole",
+      "text": "Trou de %lld"
+    },
+    {
+      "culture": "de",
+      "key": "%lld hole",
+      "text": "Loch mit %lld"
+    },
+    {
+      "culture": "it",
+      "key": "%lld hole",
+      "text": "Buca da %lld"
+    },
+    {
+      "culture": "pt",
+      "key": "%lld hole",
+      "text": "Buraco de %lld"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%lld hole",
+      "text": "Buraco de %lld"
+    },
+    {
+      "culture": "ja",
+      "key": "%lld hole",
+      "text": "%lld点の穴"
+    },
+    {
+      "culture": "ko",
+      "key": "%lld hole",
+      "text": "%lld점 구멍"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%lld hole",
+      "text": "%lld分洞"
+    },
+    {
+      "culture": "ru",
+      "key": "%lld hole",
+      "text": "Лунка на %lld"
+    },
+    {
+      "culture": "ar",
+      "key": "%lld hole",
+      "text": "حفرة %lld"
+    },
+    {
+      "culture": "es",
+      "key": "the %lld hole",
+      "text": "el agujero de %lld"
+    },
+    {
+      "culture": "fr",
+      "key": "the %lld hole",
+      "text": "le trou de %lld"
+    },
+    {
+      "culture": "de",
+      "key": "the %lld hole",
+      "text": "das Loch mit %lld"
+    },
+    {
+      "culture": "it",
+      "key": "the %lld hole",
+      "text": "la buca da %lld"
+    },
+    {
+      "culture": "pt",
+      "key": "the %lld hole",
+      "text": "o buraco de %lld"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the %lld hole",
+      "text": "o buraco de %lld"
+    },
+    {
+      "culture": "ja",
+      "key": "the %lld hole",
+      "text": "%lld点の穴"
+    },
+    {
+      "culture": "ko",
+      "key": "the %lld hole",
+      "text": "%lld점 구멍"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the %lld hole",
+      "text": "%lld分洞"
+    },
+    {
+      "culture": "ru",
+      "key": "the %lld hole",
+      "text": "лунка на %lld"
+    },
+    {
+      "culture": "ar",
+      "key": "the %lld hole",
+      "text": "حفرة الـ%lld"
+    },
+    {
+      "culture": "es",
+      "key": "Near cup",
+      "text": "Hoyo cercano"
+    },
+    {
+      "culture": "fr",
+      "key": "Near cup",
+      "text": "Trou proche"
+    },
+    {
+      "culture": "de",
+      "key": "Near cup",
+      "text": "Vorderes Loch"
+    },
+    {
+      "culture": "it",
+      "key": "Near cup",
+      "text": "Buca vicina"
+    },
+    {
+      "culture": "pt",
+      "key": "Near cup",
+      "text": "Buraco próximo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Near cup",
+      "text": "Buraco próximo"
+    },
+    {
+      "culture": "ja",
+      "key": "Near cup",
+      "text": "手前のカップ"
+    },
+    {
+      "culture": "ko",
+      "key": "Near cup",
+      "text": "가까운 컵"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Near cup",
+      "text": "近端球洞"
+    },
+    {
+      "culture": "ru",
+      "key": "Near cup",
+      "text": "Ближняя лунка"
+    },
+    {
+      "culture": "ar",
+      "key": "Near cup",
+      "text": "الحفرة القريبة"
+    },
+    {
+      "culture": "es",
+      "key": "Far cup",
+      "text": "Hoyo del fondo"
+    },
+    {
+      "culture": "fr",
+      "key": "Far cup",
+      "text": "Trou du fond"
+    },
+    {
+      "culture": "de",
+      "key": "Far cup",
+      "text": "Hinteres Loch"
+    },
+    {
+      "culture": "it",
+      "key": "Far cup",
+      "text": "Buca di fondo"
+    },
+    {
+      "culture": "pt",
+      "key": "Far cup",
+      "text": "Buraco do fundo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Far cup",
+      "text": "Buraco do fundo"
+    },
+    {
+      "culture": "ja",
+      "key": "Far cup",
+      "text": "奥のカップ"
+    },
+    {
+      "culture": "ko",
+      "key": "Far cup",
+      "text": "먼 컵"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Far cup",
+      "text": "远端球洞"
+    },
+    {
+      "culture": "ru",
+      "key": "Far cup",
+      "text": "Дальняя лунка"
+    },
+    {
+      "culture": "ar",
+      "key": "Far cup",
+      "text": "الحفرة البعيدة"
+    },
+    {
+      "culture": "es",
+      "key": "the near cup",
+      "text": "el hoyo cercano"
+    },
+    {
+      "culture": "fr",
+      "key": "the near cup",
+      "text": "le trou proche"
+    },
+    {
+      "culture": "de",
+      "key": "the near cup",
+      "text": "das vordere Loch"
+    },
+    {
+      "culture": "it",
+      "key": "the near cup",
+      "text": "la buca vicina"
+    },
+    {
+      "culture": "pt",
+      "key": "the near cup",
+      "text": "o buraco próximo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the near cup",
+      "text": "o buraco próximo"
+    },
+    {
+      "culture": "ja",
+      "key": "the near cup",
+      "text": "手前のカップ"
+    },
+    {
+      "culture": "ko",
+      "key": "the near cup",
+      "text": "가까운 컵"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the near cup",
+      "text": "近端球洞"
+    },
+    {
+      "culture": "ru",
+      "key": "the near cup",
+      "text": "ближняя лунка"
+    },
+    {
+      "culture": "ar",
+      "key": "the near cup",
+      "text": "الحفرة القريبة"
+    },
+    {
+      "culture": "es",
+      "key": "the far cup",
+      "text": "el hoyo del fondo"
+    },
+    {
+      "culture": "fr",
+      "key": "the far cup",
+      "text": "le trou du fond"
+    },
+    {
+      "culture": "de",
+      "key": "the far cup",
+      "text": "das hintere Loch"
+    },
+    {
+      "culture": "it",
+      "key": "the far cup",
+      "text": "la buca di fondo"
+    },
+    {
+      "culture": "pt",
+      "key": "the far cup",
+      "text": "o buraco do fundo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the far cup",
+      "text": "o buraco do fundo"
+    },
+    {
+      "culture": "ja",
+      "key": "the far cup",
+      "text": "奥のカップ"
+    },
+    {
+      "culture": "ko",
+      "key": "the far cup",
+      "text": "먼 컵"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the far cup",
+      "text": "远端球洞"
+    },
+    {
+      "culture": "ru",
+      "key": "the far cup",
+      "text": "дальняя лунка"
+    },
+    {
+      "culture": "ar",
+      "key": "the far cup",
+      "text": "الحفرة البعيدة"
+    },
+    {
+      "culture": "es",
+      "key": "Hole",
+      "text": "Agujero"
+    },
+    {
+      "culture": "fr",
+      "key": "Hole",
+      "text": "Trou"
+    },
+    {
+      "culture": "de",
+      "key": "Hole",
+      "text": "Loch"
+    },
+    {
+      "culture": "it",
+      "key": "Hole",
+      "text": "Buca"
+    },
+    {
+      "culture": "pt",
+      "key": "Hole",
+      "text": "Buraco"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Hole",
+      "text": "Buraco"
+    },
+    {
+      "culture": "ja",
+      "key": "Hole",
+      "text": "穴"
+    },
+    {
+      "culture": "ko",
+      "key": "Hole",
+      "text": "구멍"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Hole",
+      "text": "洞"
+    },
+    {
+      "culture": "ru",
+      "key": "Hole",
+      "text": "Лунка"
+    },
+    {
+      "culture": "ar",
+      "key": "Hole",
+      "text": "حفرة"
+    },
+    {
+      "culture": "es",
+      "key": "Black peg",
+      "text": "Seta negra"
+    },
+    {
+      "culture": "fr",
+      "key": "Black peg",
+      "text": "Champignon noir"
+    },
+    {
+      "culture": "de",
+      "key": "Black peg",
+      "text": "Schwarzer Pilz"
+    },
+    {
+      "culture": "it",
+      "key": "Black peg",
+      "text": "Fungo nero"
+    },
+    {
+      "culture": "pt",
+      "key": "Black peg",
+      "text": "Pino preto"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Black peg",
+      "text": "Pino preto"
+    },
+    {
+      "culture": "ja",
+      "key": "Black peg",
+      "text": "黒いペグ"
+    },
+    {
+      "culture": "ko",
+      "key": "Black peg",
+      "text": "검은 페그"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Black peg",
+      "text": "黑色小柱"
+    },
+    {
+      "culture": "ru",
+      "key": "Black peg",
+      "text": "Чёрный грибок"
+    },
+    {
+      "culture": "ar",
+      "key": "Black peg",
+      "text": "الوتد الأسود"
+    },
+    {
+      "culture": "es",
+      "key": "the black peg",
+      "text": "la seta negra"
+    },
+    {
+      "culture": "fr",
+      "key": "the black peg",
+      "text": "le champignon noir"
+    },
+    {
+      "culture": "de",
+      "key": "the black peg",
+      "text": "der schwarze Pilz"
+    },
+    {
+      "culture": "it",
+      "key": "the black peg",
+      "text": "il fungo nero"
+    },
+    {
+      "culture": "pt",
+      "key": "the black peg",
+      "text": "o pino preto"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the black peg",
+      "text": "o pino preto"
+    },
+    {
+      "culture": "ja",
+      "key": "the black peg",
+      "text": "黒いペグ"
+    },
+    {
+      "culture": "ko",
+      "key": "the black peg",
+      "text": "검은 페그"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the black peg",
+      "text": "黑色小柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the black peg",
+      "text": "чёрный грибок"
+    },
+    {
+      "culture": "ar",
+      "key": "the black peg",
+      "text": "الوتد الأسود"
+    },
+    {
+      "culture": "es",
+      "key": "White peg, left",
+      "text": "Seta blanca, izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "White peg, left",
+      "text": "Champignon blanc, à gauche"
+    },
+    {
+      "culture": "de",
+      "key": "White peg, left",
+      "text": "Weißer Pilz, links"
+    },
+    {
+      "culture": "it",
+      "key": "White peg, left",
+      "text": "Fungo bianco, a sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "White peg, left",
+      "text": "Pino branco, à esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "White peg, left",
+      "text": "Pino branco, à esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "White peg, left",
+      "text": "白いペグ（左）"
+    },
+    {
+      "culture": "ko",
+      "key": "White peg, left",
+      "text": "흰 페그, 왼쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "White peg, left",
+      "text": "白色小柱（左）"
+    },
+    {
+      "culture": "ru",
+      "key": "White peg, left",
+      "text": "Белый грибок, слева"
+    },
+    {
+      "culture": "ar",
+      "key": "White peg, left",
+      "text": "الوتد الأبيض، يسارًا"
+    },
+    {
+      "culture": "es",
+      "key": "White peg, right",
+      "text": "Seta blanca, derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "White peg, right",
+      "text": "Champignon blanc, à droite"
+    },
+    {
+      "culture": "de",
+      "key": "White peg, right",
+      "text": "Weißer Pilz, rechts"
+    },
+    {
+      "culture": "it",
+      "key": "White peg, right",
+      "text": "Fungo bianco, a destra"
+    },
+    {
+      "culture": "pt",
+      "key": "White peg, right",
+      "text": "Pino branco, à direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "White peg, right",
+      "text": "Pino branco, à direita"
+    },
+    {
+      "culture": "ja",
+      "key": "White peg, right",
+      "text": "白いペグ（右）"
+    },
+    {
+      "culture": "ko",
+      "key": "White peg, right",
+      "text": "흰 페그, 오른쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "White peg, right",
+      "text": "白色小柱（右）"
+    },
+    {
+      "culture": "ru",
+      "key": "White peg, right",
+      "text": "Белый грибок, справа"
+    },
+    {
+      "culture": "ar",
+      "key": "White peg, right",
+      "text": "الوتد الأبيض، يمينًا"
+    },
+    {
+      "culture": "es",
+      "key": "the left white peg",
+      "text": "la seta blanca de la izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "the left white peg",
+      "text": "le champignon blanc de gauche"
+    },
+    {
+      "culture": "de",
+      "key": "the left white peg",
+      "text": "der linke weiße Pilz"
+    },
+    {
+      "culture": "it",
+      "key": "the left white peg",
+      "text": "il fungo bianco di sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "the left white peg",
+      "text": "o pino branco da esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the left white peg",
+      "text": "o pino branco da esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "the left white peg",
+      "text": "左の白いペグ"
+    },
+    {
+      "culture": "ko",
+      "key": "the left white peg",
+      "text": "왼쪽 흰 페그"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the left white peg",
+      "text": "左边的白色小柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the left white peg",
+      "text": "левый белый грибок"
+    },
+    {
+      "culture": "ar",
+      "key": "the left white peg",
+      "text": "الوتد الأبيض الأيسر"
+    },
+    {
+      "culture": "es",
+      "key": "the right white peg",
+      "text": "la seta blanca de la derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "the right white peg",
+      "text": "le champignon blanc de droite"
+    },
+    {
+      "culture": "de",
+      "key": "the right white peg",
+      "text": "der rechte weiße Pilz"
+    },
+    {
+      "culture": "it",
+      "key": "the right white peg",
+      "text": "il fungo bianco di destra"
+    },
+    {
+      "culture": "pt",
+      "key": "the right white peg",
+      "text": "o pino branco da direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the right white peg",
+      "text": "o pino branco da direita"
+    },
+    {
+      "culture": "ja",
+      "key": "the right white peg",
+      "text": "右の白いペグ"
+    },
+    {
+      "culture": "ko",
+      "key": "the right white peg",
+      "text": "오른쪽 흰 페그"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the right white peg",
+      "text": "右边的白色小柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the right white peg",
+      "text": "правый белый грибок"
+    },
+    {
+      "culture": "ar",
+      "key": "the right white peg",
+      "text": "الوتد الأبيض الأيمن"
+    },
+    {
+      "culture": "es",
+      "key": "Red pin",
+      "text": "Bolo rojo"
+    },
+    {
+      "culture": "fr",
+      "key": "Red pin",
+      "text": "Quille rouge"
+    },
+    {
+      "culture": "de",
+      "key": "Red pin",
+      "text": "Roter Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "Red pin",
+      "text": "Birillo rosso"
+    },
+    {
+      "culture": "pt",
+      "key": "Red pin",
+      "text": "Pino vermelho"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Red pin",
+      "text": "Pino vermelho"
+    },
+    {
+      "culture": "ja",
+      "key": "Red pin",
+      "text": "赤いピン"
+    },
+    {
+      "culture": "ko",
+      "key": "Red pin",
+      "text": "빨간 핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Red pin",
+      "text": "红色木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "Red pin",
+      "text": "Красная кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "Red pin",
+      "text": "الوتد الأحمر"
+    },
+    {
+      "culture": "es",
+      "key": "the red pin",
+      "text": "el bolo rojo"
+    },
+    {
+      "culture": "fr",
+      "key": "the red pin",
+      "text": "la quille rouge"
+    },
+    {
+      "culture": "de",
+      "key": "the red pin",
+      "text": "der rote Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "the red pin",
+      "text": "il birillo rosso"
+    },
+    {
+      "culture": "pt",
+      "key": "the red pin",
+      "text": "o pino vermelho"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the red pin",
+      "text": "o pino vermelho"
+    },
+    {
+      "culture": "ja",
+      "key": "the red pin",
+      "text": "赤いピン"
+    },
+    {
+      "culture": "ko",
+      "key": "the red pin",
+      "text": "빨간 핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the red pin",
+      "text": "红色木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the red pin",
+      "text": "красная кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "the red pin",
+      "text": "الوتد الأحمر"
+    },
+    {
+      "culture": "es",
+      "key": "White pin, near",
+      "text": "Bolo blanco, cercano"
+    },
+    {
+      "culture": "fr",
+      "key": "White pin, near",
+      "text": "Quille blanche, devant"
+    },
+    {
+      "culture": "de",
+      "key": "White pin, near",
+      "text": "Weißer Kegel, vorn"
+    },
+    {
+      "culture": "it",
+      "key": "White pin, near",
+      "text": "Birillo bianco, davanti"
+    },
+    {
+      "culture": "pt",
+      "key": "White pin, near",
+      "text": "Pino branco, à frente"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "White pin, near",
+      "text": "Pino branco, na frente"
+    },
+    {
+      "culture": "ja",
+      "key": "White pin, near",
+      "text": "白いピン（手前）"
+    },
+    {
+      "culture": "ko",
+      "key": "White pin, near",
+      "text": "흰 핀, 앞쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "White pin, near",
+      "text": "白色木柱（近端）"
+    },
+    {
+      "culture": "ru",
+      "key": "White pin, near",
+      "text": "Белая кегля, ближняя"
+    },
+    {
+      "culture": "ar",
+      "key": "White pin, near",
+      "text": "الوتد الأبيض، القريب"
+    },
+    {
+      "culture": "es",
+      "key": "White pin, far",
+      "text": "Bolo blanco, del fondo"
+    },
+    {
+      "culture": "fr",
+      "key": "White pin, far",
+      "text": "Quille blanche, au fond"
+    },
+    {
+      "culture": "de",
+      "key": "White pin, far",
+      "text": "Weißer Kegel, hinten"
+    },
+    {
+      "culture": "it",
+      "key": "White pin, far",
+      "text": "Birillo bianco, in fondo"
+    },
+    {
+      "culture": "pt",
+      "key": "White pin, far",
+      "text": "Pino branco, ao fundo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "White pin, far",
+      "text": "Pino branco, no fundo"
+    },
+    {
+      "culture": "ja",
+      "key": "White pin, far",
+      "text": "白いピン（奥）"
+    },
+    {
+      "culture": "ko",
+      "key": "White pin, far",
+      "text": "흰 핀, 뒤쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "White pin, far",
+      "text": "白色木柱（远端）"
+    },
+    {
+      "culture": "ru",
+      "key": "White pin, far",
+      "text": "Белая кегля, дальняя"
+    },
+    {
+      "culture": "ar",
+      "key": "White pin, far",
+      "text": "الوتد الأبيض، البعيد"
+    },
+    {
+      "culture": "es",
+      "key": "the near white pin",
+      "text": "el bolo blanco cercano"
+    },
+    {
+      "culture": "fr",
+      "key": "the near white pin",
+      "text": "la quille blanche de devant"
+    },
+    {
+      "culture": "de",
+      "key": "the near white pin",
+      "text": "der vordere weiße Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "the near white pin",
+      "text": "il birillo bianco davanti"
+    },
+    {
+      "culture": "pt",
+      "key": "the near white pin",
+      "text": "o pino branco da frente"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the near white pin",
+      "text": "o pino branco da frente"
+    },
+    {
+      "culture": "ja",
+      "key": "the near white pin",
+      "text": "手前の白いピン"
+    },
+    {
+      "culture": "ko",
+      "key": "the near white pin",
+      "text": "앞쪽 흰 핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the near white pin",
+      "text": "近端的白色木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the near white pin",
+      "text": "ближняя белая кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "the near white pin",
+      "text": "الوتد الأبيض القريب"
+    },
+    {
+      "culture": "es",
+      "key": "the far white pin",
+      "text": "el bolo blanco del fondo"
+    },
+    {
+      "culture": "fr",
+      "key": "the far white pin",
+      "text": "la quille blanche du fond"
+    },
+    {
+      "culture": "de",
+      "key": "the far white pin",
+      "text": "der hintere weiße Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "the far white pin",
+      "text": "il birillo bianco in fondo"
+    },
+    {
+      "culture": "pt",
+      "key": "the far white pin",
+      "text": "o pino branco do fundo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the far white pin",
+      "text": "o pino branco do fundo"
+    },
+    {
+      "culture": "ja",
+      "key": "the far white pin",
+      "text": "奥の白いピン"
+    },
+    {
+      "culture": "ko",
+      "key": "the far white pin",
+      "text": "뒤쪽 흰 핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the far white pin",
+      "text": "远端的白色木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the far white pin",
+      "text": "дальняя белая кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "the far white pin",
+      "text": "الوتد الأبيض البعيد"
+    },
+    {
+      "culture": "es",
+      "key": "White pin, left",
+      "text": "Bolo blanco, izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "White pin, left",
+      "text": "Quille blanche, à gauche"
+    },
+    {
+      "culture": "de",
+      "key": "White pin, left",
+      "text": "Weißer Kegel, links"
+    },
+    {
+      "culture": "it",
+      "key": "White pin, left",
+      "text": "Birillo bianco, a sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "White pin, left",
+      "text": "Pino branco, à esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "White pin, left",
+      "text": "Pino branco, à esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "White pin, left",
+      "text": "白いピン（左）"
+    },
+    {
+      "culture": "ko",
+      "key": "White pin, left",
+      "text": "흰 핀, 왼쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "White pin, left",
+      "text": "白色木柱（左）"
+    },
+    {
+      "culture": "ru",
+      "key": "White pin, left",
+      "text": "Белая кегля, слева"
+    },
+    {
+      "culture": "ar",
+      "key": "White pin, left",
+      "text": "الوتد الأبيض، يسارًا"
+    },
+    {
+      "culture": "es",
+      "key": "White pin, right",
+      "text": "Bolo blanco, derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "White pin, right",
+      "text": "Quille blanche, à droite"
+    },
+    {
+      "culture": "de",
+      "key": "White pin, right",
+      "text": "Weißer Kegel, rechts"
+    },
+    {
+      "culture": "it",
+      "key": "White pin, right",
+      "text": "Birillo bianco, a destra"
+    },
+    {
+      "culture": "pt",
+      "key": "White pin, right",
+      "text": "Pino branco, à direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "White pin, right",
+      "text": "Pino branco, à direita"
+    },
+    {
+      "culture": "ja",
+      "key": "White pin, right",
+      "text": "白いピン（右）"
+    },
+    {
+      "culture": "ko",
+      "key": "White pin, right",
+      "text": "흰 핀, 오른쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "White pin, right",
+      "text": "白色木柱（右）"
+    },
+    {
+      "culture": "ru",
+      "key": "White pin, right",
+      "text": "Белая кегля, справа"
+    },
+    {
+      "culture": "ar",
+      "key": "White pin, right",
+      "text": "الوتد الأبيض، يمينًا"
+    },
+    {
+      "culture": "es",
+      "key": "the left white pin",
+      "text": "el bolo blanco de la izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "the left white pin",
+      "text": "la quille blanche de gauche"
+    },
+    {
+      "culture": "de",
+      "key": "the left white pin",
+      "text": "der linke weiße Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "the left white pin",
+      "text": "il birillo bianco di sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "the left white pin",
+      "text": "o pino branco da esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the left white pin",
+      "text": "o pino branco da esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "the left white pin",
+      "text": "左の白いピン"
+    },
+    {
+      "culture": "ko",
+      "key": "the left white pin",
+      "text": "왼쪽 흰 핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the left white pin",
+      "text": "左边的白色木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the left white pin",
+      "text": "левая белая кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "the left white pin",
+      "text": "الوتد الأبيض الأيسر"
+    },
+    {
+      "culture": "es",
+      "key": "the right white pin",
+      "text": "el bolo blanco de la derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "the right white pin",
+      "text": "la quille blanche de droite"
+    },
+    {
+      "culture": "de",
+      "key": "the right white pin",
+      "text": "der rechte weiße Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "the right white pin",
+      "text": "il birillo bianco di destra"
+    },
+    {
+      "culture": "pt",
+      "key": "the right white pin",
+      "text": "o pino branco da direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "the right white pin",
+      "text": "o pino branco da direita"
+    },
+    {
+      "culture": "ja",
+      "key": "the right white pin",
+      "text": "右の白いピン"
+    },
+    {
+      "culture": "ko",
+      "key": "the right white pin",
+      "text": "오른쪽 흰 핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "the right white pin",
+      "text": "右边的白色木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "the right white pin",
+      "text": "правая белая кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "the right white pin",
+      "text": "الوتد الأبيض الأيمن"
+    },
+    {
+      "culture": "es",
+      "key": "Pin",
+      "text": "Bolo"
+    },
+    {
+      "culture": "fr",
+      "key": "Pin",
+      "text": "Quille"
+    },
+    {
+      "culture": "de",
+      "key": "Pin",
+      "text": "Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "Pin",
+      "text": "Birillo"
+    },
+    {
+      "culture": "pt",
+      "key": "Pin",
+      "text": "Pino"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Pin",
+      "text": "Pino"
+    },
+    {
+      "culture": "ja",
+      "key": "Pin",
+      "text": "ピン"
+    },
+    {
+      "culture": "ko",
+      "key": "Pin",
+      "text": "핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Pin",
+      "text": "木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "Pin",
+      "text": "Кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "Pin",
+      "text": "وتد"
+    },
+    {
+      "culture": "es",
+      "key": "a pin",
+      "text": "un bolo"
+    },
+    {
+      "culture": "fr",
+      "key": "a pin",
+      "text": "une quille"
+    },
+    {
+      "culture": "de",
+      "key": "a pin",
+      "text": "ein Kegel"
+    },
+    {
+      "culture": "it",
+      "key": "a pin",
+      "text": "un birillo"
+    },
+    {
+      "culture": "pt",
+      "key": "a pin",
+      "text": "um pino"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a pin",
+      "text": "um pino"
+    },
+    {
+      "culture": "ja",
+      "key": "a pin",
+      "text": "ピン"
+    },
+    {
+      "culture": "ko",
+      "key": "a pin",
+      "text": "핀"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a pin",
+      "text": "一个木柱"
+    },
+    {
+      "culture": "ru",
+      "key": "a pin",
+      "text": "кегля"
+    },
+    {
+      "culture": "ar",
+      "key": "a pin",
+      "text": "وتد"
+    },
+    {
+      "culture": "es",
+      "key": "Bumper",
+      "text": "Tope"
+    },
+    {
+      "culture": "fr",
+      "key": "Bumper",
+      "text": "Plot"
+    },
+    {
+      "culture": "de",
+      "key": "Bumper",
+      "text": "Pfosten"
+    },
+    {
+      "culture": "it",
+      "key": "Bumper",
+      "text": "Respingente"
+    },
+    {
+      "culture": "pt",
+      "key": "Bumper",
+      "text": "Pino de borracha"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Bumper",
+      "text": "Pino de borracha"
+    },
+    {
+      "culture": "ja",
+      "key": "Bumper",
+      "text": "バンパー"
+    },
+    {
+      "culture": "ko",
+      "key": "Bumper",
+      "text": "범퍼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Bumper",
+      "text": "挡柱"
+    },
+    {
+      "culture": "ru",
+      "key": "Bumper",
+      "text": "Столбик"
+    },
+    {
+      "culture": "ar",
+      "key": "Bumper",
+      "text": "مصدّ"
+    },
+    {
+      "culture": "es",
+      "key": "a bumper",
+      "text": "un tope"
+    },
+    {
+      "culture": "fr",
+      "key": "a bumper",
+      "text": "un plot"
+    },
+    {
+      "culture": "de",
+      "key": "a bumper",
+      "text": "ein Pfosten"
+    },
+    {
+      "culture": "it",
+      "key": "a bumper",
+      "text": "un respingente"
+    },
+    {
+      "culture": "pt",
+      "key": "a bumper",
+      "text": "um pino de borracha"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a bumper",
+      "text": "um pino de borracha"
+    },
+    {
+      "culture": "ja",
+      "key": "a bumper",
+      "text": "バンパー"
+    },
+    {
+      "culture": "ko",
+      "key": "a bumper",
+      "text": "범퍼"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a bumper",
+      "text": "一个挡柱"
+    },
+    {
+      "culture": "ru",
+      "key": "a bumper",
+      "text": "столбик"
+    },
+    {
+      "culture": "ar",
+      "key": "a bumper",
+      "text": "مصدّ"
+    },
+    {
+      "culture": "es",
+      "key": "%@ is right beside it.",
+      "text": "%@ está justo al lado."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ is right beside it.",
+      "text": "%@ est juste à côté."
+    },
+    {
+      "culture": "de",
+      "key": "%@ is right beside it.",
+      "text": "%@ ist direkt daneben."
+    },
+    {
+      "culture": "it",
+      "key": "%@ is right beside it.",
+      "text": "%@ è proprio accanto."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ is right beside it.",
+      "text": "%@ está mesmo ao lado."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ is right beside it.",
+      "text": "%@ está bem ao lado."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ is right beside it.",
+      "text": "すぐ隣に%@があります。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ is right beside it.",
+      "text": "바로 옆에 %@이(가) 있어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ is right beside it.",
+      "text": "%@就在旁边。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ is right beside it.",
+      "text": "%@ — совсем рядом."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ is right beside it.",
+      "text": "%@ على مقربة مباشرة."
+    },
+    {
+      "culture": "es",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ está a unas %2$@ bolas de distancia."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ est à environ %2$@ largeurs de bille."
+    },
+    {
+      "culture": "de",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ ist etwa %2$@ Kugelbreiten entfernt."
+    },
+    {
+      "culture": "it",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ è a circa %2$@ palle di distanza."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ está a cerca de %2$@ bolas de distância."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ está a cerca de %2$@ bolas de distância."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@まで球約%2$@個分です。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@까지 공 약 %2$@개 거리예요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@在约%2$@个球宽之外。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ — примерно в %2$@ шарах."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ is about %@ ball-widths away.",
+      "text": "%1$@ على بعد نحو %2$@ عرض كرة."
+    },
+    {
+      "culture": "es",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "Está contra %1$@, a %2$@ bolas de distancia de %3$@."
+    },
+    {
+      "culture": "fr",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "C'est contre %1$@, à %2$@ largeurs de bille de %3$@."
+    },
+    {
+      "culture": "de",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "Direkt an der %1$@, %2$@ Kugelbreiten von der %3$@."
+    },
+    {
+      "culture": "it",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "Contro la %1$@, a %2$@ palle di distanza dalla %3$@."
+    },
+    {
+      "culture": "pt",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "Junto à %1$@, a %2$@ bolas de distância da %3$@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "Junto à %1$@, a %2$@ bolas de distância da %3$@."
+    },
+    {
+      "culture": "ja",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "%1$@に接していて、%3$@から球%2$@個分です。"
+    },
+    {
+      "culture": "ko",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "%1$@에 붙어 있고, %3$@에서 공 %2$@개 거리예요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "贴着%1$@，距%3$@%2$@个球宽。"
+    },
+    {
+      "culture": "ru",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "У самого борта: %1$@, в %2$@ шарах от борта (%3$@)."
+    },
+    {
+      "culture": "ar",
+      "key": "It is against %@, %@ ball-widths from %@.",
+      "text": "ملاصق لـ%1$@، على بعد %2$@ عرض كرة من %3$@."
+    },
+    {
+      "culture": "es",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "Está a %1$@ bolas de %2$@ y a %3$@ de %4$@."
+    },
+    {
+      "culture": "fr",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "C'est à %1$@ largeurs de bille de %2$@ et à %3$@ de %4$@."
+    },
+    {
+      "culture": "de",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "%1$@ Kugelbreiten von der %2$@ und %3$@ von der %4$@ entfernt."
+    },
+    {
+      "culture": "it",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "A %1$@ palle dalla %2$@ e a %3$@ dalla %4$@."
+    },
+    {
+      "culture": "pt",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "A %1$@ bolas da %2$@ e a %3$@ da %4$@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "A %1$@ bolas da %2$@ e a %3$@ da %4$@."
+    },
+    {
+      "culture": "ja",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "%2$@から球%1$@個分、%4$@から%3$@個分です。"
+    },
+    {
+      "culture": "ko",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "%2$@에서 공 %1$@개, %4$@에서 %3$@개 거리예요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "距%2$@%1$@个球宽，距%4$@%3$@个球宽。"
+    },
+    {
+      "culture": "ru",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "В %1$@ шарах от борта (%2$@) и в %3$@ от борта (%4$@)."
+    },
+    {
+      "culture": "ar",
+      "key": "It is %@ ball-widths from %@ and %@ from %@.",
+      "text": "على بعد %1$@ عرض كرة من %2$@ و%3$@ من %4$@."
+    },
+    {
+      "culture": "es",
+      "key": "In the way from %@: %@.",
+      "text": "En el camino desde %1$@: %2$@."
+    },
+    {
+      "culture": "fr",
+      "key": "In the way from %@: %@.",
+      "text": "Sur le chemin depuis %1$@ : %2$@."
+    },
+    {
+      "culture": "de",
+      "key": "In the way from %@: %@.",
+      "text": "Im Weg der gespielten Kugel (%1$@): %2$@."
+    },
+    {
+      "culture": "it",
+      "key": "In the way from %@: %@.",
+      "text": "Sulla strada della palla giocata (%1$@): %2$@."
+    },
+    {
+      "culture": "pt",
+      "key": "In the way from %@: %@.",
+      "text": "No caminho da bola jogada (%1$@): %2$@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "In the way from %@: %@.",
+      "text": "No caminho da bola jogada (%1$@): %2$@."
+    },
+    {
+      "culture": "ja",
+      "key": "In the way from %@: %@.",
+      "text": "%1$@からの進路をふさいでいる球：%2$@。"
+    },
+    {
+      "culture": "ko",
+      "key": "In the way from %@: %@.",
+      "text": "%1$@의 길을 막는 공: %2$@."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "In the way from %@: %@.",
+      "text": "挡在%1$@前路上的：%2$@。"
+    },
+    {
+      "culture": "ru",
+      "key": "In the way from %@: %@.",
+      "text": "На пути шара (%1$@): %2$@."
+    },
+    {
+      "culture": "ar",
+      "key": "In the way from %@: %@.",
+      "text": "في طريق %1$@: %2$@."
+    },
+    {
+      "culture": "es",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "Lo primero en su camino: %@, y cae dentro."
+    },
+    {
+      "culture": "fr",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "Premier obstacle sur sa route : %@, et elle tombe dedans."
+    },
+    {
+      "culture": "de",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "Als Erstes im Weg: %@, und sie fällt hinein."
+    },
+    {
+      "culture": "it",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "La prima cosa sul suo percorso: %@, e ci cade dentro."
+    },
+    {
+      "culture": "pt",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "A primeira coisa no caminho: %@, e cai lá dentro."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "A primeira coisa no caminho: %@, e cai lá dentro."
+    },
+    {
+      "culture": "ja",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "進路で最初にあるのは%@で、そこに落ちます。"
+    },
+    {
+      "culture": "ko",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "가는 길에 처음 있는 것은 %@이고, 그 안으로 떨어져요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "路线上第一个是%@，球会掉进去。"
+    },
+    {
+      "culture": "ru",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "Первое на пути: %@ — и шар туда упадёт."
+    },
+    {
+      "culture": "ar",
+      "key": "First in its path: %@, and it drops in.",
+      "text": "أول ما في طريقها: %@، وتسقط فيه."
+    },
+    {
+      "culture": "es",
+      "key": "First in its path: %@.",
+      "text": "Lo primero en su camino: %@."
+    },
+    {
+      "culture": "fr",
+      "key": "First in its path: %@.",
+      "text": "Premier obstacle sur sa route : %@."
+    },
+    {
+      "culture": "de",
+      "key": "First in its path: %@.",
+      "text": "Als Erstes im Weg: %@."
+    },
+    {
+      "culture": "it",
+      "key": "First in its path: %@.",
+      "text": "La prima cosa sul suo percorso: %@."
+    },
+    {
+      "culture": "pt",
+      "key": "First in its path: %@.",
+      "text": "A primeira coisa no caminho: %@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "First in its path: %@.",
+      "text": "A primeira coisa no caminho: %@."
+    },
+    {
+      "culture": "ja",
+      "key": "First in its path: %@.",
+      "text": "進路で最初にあるのは%@です。"
+    },
+    {
+      "culture": "ko",
+      "key": "First in its path: %@.",
+      "text": "가는 길에 처음 있는 것은 %@이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "First in its path: %@.",
+      "text": "路线上第一个是%@。"
+    },
+    {
+      "culture": "ru",
+      "key": "First in its path: %@.",
+      "text": "Первое на пути: %@."
+    },
+    {
+      "culture": "ar",
+      "key": "First in its path: %@.",
+      "text": "أول ما في طريقها: %@."
+    },
+    {
+      "culture": "es",
+      "key": "Next in its path: %@.",
+      "text": "Después, en su camino: %@."
+    },
+    {
+      "culture": "fr",
+      "key": "Next in its path: %@.",
+      "text": "Ensuite sur sa route : %@."
+    },
+    {
+      "culture": "de",
+      "key": "Next in its path: %@.",
+      "text": "Danach im Weg: %@."
+    },
+    {
+      "culture": "it",
+      "key": "Next in its path: %@.",
+      "text": "Poi sul suo percorso: %@."
+    },
+    {
+      "culture": "pt",
+      "key": "Next in its path: %@.",
+      "text": "A seguir no caminho: %@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Next in its path: %@.",
+      "text": "Em seguida no caminho: %@."
+    },
+    {
+      "culture": "ja",
+      "key": "Next in its path: %@.",
+      "text": "その先にあるのは%@です。"
+    },
+    {
+      "culture": "ko",
+      "key": "Next in its path: %@.",
+      "text": "그다음 길에 있는 것은 %@이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Next in its path: %@.",
+      "text": "接下来路线上是%@。"
+    },
+    {
+      "culture": "ru",
+      "key": "Next in its path: %@.",
+      "text": "Дальше на пути: %@."
+    },
+    {
+      "culture": "ar",
+      "key": "Next in its path: %@.",
+      "text": "التالي في طريقها: %@."
+    },
+    {
+      "culture": "es",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ no toca ninguna bola y llega a %2$@."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ ne touche aucune bille et file vers %2$@."
+    },
+    {
+      "culture": "de",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ trifft keine Kugel und läuft zur %2$@."
+    },
+    {
+      "culture": "it",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ non tocca nessuna palla e arriva alla %2$@."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ não toca em nenhuma bola e vai até à %2$@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ não toca em nenhuma bola e vai até a %2$@."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@はどの球にも当たらず%2$@へ進みます。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@은(는) 어떤 공도 맞히지 않고 %2$@까지 가요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@不碰任何球，滚向%2$@。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ не задевает ни одного шара и идёт к борту (%2$@)."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ hits no ball and runs to %@.",
+      "text": "%1$@ لا تصيب أي كرة وتصل إلى %2$@."
+    },
+    {
+      "culture": "es",
+      "key": "%@ hits no ball.",
+      "text": "%@ no toca ninguna bola."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ hits no ball.",
+      "text": "%@ ne touche aucune bille."
+    },
+    {
+      "culture": "de",
+      "key": "%@ hits no ball.",
+      "text": "%@ trifft keine Kugel."
+    },
+    {
+      "culture": "it",
+      "key": "%@ hits no ball.",
+      "text": "%@ non tocca nessuna palla."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ hits no ball.",
+      "text": "%@ não toca em nenhuma bola."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ hits no ball.",
+      "text": "%@ não toca em nenhuma bola."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ hits no ball.",
+      "text": "%@はどの球にも当たりません。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ hits no ball.",
+      "text": "%@은(는) 어떤 공도 맞히지 않아요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ hits no ball.",
+      "text": "%@不碰任何球。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ hits no ball.",
+      "text": "%@ не задевает ни одного шара."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ hits no ball.",
+      "text": "%@ لا تصيب أي كرة."
+    },
+    {
+      "culture": "es",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ golpeó primero %2$@."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ a touché %2$@ en premier."
+    },
+    {
+      "culture": "de",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ traf zuerst %2$@."
+    },
+    {
+      "culture": "it",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ ha colpito prima %2$@."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ acertou primeiro %2$@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ acertou primeiro %2$@."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@は最初に%2$@に当たりました。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@이(가) 먼저 %2$@을(를) 맞혔어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@先击中了%2$@。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ hit %@ first.",
+      "text": "%1$@ первым коснулся: %2$@."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ hit %@ first.",
+      "text": "أصابت %1$@ %2$@ أولًا."
+    },
+    {
+      "culture": "es",
+      "key": "%@ hit no ball.",
+      "text": "%@ no tocó ninguna bola."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ hit no ball.",
+      "text": "%@ n'a touché aucune bille."
+    },
+    {
+      "culture": "de",
+      "key": "%@ hit no ball.",
+      "text": "%@ traf keine Kugel."
+    },
+    {
+      "culture": "it",
+      "key": "%@ hit no ball.",
+      "text": "%@ non ha toccato nessuna palla."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ hit no ball.",
+      "text": "%@ não tocou em nenhuma bola."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ hit no ball.",
+      "text": "%@ não tocou em nenhuma bola."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ hit no ball.",
+      "text": "%@はどの球にも当たりませんでした。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ hit no ball.",
+      "text": "%@은(는) 어떤 공도 맞히지 못했어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ hit no ball.",
+      "text": "%@没有碰到任何球。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ hit no ball.",
+      "text": "%@ не задел ни одного шара."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ hit no ball.",
+      "text": "لم تصب %@ أي كرة."
+    },
+    {
+      "culture": "es",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ entró: %2$@."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ est tombée : %2$@."
+    },
+    {
+      "culture": "de",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ ist gefallen: %2$@."
+    },
+    {
+      "culture": "it",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ è entrata: %2$@."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ entrou: %2$@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ entrou: %2$@."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@が入りました：%2$@。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@이(가) 들어갔어요: %2$@."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@落入：%2$@。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ dropped: %@.",
+      "text": "%1$@ упал: %2$@."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ dropped: %@.",
+      "text": "سقطت %1$@: %2$@."
+    },
+    {
+      "culture": "es",
+      "key": "%lld pegs down.",
+      "text": "%lld setas derribadas."
+    },
+    {
+      "culture": "fr",
+      "key": "%lld pegs down.",
+      "text": "%lld champignons tombés."
+    },
+    {
+      "culture": "de",
+      "key": "%lld pegs down.",
+      "text": "%lld Pilze gefallen."
+    },
+    {
+      "culture": "it",
+      "key": "%lld pegs down.",
+      "text": "%lld funghi abbattuti."
+    },
+    {
+      "culture": "pt",
+      "key": "%lld pegs down.",
+      "text": "%lld pinos derrubados."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%lld pegs down.",
+      "text": "%lld pinos derrubados."
+    },
+    {
+      "culture": "ja",
+      "key": "%lld pegs down.",
+      "text": "ペグが%lld本倒れました。"
+    },
+    {
+      "culture": "ko",
+      "key": "%lld pegs down.",
+      "text": "페그 %lld개가 쓰러졌어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%lld pegs down.",
+      "text": "击倒%lld个小柱。"
+    },
+    {
+      "culture": "ru",
+      "key": "%lld pegs down.",
+      "text": "Сбито грибков: %lld."
+    },
+    {
+      "culture": "ar",
+      "key": "%lld pegs down.",
+      "text": "سقط %lld من الأوتاد."
+    },
+    {
+      "culture": "es",
+      "key": "%@ left the table.",
+      "text": "%@ salió de la mesa."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ left the table.",
+      "text": "%@ est sortie de la table."
+    },
+    {
+      "culture": "de",
+      "key": "%@ left the table.",
+      "text": "%@ hat den Tisch verlassen."
+    },
+    {
+      "culture": "it",
+      "key": "%@ left the table.",
+      "text": "%@ è uscita dal tavolo."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ left the table.",
+      "text": "%@ saiu da mesa."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ left the table.",
+      "text": "%@ saiu da mesa."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ left the table.",
+      "text": "%@は台の外に出ました。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ left the table.",
+      "text": "%@은(는) 테이블 밖으로 나갔어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ left the table.",
+      "text": "%@飞出了球台。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ left the table.",
+      "text": "%@ вылетел со стола."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ left the table.",
+      "text": "خرجت %@ من الطاولة."
+    },
+    {
+      "culture": "es",
+      "key": "%@ came to rest.",
+      "text": "%@ se detuvo."
+    },
+    {
+      "culture": "fr",
+      "key": "%@ came to rest.",
+      "text": "%@ s'est arrêtée."
+    },
+    {
+      "culture": "de",
+      "key": "%@ came to rest.",
+      "text": "%@ ist liegen geblieben."
+    },
+    {
+      "culture": "it",
+      "key": "%@ came to rest.",
+      "text": "%@ si è fermata."
+    },
+    {
+      "culture": "pt",
+      "key": "%@ came to rest.",
+      "text": "%@ parou."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ came to rest.",
+      "text": "%@ parou."
+    },
+    {
+      "culture": "ja",
+      "key": "%@ came to rest.",
+      "text": "%@が止まりました。"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ came to rest.",
+      "text": "%@이(가) 멈췄어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ came to rest.",
+      "text": "%@停了下来。"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ came to rest.",
+      "text": "%@ остановился."
+    },
+    {
+      "culture": "ar",
+      "key": "%@ came to rest.",
+      "text": "توقفت %@."
+    },
+    {
+      "culture": "es",
+      "key": "%@ millimetres above centre",
+      "text": "%@ milímetros por encima del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "%@ millimetres above centre",
+      "text": "%@ millimètres au-dessus du centre"
+    },
+    {
+      "culture": "de",
+      "key": "%@ millimetres above centre",
+      "text": "%@ Millimeter über der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "%@ millimetres above centre",
+      "text": "%@ millimetri sopra il centro"
+    },
+    {
+      "culture": "pt",
+      "key": "%@ millimetres above centre",
+      "text": "%@ milímetros acima do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ millimetres above centre",
+      "text": "%@ milímetros acima do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "%@ millimetres above centre",
+      "text": "中心から%@ミリ上"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ millimetres above centre",
+      "text": "중심에서 %@밀리미터 위"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ millimetres above centre",
+      "text": "中心上方%@毫米"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ millimetres above centre",
+      "text": "%@ мм выше центра"
+    },
+    {
+      "culture": "ar",
+      "key": "%@ millimetres above centre",
+      "text": "%@ ملم فوق المركز"
+    },
+    {
+      "culture": "es",
+      "key": "%@ millimetres below centre",
+      "text": "%@ milímetros por debajo del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "%@ millimetres below centre",
+      "text": "%@ millimètres au-dessous du centre"
+    },
+    {
+      "culture": "de",
+      "key": "%@ millimetres below centre",
+      "text": "%@ Millimeter unter der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "%@ millimetres below centre",
+      "text": "%@ millimetri sotto il centro"
+    },
+    {
+      "culture": "pt",
+      "key": "%@ millimetres below centre",
+      "text": "%@ milímetros abaixo do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ millimetres below centre",
+      "text": "%@ milímetros abaixo do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "%@ millimetres below centre",
+      "text": "中心から%@ミリ下"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ millimetres below centre",
+      "text": "중심에서 %@밀리미터 아래"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ millimetres below centre",
+      "text": "中心下方%@毫米"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ millimetres below centre",
+      "text": "%@ мм ниже центра"
+    },
+    {
+      "culture": "ar",
+      "key": "%@ millimetres below centre",
+      "text": "%@ ملم تحت المركز"
+    },
+    {
+      "culture": "es",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ milímetros a la derecha del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ millimètres à droite du centre"
+    },
+    {
+      "culture": "de",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ Millimeter rechts der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ millimetri a destra del centro"
+    },
+    {
+      "culture": "pt",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ milímetros à direita do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ milímetros à direita do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "%@ millimetres right of centre",
+      "text": "中心から%@ミリ右"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ millimetres right of centre",
+      "text": "중심에서 %@밀리미터 오른쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ millimetres right of centre",
+      "text": "中心右侧%@毫米"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ мм правее центра"
+    },
+    {
+      "culture": "ar",
+      "key": "%@ millimetres right of centre",
+      "text": "%@ ملم يمين المركز"
+    },
+    {
+      "culture": "es",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ milímetros a la izquierda del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ millimètres à gauche du centre"
+    },
+    {
+      "culture": "de",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ Millimeter links der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ millimetri a sinistra del centro"
+    },
+    {
+      "culture": "pt",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ milímetros à esquerda do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ milímetros à esquerda do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "%@ millimetres left of centre",
+      "text": "中心から%@ミリ左"
+    },
+    {
+      "culture": "ko",
+      "key": "%@ millimetres left of centre",
+      "text": "중심에서 %@밀리미터 왼쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@ millimetres left of centre",
+      "text": "中心左侧%@毫米"
+    },
+    {
+      "culture": "ru",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ мм левее центра"
+    },
+    {
+      "culture": "ar",
+      "key": "%@ millimetres left of centre",
+      "text": "%@ ملم يسار المركز"
+    },
+    {
+      "culture": "es",
+      "key": "a little above centre",
+      "text": "un poco por encima del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "a little above centre",
+      "text": "un peu au-dessus du centre"
+    },
+    {
+      "culture": "de",
+      "key": "a little above centre",
+      "text": "etwas über der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "a little above centre",
+      "text": "poco sopra il centro"
+    },
+    {
+      "culture": "pt",
+      "key": "a little above centre",
+      "text": "um pouco acima do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a little above centre",
+      "text": "um pouco acima do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "a little above centre",
+      "text": "中心より少し上"
+    },
+    {
+      "culture": "ko",
+      "key": "a little above centre",
+      "text": "중심보다 조금 위"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a little above centre",
+      "text": "略高于中心"
+    },
+    {
+      "culture": "ru",
+      "key": "a little above centre",
+      "text": "чуть выше центра"
+    },
+    {
+      "culture": "ar",
+      "key": "a little above centre",
+      "text": "أعلى المركز قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "halfway up",
+      "text": "a media altura hacia arriba"
+    },
+    {
+      "culture": "fr",
+      "key": "halfway up",
+      "text": "à mi-hauteur vers le haut"
+    },
+    {
+      "culture": "de",
+      "key": "halfway up",
+      "text": "halb nach oben"
+    },
+    {
+      "culture": "it",
+      "key": "halfway up",
+      "text": "a metà verso l'alto"
+    },
+    {
+      "culture": "pt",
+      "key": "halfway up",
+      "text": "a meio caminho para cima"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "halfway up",
+      "text": "a meio caminho para cima"
+    },
+    {
+      "culture": "ja",
+      "key": "halfway up",
+      "text": "上へ半分ほど"
+    },
+    {
+      "culture": "ko",
+      "key": "halfway up",
+      "text": "위로 절반쯤"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "halfway up",
+      "text": "向上一半"
+    },
+    {
+      "culture": "ru",
+      "key": "halfway up",
+      "text": "наполовину вверх"
+    },
+    {
+      "culture": "ar",
+      "key": "halfway up",
+      "text": "في منتصف الطريق إلى الأعلى"
+    },
+    {
+      "culture": "es",
+      "key": "well above centre",
+      "text": "muy por encima del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "well above centre",
+      "text": "bien au-dessus du centre"
+    },
+    {
+      "culture": "de",
+      "key": "well above centre",
+      "text": "deutlich über der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "well above centre",
+      "text": "ben sopra il centro"
+    },
+    {
+      "culture": "pt",
+      "key": "well above centre",
+      "text": "bem acima do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "well above centre",
+      "text": "bem acima do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "well above centre",
+      "text": "中心よりかなり上"
+    },
+    {
+      "culture": "ko",
+      "key": "well above centre",
+      "text": "중심보다 한참 위"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "well above centre",
+      "text": "远高于中心"
+    },
+    {
+      "culture": "ru",
+      "key": "well above centre",
+      "text": "намного выше центра"
+    },
+    {
+      "culture": "ar",
+      "key": "well above centre",
+      "text": "أعلى المركز بكثير"
+    },
+    {
+      "culture": "es",
+      "key": "a little below centre",
+      "text": "un poco por debajo del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "a little below centre",
+      "text": "un peu au-dessous du centre"
+    },
+    {
+      "culture": "de",
+      "key": "a little below centre",
+      "text": "etwas unter der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "a little below centre",
+      "text": "poco sotto il centro"
+    },
+    {
+      "culture": "pt",
+      "key": "a little below centre",
+      "text": "um pouco abaixo do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a little below centre",
+      "text": "um pouco abaixo do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "a little below centre",
+      "text": "中心より少し下"
+    },
+    {
+      "culture": "ko",
+      "key": "a little below centre",
+      "text": "중심보다 조금 아래"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a little below centre",
+      "text": "略低于中心"
+    },
+    {
+      "culture": "ru",
+      "key": "a little below centre",
+      "text": "чуть ниже центра"
+    },
+    {
+      "culture": "ar",
+      "key": "a little below centre",
+      "text": "أسفل المركز قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "halfway down",
+      "text": "a media altura hacia abajo"
+    },
+    {
+      "culture": "fr",
+      "key": "halfway down",
+      "text": "à mi-hauteur vers le bas"
+    },
+    {
+      "culture": "de",
+      "key": "halfway down",
+      "text": "halb nach unten"
+    },
+    {
+      "culture": "it",
+      "key": "halfway down",
+      "text": "a metà verso il basso"
+    },
+    {
+      "culture": "pt",
+      "key": "halfway down",
+      "text": "a meio caminho para baixo"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "halfway down",
+      "text": "a meio caminho para baixo"
+    },
+    {
+      "culture": "ja",
+      "key": "halfway down",
+      "text": "下へ半分ほど"
+    },
+    {
+      "culture": "ko",
+      "key": "halfway down",
+      "text": "아래로 절반쯤"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "halfway down",
+      "text": "向下一半"
+    },
+    {
+      "culture": "ru",
+      "key": "halfway down",
+      "text": "наполовину вниз"
+    },
+    {
+      "culture": "ar",
+      "key": "halfway down",
+      "text": "في منتصف الطريق إلى الأسفل"
+    },
+    {
+      "culture": "es",
+      "key": "well below centre",
+      "text": "muy por debajo del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "well below centre",
+      "text": "bien au-dessous du centre"
+    },
+    {
+      "culture": "de",
+      "key": "well below centre",
+      "text": "deutlich unter der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "well below centre",
+      "text": "ben sotto il centro"
+    },
+    {
+      "culture": "pt",
+      "key": "well below centre",
+      "text": "bem abaixo do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "well below centre",
+      "text": "bem abaixo do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "well below centre",
+      "text": "中心よりかなり下"
+    },
+    {
+      "culture": "ko",
+      "key": "well below centre",
+      "text": "중심보다 한참 아래"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "well below centre",
+      "text": "远低于中心"
+    },
+    {
+      "culture": "ru",
+      "key": "well below centre",
+      "text": "намного ниже центра"
+    },
+    {
+      "culture": "ar",
+      "key": "well below centre",
+      "text": "أسفل المركز بكثير"
+    },
+    {
+      "culture": "es",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ milímetros"
+    },
+    {
+      "culture": "fr",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ millimètres"
+    },
+    {
+      "culture": "de",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ Millimeter"
+    },
+    {
+      "culture": "it",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ millimetri"
+    },
+    {
+      "culture": "pt",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ milímetros"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ milímetros"
+    },
+    {
+      "culture": "ja",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@、%2$@ミリ"
+    },
+    {
+      "culture": "ko",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@밀리미터"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@，%2$@毫米"
+    },
+    {
+      "culture": "ru",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@, %2$@ мм"
+    },
+    {
+      "culture": "ar",
+      "key": "%@, %@ millimetres",
+      "text": "%1$@، %2$@ ملم"
+    },
+    {
+      "culture": "es",
+      "key": "a little right of centre",
+      "text": "un poco a la derecha del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "a little right of centre",
+      "text": "un peu à droite du centre"
+    },
+    {
+      "culture": "de",
+      "key": "a little right of centre",
+      "text": "etwas rechts der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "a little right of centre",
+      "text": "poco a destra del centro"
+    },
+    {
+      "culture": "pt",
+      "key": "a little right of centre",
+      "text": "um pouco à direita do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a little right of centre",
+      "text": "um pouco à direita do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "a little right of centre",
+      "text": "中心より少し右"
+    },
+    {
+      "culture": "ko",
+      "key": "a little right of centre",
+      "text": "중심보다 조금 오른쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a little right of centre",
+      "text": "略偏中心右侧"
+    },
+    {
+      "culture": "ru",
+      "key": "a little right of centre",
+      "text": "чуть правее центра"
+    },
+    {
+      "culture": "ar",
+      "key": "a little right of centre",
+      "text": "يمين المركز قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "halfway to the right",
+      "text": "a medio camino a la derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "halfway to the right",
+      "text": "à mi-chemin vers la droite"
+    },
+    {
+      "culture": "de",
+      "key": "halfway to the right",
+      "text": "halb nach rechts"
+    },
+    {
+      "culture": "it",
+      "key": "halfway to the right",
+      "text": "a metà verso destra"
+    },
+    {
+      "culture": "pt",
+      "key": "halfway to the right",
+      "text": "a meio caminho para a direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "halfway to the right",
+      "text": "a meio caminho para a direita"
+    },
+    {
+      "culture": "ja",
+      "key": "halfway to the right",
+      "text": "右へ半分ほど"
+    },
+    {
+      "culture": "ko",
+      "key": "halfway to the right",
+      "text": "오른쪽으로 절반쯤"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "halfway to the right",
+      "text": "向右一半"
+    },
+    {
+      "culture": "ru",
+      "key": "halfway to the right",
+      "text": "наполовину вправо"
+    },
+    {
+      "culture": "ar",
+      "key": "halfway to the right",
+      "text": "في منتصف الطريق إلى اليمين"
+    },
+    {
+      "culture": "es",
+      "key": "well to the right",
+      "text": "muy a la derecha"
+    },
+    {
+      "culture": "fr",
+      "key": "well to the right",
+      "text": "bien à droite"
+    },
+    {
+      "culture": "de",
+      "key": "well to the right",
+      "text": "deutlich rechts"
+    },
+    {
+      "culture": "it",
+      "key": "well to the right",
+      "text": "molto a destra"
+    },
+    {
+      "culture": "pt",
+      "key": "well to the right",
+      "text": "bem à direita"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "well to the right",
+      "text": "bem à direita"
+    },
+    {
+      "culture": "ja",
+      "key": "well to the right",
+      "text": "かなり右"
+    },
+    {
+      "culture": "ko",
+      "key": "well to the right",
+      "text": "한참 오른쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "well to the right",
+      "text": "远偏右侧"
+    },
+    {
+      "culture": "ru",
+      "key": "well to the right",
+      "text": "намного правее"
+    },
+    {
+      "culture": "ar",
+      "key": "well to the right",
+      "text": "إلى اليمين بكثير"
+    },
+    {
+      "culture": "es",
+      "key": "a little left of centre",
+      "text": "un poco a la izquierda del centro"
+    },
+    {
+      "culture": "fr",
+      "key": "a little left of centre",
+      "text": "un peu à gauche du centre"
+    },
+    {
+      "culture": "de",
+      "key": "a little left of centre",
+      "text": "etwas links der Mitte"
+    },
+    {
+      "culture": "it",
+      "key": "a little left of centre",
+      "text": "poco a sinistra del centro"
+    },
+    {
+      "culture": "pt",
+      "key": "a little left of centre",
+      "text": "um pouco à esquerda do centro"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "a little left of centre",
+      "text": "um pouco à esquerda do centro"
+    },
+    {
+      "culture": "ja",
+      "key": "a little left of centre",
+      "text": "中心より少し左"
+    },
+    {
+      "culture": "ko",
+      "key": "a little left of centre",
+      "text": "중심보다 조금 왼쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "a little left of centre",
+      "text": "略偏中心左侧"
+    },
+    {
+      "culture": "ru",
+      "key": "a little left of centre",
+      "text": "чуть левее центра"
+    },
+    {
+      "culture": "ar",
+      "key": "a little left of centre",
+      "text": "يسار المركز قليلًا"
+    },
+    {
+      "culture": "es",
+      "key": "halfway to the left",
+      "text": "a medio camino a la izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "halfway to the left",
+      "text": "à mi-chemin vers la gauche"
+    },
+    {
+      "culture": "de",
+      "key": "halfway to the left",
+      "text": "halb nach links"
+    },
+    {
+      "culture": "it",
+      "key": "halfway to the left",
+      "text": "a metà verso sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "halfway to the left",
+      "text": "a meio caminho para a esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "halfway to the left",
+      "text": "a meio caminho para a esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "halfway to the left",
+      "text": "左へ半分ほど"
+    },
+    {
+      "culture": "ko",
+      "key": "halfway to the left",
+      "text": "왼쪽으로 절반쯤"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "halfway to the left",
+      "text": "向左一半"
+    },
+    {
+      "culture": "ru",
+      "key": "halfway to the left",
+      "text": "наполовину влево"
+    },
+    {
+      "culture": "ar",
+      "key": "halfway to the left",
+      "text": "في منتصف الطريق إلى اليسار"
+    },
+    {
+      "culture": "es",
+      "key": "well to the left",
+      "text": "muy a la izquierda"
+    },
+    {
+      "culture": "fr",
+      "key": "well to the left",
+      "text": "bien à gauche"
+    },
+    {
+      "culture": "de",
+      "key": "well to the left",
+      "text": "deutlich links"
+    },
+    {
+      "culture": "it",
+      "key": "well to the left",
+      "text": "molto a sinistra"
+    },
+    {
+      "culture": "pt",
+      "key": "well to the left",
+      "text": "bem à esquerda"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "well to the left",
+      "text": "bem à esquerda"
+    },
+    {
+      "culture": "ja",
+      "key": "well to the left",
+      "text": "かなり左"
+    },
+    {
+      "culture": "ko",
+      "key": "well to the left",
+      "text": "한참 왼쪽"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "well to the left",
+      "text": "远偏左侧"
+    },
+    {
+      "culture": "ru",
+      "key": "well to the left",
+      "text": "намного левее"
+    },
+    {
+      "culture": "ar",
+      "key": "well to the left",
+      "text": "إلى اليسار بكثير"
+    },
+    {
+      "culture": "es",
+      "key": "Centre of the cue ball",
+      "text": "Centro de la bola blanca"
+    },
+    {
+      "culture": "fr",
+      "key": "Centre of the cue ball",
+      "text": "Centre de la bille blanche"
+    },
+    {
+      "culture": "de",
+      "key": "Centre of the cue ball",
+      "text": "Mitte der weißen Kugel"
+    },
+    {
+      "culture": "it",
+      "key": "Centre of the cue ball",
+      "text": "Centro della palla bianca"
+    },
+    {
+      "culture": "pt",
+      "key": "Centre of the cue ball",
+      "text": "Centro da bola branca"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Centre of the cue ball",
+      "text": "Centro da bola branca"
+    },
+    {
+      "culture": "ja",
+      "key": "Centre of the cue ball",
+      "text": "手球の中心"
+    },
+    {
+      "culture": "ko",
+      "key": "Centre of the cue ball",
+      "text": "큐볼 중심"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Centre of the cue ball",
+      "text": "白球中心"
+    },
+    {
+      "culture": "ru",
+      "key": "Centre of the cue ball",
+      "text": "Центр белого шара"
+    },
+    {
+      "culture": "ar",
+      "key": "Centre of the cue ball",
+      "text": "مركز الكرة البيضاء"
+    },
+    {
+      "culture": "es",
+      "key": "Height inside the marked band.",
+      "text": "Altura dentro de la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Height inside the marked band.",
+      "text": "Hauteur dans la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Height inside the marked band.",
+      "text": "Höhe im markierten Bereich."
+    },
+    {
+      "culture": "it",
+      "key": "Height inside the marked band.",
+      "text": "Altezza dentro la fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Height inside the marked band.",
+      "text": "Altura dentro da faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Height inside the marked band.",
+      "text": "Altura dentro da faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Height inside the marked band.",
+      "text": "高さはマークした帯の中です。"
+    },
+    {
+      "culture": "ko",
+      "key": "Height inside the marked band.",
+      "text": "높이가 표시된 구간 안이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Height inside the marked band.",
+      "text": "高度在标记区内。"
+    },
+    {
+      "culture": "ru",
+      "key": "Height inside the marked band.",
+      "text": "Высота в отмеченной полосе."
+    },
+    {
+      "culture": "ar",
+      "key": "Height inside the marked band.",
+      "text": "الارتفاع داخل النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Sube la punta %@ milímetros para llegar a la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Monte la pointe de %@ millimètres pour atteindre la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Heb die Spitze um %@ Millimeter an, um den markierten Bereich zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Alza la punta di %@ millimetri per arrivare alla fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Sobe a ponta %@ milímetros para chegar à faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Suba a ponta %@ milímetros para chegar à faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "マークした帯まで、先端をあと%@ミリ上げます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "표시된 구간까지 팁을 %@밀리미터 올려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "将杆头上移%@毫米即可进入标记区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "Подними точку удара на %@ мм, чтобы попасть в отмеченную полосу."
+    },
+    {
+      "culture": "ar",
+      "key": "Raise the tip %@ millimetres to reach the marked band.",
+      "text": "ارفع الرأس %@ ملم لتصل إلى النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Baja la punta %@ milímetros para llegar a la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Descends la pointe de %@ millimètres pour atteindre la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Senk die Spitze um %@ Millimeter, um den markierten Bereich zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Abbassa la punta di %@ millimetri per arrivare alla fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Baixa a ponta %@ milímetros para chegar à faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Abaixe a ponta %@ milímetros para chegar à faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "マークした帯まで、先端をあと%@ミリ下げます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "표시된 구간까지 팁을 %@밀리미터 내려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "将杆头下移%@毫米即可进入标记区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "Опусти точку удара на %@ мм, чтобы попасть в отмеченную полосу."
+    },
+    {
+      "culture": "ar",
+      "key": "Lower the tip %@ millimetres to reach the marked band.",
+      "text": "اخفض الرأس %@ ملم لتصل إلى النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Side inside the marked band.",
+      "text": "Efecto lateral dentro de la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Side inside the marked band.",
+      "text": "Côté dans la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Side inside the marked band.",
+      "text": "Seite im markierten Bereich."
+    },
+    {
+      "culture": "it",
+      "key": "Side inside the marked band.",
+      "text": "Lato dentro la fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Side inside the marked band.",
+      "text": "Lado dentro da faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Side inside the marked band.",
+      "text": "Lado dentro da faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Side inside the marked band.",
+      "text": "横の位置はマークした帯の中です。"
+    },
+    {
+      "culture": "ko",
+      "key": "Side inside the marked band.",
+      "text": "옆 위치가 표시된 구간 안이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Side inside the marked band.",
+      "text": "侧向位置在标记区内。"
+    },
+    {
+      "culture": "ru",
+      "key": "Side inside the marked band.",
+      "text": "Боковое смещение в отмеченной полосе."
+    },
+    {
+      "culture": "ar",
+      "key": "Side inside the marked band.",
+      "text": "الجانب داخل النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Mueve la punta %@ milímetros a la derecha para llegar a la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Décale la pointe de %@ millimètres vers la droite pour atteindre la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Schieb die Spitze %@ Millimeter nach rechts, um den markierten Bereich zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Sposta la punta di %@ millimetri a destra per arrivare alla fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Move a ponta %@ milímetros para a direita para chegar à faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Mova a ponta %@ milímetros para a direita para chegar à faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "マークした帯まで、先端をあと%@ミリ右へ。"
+    },
+    {
+      "culture": "ko",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "표시된 구간까지 팁을 오른쪽으로 %@밀리미터 옮겨요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "将杆头右移%@毫米即可进入标记区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "Сдвинь точку удара на %@ мм вправо, чтобы попасть в отмеченную полосу."
+    },
+    {
+      "culture": "ar",
+      "key": "Move the tip %@ millimetres right to reach the marked band.",
+      "text": "حرّك الرأس %@ ملم إلى اليمين لتصل إلى النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Mueve la punta %@ milímetros a la izquierda para llegar a la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Décale la pointe de %@ millimètres vers la gauche pour atteindre la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Schieb die Spitze %@ Millimeter nach links, um den markierten Bereich zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Sposta la punta di %@ millimetri a sinistra per arrivare alla fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Move a ponta %@ milímetros para a esquerda para chegar à faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Mova a ponta %@ milímetros para a esquerda para chegar à faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "マークした帯まで、先端をあと%@ミリ左へ。"
+    },
+    {
+      "culture": "ko",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "표시된 구간까지 팁을 왼쪽으로 %@밀리미터 옮겨요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "将杆头左移%@毫米即可进入标记区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "Сдвинь точку удара на %@ мм влево, чтобы попасть в отмеченную полосу."
+    },
+    {
+      "culture": "ar",
+      "key": "Move the tip %@ millimetres left to reach the marked band.",
+      "text": "حرّك الرأس %@ ملم إلى اليسار لتصل إلى النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Inside the marked band.",
+      "text": "Dentro de la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Inside the marked band.",
+      "text": "Dans la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Inside the marked band.",
+      "text": "Im markierten Bereich."
+    },
+    {
+      "culture": "it",
+      "key": "Inside the marked band.",
+      "text": "Dentro la fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Inside the marked band.",
+      "text": "Dentro da faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Inside the marked band.",
+      "text": "Dentro da faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Inside the marked band.",
+      "text": "マークした帯の中です。"
+    },
+    {
+      "culture": "ko",
+      "key": "Inside the marked band.",
+      "text": "표시된 구간 안이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Inside the marked band.",
+      "text": "在标记区内。"
+    },
+    {
+      "culture": "ru",
+      "key": "Inside the marked band.",
+      "text": "В отмеченной полосе."
+    },
+    {
+      "culture": "ar",
+      "key": "Inside the marked band.",
+      "text": "داخل النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Sube %@ por ciento para llegar a la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Ajoute %@ pour cent pour atteindre la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Gib %@ Prozent dazu, um den markierten Bereich zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Aggiungi il %@ per cento per arrivare alla fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Junta %@ por cento para chegar à faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Aumente %@ por cento para chegar à faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "マークした帯まで、あと%@パーセント上げます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "표시된 구간까지 %@퍼센트 올려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "再加百分之%@即可进入标记区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "Добавь %@ %%, чтобы попасть в отмеченную полосу."
+    },
+    {
+      "culture": "ar",
+      "key": "Add %@ percent to reach the marked band.",
+      "text": "زد %@ بالمئة لتصل إلى النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Baja %@ por ciento para llegar a la franja marcada."
+    },
+    {
+      "culture": "fr",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Retire %@ pour cent pour atteindre la bande marquée."
+    },
+    {
+      "culture": "de",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Nimm %@ Prozent weg, um den markierten Bereich zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Togli il %@ per cento per arrivare alla fascia segnata."
+    },
+    {
+      "culture": "pt",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Tira %@ por cento para chegar à faixa marcada."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Diminua %@ por cento para chegar à faixa marcada."
+    },
+    {
+      "culture": "ja",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "マークした帯まで、あと%@パーセント下げます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "표시된 구간까지 %@퍼센트 내려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "再减百分之%@即可进入标记区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "Убавь %@ %%, чтобы попасть в отмеченную полосу."
+    },
+    {
+      "culture": "ar",
+      "key": "Take off %@ percent to reach the marked band.",
+      "text": "أنقص %@ بالمئة لتصل إلى النطاق المحدد."
+    },
+    {
+      "culture": "es",
+      "key": "Inside the marked fan.",
+      "text": "Dentro del abanico marcado."
+    },
+    {
+      "culture": "fr",
+      "key": "Inside the marked fan.",
+      "text": "Dans l'éventail marqué."
+    },
+    {
+      "culture": "de",
+      "key": "Inside the marked fan.",
+      "text": "Im markierten Fächer."
+    },
+    {
+      "culture": "it",
+      "key": "Inside the marked fan.",
+      "text": "Dentro il ventaglio segnato."
+    },
+    {
+      "culture": "pt",
+      "key": "Inside the marked fan.",
+      "text": "Dentro do leque marcado."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Inside the marked fan.",
+      "text": "Dentro do leque marcado."
+    },
+    {
+      "culture": "ja",
+      "key": "Inside the marked fan.",
+      "text": "マークした扇形の中です。"
+    },
+    {
+      "culture": "ko",
+      "key": "Inside the marked fan.",
+      "text": "표시된 부채꼴 안이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Inside the marked fan.",
+      "text": "在标记扇区内。"
+    },
+    {
+      "culture": "ru",
+      "key": "Inside the marked fan.",
+      "text": "В отмеченном секторе."
+    },
+    {
+      "culture": "ar",
+      "key": "Inside the marked fan.",
+      "text": "داخل المروحة المحددة."
+    },
+    {
+      "culture": "es",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Gira la puntería %@ grados a la izquierda para llegar al abanico marcado."
+    },
+    {
+      "culture": "fr",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Tourne la visée de %@ degrés vers la gauche pour atteindre l'éventail marqué."
+    },
+    {
+      "culture": "de",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Dreh das Ziel um %@ Grad nach links, um den markierten Fächer zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Ruota la mira di %@ gradi a sinistra per arrivare al ventaglio segnato."
+    },
+    {
+      "culture": "pt",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Roda a mira %@ graus para a esquerda para chegar ao leque marcado."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Gire a mira %@ graus para a esquerda para chegar ao leque marcado."
+    },
+    {
+      "culture": "ja",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "マークした扇形まで、狙いをあと%@度左へ回します。"
+    },
+    {
+      "culture": "ko",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "표시된 부채꼴까지 조준을 왼쪽으로 %@도 돌려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "将瞄准向左转%@度即可进入标记扇区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "Поверни прицел на %@° влево, чтобы попасть в отмеченный сектор."
+    },
+    {
+      "culture": "ar",
+      "key": "Turn the aim %@ degrees left to reach the marked fan.",
+      "text": "أدر التصويب %@ درجة إلى اليسار لتصل إلى المروحة المحددة."
+    },
+    {
+      "culture": "es",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Gira la puntería %@ grados a la derecha para llegar al abanico marcado."
+    },
+    {
+      "culture": "fr",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Tourne la visée de %@ degrés vers la droite pour atteindre l'éventail marqué."
+    },
+    {
+      "culture": "de",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Dreh das Ziel um %@ Grad nach rechts, um den markierten Fächer zu erreichen."
+    },
+    {
+      "culture": "it",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Ruota la mira di %@ gradi a destra per arrivare al ventaglio segnato."
+    },
+    {
+      "culture": "pt",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Roda a mira %@ graus para a direita para chegar ao leque marcado."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Gire a mira %@ graus para a direita para chegar ao leque marcado."
+    },
+    {
+      "culture": "ja",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "マークした扇形まで、狙いをあと%@度右へ回します。"
+    },
+    {
+      "culture": "ko",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "표시된 부채꼴까지 조준을 오른쪽으로 %@도 돌려요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "将瞄准向右转%@度即可进入标记扇区。"
+    },
+    {
+      "culture": "ru",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "Поверни прицел на %@° вправо, чтобы попасть в отмеченный сектор."
+    },
+    {
+      "culture": "ar",
+      "key": "Turn the aim %@ degrees right to reach the marked fan.",
+      "text": "أدر التصويب %@ درجة إلى اليمين لتصل إلى المروحة المحددة."
+    },
+    {
+      "culture": "es",
+      "key": "Inside the marked angles.",
+      "text": "Dentro de los ángulos marcados."
+    },
+    {
+      "culture": "fr",
+      "key": "Inside the marked angles.",
+      "text": "Dans les angles marqués."
+    },
+    {
+      "culture": "de",
+      "key": "Inside the marked angles.",
+      "text": "In den markierten Winkeln."
+    },
+    {
+      "culture": "it",
+      "key": "Inside the marked angles.",
+      "text": "Dentro gli angoli segnati."
+    },
+    {
+      "culture": "pt",
+      "key": "Inside the marked angles.",
+      "text": "Dentro dos ângulos marcados."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Inside the marked angles.",
+      "text": "Dentro dos ângulos marcados."
+    },
+    {
+      "culture": "ja",
+      "key": "Inside the marked angles.",
+      "text": "マークした角度の中です。"
+    },
+    {
+      "culture": "ko",
+      "key": "Inside the marked angles.",
+      "text": "표시된 각도 안이에요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Inside the marked angles.",
+      "text": "在标记角度内。"
+    },
+    {
+      "culture": "ru",
+      "key": "Inside the marked angles.",
+      "text": "В отмеченных углах."
+    },
+    {
+      "culture": "ar",
+      "key": "Inside the marked angles.",
+      "text": "داخل الزوايا المحددة."
+    },
+    {
+      "culture": "es",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Los ángulos marcados van de %lld a %lld grados hacia arriba."
+    },
+    {
+      "culture": "fr",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Les angles marqués vont de %lld à %lld degrés vers le haut."
+    },
+    {
+      "culture": "de",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Markiert sind %lld bis %lld Grad nach oben."
+    },
+    {
+      "culture": "it",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Gli angoli segnati vanno da %lld a %lld gradi in su."
+    },
+    {
+      "culture": "pt",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Os ângulos marcados vão de %lld a %lld graus para cima."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Os ângulos marcados vão de %lld a %lld graus para cima."
+    },
+    {
+      "culture": "ja",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "マークした角度は上向き%lld〜%lld度です。"
+    },
+    {
+      "culture": "ko",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "표시된 각도는 위로 %lld~%lld도예요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "标记角度为向上%lld到%lld度。"
+    },
+    {
+      "culture": "ru",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "Отмеченные углы: от %lld до %lld° вверх."
+    },
+    {
+      "culture": "ar",
+      "key": "The marked angles are %lld to %lld degrees up.",
+      "text": "الزوايا المحددة من %lld إلى %lld درجة للأعلى."
+    },
+    {
+      "culture": "es",
+      "key": "%@, marked",
+      "text": "%@, marcado"
+    },
+    {
+      "culture": "fr",
+      "key": "%@, marked",
+      "text": "%@, marqué"
+    },
+    {
+      "culture": "de",
+      "key": "%@, marked",
+      "text": "%@, markiert"
+    },
+    {
+      "culture": "it",
+      "key": "%@, marked",
+      "text": "%@, segnato"
+    },
+    {
+      "culture": "pt",
+      "key": "%@, marked",
+      "text": "%@, marcado"
+    },
+    {
+      "culture": "pt-BR",
+      "key": "%@, marked",
+      "text": "%@, marcado"
+    },
+    {
+      "culture": "ja",
+      "key": "%@, marked",
+      "text": "%@、マーク付き"
+    },
+    {
+      "culture": "ko",
+      "key": "%@, marked",
+      "text": "%@, 표시됨"
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "%@, marked",
+      "text": "%@，已标记"
+    },
+    {
+      "culture": "ru",
+      "key": "%@, marked",
+      "text": "%@, отмечено"
+    },
+    {
+      "culture": "ar",
+      "key": "%@, marked",
+      "text": "%@، محددة"
+    },
+    {
+      "culture": "es",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "Todo está listo y bloqueado. Toca dos veces Tirar y escucha qué pasa."
+    },
+    {
+      "culture": "fr",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "Tout est réglé pour toi et verrouillé. Touche deux fois Tirer et écoute ce qui se passe."
+    },
+    {
+      "culture": "de",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "Alles ist für dich eingestellt und gesperrt. Tipp doppelt auf Stoßen und hör, was passiert."
+    },
+    {
+      "culture": "it",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "È tutto impostato e bloccato. Tocca due volte Tira e ascolta cosa succede."
+    },
+    {
+      "culture": "pt",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "Está tudo definido e bloqueado. Toca duas vezes em Tacar e ouve o que acontece."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "Está tudo definido e bloqueado. Toque duas vezes em Tacar e ouça o que acontece."
+    },
+    {
+      "culture": "ja",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "すべて設定済みでロックされています。「ショット」をダブルタップして、何が起きるか聞いてください。"
+    },
+    {
+      "culture": "ko",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "모든 게 설정되고 잠겨 있어요. 샷을 두 번 탭하고 어떻게 되는지 들어 보세요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "一切都已设好并锁定。连按两下“击球”，听听会发生什么。"
+    },
+    {
+      "culture": "ru",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "Всё настроено за тебя и заблокировано. Дважды коснись «Ударить» и послушай, что будет."
+    },
+    {
+      "culture": "ar",
+      "key": "Everything is set for you and locked. Double-tap Shoot and listen to what happens.",
+      "text": "كل شيء مضبوط لك ومقفل. انقر مرتين على «اضرب» واستمع لما يحدث."
+    },
+    {
+      "culture": "es",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "Solo está abierta la altura de la punta. En Posición de la punta del taco, usa las acciones Un poco arriba y Un poco abajo hasta que diga que la altura está dentro de la franja marcada. Luego tira."
+    },
+    {
+      "culture": "fr",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "Seule la hauteur de la pointe est libre. Sur Position de la pointe de la queue, utilise les actions Un peu plus haut et Un peu plus bas jusqu'à entendre que la hauteur est dans la bande marquée. Puis tire."
+    },
+    {
+      "culture": "de",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "Nur die Höhe der Spitze ist frei. Nutze bei Position der Queuespitze die Aktionen Etwas höher und Etwas tiefer, bis die Höhe im markierten Bereich ist. Dann stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "È aperta solo l'altezza della punta. Su Posizione della punta della stecca, usa le azioni Un po' più su e Un po' più giù finché senti che l'altezza è dentro la fascia segnata. Poi tira."
+    },
+    {
+      "culture": "pt",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "Só a altura da ponta está aberta. Em Posição da ponta do taco, usa as ações Um pouco acima e Um pouco abaixo até ouvires que a altura está dentro da faixa marcada. Depois taca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "Só a altura da ponta está liberada. Em Posição da ponta do taco, use as ações Um pouco acima e Um pouco abaixo até ouvir que a altura está dentro da faixa marcada. Depois dê a tacada."
+    },
+    {
+      "culture": "ja",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "先端の高さだけが動かせます。「キューの先端の位置」で「少し上へ」と「少し下へ」のアクションを使い、高さがマークした帯の中と読み上げられるまで調整します。それからショットします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "팁 높이만 열려 있어요. 큐 팁 위치에서 조금 위로, 조금 아래로 동작을 써서 높이가 표시된 구간 안이라고 들릴 때까지 맞춰요. 그다음 샷을 해요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "只有杆头高度可调。在“杆头位置”上使用“稍微往上”和“稍微往下”操作，直到听到高度在标记区内。然后击球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "Открыта только высота точки удара. На «Положении кончика кия» используй действия «Чуть выше» и «Чуть ниже», пока не услышишь, что высота в отмеченной полосе. Потом бей."
+    },
+    {
+      "culture": "ar",
+      "key": "Only the tip height is open. On Cue tip position, use the actions Up a little and Down a little until it says the height is inside the marked band. Then shoot.",
+      "text": "الارتفاع وحده مفتوح. على «موضع رأس العصا»، استخدم الإجراءين «أعلى قليلًا» و«أسفل قليلًا» حتى تسمع أن الارتفاع داخل النطاق المحدد. ثم اضرب."
+    },
+    {
+      "culture": "es",
+      "key": "The band runs from %@ to %@.",
+      "text": "La franja va de %@ a %@."
+    },
+    {
+      "culture": "fr",
+      "key": "The band runs from %@ to %@.",
+      "text": "La bande va de %@ à %@."
+    },
+    {
+      "culture": "de",
+      "key": "The band runs from %@ to %@.",
+      "text": "Der Bereich reicht von %@ bis %@."
+    },
+    {
+      "culture": "it",
+      "key": "The band runs from %@ to %@.",
+      "text": "La fascia va da %@ a %@."
+    },
+    {
+      "culture": "pt",
+      "key": "The band runs from %@ to %@.",
+      "text": "A faixa vai de %@ a %@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "The band runs from %@ to %@.",
+      "text": "A faixa vai de %@ a %@."
+    },
+    {
+      "culture": "ja",
+      "key": "The band runs from %@ to %@.",
+      "text": "帯は%@から%@までです。"
+    },
+    {
+      "culture": "ko",
+      "key": "The band runs from %@ to %@.",
+      "text": "구간은 %@부터 %@까지예요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "The band runs from %@ to %@.",
+      "text": "标记区从%@到%@。"
+    },
+    {
+      "culture": "ru",
+      "key": "The band runs from %@ to %@.",
+      "text": "Полоса: %@ — %@."
+    },
+    {
+      "culture": "ar",
+      "key": "The band runs from %@ to %@.",
+      "text": "يمتد النطاق من %@ إلى %@."
+    },
+    {
+      "culture": "es",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "Solo está abierto el efecto lateral. En Posición de la punta del taco, usa las acciones Un poco a la izquierda y Un poco a la derecha hasta que diga que el lado está dentro de la franja marcada. Luego tira."
+    },
+    {
+      "culture": "fr",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "Seul l'effet latéral est libre. Sur Position de la pointe de la queue, utilise les actions Un peu à gauche et Un peu à droite jusqu'à entendre que le côté est dans la bande marquée. Puis tire."
+    },
+    {
+      "culture": "de",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "Nur der Seitendrall ist frei. Nutze bei Position der Queuespitze die Aktionen Etwas nach links und Etwas nach rechts, bis die Seite im markierten Bereich ist. Dann stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "È aperto solo l'effetto laterale. Su Posizione della punta della stecca, usa le azioni Un po' a sinistra e Un po' a destra finché senti che il lato è dentro la fascia segnata. Poi tira."
+    },
+    {
+      "culture": "pt",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "Só o efeito lateral está aberto. Em Posição da ponta do taco, usa as ações Um pouco à esquerda e Um pouco à direita até ouvires que o lado está dentro da faixa marcada. Depois taca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "Só o efeito lateral está liberado. Em Posição da ponta do taco, use as ações Um pouco à esquerda e Um pouco à direita até ouvir que o lado está dentro da faixa marcada. Depois dê a tacada."
+    },
+    {
+      "culture": "ja",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "横回転だけが動かせます。「キューの先端の位置」で「少し左へ」と「少し右へ」のアクションを使い、横の位置がマークした帯の中と読み上げられるまで調整します。それからショットします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "옆 회전만 열려 있어요. 큐 팁 위치에서 조금 왼쪽으로, 조금 오른쪽으로 동작을 써서 옆 위치가 표시된 구간 안이라고 들릴 때까지 맞춰요. 그다음 샷을 해요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "只有侧旋可调。在“杆头位置”上使用“稍微往左”和“稍微往右”操作，直到听到侧向位置在标记区内。然后击球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "Открыто только боковое вращение. На «Положении кончика кия» используй действия «Чуть левее» и «Чуть правее», пока не услышишь, что смещение в отмеченной полосе. Потом бей."
+    },
+    {
+      "culture": "ar",
+      "key": "Only the side spin is open. On Cue tip position, use the actions Left a little and Right a little until it says the side is inside the marked band. Then shoot.",
+      "text": "اللف الجانبي وحده مفتوح. على «موضع رأس العصا»، استخدم الإجراءين «يسارًا قليلًا» و«يمينًا قليلًا» حتى تسمع أن الجانب داخل النطاق المحدد. ثم اضرب."
+    },
+    {
+      "culture": "es",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "Solo está abierta la puntería. Desliza arriba o abajo sobre Apuntar hasta que diga dentro del abanico marcado. Luego tira."
+    },
+    {
+      "culture": "fr",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "Seule la visée est libre. Glisse vers le haut ou le bas sur Viser jusqu'à entendre dans l'éventail marqué. Puis tire."
+    },
+    {
+      "culture": "de",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "Nur das Zielen ist frei. Wisch auf Zielen nach oben oder unten, bis du „im markierten Fächer“ hörst. Dann stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "È aperta solo la mira. Scorri su o giù su Mira finché senti dentro il ventaglio segnato. Poi tira."
+    },
+    {
+      "culture": "pt",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "Só a mira está aberta. Desliza para cima ou para baixo em Mira até ouvires dentro do leque marcado. Depois taca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "Só a mira está liberada. Deslize para cima ou para baixo em Mira até ouvir dentro do leque marcado. Depois dê a tacada."
+    },
+    {
+      "culture": "ja",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "狙いだけが動かせます。「照準」で上下にスワイプし、マークした扇形の中と読み上げられたらショットします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "조준만 열려 있어요. 조준에서 위아래로 스와이프해 표시된 부채꼴 안이라고 들리면 샷을 해요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "只有瞄准可调。在“瞄准”上上下滑动，直到听到在标记扇区内。然后击球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "Открыт только прицел. Проводи вверх или вниз по «Прицелу», пока не услышишь «в отмеченном секторе». Потом бей."
+    },
+    {
+      "culture": "ar",
+      "key": "Only the aim is open. Swipe up or down on Aim until it says inside the marked fan. Then shoot.",
+      "text": "التصويب وحده مفتوح. مرّر لأعلى أو لأسفل على «التصويب» حتى تسمع داخل المروحة المحددة. ثم اضرب."
+    },
+    {
+      "culture": "es",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "Solo está abierta la potencia. Desliza arriba o abajo sobre Potencia hasta que diga dentro de la franja marcada. Luego tira."
+    },
+    {
+      "culture": "fr",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "Seule la puissance est libre. Glisse vers le haut ou le bas sur Puissance jusqu'à entendre dans la bande marquée. Puis tire."
+    },
+    {
+      "culture": "de",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "Nur die Kraft ist frei. Wisch auf Kraft nach oben oder unten, bis du „im markierten Bereich“ hörst. Dann stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "È aperta solo la potenza. Scorri su o giù su Potenza finché senti dentro la fascia segnata. Poi tira."
+    },
+    {
+      "culture": "pt",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "Só a força está aberta. Desliza para cima ou para baixo em Força até ouvires dentro da faixa marcada. Depois taca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "Só a força está liberada. Deslize para cima ou para baixo em Força até ouvir dentro da faixa marcada. Depois dê a tacada."
+    },
+    {
+      "culture": "ja",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "強さだけが動かせます。「強さ」で上下にスワイプし、マークした帯の中と読み上げられたらショットします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "세기만 열려 있어요. 세기에서 위아래로 스와이프해 표시된 구간 안이라고 들리면 샷을 해요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "只有力度可调。在“力度”上上下滑动，直到听到在标记区内。然后击球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "Открыта только сила. Проводи вверх или вниз по «Силе», пока не услышишь «в отмеченной полосе». Потом бей."
+    },
+    {
+      "culture": "ar",
+      "key": "Only the power is open. Swipe up or down on Power until it says inside the marked band. Then shoot.",
+      "text": "القوة وحدها مفتوحة. مرّر لأعلى أو لأسفل على «القوة» حتى تسمع داخل النطاق المحدد. ثم اضرب."
+    },
+    {
+      "culture": "es",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "Solo está abierto el ángulo del taco. Abre Ángulo del taco y elige un ángulo que diga marcado. Luego tira."
+    },
+    {
+      "culture": "fr",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "Seul l'angle de la queue est libre. Ouvre Angle de la queue et choisis un angle annoncé comme marqué. Puis tire."
+    },
+    {
+      "culture": "de",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "Nur der Queuewinkel ist frei. Öffne Queuewinkel und wähl einen Winkel, der als markiert angesagt wird. Dann stoß."
+    },
+    {
+      "culture": "it",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "È aperto solo l'angolo della stecca. Apri Angolo della stecca e scegli un angolo indicato come segnato. Poi tira."
+    },
+    {
+      "culture": "pt",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "Só o ângulo do taco está aberto. Abre Ângulo do taco e escolhe um ângulo que diga marcado. Depois taca."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "Só o ângulo do taco está liberado. Abra Ângulo do taco e escolha um ângulo que diga marcado. Depois dê a tacada."
+    },
+    {
+      "culture": "ja",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "キューの角度だけが動かせます。「キューの角度」を開き、「マーク付き」と読み上げられる角度を選んでからショットします。"
+    },
+    {
+      "culture": "ko",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "큐 각도만 열려 있어요. 큐 각도를 열고 표시됨이라고 들리는 각도를 골라요. 그다음 샷을 해요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "只有球杆角度可调。打开“球杆角度”，选择读作“已标记”的角度。然后击球。"
+    },
+    {
+      "culture": "ru",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "Открыт только угол кия. Открой «Угол кия» и выбери угол, где сказано «отмечено». Потом бей."
+    },
+    {
+      "culture": "ar",
+      "key": "Only the cue angle is open. Open Cue angle and pick an angle that says marked. Then shoot.",
+      "text": "زاوية العصا وحدها مفتوحة. افتح «زاوية العصا» واختر زاوية تُقرأ «محددة». ثم اضرب."
+    },
+    {
+      "culture": "es",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Ahora todos los controles están abiertos. Cada uno sigue diciendo si está dentro de su franja."
+    },
+    {
+      "culture": "fr",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Toutes les commandes sont libres maintenant. Chacune dit encore si elle est dans sa bande."
+    },
+    {
+      "culture": "de",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Jetzt sind alle Regler frei. Jeder sagt weiterhin, ob er in seinem Bereich ist."
+    },
+    {
+      "culture": "it",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Ora tutti i comandi sono aperti. Ognuno dice ancora se è dentro la sua fascia."
+    },
+    {
+      "culture": "pt",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Agora todos os controlos estão abertos. Cada um continua a dizer se está dentro da sua faixa."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Agora todos os controles estão liberados. Cada um ainda diz se está dentro da sua faixa."
+    },
+    {
+      "culture": "ja",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "すべての操作が使えるようになりました。それぞれ、帯の中かどうかを引き続き読み上げます。"
+    },
+    {
+      "culture": "ko",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "이제 모든 조작이 열렸어요. 각각 구간 안인지 계속 알려 줘요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "现在所有控件都可调。每个控件仍会告诉你是否在标记区内。"
+    },
+    {
+      "culture": "ru",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "Теперь открыто всё. Каждый элемент по-прежнему говорит, в своей ли он полосе."
+    },
+    {
+      "culture": "ar",
+      "key": "Every control is open now. Each one still says whether it is inside its band.",
+      "text": "كل عناصر التحكم مفتوحة الآن. وكل منها ما زال يخبرك إن كان داخل نطاقه."
+    },
+    {
+      "culture": "es",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "El círculo marcado para la bola blanca está %@."
+    },
+    {
+      "culture": "fr",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "Le cercle marqué pour la bille blanche est %@."
+    },
+    {
+      "culture": "de",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "Der markierte Kreis für die weiße Kugel liegt %@."
+    },
+    {
+      "culture": "it",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "Il cerchio segnato per la palla bianca è %@."
+    },
+    {
+      "culture": "pt",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "O círculo marcado para a bola branca está %@."
+    },
+    {
+      "culture": "pt-BR",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "O círculo marcado para a bola branca está %@."
+    },
+    {
+      "culture": "ja",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "手球の目標の円は%@にあります。"
+    },
+    {
+      "culture": "ko",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "큐볼의 표시된 원은 %@에 있어요."
+    },
+    {
+      "culture": "zh-Hans",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "白球的标记圆圈在%@。"
+    },
+    {
+      "culture": "ru",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "Отмеченный круг для белого шара: %@."
+    },
+    {
+      "culture": "ar",
+      "key": "The marked circle for the cue ball is %@.",
+      "text": "الدائرة المحددة للكرة البيضاء %@."
+    }
+  ]
+}
