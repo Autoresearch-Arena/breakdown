@@ -17,6 +17,7 @@
 //          Does NOT belong here: where the pictures are used (LensLayer.swift), the grid (BallTextures.gridTexture).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (reads the system's Differentiate Without Colour setting and names
 //          the notification for its change, beside the Increase Contrast reader, for the dashed sliding trails.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the sliding colour is magenta; one comment updated.)
 // SRP/DRY check: Pass - Lens picture generation only; colours arrive from Theme through the caller.
 import CoreGraphics
 import Foundation
@@ -40,7 +41,7 @@ enum LensTextures {
     }
 
     /// System "Differentiate Without Colour" setting. When on, the Lens draws a sliding path dashed and a rolling path
-    /// solid, so the two motion phases differ in shape and not only in amber against cyan. Read whenever the trails
+    /// solid, so the two motion phases differ in shape and not only in magenta against cyan. Read whenever the trails
     /// are rebuilt; LensLayer also rebuilds them when the setting changes (see `differentiateWithoutColorChanged`).
     static var differentiateWithoutColor: Bool {
         #if canImport(UIKit)

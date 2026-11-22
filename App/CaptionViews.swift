@@ -32,6 +32,8 @@
 //          on-table ring stand back (model.holdForTips), so the tips are the one thing on screen; (55) the equation line
 //          shows the event's own numbers (Caption.worked) on the opening's headline beats (model.holdingHeadline) even
 //          with Show the maths off, and whenever Show the maths is on.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the Lens key's spoken sentence says magenta, the sliding
+//          colour now, not amber.)
 // PURPOSE: The caption and equation card, the fixed-height caption strip, the Continue button for guided pacing, the
 //          Physics Lens key chip, and the highlight ring, on-table title chip and thin leader line that tie the words to
 //          the ball they describe. On a phone held upright the words sit in CaptionStrip under the table (ShowpieceView
@@ -346,7 +348,7 @@ struct CaptionStrip: View {
 // MARK: Lens colour key
 
 /// The Lens named and explained, as a small glass chip for the title row: the name "Physics Lens" as a heading, then
-/// an amber line for a ball sliding and a cyan line for a ball rolling. Whenever the blueprint view is up the player
+/// a magenta line for a ball sliding and a cyan line for a ball rolling. Whenever the blueprint view is up the player
 /// can read what it is and what its colours mean. It replaces the baked 3D legend that used to take a band of height
 /// off the table. Text follows Dynamic Type; when one row does not fit beside the back button the pieces stack, and
 /// as a last resort the heading drops so the row is never squeezed. Spoken as one sentence (label unchanged).
@@ -396,8 +398,8 @@ struct LensLegendChip: View {
         .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(withoutColour
-            ? Text("Lens lines: dashed amber lines show a ball sliding, solid cyan lines a ball rolling")
-            : Text("Lens colours: amber lines show a ball sliding, cyan lines a ball rolling"))
+            ? Text("Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling")
+            : Text("Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling"))
     }
 }
 

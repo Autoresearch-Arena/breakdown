@@ -4,7 +4,7 @@
 //          the title row now (LensLegendChip in CaptionViews), which follows Dynamic Type and VoiceOver and costs the
 //          table no room).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (spin markers: every moving or spinning ball in the Lens now carries
-//          an amber belt showing the part of its spin that is NOT natural rolling (draw, follow, the slip that makes a
+//          a magenta belt showing the part of its spin that is NOT natural rolling (draw, follow, the slip that makes a
 //          ball slide), with an arrowhead on top showing which way the top of the ball turns, and a flat blue ring on
 //          the cloth with an arrow for side spin (english). Both fade with the amount and are read from the recorded
 //          timeline at the clock, so scrubbing shows the same markers either way.)
@@ -39,15 +39,15 @@
 //
 //          SPIN MARKERS (21-Nov-2026). Rolling spin is not interesting on its own: it just follows the velocity. What
 //          makes draw, follow and swerve happen is the DIFFERENCE between the ball's spin and natural roll, so that is
-//          what the amber belt shows (amber because that difference is exactly what makes a ball slide). The vertical
-//          part of the spin, english, gets its own flat ring on the cloth in the cushion blue, since cushions are where
-//          side spin shows itself. Each ball owns one belt and one ring built once; per frame only their pose and
+//          what the magenta belt shows (the sliding colour, because that difference is exactly what makes a ball
+//          slide). The vertical part of the spin, english, gets its own flat ring on the cloth in the cushion blue,
+//          since cushions are where side spin shows itself. Each ball owns one belt and one ring built once; per frame only their pose and
 //          opacity change.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Lens grid is built by buildGrid, which TableScene calls again
 //          when the table changes; it also marks the holes in another table's bed).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 4: with Differentiate Without Colour on,
 //          a sliding path is built as dashes and a rolling path stays solid, so the two phases differ in shape, not
-//          only in amber against cyan; the trails are rebuilt when the setting changes. The dashes are cut from the
+//          only in magenta against cyan; the trails are rebuilt when the setting changes. The dashes are cut from the
 //          geometry at build time, so the clock-only exactness of the picture is untouched. Package 5: the
 //          generation-two events now leave a visible mark like the others: a red double ring where the cue MISCUED (the
 //          one place a sound alone would carry it), a pocket-coloured ring where a ball skipped over a hole, and an
@@ -63,6 +63,9 @@
 //          short span of clock. Every new mark is a function of the clock alone and is in the fingerprint.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment hook, plan items 57 and 23: AimPreview carries the
 //          picked cue and the bridge's length for CueRig; two appended fields with defaults.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: sliding trails and the slip belt are magenta
+//          (Theme.slideRGB, renamed from amberRGB); the grid's edge pockets are drawn only when the table has them
+//          (pocketsEnabled), and BallTextures.gridImage now draws every pocket and bed hole as a real hole.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 //          The throw rule is CaptionEngine's (one rule for the words and the drawing).
 import BreakdownLensModel
@@ -272,9 +275,9 @@ final class LensLayer {
         // With a real bloom pass the halo in the pictures is dialled back; without one it carries the whole glow.
         let haloGain = bloomActive ? 0.55 : 1.0
 
-        let amber = Theme.amberRGB, cyan = Theme.cyanRGB
+        let slide = Theme.slideRGB, cyan = Theme.cyanRGB
         // A flight is white (the spec's airborne trail): neither sliding nor rolling, because nothing touches the cloth.
-        let phaseColours: [MotionPhase: (Double, Double, Double)] = [.sliding: amber, .rolling: cyan,
+        let phaseColours: [MotionPhase: (Double, Double, Double)] = [.sliding: slide, .rolling: cyan,
                                                                      .airborne: Theme.paperRGB]
         for (phase, c) in phaseColours {
             if let tex = LensTextures.trail(color: c, haloGain: haloGain, brightness: { Self.trailBrightness(age: $0) }, width: { Self.trailWidth(age: $0) }) {
@@ -304,8 +307,8 @@ final class LensLayer {
             let p = Theme.paperRGB
             markMaterial = Self.glow(lineTex, tint: rgba(p.0, p.1, p.2))
             arrowGlowMaterial = Self.glow(lineTex, tint: rgba(1.0, 0.93, 0.55))
-            // Slip is sliding, so it wears the sliding amber; side spin wears the cushion-ring blue used above.
-            slipMaterial = Self.glow(lineTex, tint: rgba(amber.0, amber.1, amber.2))
+            // Slip is sliding, so it wears the sliding magenta; side spin wears the cushion-ring blue used above.
+            slipMaterial = Self.glow(lineTex, tint: rgba(slide.0, slide.1, slide.2))
             sideMaterial = Self.glow(lineTex, tint: rgba(0.45, 0.70, 1.0))
         }
         var core = UnlitMaterial(color: rgba(1.0, 0.96, 0.78))
@@ -413,12 +416,18 @@ final class LensLayer {
         aimLine.isEnabled = false
     }
 
-    /// Grid under the Lens, with the cushion line, the rail outline and the pockets drawn into it (the edge pockets the
-    /// table has, and any holes in its bed). Called again by TableScene when the table changes.
+    /// Grid under the Lens, with the cushion line, the rail outline and the pockets drawn into it as holes (the edge
+    /// pockets the table has, and any holes in its bed), each at its own capture radius. A function of the table alone:
+    /// the picture is cached by StartupAssets under the hole list (GridKey), so nothing here depends on the clock and
+    /// the Lens fingerprint, which covers only clock-driven parts, needs nothing from it. Called again by TableScene
+    /// when the table changes.
     func buildGrid(frame: TableFrame, table: TableSpec) {
         let L = frame.length, W = frame.width
-        let pockets = zip(table.pockets, table.pocketCaptureRadius).map { (x: $0.0.x, y: $0.0.y, radius: $0.1) }
-            + table.bedHoles.map { (x: $0.center.x, y: $0.center.y, radius: $0.captureRadius) }
+        // Edge pockets only when the table has them (a table without, such as five-pin, records none anyway; the
+        // check keeps the grid honest if a list is ever carried over).
+        let edge: [(x: Double, y: Double, radius: Double)] = table.pocketsEnabled
+            ? zip(table.pockets, table.pocketCaptureRadius).map { (x: $0.0.x, y: $0.0.y, radius: $0.1) } : []
+        let pockets = edge + table.bedHoles.map { (x: $0.center.x, y: $0.center.y, radius: $0.captureRadius) }
         if let tex = BallTextures.gridTexture(length: Double(L), width: Double(W), pockets: pockets) {
             let m = Float(BallTextures.gridMargin)
             gridEntity.model = ModelComponent(mesh: .generatePlane(width: L + 2 * m, depth: W + 2 * m), materials: [Self.glow(tex)])

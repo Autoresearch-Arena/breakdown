@@ -1,15 +1,17 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 21-November-2026 (version 0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 44
-//          and 53: the tips use the Lens key's own words, amber and cyan, and with Differentiate Without Colour on
-//          "dashed amber" and "solid cyan", matching the trails and LensLegendChip; they no longer appear over a finished
+//          and 53: the tips use the Lens key's own words, magenta and cyan, and with Differentiate Without Colour on
+//          "dashed magenta" and "solid cyan", matching the trails and LensLegendChip; they no longer appear over a finished
 //          break or on a lesson's key moment, but on the first guided hold of a Lens replay the player started
 //          (model.lensReplayStartedByPlayer and model.holding), and while they show the beat holds
 //          (model.holdForTips) and the caption card, strip and ring stand back (CaptionViews reads the same flag).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the sliding path is magenta now, so the first tip says "Magenta path" and
+//          "Dashed magenta path"; the key's words and the trails changed with it.)
 // PURPOSE: The Physics Lens, explained once. The first time the player starts a Lens replay of their own (Replay with
 //          the Lens, Watch it in the Lens) and the replay stops on its first beat, three short callouts appear one at a
 //          time, each pointing at the thing it names:
-//            1. the amber path (dashed amber with Differentiate Without Colour): a ball sliding over the cloth,
+//            1. the magenta path (dashed magenta with Differentiate Without Colour): a ball sliding over the cloth,
 //            2. the cyan path (solid cyan): a ball rolling,
 //            3. the bar: drag it to move through the shot in time.
 //          The beat holds while they are up (model.holdForTips), so the trails they point at stay fresh. Next moves on,
@@ -51,12 +53,12 @@ enum LensCallouts {
     }
 
     /// The tip's words. `withoutColour` (Differentiate Without Colour) names each line's shape as well, the way the
-    /// trails and the Lens key draw it then: sliding dashed, rolling solid. The colour words are the key's own, amber
+    /// trails and the Lens key draw it then: sliding dashed, rolling solid. The colour words are the key's own, magenta
     /// and cyan.
     static func text(step: Int, withoutColour: Bool) -> String {
         switch (step, withoutColour) {
-        case (0, false): return String(localized: "Amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
-        case (0, true): return String(localized: "Dashed amber path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
+        case (0, false): return String(localized: "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
+        case (0, true): return String(localized: "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
         case (1, false): return String(localized: "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
         case (1, true): return String(localized: "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
         default: return String(localized: "Drag the bar to move through the shot in time, forwards or back.")

@@ -21,6 +21,10 @@
 //          each table's own balls (TableBallSet): ballImage(look:compact:) draws a plain white, red or yellow ball and
 //          bumper pool's marked ball (one colour with a spot of the other side's colour at each end of one axis);
 //          swatch(_ look:) gives a look's main colour for flat icons, the contract's call for the match views.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the Lens grid draws every pocket and bed hole as a real hole,
+//          an opaque near-black disc at its capture radius inside a clear light rim with a soft glow, on a slightly
+//          lighter playing surface, so a glance at a lesson or the Lens shows the holes; the old faint well and thin gold
+//          ring read as a bare rectangle. The rim follows Increase Contrast like the grid lines.)
 // SRP/DRY check: Pass - ball and Lens-grid drawing only; table surfaces are in SurfaceTextures.swift and the
 //          timing of it all is in StartupAssets.swift. Which ball wears which look is TableBallSet's; which picture a ball
 //          wears on screen is TableDetail's.
@@ -292,10 +296,11 @@ enum BallTextures {
 
     /// Blueprint grid for the Lens: a faint ten-centimetre grid with heavier lines every half metre, a slightly
     /// lighter playing surface, a clear but quiet outline of the cushion line, a fainter outline where the rails
-    /// end, and a ring at every pocket (its capture radius). Everything fades out past the rails.
+    /// end, and a hole at every pocket and bed hole (its capture radius). Everything fades out past the rails.
     /// Package 2 of the glow-up plan (13-Nov-2026): quieter lines so the glowing trails are the brightest thing on
-    /// screen, plus the pocket rings and the edge fade.
-    /// The picture is symmetric left-right and top-bottom, so how it is mapped onto the plane does not matter.
+    /// screen, plus the edge fade. 0.7.2: the pockets are drawn as holes (see gridImage).
+    /// A pool table's picture is symmetric left-right and top-bottom; bed holes (bar billiards) are symmetric across
+    /// the width only, and are placed along the length in the same direction as the plane's x.
     @MainActor
     static func gridTexture(length: Double, width: Double, pockets: [(x: Double, y: Double, radius: Double)]) -> TextureResource? {
         // Usually already drawn in the background at launch (StartupAssets); drawn here only for a different table.
@@ -316,8 +321,10 @@ enum BallTextures {
         // Lines are anchored to the table corner (0,0), which sits `m` metres inside the image.
         let ox = m * ppm, oy = m * ppm
         let tableRect = CGRect(x: ox, y: oy, width: length * ppm, height: width * ppm)
-        // The playing surface: a very slightly lighter pane so the table reads as an object.
-        ctx.setFillColor(CGColor(red: 0.04, green: 0.16, blue: 0.24, alpha: 0.22))
+        // The playing surface: a slightly lighter pane so the table reads as an object, and so the holes cut into it
+        // read as darker than the bed around them (at the old 0.22 the bed was barely lighter than the dark room, and a
+        // black hole on it could not be seen).
+        ctx.setFillColor(CGColor(red: 0.05, green: 0.19, blue: 0.28, alpha: 0.34))
         ctx.fill(tableRect)
         func line(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double, _ lw: Double, _ alpha: Double) {
             ctx.setStrokeColor(CGColor(red: 0.20, green: 0.75, blue: 0.95, alpha: alpha))
@@ -349,15 +356,26 @@ enum BallTextures {
         ctx.setStrokeColor(CGColor(red: 0.45, green: 0.95, blue: 1.0, alpha: min(1, 0.50 * boost)))
         ctx.setLineWidth(3)
         ctx.stroke(tableRect)
-        // Pockets: a ring at the capture radius with a soft dark well inside, so the player sees where a ball drops.
+        // Pockets and bed holes as real holes, each at its own capture radius (corner, side and bed holes differ):
+        // 1. a soft light glow just outside the rim, so the hole stands off the bed even where grid lines cross it;
+        // 2. an opaque near-black disc, drawn over the grid and the cushion line, so no line runs through a hole and
+        //    the table's outline is visibly broken where a pocket opens;
+        // 3. a clear light rim (the Lens's paper colour) on the capture circle itself, the edge a ball's centre must
+        //    cross to drop.
+        // Widths are in metres on the table (times ppm), so they are the same share of the hole on every table.
+        let glowWidth = 0.024 * ppm, rimWidth = 0.009 * ppm
         for p in pockets {
             let c = CGPoint(x: ox + p.x * ppm, y: oy + p.y * ppm)
             let r = p.radius * ppm
-            ctx.setFillColor(CGColor(red: 0.0, green: 0.02, blue: 0.05, alpha: 0.85))
-            ctx.fillEllipse(in: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
-            ctx.setStrokeColor(CGColor(red: 1.0, green: 0.82, blue: 0.25, alpha: 0.55))
-            ctx.setLineWidth(2.5)
-            ctx.strokeEllipse(in: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
+            let circle = CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r)
+            ctx.setStrokeColor(CGColor(red: 0.92, green: 0.96, blue: 1.0, alpha: min(1, 0.16 * boost)))
+            ctx.setLineWidth(glowWidth)
+            ctx.strokeEllipse(in: circle)
+            ctx.setFillColor(CGColor(red: 0.0, green: 0.006, blue: 0.014, alpha: 1.0))
+            ctx.fillEllipse(in: circle)
+            ctx.setStrokeColor(CGColor(red: 0.92, green: 0.96, blue: 1.0, alpha: min(1, 0.82 * boost)))
+            ctx.setLineWidth(rimWidth)
+            ctx.strokeEllipse(in: circle)
         }
         // Edge fade: full strength out to the rail outline, gone before the picture ends. Multiply every pixel's
         // premultiplied colour and alpha by the same factor, which is exactly how a premultiplied fade works.

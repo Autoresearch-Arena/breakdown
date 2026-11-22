@@ -6,6 +6,10 @@
 //          dark appearance on the whole window, so the light values the palette carried were never shown. They are
 //          removed rather than kept half-supported: each colour now has its normal and Increase Contrast values only,
 //          and the palette is resolved from the contrast setting alone.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the sliding colour is magenta, no longer amber or orange.
+//          amberRGB is renamed slideRGB and joined by slideHighRGB for Increase Contrast; Palette.slide and
+//          Palette.friction take the same two magentas, so every sliding line, label, ring and gauge in the interface
+//          and the Lens agrees. The room's own warm light, wood, balls and cloth are not interface and are unchanged.)
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
 //          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
@@ -21,8 +25,12 @@ import SwiftUI
 enum Theme {
     // MARK: Raw colours (red, green, blue, 0 to 1), shared with the 3D scene
 
-    /// Amber: a ball sliding on the cloth (the lamp's colour).
-    static let amberRGB: (Double, Double, Double) = (1.0, 0.62, 0.20)
+    /// Magenta: a ball sliding on the cloth. Chosen to sit far from the cyan of rolling and from every warm colour in
+    /// the room (lamp, wood, balls), so a sliding line never reads as part of the table itself.
+    static let slideRGB: (Double, Double, Double) = (1.0, 0.30, 0.70)
+    /// The same magenta under Increase Contrast: lighter, so it stands further off the dark ground (Palette.slide's
+    /// high tone). For the 3D parts that follow the contrast setting (BridgeRing).
+    static let slideHighRGB: (Double, Double, Double) = (1.0, 0.52, 0.82)
     /// Cyan: a ball rolling cleanly (the Lens's colour).
     static let cyanRGB: (Double, Double, Double) = (0.30, 0.88, 1.0)
     /// Paper: main text on the dark ground.
@@ -73,7 +81,7 @@ private struct Tone {
 struct Palette {
     /// Tint for controls and the playhead; the Lens's rolling colour.
     let accent: Color
-    /// A ball sliding on the cloth.
+    /// A ball sliding on the cloth (magenta, Theme.slideRGB).
     let slide: Color
     /// Wordmark and title text that sits directly on the scene (not on glass).
     let paper: Color
@@ -98,14 +106,15 @@ struct Palette {
         typealias C = Tone.RGBA
         func tone(_ n: C, _ h: C) -> Color { Tone(normal: n, high: h).resolve(contrast) }
         accent = tone(C(0.30, 0.88, 1.0), C(0.55, 0.95, 1.0))
-        slide = tone(C(1.0, 0.62, 0.20), C(1.0, 0.76, 0.42))
+        slide = tone(C(1.0, 0.30, 0.70), C(1.0, 0.52, 0.82))
         paper = tone(C(0.92, 0.96, 1.0), C(1, 1, 1))
         ground = tone(C(0.02, 0.03, 0.05), C(0, 0, 0))
         track = tone(C(1, 1, 1, 0.18), C(1, 1, 1, 0.38))
         strike = tone(C(1.0, 0.93, 0.55), C(1.0, 0.97, 0.75))
         impact = tone(C(1.0, 0.85, 0.55), C(1.0, 0.92, 0.72))
         cushion = tone(C(0.55, 0.72, 1.0), C(0.72, 0.84, 1.0))
-        friction = tone(C(1.0, 0.62, 0.25), C(1.0, 0.76, 0.45))
+        // Friction is what makes a ball slide and slow, so its captions wear the sliding magenta.
+        friction = tone(C(1.0, 0.30, 0.70), C(1.0, 0.52, 0.82))
         pocket = tone(C(1.0, 0.82, 0.25), C(1.0, 0.90, 0.50))
     }
 }

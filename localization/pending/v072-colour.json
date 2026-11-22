@@ -1,0 +1,230 @@
+{
+ "keys": [
+  "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+  "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+  "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+  "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trazo magenta: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trace magenta : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Magentafarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Traccia magenta: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rasto magenta: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rastro magenta: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
+  },
+  {
+   "culture": "ja",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "マゼンタの軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "마젠타 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "品红色轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
+  },
+  {
+   "culture": "ru",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Пурпурный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
+  },
+  {
+   "culture": "ar",
+   "key": "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "المسار بلون الماجنتا: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trazo magenta discontinuo: la bola se desliza. Su giro aún no ha alcanzado su velocidad, así que derrapa sobre el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Trace magenta en pointillés : la bille glisse. Sa rotation n'a pas encore rattrapé sa vitesse, donc elle dérape sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Gestrichelte magentafarbene Spur: Die Kugel gleitet. Ihr Drall hat ihr Tempo noch nicht eingeholt, also rutscht sie über das Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Traccia magenta tratteggiata: la palla scivola. La sua rotazione non ha ancora raggiunto la sua velocità, quindi slitta sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rasto magenta tracejado: a bola desliza. A rotação ainda não acompanhou a velocidade, por isso derrapa sobre o pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Rastro magenta tracejado: a bola está deslizando. O giro ainda não acompanhou a velocidade, então ela derrapa sobre o pano."
+  },
+  {
+   "culture": "ja",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "マゼンタの破線の軌跡：球は滑っています。回転がまだ速さに追いついていないので、ラシャの上を滑ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "마젠타 점선 경로: 공이 미끄러지고 있어요. 회전이 아직 속도를 따라잡지 못해서 천 위를 미끄러져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "品红色虚线轨迹：球在滑动。它的旋转还没跟上速度，所以在台呢上打滑。"
+  },
+  {
+   "culture": "ru",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "Пурпурный пунктирный след: шар скользит. Его вращение ещё не догнало скорость, поэтому он проскальзывает по сукну."
+  },
+  {
+   "culture": "ar",
+   "key": "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.",
+   "text": "المسار المتقطع بلون الماجنتا: الكرة تنزلق. لم يلحق دورانها بسرعتها بعد، لذا تنزلق فوق الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Líneas de la lente: las magenta discontinuas muestran una bola deslizando, las cian continuas una bola rodando"
+  },
+  {
+   "culture": "fr",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Lignes de la lentille : les magenta en pointillés montrent une bille qui glisse, les cyan continues une bille qui roule"
+  },
+  {
+   "culture": "de",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linien der Linse: gestrichelte magentafarbene Linien zeigen eine gleitende Kugel, durchgehende cyanfarbene eine rollende"
+  },
+  {
+   "culture": "it",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linee della lente: le magenta tratteggiate mostrano una palla che scivola, le ciano continue una palla che rotola"
+  },
+  {
+   "culture": "pt",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linhas da lente: as magenta tracejadas mostram uma bola a deslizar, as ciano contínuas uma bola a rolar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Linhas da lente: as magenta tracejadas mostram uma bola deslizando, as ciano contínuas uma bola rolando"
+  },
+  {
+   "culture": "ja",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "レンズの線：マゼンタの破線は滑っている球、シアンの実線は転がっている球"
+  },
+  {
+   "culture": "ko",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "렌즈 선: 마젠타 점선은 미끄러지는 공, 청록색 실선은 구르는 공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "透镜线条：品红色虚线表示球在滑动，青色实线表示球在滚动"
+  },
+  {
+   "culture": "ru",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "Линии линзы: пурпурный пунктир — шар скользит, сплошной голубой — шар катится"
+  },
+  {
+   "culture": "ar",
+   "key": "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling",
+   "text": "خطوط العدسة: الخطوط المتقطعة بلون الماجنتا تُظهر كرة تنزلق، والخطوط السماوية المتصلة كرة تتدحرج"
+  },
+  {
+   "culture": "es",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Colores de la lente: las líneas magenta muestran una bola deslizando, las cian una bola rodando"
+  },
+  {
+   "culture": "fr",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Couleurs de la lentille : les lignes magenta montrent une bille qui glisse, les lignes cyan une bille qui roule"
+  },
+  {
+   "culture": "de",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Lens-Farben: Magentafarbene Linien zeigen eine rutschende Kugel, türkise Linien eine rollende Kugel"
+  },
+  {
+   "culture": "it",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Colori della lente: le linee magenta mostrano una palla che scivola, quelle ciano una palla che rotola"
+  },
+  {
+   "culture": "pt",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Cores da lente: as linhas magenta mostram uma bola a deslizar, as ciano uma bola a rolar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Cores da lente: as linhas magenta mostram uma bola deslizando, as ciano uma bola rolando"
+  },
+  {
+   "culture": "ja",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "レンズの色: マゼンタの線は滑っている球、シアンの線は転がっている球を表します"
+  },
+  {
+   "culture": "ko",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "렌즈 색상: 마젠타 선은 미끄러지는 공, 청록색 선은 구르는 공을 나타냅니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "镜片颜色：品红色线条表示球在滑动，青色线条表示球在滚动"
+  },
+  {
+   "culture": "ru",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "Цвета линзы: пурпурные линии — шар скользит, голубые — шар катится"
+  },
+  {
+   "culture": "ar",
+   "key": "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling",
+   "text": "ألوان العدسة: الخطوط بلون الماجنتا تُظهر كرة تنزلق، والخطوط السماوية تُظهر كرة تتدحرج"
+  }
+ ]
+}

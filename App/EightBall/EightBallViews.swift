@@ -24,6 +24,8 @@
 //          with the glow, the big one for gold, through SoundBoard, which also plays its haptic, so the card's own
 //          success haptic is gone rather than doubled.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 44: Next's arrow follows the reading direction.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the interface's orange became magenta, so the bronze medal
+//          no longer borrows Palette.slide (a magenta medal would read as a fourth prize); it gets its own muted bronze.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -63,7 +65,9 @@ private extension EightBallMedal {
         switch self {
         case .gold: return palette.pocket
         case .silver: return Color(white: 0.72)
-        case .bronze: return palette.slide
+        // Its own muted bronze, brown rather than orange: a medal's colour names the metal, so it does not follow the
+        // sliding colour (Palette.slide, magenta) it borrowed before 0.7.2.
+        case .bronze: return Color(red: 0.72, green: 0.53, blue: 0.38)
         }
     }
 }

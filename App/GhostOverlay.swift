@@ -7,13 +7,15 @@
 //          keeps its dismissal to itself, and steps aside while a trick-shot, 8-ball or match card is the result card.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (lessons stream, one line: the comparison card also steps aside while a
 //          lesson is up, because the lesson card is then the one result card and carries the sentence itself.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the struck ball's ghost line takes the sliding magenta from the palette; one
+//          comment updated.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
 //          recording (ShotAttempt.ghostPaths), so the picture does not depend on the playback clock: scrubbing either
 //          way leaves it exactly where it was. It is projected through the live camera each frame, so it follows the
 //          swing into the Lens. It never takes touches.
-//          Colours are deliberately secondary: paper white and a muted version of the struck ball's amber, thin and
+//          Colours are deliberately secondary: paper white and a muted version of the sliding magenta for the struck ball, thin and
 //          dashed, so they read as a memory under the live trails rather than as part of the shot.
 // SRP/DRY check: Pass - checked AimOverlay (same projector and Canvas pattern, but for the live aim) and LensLayer
 //          (clock-driven live trails in 3D). This file only draws the previous attempt.

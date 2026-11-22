@@ -1,12 +1,15 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: an awkward stance's ring is magenta, Theme.slideRGB and
+//          its Increase Contrast tone Theme.slideHighRGB, read from Theme instead of typed in, so it always matches
+//          Palette.slide.)
 // PURPOSE: The bridge mark as a flat ring lying on the cloth in the 3D scene (plans/21-Nov-2026-bugs-after-0-6-6-plan.md
 //          item 23). Until 0.7.0 the mark was a flat drawing in AimOverlay's 2D layer, painted over the 3D picture, so it
 //          sat on top of the cue's shaft and, on every bridge shot, right on the chrome bridge head. Here it is part of
 //          the table: a soft chalk ring at the bridge hand's spot (model.strokeBridgeLength behind the cue ball along the
 //          cue) with a faint line from it to the back of the cue ball, lying just above the cloth, so the 3D cue and
 //          the bridge pass over it and cover it as real ones would. Paper white for a square stance with a clear path,
-//          the lamp's amber when the stance is not (App/Stroke/Reach.swift); with Differentiate Without Colour an
+//          magenta when the stance is not (App/Stroke/Reach.swift); with Differentiate Without Colour an
 //          awkward stance also gets an inner ring, so it never rests on colour alone. The ring is left out while the
 //          mechanical rest is drawn (model.restInUse): the rest's head stands there itself.
 //          Integration: TableStage builds a BridgeMark from the model each frame while the cue may show (nil
@@ -28,7 +31,7 @@ struct BridgeMark: Equatable {
     var spot: Vec2
     /// The back of the cue ball along the cue, where the faint line ends.
     var ballBack: Vec2
-    /// The stance is not square (a stretch, behind the back, on the rail, the rest, or a raised cue): amber.
+    /// The stance is not square (a stretch, behind the back, on the rail, the rest, or a raised cue): magenta.
     var awkward: Bool
     /// Differentiate Without Colour is on: an awkward stance also gets an inner ring.
     var innerRing: Bool
@@ -90,12 +93,12 @@ final class BridgeRing {
         line.scale = SIMD3(0.0015, 1, length)
     }
 
-    /// Paper or amber, at the old flat mark's strengths (halo 0.16, ring 0.75, line 0.35); the brighter tones under
+    /// Paper or magenta, at the old flat mark's strengths (halo 0.16, ring 0.75, line 0.35); the brighter tones under
     /// Increase Contrast, as the palette resolves them (Theme's paper and slide).
     private func colour(awkward: Bool) {
         shownAwkward = awkward
         let high = LensTextures.increaseContrast
-        let ink: (Double, Double, Double) = awkward ? (high ? (1.0, 0.76, 0.42) : (1.0, 0.62, 0.20))
+        let ink: (Double, Double, Double) = awkward ? (high ? Theme.slideHighRGB : Theme.slideRGB)
                                                    : (high ? (1.0, 1.0, 1.0) : (0.92, 0.96, 1.0))
         func material(_ opacity: Float) -> UnlitMaterial {
             var m = UnlitMaterial(color: rgba(ink.0, ink.1, ink.2))

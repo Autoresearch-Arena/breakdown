@@ -20,6 +20,8 @@
 //          names it in one line (StanceWords.cueLine) beside a pictogram of that cue at its angle, so the pick is
 //          always said; it shows even with a square stance. The rest's pictogram is now the swan-neck rest the table
 //          draws, and the bridge readout says "the rest" whenever the model uses it (model.restInUse).)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the pictograms' cue and the card's outline take Palette.slide,
+//          now magenta; one comment updated.)
 // SRP/DRY check: Pass - checked StrokeViews (StrokeResultCard is the same small-card pattern, its glass card and fonts
 //          reused), AimGauges (the panel's own controls; this card sits beside them, it does not change them) and
 //          StanceWords (every line comes from there).
@@ -144,7 +146,7 @@ struct EquipmentCard: View {
 // MARK: Pictograms
 
 /// A flat side view drawn with paths: the table's edge on the right (its top and a leg), the floor, and a figure at the
-/// rail in the rung's posture, the cue in the lamp's amber. Coordinates are shares of the drawing's width and height,
+/// rail in the rung's posture, the cue in the sliding magenta (Palette.slide). Coordinates are shares of the drawing's width and height,
 /// (0, 0) top left; the table's top sits at 0.45 of the height and its rail's outer edge at 0.56 of the width.
 struct StancePictogram: View {
     let picture: EquipmentRow.Picture

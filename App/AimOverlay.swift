@@ -48,7 +48,7 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (reach: the bridge mark. While aiming and stroking, a soft chalk ring
 //          lies on the cloth where the bridge rests (model.strokeBridgeLength behind the cue ball along the cue: the
 //          finger's, the automatic one, or the rest's head), with a faint dotted line from it to the cue ball. Paper
-//          for a square stance, the lamp's amber when the stance is not (App/Stroke/Reach.swift); with Differentiate
+//          for a square stance, magenta when the stance is not (App/Stroke/Reach.swift); with Differentiate
 //          Without Colour that also gets an inner ring, so it never rests on colour alone. It never moves by itself,
 //          so Reduce Motion has nothing to stop. Its length is read in the fine controls and the stance by the
 //          equipment card, both spoken; the drawing itself stays hidden from VoiceOver like the rest of this Canvas.)
@@ -79,6 +79,8 @@
 //          "Cue aims here" and "Ball goes here" with the turn; and the object ball's line follows the solver's own impact,
 //          so it includes throw. Aiming at a ball or a pot, by tap or by the VoiceOver actions, turns the cue back by
 //          side spin's push through AimGeometry.cueAim(forLaunch:for:), so the ball itself leaves for the chosen spot.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the ringed target, its departure line and an awkward stance's bridge mark are
+//          magenta (Palette.slide), no longer amber; the local name and comments follow.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: which gesture a touch is gets decided by the touch arbiter (StrokeGestures,
 //          App/Stroke/StrokeGesture.swift), which then calls this layer's handlers: a drag to aim swings the aim line to
@@ -526,7 +528,7 @@ struct AimOverlay: View {
         let contact = aimGuide ? firstHit : nil
         let toHit = firstHit.map { ($0.ghost - origin).length }
         let reach = aimGuide ? guide.reach : min(Self.unguidedReach, guide.reach)
-        let accent = palette.accent, amber = palette.slide, paper = palette.paper
+        let accent = palette.accent, magenta = palette.slide, paper = palette.paper
 
         // The cue and the mechanical bridge are 3D models (CueRig); whenever the rest is in use (a shot that needs it,
         // or a stance out of reach), a small label names it beside its head.
@@ -570,7 +572,7 @@ struct AimOverlay: View {
                 ctx.stroke(ghost, with: .color(paper.opacity(0.95)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
             }
             // The ball it will hit, ringed, and the spot where they touch.
-            if let ring = circle(proj, hit.target, radius * 1.3) { ctx.stroke(ring, with: .color(amber), lineWidth: 2.5) }
+            if let ring = circle(proj, hit.target, radius * 1.3) { ctx.stroke(ring, with: .color(magenta), lineWidth: 2.5) }
             if let touch = proj.screen((hit.ghost + hit.target) * 0.5) {
                 ctx.fill(Path(ellipseIn: CGRect(x: touch.x - 3, y: touch.y - 3, width: 6, height: 6)), with: .color(paper))
             }
@@ -585,7 +587,7 @@ struct AimOverlay: View {
             let objectLength = min(0.15 + 0.6 * fullness, AimGeometry.cushionDistance(from: hit.target, direction: objectDirection, table: table))
             if let a = proj.screen(hit.target + objectDirection * radius * 1.3), let b = proj.screen(hit.target + objectDirection * (radius + objectLength)) {
                 var path = Path(); path.move(to: a); path.addLine(to: b)
-                ctx.stroke(path, with: .linearGradient(Gradient(colors: [amber, amber.opacity(0.05)]), startPoint: a, endPoint: b),
+                ctx.stroke(path, with: .linearGradient(Gradient(colors: [magenta, magenta.opacity(0.05)]), startPoint: a, endPoint: b),
                            style: StrokeStyle(lineWidth: 3, lineCap: .round))
             }
             if let side = hit.cueDirection {
@@ -667,7 +669,7 @@ struct AimOverlay: View {
         let backward = (1 - sideways * sideways).squareRoot()
         let spot = origin - forward * (length * backward) + forward.perp * (length * sideways)
         guard let ring = clothCircle(proj, spot, Self.bridgeMarkRadius) else { return }
-        // Paper for a square stance with a clear path; amber (the lamp's colour) when the stance is not.
+        // Paper for a square stance with a clear path; magenta (Palette.slide) when the stance is not.
         let awkward = model.stance.map { !$0.isNormal } ?? false
         let ink = awkward ? palette.slide : palette.paper
         let toBall = (origin - spot).normalized
