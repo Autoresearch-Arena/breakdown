@@ -827,6 +827,7 @@ enum TableWords {
     static func markedAngle(words: String) -> String { String(localized: "\(words), marked") }
 
     /// "Try 1 of 3" and so on: the same words as the lesson card's corner (LessonViews), so they share a translation.
+    @MainActor
     static func lessonStepName(_ step: LessonMode.Step) -> String {
         switch step {
         case .try1: return String(localized: "Try 1 of 3")

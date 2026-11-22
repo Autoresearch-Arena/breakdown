@@ -51,6 +51,8 @@ import BreakdownRules
 import CoreGraphics
 import Foundation
 import GameController
+// The scene's camera (AimProjector reads RealityKit's PerspectiveCamera from the table's root entity).
+import RealityKit
 
 @MainActor
 final class GameControllerInput {
@@ -416,7 +418,7 @@ final class GameControllerInput {
         }
         let call = EightBallCall.ball(ball, pocket: pocket)
         match.setCall(call)
-        ShotNarration.announce(MatchWords.callLine(call))
+        ShotNarration.answer(MatchWords.callLine(call))
         return true
     }
 
@@ -431,14 +433,14 @@ final class GameControllerInput {
             let ball = i.map { callable[($0 + x + callable.count) % callable.count] } ?? callable[0]
             eight.pick(ball: ball)
             eightBallPocket = nil
-            ShotNarration.announce(TableWords.capitalized(TableWords.ballName(ball)))
+            ShotNarration.answer(TableWords.capitalized(TableWords.ballName(ball)))
         } else if let ball = eight.pendingBall {
             let all = EightBallPocket.allCases
             let now = eightBallPocket ?? bestPocket(for: ball, model: model)
             let i = now.flatMap { all.firstIndex(of: $0) } ?? 0
             let next = all[(i + y + all.count) % all.count]
             eightBallPocket = next
-            ShotNarration.announce(next.title)
+            ShotNarration.answer(next.title)
         }
         return true
     }

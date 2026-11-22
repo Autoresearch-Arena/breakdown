@@ -9,7 +9,9 @@
 //            posted within a quarter of a second into one sentence (no exact repeats) and posts it at low priority,
 //            so VoiceOver queues it behind whatever it is saying instead of cutting it off. A finished shot is one
 //            utterance: the summary, the stroke's line, the one ruling sentence (the match card no longer says its
-//            own version) and the stance for the next strike, folded in instead of announced on every change.
+//            own version) and the stance for the next strike, folded in instead of announced on every change. The
+//            reply to something the player just did (an action, a d-pad press, stepping through the shot) goes
+//            through ShotNarration.answer instead: at once, at normal priority, never joined to the line before.
 //          - item 46: lessons are followed without sight: the step's voice line when a step starts (what is open, the
 //            band's range in words, the goal, where the finish circle is), the idea when the replay pauses on it, the
 //            verdict after every try; TipAccessActions gives the tip picture its spoken amount, its band status, fine
@@ -78,6 +80,17 @@ enum ShotNarration {
             try? await Task.sleep(for: gatherWindow)
             flush()
         }
+    }
+
+    /// Speak the result of something the player just did (an action, a button, a d-pad press) at once, at the normal
+    /// priority, without gathering: a reply should not wait behind other speech, and a quick second press should
+    /// replace the first reply rather than be joined to it. Narration the player did not ask for uses announce.
+    static func answer(_ text: String) {
+        let line = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !line.isEmpty else { return }
+        var spoken = AttributedString(line)
+        spoken.accessibilitySpeechAnnouncementPriority = .default
+        AccessibilityNotification.Announcement(spoken).post()
     }
 
     private static func flush() {
@@ -237,11 +250,11 @@ enum ShotNarration {
         let next = forward ? caps.first { $0.time > model.time + epsilon } : caps.last { $0.time < model.time - epsilon }
         guard let caption = next else {
             model.scrub(to: forward ? model.duration : 0)
-            announce(forward ? String(localized: "End of the shot.") : String(localized: "Start of the shot."))
+            answer(forward ? String(localized: "End of the shot.") : String(localized: "Start of the shot."))
             return
         }
         model.scrub(to: caption.time)
-        announce("\(caption.title). \(caption.detail)")
+        answer("\(caption.title). \(caption.detail)")
     }
 }
 
@@ -346,7 +359,7 @@ struct TipAccessActions: ViewModifier {
         if length > limit, length > 0 { u *= limit / length; s *= limit / length }
         if up != nil { model.activeTipUp = u }
         if side != nil { model.activeTipSide = s }
-        ShotNarration.announce(TableWords.tipValue(model, zones: zones))
+        ShotNarration.answer(TableWords.tipValue(model, zones: zones))
     }
 }
 
@@ -430,7 +443,7 @@ struct TableAccessLayer: View {
                     Button(String(localized: "Step back through the shot")) { ShotNarration.step(model, forward: false) }
                 }
                 if NotebookStory.hasShot(model) {
-                    Button(String(localized: "Say what happened")) { ShotNarration.announce(ShotNarration.summary(of: model)) }
+                    Button(String(localized: "Say what happened")) { ShotNarration.answer(ShotNarration.summary(of: model)) }
                 }
                 if let zoom = bridge.table?.zoom {
                     if cuePosition != nil {
@@ -439,7 +452,7 @@ struct TableAccessLayer: View {
                     if zoom.isZoomed {
                         Button(String(localized: "Zoom out")) {
                             zoom.springBack()
-                            ShotNarration.announce(String(localized: "Zoomed out."))
+                            ShotNarration.answer(String(localized: "Zoomed out."))
                         }
                     }
                 }
@@ -469,7 +482,7 @@ struct TableAccessLayer: View {
         guard let p = cuePosition else { return }
         let w = TableFrame(model.timeline.table).world(p)
         zoom.focus(on: SIMD2(w.x, w.z), ball: cueBall)
-        ShotNarration.announce(String(localized: "Zoomed in on the cue ball."))
+        ShotNarration.answer(String(localized: "Zoomed in on the cue ball."))
     }
 
     // MARK: Ball, pocket and feature elements
@@ -595,7 +608,7 @@ struct TableAccessLayer: View {
                 .accessibilityHint(Text("Aims straight at it"))
                 .accessibilityAction {
                     AimAccess.aim(model, toward: target)
-                    ShotNarration.announce(TableWords.spokenAim(for: model))
+                    ShotNarration.answer(TableWords.spokenAim(for: model))
                 }
         } else if item.id >= 100, item.id < 200, let onPocket {
             base

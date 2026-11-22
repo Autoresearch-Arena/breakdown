@@ -55,7 +55,8 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hooks, 0.7.0 items 47 and 50: the Aim element's words
 //          come from TableWords.spokenAim (the guide's launch line and contact, side spin included, with a lesson's
 //          aim band and the stance), the ball in line is the guide's, and aiming at a ball or a pot goes through
-//          AimAccess so the launch line, not the bare cue line, runs through the chosen point.)
+//          AimAccess so the launch line, not the bare cue line, runs through the chosen point. Replies to the Aim
+//          element's actions are spoken at once through ShotNarration.answer, not queued behind other speech.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: a drag that starts away from the cue ball swings the aim line to follow the finger
 //          (the finger's spot on the table is found with AimProjector, so it works from any camera angle); a drag that
@@ -215,7 +216,7 @@ struct AimOverlay: View {
             let degrees = (aimStep * 0.25).formatted(.number.precision(.fractionLength(0...2)))
             size = String(localized: "Each step turns the aim \(degrees) degrees.")
         }
-        ShotNarration.announce(size)
+        ShotNarration.answer(size)
     }
 
     /// Object balls the cue ball can hit straight on (its line to the ball's centre meets that ball first). In a
@@ -245,14 +246,14 @@ struct AimOverlay: View {
     private func aimAtBall(_ ball: Int) {
         guard model.layout.indices.contains(ball), NextShot.isOnTable(model.layout[ball]) else { return }
         AimAccess.aim(model, toward: model.layout[ball])
-        ShotNarration.announce(spokenAim)
+        ShotNarration.answer(spokenAim)
     }
 
     /// Cycle through the balls that can be hit, by number, starting after the one in line now.
     private func aimAtNextBall() {
         let balls = hittableBalls()
         guard let first = balls.first else {
-            ShotNarration.announce(String(localized: "No ball can be hit in a straight line."))
+            ShotNarration.answer(String(localized: "No ball can be hit in a straight line."))
             return
         }
         let current = ballInLine ?? 0
@@ -263,7 +264,7 @@ struct AimOverlay: View {
     private func aimPot(_ pot: TableLines.PotAim) {
         // Corrected for side spin's push, so the ball really leaves for the ghost spot (access stream, item 50).
         AimAccess.aim(model, toward: pot.ghost)
-        ShotNarration.announce(spokenAim)
+        ShotNarration.answer(spokenAim)
     }
 
     /// Tap or double-tap on a pocket: pot the ball in line into it; with no ball in line, the ball that is easiest
@@ -277,7 +278,7 @@ struct AimOverlay: View {
         let options = (1..<max(1, layout.count)).compactMap { TableLines.potAim(ball: $0, pocket: pocket, in: layout, table: table) }
         guard let pot = options.filter(\.clear).min(by: { $0.cutSine < $1.cutSine }) ?? options.min(by: { $0.cutSine < $1.cutSine })
         else {
-            ShotNarration.announce(String(localized: "No ball can be potted in that pocket from here."))
+            ShotNarration.answer(String(localized: "No ball can be potted in that pocket from here."))
             return
         }
         aimPot(pot)
@@ -289,7 +290,7 @@ struct AimOverlay: View {
         let table = model.timeline.table, layout = model.layout
         let o = model.aimOrigin
         guard let ball = ballInLine ?? hittableBalls().min(by: { (layout[$0] - o).length < (layout[$1] - o).length }) else {
-            ShotNarration.announce(String(localized: "No ball can be hit in a straight line."))
+            ShotNarration.answer(String(localized: "No ball can be hit in a straight line."))
             return
         }
         let pots = (0..<min(TableSpec.edgePocketCount, table.pockets.count)).compactMap {
@@ -297,7 +298,7 @@ struct AimOverlay: View {
         }
         let nearest = pots.filter(\.clear).min { (table.pockets[$0.pocket] - layout[ball]).length < (table.pockets[$1.pocket] - layout[ball]).length }
         guard let pot = nearest ?? TableLines.bestPot(ball: ball, in: layout, table: table) else {
-            ShotNarration.announce(String(localized: "No ball can be potted in that pocket from here."))
+            ShotNarration.answer(String(localized: "No ball can be potted in that pocket from here."))
             return
         }
         aimPot(pot)
