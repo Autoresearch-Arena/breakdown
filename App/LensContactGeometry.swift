@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream drawings, bug list #15, #16, #17, #65: LensMarkFloor at the
+//          end of this file, the screen-size floors every Lens mark keeps on a phone (lines at least 2 points wide,
+//          arrowheads at least 8 points, the contact lines reaching 40 points either side, throw lines long enough that
+//          a one-degree throw opens 6 points at the far end). Pure maths on a points-per-metre figure, so the unit tests
+//          can pin it; LensLayer reads the figure from the table camera.)
 // PURPOSE: The geometry of one ball-to-ball hit, read from its recorded Lens event, for the Lens drawing of a held hit
 //          (plans/22-Nov-2026-v074-glow-up-plan.md, feature G2, stream lens-drawing). Given a ball-to-ball event it
 //          says where the balls touched, the line of centres (from the striking ball into the struck one) and the
@@ -14,6 +19,8 @@
 //          degrees. The mark is therefore rare and always true, as the plan's "drawn by the true solver" asks.
 //          Pure: no RealityKit, no model. Read by LensLayer each frame a hit is held (LensLayer.heldEvent) and by
 //          BreakdownTests/LensContactGeometryTests.
+//          LensMarkFloor (0.7.6) is the other pure half of the Lens marks' layout: how much larger than its table size a
+//          mark must be drawn so it stays readable on screen.
 // SRP/DRY check: Pass - checked CaptionEngine.throwFacts (the throw caption and the throw lines: it finds the ball at
 //          rest the same way and its rest speed, CaptionEngine.restSpeed, is reused here so the words and the drawing
 //          agree on what "at rest" means) and AimGeometry (the aim guide's predicted paths before a shot; this reads a
@@ -74,5 +81,67 @@ struct ContactGeometry: Equatable {
         return ContactGeometry(point: e.point, normal: n, tangent: n.perp, striker: striker.ball, object: object.ball,
                                incoming: striker.velocityBefore, strikerOut: sOut, objectOut: oOut,
                                objectWasMoving: moving, rightAngle: square)
+    }
+}
+
+/// Screen-size floors for the Lens marks (0.7.6 stream drawings; plans/22-Nov-2026-phone-bug-hunt.md #15, #16, #17, #65).
+/// Every Lens mark is built in table metres, which reads well in a large window but comes out under a point wide on an
+/// upright phone, where the whole table is about 150 points per metre. LensLayer asks the table camera how many screen
+/// points one metre covers at the mark's place (TableCamera.pointsPerMetre) and these functions say how much larger the
+/// mark must be drawn. They only ever grow a mark (a large window keeps its table sizes exactly), and with no figure
+/// (nil: the scrub check and unit tests, which have no camera) they change nothing, so the clock-only fingerprint holds.
+/// Pure: no RealityKit, no model.
+enum LensMarkFloor {
+    /// The thinnest any drawn line may be, screen points (the plan's 2).
+    static let line: Float = 2
+    /// The shortest any arrowhead may be, screen points (the plan's 8).
+    static let head: Float = 8
+    /// How far the contact drawing's line of centres and tangent reach either side of the contact, at least, in screen
+    /// points: 40 either side clears the 20-point caption ring, so the lines are never lost inside it.
+    static let contactReach: Float = 40
+    /// Throw lines: at least this long on screen, points; and for a throw of a degree or more, long enough that the far
+    /// ends of the two lines stand `throwGap` points apart, but never longer than `throwLongest` (a throw of exactly one
+    /// degree needs about 344 points, so the cap only bites just under a degree, where nothing is promised).
+    static let throwLength: Float = 90
+    static let throwGap: Float = 6
+    static let throwLongest: Float = 360
+    /// The smallest throw, degrees, that the far-end gap is promised for.
+    static let throwGapFrom = 1.0
+    /// Jump mark: the ring on the ball's ground spot clears the drawn ball by at least this many points, plus up to
+    /// `jumpGrowth` more as the ball climbs to two radii up, so its edge stays visible from straight above.
+    static let jumpGap: Float = 4
+    static let jumpGrowth: Float = 8
+    /// The most a floor may enlarge a mark. A safety cap: on an upright phone the largest floor needed is about five
+    /// times (the throw lines); only a point far from the camera in the Ride view could ask for more, and there a mark
+    /// many times its size would read as something else.
+    static let maxScale: Float = 6
+
+    /// A usable points-per-metre figure, or nil (behind the camera, not a number, or none given).
+    static func usable(_ pointsPerMetre: Float?) -> Float? {
+        guard let ppm = pointsPerMetre, ppm.isFinite, ppm > 1e-3 else { return nil }
+        return ppm
+    }
+
+    /// The factor a part `natural` metres across must be scaled by to be at least `points` on screen: 1 when it is
+    /// already that large or when there is no figure, never more than `maxScale`.
+    static func scale(natural: Float, points: Float, pointsPerMetre: Float?) -> Float {
+        guard let ppm = usable(pointsPerMetre), natural > 0 else { return 1 }
+        return min(maxScale, max(1, points / (natural * ppm)))
+    }
+
+    /// The length, metres, of the two throw lines (the dashed line of centres and the solid departure, drawn from the
+    /// struck ball's centre `degrees` apart): never shorter than `natural`, at least `throwLength` points on screen,
+    /// and for a throw of `throwGapFrom` degrees or more long enough that the far ends are `throwGap` points apart.
+    /// Only the length changes, never the angle: the lines always part at the true throw.
+    static func throwLineLength(natural: Float, degrees: Double, pointsPerMetre: Float?) -> Float {
+        guard let ppm = usable(pointsPerMetre) else { return natural }
+        var points = throwLength
+        // The chord between the far ends of two lines L long, an angle a apart, is 2 L sin(a / 2).
+        let halfAngle = Float(abs(degrees) * .pi / 360)
+        if abs(degrees) >= throwGapFrom, sin(halfAngle) > 1e-6 {
+            points = max(points, throwGap / (2 * sin(halfAngle)))
+        }
+        points = min(points, throwLongest)
+        return min(natural * maxScale, max(natural, points / ppm))
     }
 }
