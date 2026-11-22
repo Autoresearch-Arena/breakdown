@@ -6,6 +6,11 @@
 //          list.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (stroke stream: the straight-stroke drill's two remembered numbers,
 //          strokeDrillBestKey and strokeDrillStraightKey, read and written by StrokeDrill.)
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, item 45 of plans/21-Nov-2026-bugs-after-0-6-6-plan.md: "Shoot
+//          with the button only", buttonOnlyKey, off by default. When on, a finger's pull still sets the power and its
+//          stroke is still measured, but a push through the cue ball never plays the shot; only Shoot (or Break) does.
+//          For a player whose hand may slip forward. The touch stroke (StrokeGesture) reads shootWithButtonOnly at the
+//          moment of the push. A touch-screen option, so it shows on iPhone and iPad only.)
 // PURPOSE: The player's options, stored on the device: sound, vibration, shot explanations (the caption card in the
 //          Physics Lens), the aim guide (ghost ball and where the balls head after contact), and whether the
 //          explanation card shows its maths. One key per option, read by the views with @AppStorage and by the sound
@@ -32,11 +37,17 @@ enum GameSettings {
     static let strokeDrillBestKey = "strokeDrillBest"
     /// How many dead-straight strokes the drill has seen (StrokeDrill).
     static let strokeDrillStraightKey = "strokeDrillStraight"
+    /// "Shoot with the button only": the touch stroke sets power but never plays on the push; Shoot plays. Off by
+    /// default (docs/v07-contracts.md 3.6). Read by StrokeGesture through shootWithButtonOnly.
+    static let buttonOnlyKey = "optionShootWithButtonOnly"
 
     /// Options default to on; reading a missing key as "on" keeps a fresh install fully featured.
     private static func flag(_ key: String) -> Bool { UserDefaults.standard.object(forKey: key) as? Bool ?? true }
     static var soundOn: Bool { flag(soundKey) }
     static var hapticsOn: Bool { flag(hapticsKey) }
+    /// The one option that defaults to off: the push through the ball is the game's own way to shoot, and a fresh
+    /// install plays it. Read at the moment of the push, so a change in Options applies to the next stroke.
+    static var shootWithButtonOnly: Bool { UserDefaults.standard.bool(forKey: buttonOnlyKey) }
 }
 
 struct OptionsSheet: View {
@@ -48,6 +59,7 @@ struct OptionsSheet: View {
     @AppStorage(GameSettings.mathsKey) private var maths = false
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage(LensCallouts.seenKey) private var lensTipsSeen = false
+    @AppStorage(GameSettings.buttonOnlyKey) private var buttonOnly = false
 
     private var version: String {
         let info = Bundle.main.infoDictionary
@@ -85,6 +97,16 @@ struct OptionsSheet: View {
                 } footer: {
                     Text("The guide shows the first ball you will hit and where both balls head next. Turn it off to judge the angle yourself.")
                 }
+                #if os(iOS)
+                // Touch only: a pointer, the keys and a controller never shoot on a push.
+                Section {
+                    Toggle("Shoot with the button only", systemImage: "hand.tap", isOn: $buttonOnly)
+                } header: {
+                    Text("Stroke")
+                } footer: {
+                    Text("Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.")
+                }
+                #endif
                 Section {
                     LabeledContent("Version", value: version)
                 }

@@ -1,12 +1,19 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, items 4 and 45 of plans/21-Nov-2026-bugs-after-0-6-6-plan.md:
+//          the result card shows whenever the stroke changed what happened, in either zone (StrokeEffect), and offers
+//          the straight-stroke drill in free play; the drill card says it measures a finger stroke, names the turn of
+//          every drifted stroke, and marks a shot played another way as left out of the record.)
 // PURPOSE: The stroke on screen (plans/21-Nov-2026-stroke-and-power-plan.md), apart from the live groove:
 //          - StrokeCards: the cards this stream adds, one hook line wherever the cards sit (the phone's bottom stack,
-//            the side column, the notebook panel), so each works as a card of the notebook beside the table:
-//            - StrokeResultCard: after a hard shot whose drift mattered, the plain result line ("Full power: the tip
-//              landed left of where you aimed."), once the shot has played out, until the next shot.
-//            - StrokeDrillCard: the straight-stroke drill's goal, verdict, the stroke's trace, the remembered
-//              progress, and Again.
+//            the side column, the notebook panel), so each works as a card of the notebook beside the table and
+//            nothing covers the table:
+//            - StrokeResultCard: when the stroke changed what happened (the first ball, a pot made or missed, the
+//              cue ball lost or kept), the plain result line ("Your stroke turned the cue a little left. Played
+//              straight, the pot would have dropped."), once the shot has played out, until the next shot; in free
+//              play with a button to the straight-stroke drill, the one place the stroke is taught.
+//            - StrokeDrillCard: the straight-stroke drill's goal, what it measures, the verdict, the turn, the
+//              stroke's trace, the remembered progress, and Again.
 //          - StrokeShape: a small drawing of a stroke's shape (the drill card's trace), sideways wander enlarged.
 //          - StrokeTraceOverlay: the stroke's trace kept with the attempt, drawn faintly on the cloth behind the cue
 //            ball while its replay plays, projected through the live camera like the ghost.
@@ -36,24 +43,46 @@ struct StrokeResultCard: View {
     /// The line for the shot on screen, once it has played out. Not in the drill, whose card says it with its verdict.
     private var line: String? {
         guard model.aimReady, !model.strokeDrill.isActive else { return nil }
-        return StrokeWords.resultLine(model.currentAttempt?.stroke)
+        return StrokeWords.resultLine(for: model.currentAttempt)
+    }
+
+    /// The drill is offered only in free play: starting it ends whatever is on the table, and a match, a lesson, a
+    /// trick shot or a Behind the 8-Ball situation must not be thrown away by a tip.
+    private var offersDrill: Bool {
+        model.match == nil && !model.trickMode.isActive && !model.lessonMode.isActive && !model.eightBallMode.isActive
     }
 
     var body: some View {
         if let line {
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "scribble")
-                    .font(.headline)
-                    .foregroundStyle(palette.slide)
-                    .accessibilityHidden(true)
-                Text(line)
-                    .font(Theme.body)
-                    .foregroundStyle(palette.paper)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "scribble")
+                        .font(.headline)
+                        .foregroundStyle(palette.slide)
+                        .accessibilityHidden(true)
+                    Text(line)
+                        .font(Theme.body)
+                        .foregroundStyle(palette.paper)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .accessibilityElement(children: .combine)
+                if offersDrill {
+                    Button { model.strokeDrill.begin() } label: {
+                        Label(String(localized: "Practise the straight stroke"), systemImage: "arrow.up.and.down")
+                            .font(.headline)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                            .frame(minHeight: CallMetrics.buttonHeight)
+                    }
+                    .buttonStyle(.glass)
+                    .controlSize(.regular)
+                    .accessibilityHint(String(localized: "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back"))
+                }
             }
             .glassCard(cornerRadius: 20, padding: 12)
-            .accessibilityElement(children: .combine)
+            .tint(palette.accent)
+            .accessibilityElement(children: .contain)
             .transition(.opacity)
         }
     }
@@ -84,7 +113,13 @@ struct StrokeDrillCard: View {
                             .font(Theme.label)
                             .foregroundStyle(palette.accent)
                     }
-                    if let line = StrokeWords.resultLine(drill.lastStroke) {
+                    if !drill.lastCounted {
+                        Text(StrokeWords.notCounted)
+                            .font(Theme.label)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let line = StrokeWords.drillLine(drill.lastStroke) {
                         Text(line).font(Theme.body).foregroundStyle(palette.paper.opacity(0.9))
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -100,6 +135,10 @@ struct StrokeDrillCard: View {
                     Text(String(localized: "Stroke the cue ball up to the far rail. A straight stroke brings it back along the cue line."))
                         .font(Theme.body)
                         .foregroundStyle(palette.paper.opacity(0.9))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(StrokeWords.drillMeasuresFinger)
+                        .font(Theme.label)
+                        .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(String(localized: "Then try it hard: past the calm zone on the power bar, the line wanders more."))
                         .font(Theme.label)
