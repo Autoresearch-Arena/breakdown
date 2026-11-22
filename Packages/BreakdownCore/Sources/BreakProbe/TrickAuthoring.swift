@@ -3,6 +3,10 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (throw search moved further off the pocket so it needs the throw, coarser aim steps; new massé and jump searches using cue elevation).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: searches for the two side-spin shots,
 //          "squirt" and "side-off-rail", each kept only if it teaches what its words say; see their MARK sections.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 6: "tricks masse-offered jump-offered draw-masse-carom" re-author the three raised-cue shots on an angle
+//          the cue-angle menu offers, each kept on its old checks plus a tip-height window of at least 1.5 mm each side;
+//          see "Raised cue on the offered angles".)
 // PURPOSE: Authors the trick shots for the app with the real solver (run "BreakProbe tricks [id ...]"). Each shot is
 //          built geometrically first (the ghost-ball line from the target pocket back through the object ball, a second
 //          ball dropped onto the cue ball's own recorded path, blockers on the straight line, a frozen pair whose line
@@ -750,10 +754,167 @@ func authorSideOffRail() -> Authored? {
     return found
 }
 
+// MARK: Raised cue on the offered angles (0.7.5)
+
+// The three raised-cue trick shots were first authored on any sine the search liked (the massé 0.40, the jump 0.55, the
+// carom 0.45), none of which the cue-angle menu can set: its angles are offeredCueAngles (LessonAuthoring.swift, the
+// app's CueAngleMenu.angles). So a player could never strike the answer exactly, and Your turn after Watch it put the
+// cue on a different angle from the one just watched. These searches keep each shot's layout and goal and re-author its
+// strike on an offered angle near the old one, with the elevation exactly sineOf(degrees:), the same formula the app's
+// control writes (so the answer's elevation is bit for bit the menu's value).
+
+/// The offered angles within `spread` degrees of an elevation (a sine), nearest first, as (degrees, sine).
+func offeredAngles(near elevation: Double, spread: Double = 12) -> [(angle: Int, sine: Double)] {
+    let degrees = asin(min(max(elevation, 0), 0.995)) * 180 / Double.pi
+    return offeredCueAngles.filter { $0 > 0 && abs(Double($0) - degrees) <= spread }
+        .sorted { abs(Double($0) - degrees) < abs(Double($1) - degrees) }
+        .map { ($0, sineOf(degrees: $0)) }
+}
+
+/// The least tip-height half-window a trick may ship with, metres: 1.5 mm either side of the answer. The tip picture's
+/// own steps (a millimetre by VoiceOver, about one by a fingertip on the 52-point picture) must be able to land in it,
+/// so a window of half a millimetre each side, the carom's before 0.7.5, was a target nobody could reliably set. The
+/// app's AuthoredLibraryTests holds every trick to the same number.
+let leastTipHalfWindow = 0.0015
+
+/// What each raised-cue trick must still show, as it was kept on the first time (Reauthor's nearRules, whose closures
+/// are private there): a level cue misses (it is the raised cue that does it), and for the carom removing the draw or
+/// the side misses too. Every one also needs the tip-height window above.
+func raisedCueKeeps(_ id: String) -> (Difficulty, @Sendable (Authored) -> Bool) {
+    let levelMisses: @Sendable (Authored) -> Bool = { a in
+        var level = a.strike; level.elevation = 0
+        return !passes(a.goal, simulate(a.layout, level))
+    }
+    let roomyTip: @Sendable (Authored) -> Bool = { $0.tipHalfWindow >= leastTipHalfWindow - 1e-9 }
+    switch id {
+    case "draw-masse-carom":
+        return (.hard, { a in
+            guard roomyTip(a), levelMisses(a) else { return false }
+            var noDraw = a.strike; noDraw.tipUp = 0
+            var noSide = a.strike; noSide.tipSide = 0
+            return !passes(a.goal, simulate(a.layout, noDraw)) && !passes(a.goal, simulate(a.layout, noSide))
+        })
+    case "jump-over": return (.medium, { roomyTip($0) && levelMisses($0) })
+    default: return (.hard, { roomyTip($0) && levelMisses($0) })      // the massé
+    }
+}
+
+/// Re-author one raised-cue trick (masse-curve, jump-over or draw-masse-carom) on an offered angle near its old one.
+/// First the cheap way: the old strike at each nearby offered angle, re-centred in its windows (TrickSearch.measured
+/// leaves the elevation untouched). Only when none of those keeps the shot's checks, a grid near the old strike on the
+/// same angles: aim either side (wide for a curve, whose aim swings with the bend), power from softer to harder, tip
+/// height a few millimetres either way, the side a little either way where the shot uses it, every tip inside the grip.
+/// The choice among survivors is the first authoring's (best, choose).
+func authorOnOfferedAngle(_ id: String) -> Authored? {
+    guard let t = authoredTricks.first(where: { $0.id == id }), t.strike.elevation > 0 else {
+        print("   \(id): not a raised-cue trick in the library"); return nil
+    }
+    let (difficulty, keeps) = raisedCueKeeps(id)
+    let angles = offeredAngles(near: t.strike.elevation)
+    print(String(format: "   %@: old elevation sine %.2f (%.1f deg); offered angles tried: %@", id, t.strike.elevation,
+                 asin(t.strike.elevation) * 180 / Double.pi, angles.map { "\($0.angle)" }.joined(separator: ", ")))
+    // 1. The old strike, moved onto each offered angle.
+    let moved = parallelMap(angles.count) { i -> Authored? in
+        var s = t.strike; s.elevation = angles[i].sine
+        guard passes(t.goal, simulate(t.layout, s)),
+              let a = measured(id, t.layout, s, t.goal, note: "the old strike on \(angles[i].angle) degrees, re-centred"),
+              keeps(a) else { return nil }
+        return a
+    }.compactMap { $0 }
+    // How many offered angles make each one (its run, cueAngleBand): a player who picks the next angle up or down
+    // should still have a chance, so the widest run wins, then the first authoring's choice (choose).
+    let runs = parallelMap(moved.count) { i -> Int in
+        guard let b = cueAngleBand(moved[i].layout, moved[i].strike, moved[i].goal),
+              let lo = offeredCueAngles.firstIndex(of: b.lo), let hi = offeredCueAngles.firstIndex(of: b.hi) else { return 0 }
+        return hi - lo + 1
+    }
+    for (a, run) in zip(moved, runs) {
+        print(String(format: "   kept as moved: %d degrees, aim half %.2f, tip half %.4f, feel %.2f, %d offered angles make it",
+                     Int((asin(a.strike.elevation) * 180 / Double.pi).rounded()), a.aimHalfWindow, a.tipHalfWindow,
+                     a.feelScore, run))
+    }
+    if let widest = runs.max(), let a = choose(zip(moved, runs).filter { $0.1 == widest }.map(\.0), difficulty) { return a }
+    // 2. A grid near the old strike on the same angles. The tip is walked in whole millimetres, wider for the carom,
+    // whose draw and side are what the shot is about and whose old answer sat in a half-millimetre tip window.
+    let old = t.strike
+    let curve = old.tipSide != 0
+    let aims = curve ? range(old.aim - 8, old.aim + 8, 0.25) : range(old.aim - 1.5, old.aim + 1.5, 0.05)
+    let powers = range(max(0.6, old.power * 0.75), min(8, old.power * 1.4), max(0.05, (old.power * 0.05 / 0.05).rounded() * 0.05))
+    let upSpread = id == "draw-masse-carom" ? 5 : 4, sideSpread = id == "draw-masse-carom" ? 3 : 2
+    let ups = (-upSpread...upSpread).map { ((old.tipUp + Double($0) * 0.001) / 0.0005).rounded() * 0.0005 }
+    let sides: [Double] = old.tipSide == 0 ? [0]
+        : (-sideSpread...sideSpread).map { ((old.tipSide + Double($0) * 0.001) / 0.0005).rounded() * 0.0005 }
+            .filter { $0 * old.tipSide > 0 }
+    var cands: [Candidate] = []
+    for (_, e) in angles { for ts in sides { for tu in ups where insideGrip(up: tu, side: ts) {
+        for p in powers { for a in aims {
+            cands.append(Candidate(layout: t.layout, strike: Strike(aim: a, power: p, tipUp: tu, tipSide: ts, elevation: e),
+                                   goal: t.goal, note: "near the old strike, on an offered angle"))
+        } }
+    } } }
+    print("   \(id): the old strike keeps nothing on an offered angle; \(cands.count) grid strikes")
+    // More of the survivors are measured than in a first authoring (240, not 48): the tip-height rule is strict, and a
+    // shot that meets it may be rare among strokes that pass.
+    if let a = best(id, cands, difficulty, limit: 240, extra: keeps) { return a }
+    diagnoseOffered(id, cands, keeps)
+    return nil
+}
+
+/// When no grid strike keeps a raised-cue trick's checks, says why: of a spread of measured strikes that pass, the
+/// widest tip-height half-window found and how many fail each check, so the next search (or the decision to keep the
+/// old numbers) rests on what the solver did.
+func diagnoseOffered(_ id: String, _ cands: [Candidate], _ keeps: @Sendable (Authored) -> Bool) {
+    let ok = parallelMap(cands.count) { i in passes(cands[i].goal, simulate(cands[i].layout, cands[i].strike)) }
+    let passing = zip(cands, ok).filter { $0.1 }.map(\.0)
+    guard !passing.isEmpty else { print("   \(id) diagnosis: nothing passes"); return }
+    let step = max(1, passing.count / 120)
+    let sample = Swift.stride(from: 0, to: passing.count, by: step).map { passing[$0] }
+    let measuredSample = parallelMap(sample.count) { i in
+        measured(id, sample[i].layout, sample[i].strike, sample[i].goal, note: "diagnosis")
+    }.compactMap { $0 }
+    let roomy = measuredSample.filter { $0.tipHalfWindow >= leastTipHalfWindow - 1e-9 }
+    let kept = parallelMap(roomy.count) { i in keeps(roomy[i]) }
+    let widest = measuredSample.max { $0.tipHalfWindow < $1.tipHalfWindow }
+    print(String(format: "   %@ diagnosis: %d measured, widest tip half-window %.4f m, %d with at least %.4f, %d of those keep the other checks",
+                 id, measuredSample.count, widest?.tipHalfWindow ?? 0, roomy.count, leastTipHalfWindow,
+                 kept.filter { $0 }.count))
+    if let w = widest { print("   widest: \(w.strike)") }
+}
+
+/// Prints what the app needs beside a re-authored raised-cue trick: the strike and windows (report), the side window
+/// walked from the answer, the run of offered angles that still makes it (for the comment and the judge's cue-angle
+/// band), and the three checks the shot is kept on.
+func reportOnOfferedAngle(_ a: Authored) {
+    report(a)
+    let side = halfWidth(tipSideBand(a.layout, a.strike, a.goal), around: a.strike.tipSide)
+    let deg = Int((asin(a.strike.elevation) * 180 / Double.pi).rounded())
+    print(String(format: "   APP: AuthoredStrike(aim: %.2f, power: %.2f, tipUp: %.4f, tipSide: %.4f, elevation: sine(forAngle: %d))",
+                 a.strike.aim, a.strike.power, a.strike.tipUp, a.strike.tipSide, deg))
+    print(String(format: "   APP: AuthoredWindow(aim: %.2f, power: %.2f, tipUp: %.4f, tipSide: %.4f)", a.aimHalfWindow,
+                 a.powerHalfWindow, a.tipHalfWindow, side))
+    if let band = cueAngleBand(a.layout, a.strike, a.goal) {
+        print("   OFFERED ANGLES THAT MAKE IT: \(band.lo) to \(band.hi) degrees")
+    }
+    var level = a.strike; level.elevation = 0
+    print("   level cue: " + trickOutcome(a.goal, simulate(a.layout, level)))
+    if a.strike.tipUp != 0 { var s = a.strike; s.tipUp = 0; print("   no draw or follow: " + trickOutcome(a.goal, simulate(a.layout, s))) }
+    if a.strike.tipSide != 0 { var s = a.strike; s.tipSide = 0; print("   no side: " + trickOutcome(a.goal, simulate(a.layout, s))) }
+}
+
 // MARK: Driver
 
 /// Authors every shot (or only the ids named) and prints each report.
 func runTrickAuthoring(only: Set<String>) {
+    // 0.7.5: the raised-cue tricks on the cue-angle menu's own angles ("BreakProbe tricks masse-offered jump-offered
+    // draw-masse-carom"). Run only when named, so a bare "tricks" keeps doing what it always did.
+    let offered: [(String, String)] = [("masse-offered", "masse-curve"), ("jump-offered", "jump-over"),
+                                       ("draw-masse-carom", "draw-masse-carom")]
+    for (name, id) in offered where only.contains(name) {
+        let start = Date()
+        if let a = authorOnOfferedAngle(id) { reportOnOfferedAngle(a) } else { print("== \(id): NO SOLUTION ON AN OFFERED ANGLE") }
+        print(String(format: "   (search took %.1f s)", Date().timeIntervalSince(start)))
+    }
+    if !only.isEmpty && only.isSubset(of: Set(offered.map(\.0))) { return }
     let all: [(String, () -> Authored?)] = [
         ("called-break-short", authorCalledBreakShort),
         ("stop-dead", authorStopDead),

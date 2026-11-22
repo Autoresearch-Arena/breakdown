@@ -1,0 +1,734 @@
+{
+ "keys": [
+  "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+  "Too much draw. Strike about %@ millimetres higher.",
+  "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+  "Too much follow. Strike about %@ millimetres lower.",
+  "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+  "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+  "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+  "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+  "Too much side. Strike about %@ millimetres nearer the middle.",
+  "The white peg went down: this break's points are lost.",
+  "%@, %@ mm",
+  "The cue points at %@; the side will push the ball off it.",
+  "The cue points at the spot to pot %@; the side will push the ball off it."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Falta retroceso. Golpea unos %@ milímetros más abajo en la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Pas assez de rétro. Frappe environ %@ millimètres plus bas sur la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Zu wenig Rückzug. Triff die weiße Kugel etwa %@ Millimeter weiter unten."
+  },
+  {
+   "culture": "it",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Troppo poco indietro. Colpisci la palla bianca circa %@ millimetri più in basso."
+  },
+  {
+   "culture": "pt",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Falta recuo. Bate cerca de %@ milímetros mais abaixo na bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Falta recuo. Bata cerca de %@ milímetros mais abaixo na bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "引き玉が足りません。手球の約%@ミリ下を打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "드로우가 부족해요. 큐볼을 약 %@밀리미터 더 아래로 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "低杆不够。击打白球的位置再往下约%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "Недостаточно оттяжки. Бей по белому шару примерно на %@ мм ниже."
+  },
+  {
+   "culture": "ar",
+   "key": "Not enough draw. Strike about %@ millimetres lower on the cue ball.",
+   "text": "السحب غير كافٍ. اضرب الكرة البيضاء أسفل بنحو %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Sobra retroceso. Golpea unos %@ milímetros más arriba."
+  },
+  {
+   "culture": "fr",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Trop de rétro. Frappe environ %@ millimètres plus haut."
+  },
+  {
+   "culture": "de",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Zu viel Rückzug. Triff etwa %@ Millimeter höher."
+  },
+  {
+   "culture": "it",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Troppo indietro. Colpisci circa %@ millimetri più in alto."
+  },
+  {
+   "culture": "pt",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Recuo a mais. Bate cerca de %@ milímetros mais acima."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Recuo demais. Bata cerca de %@ milímetros mais acima."
+  },
+  {
+   "culture": "ja",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "引き玉が強すぎます。約%@ミリ上を打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "드로우가 너무 강해요. 약 %@밀리미터 더 위를 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "低杆太多。击打位置往上约%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "Оттяжки слишком много. Бей примерно на %@ мм выше."
+  },
+  {
+   "culture": "ar",
+   "key": "Too much draw. Strike about %@ millimetres higher.",
+   "text": "السحب زائد. اضرب أعلى بنحو %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Falta efecto de avance. Golpea unos %@ milímetros más arriba en la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Pas assez d'effet avant. Frappe environ %@ millimètres plus haut sur la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Zu wenig Nachlauf. Triff die weiße Kugel etwa %@ Millimeter weiter oben."
+  },
+  {
+   "culture": "it",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Troppo poco avanti. Colpisci la palla bianca circa %@ millimetri più in alto."
+  },
+  {
+   "culture": "pt",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Falta avanço. Bate cerca de %@ milímetros mais acima na bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Falta avanço. Bata cerca de %@ milímetros mais acima na bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "送り玉が足りません。手球の約%@ミリ上を打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "팔로우가 부족해요. 큐볼을 약 %@밀리미터 더 위로 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "高杆不够。击打白球的位置再往上约%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "Недостаточно наката. Бей по белому шару примерно на %@ мм выше."
+  },
+  {
+   "culture": "ar",
+   "key": "Not enough follow. Strike about %@ millimetres higher on the cue ball.",
+   "text": "الدفع غير كافٍ. اضرب الكرة البيضاء أعلى بنحو %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Sobra efecto de avance. Golpea unos %@ milímetros más abajo."
+  },
+  {
+   "culture": "fr",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Trop d'effet avant. Frappe environ %@ millimètres plus bas."
+  },
+  {
+   "culture": "de",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Zu viel Nachlauf. Triff etwa %@ Millimeter tiefer."
+  },
+  {
+   "culture": "it",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Troppo avanti. Colpisci circa %@ millimetri più in basso."
+  },
+  {
+   "culture": "pt",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Avanço a mais. Bate cerca de %@ milímetros mais abaixo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Avanço demais. Bata cerca de %@ milímetros mais abaixo."
+  },
+  {
+   "culture": "ja",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "送り玉が強すぎます。約%@ミリ下を打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "팔로우가 너무 강해요. 약 %@밀리미터 더 아래를 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "高杆太多。击打位置往下约%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "Накат слишком сильный. Бей примерно на %@ мм ниже."
+  },
+  {
+   "culture": "ar",
+   "key": "Too much follow. Strike about %@ millimetres lower.",
+   "text": "الدفع زائد. اضرب أسفل بنحو %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Golpea unos %@ milímetros más abajo, más cerca del centro de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Frappe environ %@ millimètres plus bas, plus près du centre de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Triff etwa %@ Millimeter tiefer, näher an der Mitte der weißen Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Colpisci circa %@ millimetri più in basso, più vicino al centro della palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Bate cerca de %@ milímetros mais abaixo, mais perto do centro da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Bata cerca de %@ milímetros mais abaixo, mais perto do centro da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "約%@ミリ下、手球の中心に近い所を打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "약 %@밀리미터 더 아래, 큐볼의 가운데에 가깝게 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "击打位置往下约%@毫米，更靠近白球中心。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "Бей примерно на %@ мм ниже, ближе к центру белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike about %@ millimetres lower, nearer the middle of the cue ball.",
+   "text": "اضرب أسفل بنحو %@ ملم، أقرب إلى مركز الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Golpea unos %@ milímetros más arriba, más cerca del centro de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Frappe environ %@ millimètres plus haut, plus près du centre de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Triff etwa %@ Millimeter höher, näher an der Mitte der weißen Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Colpisci circa %@ millimetri più in alto, più vicino al centro della palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Bate cerca de %@ milímetros mais acima, mais perto do centro da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Bata cerca de %@ milímetros mais acima, mais perto do centro da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "約%@ミリ上、手球の中心に近い所を打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "약 %@밀리미터 더 위, 큐볼의 가운데에 가깝게 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "击打位置往上约%@毫米，更靠近白球中心。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "Бей примерно на %@ мм выше, ближе к центру белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike about %@ millimetres higher, nearer the middle of the cue ball.",
+   "text": "اضرب أعلى بنحو %@ ملم، أقرب إلى مركز الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "El efecto lateral la desvió de la línea. Golpea unos %@ milímetros más cerca del centro de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "L'effet latéral l'a fait dévier de sa ligne. Frappe environ %@ millimètres plus près du centre de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "Der Seitendrall hat sie von der Linie abgelenkt. Triff etwa %@ Millimeter näher an der Mitte der weißen Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "L'effetto laterale l'ha deviata dalla linea. Colpisci circa %@ millimetri più vicino al centro della palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "O efeito lateral desviou-a da linha. Bate cerca de %@ milímetros mais perto do centro da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "O efeito lateral desviou a bola da linha. Bata cerca de %@ milímetros mais perto do centro da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "横回転で進路がずれました。約%@ミリ、手球の中心寄りを打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "옆회전 때문에 방향이 빗나갔어요. 큐볼의 가운데 쪽으로 약 %@밀리미터 더 가깝게 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "侧旋使它偏离了路线。击打位置向白球中心靠近约%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "Боковое вращение увело шар с линии. Бей примерно на %@ мм ближе к центру белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "The side spin bent it off line. Strike about %@ millimetres nearer the middle of the cue ball.",
+   "text": "اللف الجانبي حرفها عن خطها. اضرب أقرب إلى مركز الكرة البيضاء بنحو %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Falta efecto a la %1$@. Golpea unos %2$@ milímetros más hacia la %3$@ de la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Pas assez d'effet à %1$@. Frappe environ %2$@ millimètres plus vers la %3$@ de la bille blanche."
+  },
+  {
+   "culture": "de",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Zu wenig Seitendrall nach %1$@. Triff die weiße Kugel etwa %2$@ Millimeter weiter %3$@."
+  },
+  {
+   "culture": "it",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Poco effetto laterale a %1$@. Colpisci circa %2$@ millimetri più a %3$@ della palla bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Falta efeito lateral %1$@. Bate cerca de %2$@ milímetros mais para o lado %3$@ da bola branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Falta efeito lateral %1$@. Bata cerca de %2$@ milímetros mais para o lado %3$@ da bola branca."
+  },
+  {
+   "culture": "ja",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "%1$@の横回転が足りません。手球のあと約%2$@ミリ%3$@寄りを打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "%1$@ 옆회전이 부족해요. 큐볼의 %3$@ 쪽을 약 %2$@밀리미터 더 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "%1$@侧旋不够。击打位置再向白球的%3$@侧偏约%2$@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "Недостаточно %1$@ бокового вращения. Бей примерно на %2$@ мм дальше к %3$@ стороне белого шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Not enough %@ side. Strike about %@ millimetres further to the %@ of the cue ball.",
+   "text": "اللف الجانبي %1$@ غير كافٍ. اضرب أبعد بنحو %2$@ ملم نحو الجانب %3$@ من الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Sobra efecto lateral. Golpea unos %@ milímetros más cerca del centro."
+  },
+  {
+   "culture": "fr",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Trop d'effet latéral. Frappe environ %@ millimètres plus près du centre."
+  },
+  {
+   "culture": "de",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Zu viel Seitendrall. Triff etwa %@ Millimeter näher an der Mitte."
+  },
+  {
+   "culture": "it",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Troppo effetto laterale. Colpisci circa %@ millimetri più vicino al centro."
+  },
+  {
+   "culture": "pt",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Efeito lateral a mais. Bate cerca de %@ milímetros mais perto do centro."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Efeito lateral demais. Bata cerca de %@ milímetros mais perto do centro."
+  },
+  {
+   "culture": "ja",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "横回転が強すぎます。約%@ミリ中心寄りを打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "옆회전이 너무 강해요. 약 %@밀리미터 더 가운데를 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "侧旋太多。击打位置向中心靠近约%@毫米。"
+  },
+  {
+   "culture": "ru",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "Боковое вращение слишком сильное. Бей примерно на %@ мм ближе к центру."
+  },
+  {
+   "culture": "ar",
+   "key": "Too much side. Strike about %@ millimetres nearer the middle.",
+   "text": "اللف الجانبي زائد. اضرب أقرب إلى المركز بنحو %@ ملم."
+  },
+  {
+   "culture": "es",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "Cayó el palito blanco: se pierden los puntos de esta tacada."
+  },
+  {
+   "culture": "fr",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "La quille blanche est tombée : les points de cette série sont perdus."
+  },
+  {
+   "culture": "de",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "Der weiße Pin ist gefallen: die Punkte dieser Serie sind verloren."
+  },
+  {
+   "culture": "it",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "È caduto il birillo bianco: si perdono i punti di questa serie."
+  },
+  {
+   "culture": "pt",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "O pino branco caiu: perdem-se os pontos desta série."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "O pino branco caiu: os pontos desta série são perdidos."
+  },
+  {
+   "culture": "ja",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "白いピンが倒れました。このブレイクの得点は失われます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "흰 핀이 쓰러졌습니다: 이번 연속 득점을 잃습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "白柱倒了：本轮连击得分作废。"
+  },
+  {
+   "culture": "ru",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "Белая кегля упала: очки этой серии сгорают."
+  },
+  {
+   "culture": "ar",
+   "key": "The white peg went down: this break's points are lost.",
+   "text": "سقط الوتد الأبيض: ضاعت نقاط هذه السلسلة."
+  },
+  {
+   "culture": "es",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ mm"
+  },
+  {
+   "culture": "fr",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ mm"
+  },
+  {
+   "culture": "de",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ mm"
+  },
+  {
+   "culture": "it",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ mm"
+  },
+  {
+   "culture": "pt",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ mm"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ mm"
+  },
+  {
+   "culture": "ja",
+   "key": "%@, %@ mm",
+   "text": "%@、%@ mm"
+  },
+  {
+   "culture": "ko",
+   "key": "%@, %@ mm",
+   "text": "%@, %@mm"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@, %@ mm",
+   "text": "%@，%@ 毫米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@, %@ mm",
+   "text": "%@, %@ мм"
+  },
+  {
+   "culture": "ar",
+   "key": "%@, %@ mm",
+   "text": "%@، %@ ملم"
+  },
+  {
+   "culture": "es",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "El taco apunta a %@; el efecto lateral desviará la bola de esa línea."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "La queue vise %@ ; l'effet latéral écartera la bille de cette ligne."
+  },
+  {
+   "culture": "de",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "Der Queue zielt auf %@; der Seitendrall drückt die Kugel von dieser Linie weg."
+  },
+  {
+   "culture": "it",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "La stecca punta verso %@; l'effetto laterale spingerà la palla fuori da quella linea."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "O taco aponta para %@; o efeito lateral vai desviar a bola dessa linha."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "O taco aponta para %@; o efeito lateral vai desviar a bola dessa linha."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "キューは%@を狙っています。横回転で球はその線からずれます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "큐가 %@을(를) 겨누고 있어요. 옆회전이 공을 그 선에서 밀어낼 거예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "球杆指向%@；侧旋会把球推离这条线。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "Кий направлен на %@; боковое вращение сдвинет шар с этой линии."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue points at %@; the side will push the ball off it.",
+   "text": "العصا موجهة نحو %@؛ وسيدفع اللف الجانبي الكرة بعيدًا عن هذا الخط."
+  },
+  {
+   "culture": "es",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "El taco apunta al punto para meter %@; el efecto lateral desviará la bola de esa línea."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "La queue vise le point pour empocher %@ ; l'effet latéral écartera la bille de cette ligne."
+  },
+  {
+   "culture": "de",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "Der Queue zielt auf den Punkt, um %@ zu versenken; der Seitendrall drückt die Kugel von dieser Linie weg."
+  },
+  {
+   "culture": "it",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "La stecca punta verso il punto per imbucare %@; l'effetto laterale spingerà la palla fuori da quella linea."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "O taco aponta para o ponto para embolsar %@; o efeito lateral vai desviar a bola dessa linha."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "O taco aponta para o ponto de encaçapar %@; o efeito lateral vai desviar a bola dessa linha."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "キューは%@を入れる位置を狙っています。横回転で球はその線からずれます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "큐가 %@을(를) 넣는 지점을 겨누고 있어요. 옆회전이 공을 그 선에서 밀어낼 거예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "球杆指向打进%@的位置；侧旋会把球推离这条线。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "Кий направлен в точку, чтобы забить %@; боковое вращение сдвинет шар с этой линии."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue points at the spot to pot %@; the side will push the ball off it.",
+   "text": "العصا موجهة نحو النقطة اللازمة لإدخال %@؛ وسيدفع اللف الجانبي الكرة بعيدًا عن هذا الخط."
+  }
+ ]
+}

@@ -8,6 +8,11 @@
 //          reading direction, so they point left in Arabic.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 gaps, item 53: the rings LessonTableLayer draws on the cloth
 //          stand back while the Lens tips are up too, as the card already did, so the tips are alone on screen.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 9, 11 and 12: the rings and the finish circle are drawn by GoalMarks (TrickShotViews.swift), shared with
+//          the trick-shot layer; the card steps aside while a what-if is open and shows its slim form (the heading and
+//          the main button) during a guided Lens replay on a phone held upright; the list's Mac minimum size applies
+//          only as a sheet, not as a page of the notebook.)
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
@@ -41,6 +46,8 @@ import SwiftUI
 struct LessonList: View {
     let mode: LessonMode
     @Environment(\.palette) private var palette
+    /// True when the list is a page of the notebook (iPad, Mac, the open Duo) rather than a sheet of its own.
+    @Environment(\.inlinePages) private var inlinePages
 
     var body: some View {
         NavigationStack {
@@ -66,7 +73,9 @@ struct LessonList: View {
         }
         .tint(palette.accent)
         #if os(macOS)
-        .frame(minWidth: 460, minHeight: 520)
+        // A sheet's own minimum size; as a page of the Mac notebook it takes the panel's size (0.7.5: the minimum
+        // pushed the list past the panel's edge). Nil sizes rather than an if, so the view keeps its identity.
+        .frame(minWidth: inlinePages ? nil : 460, minHeight: inlinePages ? nil : 520)
         #endif
     }
 
@@ -107,6 +116,9 @@ struct LessonCard: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
+    /// card, heading and main button only, so the table keeps its height.
+    @Environment(\.lensReplayCompact) private var compact
 
     private var mode: LessonMode { model.lessonMode }
 
@@ -114,9 +126,11 @@ struct LessonCard: View {
         // While the Lens tips are showing over a held beat (model.holdForTips, set by the tips themselves), they are the
         // one card: this card steps back and returns when they are done, so the key moment's idea is never stacked
         // under the tips (review of 0.6.6, item 53). The replay cannot reach the key moment meanwhile: the clock holds.
-        if let lesson = mode.current, mode.isActive, !model.holdForTips {
+        // While a what-if is open on the try (0.7.5, WhatIfFork.isShowing) its card is the one result card: this one
+        // steps aside and comes back, unchanged, when the what-if closes.
+        if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
             VStack(alignment: .leading, spacing: 8) {
-                content(lesson)
+                if compact { slim(lesson) } else { content(lesson) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .glassCard(cornerRadius: 22, padding: 12)
@@ -210,11 +224,7 @@ struct LessonCard: View {
                 if mode.suggestedTrick != nil {
                     plainButton(String(localized: "Try the trick shot"), symbol: "wand.and.sparkles") { mode.playSuggestedTrick() }
                 }
-                styled(Button { mode.nextLesson() } label: {
-                    Label("Next lesson", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: true)
-                .keyboardShortcut(.defaultAction)
+                nextLessonButton
             } else if step == .pass || step == .exercise {
                 // A missed pass shot: Try again keeps the player's own settings; this puts the lesson's stroke back.
                 if step == .pass && !verdict.made {
@@ -227,13 +237,51 @@ struct LessonCard: View {
                 if verdict.made { listButton }
             } else {
                 tryAgainButton(prominent: !verdict.made)
-                styled(Button { mode.nextStep() } label: {
-                    Label("Next step", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: verdict.made)
-                .accessibilityHint(String(localized: "Goes on to the next try, with less help"))
+                nextStepButton(prominent: verdict.made)
             }
         }
+    }
+
+    /// The slim card (0.7.5, lensReplayCompact): the lesson's heading and the one button that moves the lesson on, so a
+    /// guided Lens replay on a phone held upright keeps the table its height. Your turn during the Watch beat; after a
+    /// try, Next lesson for a pass, Next step for a made guided try, Try again otherwise; nothing more while aiming.
+    @ViewBuilder
+    private func slim(_ lesson: Lesson) -> some View {
+        header(lesson, step: mode.step)
+        switch mode.phase {
+        case .ready, .watching, .replaying, .keyMoment:
+            buttons { turnButton(prominent: true) }
+        case .judged(let step, let verdict):
+            buttons {
+                if verdict.made && step == .pass {
+                    nextLessonButton
+                } else if verdict.made && step != .exercise {
+                    nextStepButton(prominent: true)
+                } else {
+                    tryAgainButton(prominent: true)
+                }
+            }
+        case .offScript:
+            buttons { tryAgainButton(prominent: true) }
+        case .aiming, .off:
+            EmptyView()
+        }
+    }
+
+    private var nextLessonButton: some View {
+        styled(Button { mode.nextLesson() } label: {
+            Label("Next lesson", systemImage: "arrow.forward").font(.headline).lineLimit(1)
+                .frame(minHeight: Self.buttonHeight)
+        }, prominent: true)
+        .keyboardShortcut(.defaultAction)
+    }
+
+    private func nextStepButton(prominent: Bool) -> some View {
+        styled(Button { mode.nextStep() } label: {
+            Label("Next step", systemImage: "arrow.forward").font(.headline).lineLimit(1)
+                .frame(minHeight: Self.buttonHeight)
+        }, prominent: prominent)
+        .accessibilityHint(String(localized: "Goes on to the next try, with less help"))
     }
 
     // MARK: Words
@@ -431,33 +479,10 @@ struct LessonTableLayer: View {
               let root = bridge.table?.root,
               let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
         else { return }
-        let table = model.timeline.table
-        func ring(_ centre: Vec2, _ radius: Double) -> Path? {
-            var path = Path()
-            for i in 0..<48 {
-                let a = Double(i) / 48 * 2 * Double.pi
-                guard let s = proj.screen(centre + Vec2(cos(a), sin(a)) * radius, height: 0.001) else { return nil }
-                if i == 0 { path.move(to: s) } else { path.addLine(to: s) }
-            }
-            path.closeSubpath()
-            return path
-        }
-        if let zone = marks.zone, let p = ring(zone.centre, zone.radius) {
-            ctx.fill(p, with: .color(palette.accent.opacity(0.10)))
-            ctx.stroke(p, with: .color(palette.accent.opacity(0.8)), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
-        }
-        for k in marks.pockets where k < table.pockets.count {
-            if let p = ring(table.pockets[k], table.pocketCaptureRadius[k] + 0.012) {
-                ctx.stroke(p, with: .color(palette.accent.opacity(0.35)), style: StrokeStyle(lineWidth: 7))
-                ctx.stroke(p, with: .color(palette.accent), style: StrokeStyle(lineWidth: 2))
-            }
-        }
-        // Not while the replay is paused on the moment: the balls there are mid-shot, not where the goal names them.
-        guard model.aimReady else { return }
-        for b in marks.balls where NextShot.isOnTable(model.layout[b]) {
-            if let p = ring(model.layout[b], table.ballRadius * 1.45) {
-                ctx.stroke(p, with: .color(palette.accent.opacity(0.9)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
-            }
-        }
+        // Drawn by GoalMarks (TrickShotViews.swift), the one drawing shared with the trick-shot layer (0.7.5). The
+        // ball rings are left out while the replay is paused on the moment: the balls there are mid-shot, not where
+        // the goal names them.
+        GoalMarks.draw(balls: model.aimReady ? marks.balls : [], pockets: marks.pockets, zone: marks.zone,
+                       layout: model.layout, table: model.timeline.table, accent: palette.accent, in: &ctx, proj)
     }
 }

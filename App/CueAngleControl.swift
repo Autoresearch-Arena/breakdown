@@ -6,17 +6,23 @@
 //          caller exactly as before.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 46: the spoken value says whether the angle is inside a
 //          lesson's marked angles, and each marked angle in the menu is read as marked.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 8: the Behind the 8-Ball card's menu and EightBallMode's angle list are gone; this header and the
+//          angles' comment say so. No change to the control.)
 // PURPOSE: The cue-angle control, shared. A small glass menu button that shows how far the cue is raised ("Level",
 //          "30° up") and offers the angles a player picks from: level for nearly every shot, a little raised for a
 //          jump, steep for a massé. It reads and writes the solver's own unit, the SINE of the cue's angle above the
 //          table, through a binding, and does the degrees-to-sine conversion itself, so every caller stores the same
 //          number the solver is given.
-//          Used by the Behind the 8-Ball card while aiming (EightBallViews) and by the shot panel in free play and
-//          matches (ShotPanel, when ShowpieceModel.elevationAllowed). Before this file the control lived only inside
-//          the 8-ball card; it moved here so free play reuses it instead of growing a second one (rules plan,
-//          package 2 step 4).
-// SRP/DRY check: Pass - checked EightBallViews (the old private cueAngleMenu and EightBallFormat.cueAngle, both now
-//          call this file) and EightBallMode.cueAngle (its snapping getter is left as it is; it reads the same list).
+//          Used by the shot panel (ShotPanel, whenever ShowpieceModel.elevationAllowed: free play, matches, trick shots,
+//          lessons and Behind the 8-Ball). Before the rules plan the control lived only inside the 8-ball card; it moved
+//          here so free play reuses it instead of growing a second one (rules plan, package 2 step 4), and since 0.7.5
+//          the 8-ball card no longer shows its own copy beside the panel's, so there is one cue-angle control on screen.
+//          EightBallFormat.cueAngle still borrows words(degrees:) for the "On a real table" card.
+// SRP/DRY check: Pass - checked EightBallViews (EightBallFormat.cueAngle calls words(degrees:) here; the card's own
+//          menu is gone) and EightBallMode (its copy of the angle list and its snapping getter are gone). The package
+//          keeps its own copy of the angles (BreakProbe offeredCueAngles, AuthoredLibraryTests), since it cannot import
+//          app files; the tests hold them equal to this list in effect (every authored raised cue is one of them).
 import SwiftUI
 
 struct CueAngleMenu: View {
@@ -31,10 +37,10 @@ struct CueAngleMenu: View {
     /// True while a lesson has locked the cue angle for this step.
     var locked: Bool = false
 
-    /// The angles offered, in degrees above level. The same steps the Behind the 8-Ball card has always offered (the
-    /// list EightBallMode.cueAngles snaps to; written out here so this control does not reach into a puzzle mode):
-    /// fine steps up to 30 degrees, where jumps live, then coarser ones for the massé, up to 80 degrees, short of the
-    /// 84 degrees (sine 0.995) where the cue rig stops pitching the cue.
+    /// The angles offered, in degrees above level: the one list in the app (the Behind the 8-Ball card's copy went in
+    /// 0.7.5). Fine steps up to 30 degrees, where jumps live, then coarser ones for the massé, up to 80 degrees, short
+    /// of the 84 degrees (sine 0.995) where the cue rig stops pitching the cue. Every authored raised cue (lessons and
+    /// trick shots) is one of these, exactly as sine(forAngle:) writes it, so the player can always set the answer.
     nonisolated static let angles: [Int] = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80]
 
     /// The offered angle nearest to a sine. Clamped to the rig's limit so a stray value can never ask for asin of more

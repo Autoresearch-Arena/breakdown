@@ -81,6 +81,10 @@
 //          side spin's push through AimGeometry.cueAim(forLaunch:for:), so the ball itself leaves for the chosen spot.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the ringed target, its departure line and an awkward stance's bridge mark are
 //          magenta (Palette.slide), no longer amber; the local name and comments follow.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 7: in Squirt and Side Off the Rail a tap or an aim action points the cue's own line at the spot, not a
+//          launch corrected for the side's push, so the player allows for the squirt as the shot asks, and the spoken
+//          answer says the side will push the ball off that line; the pull's ticks honour the Vibration option.)
 // PURPOSE: Aim by touching the table. A transparent layer laid over the 3D table while "Your shot" is open. It does
 //          two jobs. (1) Gestures: which gesture a touch is gets decided by the touch arbiter (StrokeGestures,
 //          App/Stroke/StrokeGesture.swift), which then calls this layer's handlers: a drag to aim swings the aim line to
@@ -189,7 +193,8 @@ struct AimOverlay: View {
         }
         .task { await TestScript.run(on: self) }
         .onKeyPress(keys: [.leftArrow, .rightArrow, .upArrow, .downArrow, .return], phases: [.down, .repeat], action: handleKey)
-        .sensoryFeedback(.selection, trigger: pullBucket)
+        // The pull's ticks honour the Vibration option (0.7.5), read as each one fires, as every other haptic does.
+        .sensoryFeedback(trigger: pullBucket) { _, _ in GameSettings.hapticsOn ? .selection : nil }
         .accessibilityElement(children: .contain)
     }
 
@@ -268,8 +273,18 @@ struct AimOverlay: View {
     /// push included, is what runs through the centre (aimLaunch).
     private func aimAtBall(_ ball: Int) {
         guard model.layout.indices.contains(ball), NextShot.isOnTable(model.layout[ball]) else { return }
-        aimLaunch(toward: model.layout[ball])
-        ShotNarration.answer(spokenAim)
+        let cueLine = aimLaunch(toward: model.layout[ball])
+        // On a strong-side trick the cue, not the ball, was pointed at it: say so, or the player hears a full hit.
+        ShotNarration.answer(cueLine
+            ? spokenAim + " " + String(localized: "The cue points at \(TableWords.ballName(ball)); the side will push the ball off it.")
+            : spokenAim)
+    }
+
+    /// True while a trick shot about side spin's push is up (Squirt, Side Off the Rail: TrickGoal.side, the strong-side
+    /// rule): there the tap and the aim actions point the cue's own line, and allowing for the squirt is the player's
+    /// job, which is what the shot teaches. Everywhere else the launch is corrected for the push (aimLaunch).
+    private var aimsCueLine: Bool {
+        model.trickMode.isActive && model.trickMode.current?.goal.side != nil
     }
 
     /// Aim so the struck ball itself leaves along the line through `point`, side spin's push allowed for (item 50):
@@ -277,12 +292,20 @@ struct AimOverlay: View {
     /// line the guide draws, the ball the badge rings and the words VoiceOver speaks all run through the chosen ball or
     /// ghost spot. Every aim at a ball or a pot from this layer goes through here: the VoiceOver actions, the ball and
     /// pocket elements and a sighted tap. The break aims at the rack by its offset instead (ShowpieceModel.aim(toward:)),
-    /// so it is passed straight on.
-    private func aimLaunch(toward point: Vec2) {
+    /// so it is passed straight on. On a strong-side trick (aimsCueLine, 0.7.5) the cue's own line is pointed at the
+    /// spot instead, uncorrected, so the tap does not do the allowing-for-squirt the shot asks of the player. Returns
+    /// true when it pointed the cue's own line that way, so the spoken answer can say so.
+    @discardableResult
+    private func aimLaunch(toward point: Vec2) -> Bool {
         let origin = model.aimOrigin
         let want = point - origin
-        guard !model.racked, want.lengthSquared > 1e-12 else { model.aim(toward: point); return }
+        guard !model.racked, want.lengthSquared > 1e-12 else { model.aim(toward: point); return false }
+        if aimsCueLine {
+            model.aim(toward: point)
+            return true
+        }
         model.aim(toward: origin + AimGeometry.cueAim(forLaunch: want, for: model))
+        return false
     }
 
     /// Cycle through the balls that can be hit, by number, starting after the one in line now.
@@ -298,9 +321,12 @@ struct AimOverlay: View {
 
     /// Aim the ghost-ball pot of `ball` into `pocket`, and say the new aim (which names the pocket, or what blocks it).
     private func aimPot(_ pot: TableLines.PotAim) {
-        // Corrected for side spin's push, so the ball really leaves for the ghost spot (item 50).
-        aimLaunch(toward: pot.ghost)
-        ShotNarration.answer(spokenAim)
+        // Corrected for side spin's push, so the ball really leaves for the ghost spot (item 50); on a strong-side
+        // trick the cue's own line is pointed there instead, and the answer says so (0.7.5).
+        let cueLine = aimLaunch(toward: pot.ghost)
+        ShotNarration.answer(cueLine
+            ? spokenAim + " " + String(localized: "The cue points at the spot to pot \(TableWords.ballName(pot.ball)); the side will push the ball off it.")
+            : spokenAim)
     }
 
     /// Tap or double-tap on a pocket: pot the ball in line into it; with no ball in line, the ball that is easiest

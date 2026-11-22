@@ -11,6 +11,10 @@
 //          authored library (BreakdownAuthored), the very numbers the app ships, so the copies marked KEEP IN STEP are
 //          gone; item 30, an escape whose aim window is narrower than one of the aim control's quarter-degree steps
 //          fails, and one narrower than two (half a degree, the authoring's aim) is named in a note.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 6: a report, after the pass and fail lines, of each raised-cue trick answer replayed at every offered
+//          cue angle, beside the run AuthoredTricks.cueAngleBands records for the judge; it never changes the exit
+//          status.)
 // PURPOSE: "BreakProbe verify [generation]": plays every authored trick shot, lesson and Behind the 8-Ball escape the app
 //          carries, exactly as authored, on the chosen physics generation (default: the solver's default, the one the
 //          app ships), and prints one PASS or FAIL line each, with the reason for a failure. Returns whether all passed;
@@ -88,6 +92,58 @@ func trickFailure(_ goal: Goal, _ tl: Timeline) -> String? {
     return nil
 }
 
+/// The raised-cue trick answers at every angle the cue-angle menu offers (0.7.5): which make it, beside the run the
+/// library records for the judge (AuthoredTricks.cueAngleBands), and how far the cue ball turns before its first ball.
+/// A report, not a gate: the answer's own angle is already played above, and a neighbouring angle was never promised
+/// to work, so nothing here changes the exit status. A run that no longer matches the library's is printed as a NOTE
+/// for whoever re-authors the shot, since the judge tells a stroke outside the recorded run to raise or lower the cue.
+func reportRaisedCueAngles(parameters: PoolParameters) {
+    // The raised-cue tricks with the run the library records for the judge, and the raised-cue lessons with their own
+    // marked band (the lesson's judge reads that band instead), so both kinds of judged angle are seen side by side.
+    struct Raised { let id: String; let layout: [Vec2]; let strike: AuthoredStrike; let goal: AuthoredGoal
+        let band: ClosedRange<Int>?; let source: String }
+    let raised = AuthoredTricks.all.filter { $0.solution.elevation > 0 }.map {
+        Raised(id: $0.id, layout: $0.layout, strike: $0.solution, goal: $0.goal,
+               band: AuthoredTricks.cueAngleBands[$0.id], source: "AuthoredTricks.cueAngleBands")
+    } + AuthoredLessons.all.filter { $0.reference.elevation > 0 }.map {
+        Raised(id: $0.id, layout: $0.layout, strike: $0.reference, goal: $0.goal, band: $0.cueAngles,
+               source: "the lesson's cueAngles")
+    }
+    guard !raised.isEmpty else { return }
+    print("== raised-cue answers at the offered cue angles (report only)")
+    let rows = parallelMap(raised.count) { i -> String in
+        let t = raised[i]
+        let goal = probeGoal(t.goal)
+        let base = probeStrike(t.strike)
+        let own = offeredCueAngles.first { abs(sineOf(degrees: $0) - t.strike.elevation) < 1e-12 }
+        var made: [Int] = []
+        for a in offeredCueAngles {
+            var s = base; s.elevation = sineOf(degrees: a)
+            if trickFailure(goal, simulate(t.layout, s, parameters: parameters)) == nil { made.append(a) }
+        }
+        // The turn of the cue ball's heading between just after the strike and its first ball contact (or the end).
+        let tl = simulate(t.layout, base, parameters: parameters)
+        let first = tl.events.first { $0.kind == .ballBall && $0.balls.contains { $0.ball == 0 } }?.time ?? tl.duration
+        let h0 = degrees(of: tl.state(ball: 0, at: 1e-4).velocity)
+        let h1 = degrees(of: tl.state(ball: 0, at: max(1e-4, first - 1e-3)).velocity)
+        var turn = h1 - h0
+        while turn > 180 { turn -= 360 }
+        while turn < -180 { turn += 360 }
+        var line = "     \(t.id): answer at " + (own.map { "\($0) degrees" } ?? String(format: "sine %.3f, NOT AN OFFERED ANGLE", t.strike.elevation))
+        line += "; makes it at " + (made.isEmpty ? "no offered angle" : made.map(String.init).joined(separator: ", "))
+        line += String(format: "; the cue ball turns %.1f degrees before its first ball", turn)
+        if let band = t.band {
+            line += "; judged band \(band.lowerBound) to \(band.upperBound)"
+            let run = offeredCueAngles.filter { band.contains($0) }
+            if !run.allSatisfy(made.contains) { line += "  NOTE: not every angle of the band makes it" }
+        } else {
+            line += "  NOTE: no band recorded in \(t.source)"
+        }
+        return line
+    }
+    for row in rows { print(row) }
+}
+
 /// Plays every authored trick shot, lesson and escape on `generation`; prints a line each and returns true when all
 /// pass.
 func runContentVerify(generation: Int) -> Bool {
@@ -137,6 +193,7 @@ func runContentVerify(generation: Int) -> Bool {
         if let why { failures += 1; print("FAIL eightball \(f.situation) \(f.escape): \(why)") }
         else { print("PASS eightball \(f.situation) \(f.escape)") }
     }
+    reportRaisedCueAngles(parameters: parameters)
     let total = authoredTricks.count + ebFinal.count + authoredLessons.count + 2
     print(String(format: "== %d of %d authored shots pass on generation %d (%.1f s)", total - failures, total,
                  generation, Date().timeIntervalSince(start)))

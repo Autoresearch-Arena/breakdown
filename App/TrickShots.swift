@@ -15,6 +15,9 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: Squirt and Side Off the Rail join the
 //          list, judged with the package's strong-side rule (TrickGoal.side); Two-Rail Kick's idea no longer promises side
 //          it does not use; Draw-Massé Carom gets its maths line.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream: a raised-cue shot carries the run of offered
+//          cue angles that make it (cueAngles, from AuthoredTricks.cueAngleBands), which the judge's cue-angle check
+//          reads; the massé, the jump and the carom are struck on angles the cue-angle menu offers.)
 // PURPOSE: The trick-shot library as the app shows it. Every shot has its id, title, a one-sentence hook, where
 //          the balls start (only the balls it uses; every other ball is off the table), the authored answer (aim, power,
 //          cue-tip height and side; cue elevation for the massé, the jump and the carom), the goal the app checks from
@@ -145,6 +148,12 @@ struct TrickShot: Identifiable, Equatable {
     let praise: String
     /// True while the shot waits on physics the solver does not have yet.
     let pending: Bool
+    /// For a shot that needs a raised cue: the run of the cue-angle menu's angles (whole degrees) in which the answer's
+    /// other settings still make it, measured by BreakProbe (AuthoredTricks.cueAngleBands). The judge tells a stroke
+    /// outside it to raise or lower the cue (TrickShotJudge.cueAngleLine). Nil for a level shot, and for the lessons'
+    /// shots, whose own marked band (Lesson.cueAngles) is passed to the judge instead. Last, with a default, so the
+    /// lessons' memberwise calls (Lessons.swift) need no change.
+    var cueAngles: ClosedRange<Int>? = nil
 
     var isBreak: Bool { if case .rack = setup { return true } else { return false } }
 }
@@ -188,7 +197,8 @@ enum TrickShots {
         return TrickShot(id: a.id, number: a.number, title: title, hook: hook, goalLine: goalLine, setup: .layout(a.layout),
                          solution: TrickSettings(a.solution), goal: goal, usesBridge: a.usesBridge,
                          idea: idea, maths: maths, mathsSpoken: mathsSpoken, difficulty: difficulty,
-                         window: TrickWindow(a.window), praise: praise, pending: false)
+                         window: TrickWindow(a.window), praise: praise, pending: false,
+                         cueAngles: AuthoredTricks.cueAngleBands[a.id])
     }
 
     // MARK: 1. The Called Break

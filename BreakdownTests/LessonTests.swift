@@ -9,6 +9,8 @@
 //          the menu offers). Also the lesson flow's locks: which controls each step opens.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: the reach check is the miscue limit of the
 //          default physics instead of the old 20 mm tip travel.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream: the lesson's cue-angle line comes out
+//          through the trick judge's shared check, handed the lesson's band.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 integration: try 3 and the pass shot of a lesson not about power
 //          keep the power held, so the steps test expects every control but the power, and no power band.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan after 0.6.6, item 10: every lesson and the exercise must be
@@ -107,6 +109,28 @@ final class LessonTests: XCTestCase {
         }
         for lesson in Lessons.all { square(lesson.layout, lesson.reference, lesson.id) }
         square(Lessons.stopExercise.layout, Lessons.stopExercise.reference, "lesson-stop-exercise")
+    }
+
+    // 0.7.5: the lesson's cue-angle line now comes from the trick judge's shared check (TrickShotJudge.cueAngleLine),
+    // handed the lesson's own marked band, as LessonMode.judge does. A level cue at the jump lesson is told to raise it;
+    // the curve lesson struck at 80 degrees, far above its 25 to 30 degree band (BreakProbe verify: it makes it only at
+    // 25 and 30), is told to lower it; and the reference itself, inside its band, is made with its praise.
+    func testTheCueAngleLineComesFromTheSharedCheck() throws {
+        let jump = try XCTUnwrap(Lessons.all.first { $0.id == "lesson-jump" })
+        let curve = try XCTUnwrap(Lessons.all.first { $0.id == "lesson-curve" })
+        var level = jump.reference
+        level.elevation = nil
+        let levelVerdict = TrickShotJudge.verdict(for: jump.trick, attempt: play(jump.layout, level), cueAngles: jump.cueAngles)
+        XCTAssertFalse(levelVerdict.made, "a level cue made the jump lesson")
+        XCTAssertEqual(levelVerdict.line, String(localized: "Raise the cue more. A level cue cannot do this one."))
+        var steep = curve.reference
+        steep.elevation = CueAngleMenu.sine(forAngle: 80)
+        let steepVerdict = TrickShotJudge.verdict(for: curve.trick, attempt: play(curve.layout, steep), cueAngles: curve.cueAngles)
+        XCTAssertFalse(steepVerdict.made, "the curve lesson was made at 80 degrees")
+        XCTAssertEqual(steepVerdict.line, String(localized: "The cue is too steep. Lower it a little."))
+        let own = TrickShotJudge.verdict(for: curve.trick, attempt: play(curve.layout, curve.reference), cueAngles: curve.cueAngles)
+        XCTAssertTrue(own.made, own.line)
+        XCTAssertEqual(own.line, curve.praise)
     }
 
     func testEachStepOpensTheRightControls() {

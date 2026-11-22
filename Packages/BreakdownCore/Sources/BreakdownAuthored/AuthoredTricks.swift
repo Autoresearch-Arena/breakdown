@@ -2,6 +2,10 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 trick-shots stream: Squirt and Side Off the Rail, and the
 //          strong-side rule both are judged by.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          item 6: the massé, the jump and the carom re-authored on angles the cue-angle menu offers, their elevations
+//          exactly AuthoredLessons.sine(forAngle:); the carom on a tip-height window of 1.5 mm each side; cueAngleBands,
+//          the run of offered angles each raised-cue answer makes it on, for the judge's cue-angle check.)
 // PURPOSE: The trick shots' numbers, the one copy (bug plan after 0.6.6, item 38): where the balls start, the authored
 //          answer, the goal the judges check, the measured skill windows, the bridge and the difficulty. The app's
 //          TrickShots adds the titles and words and reads these; BreakProbe's "verify" plays them and "tricks near"
@@ -141,40 +145,70 @@ public enum AuthoredTricks {
 
     // MARK: 9. The Massé
     // BreakProbe tricks masse-curve (20-Nov-2026), re-authored near its old answer on the tuned generation two, kept only
-    // if a level cue misses. Unchanged on the 0.7.0 physics (tricks near, 21-Nov-2026); windows: aim 51.55 to 56.13
-    // degrees, power 1.20 to 2.25 m/s, tip height -4.5 to +3.5 mm, side +11.5 to +14.0 mm (the top is the miscue limit).
+    // if a level cue misses. 0.7.5 (Claude Opus 5.5 High, "BreakProbe tricks masse-offered", 22-Nov-2026; log on the
+    // Team 4TB drive, breakdown-build/v075-learn-modes-masse.log): the old elevation, sine 0.40 (23.6 degrees), is not an
+    // angle the cue-angle menu offers, so the old strike was moved onto the offered angles nearby and re-centred in its
+    // windows. At 25 degrees it also makes it (aim half-width 1.92); 20 degrees was kept, its aim window nearer the hard
+    // band. Each of the two makes it only on its own angle, so the band of offered angles that makes it is 20 to 20 degrees
+    // (cueAngleBands): the curve's bend changes with the angle and the aim has to follow it. A level cue and the same
+    // stroke with no side both miss (the cue ball touches no ball). Windows: aim 50.24 to 53.34 degrees, power 1.10 to
+    // 2.00 m/s, tip height -4.5 to +4.5 mm, side +12.5 to +14.0 mm (the top is the miscue limit).
     public static let masse = AuthoredTrick(
         id: "masse-curve", number: 9,
         layout: authoredLayout([0: Vec2(1.9992, 0.9726), 4: Vec2(2.1745, 1.0690), 9: Vec2(2.4436, 1.2170)]),
-        solution: AuthoredStrike(aim: 53.55, power: 1.60, tipUp: -0.0025, tipSide: 0.0135, elevation: 0.40),
+        solution: AuthoredStrike(aim: 51.68, power: 1.55, tipUp: 0, tipSide: 0.0135,
+                                 elevation: AuthoredLessons.sine(forAngle: 20)),
         goal: AuthoredGoal(drops: [AuthoredDrop(9, 3)], firstHit: 9),
-        window: AuthoredWindow(aim: 2.00, power: 0.40, tipUp: 0.0020, tipSide: 0.0005),
+        window: AuthoredWindow(aim: 1.44, power: 0.45, tipUp: 0.0045, tipSide: 0.0005),
         usesBridge: false, difficulty: 3)
 
     // MARK: 10. Jump the Blocker
-    // BreakProbe tricks jump-over (20-Nov-2026), kept only if a level cue misses. Unchanged on the 0.7.0 physics (tricks
-    // near, 21-Nov-2026); windows: aim 26.64 to 27.34 degrees, power 4.10 to 5.45 m/s, tip height -8.5 to +7.0 mm, side
-    // -0.5 to +0.5 mm.
+    // BreakProbe tricks jump-over (20-Nov-2026), kept only if a level cue misses. 0.7.5 (Claude Opus 5.5 High,
+    // "BreakProbe tricks jump-offered", 22-Nov-2026; log breakdown-build/v075-learn-modes-jump.log): the old elevation,
+    // sine 0.55 (33.4 degrees), is not an offered angle, so the old strike was moved onto 30 degrees and re-centred (40
+    // degrees also makes it, aim half-width 0.24, outside the medium band). Offered angles that make it with this stroke:
+    // 30 to 50 degrees. A level cue hits the 6 first and the 11 stays up. Windows: aim 26.62 to 27.26 degrees, power 4.80
+    // to 5.25 m/s, tip height -8.5 to +6.5 mm, side -0.5 to +0.5 mm.
     public static let jumpOver = AuthoredTrick(
         id: "jump-over", number: 10,
         layout: authoredLayout([0: Vec2(1.3708, 0.6854), 6: Vec2(1.6392, 0.8196), 11: Vec2(2.2270, 1.1135)]),
-        solution: AuthoredStrike(aim: 27.02, power: 4.55, tipUp: -0.005, tipSide: 0, elevation: 0.55),
+        solution: AuthoredStrike(aim: 26.94, power: 5.05, tipUp: -0.001, tipSide: 0,
+                                 elevation: AuthoredLessons.sine(forAngle: 30)),
         goal: AuthoredGoal(drops: [AuthoredDrop(11, 3)], firstHit: 11),
-        window: AuthoredWindow(aim: 0.32, power: 0.45, tipUp: 0.0035, tipSide: 0.0005),
+        window: AuthoredWindow(aim: 0.32, power: 0.20, tipUp: 0.0075, tipSide: 0.0005),
         usesBridge: false, difficulty: 2)
 
     // MARK: 11. Draw-Massé Carom
     // A solver sweep (21-Nov-2026), kept only if levelling the cue, removing the draw and removing the side each miss;
-    // re-authored near it on the tuned generation two. On the 0.7.0 physics it still made the carom but at the edge of its
-    // windows, so it was re-centred (tricks near, 21-Nov-2026). Windows: aim 347.04 to 348.94 degrees, power 2.40 to
-    // 2.95 m/s, tip height -10.5 to -9.5 mm, side +3.5 to +10.0 mm.
+    // re-authored near it on the tuned generation two, and re-centred on the 0.7.0 physics (tricks near, 21-Nov-2026).
+    // 0.7.5 (Claude Opus 5.5 High, "BreakProbe tricks draw-masse-carom", 22-Nov-2026; log
+    // breakdown-build/v075-learn-modes-carom.log): its old elevation, sine 0.45 (26.7 degrees), is not an offered angle,
+    // and its tip-height window was half a millimetre each side, narrower than the tip controls can reliably set. The old
+    // strike kept neither rule on any offered angle from 15 to 30 degrees, so a grid near it on those angles (184,080
+    // strokes: aim 8 degrees either side, power 0.75 to 1.4 times, tip height 5 mm and side 3 mm either way) was searched,
+    // keeping only strokes whose tip-height window is at least 1.5 mm each side and for which a level cue, no draw and no
+    // side each still miss (no draw also scratches). Offered angles that make it with this stroke: 5 to 15 degrees. The
+    // 4 may drop on the way (the goal is the carom). Windows: aim 352.07 to 355.41 degrees, power 2.25 to 3.95 m/s, tip
+    // height -7.5 to -4.0 mm, side +4.5 to +13.0 mm.
     public static let drawMasseCarom = AuthoredTrick(
         id: "draw-masse-carom", number: 11,
         layout: authoredLayout([0: Vec2(0.9, 0.61), 4: Vec2(1.06, 0.61), 9: Vec2(0.93, 0.219)]),
-        solution: AuthoredStrike(aim: 347.88, power: 2.70, tipUp: -0.010, tipSide: 0.006, elevation: 0.45),
+        solution: AuthoredStrike(aim: 353.63, power: 3.10, tipUp: -0.006, tipSide: 0.009,
+                                 elevation: AuthoredLessons.sine(forAngle: 15)),
         goal: AuthoredGoal(drops: [], firstHit: 4, secondHit: 9),
-        window: AuthoredWindow(aim: 0.84, power: 0.25, tipUp: 0.0005, tipSide: 0.0025),
+        window: AuthoredWindow(aim: 1.56, power: 0.85, tipUp: 0.0015, tipSide: 0.0040),
         usesBridge: false, difficulty: 3)
+
+    /// The raised-cue shots' runs of offered cue angles (whole degrees, CueAngleMenu.angles in the app) in which the
+    /// answer's other settings still make it, measured by the 0.7.5 searches above (BreakProbe's cueAngleBand, walked
+    /// out from the answer's own angle). The app's TrickShotJudge tells a stroke outside its shot's run to raise or lower
+    /// the cue; "BreakProbe verify" replays each answer at every offered angle and reports which make it beside this
+    /// run, so a physics change that moves a run is seen before an upload.
+    public static let cueAngleBands: [String: ClosedRange<Int>] = [
+        "masse-curve": 20...20,
+        "jump-over": 30...50,
+        "draw-masse-carom": 5...15,
+    ]
 
     // MARK: 12. Squirt (0.7.4)
     // BreakProbe tricks squirt (22-Nov-2026, Claude Opus 5.5 High; log on the Team 4TB drive,

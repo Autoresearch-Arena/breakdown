@@ -16,6 +16,11 @@
 //          the answer's real solved path (TrickPathThumb); a made try offers Watch yours in the Lens; after the answer
 //          has been watched, the card offers Show / Hide the answer's path, which the table layer draws faintly on the
 //          cloth with the ghost's own path drawing (TablePathStroke); this header no longer counts the shots.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 9, 11 and 12: Stop Dead draws its finish circle, through GoalMarks, the one drawing of the goal marks
+//          now shared with LessonTableLayer; the card steps aside while a what-if is open and shows its slim form (the
+//          heading and the main button) during a guided Lens replay on a phone held upright (lensReplayCompact); the
+//          list's Mac minimum size applies only as a sheet, not as a page of the notebook.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the trick shots, in a sheet from the menu: number (or a tick once made), title,
 //            hook and difficulty, and beside them a small drawing of the answer's real path (above the text at
@@ -26,7 +31,8 @@
 //            Try again and Next shot, Watch yours in the Lens after a make, and Show the answer's path once the answer
 //            has been watched. One or two lines of text and one row of buttons.
 //          TrickTableLayer - laid over the 3D table, never taking touches: rings on the balls the shot names and on the
-//            pockets they must drop in, the answer's cue-ball path when the player asks for it (white, dashed, faint,
+//            pockets they must drop in, the cue ball's finish circle for Stop Dead (GoalMarks, shared with the lesson
+//            layer), the answer's cue-ball path when the player asks for it (white, dashed, faint,
 //            labelled), and a short glow around the screen when a shot is made. It also hosts the list
 //            sheet, handles the launch flags (-trickList, -trick <id>, -trickPlay <id>), forwards the model's playback
 //            changes to TrickShotMode.update(), and opens or closes the shot panel when the mode asks.
@@ -34,9 +40,12 @@
 //          to two rows and the text wraps), VoiceOver labels, and Reduce Motion (the glow fades without movement; the
 //          card changes without animation).
 // SRP/DRY check: Pass - views only. Flow is TrickShotMode, data TrickShots; projection to the screen is AimProjector
-//          (as in GhostOverlay and AimOverlay); card styling is the shared glassCard.
+//          (as in GhostOverlay and AimOverlay); card styling is the shared glassCard. The goal marks are drawn once,
+//          by GoalMarks here, for this layer and LessonTableLayer, with the ghost overlay's ring path
+//          (TablePathStroke.ring) rather than a third copy of it.
 import BreakdownLensModel
 import BreakdownPhysics
+import BreakdownTimeline
 import SwiftUI
 
 // MARK: The list
@@ -45,6 +54,8 @@ struct TrickShotList: View {
     let mode: TrickShotMode
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// True when the list is a page of the notebook (iPad, Mac, the open Duo) rather than a sheet of its own.
+    @Environment(\.inlinePages) private var inlinePages
     /// The answers' drawings, solved once per run when this list first appears.
     private var paths: TrickPathCache { TrickPathCache.shared }
 
@@ -75,7 +86,10 @@ struct TrickShotList: View {
         }
         .tint(palette.accent)
         #if os(macOS)
-        .frame(minWidth: 460, minHeight: 560)
+        // A sheet's own minimum size; as a page of the Mac notebook it takes the panel's size instead (0.7.5: the
+        // minimum pushed the list past the panel's edge). One frame with nil sizes, not an if, so the view keeps its
+        // identity when the window changes layout.
+        .frame(minWidth: inlinePages ? nil : 460, minHeight: inlinePages ? nil : 560)
         #endif
     }
 
@@ -157,15 +171,20 @@ struct TrickShotCard: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
+    /// card, heading and main button only, so the table keeps its height.
+    @Environment(\.lensReplayCompact) private var compact
 
     private var mode: TrickShotMode { model.trickMode }
 
     var body: some View {
         // While the Lens tips are showing over a held beat (model.holdForTips, set by the tips themselves), they are the
         // one card: this card steps back and returns when they are done, so the idea is never stacked under the tips.
-        if let shot = mode.current, mode.isActive, !model.holdForTips {
+        // While a what-if is open on the try (0.7.5, WhatIfFork.isShowing) its card is the one result card: this one
+        // steps aside and comes back, unchanged, when the what-if closes.
+        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
             VStack(alignment: .leading, spacing: 8) {
-                content(shot)
+                if compact { slim(shot) } else { content(shot) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .glassCard(cornerRadius: 22, padding: 12)
@@ -252,12 +271,7 @@ struct TrickShotCard: View {
                     }, prominent: false)
                     .accessibilityHint("Replays your stroke slowly in the Lens, stopping on the moments that made it")
                     tryAgainButton(prominent: false)
-                    Button { mode.next() } label: {
-                        Label("Next shot", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                            .frame(minHeight: Self.buttonHeight)
-                    }
-                    .buttonStyle(.glassProminent).foregroundStyle(palette.ground)
-                    .keyboardShortcut(.defaultAction)
+                    nextShotButton
                 } else {
                     watchButton(prominent: false)
                     tryAgainButton(prominent: true)
@@ -272,7 +286,34 @@ struct TrickShotCard: View {
         }
     }
 
+    /// The slim card (0.7.5, lensReplayCompact): the shot's heading and the one button that moves the shot on, so a
+    /// guided Lens replay on a phone held upright keeps the table its height. Your turn while the answer is set up,
+    /// played or explained; after a try, Next shot for a make and Try again for a miss; nothing more while aiming.
+    @ViewBuilder
+    private func slim(_ shot: TrickShot) -> some View {
+        header(shot)
+        switch mode.phase {
+        case .ready, .watching, .explaining:
+            buttons { turnButton(prominent: true) }
+        case .judged(let verdict):
+            buttons { if verdict.made { nextShotButton } else { tryAgainButton(prominent: true) } }
+        case .offScript:
+            buttons { tryAgainButton(prominent: true) }
+        case .aiming, .off:
+            EmptyView()
+        }
+    }
+
     // MARK: Pieces
+
+    private var nextShotButton: some View {
+        Button { mode.next() } label: {
+            Label("Next shot", systemImage: "arrow.forward").font(.headline).lineLimit(1)
+                .frame(minHeight: Self.buttonHeight)
+        }
+        .buttonStyle(.glassProminent).foregroundStyle(palette.ground)
+        .keyboardShortcut(.defaultAction)
+    }
 
     private func header(_ shot: TrickShot) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -476,29 +517,42 @@ struct TrickTableLayer: View {
         TablePathStroke.label(Text("Answer"), at: rest, colour: palette.paper.opacity(0.8), in: &ctx, size: size, proj)
     }
 
-    /// Rings on the balls the shot names (where they rest now) and on the pockets they must drop in.
+    /// Rings on the balls the shot names (where they rest now), on the pockets they must drop in, and Stop Dead's
+    /// finish circle (0.7.5), drawn by GoalMarks exactly as the lesson layer draws its own.
     private func drawMarkers(_ ctx: inout GraphicsContext, _ proj: AimProjector) {
         guard let marks = mode.markers, model.aimReady, model.layout.count == 16 else { return }
-        let table = model.timeline.table
-        func ring(_ centre: Vec2, _ radius: Double) -> Path? {
-            var path = Path()
-            for i in 0..<40 {
-                let a = Double(i) / 40 * 2 * Double.pi
-                guard let s = proj.screen(centre + Vec2(cos(a), sin(a)) * radius, height: 0.001) else { return nil }
-                if i == 0 { path.move(to: s) } else { path.addLine(to: s) }
-            }
-            path.closeSubpath()
-            return path
+        GoalMarks.draw(balls: marks.balls, pockets: marks.pockets, zone: marks.zone, layout: model.layout,
+                       table: model.timeline.table, accent: palette.accent, in: &ctx, proj)
+    }
+}
+
+// MARK: Goal marks (shared with LessonTableLayer)
+
+/// The marks a trick shot or a lesson lays on the cloth, drawn one way for both (0.7.5; each layer had its own copy,
+/// and the trick layer had no finish circle, so Stop Dead's target never showed): the circle the cue ball must finish
+/// in (a faint accent fill under a dashed accent line), a double ring on each pocket a ball must drop in, and a dashed
+/// ring round each named ball where it rests. The ring path is the ghost overlay's (TablePathStroke.ring), so every
+/// circle on the cloth is traced the same way through the live camera. On the main actor, as TablePathStroke is and
+/// as both layers' Canvas drawing runs.
+@MainActor
+enum GoalMarks {
+    /// Draw the marks. `balls` empty draws no ball rings (the lesson's paused key moment, where the balls are
+    /// mid-shot). The zone goes first, under the pocket and ball rings.
+    static func draw(balls: [Int], pockets: [Int], zone: TrickZone?, layout: [Vec2], table: TableSpec, accent: Color,
+                     in ctx: inout GraphicsContext, _ proj: AimProjector) {
+        if let zone, let p = TablePathStroke.ring(at: zone.centre, radius: zone.radius, proj) {
+            ctx.fill(p, with: .color(accent.opacity(0.10)))
+            ctx.stroke(p, with: .color(accent.opacity(0.8)), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
         }
-        for k in marks.pockets where k < table.pockets.count {
-            if let p = ring(table.pockets[k], table.pocketCaptureRadius[k] + 0.012) {
-                ctx.stroke(p, with: .color(palette.accent.opacity(0.35)), style: StrokeStyle(lineWidth: 7))
-                ctx.stroke(p, with: .color(palette.accent), style: StrokeStyle(lineWidth: 2))
+        for k in pockets where k < table.pockets.count {
+            if let p = TablePathStroke.ring(at: table.pockets[k], radius: table.pocketCaptureRadius[k] + 0.012, proj) {
+                ctx.stroke(p, with: .color(accent.opacity(0.35)), style: StrokeStyle(lineWidth: 7))
+                ctx.stroke(p, with: .color(accent), style: StrokeStyle(lineWidth: 2))
             }
         }
-        for b in marks.balls where NextShot.isOnTable(model.layout[b]) {
-            if let p = ring(model.layout[b], table.ballRadius * 1.45) {
-                ctx.stroke(p, with: .color(palette.accent.opacity(0.9)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+        for b in balls where layout.indices.contains(b) && NextShot.isOnTable(layout[b]) {
+            if let p = TablePathStroke.ring(at: layout[b], radius: table.ballRadius * 1.45, proj) {
+                ctx.stroke(p, with: .color(accent.opacity(0.9)), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
             }
         }
     }

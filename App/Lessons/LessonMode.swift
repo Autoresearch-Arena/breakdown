@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
+//          items 2 and 10: the cue-angle check moved into the trick judge (TrickShotJudge.cueAngleLine), which this
+//          mode hands its marked band; recordingReplaced follows a surface change during the Watch beat, so the
+//          demonstration no longer stalls.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 foundation, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md F10:
 //          recordingReplaced, a stub learn-modes fills.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (review fix: a lesson plays on the standard cloth it was authored on and
@@ -29,8 +33,8 @@
 //          shootNow, replay, scrub, tryAgain, setLens) and learns that a shot finished from the model's aimReady and
 //          timelineVersion, forwarded to update() by LessonTableLayer, which also forwards the clock to tick() so the
 //          Lens replay can stop on the lesson's moment. Attempts are judged by TrickShotJudge (each lesson exposes
-//          itself as a TrickShot) and only when they started from the step's own layout; a raised-cue lesson first
-//          checks the cue angle, which the trick judge does not weigh.
+//          itself as a TrickShot) and only when they started from the step's own layout; a raised-cue lesson hands the
+//          judge its marked band of cue angles, which the judge checks before anything else.
 //          openControls and zones are read by the model (which refuses changes to closed controls) and handed to the
 //          shot controls (ShotPanel, AimGauges, AimOverlay).
 //          Passed lessons are stored in UserDefaults under "lessonsDone" as a comma-separated list of ids.
@@ -44,9 +48,25 @@ import Observation
 @MainActor
 @Observable
 final class LessonMode {
-    /// The model re-solved the recording on screen (a surface change): the one with version `old` is now `new`.
-    /// Stub from the 0.7.5 foundation; learn-modes fills it so a playing lesson beat follows its recording.
-    func recordingReplaced(old: Int, new: Int) {}
+    /// The model re-solved the recording on screen (a surface change, ShowpieceModel.setSurface): the one with version
+    /// `old` is now `new`. Before 0.7.5 the demonstration's version no longer matched, so a surface picked during the
+    /// Watch beat stalled it (update() and tick() wait on demoVersion). Now the kept versions follow the recording
+    /// (RecordingFollow, shared with TrickShotMode), the lesson's moment is found again in the new recording, and a
+    /// demonstration that was replaying or paused on its moment replays in the Lens from the start, to stop on the
+    /// moment again.
+    func recordingReplaced(old: Int, new: Int) {
+        guard let lesson = current else { return }
+        RecordingFollow.move(&demoVersion, old: old, new: new)
+        RecordingFollow.move(&judgedVersion, old: old, new: new)
+        guard demoVersion == new else { return }
+        keyTime = lesson.moment.time(in: model.timeline)
+        if phase == .replaying || phase == .keyMoment {
+            // Replaying first, then the replay: replay(withLens:) reads the phase to know this is the lesson's own
+            // demonstration (not the player's replay), and tick() stops it on the moment as it did the first time.
+            phase = .replaying
+            model.replay(withLens: true)
+        }
+    }
 
     /// The player's steps after the Watch beat.
     enum Step: Int, Equatable {
@@ -393,19 +413,12 @@ final class LessonMode {
     }
 
     /// Made it, or the one thing to change. A lesson that raises the cue is judged on the cue angle first, because
-    /// the trick judge weighs only aim, power and tip: a level stroke at a jump would otherwise be told to aim better.
+    /// the window ranking weighs only aim, power and tip: a level stroke at a jump would otherwise be told to aim
+    /// better. Since 0.7.5 that check is the trick judge's own (TrickShotJudge.cueAngleLine, shared with the trick
+    /// shots), handed this lesson's marked band of angles.
     private func judge(_ lesson: Lesson, _ step: Step, _ attempt: ShotAttempt) -> TrickVerdict {
         if step == .exercise { return TrickShotJudge.verdict(for: Lessons.stopExercise.trick, attempt: attempt) }
-        let verdict = TrickShotJudge.verdict(for: lesson.trick, attempt: attempt)
-        guard !verdict.made, let angles = lesson.cueAngles else { return verdict }
-        let degrees = asin(min(max(attempt.elevation, 0), 0.995)) * 180 / Double.pi
-        if degrees < Double(angles.lowerBound) - 0.5 {
-            return TrickVerdict(made: false, line: String(localized: "Raise the cue more. A level cue cannot do this one."))
-        }
-        if degrees > Double(angles.upperBound) + 0.5 {
-            return TrickVerdict(made: false, line: String(localized: "The cue is too steep. Lower it a little."))
-        }
-        return verdict
+        return TrickShotJudge.verdict(for: lesson.trick, attempt: attempt, cueAngles: lesson.cueAngles)
     }
 
     private func markDone(_ lesson: Lesson) {

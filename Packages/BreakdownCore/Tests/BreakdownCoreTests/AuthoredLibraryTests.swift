@@ -2,6 +2,9 @@
 // Date: 21-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4: the two side-spin shots keep their side windows inside the
 //          strong-side rule they are judged by.)
+// Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream: every raised-cue trick is struck on an
+//          angle the cue-angle control offers, exactly its sine, inside its recorded run (cueAngleBands); every trick's
+//          tip-height window is at least 1.5 mm each side.)
 // PURPOSE: The authored answers library (BreakdownAuthored; bug plan after 0.6.6, item 38) and the surfaces it holds
 //          (item 27), checked as data: ids are unique; every authored stroke keeps its tip inside the miscue limit; every
 //          window the judges divide by is above zero; a raised-cue lesson's elevation is exactly the sine of an angle the
@@ -70,8 +73,48 @@ final class AuthoredLibraryTests: XCTestCase {
         }
     }
 
+    // 0.7.5: a raised-cue trick's answer must be an angle the cue-angle menu offers, exactly as the menu writes it
+    // (AuthoredLessons.sine(forAngle:), the app's CueAngleMenu.sine formula), or the player can never strike the answer
+    // and Your turn after Watch it puts the cue on another angle. Its recorded run of offered angles (the judge's band)
+    // must hold its own angle and only offered angles; a level trick has no run.
+    func testRaisedCueTricksUseOfferedAngles() {
+        for t in AuthoredTricks.all {
+            let band = AuthoredTricks.cueAngleBands[t.id]
+            guard t.solution.elevation > 0 else {
+                XCTAssertNil(band, "\(t.id): a level trick has a cue-angle run")
+                continue
+            }
+            guard let angle = offeredAngles.first(where: { AuthoredLessons.sine(forAngle: $0) == t.solution.elevation }) else {
+                XCTFail("\(t.id): elevation \(t.solution.elevation) is not the sine of an offered angle \(offeredAngles)")
+                continue
+            }
+            guard let band else { XCTFail("\(t.id): no cue-angle run in AuthoredTricks.cueAngleBands"); continue }
+            XCTAssertTrue(band.contains(angle), "\(t.id): its own angle \(angle) is outside its run \(band)")
+            XCTAssertTrue(offeredAngles.contains(band.lowerBound) && offeredAngles.contains(band.upperBound),
+                          "\(t.id): its run \(band) does not end on offered angles")
+        }
+        for id in AuthoredTricks.cueAngleBands.keys {
+            XCTAssertNotNil(AuthoredTricks.trick(id: id), "\(id): a cue-angle run for a trick that does not exist")
+        }
+    }
+
+    // 0.7.5: every trick's tip-height window is at least 1.5 mm either side of its answer, a band the tip picture and the
+    // fine controls can reliably land in (the carom's was half a millimetre before it was re-authored). Side windows are
+    // not held to it: a no-side shot's narrow side window sits on the centre, which the tip picture's per-axis snap sets
+    // exactly (AimGauges), and the massé's side reaches the miscue limit, where the dot's travel stops.
+    func testTipHeightWindowsCanBeSet() {
+        for t in AuthoredTricks.all {
+            XCTAssertGreaterThanOrEqual(t.window.tipUp, 0.0015 - 1e-12,
+                                        "\(t.id): tip-height window \(t.window.tipUp) m is under 1.5 mm each side")
+        }
+    }
+
+    /// The cue-angle control's angles (the app's CueAngleMenu.angles; the package cannot import app files, so they are
+    /// written out here, as BreakProbe's offeredCueAngles are).
+    private let offeredAngles = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80]
+
     func testLessonsAreWellFormed() {
-        let offered = [0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80]   // the cue-angle control's angles
+        let offered = offeredAngles
         for l in AuthoredLessons.all {
             inGrip(l.reference, l.id)
             positive(l.window, l.id)
