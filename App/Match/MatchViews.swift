@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: comment only - the hand-over card's heading is now whose shot
+//          it is, from MatchWords.handOver, no longer an instruction to pass the device.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (opponent stream: on the computer's turn the card shows "Thinking..."
 //          instead of the call control and the choice buttons (the person cannot act for it); after the computer's
 //          stroke the ruling card offers "Why that shot", which opens its plain-words reasons in the card itself (so it
@@ -45,7 +47,7 @@
 //            ruling   - a routine ruling: its header and sentences, settling by themselves; otherwise the card: the
 //                       ruling in plain words ("Foul: the cue ball hit the 11 first. Ball in hand for Sam."), then the
 //                       choice, or Continue.
-//            handOver - "Pass the device to Sam." and Ready.
+//            handOver - whose shot it is ("Sam to shoot.") and Ready, between two people on one device.
 //            over     - who won and why, the running scores, Rematch and Menu.
 //          Feedback (rules plan, package 6): the sound and haptic of a foul, a turn change and a win are played by
 //          MatchMode through SoundBoard.play (only felt with Vibration on); this card speaks the ruling to VoiceOver as
