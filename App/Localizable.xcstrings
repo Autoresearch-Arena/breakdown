@@ -620,7 +620,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ задевает %@ на скорости %@ m/s и отводится от лузы. Чуть ближе к середине лузы, и шар упадёт."
+            "value": "%@ задевает %@ на скорости %@ м/с и отводится от лузы. Чуть ближе к середине лузы, и шар упадёт."
           }
         },
         "zh-Hans": {
@@ -690,7 +690,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ приземляется в %2$@ cm от места, где оторвался от сукна, на скорости %3$@ m/s и остаётся на сукне."
+            "value": "%1$@ приземляется в %2$@ см от места, где оторвался от сукна, на скорости %3$@ м/с и остаётся на сукне."
           }
         },
         "zh-Hans": {
@@ -760,7 +760,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ приземляется в %2$@ cm от места, где оторвался от сукна, на скорости %3$@ m/s, и плита снова подбрасывает его со скоростью %4$@ m/s."
+            "value": "%1$@ приземляется в %2$@ см от места, где оторвался от сукна, на скорости %3$@ м/с, и плита снова подбрасывает его со скоростью %4$@ м/с."
           }
         },
         "zh-Hans": {
@@ -1180,7 +1180,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ падает в лузу на скорости %@ m/s."
+            "value": "%@ падает в лузу на скорости %@ м/с."
           }
         },
         "zh-Hans": {
@@ -2510,7 +2510,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ ударяется о борт на скорости %@ m/s и сохраняет %@ процентов скорости в направлении борта. Боковую скорость гасит трение."
+            "value": "%@ ударяется о борт на скорости %@ м/с и сохраняет %@ процентов скорости в направлении борта. Боковую скорость гасит трение."
           }
         },
         "zh-Hans": {
@@ -2580,7 +2580,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ ударяется о борт на скорости %2$@ m/s. Кромка борта выше центра шара, поэтому она давит не только назад, но и вниз, и сукно принимает %3$@ миллиньютон-секунд этого толчка. Он сохраняет %4$@ процентов скорости в направлении борта."
+            "value": "%1$@ ударяется о борт на скорости %2$@ м/с. Кромка борта выше центра шара, поэтому она давит не только назад, но и вниз, и сукно принимает %3$@ миллиньютон-секунд этого толчка. Он сохраняет %4$@ процентов скорости в направлении борта."
           }
         },
         "zh-Hans": {
@@ -2650,7 +2650,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ ударяется о борт на скорости %@ m/s. Кромка борта выше центра шара, поэтому она давит не только назад, но и вниз: сукно принимает %@ миллиньютон-секунд этого толчка, и его сцепление меняет вращение, с которым уходит шар. Он сохраняет %@ процентов скорости в направлении борта."
+            "value": "%@ ударяется о борт на скорости %@ м/с. Кромка борта выше центра шара, поэтому она давит не только назад, но и вниз: сукно принимает %@ миллиньютон-секунд этого толчка, и его сцепление меняет вращение, с которым уходит шар. Он сохраняет %@ процентов скорости в направлении борта."
           }
         },
         "zh-Hans": {
@@ -2720,7 +2720,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ ударяется о плиту, двигаясь вниз со скоростью %2$@ m/s, и отскакивает вверх со скоростью %3$@ m/s, поэтому отрывается от сукна."
+            "value": "%1$@ ударяется о плиту, двигаясь вниз со скоростью %2$@ м/с, и отскакивает вверх со скоростью %3$@ м/с, поэтому отрывается от сукна."
           }
         },
         "zh-Hans": {
@@ -5730,7 +5730,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ подходит к лузе на скорости %@ m/s — слишком быстро, чтобы упасть: шар пересекает её раньше, чем сила тяжести опустит его достаточно, чтобы зацепиться за дальний край, и катится дальше на %@ m/s."
+            "value": "%@ подходит к лузе на скорости %@ м/с — слишком быстро, чтобы упасть: шар пересекает её раньше, чем сила тяжести опустит его достаточно, чтобы зацепиться за дальний край, и катится дальше на %@ м/с."
           }
         },
         "zh-Hans": {
@@ -5800,7 +5800,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ пролетает над бортом в %2$@ cm над сукном на скорости %3$@ m/s и покидает стол."
+            "value": "%1$@ пролетает над бортом в %2$@ см над сукном на скорости %3$@ м/с и покидает стол."
           }
         },
         "zh-Hans": {
@@ -6604,7 +6604,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ casse"
+            "value": "À %@ de casser"
           }
         },
         "it": {
@@ -6656,7 +6656,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "يبدأ %@ بالكسر."
+            "value": "يفتتح %@."
           }
         },
         "de": {
@@ -6668,7 +6668,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rompe %@."
+            "value": "Saca %@."
           }
         },
         "fr": {
@@ -7060,7 +7060,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ двигался со скоростью %@ m/s. Передача энергии: %@ процентов уходит к %@, %@ процентов остаётся, а остальное теряется в виде тепла и звука."
+            "value": "%@ двигался со скоростью %@ м/с. Передача энергии: %@ процентов уходит к %@, %@ процентов остаётся, а остальное теряется в виде тепла и звука."
           }
         },
         "zh-Hans": {
@@ -8430,7 +8430,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@, il ponte"
+            "value": "%@, il rastrello"
           }
         },
         "ja": {
@@ -9736,7 +9736,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "بقيت %lld كرات"
+            "value": "الكرات المتبقية: %lld"
           }
         },
         "de": {
@@ -10426,7 +10426,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "击倒%lld个小柱。"
+            "value": "击倒%lld个木桩。"
           }
         }
       }
@@ -11066,7 +11066,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "(بدون لف)"
+            "value": "(بدون دوران)"
           }
         },
         "de": {
@@ -11400,7 +11400,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Шар, который катится прямо в борт со скоростью %1$@ m/s, сохраняет здесь %2$lld процентов скорости (стандартный стол: %3$lld процентов)."
+            "value": "Шар, который катится прямо в борт со скоростью %1$@ м/с, сохраняет здесь %2$lld процентов скорости (стандартный стол: %3$lld процентов)."
           }
         },
         "zh-Hans": {
@@ -11766,7 +11766,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تركيبة"
+            "value": "ضربة مركّبة"
           }
         },
         "de": {
@@ -12338,7 +12338,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un rodar suave."
+            "value": "Un toque suave."
           }
         },
         "fr": {
@@ -12374,13 +12374,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Um rolar suave."
+            "value": "Uma tacada bem suave."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Мягкий накат."
+            "value": "Мягкий удар."
           }
         },
         "zh-Hans": {
@@ -15272,7 +15272,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Noch mal"
+            "value": "Nochmal"
           }
         },
         "es": {
@@ -15564,7 +15564,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Viser"
+            "value": "Visée"
           }
         },
         "it": {
@@ -16678,7 +16678,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apuntando"
+            "value": "Puntería"
           }
         },
         "fr": {
@@ -16696,25 +16696,25 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "照準中"
+            "value": "照準"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "조준 중"
+            "value": "조준"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A mirar"
+            "value": "Mira"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mirando"
+            "value": "Mira"
           }
         },
         "ru": {
@@ -16726,7 +16726,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "瞄准中"
+            "value": "瞄准"
           }
         }
       }
@@ -17262,7 +17262,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "열린 테이블"
+            "value": "오픈 테이블"
           }
         },
         "pt": {
@@ -17740,7 +17740,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Come l'hai giocato"
+            "value": "Come giocato"
           }
         },
         "ja": {
@@ -18400,7 +18400,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В верхней точке полёта его низ находится на высоте %@ cm над сукном."
+            "value": "В верхней точке полёта его низ находится на высоте %@ см над сукном."
           }
         },
         "zh-Hans": {
@@ -18422,7 +18422,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Automatisch"
+            "value": "Auto"
           }
         },
         "es": {
@@ -18440,7 +18440,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Automatico"
+            "value": "Auto"
           }
         },
         "ja": {
@@ -18458,13 +18458,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Automático"
+            "value": "Auto"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Automático"
+            "value": "Auto"
           }
         },
         "ru": {
@@ -21042,7 +21042,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "돌아가기"
+            "value": "휘어 돌아가기"
           }
         },
         "pt": {
@@ -21094,7 +21094,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Courbée autour."
+            "value": "Contournée en courbe."
           }
         },
         "it": {
@@ -21304,13 +21304,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Meilleur %lld"
+            "value": "Record %lld"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Migliore %lld"
+            "value": "Record %lld"
           }
         },
         "ja": {
@@ -21328,19 +21328,19 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Melhor %lld"
+            "value": "Recorde %lld"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Melhor %lld"
+            "value": "Recorde %lld"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Лучший %lld"
+            "value": "Рекорд %lld"
           }
         },
         "zh-Hans": {
@@ -21626,7 +21626,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "黑色小柱"
+            "value": "黑色木桩"
           }
         }
       }
@@ -22144,7 +22144,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chevalet"
+            "value": "Pont"
           }
         },
         "it": {
@@ -22180,7 +22180,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Мост"
+            "value": "Мостик"
           }
         },
         "zh-Hans": {
@@ -22686,7 +22686,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تسمية الجيب"
+            "value": "إعلان الجيب"
           }
         },
         "de": {
@@ -22756,7 +22756,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "سمِّ كل ضربة"
+            "value": "أعلن كل ضربة"
           }
         },
         "de": {
@@ -22798,7 +22798,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anuncie cada tacada"
+            "value": "Anuncia cada tacada"
           }
         },
         "pt-BR": {
@@ -22816,7 +22816,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "每杆都要报球"
+            "value": "每杆都要叫球"
           }
         }
       }
@@ -23182,13 +23182,13 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Angesagt: Sicherheit."
+            "value": "Angesagt: Safety."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cantado: defensa."
+            "value": "Cantado: seguridad."
           }
         },
         "fr": {
@@ -23806,7 +23806,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "توسيط طرف العصا"
+            "value": "توسيط رأس العصا"
           }
         },
         "de": {
@@ -23818,7 +23818,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Centrar el taco"
+            "value": "Centrar la punta"
           }
         },
         "fr": {
@@ -23848,13 +23848,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Centrar o taco"
+            "value": "Centrar a ponta"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Centralizar o taco"
+            "value": "Centralizar a ponta"
           }
         },
         "ru": {
@@ -23888,7 +23888,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cambiar lo cantado"
+            "value": "Cambiar jugada"
           }
         },
         "fr": {
@@ -24886,7 +24886,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "クロス：%@"
+            "value": "ラシャ：%@"
           }
         },
         "ko": {
@@ -25078,7 +25078,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Más grueso"
+            "value": "Paso más grande"
           }
         },
         "fr": {
@@ -25108,13 +25108,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mais grosso"
+            "value": "Passo maior"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mais grosso"
+            "value": "Passo maior"
           }
         },
         "ru": {
@@ -25206,7 +25206,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تركيبة"
+            "value": "ضربة مركّبة"
           }
         },
         "de": {
@@ -25294,7 +25294,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chaîne de carambolage"
+            "value": "Combinaisons en chaîne"
           }
         },
         "it": {
@@ -25346,7 +25346,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "التالي. %@"
+            "value": "قريبًا. %@"
           }
         },
         "de": {
@@ -25376,13 +25376,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "次は%@。"
+            "value": "近日公開。%@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "다음은 %@."
+            "value": "준비 중. %@"
           }
         },
         "pt": {
@@ -25400,13 +25400,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Дальше: %@"
+            "value": "Скоро. %@"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "接下来：%@"
+            "value": "即将推出：%@"
           }
         }
       }
@@ -25802,7 +25802,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "경기 이어 하기"
+            "value": "경기 이어하기"
           }
         },
         "pt": {
@@ -26116,7 +26116,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الارتداد المتقاطع"
+            "value": "تسديدة بالحافة عبر الطاولة"
           }
         },
         "de": {
@@ -26134,7 +26134,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bande croisée"
+            "value": "Doublé en travers"
           }
         },
         "it": {
@@ -26158,25 +26158,25 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tabela de Lado Cruzado"
+            "value": "Bola de tabela cruzada"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tabela de Lado Cruzado"
+            "value": "Bola de tabela cruzada"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Перекрёстный удар от борта"
+            "value": "Дуплет поперёк"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "跨台翻库"
+            "value": "对边翻袋"
           }
         }
       }
@@ -26764,7 +26764,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pointe de la queue"
+            "value": "Procédé"
           }
         },
         "it": {
@@ -27318,7 +27318,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Curvó %@°."
+            "value": "Se curvó %@°."
           }
         },
         "fr": {
@@ -27464,7 +27464,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Coupe et effet de jet"
+            "value": "Coupe et effet d'entraînement"
           }
         },
         "it": {
@@ -27500,7 +27500,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Срез и увод"
+            "value": "Срез и отброс"
           }
         },
         "zh-Hans": {
@@ -28310,7 +28310,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fatto"
+            "value": "Fine"
           }
         },
         "ja": {
@@ -29220,7 +29220,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Indietro"
+            "value": "Effetto indietro"
           }
         },
         "ja": {
@@ -29396,7 +29396,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "回旋扎杆碰球"
+            "value": "低杆马塞碰球"
           }
         }
       }
@@ -30246,7 +30246,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الكرة ٨"
+            "value": "الكرة 8"
           }
         },
         "de": {
@@ -30288,7 +30288,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "A bola 8"
+            "value": "Bola 8"
           }
         },
         "pt-BR": {
@@ -32002,7 +32002,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gefühl"
+            "value": "Spielgefühl"
           }
         },
         "es": {
@@ -32032,7 +32032,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "느낌"
+            "value": "사운드와 진동"
           }
         },
         "pt": {
@@ -32218,7 +32218,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Más fino"
+            "value": "Paso más pequeño"
           }
         },
         "fr": {
@@ -32248,13 +32248,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mais fino"
+            "value": "Passo menor"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mais fino"
+            "value": "Passo menor"
           }
         },
         "ru": {
@@ -32452,7 +32452,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "단단하게."
+            "value": "세게."
           }
         },
         "pt": {
@@ -33052,7 +33052,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wer zuerst %lld hat"
+            "value": "Ziel: %lld Punkte"
           }
         },
         "es": {
@@ -33198,7 +33198,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cinco quillas"
+            "value": "Cinco bolos"
           }
         },
         "fr": {
@@ -33344,13 +33344,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avant"
+            "value": "Coulé"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avanti"
+            "value": "Effetto avanti"
           }
         },
         "ja": {
@@ -33444,7 +33444,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Efeito alto ou baixo"
+            "value": "Avanço ou recuo"
           }
         },
         "ru": {
@@ -33484,7 +33484,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le train de l'avant"
+            "value": "Le train en coulé"
           }
         },
         "it": {
@@ -33852,7 +33852,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "승부를 걸고"
+            "value": "승부를 건 샷"
           }
         },
         "pt": {
@@ -33870,7 +33870,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "На партию"
+            "value": "Партийный шар"
           }
         },
         "zh-Hans": {
@@ -34424,7 +34424,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a esquerda da linha dos centros: isso é o throw, e é por isso que um corte suave mirado na linha erra."
+            "value": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a esquerda da linha dos centros: isso é o arrasto, e é por isso que um corte suave mirado na linha erra."
           }
         },
         "ru": {
@@ -34494,7 +34494,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a direita da linha dos centros: isso é o throw, e é por isso que um corte suave mirado na linha erra."
+            "value": "O atrito entre as bolas arrastou %1$@ %2$@ graus para a direita da linha dos centros: isso é o arrasto, e é por isso que um corte suave mirado na linha erra."
           }
         },
         "ru": {
@@ -34570,7 +34570,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Трение о сукно замедлило %@ и раскрутило его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %@ m/s."
+            "value": "Трение о сукно замедлило %@ и раскрутило его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %@ м/с."
           }
         },
         "zh-Hans": {
@@ -35922,7 +35922,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Schwere Technik"
+            "value": "Schwierige Technik"
           }
         },
         "es": {
@@ -36880,7 +36880,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "При ударе левее центра шар отталкивается вправо, прочь от стороны, куда попала наклейка: он уходит на %@ градусов в сторону от линии кия, на скорости %@ m/s. Боковой винт всегда немного сбивает прицел."
+            "value": "При ударе левее центра шар отталкивается вправо, прочь от стороны, куда попала наклейка: он уходит на %@ градусов в сторону от линии кия, на скорости %@ м/с. Боковой винт всегда немного сбивает прицел."
           }
         },
         "zh-Hans": {
@@ -37020,7 +37020,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "При ударе правее центра шар отталкивается влево, прочь от стороны, куда попала наклейка: он уходит на %@ градусов в сторону от линии кия, на скорости %@ m/s. Боковой винт всегда немного сбивает прицел."
+            "value": "При ударе правее центра шар отталкивается влево, прочь от стороны, куда попала наклейка: он уходит на %@ градусов в сторону от линии кия, на скорости %@ м/с. Боковой винт всегда немного сбивает прицел."
           }
         },
         "zh-Hans": {
@@ -37480,7 +37480,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Colpisce %@ piena."
+            "value": "Colpisce %@ in pieno."
           }
         },
         "ja": {
@@ -38286,7 +38286,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "请稍候"
+            "value": "等一下"
           }
         }
       }
@@ -39324,13 +39324,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entrou, mas sem o efeito forte de que trata esta tacada. Bata mais para o lado %@ da bola branca."
+            "value": "Entrou, mas sem o efeito forte de que trata esta tacada. Bata mais à %@ da bola branca."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забит, но без сильного бокового вращения, ради которого этот удар. Бей дальше к %@ стороне белого шара."
+            "value": "Забит, но без сильного бокового вращения, ради которого этот удар. Бей по белому шару дальше %@."
           }
         },
         "zh-Hans": {
@@ -39556,7 +39556,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "في الكأس"
+            "value": "في الحفرة"
           }
         },
         "de": {
@@ -39574,7 +39574,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dans la coupe"
+            "value": "Dans le trou"
           }
         },
         "it": {
@@ -39604,13 +39604,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Na caçapa"
+            "value": "No buraco"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "В лузу-чашу"
+            "value": "В лунку"
           }
         },
         "zh-Hans": {
@@ -39626,7 +39626,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "في الفتحة"
+            "value": "في الحفرة"
           }
         },
         "de": {
@@ -42340,7 +42340,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Он пролетает над шаром (%1$@) с запасом %2$@ cm."
+            "value": "Он пролетает над шаром (%1$@) с запасом %2$@ см."
           }
         },
         "zh-Hans": {
@@ -44264,7 +44264,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Saute l'obstacle"
+            "value": "Sauter l'obstacle"
           }
         },
         "it": {
@@ -44848,7 +44848,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continue a jogar"
+            "value": "Continua a jogar"
           }
         },
         "pt-BR": {
@@ -44988,7 +44988,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mantenha a vez"
+            "value": "Mantém a vez"
           }
         },
         "pt-BR": {
@@ -46394,7 +46394,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Da última vez %@ entrou; desta vez %@ ficou na mesa."
+            "value": "Da última vez entrou %1$@; desta vez %2$@ na mesa."
           }
         },
         "ru": {
@@ -46504,7 +46504,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dernier essai"
+            "value": "Essai précédent"
           }
         },
         "it": {
@@ -46638,7 +46638,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aprende los tiros"
+            "value": "Aprender los tiros"
           }
         },
         "fr": {
@@ -46668,7 +46668,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aprende as tacadas"
+            "value": "Aprender as tacadas"
           }
         },
         "pt-BR": {
@@ -47116,7 +47116,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لف يساري"
+            "value": "دوران يساري"
           }
         },
         "de": {
@@ -47186,7 +47186,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "العصا اليسرى"
+            "value": "عصا التحكم اليسرى"
           }
         },
         "de": {
@@ -47514,7 +47514,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Defesa legal"
+            "value": "Defesa válida"
           }
         },
         "ru": {
@@ -47916,7 +47916,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パワーを下げる"
+            "value": "強さを下げる"
           }
         },
         "ko": {
@@ -47986,7 +47986,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パワーを下げる"
+            "value": "強さを下げる"
           }
         },
         "ko": {
@@ -49200,7 +49200,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сначала младший"
+            "value": "Сначала младший шар"
           }
         },
         "zh-Hans": {
@@ -49340,7 +49340,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забит, как заказал."
+            "value": "Забит по заказу."
           }
         },
         "zh-Hans": {
@@ -49800,7 +49800,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fai la tua chiamata"
+            "value": "Chiama il tiro"
           }
         },
         "ja": {
@@ -49818,7 +49818,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Faz o teu anúncio"
+            "value": "Fazer o anúncio"
           }
         },
         "pt-BR": {
@@ -50722,7 +50722,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "중간."
+            "value": "보통."
           }
         },
         "pt": {
@@ -51246,7 +51246,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "ضربة منزلقة"
+            "value": "انزلاق رأس العصا"
           }
         },
         "de": {
@@ -51288,7 +51288,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tacada falhada"
+            "value": "Falha de taco"
           }
         },
         "pt-BR": {
@@ -51504,7 +51504,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Errou, mas foi legal"
+            "value": "Errou, mas foi válida"
           }
         },
         "ru": {
@@ -51836,13 +51836,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パワーを上げる"
+            "value": "強さを上げる"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "힘 올리기"
+            "value": "힘 늘리기"
           }
         },
         "pt": {
@@ -51906,7 +51906,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パワーを上げる"
+            "value": "強さを上げる"
           }
         },
         "ko": {
@@ -53592,13 +53592,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "새 경기"
+            "value": "새 게임"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nova partida"
+            "value": "Novo jogo"
           }
         },
         "pt-BR": {
@@ -53610,7 +53610,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Новая партия"
+            "value": "Новая игра"
           }
         },
         "zh-Hans": {
@@ -55306,7 +55306,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "بلا تسمية"
+            "value": "بلا إعلان"
           }
         },
         "de": {
@@ -55366,7 +55366,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "无需报球"
+            "value": "无需叫球"
           }
         }
       }
@@ -56474,13 +56474,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falta efeito lateral %1$@. Bata cerca de %2$@ milímetros mais para o lado %3$@ da bola branca."
+            "value": "Falta efeito à %1$@. Bata cerca de %2$@ milímetros mais à %3$@ da bola branca."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Недостаточно %1$@ бокового вращения. Бей примерно на %2$@ мм дальше к %3$@ стороне белого шара."
+            "value": "Недостаточно бокового вращения %1$@. Бей по белому шару примерно на %2$@ мм дальше %3$@."
           }
         },
         "zh-Hans": {
@@ -56544,13 +56544,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Falta efeito lateral %@. Bata mais para o lado %@ da bola branca."
+            "value": "Falta efeito à %1$@. Bata mais à %2$@ da bola branca."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Недостаточно %@ бокового вращения. Бей дальше к %@ стороне белого шара."
+            "value": "Недостаточно бокового вращения %1$@. Бей по белому шару дальше %2$@."
           }
         },
         "zh-Hans": {
@@ -57174,7 +57174,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Não é bem a linha certa. Mire %@ %@."
+            "value": "Não é bem a linha certa. Mire %1$@ para a %2$@."
           }
         },
         "ru": {
@@ -57698,7 +57698,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apagado"
+            "value": "Desactivado"
           }
         },
         "fr": {
@@ -59070,7 +59070,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "На поверхности «%1$@» при трении скольжения %2$@ и силе тяжести %3$@ m/s² понадобилось %4$@ с, чтобы замедлить %5$@ и раскрутить его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %6$@ m/s."
+            "value": "На поверхности «%1$@» при трении скольжения %2$@ и силе тяжести %3$@ м/с² понадобилось %4$@ с, чтобы замедлить %5$@ и раскрутить его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %6$@ м/с."
           }
         },
         "zh-Hans": {
@@ -59420,7 +59420,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "На Луне коэффициенты трения такие же, как на сукне, но сила тяжести %1$@ m/s² вместо %2$@. Трение тормозит с силой, равной коэффициенту трения, умноженному на вес шара, а вес — это масса, умноженная на силу тяжести, поэтому шар скользит примерно в %3$@ раза дальше, прежде чем покатиться, и катится примерно в %4$@ раза дальше."
+            "value": "На Луне коэффициенты трения такие же, как на сукне, но сила тяжести %1$@ м/с² вместо %2$@. Трение тормозит с силой, равной коэффициенту трения, умноженному на вес шара, а вес — это масса, умноженная на силу тяжести, поэтому шар скользит примерно в %3$@ раза дальше, прежде чем покатиться, и катится примерно в %4$@ раза дальше."
           }
         },
         "zh-Hans": {
@@ -59490,7 +59490,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "На Луне при таком же трении скольжения, как на сукне (%1$@), и силе тяжести всего %2$@ m/s² понадобилось %3$@ с, чтобы замедлить %4$@ и раскрутить его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %5$@ m/s."
+            "value": "На Луне при таком же трении скольжения, как на сукне (%1$@), и силе тяжести всего %2$@ м/с² понадобилось %3$@ с, чтобы замедлить %4$@ и раскрутить его, пока низ шара не перестал проскальзывать. Теперь он катится со скоростью %5$@ м/с."
           }
         },
         "zh-Hans": {
@@ -60324,7 +60324,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tabela de uma tabela"
+            "value": "Por uma tabela"
           }
         },
         "ru": {
@@ -61870,7 +61870,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кнопка параметров"
+            "value": "Кнопка Options"
           }
         },
         "zh-Hans": {
@@ -62062,7 +62062,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "통과 샷"
+            "value": "통과 도전"
           }
         },
         "pt": {
@@ -62528,7 +62528,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Palito derribado"
+            "value": "Seta derribada"
           }
         },
         "fr": {
@@ -62656,13 +62656,13 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "إعادة عدسة الفيزياء"
+            "value": "إعادة العرض بعدسة الفيزياء"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Physik-Linse-Wiederholung"
+            "value": "Physik-Lens-Wiederholung"
           }
         },
         "es": {
@@ -62674,7 +62674,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Replay de la Loupe physique"
+            "value": "Revoir avec la lentille physique"
           }
         },
         "it": {
@@ -63934,7 +63934,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jouer les deux"
+            "value": "Voir les deux"
           }
         },
         "it": {
@@ -64138,7 +64138,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Juega contra el ordenador"
+            "value": "Jugar contra el ordenador"
           }
         },
         "fr": {
@@ -64168,13 +64168,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Joga contra o computador"
+            "value": "Jogar contra o computador"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jogue contra o computador"
+            "value": "Jogar contra o computador"
           }
         },
         "ru": {
@@ -65580,13 +65580,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Воспроизвести твою разбивку"
+            "value": "Выполняет твой разбой"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "播放你自己的开球"
+            "value": "打出你的开球"
           }
         }
       }
@@ -65596,7 +65596,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "شغّل ضربتك"
+            "value": "العب ضربتك"
           }
         },
         "de": {
@@ -65650,13 +65650,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Воспроизвести твой удар"
+            "value": "Выполняет твой удар"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "播放你的击球"
+            "value": "打出你的这一杆"
           }
         }
       }
@@ -65854,13 +65854,13 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçapada"
+            "value": "Na caçapa"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Забит"
+            "value": "В лузе"
           }
         },
         "zh-Hans": {
@@ -67260,7 +67260,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Потренируйтесь на"
+            "value": "Потренируйся на"
           }
         },
         "zh-Hans": {
@@ -68606,7 +68606,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الترتيب"
+            "value": "ترتيب الكرات"
           }
         },
         "de": {
@@ -68980,7 +68980,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Colpi di sponda"
+            "value": "Urti di sponda"
           }
         },
         "ja": {
@@ -69080,7 +69080,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Борт сохраняет при %@ m/s"
+            "value": "Борт сохраняет при %@ м/с"
           }
         },
         "zh-Hans": {
@@ -69150,7 +69150,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Борта: шар, который катится прямо в борт со скоростью %1$@ m/s, сохраняет %2$lld процентов скорости."
+            "value": "Борта: шар, который катится прямо в борт со скоростью %1$@ м/с, сохраняет %2$lld процентов скорости."
           }
         },
         "zh-Hans": {
@@ -71074,13 +71074,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rejouer"
+            "value": "Revoir"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ripetizione"
+            "value": "Rivedi"
           }
         },
         "ja": {
@@ -71144,13 +71144,13 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rejouer avec la lentille"
+            "value": "Revoir avec la lentille"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ripetizione con Lens"
+            "value": "Rivedi con la Lens"
           }
         },
         "ja": {
@@ -71880,7 +71880,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Назад"
+            "value": "Перемотка"
           }
         },
         "zh-Hans": {
@@ -71896,7 +71896,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "مرافقة"
+            "value": "تتبّع"
           }
         },
         "de": {
@@ -71908,7 +71908,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Seguir"
+            "value": "Cámara"
           }
         },
         "fr": {
@@ -71950,7 +71950,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Следовать"
+            "value": "За шаром"
           }
         },
         "zh-Hans": {
@@ -71966,7 +71966,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "كاميرا المرافقة"
+            "value": "كاميرا التتبّع"
           }
         },
         "de": {
@@ -72036,7 +72036,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "كاميرا المرافقة"
+            "value": "كاميرا التتبّع"
           }
         },
         "de": {
@@ -72526,7 +72526,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لف يميني"
+            "value": "دوران يميني"
           }
         },
         "de": {
@@ -72596,7 +72596,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "العصا اليمنى"
+            "value": "عصا التحكم اليمنى"
           }
         },
         "de": {
@@ -72666,7 +72666,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "ضغط العصا اليمنى"
+            "value": "ضغط عصا التحكم اليمنى"
           }
         },
         "de": {
@@ -73314,7 +73314,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sécurité ! Ils sont coincés."
+            "value": "Sécurité ! L'adversaire est coincé."
           }
         },
         "it": {
@@ -73448,7 +73448,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Misma jugada cantada"
+            "value": "Misma jugada"
           }
         },
         "fr": {
@@ -75286,7 +75286,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@で。"
+            "value": "%@の上で。"
           }
         },
         "ko": {
@@ -78266,7 +78266,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تخطٍّ"
+            "value": "تخطي"
           }
         },
         "de": {
@@ -79246,7 +79246,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "كرة سادة"
+            "value": "كرة مصمتة"
           }
         },
         "de": {
@@ -79912,7 +79912,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "8번 되돌리기"
+            "value": "8번 제자리에 두기"
           }
         },
         "pt": {
@@ -83698,7 +83698,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Listada"
+            "value": "Listrada"
           }
         },
         "pt-BR": {
@@ -86090,7 +86090,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Коснись, чтобы пропустить"
+            "value": "Пропустить"
           }
         },
         "zh-Hans": {
@@ -89584,7 +89584,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "A bola branca tem que atingir a %lld primeiro. Mire %@ %@."
+            "value": "A bola branca tem que atingir a %1$lld primeiro. Mire %2$@ para a %3$@."
           }
         },
         "ru": {
@@ -90920,7 +90920,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кий, поднятый на %1$@ градусов, гонит шар со скоростью %2$@ m/s вдоль своей линии: %3$@ m/s вдоль сукна и %4$@ m/s вниз, в плиту. Плита подбрасывает его вверх со скоростью %5$@ m/s, и он отрывается от сукна."
+            "value": "Кий, поднятый на %1$@ градусов, гонит шар со скоростью %2$@ м/с вдоль своей линии: %3$@ м/с вдоль сукна и %4$@ м/с вниз, в плиту. Плита подбрасывает его вверх со скоростью %5$@ м/с, и он отрывается от сукна."
           }
         },
         "zh-Hans": {
@@ -90990,7 +90990,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Кий, поднятый на %1$@ градусов, вдавливает шар в плиту и одновременно толкает вперёд. Толчок вниз слишком слаб, чтобы шар подпрыгнул, поэтому сукно его гасит, и шар уходит по сукну со скоростью %2$@ m/s."
+            "value": "Кий, поднятый на %1$@ градусов, вдавливает шар в плиту и одновременно толкает вперёд. Толчок вниз слишком слаб, чтобы шар подпрыгнул, поэтому сукно его гасит, и шар уходит по сукну со скоростью %2$@ м/с."
           }
         },
         "zh-Hans": {
@@ -92202,7 +92202,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Mathematik: %@"
+            "value": "Die Rechnung: %@"
           }
         },
         "es": {
@@ -92250,7 +92250,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Математика: %@"
+            "value": "Формулы: %@"
           }
         },
         "zh-Hans": {
@@ -94280,7 +94280,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Наклейка коснулась шара на %@ процентов радиуса от центра, поэтому часть толчка кия ушла во вращение, а не в скорость. Шар уходит на %@ m/s, на %@ процентов медленнее, чем при ударе в центр тем же движением."
+            "value": "Наклейка коснулась шара на %@ процентов радиуса от центра, поэтому часть толчка кия ушла во вращение, а не в скорость. Шар уходит на %@ м/с, на %@ процентов медленнее, чем при ударе в центр тем же движением."
           }
         },
         "zh-Hans": {
@@ -94350,7 +94350,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Наклейка коснулась шара дальше чем на %@ процентов радиуса от центра, там, где она уже не держит, и соскользнула. Шар уходит всего на %@ m/s, на %@ градусов в сторону от линии кия."
+            "value": "Наклейка коснулась шара дальше чем на %@ процентов радиуса от центра, там, где она уже не держит, и соскользнула. Шар уходит всего на %@ м/с, на %@ градусов в сторону от линии кия."
           }
         },
         "zh-Hans": {
@@ -97534,7 +97534,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passée par le trou"
+            "value": "Passée par l'ouverture"
           }
         },
         "it": {
@@ -97558,7 +97558,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Passou pelo buraco"
+            "value": "Passou pela brecha"
           }
         },
         "pt-BR": {
@@ -97844,7 +97844,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tabela de três tabelas"
+            "value": "Por três tabelas"
           }
         },
         "ru": {
@@ -97878,7 +97878,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Arrastre (throw)"
+            "value": "Arrastre"
           }
         },
         "fr": {
@@ -97908,13 +97908,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Throw"
+            "value": "Arrasto"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Throw"
+            "value": "Arrasto"
           }
         },
         "ru": {
@@ -97926,7 +97926,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "带偏（throw）"
+            "value": "带偏"
           }
         }
       }
@@ -97978,7 +97978,7 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jogar para dentro"
+            "value": "Meter por arrasto"
           }
         },
         "pt-BR": {
@@ -98118,13 +98118,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Metida com throw"
+            "value": "Metida por arrasto"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encaçapada com throw"
+            "value": "Entrou por arrasto"
           }
         },
         "ru": {
@@ -98776,7 +98776,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "طرف العصا أعلى (متابعة)"
+            "value": "رأس العصا أعلى (دفع)"
           }
         },
         "de": {
@@ -98788,7 +98788,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco más arriba (efecto alto)"
+            "value": "Punta más arriba (avance)"
           }
         },
         "fr": {
@@ -98818,13 +98818,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco mais acima (efeito de seguimento)"
+            "value": "Ponta mais acima (avanço)"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco mais acima (efeito para frente)"
+            "value": "Ponta mais acima (avanço)"
           }
         },
         "ru": {
@@ -98836,7 +98836,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "杆头上移（跟进）"
+            "value": "杆头上移（高杆）"
           }
         }
       }
@@ -98846,7 +98846,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "طرف العصا لليسار"
+            "value": "رأس العصا لليسار"
           }
         },
         "de": {
@@ -98858,7 +98858,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco a la izquierda"
+            "value": "Punta a la izquierda"
           }
         },
         "fr": {
@@ -98888,13 +98888,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco à esquerda"
+            "value": "Ponta à esquerda"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco à esquerda"
+            "value": "Ponta à esquerda"
           }
         },
         "ru": {
@@ -98916,7 +98916,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "طرف العصا أسفل (سحب)"
+            "value": "رأس العصا أسفل (سحب)"
           }
         },
         "de": {
@@ -98928,7 +98928,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco más abajo (efecto bajo)"
+            "value": "Punta más abajo (retroceso)"
           }
         },
         "fr": {
@@ -98958,13 +98958,13 @@
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco mais abaixo (efeito de recuo)"
+            "value": "Ponta mais abaixo (recuo)"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco mais abaixo (efeito para trás)"
+            "value": "Ponta mais abaixo (recuo)"
           }
         },
         "ru": {
@@ -98976,7 +98976,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "杆头下移（缩杆）"
+            "value": "杆头下移（低杆）"
           }
         }
       }
@@ -98986,7 +98986,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "طرف العصا لليمين"
+            "value": "رأس العصا لليمين"
           }
         },
         "de": {
@@ -98998,7 +98998,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco a la derecha"
+            "value": "Punta a la derecha"
           }
         },
         "fr": {
@@ -99034,7 +99034,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Taco à direita"
+            "value": "Ponta à direita"
           }
         },
         "ru": {
@@ -100888,7 +100888,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca la %lld"
+            "value": "Tocando la %lld"
           }
         },
         "fr": {
@@ -100900,7 +100900,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tocca la %lld"
+            "value": "A contatto con la %lld"
           }
         },
         "ja": {
@@ -102312,7 +102312,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "2인"
+            "value": "2인 플레이"
           }
         },
         "pt": {
@@ -102522,7 +102522,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "2인"
+            "value": "2인 플레이"
           }
         },
         "pt": {
@@ -103064,7 +103064,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rebond sur deux bandes"
+            "value": "Bricole à deux bandes"
           }
         },
         "it": {
@@ -103076,13 +103076,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "2クッションキック"
+            "value": "ツークッションキック"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "2쿠션 킥"
+            "value": "투쿠션 킥"
           }
         },
         "pt": {
@@ -103106,7 +103106,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "双库反弹"
+            "value": "两库解球"
           }
         }
       }
@@ -103164,7 +103164,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tabela em Z de duas tabelas"
+            "value": "Em Z, por duas tabelas"
           }
         },
         "ru": {
@@ -103234,7 +103234,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tabela de duas tabelas"
+            "value": "Por duas tabelas"
           }
         },
         "ru": {
@@ -104318,7 +104318,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Míralo"
+            "value": "Verlo"
           }
         },
         "fr": {
@@ -105416,7 +105416,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "如果……"
+            "value": "换个打法…"
           }
         }
       }
@@ -105550,13 +105550,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "А если"
+            "value": "Что, если"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "如果"
+            "value": "换个打法"
           }
         }
       }
@@ -106326,7 +106326,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "白色小柱（左）"
+            "value": "白色木桩（左）"
           }
         }
       }
@@ -106396,7 +106396,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "白色小柱（右）"
+            "value": "白色木桩（右）"
           }
         }
       }
@@ -106722,7 +106722,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "왜 그 샷을"
+            "value": "샷 선택 이유"
           }
         },
         "pt": {
@@ -107772,7 +107772,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "당신이 %@."
+            "value": "이번에는 %@."
           }
         },
         "pt": {
@@ -109604,7 +109604,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bateu com corte muito %@. Mire %@ %@."
+            "value": "Bateu com corte muito %1$@. Mire %2$@ para a %3$@."
           }
         },
         "ru": {
@@ -112706,31 +112706,31 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "سلسلتك"
+            "value": "افتتاحك"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Serie"
+            "value": "Dein Break"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu tacada"
+            "value": "Tu saque"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ta série"
+            "value": "Ta casse"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "La tua serie"
+            "value": "Il tuo break"
           }
         },
         "ja": {
@@ -112742,7 +112742,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "연속 득점"
+            "value": "내 브레이크"
           }
         },
         "pt": {
@@ -112754,7 +112754,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sua série"
+            "value": "Sua abertura"
           }
         },
         "ru": {
@@ -112766,7 +112766,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "你的连击"
+            "value": "你的开球"
           }
         }
       }
@@ -113180,7 +113180,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Твоё первое разбитие"
+            "value": "Твой первый разбой"
           }
         },
         "zh-Hans": {
@@ -113512,7 +113512,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "네 점수"
+            "value": "내 점수"
           }
         },
         "pt": {
@@ -114842,7 +114842,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "당신 차례입니다. %@"
+            "value": "내 차례입니다. %@"
           }
         },
         "pt": {
@@ -116324,7 +116324,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "um pouquinho"
+            "value": "um pouco mais"
           }
         },
         "ru": {
@@ -117116,7 +117116,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "كسر"
+            "value": "افتتاح"
           }
         },
         "de": {
@@ -117310,7 +117310,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "изменил вращение с %@ на %@"
+            "value": "изменил вращение с «%1$@» на «%2$@»"
           }
         },
         "zh-Hans": {
@@ -117326,7 +117326,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "التالي"
+            "value": "قريبًا"
           }
         },
         "de": {
@@ -117356,13 +117356,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "次に落ちる"
+            "value": "近日公開"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "다음 차례"
+            "value": "준비 중"
           }
         },
         "pt": {
@@ -117380,13 +117380,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "далее"
+            "value": "скоро"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "接下来"
+            "value": "即将推出"
           }
         }
       }
@@ -117746,7 +117746,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "خروج"
+            "value": "إفلات"
           }
         },
         "de": {
@@ -117834,7 +117834,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "ferme"
+            "value": "appuyé"
           }
         },
         "it": {
@@ -117974,7 +117974,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "avant"
+            "value": "coulé"
           }
         },
         "it": {
@@ -118394,7 +118394,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "à mi-hauteur vers le bas"
+            "value": "à mi-chemin vers le bas"
           }
         },
         "it": {
@@ -118604,7 +118604,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "à mi-hauteur vers le haut"
+            "value": "à mi-chemin vers le haut"
           }
         },
         "it": {
@@ -118692,7 +118692,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "강하게"
+            "value": "아주 세게"
           }
         },
         "pt": {
@@ -118780,7 +118780,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "ударить по белому шару выше"
+            "value": "ударил по белому шару выше"
           }
         },
         "zh-Hans": {
@@ -118796,7 +118796,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "اضرب بقوة أكبر"
+            "value": "ضربت بقوة أكبر"
           }
         },
         "de": {
@@ -118850,7 +118850,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "ударить сильнее"
+            "value": "ударил сильнее"
           }
         },
         "zh-Hans": {
@@ -118866,7 +118866,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "اضرب بقوة أقل"
+            "value": "ضربت بقوة أقل"
           }
         },
         "de": {
@@ -118920,7 +118920,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "ударить мягче"
+            "value": "ударил мягче"
           }
         },
         "zh-Hans": {
@@ -118990,7 +118990,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "ударить по белому шару ниже"
+            "value": "ударил по белому шару ниже"
           }
         },
         "zh-Hans": {
@@ -119334,7 +119334,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "ela"
+            "value": "ela ficou"
           }
         },
         "ru": {
@@ -119410,7 +119410,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "слева"
+            "value": "влево"
           }
         },
         "zh-Hans": {
@@ -120810,7 +120810,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "добавил %@ боковое вращение"
+            "value": "добавил боковое вращение %@"
           }
         },
         "zh-Hans": {
@@ -120844,7 +120844,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "coup au quart"
+            "value": "coup quart de bille"
           }
         },
         "it": {
@@ -120972,7 +120972,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wiederholung"
+            "value": "neuer Versuch"
           }
         },
         "es": {
@@ -121090,7 +121090,7 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "справа"
+            "value": "вправо"
           }
         },
         "zh-Hans": {
@@ -121866,7 +121866,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "黑色小柱"
+            "value": "黑色木桩"
           }
         }
       }
@@ -123686,7 +123686,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "左边的白色小柱"
+            "value": "左边的白色木桩"
           }
         }
       }
@@ -124280,7 +124280,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "la forza"
+            "value": "la potenza"
           }
         },
         "ja": {
@@ -124736,7 +124736,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "右边的白色小柱"
+            "value": "右边的白色木桩"
           }
         }
       }
@@ -125330,7 +125330,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "esse"
+            "value": "ognuna"
           }
         },
         "ja": {
@@ -125354,7 +125354,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "elas"
+            "value": "elas ficaram"
           }
         },
         "ru": {
@@ -125744,7 +125744,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "coup aux trois quarts"
+            "value": "coup trois quarts de bille"
           }
         },
         "it": {
@@ -126124,7 +126124,7 @@
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "bem"
+            "value": "bem mais"
           }
         },
         "ru": {
