@@ -15,6 +15,7 @@
 //          (ComputerLevel.title is reused for the progress picture), TitleScreen's lessonMark and trickMark (the "%lld/%lld"
 //          and "%lld of %lld" keys are reused as they build them) and NumberStyle (AppLocale.numbers, the game's number
 //          locale, for the date). Strings only.
+import BreakdownRules
 import Foundation
 
 enum AchievementWords {
