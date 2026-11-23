@@ -19,6 +19,9 @@
 //          setRide and the primary action's own closure.
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (the button row's gaps match the fitting sum: at the largest
 //          text sizes Lens was squeezed to "Le..." instead of moving into the menu.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (the strip's glass pieces other than the primary action come and go
+//          with the materialize transition, plan Part 3 Morph: the speed capsule, the transport and Lens and Ride carry
+//          it, their conditional containers fade in and out, and Lens and Ride appearing after the first shot animate.)
 // SRP/DRY check: Pass - reuses ScrubBar (phone style added there), PlaybackSpeed.rates, SpeedPicker.autoShort and the
 //          same model calls PlayPauseButton, ReplayButton, SpeedPicker and PlaybackControls' Lens and Ride toggles use.
 //          The shared PlaybackControls stays for the notebook, the sideways column and the big-window layout.
@@ -89,15 +92,16 @@ struct PhoneStrip: View {
         let lens = Self.showsLens(model) && !overflow.lens
         let ride = Self.showsRide(model) && !overflow.ride
         VStack(spacing: Self.spacing) {
-            if showsPlayback { scrubRow }
+            // Each conditional piece fades as a whole so its glass's materialize transition shows (plan Part 3 Morph).
+            if showsPlayback { scrubRow.transition(.opacity) }
             if showsPlayback || primary != nil {
                 HStack(spacing: Self.spacing) {
                     // The left group fills the room instead of a Spacer: a Spacer is a child of the row too, so it
                     // added a gap that wanted() never counted, and at the largest text sizes Lens looked like it fit
                     // by two points and was squeezed to "Le..." (22-Nov-2026). Now the gaps drawn are the gaps counted.
                     HStack(spacing: Self.spacing) {
-                        if showsPlayback { transport }
-                        if lens || ride { views(lens: lens, ride: ride) }
+                        if showsPlayback { transport.transition(.opacity) }
+                        if lens || ride { views(lens: lens, ride: ride).transition(.opacity) }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     if let primary { primaryButton(primary) }
@@ -119,6 +123,9 @@ struct PhoneStrip: View {
         .animation(reduceMotion ? nil : .smooth, value: showsPlayback)
         .animation(reduceMotion ? nil : .smooth, value: primary?.title)
         .animation(reduceMotion ? nil : .smooth, value: overflow)
+        // Lens and Ride first appear after the first shot, not on any of the values above, so they animate in too.
+        .animation(reduceMotion ? nil : .smooth, value: Self.showsLens(model))
+        .animation(reduceMotion ? nil : .smooth, value: Self.showsRide(model))
     }
 
     // MARK: Overflow
@@ -166,7 +173,7 @@ struct PhoneStrip: View {
     private var scrubRow: some View {
         HStack(spacing: Self.spacing) {
             ScrubBar(model: model, phoneStyle: true)
-            if !overflow.speed { speedMenu }
+            if !overflow.speed { speedMenu.transition(.opacity) }
         }
     }
 
@@ -183,6 +190,9 @@ struct PhoneStrip: View {
         } label: {
             speedLabel
                 .glassEffect(.regular.interactive(), in: .capsule)
+                // Materializes in and out; only the primary action is left out, since it morphs into the aiming panel
+                // by its shared glass identity instead.
+                .glassEffectTransition(.materialize)
                 .frame(minHeight: 44)
                 .contentShape(Rectangle())
         }
@@ -257,6 +267,9 @@ struct PhoneStrip: View {
         // One capsule of glass behind both: two joined circles drew a single circle off-centre between the symbols on
         // the iPhone 17 (22-Nov-2026), so the pair shares one shape instead.
         .glassEffect(.regular.interactive(), in: .capsule)
+        // Materializes in and out; the primary action alone skips this, as it morphs into the aiming panel by its
+        // shared glass identity instead.
+        .glassEffectTransition(.materialize)
         .animation(reduceMotion ? nil : .default, value: symbol)
     }
 
@@ -301,6 +314,9 @@ struct PhoneStrip: View {
         .buttonStyle(.plain)
         .glassEffect(.regular.interactive(), in: .capsule)
         .glassEffectUnion(id: "views", namespace: localGlass)
+        // Materializes in and out; not the primary action's way, which morphs into the aiming panel by its shared glass
+        // identity instead.
+        .glassEffectTransition(.materialize)
         .accessibilityLabel(spoken)
         .accessibilityValue(isOn ? String(localized: "On") : String(localized: "Off"))
         .accessibilityAddTraits(isOn ? [.isToggle, .isSelected] : .isToggle)

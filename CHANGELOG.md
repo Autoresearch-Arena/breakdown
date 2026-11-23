@@ -10,6 +10,13 @@ All notable changes to this project are listed here, newest first. Versions foll
 
 ## [0.7.6] - 22-November-2026 (not yet shipped)
 
+### The rest of the phone plan
+
+Author: Claude Opus 5.5 Medium, with four builders at Claude Opus 5.5 Medium.
+
+- What: The last pieces of plans/22-Nov-2026-phone-ui-plan.md on the upright phone. The strip's glass pieces fade in and out instead of popping. A what-if's result sits beside the point where the two futures part, with a leader line, instead of at the top. Shot options lists "Show the hint again" again. The target ball's label ("1 Solid") is small, on plain material rather than glass, and stays clear of the rack.
+- Why: These were in the plan but never built.
+
 ### Numbers and units in every language
 
 Author: Claude Opus 5.5 Medium.

@@ -10,6 +10,9 @@
 //          StageChrome edges as before. The ring's title chip is off on that layout. Every other layout, the panel
 //          waits, the shot-rolling rule, the launch flags, the menu hiding and the sheets are unchanged. The Surface
 //          menu's rows are SurfaceMenuItems, shared by the round Surface button and the phone's More menu.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan Part 3, "The aiming panel": the what-if result is an
+//          anchored blurb over the stage, at the point where the two futures part, instead of a docked one; the
+//          explanation blurb steps aside while it shows, so the two anchored blurbs never overlap.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: the title
 //          row's status slot shows the ride's acts with the small table map (RideTitleChip), in place of the surface
@@ -417,7 +420,16 @@ struct ShowpieceView: View {
             if upright {
                 // The explanation, anchored above or below its moment inside the table area (BlurbPlacement), over the
                 // opening's tap layer so it can be opened with a tap.
-                PhoneExplanationBlurb(model: model, leader: leader, tableArea: phoneTableArea(geo))
+                // While a what-if shows, its result is the one result on screen (every mode blurb already steps aside
+                // for it), so the explanation is not mounted and the two anchored blurbs never overlap.
+                if !model.whatIf.isShowing {
+                    PhoneExplanationBlurb(model: model, leader: leader, tableArea: phoneTableArea(geo))
+                        .opacity(model.menuOpen ? 0 : 1)
+                        .allowsHitTesting(!model.menuOpen)
+                        .accessibilityHidden(model.menuOpen)
+                }
+                // The what-if's result, anchored to where the two futures part (or the other cue ball's rest).
+                WhatIfPhoneBlurb(model: model, bridge: bridge, tableArea: phoneTableArea(geo))
                     .opacity(model.menuOpen ? 0 : 1)
                     .allowsHitTesting(!model.menuOpen)
                     .accessibilityHidden(model.menuOpen)
@@ -549,7 +561,8 @@ struct ShowpieceView: View {
     }
 
     /// The docked blurbs, top down in the plan's order (Lens key, rulings and notices, the first-minute instruction, the
-    /// Lens tips), 6 apart (BlurbPlacement.dockSpacing). Each view shows nothing when it has nothing to say.
+    /// Lens tips), 6 apart (BlurbPlacement.dockSpacing). Each view shows nothing when it has nothing to say. The
+    /// what-if's result is not here: it is anchored over the stage (WhatIfPhoneBlurb, mounted in stage(...)).
     private var phoneDock: some View {
         VStack(alignment: .leading, spacing: BlurbPlacement.dockSpacing) {
             Group {
@@ -564,7 +577,6 @@ struct ShowpieceView: View {
                 ComparisonPhoneBlurb(model: model)
                 ContactArrivalPhoneBlurb(model: model)
                 StrokePhoneBlurbs(model: model)
-                WhatIfPhoneBlurb(model: model)
                 PhoneLensTipBlurb(model: model)
             }
         }

@@ -21,6 +21,10 @@
 //          docked blurb: the sentences folded to two lines, the rest behind a tap, with Play both and Where they part
 //          as its two small buttons. The card's close button is glass instead of bordered. The text rules (full and
 //          short result) are shared statics, so card, panel and blurb say the same words. The card is unchanged elsewhere.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan Part 3: WhatIfPhoneBlurb is now an anchored blurb,
+//          not a docked one. ShowpieceView mounts it as a full-stage layer; it sits above or below where the two
+//          futures part (or the other cue ball's rest), keeps its place for the whole result, and a violet leader that
+//          follows the camera joins it to that point. Same words and buttons as before.)
 // PURPOSE: The what-if replay's controls. WhatIfButton is the entry in the playback row beside Replay (a branch
 //          symbol), shown only while model.whatIf.canOpen and the what-if is not already up. WhatIfCard is the card in
 //          the card slot (below the table on a phone, in the notebook on iPad, Mac and the open Duo, so nothing covers
@@ -32,9 +36,14 @@
 //          steady height so the table never reframes between nudges. A selection haptic on each click when Vibration
 //          is on. Nothing plays by itself. ShowpieceView and NotebookPanel mount both (the foundation's mounts);
 //          PlaybackControls places the button.
+//          On the upright phone the card gives way to two pieces: WhatIfPhonePanel (the nudge controls, in the aiming
+//          panel's place) and WhatIfPhoneBlurb (the result, an anchored blurb at the point where the two futures part,
+//          not docked).
 // SRP/DRY check: Pass - the card follows TableClearedCard's glass card and ComparisonCard's close button; the words are
 //          WhatIfWords, the state WhatIfFork. Nothing else draws what-if controls. The compact form reuses the same
 //          header, picker, rows and actions as the full one; only their arrangement and the result's room differ.
+import BreakdownLensModel
+import BreakdownTimeline
 import SwiftUI
 
 /// The "What if" entry beside Replay; shown only while model.whatIf.canOpen and not already showing.
@@ -535,7 +544,7 @@ private struct NudgeRow: View {
 /// container instead of PhoneAimPanel while model.whatIf.isShowing. One regular glass shape, the controls drawn on it as
 /// content: the title with Reset, Keep this one (the white capsule, only when the mode can retry with it) and Close;
 /// the setting picker; the chosen setting's nudge rows, with room kept for the tallest setting so the table does not
-/// reframe as the player switches. The result is not here: it is WhatIfPhoneBlurb, docked over the table. A selection
+/// reframe as the player switches. The result is not here: it is WhatIfPhoneBlurb, anchored over the table. A selection
 /// haptic on each click when Vibration is on, as the card.
 struct WhatIfPhonePanel: View {
     let model: ShowpieceModel
@@ -619,21 +628,100 @@ struct WhatIfPhonePanel: View {
     }
 }
 
-/// The what-if's result on the upright phone: a docked blurb with every sentence about the other future, folded to two
-/// lines (the verdict and the outcome come first, so the fold keeps what matters most), the rest behind a tap. Play both
-/// and Where they part are its two small buttons once there is a result (Where they part only with a parting point).
-/// Before a result it says the prompt, that it is working, or that the shot is too long to show. Silent and of no
-/// height while the what-if is not showing.
+/// The what-if's result on the upright phone (plans/22-Nov-2026-phone-ui-plan.md Part 3, "The aiming panel": "its result
+/// is an anchored blurb"): every sentence about the other future, folded to two lines (the verdict and the outcome come
+/// first, so the fold keeps what matters most), the rest behind a tap. Play both and Where they part are its two small
+/// buttons once there is a result (Where they part only with a parting point). Before a result it says the prompt, that
+/// it is working, or that the shot is too long to show. It is anchored, as PhoneExplanationBlurb is, to where the two
+/// futures part (the violet diamond WhatIfOverlay draws), or with no parting point to where the other cue ball comes to
+/// rest; with neither (or no room either side) it sits at the top of the table area with no leader. A violet leader
+/// joins it to its anchor and follows the camera every frame; the blurb itself never moves during a beat (its place is
+/// worked out only for a new result, when it opens or folds, or when the table area changes). A full-stage layer that
+/// takes touches only on the blurb; nothing while the what-if is not showing.
 struct WhatIfPhoneBlurb: View {
     let model: ShowpieceModel
+    let bridge: SceneBridge
+    /// Where blurbs may go, in StageSpace: under the title row (or the lowest docked blurb), above the control bar.
+    let tableArea: CGRect
+
+    @Environment(\.palette) private var palette
+    @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Where the blurb was put for a result: its frame in StageSpace, the side of the anchor it took (nil: docked at
+    /// the top of the table area, no leader) and the leader's end on its near edge. Kept for the whole beat.
+    private struct Placed: Equatable {
+        let version: Int
+        let frame: CGRect
+        let side: BlurbPlacement.Side?
+        let leaderTo: CGPoint
+    }
+
+    @State private var placed: Placed? = nil
+    /// The blurb's measured size (it follows its words, and grows when opened).
+    @State private var size: CGSize = .zero
+    /// This layer's top-left corner in StageSpace, and its size (the projection's screen).
+    @State private var origin: CGPoint = .zero
+    @State private var layerSize: CGSize = .zero
+    @State private var cameraBox = AimProjector.CameraBox()
+
+    /// Marks on the cloth sit just above it, as WhatIfOverlay draws them, so the leader meets the diamond exactly.
+    private static let onCloth: Float = 0.001
+    /// What the blurb keeps clear of around its anchor: the diamond is 12 points across, plus a little air.
+    private static let clearSide: CGFloat = 24
 
     private var fork: WhatIfFork { model.whatIf }
 
     var body: some View {
-        if fork.isShowing, let real = fork.real {
-            Blurb(sentence: WhatIfCard.fullText(fork, real: real), foldedLines: 2, buttons: buttons)
-                .opacity(fork.solving ? 0.6 : 1)
+        let shown = placed?.version == fork.resultVersion ? placed : nil
+        ZStack(alignment: .topLeading) {
+            // Fills the stage so the offsets below are from its corner; never takes a touch (aiming passes through).
+            Color.clear.allowsHitTesting(false)
+            if fork.isShowing, let real = fork.real {
+                if let shown, shown.side != nil {
+                    // Re-projected every frame so the leader follows the camera while the blurb stays put.
+                    TimelineView(.animation) { _ in
+                        if let anchor = anchorPoint() {
+                            BlurbLeader(from: local(anchor), to: local(shown.leaderTo), colour: palette.whatIf)
+                        }
+                    }
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+                }
+                Blurb(sentence: WhatIfCard.fullText(fork, real: real), foldedLines: 2, buttons: buttons)
+                    .opacity(fork.solving ? 0.6 : 1)
+                    // The words keep the reader's direction; only the placement is in screen points.
+                    .environment(\.layoutDirection, layoutDirection)
+                    .onGeometryChange(for: CGSize.self) { $0.size } action: { new in
+                        size = new
+                        place(keepSide: true)
+                    }
+                    // Offered the table area's width less its margins; the blurb takes only what its words need.
+                    .frame(width: max(0, tableArea.width - 2 * BlurbPlacement.margin), alignment: .topLeading)
+                    .offset(x: (shown?.frame.minX ?? 0) - origin.x, y: (shown?.frame.minY ?? 0) - origin.y)
+                    // Unseen and silent until it has a place, so it never flashes at the corner.
+                    .opacity(shown == nil ? 0 : 1)
+                    .accessibilityHidden(shown == nil)
+                    .transition(Blurb.transition)
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // Placed in screen points from the 3D projection, which does not mirror for right-to-left languages.
+        .environment(\.layoutDirection, .leftToRight)
+        // The same screen WhatIfOverlay projects onto (it ignores the safe area too), so the anchor is the diamond.
+        .ignoresSafeArea()
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
+            origin = frame.origin
+            layerSize = frame.size
+        }
+        .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: fork.isShowing)
+        .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: placed)
+        // A new result (or the first words): placed afresh, below its anchor first.
+        .onChange(of: fork.resultVersion) { _, _ in place(keepSide: false) }
+        // The table area moved (a docked blurb came or went, the bar grew): placed again, same side first.
+        .onChange(of: tableArea) { _, _ in place(keepSide: true) }
+        // Closed: forget the place, so the next what-if never opens at a stale spot.
+        .onChange(of: fork.isShowing) { _, showing in if !showing { placed = nil } }
     }
 
     private var buttons: [BlurbButton] {
@@ -647,4 +735,47 @@ struct WhatIfPhoneBlurb: View {
         }
         return list
     }
+
+    // MARK: Placement (all in StageSpace)
+
+    /// The anchor on screen, in StageSpace: the parting marker, or with none the other cue ball's rest (unless it
+    /// dropped); nil with neither, or when the table is not up or the point is behind the camera. Projected exactly
+    /// as WhatIfOverlay.draw projects the diamond.
+    private func anchorPoint() -> CGPoint? {
+        guard let r = fork.result, layerSize.width > 0, layerSize.height > 0 else { return nil }
+        let point = r.fork.marker?.point ?? (r.alternate.cueBallScratched ? nil : r.alternate.cueRest)
+        guard let point, let root = bridge.table?.root,
+              let proj = AimProjector(camera: cameraBox.find(in: root), size: layerSize,
+                                      frame: TableFrame(model.timeline.table)),
+              let screen = proj.screen(point, height: Self.onCloth)
+        else { return nil }
+        return CGPoint(x: screen.x + origin.x, y: screen.y + origin.y)
+    }
+
+    /// Works out the blurb's place for the result on screen. keepSide: try the side it already has first (an opened
+    /// blurb stays on its side of the anchor); otherwise below first.
+    private func place(keepSide: Bool) {
+        guard fork.isShowing, size.width > 0, size.height > 0, tableArea.height > 0 else { return }
+        let version = fork.resultVersion
+        let current = placed?.version == version ? placed : nil
+        let preferred: BlurbPlacement.Side = keepSide ? (current?.side ?? .below) : .below
+        let next: Placed
+        if let anchor = anchorPoint(),
+           let anchored = BlurbPlacement.anchored(
+               anchor: anchor, size: size, tableArea: tableArea,
+               keepClear: CGRect(x: anchor.x - Self.clearSide / 2, y: anchor.y - Self.clearSide / 2,
+                                 width: Self.clearSide, height: Self.clearSide),
+               preferred: preferred) {
+            next = Placed(version: version, frame: anchored.frame, side: anchored.side, leaderTo: anchored.leaderTo)
+        } else {
+            // No anchor, or no room either side: at the top of the table area, at the left margin, with no leader.
+            let frame = BlurbPlacement.dockedFrames(sizes: [size], top: tableArea.minY + BlurbPlacement.dockSpacing,
+                                                    area: tableArea)[0]
+            next = Placed(version: version, frame: frame, side: nil, leaderTo: .zero)
+        }
+        if placed != next { placed = next }
+    }
+
+    /// A StageSpace point in this layer's own space.
+    private func local(_ p: CGPoint) -> CGPoint { CGPoint(x: p.x - origin.x, y: p.y - origin.y) }
 }

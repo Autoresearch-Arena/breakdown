@@ -66,6 +66,8 @@
 //          looks and behaves exactly as before.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (Show the hint again is back in the upright phone's Shot options,
+//          plan Part 3: it brings back the aiming layer's groove hint, which the phone draws too.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -396,10 +398,11 @@ struct ShotStatusLine: View {
 /// (PhoneAimPanel), so both offer the same things with the same rules: Fine controls, Aim at nearest ball, and in plain
 /// free play Move cue ball, Undo last shot, the rack and Re-rack, then Show the hint again once the hint has been seen.
 /// The phone's form (`phone`) adds Try again first (it left the phone's main row) and Change the call in a match whose
-/// call is made, uses the symbols the phone plan chose (Undo's plain back arrow, Re-rack's circling arrows), and leaves
-/// out Show the hint again (the phone has no hint card to bring back); the shot panel's form is exactly the menu it
-/// always had. The hint's seen flag is the same stored "aimHintSeen" key the
-/// panel and the aim overlay read, so Show the hint again works from either menu.
+/// call is made, and uses the symbols the phone plan chose (Undo's plain back arrow, Re-rack's circling arrows); it
+/// keeps Show the hint again, last, as the plan orders it. The phone has no hint card, but the item still brings back
+/// the aiming layer's groove hint (AimOverlay.showsGrooveHint), which is drawn on every layout, the upright phone
+/// included. The shot panel's form is exactly the menu it always had. The hint's seen flag is the same stored
+/// "aimHintSeen" key the panel and the aim overlay read, so Show the hint again works from either menu.
 struct ShotOptionsItems: View {
     let model: ShowpieceModel
     /// Opens the fine controls (the panel shows them inside itself, or in a sheet on iPad and Mac).
@@ -452,8 +455,9 @@ struct ShotOptionsItems: View {
                 }
             }
         }
-        // Not on the upright phone, which shows no hint card (the opening's docked blurb teaches the gestures there).
-        if hintSeen && !phone {
+        // On every layout, the upright phone too: clearing the flag brings back the aiming layer's groove hint
+        // everywhere, and on the iPad and Mac the panel's hint card as well.
+        if hintSeen {
             Button { hintSeen = false } label: { Label("Show the hint again", systemImage: "questionmark.circle") }
         }
     }
