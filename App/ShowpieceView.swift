@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
+//          the achievement note under the upright phone's docked blurbs, first in the side column's and the big window's
+//          cards, and the Achievements page in the page sheet, opened by the end note's button; each marked
+//          "// 0.7.7 achievements:".)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md, foundation:
 //          a phone held upright (not split, no notebook or hinge, not the big-window table-only layout) gets the new
 //          phone layout in place of ScreenHeader and the bottom stack: content gradients behind the title row and the
@@ -332,6 +336,9 @@ struct ShowpieceView: View {
                 if open { TitleMusic.shared.start() } else { TitleMusic.shared.stop() }
             }
             .onChange(of: soundOption) { _, on in if !on { TitleMusic.shared.stop() } }
+            // 0.7.7 achievements: the end note's "Achievements" opened the menu; the page follows. The same `page` feeds
+            // the notebook's page and the phone's sheet, so this one line serves both.
+            .onChange(of: model.achievements.pageRequests) { _, _ in page = .achievements }
             // The model asks for Your shot to open, close or toggle (after a break once the balls stop on the person's
             // turn, the first-break card's Keep playing, the controller); this view owns the switch, so it acts here.
             .onChange(of: model.shotPanelRequest) { _, request in
@@ -529,6 +536,9 @@ struct ShowpieceView: View {
                     let bottom: Double? = frame.height > 0.5 ? Double(frame.maxY) : nil
                     if phoneDockBottom != bottom { phoneDockBottom = bottom }
                 }
+            // 0.7.7 achievements: the achievement note, a small blurb at the trailing edge right under the docked blurbs.
+            // Outside phoneDock on purpose, so the dock's measured bottom (and the camera) never move for it.
+            AchievementToast(model: model, style: .blurb)
             Spacer(minLength: 0)
             // Ride's small table map, docked bottom-left above the strip while a ride shows its guides; its status
             // words are the title. Silent: the title already says what the ride is doing.
@@ -655,6 +665,8 @@ struct ShowpieceView: View {
         }
         FittingScroll(maxHeight: cardsCap) {
             VStack(spacing: 10) {
+                // 0.7.7 achievements: the achievement note, first of the cards (the big window with the notebook put away).
+                if !wide { AchievementToast(model: model, style: .card) }
                 // The what-if card first: while it shows, the result cards below step aside (0.7.5).
                 if !wide { WhatIfCard(model: model) }
                 if !wide { ComparisonCard(model: model) }
@@ -745,6 +757,8 @@ struct ShowpieceView: View {
         case .howTo: HowToPlaySheet(isOpen: isOpen, input: model.inputInUse)
         case .options: OptionsSheet(isOpen: isOpen)
         case .tables: TableList(model: model, onChosen: { showShotPanel = true }, onClose: { page = nil })
+        // 0.7.7 achievements: the Achievements page.
+        case .achievements: AchievementList(model: model, onClose: { page = nil })
         }
     }
 
@@ -786,6 +800,8 @@ struct ShowpieceView: View {
                             default:
                                 // The cards in their own stack with the column's spacing.
                                 VStack(spacing: 12) {
+                                    // 0.7.7 achievements: the achievement note, first card of the column.
+                                    AchievementToast(model: model, style: .card)
                                     WhatIfCard(model: model)
                                     ComparisonCard(model: model)
                                     OpeningCard(model: model)

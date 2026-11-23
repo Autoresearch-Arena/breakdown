@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
+//          the Achievements page (a new NotebookPage case), the menu's Achievements row opening it, and the achievement
+//          note first among the cards, on the panel's half; each marked "// 0.7.7 achievements:".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: the notebook's Continue waits for the opening
 //          to end, so the first minute's notebook stays its one line; the opening's holds end by themselves.)
@@ -66,7 +69,8 @@ extension EnvironmentValues {
 
 /// The pages that replace play in the notebook (and are sheets elsewhere): How to play, Options, Tables.
 enum NotebookPage: String, Identifiable {
-    case howTo, options, tables
+    // 0.7.7 achievements: achievements, the list of things done (AchievementList).
+    case howTo, options, tables, achievements
     var id: String { rawValue }
 }
 
@@ -147,6 +151,8 @@ struct NotebookPanel: View {
             case .howTo: HowToPlaySheet(isOpen: pageBinding, input: model.inputInUse)
             case .options: OptionsSheet(isOpen: pageBinding)
             case .tables: TableList(model: model, onChosen: { showShotPanel = true }, onClose: { self.page = nil })
+            // 0.7.7 achievements: the Achievements page.
+            case .achievements: AchievementList(model: model, onClose: { self.page = nil })
             }
         } else if model.trickMode.listOpen {
             TrickShotList(mode: model.trickMode)
@@ -155,9 +161,11 @@ struct NotebookPanel: View {
         } else if model.eightBallMode.listOpen {
             EightBallList(mode: model.eightBallMode)
         } else if model.menuOpen {
+            // 0.7.7 achievements: onAchievements opens the Achievements page.
             TitleScreen(model: model, onPlay: { showShotPanel = true },
                         onHowTo: { page = .howTo }, onOptions: { openOptions() },
-                        onTables: { page = .tables }, pendingMatch: $pendingMatch)
+                        onTables: { page = .tables }, onAchievements: { page = .achievements },
+                        pendingMatch: $pendingMatch)
         } else {
             play(size: size)
         }
@@ -189,6 +197,8 @@ struct NotebookPanel: View {
     /// The cards that belong to the mode on the table and the mode's details.
     private var cards: some View {
         VStack(spacing: 10) {
+            // 0.7.7 achievements: the achievement note, first card, on the panel's half (nothing over the table).
+            AchievementToast(model: model, style: .card)
             WhatIfCard(model: model)
             ComparisonCard(model: model)
             OpeningCard(model: model)

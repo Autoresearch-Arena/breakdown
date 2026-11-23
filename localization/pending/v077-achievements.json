@@ -1,0 +1,4150 @@
+{
+ "keys": [
+  "Achievements",
+  "Physics you have pulled off, with the shot that did it.",
+  "Every shot you play is read for these, in any mode.",
+  "Shots",
+  "Games",
+  "Not earned yet",
+  "Earned %@",
+  "%lld of %lld earned, %lld new",
+  "%lld of %lld earned",
+  "No single shot to replay for this one.",
+  "Played again with today's physics, so it may not end the same way.",
+  "Achievement earned",
+  "Achievement earned: %@",
+  "That was your %@.",
+  "Dead stop",
+  "Draw back",
+  "Massé curve",
+  "Over the top",
+  "Kick shot",
+  "Bank shot",
+  "In off the jaw",
+  "Rattled out",
+  "Too fast to drop",
+  "Big break",
+  "Run the rack",
+  "Beat the computer: Easy",
+  "Beat the computer: Medium",
+  "Beat the computer: Hard",
+  "Every table",
+  "Every surface",
+  "Every lesson",
+  "Every trick shot",
+  "Every way out",
+  "The cue ball left the cloth and flew over a ball in its way.",
+  "The cue ball glanced off one ball into another, and that one dropped.",
+  "The ball touched the pocket's jaw and still fell in.",
+  "The ball bounced between the pocket's jaws and stayed on the table.",
+  "Three or more balls went down from one break.",
+  "From your break to an empty table, every shot dropped a ball.",
+  "You won a game against the computer at this level.",
+  "You played a shot on every table.",
+  "You played a shot on every surface, the Moon included.",
+  "You passed this lesson.",
+  "You passed every lesson.",
+  "You made this trick shot.",
+  "You made every trick shot.",
+  "You won a medal on every spot.",
+  "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+  "Strike low on the cue ball so it spins back after the hit.",
+  "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+  "Raise the cue and hit down on the cue ball to hop it over a ball.",
+  "Cut a ball softly so friction at the contact turns it into the pocket.",
+  "Send one ball into another so the second one drops.",
+  "Send the cue ball off a cushion first, then into a ball.",
+  "Drop a ball off a cushion.",
+  "Glance the cue ball off one ball so it knocks a second ball in.",
+  "Drop two balls with one stroke.",
+  "Drop a ball that touches the side of the pocket on its way in.",
+  "Hit the pocket's jaws hard enough that the ball bounces out.",
+  "Roll a ball over a hole faster than it can fall in.",
+  "Break the rack hard and square.",
+  "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+  "On the bumper pool table, play a ball off a bumper into a cup.",
+  "On the five-pin table, knock down only the red pin.",
+  "Win a game against the computer at Easy.",
+  "Win a game against the computer at Medium.",
+  "Win a game against the computer at Hard.",
+  "Play a shot on each table in Tables.",
+  "Play a shot on each surface in the Surface menu.",
+  "Pass this lesson in Learn.",
+  "Pass every lesson in Learn.",
+  "Make this trick shot in Trick shots.",
+  "Make every trick shot.",
+  "Win a medal on each spot in Behind the 8-Ball."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Achievements",
+   "text": "Logros"
+  },
+  {
+   "culture": "fr",
+   "key": "Achievements",
+   "text": "Succès"
+  },
+  {
+   "culture": "de",
+   "key": "Achievements",
+   "text": "Erfolge"
+  },
+  {
+   "culture": "it",
+   "key": "Achievements",
+   "text": "Obiettivi"
+  },
+  {
+   "culture": "pt",
+   "key": "Achievements",
+   "text": "Conquistas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Achievements",
+   "text": "Conquistas"
+  },
+  {
+   "culture": "ja",
+   "key": "Achievements",
+   "text": "実績"
+  },
+  {
+   "culture": "ko",
+   "key": "Achievements",
+   "text": "업적"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Achievements",
+   "text": "成就"
+  },
+  {
+   "culture": "ru",
+   "key": "Achievements",
+   "text": "Достижения"
+  },
+  {
+   "culture": "ar",
+   "key": "Achievements",
+   "text": "الإنجازات"
+  },
+  {
+   "culture": "es",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "La física que has logrado, con el tiro que lo consiguió."
+  },
+  {
+   "culture": "fr",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "La physique que tu as réussie, avec le coup qui l'a faite."
+  },
+  {
+   "culture": "de",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "Physik, die dir gelungen ist, mit dem Stoß, der es geschafft hat."
+  },
+  {
+   "culture": "it",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "La fisica che hai messo a segno, con il colpo che ci è riuscito."
+  },
+  {
+   "culture": "pt",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "A física que conseguiste fazer, com a jogada que o fez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "A física que você conseguiu fazer, com a tacada que fez isso."
+  },
+  {
+   "culture": "ja",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "成功させた物理と、それを生んだショット。"
+  },
+  {
+   "culture": "ko",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "직접 해낸 물리와 그것을 만든 샷."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "你打出的物理效果，以及打出它的那一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "Физика, которая тебе удалась, и удар, который это сделал."
+  },
+  {
+   "culture": "ar",
+   "key": "Physics you have pulled off, with the shot that did it.",
+   "text": "الفيزياء التي نجحت فيها، مع الضربة التي حققتها."
+  },
+  {
+   "culture": "es",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Cada tiro que juegas se revisa para estos logros, en cualquier modo."
+  },
+  {
+   "culture": "fr",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Chaque coup que tu joues est examiné pour ces succès, dans tous les modes."
+  },
+  {
+   "culture": "de",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Jeder Stoß, den du spielst, wird darauf geprüft, in jedem Modus."
+  },
+  {
+   "culture": "it",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Ogni colpo che giochi viene esaminato per questi obiettivi, in qualsiasi modalità."
+  },
+  {
+   "culture": "pt",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Cada jogada que fazes é analisada para estas conquistas, em qualquer modo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Cada tacada que você joga é analisada para estas conquistas, em qualquer modo."
+  },
+  {
+   "culture": "ja",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "どのモードでも、打ったショットはすべてこれらの実績の対象として読み取られます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "어떤 모드에서든 치는 샷은 모두 이 업적을 위해 읽힙니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "在任何模式下，你打的每一杆都会被检查是否达成这些成就。"
+  },
+  {
+   "culture": "ru",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "Каждый твой удар проверяется на эти достижения, в любом режиме."
+  },
+  {
+   "culture": "ar",
+   "key": "Every shot you play is read for these, in any mode.",
+   "text": "تُقرأ كل ضربة تلعبها بحثاً عن هذه الإنجازات، في أي وضع."
+  },
+  {
+   "culture": "es",
+   "key": "Shots",
+   "text": "Tiros"
+  },
+  {
+   "culture": "fr",
+   "key": "Shots",
+   "text": "Coups"
+  },
+  {
+   "culture": "de",
+   "key": "Shots",
+   "text": "Stöße"
+  },
+  {
+   "culture": "it",
+   "key": "Shots",
+   "text": "Colpi"
+  },
+  {
+   "culture": "pt",
+   "key": "Shots",
+   "text": "Jogadas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shots",
+   "text": "Tacadas"
+  },
+  {
+   "culture": "ja",
+   "key": "Shots",
+   "text": "ショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Shots",
+   "text": "샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shots",
+   "text": "击球"
+  },
+  {
+   "culture": "ru",
+   "key": "Shots",
+   "text": "Удары"
+  },
+  {
+   "culture": "ar",
+   "key": "Shots",
+   "text": "الضربات"
+  },
+  {
+   "culture": "es",
+   "key": "Games",
+   "text": "Partidas"
+  },
+  {
+   "culture": "fr",
+   "key": "Games",
+   "text": "Parties"
+  },
+  {
+   "culture": "de",
+   "key": "Games",
+   "text": "Spiele"
+  },
+  {
+   "culture": "it",
+   "key": "Games",
+   "text": "Partite"
+  },
+  {
+   "culture": "pt",
+   "key": "Games",
+   "text": "Partidas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Games",
+   "text": "Partidas"
+  },
+  {
+   "culture": "ja",
+   "key": "Games",
+   "text": "ゲーム"
+  },
+  {
+   "culture": "ko",
+   "key": "Games",
+   "text": "게임"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Games",
+   "text": "对局"
+  },
+  {
+   "culture": "ru",
+   "key": "Games",
+   "text": "Игры"
+  },
+  {
+   "culture": "ar",
+   "key": "Games",
+   "text": "المباريات"
+  },
+  {
+   "culture": "es",
+   "key": "Not earned yet",
+   "text": "Aún no conseguido"
+  },
+  {
+   "culture": "fr",
+   "key": "Not earned yet",
+   "text": "Pas encore obtenu"
+  },
+  {
+   "culture": "de",
+   "key": "Not earned yet",
+   "text": "Noch nicht erreicht"
+  },
+  {
+   "culture": "it",
+   "key": "Not earned yet",
+   "text": "Non ancora ottenuto"
+  },
+  {
+   "culture": "pt",
+   "key": "Not earned yet",
+   "text": "Ainda não conquistada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Not earned yet",
+   "text": "Ainda não conquistada"
+  },
+  {
+   "culture": "ja",
+   "key": "Not earned yet",
+   "text": "未獲得"
+  },
+  {
+   "culture": "ko",
+   "key": "Not earned yet",
+   "text": "아직 획득하지 못함"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Not earned yet",
+   "text": "尚未获得"
+  },
+  {
+   "culture": "ru",
+   "key": "Not earned yet",
+   "text": "Ещё не получено"
+  },
+  {
+   "culture": "ar",
+   "key": "Not earned yet",
+   "text": "لم يتحقق بعد"
+  },
+  {
+   "culture": "es",
+   "key": "Earned %@",
+   "text": "Conseguido el %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Earned %@",
+   "text": "Obtenu le %@"
+  },
+  {
+   "culture": "de",
+   "key": "Earned %@",
+   "text": "Erreicht am %@"
+  },
+  {
+   "culture": "it",
+   "key": "Earned %@",
+   "text": "Ottenuto il %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Earned %@",
+   "text": "Conquistada a %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Earned %@",
+   "text": "Conquistada em %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Earned %@",
+   "text": "%@ に獲得"
+  },
+  {
+   "culture": "ko",
+   "key": "Earned %@",
+   "text": "%@ 획득"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Earned %@",
+   "text": "获得于 %@"
+  },
+  {
+   "culture": "ru",
+   "key": "Earned %@",
+   "text": "Получено %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Earned %@",
+   "text": "تحقق في %@"
+  },
+  {
+   "culture": "es",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld de %lld conseguidos, %lld nuevos"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld sur %lld obtenus, %lld nouveaux"
+  },
+  {
+   "culture": "de",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld von %lld erreicht, %lld neu"
+  },
+  {
+   "culture": "it",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld di %lld ottenuti, %lld nuovi"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld de %lld conquistadas, %lld novas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld de %lld conquistadas, %lld novas"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld/%lld 獲得、新規 %lld"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld / %lld 획득, 새 업적 %lld개"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "已获得 %lld/%lld，新增 %lld 个"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "Получено %lld из %lld, новых: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld of %lld earned, %lld new",
+   "text": "%lld من %lld محققة، %lld جديدة"
+  },
+  {
+   "culture": "es",
+   "key": "%lld of %lld earned",
+   "text": "%lld de %lld conseguidos"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld of %lld earned",
+   "text": "%lld sur %lld obtenus"
+  },
+  {
+   "culture": "de",
+   "key": "%lld of %lld earned",
+   "text": "%lld von %lld erreicht"
+  },
+  {
+   "culture": "it",
+   "key": "%lld of %lld earned",
+   "text": "%lld di %lld ottenuti"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld of %lld earned",
+   "text": "%lld de %lld conquistadas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld of %lld earned",
+   "text": "%lld de %lld conquistadas"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld of %lld earned",
+   "text": "%lld/%lld 獲得"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld of %lld earned",
+   "text": "%lld / %lld 획득"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld of %lld earned",
+   "text": "已获得 %lld/%lld"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld of %lld earned",
+   "text": "Получено %lld из %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld of %lld earned",
+   "text": "%lld من %lld محققة"
+  },
+  {
+   "culture": "es",
+   "key": "No single shot to replay for this one.",
+   "text": "Este no tiene un único tiro que repetir."
+  },
+  {
+   "culture": "fr",
+   "key": "No single shot to replay for this one.",
+   "text": "Pas de coup unique à revoir pour celui-ci."
+  },
+  {
+   "culture": "de",
+   "key": "No single shot to replay for this one.",
+   "text": "Hierfür gibt es keinen einzelnen Stoß zum Ansehen."
+  },
+  {
+   "culture": "it",
+   "key": "No single shot to replay for this one.",
+   "text": "Per questo non c'è un singolo colpo da rivedere."
+  },
+  {
+   "culture": "pt",
+   "key": "No single shot to replay for this one.",
+   "text": "Esta não tem uma jogada única para rever."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No single shot to replay for this one.",
+   "text": "Esta não tem uma tacada única para rever."
+  },
+  {
+   "culture": "ja",
+   "key": "No single shot to replay for this one.",
+   "text": "この実績には再生できる1つのショットがありません。"
+  },
+  {
+   "culture": "ko",
+   "key": "No single shot to replay for this one.",
+   "text": "이 업적에는 다시 볼 하나의 샷이 없습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No single shot to replay for this one.",
+   "text": "这一项没有可以回放的单独一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "No single shot to replay for this one.",
+   "text": "Для этого достижения нет одного удара, который можно повторить."
+  },
+  {
+   "culture": "ar",
+   "key": "No single shot to replay for this one.",
+   "text": "لا توجد ضربة واحدة لإعادة عرضها لهذا الإنجاز."
+  },
+  {
+   "culture": "es",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Se repite con la física de hoy, así que puede no terminar igual."
+  },
+  {
+   "culture": "fr",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Rejoué avec la physique d'aujourd'hui, il peut donc ne pas finir pareil."
+  },
+  {
+   "culture": "de",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Mit der heutigen Physik neu gespielt, daher endet er vielleicht anders."
+  },
+  {
+   "culture": "it",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Rigiocato con la fisica di oggi, quindi potrebbe non finire allo stesso modo."
+  },
+  {
+   "culture": "pt",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Jogada de novo com a física de hoje, por isso pode não acabar da mesma forma."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Jogada de novo com a física de hoje, então pode não terminar do mesmo jeito."
+  },
+  {
+   "culture": "ja",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "現在の物理で再現するため、同じ結果にならない場合があります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "지금의 물리로 다시 재생하므로 같은 결과로 끝나지 않을 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "按现在的物理重新演算，结果可能会不一样。"
+  },
+  {
+   "culture": "ru",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "Удар сыгран заново по нынешней физике, поэтому может закончиться иначе."
+  },
+  {
+   "culture": "ar",
+   "key": "Played again with today's physics, so it may not end the same way.",
+   "text": "تُعاد بالفيزياء الحالية، لذا قد لا تنتهي بالطريقة نفسها."
+  },
+  {
+   "culture": "es",
+   "key": "Achievement earned",
+   "text": "Logro conseguido"
+  },
+  {
+   "culture": "fr",
+   "key": "Achievement earned",
+   "text": "Succès obtenu"
+  },
+  {
+   "culture": "de",
+   "key": "Achievement earned",
+   "text": "Erfolg erreicht"
+  },
+  {
+   "culture": "it",
+   "key": "Achievement earned",
+   "text": "Obiettivo ottenuto"
+  },
+  {
+   "culture": "pt",
+   "key": "Achievement earned",
+   "text": "Conquista obtida"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Achievement earned",
+   "text": "Conquista desbloqueada"
+  },
+  {
+   "culture": "ja",
+   "key": "Achievement earned",
+   "text": "実績を獲得"
+  },
+  {
+   "culture": "ko",
+   "key": "Achievement earned",
+   "text": "업적 달성"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Achievement earned",
+   "text": "达成成就"
+  },
+  {
+   "culture": "ru",
+   "key": "Achievement earned",
+   "text": "Достижение получено"
+  },
+  {
+   "culture": "ar",
+   "key": "Achievement earned",
+   "text": "تحقق إنجاز"
+  },
+  {
+   "culture": "es",
+   "key": "Achievement earned: %@",
+   "text": "Logro conseguido: %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Achievement earned: %@",
+   "text": "Succès obtenu : %@"
+  },
+  {
+   "culture": "de",
+   "key": "Achievement earned: %@",
+   "text": "Erfolg erreicht: %@"
+  },
+  {
+   "culture": "it",
+   "key": "Achievement earned: %@",
+   "text": "Obiettivo ottenuto: %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Achievement earned: %@",
+   "text": "Conquista obtida: %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Achievement earned: %@",
+   "text": "Conquista desbloqueada: %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Achievement earned: %@",
+   "text": "実績を獲得：%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Achievement earned: %@",
+   "text": "업적 달성: %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Achievement earned: %@",
+   "text": "达成成就：%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Achievement earned: %@",
+   "text": "Достижение получено: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Achievement earned: %@",
+   "text": "تحقق إنجاز: %@"
+  },
+  {
+   "culture": "es",
+   "key": "That was your %@.",
+   "text": "Así lo conseguiste: %@."
+  },
+  {
+   "culture": "fr",
+   "key": "That was your %@.",
+   "text": "Voilà comment tu l'as obtenu : %@."
+  },
+  {
+   "culture": "de",
+   "key": "That was your %@.",
+   "text": "So hast du es geschafft: %@."
+  },
+  {
+   "culture": "it",
+   "key": "That was your %@.",
+   "text": "Ecco come l'hai ottenuto: %@."
+  },
+  {
+   "culture": "pt",
+   "key": "That was your %@.",
+   "text": "Foi assim que a conquistaste: %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "That was your %@.",
+   "text": "Foi assim que você conquistou: %@."
+  },
+  {
+   "culture": "ja",
+   "key": "That was your %@.",
+   "text": "これがあなたの「%@」でした。"
+  },
+  {
+   "culture": "ko",
+   "key": "That was your %@.",
+   "text": "이게 바로 너의 '%@'였어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "That was your %@.",
+   "text": "这就是你的「%@」。"
+  },
+  {
+   "culture": "ru",
+   "key": "That was your %@.",
+   "text": "Вот так это получилось: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "That was your %@.",
+   "text": "هكذا حققت: %@."
+  },
+  {
+   "culture": "es",
+   "key": "Dead stop",
+   "text": "Parada en seco"
+  },
+  {
+   "culture": "fr",
+   "key": "Dead stop",
+   "text": "Arrêt net"
+  },
+  {
+   "culture": "de",
+   "key": "Dead stop",
+   "text": "Stoppball"
+  },
+  {
+   "culture": "it",
+   "key": "Dead stop",
+   "text": "Arresto secco"
+  },
+  {
+   "culture": "pt",
+   "key": "Dead stop",
+   "text": "Paragem seca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Dead stop",
+   "text": "Parada seca"
+  },
+  {
+   "culture": "ja",
+   "key": "Dead stop",
+   "text": "ストップショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Dead stop",
+   "text": "스톱 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Dead stop",
+   "text": "定杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Dead stop",
+   "text": "Стоп-удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Dead stop",
+   "text": "توقف تام"
+  },
+  {
+   "culture": "es",
+   "key": "Draw back",
+   "text": "Retroceso"
+  },
+  {
+   "culture": "fr",
+   "key": "Draw back",
+   "text": "Rétro"
+  },
+  {
+   "culture": "de",
+   "key": "Draw back",
+   "text": "Rückzieher"
+  },
+  {
+   "culture": "it",
+   "key": "Draw back",
+   "text": "Effetto indietro"
+  },
+  {
+   "culture": "pt",
+   "key": "Draw back",
+   "text": "Recuo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Draw back",
+   "text": "Puxada"
+  },
+  {
+   "culture": "ja",
+   "key": "Draw back",
+   "text": "ドローショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Draw back",
+   "text": "끌어치기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Draw back",
+   "text": "缩杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Draw back",
+   "text": "Оттяжка"
+  },
+  {
+   "culture": "ar",
+   "key": "Draw back",
+   "text": "السحب للخلف"
+  },
+  {
+   "culture": "es",
+   "key": "Massé curve",
+   "text": "Curva de massé"
+  },
+  {
+   "culture": "fr",
+   "key": "Massé curve",
+   "text": "Courbe massé"
+  },
+  {
+   "culture": "de",
+   "key": "Massé curve",
+   "text": "Massé-Kurve"
+  },
+  {
+   "culture": "it",
+   "key": "Massé curve",
+   "text": "Curva massé"
+  },
+  {
+   "culture": "pt",
+   "key": "Massé curve",
+   "text": "Curva massé"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Massé curve",
+   "text": "Curva massé"
+  },
+  {
+   "culture": "ja",
+   "key": "Massé curve",
+   "text": "マッセカーブ"
+  },
+  {
+   "culture": "ko",
+   "key": "Massé curve",
+   "text": "마세 커브"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Massé curve",
+   "text": "马塞弧线"
+  },
+  {
+   "culture": "ru",
+   "key": "Massé curve",
+   "text": "Кривая массе"
+  },
+  {
+   "culture": "ar",
+   "key": "Massé curve",
+   "text": "منحنى الماسيه"
+  },
+  {
+   "culture": "es",
+   "key": "Over the top",
+   "text": "Por encima"
+  },
+  {
+   "culture": "fr",
+   "key": "Over the top",
+   "text": "Par-dessus"
+  },
+  {
+   "culture": "de",
+   "key": "Over the top",
+   "text": "Drübergesprungen"
+  },
+  {
+   "culture": "it",
+   "key": "Over the top",
+   "text": "Scavalcata"
+  },
+  {
+   "culture": "pt",
+   "key": "Over the top",
+   "text": "Por cima"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Over the top",
+   "text": "Por cima"
+  },
+  {
+   "culture": "ja",
+   "key": "Over the top",
+   "text": "飛び越え"
+  },
+  {
+   "culture": "ko",
+   "key": "Over the top",
+   "text": "뛰어넘기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Over the top",
+   "text": "飞越"
+  },
+  {
+   "culture": "ru",
+   "key": "Over the top",
+   "text": "Поверху"
+  },
+  {
+   "culture": "ar",
+   "key": "Over the top",
+   "text": "من فوقها"
+  },
+  {
+   "culture": "es",
+   "key": "Kick shot",
+   "text": "Tiro de rebote"
+  },
+  {
+   "culture": "fr",
+   "key": "Kick shot",
+   "text": "Bricole"
+  },
+  {
+   "culture": "de",
+   "key": "Kick shot",
+   "text": "Vorbänder"
+  },
+  {
+   "culture": "it",
+   "key": "Kick shot",
+   "text": "Colpo di rimbalzo"
+  },
+  {
+   "culture": "pt",
+   "key": "Kick shot",
+   "text": "Jogada de tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Kick shot",
+   "text": "Tacada de tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "Kick shot",
+   "text": "キックショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Kick shot",
+   "text": "킥 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Kick shot",
+   "text": "库边解球"
+  },
+  {
+   "culture": "ru",
+   "key": "Kick shot",
+   "text": "Удар через борт"
+  },
+  {
+   "culture": "ar",
+   "key": "Kick shot",
+   "text": "ضربة الارتداد"
+  },
+  {
+   "culture": "es",
+   "key": "Bank shot",
+   "text": "Tiro por banda"
+  },
+  {
+   "culture": "fr",
+   "key": "Bank shot",
+   "text": "Doublé"
+  },
+  {
+   "culture": "de",
+   "key": "Bank shot",
+   "text": "Bandenball"
+  },
+  {
+   "culture": "it",
+   "key": "Bank shot",
+   "text": "Tiro di sponda"
+  },
+  {
+   "culture": "pt",
+   "key": "Bank shot",
+   "text": "Bola de tabela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Bank shot",
+   "text": "Bola de tabela"
+  },
+  {
+   "culture": "ja",
+   "key": "Bank shot",
+   "text": "バンクショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Bank shot",
+   "text": "뱅크 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Bank shot",
+   "text": "翻袋"
+  },
+  {
+   "culture": "ru",
+   "key": "Bank shot",
+   "text": "Дуплет"
+  },
+  {
+   "culture": "ar",
+   "key": "Bank shot",
+   "text": "تسديدة بالحافة"
+  },
+  {
+   "culture": "es",
+   "key": "In off the jaw",
+   "text": "Dentro rozando la boca"
+  },
+  {
+   "culture": "fr",
+   "key": "In off the jaw",
+   "text": "Rentrée par le bord"
+  },
+  {
+   "culture": "de",
+   "key": "In off the jaw",
+   "text": "Über die Taschenwange rein"
+  },
+  {
+   "culture": "it",
+   "key": "In off the jaw",
+   "text": "Dentro di ganascia"
+  },
+  {
+   "culture": "pt",
+   "key": "In off the jaw",
+   "text": "Entrou a raspar a boca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In off the jaw",
+   "text": "Entrou raspando a borda"
+  },
+  {
+   "culture": "ja",
+   "key": "In off the jaw",
+   "text": "縁に当たってイン"
+  },
+  {
+   "culture": "ko",
+   "key": "In off the jaw",
+   "text": "턱 맞고 들어감"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In off the jaw",
+   "text": "磕袋角进球"
+  },
+  {
+   "culture": "ru",
+   "key": "In off the jaw",
+   "text": "В лузу от губки"
+  },
+  {
+   "culture": "ar",
+   "key": "In off the jaw",
+   "text": "دخلت بعد لمس فك الجيب"
+  },
+  {
+   "culture": "es",
+   "key": "Rattled out",
+   "text": "Escupida por la boca"
+  },
+  {
+   "culture": "fr",
+   "key": "Rattled out",
+   "text": "Recrachée"
+  },
+  {
+   "culture": "de",
+   "key": "Rattled out",
+   "text": "Rausgeklappert"
+  },
+  {
+   "culture": "it",
+   "key": "Rattled out",
+   "text": "Sputata dalle ganasce"
+  },
+  {
+   "culture": "pt",
+   "key": "Rattled out",
+   "text": "Cuspida pela boca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rattled out",
+   "text": "Cuspida pela caçapa"
+  },
+  {
+   "culture": "ja",
+   "key": "Rattled out",
+   "text": "ポケットで弾かれた"
+  },
+  {
+   "culture": "ko",
+   "key": "Rattled out",
+   "text": "포켓에서 튕겨 나옴"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rattled out",
+   "text": "袋口晃出"
+  },
+  {
+   "culture": "ru",
+   "key": "Rattled out",
+   "text": "Выплюнуло из лузы"
+  },
+  {
+   "culture": "ar",
+   "key": "Rattled out",
+   "text": "ارتدت من فم الجيب"
+  },
+  {
+   "culture": "es",
+   "key": "Too fast to drop",
+   "text": "Demasiado rápida para caer"
+  },
+  {
+   "culture": "fr",
+   "key": "Too fast to drop",
+   "text": "Trop rapide pour tomber"
+  },
+  {
+   "culture": "de",
+   "key": "Too fast to drop",
+   "text": "Zu schnell zum Fallen"
+  },
+  {
+   "culture": "it",
+   "key": "Too fast to drop",
+   "text": "Troppo veloce per cadere"
+  },
+  {
+   "culture": "pt",
+   "key": "Too fast to drop",
+   "text": "Demasiado rápida para cair"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Too fast to drop",
+   "text": "Rápida demais para cair"
+  },
+  {
+   "culture": "ja",
+   "key": "Too fast to drop",
+   "text": "速すぎて落ちない"
+  },
+  {
+   "culture": "ko",
+   "key": "Too fast to drop",
+   "text": "너무 빨라서 안 떨어짐"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Too fast to drop",
+   "text": "太快没落袋"
+  },
+  {
+   "culture": "ru",
+   "key": "Too fast to drop",
+   "text": "Слишком быстро для лузы"
+  },
+  {
+   "culture": "ar",
+   "key": "Too fast to drop",
+   "text": "أسرع من أن تسقط"
+  },
+  {
+   "culture": "es",
+   "key": "Big break",
+   "text": "Gran saque"
+  },
+  {
+   "culture": "fr",
+   "key": "Big break",
+   "text": "Grosse casse"
+  },
+  {
+   "culture": "de",
+   "key": "Big break",
+   "text": "Starker Break"
+  },
+  {
+   "culture": "it",
+   "key": "Big break",
+   "text": "Break potente"
+  },
+  {
+   "culture": "pt",
+   "key": "Big break",
+   "text": "Grande abertura"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Big break",
+   "text": "Grande abertura"
+  },
+  {
+   "culture": "ja",
+   "key": "Big break",
+   "text": "ビッグブレイク"
+  },
+  {
+   "culture": "ko",
+   "key": "Big break",
+   "text": "빅 브레이크"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Big break",
+   "text": "强力开球"
+  },
+  {
+   "culture": "ru",
+   "key": "Big break",
+   "text": "Мощная разбивка"
+  },
+  {
+   "culture": "ar",
+   "key": "Big break",
+   "text": "افتتاح قوي"
+  },
+  {
+   "culture": "es",
+   "key": "Run the rack",
+   "text": "Limpiar la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Run the rack",
+   "text": "Finir la table"
+  },
+  {
+   "culture": "de",
+   "key": "Run the rack",
+   "text": "Tisch ausräumen"
+  },
+  {
+   "culture": "it",
+   "key": "Run the rack",
+   "text": "Ripulire il tavolo"
+  },
+  {
+   "culture": "pt",
+   "key": "Run the rack",
+   "text": "Limpar a mesa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Run the rack",
+   "text": "Limpar a mesa"
+  },
+  {
+   "culture": "ja",
+   "key": "Run the rack",
+   "text": "テーブルを取り切る"
+  },
+  {
+   "culture": "ko",
+   "key": "Run the rack",
+   "text": "한 번에 테이블 정리"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Run the rack",
+   "text": "一杆清台"
+  },
+  {
+   "culture": "ru",
+   "key": "Run the rack",
+   "text": "Партия с кия"
+  },
+  {
+   "culture": "ar",
+   "key": "Run the rack",
+   "text": "تنظيف الطاولة"
+  },
+  {
+   "culture": "es",
+   "key": "Beat the computer: Easy",
+   "text": "Vence al ordenador: Fácil"
+  },
+  {
+   "culture": "fr",
+   "key": "Beat the computer: Easy",
+   "text": "Bats l'ordinateur : Facile"
+  },
+  {
+   "culture": "de",
+   "key": "Beat the computer: Easy",
+   "text": "Schlag den Computer: Leicht"
+  },
+  {
+   "culture": "it",
+   "key": "Beat the computer: Easy",
+   "text": "Batti il computer: Facile"
+  },
+  {
+   "culture": "pt",
+   "key": "Beat the computer: Easy",
+   "text": "Vence o computador: Fácil"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Beat the computer: Easy",
+   "text": "Vença o computador: Fácil"
+  },
+  {
+   "culture": "ja",
+   "key": "Beat the computer: Easy",
+   "text": "コンピューターに勝つ：かんたん"
+  },
+  {
+   "culture": "ko",
+   "key": "Beat the computer: Easy",
+   "text": "컴퓨터 이기기: 쉬움"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Beat the computer: Easy",
+   "text": "战胜电脑：简单"
+  },
+  {
+   "culture": "ru",
+   "key": "Beat the computer: Easy",
+   "text": "Победи компьютер: Легко"
+  },
+  {
+   "culture": "ar",
+   "key": "Beat the computer: Easy",
+   "text": "اهزم الكمبيوتر: سهل"
+  },
+  {
+   "culture": "es",
+   "key": "Beat the computer: Medium",
+   "text": "Vence al ordenador: Medio"
+  },
+  {
+   "culture": "fr",
+   "key": "Beat the computer: Medium",
+   "text": "Bats l'ordinateur : Moyen"
+  },
+  {
+   "culture": "de",
+   "key": "Beat the computer: Medium",
+   "text": "Schlag den Computer: Mittel"
+  },
+  {
+   "culture": "it",
+   "key": "Beat the computer: Medium",
+   "text": "Batti il computer: Medio"
+  },
+  {
+   "culture": "pt",
+   "key": "Beat the computer: Medium",
+   "text": "Vence o computador: Médio"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Beat the computer: Medium",
+   "text": "Vença o computador: Médio"
+  },
+  {
+   "culture": "ja",
+   "key": "Beat the computer: Medium",
+   "text": "コンピューターに勝つ：ふつう"
+  },
+  {
+   "culture": "ko",
+   "key": "Beat the computer: Medium",
+   "text": "컴퓨터 이기기: 보통"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Beat the computer: Medium",
+   "text": "战胜电脑：中等"
+  },
+  {
+   "culture": "ru",
+   "key": "Beat the computer: Medium",
+   "text": "Победи компьютер: Средне"
+  },
+  {
+   "culture": "ar",
+   "key": "Beat the computer: Medium",
+   "text": "اهزم الكمبيوتر: متوسط"
+  },
+  {
+   "culture": "es",
+   "key": "Beat the computer: Hard",
+   "text": "Vence al ordenador: Difícil"
+  },
+  {
+   "culture": "fr",
+   "key": "Beat the computer: Hard",
+   "text": "Bats l'ordinateur : Difficile"
+  },
+  {
+   "culture": "de",
+   "key": "Beat the computer: Hard",
+   "text": "Schlag den Computer: Schwer"
+  },
+  {
+   "culture": "it",
+   "key": "Beat the computer: Hard",
+   "text": "Batti il computer: Difficile"
+  },
+  {
+   "culture": "pt",
+   "key": "Beat the computer: Hard",
+   "text": "Vence o computador: Difícil"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Beat the computer: Hard",
+   "text": "Vença o computador: Difícil"
+  },
+  {
+   "culture": "ja",
+   "key": "Beat the computer: Hard",
+   "text": "コンピューターに勝つ：むずかしい"
+  },
+  {
+   "culture": "ko",
+   "key": "Beat the computer: Hard",
+   "text": "컴퓨터 이기기: 어려움"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Beat the computer: Hard",
+   "text": "战胜电脑：困难"
+  },
+  {
+   "culture": "ru",
+   "key": "Beat the computer: Hard",
+   "text": "Победи компьютер: Сложно"
+  },
+  {
+   "culture": "ar",
+   "key": "Beat the computer: Hard",
+   "text": "اهزم الكمبيوتر: صعب"
+  },
+  {
+   "culture": "es",
+   "key": "Every table",
+   "text": "Todas las mesas"
+  },
+  {
+   "culture": "fr",
+   "key": "Every table",
+   "text": "Toutes les tables"
+  },
+  {
+   "culture": "de",
+   "key": "Every table",
+   "text": "Alle Tische"
+  },
+  {
+   "culture": "it",
+   "key": "Every table",
+   "text": "Tutti i tavoli"
+  },
+  {
+   "culture": "pt",
+   "key": "Every table",
+   "text": "Todas as mesas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every table",
+   "text": "Todas as mesas"
+  },
+  {
+   "culture": "ja",
+   "key": "Every table",
+   "text": "すべてのテーブル"
+  },
+  {
+   "culture": "ko",
+   "key": "Every table",
+   "text": "모든 테이블"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every table",
+   "text": "全部球台"
+  },
+  {
+   "culture": "ru",
+   "key": "Every table",
+   "text": "Все столы"
+  },
+  {
+   "culture": "ar",
+   "key": "Every table",
+   "text": "كل الطاولات"
+  },
+  {
+   "culture": "es",
+   "key": "Every surface",
+   "text": "Todas las superficies"
+  },
+  {
+   "culture": "fr",
+   "key": "Every surface",
+   "text": "Toutes les surfaces"
+  },
+  {
+   "culture": "de",
+   "key": "Every surface",
+   "text": "Alle Spielflächen"
+  },
+  {
+   "culture": "it",
+   "key": "Every surface",
+   "text": "Tutte le superfici"
+  },
+  {
+   "culture": "pt",
+   "key": "Every surface",
+   "text": "Todas as superfícies"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every surface",
+   "text": "Todas as superfícies"
+  },
+  {
+   "culture": "ja",
+   "key": "Every surface",
+   "text": "すべての台の表面"
+  },
+  {
+   "culture": "ko",
+   "key": "Every surface",
+   "text": "모든 표면"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every surface",
+   "text": "全部台面"
+  },
+  {
+   "culture": "ru",
+   "key": "Every surface",
+   "text": "Все поверхности"
+  },
+  {
+   "culture": "ar",
+   "key": "Every surface",
+   "text": "كل الأسطح"
+  },
+  {
+   "culture": "es",
+   "key": "Every lesson",
+   "text": "Todas las lecciones"
+  },
+  {
+   "culture": "fr",
+   "key": "Every lesson",
+   "text": "Toutes les leçons"
+  },
+  {
+   "culture": "de",
+   "key": "Every lesson",
+   "text": "Alle Lektionen"
+  },
+  {
+   "culture": "it",
+   "key": "Every lesson",
+   "text": "Tutte le lezioni"
+  },
+  {
+   "culture": "pt",
+   "key": "Every lesson",
+   "text": "Todas as lições"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every lesson",
+   "text": "Todas as lições"
+  },
+  {
+   "culture": "ja",
+   "key": "Every lesson",
+   "text": "すべてのレッスン"
+  },
+  {
+   "culture": "ko",
+   "key": "Every lesson",
+   "text": "모든 레슨"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every lesson",
+   "text": "全部课程"
+  },
+  {
+   "culture": "ru",
+   "key": "Every lesson",
+   "text": "Все уроки"
+  },
+  {
+   "culture": "ar",
+   "key": "Every lesson",
+   "text": "كل الدروس"
+  },
+  {
+   "culture": "es",
+   "key": "Every trick shot",
+   "text": "Todos los tiros de truco"
+  },
+  {
+   "culture": "fr",
+   "key": "Every trick shot",
+   "text": "Tous les coups d'artiste"
+  },
+  {
+   "culture": "de",
+   "key": "Every trick shot",
+   "text": "Alle Trickstöße"
+  },
+  {
+   "culture": "it",
+   "key": "Every trick shot",
+   "text": "Tutti i colpi spettacolari"
+  },
+  {
+   "culture": "pt",
+   "key": "Every trick shot",
+   "text": "Todos os truques"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every trick shot",
+   "text": "Todos os truques"
+  },
+  {
+   "culture": "ja",
+   "key": "Every trick shot",
+   "text": "すべてのトリックショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Every trick shot",
+   "text": "모든 트릭 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every trick shot",
+   "text": "全部花式球"
+  },
+  {
+   "culture": "ru",
+   "key": "Every trick shot",
+   "text": "Все трюковые удары"
+  },
+  {
+   "culture": "ar",
+   "key": "Every trick shot",
+   "text": "كل ضربات الخدع"
+  },
+  {
+   "culture": "es",
+   "key": "Every way out",
+   "text": "Todas las salidas"
+  },
+  {
+   "culture": "fr",
+   "key": "Every way out",
+   "text": "Toutes les sorties"
+  },
+  {
+   "culture": "de",
+   "key": "Every way out",
+   "text": "Alle Auswege"
+  },
+  {
+   "culture": "it",
+   "key": "Every way out",
+   "text": "Tutte le vie d'uscita"
+  },
+  {
+   "culture": "pt",
+   "key": "Every way out",
+   "text": "Todas as saídas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every way out",
+   "text": "Todas as saídas"
+  },
+  {
+   "culture": "ja",
+   "key": "Every way out",
+   "text": "すべての脱出"
+  },
+  {
+   "culture": "ko",
+   "key": "Every way out",
+   "text": "모든 탈출구"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every way out",
+   "text": "全部解法"
+  },
+  {
+   "culture": "ru",
+   "key": "Every way out",
+   "text": "Все выходы"
+  },
+  {
+   "culture": "ar",
+   "key": "Every way out",
+   "text": "كل المخارج"
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "La blanca dejó el paño y voló por encima de una bola que estorbaba."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "La blanche a quitté le tapis et a survolé une bille qui lui barrait la route."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "Die Weiße hob vom Tuch ab und flog über eine Kugel, die im Weg lag."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "La bianca ha lasciato il panno ed è volata sopra una palla che le sbarrava la strada."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "A branca saiu do pano e voou por cima de uma bola que estava no caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "A branca saiu do pano e voou por cima de uma bola que estava no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "手球が羅紗から浮き上がり、行く手の球を飛び越えた。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "큐볼이 천에서 떠올라 길을 막던 공을 넘어 날아갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "母球离开台呢，飞过了挡路的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "Биток оторвался от сукна и перелетел через шар на своём пути."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball left the cloth and flew over a ball in its way.",
+   "text": "غادرت الكرة البيضاء القماش وطارت فوق كرة كانت في طريقها."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "La blanca rozó una bola, siguió hacia otra, y esa entró."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "La blanche a effleuré une bille, puis en a touché une autre, qui est tombée."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "Die Weiße streifte eine Kugel, lief auf eine andere, und die fiel."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "La bianca ha sfiorato una palla, è finita su un'altra, e quella è andata in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "A branca resvalou numa bola, seguiu para outra, e essa entrou."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "A branca resvalou numa bola, seguiu para outra, e essa caiu."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "手球が1つの球に当たって別の球へ向かい、その球が落ちた。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "큐볼이 한 공을 스치고 다른 공으로 가서, 그 공이 들어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "母球擦过一颗球后撞向另一颗，那颗球落袋了。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "Биток скользнул от одного шара к другому, и тот упал в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball glanced off one ball into another, and that one dropped.",
+   "text": "لامست الكرة البيضاء كرة ثم اتجهت إلى أخرى، فسقطت تلك."
+  },
+  {
+   "culture": "es",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "La bola tocó la boca de la tronera y aun así entró."
+  },
+  {
+   "culture": "fr",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "La bille a touché le bord de la poche et est quand même tombée."
+  },
+  {
+   "culture": "de",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "Die Kugel berührte die Taschenwange und fiel trotzdem hinein."
+  },
+  {
+   "culture": "it",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "La palla ha toccato la ganascia della buca ed è caduta lo stesso."
+  },
+  {
+   "culture": "pt",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "A bola tocou na boca do buraco e mesmo assim caiu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "A bola tocou na borda da caçapa e mesmo assim caiu."
+  },
+  {
+   "culture": "ja",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "球はポケットの縁に当たったが、それでも落ちた。"
+  },
+  {
+   "culture": "ko",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "공이 포켓 턱에 닿았는데도 들어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "球碰到了袋角，还是落袋了。"
+  },
+  {
+   "culture": "ru",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "Шар задел губку лузы и всё равно упал."
+  },
+  {
+   "culture": "ar",
+   "key": "The ball touched the pocket's jaw and still fell in.",
+   "text": "لمست الكرة فك الجيب وسقطت فيه مع ذلك."
+  },
+  {
+   "culture": "es",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "La bola rebotó en la boca de la tronera y se quedó en la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "La bille a rebondi entre les bords de la poche et est restée sur la table."
+  },
+  {
+   "culture": "de",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "Die Kugel sprang zwischen den Taschenwangen hin und her und blieb auf dem Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "La palla è rimbalzata tra le ganasce della buca ed è rimasta sul tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "A bola ressaltou entre os lados da boca do buraco e ficou na mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "A bola quicou entre as bordas da caçapa e ficou na mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "球はポケットの縁の間で跳ね返り、台の上に残った。"
+  },
+  {
+   "culture": "ko",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "공이 포켓 턱 사이에서 튕기다가 테이블에 남았어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "球在袋口两侧之间弹来弹去，留在了台面上。"
+  },
+  {
+   "culture": "ru",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "Шар отскочил между губками лузы и остался на столе."
+  },
+  {
+   "culture": "ar",
+   "key": "The ball bounced between the pocket's jaws and stayed on the table.",
+   "text": "ارتدت الكرة بين جانبي فم الجيب وبقيت على الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "Three or more balls went down from one break.",
+   "text": "Tres o más bolas entraron en un solo saque."
+  },
+  {
+   "culture": "fr",
+   "key": "Three or more balls went down from one break.",
+   "text": "Trois billes ou plus sont tombées sur une seule casse."
+  },
+  {
+   "culture": "de",
+   "key": "Three or more balls went down from one break.",
+   "text": "Drei oder mehr Kugeln fielen bei einem einzigen Break."
+  },
+  {
+   "culture": "it",
+   "key": "Three or more balls went down from one break.",
+   "text": "Tre o più palle sono andate in buca con un solo break."
+  },
+  {
+   "culture": "pt",
+   "key": "Three or more balls went down from one break.",
+   "text": "Três ou mais bolas entraram numa só abertura."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Three or more balls went down from one break.",
+   "text": "Três ou mais bolas caíram numa só abertura."
+  },
+  {
+   "culture": "ja",
+   "key": "Three or more balls went down from one break.",
+   "text": "1回のブレイクで3球以上が落ちた。"
+  },
+  {
+   "culture": "ko",
+   "key": "Three or more balls went down from one break.",
+   "text": "한 번의 브레이크로 공이 세 개 이상 들어갔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Three or more balls went down from one break.",
+   "text": "一次开球就进了三颗或更多球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Three or more balls went down from one break.",
+   "text": "Три шара или больше упали с одной разбивки."
+  },
+  {
+   "culture": "ar",
+   "key": "Three or more balls went down from one break.",
+   "text": "سقطت ثلاث كرات أو أكثر من افتتاح واحد."
+  },
+  {
+   "culture": "es",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "Desde tu saque hasta la mesa vacía, cada tiro metió una bola."
+  },
+  {
+   "culture": "fr",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "De ta casse à la table vide, chaque coup a fait tomber une bille."
+  },
+  {
+   "culture": "de",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "Vom Break bis zum leeren Tisch hat jeder Stoß eine Kugel versenkt."
+  },
+  {
+   "culture": "it",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "Dal tuo break al tavolo vuoto, ogni colpo ha mandato in buca una palla."
+  },
+  {
+   "culture": "pt",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "Da tua abertura até à mesa vazia, cada jogada meteu uma bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "Da sua abertura até a mesa vazia, cada tacada encaçapou uma bola."
+  },
+  {
+   "culture": "ja",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "ブレイクから台が空になるまで、どのショットでも球を落とした。"
+  },
+  {
+   "culture": "ko",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "브레이크부터 테이블이 빌 때까지 매 샷마다 공을 넣었어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "从你的开球到清空球台，每一杆都进了球。"
+  },
+  {
+   "culture": "ru",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "От разбивки до пустого стола каждый удар забивал шар."
+  },
+  {
+   "culture": "ar",
+   "key": "From your break to an empty table, every shot dropped a ball.",
+   "text": "من افتتاحك حتى خلت الطاولة، أسقطت كل ضربة كرة."
+  },
+  {
+   "culture": "es",
+   "key": "You won a game against the computer at this level.",
+   "text": "Ganaste una partida contra el ordenador en este nivel."
+  },
+  {
+   "culture": "fr",
+   "key": "You won a game against the computer at this level.",
+   "text": "Tu as gagné une partie contre l'ordinateur à ce niveau."
+  },
+  {
+   "culture": "de",
+   "key": "You won a game against the computer at this level.",
+   "text": "Du hast auf dieser Stufe ein Spiel gegen den Computer gewonnen."
+  },
+  {
+   "culture": "it",
+   "key": "You won a game against the computer at this level.",
+   "text": "Hai vinto una partita contro il computer a questo livello."
+  },
+  {
+   "culture": "pt",
+   "key": "You won a game against the computer at this level.",
+   "text": "Ganhaste uma partida contra o computador neste nível."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You won a game against the computer at this level.",
+   "text": "Você venceu uma partida contra o computador neste nível."
+  },
+  {
+   "culture": "ja",
+   "key": "You won a game against the computer at this level.",
+   "text": "このレベルでコンピューターに1ゲーム勝った。"
+  },
+  {
+   "culture": "ko",
+   "key": "You won a game against the computer at this level.",
+   "text": "이 난이도에서 컴퓨터를 상대로 한 게임을 이겼어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You won a game against the computer at this level.",
+   "text": "你在这个难度下赢了电脑一局。"
+  },
+  {
+   "culture": "ru",
+   "key": "You won a game against the computer at this level.",
+   "text": "Ты выиграл партию у компьютера на этом уровне."
+  },
+  {
+   "culture": "ar",
+   "key": "You won a game against the computer at this level.",
+   "text": "فزت بمباراة ضد الكمبيوتر في هذا المستوى."
+  },
+  {
+   "culture": "es",
+   "key": "You played a shot on every table.",
+   "text": "Jugaste un tiro en cada mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "You played a shot on every table.",
+   "text": "Tu as joué un coup sur chaque table."
+  },
+  {
+   "culture": "de",
+   "key": "You played a shot on every table.",
+   "text": "Du hast auf jedem Tisch einen Stoß gespielt."
+  },
+  {
+   "culture": "it",
+   "key": "You played a shot on every table.",
+   "text": "Hai giocato un colpo su ogni tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "You played a shot on every table.",
+   "text": "Fizeste uma jogada em cada mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You played a shot on every table.",
+   "text": "Você jogou uma tacada em cada mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "You played a shot on every table.",
+   "text": "すべてのテーブルでショットを打った。"
+  },
+  {
+   "culture": "ko",
+   "key": "You played a shot on every table.",
+   "text": "모든 테이블에서 샷을 쳤어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You played a shot on every table.",
+   "text": "你在每一张球台上都打过一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "You played a shot on every table.",
+   "text": "Ты сыграл удар на каждом столе."
+  },
+  {
+   "culture": "ar",
+   "key": "You played a shot on every table.",
+   "text": "لعبت ضربة على كل طاولة."
+  },
+  {
+   "culture": "es",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Jugaste un tiro en cada superficie, la Luna incluida."
+  },
+  {
+   "culture": "fr",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Tu as joué un coup sur chaque surface, la Lune comprise."
+  },
+  {
+   "culture": "de",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Du hast auf jeder Spielfläche einen Stoß gespielt, den Mond eingeschlossen."
+  },
+  {
+   "culture": "it",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Hai giocato un colpo su ogni superficie, Luna compresa."
+  },
+  {
+   "culture": "pt",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Fizeste uma jogada em cada superfície, incluindo a Lua."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Você jogou uma tacada em cada superfície, incluindo a Lua."
+  },
+  {
+   "culture": "ja",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "月面も含め、すべての台の表面でショットを打った。"
+  },
+  {
+   "culture": "ko",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "달을 포함해 모든 표면에서 샷을 쳤어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "你在每一种台面上都打过一杆，月球也不例外。"
+  },
+  {
+   "culture": "ru",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "Ты сыграл удар на каждой поверхности, включая Луну."
+  },
+  {
+   "culture": "ar",
+   "key": "You played a shot on every surface, the Moon included.",
+   "text": "لعبت ضربة على كل سطح، بما فيها القمر."
+  },
+  {
+   "culture": "es",
+   "key": "You passed this lesson.",
+   "text": "Aprobaste esta lección."
+  },
+  {
+   "culture": "fr",
+   "key": "You passed this lesson.",
+   "text": "Tu as réussi cette leçon."
+  },
+  {
+   "culture": "de",
+   "key": "You passed this lesson.",
+   "text": "Du hast diese Lektion bestanden."
+  },
+  {
+   "culture": "it",
+   "key": "You passed this lesson.",
+   "text": "Hai superato questa lezione."
+  },
+  {
+   "culture": "pt",
+   "key": "You passed this lesson.",
+   "text": "Concluíste esta lição."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You passed this lesson.",
+   "text": "Você concluiu esta lição."
+  },
+  {
+   "culture": "ja",
+   "key": "You passed this lesson.",
+   "text": "このレッスンに合格した。"
+  },
+  {
+   "culture": "ko",
+   "key": "You passed this lesson.",
+   "text": "이 레슨을 통과했어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You passed this lesson.",
+   "text": "你通过了这节课。"
+  },
+  {
+   "culture": "ru",
+   "key": "You passed this lesson.",
+   "text": "Ты прошёл этот урок."
+  },
+  {
+   "culture": "ar",
+   "key": "You passed this lesson.",
+   "text": "اجتزت هذا الدرس."
+  },
+  {
+   "culture": "es",
+   "key": "You passed every lesson.",
+   "text": "Aprobaste todas las lecciones."
+  },
+  {
+   "culture": "fr",
+   "key": "You passed every lesson.",
+   "text": "Tu as réussi toutes les leçons."
+  },
+  {
+   "culture": "de",
+   "key": "You passed every lesson.",
+   "text": "Du hast alle Lektionen bestanden."
+  },
+  {
+   "culture": "it",
+   "key": "You passed every lesson.",
+   "text": "Hai superato tutte le lezioni."
+  },
+  {
+   "culture": "pt",
+   "key": "You passed every lesson.",
+   "text": "Concluíste todas as lições."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You passed every lesson.",
+   "text": "Você concluiu todas as lições."
+  },
+  {
+   "culture": "ja",
+   "key": "You passed every lesson.",
+   "text": "すべてのレッスンに合格した。"
+  },
+  {
+   "culture": "ko",
+   "key": "You passed every lesson.",
+   "text": "모든 레슨을 통과했어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You passed every lesson.",
+   "text": "你通过了所有课程。"
+  },
+  {
+   "culture": "ru",
+   "key": "You passed every lesson.",
+   "text": "Ты прошёл все уроки."
+  },
+  {
+   "culture": "ar",
+   "key": "You passed every lesson.",
+   "text": "اجتزت كل الدروس."
+  },
+  {
+   "culture": "es",
+   "key": "You made this trick shot.",
+   "text": "Lograste este tiro de truco."
+  },
+  {
+   "culture": "fr",
+   "key": "You made this trick shot.",
+   "text": "Tu as réussi ce coup d'artiste."
+  },
+  {
+   "culture": "de",
+   "key": "You made this trick shot.",
+   "text": "Du hast diesen Trickstoß geschafft."
+  },
+  {
+   "culture": "it",
+   "key": "You made this trick shot.",
+   "text": "Hai realizzato questo colpo spettacolare."
+  },
+  {
+   "culture": "pt",
+   "key": "You made this trick shot.",
+   "text": "Fizeste este truque."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You made this trick shot.",
+   "text": "Você acertou este truque."
+  },
+  {
+   "culture": "ja",
+   "key": "You made this trick shot.",
+   "text": "このトリックショットを決めた。"
+  },
+  {
+   "culture": "ko",
+   "key": "You made this trick shot.",
+   "text": "이 트릭 샷을 성공했어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You made this trick shot.",
+   "text": "你打成了这个花式球。"
+  },
+  {
+   "culture": "ru",
+   "key": "You made this trick shot.",
+   "text": "Ты сделал этот трюковой удар."
+  },
+  {
+   "culture": "ar",
+   "key": "You made this trick shot.",
+   "text": "نجحت في ضربة الخدعة هذه."
+  },
+  {
+   "culture": "es",
+   "key": "You made every trick shot.",
+   "text": "Lograste todos los tiros de truco."
+  },
+  {
+   "culture": "fr",
+   "key": "You made every trick shot.",
+   "text": "Tu as réussi tous les coups d'artiste."
+  },
+  {
+   "culture": "de",
+   "key": "You made every trick shot.",
+   "text": "Du hast alle Trickstöße geschafft."
+  },
+  {
+   "culture": "it",
+   "key": "You made every trick shot.",
+   "text": "Hai realizzato tutti i colpi spettacolari."
+  },
+  {
+   "culture": "pt",
+   "key": "You made every trick shot.",
+   "text": "Fizeste todos os truques."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You made every trick shot.",
+   "text": "Você acertou todos os truques."
+  },
+  {
+   "culture": "ja",
+   "key": "You made every trick shot.",
+   "text": "すべてのトリックショットを決めた。"
+  },
+  {
+   "culture": "ko",
+   "key": "You made every trick shot.",
+   "text": "모든 트릭 샷을 성공했어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You made every trick shot.",
+   "text": "你打成了所有花式球。"
+  },
+  {
+   "culture": "ru",
+   "key": "You made every trick shot.",
+   "text": "Ты сделал все трюковые удары."
+  },
+  {
+   "culture": "ar",
+   "key": "You made every trick shot.",
+   "text": "نجحت في كل ضربات الخدع."
+  },
+  {
+   "culture": "es",
+   "key": "You won a medal on every spot.",
+   "text": "Ganaste una medalla en cada situación."
+  },
+  {
+   "culture": "fr",
+   "key": "You won a medal on every spot.",
+   "text": "Tu as gagné une médaille à chaque situation."
+  },
+  {
+   "culture": "de",
+   "key": "You won a medal on every spot.",
+   "text": "Du hast in jeder Lage eine Medaille gewonnen."
+  },
+  {
+   "culture": "it",
+   "key": "You won a medal on every spot.",
+   "text": "Hai vinto una medaglia in ogni situazione."
+  },
+  {
+   "culture": "pt",
+   "key": "You won a medal on every spot.",
+   "text": "Ganhaste uma medalha em cada situação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You won a medal on every spot.",
+   "text": "Você conquistou uma medalha em cada situação."
+  },
+  {
+   "culture": "ja",
+   "key": "You won a medal on every spot.",
+   "text": "すべての局面でメダルを獲得した。"
+  },
+  {
+   "culture": "ko",
+   "key": "You won a medal on every spot.",
+   "text": "모든 상황에서 메달을 땄어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You won a medal on every spot.",
+   "text": "你在每个局面都赢得了奖牌。"
+  },
+  {
+   "culture": "ru",
+   "key": "You won a medal on every spot.",
+   "text": "Ты получил медаль в каждой позиции."
+  },
+  {
+   "culture": "ar",
+   "key": "You won a medal on every spot.",
+   "text": "فزت بميدالية في كل موقف."
+  },
+  {
+   "culture": "es",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Golpea una bola de lleno y con firmeza para que la blanca se pare en el sitio y la bola entre."
+  },
+  {
+   "culture": "fr",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Frappe une bille pleine et franchement pour que la blanche s'arrête sur place et que la bille tombe."
+  },
+  {
+   "culture": "de",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Triff eine Kugel voll und kräftig, damit die Weiße auf der Stelle stehen bleibt und die Kugel fällt."
+  },
+  {
+   "culture": "it",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Colpisci una palla piena e decisa, così la bianca si ferma sul posto e la palla va in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Bate numa bola em cheio e com firmeza para a branca parar no sítio e a bola entrar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Acerte uma bola em cheio e com firmeza para a branca parar no lugar e a bola cair."
+  },
+  {
+   "culture": "ja",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "球に厚くしっかり当てて、手球をその場で止め、球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "공을 정면으로 힘 있게 맞혀서 큐볼은 그 자리에 멈추고 공은 들어가게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "厚而有力地击中一颗球，让母球停在原地，目标球落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "Ударь шар полно и твёрдо, чтобы биток встал на месте, а шар упал."
+  },
+  {
+   "culture": "ar",
+   "key": "Hit a ball full and firm so the cue ball stops on the spot and the ball drops.",
+   "text": "اضرب كرة بامتلاء وبحزم لتتوقف البيضاء في مكانها وتسقط الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Golpea la blanca por abajo para que retroceda girando tras el choque."
+  },
+  {
+   "culture": "fr",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Frappe la blanche en bas pour qu'elle revienne en tournant après l'impact."
+  },
+  {
+   "culture": "de",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Triff die Weiße tief, damit sie nach dem Treffer zurückdreht."
+  },
+  {
+   "culture": "it",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Colpisci la bianca in basso così torna indietro girando dopo l'impatto."
+  },
+  {
+   "culture": "pt",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Bate na branca por baixo para ela voltar para trás depois do choque."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Bata na branca por baixo para ela voltar girando depois do choque."
+  },
+  {
+   "culture": "ja",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "手球の下を突いて、当たったあとに逆回転で戻らせましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "큐볼 아래쪽을 쳐서 맞은 뒤 회전으로 돌아오게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "击打母球下部，让它在碰撞后旋转着退回来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "Бей по битку низом, чтобы после удара он закрутился назад."
+  },
+  {
+   "culture": "ar",
+   "key": "Strike low on the cue ball so it spins back after the hit.",
+   "text": "اضرب الكرة البيضاء من الأسفل لتدور إلى الخلف بعد الاصطدام."
+  },
+  {
+   "culture": "es",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Levanta mucho el taco y golpea fuera del centro para que la blanca se curve antes de llegar a una bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Lève fortement la queue et frappe hors du centre pour que la blanche se courbe avant d'atteindre une bille."
+  },
+  {
+   "culture": "de",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Stell das Queue steil auf und triff außermittig, damit die Weiße sich biegt, bevor sie eine Kugel erreicht."
+  },
+  {
+   "culture": "it",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Alza molto la stecca e colpisci fuori centro così la bianca curva prima di arrivare a una palla."
+  },
+  {
+   "culture": "pt",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Levanta bem o taco e bate fora do centro para a branca curvar antes de chegar a uma bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Levante bem o taco e bata fora do centro para a branca curvar antes de chegar a uma bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "キューを大きく立てて中心を外して突き、手球が球に届く前に曲がるようにしましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "큐를 높이 세우고 중심을 벗어나게 쳐서 큐볼이 공에 닿기 전에 휘게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "把球杆立得很高，偏离中心击球，让母球在碰到球之前拐弯。"
+  },
+  {
+   "culture": "ru",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "Сильно подними кий и бей не по центру, чтобы биток изогнулся до встречи с шаром."
+  },
+  {
+   "culture": "ar",
+   "key": "Raise the cue steeply and hit off centre so the cue ball bends before it reaches a ball.",
+   "text": "ارفع العصا بشدة واضرب بعيداً عن المركز لتنحني البيضاء قبل أن تصل إلى كرة."
+  },
+  {
+   "culture": "es",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Levanta el taco y golpea la blanca hacia abajo para que salte por encima de una bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Lève la queue et frappe la blanche vers le bas pour la faire sauter par-dessus une bille."
+  },
+  {
+   "culture": "de",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Stell das Queue an und triff die Weiße nach unten, damit sie über eine Kugel hüpft."
+  },
+  {
+   "culture": "it",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Alza la stecca e colpisci la bianca verso il basso per farla saltare sopra una palla."
+  },
+  {
+   "culture": "pt",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Levanta o taco e bate na branca para baixo para ela saltar por cima de uma bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Levante o taco e bata na branca para baixo para ela pular por cima de uma bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "キューを立てて手球を上から突き、球を飛び越えさせましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "큐를 세우고 큐볼을 아래로 내려쳐서 공을 뛰어넘게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "抬起球杆向下击打母球，让它跳过一颗球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "Подними кий и ударь по битку сверху вниз, чтобы он перепрыгнул шар."
+  },
+  {
+   "culture": "ar",
+   "key": "Raise the cue and hit down on the cue ball to hop it over a ball.",
+   "text": "ارفع العصا واضرب البيضاء نحو الأسفل لتقفز فوق كرة."
+  },
+  {
+   "culture": "es",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Corta una bola con suavidad para que el roce en el contacto la desvíe hacia la tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Coupe une bille en douceur pour que le frottement au contact la dévie dans la poche."
+  },
+  {
+   "culture": "de",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Schneide eine Kugel sanft, damit die Reibung am Kontakt sie in die Tasche lenkt."
+  },
+  {
+   "culture": "it",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Taglia una palla piano così l'attrito nel contatto la porta in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Corta uma bola suavemente para o atrito no contacto a desviar para o buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Corte uma bola suavemente para o atrito no contato desviá-la para a caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "球を柔らかく薄く当てて、接触の摩擦でポケットへ向かわせましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "공을 부드럽게 얇게 맞혀서 접촉 마찰로 포켓에 들어가게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "轻轻切一颗球，让接触时的摩擦把它带进袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "Мягко срежь шар, чтобы трение в момент касания довернуло его в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "Cut a ball softly so friction at the contact turns it into the pocket.",
+   "text": "اقطع كرة بلطف ليحرفها الاحتكاك عند التلامس نحو الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Manda una bola contra otra para que la segunda entre."
+  },
+  {
+   "culture": "fr",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Envoie une bille sur une autre pour que la seconde tombe."
+  },
+  {
+   "culture": "de",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Schick eine Kugel auf eine andere, damit die zweite fällt."
+  },
+  {
+   "culture": "it",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Manda una palla contro un'altra così la seconda va in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Manda uma bola contra outra para a segunda entrar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Mande uma bola contra outra para a segunda cair."
+  },
+  {
+   "culture": "ja",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "1つの球を別の球に当てて、2つ目の球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "한 공을 다른 공에 맞혀서 두 번째 공이 들어가게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "让一颗球撞向另一颗，使第二颗落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "Направь один шар в другой, чтобы второй упал."
+  },
+  {
+   "culture": "ar",
+   "key": "Send one ball into another so the second one drops.",
+   "text": "أرسل كرة نحو أخرى لتسقط الثانية."
+  },
+  {
+   "culture": "es",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Manda primero la blanca a una banda y luego contra una bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Envoie d'abord la blanche sur une bande, puis sur une bille."
+  },
+  {
+   "culture": "de",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Schick die Weiße erst an eine Bande, dann auf eine Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Manda prima la bianca su una sponda, poi contro una palla."
+  },
+  {
+   "culture": "pt",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Manda primeiro a branca à tabela e depois contra uma bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Mande primeiro a branca na tabela e depois contra uma bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "手球をまずクッションに当て、それから球に当てましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "큐볼을 먼저 쿠션에 맞힌 다음 공에 맞히세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "让母球先撞库边，再撞到一颗球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "Сначала направь биток в борт, а потом в шар."
+  },
+  {
+   "culture": "ar",
+   "key": "Send the cue ball off a cushion first, then into a ball.",
+   "text": "أرسل البيضاء إلى الحافة أولاً، ثم نحو كرة."
+  },
+  {
+   "culture": "es",
+   "key": "Drop a ball off a cushion.",
+   "text": "Mete una bola rebotando en una banda."
+  },
+  {
+   "culture": "fr",
+   "key": "Drop a ball off a cushion.",
+   "text": "Fais tomber une bille par la bande."
+  },
+  {
+   "culture": "de",
+   "key": "Drop a ball off a cushion.",
+   "text": "Versenke eine Kugel über die Bande."
+  },
+  {
+   "culture": "it",
+   "key": "Drop a ball off a cushion.",
+   "text": "Manda in buca una palla di sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "Drop a ball off a cushion.",
+   "text": "Mete uma bola pela tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drop a ball off a cushion.",
+   "text": "Encaçape uma bola pela tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "Drop a ball off a cushion.",
+   "text": "クッションを使って球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drop a ball off a cushion.",
+   "text": "쿠션을 맞고 공이 들어가게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drop a ball off a cushion.",
+   "text": "让一颗球借库边落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drop a ball off a cushion.",
+   "text": "Забей шар через борт."
+  },
+  {
+   "culture": "ar",
+   "key": "Drop a ball off a cushion.",
+   "text": "أسقط كرة عبر الحافة."
+  },
+  {
+   "culture": "es",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Haz que la blanca roce una bola y meta una segunda."
+  },
+  {
+   "culture": "fr",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Fais effleurer une bille à la blanche pour qu'elle en fasse tomber une deuxième."
+  },
+  {
+   "culture": "de",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Lass die Weiße eine Kugel streifen, damit sie eine zweite versenkt."
+  },
+  {
+   "culture": "it",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Fai sfiorare una palla alla bianca così manda in buca una seconda palla."
+  },
+  {
+   "culture": "pt",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Faz a branca resvalar numa bola para meter uma segunda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Faça a branca resvalar numa bola para encaçapar uma segunda."
+  },
+  {
+   "culture": "ja",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "手球を1つの球にかすらせ、2つ目の球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "큐볼이 한 공을 스치고 두 번째 공을 넣게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "让母球擦过一颗球，再把第二颗撞进袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "Пусти биток вскользь от одного шара, чтобы он забил второй."
+  },
+  {
+   "culture": "ar",
+   "key": "Glance the cue ball off one ball so it knocks a second ball in.",
+   "text": "اجعل البيضاء تلامس كرة لتُسقط كرة ثانية."
+  },
+  {
+   "culture": "es",
+   "key": "Drop two balls with one stroke.",
+   "text": "Mete dos bolas con un solo golpe."
+  },
+  {
+   "culture": "fr",
+   "key": "Drop two balls with one stroke.",
+   "text": "Fais tomber deux billes d'un seul coup."
+  },
+  {
+   "culture": "de",
+   "key": "Drop two balls with one stroke.",
+   "text": "Versenke zwei Kugeln mit einem Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "Drop two balls with one stroke.",
+   "text": "Manda in buca due palle con un solo colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "Drop two balls with one stroke.",
+   "text": "Mete duas bolas numa só tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drop two balls with one stroke.",
+   "text": "Encaçape duas bolas com uma só tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Drop two balls with one stroke.",
+   "text": "1回のショットで2つの球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drop two balls with one stroke.",
+   "text": "한 번의 샷으로 공 두 개를 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drop two balls with one stroke.",
+   "text": "一杆打进两颗球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drop two balls with one stroke.",
+   "text": "Забей два шара одним ударом."
+  },
+  {
+   "culture": "ar",
+   "key": "Drop two balls with one stroke.",
+   "text": "أسقط كرتين بضربة واحدة."
+  },
+  {
+   "culture": "es",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Mete una bola que toque el borde de la tronera al entrar."
+  },
+  {
+   "culture": "fr",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Fais tomber une bille qui touche le bord de la poche en entrant."
+  },
+  {
+   "culture": "de",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Versenke eine Kugel, die auf dem Weg hinein die Taschenwange berührt."
+  },
+  {
+   "culture": "it",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Manda in buca una palla che tocca la ganascia mentre entra."
+  },
+  {
+   "culture": "pt",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Mete uma bola que toque na boca do buraco ao entrar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Encaçape uma bola que toque na borda da caçapa ao entrar."
+  },
+  {
+   "culture": "ja",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "ポケットの縁に触れながら入る球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "포켓 턱을 스치면서 들어가는 공을 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "让一颗球擦着袋角落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "Забей шар, который по пути в лузу заденет её губку."
+  },
+  {
+   "culture": "ar",
+   "key": "Drop a ball that touches the side of the pocket on its way in.",
+   "text": "أسقط كرة تلمس جانب الجيب وهي تدخل."
+  },
+  {
+   "culture": "es",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Golpea la boca de la tronera con tanta fuerza que la bola rebote fuera."
+  },
+  {
+   "culture": "fr",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Frappe les bords de la poche assez fort pour que la bille ressorte."
+  },
+  {
+   "culture": "de",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Triff die Taschenwangen so hart, dass die Kugel wieder herausspringt."
+  },
+  {
+   "culture": "it",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Colpisci le ganasce della buca così forte che la palla rimbalza fuori."
+  },
+  {
+   "culture": "pt",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Bate na boca do buraco com força suficiente para a bola ressaltar para fora."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Bata na borda da caçapa com força suficiente para a bola quicar para fora."
+  },
+  {
+   "culture": "ja",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "ポケットの縁に強く当てて、球を弾き出させましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "포켓 턱을 세게 맞혀서 공이 튕겨 나오게 하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "用足够大的力打到袋口两侧，让球弹出来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "Ударь в губки лузы так сильно, чтобы шар выскочил обратно."
+  },
+  {
+   "culture": "ar",
+   "key": "Hit the pocket's jaws hard enough that the ball bounces out.",
+   "text": "اضرب جانبي فم الجيب بقوة كافية لترتد الكرة خارجه."
+  },
+  {
+   "culture": "es",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Haz rodar una bola sobre un agujero más rápido de lo que puede caer."
+  },
+  {
+   "culture": "fr",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Fais rouler une bille sur un trou plus vite qu'elle ne peut y tomber."
+  },
+  {
+   "culture": "de",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Lass eine Kugel schneller über ein Loch rollen, als sie hineinfallen kann."
+  },
+  {
+   "culture": "it",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Fai rotolare una palla sopra un buco più veloce di quanto possa cadervi."
+  },
+  {
+   "culture": "pt",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Faz rolar uma bola sobre um buraco mais depressa do que ela consegue cair."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Faça uma bola rolar sobre um buraco mais rápido do que ela consegue cair."
+  },
+  {
+   "culture": "ja",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "落ちきれない速さで球を穴の上に転がしましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "공이 떨어질 수 없을 만큼 빠르게 구멍 위로 굴리세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "让一颗球以来不及落下的速度滚过洞口。"
+  },
+  {
+   "culture": "ru",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "Прокати шар над лузой быстрее, чем он успеет в неё упасть."
+  },
+  {
+   "culture": "ar",
+   "key": "Roll a ball over a hole faster than it can fall in.",
+   "text": "دحرج كرة فوق حفرة أسرع من أن تسقط فيها."
+  },
+  {
+   "culture": "es",
+   "key": "Break the rack hard and square.",
+   "text": "Saca fuerte y de lleno contra el triángulo."
+  },
+  {
+   "culture": "fr",
+   "key": "Break the rack hard and square.",
+   "text": "Casse fort et bien en face."
+  },
+  {
+   "culture": "de",
+   "key": "Break the rack hard and square.",
+   "text": "Brich das Dreieck hart und gerade auf."
+  },
+  {
+   "culture": "it",
+   "key": "Break the rack hard and square.",
+   "text": "Spacca il triangolo forte e dritto."
+  },
+  {
+   "culture": "pt",
+   "key": "Break the rack hard and square.",
+   "text": "Abre o triângulo com força e de frente."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Break the rack hard and square.",
+   "text": "Abra o triângulo com força e de frente."
+  },
+  {
+   "culture": "ja",
+   "key": "Break the rack hard and square.",
+   "text": "強く、まっすぐにブレイクしましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Break the rack hard and square.",
+   "text": "랙을 세고 정면으로 브레이크하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Break the rack hard and square.",
+   "text": "用力而正面地开球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Break the rack hard and square.",
+   "text": "Разбей пирамиду сильно и точно в лоб."
+  },
+  {
+   "culture": "ar",
+   "key": "Break the rack hard and square.",
+   "text": "افتتح المثلث بقوة وبشكل مستقيم."
+  },
+  {
+   "culture": "es",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "En juego libre, saca y luego mete una bola en cada tiro hasta vaciar la mesa, sin perder la blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "En jeu libre, casse puis fais tomber une bille à chaque coup jusqu'à vider la table, sans perdre la blanche."
+  },
+  {
+   "culture": "de",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "Im freien Spiel brich an und versenke dann mit jedem Stoß eine Kugel, bis der Tisch leer ist, ohne die Weiße zu verlieren."
+  },
+  {
+   "culture": "it",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "In gioco libero, fai il break e poi manda in buca una palla a ogni colpo finché il tavolo è vuoto, senza perdere la bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "Em jogo livre, abre e depois mete uma bola em cada jogada até a mesa ficar vazia, sem perder a branca."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "No jogo livre, abra e depois encaçape uma bola em cada tacada até a mesa ficar vazia, sem perder a branca."
+  },
+  {
+   "culture": "ja",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "フリープレイでブレイクし、手球を落とさずに、台が空になるまで毎ショット球を落としましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "자유 플레이에서 브레이크한 뒤, 큐볼을 빠뜨리지 않고 테이블이 빌 때까지 매 샷마다 공을 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "在自由游戏中开球，然后每一杆都进一颗球，直到清台，且母球不能落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "В свободной игре разбей, а потом забивай шар каждым ударом, пока стол не опустеет, не потеряв биток."
+  },
+  {
+   "culture": "ar",
+   "key": "In free play, break and then drop a ball with every shot until the table is clear, without losing the cue ball.",
+   "text": "في اللعب الحر، افتتح ثم أسقط كرة في كل ضربة حتى تخلو الطاولة، دون أن تخسر الكرة البيضاء."
+  },
+  {
+   "culture": "es",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "En la mesa de bumper pool, juega una bola contra un bumper y métela en un hoyo."
+  },
+  {
+   "culture": "fr",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "Sur la table de bumper pool, envoie une bille sur un bumper et dans un trou."
+  },
+  {
+   "culture": "de",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "Spiel auf dem Bumper-Pool-Tisch eine Kugel über einen Bumper in ein Loch."
+  },
+  {
+   "culture": "it",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "Sul tavolo da bumper pool, manda una palla su un bumper e dentro una buca."
+  },
+  {
+   "culture": "pt",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "Na mesa de bumper pool, joga uma bola contra um bumper e para dentro de um buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "Na mesa de bumper pool, jogue uma bola contra um bumper e para dentro de um buraco."
+  },
+  {
+   "culture": "ja",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "バンパープールの台で、バンパーに当てて球をカップに入れましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "범퍼 풀 테이블에서 범퍼를 맞혀 공을 컵에 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "在障碍台球桌上，让一颗球撞障碍柱后进洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "На столе для бампер-пула отправь шар от бампера в лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "On the bumper pool table, play a ball off a bumper into a cup.",
+   "text": "على طاولة بلياردو المصدّات، أرسل كرة عبر مصدّ إلى داخل الحفرة."
+  },
+  {
+   "culture": "es",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "En la mesa de cinco bolos, derriba solo el bolo rojo."
+  },
+  {
+   "culture": "fr",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "Sur la table à cinq quilles, ne fais tomber que la quille rouge."
+  },
+  {
+   "culture": "de",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "Wirf auf dem Fünf-Kegel-Tisch nur den roten Kegel um."
+  },
+  {
+   "culture": "it",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "Sul tavolo a cinque birilli, abbatti solo il birillo rosso."
+  },
+  {
+   "culture": "pt",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "Na mesa de cinco pinos, derruba só o pino vermelho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "Na mesa de cinco pinos, derrube só o pino vermelho."
+  },
+  {
+   "culture": "ja",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "ファイブピンの台で、赤いピンだけを倒しましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "파이브 핀 테이블에서 빨간 핀만 쓰러뜨리세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "在五柱台球桌上，只击倒红色的柱。"
+  },
+  {
+   "culture": "ru",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "На столе с пятью кеглями сбей только красную кеглю."
+  },
+  {
+   "culture": "ar",
+   "key": "On the five-pin table, knock down only the red pin.",
+   "text": "على طاولة الأوتاد الخمسة، أسقط الوتد الأحمر وحده."
+  },
+  {
+   "culture": "es",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Gana una partida contra el ordenador en Fácil."
+  },
+  {
+   "culture": "fr",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Gagne une partie contre l'ordinateur en Facile."
+  },
+  {
+   "culture": "de",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Gewinn ein Spiel gegen den Computer auf Leicht."
+  },
+  {
+   "culture": "it",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Vinci una partita contro il computer a Facile."
+  },
+  {
+   "culture": "pt",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Ganha uma partida contra o computador em Fácil."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Vença uma partida contra o computador no Fácil."
+  },
+  {
+   "culture": "ja",
+   "key": "Win a game against the computer at Easy.",
+   "text": "「かんたん」のコンピューターに1ゲーム勝ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Win a game against the computer at Easy.",
+   "text": "쉬움 난이도의 컴퓨터를 상대로 한 게임을 이기세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Win a game against the computer at Easy.",
+   "text": "在简单难度下赢电脑一局。"
+  },
+  {
+   "culture": "ru",
+   "key": "Win a game against the computer at Easy.",
+   "text": "Выиграй партию у компьютера на уровне «Легко»."
+  },
+  {
+   "culture": "ar",
+   "key": "Win a game against the computer at Easy.",
+   "text": "افز بمباراة ضد الكمبيوتر في المستوى السهل."
+  },
+  {
+   "culture": "es",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Gana una partida contra el ordenador en Medio."
+  },
+  {
+   "culture": "fr",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Gagne une partie contre l'ordinateur en Moyen."
+  },
+  {
+   "culture": "de",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Gewinn ein Spiel gegen den Computer auf Mittel."
+  },
+  {
+   "culture": "it",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Vinci una partita contro il computer a Medio."
+  },
+  {
+   "culture": "pt",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Ganha uma partida contra o computador em Médio."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Vença uma partida contra o computador no Médio."
+  },
+  {
+   "culture": "ja",
+   "key": "Win a game against the computer at Medium.",
+   "text": "「ふつう」のコンピューターに1ゲーム勝ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Win a game against the computer at Medium.",
+   "text": "보통 난이도의 컴퓨터를 상대로 한 게임을 이기세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Win a game against the computer at Medium.",
+   "text": "在中等难度下赢电脑一局。"
+  },
+  {
+   "culture": "ru",
+   "key": "Win a game against the computer at Medium.",
+   "text": "Выиграй партию у компьютера на уровне «Средне»."
+  },
+  {
+   "culture": "ar",
+   "key": "Win a game against the computer at Medium.",
+   "text": "افز بمباراة ضد الكمبيوتر في المستوى المتوسط."
+  },
+  {
+   "culture": "es",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Gana una partida contra el ordenador en Difícil."
+  },
+  {
+   "culture": "fr",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Gagne une partie contre l'ordinateur en Difficile."
+  },
+  {
+   "culture": "de",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Gewinn ein Spiel gegen den Computer auf Schwer."
+  },
+  {
+   "culture": "it",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Vinci una partita contro il computer a Difficile."
+  },
+  {
+   "culture": "pt",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Ganha uma partida contra o computador em Difícil."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Vença uma partida contra o computador no Difícil."
+  },
+  {
+   "culture": "ja",
+   "key": "Win a game against the computer at Hard.",
+   "text": "「むずかしい」のコンピューターに1ゲーム勝ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Win a game against the computer at Hard.",
+   "text": "어려움 난이도의 컴퓨터를 상대로 한 게임을 이기세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Win a game against the computer at Hard.",
+   "text": "在困难难度下赢电脑一局。"
+  },
+  {
+   "culture": "ru",
+   "key": "Win a game against the computer at Hard.",
+   "text": "Выиграй партию у компьютера на уровне «Сложно»."
+  },
+  {
+   "culture": "ar",
+   "key": "Win a game against the computer at Hard.",
+   "text": "افز بمباراة ضد الكمبيوتر في المستوى الصعب."
+  },
+  {
+   "culture": "es",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Juega un tiro en cada mesa de Mesas."
+  },
+  {
+   "culture": "fr",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Joue un coup sur chaque table dans Tables."
+  },
+  {
+   "culture": "de",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Spiel einen Stoß auf jedem Tisch unter Tische."
+  },
+  {
+   "culture": "it",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Gioca un colpo su ogni tavolo in Tavoli."
+  },
+  {
+   "culture": "pt",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Faz uma jogada em cada mesa em Mesas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Jogue uma tacada em cada mesa em Mesas."
+  },
+  {
+   "culture": "ja",
+   "key": "Play a shot on each table in Tables.",
+   "text": "「テーブル」の各テーブルでショットを打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Play a shot on each table in Tables.",
+   "text": "테이블 메뉴의 각 테이블에서 샷을 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play a shot on each table in Tables.",
+   "text": "在“球台”里的每张球台上各打一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Play a shot on each table in Tables.",
+   "text": "Сыграй удар на каждом столе из раздела «Столы»."
+  },
+  {
+   "culture": "ar",
+   "key": "Play a shot on each table in Tables.",
+   "text": "العب ضربة على كل طاولة في الطاولات."
+  },
+  {
+   "culture": "es",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Juega un tiro en cada superficie del menú Superficie."
+  },
+  {
+   "culture": "fr",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Joue un coup sur chaque surface du menu Surface."
+  },
+  {
+   "culture": "de",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Spiel einen Stoß auf jeder Spielfläche im Menü Spielfläche."
+  },
+  {
+   "culture": "it",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Gioca un colpo su ogni superficie del menu Superficie."
+  },
+  {
+   "culture": "pt",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Faz uma jogada em cada superfície do menu Superfície."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Jogue uma tacada em cada superfície do menu Superfície."
+  },
+  {
+   "culture": "ja",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "「台の表面」メニューの各表面でショットを打ちましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "표면 메뉴의 각 표면에서 샷을 치세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "在“台面”菜单里的每种台面上各打一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "Сыграй удар на каждой поверхности из меню «Поверхность»."
+  },
+  {
+   "culture": "ar",
+   "key": "Play a shot on each surface in the Surface menu.",
+   "text": "العب ضربة على كل سطح في قائمة السطح."
+  },
+  {
+   "culture": "es",
+   "key": "Pass this lesson in Learn.",
+   "text": "Aprueba esta lección en Aprender."
+  },
+  {
+   "culture": "fr",
+   "key": "Pass this lesson in Learn.",
+   "text": "Réussis cette leçon dans Apprendre."
+  },
+  {
+   "culture": "de",
+   "key": "Pass this lesson in Learn.",
+   "text": "Besteh diese Lektion unter Lernen."
+  },
+  {
+   "culture": "it",
+   "key": "Pass this lesson in Learn.",
+   "text": "Supera questa lezione in Impara."
+  },
+  {
+   "culture": "pt",
+   "key": "Pass this lesson in Learn.",
+   "text": "Conclui esta lição em Aprender."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pass this lesson in Learn.",
+   "text": "Conclua esta lição em Aprender."
+  },
+  {
+   "culture": "ja",
+   "key": "Pass this lesson in Learn.",
+   "text": "「学ぶ」でこのレッスンに合格しましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pass this lesson in Learn.",
+   "text": "배우기에서 이 레슨을 통과하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pass this lesson in Learn.",
+   "text": "在“学习”中通过这节课。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pass this lesson in Learn.",
+   "text": "Пройди этот урок в разделе «Учиться»."
+  },
+  {
+   "culture": "ar",
+   "key": "Pass this lesson in Learn.",
+   "text": "اجتز هذا الدرس في تعلّم."
+  },
+  {
+   "culture": "es",
+   "key": "Pass every lesson in Learn.",
+   "text": "Aprueba todas las lecciones en Aprender."
+  },
+  {
+   "culture": "fr",
+   "key": "Pass every lesson in Learn.",
+   "text": "Réussis toutes les leçons dans Apprendre."
+  },
+  {
+   "culture": "de",
+   "key": "Pass every lesson in Learn.",
+   "text": "Besteh alle Lektionen unter Lernen."
+  },
+  {
+   "culture": "it",
+   "key": "Pass every lesson in Learn.",
+   "text": "Supera tutte le lezioni in Impara."
+  },
+  {
+   "culture": "pt",
+   "key": "Pass every lesson in Learn.",
+   "text": "Conclui todas as lições em Aprender."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pass every lesson in Learn.",
+   "text": "Conclua todas as lições em Aprender."
+  },
+  {
+   "culture": "ja",
+   "key": "Pass every lesson in Learn.",
+   "text": "「学ぶ」のすべてのレッスンに合格しましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pass every lesson in Learn.",
+   "text": "배우기의 모든 레슨을 통과하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pass every lesson in Learn.",
+   "text": "在“学习”中通过所有课程。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pass every lesson in Learn.",
+   "text": "Пройди все уроки в разделе «Учиться»."
+  },
+  {
+   "culture": "ar",
+   "key": "Pass every lesson in Learn.",
+   "text": "اجتز كل الدروس في تعلّم."
+  },
+  {
+   "culture": "es",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Logra este tiro en Tiros de truco."
+  },
+  {
+   "culture": "fr",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Réussis ce coup dans Coups d'artiste."
+  },
+  {
+   "culture": "de",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Schaff diesen Stoß unter Trickstöße."
+  },
+  {
+   "culture": "it",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Realizza questo colpo nei colpi spettacolari."
+  },
+  {
+   "culture": "pt",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Faz este truque em Truques."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Acerte este truque em Truques."
+  },
+  {
+   "culture": "ja",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "「トリック一覧」でこのトリックショットを決めましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "트릭 샷에서 이 샷을 성공하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "在“花式球”中打成这一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "Сделай этот удар в разделе «Трюковые удары»."
+  },
+  {
+   "culture": "ar",
+   "key": "Make this trick shot in Trick shots.",
+   "text": "انجح في هذه الضربة في ضربات الخدع."
+  },
+  {
+   "culture": "es",
+   "key": "Make every trick shot.",
+   "text": "Logra todos los tiros de truco."
+  },
+  {
+   "culture": "fr",
+   "key": "Make every trick shot.",
+   "text": "Réussis tous les coups d'artiste."
+  },
+  {
+   "culture": "de",
+   "key": "Make every trick shot.",
+   "text": "Schaff alle Trickstöße."
+  },
+  {
+   "culture": "it",
+   "key": "Make every trick shot.",
+   "text": "Realizza tutti i colpi spettacolari."
+  },
+  {
+   "culture": "pt",
+   "key": "Make every trick shot.",
+   "text": "Faz todos os truques."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make every trick shot.",
+   "text": "Acerte todos os truques."
+  },
+  {
+   "culture": "ja",
+   "key": "Make every trick shot.",
+   "text": "すべてのトリックショットを決めましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Make every trick shot.",
+   "text": "모든 트릭 샷을 성공하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make every trick shot.",
+   "text": "打成所有花式球。"
+  },
+  {
+   "culture": "ru",
+   "key": "Make every trick shot.",
+   "text": "Сделай все трюковые удары."
+  },
+  {
+   "culture": "ar",
+   "key": "Make every trick shot.",
+   "text": "انجح في كل ضربات الخدع."
+  },
+  {
+   "culture": "es",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Gana una medalla en cada situación de Detrás de la 8."
+  },
+  {
+   "culture": "fr",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Gagne une médaille à chaque situation de Derrière la 8."
+  },
+  {
+   "culture": "de",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Gewinn in jeder Lage von Hinter der 8 eine Medaille."
+  },
+  {
+   "culture": "it",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Vinci una medaglia in ogni situazione di Dietro la 8."
+  },
+  {
+   "culture": "pt",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Ganha uma medalha em cada situação de Atrás da 8."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Conquiste uma medalha em cada situação de Atrás da 8."
+  },
+  {
+   "culture": "ja",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "「8番の陰で」のすべての局面でメダルを獲得しましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "8번 뒤에서의 모든 상황에서 메달을 따세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "在“8 号球后面”的每个局面都赢得奖牌。"
+  },
+  {
+   "culture": "ru",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "Получи медаль в каждой позиции раздела «За восьмёркой»."
+  },
+  {
+   "culture": "ar",
+   "key": "Win a medal on each spot in Behind the 8-Ball.",
+   "text": "افز بميدالية في كل موقف في خلف الكرة 8."
+  }
+ ]
+}

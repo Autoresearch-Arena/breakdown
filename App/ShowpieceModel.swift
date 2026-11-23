@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
+//          the achievements book (made on first use), who struck each stroke, every shot the player struck read in any
+//          mode, its per-frame step, and Watch it in the Lens for an achievement's kept shot; each marked
+//          "// 0.7.7 achievements:".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: a ride is
 //          a scene in acts (RideAct, see RideStage.swift), run inside the ordinary table stage: the mount holds the
 //          clock at the strike while the camera comes down to the ball, the roll plays the shot, the ride holds two
@@ -974,6 +978,9 @@ final class ShowpieceModel {
 
     /// Solve a struck shot and put it on screen as the player's attempt.
     private func strike(_ input: ShotInput, _ settings: StruckSettings, undo: UndoStep?) {
+        // 0.7.7 achievements: whose stroke this is, captured here before the solve starts (the computer's computerActing
+        // and a mode's .watching are still set now; a background solve lands after they are cleared).
+        achievements.strikeStarted(byPerson: achievementStrikeIsPersons)
         // Ball in hand is used up by the stroke; the shot's outcome (a scratch, a match's ruling) sets it again.
         ballInHand = BallInHand.none
         // The stroke measured for this strike, and its bridge, are used up; the next one is measured afresh.
@@ -1065,6 +1072,15 @@ final class ShowpieceModel {
         // 0.7.4: last, so everything above is exactly as before. Judged only once the opening is over, outside the
         // authored modes and the drill (judgeHighlight's own guard); the first break of a first launch never is.
         judgeHighlight(tl, isBreak: s.isBreak)
+        // 0.7.7 achievements: the shot is read for achievements. Unlike judgeHighlight this runs in every mode (trick
+        // shots, lessons, Behind the 8-Ball, matches, the drill, the opening); the book itself skips strokes the game
+        // played for the player, and the opening earns quietly.
+        if let attempt = currentAttempt, let facts = shotFacts {
+            achievements.noteShot(AchievementShotContext(timeline: tl, facts: facts, captions: captions, table: solvedTable,
+                                                         isBreak: s.isBreak, freePlay: achievementFreePlay,
+                                                         attempt: attempt),
+                                  version: timelineVersion, quiet: openingStage != .none)
+        }
     }
 
     /// The undo step for a free-play stroke about to be struck (nil outside free play).
@@ -2968,6 +2984,9 @@ final class ShowpieceModel {
         // A guided Lens replay that held Ride off has played to its end: Ride comes back (holdRideForGuidedReplay).
         if rideHeldForGuidedReplay, aimReady, !holding { restoreHeldRide() }
         chimeTableClearedIfDue()
+        // 0.7.7 achievements: the progress sweep and the notes, on real seconds (not the clamped physics step). Never
+        // behind the menu: advance has returned above.
+        achievements.frame(rawDt)
     }
 
     private func step(_ dt: Double) {
@@ -3120,6 +3139,31 @@ final class ShowpieceModel {
     /// True while a mode that was authored on the pool table is up: a trick shot or a Behind the 8-Ball situation.
     var authoredModeUp: Bool {
         trickModeStorage?.current != nil || eightBallModeStorage?.current != nil || lessonModeStorage?.current != nil
+    }
+
+    // 0.7.7 achievements: three small readers for the achievements book, through the optional storage, so a strike or a
+    // frame never creates a mode.
+    /// True when the stroke being struck is the person's own: not the computer's, and not a trick's or lesson's Watch
+    /// or a Behind the 8-Ball hint (each mode sets .watching before it strikes, and authored modes solve synchronously,
+    /// so the phase is still set inside strike()).
+    var achievementStrikeIsPersons: Bool {
+        if match?.computerActing == true { return false }
+        if trickModeStorage?.phase == .watching { return false }
+        if lessonModeStorage?.phase == .watching { return false }
+        if eightBallModeStorage?.phase == .watching { return false }
+        return true
+    }
+
+    /// Free play for the achievements: no match, no authored mode, no drill.
+    var achievementFreePlay: Bool {
+        match == nil && !authoredModeUp && strokeDrillStorage?.isActive != true
+    }
+
+    /// A fingerprint of the progress the game keeps (lessons passed, trick shots made, medals, games finished this
+    /// sitting); the book sweeps its collections when it moves. -1 for a mode not made yet.
+    var achievementStamp: [Int] {
+        [lessonModeStorage?.doneIDs.count ?? -1, trickModeStorage?.doneIDs.count ?? -1,
+         eightBallModeStorage?.medals.count ?? -1, match?.sittingGames ?? -1]
     }
 
     /// True while something that only makes sense on the pool table is up: an authored mode, or an eight-ball or
@@ -3282,6 +3326,15 @@ final class ShowpieceModel {
         let m = TrickShotMode(model: self)
         trickModeStorage = m
         return m
+    }
+
+    // 0.7.7 achievements: the achievements book, made on first use and kept out of observation, exactly as trickMode.
+    @ObservationIgnored private var achievementsStorage: AchievementBook?
+    var achievements: AchievementBook {
+        if let b = achievementsStorage { return b }
+        let b = AchievementBook(model: self)
+        achievementsStorage = b
+        return b
     }
 
     /// Onto the table from the menu for a trick shot: the menu closes and Continue will come back here. A match in
@@ -3859,6 +3912,73 @@ final class ShowpieceModel {
         clearedTable = nil
         bestReplayControls = nil
         replayingBest = false
+    }
+
+    // MARK: Achievements: an achievement's shot in the Lens (0.7.7 achievements)
+
+    // 0.7.7 achievements: the recording an achievement's replay put on screen, and which achievement it was. The book
+    // shows the end note ("That was your Bank shot.") while that recording is on screen and the table is calm.
+    private(set) var achievementReplayVersion: Int?
+    private(set) var achievementReplayID: String?
+
+    /// 0.7.7 achievements: "Watch it in the Lens" on an achievement's page. A route into play, like Watch the intro: the
+    /// menu closes, any trick shot, lesson, situation or drill is left, a match is left saved (Continue match brings it
+    /// back), the shot's table and surface become the chosen ones (stored, as the Tables list and the Surface menu store
+    /// them), and the kept shot (already solved again by AchievementBook.replayShot) replays slowly in the Lens, holding
+    /// its signature moments, with Ride held for the replay. Afterwards the table is ready to play on: a scratched cue
+    /// ball is in hand, and a shot that cleared the table shows Table cleared with Rack again, silently. Nothing is
+    /// recorded or counted (no record(), no undo step), as Watch your best shot; the kept attempt becomes the current
+    /// attempt, so Try again retries the replayed shot from its start.
+    func watchAchievementShot(_ attempt: ShotAttempt, signature: [Int], id: String) {
+        closeAllLists()
+        abandonBestReplay()
+        endPoolTableModes()
+        strokeDrillStorage?.end()
+        // Puts back any lesson surface first, so the shot's own surface below is the one that stays.
+        lessonModeStorage?.end()
+        cancelPendingSolve()
+        leaveMatch()
+        endPlacement(); ballInHand = .none
+        undoStep = nil
+        startHighlightRack()
+        // A replayed clearing shot shows Table cleared without its chime: the chime is for clearing a rack, not for
+        // watching one.
+        clearedChimePlayed = true
+        if tableKind != attempt.table {
+            tableKind = attempt.table
+            UserDefaults.standard.set(attempt.table.rawValue, forKey: TableKind.storageKey)
+        }
+        if surface != attempt.surface {
+            // As setSurface stores it, without its re-solve: the load below puts the shot on screen.
+            surface = attempt.surface
+            UserDefaults.standard.set(attempt.surface.rawValue, forKey: PlaySurface.storageKey)
+            surfaceVersion += 1
+        }
+        menuOpen = false
+        gameInProgress = true
+        panelAfterBreakDue = false
+        requestShotPanel(.close)
+        // Drops the ghost, the comparison, the retry seed and a kept what-if strike.
+        clearAttempts()
+        // Counts a shot nobody struck here, on purpose: tableCleared needs a count above zero, so a replayed shot that
+        // left no object ball gets the Table cleared card and its Rack again. undoStep is nil above, so Undo cannot act
+        // on it.
+        shotsThisRack = 1
+        showKeptRecording(attempt, input: attempt.input, classic: false, surface: attempt.surface, table: attempt.table,
+                          generation: attempt.generation)
+        // A scratch with object balls left: ball in hand once the replay has played, as finishStrike does in free play.
+        let objectBallsLeft = layout.indices.contains { $0 != strikeBall && NextShot.isOnTable(layout[$0]) }
+        if shotFacts?.cueBallScratched == true, objectBallsLeft {
+            ballInHand = .anywhere
+            placementDue = true
+        }
+        achievementReplayVersion = timelineVersion
+        achievementReplayID = id
+        // After the load: load gives back any held Ride and clears the signature.
+        holdRideForGuidedReplay()
+        setPaceSignature(signature)
+        replay(withLens: true)
+        lensReplayStartedByPlayer = true
     }
 
     /// Every frame: Table cleared sounds the bigger made-it once per rack, as its card appears (Haptics gives the

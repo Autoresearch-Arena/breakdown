@@ -1,5 +1,8 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
+//          an Achievements row after Tables, with a mark of how many are earned whose symbol changes while some are
+//          new, opening the Achievements page; each marked "// 0.7.7 achievements:".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream menu, plans/22-Nov-2026-v076-phone-plan.md, bugs 54,
 //          55 and 57: turning the phone keeps the menu screen that was open. The menu's own screens (the Play list, the
 //          entrance, the How to play, Options and Tables sheets) live in one shared MenuScreenState instead of each
@@ -173,6 +176,8 @@ struct TitleScreen: View {
     var onHowTo: (() -> Void)? = nil
     var onOptions: (() -> Void)? = nil
     var onTables: (() -> Void)? = nil
+    // 0.7.7 achievements: the notebook's handler for the Achievements page (nil: the screen's page or the menu's sheet).
+    var onAchievements: (() -> Void)? = nil
     /// The screen's own page switch (ShowpieceView's NotebookPage, shown there as a sheet outside the notebook). When it
     /// is handed in, How to play, Options and Tables open through it instead of this view's own sheets: that sheet hangs
     /// from the screen, not from this menu copy, so turning the phone neither closes it nor loses the rules page or
@@ -208,6 +213,8 @@ struct TitleScreen: View {
         case .howTo: HowToPlaySheet(isOpen: isOpen, input: model.inputInUse)
         case .options: OptionsSheet(isOpen: isOpen)
         case .tables: TableList(model: model, onChosen: onPlay, onClose: { state.sheet = nil })
+        // 0.7.7 achievements: the Achievements page as the menu's own sheet.
+        case .achievements: AchievementList(model: model, onClose: { state.sheet = nil })
         }
     }
 
@@ -356,6 +363,11 @@ struct TitleScreen: View {
             MenuRow(title: "Tables", line: "Other tables, each a game of its own.", symbol: "square.grid.2x2") {
                 openPage(.tables, inline: onTables)
             }
+            // 0.7.7 achievements: the list of physics the player has pulled off.
+            MenuRow(title: "Achievements", line: "Physics you have pulled off, with the shot that did it.",
+                    symbol: "rosette", mark: achievementMark) {
+                openPage(.achievements, inline: onAchievements)
+            }
             MenuRow(title: "Watch the intro", line: "The opening break again, slowed down under the Physics Lens.",
                     symbol: "sparkles") {
                 model.trickMode.end(); model.eightBallMode.end(); model.watchBreak()
@@ -406,6 +418,15 @@ struct TitleScreen: View {
         return MenuRow.Mark(symbol: "checkmark.circle.fill",
                             text: String(localized: "\(made)/\(playable.count)"),
                             spoken: String(localized: "\(made) of \(playable.count) made"))
+    }
+
+    /// 0.7.7 achievements: achievements earned out of all of them. The symbol is sparkles while some are new since the
+    /// list was last opened; VoiceOver hears the counts, the new ones included.
+    private var achievementMark: MenuRow.Mark {
+        let b = model.achievements
+        return MenuRow.Mark(symbol: AchievementWords.menuSymbol(new: b.newCount),
+                            text: AchievementWords.menuMark(earned: b.earnedCount, total: b.total),
+                            spoken: AchievementWords.menuSpoken(earned: b.earnedCount, total: b.total, new: b.newCount))
     }
 
     /// Medals won out of the situations there are.
