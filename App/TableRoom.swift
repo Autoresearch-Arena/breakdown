@@ -9,12 +9,14 @@
 //          wallSpillImage), unlit like the floor, so the far wall reads as a wall in the low Ride view instead of a
 //          near-black void, and the wainscot carries a faint glow of the same light; the overhead views and the Lens,
 //          which never see the walls, are unchanged.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7: no wood in the room. The wainscot and waist rail are painted,
+//          the floor is carpet (SurfaceTextures.roomFloorImage); the Boss found the room's wood fighting the table's rails.)
 // PURPOSE: The room around the table (look plan package 1) and the moulded pockets (package 2), as an extension of
 //          TableBuilder so everything the warm table group holds is still built by TableBuilder. Before this the low
 //          Ride camera saw solid black above the far rail: there was no room, no lamp, no wall, and the floor faded to
 //          nothing a few metres out. Now:
-//            - Four walls a little over two metres out from the table, painted a dark green-grey, with dark wooden
-//              wainscot panels up to a wooden waist rail, a dark ceiling, and the floor reaching every wall (its
+//            - Four walls a little over two metres out from the table, painted a dark green-grey, with darker painted
+//              wainscot panels up to a painted waist rail, a dark ceiling, and the floor reaching every wall (its
 //              picture is SurfaceTextures.roomFloorImage, sized here by roomFloorSide).
 //            - The lamp: a long enamelled shade (LampShade.usdz, made by Tools/blender/make_room.py) hanging over the
 //              table, its white reflector and three bulbs lit from inside with unlit materials, so the table's light
@@ -34,7 +36,7 @@
 //          StartupAssets (roomHalfExtent, roomFloorSide), TableDetail (the shade, found by name, fades out when the
 //          camera rises past it, so it never blocks the view of the table from above).
 // SRP/DRY check: Pass - room geometry and its materials only. Reuses TableProps.dress and TableProps.receiveLight for
-//          the loaded models (the same steps CueRig keeps privately), TableBuilder's wood material for the rails, and
+//          the loaded models (the same steps CueRig keeps privately), and
 //          the floor picture from SurfaceTextures. Per-frame behaviour (the shade's fade) is in TableDetail.
 import BreakdownLensModel
 import BreakdownTimeline
@@ -99,7 +101,7 @@ extension TableBuilder {
 
     /// The room: floor, walls with wainscot and a waist rail, ceiling, the lamp shade and the three props.
     /// - tableHalf: half the table's outer length and width (floorHalfExtent).
-    /// - wood: the table's wood material (rails, legs), reused for the waist rail and, darkened, the wainscot.
+    /// - wood: the table's wood material (rails, legs); no longer used by the room itself (0.7.7), kept for callers.
     /// - lightSource: the entity carrying the lamp reflection, for the models that load later; nil skips that step.
     static func makeRoom(frame: TableFrame, tableHalf: SIMD2<Float>, wood: PhysicallyBasedMaterial, lightSource: Entity?) -> Entity {
         let room = Entity()
@@ -140,14 +142,19 @@ extension TableBuilder {
             (SIMD3(-half.x, 0, 0), .pi / 2, 2 * half.y),
             (SIMD3(half.x, 0, 0), -.pi / 2, 2 * half.y),
         ]
-        // Wainscot: the wood picture, darkened to about half so the panels read as old varnished boards in shadow.
+        // Wainscot: painted panels, a darker shade of the plaster's green-grey. Until 0.7.7 they were the table's
+        // wood, darkened; the Boss found the room's wood fighting the table's rails, so only the table is wood now.
         var wainscot = PhysicallyBasedMaterial()
-        wainscot.baseColor = .init(tint: rgba(0.5, 0.46, 0.42), texture: wood.baseColor.texture)
-        wainscot.roughness = .init(floatLiteral: 0.6)
-        // A faint glow of the lamp's spill on the boards (the same light the plaster above is painted with), so the
-        // wainscot reads as varnished wood in shadow rather than a black band: its own picture at about a tenth.
-        wainscot.emissiveColor = .init(color: rgba(0.10, 0.085, 0.065), texture: wood.baseColor.texture)
+        wainscot.baseColor = .init(tint: rgba(0.05, 0.06, 0.058))
+        wainscot.roughness = .init(floatLiteral: 0.7)
+        // A faint glow of the lamp's spill (the same light the plaster above is painted with), so the panels read as
+        // paint in shadow rather than a black band.
+        wainscot.emissiveColor = .init(color: rgba(0.03, 0.035, 0.033))
         wainscot.emissiveIntensity = 1
+        // The waist rail: the same paint, a little lighter, so it still reads as a moulding.
+        var paintedRail = wainscot
+        paintedRail.baseColor = .init(tint: rgba(0.08, 0.09, 0.086))
+        paintedRail.emissiveColor = .init(color: rgba(0.045, 0.05, 0.048))
         var ceiling = PhysicallyBasedMaterial()
         ceiling.baseColor = .init(tint: rgba(0.06, 0.055, 0.05))
         ceiling.roughness = .init(floatLiteral: 1)
@@ -165,8 +172,8 @@ extension TableBuilder {
             panel.orientation = turn
             panel.position = centre + SIMD3(0, floorY + waistRailHeight * 0.5, 0) + inward * (panelDepth * 0.5)
             walls.addChild(panel)
-            // The waist rail: a rounded wooden cap along the top of the wainscot.
-            let rail = ModelEntity(mesh: .generateBox(size: SIMD3(length, railHeight, railDepth), cornerRadius: 0.01), materials: [wood])
+            // The waist rail: a rounded painted cap along the top of the wainscot.
+            let rail = ModelEntity(mesh: .generateBox(size: SIMD3(length, railHeight, railDepth), cornerRadius: 0.01), materials: [paintedRail])
             rail.orientation = turn
             rail.position = centre + SIMD3(0, floorY + waistRailHeight - railHeight * 0.3, 0) + inward * (railDepth * 0.5)
             walls.addChild(rail)

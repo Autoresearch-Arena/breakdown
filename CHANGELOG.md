@@ -18,6 +18,14 @@ Author: Claude Opus 5.5 High (coordinator), with five planners, five critics and
 - Why: The Boss picked these five on 23 November 2026; clips to share is the top priority.
 - How: each feature planned, checked against the code by a second reader, built by its own developer in its own worktree, then merged, compiled once and tested.
 
+### Fixes after the first clips
+
+Author: Claude Opus 5.5 High.
+
+- What: Clips now show the table as bright as the game does; the room round the table has no wood left (a dark carpet and painted wall panels), so the table's rails stand out; a jump in the Lens replay is framed on its whole flight and the ball it jumps, instead of one ball on an empty grid.
+- Why: The Boss found the room's wooden walls fighting the table's rails, and the jump replay hard to read.
+- How: the clip's rendered picture is read as linear light (it was being darkened twice); SurfaceTextures.roomFloorImage and TableRoom's wainscot and waist rail; PacePlan.focusRegion frames take-offs and landings with a new flight(of:around:in:).
+
 ### Lens clips to share
 
 What: After a shot worth watching, one tap makes a short film of it, ready to save or send through the device's own share sheet. The film shows the shot at full speed on the warm table with its real contact sounds, then the melt into the Physics Lens, a silent rewind, and the explained replay. The replay stops on up to four moments, each with a ring on the ball and one plain sentence in the game's language. A quiet end card closes it with the shot's name and the game's name. A film runs about 25 seconds and never more than 40. It is upright by default on iPhone and wide on iPad and Mac, and the other shape is one more choice in the menu. While the clip is made, a small note shows a progress bar and Cancel. Then it says "Your clip is ready" with Share and Close. Starts: the upright phone strip's "Share clip" after a remarkable shot has been watched or its card closed; the More menu; a round share button beside the Surface button on a sideways phone, iPad, Mac and the open Duo; the highlight card; "Share your best shot" on the cleared table; and the Mac's Playback menu (Shift-Command-E). Nothing is offered in the first minute and nothing pops up by itself.

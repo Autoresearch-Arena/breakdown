@@ -8,6 +8,9 @@
 //          take-off (a jump), the first ball-to-ball hit that threw a ball a degree or more, and the end of the
 //          biggest bend (a masse). The first launch is untouched and never takes a signature.)
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (a jump's take-off and landing are framed on the whole flight and
+//          the ball it passes over, not a short stretch of path: the Boss found the jump replay showing one ball on an
+//          empty grid.)
 // PURPOSE: Guided pacing for the Physics Lens replay. Built once per recorded shot from its captions (the way
 //          RidePlan is built once per shot), it picks the BEATS: the handful of moments worth stopping on so the
 //          explanation can be read (always the cue strike and the first ball-to-ball hit; then the strongest other
@@ -361,8 +364,10 @@ struct PacePlan: Equatable {
         case .ballBall, .settledInContact:
             for b in balls.prefix(2) { rect = rect.union(path(of: b, from: e.time, metres: hitPath, in: tl)) }
         case .phaseTransition:
-            if e.flight == .takeOff {
-                for b in balls.prefix(1) { rect = rect.union(path(of: b, from: e.time, metres: hitPath, in: tl)) }
+            if e.flight == .takeOff || e.flight == .landing {
+                // A jump: the whole flight and any ball it passes over, so the player sees what was jumped. A short
+                // stretch of path showed only the flying ball on an empty grid (the Boss, 23-Nov-2026).
+                for b in balls.prefix(1) { rect = rect.union(flight(of: b, around: e.time, in: tl)) }
             } else if e.flight == FlightMark.none, e.phaseFrom == .sliding {
                 // Skid turning into roll: the slide that has just ended.
                 for b in balls.prefix(1) { rect = rect.union(slide(of: b, endingAt: e.time, in: tl)) }
@@ -380,6 +385,39 @@ struct PacePlan: Equatable {
             }
         }
         return rect.outset(by: tl.table.ballRadius)
+    }
+
+    /// The flight `ball` is in at clock time `t` (a take-off starts one, a landing ends one or starts a bounce): every
+    /// airborne stretch within a second either side of `t`, joined, plus a little of the cloth before and after, and
+    /// every other ball that sits within two ball widths of that flight while it flies (the ball that was jumped).
+    /// Sampled every 1/120 s; a flight on a pool table lasts well under a second.
+    private static func flight(of ball: Int, around t: Double, in tl: Timeline) -> TableRect {
+        let step = 1.0 / 120
+        let start = max(0, t - 1), end = min(tl.duration, t + 1)
+        var points: [(time: Double, position: Vec2)] = []
+        var now = start
+        while now <= end {
+            let s = tl.state(ball: ball, at: now)
+            if s.phase == .airborne { points.append((now, s.position)) }
+            now += step
+        }
+        var rect = TableRect(around: tl.state(ball: ball, at: t).position)
+        guard let first = points.first, let last = points.last else {
+            return rect.union(path(of: ball, from: t, metres: hitPath, in: tl))
+        }
+        for p in points { rect.include(p.position) }
+        // A little of the run-up and the roll-out, so take-off and landing read as places on the table.
+        rect.include(tl.state(ball: ball, at: max(0, first.time - 0.15)).position)
+        rect = rect.union(path(of: ball, from: last.time, metres: hitPath, in: tl))
+        // The ball (or balls) the flight passes over.
+        let reach = tl.table.ballRadius * 4
+        for other in 0..<tl.ballCount where other != ball && tl.segments.indices.contains(other)
+            && !tl.segments[other].isEmpty {
+            let o = tl.state(ball: other, at: first.time)
+            if o.pocketed { continue }
+            if points.contains(where: { ($0.position - o.position).length < reach }) { rect.include(o.position) }
+        }
+        return rect
     }
 
     /// Where `ball` goes from clock time `t` for about `metres` of path (less when it stops, drops or the recording

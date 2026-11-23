@@ -14,6 +14,8 @@
 //          cushions meet the bed).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan item 56: wallSpillImage, the room's plaster with the lamp's
 //          light painted on, so the far wall in the low Ride view reads as a dim wall instead of a void.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7: the room floor is a cool dark carpet, not wooden boards; the
+//          Boss found the room's wood fighting the table's rails.)
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that runs to the room's walls, the
 //          pocket-wall gradient that makes a well read as deep, and the other playing beds of the Surface menu.
@@ -477,10 +479,11 @@ enum SurfaceTextures {
                 let outside = (ox * ox + oz * oz).squareRoot()
                 let shadowMask = max(0, min(1, 1 - outside / 0.55))
                 let shade = 1 - 0.9 * shadowMask * shadowMask * (3 - 2 * shadowMask)
-                // Dark oiled boards: faint plank lines and grain.
-                let plank = (Int((wx + 20) / 0.19) % 2 == 0) ? 0.0 : -0.12
-                let grain = (fbm(Float(x) / 60, Float(y) / 3, px: 16, py: 340, octaves: 3, seed: 41) - 0.5) * 0.35
-                let tone = max(0, 1 + Float(plank) + grain)
+                // Dark wool carpet: a fine, even speckle and no lines at all. (Until 0.7.7 this was dark oiled boards;
+                // seen from above, their brown planks ran beside the rails and read as more wood next to the table's
+                // own, so the table's edge got lost. Only the table is wood now.)
+                let speckle = (fbm(Float(x) / 3, Float(y) / 3, px: 170, py: 170, octaves: 2, seed: 41) - 0.5) * 0.16
+                let tone = max(0, 1 + speckle)
                 // Bounce light from the walls and ceiling: about a sixth of the pool's peak, so the boards stay
                 // readable to the walls without competing with the lit table.
                 let ambient: Float = 0.032
@@ -489,7 +492,8 @@ enum SurfaceTextures {
                 let k = min(1, toWall / 0.6)
                 let nearWall = 0.55 + 0.45 * k * k * (3 - 2 * k)
                 let v = (0.20 * pool * shade + ambient * shade) * tone * nearWall
-                r.set(x, y, v * 1.00 + 0.004, v * 0.74 + 0.004, v * 0.52 + 0.005)
+                // A cool slate grey, away from the rails' warm brown, so the table's edge stands clear of the floor.
+                r.set(x, y, v * 0.60 + 0.004, v * 0.66 + 0.004, v * 0.72 + 0.005)
             }
         }
         return r.image()
