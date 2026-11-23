@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: update
+//          takes bullet time's camera, applied right after the ride's override and before the lamp shot.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the table fills the screen: the playing area is framed between the
 //          title row and the controls while the rails may tuck under that glass; no caption or legend room is reserved
 //          any more, so toggling the Lens changes only the angle; on a tall screen the warm view tilts steeper, up to
@@ -186,8 +188,12 @@ final class TableCamera {
     /// - zoom: the hand zoom (pinch, pan, double tap); applied to the fitted pose, under Ride.
     /// - moment: the moment framing of a guided Lens replay (MomentFrame), applied to the fitted pose before the hand
     ///   zoom; nil leaves the fitted view whole.
+    /// - bullet: bullet time's camera (0.7.7), which swings round a frozen hit after the ride's say and before the lamp
+    ///   shot; nil leaves the camera alone.
+    // 0.7.7 bullet-time: the `bullet` parameter.
     func update(melt: Double, clock: Double, duration: Double, request q: FramingRequest, frame: TableFrame,
-                ride: ShotCamera? = nil, zoom: TableZoom? = nil, moment: MomentFocus? = nil) {
+                ride: ShotCamera? = nil, zoom: TableZoom? = nil, moment: MomentFocus? = nil,
+                bullet: BulletTimeCamera? = nil) {
         let size = q.size
         let reduce = Self.reduceMotion
         let m = Float(melt)
@@ -268,6 +274,8 @@ final class TableCamera {
         var shot = ride?.override(position: position, target: target, fov: Self.fov, free: freeNow, size: size,
                                   reduceMotion: reduce)
             ?? CameraShot(position: position, target: target, fov: Self.fov, near: ShotCamera.overheadNear)
+        // 0.7.7 bullet-time: a frozen hit's swing round the contact, over whatever the ride left (BulletTimeCamera).
+        if let bullet { shot = bullet.override(shot, free: freeNow, size: size, reduceMotion: reduce) }
         // The opening's lamp shot: held under the lamp, then blended into the table view as it rises (under Reduce
         // Motion it ends after the hold, so the next frame cuts to the table).
         if let start = lampStart {

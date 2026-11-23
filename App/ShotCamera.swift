@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md:
+//          frameInFreeSpace takes where down the free space the target lands, place, defaulting to ballPlace.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (a chase view of the cue ball for the whole shot, as the Boss asked:
 //          higher and further back, no hand-over to the struck ball, a crane up after the first contact).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (release stream: selfTest also returns what it measured as a RideCheck,
@@ -531,15 +533,19 @@ final class ShotCamera {
         return min(106, max(46, vertical))
     }
 
+    // 0.7.7 bullet-time: the `place` parameter (default ShotCamera.ballPlace, so every existing caller is unchanged).
     /// Turn the ride's look direction so the shot's target (the ridden ball) lands across the middle of the free space
     /// (between the title row and the cards) and `ballPlace` of the way down it, in its lower third, rather than at the
     /// middle of the screen; and keep the view pointing down at the cloth: the view ray never rises above a few degrees
     /// below the horizon, so it never looks over or through the table.
-    static func frameInFreeSpace(_ s: CameraShot, free: FramingRect, size: CGSize) -> CameraShot {
+    /// - place: how far down the free space the target lands, as a share of its height (bullet time's frozen hit sits
+    ///   in the middle, 0.5); the ride's ballPlace by default.
+    static func frameInFreeSpace(_ s: CameraShot, free: FramingRect, size: CGSize,
+                                 place: Double = ShotCamera.ballPlace) -> CameraShot {
         let w = Float(max(1, size.width)), h = Float(max(1, size.height))
         let kY = tan(s.fov * .pi / 360), kX = kY * w / h
         let nx = Float(free.centerX) / w * 2 - 1
-        let ny = 1 - Float(free.top + free.height * ballPlace) / h * 2
+        let ny = 1 - Float(free.top + free.height * place) / h * 2
         var f = simd_normalize(s.target - s.position)
         let right = simd_normalize(simd_cross(f, SIMD3(0, 1, 0)))
         let up = simd_cross(right, f)

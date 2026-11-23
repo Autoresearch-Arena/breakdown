@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the top
+//          bar's title reads a frozen hit's status line for the length of the freeze.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: the notebook's Continue waits for the opening
 //          to end, so the first minute's notebook stays its one line; the opening's holds end by themselves.)
@@ -362,6 +364,8 @@ private struct NotebookTopBar: View {
 
     /// The opening's own status while it tells its story, else the game or mode on the table.
     private var title: String {
+        // 0.7.7 bullet-time: a frozen hit names its moment on the words half for the length of the freeze.
+        if let words = model.bulletTime.statusWords { return words }
         if model.stage != .explore && model.stage != .lead { return model.stageTitle }
         if let match = model.match { return NotebookWords.gameName(match.rules.kind) }
         if model.trickMode.isActive { return String(localized: "Trick shots") }

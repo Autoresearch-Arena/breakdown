@@ -1,0 +1,454 @@
+{
+ "keys": [
+  "Freeze the big hits",
+  "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+  "All the speed goes into the rack",
+  "Down from the jump, onto the ball",
+  "The curve ends on the ball",
+  "The kiss that sends it in",
+  "A thin cut that still sends it in",
+  "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Freeze the big hits",
+   "text": "Congelar los grandes golpes"
+  },
+  {
+   "culture": "es",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "En un golpe poco común, el tiempo se detiene un instante y la cámara gira alrededor de las dos bolas para mostrar el empuje entre ellas."
+  },
+  {
+   "culture": "es",
+   "key": "All the speed goes into the rack",
+   "text": "Toda la velocidad entra en el triángulo"
+  },
+  {
+   "culture": "es",
+   "key": "Down from the jump, onto the ball",
+   "text": "Del salto, directa a la bola"
+  },
+  {
+   "culture": "es",
+   "key": "The curve ends on the ball",
+   "text": "La curva termina en la bola"
+  },
+  {
+   "culture": "es",
+   "key": "The kiss that sends it in",
+   "text": "El toque que la mete"
+  },
+  {
+   "culture": "es",
+   "key": "A thin cut that still sends it in",
+   "text": "Un corte fino que aun así la mete"
+  },
+  {
+   "culture": "es",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. El tiempo se detiene en el golpe. La línea discontinua es el empuje entre los centros, la línea más fina es la tangente y las flechas reparten la velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "Freeze the big hits",
+   "text": "Figer les grands coups"
+  },
+  {
+   "culture": "fr",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "Sur un coup rare, le temps s'arrête un instant et la caméra tourne autour des deux billes pour montrer la poussée entre elles."
+  },
+  {
+   "culture": "fr",
+   "key": "All the speed goes into the rack",
+   "text": "Toute la vitesse part dans le triangle"
+  },
+  {
+   "culture": "fr",
+   "key": "Down from the jump, onto the ball",
+   "text": "Retombée du saut, droit sur la bille"
+  },
+  {
+   "culture": "fr",
+   "key": "The curve ends on the ball",
+   "text": "La courbe finit sur la bille"
+  },
+  {
+   "culture": "fr",
+   "key": "The kiss that sends it in",
+   "text": "Le contact qui l'envoie dans la poche"
+  },
+  {
+   "culture": "fr",
+   "key": "A thin cut that still sends it in",
+   "text": "Une coupe fine qui rentre quand même"
+  },
+  {
+   "culture": "fr",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. Le temps s'arrête au contact. La ligne en tirets est la poussée entre les centres, la ligne plus fine est la tangente, et les flèches répartissent la vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "Freeze the big hits",
+   "text": "Große Treffer einfrieren"
+  },
+  {
+   "culture": "de",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "Bei einem seltenen Treffer bleibt die Zeit kurz stehen, und die Kamera schwenkt um die beiden Kugeln, um den Stoß zwischen ihnen zu zeigen."
+  },
+  {
+   "culture": "de",
+   "key": "All the speed goes into the rack",
+   "text": "Die ganze Wucht geht ins Dreieck"
+  },
+  {
+   "culture": "de",
+   "key": "Down from the jump, onto the ball",
+   "text": "Aus dem Sprung auf die Kugel"
+  },
+  {
+   "culture": "de",
+   "key": "The curve ends on the ball",
+   "text": "Die Kurve endet an der Kugel"
+  },
+  {
+   "culture": "de",
+   "key": "The kiss that sends it in",
+   "text": "Die Berührung, die sie versenkt"
+  },
+  {
+   "culture": "de",
+   "key": "A thin cut that still sends it in",
+   "text": "Ein feiner Schnitt, der trotzdem fällt"
+  },
+  {
+   "culture": "de",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. Beim Treffer bleibt die Zeit stehen. Die gestrichelte Linie ist der Stoß zwischen den Mittelpunkten, die feinere Linie ist die Tangente, und die Pfeile teilen die Geschwindigkeit auf."
+  },
+  {
+   "culture": "it",
+   "key": "Freeze the big hits",
+   "text": "Ferma i grandi colpi"
+  },
+  {
+   "culture": "it",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "In un colpo raro il tempo si ferma per un attimo e la telecamera gira intorno alle due bilie per mostrare la spinta tra di loro."
+  },
+  {
+   "culture": "it",
+   "key": "All the speed goes into the rack",
+   "text": "Tutta la velocità entra nel triangolo"
+  },
+  {
+   "culture": "it",
+   "key": "Down from the jump, onto the ball",
+   "text": "Giù dal salto, dritta sulla bilia"
+  },
+  {
+   "culture": "it",
+   "key": "The curve ends on the ball",
+   "text": "La curva finisce sulla bilia"
+  },
+  {
+   "culture": "it",
+   "key": "The kiss that sends it in",
+   "text": "Il tocco che la manda in buca"
+  },
+  {
+   "culture": "it",
+   "key": "A thin cut that still sends it in",
+   "text": "Un taglio sottile che va in buca lo stesso"
+  },
+  {
+   "culture": "it",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. Il tempo si ferma sul colpo. La linea tratteggiata è la spinta tra i centri, quella più sottile è la tangente e le frecce ripartiscono la velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "Freeze the big hits",
+   "text": "Congelar as grandes tacadas"
+  },
+  {
+   "culture": "pt",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "Numa tacada rara, o tempo para por um momento e a câmara roda à volta das duas bolas para mostrar o impulso entre elas."
+  },
+  {
+   "culture": "pt",
+   "key": "All the speed goes into the rack",
+   "text": "Toda a velocidade vai para o triângulo"
+  },
+  {
+   "culture": "pt",
+   "key": "Down from the jump, onto the ball",
+   "text": "Do salto, direta à bola"
+  },
+  {
+   "culture": "pt",
+   "key": "The curve ends on the ball",
+   "text": "A curva acaba na bola"
+  },
+  {
+   "culture": "pt",
+   "key": "The kiss that sends it in",
+   "text": "O toque que a faz entrar"
+  },
+  {
+   "culture": "pt",
+   "key": "A thin cut that still sends it in",
+   "text": "Um corte fino que ainda a faz entrar"
+  },
+  {
+   "culture": "pt",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. O tempo para no impacto. A linha tracejada é o impulso entre os centros, a linha mais fina é a tangente e as setas repartem a velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Freeze the big hits",
+   "text": "Congelar as grandes tacadas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "Numa tacada rara, o tempo para por um instante e a câmera gira ao redor das duas bolas para mostrar o empurrão entre elas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "All the speed goes into the rack",
+   "text": "Toda a velocidade vai para o triângulo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Down from the jump, onto the ball",
+   "text": "Do pulo, direto na bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The curve ends on the ball",
+   "text": "A curva termina na bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The kiss that sends it in",
+   "text": "O toque que a manda para a caçapa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A thin cut that still sends it in",
+   "text": "Um corte fino que ainda cai na caçapa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. O tempo para no impacto. A linha tracejada é o empurrão entre os centros, a linha mais fina é a tangente e as setas dividem a velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "Freeze the big hits",
+   "text": "大きな当たりで時間を止める"
+  },
+  {
+   "culture": "ja",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "まれな当たりのとき、時間が一瞬止まり、カメラが二つのボールの周りを回って、ボールどうしの押し合いを見せます。"
+  },
+  {
+   "culture": "ja",
+   "key": "All the speed goes into the rack",
+   "text": "すべての勢いがラックへ"
+  },
+  {
+   "culture": "ja",
+   "key": "Down from the jump, onto the ball",
+   "text": "ジャンプから的球へ"
+  },
+  {
+   "culture": "ja",
+   "key": "The curve ends on the ball",
+   "text": "カーブの先で球に当たる"
+  },
+  {
+   "culture": "ja",
+   "key": "The kiss that sends it in",
+   "text": "ボールを沈めたキス"
+  },
+  {
+   "culture": "ja",
+   "key": "A thin cut that still sends it in",
+   "text": "薄いカットでも沈む"
+  },
+  {
+   "culture": "ja",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@。当たりの瞬間で時間が止まります。破線は中心どうしを結ぶ押しの向き、細い線は接線、矢印は速さの分かれ方を示します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Freeze the big hits",
+   "text": "큰 타격에서 시간 멈추기"
+  },
+  {
+   "culture": "ko",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "드문 타격이 나오면 시간이 잠시 멈추고, 카메라가 두 공 주위를 돌며 공 사이에서 미는 힘을 보여 줍니다."
+  },
+  {
+   "culture": "ko",
+   "key": "All the speed goes into the rack",
+   "text": "모든 속도가 랙으로"
+  },
+  {
+   "culture": "ko",
+   "key": "Down from the jump, onto the ball",
+   "text": "점프 후 곧장 공으로"
+  },
+  {
+   "culture": "ko",
+   "key": "The curve ends on the ball",
+   "text": "커브 끝에 공을 맞힘"
+  },
+  {
+   "culture": "ko",
+   "key": "The kiss that sends it in",
+   "text": "공을 넣는 키스"
+  },
+  {
+   "culture": "ko",
+   "key": "A thin cut that still sends it in",
+   "text": "얇게 쳐도 들어가는 컷"
+  },
+  {
+   "culture": "ko",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. 타격 순간에 시간이 멈춥니다. 점선은 두 중심 사이에서 미는 방향, 더 가는 선은 접선이며, 화살표는 속도가 어떻게 나뉘는지 보여 줍니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Freeze the big hits",
+   "text": "定格精彩击球"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "遇到少见的击球时，时间会停顿片刻，镜头绕着两颗球旋转，展示它们之间的推力。"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "All the speed goes into the rack",
+   "text": "全部速度冲进球堆"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Down from the jump, onto the ball",
+   "text": "跳起落下，正中目标球"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The curve ends on the ball",
+   "text": "弧线的终点击中目标球"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The kiss that sends it in",
+   "text": "这一碰把球送进袋"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A thin cut that still sends it in",
+   "text": "薄切也能进袋"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@。时间停在击球的瞬间。虚线是两个球心之间的推力方向，较细的线是切线，箭头表示速度如何分配。"
+  },
+  {
+   "culture": "ru",
+   "key": "Freeze the big hits",
+   "text": "Стоп-кадр на ярких ударах"
+  },
+  {
+   "culture": "ru",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "При редком ударе время на миг останавливается, и камера облетает два шара, показывая толчок между ними."
+  },
+  {
+   "culture": "ru",
+   "key": "All the speed goes into the rack",
+   "text": "Вся скорость уходит в пирамиду"
+  },
+  {
+   "culture": "ru",
+   "key": "Down from the jump, onto the ball",
+   "text": "Из прыжка прямо в шар"
+  },
+  {
+   "culture": "ru",
+   "key": "The curve ends on the ball",
+   "text": "Дуга заканчивается на шаре"
+  },
+  {
+   "culture": "ru",
+   "key": "The kiss that sends it in",
+   "text": "Касание, которое загоняет шар"
+  },
+  {
+   "culture": "ru",
+   "key": "A thin cut that still sends it in",
+   "text": "Тонкая резка — и всё же в лузу"
+  },
+  {
+   "culture": "ru",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. Время останавливается в момент удара. Пунктир — толчок по линии центров, тонкая линия — касательная, а стрелки показывают, как делится скорость."
+  },
+  {
+   "culture": "ar",
+   "key": "Freeze the big hits",
+   "text": "تجميد الضربات الكبيرة"
+  },
+  {
+   "culture": "ar",
+   "key": "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.",
+   "text": "في ضربة نادرة، يتوقف الوقت لحظة وتدور الكاميرا حول الكرتين لتُظهر الدفع بينهما."
+  },
+  {
+   "culture": "ar",
+   "key": "All the speed goes into the rack",
+   "text": "كل السرعة تذهب إلى المثلث"
+  },
+  {
+   "culture": "ar",
+   "key": "Down from the jump, onto the ball",
+   "text": "من القفزة إلى الكرة مباشرة"
+  },
+  {
+   "culture": "ar",
+   "key": "The curve ends on the ball",
+   "text": "ينتهي المنحنى عند الكرة"
+  },
+  {
+   "culture": "ar",
+   "key": "The kiss that sends it in",
+   "text": "اللمسة التي تُدخلها الجيب"
+  },
+  {
+   "culture": "ar",
+   "key": "A thin cut that still sends it in",
+   "text": "قطع رفيع ومع ذلك تدخل"
+  },
+  {
+   "culture": "ar",
+   "key": "%@. Time stops at the hit. The dashed line is the push between the centres, the finer line is the tangent, and the arrows share out the speed.",
+   "text": "%@. يتوقف الوقت عند الضربة. الخط المتقطع هو الدفع بين المركزين، والخط الأرفع هو المماس، والأسهم توزّع السرعة."
+  }
+ ]
+}

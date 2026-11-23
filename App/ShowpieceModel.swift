@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: owns
+//          bulletTime; finishStrike arms it last, advance steps it every frame before the stage switch and lets it hold
+//          and ease the plain explore step, step caps the clock at its contact, scrub cancels it, and a fresh rack
+//          tells it.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: a ride is
 //          a scene in acts (RideAct, see RideStage.swift), run inside the ordinary table stage: the mount holds the
 //          clock at the strike while the camera comes down to the ball, the roll plays the shot, the ride holds two
@@ -421,6 +425,11 @@ final class ShowpieceModel {
     private var rideTipThisRide = false
     /// The ride's two beats for the recording on screen, worked out once per recording (rideBeats).
     @ObservationIgnored private var rideBeatsMemo: (version: Int, beats: [RideBeat]) = (-1, [])
+
+    // 0.7.7 bullet-time: the freeze on a rare hit (BulletTime.swift; plans/23-Nov-2026-bullet-time-plan.md).
+    /// Bullet time's run: armed at the strike, stepped every frame, read by the scene and the status slots. A let of an
+    /// observable class, so views reading bulletTime.statusWords are tracked through it.
+    let bulletTime = BulletTime()
 
     // Guided pacing (see PacePlan). Only which beat is being held, and for how long, is stored; the next beat is always
     // found from the clock itself, so the many places that set `time` directly never leave a stale "next beat" behind.
@@ -1065,6 +1074,21 @@ final class ShowpieceModel {
         // 0.7.4: last, so everything above is exactly as before. Judged only once the opening is over, outside the
         // authored modes and the drill (judgeHighlight's own guard); the first break of a first launch never is.
         judgeHighlight(tl, isBreak: s.isBreak)
+        // 0.7.7 bullet-time: after the judge (so freePlayBreaksStruck already counts this break). The turn is still the
+        // shooter's here; load() has just built this shot's ridePlan, so rideActive is this shot's. Ride, the Lens
+        // and the rest are checked here so a freeze that could never play does not use up the ration; frame() in
+        // advance repeats them for anything that changes after the strike. freePlay is judgeHighlight's own test.
+        // (Split into small terms so each line reads, and the type checker never has a long chain to solve.)
+        let noMode: Bool = lessonModeStorage?.isActive != true && strokeDrillStorage?.isActive != true
+        // Bar billiards' clock would pay for the slow-down. Written with map so the one optional level is plain.
+        let noClock: Bool = match.map { $0.state.clockRemaining == nil } ?? true
+        let noLensOrRide: Bool = !rideActive && melt < 0.02 && meltTarget == nil
+        let bulletOpen: Bool = openingStage == .none && noMode && noClock && whatIfStorage?.isOpen != true && noLensOrRide
+        let computerShot: Bool = match.map { $0.isComputer($0.state.turn) } ?? false
+        let bulletFreePlay: Bool = match == nil && !authoredModeUp && strokeDrillStorage?.isActive != true
+        bulletTime.arm(timeline: tl, facts: shotFacts, captions: captions, isBreak: s.isBreak, version: timelineVersion,
+                       gate: BulletGate(open: bulletOpen, computerShot: computerShot, freePlay: bulletFreePlay,
+                                        freePlayBreaks: freePlayBreaksStruck))
     }
 
     /// The undo step for a free-play stroke about to be struck (nil outside free play).
@@ -2789,6 +2813,9 @@ final class ShowpieceModel {
     // MARK: Player controls
 
     func scrub(to t: Double) {
+        // 0.7.7 bullet-time: a scrub of any size ends a freeze for this recording (a slow drag can move the clock by
+        // less than the playback allowance, which frame() alone would not notice).
+        bulletTime.cancel()
         finishColdOpen()
         playing = false
         time = min(max(0, t), duration)
@@ -2884,6 +2911,15 @@ final class ShowpieceModel {
         defer {
             if let hold = Self.pauseAt, stage == .explore, playing, time >= hold { scrub(to: hold) }
         }
+        // 0.7.7 bullet-time: every frame the table runs, whatever the stage, so a freeze is ended by the next frame
+        // when anything overtakes it (the Lens asked for, Ride, a guided replay, the what-if, the option, leaving the
+        // table for the intro). Keep it unconditional and outside the switch. meltTarget is set the moment the Lens is
+        // asked for, so the freeze ends on the tap; a meltTarget of 0 (the Lens leaving, a plain Replay) does not
+        // count as the Lens coming. Behind the menu advance returned above, so the freeze simply pauses there.
+        let bulletTable: Bool = stage == .explore && GameSettings.bulletTimeOn && whatIfStorage?.isOpen != true
+        let bulletQuiet: Bool = !guided && !rideActive && rideAct == .none && melt < 0.02 && (meltTarget ?? 0) < 0.5
+        let bulletHolds = bulletTime.frame(dt, clock: time, playing: playing, rate: chosenRate ?? 1,
+                                           version: timelineVersion, allowed: bulletTable && bulletQuiet)
         switch stage {
         case .lead:
             stageTime += dt
@@ -2933,8 +2969,14 @@ final class ShowpieceModel {
                     // With Ride on, playback eases into slow motion around the first contact and back out; the curve
                     // is a function of the clock, so it plays the same however the clock got there. Any speed the
                     // player picked still applies: the curve multiplies it.
-                    displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
-                    if playing { step(dt) }
+                    // 0.7.7 bullet-time: a freeze holds the clock; around it, its own ease down and back up multiplies in.
+                    if bulletHolds {
+                        displayRate = 0
+                    } else {
+                        displayRate = (chosenRate ?? 1) * (rideActive ? ridePlan.rateFactor(at: time) : 1)
+                            * bulletTime.rateFactor(at: time)
+                        if playing { step(dt) }
+                    }
                 }
             }
             if let target = meltTarget {
@@ -2972,7 +3014,9 @@ final class ShowpieceModel {
 
     private func step(_ dt: Double) {
         let old = time
-        time = min(duration, time + dt * displayRate)
+        // 0.7.7 bullet-time: capped at an armed freeze's contact, so the frame that reaches it lands on it and
+        // fireSounds crosses the contact exactly once.
+        time = min(duration, time + dt * displayRate, bulletTime.cap(clock: old, version: timelineVersion))
         if time >= duration, stage == .explore { playing = false }
         fireSounds(from: old, to: time)
     }
@@ -3717,6 +3761,8 @@ final class ShowpieceModel {
     /// rack, the rack's best shot, the cleared chime).
     private func startHighlightRack() {
         highlightOffer.startRack()
+        // 0.7.7 bullet-time: the rack's big cut is available again.
+        bulletTime.startRack()
         bestShot = nil
         clearedChimePlayed = false
     }

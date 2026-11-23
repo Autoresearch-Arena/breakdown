@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: freeze,
+//          the buzz as the clock stops on a hit, a firm tap and a short low hum; outside the feel-cue list.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (honours the Vibration option).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (sound plan package 4: one shared engine (Haptics.shared), so a match
 //          moment played through SoundBoard.play(_:) is felt too; a pattern for every new feel cue (pin, post, jump
@@ -78,6 +80,21 @@ final class Haptics {
     /// The tip meeting the ball when a pushed stroke plays the shot: one firm, crisp click.
     func strokeContact() {
         playEvents([Self.tap(0.85, 0.8, at: 0)])
+    }
+
+    // 0.7.7 bullet-time: the freeze's own buzz, an entry point beside the stroke's (not a new feel cue, which would
+    // open the exhaustive switches here and in SoundBoard for a moment that has no sound of its own).
+    /// The clock stopping on a hit (BulletTime): a firm tap, harder for a faster hit (`strength` 0 to 1), then a short
+    /// low hum under the held moment.
+    func freeze(strength: Double) {
+        let s = min(1, max(0, strength))
+        playEvents([
+            Self.tap(0.7 + 0.3 * s, 0.6, at: 0),
+            CHHapticEvent(eventType: .hapticContinuous, parameters: [
+                CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.3),
+                CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.1),
+            ], relativeTime: 0.02, duration: 0.3),
+        ])
     }
 
     /// Play prepared events, honouring the Vibration option as every cue does. Cheap no-op without an engine.

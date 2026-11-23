@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the
+//          contact drawing gets a second owner, bullet time's frozen hit (bulletEvent), and moves under its own parent
+//          (heldRoot) outside root so it can show with the Lens off; see CONTACT GEOMETRY. The Lens's own picture is
+//          unchanged.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream drawings, plans/22-Nov-2026-v076-phone-plan.md and bug
 //          list #15, #16, #17, #65: the Lens marks at a readable size. The layer keeps a weak link to the table camera
 //          (`camera`, set once by TableScene) and asks it, at each mark's place, how many screen points a metre covers;
@@ -89,6 +93,10 @@
 //          0.35 m), so it still closes; arrows clamped one by one would not. When the struck ball was already moving
 //          only the two lines are drawn, and when the throw lines already show this hit's line of centres (throwFacts)
 //          the contact's own line of centres is left out, so it is never drawn twice.
+//          Since 0.7.7 the drawing has two owners and its own parent, heldRoot, outside root: the guided hold
+//          (heldEvent, Lens in, multiplied by the melt by hand as root's opacity used to) and bullet time (bulletEvent,
+//          any melt, lifted to the balls' centres so it hangs between them, the line of centres always drawn since there
+//          are no throw lines with the Lens off). heldRoot carries its own bloom; fingerprint() is unchanged.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the Lens grid is built by buildGrid, which TableScene calls again
 //          when the table changes; it also marks the holes in another table's bed).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (accessibility plan, package 4: with Differentiate Without Colour on,
@@ -154,6 +162,15 @@ final class LensLayer {
     /// The timeline event of the guided beat being held, set by TableScene each frame; nil when nothing is held;
     /// LensScrubCheck leaves it nil, so the scrub check stays a pure function of the clock (0.7.4 foundation).
     var heldEvent: Int?
+    // 0.7.7 bullet-time: the contact drawing's second owner.
+    /// The ball-to-ball event bullet time is frozen on (0.7.7), set by TableScene each frame while the freeze's drawing
+    /// shows; nil otherwise. Drawn with any melt (the Lens is off during a freeze), lifted to the balls' centres.
+    var bulletEvent: Int?
+    /// The height the bullet drawing is lifted to, metres above the cloth: the balls' centres (TableScene sets it).
+    var bulletLift: Float = 0
+    /// True while the contact drawing on screen was posed for bulletEvent (set every frame its owner branch runs, kept
+    /// through its fade-out, cleared by cutContact), so it is lifted and not multiplied by the melt.
+    private var contactIsBullet = false
     /// The table camera (0.7.6 stream drawings), handed over once by TableScene, read every frame for how many screen
     /// points a metre covers at a mark (see LensMarkFloor). Weak: TableScene owns it. Nil for a layer made on its own
     /// (unit tests), where every mark keeps its table size; the in-app scrub self-test (-lensSelfTest) runs inside one
@@ -309,6 +326,11 @@ final class LensLayer {
 
     /// Parent of every Lens entity; fades as a whole with the melt value.
     let root = Entity()
+    // 0.7.7 bullet-time: the contact drawing moved out from under root.
+    /// The contact drawing's parent (0.7.7), outside root so the drawing can show with the Lens off (bullet time);
+    /// TableScene adds it to the scene beside root. With the Lens it is multiplied by the melt by hand
+    /// (setContactOpacity), exactly as root's opacity multiplied it before. It carries its own bloom.
+    let heldRoot = Entity()
     private let trailRoot = Entity()
     private let ringRoot = Entity()
     private let arrowRoot = Entity()
@@ -428,6 +450,8 @@ final class LensLayer {
 
     init() {
         bloomActive = Self.enableBloom(on: root)
+        // 0.7.7 bullet-time: the bloom is hierarchical, so the moved contact drawing needs its own to keep its glow.
+        _ = Self.enableBloom(on: heldRoot)
         // With a real bloom pass the halo in the pictures is dialled back; without one it carries the whole glow.
         let haloGain = bloomActive ? 0.55 : 1.0
 
@@ -483,7 +507,8 @@ final class LensLayer {
         root.addChild(trailRoot)
         root.addChild(ringRoot)
         root.addChild(spinRoot)
-        root.addChild(contactRoot)
+        // 0.7.7 bullet-time: under heldRoot, not root, so a frozen hit can show it with the Lens off.
+        heldRoot.addChild(contactRoot)
         root.addChild(arrowRoot)
         root.addChild(aimLine)
         buildContact()
@@ -1304,9 +1329,13 @@ final class LensLayer {
     /// Real time, not the clock, throughout: the clock stands still while a beat is held. None of this is in
     /// fingerprint(), which covers only what the clock decides.
     private func applyContact(melt m: Float, timeline: Timeline, frame: TableFrame) {
-        guard m > 0.02 else { cutContact(); return }
+        // 0.7.7 bullet-time: a frozen hit (or its fade-out) shows with any melt; the Lens's own drawing still needs it.
+        guard m > 0.02 || bulletEvent != nil || contactIsBullet else { cutContact(); return }
         let now = ProcessInfo.processInfo.systemUptime
-        if let i = heldEvent, timeline.events.indices.contains(i), let g = ContactGeometry.at(timeline.events[i]) {
+        // 0.7.7 bullet-time: the guided hold owns the drawing when it holds a hit, else a frozen hit does.
+        if let i = heldEvent ?? bulletEvent, timeline.events.indices.contains(i),
+           let g = ContactGeometry.at(timeline.events[i]) {
+            contactIsBullet = (heldEvent == nil)
             if contactShown?.event != i || contactFadingOut != nil {
                 if contactShown?.event != i { contactSource = (g, timeline.events[i]) }
                 // Back-date the fade-in's start so it carries on from the opacity on screen now: from zero that is
@@ -1315,12 +1344,13 @@ final class LensLayer {
                 contactFadingOut = nil
             }
             let since = contactShown?.since ?? now
-            setContactOpacity(Float(min(1, max(0, (now - since) / Self.contactFadeIn))))
+            setContactOpacity(Float(min(1, max(0, (now - since) / Self.contactFadeIn))), melt: m)
             if let source = contactSource { poseContact(source.geometry, event: source.event, frame: frame) }
             return
         }
         // Held on something that is not a hit, or nothing was showing: off at once.
-        guard heldEvent == nil, contactShown != nil, contactRoot.isEnabled else { cutContact(); return }
+        // 0.7.7 bullet-time: the fade-out keeps the owner it had (contactIsBullet is left alone here).
+        guard (heldEvent ?? bulletEvent) == nil, contactShown != nil, contactRoot.isEnabled else { cutContact(); return }
         // The hold ended with the drawing up: fade it out where it is.
         if contactFadingOut == nil { contactFadingOut = (from: contactOpacity, since: now) }
         let fading = contactFadingOut ?? (from: contactOpacity, since: now)
@@ -1328,15 +1358,18 @@ final class LensLayer {
         if left <= 0.001 {
             cutContact()
         } else {
-            setContactOpacity(left)
+            setContactOpacity(left, melt: m)
             if let source = contactSource { poseContact(source.geometry, event: source.event, frame: frame) }
         }
     }
 
     /// Shows the contact drawing at `opacity` and remembers it, so a fade that starts next can carry on from it.
-    private func setContactOpacity(_ opacity: Float) {
+    /// 0.7.7 bullet-time: the drawing no longer sits under root, so the Lens's own drawing is multiplied by the melt
+    /// here, as root's opacity multiplied it before; a frozen hit's is not (the Lens is off). contactOpacity keeps the
+    /// bare fade, so the fade arithmetic is unchanged.
+    private func setContactOpacity(_ opacity: Float, melt m: Float) {
         contactRoot.isEnabled = true
-        contactRoot.components.set(OpacityComponent(opacity: opacity))
+        contactRoot.components.set(OpacityComponent(opacity: opacity * (contactIsBullet ? 1 : m)))
         contactOpacity = opacity
     }
 
@@ -1348,13 +1381,18 @@ final class LensLayer {
         contactSource = nil
         contactFadingOut = nil
         contactOpacity = 0
+        // 0.7.7 bullet-time: the next drawing's owner is set afresh.
+        contactIsBullet = false
     }
 
     /// Lays the contact drawing out for one hit (see CONTACT GEOMETRY in the header for what shows when).
     private func poseContact(_ g: ContactGeometry, event e: LensEvent, frame: TableFrame) {
         // Screen floors (0.7.6, #15), read once at the contact: the whole drawing is small next to a phone's view of
         // the table, so one figure serves every part.
-        let ppm = pointsPerMetre(at: frame.world(g.point, height: 0.01))
+        // 0.7.7 bullet-time: a frozen hit's drawing hangs at the balls' centres instead of a centimetre above the cloth;
+        // every height below is lifted by this (the screen floors are then measured where the drawing is).
+        let contactLift: Float = contactIsBullet ? bulletLift - 0.01 : 0
+        let ppm = pointsPerMetre(at: frame.world(g.point, height: 0.01 + contactLift))
         // The two lines grow together, longer and wider by one factor, so the tangent's dashes and dots keep their
         // shapes (a dot stretched only across would read as a dash): enough for the thinnest line (the tangent's
         // dashes) to be 2 points wide and for each line to reach 40 points either side of the contact, clear of the
@@ -1376,10 +1414,11 @@ final class LensLayer {
             entity.scale = SIMD3<Float>(2 * reach, 1, lineScale)
         }
         // The throw lines already draw this hit's line of centres (from the struck ball); never a second one.
-        centresLine.isEnabled = CaptionEngine.throwFacts(e) == nil
-        if centresLine.isEnabled { through(centresLine, along: g.normal, height: 0.0095) }
-        through(tangentDashed, along: g.tangent, height: 0.0094)
-        through(tangentDotted, along: g.tangent, height: 0.0094)
+        // 0.7.7 bullet-time: with the Lens off there are no throw lines, so a frozen hit always draws its own.
+        centresLine.isEnabled = contactIsBullet || CaptionEngine.throwFacts(e) == nil
+        if centresLine.isEnabled { through(centresLine, along: g.normal, height: 0.0095 + contactLift) }
+        through(tangentDashed, along: g.tangent, height: 0.0094 + contactLift)
+        through(tangentDotted, along: g.tangent, height: 0.0094 + contactLift)
         tangentDashed.isEnabled = true
         pickTangent()
 
@@ -1401,7 +1440,7 @@ final class LensLayer {
             // An arrow a few millimetres long (a ball left almost still) would be only a head: leave it out.
             guard triangle, length > 0.004 else { arrow.root.isEnabled = false; continue }
             arrow.root.isEnabled = true
-            arrow.root.position = frame.world(leg.from, height: 0.011)
+            arrow.root.position = frame.world(leg.from, height: 0.011 + contactLift)
             arrow.root.orientation = yaw(leg.vector)
             // The head takes at most a little under half of a short arrow, shrinking with it; the screen floor may
             // take more, up to the whole arrow (its tip always stays at the arrow's true end, so the triangle closes).
@@ -1425,7 +1464,7 @@ final class LensLayer {
             let natural = Self.contactMarkSize * frame.ballRadius
             let size = natural * LensMarkFloor.scale(natural: 2 * Self.contactMarkHalf * natural, points: LensMarkFloor.line,
                                                      pointsPerMetre: ppm)
-            squareMark.position = frame.world(g.point, height: 0.0105)
+            squareMark.position = frame.world(g.point, height: 0.0105 + contactLift)
             squareMark.orientation = q
             squareMark.scale = SIMD3<Float>(size, 1, size * side)
         }

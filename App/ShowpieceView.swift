@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the
+//          header's glass status label names a frozen hit, on one line, off the upright phone.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md, foundation:
 //          a phone held upright (not split, no notebook or hinge, not the big-window table-only layout) gets the new
 //          phone layout in place of ScreenHeader and the bottom stack: content gradients behind the title row and the
@@ -893,6 +895,20 @@ private struct ScreenHeader: View {
                     .transition(.opacity)
                     .accessibilityLabel("Status: \(model.stageTitle)")
             }
+            // 0.7.7 bullet-time: a frozen hit names its moment in the same glass label, kept to one line so the
+            // header's height (and with it the free space the camera frames into) never changes mid-freeze.
+            if let words = model.bulletTime.statusWords {
+                Text(words)
+                    .font(Theme.label)
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
+                    .transition(.opacity)
+                    .accessibilityLabel("Status: \(words)")
+            }
         }
         .opacity(model.menuOpen ? 0 : 1)
         // Disabled behind the menu, so the hidden back button's Escape and the skip button do nothing there (0.7.5).
@@ -902,6 +918,8 @@ private struct ScreenHeader: View {
         .animation(.easeOut(duration: 0.25), value: model.lensOn)
         .animation(.easeOut(duration: 0.25), value: model.openingStage)
         .animation(.easeOut(duration: 0.25), value: model.rideAct)
+        // 0.7.7 bullet-time
+        .animation(.easeOut(duration: 0.25), value: model.bulletTime.statusWords)
     }
 }
 
