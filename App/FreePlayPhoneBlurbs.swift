@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md F2:
+//          HighlightPhoneBlurb's small buttons start with Make it again / Play it now when the shot can be saved.)
 // PURPOSE: Free play and matches on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "Every phone state"
 //          and Part 4 step 5): everything PlayCards (FreePlayViews.swift) shows on the other layouts, as small docked
 //          blurbs instead of full-width glass cards, hosted together as PlayPhoneBlurbs in ShowpieceView's dock:
@@ -167,6 +169,9 @@ struct HighlightPhoneBlurb: View {
     /// Try the trick shot when it is allowed, and Close. "Watch it in the Lens" is the strip's primary action.
     private func buttons(_ offer: ShowpieceModel.HighlightCardOffer) -> [BlurbButton] {
         var out: [BlurbButton] = []
+        // 0.7.7 make-it-again: Make it again (or Play it now) first when the shot can be saved; the blurb draws the
+        // first two, so with Try the trick shot as well, Close is not drawn (the blurb still goes at the first touch).
+        if let save = MakeItAgainButton.blurbButton(model) { out.append(save) }
         if offer.canTryTrick {
             out.append(BlurbButton(String(localized: "Try the trick shot")) { model.tryHighlightTrick() })
         }

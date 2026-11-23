@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md C1:
+//          Playback gains Make It Again (Shift-Command-S) after Watch It in the Lens (MakeItAgainCommand).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: a new match from the menu bar asks only when
 //          that game has a save).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 3 and half of L-A,
@@ -53,7 +55,8 @@
 //              a safety) when the game asks for a call. View: Physics Lens (Command-L), Ride Camera (Command-E), Show
 //              Notebook (Option-Command-I), Zoom In, Zoom Out, Actual Size (Command-plus, -minus, -0). Playback: Play or
 //              Pause (space while the table has focus), Replay with Lens (Command-R), Watch It in the Lens
-//              (Shift-Command-R, while a remarkable shot is on offer), the four
+//              (Shift-Command-R, while a remarkable shot is on offer), Make It Again (Shift-Command-S, while the
+//              shot on screen can be saved as the player's own challenge; Play It Now once saved), the four
 //              speeds (Command-1 to 4) and Auto, Next and Previous Explained Moment (Command-] and Command-[), Try
 //              Again (Command-T), What If... (Shift-Command-T). Help: How to Play (Command-?).
 //            - behind the main menu the Shot and Playback menus and the toolbar's playback controls are disabled, so
@@ -415,6 +418,9 @@ struct PlaybackCommands: Commands {
         Button("Watch It in the Lens") { model?.watchHighlight() }
             .keyboardShortcut("r", modifiers: [.command, .shift])
             .disabled(model?.highlightOnOffer == nil)
+        // 0.7.7 make-it-again: Make It Again (Shift-Command-S) saves the shot on screen as the player's own challenge;
+        // once saved it reads Play It Now. Enabled exactly when the card's button would act (OwnShotShelf).
+        MakeItAgainCommand(model: model)
         Menu("Speed") {
             // Auto: back to the paced replay that slows for each explained moment (0.7.5). No key: Command-0 is
             // the View menu's Actual Size.

@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md S1:
+//          Shot options offers Make it again / Play it now after Undo last shot (MakeItAgainMenuItem).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: Try again falls back to its arrow alone when the
 //          row has no room, instead of being cut short).
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
@@ -443,6 +445,8 @@ struct ShotOptionsItems: View {
             }
             .disabled(!model.canUndo)
             .keyboardShortcut("z", modifiers: .command)
+            // 0.7.7 make-it-again: Make it again / Play it now for any saveable shot, remarkable or not.
+            MakeItAgainMenuItem(model: model)
             Picker(selection: Binding(get: { model.freePlayRack }, set: { model.setFreePlayRack($0) })) {
                 ForEach(FreePlayRack.allCases, id: \.self) { rack in Text(ShotPanel.rackName(rack)).tag(rack) }
             } label: {

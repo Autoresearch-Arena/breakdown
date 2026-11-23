@@ -1,4 +1,7 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md T2 to
+//          T4: Watch it strikes a saved shot's kept stroke exactly (OwnShotProof.arm); Next shot after a saved shot
+//          walks the shelf; a saved shot's make is kept on the shelf, never in doneIDs.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: Watch it
 //          still strikes at once with Ride on, and the model now holds the clock at the strike for the mount; when the
 //          answer has played, the slow Lens replay is announced and rewound (model.replayInLensAfterRide) instead of
@@ -190,7 +193,9 @@ final class TrickShotMode {
         requestAiming(false)
         phase = .watching
         ride(true)
-        if shot.isBreak { model.breakNow() } else { model.shootNow() }
+        // 0.7.7 make-it-again: a saved shot of the player's own strikes its kept stroke exactly (OwnShotProof.arm arms
+        // the model's kept strike after loadStart, so the controls match); an authored shot is unchanged.
+        if shot.isBreak { model.breakNow() } else { OwnShotProof.arm(shot, model: model); model.shootNow() }
         solutionVersion = model.timelineVersion
     }
 
@@ -231,6 +236,11 @@ final class TrickShotMode {
     /// The next shot in the list that is ready to play, or the list itself after the last one.
     func next() {
         guard let shot = current else { listOpen = true; return }
+        // 0.7.7 make-it-again: a saved shot of the player's own walks the shelf (newest first), not the authored list.
+        if OwnShot.isOwnID(shot.id) {
+            if let n = OwnShotShelf.shared.next(after: shot.id) { OwnShotShelf.shared.play(n, model: model) } else { listOpen = true }
+            return
+        }
         let playable = TrickShots.all.filter { !$0.pending }
         if let i = playable.firstIndex(where: { $0.id == shot.id }), i + 1 < playable.count {
             begin(playable[i + 1])
@@ -369,6 +379,8 @@ final class TrickShotMode {
     }
 
     private func markDone(_ shot: TrickShot) {
+        // 0.7.7 make-it-again: a saved shot's make is kept on the shelf, never in doneIDs (the authored progress).
+        if OwnShot.isOwnID(shot.id) { celebrations += 1; OwnShotShelf.shared.noteMade(id: shot.id); return }
         celebrations += 1
         guard !doneIDs.contains(shot.id) else { return }
         doneIDs.insert(shot.id)

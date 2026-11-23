@@ -1,0 +1,1966 @@
+{
+ "keys": [
+  "Make it again",
+  "Play it now",
+  "Make It Again",
+  "Play It Now",
+  "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+  "Sets up your saved shot so you can make it again.",
+  "Your shots is full. Delete one in Trick shots to save another.",
+  "Saved to Your shots, in Trick shots.",
+  "Your shots",
+  "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+  "The game kept your stroke, so Watch it plays the way it went.",
+  "Made again",
+  "Not made again yet",
+  "Checking the saved stroke…",
+  "The saved stroke no longer makes it in this version. The shot may still be possible.",
+  "This version cannot set up this shot.",
+  "Rename",
+  "Delete",
+  "Name",
+  "Save",
+  "Delete this shot?",
+  "It is removed from Your shots for good.",
+  "Options for %@",
+  "Made it again: the same balls in the same pockets.",
+  "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+  "Your own shot, saved from free play.",
+  "Saved shot %lld",
+  "%@ into %@",
+  "Pot %@.",
+  "Touch %@ first.",
+  "%@ must come off a cushion on the way.",
+  "Surface: %@",
+  "Table: %@",
+  "Left stick click",
+  "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Make it again",
+   "text": "Hazlo otra vez"
+  },
+  {
+   "culture": "fr",
+   "key": "Make it again",
+   "text": "Le refaire"
+  },
+  {
+   "culture": "de",
+   "key": "Make it again",
+   "text": "Nochmal machen"
+  },
+  {
+   "culture": "it",
+   "key": "Make it again",
+   "text": "Rifallo"
+  },
+  {
+   "culture": "pt",
+   "key": "Make it again",
+   "text": "Fazer de novo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make it again",
+   "text": "Fazer de novo"
+  },
+  {
+   "culture": "ja",
+   "key": "Make it again",
+   "text": "もう一度決める"
+  },
+  {
+   "culture": "ko",
+   "key": "Make it again",
+   "text": "다시 도전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make it again",
+   "text": "再打一次"
+  },
+  {
+   "culture": "ru",
+   "key": "Make it again",
+   "text": "Повторить удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Make it again",
+   "text": "اصنعها مجددًا"
+  },
+  {
+   "culture": "es",
+   "key": "Play it now",
+   "text": "Jugarlo ahora"
+  },
+  {
+   "culture": "fr",
+   "key": "Play it now",
+   "text": "Le jouer maintenant"
+  },
+  {
+   "culture": "de",
+   "key": "Play it now",
+   "text": "Jetzt spielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play it now",
+   "text": "Giocalo ora"
+  },
+  {
+   "culture": "pt",
+   "key": "Play it now",
+   "text": "Jogar agora"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play it now",
+   "text": "Jogar agora"
+  },
+  {
+   "culture": "ja",
+   "key": "Play it now",
+   "text": "今すぐプレイ"
+  },
+  {
+   "culture": "ko",
+   "key": "Play it now",
+   "text": "지금 플레이"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play it now",
+   "text": "现在就打"
+  },
+  {
+   "culture": "ru",
+   "key": "Play it now",
+   "text": "Сыграть сейчас"
+  },
+  {
+   "culture": "ar",
+   "key": "Play it now",
+   "text": "العبها الآن"
+  },
+  {
+   "culture": "es",
+   "key": "Make It Again",
+   "text": "Hazlo otra vez"
+  },
+  {
+   "culture": "fr",
+   "key": "Make It Again",
+   "text": "Le refaire"
+  },
+  {
+   "culture": "de",
+   "key": "Make It Again",
+   "text": "Nochmal machen"
+  },
+  {
+   "culture": "it",
+   "key": "Make It Again",
+   "text": "Rifallo"
+  },
+  {
+   "culture": "pt",
+   "key": "Make It Again",
+   "text": "Fazer de novo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make It Again",
+   "text": "Fazer de novo"
+  },
+  {
+   "culture": "ja",
+   "key": "Make It Again",
+   "text": "もう一度決める"
+  },
+  {
+   "culture": "ko",
+   "key": "Make It Again",
+   "text": "다시 도전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make It Again",
+   "text": "再打一次"
+  },
+  {
+   "culture": "ru",
+   "key": "Make It Again",
+   "text": "Повторить удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Make It Again",
+   "text": "اصنعها مجددًا"
+  },
+  {
+   "culture": "es",
+   "key": "Play It Now",
+   "text": "Jugarlo ahora"
+  },
+  {
+   "culture": "fr",
+   "key": "Play It Now",
+   "text": "Le jouer maintenant"
+  },
+  {
+   "culture": "de",
+   "key": "Play It Now",
+   "text": "Jetzt spielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play It Now",
+   "text": "Giocalo ora"
+  },
+  {
+   "culture": "pt",
+   "key": "Play It Now",
+   "text": "Jogar agora"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play It Now",
+   "text": "Jogar agora"
+  },
+  {
+   "culture": "ja",
+   "key": "Play It Now",
+   "text": "今すぐプレイ"
+  },
+  {
+   "culture": "ko",
+   "key": "Play It Now",
+   "text": "지금 플레이"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play It Now",
+   "text": "现在就打"
+  },
+  {
+   "culture": "ru",
+   "key": "Play It Now",
+   "text": "Сыграть сейчас"
+  },
+  {
+   "culture": "ar",
+   "key": "Play It Now",
+   "text": "العبها الآن"
+  },
+  {
+   "culture": "es",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Guarda las bolas como estaban antes de este tiro como un reto propio, en Tiros de truco."
+  },
+  {
+   "culture": "fr",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Enregistre les billes telles qu'elles étaient avant ce coup comme ton propre défi, dans Coups d'artiste."
+  },
+  {
+   "culture": "de",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Speichert die Kugeln, wie sie vor diesem Stoß lagen, als deine eigene Aufgabe unter Trickstöße."
+  },
+  {
+   "culture": "it",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Salva le bilie come erano prima di questo colpo come una tua sfida, in Prova i colpi."
+  },
+  {
+   "culture": "pt",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Guarda as bolas como estavam antes desta tacada como um desafio teu, em Truques."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Salva as bolas como estavam antes desta tacada como um desafio seu, em Truques."
+  },
+  {
+   "culture": "ja",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "このショットの前の球の配置を、自分のチャレンジとしてトリック一覧に保存します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "이 샷 전의 공 배치를 내 도전으로 트릭 샷에 저장해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "把这一杆之前的球位保存为你自己的挑战，放在花式球里。"
+  },
+  {
+   "culture": "ru",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "Сохраняет расстановку шаров перед этим ударом как твою собственную задачу в разделе «Трюковые удары»."
+  },
+  {
+   "culture": "ar",
+   "key": "Saves the balls as they stood before this shot as a challenge of your own, in Trick shots.",
+   "text": "يحفظ الكرات كما كانت قبل هذه الضربة كتحدٍّ خاص بك، في ضربات الخدع."
+  },
+  {
+   "culture": "es",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Prepara tu tiro guardado para que lo vuelvas a hacer."
+  },
+  {
+   "culture": "fr",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Met en place ton coup enregistré pour que tu le refasses."
+  },
+  {
+   "culture": "de",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Baut deinen gespeicherten Stoß auf, damit du ihn noch einmal schaffst."
+  },
+  {
+   "culture": "it",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Prepara il tuo colpo salvato per rifarlo."
+  },
+  {
+   "culture": "pt",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Prepara a tua tacada guardada para a voltares a fazer."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Prepara sua tacada salva para você fazer de novo."
+  },
+  {
+   "culture": "ja",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "保存したショットを並べて、もう一度決められるようにします。"
+  },
+  {
+   "culture": "ko",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "저장한 샷을 배치해서 다시 성공할 수 있게 해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "摆好你保存的球，让你再打进一次。"
+  },
+  {
+   "culture": "ru",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "Расставляет твой сохранённый удар, чтобы ты повторил его."
+  },
+  {
+   "culture": "ar",
+   "key": "Sets up your saved shot so you can make it again.",
+   "text": "يجهّز ضربتك المحفوظة لتعيدها من جديد."
+  },
+  {
+   "culture": "es",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "Tus tiros está lleno. Borra uno en Tiros de truco para guardar otro."
+  },
+  {
+   "culture": "fr",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "Tes coups est plein. Supprimes-en un dans Coups d'artiste pour en enregistrer un autre."
+  },
+  {
+   "culture": "de",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "Deine Stöße ist voll. Lösche einen unter Trickstöße, um einen weiteren zu speichern."
+  },
+  {
+   "culture": "it",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "I tuoi colpi è pieno. Eliminane uno in Prova i colpi per salvarne un altro."
+  },
+  {
+   "culture": "pt",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "As tuas tacadas está cheio. Apaga uma em Truques para guardar outra."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "Suas tacadas está cheio. Apague uma em Truques para salvar outra."
+  },
+  {
+   "culture": "ja",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "自分のショットがいっぱいです。トリック一覧で1つ削除すると保存できます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "내 샷 모음이 가득 찼어요. 트릭 샷에서 하나를 지우면 저장할 수 있어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "“我的球”已满。在花式球里删掉一个才能再保存。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "В «Твоих ударах» нет места. Удали один в разделе «Трюковые удары», чтобы сохранить новый."
+  },
+  {
+   "culture": "ar",
+   "key": "Your shots is full. Delete one in Trick shots to save another.",
+   "text": "ضرباتك ممتلئة. احذف واحدة في ضربات الخدع لتحفظ أخرى."
+  },
+  {
+   "culture": "es",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Guardado en Tus tiros, dentro de Tiros de truco."
+  },
+  {
+   "culture": "fr",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Enregistré dans Tes coups, dans Coups d'artiste."
+  },
+  {
+   "culture": "de",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Unter Deine Stöße gespeichert, bei den Trickstößen."
+  },
+  {
+   "culture": "it",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Salvato in I tuoi colpi, dentro Prova i colpi."
+  },
+  {
+   "culture": "pt",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Guardada em As tuas tacadas, em Truques."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Salva em Suas tacadas, em Truques."
+  },
+  {
+   "culture": "ja",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "トリック一覧の「自分のショット」に保存しました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "트릭 샷의 내 샷 모음에 저장했어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "已保存到花式球里的“我的球”。"
+  },
+  {
+   "culture": "ru",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "Сохранено в «Твоих ударах», в разделе «Трюковые удары»."
+  },
+  {
+   "culture": "ar",
+   "key": "Saved to Your shots, in Trick shots.",
+   "text": "حُفظت في ضرباتك، ضمن ضربات الخدع."
+  },
+  {
+   "culture": "es",
+   "key": "Your shots",
+   "text": "Tus tiros"
+  },
+  {
+   "culture": "fr",
+   "key": "Your shots",
+   "text": "Tes coups"
+  },
+  {
+   "culture": "de",
+   "key": "Your shots",
+   "text": "Deine Stöße"
+  },
+  {
+   "culture": "it",
+   "key": "Your shots",
+   "text": "I tuoi colpi"
+  },
+  {
+   "culture": "pt",
+   "key": "Your shots",
+   "text": "As tuas tacadas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your shots",
+   "text": "Suas tacadas"
+  },
+  {
+   "culture": "ja",
+   "key": "Your shots",
+   "text": "自分のショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Your shots",
+   "text": "내 샷 모음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your shots",
+   "text": "我的球"
+  },
+  {
+   "culture": "ru",
+   "key": "Your shots",
+   "text": "Твои удары"
+  },
+  {
+   "culture": "ar",
+   "key": "Your shots",
+   "text": "ضرباتك"
+  },
+  {
+   "culture": "es",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "Tras un tiro que mete una bola, Hazlo otra vez lo guarda aquí como un reto propio."
+  },
+  {
+   "culture": "fr",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "Après un coup qui empoche une bille, Le refaire le garde ici comme ton propre défi."
+  },
+  {
+   "culture": "de",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "Nach einem Stoß, der eine Kugel versenkt, legt Nochmal machen ihn hier als deine eigene Aufgabe ab."
+  },
+  {
+   "culture": "it",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "Dopo un colpo che manda in buca una bilia, Rifallo lo tiene qui come tua sfida."
+  },
+  {
+   "culture": "pt",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "Depois de uma tacada que mete uma bola, Fazer de novo guarda-a aqui como um desafio teu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "Depois de uma tacada que encaçapa uma bola, Fazer de novo a guarda aqui como um desafio seu."
+  },
+  {
+   "culture": "ja",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "球を落としたショットのあと、「もう一度決める」でここに自分のチャレンジとして残せます。"
+  },
+  {
+   "culture": "ko",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "공을 넣은 샷 다음에 다시 도전을 누르면 내 도전으로 여기에 남아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "打进一球后，用“再打一次”就能把它作为你自己的挑战存在这里。"
+  },
+  {
+   "culture": "ru",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "После удара, который забил шар, «Повторить удар» сохранит его здесь как твою собственную задачу."
+  },
+  {
+   "culture": "ar",
+   "key": "After a shot that drops a ball, Make it again keeps it here as a challenge of your own.",
+   "text": "بعد ضربة تُدخل كرة، يحفظها «اصنعها مجددًا» هنا كتحدٍّ خاص بك."
+  },
+  {
+   "culture": "es",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "El juego guardó tu golpe, así que Míralo lo repite tal como fue."
+  },
+  {
+   "culture": "fr",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "Le jeu a gardé ton geste, donc Voir le coup le rejoue tel quel."
+  },
+  {
+   "culture": "de",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "Das Spiel hat deinen Stoß behalten, also zeigt Ansehen ihn genau so, wie er war."
+  },
+  {
+   "culture": "it",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "Il gioco ha tenuto il tuo tiro, quindi Guardalo lo ripete com'è andato."
+  },
+  {
+   "culture": "pt",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "O jogo guardou o teu gesto, por isso Ver a tacada repete-a tal como foi."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "O jogo guardou sua tacada, então Ver a tacada repete tudo como foi."
+  },
+  {
+   "culture": "ja",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "あなたのストロークを保存しているので、「見てみる」でそのとおりに再現されます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "게임이 내 스트로크를 기억해서, 보기를 누르면 그대로 다시 보여 줘요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "游戏记下了你的出杆，所以“看一遍”会照原样重演。"
+  },
+  {
+   "culture": "ru",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "Игра запомнила твой удар, поэтому «Смотреть» покажет его точно так, как было."
+  },
+  {
+   "culture": "ar",
+   "key": "The game kept your stroke, so Watch it plays the way it went.",
+   "text": "احتفظت اللعبة بضربتك، لذا تعيدها «شاهدها» كما جرت تمامًا."
+  },
+  {
+   "culture": "es",
+   "key": "Made again",
+   "text": "Repetido"
+  },
+  {
+   "culture": "fr",
+   "key": "Made again",
+   "text": "Refait"
+  },
+  {
+   "culture": "de",
+   "key": "Made again",
+   "text": "Wiederholt"
+  },
+  {
+   "culture": "it",
+   "key": "Made again",
+   "text": "Rifatto"
+  },
+  {
+   "culture": "pt",
+   "key": "Made again",
+   "text": "Repetida"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Made again",
+   "text": "Repetida"
+  },
+  {
+   "culture": "ja",
+   "key": "Made again",
+   "text": "再現成功"
+  },
+  {
+   "culture": "ko",
+   "key": "Made again",
+   "text": "다시 성공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Made again",
+   "text": "已再次打进"
+  },
+  {
+   "culture": "ru",
+   "key": "Made again",
+   "text": "Повторён"
+  },
+  {
+   "culture": "ar",
+   "key": "Made again",
+   "text": "أُعيدت بنجاح"
+  },
+  {
+   "culture": "es",
+   "key": "Not made again yet",
+   "text": "Aún sin repetir"
+  },
+  {
+   "culture": "fr",
+   "key": "Not made again yet",
+   "text": "Pas encore refait"
+  },
+  {
+   "culture": "de",
+   "key": "Not made again yet",
+   "text": "Noch nicht wiederholt"
+  },
+  {
+   "culture": "it",
+   "key": "Not made again yet",
+   "text": "Non ancora rifatto"
+  },
+  {
+   "culture": "pt",
+   "key": "Not made again yet",
+   "text": "Ainda por repetir"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Not made again yet",
+   "text": "Ainda não repetida"
+  },
+  {
+   "culture": "ja",
+   "key": "Not made again yet",
+   "text": "まだ再現していません"
+  },
+  {
+   "culture": "ko",
+   "key": "Not made again yet",
+   "text": "아직 다시 성공 전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Not made again yet",
+   "text": "还没再次打进"
+  },
+  {
+   "culture": "ru",
+   "key": "Not made again yet",
+   "text": "Ещё не повторён"
+  },
+  {
+   "culture": "ar",
+   "key": "Not made again yet",
+   "text": "لم تُعَد بعد"
+  },
+  {
+   "culture": "es",
+   "key": "Checking the saved stroke…",
+   "text": "Comprobando el golpe guardado…"
+  },
+  {
+   "culture": "fr",
+   "key": "Checking the saved stroke…",
+   "text": "Vérification du geste enregistré…"
+  },
+  {
+   "culture": "de",
+   "key": "Checking the saved stroke…",
+   "text": "Gespeicherter Stoß wird geprüft…"
+  },
+  {
+   "culture": "it",
+   "key": "Checking the saved stroke…",
+   "text": "Controllo del tiro salvato…"
+  },
+  {
+   "culture": "pt",
+   "key": "Checking the saved stroke…",
+   "text": "A verificar a tacada guardada…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Checking the saved stroke…",
+   "text": "Verificando a tacada salva…"
+  },
+  {
+   "culture": "ja",
+   "key": "Checking the saved stroke…",
+   "text": "保存したストロークを確認中…"
+  },
+  {
+   "culture": "ko",
+   "key": "Checking the saved stroke…",
+   "text": "저장한 스트로크 확인 중…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Checking the saved stroke…",
+   "text": "正在检查保存的出杆…"
+  },
+  {
+   "culture": "ru",
+   "key": "Checking the saved stroke…",
+   "text": "Проверяем сохранённый удар…"
+  },
+  {
+   "culture": "ar",
+   "key": "Checking the saved stroke…",
+   "text": "جارٍ التحقق من الضربة المحفوظة…"
+  },
+  {
+   "culture": "es",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "En esta versión el golpe guardado ya no lo consigue. Puede que el tiro siga siendo posible."
+  },
+  {
+   "culture": "fr",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "Dans cette version, le geste enregistré ne réussit plus. Le coup reste peut-être possible."
+  },
+  {
+   "culture": "de",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "In dieser Version gelingt der gespeicherte Stoß nicht mehr. Möglich ist er vielleicht trotzdem."
+  },
+  {
+   "culture": "it",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "In questa versione il tiro salvato non riesce più. Il colpo potrebbe essere ancora possibile."
+  },
+  {
+   "culture": "pt",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "Nesta versão, a tacada guardada já não resulta. O lance pode continuar possível."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "Nesta versão, a tacada salva não funciona mais. A jogada ainda pode ser possível."
+  },
+  {
+   "culture": "ja",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "このバージョンでは保存したストロークでは決まらなくなりました。ショット自体はまだ可能かもしれません。"
+  },
+  {
+   "culture": "ko",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "이 버전에서는 저장한 스트로크로 더 이상 성공하지 않아요. 샷 자체는 아직 가능할 수 있어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "在这个版本里，保存的出杆已打不进了。这一球也许仍然可能。"
+  },
+  {
+   "culture": "ru",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "В этой версии сохранённый удар больше не проходит. Сам удар, возможно, всё ещё выполним."
+  },
+  {
+   "culture": "ar",
+   "key": "The saved stroke no longer makes it in this version. The shot may still be possible.",
+   "text": "لم تعد الضربة المحفوظة تنجح في هذا الإصدار. قد تظل الضربة ممكنة."
+  },
+  {
+   "culture": "es",
+   "key": "This version cannot set up this shot.",
+   "text": "Esta versión no puede preparar este tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "This version cannot set up this shot.",
+   "text": "Cette version ne peut pas mettre en place ce coup."
+  },
+  {
+   "culture": "de",
+   "key": "This version cannot set up this shot.",
+   "text": "Diese Version kann diesen Stoß nicht aufbauen."
+  },
+  {
+   "culture": "it",
+   "key": "This version cannot set up this shot.",
+   "text": "Questa versione non può preparare questo colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "This version cannot set up this shot.",
+   "text": "Esta versão não consegue preparar esta tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This version cannot set up this shot.",
+   "text": "Esta versão não consegue preparar esta tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "This version cannot set up this shot.",
+   "text": "このバージョンではこのショットを並べられません。"
+  },
+  {
+   "culture": "ko",
+   "key": "This version cannot set up this shot.",
+   "text": "이 버전에서는 이 샷을 배치할 수 없어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This version cannot set up this shot.",
+   "text": "这个版本摆不出这一球。"
+  },
+  {
+   "culture": "ru",
+   "key": "This version cannot set up this shot.",
+   "text": "Эта версия не может расставить этот удар."
+  },
+  {
+   "culture": "ar",
+   "key": "This version cannot set up this shot.",
+   "text": "لا يستطيع هذا الإصدار تجهيز هذه الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "Rename",
+   "text": "Renombrar"
+  },
+  {
+   "culture": "fr",
+   "key": "Rename",
+   "text": "Renommer"
+  },
+  {
+   "culture": "de",
+   "key": "Rename",
+   "text": "Umbenennen"
+  },
+  {
+   "culture": "it",
+   "key": "Rename",
+   "text": "Rinomina"
+  },
+  {
+   "culture": "pt",
+   "key": "Rename",
+   "text": "Mudar o nome"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Rename",
+   "text": "Renomear"
+  },
+  {
+   "culture": "ja",
+   "key": "Rename",
+   "text": "名前を変更"
+  },
+  {
+   "culture": "ko",
+   "key": "Rename",
+   "text": "이름 변경"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Rename",
+   "text": "重命名"
+  },
+  {
+   "culture": "ru",
+   "key": "Rename",
+   "text": "Переименовать"
+  },
+  {
+   "culture": "ar",
+   "key": "Rename",
+   "text": "إعادة التسمية"
+  },
+  {
+   "culture": "es",
+   "key": "Delete",
+   "text": "Eliminar"
+  },
+  {
+   "culture": "fr",
+   "key": "Delete",
+   "text": "Supprimer"
+  },
+  {
+   "culture": "de",
+   "key": "Delete",
+   "text": "Löschen"
+  },
+  {
+   "culture": "it",
+   "key": "Delete",
+   "text": "Elimina"
+  },
+  {
+   "culture": "pt",
+   "key": "Delete",
+   "text": "Apagar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Delete",
+   "text": "Apagar"
+  },
+  {
+   "culture": "ja",
+   "key": "Delete",
+   "text": "削除"
+  },
+  {
+   "culture": "ko",
+   "key": "Delete",
+   "text": "삭제"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Delete",
+   "text": "删除"
+  },
+  {
+   "culture": "ru",
+   "key": "Delete",
+   "text": "Удалить"
+  },
+  {
+   "culture": "ar",
+   "key": "Delete",
+   "text": "حذف"
+  },
+  {
+   "culture": "es",
+   "key": "Name",
+   "text": "Nombre"
+  },
+  {
+   "culture": "fr",
+   "key": "Name",
+   "text": "Nom"
+  },
+  {
+   "culture": "de",
+   "key": "Name",
+   "text": "Name"
+  },
+  {
+   "culture": "it",
+   "key": "Name",
+   "text": "Nome"
+  },
+  {
+   "culture": "pt",
+   "key": "Name",
+   "text": "Nome"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Name",
+   "text": "Nome"
+  },
+  {
+   "culture": "ja",
+   "key": "Name",
+   "text": "名前"
+  },
+  {
+   "culture": "ko",
+   "key": "Name",
+   "text": "이름"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Name",
+   "text": "名称"
+  },
+  {
+   "culture": "ru",
+   "key": "Name",
+   "text": "Название"
+  },
+  {
+   "culture": "ar",
+   "key": "Name",
+   "text": "الاسم"
+  },
+  {
+   "culture": "es",
+   "key": "Save",
+   "text": "Guardar"
+  },
+  {
+   "culture": "fr",
+   "key": "Save",
+   "text": "Enregistrer"
+  },
+  {
+   "culture": "de",
+   "key": "Save",
+   "text": "Speichern"
+  },
+  {
+   "culture": "it",
+   "key": "Save",
+   "text": "Salva"
+  },
+  {
+   "culture": "pt",
+   "key": "Save",
+   "text": "Guardar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Save",
+   "text": "Salvar"
+  },
+  {
+   "culture": "ja",
+   "key": "Save",
+   "text": "保存"
+  },
+  {
+   "culture": "ko",
+   "key": "Save",
+   "text": "저장"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Save",
+   "text": "保存"
+  },
+  {
+   "culture": "ru",
+   "key": "Save",
+   "text": "Сохранить"
+  },
+  {
+   "culture": "ar",
+   "key": "Save",
+   "text": "حفظ"
+  },
+  {
+   "culture": "es",
+   "key": "Delete this shot?",
+   "text": "¿Eliminar este tiro?"
+  },
+  {
+   "culture": "fr",
+   "key": "Delete this shot?",
+   "text": "Supprimer ce coup ?"
+  },
+  {
+   "culture": "de",
+   "key": "Delete this shot?",
+   "text": "Diesen Stoß löschen?"
+  },
+  {
+   "culture": "it",
+   "key": "Delete this shot?",
+   "text": "Eliminare questo colpo?"
+  },
+  {
+   "culture": "pt",
+   "key": "Delete this shot?",
+   "text": "Apagar esta tacada?"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Delete this shot?",
+   "text": "Apagar esta tacada?"
+  },
+  {
+   "culture": "ja",
+   "key": "Delete this shot?",
+   "text": "このショットを削除しますか？"
+  },
+  {
+   "culture": "ko",
+   "key": "Delete this shot?",
+   "text": "이 샷을 삭제할까요?"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Delete this shot?",
+   "text": "删除这一球？"
+  },
+  {
+   "culture": "ru",
+   "key": "Delete this shot?",
+   "text": "Удалить этот удар?"
+  },
+  {
+   "culture": "ar",
+   "key": "Delete this shot?",
+   "text": "حذف هذه الضربة؟"
+  },
+  {
+   "culture": "es",
+   "key": "It is removed from Your shots for good.",
+   "text": "Se quitará de Tus tiros para siempre."
+  },
+  {
+   "culture": "fr",
+   "key": "It is removed from Your shots for good.",
+   "text": "Il sera retiré de Tes coups pour de bon."
+  },
+  {
+   "culture": "de",
+   "key": "It is removed from Your shots for good.",
+   "text": "Er wird endgültig aus Deine Stöße entfernt."
+  },
+  {
+   "culture": "it",
+   "key": "It is removed from Your shots for good.",
+   "text": "Verrà tolto per sempre da I tuoi colpi."
+  },
+  {
+   "culture": "pt",
+   "key": "It is removed from Your shots for good.",
+   "text": "Sai de As tuas tacadas de vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "It is removed from Your shots for good.",
+   "text": "Ela sai de Suas tacadas para sempre."
+  },
+  {
+   "culture": "ja",
+   "key": "It is removed from Your shots for good.",
+   "text": "自分のショットから完全に削除されます。"
+  },
+  {
+   "culture": "ko",
+   "key": "It is removed from Your shots for good.",
+   "text": "내 샷 모음에서 영영 사라져요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "It is removed from Your shots for good.",
+   "text": "它会从“我的球”里永久移除。"
+  },
+  {
+   "culture": "ru",
+   "key": "It is removed from Your shots for good.",
+   "text": "Он навсегда исчезнет из «Твоих ударов»."
+  },
+  {
+   "culture": "ar",
+   "key": "It is removed from Your shots for good.",
+   "text": "ستُزال من ضرباتك نهائيًا."
+  },
+  {
+   "culture": "es",
+   "key": "Options for %@",
+   "text": "Opciones de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Options for %@",
+   "text": "Options pour %@"
+  },
+  {
+   "culture": "de",
+   "key": "Options for %@",
+   "text": "Optionen für %@"
+  },
+  {
+   "culture": "it",
+   "key": "Options for %@",
+   "text": "Opzioni per %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Options for %@",
+   "text": "Opções de %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Options for %@",
+   "text": "Opções de %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Options for %@",
+   "text": "%@のオプション"
+  },
+  {
+   "culture": "ko",
+   "key": "Options for %@",
+   "text": "%@ 옵션"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Options for %@",
+   "text": "%@ 的选项"
+  },
+  {
+   "culture": "ru",
+   "key": "Options for %@",
+   "text": "Действия: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Options for %@",
+   "text": "خيارات %@"
+  },
+  {
+   "culture": "es",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Lo volviste a hacer: las mismas bolas en las mismas troneras."
+  },
+  {
+   "culture": "fr",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Refait : les mêmes billes dans les mêmes poches."
+  },
+  {
+   "culture": "de",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Wieder geschafft: dieselben Kugeln in denselben Taschen."
+  },
+  {
+   "culture": "it",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Rifatto: le stesse bilie nelle stesse buche."
+  },
+  {
+   "culture": "pt",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Voltaste a fazer: as mesmas bolas nas mesmas caçapas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Você repetiu: as mesmas bolas nas mesmas caçapas."
+  },
+  {
+   "culture": "ja",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "再現成功：同じ球が同じポケットに。"
+  },
+  {
+   "culture": "ko",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "다시 성공: 같은 공이 같은 포켓에."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "又打进了：同样的球进了同样的袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "Повторил: те же шары в те же лузы."
+  },
+  {
+   "culture": "ar",
+   "key": "Made it again: the same balls in the same pockets.",
+   "text": "أعدتها: الكرات نفسها في الجيوب نفسها."
+  },
+  {
+   "culture": "es",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Mismo inicio, mismo golpe, mismo resultado: en la física no hay suerte, así que tu propio golpe es la respuesta."
+  },
+  {
+   "culture": "fr",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Même départ, même geste, même résultat : la physique ne laisse rien au hasard, alors ton propre geste est la réponse."
+  },
+  {
+   "culture": "de",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Gleicher Start, gleicher Stoß, gleiches Ergebnis: In der Physik gibt es kein Glück, also ist dein eigener Stoß die Lösung."
+  },
+  {
+   "culture": "it",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Stessa partenza, stesso tiro, stesso risultato: nella fisica non c'è fortuna, quindi la risposta è il tuo tiro."
+  },
+  {
+   "culture": "pt",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Mesmo início, mesma tacada, mesmo resultado: na física não há sorte, por isso a tua própria tacada é a resposta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Mesmo início, mesma tacada, mesmo resultado: na física não existe sorte, então sua própria tacada é a resposta."
+  },
+  {
+   "culture": "ja",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "同じ配置、同じストローク、同じ結果。物理に運はないので、答えはあなた自身のストロークです。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "같은 배치, 같은 스트로크, 같은 결과. 물리에는 운이 없으니 답은 내 스트로크예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "同样的球位、同样的出杆、同样的结果：物理里没有运气，所以答案就是你自己的那一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "Та же расстановка, тот же удар, тот же результат: в физике нет везения, так что ответ — твой собственный удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Same start, same stroke, same result: there is no luck in the physics, so your own stroke is the answer.",
+   "text": "البداية نفسها والضربة نفسها والنتيجة نفسها: لا حظّ في الفيزياء، لذا فضربتك أنت هي الجواب."
+  },
+  {
+   "culture": "es",
+   "key": "Your own shot, saved from free play.",
+   "text": "Tu propio tiro, guardado del juego libre."
+  },
+  {
+   "culture": "fr",
+   "key": "Your own shot, saved from free play.",
+   "text": "Ton propre coup, enregistré en jeu libre."
+  },
+  {
+   "culture": "de",
+   "key": "Your own shot, saved from free play.",
+   "text": "Dein eigener Stoß, aus dem freien Spiel gespeichert."
+  },
+  {
+   "culture": "it",
+   "key": "Your own shot, saved from free play.",
+   "text": "Un tuo colpo, salvato dal gioco libero."
+  },
+  {
+   "culture": "pt",
+   "key": "Your own shot, saved from free play.",
+   "text": "Uma tacada tua, guardada do jogo livre."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your own shot, saved from free play.",
+   "text": "Uma tacada sua, salva do jogo livre."
+  },
+  {
+   "culture": "ja",
+   "key": "Your own shot, saved from free play.",
+   "text": "フリープレイから保存した自分のショット。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your own shot, saved from free play.",
+   "text": "자유 플레이에서 저장한 내 샷이에요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your own shot, saved from free play.",
+   "text": "你自己的一杆，保存自自由游戏。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your own shot, saved from free play.",
+   "text": "Твой собственный удар, сохранённый в свободной игре."
+  },
+  {
+   "culture": "ar",
+   "key": "Your own shot, saved from free play.",
+   "text": "ضربتك أنت، محفوظة من اللعب الحر."
+  },
+  {
+   "culture": "es",
+   "key": "Saved shot %lld",
+   "text": "Tiro guardado %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Saved shot %lld",
+   "text": "Coup enregistré %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Saved shot %lld",
+   "text": "Gespeicherter Stoß %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Saved shot %lld",
+   "text": "Colpo salvato %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Saved shot %lld",
+   "text": "Tacada guardada %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Saved shot %lld",
+   "text": "Tacada salva %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Saved shot %lld",
+   "text": "保存したショット%lld"
+  },
+  {
+   "culture": "ko",
+   "key": "Saved shot %lld",
+   "text": "저장한 샷 %lld"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Saved shot %lld",
+   "text": "保存的球 %lld"
+  },
+  {
+   "culture": "ru",
+   "key": "Saved shot %lld",
+   "text": "Сохранённый удар %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Saved shot %lld",
+   "text": "ضربة محفوظة %lld"
+  },
+  {
+   "culture": "es",
+   "key": "%@ into %@",
+   "text": "%@ en %@"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ into %@",
+   "text": "%@ dans %@"
+  },
+  {
+   "culture": "de",
+   "key": "%@ into %@",
+   "text": "%@ (%@)"
+  },
+  {
+   "culture": "it",
+   "key": "%@ into %@",
+   "text": "%@ (%@)"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ into %@",
+   "text": "%@ (%@)"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ into %@",
+   "text": "%@ (%@)"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ into %@",
+   "text": "%@を%@に"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ into %@",
+   "text": "%2$@에 %1$@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ into %@",
+   "text": "%@进%@"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ into %@",
+   "text": "%@ (%@)"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ into %@",
+   "text": "%@ في %@"
+  },
+  {
+   "culture": "es",
+   "key": "Pot %@.",
+   "text": "Mete %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Pot %@.",
+   "text": "Empoche %@."
+  },
+  {
+   "culture": "de",
+   "key": "Pot %@.",
+   "text": "Versenke %@."
+  },
+  {
+   "culture": "it",
+   "key": "Pot %@.",
+   "text": "Imbuca %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Pot %@.",
+   "text": "Mete %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pot %@.",
+   "text": "Encaçape %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Pot %@.",
+   "text": "%@入れよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pot %@.",
+   "text": "넣을 공: %@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pot %@.",
+   "text": "目标：%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pot %@.",
+   "text": "Забей: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Pot %@.",
+   "text": "أدخل %@."
+  },
+  {
+   "culture": "es",
+   "key": "Touch %@ first.",
+   "text": "La blanca debe tocar primero %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Touch %@ first.",
+   "text": "La blanche doit toucher %@ en premier."
+  },
+  {
+   "culture": "de",
+   "key": "Touch %@ first.",
+   "text": "Die Weiße muss zuerst %@ treffen."
+  },
+  {
+   "culture": "it",
+   "key": "Touch %@ first.",
+   "text": "La bianca deve toccare prima %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Touch %@ first.",
+   "text": "A branca tem de tocar primeiro %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Touch %@ first.",
+   "text": "A branca precisa tocar primeiro %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Touch %@ first.",
+   "text": "手球は最初に%@に当てよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Touch %@ first.",
+   "text": "수구가 %@에 먼저 맞아야 해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Touch %@ first.",
+   "text": "母球要先碰到%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Touch %@ first.",
+   "text": "Первым биток должен задеть: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Touch %@ first.",
+   "text": "يجب أن تلمس الكرة البيضاء %@ أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ debe rebotar en una banda por el camino."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ doit toucher une bande en chemin."
+  },
+  {
+   "culture": "de",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ muss unterwegs von einer Bande abprallen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ deve prendere una sponda prima di entrare."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ tem de bater numa tabela pelo caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ precisa bater numa tabela no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@は途中でクッションに当てること。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@은(는) 가는 길에 쿠션을 맞아야 해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@途中要先撞一次库边。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "%@ должен по пути отскочить от борта."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ must come off a cushion on the way.",
+   "text": "يجب أن ترتد %@ عن حافة في طريقها."
+  },
+  {
+   "culture": "es",
+   "key": "Surface: %@",
+   "text": "Superficie: %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Surface: %@",
+   "text": "Surface : %@"
+  },
+  {
+   "culture": "de",
+   "key": "Surface: %@",
+   "text": "Spielfläche: %@"
+  },
+  {
+   "culture": "it",
+   "key": "Surface: %@",
+   "text": "Superficie: %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Surface: %@",
+   "text": "Superfície: %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Surface: %@",
+   "text": "Superfície: %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Surface: %@",
+   "text": "台の表面：%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Surface: %@",
+   "text": "표면: %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Surface: %@",
+   "text": "台面：%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Surface: %@",
+   "text": "Поверхность: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Surface: %@",
+   "text": "السطح: %@"
+  },
+  {
+   "culture": "es",
+   "key": "Table: %@",
+   "text": "Mesa: %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Table: %@",
+   "text": "Table : %@"
+  },
+  {
+   "culture": "de",
+   "key": "Table: %@",
+   "text": "Tisch: %@"
+  },
+  {
+   "culture": "it",
+   "key": "Table: %@",
+   "text": "Tavolo: %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Table: %@",
+   "text": "Mesa: %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Table: %@",
+   "text": "Mesa: %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Table: %@",
+   "text": "テーブル：%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Table: %@",
+   "text": "테이블: %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Table: %@",
+   "text": "球桌：%@"
+  },
+  {
+   "culture": "ru",
+   "key": "Table: %@",
+   "text": "Стол: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Table: %@",
+   "text": "الطاولة: %@"
+  },
+  {
+   "culture": "es",
+   "key": "Left stick click",
+   "text": "Pulsar el stick izquierdo"
+  },
+  {
+   "culture": "fr",
+   "key": "Left stick click",
+   "text": "Clic du stick gauche"
+  },
+  {
+   "culture": "de",
+   "key": "Left stick click",
+   "text": "Linken Stick drücken"
+  },
+  {
+   "culture": "it",
+   "key": "Left stick click",
+   "text": "Clic della levetta sinistra"
+  },
+  {
+   "culture": "pt",
+   "key": "Left stick click",
+   "text": "Clique do manípulo esquerdo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Left stick click",
+   "text": "Clique do analógico esquerdo"
+  },
+  {
+   "culture": "ja",
+   "key": "Left stick click",
+   "text": "左スティック押し込み"
+  },
+  {
+   "culture": "ko",
+   "key": "Left stick click",
+   "text": "왼쪽 스틱 누르기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Left stick click",
+   "text": "按下左摇杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Left stick click",
+   "text": "Нажатие левого стика"
+  },
+  {
+   "culture": "ar",
+   "key": "Left stick click",
+   "text": "ضغط عصا التحكم اليسرى"
+  },
+  {
+   "culture": "es",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Guarda el tiro recién jugado como un reto propio (Hazlo otra vez), si el mando tiene este botón."
+  },
+  {
+   "culture": "fr",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Enregistre le coup qui vient d'être joué comme ton propre défi (Le refaire), si la manette a ce bouton."
+  },
+  {
+   "culture": "de",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Speichert den gerade gespielten Stoß als deine eigene Aufgabe (Nochmal machen), wenn der Controller diese Taste hat."
+  },
+  {
+   "culture": "it",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Salva il colpo appena giocato come una tua sfida (Rifallo), se il controller ha questo tasto."
+  },
+  {
+   "culture": "pt",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Guarda a tacada acabada de jogar como um desafio teu (Fazer de novo), se o comando tiver este botão."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Salva a tacada que você acabou de jogar como um desafio seu (Fazer de novo), se o controle tiver este botão."
+  },
+  {
+   "culture": "ja",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "今打ったショットを自分のチャレンジとして保存します（もう一度決める）。このボタンがあるコントローラーのみ。"
+  },
+  {
+   "culture": "ko",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "방금 친 샷을 내 도전으로 저장해요(다시 도전). 이 버튼이 있는 컨트롤러에서만 돼요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "把刚打的这一杆保存为你自己的挑战（再打一次），需手柄有此按键。"
+  },
+  {
+   "culture": "ru",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "Сохраняет только что сыгранный удар как твою собственную задачу («Повторить удар»), если у контроллера есть эта кнопка."
+  },
+  {
+   "culture": "ar",
+   "key": "Saves the shot just played as a challenge of your own (Make it again), where the controller has this button.",
+   "text": "يحفظ الضربة التي لُعبت للتو كتحدٍّ خاص بك («اصنعها مجددًا»)، إن كان في وحدة التحكم هذا الزر."
+  }
+ ]
+}

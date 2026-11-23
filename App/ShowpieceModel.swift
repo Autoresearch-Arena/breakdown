@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md M1 and
+//          M2: physicsTable gives a saved shot of the player's own its own table while it is the trick shot up;
+//          freePlayUp is internal so the shelf can tell free play is on the table.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: a ride is
 //          a scene in acts (RideAct, see RideStage.swift), run inside the ordinary table stage: the mount holds the
 //          clock at the strike while the camera comes down to the ball, the roll plays the shot, the ride holds two
@@ -3112,6 +3115,9 @@ final class ShowpieceModel {
     /// The table the solver uses now: the pool table while a trick shot, a Behind the 8-Ball situation or a pool match
     /// is up (every one is played there), a match's own table in a table game, the player's chosen table otherwise.
     var physicsTable: TableKind {
+        // 0.7.7 make-it-again: a saved shot of the player's own is solved, drawn and judged on the table it was made
+        // on (bumper pool, bar billiards); authored shots and lessons keep the pool table (their table is the default).
+        if let own = trickModeStorage?.current, own.table != .standard { return own.table }
         if onPoolTableOnly { return .standard }
         if let m = match { return m.table }
         return tableKind
@@ -3621,7 +3627,8 @@ final class ShowpieceModel {
     }
 
     /// True while free play is on the table: no match, no trick shot, situation or lesson, no drill, no opening.
-    private var freePlayUp: Bool {
+    // 0.7.7 make-it-again: internal (was private), for OwnShotShelf.canSave.
+    var freePlayUp: Bool {
         match == nil && !authoredModeUp && strokeDrillStorage?.isActive != true && openingStage == .none
     }
 
