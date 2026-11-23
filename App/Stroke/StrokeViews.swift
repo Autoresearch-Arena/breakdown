@@ -11,6 +11,8 @@
 //          verdict (folded to its first lines, the rest behind a tap), the result line with "Practise the straight
 //          stroke", and the stance notice (EquipmentRowList); PhonePrimaryAction.stroke offers "Again" in the drill. The
 //          cards above are unchanged for the notebook and the sideways column.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: The stroke on screen (plans/21-Nov-2026-stroke-and-power-plan.md), apart from the live groove:
 //          - StrokeCards: the cards this stream adds, one hook line wherever the cards sit (the phone's bottom stack,
 //            the side column, the notebook panel), so each works as a card of the notebook beside the table and
@@ -52,7 +54,7 @@ struct StrokeResultCard: View {
     /// stay under it, vanish when Play both started and pop back when the replay ended, shifting the cards.
     /// Shared with the upright phone's result blurb (StrokePhoneBlurbs).
     static func line(_ model: ShowpieceModel) -> String? {
-        guard model.aimReady, !model.strokeDrill.isActive, !model.whatIf.isShowing else { return nil }
+        guard model.aimReady, !model.strokeDrill.isActive, !model.otherFutureShowing else { return nil }
         return StrokeWords.resultLine(for: model.currentAttempt)
     }
 

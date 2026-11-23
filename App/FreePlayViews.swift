@@ -13,7 +13,7 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream model-flow item 10: the intro-end card's Practice racks the pool table and opens Your shot, and its
 //          Trick shots opens that list alone (model.showList). Table cleared, the highlight card and the intro-end card
-//          step aside while a what-if is showing (model.whatIf.isShowing; the what-if card has the slot). On a phone
+//          step aside while a what-if or the every-surface fan is showing (model.otherFutureShowing; that card has the slot). On a phone
 //          held upright during a guided Lens replay (lensReplayCompact) Table cleared and the highlight card shrink to
 //          their heading, so the table keeps its height.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 watch-invite, plans/22-Nov-2026-v074-glow-up-plan.md G3 and
@@ -30,6 +30,8 @@
 //          ShowpieceModel.liftableBall.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (access stream hook, 0.7.0 item 47: the placement and Table cleared announcements go
 //          through the one speaker, ShotNarration.announce.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: The play cards that belong to free play and to matches, hosted together as PlayCards beside the trick-shot
 //          and 8-ball cards (ShowpieceView above the controls or in the side column, DuoPanel in the notebook panel):
 //            BallInHandCard  - while the cue ball is in hand (after a scratch in free play, after a foul in a match) or
@@ -324,7 +326,7 @@ struct TableClearedCard: View {
 
     /// The rule behind `visible`, shared with the upright phone's blurb and its Rack again.
     static func isVisible(_ model: ShowpieceModel) -> Bool {
-        model.match == nil && ((model.tableCleared && model.aimReady) || model.replayingBest) && !model.whatIf.isShowing
+        model.match == nil && ((model.tableCleared && model.aimReady) || model.replayingBest) && !model.otherFutureShowing
     }
 
     var body: some View {
@@ -416,7 +418,7 @@ struct HighlightCard: View {
 
     var body: some View {
         // Steps aside while a what-if is showing (0.7.5); it comes back on the what-if's close.
-        if let offer = model.highlightCard, !model.whatIf.isShowing {
+        if let offer = model.highlightCard, !model.otherFutureShowing {
             let kind = offer.highlight.kind
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
@@ -495,7 +497,7 @@ struct IntroEndCard: View {
 
     var body: some View {
         // Steps aside while a what-if is showing (0.7.5), like every result card.
-        if model.introEndOffered, !model.whatIf.isShowing {
+        if model.introEndOffered, !model.otherFutureShowing {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "sparkles").foregroundStyle(palette.accent).accessibilityHidden(true)

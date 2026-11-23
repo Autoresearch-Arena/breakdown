@@ -38,6 +38,8 @@
 //          aiming; the card steps aside while a what-if is open and shows its slim form (the heading and the main
 //          button) during a guided Lens replay on a phone held upright; the list's Mac minimum size applies only as a
 //          sheet, not as a page of the notebook.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: Everything the player sees of Behind the 8-Ball, modelled on TrickShotViews:
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
@@ -355,7 +357,7 @@ struct EightBallCard: View {
         // While the Lens tips are up (the player's own Lens replay of this try) the card stands back, so the tips are
         // the one thing to read; it returns as soon as they are done. While a what-if is open on the try (0.7.5,
         // WhatIfFork.isShowing) its card is the one result card: this one steps aside and comes back when it closes.
-        if let s = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+        if let s = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             VStack(alignment: .leading, spacing: 8) {
                 if compact { slim(s) } else { content(s) }
             }

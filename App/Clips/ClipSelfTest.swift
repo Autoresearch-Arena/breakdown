@@ -7,7 +7,7 @@
 //          PASS needs one video track of 1080 by 1920, one audio track, and a duration within a frame or two of the
 //          script's. Log only, no screenshots. It is the first run that shows the colour-format and upside-down risks
 //          (see ClipRenderer), so the coordinator runs it once after the merge.
-//          Hooked by ClipCard and ClipPhoneBlurb (one of them is mounted on every layout) through ClipSelfTestHook,
+//          Hooked by ClipCard and ClipPhoneBlurb (one of them is mounted on every layout) through ClipSelfTestAnchor,
 //          which adds its task only when the flag is set; the test runs once per launch whichever mounts first.
 // SRP/DRY check: Pass - drives the real ClipMaker; nothing here makes a clip its own way.
 import AVFoundation
@@ -57,6 +57,13 @@ enum ClipSelfTest {
             && abs(duration - script.duration) < 0.1
         NSLog("CLIP-SELFTEST frames=%d duration=%.2f bytes=%lld tracks=%d size=%dx%d -> %@", script.frames.count,
               duration, bytes, video.count + audio.count, Int(size.width), Int(size.height), pass ? "PASS" : "FAIL")
+        // Keep a copy in Caches before close() deletes the clip, so the coordinator can look at its pictures (upside
+        // down, too dark) without a device: <app data>/Library/Caches/clip-selftest.mov.
+        if let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first {
+            let copy = caches.appendingPathComponent("clip-selftest.mov")
+            try? FileManager.default.removeItem(at: copy)
+            try? FileManager.default.copyItem(at: result.url, to: copy)
+        }
         maker.close()
     }
 }
@@ -71,5 +78,16 @@ struct ClipSelfTestHook: ViewModifier {
         } else {
             content
         }
+    }
+}
+
+/// A one-point, invisible view that carries the self-test hook, so the hook sits on something that actually appears.
+struct ClipSelfTestAnchor: View {
+    let model: ShowpieceModel
+
+    var body: some View {
+        Color.clear.frame(width: 1, height: 1)
+            .accessibilityHidden(true)
+            .modifier(ClipSelfTestHook(model: model))
     }
 }

@@ -4,8 +4,8 @@
 //          solid-colour frames through ClipVideoWriter at the upright size, one second of a test tone through
 //          ClipAudioWriter, then ClipMuxer with a shot record. The file must open with one video track of 1080 by
 //          1920 and one audio track, last about a third of a second (the pictures' length), and give the same shot
-//          record back from its metadata. If the record does not survive the .mp4 passthrough export, the plan's
-//          fallback is to write .mov (see the plan's risks).
+//          record back from its metadata. The final file is a .mov: an .mp4 passthrough export dropped the record (0.7.7 test run), which was the plan's
+//          fallback (see the plan's risks).
 // SRP/DRY check: Pass - checks only.
 @testable import Breakdown
 import AVFoundation
@@ -20,7 +20,7 @@ final class ClipWriterTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: folder) }
         let video = folder.appendingPathComponent("video.mp4")
         let audio = folder.appendingPathComponent("sound.m4a")
-        let final = folder.appendingPathComponent("clip.mp4")
+        let final = folder.appendingPathComponent("clip.mov")
         let size = ClipShape.upright.pixelSize
 
         // Ten solid-colour frames.
@@ -58,8 +58,7 @@ final class ClipWriterTests: XCTestCase {
         XCTAssertEqual(natural.height, 1920)
         let duration = CMTimeGetSeconds(try await asset.load(.duration))
         XCTAssertEqual(duration, 1.0 / 3, accuracy: 0.05)
-        let metadata = try await asset.load(.metadata)
-        let back = await ClipShotRecord.read(from: metadata)
+        let back = await ClipShotRecord.read(from: final)
         XCTAssertEqual(back, record, "the shot record did not survive the export")
     }
 }

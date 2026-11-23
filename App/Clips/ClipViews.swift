@@ -110,10 +110,12 @@ struct ClipCard: View {
     private var maker: ClipMaker { ClipMaker.shared }
 
     var body: some View {
-        // The self-test hook sits on the always-present Group: at launch the maker is idle, so anything inside the
-        // branch would never mount.
-        Group { if !maker.isIdle { card } }
-            .modifier(ClipSelfTestHook(model: model))
+        // The self-test hook needs a view that really appears: an empty Group never does, so its task never ran
+        // (0.7.7 merge check). Only a launch with -clipSelfTest gets the one-point stand-in; normal play is unchanged.
+        Group {
+            if ClipSelfTest.requested { ClipSelfTestAnchor(model: model) }
+            if !maker.isIdle { card }
+        }
     }
 
     private var card: some View {
@@ -198,8 +200,10 @@ struct ClipPhoneBlurb: View {
     private var maker: ClipMaker { ClipMaker.shared }
 
     var body: some View {
-        Group { if !maker.isIdle { blurb } }
-            .modifier(ClipSelfTestHook(model: model))
+        Group {
+            if ClipSelfTest.requested { ClipSelfTestAnchor(model: model) }  // see ClipCard
+            if !maker.isIdle { blurb }
+        }
     }
 
     @ViewBuilder private var blurb: some View {

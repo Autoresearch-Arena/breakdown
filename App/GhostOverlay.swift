@@ -26,6 +26,8 @@
 //          comparison card's close button is glass instead of bordered; when the card shows is one shared rule
 //          (ComparisonCard.shows), which ComparisonPhoneBlurb, the upright phone's docked blurb of the same sentence with
 //          See the contact and Close, also reads. The card is unchanged elsewhere.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: The "last try" ghost. While the player retries a shot, the previous attempt's cue-ball path and the path of
 //          the first ball it struck are drawn faintly over the table (and over the Physics Lens), with a hollow ring and
 //          a small "Last try" label where the ghost cue ball stopped. The paths are sampled once per ghost from the
@@ -219,7 +221,7 @@ struct ComparisonCard: View {
     static func shows(_ model: ShowpieceModel, dismissed: Int, seeked: Int) -> Bool {
         guard model.retryComparison != nil, dismissed != model.timelineVersion,
               !model.trickMode.isActive, !model.eightBallMode.isActive, !model.lessonMode.isActive,
-              model.match == nil, !model.whatIf.isShowing else { return false }
+              model.match == nil, !model.otherFutureShowing else { return false }
         return model.aimReady || seeked == model.timelineVersion
     }
 

@@ -32,6 +32,8 @@
 //          words as blurbs on the phone held upright, and PhonePrimaryAction.trick, its main button as the strip's
 //          primary action ("Watch it", "Your turn", "Try again", "Next shot"). The make's success haptic moved from the
 //          card to TrickTableLayer, which is on screen in every layout, so the upright phone (no card) keeps it.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: Everything the player sees of trick-shot mode, kept small so the table stays big:
 //          TrickShotList - the list of the trick shots, in a sheet from the menu: number (or a tick once made), title,
 //            hook and difficulty, and beside them a small drawing of the answer's real path (above the text at
@@ -202,7 +204,7 @@ struct TrickShotCard: View {
         // one card: this card steps back and returns when they are done, so the idea is never stacked under the tips.
         // While a what-if is open on the try (0.7.5, WhatIfFork.isShowing) its card is the one result card: this one
         // steps aside and comes back, unchanged, when the what-if closes.
-        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             VStack(alignment: .leading, spacing: 8) {
                 if compact { slim(shot) } else { content(shot) }
             }
@@ -478,7 +480,7 @@ struct TrickPhoneBlurbs: View {
     private var mode: TrickShotMode { model.trickMode }
 
     var body: some View {
-        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             // The idea while the answer replays in the Lens (folded to one line, its dot saying there is more), or
             // whenever the title opened it (then shown open; folding it puts it away).
             if mode.phase == .explaining || ideaOpen { idea(shot) }
@@ -552,7 +554,7 @@ extension PhonePrimaryAction {
     /// what-if is open (the trick card stepped aside for it too).
     static func trick(_ model: ShowpieceModel) -> PhonePrimaryAction? {
         let mode = model.trickMode
-        guard mode.isActive, !model.whatIf.isShowing else { return nil }
+        guard mode.isActive, !model.otherFutureShowing else { return nil }
         switch mode.phase {
         case .ready:
             return PhonePrimaryAction(title: String(localized: "Watch it"),

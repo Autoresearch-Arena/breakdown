@@ -20,6 +20,8 @@
 //          words as blurbs on the phone held upright, and PhonePrimaryAction.lesson, its main button as the strip's
 //          primary action; the step words moved into LessonWords so the card and the blurbs say the same; the pass's
 //          success haptic moved from the card to LessonTableLayer, which is on screen in every layout.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
@@ -143,7 +145,7 @@ struct LessonCard: View {
         // under the tips (review of 0.6.6, item 53). The replay cannot reach the key moment meanwhile: the clock holds.
         // While a what-if is open on the try (0.7.5, WhatIfFork.isShowing) its card is the one result card: this one
         // steps aside and comes back, unchanged, when the what-if closes.
-        if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+        if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             VStack(alignment: .leading, spacing: 8) {
                 // Paused on the lesson's moment the full card shows, slim or not: the idea is the reason the replay
                 // stopped there (0.7.6, #38; the guided flag stays on while the clock is held on the moment).
@@ -461,7 +463,7 @@ struct LessonPhoneBlurbs: View {
     private var mode: LessonMode { model.lessonMode }
 
     var body: some View {
-        if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+        if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             if mode.phase == .replaying || mode.phase == .keyMoment || ideaOpen { idea(lesson) }
             phaseBlurb(lesson)
         }
@@ -578,7 +580,7 @@ extension PhonePrimaryAction {
     /// list, now in the title row's More menu), outside a lesson, and while a what-if is open.
     static func lesson(_ model: ShowpieceModel) -> PhonePrimaryAction? {
         let mode = model.lessonMode
-        guard mode.isActive, !model.whatIf.isShowing else { return nil }
+        guard mode.isActive, !model.otherFutureShowing else { return nil }
         let tryAgain = PhonePrimaryAction(
             title: String(localized: "Try again"),
             hint: String(localized: "Puts the balls back where the shot started, with your last aim, power and spin")) {

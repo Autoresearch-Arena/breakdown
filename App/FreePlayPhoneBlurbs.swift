@@ -2,6 +2,8 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md F2:
 //          HighlightPhoneBlurb's small buttons start with Make it again / Play it now when the shot can be saved.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: Free play and matches on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "Every phone state"
 //          and Part 4 step 5): everything PlayCards (FreePlayViews.swift) shows on the other layouts, as small docked
 //          blurbs instead of full-width glass cards, hosted together as PlayPhoneBlurbs in ShowpieceView's dock:
@@ -171,7 +173,7 @@ struct HighlightPhoneBlurb: View {
 
     var body: some View {
         // Steps aside while a what-if is showing; it comes back on the what-if's close.
-        if let offer = model.highlightCard, !model.whatIf.isShowing {
+        if let offer = model.highlightCard, !model.otherFutureShowing {
             let kind = offer.highlight.kind
             Blurb(title: HighlightWords.title(kind),
                   sentence: PlayPhoneBlurbs.replaying(model) ? nil : HighlightWords.line(kind),
@@ -200,7 +202,7 @@ struct IntroEndPhoneBlurb: View {
     let model: ShowpieceModel
 
     var body: some View {
-        if model.introEndOffered, !model.whatIf.isShowing {
+        if model.introEndOffered, !model.otherFutureShowing {
             Blurb(sentence: HighlightWords.introEnd,
                   startsFolded: false,
                   buttons: [
@@ -258,14 +260,14 @@ extension PhonePrimaryAction {
         if TableClearedCard.isVisible(model) {
             return PhonePrimaryAction(title: String(localized: "Rack again")) { model.rackAgain() }
         }
-        if let offer = model.highlightCard, !model.whatIf.isShowing, offer.canWatch {
+        if let offer = model.highlightCard, !model.otherFutureShowing, offer.canWatch {
             return PhonePrimaryAction(title: String(localized: "Watch it"), hint: HighlightWords.watchHint) {
                 model.watchHighlight()
             }
         }
         // 0.7.7 clips: after the highlight's Watch it was used or its card closed, "Share clip".
         if let a = PhonePrimaryAction.clip(model) { return a }
-        if model.introEndOffered, !model.whatIf.isShowing {
+        if model.introEndOffered, !model.otherFutureShowing {
             return PhonePrimaryAction(title: String(localized: "Trick shots")) { model.showList(.tricks) }
         }
         return nil

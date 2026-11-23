@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: Behind the 8-Ball on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "Every phone state" and
 //          Part 4 step 5): everything EightBallCard (EightBallViews.swift) shows on the other layouts, as small docked
 //          blurbs instead of one glass card. The situation's name is the title row's (PhoneTitle); a tap on it opens
@@ -53,7 +55,7 @@ struct EightBallPhoneBlurbs: View {
     var body: some View {
         // Steps back while the Lens tips are up (they are the one thing to read) and while a what-if is open on the
         // try (its own blurb and panel have the screen), exactly as EightBallCard.
-        if let s = mode.current, mode.isActive, !model.holdForTips, !model.whatIf.isShowing {
+        if let s = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             switch mode.phase {
             case .looking:
                 looking(s)
@@ -314,7 +316,7 @@ extension PhonePrimaryAction {
     /// show and while a what-if is open (the card steps back then too).
     static func eightBall(_ model: ShowpieceModel) -> PhonePrimaryAction? {
         let mode = model.eightBallMode
-        guard mode.isActive, mode.current != nil, !model.holdForTips, !model.whatIf.isShowing else { return nil }
+        guard mode.isActive, mode.current != nil, !model.holdForTips, !model.otherFutureShowing else { return nil }
         switch mode.phase {
         case .looking:
             return PhonePrimaryAction(title: String(localized: "Make your call"),

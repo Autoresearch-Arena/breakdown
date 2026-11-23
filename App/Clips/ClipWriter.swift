@@ -165,7 +165,7 @@ enum ClipAudioWriter {
 
 /// The final file: pictures and sound side by side, plus the settings record.
 enum ClipMuxer {
-    /// Puts `video` (pictures only) and `audio` (sound only) into one .mp4 at `url`, over the video's duration, with
+    /// Puts `video` (pictures only) and `audio` (sound only) into one .mov at `url` (QuickTime, so the shot record survives; an .mp4 export drops it), over the video's duration, with
     /// the shot's settings record (when there is one) as metadata. Passthrough: nothing is encoded again. The record
     /// crosses in as a plain value and its metadata item is made here, so nothing that is not Sendable leaves the
     /// caller's actor.
@@ -197,6 +197,6 @@ enum ClipMuxer {
         }
         session.metadata = record?.metadataItem().map { [$0] } ?? []
         session.shouldOptimizeForNetworkUse = true
-        try await session.export(to: url, as: .mp4)
+        try await session.export(to: url, as: .mov)
     }
 }

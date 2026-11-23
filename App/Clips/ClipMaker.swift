@@ -9,7 +9,7 @@
 //            3. off the main actor: the sound plan (ClipSound.plan), the voices (built once per launch), the mix and
 //               the sound file (ClipAudioWriter); and the settings record's check (re-solved on a background task and
 //               kept only when it moves exactly as the shot did);
-//            4. the final file (ClipMuxer), named Breakdown-clip-yyyyMMdd-HHmmss.mp4 in the temporary Clips folder;
+//            4. the final file (ClipMuxer), named Breakdown-clip-yyyyMMdd-HHmmss.mov in the temporary Clips folder;
 //            5. "Your clip is ready", with Share (the system's share sheet, ClipSharePresenter) and Close.
 //          Cancel stops it at the next frame and deletes everything. A failure says so in one line, with Try again.
 //          On iPhone and iPad, sending the game to the background stops a clip being made (the GPU may not draw there)
@@ -109,7 +109,7 @@ final class ClipMaker {
         f.locale = Locale(identifier: "en_US_POSIX")
         f.timeZone = .current
         f.dateFormat = "yyyyMMdd-HHmmss"
-        return "Breakdown-clip-" + f.string(from: date) + ".mp4"
+        return "Breakdown-clip-" + f.string(from: date) + ".mov"
     }
 
     // MARK: Starting and stopping

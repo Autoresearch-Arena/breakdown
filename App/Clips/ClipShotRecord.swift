@@ -93,6 +93,14 @@ struct ClipShotRecord: Codable, Equatable, Sendable {
     }
 
     /// Reads a record back from metadata items (the tests use it; opening a clip is for a later version).
+    /// Reads the record from a finished clip file. Opening the file here, rather than taking metadata items from the
+    /// caller, keeps the non-Sendable items inside this one nonisolated function, so a main-actor caller passes only a
+    /// URL across.
+    static func read(from url: URL) async -> ClipShotRecord? {
+        guard let items = try? await AVURLAsset(url: url).load(.metadata) else { return nil }
+        return await read(from: items)
+    }
+
     static func read(from items: [AVMetadataItem]) async -> ClipShotRecord? {
         for item in items where item.keySpace == .quickTimeMetadata {
             guard (item.key as? String) == metadataKey else { continue }

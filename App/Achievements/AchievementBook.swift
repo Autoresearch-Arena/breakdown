@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
+//          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: The live achievements object the model owns (plans/23-Nov-2026-achievements-plan.md, new file 6). It:
 //          - hears who struck each stroke (strikeStarted, from ShowpieceModel.strike) and reads every shot the player
 //            struck, in any mode (noteShot, from finishStrike): the shot achievements, the table and surface played,
@@ -211,7 +213,7 @@ final class AchievementBook {
         // nothing is solving), no held beat, nothing being placed, no what-if, the computer not lining up, the menu
         // closed, the opening over. Not "not guided": a finished Lens replay stays guided until something else loads.
         let calm = model.openingStage == .none && !model.menuOpen && model.aimReady && !model.holding
-            && !model.placingCueBall && !model.whatIf.isShowing && model.computerTurnStage == .none
+            && !model.placingCueBall && !model.otherFutureShowing && model.computerTurnStage == .none
 
         // The end note after an achievement's replay, while that replay's recording is on screen.
         var replayEnd: String?
