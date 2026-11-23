@@ -72,15 +72,8 @@ import Observation
         let contrast: Headline
     }
 
-    /// One surface's solve, handed back from its child task. Sendable values only: the attempt is built on the main
-    /// actor in landed(_:session:).
-    struct Landing: Sendable {
-        let surface: PlaySurface
-        /// Nil when the solve ran past the event budget.
-        let timeline: Timeline?
-        let fork: TimelineFork?
-        let outcome: WorldOutcome?
-    }
+    /// One surface's solve, handed back from its child task (EveryWorldLanding, at file scope below).
+    typealias Landing = EveryWorldLanding
 
     // MARK: State
 
@@ -458,4 +451,15 @@ import Observation
         if picked == nil, headline == nil { return nil }
         return shownSurface?.summary
     }
+}
+
+/// One surface's solve, handed back from its child task to the fan. Sendable values only: the attempt is built on the
+/// main actor in EveryWorldFan.landed(_:session:). At file scope, not nested in the main-actor fan, so the nonisolated
+/// solveOne can build it off the main actor whatever the toolchain infers for nested types.
+struct EveryWorldLanding: Sendable {
+    let surface: PlaySurface
+    /// Nil when the solve ran past the event budget.
+    let timeline: Timeline?
+    let fork: TimelineFork?
+    let outcome: WorldOutcome?
 }
