@@ -16,8 +16,8 @@
 //          Never touches the live model, the live scene, SoundStage's stored listener or RideLive.
 //          Known risks the coordinator's first run shows (see the plan): the texture's colour format (.bgra8Unorm_srgb;
 //          if the picture is refused or dark, use .rgba16Float with extended linear sRGB), the vertical flip (if the
-//          self-test clip is upside down, drop it), and the floor's lighting (if it is dark, set renderer.lighting's
-//          resource to the same StartupAssets environment).
+//          self-test clip is upside down, drop it), and the floor's lighting (dark on the first run: renderer.lighting's
+//          resource is now the same StartupAssets environment).
 // SRP/DRY check: Pass - reuses TableScene whole (table, Lens, camera, moment framing) and StartupAssets' pictures;
 //          the only new drawing is ClipOverlay's.
 import CoreGraphics
@@ -40,6 +40,7 @@ final class ClipRenderer {
     let shape: ClipShape
     let script: ClipScript
     private let sRGB = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
+    private let linearSRGB = CGColorSpace(name: CGColorSpace.linearSRGB) ?? CGColorSpaceCreateDeviceRGB()
 
     init(source: ClipSource, shape: ClipShape, script: ClipScript) {
         self.source = source
@@ -72,6 +73,12 @@ final class ClipRenderer {
         renderer.entities.replaceAll([scene.root])
         defer { renderer.entities.removeAll() }
         renderer.activeCamera = scene.cameraEntity
+        // The live view lights the whole room from the same environment picture by default; an offscreen renderer
+        // starts with none, and the first clips came out much darker than the game (0.7.7 merge check). Give it the
+        // same environment, so the film's table matches the screen's.
+        if let environment = await StartupAssets.shared.environment() {
+            renderer.lighting.resource = environment
+        }
         var settings = renderer.cameraSettings
         settings.colorBackground = .color(CGColor(srgbRed: 0.02, green: 0.03, blue: 0.05, alpha: 1))
         settings.antialiasing = .multisample4X
@@ -116,7 +123,9 @@ final class ClipRenderer {
             // Screen right across the table, for the sound's pan (TableCamera hands SoundStage the same direction).
             rights.append(simd_cross(camera.forward, SIMD3<Float>(0, 1, 0)))
             try await draw(renderer, output)
-            guard let raw = CIImage(mtlTexture: texture, options: [.colorSpace: sRGB]) else {
+            // An _srgb texture hands back linear light when read, so Core Image must be told the values are linear;
+            // tagged sRGB, the picture was darkened a second time and the table came out far too dark (0.7.7 check).
+            guard let raw = CIImage(mtlTexture: texture, options: [.colorSpace: linearSRGB]) else {
                 throw ClipRenderError.badFrame
             }
             // A Metal texture's first row is the top of the picture; Core Image counts from the bottom: flip it.
