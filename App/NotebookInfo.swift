@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md N1: How
+//          forgiving is not shown for a saved shot of the player's own until its window has been measured.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (renamed, file NotebookInfo.swift (it was DuoInfo.swift), for the notebook layout it now serves on every big screen:
 //          NotebookNumbers, NotebookSurfaceCard and NotebookDossier (they were DuoNumbers, DuoSurfaceCard, DuoDossier).
 //          On a big screen (notebookRoomy) the number tiles' labels follow the reader's text size instead of a fixed
@@ -201,6 +203,8 @@ struct NotebookDossier: View {
         case .explaining: showsWindow = false
         default: break
         }
+        // 0.7.7 make-it-again: a saved shot's window is not measured yet: show no made-up numbers.
+        if OwnShotShelf.shared.isUnmeasured(shot) { showsWindow = false }
         guard showsIdea || showsWindow else { return AnyView(EmptyView()) }
         return AnyView(VStack(alignment: .leading, spacing: 10) {
             if showsIdea {

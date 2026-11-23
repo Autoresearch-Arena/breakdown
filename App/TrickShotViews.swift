@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md V1 and
+//          V2: the list gains the "Your shots" section (OwnShotsSection) after the authored shots; GoalMarks rings a bed
+//          hole as well as an edge pocket, through TableSpec.holeCenter, for a saved shot on bumper pool or bar
+//          billiards.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #64: the slim
 //          card shows the shot's one idea, two lines at most, beside Your turn while the answer is explained, instead of
 //          a lone button under empty glass.)
@@ -87,6 +91,8 @@ struct TrickShotList: View {
                 } footer: {
                     Text("Watch each shot, see the physics behind it in the Lens, then make it yourself.")
                 }
+                // 0.7.7 make-it-again: the player's own saved shots, "Your shots", after the authored ones.
+                OwnShotsSection(mode: mode)
             }
             // The drawings are solved when the list is first opened, never at launch (TrickPathCache).
             .onAppear { paths.start() }
@@ -698,8 +704,20 @@ enum GoalMarks {
             ctx.fill(p, with: .color(accent.opacity(0.10)))
             ctx.stroke(p, with: .color(accent.opacity(0.8)), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
         }
-        for k in pockets where k < table.pockets.count {
-            if let p = TablePathStroke.ring(at: table.pockets[k], radius: table.pocketCaptureRadius[k] + 0.012, proj) {
+        // 0.7.7 make-it-again: a bed hole (pocket 6 and up on bumper pool and bar billiards) is ringed too, for a saved
+        // shot on those tables. holeCenter is nil for a hole this table lacks; it comes first, as it is what keeps
+        // bedHoles[j] in range. On the pool table it gives pockets[k] for 0 to 5, so every other ring is as before.
+        for k in pockets {
+            guard let centre = table.holeCenter(pocket: k) else { continue }
+            let j = k - TableSpec.edgePocketCount
+            let radius: Double
+            if j >= 0 {
+                radius = table.bedHoles[j].captureRadius
+            } else {
+                guard k < table.pocketCaptureRadius.count else { continue }
+                radius = table.pocketCaptureRadius[k]
+            }
+            if let p = TablePathStroke.ring(at: centre, radius: radius + 0.012, proj) {
                 ctx.stroke(p, with: .color(accent.opacity(0.35)), style: StrokeStyle(lineWidth: 7))
                 ctx.stroke(p, with: .color(accent), style: StrokeStyle(lineWidth: 2))
             }

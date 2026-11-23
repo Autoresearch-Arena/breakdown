@@ -3,6 +3,9 @@
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: while the every-surface fan shows, left and right
 //          on the d-pad pick a surface, A plays the shot on the picked one in free play (else A keeps its job), and B
 //          closes the fan once the balls are at rest (while the replay runs B still skips); one new mapping row.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md C2: the
+//          left stick click saves the shot on screen as the player's own challenge (OwnShotShelf), and the mapping
+//          lists it.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 5, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          while a page is up (the menu, or the trick, lesson or eight-ball list) A, B, X, Y, the shoulders, the d-pad
 //          and the sticks leave the table alone, so the system's controller focus drives the menu and the lists; the
@@ -42,6 +45,8 @@
 //            options button ................ try again (where the controller has one)
 //            right stick click ............. replay with the Lens; Watch it in the Lens when a remarkable shot is on
 //                                            offer (where the controller has one)
+//            left stick click .............. Make it again: save the shot on screen as the player's own challenge,
+//                                            when it can be saved (where the controller has one)
 //            menu button ................... open the menu, or close it when a game is in progress
 //          While a page is up (the menu, or a trick, lesson or eight-ball list) only the menu button acts here; the
 //          system's controller focus moves through the page.
@@ -132,6 +137,8 @@ final class GameControllerInput {
                     action: String(localized: "Tries the shot again, where the controller has this button.")),
             Mapping(control: String(localized: "Right stick click"),
                     action: String(localized: "Replays the shot with the Physics Lens, where the controller has this button.")),
+            // 0.7.7 make-it-again: the left stick click.
+            Mapping(control: OwnShotWords.leftStickControl, action: OwnShotWords.leftStickAction),
             Mapping(control: String(localized: "Menu button"),
                     action: String(localized: "Opens or closes the menu.")),
         ]
@@ -179,6 +186,8 @@ final class GameControllerInput {
     /// Which button was pressed: a plain value, so the framework's handler can hand it to the main actor.
     private enum Button: Sendable {
         case a, b, x, y, menu, options, rightStick, rightShoulder, leftShoulder, left, right, up, down
+        // 0.7.7 make-it-again: the left stick click saves the shot on screen as the player's own challenge.
+        case leftStick
     }
 
     /// Buttons: one action per press (pressed changes from false to true), never a hold.
@@ -192,6 +201,8 @@ final class GameControllerInput {
         // Not every controller has these two (the framework gives nil then); the mapping says "where it has one".
         if let options = pad.buttonOptions { buttons.append((options, .options)) }
         if let stick = pad.rightThumbstickButton { buttons.append((stick, .rightStick)) }
+        // 0.7.7 make-it-again: the left stick click too, where the controller has one.
+        if let stick = pad.leftThumbstickButton { buttons.append((stick, .leftStick)) }
         for (input, button) in buttons {
             input.pressedChangedHandler = { _, _, pressed in
                 guard pressed else { return }
@@ -244,6 +255,10 @@ final class GameControllerInput {
             } else if NotebookStory.hasShot(model) {
                 model.replay(withLens: true)
             }
+        case .leftStick:
+            // 0.7.7 make-it-again: Make it again for the shot on screen (OwnShotShelf decides when it can be saved);
+            // nothing when it cannot.
+            if OwnShotShelf.shared.canSave(model) { OwnShotShelf.shared.save(from: model) }
         case .rightShoulder: ShotNarration.step(model, forward: true)
         case .leftShoulder: ShotNarration.step(model, forward: false)
         case .left: pressDpad(model, x: -1, y: 0)

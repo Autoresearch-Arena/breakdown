@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md F1:
+//          HighlightCard's button row starts with Make it again / Play it now (MakeItAgainButton, OwnShotViews.swift).)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The rules the
 //          upright phone's blurbs (FreePlayPhoneBlurbs.swift) share with these cards are lifted out so the two never
 //          disagree: when each card shows (BallInHandCard.isVisible, PlaceBallsCard.isVisible,
@@ -463,6 +465,8 @@ struct HighlightCard: View {
                 .buttonStyle(.glass)
                 .accessibilityHint(ClipWords.hint)
             }
+            // 0.7.7 make-it-again: Make it again (or Play it now once saved), first in the row.
+            MakeItAgainButton(model: model)
             if offer.canTryTrick {
                 Button { model.tryHighlightTrick() } label: {
                     Label(String(localized: "Try the trick shot"), systemImage: "scope").font(.headline)

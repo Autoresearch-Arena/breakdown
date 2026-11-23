@@ -22,6 +22,9 @@
 //          pockets are named in table words that hold however the phone is held (the far corner on the 3's side of the
 //          rack, the corner nearest or beyond a ball), never screen words such as top-right, which were only right
 //          with the phone sideways. The rings on the cloth mark the same pockets.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md T1:
+//          TrickShot carries the table it is played on, defaulting to the pool table, so a player's own saved shot on
+//          bumper pool or bar billiards is solved there.)
 // PURPOSE: The trick-shot library as the app shows it. Every shot has its id, title, a one-sentence hook, where
 //          the balls start (only the balls it uses; every other ball is off the table), the authored answer (aim, power,
 //          cue-tip height and side; cue elevation for the massé, the jump and the carom), the goal the app checks from
@@ -158,6 +161,11 @@ struct TrickShot: Identifiable, Equatable {
     /// shots, whose own marked band (Lesson.cueAngles) is passed to the judge instead. Last, with a default, so the
     /// lessons' memberwise calls (Lessons.swift) need no change.
     var cueAngles: ClosedRange<Int>? = nil
+    // 0.7.7 make-it-again: the table a shot is played on.
+    /// The table this shot is played on: the pool table for every authored shot and lesson; a saved shot of the
+    /// player's own (Make it again, 0.7.7) keeps the table it was made on, and ShowpieceModel.physicsTable reads it.
+    /// Last, with a default, so no existing call changes.
+    var table: TableKind = .standard
 
     var isBreak: Bool { if case .rack = setup { return true } else { return false } }
 }

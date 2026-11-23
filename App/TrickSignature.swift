@@ -5,6 +5,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream pacing, plans/22-Nov-2026-v076-phone-plan.md, bug-hunt
 //          entry 5: The Called Break also holds the called ball dropping (the ball its goal names), so the moment the
 //          shot is about is a stop; before, only the push into the rack was, and the called ball went in unheld.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md T5: an
+//          unknown id that is a saved shot of the player's own gets its moments from OwnShotSignature.)
 // PURPOSE: For each authored trick shot, the moments its guided Lens replay must stop on (plans/22-Nov-2026-v074-
 //          glow-up-plan.md, F4 and stream lens-pacing): the jump's take-off and landing, the end of the masse's bend,
 //          the throw contact and so on, found in whichever recording of that shot is on screen (the answer or the
@@ -77,7 +79,10 @@ enum TrickSignature {
             candidates = [first, m.secondContact(of: cue),
                           m.largestBend(of: cue, after: first.map { m.time($0) } ?? .infinity)?.event]
         default:
-            return []
+            // 0.7.7 make-it-again: a saved shot of the player's own: its first contact, then the last ball down (its
+            // bank, else its drop). Read from the recording alone, so this stays a plain nonisolated call. Any other
+            // unknown id still gets an empty list, as before.
+            return OwnShotSignature.events(forOwn: id, in: timeline, captions: captions)
         }
         let found = m.signature(candidates)
         return found.isEmpty ? m.signature([first]) : found
