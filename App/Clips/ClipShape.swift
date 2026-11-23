@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (App Store previews: a third shape, storePreview, 886 by 1920, the
+//          size the store takes for current iPhones, with a shorter replay so the film stays under the store's 30 s.)
 // PURPOSE: The two shapes a Lens clip comes in (0.7.7, plans/23-Nov-2026-clips-plan.md, Step 3): upright (1080 by 1920
 //          pixels, for a phone's photo library and the social apps that show video upright) and wide (1920 by 1080).
 //          Each shape also says how the table is framed inside it: the clip's scene is laid out on a canvas in points
@@ -18,14 +20,22 @@ import UIKit
 #endif
 
 enum ClipShape: Equatable, Sendable {
-    case upright, wide
+    /// storePreview: the App Store's preview size for current iPhones (886 by 1920), upright, only ever made by the
+    /// self-test launch (-clipShape store) for the store page; players get upright or wide.
+    case upright, wide, storePreview
 
     /// The film's size in pixels.
     var pixelSize: CGSize {
         switch self {
         case .upright: return CGSize(width: 1080, height: 1920)
         case .wide: return CGSize(width: 1920, height: 1080)
+        case .storePreview: return CGSize(width: 886, height: 1920)
         }
+    }
+
+    /// Seconds the explained replay may take. The store's previews must be 30 s at most, so its replay is shorter.
+    var replayBudget: Double {
+        self == .storePreview ? 16 : ClipScript.replayBudget
     }
 
     /// Pixels per canvas point: the canvas is a phone-sized screen drawn at a phone's own scale.
@@ -44,6 +54,8 @@ enum ClipShape: Equatable, Sendable {
             return FramingRequest(size: canvas, safe: FramingInsets(), headerBottom: 24, controlsTop: 490)
         case .wide:
             return FramingRequest(size: canvas, safe: FramingInsets(), headerBottom: 16, controlsTop: 264)
+        case .storePreview:
+            return FramingRequest(size: canvas, safe: FramingInsets(), headerBottom: 24, controlsTop: 490)
         }
     }
 
@@ -52,6 +64,7 @@ enum ClipShape: Equatable, Sendable {
         switch self {
         case .upright: return CGRect(x: 0, y: 490, width: 360, height: 150)
         case .wide: return CGRect(x: 0, y: 264, width: 640, height: 96)
+        case .storePreview: return CGRect(x: 0, y: 490, width: canvas.width, height: 150)
         }
     }
 
@@ -60,6 +73,7 @@ enum ClipShape: Equatable, Sendable {
         switch self {
         case .upright: return 320
         case .wide: return 440
+        case .storePreview: return 270
         }
     }
 
@@ -68,6 +82,7 @@ enum ClipShape: Equatable, Sendable {
         switch self {
         case .upright: return 5
         case .wide: return 4
+        case .storePreview: return 6
         }
     }
 

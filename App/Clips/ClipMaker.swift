@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (the script's replay budget comes from the shape.)
 // PURPOSE: Makes a Lens clip, start to finish, while the game keeps playing (0.7.7, plans/23-Nov-2026-clips-plan.md,
 //          Step 8). One shared maker (ClipMaker.shared), observed by the clip card, the phone's clip blurb, the start
 //          buttons (hidden while a clip is being made) and the controller.
@@ -123,7 +124,7 @@ final class ClipMaker {
         generation += 1
         // A recording with no moment to hold makes no clip; a tap never silently does nothing.
         guard let script = ClipScript.make(timeline: source.timeline, captions: source.captions,
-                                           signature: source.signature) else {
+                                           signature: source.signature, replayBudget: shape.replayBudget) else {
             phase = .failed(.couldNotMake)
             return
         }

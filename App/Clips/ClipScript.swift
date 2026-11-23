@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (make takes the replay budget, so the App Store shape can be shorter.)
 // PURPOSE: The script of a Lens clip (0.7.7, plans/23-Nov-2026-clips-plan.md, Step 4): for every frame of the film (30 a
 //          second), the shot's clock, the Lens melt, the playback rate (for the sound's slow-motion stretch), whether the
 //          contacts crossed on this frame sound, the moment being held, the note on screen and how opaque it is, whether
@@ -163,7 +164,8 @@ struct ClipScript: Equatable {
     // MARK: Making the script
 
     /// The script for a recording, or nil when it has no moment worth holding (a still table makes no clip).
-    static func make(timeline: Timeline, captions: [Caption], signature: [Int]) -> ClipScript? {
+    static func make(timeline: Timeline, captions: [Caption], signature: [Int],
+                     replayBudget: Double = ClipScript.replayBudget) -> ClipScript? {
         let full = PacePlan(captions: captions, timeline: timeline, style: .standard, signature: signature)
         guard full.hasBeats else { return nil }
         let D = timeline.duration
@@ -173,7 +175,7 @@ struct ClipScript: Equatable {
         // Fit the replay into its budget: raise k, then drop a moment and start again, down to two moments; with two
         // left (or fewer to begin with), k keeps growing. The holds alone are at most 2 x 6 s and the tail at most
         // 4.5 s, so a large enough k always fits.
-        let budget = Int((replayBudget * fps).rounded())
+        let budget = Int((replayBudget * fps).rounded())  // the shape's budget (shorter for the store's previews)
         var cut = full.keeping(kept)
         var beats = clipBeats(cut)
         var replay: [ClipFrame] = []

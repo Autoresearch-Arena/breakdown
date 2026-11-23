@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (-clipShape picks the shape, for the App Store previews.)
 // PURPOSE: The launch check for Lens clips (0.7.7, plans/23-Nov-2026-clips-plan.md, Step 10). Launched with
 //          -clipSelfTest, the app makes an upright clip of the shot on screen at launch (the opening's break) through
 //          the real maker, renderer, mixer and writer, then opens the finished file and logs one line:
@@ -17,6 +18,16 @@ import SwiftUI
 @MainActor
 enum ClipSelfTest {
     static let requested = ProcessInfo.processInfo.arguments.contains("-clipSelfTest")
+    /// The shape to film: "-clipShape store" makes the App Store preview size, "-clipShape wide" the wide one.
+    static var shape: ClipShape {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "-clipShape"), i + 1 < args.count else { return .upright }
+        switch args[i + 1] {
+        case "store": return .storePreview
+        case "wide": return .wide
+        default: return .upright
+        }
+    }
     private static var started = false
 
     /// Makes the self-test clip once per launch, when the flag is set; logs the result.
@@ -28,12 +39,12 @@ enum ClipSelfTest {
         let source = ClipSource(timeline: model.timeline, surface: model.physicsSurface, table: model.solvedTable,
                                 title: nil)
         guard let script = ClipScript.make(timeline: source.timeline, captions: source.captions,
-                                           signature: source.signature) else {
+                                           signature: source.signature, replayBudget: shape.replayBudget) else {
             NSLog("CLIP-SELFTEST no moments to hold in the shot on screen -> FAIL")
             return
         }
         let maker = ClipMaker.shared
-        maker.start(source, shape: .upright)
+        maker.start(source, shape: shape)
         // Wait for the maker to finish (a clip renders in about its own length; allow ten times that).
         var waited = 0.0
         while maker.isMaking, waited < script.duration * 10 + 30 {
@@ -53,7 +64,8 @@ enum ClipSelfTest {
         let duration = (try? await asset.load(.duration)).map { CMTimeGetSeconds($0) } ?? 0
         let bytes = ((try? FileManager.default.attributesOfItem(atPath: result.url.path)[.size]) as? NSNumber)?
             .int64Value ?? 0
-        let pass = video.count == 1 && audio.count == 1 && Int(size.width) == 1080 && Int(size.height) == 1920
+        let pass = video.count == 1 && audio.count == 1 && Int(size.width) == Int(shape.pixelSize.width)
+            && Int(size.height) == Int(shape.pixelSize.height)
             && abs(duration - script.duration) < 0.1
         NSLog("CLIP-SELFTEST frames=%d duration=%.2f bytes=%lld tracks=%d size=%dx%d -> %@", script.frames.count,
               duration, bytes, video.count + audio.count, Int(size.width), Int(size.height), pass ? "PASS" : "FAIL")
