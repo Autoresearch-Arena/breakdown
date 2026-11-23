@@ -79,6 +79,10 @@
 //          things to say about one event (throw, a bend, the rail's effect on spin) are sentences inside that
 //          event's caption, never a second caption. Also holds RailKeep (what a rail gives back at a stated pace),
 //          read by the notebook and the Behind the 8-Ball card too.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (a figure's unit prints in the shown language, UnitSymbol in
+//          NumberStyle.swift: Russian м/с, Arabic م/ث, matching the sentences beside it.)
 // SRP/DRY check: Pass - caption selection and wording only; display lives in the view. RailKeep restates the
 //          solver's rail routine (BreakdownPhysics Impacts.rail, internal to the package, so the app cannot call it)
 //          for the one case the words need; the reason and the risk are in its own comment.
@@ -111,7 +115,7 @@ struct CaptionFigure: Equatable, Sendable {
     /// Value and unit as one piece of text ("5.1 m/s", "2.1°", "64%"), never broken across lines: a symbol that hugs its
     /// number is written straight on, any other unit after a no-break space.
     var text: String {
-        unit == "°" || unit == "%" ? value + unit : value + "\u{00A0}" + unit
+        unit == "°" || unit == "%" ? value + unit : value + "\u{00A0}" + UnitSymbol.shown(unit)
     }
 }
 
@@ -287,17 +291,17 @@ enum CaptionEngine {
 
     /// A number with the decimal places asked for, written the way the player's language writes numbers.
     private static func f(_ x: Double, _ digits: Int = 1) -> String {
-        String(format: "%.\(digits)f", locale: Locale.current, x)
+        String(format: "%.\(digits)f", locale: AppLocale.numbers, x)
     }
 
     /// A friction number with its meaningful digits (0.2, 0.025, 0.0025), in the player's number style.
     private static func coefficient(_ x: Double) -> String {
-        x.formatted(.number.precision(.significantDigits(1...2)))
+        x.formatted(.number.locale(AppLocale.numbers).precision(.significantDigits(1...2)))
     }
 
     /// A "times as far" ratio: one decimal below 10 (8, 6.1, 0.4), whole numbers above (12).
     private static func ratio(_ x: Double) -> String {
-        x < 10 ? x.formatted(.number.precision(.fractionLength(0...1))) : x.formatted(.number.precision(.fractionLength(0)))
+        x < 10 ? x.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...1))) : x.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0)))
     }
 
     /// True when `ratio` would print a ratio as "1": one decimal below 10, so anything from 0.95 up to 1.05.
@@ -591,7 +595,7 @@ enum CaptionEngine {
     /// above, each with two significant figures. (Nine microjoules printed as millijoules to one decimal read "0.0".)
     static func energyPhrase(_ joules: Double) -> String {
         let x = max(0, joules)
-        func sig(_ v: Double) -> String { v.formatted(.number.precision(.significantDigits(1...2))) }
+        func sig(_ v: Double) -> String { v.formatted(.number.locale(AppLocale.numbers).precision(.significantDigits(1...2))) }
         if x < 1e-3 { return String(localized: "\(sig(x * 1e6)) microjoules") }
         if x < 1 { return String(localized: "\(sig(x * 1e3)) millijoules") }
         return String(localized: "\(sig(x)) joules")

@@ -64,6 +64,8 @@
 //          again there); the status line moved into ShotStatusLine, shared with the phone's panel; the fine controls
 //          (FineControls) are no longer private, so the phone's panel opens the same sliders inside itself. This panel
 //          looks and behaves exactly as before.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -347,7 +349,7 @@ struct ShotPanel: View {
         // assigning a plain 0 drops the sign bit.
         var tenths = (metres * 10_000).rounded() / 10
         if tenths == 0 { tenths = 0 }
-        let mm = tenths.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always(includingZero: false)))
+        let mm = tenths.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(1)).sign(strategy: .always(includingZero: false)))
         return String(localized: "\(word), \(mm) mm")
     }
 
@@ -477,7 +479,7 @@ struct FineControls: View {
                     if model.racked {
                         SliderRow(label: "Aim", value: $model.aimOffset, range: -ShowpieceModel.breakAimLimit...ShowpieceModel.breakAimLimit,
                                   // In the player's number style, as the other readouts are (#61).
-                                  readout: String(format: "%+.0f mm", locale: Locale.current, model.aimOffset * 1000))
+                                  readout: String(format: "%+.0f mm", locale: AppLocale.numbers, model.aimOffset * 1000))
                     } else {
                         aimRow.disabled(!open.contains(.aim)).lockedForStep(!open.contains(.aim))
                     }
@@ -493,7 +495,7 @@ struct FineControls: View {
                               range: StrokeModel.bridgeRange,
                               readout: Measurement(value: ((model.strokeBridge ?? StrokeModel.automaticBridge) * 100).rounded(),
                                                    unit: UnitLength.centimeters)
-                                  .formatted(.measurement(width: .abbreviated, usage: .asProvided)))
+                                  .formatted(.measurement(width: .abbreviated, usage: .asProvided).locale(AppLocale.numbers)))
                         .disabled(model.restInUse)
                     SliderRow(label: "Cue tip", value: Binding(get: { model.activeTipUp }, set: { model.activeTipUp = $0 }),
                               range: -model.tipLimit...model.tipLimit,
@@ -559,7 +561,7 @@ struct FineControls: View {
                     .accessibilityLabel("Aim right a little")
                 Slider(value: $model.aimDegrees, in: -180...180) { Text("Aim") }
                     .labelsHidden()   // the Mac draws a slider's label unless told not to; the row already shows it
-                    .accessibilityValue(String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees"))
+                    .accessibilityValue(String(localized: "\(String(format: "%.1f", locale: AppLocale.numbers, model.aimDegrees)) degrees"))
                 Button { model.aimDegrees += 0.25 } label: { Image(systemName: "plus").frame(width: Self.nudgeSize, height: Self.nudgeSize) }
                     .accessibilityLabel("Aim left a little")
             }
@@ -574,7 +576,7 @@ struct FineControls: View {
     private static func degreesReadout(_ degrees: Double) -> String {
         var tenths = (degrees * 10).rounded() / 10
         if tenths == 0 { tenths = 0 }
-        return tenths.formatted(.number.precision(.fractionLength(1)).sign(strategy: .always(includingZero: false))) + "°"
+        return tenths.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(1)).sign(strategy: .always(includingZero: false))) + "°"
     }
 
     /// Icon frame for the nudge buttons: the bordered circle adds a little around it, so this lands on 44 points or

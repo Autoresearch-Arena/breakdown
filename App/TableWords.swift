@@ -39,6 +39,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 learn-modes stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          item 4: the spoken bar-billiards ruling says a fallen white peg loses "this break's points", not this
 //          turn's; the tip's spoken value already names its millimetres (tipAmount), as the fine controls now show them.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked CaptionEngine (Captions.swift: the per-event physics sentences, reused as they are
 //          for "Step through the shot"; its ball-name strings are reused here), EightBallTypes (pocket, group and
 //          foul titles, reused) and EightBallJudge (its line tests now live in TableLines, used here). The ruling
@@ -161,7 +163,7 @@ enum TableWords {
     /// A count of ball-widths or diamonds, rounded to the nearest half (finer than a player can judge by eye or
     /// hand), in the player's number style: "2", "1.5", "0.5".
     static func amount(_ x: Double) -> String {
-        ((x * 2).rounded() / 2).formatted(.number.precision(.fractionLength(0...1)))
+        ((x * 2).rounded() / 2).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...1)))
     }
 
     /// A sentence that begins with a ball's name ("the 3 ball ...") starts with a capital, as a sentence should.
@@ -529,7 +531,7 @@ enum TableWords {
     @MainActor
     static func spokenAim(for model: ShowpieceModel) -> String {
         if model.racked {
-            return String(localized: "\(String(format: "%+.0f", locale: Locale.current, model.aimOffset * 1000)) millimetres from the lead ball")
+            return String(localized: "\(String(format: "%+.0f", locale: AppLocale.numbers, model.aimOffset * 1000)) millimetres from the lead ball")
         }
         guard NextShot.isOnTable(model.aimOrigin), model.layout.count > 1 else {
             return String(localized: "The cue ball is off the table.")
@@ -539,7 +541,7 @@ enum TableWords {
         let target = aim(layout: model.layout, from: model.aimOrigin, direction: AimGeometry.launchDirection(for: model),
                          table: table, kind: model.solvedTable, striker: model.strikeBall,
                          contact: AimGeometry.guideContact(for: model), pinsDown: pinsDown)
-        let degrees = String(localized: "\(String(format: "%.1f", locale: Locale.current, model.aimDegrees)) degrees")
+        let degrees = String(localized: "\(String(format: "%.1f", locale: AppLocale.numbers, model.aimDegrees)) degrees")
         var out = target + " " + degrees
         if let band = aimBandLine(degrees: model.aimDegrees, band: model.lessonZones?.aim) { out = joined(out, band) }
         if let stance = stanceLine(model) { out = joined(out, stance) }
@@ -582,7 +584,7 @@ enum TableWords {
         }
         let drops = facts.objectBallsPocketed
         if drops.count > 3 {
-            let names = drops.map { name($0.ball) }.formatted(.list(type: .and))
+            let names = drops.map { name($0.ball) }.formatted(.list(type: .and).locale(AppLocale.numbers))
             out.append(String(localized: "\(drops.count) balls dropped: \(names)."))
         } else {
             // The hole after a colon, never after a preposition (see placeSentence).
@@ -620,7 +622,7 @@ enum TableWords {
         let drops = facts.objectBallsPocketed
         if drops.count > 3 {
             // A break that drops many: the numbers as a list, not a sentence each.
-            let numbers = drops.map { String($0.ball) }.formatted(.list(type: .and))
+            let numbers = drops.map { String($0.ball) }.formatted(.list(type: .and).locale(AppLocale.numbers))
             out.append(String(localized: "\(drops.count) balls dropped: \(numbers)."))
         } else {
             for d in drops {
@@ -649,7 +651,7 @@ enum TableWords {
         func name(_ p: PlayerID) -> String { names.indices.contains(p.index) ? names[p.index] : String(p.index + 1) }
         var out: [String] = []
         if !r.fouls.isEmpty {
-            let list = r.fouls.map(foulWords).formatted(.list(type: .and))
+            let list = r.fouls.map(foulWords).formatted(.list(type: .and).locale(AppLocale.numbers))
             out.append(String(localized: "Foul: \(list)."))
         }
         if let group = r.assignedGroup {
@@ -796,7 +798,7 @@ enum TableWords {
         let power = model.activePower
         if band.contains(power) { return String(localized: "Inside the marked band.") }
         // At least one percent, so a value just outside the band never reads "add 0 percent".
-        func percent(_ speed: Double) -> String { max(1, (speed / span * 100).rounded()).formatted(.number.precision(.fractionLength(0))) }
+        func percent(_ speed: Double) -> String { max(1, (speed / span * 100).rounded()).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0))) }
         if power < band.lowerBound {
             return String(localized: "Add \(percent(band.lowerBound - power)) percent to reach the marked band.")
         }
@@ -817,7 +819,7 @@ enum TableWords {
         let toLow = turn(to: band.lowerBound), toHigh = turn(to: band.upperBound)
         if toLow <= 0, toHigh >= 0 { return String(localized: "Inside the marked fan.") }
         let needed = abs(toLow) < abs(toHigh) ? toLow : toHigh
-        let size = abs(needed).formatted(.number.precision(.fractionLength(0...1)))
+        let size = abs(needed).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...1)))
         return needed > 0 ? String(localized: "Turn the aim \(size) degrees left to reach the marked fan.")
                           : String(localized: "Turn the aim \(size) degrees right to reach the marked fan.")
     }

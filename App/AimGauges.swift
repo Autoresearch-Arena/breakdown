@@ -45,6 +45,8 @@
 //          the balls are racked, shot values afterwards), so the sliders in the fine-controls sheet and these gauges
 //          always agree. Both are 44 points or more in every direction, scale with the text size, and speak a value
 //          and offer actions to VoiceOver, so they are usable without touching the picture.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked ShotPanel's slider rows, which stay as the accessible fallback; these are the new
 //          touch-first versions of the same three values (power, tip height, tip side), not a second copy of the logic.
 import SwiftUI
@@ -346,7 +348,7 @@ struct PowerGauge: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
         // The lesson's power band, when one is marked, after the value (access stream hook, 0.7.0 item 46).
-        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm, cue: model.cueInHand))"),
+        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: AppLocale.numbers, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm, cue: model.cueInHand))"),
                                               TableWords.powerBandLine(model, zones: zones)))
         .accessibilityAdjustableAction { direction in
             // A tenth of the bar per swipe, or the lesson band's finer step while one is up (see tapStep).

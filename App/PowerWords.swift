@@ -6,6 +6,8 @@
 //          identifier (for comparisons and tests), shownWord turns it into the translated word the player reads, and
 //          readout builds the "word · number" text the gauges show. Used by PowerGauge (AimGauges.swift) and the
 //          power slider in the fine controls (ShotPanel.swift).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked ShotPanel (tip and side words, same pattern, kept separate because they describe the
 //          tip, not the speed), AimGauges (the gauge that shows the number) and ShotAttempt (the retry comparison says
 //          "harder" or "softer", a change, not a level). The bands live here only.
@@ -52,13 +54,13 @@ enum PowerWords {
 
     /// "firm · 3.4 m/s": the word first, the number for those who want it, formatted for the player's language.
     static func readout(speed: Double, racked: Bool) -> String {
-        let number = String(format: "%.1f", locale: Locale.current, speed)
+        let number = String(format: "%.1f", locale: AppLocale.numbers, speed)
         return String(localized: "\(word(speed: speed, racked: racked)) · \(number) m/s")
     }
 
     /// What VoiceOver says: "firm, 3.4 metres per second".
     static func spoken(speed: Double, racked: Bool) -> String {
-        let number = String(format: "%.1f", locale: Locale.current, speed)
+        let number = String(format: "%.1f", locale: AppLocale.numbers, speed)
         return String(localized: "\(word(speed: speed, racked: racked)), \(number) metres per second")
     }
 }

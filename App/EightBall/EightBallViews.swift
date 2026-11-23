@@ -59,6 +59,8 @@
 //            playback changes to EightBallMode.update() and opens or closes the shot panel when the mode asks.
 //          Standard controls (Liquid Glass buttons, a List, Menus, SF Symbols), Dynamic Type (button rows fall back to
 //          a column), VoiceOver labels, Reduce Motion (the glow only fades; the card changes without animation).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - views only. Flow is EightBallMode, data EightBallSituations, the cloth numbers come from
 //          RealTableNumbers and PlaySurface.parameters; projection is AimProjector; card styling is the shared
 //          glassCard. The card's small pieces (header, line, button row, prominent style) follow TrickShotCard's so the
@@ -87,7 +89,7 @@ private extension EightBallMedal {
 /// Numbers for the cards, in the player's own number format. Also read by the upright phone's real-table blurb.
 enum EightBallFormat {
     static func decimal(_ x: Double, _ places: Int) -> String {
-        String(format: "%.\(places)f", locale: Locale.current, x)
+        String(format: "%.\(places)f", locale: AppLocale.numbers, x)
     }
 
     static func degrees(_ x: Double) -> String { String(localized: "\(decimal(x, 1))°") }
@@ -104,7 +106,7 @@ enum EightBallFormat {
         if u < 0 { parts.append(String(localized: "\(decimal(-u, 0)) mm below")) }
         if s > 0 { parts.append(String(localized: "\(decimal(s, 0)) mm right")) }
         if s < 0 { parts.append(String(localized: "\(decimal(-s, 0)) mm left")) }
-        return parts.isEmpty ? String(localized: "Centre") : parts.formatted(.list(type: .and))
+        return parts.isEmpty ? String(localized: "Centre") : parts.formatted(.list(type: .and).locale(AppLocale.numbers))
     }
 }
 
@@ -159,7 +161,7 @@ enum EightBallWords {
 
     static func whatWentWrong(_ v: EightBallVerdict) -> String? {
         if let loss = v.loss { return loss.title + "." }
-        if v.fouled { return v.fouls.map(\.title).formatted(.list(type: .and)) + "." }
+        if v.fouled { return v.fouls.map(\.title).formatted(.list(type: .and).locale(AppLocale.numbers)) + "." }
         return nil
     }
 
@@ -175,7 +177,7 @@ enum EightBallWords {
     static func scoreNotes(_ mode: EightBallMode, _ v: EightBallVerdict) -> [String] {
         var out: [String] = []
         if v.madeAsCalled && !v.style.isEmpty {
-            out.append(String(localized: "Style: \(v.style.map(\.title).formatted(.list(type: .and)))."))
+            out.append(String(localized: "Style: \(v.style.map(\.title).formatted(.list(type: .and).locale(AppLocale.numbers)))."))
         }
         if v.nearEdge { out.append(String(localized: "Close to the edge of what works: one off difficulty, and no style.")) }
         if v.fluke { out.append(String(localized: "An unplanned kiss: it counts, but scores no difficulty or style.")) }
@@ -658,9 +660,9 @@ struct EightBallCard: View {
                 GridRow {
                     Text(String(localized: "Rail keeps at \(pace) m/s")).font(.caption)
                     // The player's own percent style (the sign's place and spacing differ by language).
-                    Text(verbatim: (Double(keeps) / 100).formatted(.percent.precision(.fractionLength(0))))
+                    Text(verbatim: (Double(keeps) / 100).formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0))))
                         .font(Theme.number)
-                    Text(verbatim: (Double(keepsStd) / 100).formatted(.percent.precision(.fractionLength(0))))
+                    Text(verbatim: (Double(keepsStd) / 100).formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0))))
                         .font(Theme.number).foregroundStyle(.secondary)
                 }
             }

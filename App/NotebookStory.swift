@@ -19,6 +19,8 @@
 //          uses (CaptionEngine), read from the model; nothing here is worked out again, so every number on the panel is
 //          a number the solver produced.
 //          Follows the Explanations option: with it off the list is not drawn.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - display only. Wording is Captions.swift, the clock and the jump are ShowpieceModel; the lit row
 //          is found by a probe view so the list itself redraws only when the lit caption changes, not every frame.
 import BreakdownLensModel
@@ -175,7 +177,7 @@ struct NotebookStory: View {
     private static func timeText(_ t: Double) -> String {
         Measurement(value: t, unit: UnitDuration.seconds)
             .formatted(.measurement(width: .abbreviated, usage: .asProvided,
-                                    numberFormatStyle: .number.precision(.fractionLength(2))))
+                                    numberFormatStyle: .number.locale(AppLocale.numbers).precision(.fractionLength(2))).locale(AppLocale.numbers))
     }
 }
 

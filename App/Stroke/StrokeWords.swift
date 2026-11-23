@@ -17,6 +17,8 @@
 //          little left. Played straight, the pot would have dropped."), the retry comparison's stroke sentence ("Your
 //          stroke was straighter this time"), and the straight-stroke drill's verdicts and progress. Every sentence a
 //          player reads is here, for the screen and VoiceOver alike.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked PowerWords (the plain word, soft to hard, still comes from there and is decided by the
 //          ball's speed, which its bands were written for), RetryWords (the comparison's outcome half is its own; this
 //          file only adds the stroke half), StrokeEffect (decides whether the stroke changed what happened; this file
@@ -27,7 +29,7 @@ enum StrokeWords {
     // MARK: Power readout
 
     /// A metres-per-second number in the player's language, one decimal.
-    private static func speed(_ v: Double) -> String { String(format: "%.1f", locale: Locale.current, v) }
+    private static func speed(_ v: Double) -> String { String(format: "%.1f", locale: AppLocale.numbers, v) }
 
     // The three readouts take the cue in hand (the caller passes model.cueInHand, the cue the game picked for this
     // shot): power is the swing, so the ball's speed, and the soft-to-hard word decided by it, depend on the cue's
@@ -174,10 +176,10 @@ enum StrokeWords {
         let m = abs(metres)
         if m < 0.1 {
             return Measurement(value: (m * 1000).rounded(), unit: UnitLength.millimeters)
-                .formatted(.measurement(width: .abbreviated, usage: .asProvided))
+                .formatted(.measurement(width: .abbreviated, usage: .asProvided).locale(AppLocale.numbers))
         }
         return Measurement(value: (m * 100).rounded(), unit: UnitLength.centimeters)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided))
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided).locale(AppLocale.numbers))
     }
 
     static func verdict(_ r: StrokeDrill.Result) -> String {

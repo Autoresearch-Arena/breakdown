@@ -21,6 +21,8 @@
 //          PlayTableLayer on the upright phone (FreePlayPhoneBlurbs.swift, PhonePlayFeedback).
 //          The call itself (eight-ball after the break) is not here: the plan puts the call row in the aiming panel
 //          (PhoneAimPanel, MatchCallControl).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - every word comes from MatchWords, TableGameWords, OpponentWords, HighlightWords and the
 //          MatchCard statics the card itself uses (rulingTitle, rulingSentences, settledWords, rematchHint,
 //          recordLines, personWon); every action is the card's own model call (acknowledgeRuling, answer, rematch,
@@ -360,11 +362,11 @@ extension PhoneTitle {
             guard !scores.isEmpty else { return nil }
             // Alone (bar billiards against the clock): the one score. Two seats: the person's first, so "12–8" on the
             // person's line reads as theirs.
-            if scores.count == 1 { return scores[0].formatted() }
+            if scores.count == 1 { return scores[0].formatted(.number.locale(AppLocale.numbers)) }
             var ordered = state.players.map(\.id)
             if let you = match.you, let i = ordered.firstIndex(of: you) { ordered.insert(ordered.remove(at: i), at: 0) }
             return ordered.map { id in
-                (state.scores.indices.contains(id.index) ? state.scores[id.index] : 0).formatted()
+                (state.scores.indices.contains(id.index) ? state.scores[id.index] : 0).formatted(.number.locale(AppLocale.numbers))
             }.joined(separator: "–")
         }
         if state.kind == .eightBall, let you = match.you {

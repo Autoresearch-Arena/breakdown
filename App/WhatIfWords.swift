@@ -18,6 +18,8 @@
 //          Ball names come from TableWords.ballName with the attempt's table; left and right follow ShotComparison
 //          (anticlockwise on the table plan is the shooter's left). Read by WhatIfViews (the card) and WhatIfFork (the
 //          spoken outcome line).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked ShotComparison (its landmark and list are reused; describe is not), RetryWords (the
 //          retry card's one sentence about a second try), TableWords.ballName (ball names) and CueAngleMenu.words (the
 //          cue angle readout); the what-if's own sentences exist nowhere else.
@@ -43,7 +45,7 @@ enum WhatIfWords {
     // MARK: Numbers in the player's language
 
     private static func number(_ x: Double, digits: ClosedRange<Int>) -> String {
-        x.formatted(.number.precision(.fractionLength(digits)))
+        x.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(digits)))
     }
 
     /// A ball inside a sentence, named the way the attempt's table names it.
@@ -109,7 +111,7 @@ enum WhatIfWords {
             return d > 0 ? String(localized: "\(deg)° left") : String(localized: "\(deg)° right")
         case .power:
             let pct = (powerPercent(before, value, range: real.powerRange) / 100)
-                .formatted(.percent.precision(.fractionLength(0)))
+                .formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0)))
             return d > 0 ? String(localized: "\(pct) harder") : String(localized: "\(pct) softer")
         case .tipUp:
             let mm = number(abs(d) * 1000, digits: 0...1)
@@ -156,7 +158,7 @@ enum WhatIfWords {
                 if angle == 0 {
                     out.append(String(localized: "This version strikes with a level cue."))
                 } else {
-                    let deg = Double(angle).formatted(.number.precision(.fractionLength(0)))
+                    let deg = Double(angle).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0)))
                     out.append(d > 0 ? String(localized: "This version raises the cue to \(deg) degrees.")
                                      : String(localized: "This version lowers the cue to \(deg) degrees."))
                 }
@@ -266,7 +268,7 @@ enum WhatIfWords {
         guard real.table == .standard, r.steps.nudged == [.aim] || r.steps.nudged == [.tipSide],
               r.fork.departure != nil, let gap = r.fork.firstContactGap, gap >= 0.0001,
               r.fork.finishGap > 10 * gap else { return nil }
-        let mm = (gap * 1000).formatted(.number.precision(.significantDigits(1...2)))
+        let mm = (gap * 1000).formatted(.number.locale(AppLocale.numbers).precision(.significantDigits(1...2)))
         let cm = number(r.fork.finishGap * 100, digits: 0...0)
         return String(localized: "At the first hit the two cue balls were \(mm) millimetres apart; they stop \(cm) centimetres apart.")
     }

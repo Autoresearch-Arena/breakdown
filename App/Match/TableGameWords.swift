@@ -30,6 +30,8 @@
 //          sentences, lists, the turn banner and the rules page.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: bar billiards' line in the Tables list says what the game is,
 //          a score against the clock, without offering it as a game against a friend.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked MatchWords (the shared ruling sentences, game names and player names are reused from
 //          there, not repeated) and TableKind (table names and summaries reused). Nothing else words these games.
 import BreakdownRules
@@ -78,7 +80,7 @@ enum TableGameWords {
             let whites = numbers.filter { $0 != BarBilliardsRules.redBall }.count
             var parts = counted(whites: whites, reds: 0)
             if numbers.contains(BarBilliardsRules.redBall) { parts.append(String(localized: "the red")) }
-            return parts.formatted(.list(type: .and))
+            return parts.formatted(.list(type: .and).locale(AppLocale.numbers))
         case .bumperPool:
             // The marked balls are named one by one (each side has one); the rest are counted by colour.
             let marked = numbers.filter { b in BumperPoolRules.sides.contains(where: { $0.first == b }) }
@@ -86,9 +88,9 @@ enum TableGameWords {
             let reds = plain.filter { bumperColour(of: $0) == .red }.count
             var parts = marked.map { ball($0, kind: kind) }
             parts += counted(whites: plain.count - reds, reds: reds)
-            return parts.formatted(.list(type: .and))
+            return parts.formatted(.list(type: .and).locale(AppLocale.numbers))
         case .fivePin, .eightBall, .nineBall:
-            return numbers.map { ball($0, kind: kind) }.formatted(.list(type: .and))
+            return numbers.map { ball($0, kind: kind) }.formatted(.list(type: .and).locale(AppLocale.numbers))
         }
     }
 
@@ -153,7 +155,7 @@ enum TableGameWords {
 
     /// Bar billiards: the time left as minutes and seconds, from whole seconds.
     static func timeLeft(seconds: Int) -> String {
-        let clock = Duration.seconds(max(0, seconds)).formatted(.time(pattern: .minuteSecond))
+        let clock = Duration.seconds(max(0, seconds)).formatted(.time(pattern: .minuteSecond).locale(AppLocale.numbers))
         return String(localized: "Time left: \(clock)")
     }
 
@@ -184,7 +186,7 @@ enum TableGameWords {
         let each = scores.enumerated().map { seat, score in
             String(localized: "\(MatchWords.displayName(PlayerID(seat), in: names, you: you)): \(score)")
         }
-        return String(localized: "Scores: \(each.formatted(.list(type: .and))).")
+        return String(localized: "Scores: \(each.formatted(.list(type: .and).locale(AppLocale.numbers))).")
     }
 
     // MARK: The points-explained card

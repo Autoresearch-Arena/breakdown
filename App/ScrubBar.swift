@@ -20,6 +20,8 @@
 //          strip (PhoneStrip): unplayed rail white at 25 per cent, played rail white, no accent glow on the knob, and a
 //          2-point white tick at each explained moment (the captions) instead of the coloured impact ticks, because on
 //          the phone cyan and magenta mean only rolling and sliding. Touch area, haptics and VoiceOver are unchanged.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -196,7 +198,7 @@ struct ScrubBar: View {
     private func impact(before t: Double) -> Double? { impactTimes.last { $0 < t - 0.001 } }
 
     private var spokenValue: String {
-        String(localized: "\(String(format: "%.1f", locale: Locale.current, model.time)) of \(String(format: "%.1f", locale: Locale.current, model.duration)) seconds")
+        String(localized: "\(String(format: "%.1f", locale: AppLocale.numbers, model.time)) of \(String(format: "%.1f", locale: AppLocale.numbers, model.duration)) seconds")
     }
 }
 
@@ -214,5 +216,5 @@ struct TimeReadout: View {
             .accessibilityHidden(true)   // the scrub bar already speaks it
     }
 
-    private static func seconds(_ t: Double) -> String { t.formatted(.number.precision(.fractionLength(1))) }
+    private static func seconds(_ t: Double) -> String { t.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(1))) }
 }

@@ -10,6 +10,13 @@ All notable changes to this project are listed here, newest first. Versions foll
 
 ## [0.7.6] - 22-November-2026 (not yet shipped)
 
+### Numbers and units in every language
+
+Author: Claude Opus 5.5 Medium.
+
+- What: Every number on screen is written the way the game's language writes it, so French, German, Spanish, Italian, Portuguese and Russian show "6,7 m/s" even on a phone set to the United States (App/NumberStyle.swift). The figure tiles print their unit in the shown language (Russian м/с, Arabic م/ث), Arabic sentences use Arabic unit symbols throughout and Chinese speeds use m/s throughout. Three lines that showed in English in every language are translated: the ride's status, the swing speed caption and the spoken page count. At the largest text sizes the strip's "Lens" moves into the More menu instead of being cut to "Le...".
+- Why: The Boss asked for commas in French and German; Apple writes numbers by the phone's region, not the game's language.
+
 ### The upright phone on Liquid Glass
 
 Author: Claude Opus 5.5 Medium (coordinator), with a foundation builder and four builders at Claude Opus 5.5 Medium. Plan: plans/22-Nov-2026-phone-ui-plan.md.

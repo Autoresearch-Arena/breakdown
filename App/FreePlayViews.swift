@@ -46,6 +46,8 @@
 //          The drag that moves the lifted ball lives in AimOverlay (a small addition there); the red tint and the head
 //          line are drawn by PlayTableLayer. Legality is asked of the package (NextShot.placement), the same check the
 //          model uses when the ball is put down, so the card and the table never disagree with the model.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked ShotPanel (Move cue ball, Undo and the rack choice live in its More menu, which calls
 //          the same model methods), TrickShotCard and EightBallCard (the card pieces follow theirs), and the model
 //          contract in docs/award-batch-contracts.md section 2.1 (every model name used here is from it).
@@ -156,7 +158,7 @@ enum CueBallPlacement {
         let t = model.timeline.table
         func length(_ m: Double) -> String {
             Measurement(value: (max(0, m) * 100).rounded(), unit: UnitLength.centimeters)
-                .formatted(.measurement(width: .wide, usage: .asProvided))
+                .formatted(.measurement(width: .wide, usage: .asProvided).locale(AppLocale.numbers))
         }
         // The nearer long cushion is the one named: y = 0 is the right-hand cushion seen from the head end.
         let place = p.y > t.width / 2

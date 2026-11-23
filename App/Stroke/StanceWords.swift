@@ -7,6 +7,8 @@
 //          VoiceOver alike.
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 equipment, plan item 57: cueLine, the stance card's one-line
 //          indicator naming the cue the game picked for the shot and why.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked StrokeWords (its distance() formats the bridge's length, reused, not copied),
 //          TableGameWords.ball (names the ball the cue is raised over, so other tables' balls read as they do elsewhere)
 //          and RetryWords / ShotComparison (they decide when a setup sentence is said; this file only words it).
@@ -113,7 +115,7 @@ enum StanceWords {
         if names.count == 1 && !strokeChanged {
             return String(localized: "You changed \(names[0]), and \(outcome).")
         }
-        let all = (names + (strokeChanged ? [String(localized: "your stroke")] : [])).formatted(.list(type: .and))
+        let all = (names + (strokeChanged ? [String(localized: "your stroke")] : [])).formatted(.list(type: .and).locale(AppLocale.numbers))
         return String(localized: "You changed \(all), and \(outcome). With several changes at once, this alone can't say which one did it.")
     }
 }

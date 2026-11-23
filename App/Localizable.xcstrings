@@ -566,7 +566,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ يلتقط %@ بسرعة %@ m/s فيُصرف عن الفتحة. بقليل أكثر نحو وسط الجيب تسقط."
+            "value": "%@ يلتقط %@ بسرعة %@ م/ث فيُصرف عن الفتحة. بقليل أكثر نحو وسط الجيب تسقط."
           }
         },
         "de": {
@@ -636,7 +636,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تهبط على بُعد %2$@ cm من حيث غادرت الجوخ، بسرعة %3$@ m/s، وتبقى على الجوخ."
+            "value": "%1$@ تهبط على بُعد %2$@ سم من حيث غادرت الجوخ، بسرعة %3$@ م/ث، وتبقى على الجوخ."
           }
         },
         "de": {
@@ -706,7 +706,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تهبط على بُعد %2$@ cm من حيث غادرت الجوخ، بسرعة %3$@ m/s، ويعيدها اللوح إلى الأعلى بسرعة %4$@ m/s."
+            "value": "%1$@ تهبط على بُعد %2$@ سم من حيث غادرت الجوخ، بسرعة %3$@ م/ث، ويعيدها اللوح إلى الأعلى بسرعة %4$@ م/ث."
           }
         },
         "de": {
@@ -1126,7 +1126,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ يسقط في الجيب بسرعة %@ m/s."
+            "value": "%@ يسقط في الجيب بسرعة %@ م/ث."
           }
         },
         "de": {
@@ -1196,7 +1196,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تسقط في الكأس بسرعة %2$@ m/s."
+            "value": "%1$@ تسقط في الكأس بسرعة %2$@ م/ث."
           }
         },
         "de": {
@@ -1266,7 +1266,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تسقط في الفتحة بسرعة %2$@ m/s."
+            "value": "%1$@ تسقط في الفتحة بسرعة %2$@ م/ث."
           }
         },
         "de": {
@@ -2316,7 +2316,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ يصطدم بالمصدّ بسرعة %2$@ m/s ويحتفظ بـ%3$@ في المئة من سرعته متجهاً مباشرةً نحوه."
+            "value": "%1$@ يصطدم بالمصدّ بسرعة %2$@ م/ث ويحتفظ بـ%3$@ في المئة من سرعته متجهاً مباشرةً نحوه."
           }
         },
         "de": {
@@ -2386,7 +2386,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ يصطدم بالعمود بسرعة %2$@ m/s ويحتفظ بـ%3$@ في المئة من سرعته متجهاً مباشرةً نحوه."
+            "value": "%1$@ يصطدم بالعمود بسرعة %2$@ م/ث ويحتفظ بـ%3$@ في المئة من سرعته متجهاً مباشرةً نحوه."
           }
         },
         "de": {
@@ -2456,7 +2456,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ يصطدم بالحافة بسرعة %@ m/s ويحتفظ بـ%@ في المئة من سرعته متجهاً مباشرةً نحو الحافة. ويقلّص الاحتكاكُ السرعةَ الجانبية."
+            "value": "%@ يصطدم بالحافة بسرعة %@ م/ث ويحتفظ بـ%@ في المئة من سرعته متجهاً مباشرةً نحو الحافة. ويقلّص الاحتكاكُ السرعةَ الجانبية."
           }
         },
         "de": {
@@ -2526,7 +2526,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ يصطدم بالحافة بسرعة %2$@ m/s. طرف الحافة أعلى من مركز الكرة، فيدفعها إلى الأسفل وإلى الخلف معاً، ويتلقّى القماش %3$@ ملي نيوتن ثانية من هذه الدفعة. ويحتفظ بـ%4$@ في المئة من سرعته متجهاً مباشرةً نحو الحافة."
+            "value": "%1$@ يصطدم بالحافة بسرعة %2$@ م/ث. طرف الحافة أعلى من مركز الكرة، فيدفعها إلى الأسفل وإلى الخلف معاً، ويتلقّى القماش %3$@ ملي نيوتن ثانية من هذه الدفعة. ويحتفظ بـ%4$@ في المئة من سرعته متجهاً مباشرةً نحو الحافة."
           }
         },
         "de": {
@@ -2596,7 +2596,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ يصطدم بالحافة بسرعة %@ m/s. طرف الحافة أعلى من مركز الكرة، فيدفعها إلى الأسفل وإلى الخلف معاً: يتلقّى القماش %@ ملي نيوتن ثانية من هذه الدفعة، ويغيّر احتكاكُه الدورانَ الذي تحمله الكرة معها. ويحتفظ بـ%@ في المئة من سرعته متجهاً مباشرةً نحو الحافة."
+            "value": "%@ يصطدم بالحافة بسرعة %@ م/ث. طرف الحافة أعلى من مركز الكرة، فيدفعها إلى الأسفل وإلى الخلف معاً: يتلقّى القماش %@ ملي نيوتن ثانية من هذه الدفعة، ويغيّر احتكاكُه الدورانَ الذي تحمله الكرة معها. ويحتفظ بـ%@ في المئة من سرعته متجهاً مباشرةً نحو الحافة."
           }
         },
         "de": {
@@ -2666,7 +2666,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تصطدم باللوح الحجري نازلةً بسرعة %2$@ m/s وترتد إلى الأعلى بسرعة %3$@ m/s، فتغادر الجوخ."
+            "value": "%1$@ تصطدم باللوح الحجري نازلةً بسرعة %2$@ م/ث وترتد إلى الأعلى بسرعة %3$@ م/ث، فتغادر الجوخ."
           }
         },
         "de": {
@@ -3156,7 +3156,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ يُسقط الوتد بسرعة %2$@ m/s ويواصل التدحرج بسرعة %3$@ m/s."
+            "value": "%1$@ يُسقط الوتد بسرعة %2$@ م/ث ويواصل التدحرج بسرعة %3$@ م/ث."
           }
         },
         "de": {
@@ -3226,7 +3226,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ يُسقط الوتد بسرعة %2$@ m/s ويواصل التدحرج بسرعة %3$@ m/s."
+            "value": "%1$@ يُسقط الوتد بسرعة %2$@ م/ث ويواصل التدحرج بسرعة %3$@ م/ث."
           }
         },
         "de": {
@@ -3496,7 +3496,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ 米/秒"
+            "value": "%@ m/s"
           }
         }
       }
@@ -5606,7 +5606,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تصل إلى الكأس بسرعة %2$@ m/s، أسرع من أن تسقط: تعبرها قبل أن تسحبها الجاذبية إلى أسفل بما يكفي لتعلق بالحافة البعيدة، وتواصل بسرعة %3$@ m/s."
+            "value": "%1$@ تصل إلى الكأس بسرعة %2$@ م/ث، أسرع من أن تسقط: تعبرها قبل أن تسحبها الجاذبية إلى أسفل بما يكفي لتعلق بالحافة البعيدة، وتواصل بسرعة %3$@ م/ث."
           }
         },
         "de": {
@@ -5676,7 +5676,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ تصل إلى الفتحة بسرعة %@ m/s، أسرع من أن تسقط: تعبرها قبل أن تسحبها الجاذبية إلى أسفل بما يكفي لتعلق بالحافة البعيدة، وتواصل بسرعة %@ m/s."
+            "value": "%@ تصل إلى الفتحة بسرعة %@ م/ث، أسرع من أن تسقط: تعبرها قبل أن تسحبها الجاذبية إلى أسفل بما يكفي لتعلق بالحافة البعيدة، وتواصل بسرعة %@ م/ث."
           }
         },
         "de": {
@@ -5746,7 +5746,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ تطير فوق الحافة على ارتفاع %2$@ cm فوق الجوخ بسرعة %3$@ m/s وتغادر الطاولة."
+            "value": "%1$@ تطير فوق الحافة على ارتفاع %2$@ سم فوق الجوخ بسرعة %3$@ م/ث وتغادر الطاولة."
           }
         },
         "de": {
@@ -7006,7 +7006,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "كانت %@ تتحرك بسرعة %@ m/s. انتقال الطاقة: %@ في المئة تذهب إلى %@، و%@ في المئة تبقى، والباقي يضيع على شكل حرارة وصوت."
+            "value": "كانت %@ تتحرك بسرعة %@ م/ث. انتقال الطاقة: %@ في المئة تذهب إلى %@، و%@ في المئة تبقى، والباقي يضيع على شكل حرارة وصوت."
           }
         },
         "de": {
@@ -7486,7 +7486,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ · %@ 米/秒"
+            "value": "%@ · %@ m/s"
           }
         }
       }
@@ -7556,7 +7556,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ · 球 %@ 米/秒"
+            "value": "%@ · 球 %@ m/s"
           }
         }
       }
@@ -7626,7 +7626,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ · 出杆 %@ 米/秒"
+            "value": "%@ · 出杆 %@ m/s"
           }
         }
       }
@@ -11346,7 +11346,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %1$@ m/s تحتفظ هنا بـ%2$lld في المئة من سرعتها (الطاولة القياسية: %3$lld في المئة)."
+            "value": "الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %1$@ م/ث تحتفظ هنا بـ%2$lld في المئة من سرعتها (الطاولة القياسية: %3$lld في المئة)."
           }
         },
         "de": {
@@ -18346,7 +18346,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "في أعلى نقطة من طيرانها تكون أدنى نقطة فيها على ارتفاع %@ cm فوق الجوخ."
+            "value": "في أعلى نقطة من طيرانها تكون أدنى نقطة فيها على ارتفاع %@ سم فوق الجوخ."
           }
         },
         "de": {
@@ -34516,7 +34516,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "أبطأها احتكاك اللباد بمقدار %@ وأدارتها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %@ m/s."
+            "value": "أبطأها احتكاك اللباد بمقدار %@ وأدارتها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %@ م/ث."
           }
         },
         "de": {
@@ -36826,7 +36826,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "عند الضرب يسار المركز تُدفع الكرة إلى اليمين، بعيداً عن الجهة التي لمسها رأس العصا: تنطلق منحرفةً %@ درجة عن خط العصا، بسرعة %@ m/s. الدوران الجانبي يكلّف دائماً قليلاً من دقة التصويب."
+            "value": "عند الضرب يسار المركز تُدفع الكرة إلى اليمين، بعيداً عن الجهة التي لمسها رأس العصا: تنطلق منحرفةً %@ درجة عن خط العصا، بسرعة %@ م/ث. الدوران الجانبي يكلّف دائماً قليلاً من دقة التصويب."
           }
         },
         "de": {
@@ -36966,7 +36966,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "عند الضرب يمين المركز تُدفع الكرة إلى اليسار، بعيداً عن الجهة التي لمسها رأس العصا: تنطلق منحرفةً %@ درجة عن خط العصا، بسرعة %@ m/s. الدوران الجانبي يكلّف دائماً قليلاً من دقة التصويب."
+            "value": "عند الضرب يمين المركز تُدفع الكرة إلى اليسار، بعيداً عن الجهة التي لمسها رأس العصا: تنطلق منحرفةً %@ درجة عن خط العصا، بسرعة %@ م/ث. الدوران الجانبي يكلّف دائماً قليلاً من دقة التصويب."
           }
         },
         "de": {
@@ -42286,7 +42286,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تمرّ فوق %1$@ بفارق %2$@ cm."
+            "value": "تمرّ فوق %1$@ بفارق %2$@ سم."
           }
         },
         "de": {
@@ -59016,7 +59016,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "على سطح «%1$@»، استغرق احتكاك انزلاق قدره %2$@ تحت جاذبية %3$@ m/s² مدة %4$@ ثانية لإبطاء %5$@ وتدويرها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %6$@ m/s."
+            "value": "على سطح «%1$@»، استغرق احتكاك انزلاق قدره %2$@ تحت جاذبية %3$@ م/ث² مدة %4$@ ثانية لإبطاء %5$@ وتدويرها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %6$@ م/ث."
           }
         },
         "de": {
@@ -59366,7 +59366,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "على القمر معاملات الاحتكاك هي نفسها على الجوخ، لكن الجاذبية %1$@ m/s² بدلًا من %2$@. يدفع الاحتكاك بمقدار معامل الاحتكاك مضروبًا في وزن الكرة، والوزن هو الكتلة مضروبة في الجاذبية، لذلك تنزلق الكرة أبعد بنحو %3$@ مرة قبل أن تتدحرج، وتتدحرج أبعد بنحو %4$@ مرة."
+            "value": "على القمر معاملات الاحتكاك هي نفسها على الجوخ، لكن الجاذبية %1$@ م/ث² بدلًا من %2$@. يدفع الاحتكاك بمقدار معامل الاحتكاك مضروبًا في وزن الكرة، والوزن هو الكتلة مضروبة في الجاذبية، لذلك تنزلق الكرة أبعد بنحو %3$@ مرة قبل أن تتدحرج، وتتدحرج أبعد بنحو %4$@ مرة."
           }
         },
         "de": {
@@ -59436,7 +59436,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "على القمر، استغرق احتكاك الانزلاق نفسه الذي على الجوخ (%1$@)، تحت جاذبية لا تتجاوز %2$@ m/s²، مدة %3$@ ثانية لإبطاء %4$@ وتدويرها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %5$@ m/s."
+            "value": "على القمر، استغرق احتكاك الانزلاق نفسه الذي على الجوخ (%1$@)، تحت جاذبية لا تتجاوز %2$@ م/ث²، مدة %3$@ ثانية لإبطاء %4$@ وتدويرها حتى توقف أسفل الكرة عن الانزلاق. وهي الآن تتدحرج بسرعة %5$@ م/ث."
           }
         },
         "de": {
@@ -62017,6 +62017,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "自己的球击倒了柱"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الصفحة %lld من %lld"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seite %lld von %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Página %lld de %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page %lld sur %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagina %lld di %lld"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/%lldページ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/%lld쪽"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Página %lld de %lld"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Página %lld de %lld"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Страница %lld из %lld"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %lld 页，共 %lld 页"
           }
         }
       }
@@ -69026,7 +69096,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "ما تحتفظ به الحافة عند %@ m/s"
+            "value": "ما تحتفظ به الحافة عند %@ م/ث"
           }
         },
         "de": {
@@ -69096,7 +69166,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الحواف: الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %1$@ m/s تحتفظ بـ%2$lld في المئة من سرعتها."
+            "value": "الحواف: الكرة التي تتدحرج مباشرةً نحو الحافة بسرعة %1$@ م/ث تحتفظ بـ%2$lld في المئة من سرعتها."
           }
         },
         "de": {
@@ -72170,6 +72240,77 @@
           }
         }
       }
+    },
+    "Riding with %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نرافق %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitfahrt: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viajando con %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En route avec %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In viaggio con %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@に同乗中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 시점"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Em viagem com %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viajando com %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Катимся вместе: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟随%@"
+          }
+        }
+      },
+      "comment": "Status in the title row while the camera rides with the struck ball; the argument is the ball's name with its article, for example 'the cue ball'"
     },
     "Right a little": {
       "localizations": {
@@ -79796,7 +79937,7 @@
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "可行速度：%1$@ 到 %2$@ 米/秒。"
+            "value": "可行速度：%1$@ 到 %2$@ m/s。"
           }
         }
       }
@@ -84557,6 +84698,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "弧线绕过 6 号球"
+          }
+        }
+      }
+    },
+    "Swing speed · %@": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرعة الضربة · %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwung · %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Golpe · %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Élan · %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colpo · %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スイング · %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스윙 · %@"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tacada · %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tacada · %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Замах · %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "出杆 · %@"
           }
         }
       }
@@ -90866,7 +91077,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "العصا، المرفوعة %1$@ درجة، تدفع الكرة بسرعة %2$@ m/s على امتداد خطها: %3$@ m/s على طول الجوخ و%4$@ m/s إلى الأسفل نحو اللوح الحجري. يقذفها اللوح إلى الأعلى بسرعة %5$@ m/s، فتغادر الجوخ."
+            "value": "العصا، المرفوعة %1$@ درجة، تدفع الكرة بسرعة %2$@ م/ث على امتداد خطها: %3$@ م/ث على طول الجوخ و%4$@ م/ث إلى الأسفل نحو اللوح الحجري. يقذفها اللوح إلى الأعلى بسرعة %5$@ م/ث، فتغادر الجوخ."
           }
         },
         "de": {
@@ -90936,7 +91147,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "العصا، المرفوعة %1$@ درجة، تدفع الكرة نحو اللوح الحجري وإلى الأمام معاً. الدفعة إلى الأسفل أصغر من أن تجعلها تقفز، فيمتصها الجوخ وتنطلق الكرة على الجوخ بسرعة %2$@ m/s."
+            "value": "العصا، المرفوعة %1$@ درجة، تدفع الكرة نحو اللوح الحجري وإلى الأمام معاً. الدفعة إلى الأسفل أصغر من أن تجعلها تقفز، فيمتصها الجوخ وتنطلق الكرة على الجوخ بسرعة %2$@ م/ث."
           }
         },
         "de": {
@@ -94226,7 +94437,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لامس رأس العصا الكرة على بعد %@ في المئة من نصف قطرها عن المركز، فذهب جزء من دفعة العصا إلى الدوران بدلاً من السرعة. تنطلق بسرعة %@ m/s، أبطأ بنسبة %@ في المئة من ضربة في المركز بالحركة نفسها."
+            "value": "لامس رأس العصا الكرة على بعد %@ في المئة من نصف قطرها عن المركز، فذهب جزء من دفعة العصا إلى الدوران بدلاً من السرعة. تنطلق بسرعة %@ م/ث، أبطأ بنسبة %@ في المئة من ضربة في المركز بالحركة نفسها."
           }
         },
         "de": {
@@ -94296,7 +94507,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لامس رأس العصا الكرة على بعد أكثر من %@ في المئة من نصف قطرها عن المركز، أبعد مما يستطيع الإمساك به، فانزلق عنها. تنطلق الكرة بسرعة %@ m/s فقط، منحرفةً %@ درجة عن خط العصا."
+            "value": "لامس رأس العصا الكرة على بعد أكثر من %@ في المئة من نصف قطرها عن المركز، أبعد مما يستطيع الإمساك به، فانزلق عنها. تنطلق الكرة بسرعة %@ م/ث فقط، منحرفةً %@ درجة عن خط العصا."
           }
         },
         "de": {
@@ -103320,6 +103531,237 @@
           }
         }
       }
+    },
+    "Unit: cm": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سم"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "см"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cm"
+          }
+        }
+      },
+      "comment": "Short symbol for centimetres, printed after a distance figure."
+    },
+    "Unit: m/s": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "م/ث"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "м/с"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "m/s"
+          }
+        }
+      },
+      "comment": "Short symbol for metres per second, printed after a speed figure. Use the symbol a school physics book in this language uses."
+    },
+    "Unit: s": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ث"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "с"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "s"
+          }
+        }
+      },
+      "comment": "Short symbol for seconds, printed after a time figure."
     },
     "Up a little": {
       "localizations": {

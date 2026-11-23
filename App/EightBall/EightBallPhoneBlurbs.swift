@@ -23,6 +23,8 @@
 //          a what-if is open, as the card does.
 //          Also PhonePrimaryAction.eightBall. Colour: the card's cyan and magenta accents are white and the secondary
 //          colour here (Part 3: magenta and cyan mean only sliding and rolling).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - every word comes from EightBallWords and EightBallFormat (shared with the card), the call
 //          controls are CallBallChips, CallPocketMenu and CallSafetyButton, and every action is the card's own
 //          EightBallMode call (startCalling, aimWithCall, watch, cancelCalling, pick, callSafety, skipHint, lensReplay,
@@ -195,7 +197,7 @@ struct EightBallPhoneBlurbs: View {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(verbatim: EightBallWords.resultTitle(v)).font(Theme.blurbTitle).lineLimit(2)
                 Text(verbatim: "·").font(Theme.blurbTitle).foregroundStyle(.secondary)
-                Text(verbatim: v.total.formatted()).font(Theme.blurbFigure).foregroundStyle(.white)
+                Text(verbatim: v.total.formatted(.number.locale(AppLocale.numbers))).font(Theme.blurbFigure).foregroundStyle(.white)
                     .lineLimit(1).fixedSize()
             }
             if !replaying {

@@ -34,6 +34,8 @@
 //          ball heads, read from a two-ball trial solve by the solver itself, remembered until the shot changes.
 //          (7) AimProjector.turnSign: which way a counter-clockwise turn on the table looks on screen, shared by the
 //          pointer's scroll (PointerAim) so it turns the line the way the arrow keys do (item 31).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked TableStage and TableCamera, which project world points to the screen for the caption
 //          ring; that goes one way only and lives in a closure inside the 3D view, so the other way (screen to table)
 //          is done here from the camera entity itself. Table/world conversion stays in TableFrame. guideLine is the
@@ -95,7 +97,7 @@ struct AimFork: Equatable, Sendable {
     /// How far and which way side spin turns the ball, for beside the ball's prong ("2.4° left"), as the shooter sees it
     /// standing behind the cue.
     var turnWords: String {
-        let degrees = abs(turnDegrees).formatted(.number.precision(.fractionLength(1)))
+        let degrees = abs(turnDegrees).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(1)))
         return turnDegrees > 0 ? String(localized: "\(degrees)° left") : String(localized: "\(degrees)° right")
     }
 }

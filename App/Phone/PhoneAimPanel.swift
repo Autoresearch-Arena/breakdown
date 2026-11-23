@@ -25,6 +25,8 @@
 //          shapes never claim it at once.
 //          Reads and writes the model only through the calls ShotPanel uses (fireStroke, activeElevation, powerFraction,
 //          the gauges' own calls, the options' calls); Put away sets the isOpen binding, as Your shot's toggle does.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - reuses TipPicker (AimGauges.swift), CueAngleMenu (phone form), ShotOptionsItems, FineControls
 //          and ShotStatusLine (ShotPanel.swift), MatchCallRow (CallControl.swift) and StrokeWords (the
 //          figure and caption). PhonePowerBar redraws PowerGauge's bar (AimGauges.swift is not part of this change):
@@ -313,7 +315,7 @@ struct PhonePowerBar: View {
         .onChange(of: calm < 1) { noteCalmMark() }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: "Power"))
-        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: Locale.current, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm, cue: model.cueInHand))"),
+        .accessibilityValue(TableWords.joined(String(localized: "\(String(format: "%.0f", locale: AppLocale.numbers, fraction * 100)) percent, \(StrokeWords.spoken(power: model.activePower, racked: model.racked, warm: warm, cue: model.cueInHand))"),
                                               TableWords.powerBandLine(model, zones: zones)))
         .accessibilityAdjustableAction { direction in
             let swipe = min(Self.adjustStep, bandStep ?? Self.adjustStep)

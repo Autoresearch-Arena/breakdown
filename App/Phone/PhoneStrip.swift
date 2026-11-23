@@ -17,6 +17,8 @@
 //          Also writes model.playbackRowTop (the third Lens tip anchors on it), as PlaybackControls does elsewhere.
 //          Writes to the model only through togglePlay, nextBeat, replay(withLens:), setRate, setAutoRate, setLens,
 //          setRide and the primary action's own closure.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (the button row's gaps match the fitting sum: at the largest
+//          text sizes Lens was squeezed to "Le..." instead of moving into the menu.)
 // SRP/DRY check: Pass - reuses ScrubBar (phone style added there), PlaybackSpeed.rates, SpeedPicker.autoShort and the
 //          same model calls PlayPauseButton, ReplayButton, SpeedPicker and PlaybackControls' Lens and Ride toggles use.
 //          The shared PlaybackControls stays for the notebook, the sideways column and the big-window layout.
@@ -90,9 +92,14 @@ struct PhoneStrip: View {
             if showsPlayback { scrubRow }
             if showsPlayback || primary != nil {
                 HStack(spacing: Self.spacing) {
-                    if showsPlayback { transport }
-                    if lens || ride { views(lens: lens, ride: ride) }
-                    Spacer(minLength: 0)
+                    // The left group fills the room instead of a Spacer: a Spacer is a child of the row too, so it
+                    // added a gap that wanted() never counted, and at the largest text sizes Lens looked like it fit
+                    // by two points and was squeezed to "Le..." (22-Nov-2026). Now the gaps drawn are the gaps counted.
+                    HStack(spacing: Self.spacing) {
+                        if showsPlayback { transport }
+                        if lens || ride { views(lens: lens, ride: ride) }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     if let primary { primaryButton(primary) }
                 }
                 .frame(maxWidth: .infinity)

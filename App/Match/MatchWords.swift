@@ -34,6 +34,8 @@
 //          Read by MatchViews (the banner and the cards), CallControl, TableGamePage and the menu (savedLine). It
 //          reads nothing itself: the caller hands in the ruling, the state, the names and what the recording showed
 //          (balls pocketed, the first ball hit).
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked EightBallTypes.swift (EightBallGroup.title, EightBallPocket.title are reused here, not
 //          repeated) and EightBallFoul.title (short labels for the puzzle's scorecard; a match needs whole sentences
 //          naming the ball, so these are separate words for a different job). TableWords.ruling is the spoken form
@@ -96,7 +98,7 @@ enum MatchWords {
 
     /// "the 3", "the 3 and the 11", in the player's language.
     static func balls(_ numbers: [Int]) -> String {
-        numbers.map { String(localized: "the \($0)") }.formatted(.list(type: .and))
+        numbers.map { String(localized: "the \($0)") }.formatted(.list(type: .and).locale(AppLocale.numbers))
     }
 
     // MARK: The call
@@ -271,7 +273,7 @@ enum MatchWords {
         if r.fouled {
             let context = FoulContext(kind: kind, shooter: shooter, shooterIsYou: shooterIsYou, target: target)
             let what = r.fouls.map { foul($0, firstBall: firstBall, illegalBreak: illegalBreakFoul, context: context) }
-                .formatted(.list(type: .and))
+                .formatted(.list(type: .and).locale(AppLocale.numbers))
             out.append(String(localized: "Foul: \(what)."))
         }
         // The ball that won the game is said by the end line ("You pocketed the 9."), so the pot line lists only
@@ -468,7 +470,7 @@ enum MatchWords {
         if s.playerNames.count == 1 {
             return String(localized: "\(game), playing alone.")
         }
-        let who = s.playerNames.formatted(.list(type: .and))
+        let who = s.playerNames.formatted(.list(type: .and).locale(AppLocale.numbers))
         return String(localized: "\(game): \(who). \(s.turnName) to shoot.")
     }
 }

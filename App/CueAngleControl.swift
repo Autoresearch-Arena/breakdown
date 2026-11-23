@@ -26,6 +26,8 @@
 //          here so free play reuses it instead of growing a second one (rules plan, package 2 step 4), and since 0.7.5
 //          the 8-ball card no longer shows its own copy beside the panel's, so there is one cue-angle control on screen.
 //          EightBallFormat.cueAngle still borrows words(degrees:) for the "On a real table" card.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked EightBallViews (EightBallFormat.cueAngle calls words(degrees:) here; the card's own
 //          menu is gone) and EightBallMode (its copy of the angle list and its snapping getter are gone). The package
 //          keeps its own copy of the angles (BreakProbe offeredCueAngles, AuthoredLibraryTests), since it cannot import
@@ -67,14 +69,14 @@ struct CueAngleMenu: View {
     /// on the main actor, hence nonisolated (it touches nothing but its argument).
     nonisolated static func words(degrees: Double) -> String {
         degrees < 0.5 ? String(localized: "Level")
-            : String(localized: "\(String(format: "%.0f", locale: Locale.current, degrees))° up")
+            : String(localized: "\(String(format: "%.0f", locale: AppLocale.numbers, degrees))° up")
     }
 
     /// The angle in its shortest form for a crowded row (0.7.6 #47): the degrees alone, "40°", "0°" for level, in the
     /// player's number style. Through the catalog's existing "%@°" entry, so a language that writes the degree sign
     /// differently can say so.
     static func shortWords(degrees: Int) -> String {
-        String(localized: "\(degrees.formatted())°")
+        String(localized: "\(degrees.formatted(.number.locale(AppLocale.numbers)))°")
     }
 
     var body: some View {

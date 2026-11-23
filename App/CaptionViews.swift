@@ -69,6 +69,8 @@
 //          position is the ball's place on the table, read from the recorded timeline and projected to the screen by
 //          the 3D view each frame. Reads the model; writes to it only through nextBeat() (the Continue button).
 //          The player's stroke lines are drawn by CaptionLeader too: it already holds the per-frame projection.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (a figure's unit prints in the shown language, UnitSymbol in
+//          NumberStyle.swift: Russian м/с, Arabic م/ث, matching the sentences beside it.)
 // SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette. The
 //          stroke lines reuse LeaderState's projection rather than a second per-frame overlay.
 import BreakdownLensModel
@@ -280,7 +282,7 @@ private struct FigureTile: View {
         // The degree and percent signs hug their number, as in the figure's own text; other units sit after a no-break
         // space.
         let unit = figure?.unit ?? " "
-        var tail = AttributedString(unit == "°" || unit == "%" ? unit : "\u{00A0}" + unit)
+        var tail = AttributedString(unit == "°" || unit == "%" ? unit : "\u{00A0}" + UnitSymbol.shown(unit))
         tail.font = Theme.figureUnit
         return number + tail
     }

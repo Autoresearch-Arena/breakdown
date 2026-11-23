@@ -40,6 +40,8 @@
 //                         shown and hidden by the same test; the shared line keeps serving the other layouts.
 //          Used by the free-play comparison card (GhostOverlay.swift) and the trick-shot result card
 //          (TrickShotViews.swift), which carries the sentence itself so only one result card is ever up.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked ShotAttempt.swift (the model stream owns the facts and RetryComparison; this file only
 //          words them) and ShotPanel.shownWord (spin words for the panel; these are whole sentences about a change).
 import SwiftUI
@@ -79,7 +81,7 @@ enum RetryWords {
         case .severalChanges:
             // A changed stance or bridge is listed with the settings: it is one of the several things that changed.
             let names = (c.inputChanges.map { controlName($0.control) } + StanceWords.changedNames(c.setup))
-                .formatted(.list(type: .and))
+                .formatted(.list(type: .and).locale(AppLocale.numbers))
             return String(localized: "You changed \(names), and \(outcome(c)). With several changes at once, this alone can't say which one did it.")
         }
     }
@@ -120,7 +122,7 @@ enum RetryWords {
         }
         if shift < sameSpot { return String(localized: "the cue ball finished near the same spot") }
         let distance = Measurement(value: (shift * 100).rounded(), unit: UnitLength.centimeters)
-            .formatted(.measurement(width: .wide, usage: .asProvided))
+            .formatted(.measurement(width: .wide, usage: .asProvided).locale(AppLocale.numbers))
         return String(localized: "the cue ball finished about \(distance) from where it stopped last time")
     }
 }

@@ -62,6 +62,8 @@
 //          Every threshold is a named constant at the top so the situations can be tuned against it.
 //          Called by EightBallMode once per attempt that started from the situation's own setup, on a background
 //          task: it reads nothing on the main actor, and its caches are behind a lock.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - judging only. Reads pockets through TrickShotJudge.pocket(of:in:), re-solves exactly as
 //          ShowpieceModel.solve does (TableKind.standard.apply, then PlaySurface.apply, then PoolSolver.simulate on a
 //          NextShot.shot input), reads the cloth numbers through RealTableNumbers / PlaySurface.parameters, and leaves
@@ -1199,7 +1201,7 @@ enum EightBallJudge {
     }
 
     private static func number(_ x: Double, _ digits: Int) -> String {
-        x.formatted(.number.precision(.fractionLength(digits)))
+        x.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(digits)))
     }
 
     private static func signed(_ x: Double) -> String {

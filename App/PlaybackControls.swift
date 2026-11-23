@@ -33,13 +33,15 @@
 //          plans/22-Nov-2026-phone-bug-hunt.md: the speed button in the scrub row says Auto with its own short catalog
 //          key, so a long translation of the menu's Auto no longer squeezes the scrub bar; the list row and VoiceOver
 //          keep the full word. The What if button keeps its slot in the scrub row, so the bar never changes width.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
 //          ToggleButton now serves both iPhone and iPad toggles.
 import SwiftUI
 
 enum PlaybackSpeed {
     static let rates: [Double] = [0.1, 0.25, 0.5, 1.0]
-    static func label(_ r: Double) -> String { r.formatted(.number.precision(.fractionLength(0...2))) + "×" }
+    static func label(_ r: Double) -> String { r.formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...2))) + "×" }
 }
 
 // MARK: Pieces

@@ -19,6 +19,8 @@
 //            once the answer has been shown, and how forgiving the shot is (how far aim, power and cue-tip height can
 //            stray and still work). Behind the 8-Ball: your group and the balls you may hit first, and after the shot
 //            the lesson and the trick shots that teach it.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - reading and display only. The data are TrickShots, EightBallSituations and the model's timeline;
 //          nothing is repeated, and no new rules live here.
 import BreakdownLensModel
@@ -58,9 +60,9 @@ struct NotebookNumbers: View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
                 tile(facts.cueSpeed.map(Self.speedText) ?? "–", "Cue speed")
-                tile(facts.ballHits.formatted(), "Ball hits")
-                tile(facts.railHits.formatted(), "Rail hits")
-                tile(facts.pocketed.formatted(), "Pocketed")
+                tile(facts.ballHits.formatted(.number.locale(AppLocale.numbers)), "Ball hits")
+                tile(facts.railHits.formatted(.number.locale(AppLocale.numbers)), "Rail hits")
+                tile(facts.pocketed.formatted(.number.locale(AppLocale.numbers)), "Pocketed")
             }
             NotebookSurfaceCard(model: model)
         }
@@ -92,7 +94,7 @@ struct NotebookNumbers: View {
     private static func speedText(_ v: Double) -> String {
         Measurement(value: v, unit: UnitSpeed.metersPerSecond)
             .formatted(.measurement(width: .abbreviated, usage: .asProvided,
-                                    numberFormatStyle: .number.precision(.fractionLength(1))))
+                                    numberFormatStyle: .number.locale(AppLocale.numbers).precision(.fractionLength(1))).locale(AppLocale.numbers))
     }
 }
 
@@ -158,13 +160,13 @@ struct NotebookSurfaceCard: View {
     }
 
     /// The stated pace for the rails line, in the player's number style.
-    private static var pace: String { String(format: "%.0f", locale: Locale.current, RailKeep.pace) }
+    private static var pace: String { String(format: "%.0f", locale: AppLocale.numbers, RailKeep.pace) }
 
     /// One physical constant: its symbol (the one the equations use) and its value to three significant figures.
     private func constant(_ symbol: String, _ value: Double) -> some View {
         HStack(spacing: 4) {
             Text(verbatim: symbol).font(Theme.equation).foregroundStyle(palette.slide)
-            Text(verbatim: value.formatted(.number.precision(.significantDigits(1...3))))
+            Text(verbatim: value.formatted(.number.locale(AppLocale.numbers).precision(.significantDigits(1...3))))
                 .font(Theme.number)
         }
         .frame(maxWidth: .infinity)
@@ -260,7 +262,7 @@ struct NotebookDossier: View {
                 if !names.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         heading("Practise it with", symbol: "wand.and.sparkles")
-                        Text(verbatim: names.formatted(.list(type: .and)))
+                        Text(verbatim: names.formatted(.list(type: .and).locale(AppLocale.numbers)))
                             .font(Theme.body)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -299,16 +301,16 @@ struct NotebookDossier: View {
 
     private static func degrees(_ v: Double) -> String {
         Measurement(value: v, unit: UnitAngle.degrees)
-            .formatted(.measurement(width: .narrow, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0...2))))
+            .formatted(.measurement(width: .narrow, usage: .asProvided, numberFormatStyle: .number.locale(AppLocale.numbers).precision(.fractionLength(0...2))).locale(AppLocale.numbers))
     }
 
     private static func millimetres(_ metres: Double) -> String {
         Measurement(value: metres * 1000, unit: UnitLength.millimeters)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0...1))))
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.locale(AppLocale.numbers).precision(.fractionLength(0...1))).locale(AppLocale.numbers))
     }
 
     private static func metresPerSecond(_ v: Double) -> String {
         Measurement(value: v, unit: UnitSpeed.metersPerSecond)
-            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0...2))))
+            .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.locale(AppLocale.numbers).precision(.fractionLength(0...2))).locale(AppLocale.numbers))
     }
 }

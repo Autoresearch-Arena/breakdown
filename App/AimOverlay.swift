@@ -115,6 +115,8 @@
 //          tree while the panel is open, so it costs nothing otherwise. For VoiceOver the layer is a container: one
 //          adjustable "Aim" element spoken as a target, plus an element over each ball and pocket; the sliders in the
 //          fine-controls sheet remain the complete slider route.
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked CaptionViews (a Canvas overlay that projects model points; same pattern, but one-way
 //          and for the caption ring) and ShotPanel (the sliders, kept as the fallback). Ray casting and camera maths
 //          live in AimGeometry; the gauges in AimGauges; who owns a touch in StrokeGesture; this file is only the
@@ -248,7 +250,7 @@ struct AimOverlay: View {
             size = String(localized: "Each step moves the aim \(TableWords.amount(aimStep)) millimetres.")
         } else {
             // A nudge step is a quarter of a degree (ShowpieceModel.nudgeAim).
-            let degrees = (aimStep * 0.25).formatted(.number.precision(.fractionLength(0...2)))
+            let degrees = (aimStep * 0.25).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...2)))
             size = String(localized: "Each step turns the aim \(degrees) degrees.")
         }
         ShotNarration.answer(size)
@@ -688,7 +690,7 @@ struct AimOverlay: View {
     /// under the title row. The number follows the player's number style ("75 %" where that is how it is written).
     private func drawPowerBadge(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, cueScreen: CGPoint,
                                 ringRadius: CGFloat, size: CGSize) {
-        let words = model.powerFraction.formatted(.percent.precision(.fractionLength(0)))
+        let words = model.powerFraction.formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0)))
         let text = ctx.resolve(Text(verbatim: words).font(.headline.monospacedDigit()).foregroundStyle(Color.white))
         let measured = text.measure(in: size)
         let w = measured.width + 20, h = measured.height + 8

@@ -24,6 +24,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
 //          the result card's tally for this sitting, "This sitting: you 2, computer 1." (MatchMode.sittingWins). The
 //          card's record line reuses levelRecord.)
+// Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
+//          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked MatchWords (the ruling, turn and call words stay there and are not repeated; pocket
 //          names are EightBallPocket.title, reused) and TrickShotViews (its window words describe a player's own
 //          settings, not a computer's choice).
@@ -60,7 +62,7 @@ enum OpponentWords {
 
     /// A number of degrees for these lines: at most two decimals, in the player's language.
     private static func degrees(_ x: Double) -> String {
-        abs(x).formatted(.number.precision(.fractionLength(0...2)))
+        abs(x).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...2)))
     }
 
     /// "Why that shot": what the computer went for and why, in plain words, then what its hand did.
@@ -145,7 +147,7 @@ enum OpponentWords {
             lines.append(String(localized: "Nothing scored often enough, so it touched your ball softly to give away as little as possible."))
         }
         let n = shot.noise
-        let speed = (abs(n.speedShare) * 100).formatted(.number.precision(.fractionLength(0)))
+        let speed = (abs(n.speedShare) * 100).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0)))
         // The closing line is the same on every table: what the computer's hand actually did on the stroke.
         lines.append(String(localized: "On the stroke its aim drifted \(degrees(n.aimDegrees)) degrees and its speed \(speed) percent (\(shot.level.title) level)."))
         return lines
