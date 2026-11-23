@@ -1,0 +1,1630 @@
+{
+ "keys": [
+  "Every surface",
+  "Every Surface…",
+  "Shows your shot played on every surface at once",
+  "Same stroke on every surface.",
+  "Working out every surface",
+  "This surface runs too long to show.",
+  "Played here",
+  "Watch them roll",
+  "Plays your shot again with every surface's balls rolling beside it",
+  "Show this one",
+  "Show all",
+  "Shows this surface's paths",
+  "Play on %@",
+  "Changes the playing surface to %@ and plays your shot again on it",
+  "On %@ this trick shot would have worked.",
+  "On %@ %@ drops; here it stayed out.",
+  "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+  "On %@ %@ never reaches %@.",
+  "On %@ %@ meets %@ first, not %@.",
+  "On %@ %@ reaches %@; here it touched nothing.",
+  "On %@ %@ stays out; here it dropped.",
+  "On %@ %@ drops into a pocket; here it stayed up.",
+  "On %@ %@ stays on the table; here it dropped.",
+  "On %@ %@ travels %@ m; here it went %@ m.",
+  "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+  "Much the same as here.",
+  "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+  "D-pad, with Every surface open",
+  "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Every surface",
+   "text": "Todas las superficies"
+  },
+  {
+   "culture": "fr",
+   "key": "Every surface",
+   "text": "Toutes les surfaces"
+  },
+  {
+   "culture": "de",
+   "key": "Every surface",
+   "text": "Alle Spielflächen"
+  },
+  {
+   "culture": "it",
+   "key": "Every surface",
+   "text": "Tutte le superfici"
+  },
+  {
+   "culture": "pt",
+   "key": "Every surface",
+   "text": "Todas as superfícies"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every surface",
+   "text": "Todas as superfícies"
+  },
+  {
+   "culture": "ja",
+   "key": "Every surface",
+   "text": "すべての台の表面"
+  },
+  {
+   "culture": "ko",
+   "key": "Every surface",
+   "text": "모든 표면"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every surface",
+   "text": "所有台面"
+  },
+  {
+   "culture": "ru",
+   "key": "Every surface",
+   "text": "Все поверхности"
+  },
+  {
+   "culture": "ar",
+   "key": "Every surface",
+   "text": "كل الأسطح"
+  },
+  {
+   "culture": "es",
+   "key": "Every Surface…",
+   "text": "Todas las superficies…"
+  },
+  {
+   "culture": "fr",
+   "key": "Every Surface…",
+   "text": "Toutes les surfaces…"
+  },
+  {
+   "culture": "de",
+   "key": "Every Surface…",
+   "text": "Alle Spielflächen…"
+  },
+  {
+   "culture": "it",
+   "key": "Every Surface…",
+   "text": "Tutte le superfici…"
+  },
+  {
+   "culture": "pt",
+   "key": "Every Surface…",
+   "text": "Todas as superfícies…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every Surface…",
+   "text": "Todas as superfícies…"
+  },
+  {
+   "culture": "ja",
+   "key": "Every Surface…",
+   "text": "すべての台の表面…"
+  },
+  {
+   "culture": "ko",
+   "key": "Every Surface…",
+   "text": "모든 표면…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every Surface…",
+   "text": "所有台面…"
+  },
+  {
+   "culture": "ru",
+   "key": "Every Surface…",
+   "text": "Все поверхности…"
+  },
+  {
+   "culture": "ar",
+   "key": "Every Surface…",
+   "text": "كل الأسطح…"
+  },
+  {
+   "culture": "es",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Muestra tu tiro jugado en todas las superficies a la vez"
+  },
+  {
+   "culture": "fr",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Montre ton coup joué sur toutes les surfaces à la fois"
+  },
+  {
+   "culture": "de",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Zeigt deinen Stoß auf allen Spielflächen gleichzeitig"
+  },
+  {
+   "culture": "it",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Mostra il tuo tiro giocato su tutte le superfici insieme"
+  },
+  {
+   "culture": "pt",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Mostra a tua tacada jogada em todas as superfícies ao mesmo tempo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Mostra sua tacada jogada em todas as superfícies ao mesmo tempo"
+  },
+  {
+   "culture": "ja",
+   "key": "Shows your shot played on every surface at once",
+   "text": "あなたのショットを、すべての台の表面で同時に見せます"
+  },
+  {
+   "culture": "ko",
+   "key": "Shows your shot played on every surface at once",
+   "text": "내 샷을 모든 표면에서 한꺼번에 보여 줘요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shows your shot played on every surface at once",
+   "text": "在所有台面上同时显示你的这一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Shows your shot played on every surface at once",
+   "text": "Показывает твой удар сразу на всех поверхностях"
+  },
+  {
+   "culture": "ar",
+   "key": "Shows your shot played on every surface at once",
+   "text": "تعرض ضربتك على كل الأسطح في وقت واحد"
+  },
+  {
+   "culture": "es",
+   "key": "Same stroke on every surface.",
+   "text": "El mismo golpe en todas las superficies."
+  },
+  {
+   "culture": "fr",
+   "key": "Same stroke on every surface.",
+   "text": "Le même geste sur toutes les surfaces."
+  },
+  {
+   "culture": "de",
+   "key": "Same stroke on every surface.",
+   "text": "Derselbe Stoß auf allen Spielflächen."
+  },
+  {
+   "culture": "it",
+   "key": "Same stroke on every surface.",
+   "text": "Lo stesso colpo su tutte le superfici."
+  },
+  {
+   "culture": "pt",
+   "key": "Same stroke on every surface.",
+   "text": "A mesma tacada em todas as superfícies."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Same stroke on every surface.",
+   "text": "A mesma tacada em todas as superfícies."
+  },
+  {
+   "culture": "ja",
+   "key": "Same stroke on every surface.",
+   "text": "同じストロークを、すべての台の表面で。"
+  },
+  {
+   "culture": "ko",
+   "key": "Same stroke on every surface.",
+   "text": "같은 스트로크, 모든 표면에서."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Same stroke on every surface.",
+   "text": "同样的出杆，换到每一种台面。"
+  },
+  {
+   "culture": "ru",
+   "key": "Same stroke on every surface.",
+   "text": "Тот же удар на всех поверхностях."
+  },
+  {
+   "culture": "ar",
+   "key": "Same stroke on every surface.",
+   "text": "الضربة نفسها على كل الأسطح."
+  },
+  {
+   "culture": "es",
+   "key": "Working out every surface",
+   "text": "Calculando todas las superficies"
+  },
+  {
+   "culture": "fr",
+   "key": "Working out every surface",
+   "text": "Calcul de toutes les surfaces"
+  },
+  {
+   "culture": "de",
+   "key": "Working out every surface",
+   "text": "Alle Spielflächen werden berechnet"
+  },
+  {
+   "culture": "it",
+   "key": "Working out every surface",
+   "text": "Calcolo di tutte le superfici"
+  },
+  {
+   "culture": "pt",
+   "key": "Working out every surface",
+   "text": "A calcular todas as superfícies"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Working out every surface",
+   "text": "Calculando todas as superfícies"
+  },
+  {
+   "culture": "ja",
+   "key": "Working out every surface",
+   "text": "すべての台の表面を計算中"
+  },
+  {
+   "culture": "ko",
+   "key": "Working out every surface",
+   "text": "모든 표면을 계산하는 중"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Working out every surface",
+   "text": "正在计算所有台面"
+  },
+  {
+   "culture": "ru",
+   "key": "Working out every surface",
+   "text": "Просчитываю все поверхности"
+  },
+  {
+   "culture": "ar",
+   "key": "Working out every surface",
+   "text": "جارٍ حساب كل الأسطح"
+  },
+  {
+   "culture": "es",
+   "key": "This surface runs too long to show.",
+   "text": "En esta superficie el tiro dura demasiado para mostrarlo."
+  },
+  {
+   "culture": "fr",
+   "key": "This surface runs too long to show.",
+   "text": "Sur cette surface, le coup dure trop longtemps pour être montré."
+  },
+  {
+   "culture": "de",
+   "key": "This surface runs too long to show.",
+   "text": "Auf dieser Spielfläche dauert der Stoß zu lange, um ihn zu zeigen."
+  },
+  {
+   "culture": "it",
+   "key": "This surface runs too long to show.",
+   "text": "Su questa superficie il tiro dura troppo per mostrarlo."
+  },
+  {
+   "culture": "pt",
+   "key": "This surface runs too long to show.",
+   "text": "Nesta superfície a tacada dura demasiado para ser mostrada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This surface runs too long to show.",
+   "text": "Nesta superfície a tacada dura demais para ser mostrada."
+  },
+  {
+   "culture": "ja",
+   "key": "This surface runs too long to show.",
+   "text": "この表面ではショットが長すぎて表示できません。"
+  },
+  {
+   "culture": "ko",
+   "key": "This surface runs too long to show.",
+   "text": "이 표면에서는 샷이 너무 길어서 보여 줄 수 없어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This surface runs too long to show.",
+   "text": "这个台面上这一杆耗时太长，无法显示。"
+  },
+  {
+   "culture": "ru",
+   "key": "This surface runs too long to show.",
+   "text": "На этой поверхности удар длится слишком долго, чтобы его показать."
+  },
+  {
+   "culture": "ar",
+   "key": "This surface runs too long to show.",
+   "text": "على هذا السطح تطول الضربة أكثر من أن تُعرض."
+  },
+  {
+   "culture": "es",
+   "key": "Played here",
+   "text": "Jugado aquí"
+  },
+  {
+   "culture": "fr",
+   "key": "Played here",
+   "text": "Joué ici"
+  },
+  {
+   "culture": "de",
+   "key": "Played here",
+   "text": "Hier gespielt"
+  },
+  {
+   "culture": "it",
+   "key": "Played here",
+   "text": "Giocato qui"
+  },
+  {
+   "culture": "pt",
+   "key": "Played here",
+   "text": "Jogada aqui"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Played here",
+   "text": "Jogada aqui"
+  },
+  {
+   "culture": "ja",
+   "key": "Played here",
+   "text": "ここで打った"
+  },
+  {
+   "culture": "ko",
+   "key": "Played here",
+   "text": "여기서 친 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Played here",
+   "text": "实际打的台面"
+  },
+  {
+   "culture": "ru",
+   "key": "Played here",
+   "text": "Сыграно здесь"
+  },
+  {
+   "culture": "ar",
+   "key": "Played here",
+   "text": "لُعبت هنا"
+  },
+  {
+   "culture": "es",
+   "key": "Watch them roll",
+   "text": "Verlas rodar"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch them roll",
+   "text": "Les voir rouler"
+  },
+  {
+   "culture": "de",
+   "key": "Watch them roll",
+   "text": "Rollen sehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch them roll",
+   "text": "Guardale rotolare"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch them roll",
+   "text": "Vê-las rolar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch them roll",
+   "text": "Ver as bolas rolarem"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch them roll",
+   "text": "転がりを見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch them roll",
+   "text": "굴러가는 모습 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch them roll",
+   "text": "看它们滚动"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch them roll",
+   "text": "Смотреть, как катятся"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch them roll",
+   "text": "شاهدها تتدحرج"
+  },
+  {
+   "culture": "es",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Repite tu tiro con las bolas de cada superficie rodando a su lado"
+  },
+  {
+   "culture": "fr",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Rejoue ton coup avec les billes de chaque surface qui roulent à côté"
+  },
+  {
+   "culture": "de",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Spielt deinen Stoß erneut ab, die Kugeln jeder Spielfläche rollen daneben"
+  },
+  {
+   "culture": "it",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Ripete il tuo tiro con le palle di ogni superficie che rotolano accanto"
+  },
+  {
+   "culture": "pt",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Repete a tua tacada com as bolas de cada superfície a rolar ao lado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Repete sua tacada com as bolas de cada superfície rolando ao lado"
+  },
+  {
+   "culture": "ja",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "各表面のボールを並べて転がしながら、あなたのショットを再生します"
+  },
+  {
+   "culture": "ko",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "각 표면의 공을 옆에 굴리며 내 샷을 다시 재생해요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "重播你的击球，各台面上的球在旁边同时滚动"
+  },
+  {
+   "culture": "ru",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "Повторяет твой удар, а рядом катятся шары каждой поверхности"
+  },
+  {
+   "culture": "ar",
+   "key": "Plays your shot again with every surface's balls rolling beside it",
+   "text": "تعيد تشغيل ضربتك وكرات كل سطح تتدحرج بجانبها"
+  },
+  {
+   "culture": "es",
+   "key": "Show this one",
+   "text": "Ver solo esta"
+  },
+  {
+   "culture": "fr",
+   "key": "Show this one",
+   "text": "Voir celle-ci"
+  },
+  {
+   "culture": "de",
+   "key": "Show this one",
+   "text": "Nur diese zeigen"
+  },
+  {
+   "culture": "it",
+   "key": "Show this one",
+   "text": "Mostra questa"
+  },
+  {
+   "culture": "pt",
+   "key": "Show this one",
+   "text": "Ver só esta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Show this one",
+   "text": "Ver só esta"
+  },
+  {
+   "culture": "ja",
+   "key": "Show this one",
+   "text": "これだけ表示"
+  },
+  {
+   "culture": "ko",
+   "key": "Show this one",
+   "text": "이것만 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Show this one",
+   "text": "只看这个"
+  },
+  {
+   "culture": "ru",
+   "key": "Show this one",
+   "text": "Показать эту"
+  },
+  {
+   "culture": "ar",
+   "key": "Show this one",
+   "text": "اعرض هذا فقط"
+  },
+  {
+   "culture": "es",
+   "key": "Show all",
+   "text": "Ver todas"
+  },
+  {
+   "culture": "fr",
+   "key": "Show all",
+   "text": "Tout voir"
+  },
+  {
+   "culture": "de",
+   "key": "Show all",
+   "text": "Alle zeigen"
+  },
+  {
+   "culture": "it",
+   "key": "Show all",
+   "text": "Mostra tutte"
+  },
+  {
+   "culture": "pt",
+   "key": "Show all",
+   "text": "Ver todas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Show all",
+   "text": "Ver todas"
+  },
+  {
+   "culture": "ja",
+   "key": "Show all",
+   "text": "すべて表示"
+  },
+  {
+   "culture": "ko",
+   "key": "Show all",
+   "text": "모두 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Show all",
+   "text": "全部显示"
+  },
+  {
+   "culture": "ru",
+   "key": "Show all",
+   "text": "Показать все"
+  },
+  {
+   "culture": "ar",
+   "key": "Show all",
+   "text": "اعرض الكل"
+  },
+  {
+   "culture": "es",
+   "key": "Shows this surface's paths",
+   "text": "Muestra los recorridos en esta superficie"
+  },
+  {
+   "culture": "fr",
+   "key": "Shows this surface's paths",
+   "text": "Montre les trajectoires sur cette surface"
+  },
+  {
+   "culture": "de",
+   "key": "Shows this surface's paths",
+   "text": "Zeigt die Laufwege auf dieser Spielfläche"
+  },
+  {
+   "culture": "it",
+   "key": "Shows this surface's paths",
+   "text": "Mostra i percorsi su questa superficie"
+  },
+  {
+   "culture": "pt",
+   "key": "Shows this surface's paths",
+   "text": "Mostra os percursos nesta superfície"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shows this surface's paths",
+   "text": "Mostra os trajetos nesta superfície"
+  },
+  {
+   "culture": "ja",
+   "key": "Shows this surface's paths",
+   "text": "この表面での軌道を表示します"
+  },
+  {
+   "culture": "ko",
+   "key": "Shows this surface's paths",
+   "text": "이 표면에서의 경로를 보여 줘요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shows this surface's paths",
+   "text": "显示这个台面上的路线"
+  },
+  {
+   "culture": "ru",
+   "key": "Shows this surface's paths",
+   "text": "Показывает траектории на этой поверхности"
+  },
+  {
+   "culture": "ar",
+   "key": "Shows this surface's paths",
+   "text": "تعرض المسارات على هذا السطح"
+  },
+  {
+   "culture": "es",
+   "key": "Play on %@",
+   "text": "Jugar en %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Play on %@",
+   "text": "Jouer sur %@"
+  },
+  {
+   "culture": "de",
+   "key": "Play on %@",
+   "text": "Auf %@ spielen"
+  },
+  {
+   "culture": "it",
+   "key": "Play on %@",
+   "text": "Gioca su %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Play on %@",
+   "text": "Jogar em %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Play on %@",
+   "text": "Jogar em %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Play on %@",
+   "text": "%@で打つ"
+  },
+  {
+   "culture": "ko",
+   "key": "Play on %@",
+   "text": "%@에서 치기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Play on %@",
+   "text": "在%@上打"
+  },
+  {
+   "culture": "ru",
+   "key": "Play on %@",
+   "text": "Сыграть: %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Play on %@",
+   "text": "العب على %@"
+  },
+  {
+   "culture": "es",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Cambia la superficie a %@ y repite tu tiro en ella"
+  },
+  {
+   "culture": "fr",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Passe la surface sur %@ et rejoue ton coup dessus"
+  },
+  {
+   "culture": "de",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Wechselt die Spielfläche zu %@ und spielt deinen Stoß dort erneut"
+  },
+  {
+   "culture": "it",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Cambia la superficie in %@ e ripete il tuo tiro lì"
+  },
+  {
+   "culture": "pt",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Muda a superfície para %@ e repete a tua tacada nela"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Muda a superfície para %@ e repete sua tacada nela"
+  },
+  {
+   "culture": "ja",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "台の表面を%@に変えて、あなたのショットをもう一度打ちます"
+  },
+  {
+   "culture": "ko",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "표면을 %@(으)로 바꾸고 내 샷을 그 위에서 다시 쳐요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "把台面换成%@，并在上面重打你的这一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "Меняет поверхность на «%@» и повторяет на ней твой удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Changes the playing surface to %@ and plays your shot again on it",
+   "text": "تغيّر السطح إلى %@ وتعيد ضربتك عليه"
+  },
+  {
+   "culture": "es",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "En %@ este tiro de truco habría salido."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "Sur %@, ce coup d'artiste aurait réussi."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "Auf %@ hätte dieser Trickstoß geklappt."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "Su %@ questo colpo spettacolare sarebbe riuscito."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "Em %@, esta jogada de efeito teria resultado."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "Em %@, esta tacada de efeito teria dado certo."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "%@なら、このトリックショットは成功していました。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "%@에서라면 이 트릭 샷은 성공했을 거예요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "在%@上，这个花式球就能成功。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "На поверхности «%@» этот трюковой удар получился бы."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ this trick shot would have worked.",
+   "text": "على %@ كانت ضربة الخدعة هذه ستنجح."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "En %1$@, %2$@ entra; aquí se quedó fuera."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "Sur %1$@, %2$@ tombe ; ici, elle est restée en jeu."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "Auf %1$@ fällt %2$@ in die Tasche; hier blieb sie draußen."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "Su %1$@ %2$@ va in buca; qui è rimasta fuori."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "Em %1$@, %2$@ entra; aqui ficou de fora."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "Em %1$@, %2$@ cai na caçapa; aqui ficou de fora."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "%1$@では%2$@が落ちます。ここでは落ちませんでした。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "%1$@에서는 %2$@이(가) 들어가요. 여기서는 안 들어갔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "在%1$@上，%2$@会进袋；这里它没进。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "На поверхности «%1$@» в лузу падает: %2$@. Здесь этот шар остался на столе."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ drops; here it stayed out.",
+   "text": "على %1$@ تسقط %2$@؛ هنا بقيت خارج الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "En %1$@, %2$@ nunca llega a rodar: patina casi todos sus %3$@ m."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "Sur %1$@, %2$@ ne se met jamais à rouler : elle glisse sur presque tous ses %3$@ m."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "Auf %1$@ kommt %2$@ nie ins Rollen: Sie rutscht fast die ganzen %3$@ m."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "Su %1$@ %2$@ non arriva mai a rotolare: scivola per quasi tutti i suoi %3$@ m."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "Em %1$@, %2$@ nunca chega a rolar: desliza em quase todos os seus %3$@ m."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "Em %1$@, %2$@ nunca chega a rolar: desliza em quase todos os seus %3$@ m."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "%1$@では%2$@が転がりに移りません。%3$@ mのほとんどを滑っていきます。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "%1$@에서는 %2$@이(가) 끝내 구르지 않아요. %3$@ m 거의 전부를 미끄러져 가요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "在%1$@上，%2$@始终没有转入滚动：%3$@米几乎全程都在滑动。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "На поверхности «%1$@» так и не начинает катиться: %2$@. Почти все %3$@ м шар скользит."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ never settles into a roll: it skids almost all of its %@ m.",
+   "text": "على %1$@ لا تستقر %2$@ في التدحرج أبدًا: تنزلق تقريبًا طوال %3$@ م."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "En %1$@, %2$@ nunca llega a %3$@."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "Sur %1$@, %2$@ n'atteint jamais %3$@."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "Auf %1$@ erreicht %2$@ nie %3$@."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "Su %1$@ %2$@ non raggiunge mai %3$@."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "Em %1$@, %2$@ nunca alcança %3$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "Em %1$@, %2$@ nunca alcança %3$@."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "%1$@では%2$@が%3$@まで届きません。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "%1$@에서는 %2$@이(가) %3$@까지 가지 못해요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "在%1$@上，%2$@到不了%3$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "На поверхности «%1$@» %2$@ не доходит до цели: %3$@."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ never reaches %@.",
+   "text": "على %1$@ لا تصل %2$@ إلى %3$@ أبدًا."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "En %1$@, %2$@ toca primero %3$@, no %4$@."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "Sur %1$@, %2$@ touche d'abord %3$@, pas %4$@."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "Auf %1$@ trifft %2$@ zuerst %3$@, nicht %4$@."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "Su %1$@ %2$@ tocca prima %3$@, non %4$@."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "Em %1$@, %2$@ toca primeiro %3$@, não %4$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "Em %1$@, %2$@ toca primeiro %3$@, não %4$@."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "%1$@では%2$@が%4$@ではなく%3$@に先に当たります。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "%1$@에서는 %2$@이(가) %4$@이 아니라 %3$@에 먼저 맞아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "在%1$@上，%2$@先碰到%3$@，而不是%4$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "На поверхности «%1$@» %2$@ сначала касается другого шара: %3$@, а не %4$@."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ meets %@ first, not %@.",
+   "text": "على %1$@ تلمس %2$@ أولاً %3$@، لا %4$@."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "En %1$@, %2$@ llega a %3$@; aquí no tocó nada."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "Sur %1$@, %2$@ atteint %3$@ ; ici, elle n'a rien touché."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "Auf %1$@ erreicht %2$@ %3$@; hier traf sie nichts."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "Su %1$@ %2$@ raggiunge %3$@; qui non ha toccato nulla."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "Em %1$@, %2$@ alcança %3$@; aqui não tocou em nada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "Em %1$@, %2$@ alcança %3$@; aqui não tocou em nada."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "%1$@では%2$@が%3$@に届きます。ここでは何にも当たりませんでした。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "%1$@에서는 %2$@이(가) %3$@까지 가요. 여기서는 아무것도 맞히지 못했어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "在%1$@上，%2$@能碰到%3$@；这里它什么也没碰到。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "На поверхности «%1$@» %2$@ доходит до шара: %3$@. Здесь он ничего не задел."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ reaches %@; here it touched nothing.",
+   "text": "على %1$@ تصل %2$@ إلى %3$@؛ هنا لم تلمس شيئًا."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "En %1$@, %2$@ se queda fuera; aquí entró."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "Sur %1$@, %2$@ reste en jeu ; ici, elle est tombée."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "Auf %1$@ bleibt %2$@ draußen; hier fiel sie in die Tasche."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "Su %1$@ %2$@ resta fuori; qui è andata in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "Em %1$@, %2$@ fica de fora; aqui entrou."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "Em %1$@, %2$@ fica de fora; aqui caiu na caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "%1$@では%2$@が落ちません。ここでは落ちました。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "%1$@에서는 %2$@이(가) 안 들어가요. 여기서는 들어갔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "在%1$@上，%2$@不会进袋；这里它进了。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "На поверхности «%1$@» остаётся на столе: %2$@. Здесь этот шар упал в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ stays out; here it dropped.",
+   "text": "على %1$@ تبقى %2$@ خارج الجيب؛ هنا سقطت."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "En %1$@, %2$@ cae en una tronera; aquí se quedó en la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "Sur %1$@, %2$@ tombe dans une poche ; ici, elle est restée sur la table."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "Auf %1$@ fällt %2$@ in eine Tasche; hier blieb sie auf dem Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "Su %1$@ %2$@ finisce in buca; qui è rimasta sul tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "Em %1$@, %2$@ cai num buraco; aqui ficou na mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "Em %1$@, %2$@ cai numa caçapa; aqui ficou na mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "%1$@では%2$@がポケットに落ちます。ここでは台に残りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "%1$@에서는 %2$@이(가) 포켓에 들어가요. 여기서는 테이블에 남았어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "在%1$@上，%2$@会落袋；这里它留在了台上。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "На поверхности «%1$@» падает в лузу: %2$@. Здесь он остался на столе."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ drops into a pocket; here it stayed up.",
+   "text": "على %1$@ تسقط %2$@ في جيب؛ هنا بقيت على الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "En %1$@, %2$@ se queda en la mesa; aquí cayó en una tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "Sur %1$@, %2$@ reste sur la table ; ici, elle est tombée dans une poche."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "Auf %1$@ bleibt %2$@ auf dem Tisch; hier fiel sie in eine Tasche."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "Su %1$@ %2$@ resta sul tavolo; qui è finita in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "Em %1$@, %2$@ fica na mesa; aqui caiu num buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "Em %1$@, %2$@ fica na mesa; aqui caiu numa caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "%1$@では%2$@が台に残ります。ここではポケットに落ちました。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "%1$@에서는 %2$@이(가) 테이블에 남아요. 여기서는 포켓에 들어갔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "在%1$@上，%2$@留在台上；这里它落袋了。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "На поверхности «%1$@» остаётся на столе: %2$@. Здесь он упал в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ stays on the table; here it dropped.",
+   "text": "على %1$@ تبقى %2$@ على الطاولة؛ هنا سقطت في جيب."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "En %1$@, %2$@ recorre %3$@ m; aquí recorrió %4$@ m."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "Sur %1$@, %2$@ parcourt %3$@ m ; ici, elle a fait %4$@ m."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "Auf %1$@ legt %2$@ %3$@ m zurück; hier waren es %4$@ m."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "Su %1$@ %2$@ percorre %3$@ m; qui ha percorso %4$@ m."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "Em %1$@, %2$@ percorre %3$@ m; aqui percorreu %4$@ m."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "Em %1$@, %2$@ percorre %3$@ m; aqui percorreu %4$@ m."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "%1$@では%2$@が%3$@ m進みます。ここでは%4$@ mでした。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "%1$@에서는 %2$@이(가) %3$@ m 가요. 여기서는 %4$@ m 갔어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "在%1$@上，%2$@走了%3$@米；这里走了%4$@米。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "На поверхности «%1$@» %2$@ проходит %3$@ м; здесь — %4$@ м."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ travels %@ m; here it went %@ m.",
+   "text": "على %1$@ تقطع %2$@ مسافة %3$@ م؛ هنا قطعت %4$@ م."
+  },
+  {
+   "culture": "es",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "En %1$@, %2$@ sigue moviéndose %3$@ segundos; aquí se paró a los %4$@."
+  },
+  {
+   "culture": "fr",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "Sur %1$@, %2$@ continue de bouger pendant %3$@ secondes ; ici, elle s'est arrêtée après %4$@."
+  },
+  {
+   "culture": "de",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "Auf %1$@ ist %2$@ %3$@ Sekunden unterwegs; hier stand sie nach %4$@."
+  },
+  {
+   "culture": "it",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "Su %1$@ %2$@ continua a muoversi per %3$@ secondi; qui si è fermata dopo %4$@."
+  },
+  {
+   "culture": "pt",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "Em %1$@, %2$@ continua a mexer-se durante %3$@ segundos; aqui parou ao fim de %4$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "Em %1$@, %2$@ continua se movendo por %3$@ segundos; aqui parou depois de %4$@."
+  },
+  {
+   "culture": "ja",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "%1$@では%2$@が%3$@秒動き続けます。ここでは%4$@秒で止まりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "%1$@에서는 %2$@이(가) %3$@초 동안 계속 움직여요. 여기서는 %4$@초 만에 멈췄어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "在%1$@上，%2$@会持续运动%3$@秒；这里%4$@秒就停了。"
+  },
+  {
+   "culture": "ru",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "На поверхности «%1$@» %2$@ движется %3$@ с; здесь он остановился через %4$@ с."
+  },
+  {
+   "culture": "ar",
+   "key": "On %@ %@ keeps moving for %@ seconds; here it stopped after %@.",
+   "text": "على %1$@ تظل %2$@ تتحرك %3$@ ثانية؛ هنا توقفت بعد %4$@."
+  },
+  {
+   "culture": "es",
+   "key": "Much the same as here.",
+   "text": "Casi igual que aquí."
+  },
+  {
+   "culture": "fr",
+   "key": "Much the same as here.",
+   "text": "À peu près comme ici."
+  },
+  {
+   "culture": "de",
+   "key": "Much the same as here.",
+   "text": "Fast wie hier."
+  },
+  {
+   "culture": "it",
+   "key": "Much the same as here.",
+   "text": "Più o meno come qui."
+  },
+  {
+   "culture": "pt",
+   "key": "Much the same as here.",
+   "text": "Praticamente igual a aqui."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Much the same as here.",
+   "text": "Quase igual a aqui."
+  },
+  {
+   "culture": "ja",
+   "key": "Much the same as here.",
+   "text": "こことほぼ同じです。"
+  },
+  {
+   "culture": "ko",
+   "key": "Much the same as here.",
+   "text": "여기와 거의 같아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Much the same as here.",
+   "text": "和这里差不多。"
+  },
+  {
+   "culture": "ru",
+   "key": "Much the same as here.",
+   "text": "Почти так же, как здесь."
+  },
+  {
+   "culture": "ar",
+   "key": "Much the same as here.",
+   "text": "تقريبًا كما هنا."
+  },
+  {
+   "culture": "es",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "Todas las superficies juegan este tiro casi igual: termina antes de que la superficie importe mucho."
+  },
+  {
+   "culture": "fr",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "Toutes les surfaces jouent ce coup presque pareil : il est fini avant que la surface change grand-chose."
+  },
+  {
+   "culture": "de",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "Auf allen Spielflächen läuft dieser Stoß fast gleich: Er ist vorbei, bevor die Fläche viel ausmacht."
+  },
+  {
+   "culture": "it",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "Tutte le superfici giocano questo tiro quasi allo stesso modo: finisce prima che la superficie conti davvero."
+  },
+  {
+   "culture": "pt",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "Todas as superfícies jogam esta tacada quase da mesma maneira: acaba antes de a superfície fazer grande diferença."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "Todas as superfícies jogam esta tacada quase do mesmo jeito: ela termina antes que a superfície faça muita diferença."
+  },
+  {
+   "culture": "ja",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "どの表面でもこのショットはほぼ同じです。表面の違いが効いてくる前に終わってしまいます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "모든 표면에서 이 샷은 거의 똑같아요. 표면 차이가 드러나기 전에 끝나요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "这一杆在所有台面上几乎一样：台面还没来得及起多大作用，球就停了。"
+  },
+  {
+   "culture": "ru",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "На всех поверхностях этот удар почти одинаков: он заканчивается раньше, чем поверхность успевает что-то изменить."
+  },
+  {
+   "culture": "ar",
+   "key": "Every surface plays this shot almost the same way: it is over before the surface makes much difference.",
+   "text": "تُلعب هذه الضربة على كل الأسطح بالطريقة نفسها تقريبًا: تنتهي قبل أن يُحدث السطح فرقًا يُذكر."
+  },
+  {
+   "culture": "es",
+   "key": "D-pad, with Every surface open",
+   "text": "Cruceta, con Todas las superficies abierto"
+  },
+  {
+   "culture": "fr",
+   "key": "D-pad, with Every surface open",
+   "text": "Croix directionnelle, avec Toutes les surfaces ouvert"
+  },
+  {
+   "culture": "de",
+   "key": "D-pad, with Every surface open",
+   "text": "Steuerkreuz, bei geöffnetem Alle Spielflächen"
+  },
+  {
+   "culture": "it",
+   "key": "D-pad, with Every surface open",
+   "text": "Croce direzionale, con Tutte le superfici aperto"
+  },
+  {
+   "culture": "pt",
+   "key": "D-pad, with Every surface open",
+   "text": "Botões direcionais, com Todas as superfícies aberto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "D-pad, with Every surface open",
+   "text": "Direcional, com Todas as superfícies aberto"
+  },
+  {
+   "culture": "ja",
+   "key": "D-pad, with Every surface open",
+   "text": "方向パッド（すべての台の表面を開いているとき）"
+  },
+  {
+   "culture": "ko",
+   "key": "D-pad, with Every surface open",
+   "text": "방향 패드 (모든 표면이 열려 있을 때)"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "D-pad, with Every surface open",
+   "text": "方向键（打开所有台面时）"
+  },
+  {
+   "culture": "ru",
+   "key": "D-pad, with Every surface open",
+   "text": "Крестовина при открытых «Всех поверхностях»"
+  },
+  {
+   "culture": "ar",
+   "key": "D-pad, with Every surface open",
+   "text": "لوحة الاتجاهات عند فتح كل الأسطح"
+  },
+  {
+   "culture": "es",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Izquierda y derecha eligen una superficie. En juego libre, A juega tu tiro en ella. Cuando las bolas se paran, B cierra Todas las superficies."
+  },
+  {
+   "culture": "fr",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Gauche et droite choisissent une surface. En jeu libre, A y joue ton coup. Une fois les billes arrêtées, B ferme Toutes les surfaces."
+  },
+  {
+   "culture": "de",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Links und rechts wählen eine Spielfläche. Im freien Spiel spielt A deinen Stoß darauf. Sobald die Kugeln stehen, schließt B Alle Spielflächen."
+  },
+  {
+   "culture": "it",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Sinistra e destra scelgono una superficie. Nel gioco libero A gioca lì il tuo tiro. Quando le palle si fermano, B chiude Tutte le superfici."
+  },
+  {
+   "culture": "pt",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Esquerda e direita escolhem uma superfície. No jogo livre, A joga lá a tua tacada. Quando as bolas param, B fecha Todas as superfícies."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Esquerda e direita escolhem uma superfície. No jogo livre, A joga sua tacada nela. Quando as bolas param, B fecha Todas as superfícies."
+  },
+  {
+   "culture": "ja",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "左右で表面を選びます。フリープレイではAでその表面でショットを打ちます。ボールが止まったら、Bですべての台の表面を閉じます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "왼쪽과 오른쪽으로 표면을 골라요. 자유 플레이에서는 A로 그 표면에서 샷을 쳐요. 공이 멈추면 B로 모든 표면을 닫아요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "左右键选择台面。自由游戏中，按A在该台面上打这一杆。球停下后，按B关闭所有台面。"
+  },
+  {
+   "culture": "ru",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "Влево и вправо выбирают поверхность. В свободной игре A играет твой удар на ней. Когда шары остановятся, B закрывает «Все поверхности»."
+  },
+  {
+   "culture": "ar",
+   "key": "Left and right pick a surface. In free play A plays your shot on it. Once the balls stop, B closes Every surface.",
+   "text": "اليسار واليمين يختاران سطحًا. في اللعب الحر يلعب A ضربتك عليه. بعد توقف الكرات يغلق B كل الأسطح."
+  }
+ ]
+}

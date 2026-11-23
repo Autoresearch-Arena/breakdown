@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: the Playback menu's "Every Surface..."
+//          (Shift-Command-U) right after What If..., enabled exactly while the every-surface fan can open and is not up.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: a new match from the menu bar asks only when
 //          that game has a save).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 3 and half of L-A,
@@ -55,7 +57,8 @@
 //              Pause (space while the table has focus), Replay with Lens (Command-R), Watch It in the Lens
 //              (Shift-Command-R, while a remarkable shot is on offer), the four
 //              speeds (Command-1 to 4) and Auto, Next and Previous Explained Moment (Command-] and Command-[), Try
-//              Again (Command-T), What If... (Shift-Command-T). Help: How to Play (Command-?).
+//              Again (Command-T), What If... (Shift-Command-T), Every Surface... (Shift-Command-U). Help: How to Play
+//              (Command-?).
 //            - behind the main menu the Shot and Playback menus and the toolbar's playback controls are disabled, so
 //              nothing acts on the table the menu covers.
 //            - the Mac window toolbar (play, speed, replay, Lens, Ride, Your shot, the notebook), reusing the play, replay
@@ -448,6 +451,12 @@ struct PlaybackCommands: Commands {
         Button("What If…") { model?.whatIf.open() }
             .keyboardShortcut("t", modifiers: [.command, .shift])
             .disabled(!(model?.whatIf.canOpen ?? false))
+        // 0.7.7 every-world: Same shot, every surface, as the More menu's and the Surface menu's "Every surface".
+        // Enabled exactly while that item shows (EveryWorldFan.canOpen and not already up); its card opens in the
+        // notebook, never on the table. Shift-Command-U: Shift-Command-E is Share Clip and Shift-Command-S Make It Again.
+        Button("Every Surface…") { model?.everyWorld.open() }
+            .keyboardShortcut("u", modifiers: [.command, .shift])
+            .disabled(!((model?.everyWorld.canOpen ?? false) && !(model?.everyWorld.isShowing ?? false)))
     }
 
     /// The clock time of the next (or previous) caption from the playback clock, or nil when there is none that way.

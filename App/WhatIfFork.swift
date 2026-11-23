@@ -10,6 +10,8 @@
 //          clearing raise is worked out only on a sixteen-ball layout, the same guard the model's own raise has.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream what-if, bug 29 of plans/22-Nov-2026-phone-bug-hunt.md:
 //          the what-if is not offered while ball in hand is owed or the cue ball is lifted.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: opening the what-if closes the every-surface fan,
+//          so the two other futures never show together.)
 // PURPOSE: The what-if replay's state (spec 4.3): one nudged copy of the player's own shot, solved beside the real one
 //          on the same start, seed and stroke. The player moves one setting at a time in clicks (aim, power, follow or
 //          draw, side, and the cue angle on a raised shot); each click builds the nudged input here on the main actor
@@ -260,6 +262,8 @@ import Observation
     func open() {
         guard canOpen, let a = model.currentAttempt else { return }
         model.requestShotPanel(.close)
+        // 0.7.7 every-world: the fan and the what-if share the card slot and the bottom bar's panel.
+        model.everyWorldIfMade?.close()
         token += 1
         cache = []
         real = a

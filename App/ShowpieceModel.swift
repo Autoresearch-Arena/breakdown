@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world, plans/23-Nov-2026-every-world-plan.md step 10:
+//          the "Same shot, every surface" fan (EveryWorldFan) is made on first use beside the what-if (everyWorld,
+//          everyWorldIfMade for code that must not create it), otherFutureShowing says either is up, and every load
+//          closes the fan and drops its kept result.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream ride, plans/22-Nov-2026-ride-handover-plan.md: a ride is
 //          a scene in acts (RideAct, see RideStage.swift), run inside the ordinary table stage: the mount holds the
 //          clock at the strike while the camera comes down to the ball, the roll plays the shot, the ride holds two
@@ -1772,6 +1776,9 @@ final class ShowpieceModel {
     private func load(_ tl: Timeline, showpiece: Bool = false) {
         // A new recording, a surface change, Try again, a menu choice: the what-if never outlives the recording it forked.
         whatIfStorage?.close()
+        // 0.7.7 every-world: nor does the every-surface fan, and its kept result belongs to the old recording.
+        everyWorldStorage?.close()
+        everyWorldStorage?.dropCache()
         // A guided Lens replay that held Ride off is left the moment anything else goes on screen: Ride comes back.
         restoreHeldRide()
         // Anything else going on the table ends Watch your best shot's replay; the replay's own loads say so (0.7.4).
@@ -3185,6 +3192,23 @@ final class ShowpieceModel {
         whatIfStorage = w
         return w
     }
+
+    // 0.7.7 every-world: "Same shot, every surface" (EveryWorldFan), made on first use exactly as the what-if is.
+    // Every VIEW reads `everyWorld`, the creating accessor: a read of the observation-ignored storage sets up no
+    // observation, so a view that first saw nil would never redraw when the fan opens. `everyWorldIfMade` is only for
+    // non-view code that must not create the fan (load, WhatIfFork.open, ShowpieceView's Your-shot change). The Mac
+    // menu reading everyWorld.canOpen creates the fan when the menu is built; that is intended (one small object).
+    @ObservationIgnored private var everyWorldStorage: EveryWorldFan?
+    var everyWorld: EveryWorldFan {
+        if let f = everyWorldStorage { return f }
+        let f = EveryWorldFan(model: self)
+        everyWorldStorage = f
+        return f
+    }
+    var everyWorldIfMade: EveryWorldFan? { everyWorldStorage }
+    /// 0.7.7 every-world: another future of the shot is drawn over the table (the what-if or the every-surface fan);
+    /// cards, blurbs and overlays that step aside for one step aside for either.
+    var otherFutureShowing: Bool { whatIf.isShowing || everyWorld.isShowing }
 
     // MARK: Lists, table on screen, Auto speed, Ride in guided replays - 0.7.5 model-flow, Claude Opus 5.5 High
 

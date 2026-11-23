@@ -1,5 +1,11 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world, plans/23-Nov-2026-every-world-plan.md step 13:
+//          the "Same shot, every surface" fan is mounted beside the what-if: its overlay on the stage, its anchored
+//          blurb on the upright phone, its panel in the bottom bar's what-if slot, its card after WhatIfCard in the
+//          bottom stack and the side column; the last-try ghost, the stroke trace and the explanation blurb step aside
+//          for either other future (model.otherFutureShowing); opening Your shot closes the fan; the Surface menu's
+//          rows start with "Every surface" (SurfaceMenuItems.offersEveryWorld).)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, plans/22-Nov-2026-phone-ui-plan.md, foundation:
 //          a phone held upright (not split, no notebook or hinge, not the big-window table-only layout) gets the new
 //          phone layout in place of ScreenHeader and the bottom stack: content gradients behind the title row and the
@@ -300,6 +306,8 @@ struct ShowpieceView: View {
                 // Only an open one: "Keep this one" closes the what-if itself and then asks for this panel, and the kept
                 // future's faint target it leaves on the table must survive that.
                 if model.whatIf.isOpen { model.whatIf.close() }
+                // 0.7.7 every-world: aiming the next shot ends the every-surface fan too.
+                model.everyWorldIfMade?.close()
             }
             // How to play, Options and Tables outside the notebook (the Help menu, or a page left open when the window
             // shrank below the notebook): a sheet, as the main menu opens them on a phone.
@@ -390,15 +398,19 @@ struct ShowpieceView: View {
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             // Both step aside while a what-if shows: the violet other future is then the only extra drawing (0.7.5).
-            if model.ghost != nil && !model.whatIf.isShowing { GhostOverlay(model: model, bridge: bridge) }
+            // 0.7.7 every-world: steps aside for the every-surface fan too (otherFutureShowing).
+            if model.ghost != nil && !model.otherFutureShowing { GhostOverlay(model: model, bridge: bridge) }
             // The Ride hand-over's rings on the ridden and first-struck balls and the dotted path between them.
             RideOverlay(model: model, bridge: bridge)
             // The stroke that played the shot, faint on the cloth while it replays. Never takes touches.
-            if model.currentAttempt?.stroke?.trace.isEmpty == false && !model.whatIf.isShowing {
+            // 0.7.7 every-world: steps aside for the every-surface fan too (otherFutureShowing).
+            if model.currentAttempt?.stroke?.trace.isEmpty == false && !model.otherFutureShowing {
                 StrokeTraceOverlay(model: model, bridge: bridge)
             }
             // The what-if's other future: violet paths, ghost balls and the parting marker. Never takes touches.
             if model.whatIf.isShowing { WhatIfOverlay(model: model, bridge: bridge) }
+            // 0.7.7 every-world: the other surfaces' paths, symbol tags and ghost balls. Never takes touches; silent.
+            if model.everyWorld.isShowing { EveryWorldOverlay(model: model, bridge: bridge) }
             // Trick shots: rings on the shot's balls and pockets, the success glow, the list sheet, launch flags.
             TrickTableLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             // Lessons: rings, the finish circle, the pass glow, the list sheet, and the Watch beat's stop (LessonViews).
@@ -422,7 +434,8 @@ struct ShowpieceView: View {
                 // opening's tap layer so it can be opened with a tap.
                 // While a what-if shows, its result is the one result on screen (every mode blurb already steps aside
                 // for it), so the explanation is not mounted and the two anchored blurbs never overlap.
-                if !model.whatIf.isShowing {
+                // 0.7.7 every-world: nor while the every-surface fan's blurb shows (otherFutureShowing).
+                if !model.otherFutureShowing {
                     PhoneExplanationBlurb(model: model, leader: leader, tableArea: phoneTableArea(geo))
                         .opacity(model.menuOpen ? 0 : 1)
                         .allowsHitTesting(!model.menuOpen)
@@ -430,6 +443,11 @@ struct ShowpieceView: View {
                 }
                 // The what-if's result, anchored to where the two futures part (or the other cue ball's rest).
                 WhatIfPhoneBlurb(model: model, bridge: bridge, tableArea: phoneTableArea(geo))
+                    .opacity(model.menuOpen ? 0 : 1)
+                    .allowsHitTesting(!model.menuOpen)
+                    .accessibilityHidden(model.menuOpen)
+                // 0.7.7 every-world: the fan's sentence, anchored to the end of the shown surface's path.
+                EveryWorldPhoneBlurb(model: model, bridge: bridge, tableArea: phoneTableArea(geo))
                     .opacity(model.menuOpen ? 0 : 1)
                     .allowsHitTesting(!model.menuOpen)
                     .accessibilityHidden(model.menuOpen)
@@ -591,6 +609,9 @@ struct ShowpieceView: View {
             VStack(spacing: 8) {
                 if model.whatIf.isShowing {
                     WhatIfPhonePanel(model: model)
+                } else if model.everyWorld.isShowing {
+                    // 0.7.7 every-world: the fan's chips in the aiming panel's place (never with the what-if's).
+                    EveryWorldPhonePanel(model: model)
                 } else if showShotPanel {
                     PhoneAimPanel(model: model, isOpen: $showShotPanel)
                 }
@@ -615,6 +636,8 @@ struct ShowpieceView: View {
         }
         .animation(reduceMotion ? nil : .smooth, value: showShotPanel)
         .animation(reduceMotion ? nil : .smooth, value: model.whatIf.isShowing)
+        // 0.7.7 every-world: the fan's panel comes and goes the same way.
+        .animation(reduceMotion ? nil : .smooth, value: model.everyWorld.isShowing)
     }
 
     /// How the menu comes and goes: the system's smooth motion, a short plain fade with Reduce Motion. Shared by the
@@ -657,6 +680,8 @@ struct ShowpieceView: View {
             VStack(spacing: 10) {
                 // The what-if card first: while it shows, the result cards below step aside (0.7.5).
                 if !wide { WhatIfCard(model: model) }
+                // 0.7.7 every-world: the every-surface fan's card (only one of the two shows).
+                if !wide { EveryWorldCard(model: model) }
                 if !wide { ComparisonCard(model: model) }
                 if !wide { OpeningCard(model: model) }
                 // Trick shots: the shot's card, above the controls so the camera frames the table above it.
@@ -787,6 +812,8 @@ struct ShowpieceView: View {
                                 // The cards in their own stack with the column's spacing.
                                 VStack(spacing: 12) {
                                     WhatIfCard(model: model)
+                                    // 0.7.7 every-world: the every-surface fan's card.
+                                    EveryWorldCard(model: model)
                                     ComparisonCard(model: model)
                                     OpeningCard(model: model)
                                     // Trick shots: the shot's card at the top of the column.
@@ -966,8 +993,13 @@ struct SurfaceMenuButton: View {
 /// shot on it (ShowpieceModel.setSurface).
 struct SurfaceMenuItems: View {
     let model: ShowpieceModel
+    /// 0.7.7 every-world: "Every surface" leads the menu (with a divider under it) while the fan can open. The phone's
+    /// More menu passes false: it lists the item itself, under What if, and must not list it twice.
+    var offersEveryWorld = true
 
     var body: some View {
+        // 0.7.7 every-world: the item and its divider show only while the fan can open.
+        if offersEveryWorld { EveryWorldMenuItem(model: model, divider: true) }
         ForEach(PlaySurface.allCases) { surface in
             Button {
                 model.setSurface(surface)

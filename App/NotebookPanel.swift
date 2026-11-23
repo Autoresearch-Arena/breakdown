@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: EveryWorldCard right after WhatIfCard, so the
+//          every-surface fan's words live in the notebook and the table half shows only its lines and tags.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts review: the notebook's Continue waits for the opening
 //          to end, so the first minute's notebook stays its one line; the opening's holds end by themselves.)
@@ -190,6 +192,8 @@ struct NotebookPanel: View {
     private var cards: some View {
         VStack(spacing: 10) {
             WhatIfCard(model: model)
+            // 0.7.7 every-world: the every-surface fan's card (only one of the two shows).
+            EveryWorldCard(model: model)
             ComparisonCard(model: model)
             OpeningCard(model: model)
             LensCalloutCard(model: model)

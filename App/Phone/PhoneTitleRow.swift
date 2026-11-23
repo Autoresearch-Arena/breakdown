@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: "Every surface" in the More menu right under What
+//          if (EveryWorldMenuItem, shown while the fan can open), and the Surface submenu leaves it out so it is not
+//          listed twice.)
 // PURPOSE: The upright phone's title row (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The title row"), in place of
 //          ScreenHeader on that layout only. Left: Back, the standard back chevron in a 44-point clear glass circle
 //          (it pauses and opens the main menu, as MenuBackButton). Then the title (PhoneTitle: a trick or lesson name
@@ -140,7 +143,8 @@ struct PhoneTitleRow: View {
     private var menuItems: some View {
         // Surface: every playing surface, each with its one-line note (shared with the round Surface button).
         Menu {
-            SurfaceMenuItems(model: model)
+            // 0.7.7 every-world: the item is listed under What if below, not here as well.
+            SurfaceMenuItems(model: model, offersEveryWorld: false)
         } label: {
             Label(String(localized: "Surface"), systemImage: model.surface.symbol)
         }
@@ -150,6 +154,8 @@ struct PhoneTitleRow: View {
                 Label(WhatIfWords.title, systemImage: "arrow.triangle.branch")
             }
         }
+        // 0.7.7 every-world: Every surface, under What if, on the same gate (shown while it can open and is not up).
+        EveryWorldMenuItem(model: model)
         Toggle(isOn: mathsBinding) {
             Label(String(localized: "Show the maths"), systemImage: "function")
         }
