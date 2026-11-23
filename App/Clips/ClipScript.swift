@@ -263,11 +263,11 @@ struct ClipScript: Equatable {
             let id = plan.beats[i].caption.id
             return timeline.events.indices.contains(id) && timeline.events[id].kind == .cueStrike
         }
-        let byRank = ranked.filter { kept.contains($0) }
-        let victim = byRank.last { !isStrike($0) && !plan.beats[$0].headline }
-            ?? kept.filter { plan.beats[$0].headline }.max { plan.beats[$0].time < plan.beats[$1].time }
-            ?? byRank.last
-        guard let victim else { return kept }
+        let byRank: [Int] = ranked.filter { kept.contains($0) }
+        let ordinary: Int? = byRank.last(where: { !isStrike($0) && !plan.beats[$0].headline })
+        let headlines: [Int] = kept.filter { plan.beats[$0].headline }
+        let latestHeadline: Int? = headlines.max(by: { plan.beats[$0].time < plan.beats[$1].time })
+        guard let victim = ordinary ?? latestHeadline ?? byRank.last else { return kept }
         return kept.filter { $0 != victim }
     }
 

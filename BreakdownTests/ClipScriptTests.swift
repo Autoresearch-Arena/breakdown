@@ -150,8 +150,15 @@ final class ClipScriptTests: XCTestCase {
             }
             let tail = Array(replay[(lastHold + 1)...])
             let D = shot.timeline.duration
-            guard let reach = tail.firstIndex(where: { $0.clock >= D - 1e-12 }) ?? (replay[lastHold].clock >= D ? -1 : nil)
-            else { return XCTFail("\(shot.name): the tail never reaches the end") }
+            // The frame index (within the tail) that first shows the end; -1 when the last moment is the end itself.
+            let reach: Int
+            if replay[lastHold].clock >= D - 1e-12 {
+                reach = -1
+            } else if let first = tail.firstIndex(where: { $0.clock >= D - 1e-12 }) {
+                reach = first
+            } else {
+                return XCTFail("\(shot.name): the tail never reaches the end")
+            }
             XCTAssertLessThanOrEqual(Double(reach + 1) * dt, ClipScript.tailCap + dt, shot.name)
             let held = tail.filter { $0.clock >= D - 1e-12 && !$0.sounds && $0.rate == 0 }
             XCTAssertGreaterThanOrEqual(held.count, Int((ClipScript.tailHold * 30).rounded()), shot.name)
