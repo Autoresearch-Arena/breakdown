@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: while the every-surface fan shows, left and right
+//          on the d-pad pick a surface, A plays the shot on the picked one in free play (else A keeps its job), and B
+//          closes the fan once the balls are at rest (while the replay runs B still skips); one new mapping row.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 5, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          while a page is up (the menu, or the trick, lesson or eight-ball list) A, B, X, Y, the shoulders, the d-pad
 //          and the sticks leave the table alone, so the system's controller focus drives the menu and the lists; the
@@ -29,6 +32,8 @@
 //            B ............................ skip to where the balls came to rest (ready to aim)
 //            X ............................ Physics Lens on or off
 //            Y ............................ open or close Your shot
+//            d-pad, with Every surface open  left and right pick a surface; A plays the shot on it in free play;
+//                                            B closes Every surface once the balls have stopped
 //            d-pad ......................... ball in hand: move it one ball radius the way the arrow points on screen;
 //                                            an eight-ball call: left and right step the ball, up and down the pocket;
 //                                            otherwise left and right turn the aim a quarter degree, up and down step
@@ -119,6 +124,8 @@ final class GameControllerInput {
                     action: String(localized: "Opens or closes Your shot.")),
             Mapping(control: String(localized: "D-pad"),
                     action: String(localized: "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.")),
+            // 0.7.7 every-world: the d-pad, A and B while the every-surface fan is open.
+            Mapping(control: EveryWorldWords.controllerControl, action: EveryWorldWords.controllerAction),
             Mapping(control: String(localized: "Shoulder buttons"),
                     action: String(localized: "Step through the explained moments of the shot, forwards or back.")),
             Mapping(control: String(localized: "Options button"),
@@ -205,6 +212,18 @@ final class GameControllerInput {
         // The menu button works over a page (it is how a page is left for the menu or the menu for the game);
         // nothing else does.
         if button != .menu, pageUp(model) { return }
+        // 0.7.7 every-world: while the every-surface fan shows, the d-pad's left and right pick a surface, A plays the
+        // shot on the picked one when the fan can switch (otherwise A keeps its usual job), and B closes the fan once
+        // the balls are at rest (while the replay still runs, B keeps its usual skip). Up and down keep their jobs.
+        if let fan = model.everyWorldIfMade, fan.isShowing {
+            switch button {
+            case .left: fan.step(by: -1); return
+            case .right: fan.step(by: 1); return
+            case .a where fan.canSwitch: fan.switchToPicked(); return
+            case .b where model.time >= model.duration - 1e-6: fan.close(); return
+            default: break
+            }
+        }
         switch button {
         case .a: pressA(model)
         case .b: model.skipToResult()
