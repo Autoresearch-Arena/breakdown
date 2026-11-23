@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: each
+//          frame hands the scene the freeze's cue, model.bulletTime.cue, beside the held Lens event.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera: each frame hands the scene the moment framing's
 //          request (MomentFrame.allowed and the pace plan) in place of the retired signature close-up's step, and the
 //          scene is loaded with the struck ball so the Ride camera follows it (bug #21).)
@@ -158,6 +160,8 @@ struct TableStage: View {
                     let aim = bridge.showAim ? preview : nil
                     let cueAim = bridge.showCue ? preview : nil
                     table.lensHeldEvent = model.heldCaption?.id
+                    // 0.7.7 bullet-time: before apply, which reads it for the glassy balls.
+                    table.bulletCue = model.bulletTime.cue
                     table.apply(time: model.time, melt: model.melt, rate: model.displayRate, aim: aim, cueAim: cueAim,
                                 stroke: Self.stroke(for: model), ride: model.rideActive,
                                 bridgeMark: cueAim.flatMap { Self.bridgeMark(for: model, cue: $0, bridge: bridge) })

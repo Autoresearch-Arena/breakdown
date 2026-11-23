@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md, wiring
+//          only: bulletCue from TableStage makes the two touching balls glassy, steers BulletTimeCamera and hands the
+//          frozen hit to the Lens's contact drawing, whose parent (heldRoot) now sits beside the Lens root.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: the Lens reads the camera for its marks' screen floors).
@@ -131,6 +134,10 @@ final class TableScene {
     /// The ride's act this frame (ShowpieceModel.rideCue), set by TableStage before updateCamera; nil leaves the Ride
     /// camera as it was in 0.7.5.
     var rideCue: RideCue?
+    // 0.7.7 bullet-time: the freeze's cue (set by TableStage from model.bulletTime.cue before apply, which reads it for
+    // the glassy balls) and the camera that swings round the frozen hit.
+    var bulletCue: BulletCue?
+    private let bulletCamera = BulletTimeCamera()
     /// The warm table's opacity floor while the ride has the view (0 otherwise), eased in wall time so it never pops.
     private var rideTableFloor: Float = 0
     private var rideFloorTick: TimeInterval?
@@ -163,6 +170,8 @@ final class TableScene {
         // Child order matches the old single-file scene: table, Lens, camera, then balls and lights.
         root.addChild(tableHolder)
         root.addChild(lens.root)
+        // 0.7.7 bullet-time: the contact drawing's own parent, outside the Lens root so it can show with the Lens off.
+        root.addChild(lens.heldRoot)
         root.addChild(camera.rig)
         // The Lens reads the camera's points per metre for its marks' screen floors (0.7.6 stream drawings).
         lens.camera = camera
@@ -369,7 +378,8 @@ final class TableScene {
             balls[b].scale = SIMD3(repeating: scale * ballScale * lensScale)
             detail?.ball(b, centre: pos, lift: lift, radius: R, drawn: R * ballScale * lensScale,
                          onCloth: visible && !s.pocketed, tableHalf: tableHalf)
-            bodies[b].components.set(OpacityComponent(opacity: 1 - 0.55 * m))
+            // 0.7.7 bullet-time: the two touching balls of a frozen hit turn a little glassy, so the lines read.
+            bodies[b].components.set(OpacityComponent(opacity: 1 - 0.55 * max(m, bulletCue?.glass(for: b) ?? 0)))
             markers[b].components.set(OpacityComponent(opacity: m))
             visibility.append(visible)
         }
@@ -420,11 +430,14 @@ final class TableScene {
         // The moment framing for this clock (a pure function of it once its gate is open; see MomentFrame).
         let focus = momentFrame.focus(clock: lastClock, request: moment, handAtFit: zoom.atFittedView, frame: frame,
                                       reduceMotion: TableCamera.reduceMotion)
+        // 0.7.7 bullet-time: the freeze's camera gets this frame's cue before the camera moves.
+        bulletCamera.set(cue: bulletCue, timeline: timeline, frame: frame)
         camera.update(melt: Self.launchValue("-lensDebugMelt") ?? melt, clock: lastClock, duration: timeline.duration,
-                      request: request, frame: frame, ride: shotCamera, zoom: zoom, moment: focus)
+                      request: request, frame: frame, ride: shotCamera, zoom: zoom, moment: focus, bullet: bulletCamera)
         // The hand zoom ignores pinches, pans and double taps while the ride has the view (bug #24); not merely while
         // Ride is on, which it stays while the player aims the next shot from the ordinary table view.
-        zoom.rideHold = shotCamera.flying
+        // 0.7.7 bullet-time: nor while the freeze's camera has any say.
+        zoom.rideHold = shotCamera.flying || bulletCamera.flying
         // The title-row map's wedge: which way the camera faces on the table while the ride has the view.
         if !isOffscreen {  // 0.7.7 clips: the offscreen clip table leaves the live title-row map alone
             RideLive.shared.update(flying: shotCamera.flying, forward: camera.forward,
@@ -436,6 +449,9 @@ final class TableScene {
         if let p = pendingLens {
             pendingLens = nil
             lens.heldEvent = lensHeldEvent
+            // 0.7.7 bullet-time: the frozen hit's contact drawing, lifted to the balls' centres.
+            lens.bulletEvent = (bulletCue?.drawing == true) ? bulletCue?.moment.event : nil
+            lens.bulletLift = frame.ballRadius
             lens.apply(time: p.time, melt: p.melt, aim: p.aim, timeline: timeline, frame: frame, ballVisible: p.visibility)
         }
     }

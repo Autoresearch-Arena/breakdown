@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: a frozen
+//          hit's status line, right after the ride's.)
 // PURPOSE: What the upright phone's title row says (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The title row"): the
 //          first of Ride's status words while a ride speaks, the opening's status while the intro tells its story, the
 //          match's turn and score, the trick shot's name with its difficulty after it in the secondary colour ("The
@@ -30,6 +32,8 @@ enum PhoneTitle {
     static func line(for model: ShowpieceModel) -> Line? {
         // A ride names its acts while it speaks (it replaces the title for those few seconds).
         if let status = model.rideStatus { return Line(title: status, isStatus: true) }
+        // 0.7.7 bullet-time: a frozen hit names its moment here, the same small status line, for the freeze only.
+        if let words = model.bulletTime.statusWords { return Line(title: words, isStatus: true) }
         // The opening's story ("The break", "Hold on", "Slow motion") while the intro runs.
         if model.stage != .explore && model.stage != .lead {
             let words = model.stageTitle

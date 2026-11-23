@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: "Freeze
+//          the big hits", bulletTimeKey and bulletTimeOn, a toggle at the end of the Feel section, which gains a footer.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow: computerLevelKey, the computer's level the menu and
 //          the Tables pages share, stored so it is remembered across launches; read and written by ShowpieceModel.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (two keys the model stores that are not Options toggles:
@@ -45,11 +47,17 @@ enum GameSettings {
     /// "Shoot with the button only": the touch stroke sets power but never plays on the push; Shoot plays. Off by
     /// default (docs/v07-contracts.md 3.6). Read by StrokeGesture through shootWithButtonOnly.
     static let buttonOnlyKey = "optionShootWithButtonOnly"
+    // 0.7.7 bullet-time: "Freeze the big hits", on by default like every option.
+    /// Bullet time (BulletTime): on a rare hit the clock stops for a moment and the camera swings round the two balls.
+    /// Read when a shot is struck and every frame, so switching it off ends a freeze at once.
+    static let bulletTimeKey = "optionBulletTime"
 
     /// Options default to on; reading a missing key as "on" keeps a fresh install fully featured.
     private static func flag(_ key: String) -> Bool { UserDefaults.standard.object(forKey: key) as? Bool ?? true }
     static var soundOn: Bool { flag(soundKey) }
     static var hapticsOn: Bool { flag(hapticsKey) }
+    // 0.7.7 bullet-time
+    static var bulletTimeOn: Bool { flag(bulletTimeKey) }
     /// The one option that defaults to off: the push through the ball is the game's own way to shoot, and a fresh
     /// install plays it. Read at the moment of the push, so a change in Options applies to the next stroke.
     static var shootWithButtonOnly: Bool { UserDefaults.standard.bool(forKey: buttonOnlyKey) }
@@ -65,6 +73,8 @@ struct OptionsSheet: View {
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage(LensCallouts.seenKey) private var lensTipsSeen = false
     @AppStorage(GameSettings.buttonOnlyKey) private var buttonOnly = false
+    // 0.7.7 bullet-time
+    @AppStorage(GameSettings.bulletTimeKey) private var bulletTime = true
 
     private var version: String {
         let info = Bundle.main.infoDictionary
@@ -76,11 +86,19 @@ struct OptionsSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Feel") {
+                // 0.7.7 bullet-time: written with a header and footer (the Physics Lens section's form) so the new
+                // toggle can say what it does; the header's words are the same "Feel" key as before.
+                Section {
                     Toggle("Sound", systemImage: "speaker.wave.2", isOn: $sound)
                     #if os(iOS)
                     Toggle("Vibration", systemImage: "iphone.radiowaves.left.and.right", isOn: $haptics)
                     #endif
+                    // After the iOS-only block, so the Mac has it too.
+                    Toggle("Freeze the big hits", systemImage: "pause.circle", isOn: $bulletTime)
+                } header: {
+                    Text("Feel")
+                } footer: {
+                    Text("On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.")
                 }
                 Section {
                     Toggle("Shot explanations", systemImage: "text.bubble", isOn: $explanations)
