@@ -146,7 +146,7 @@ final class BulletTimeCamera {
     /// TableCamera's hook, after the ride and before the lamp shot: the given shot blended toward the orbit while a
     /// cue is set; easing back from the last orbit shot after an early end; otherwise the shot untouched.
     func override(_ shot: CameraShot, free: FramingRect, size: CGSize, reduceMotion: Bool) -> CameraShot {
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
         // Reduce Motion (now, or when the freeze began): the camera does not move at all.
