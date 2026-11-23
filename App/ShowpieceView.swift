@@ -129,6 +129,8 @@
 //          waits for a yes on the menu card (MatchStartRequest, shared with the Mac's Game menu through a focused
 //          value); the scene bridge is a focused value so the View menu can zoom the table; the space bar plays and
 //          pauses only while the table has keyboard focus, so it never swallows a space typed into a name field.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the round glass share
+//          button (ClipShareButton) sits just before the Surface button in ScreenHeader whenever a clip is offered.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -874,6 +876,7 @@ private struct ScreenHeader: View {
                 .transition(.opacity)
                 Spacer(minLength: 0)
             }
+            ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
             // A ride names its acts here, with the small table map (0.7.6 stream ride, RideMap.swift). The surface
             // button steps aside meanwhile, so the chip fits beside the back button and the Lens key on a regular
             // iPhone held upright; picking a surface mid-ride would re-solve the shot anyway.

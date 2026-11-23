@@ -40,6 +40,11 @@
 //          and the hand zoom, which now scales about that point (bug #14); the ride blend's view no longer passes
 //          straight down (ShotCamera.mix, bug #18), so the fixed world up stays safe; pointsPerMetre(at:) gives the
 //          Lens drawings the on-screen scale; -frameDebug also logs where the moment and the zoom's look point land.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the three wall-clock
+//          reads (the lamp shot's start and hold, the eased framing and launch pull-back) go through SceneClock.now, so
+//          the clip's offscreen table eases on the clip's own clock; reportsListener lets that offscreen camera skip
+//          the live sound's panning; cameraEntity hands the perspective camera to the clip's renderer. The live game
+//          is unchanged.)
 // SRP/DRY check: Pass - camera placement only; framing maths is in CameraFraming, table size arrives as a TableFrame;
 //          the ride camera's own logic is in ShotCamera, this file only applies its answer (and reuses ShotCamera.mix to
 //          blend the lamp shot into the table view).
@@ -67,6 +72,11 @@ final class TableCamera {
     private static let playReach: Float = 0.08
     /// The one overhead-ish angle Reduce Motion holds, in degrees. Near the Lens angle so the cross-fade lines up.
     private static let reducedMotionElevation: Float = 80
+
+    // 0.7.7 clips: false on the clip's offscreen camera, so it never moves the live sound's listener (SoundStage).
+    var reportsListener = true
+    // 0.7.7 clips: the perspective camera itself, for the clip renderer's activeCamera.
+    var cameraEntity: Entity { camera }
 
     init() {
         camera.camera.fieldOfViewInDegrees = Self.fov
@@ -124,7 +134,7 @@ final class TableCamera {
     /// when this turns true and stops at once if it turns false (the opening was skipped or left). Launched with
     /// -noPushIn (exact screenshot comparisons) there is none.
     func cueIntro(_ on: Bool) {
-        if on, !introCued, !Self.motionOff { lampStart = ProcessInfo.processInfo.systemUptime }
+        if on, !introCued, !Self.motionOff { lampStart = SceneClock.now }  // 0.7.7 clips: scene clock
         if !on { lampStart = nil }
         introCued = on
     }
@@ -136,7 +146,7 @@ final class TableCamera {
     /// True until the lamp shot has risen to the table: TableStage holds the playback clock meanwhile.
     var introHolding: Bool {
         guard let start = lampStart else { return false }
-        return ProcessInfo.processInfo.systemUptime - start < Self.lampLength
+        return SceneClock.now - start < Self.lampLength  // 0.7.7 clips: scene clock
     }
 
     /// The lamp shot: on the side the normal view looks from, a little outside the rail, low, looking toward the
@@ -209,7 +219,7 @@ final class TableCamera {
         //    shape (rotation, window resize) or when motion is off.
         // The un-eased playing-area rectangle, for the Ride camera, which must depend on the clock alone.
         let freeNow = free.inner
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         if let old = smoothFree, !reduce, !Self.motionOff, lastSize == size {
             free = old.eased(to: free, by: 1 - exp(-min(0.1, max(0, now - lastTick)) / 0.12))
         }
@@ -290,7 +300,9 @@ final class TableCamera {
         focal = Float(size.height) / (2 * tan(shot.fov * .pi / 360))
         // Sound stream hook (21-Nov-2026): tell the sound which way screen-right runs across the table, for panning.
         // Screen-right is the view direction crossed with world up (SoundStage normalises it).
-        SoundStage.listen(frame: frame, cameraRight: simd_cross(shot.target - shot.position, SIMD3<Float>(0, 1, 0)))
+        if reportsListener {  // 0.7.7 clips: the offscreen clip camera leaves the live listener alone
+            SoundStage.listen(frame: frame, cameraRight: simd_cross(shot.target - shot.position, SIMD3<Float>(0, 1, 0)))
+        }
         if Self.frameDebug {
             logOutline(pose: pose, size: size, safe: q.safe, table: table, melt: melt, elevation: elevation)
             logLanding(shot: shot, size: size, freeCentre: freeCentre, moment: momentLog, zoom: zoom)

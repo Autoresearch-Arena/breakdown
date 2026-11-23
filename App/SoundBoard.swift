@@ -31,6 +31,11 @@
 //          their table layers beside the success glow.
 //          Launching with -muteSound keeps the engine off and skips building the voices, so testing on a shared
 //          machine is silent; launching with -logFeel prints every cue as it fires.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the per-play choices
+//          (which voice a cue plays, the strength clamp, the strength layer, the volume, the variant pick) are five pure
+//          VoiceBook helpers, shared by the live board and the clip's mixer (ClipSound), so a clip sounds exactly like
+//          play. fire() calls them in the same order of random draws (variant first, then the level jitter), so the live
+//          game sounds exactly as before.)
 // SRP/DRY check: Pass - sound output only; FeelMapping decides what to play, the playback loop decides when,
 //          VoiceSynth does the maths of each voice, RollingVoices the rolling, SoundStage the pan and pace.
 import AVFoundation
@@ -334,6 +339,57 @@ enum VoiceBook {
     }
 }
 
+// MARK: - The per-play choices (0.7.7 clips)
+
+// 0.7.7 clips: the choices SoundBoard.fire makes for each cue, as pure functions, so the clip's offline mix (ClipSound)
+// makes exactly the same ones. Nonisolated like the rest of VoiceBook.
+extension VoiceBook {
+    /// The voice a cue of this kind plays on a surface: the rail and landing voices follow the bed (SurfaceSound).
+    static func voice(for kind: FeelKind, surface s: SurfaceSound) -> Voice {
+        switch kind {
+        case .crack: return .crack
+        case .click: return .click
+        case .tock: return .tock
+        case .cushion: return .rail(s.rail)
+        case .pocket: return .pocketDrop
+        case .knock: return .knock
+        case .pin: return .pin
+        case .post: return .post
+        case .landing: return .landing(s.bed)
+        case .offTable: return .offTable
+        case .rimSkip: return .rimSkip
+        case .miscue: return .miscue
+        case .settle: return .settle
+        case .foul: return .foul
+        case .turnChange: return .turnChange
+        case .win: return .win
+        case .madeIt: return .madeIt
+        case .madeItBig: return .madeItBig
+        }
+    }
+
+    /// A cue's strength held to 0...1 before it picks a layer or sets a volume (a recorded strength can pass 1).
+    static func clampedStrength(_ s: Double) -> Double { min(1, max(0, s)) }
+
+    /// The strength layer a cue plays, of `count`: the band its clamped strength falls in, never past the last one.
+    static func layerIndex(strength s: Double, count: Int) -> Int {
+        max(0, min(count - 1, Int(clampedStrength(s) * Double(count))))
+    }
+
+    /// Loudness: the kind's level, scaled from a soft floor (0.15) up by the clamped strength, times the jitter.
+    static func volume(_ kind: FeelKind, strength s: Double, jitter: Double) -> Double {
+        level(kind) * (0.15 + 0.85 * clampedStrength(s)) * jitter
+    }
+
+    /// A seeded pick among `count` variants, never `last` when there are two or more.
+    static func pickVariant(count: Int, last: Int?, random: inout SoundRandom) -> Int {
+        guard count > 0 else { return 0 }
+        var pick = Int(random.next() % UInt64(count))
+        if count > 1, pick == last { pick = (pick + 1) % count }
+        return pick
+    }
+}
+
 // MARK: - The board
 
 @MainActor
@@ -481,26 +537,7 @@ final class SoundBoard {
     }
 
     private func voice(for kind: FeelKind) -> Voice {
-        switch kind {
-        case .crack: return .crack
-        case .click: return .click
-        case .tock: return .tock
-        case .cushion: return .rail(surfaceSound.rail)
-        case .pocket: return .pocketDrop
-        case .knock: return .knock
-        case .pin: return .pin
-        case .post: return .post
-        case .landing: return .landing(surfaceSound.bed)
-        case .offTable: return .offTable
-        case .rimSkip: return .rimSkip
-        case .miscue: return .miscue
-        case .settle: return .settle
-        case .foul: return .foul
-        case .turnChange: return .turnChange
-        case .win: return .win
-        case .madeIt: return .madeIt
-        case .madeItBig: return .madeItBig
-        }
+        VoiceBook.voice(for: kind, surface: surfaceSound)  // 0.7.7 clips: shared with the clip's mix
     }
 
     private func fire(_ cue: FeelCue) {
@@ -513,12 +550,11 @@ final class SoundBoard {
         } else {
             TitleMusic.shared.duck()
         }
-        let s = min(1, max(0, cue.strength))
-        let layer = layers[min(layers.count - 1, Int(s * Double(layers.count)))]
+        // 0.7.7 clips: the layer, variant and volume come from the VoiceBook helpers the clip's mix shares.
+        let layer = layers[VoiceBook.layerIndex(strength: cue.strength, count: layers.count)]
         guard !layer.isEmpty else { return }
         // A seeded pick among the variants, never the one this voice played last.
-        var pick = Int(random.next() % UInt64(layer.count))
-        if layer.count > 1, pick == lastVariant[chosen] { pick = (pick + 1) % layer.count }
+        let pick = VoiceBook.pickVariant(count: layer.count, last: lastVariant[chosen], random: &random)
         lastVariant[chosen] = pick
 
         let player = players[nextPlayer]
@@ -526,7 +562,7 @@ final class SoundBoard {
         player.stop()
         // Loudness: the kind's level, scaled from a soft floor (0.15) up by strength, with a little seeded jitter.
         let jitter = 1 + VoiceBook.levelJitter * random.signed()
-        player.volume = Float(VoiceBook.level(cue.kind) * (0.15 + 0.85 * s) * jitter)
+        player.volume = Float(VoiceBook.volume(cue.kind, strength: cue.strength, jitter: jitter))
         player.pan = cue.point.map { SoundStage.pan($0) } ?? 0
         let delay = SoundStage.stretch(cue.delay)
         // A later cue is scheduled on the audio clock (host time), not with a timer, so its timing is exact.

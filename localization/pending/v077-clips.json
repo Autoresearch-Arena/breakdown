@@ -1,0 +1,902 @@
+{
+ "keys": [
+  "Share clip",
+  "Share wide clip",
+  "Share upright clip",
+  "Share the other future",
+  "Share the other future, wide",
+  "Share the other future, upright",
+  "Share your best shot",
+  "Makes a short video of this shot, ready to share",
+  "Making your clip",
+  "Your clip is ready",
+  "Share",
+  "The clip could not be made.",
+  "The clip stopped because the game left the screen.",
+  "Share Clip…",
+  "Share Wide Clip…",
+  "Share Upright Clip…"
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Share clip",
+   "text": "Compartir clip"
+  },
+  {
+   "culture": "fr",
+   "key": "Share clip",
+   "text": "Partager le clip"
+  },
+  {
+   "culture": "de",
+   "key": "Share clip",
+   "text": "Clip teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Share clip",
+   "text": "Condividi clip"
+  },
+  {
+   "culture": "pt",
+   "key": "Share clip",
+   "text": "Partilhar clip"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share clip",
+   "text": "Compartilhar clipe"
+  },
+  {
+   "culture": "ja",
+   "key": "Share clip",
+   "text": "クリップを共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share clip",
+   "text": "클립 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share clip",
+   "text": "分享短片"
+  },
+  {
+   "culture": "ru",
+   "key": "Share clip",
+   "text": "Поделиться клипом"
+  },
+  {
+   "culture": "ar",
+   "key": "Share clip",
+   "text": "شارك المقطع"
+  },
+  {
+   "culture": "es",
+   "key": "Share wide clip",
+   "text": "Compartir clip horizontal"
+  },
+  {
+   "culture": "fr",
+   "key": "Share wide clip",
+   "text": "Partager le clip horizontal"
+  },
+  {
+   "culture": "de",
+   "key": "Share wide clip",
+   "text": "Clip im Querformat teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Share wide clip",
+   "text": "Condividi clip orizzontale"
+  },
+  {
+   "culture": "pt",
+   "key": "Share wide clip",
+   "text": "Partilhar clip horizontal"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share wide clip",
+   "text": "Compartilhar clipe horizontal"
+  },
+  {
+   "culture": "ja",
+   "key": "Share wide clip",
+   "text": "横長のクリップを共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share wide clip",
+   "text": "가로 클립 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share wide clip",
+   "text": "分享横版短片"
+  },
+  {
+   "culture": "ru",
+   "key": "Share wide clip",
+   "text": "Поделиться горизонтальным клипом"
+  },
+  {
+   "culture": "ar",
+   "key": "Share wide clip",
+   "text": "شارك المقطع بالعرض"
+  },
+  {
+   "culture": "es",
+   "key": "Share upright clip",
+   "text": "Compartir clip vertical"
+  },
+  {
+   "culture": "fr",
+   "key": "Share upright clip",
+   "text": "Partager le clip vertical"
+  },
+  {
+   "culture": "de",
+   "key": "Share upright clip",
+   "text": "Clip im Hochformat teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Share upright clip",
+   "text": "Condividi clip verticale"
+  },
+  {
+   "culture": "pt",
+   "key": "Share upright clip",
+   "text": "Partilhar clip vertical"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share upright clip",
+   "text": "Compartilhar clipe vertical"
+  },
+  {
+   "culture": "ja",
+   "key": "Share upright clip",
+   "text": "縦長のクリップを共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share upright clip",
+   "text": "세로 클립 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share upright clip",
+   "text": "分享竖版短片"
+  },
+  {
+   "culture": "ru",
+   "key": "Share upright clip",
+   "text": "Поделиться вертикальным клипом"
+  },
+  {
+   "culture": "ar",
+   "key": "Share upright clip",
+   "text": "شارك المقطع بالطول"
+  },
+  {
+   "culture": "es",
+   "key": "Share the other future",
+   "text": "Compartir el otro futuro"
+  },
+  {
+   "culture": "fr",
+   "key": "Share the other future",
+   "text": "Partager l'autre avenir"
+  },
+  {
+   "culture": "de",
+   "key": "Share the other future",
+   "text": "Die andere Zukunft teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Share the other future",
+   "text": "Condividi l'altro futuro"
+  },
+  {
+   "culture": "pt",
+   "key": "Share the other future",
+   "text": "Partilhar o outro futuro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share the other future",
+   "text": "Compartilhar o outro futuro"
+  },
+  {
+   "culture": "ja",
+   "key": "Share the other future",
+   "text": "もうひとつの未来を共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share the other future",
+   "text": "다른 미래 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share the other future",
+   "text": "分享另一种结果"
+  },
+  {
+   "culture": "ru",
+   "key": "Share the other future",
+   "text": "Поделиться другим будущим"
+  },
+  {
+   "culture": "ar",
+   "key": "Share the other future",
+   "text": "شارك المستقبل الآخر"
+  },
+  {
+   "culture": "es",
+   "key": "Share the other future, wide",
+   "text": "Compartir el otro futuro, horizontal"
+  },
+  {
+   "culture": "fr",
+   "key": "Share the other future, wide",
+   "text": "Partager l'autre avenir, à l'horizontale"
+  },
+  {
+   "culture": "de",
+   "key": "Share the other future, wide",
+   "text": "Die andere Zukunft teilen, im Querformat"
+  },
+  {
+   "culture": "it",
+   "key": "Share the other future, wide",
+   "text": "Condividi l'altro futuro, orizzontale"
+  },
+  {
+   "culture": "pt",
+   "key": "Share the other future, wide",
+   "text": "Partilhar o outro futuro, na horizontal"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share the other future, wide",
+   "text": "Compartilhar o outro futuro, na horizontal"
+  },
+  {
+   "culture": "ja",
+   "key": "Share the other future, wide",
+   "text": "もうひとつの未来を横長で共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share the other future, wide",
+   "text": "다른 미래를 가로로 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share the other future, wide",
+   "text": "分享另一种结果（横版）"
+  },
+  {
+   "culture": "ru",
+   "key": "Share the other future, wide",
+   "text": "Поделиться другим будущим, горизонтально"
+  },
+  {
+   "culture": "ar",
+   "key": "Share the other future, wide",
+   "text": "شارك المستقبل الآخر بالعرض"
+  },
+  {
+   "culture": "es",
+   "key": "Share the other future, upright",
+   "text": "Compartir el otro futuro, vertical"
+  },
+  {
+   "culture": "fr",
+   "key": "Share the other future, upright",
+   "text": "Partager l'autre avenir, à la verticale"
+  },
+  {
+   "culture": "de",
+   "key": "Share the other future, upright",
+   "text": "Die andere Zukunft teilen, im Hochformat"
+  },
+  {
+   "culture": "it",
+   "key": "Share the other future, upright",
+   "text": "Condividi l'altro futuro, verticale"
+  },
+  {
+   "culture": "pt",
+   "key": "Share the other future, upright",
+   "text": "Partilhar o outro futuro, na vertical"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share the other future, upright",
+   "text": "Compartilhar o outro futuro, na vertical"
+  },
+  {
+   "culture": "ja",
+   "key": "Share the other future, upright",
+   "text": "もうひとつの未来を縦長で共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share the other future, upright",
+   "text": "다른 미래를 세로로 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share the other future, upright",
+   "text": "分享另一种结果（竖版）"
+  },
+  {
+   "culture": "ru",
+   "key": "Share the other future, upright",
+   "text": "Поделиться другим будущим, вертикально"
+  },
+  {
+   "culture": "ar",
+   "key": "Share the other future, upright",
+   "text": "شارك المستقبل الآخر بالطول"
+  },
+  {
+   "culture": "es",
+   "key": "Share your best shot",
+   "text": "Compartir tu mejor tiro"
+  },
+  {
+   "culture": "fr",
+   "key": "Share your best shot",
+   "text": "Partager ton meilleur coup"
+  },
+  {
+   "culture": "de",
+   "key": "Share your best shot",
+   "text": "Deinen besten Stoß teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Share your best shot",
+   "text": "Condividi il tuo colpo migliore"
+  },
+  {
+   "culture": "pt",
+   "key": "Share your best shot",
+   "text": "Partilhar a tua melhor jogada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share your best shot",
+   "text": "Compartilhar sua melhor tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Share your best shot",
+   "text": "ベストショットを共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share your best shot",
+   "text": "최고의 샷 공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share your best shot",
+   "text": "分享你的最佳一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Share your best shot",
+   "text": "Поделиться лучшим ударом"
+  },
+  {
+   "culture": "ar",
+   "key": "Share your best shot",
+   "text": "شارك أفضل ضرباتك"
+  },
+  {
+   "culture": "es",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Crea un vídeo corto de este tiro, listo para compartir"
+  },
+  {
+   "culture": "fr",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Crée une courte vidéo de ce coup, prête à partager"
+  },
+  {
+   "culture": "de",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Macht ein kurzes Video von diesem Stoß, bereit zum Teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Crea un breve video di questo colpo, pronto da condividere"
+  },
+  {
+   "culture": "pt",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Cria um vídeo curto desta jogada, pronto a partilhar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Cria um vídeo curto desta tacada, pronto para compartilhar"
+  },
+  {
+   "culture": "ja",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "このショットの短い動画を作り、すぐに共有できるようにする"
+  },
+  {
+   "culture": "ko",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "이 샷의 짧은 영상을 만들어 바로 공유할 수 있게 해줘"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "为这一杆制作一段短视频，方便分享"
+  },
+  {
+   "culture": "ru",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "Делает короткое видео этого удара, готовое к отправке"
+  },
+  {
+   "culture": "ar",
+   "key": "Makes a short video of this shot, ready to share",
+   "text": "ينشئ فيديو قصيراً لهذه الضربة جاهزاً للمشاركة"
+  },
+  {
+   "culture": "es",
+   "key": "Making your clip",
+   "text": "Creando tu clip"
+  },
+  {
+   "culture": "fr",
+   "key": "Making your clip",
+   "text": "Création de ton clip"
+  },
+  {
+   "culture": "de",
+   "key": "Making your clip",
+   "text": "Dein Clip wird erstellt"
+  },
+  {
+   "culture": "it",
+   "key": "Making your clip",
+   "text": "Creazione del tuo clip"
+  },
+  {
+   "culture": "pt",
+   "key": "Making your clip",
+   "text": "A criar o teu clip"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Making your clip",
+   "text": "Criando seu clipe"
+  },
+  {
+   "culture": "ja",
+   "key": "Making your clip",
+   "text": "クリップを作成中"
+  },
+  {
+   "culture": "ko",
+   "key": "Making your clip",
+   "text": "클립을 만드는 중"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Making your clip",
+   "text": "正在制作你的短片"
+  },
+  {
+   "culture": "ru",
+   "key": "Making your clip",
+   "text": "Делаю твой клип"
+  },
+  {
+   "culture": "ar",
+   "key": "Making your clip",
+   "text": "جارٍ إنشاء مقطعك"
+  },
+  {
+   "culture": "es",
+   "key": "Your clip is ready",
+   "text": "Tu clip está listo"
+  },
+  {
+   "culture": "fr",
+   "key": "Your clip is ready",
+   "text": "Ton clip est prêt"
+  },
+  {
+   "culture": "de",
+   "key": "Your clip is ready",
+   "text": "Dein Clip ist fertig"
+  },
+  {
+   "culture": "it",
+   "key": "Your clip is ready",
+   "text": "Il tuo clip è pronto"
+  },
+  {
+   "culture": "pt",
+   "key": "Your clip is ready",
+   "text": "O teu clip está pronto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your clip is ready",
+   "text": "Seu clipe está pronto"
+  },
+  {
+   "culture": "ja",
+   "key": "Your clip is ready",
+   "text": "クリップができました"
+  },
+  {
+   "culture": "ko",
+   "key": "Your clip is ready",
+   "text": "클립이 준비됐어요"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your clip is ready",
+   "text": "你的短片做好了"
+  },
+  {
+   "culture": "ru",
+   "key": "Your clip is ready",
+   "text": "Твой клип готов"
+  },
+  {
+   "culture": "ar",
+   "key": "Your clip is ready",
+   "text": "مقطعك جاهز"
+  },
+  {
+   "culture": "es",
+   "key": "Share",
+   "text": "Compartir"
+  },
+  {
+   "culture": "fr",
+   "key": "Share",
+   "text": "Partager"
+  },
+  {
+   "culture": "de",
+   "key": "Share",
+   "text": "Teilen"
+  },
+  {
+   "culture": "it",
+   "key": "Share",
+   "text": "Condividi"
+  },
+  {
+   "culture": "pt",
+   "key": "Share",
+   "text": "Partilhar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share",
+   "text": "Compartilhar"
+  },
+  {
+   "culture": "ja",
+   "key": "Share",
+   "text": "共有"
+  },
+  {
+   "culture": "ko",
+   "key": "Share",
+   "text": "공유"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share",
+   "text": "分享"
+  },
+  {
+   "culture": "ru",
+   "key": "Share",
+   "text": "Поделиться"
+  },
+  {
+   "culture": "ar",
+   "key": "Share",
+   "text": "مشاركة"
+  },
+  {
+   "culture": "es",
+   "key": "The clip could not be made.",
+   "text": "No se pudo crear el clip."
+  },
+  {
+   "culture": "fr",
+   "key": "The clip could not be made.",
+   "text": "Le clip n'a pas pu être créé."
+  },
+  {
+   "culture": "de",
+   "key": "The clip could not be made.",
+   "text": "Der Clip konnte nicht erstellt werden."
+  },
+  {
+   "culture": "it",
+   "key": "The clip could not be made.",
+   "text": "Non è stato possibile creare il clip."
+  },
+  {
+   "culture": "pt",
+   "key": "The clip could not be made.",
+   "text": "Não foi possível criar o clip."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The clip could not be made.",
+   "text": "Não foi possível criar o clipe."
+  },
+  {
+   "culture": "ja",
+   "key": "The clip could not be made.",
+   "text": "クリップを作れませんでした。"
+  },
+  {
+   "culture": "ko",
+   "key": "The clip could not be made.",
+   "text": "클립을 만들 수 없었어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The clip could not be made.",
+   "text": "短片没能做成。"
+  },
+  {
+   "culture": "ru",
+   "key": "The clip could not be made.",
+   "text": "Не удалось сделать клип."
+  },
+  {
+   "culture": "ar",
+   "key": "The clip could not be made.",
+   "text": "تعذّر إنشاء المقطع."
+  },
+  {
+   "culture": "es",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "El clip se detuvo porque el juego dejó la pantalla."
+  },
+  {
+   "culture": "fr",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "Le clip s'est arrêté car le jeu a quitté l'écran."
+  },
+  {
+   "culture": "de",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "Der Clip wurde angehalten, weil das Spiel den Bildschirm verlassen hat."
+  },
+  {
+   "culture": "it",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "Il clip si è fermato perché il gioco ha lasciato lo schermo."
+  },
+  {
+   "culture": "pt",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "O clip parou porque o jogo saiu do ecrã."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "O clipe parou porque o jogo saiu da tela."
+  },
+  {
+   "culture": "ja",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "ゲームが画面から離れたため、クリップの作成を止めました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "게임이 화면에서 벗어나서 클립 만들기가 멈췄어요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "游戏离开了屏幕，短片制作已停止。"
+  },
+  {
+   "culture": "ru",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "Клип остановлен: игра ушла с экрана."
+  },
+  {
+   "culture": "ar",
+   "key": "The clip stopped because the game left the screen.",
+   "text": "توقف المقطع لأن اللعبة غادرت الشاشة."
+  },
+  {
+   "culture": "es",
+   "key": "Share Clip…",
+   "text": "Compartir clip…"
+  },
+  {
+   "culture": "fr",
+   "key": "Share Clip…",
+   "text": "Partager le clip…"
+  },
+  {
+   "culture": "de",
+   "key": "Share Clip…",
+   "text": "Clip teilen …"
+  },
+  {
+   "culture": "it",
+   "key": "Share Clip…",
+   "text": "Condividi clip…"
+  },
+  {
+   "culture": "pt",
+   "key": "Share Clip…",
+   "text": "Partilhar clip…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share Clip…",
+   "text": "Compartilhar clipe…"
+  },
+  {
+   "culture": "ja",
+   "key": "Share Clip…",
+   "text": "クリップを共有…"
+  },
+  {
+   "culture": "ko",
+   "key": "Share Clip…",
+   "text": "클립 공유…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share Clip…",
+   "text": "分享短片…"
+  },
+  {
+   "culture": "ru",
+   "key": "Share Clip…",
+   "text": "Поделиться клипом…"
+  },
+  {
+   "culture": "ar",
+   "key": "Share Clip…",
+   "text": "مشاركة المقطع…"
+  },
+  {
+   "culture": "es",
+   "key": "Share Wide Clip…",
+   "text": "Compartir clip horizontal…"
+  },
+  {
+   "culture": "fr",
+   "key": "Share Wide Clip…",
+   "text": "Partager le clip horizontal…"
+  },
+  {
+   "culture": "de",
+   "key": "Share Wide Clip…",
+   "text": "Clip im Querformat teilen …"
+  },
+  {
+   "culture": "it",
+   "key": "Share Wide Clip…",
+   "text": "Condividi clip orizzontale…"
+  },
+  {
+   "culture": "pt",
+   "key": "Share Wide Clip…",
+   "text": "Partilhar clip horizontal…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share Wide Clip…",
+   "text": "Compartilhar clipe horizontal…"
+  },
+  {
+   "culture": "ja",
+   "key": "Share Wide Clip…",
+   "text": "横長のクリップを共有…"
+  },
+  {
+   "culture": "ko",
+   "key": "Share Wide Clip…",
+   "text": "가로 클립 공유…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share Wide Clip…",
+   "text": "分享横版短片…"
+  },
+  {
+   "culture": "ru",
+   "key": "Share Wide Clip…",
+   "text": "Поделиться горизонтальным клипом…"
+  },
+  {
+   "culture": "ar",
+   "key": "Share Wide Clip…",
+   "text": "مشاركة المقطع بالعرض…"
+  },
+  {
+   "culture": "es",
+   "key": "Share Upright Clip…",
+   "text": "Compartir clip vertical…"
+  },
+  {
+   "culture": "fr",
+   "key": "Share Upright Clip…",
+   "text": "Partager le clip vertical…"
+  },
+  {
+   "culture": "de",
+   "key": "Share Upright Clip…",
+   "text": "Clip im Hochformat teilen …"
+  },
+  {
+   "culture": "it",
+   "key": "Share Upright Clip…",
+   "text": "Condividi clip verticale…"
+  },
+  {
+   "culture": "pt",
+   "key": "Share Upright Clip…",
+   "text": "Partilhar clip vertical…"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Share Upright Clip…",
+   "text": "Compartilhar clipe vertical…"
+  },
+  {
+   "culture": "ja",
+   "key": "Share Upright Clip…",
+   "text": "縦長のクリップを共有…"
+  },
+  {
+   "culture": "ko",
+   "key": "Share Upright Clip…",
+   "text": "세로 클립 공유…"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Share Upright Clip…",
+   "text": "分享竖版短片…"
+  },
+  {
+   "culture": "ru",
+   "key": "Share Upright Clip…",
+   "text": "Поделиться вертикальным клипом…"
+  },
+  {
+   "culture": "ar",
+   "key": "Share Upright Clip…",
+   "text": "مشاركة المقطع بالطول…"
+  }
+ ]
+}

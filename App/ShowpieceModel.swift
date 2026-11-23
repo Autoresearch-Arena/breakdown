@@ -194,6 +194,9 @@
 //          Also the free-play practice table (ball in hand, rack choices, undo, table cleared), the hook for a match
 //          (MatchMode drives turns and rulings; this model plays its shots and puts its tables on screen), the retry
 //          facts, and the first-launch opening.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: three read-only
+//          properties for the clip offer (highlightOnScreen, highlightControlsUntouched, bestShotForClip) at the end of
+//          the rack's best shot section. No behaviour change.)
 // SRP/DRY check: Pass - playback state and flow only; drawing is TableScene, wording is CaptionEngine and the views,
 //          rules are BreakdownRules (through MatchMode), placement legality and spotting are NextShot. The break/shot
 //          split is hidden behind the active values here so the views never repeat the racked-or-not choice.
@@ -3867,6 +3870,29 @@ final class ShowpieceModel {
         guard !clearedChimePlayed, tableCleared else { return }
         clearedChimePlayed = true
         SoundBoard.play(.madeItBig)
+    }
+
+    // 0.7.7 clips: Lens clips (0.7.7, plans/23-Nov-2026-clips-plan.md). Three read-only views of the private highlight
+    // and best shot for ClipOffer (App/Clips/ClipSource.swift); nothing here changes the model.
+
+    /// The remarkable shot whose recording is on screen, whatever its card is doing (offered, watched or closed): the
+    /// best shot's while it replays, else the judged highlight of this very recording. Nil for an ordinary shot.
+    var highlightOnScreen: ShotHighlight? {
+        if replayingBest { return bestShot?.highlight }
+        guard let j = judgedHighlight, j.version == timelineVersion else { return nil }
+        return j.highlight
+    }
+
+    /// True while the aim, power, tip and cue angle are exactly as the judged shot left them (no control touched).
+    var highlightControlsUntouched: Bool {
+        guard let j = judgedHighlight, j.version == timelineVersion else { return false }
+        return controlValues == j.controls
+    }
+
+    /// The rack's best remarkable shot, as struck and solved, with its highlight; nil when the rack had none.
+    var bestShotForClip: (attempt: ShotAttempt, highlight: ShotHighlight)? {
+        guard let best = bestShot else { return nil }
+        return (best.attempt, best.highlight)
     }
 
     // MARK: Worth watching: the end of Watch the intro

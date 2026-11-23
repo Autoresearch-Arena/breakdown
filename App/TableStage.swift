@@ -52,6 +52,8 @@
 //          carries the cue the game picked, model.cueChoice.kind, so CueRig draws that cue, and the bridge's length, so
 //          the drawn pull-back stops in front of the bridge hand; its elevation is model.strikeElevation and its rest
 //          flag model.restInUse, as docs/v07-contracts.md 2.5 says.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: stroke(of:modeUsesBridge:)
+//          is split out of stroke(for:), so a clip draws the same cue follow-through from a kept attempt. Unchanged.)
 // SRP/DRY check: Pass - split out of ShowpieceView; the scene hand-off code is unchanged from before the glow-up,
 //          only the inputs now come from the bridge instead of the view's own state.
 import BreakdownLensModel
@@ -272,9 +274,16 @@ struct TableStage: View {
     /// when the shot needs it (trick shots, situations) or the stance recorded with the stroke was the rest.
     /// The opening showpiece break has no attempt: a level cue through the centre.
     static func stroke(for model: ShowpieceModel) -> CueStroke {
-        guard let shot = model.currentAttempt else { return CueStroke() }
+        stroke(of: model.currentAttempt, modeUsesBridge: model.strokeUsesBridge)
+    }
+
+    // 0.7.7 clips: the same follow-through from any attempt (the body stroke(for:) used to hold), so a clip of a kept
+    // shot (the rack's best, a what-if's other future) draws the cue exactly as the game did. `modeUsesBridge` is the
+    // model's strokeUsesBridge when the shot is the one on screen, false for a shot kept from free play.
+    nonisolated static func stroke(of shot: ShotAttempt?, modeUsesBridge: Bool) -> CueStroke {
+        guard let shot else { return CueStroke() }
         if shot.isBreak { return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide) }
-        let onRest = model.strokeUsesBridge || shot.stroke?.stance?.rung == .rest
+        let onRest = modeUsesBridge || shot.stroke?.stance?.rung == .rest
         return CueStroke(tipUp: shot.tipUp, tipSide: shot.tipSide, elevation: shot.elevation, usesBridge: onRest)
     }
 }

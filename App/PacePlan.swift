@@ -35,6 +35,9 @@
 //          apart, nothing moved) are held once, the more important one kept (a signature or headline beat, then the
 //          physics a shot is remembered for, then the rest, the strike last); and focusRegions, one rectangle on the
 //          table per beat holding what that beat is about, for the camera's moment framing.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: keeping(_:), a copy of
+//          the plan with only some of its beats and their focus rectangles, for the clip's cut plan. Nothing else
+//          changes.)
 // SRP/DRY check: Pass - choosing beats, where each one happens on the table and the between-beats speed only; the hold
 //          itself and the clock live in ShowpieceModel, the words in CaptionEngine, the camera move in MomentFrame.
 //          checked CameraFraming's FramingRect (screen points, y down) before adding TableRect (table metres): different
@@ -468,6 +471,19 @@ struct PacePlan: Equatable {
         let units = max(Double(words), Double(text.count) / 6)
         let time = max(minDwell, units / 3 + 1)
         return capped ? min(maxDwell, time) : time
+    }
+
+    // 0.7.7 clips: the clip's hook (ClipScript). A copy holding only beats[i] and focusRegions[i] for the given
+    // indices (out-of-range ones ignored, duplicates once, kept in clock order). The caption times every burst slows
+    // for (momentTimes) and the style are unchanged, so rate(at:) still eases through the other events exactly as
+    // before; only the stops are fewer. The clip's speed curve, its words and its moment framing all read this one
+    // cut plan, so they always agree on which moments are held.
+    func keeping(_ indices: [Int]) -> PacePlan {
+        let chosen = Array(Set(indices.filter { beats.indices.contains($0) })).sorted()
+        var cut = self
+        cut.beats = chosen.map { beats[$0] }
+        cut.focusRegions = chosen.compactMap { focusRegions.indices.contains($0) ? focusRegions[$0] : nil }
+        return cut
     }
 
     /// Index of the first beat at or after clock time `t` (beats.count when there is none).

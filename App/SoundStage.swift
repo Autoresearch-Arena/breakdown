@@ -10,6 +10,10 @@
 //          2. Pace: the playback rate (slow motion, guided pacing, Ride), reported every frame by SoundBoard.follow, so
 //             the small delays inside a cue (a pocket's settling knocks, the scatter after the crack) stretch in slow
 //             motion for sound and haptics alike.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the pan and the
+//          stretch are also offered as pure functions of their inputs (pan(_:frame:right:), stretch(_:rate:)), which the
+//          live ones call with the stored listener and rate, so the clip's sound plan can place and pace its cues the
+//          same way off the main actor. Behaviour identical.)
 // SRP/DRY check: Pass - checked TableFrame (the table-to-world mapping, reused here, not copied) and TableCamera (owns
 //          the camera; this only receives its direction). No other file turns table points into stereo positions.
 import BreakdownLensModel
@@ -19,7 +23,7 @@ import simd
 enum SoundStage {
     /// How far a hit at the very edge of the table is panned (1 would be fully into one ear). A little over half way:
     /// enough to place a bank shot with the phone held sideways, gentle enough that one ear is never left empty.
-    static let panWidth: Float = 0.55
+    nonisolated static let panWidth: Float = 0.55  // 0.7.7 clips: read by the pure pan below, off the main actor
 
     /// The table as drawn and the camera's right-hand direction in world space, from the last camera update. Before
     /// the first one, the landscape view is assumed (the table's long side runs left to right).
@@ -35,6 +39,12 @@ enum SoundStage {
     /// The stereo pan (-1 left to 1 right, already scaled by panWidth) of a point on the table.
     static func pan(_ p: Vec2) -> Float {
         guard let f = frame else { return 0 }
+        return pan(p, frame: f, right: right)
+    }
+
+    // 0.7.7 clips: the pan as a pure function of the table frame and the camera's right-hand direction (the body the
+    // live pan(_:) used to hold), so the clip's sound plan (ClipSound) pans with each clip frame's own camera.
+    nonisolated static func pan(_ p: Vec2, frame f: TableFrame, right: SIMD3<Float>) -> Float {
         let w = f.world(p)
         // Only the horizontal part of the camera's right matters: looking down at the table, it says which way across
         // the screen the table runs. Normalised so a tilted camera pans as much as a level one.
@@ -56,6 +66,12 @@ enum SoundStage {
     /// motion, down to a quarter speed (slower than that, a rattle would stop sounding like one), never squeezed when
     /// playing fast (the spacing is what keeps quick hits apart).
     static func stretch(_ delay: Double) -> Double {
+        stretch(delay, rate: rate)
+    }
+
+    // 0.7.7 clips: the stretch with the rate as a parameter (the body the live stretch(_:) used to hold), for the
+    // clip's sound plan, which knows each frame's playback rate.
+    nonisolated static func stretch(_ delay: Double, rate: Double) -> Double {
         guard delay > 0 else { return 0 }
         return delay / min(1, max(0.25, rate))
     }

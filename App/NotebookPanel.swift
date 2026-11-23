@@ -50,6 +50,8 @@
 //          A short and wide panel (the phone propped like a laptop, the band under the table on an iPad held upright)
 //          or a wide one on a large window splits into two columns: cards and controls on one side, the commentary and
 //          numbers on the other.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the round glass share
+//          button (ClipShareButton) sits before the Surface button in the top bar whenever a clip is offered.)
 // SRP/DRY check: Pass - layout and page switching only. The words are in NotebookStory and NotebookDossier, the numbers
 //          in NotebookNumbers, the split rules in NotebookGeometry; every card, list and menu is the same view the other
 //          screens use, embedded.
@@ -378,6 +380,7 @@ private struct NotebookTopBar: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 0)
+            ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
             if model.rideStatus != nil { RideTitleChip(model: model) } else { SurfaceMenuButton(model: model) }
         }
     }

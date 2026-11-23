@@ -48,6 +48,9 @@
 //          model uses when the ball is put down, so the card and the table never disagree with the model.
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: ClipCard joins PlayCards,
+//          the highlight card gains "Share clip" and the cleared-table card "Share your best shot"; App/Clips decides
+//          when and makes the clip.)
 // SRP/DRY check: Pass - checked ShotPanel (Move cue ball, Undo and the rack choice live in its More menu, which calls
 //          the same model methods), TrickShotCard and EightBallCard (the card pieces follow theirs), and the model
 //          contract in docs/award-batch-contracts.md section 2.1 (every model name used here is from it).
@@ -68,6 +71,7 @@ struct PlayCards: View {
             TableClearedCard(model: model)
             HighlightCard(model: model)
             IntroEndCard(model: model)
+            ClipCard(model: model)  // 0.7.7 clips: making, ready or failed (App/Clips/ClipViews.swift)
             MatchCard(model: model)
         }
     }
@@ -354,6 +358,15 @@ struct TableClearedCard: View {
         // The rack's best remarkable shot, replayed in the Lens; Menu and Rack again end that replay first.
         if model.canWatchBestShot {
             CardButtonRow {
+                // 0.7.7 clips: the rack's best shot as a clip, beside watching it.
+                if ClipOffer.bestShotAvailable(model) {
+                    Button { ClipOffer.startBestShot(model) } label: {
+                        Label(String(localized: "Share your best shot"), systemImage: "square.and.arrow.up")
+                            .font(.headline).lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                    }
+                    .buttonStyle(.glass)
+                    .accessibilityHint(ClipWords.hint)
+                }
                 Button { model.watchBestShot() } label: {
                     Label(HighlightWords.watchBest, systemImage: "eye").font(.headline).lineLimit(1)
                         .frame(minHeight: CallMetrics.buttonHeight)
@@ -441,6 +454,15 @@ struct HighlightCard: View {
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
         CardButtonRow {
+            // 0.7.7 clips: a short film of this shot, ready to share.
+            if ClipOffer.available(model) {
+                Button { ClipOffer.start(model) } label: {
+                    Label(ClipWords.shareClip, systemImage: "square.and.arrow.up").font(.headline)
+                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                }
+                .buttonStyle(.glass)
+                .accessibilityHint(ClipWords.hint)
+            }
             if offer.canTryTrick {
                 Button { model.tryHighlightTrick() } label: {
                     Label(String(localized: "Try the trick shot"), systemImage: "scope").font(.headline)

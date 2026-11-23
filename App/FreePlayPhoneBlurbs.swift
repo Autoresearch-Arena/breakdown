@@ -20,6 +20,9 @@
 //          and go with what they show.
 //          Colour: the old cards' cyan accents are white here (Part 3: cyan means rolling only); an illegal spot stays
 //          red with its icon, so it never depends on colour alone.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: ClipPhoneBlurb comes first
+//          in PlayPhoneBlurbs, the cleared-table blurb offers "Share your best shot" as its second button, and the
+//          strip's primary action is "Share clip" after a watched or closed highlight (PhonePrimaryAction.clip).)
 // SRP/DRY check: Pass - each blurb shows exactly when its card does (BallInHandCard.isVisible, PlaceBallsCard.isVisible,
 //          TableClearedCard.isVisible, model.highlightCard, model.introEndOffered); words and moves are the cards'
 //          (CueBallPlacement, TableClearedCard.shotsLine, HighlightWords); actions are the same model calls.
@@ -35,6 +38,7 @@ struct PlayPhoneBlurbs: View {
 
     var body: some View {
         Group {
+            ClipPhoneBlurb(model: model)  // 0.7.7 clips: a clip being made is the newest thing on screen
             PlaceBallsPhoneBlurb(model: model)
             BallInHandPhoneBlurb(model: model)
             TableClearedPhoneBlurb(model: model)
@@ -140,11 +144,21 @@ struct TableClearedPhoneBlurb: View {
             let replaying = model.replayingBest && PlayPhoneBlurbs.replaying(model)
             Blurb(title: String(localized: "Table cleared"),
                   sentence: replaying ? nil : TableClearedCard.shotsLine(model),
-                  buttons: model.canWatchBestShot
-                      ? [BlurbButton(HighlightWords.watchBest, hint: HighlightWords.watchHint) { model.watchBestShot() }]
-                      : [])
+                  buttons: bestShotButtons)
                 .onAppear { ShotNarration.announce(String(localized: "Table cleared")) }
         }
+    }
+
+    /// Watch your best shot, and (0.7.7 clips) Share your best shot as the second button when on offer.
+    private var bestShotButtons: [BlurbButton] {
+        guard model.canWatchBestShot else { return [] }
+        var out = [BlurbButton(HighlightWords.watchBest, hint: HighlightWords.watchHint) { model.watchBestShot() }]
+        if ClipOffer.bestShotAvailable(model) {  // 0.7.7 clips
+            out.append(BlurbButton(String(localized: "Share your best shot"), hint: ClipWords.hint) {
+                ClipOffer.startBestShot(model)
+            })
+        }
+        return out
     }
 }
 
@@ -244,6 +258,8 @@ extension PhonePrimaryAction {
                 model.watchHighlight()
             }
         }
+        // 0.7.7 clips: after the highlight's Watch it was used or its card closed, "Share clip".
+        if let a = PhonePrimaryAction.clip(model) { return a }
         if model.introEndOffered, !model.whatIf.isShowing {
             return PhonePrimaryAction(title: String(localized: "Trick shots")) { model.showList(.tricks) }
         }

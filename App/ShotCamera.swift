@@ -44,6 +44,7 @@
 //          every frame; TableCamera.update calls `override(...)` with its normal overhead pose and uses what comes back
 //          (position, look target, field of view, near plane). Trig and exp live here in the app; the physics package
 //          is only read.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the Ride engage's wall-clock read goes through SceneClock.now, so the clip's offscreen table eases on the clip's own clock; the live game is unchanged.)
 // SRP/DRY check: Pass - the ride camera only. Checked TableCamera (overhead framing, push-in), CameraFraming (framing
 //          maths), TableFrame (table-to-world conversion, reused here) and PacePlan (the guided replay's own
 //          slow motion, left untouched); none of them follow a ball.
@@ -265,7 +266,7 @@ final class ShotCamera {
         if clock < 0.05, lastClock > 0.3 { engage = 0 }
         lastClock = clock
         // Switching in and out: half a second of wall time, or a cut under Reduce Motion.
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
         let goal = active && plan.rideable ? 1.0 : 0.0

@@ -62,6 +62,10 @@
 //          ride's acts; after the camera moves, RideLive is told which way it faces for the title-row map; and while
 //          the ride has the view, the warm table never fades below a faint floor, so over the Lens the rails, pockets
 //          and shadows still give the low view something upright (work package 7).)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: isOffscreen marks the
+//          clip renderer's second table, which then leaves the live sound's listener, the title-row map (RideLive) and
+//          the self-test logs alone; cameraEntity hands its perspective camera to the clip's renderer; Ride's table
+//          floor eases on SceneClock.now. The live table is unchanged.)
 // SRP/DRY check: Pass - coordination only; it reads the model and timeline and never changes them.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -135,6 +139,12 @@ final class TableScene {
     private static let rideTableOpacity: Float = 0.28
     /// The camera, for the Lens drawings' on-screen scale (TableCamera.pointsPerMetre(at:)), read after it has moved.
     var tableCamera: TableCamera { camera }
+    // 0.7.7 clips: true for the clip renderer's offscreen copy of the table (ClipRenderer). It then never writes the
+    // live game's shared state: the sound's listener (TableCamera.reportsListener), the title-row map (RideLive) and
+    // the launch-flag self-test logs, which the live table already prints.
+    var isOffscreen = false { didSet { camera.reportsListener = !isOffscreen } }
+    // 0.7.7 clips: the perspective camera, for RealityRenderer.activeCamera.
+    var cameraEntity: Entity { camera.cameraEntity }
     /// The Lens inputs of this frame, set by apply() and drawn by updateCamera() once the camera has moved, so the
     /// drawings can size themselves for this frame's view (0.7.6). Nil when nothing is waiting.
     private var pendingLens: (time: Double, melt: Double, aim: AimPreview?, visibility: [Bool])?
@@ -259,8 +269,10 @@ final class TableScene {
         for b in 0..<balls.count {
             balls[b].isEnabled = true
         }
-        if Self.launchFlag("-lensSelfTest") { runSelfTest() }
-        if Self.launchFlag("-rideSelfTest") { shotCamera.selfTest(size: CGSize(width: 402, height: 874)) }
+        if !isOffscreen {  // 0.7.7 clips: the offscreen clip table never logs the self-tests a second time
+            if Self.launchFlag("-lensSelfTest") { runSelfTest() }
+            if Self.launchFlag("-rideSelfTest") { shotCamera.selfTest(size: CGSize(width: 402, height: 874)) }
+        }
     }
 
     /// Dress the playing bed in another surface, without rebuilding the table: only the bed's material changes (the
@@ -301,7 +313,7 @@ final class TableScene {
         let R = frame.ballRadius
         let m = Float(melt)
         // While the ride has the view (last frame's camera), the table keeps a faint floor (see rideTableOpacity).
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         let floorStep = Float(min(0.1, max(0, now - (rideFloorTick ?? now)))) * 2
         rideFloorTick = now
         let floorGoal: Float = shotCamera.flying ? Self.rideTableOpacity : 0
@@ -414,8 +426,10 @@ final class TableScene {
         // Ride is on, which it stays while the player aims the next shot from the ordinary table view.
         zoom.rideHold = shotCamera.flying
         // The title-row map's wedge: which way the camera faces on the table while the ride has the view.
-        RideLive.shared.update(flying: shotCamera.flying, forward: camera.forward,
-                               portrait: request.size.width < request.size.height)
+        if !isOffscreen {  // 0.7.7 clips: the offscreen clip table leaves the live title-row map alone
+            RideLive.shared.update(flying: shotCamera.flying, forward: camera.forward,
+                                   portrait: request.size.width < request.size.height)
+        }
         // With the camera placed: the lamp shade's fade and each ball's picture for the size it now is on screen.
         detail?.view(eye: camera.eye, forward: camera.forward, focal: camera.focal)
         // And the Lens, for this frame's clock and this frame's view.

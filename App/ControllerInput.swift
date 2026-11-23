@@ -22,7 +22,8 @@
 //            right trigger / left trigger . more / less power (by how hard each is squeezed; power is the swing)
 //            right stick ................... moves the cue tip on the cue ball (follow, draw, side); it stays put when
 //                                            the stick is let go, like the tip picker
-//            A ............................ the main button of the card on screen; with no card up, continue a held
+//            A ............................ the main button of the card on screen (a clip card's Share or Close too,
+//                                            with Your shot closed; A never starts a clip); with no card up, continue a held
 //                                            Lens moment, shoot while Your shot is open, open Your shot when it is
 //                                            closed, or play or pause a replay
 //            B ............................ skip to where the balls came to rest (ready to aim)
@@ -51,6 +52,8 @@
 //          accessibility layer (TableAccessLayer) hands over the scene bridge, so the d-pad can find "up on screen" for
 //          ball in hand from the live camera (AimProjector), the same way the arrow keys do.
 //          Declared in Breakdown-Info.plist (GCSupportsControllerUserInteraction, GCSupportedGameControllers).
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: with the aiming panel
+//          closed, A presses a ready clip's Share or a failed clip's Close (ClipController). A never starts a clip.)
 // SRP/DRY check: Pass - checked AimOverlay.handleKey and placementKey (the keyboard route) and AimGauges (tip and
 //          power); this file writes the same model values through the same methods (nudgeAim, powerFraction,
 //          activeTipUp/Side, activeElevation, moveCueBallCandidate, fireStroke through the panel's hook, scrub,
@@ -306,6 +309,8 @@ final class GameControllerInput {
             drill.again()
             return true
         }
+        // 0.7.7 clips: a clip card's Share (ready) or Close (failed); never with Your shot open, where A shoots.
+        if shoot == nil, ClipController.pressA(model) { return true }
         // Free play, every ball potted: Rack again.
         if model.match == nil, model.tableCleared, model.aimReady {
             model.rackAgain()

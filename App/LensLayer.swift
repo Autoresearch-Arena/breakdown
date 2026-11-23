@@ -112,6 +112,7 @@
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: sliding trails and the slip belt are magenta
 //          (Theme.slideRGB, renamed from amberRGB); the grid's edge pockets are drawn only when the table has them
 //          (pocketsEnabled), and BallTextures.gridImage now draws every pocket and bed hole as a real hole.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the held hit's drawing fade reads SceneClock.now, so the clip's offscreen table fades on the clip's own clock; the live game is unchanged.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 //          The throw rule is CaptionEngine's (one rule for the words and the drawing).
 import BreakdownLensModel
@@ -1305,7 +1306,7 @@ final class LensLayer {
     /// fingerprint(), which covers only what the clock decides.
     private func applyContact(melt m: Float, timeline: Timeline, frame: TableFrame) {
         guard m > 0.02 else { cutContact(); return }
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         if let i = heldEvent, timeline.events.indices.contains(i), let g = ContactGeometry.at(timeline.events[i]) {
             if contactShown?.event != i || contactFadingOut != nil {
                 if contactShown?.event != i { contactSource = (g, timeline.events[i]) }

@@ -37,6 +37,7 @@
 //              AimProjector, the same camera maths the aiming layer uses. Applied to the 3D view (TableStage) and to
 //              the aiming layer that covers it while "Your shot" is open (AimOverlay), each with one line.
 //          Coordinates: world metres in plan (x along the table, z across), the same plane TableFrame maps to.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the zoom's ease reads SceneClock.now (the double tap's real-gesture timing is left on the device clock), so the clip's offscreen table eases on the clip's own clock; the live game is unchanged.)
 // SRP/DRY check: Pass - checked TableCamera (fitted framing, push-in and Ride stay there; this only adds the hand
 //          zoom), AimGeometry (AimProjector is reused, not copied) and AimOverlay (its one-finger drag aims; this
 //          file only takes pinches, two-finger drags and double taps).
@@ -263,7 +264,7 @@ final class TableZoom {
         bound = tableHalf
         if let fitPivot { self.fitPivot = fitPivot }
         goalOffset = clampOffset(goalOffset)
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
         recordScreenDirections(position: position, target: target)

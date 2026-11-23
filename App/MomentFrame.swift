@@ -35,6 +35,7 @@
 //          behind the menu (the backdrop), not during the first launch's opening (which stays exactly as calm as
 //          before), not while Ride flies; and in TableScene only with Reduce Motion off and the hand zoom at the fitted
 //          view. Launch with -noMomentFrame to switch it off for screenshot comparisons; -noPushIn makes its gate snap.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the gate's wall-clock read goes through SceneClock.now, so the clip's offscreen table eases on the clip's own clock; the live game is unchanged.)
 // SRP/DRY check: Pass - checked TableCamera (fitted framing, push-in; applies this answer, does not compute it),
 //          TableZoom (the hand's zoom; this hands it its view through momentLook and never sets its goal), ShotCamera
 //          (Ride, which this steps aside for), PacePlan (owns the beats and the focus regions; read only) and the
@@ -283,7 +284,7 @@ final class MomentFrame {
     /// - handAtFit: the hand zoom's goal is the fitted view (TableZoom.atFittedView).
     func focus(clock: Double, request: MomentRequest?, handAtFit: Bool, frame: TableFrame,
                reduceMotion: Bool) -> MomentFocus? {
-        let now = ProcessInfo.processInfo.systemUptime
+        let now = SceneClock.now  // 0.7.7 clips: scene clock
         let dt = min(0.1, max(0, now - (lastTick ?? now)))
         lastTick = now
         // A Replay from the start eases in rather than cutting straight to the strike's close-up.

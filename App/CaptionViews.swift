@@ -71,6 +71,9 @@
 //          The player's stroke lines are drawn by CaptionLeader too: it already holds the per-frame projection.
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (a figure's unit prints in the shown language, UnitSymbol in
 //          NumberStyle.swift: Russian м/с, Arabic م/ث, matching the sentences beside it.)
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the ring's anchor is
+//          also a function of the timeline and the clock, LeaderState.anchor(of:timeline:time:), so the clip's ring sits
+//          on the same ball as the game's. The live ring is unchanged.)
 // SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette. The
 //          stroke lines reuse LeaderState's projection rather than a second per-frame overlay.
 import BreakdownLensModel
@@ -1070,7 +1073,12 @@ final class LeaderState {
     /// The ball a caption is about, in the 3D scene's world space: the ball's own place at the playback time, or the
     /// place of the event itself when that ball is gone (pocketed) or the event has no ball.
     private static func anchor(of caption: Caption, in model: ShowpieceModel) -> SIMD3<Float>? {
-        let timeline = model.timeline
+        anchor(of: caption, timeline: model.timeline, time: model.time)
+    }
+
+    // 0.7.7 clips: the same rule for any recording at any clock time (the body anchor(of:in:) used to hold), so the
+    // clip's ring (ClipOverlay) sits on the very ball the game's ring would.
+    static func anchor(of caption: Caption, timeline: Timeline, time: Double) -> SIMD3<Float>? {
         guard timeline.events.indices.contains(caption.id) else { return nil }
         let event = timeline.events[caption.id]
         let frame = TableFrame(timeline.table)
@@ -1080,7 +1088,7 @@ final class LeaderState {
         let ball = CaptionEngine.throwFacts(event)?.object
             ?? event.balls.max { $0.velocityBefore.length < $1.velocityBefore.length }?.ball
         if event.kind != .pocket, let ball, ball < timeline.ballCount {
-            let s = timeline.state(ball: ball, at: model.time)
+            let s = timeline.state(ball: ball, at: time)
             // At the ball's centre wherever it is: a flying ball's ring rides with it, not on the dot under it.
             if !s.pocketed { return frame.world(s.position, height: frame.ballRadius + Float(s.height)) }
         }

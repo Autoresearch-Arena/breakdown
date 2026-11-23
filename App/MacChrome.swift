@@ -69,6 +69,9 @@
 //          scrub bar's tick as it crosses an impact is the tick mark under the thumb; the power ticks while pulling are
 //          the live percentage and the gauge; a trick shot's success buzz is the success glow and card. Nothing relies
 //          on a vibration alone, so the Mac (no vibration) loses nothing.
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: Playback ends with
+//          "Share Clip…" (Shift-Command-E) and the other shape (ClipCommandItems), enabled exactly when the share
+//          button shows.)
 // SRP/DRY check: Pass - menus, toolbar and window plumbing only. The actions are the model's; the shot words (Break,
 //          Shoot, the pocket names, the game names in NotebookWords) are reused, not repeated.
 import BreakdownLensModel
@@ -448,6 +451,7 @@ struct PlaybackCommands: Commands {
         Button("What If…") { model?.whatIf.open() }
             .keyboardShortcut("t", modifiers: [.command, .shift])
             .disabled(!(model?.whatIf.canOpen ?? false))
+        ClipCommandItems(model: model)  // 0.7.7 clips: Share Clip… and the other shape
     }
 
     /// The clock time of the next (or previous) caption from the playback clock, or nil when there is none that way.

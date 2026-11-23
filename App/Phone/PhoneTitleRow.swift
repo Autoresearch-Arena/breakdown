@@ -15,6 +15,8 @@
 //          Tap to skip), setSurface (SurfaceMenuItems), whatIf.open (WhatIfButton), the maths option (GameSettings and
 //          TrickShotMode.showMaths, as the trick card's button), showList (the cards' list buttons), watch (the cards'
 //          Watch again), showAnswerPath (the trick card), setLens, setRide, setRate and setAutoRate (PlaybackControls).
+// Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the More menu offers
+//          "Share clip" and the other shape (ClipMenuItems) right after What if; no new glass on the upright phone.)
 // SRP/DRY check: Pass - checked ShowpieceView's ScreenHeader, MenuBackButton and SurfaceMenuButton (shared with the
 //          notebook's top bar, unchanged; the surface rows are SurfaceMenuItems, used by both menus), and the trick and
 //          lesson cards' buttons (same mode calls, no new rules).
@@ -150,6 +152,7 @@ struct PhoneTitleRow: View {
                 Label(WhatIfWords.title, systemImage: "arrow.triangle.branch")
             }
         }
+        ClipMenuItems(model: model)  // 0.7.7 clips: Share clip, and the other shape
         Toggle(isOn: mathsBinding) {
             Label(String(localized: "Show the maths"), systemImage: "function")
         }
