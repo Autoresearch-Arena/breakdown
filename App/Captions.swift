@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
+// Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: the take-off card says each number once: the
+//          flight height leads, then speed down and bounce up; its sentence tells the story without figures, keeping only
+//          the gap over the jumped ball; flightSegment and flightTop are shared with FlightSideView.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: every caption carries Caption.figures, up to
 //          three of its most telling numbers (value, unit, short label, the Lens mark colour it matches), built in the
 //          same branch and from the same solver numbers as its sentences and formatted the same way: the strike's launch
@@ -705,7 +708,7 @@ enum CaptionEngine {
     // MARK: Flight
 
     /// The airborne segment that starts at `t` for `ball`.
-    private static func flightSegment(ball: Int, startingAt t: Double, in timeline: Timeline) -> BallSegment? {
+    static func flightSegment(ball: Int, startingAt t: Double, in timeline: Timeline) -> BallSegment? {
         guard timeline.segments.indices.contains(ball) else { return nil }
         return timeline.segments[ball].first { $0.phase == .airborne && abs($0.t0 - t) < 1e-9 }
     }
@@ -715,7 +718,7 @@ enum CaptionEngine {
     /// flies across. The clearance is the smallest gap between the two balls' surfaces while the flying ball is over
     /// that ball (centres less than a diameter apart across the cloth), sampled through the flight; nil when it passes
     /// over no ball, or touches one (then the solver records a ball-ball contact, captioned on its own).
-    private static func flightTop(_ seg: BallSegment, ball: Int, in timeline: Timeline) -> (peak: Double, over: (ball: Int, gap: Double)?) {
+    static func flightTop(_ seg: BallSegment, ball: Int, in timeline: Timeline) -> (peak: Double, over: (ball: Int, gap: Double)?) {
         let g = -seg.verticalAcceleration
         let T = seg.t1.isFinite ? seg.t1 - seg.t0 : 0
         var tPeak = 0.0
@@ -751,26 +754,23 @@ enum CaptionEngine {
         let ball = b.ball
         switch e.flight {
         case .takeOff:
+            // Each number once (0.7.8 jump replay): the flight height is the lead figure (the chip and its tile), the
+            // two speeds are tiles, and the sentences tell the story with only the gap over the jumped ball, which is
+            // said nowhere else. The flight distance is the landing card's. The side view (FlightSideView) draws it.
             let up = e.verticalSpeedUp, down = e.verticalSpeedDown
-            var pieces = [String(localized: "\(name(ball).capitalizedFirst) hits the slate going down at \(f(down)) m/s and bounces up at \(f(up)) m/s, so it leaves the cloth.")]
+            var pieces = [String(localized: "\(name(ball).capitalizedFirst) hits the slate going down, and the slate throws it back up off the cloth.")]
             var worked = ""
             var figures: [CaptionFigure] = []
             if let seg = flightSegment(ball: ball, startingAt: e.time, in: timeline) {
                 let top = flightTop(seg, ball: ball, in: timeline)
-                pieces.append(String(localized: "At the top of its flight its lowest point is \(f(top.peak * 100)) cm above the cloth."))
                 figures.append(figure(top.peak * 100, 1, "cm", String(localized: "Flight height"), .impact))
-                // How far the flight carries across the cloth: the airborne segment from its start to its end, read the
-                // way the landing caption reads it.
-                if seg.t1.isFinite {
-                    let flown = (seg.kinematics(at: seg.t1).position - seg.position0).length
-                    figures.append(figure(flown * 100, 0, "cm", String(localized: "Flight distance"), .impact))
-                }
                 if let over = top.over {
                     pieces.append(String(localized: "It passes over \(name(over.ball)) with \(f(over.gap * 100)) cm to spare."))
                 }
                 let g = -seg.verticalAcceleration
                 if g > 0 { worked = "h = v↑² / (2·g) = \(f(up, 2))² / (2 · \(f(g, 2))) = \(f(up * up / (2 * g) * 100)) cm" }
             }
+            figures.append(figure(down, 1, "m/s", String(localized: "Speed down"), .impact))
             figures.append(figure(up, 1, "m/s", String(localized: "Bounce up"), .impact))
             return Caption(id: id, time: e.time, title: String(localized: "Off the slate"), pieces: pieces,
                            equation: "h = v↑² / (2·g)", accent: .impact, importance: 2, worked: worked,

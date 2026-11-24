@@ -8,6 +8,9 @@
 //          take-off (a jump), the first ball-to-ball hit that threw a ball a degree or more, and the end of the
 //          biggest bend (a masse). The first launch is untouched and never takes a signature.)
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay, plans/24-Nov-2026-jump-replay-plan.md: the
+//          take-off's rectangle drops the roll after landing and most of the run-up, and focusZoom lets a take-off be
+//          magnified further than other beats, so the flying ball and the ball it clears are seen large.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (a jump's take-off and landing are framed on the whole flight and
 //          the ball it passes over, not a short stretch of path: the Boss found the jump replay showing one ball on an
 //          empty grid.)
@@ -120,6 +123,10 @@ struct PacePlan: Equatable {
     /// rim skip or a pin, the ball and 0.2 m around it; for a take-off, the ball and 0.25 m of its flight. A pure
     /// function of the recording, built once with the beats. Empty when there are no beats.
     private(set) var focusRegions: [TableRect] = []
+    /// How far each beat's rectangle may be magnified (0.7.8 jump replay), same order and count as `beats`: the usual
+    /// MomentFraming.maxMagnification, and MomentFraming.flightMagnification for a take-off, so a hop over a blocker is
+    /// seen close enough to watch the gap between the two balls.
+    private(set) var focusZoom: [Float] = []
     /// Which replay this plan was built for. The first launch keeps the capped reading time; see readingTime.
     private(set) var style: Style = .standard
     /// Clock times of every caption, beats or not, sorted: a burst of them slows playback even between beats.
@@ -311,6 +318,10 @@ struct PacePlan: Equatable {
             .map { PaceBeat(caption: captions[$0], dwell: Self.readingTime(captions[$0].detail, capped: capped),
                             headline: headlines.contains($0)) }
         focusRegions = beats.map { Self.focusRegion(of: $0.caption.id, in: tl, bends: bendsByEvent) }
+        focusZoom = beats.map {
+            tl.events.indices.contains($0.caption.id) && tl.events[$0.caption.id].flight == .takeOff
+                ? MomentFraming.flightMagnification : MomentFraming.maxMagnification
+        }
     }
 
     /// Reading time for this plan's own replay (the first launch capped, every other uncapped); the model uses it when
@@ -366,8 +377,12 @@ struct PacePlan: Equatable {
         case .phaseTransition:
             if e.flight == .takeOff || e.flight == .landing {
                 // A jump: the whole flight and any ball it passes over, so the player sees what was jumped. A short
-                // stretch of path showed only the flying ball on an empty grid (the Boss, 23-Nov-2026).
-                for b in balls.prefix(1) { rect = rect.union(flight(of: b, around: e.time, in: tl)) }
+                // stretch of path showed only the flying ball on an empty grid (the Boss, 23-Nov-2026). The take-off
+                // leaves out the roll after landing (the landing beat frames that), so the camera comes in close on
+                // the flight and the blocker (0.7.8 jump replay); the balls were still small with it in.
+                for b in balls.prefix(1) {
+                    rect = rect.union(flight(of: b, around: e.time, rollOut: e.flight == .landing, in: tl))
+                }
             } else if e.flight == FlightMark.none, e.phaseFrom == .sliding {
                 // Skid turning into roll: the slide that has just ended.
                 for b in balls.prefix(1) { rect = rect.union(slide(of: b, endingAt: e.time, in: tl)) }
@@ -391,7 +406,9 @@ struct PacePlan: Equatable {
     /// airborne stretch within a second either side of `t`, joined, plus a little of the cloth before and after, and
     /// every other ball that sits within two ball widths of that flight while it flies (the ball that was jumped).
     /// Sampled every 1/120 s; a flight on a pool table lasts well under a second.
-    private static func flight(of ball: Int, around t: Double, in tl: Timeline) -> TableRect {
+    /// `rollOut`: also the first part of the roll after the flight (the landing beat); the take-off stops at the
+    /// landing point and keeps only the last few centimetres of run-up.
+    private static func flight(of ball: Int, around t: Double, rollOut: Bool, in tl: Timeline) -> TableRect {
         let step = 1.0 / 120
         let start = max(0, t - 1), end = min(tl.duration, t + 1)
         var points: [(time: Double, position: Vec2)] = []
@@ -407,8 +424,8 @@ struct PacePlan: Equatable {
         }
         for p in points { rect.include(p.position) }
         // A little of the run-up and the roll-out, so take-off and landing read as places on the table.
-        rect.include(tl.state(ball: ball, at: max(0, first.time - 0.15)).position)
-        rect = rect.union(path(of: ball, from: last.time, metres: hitPath, in: tl))
+        rect.include(tl.state(ball: ball, at: max(0, first.time - (rollOut ? 0.15 : 0.04))).position)
+        if rollOut { rect = rect.union(path(of: ball, from: last.time, metres: hitPath, in: tl)) }
         // The ball (or balls) the flight passes over.
         let reach = tl.table.ballRadius * 4
         for other in 0..<tl.ballCount where other != ball && tl.segments.indices.contains(other)
@@ -521,6 +538,7 @@ struct PacePlan: Equatable {
         var cut = self
         cut.beats = chosen.map { beats[$0] }
         cut.focusRegions = chosen.compactMap { focusRegions.indices.contains($0) ? focusRegions[$0] : nil }
+        cut.focusZoom = chosen.compactMap { focusZoom.indices.contains($0) ? focusZoom[$0] : nil }
         return cut
     }
 

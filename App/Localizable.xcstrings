@@ -2731,6 +2731,76 @@
         }
       }
     },
+    "%@ hits the slate going down, and the slate throws it back up off the cloth.": {
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ تصطدم باللوح الحجري نازلةً، فيقذفها اللوح إلى الأعلى بعيدًا عن الجوخ."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ trifft die Schieferplatte nach unten, und die Platte wirft sie wieder hoch, vom Tuch weg."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ golpea la pizarra al bajar, y la pizarra la lanza de nuevo hacia arriba, fuera del paño."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ frappe l'ardoise en descendant, et l'ardoise la renvoie vers le haut, hors du tapis."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ colpisce l'ardesia scendendo, e l'ardesia la rilancia verso l'alto, via dal panno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@は下向きにスレートに当たり、スレートに跳ね上げられてラシャから離れます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@(이)가 내려가며 슬레이트에 부딪히고, 슬레이트가 다시 위로 튕겨 올려 천에서 떠오릅니다."
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bate na ardósia a descer, e a ardósia atira-a de novo para cima, para fora do pano."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bate na ardósia descendo, e a ardósia a joga de volta para cima, para fora do pano."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ударяется о плиту, двигаясь вниз, и плита подбрасывает его вверх, над сукном."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 向下撞上石板，石板又把它向上弹起，离开了台呢。"
+          }
+        }
+      }
+    },
     "%@ into %@": {
       "localizations": {
         "ar": {

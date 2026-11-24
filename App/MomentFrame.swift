@@ -7,6 +7,9 @@
 //          the share like everything else here, MomentFocus carries it, and MomentFraming.frame moves the view across
 //          so the moment lands there and fits the smaller side when it picks the magnification. Every other layout
 //          keeps the middle (share 0.5) and is unchanged.)
+// Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: each focus carries its own magnification
+//          limit, MomentFocus.cap from PacePlan.focusZoom, so a jump's take-off can come in to 6 where every other beat
+//          stays at 3.5.)
 // PURPOSE: The moment framing of a guided Physics Lens replay (0.7.6, plans/22-Nov-2026-v076-phone-plan.md, stream
 //          camera; it replaces the 0.7.4 signature close-up). As the replay slows into a beat, the view glides in on
 //          what the beat is about so it fills the open space above the cards and sits in its middle; it stays close
@@ -55,6 +58,9 @@ struct MomentFocus: Equatable {
     /// Where the moment lands, as a share of the free space's height from its top: 0.5 the middle (every layout), about
     /// 0.35 while the upright phone's explanation blurb shows (MomentFrame.blurbShare), leaving room for it below.
     var share: Float = 0.5
+    /// The most this rectangle may be magnified: MomentFraming.maxMagnification for most beats, more for a jump's
+    /// take-off (PacePlan.focusZoom, 0.7.8).
+    var cap: Float = MomentFraming.maxMagnification
 }
 
 /// What the screen asks of the moment framing this frame (TableStage builds it from the model).
@@ -74,6 +80,9 @@ enum MomentFraming {
     static let release = 0.3
     /// The most the moment is magnified, and the share of the free space its rectangle may fill.
     static let maxMagnification: Float = 3.5
+    /// A jump's take-off may come in further (0.7.8 jump replay): a hop over a blocker is a few ball widths across, and
+    /// at 3.5 both balls were still small on a phone.
+    static let flightMagnification: Float = 6
     static let fill: Float = 0.7
 
     static func smooth(_ x: Double) -> Double { let c = min(1, max(0, x)); return c * c * (3 - 2 * c) }
@@ -121,11 +130,23 @@ enum MomentFraming {
             return (lo - pad, hi + pad)
         }
 
+        // The beat's own magnification limit (PacePlan.focusZoom), the largest among beats at the same instant.
+        func cap(_ i: Int) -> Float {
+            var c = maxMagnification
+            for j in beats.indices where abs(beats[j].time - beats[i].time) < 1e-6 && plan.focusZoom.indices.contains(j) {
+                c = max(c, plan.focusZoom[j])
+            }
+            return c
+        }
+
         let rect: (lo: SIMD2<Float>, hi: SIMD2<Float>)
+        let limit: Float
         if p < 0 {
             rect = box(n)
+            limit = cap(n)
         } else if n >= beats.count {
             rect = box(p)
+            limit = cap(p)
         } else {
             let bp = beats[p].time, bn = beats[n].time
             let a = box(p), b = box(n)
@@ -140,8 +161,10 @@ enum MomentFraming {
                 u = Float(smooth((t - s0) / (bn - s0)))
             }
             rect = (a.lo + (b.lo - a.lo) * u, a.hi + (b.hi - a.hi) * u)
+            limit = cap(p) + (cap(n) - cap(p)) * u
         }
-        return MomentFocus(weight: Float(w), centre: (rect.lo + rect.hi) * 0.5, half: (rect.hi - rect.lo) * 0.5)
+        return MomentFocus(weight: Float(w), centre: (rect.lo + rect.hi) * 0.5, half: (rect.hi - rect.lo) * 0.5,
+                           cap: limit)
     }
 
     /// The cloth point (world, y = 0) seen at view point `point` (points, origin top left) by a camera at `position`
@@ -197,9 +220,10 @@ enum MomentFraming {
             }
             return true
         }
-        if fits(maxMagnification) { return maxMagnification }
+        let most = max(1, focus.cap)
+        if fits(most) { return most }
         if !fits(1) { return 1 }
-        var lo: Float = 1, hi = maxMagnification
+        var lo: Float = 1, hi = most
         // Sixteen halvings of a 2.5 span: far finer than anything visible.
         for _ in 0..<16 {
             let mid = (lo + hi) * 0.5

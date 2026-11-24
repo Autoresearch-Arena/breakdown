@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: the blurb reports where it sits to leader.blurb, so the jump's side view keeps clear of it.)
 // PURPOSE: The explanation on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The Blurb" and Part 4
 //          step 4). Two views, both used only by ShowpieceView's upright layout:
 //          PhoneExplanationBlurb - the caption of the moment on screen (model.displayedCaption, the same words the
@@ -24,7 +25,8 @@
 //            LensLegendChip in the title row on this layout only.
 //          Reads the model, the leader (ring point, from TableStage's per-frame projection) and the Options switches
 //          (Explanations, Show the maths). Writes the model only through `playing` (pause for reading, resume) and
-//          setHoldPages (one page: this blurb never pages), and MomentFrame.blurbShare. Never writes leader.card: the
+//          setHoldPages (one page: this blurb never pages), MomentFrame.blurbShare and leader.blurb (0.7.8: where it sits,
+//          so the jump's side view keeps clear of it). Never writes leader.card: the
 //          ring hides itself under a reported card, and this blurb sits right beside its ring.
 // SRP/DRY check: Pass - checked CaptionViews.swift (CaptionStrip and CaptionArea are the other layouts' cards; the
 //          caption, its figures and its equation line come from there and Captions.swift, not rebuilt here; the Lens
@@ -99,7 +101,8 @@ struct PhoneExplanationBlurb: View {
             // Fills the stage so the offsets below are from its corner; never takes a touch (aiming passes through).
             Color.clear.allowsHitTesting(false)
             if let caption {
-                RingMarks(leader: leader, figure: caption.figures.first, placed: shown, origin: origin,
+                RingMarks(leader: leader, figure: FlightShape.isTakeOff(caption, in: model.timeline) ? nil : caption.figures.first,
+                          placed: shown, origin: origin,
                           tableArea: tableArea, figureSize: $figureSize, onRingMoved: { ringMoved(to: $0) })
                 blurb(caption)
                     // The words keep the reader's direction; only the placement is in screen points.
@@ -136,10 +139,15 @@ struct PhoneExplanationBlurb: View {
                 folded = true
             }
         }
+        // Where the blurb sits (0.7.8): the jump's side view keeps clear of it (CaptionLeader.flightCenter).
+        .onChange(of: shown?.frame ?? .zero, initial: true) { _, frame in
+            if leader.blurb != frame { leader.blurb = frame }
+        }
         .onChange(of: framesForBlurb, initial: true) { _, on in
             MomentFrame.blurbShare = on ? Self.momentShare : 0.5
         }
         .onDisappear {
+            if leader.blurb != .zero { leader.blurb = .zero }
             MomentFrame.blurbShare = 0.5
             if pausedForReading, model.holding { model.playing = true }
             pausedForReading = false

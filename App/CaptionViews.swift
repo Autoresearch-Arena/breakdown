@@ -7,6 +7,9 @@
 //          LensKeyEntry, shared by LensLegendChip and the phone's one-line Lens key blurb. Nothing changes on the other
 //          layouts.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 coordinator: wires the Ride hand-over in).
+// Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: LeaderState keeps the jump's side view
+//          (FlightSketch) while a take-off caption is up, and CaptionLeader places FlightSideView beside the flight,
+//          clear of the card and the chip.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream figures: the caption's physics figures (Caption.figures)
 //          as a row of compact tiles under the title line, each number large in rounded monospaced digits in the colour
 //          of the Lens mark it describes, its label small under it. The phone strip keeps the row's place in its fixed
@@ -1019,6 +1022,13 @@ final class LeaderState {
     var stageRect: CGRect = .zero
     /// The player's stroke lines on screen (StageSpace), or nil (LensStroke.onScreen decides when).
     var stroke: StrokeMarks?
+    /// The upright phone's explanation blurb on screen (StageSpace), or zero; PhoneExplanation reports it (0.7.8) so
+    /// the jump's side view keeps clear of it. It is not the card: the ring does not hide under it.
+    var blurb: CGRect = .zero
+    /// The side view of a jump (0.7.8, FlightSideView) while a take-off caption is up, or nil.
+    var flight: FlightSketch?
+    /// The last caption's flight shape, built once per caption (nil inside when that caption is not a take-off).
+    @ObservationIgnored private var flightShape: (id: Int, shape: FlightShape?)?
 
     /// The two stroke lines projected to the screen: from the cue ball out along the aimed line and the struck line.
     struct StrokeMarks: Equatable {
@@ -1043,14 +1053,37 @@ final class LeaderState {
             if ring != nil { ring = nil }
             if title != nil { title = nil }
             if figure != nil { figure = nil }
+            if flight != nil { flight = nil }
             return
         }
+        let sketch = flightSketch(for: caption, model: model, project: project)
+        if flight != sketch { flight = sketch }
         if accent != caption.accent { accent = caption.accent }
         if title != caption.title { title = caption.title }
-        let lead = caption.figures.first
+        // A take-off's height is in the card's title and the side view; the chip leaves it off (0.7.8).
+        let lead = FlightShape.isTakeOff(caption, in: model.timeline) ? nil : caption.figures.first
         if figure != lead { figure = lead }
         if let old = ring, hypot(old.x - point.x, old.y - point.y) < 0.5 { return }
         ring = point
+    }
+
+    /// The side view of a take-off caption's flight for this frame (FlightSideView), or nil for any other caption or
+    /// when the flight is off screen. The shape is built once per caption; only the progress and the screen place
+    /// change, in whole points and fortieths, so a still frame writes nothing.
+    private func flightSketch(for caption: Caption, model: ShowpieceModel,
+                              project: (SIMD3<Float>) -> CGPoint?) -> FlightSketch? {
+        if flightShape?.id != caption.id {
+            flightShape = (caption.id, FlightShape.make(caption: caption, timeline: model.timeline))
+        }
+        guard let shape = flightShape?.shape else { return nil }
+        let frame = TableFrame(model.timeline.table)
+        let lift = frame.ballRadius
+        guard let a = project(frame.world(shape.from, height: lift)),
+              let b = project(frame.world(shape.to, height: lift)) else { return nil }
+        let rect = CGRect(x: min(a.x, b.x).rounded(), y: min(a.y, b.y).rounded(),
+                          width: abs(a.x - b.x).rounded(), height: abs(a.y - b.y).rounded())
+        let progress = (min(1, max(0, (model.time - shape.t0) / (shape.t1 - shape.t0))) * 40).rounded() / 40
+        return FlightSketch(captionID: caption.id, shape: shape, progress: progress, screen: rect, leftward: b.x < a.x)
     }
 
     /// The stroke lines for this frame: both lines lie on the cloth (2 mm up, under the balls and the Lens trails'
@@ -1178,6 +1211,26 @@ struct CaptionLeader: View {
         return held.min { covered($0) < covered($1) } ?? above
     }
 
+    /// Where the jump's side view goes (FlightSideView.center), with the same limits as the chip: on the table, under the
+    /// title row, above a card across the table below the flight, clear of the card and of the chip when it shows.
+    private func flightCenter(_ sketch: FlightSketch, in size: CGSize) -> (point: CGPoint, size: CGSize)? {
+        let bounds = stageBounds(size)
+        let card = leader.card
+        var bottom = bounds.maxY - gap
+        if !card.isEmpty, card.minX < bounds.maxX, card.maxX > bounds.minX, card.minY > sketch.screen.midY {
+            bottom = min(bottom, card.minY - gap)
+        }
+        var avoid = [card, leader.blurb]
+        if showChip, let ring = visibleRing, leader.title != nil, chipSize != .zero {
+            let c = chipCenter(ring: ring, in: size)
+            avoid.append(CGRect(x: c.x - chipSize.width / 2, y: c.y - chipSize.height / 2,
+                                width: chipSize.width, height: chipSize.height))
+        }
+        return FlightSideView.center(flight: sketch.screen, bounds: bounds,
+                                     top: max(bounds.minY + gap, leader.topClear + gap), bottom: bottom,
+                                     avoid: avoid, gap: gap)
+    }
+
     /// The player's stroke (item 4): the aimed line faint and dashed, the line the cue really took bright and solid,
     /// both from the cue ball, each labelled at its far end. The labels are pushed apart across the two ends, so they
     /// never sit on each other however small the gap.
@@ -1291,6 +1344,14 @@ struct CaptionLeader: View {
                     // opacity fade is also what Reduce Motion asks for.
                     .id(title + (figure?.text ?? ""))
                     .transition(.opacity)
+                }
+                // The side view of a jump (0.7.8): beside the flight, clear of the card, the chip and the balls; left
+                // out when nothing fits, so it never covers the table's action or the words.
+                if explanations, let sketch = leader.flight, let at = flightCenter(sketch, in: geo.size) {
+                    FlightSideView(sketch: sketch, accent: palette.color(for: CaptionAccent.impact), size: at.size)
+                        .position(at.point)
+                        .id(sketch.captionID)
+                        .transition(.opacity)
                 }
             }
             .animation(.easeOut(duration: 0.2), value: leader.title)

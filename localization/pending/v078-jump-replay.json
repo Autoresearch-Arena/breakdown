@@ -1,0 +1,62 @@
+{
+ "keys": [
+  "%@ hits the slate going down, and the slate throws it back up off the cloth."
+ ],
+ "translations": [
+  {
+   "culture": "ar",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ تصطدم باللوح الحجري نازلةً، فيقذفها اللوح إلى الأعلى بعيدًا عن الجوخ."
+  },
+  {
+   "culture": "de",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ trifft die Schieferplatte nach unten, und die Platte wirft sie wieder hoch, vom Tuch weg."
+  },
+  {
+   "culture": "es",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ golpea la pizarra al bajar, y la pizarra la lanza de nuevo hacia arriba, fuera del paño."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ frappe l'ardoise en descendant, et l'ardoise la renvoie vers le haut, hors du tapis."
+  },
+  {
+   "culture": "it",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ colpisce l'ardesia scendendo, e l'ardesia la rilancia verso l'alto, via dal panno."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@は下向きにスレートに当たり、スレートに跳ね上げられてラシャから離れます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@(이)가 내려가며 슬레이트에 부딪히고, 슬레이트가 다시 위로 튕겨 올려 천에서 떠오릅니다."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ bate na ardósia a descer, e a ardósia atira-a de novo para cima, para fora do pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ bate na ardósia descendo, e a ardósia a joga de volta para cima, para fora do pano."
+  },
+  {
+   "culture": "ru",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ ударяется о плиту, двигаясь вниз, и плита подбрасывает его вверх, над сукном."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ hits the slate going down, and the slate throws it back up off the cloth.",
+   "text": "%@ 向下撞上石板，石板又把它向上弹起，离开了台呢。"
+  }
+ ]
+}

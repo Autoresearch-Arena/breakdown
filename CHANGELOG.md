@@ -8,6 +8,29 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.8] - 24-November-2026
+
+### The jump replay
+
+Author: Claude Opus 5.5 Medium. Plan: plans/24-Nov-2026-jump-replay-plan.md. The Boss found the jump replay hard to read:
+small balls, and the flight height printed over and over.
+
+- **Closer on the jump.** The take-off beat frames the flight and the ball it clears, without the roll after landing
+  (the landing beat frames that), and may zoom to 6 where other beats stop at 3.5 (PacePlan.focusZoom,
+  MomentFocus.cap).
+- **Each number once.** The take-off card leads with the flight height (the chip and its tile), then speed down and
+  bounce up; its sentence tells the story without figures and keeps only the gap over the jumped ball. The flight
+  distance stays on the landing card. One new sentence, translated into all eleven other languages.
+- **The jump seen side on.** A small glass panel beside the flight (FlightSideView) draws the cloth, the jumped ball,
+  the arc and a marker from the cloth to the ball's underside at the top, at true scale and the same way round as the
+  table. The whole arc shows while the beat holds; the flown part brightens as the replay plays. It sits below, above
+  or beside the flight, clear of the card, the chip, the phone's blurb (which now reports where it sits) and the
+  balls, on the table half of an open Duo, and is left out when nothing fits. It is as wide as the table allows (up to
+  330 points) and shrinks on a crowded screen. The height is no longer repeated beside the ball for a take-off.
+- The removed take-off sentences stay in the catalog until Xcode marks them stale. Shared clips get the closer
+  framing and the shorter card; the side view is drawn on the live screen only.
+- Tests: BreakdownTests/JumpReplayTests.swift, on the authored jump over a blocker.
+
 ## [0.7.7] - 23-November-2026
 
 ### Five new features
