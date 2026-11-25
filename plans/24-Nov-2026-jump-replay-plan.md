@@ -9,6 +9,8 @@ PURPOSE: Plan for fixing the jump replay in the Physics Lens (the guided replay'
          trail and the flying ball's ground ring).
 Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 shipped Parts 1 to 3; added "Next", the three pieces that
          would make the jump replay excellent, for the Boss to see before any of it is built.)
+Edited: Claude Opus 5.5 Medium, 25-November-2026 ("Next" built in 0.7.9, plus a closer take-off frame after the
+         Boss found the zoom weak; see "Built in 0.7.9" at the end.)
 SRP/DRY check: Pass - every change edits the code that already owns that job (captions in Captions.swift, framing in
          PacePlan and MomentFrame, drawing in LensLayer); the one new drawing, the side view, is a new file because
          nothing draws a ball's height today.
@@ -114,3 +116,22 @@ compile, the tests above, version 0.7.8, CHANGELOG entry, push to TestFlight.
 
 Checks: an app test that a clip of the jump has the side view in its frames; the one spot check on the iPhone 17 Pro
 simulator; the store preview watched once before upload.
+
+## Built in 0.7.9
+
+All three "Next" pieces, as written: the side view is the jump's whole story (the raised strike's cue at its real
+tilt, the push down into the slate and back up, every hop, the landing's distance), it stays up from the strike to
+the last hop, and Lens clips draw it on a dark card (ClipFlight, ClipOverlay). The tiles are matched to the arrows by
+colour, not by a pointer.
+
+The Boss also found the zoom weak on his phone (25-Nov-2026). On the iPhone 17 Pro simulator the take-off came in
+about two times while a pocket came in three and a half: the take-off's rectangle took in every hop within a second,
+and on the upright phone a jump runs up the screen, where the room is smallest. The take-off is now framed on its
+first flight only, cut a ball's width past the ball it clears (PacePlan.takeOff); the side view and the landing beat
+show the rest.
+
+Measuring it (-frameDebug) found the real culprit: CaptionEngine.flightTop named the 11, which the cue ball flies into,
+as the ball it jumped ("0.0 cm to spare"), so the frame, the side view and the card all followed the 11. Fixed there.
+The hold now comes in about twice as close. On the upright phone the closer frame put the 6 under the blurb anchored
+below the cue ball, so the blurb keeps clear of the jump's framed stretch, the jump sits a little higher, and the side
+view moves inside the blurb on that screen.

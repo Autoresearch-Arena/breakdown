@@ -76,7 +76,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
 			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = "Breakdown-Info.plist";
 			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games"; MARKETING_VERSION = 0.7.8; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO; INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves the clips you make to your photo library.";
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games"; MARKETING_VERSION = 0.7.9; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO; INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves the clips you make to your photo library.";
 			SWIFT_EMIT_LOC_STRINGS = YES; LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;
@@ -87,7 +87,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.voynichlabs.breakdown; PRODUCT_NAME = Breakdown;
 			GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = "Breakdown-Info.plist";
 			INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games"; MARKETING_VERSION = 0.7.8; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO; INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves the clips you make to your photo library.";
+			INFOPLIST_KEY_CFBundleDisplayName = Breakdown; INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games"; MARKETING_VERSION = 0.7.9; CURRENT_PROJECT_VERSION = 9; INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO; INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Saves the clips you make to your photo library.";
 			SWIFT_EMIT_LOC_STRINGS = YES; LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 			INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 			CODE_SIGN_STYLE = Automatic; CODE_SIGN_IDENTITY = "-"; CODE_SIGNING_ALLOWED = YES;

@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9, the jump replay plan's "Next": the jump's side view in clips.
+//          While the replay is on a jump (ClipFlight decides the frames and the fade, from the jump's own clock, not the
+//          note's), the game's FlightSideView is drawn in its dark film style beside the flight, placed by
+//          ClipFlight.place, under the ring and the note and under the end card. frameImage takes the frame's index
+//          (optional; without it the overlay follows the frames in order, as ClipRenderer draws them).)
 // PURPOSE: The words, the ring and the end card drawn onto each frame of a Lens clip (0.7.7,
 //          plans/23-Nov-2026-clips-plan.md, Step 5). The 3D table is rendered by ClipRenderer; this lays over it, in
 //          the film's pixels:
@@ -11,7 +16,9 @@
 //              the thrown ball for a Throw caption, else the faster ball of a hit, at its place at the held clock),
 //              sized from the ball's size on screen, with a thin line down to the note when the ring is above it;
 //            - the end card: the ground colour, the shot's name, the game's name and a short line half magenta, half
-//              cyan (the Lens colours). No web address, no slogan.
+//              cyan (the Lens colours). No web address, no slogan;
+//            - (0.7.9) while the replay is on a jump, the jump seen side on (FlightSideView, film style) beside the
+//              flight, from the strike or take-off until the ball has landed, fading in and out (ClipFlight).
 //          The note and the end card are SwiftUI views rendered once each with ImageRenderer at three pixels a point,
 //          in the game's language and reading direction; the ring is drawn per frame into a small bitmap. Everything
 //          is composed with Core Image on the GPU (ClipRenderer renders the result straight into the video's buffer).
@@ -19,7 +26,8 @@
 //          bottom left, so every placement converts.
 // SRP/DRY check: Pass - reuses LeaderState.anchor (the ring's ball), CameraFraming.project (the camera's own projection),
 //          TableCamera.pointsPerMetre (the ball's size on screen), Theme fonts and the Palette colours; the words are
-//          the captions' own, prepared by ClipScript.
+//          the captions' own, prepared by ClipScript. The side view is the game's own FlightSideView and FlightSketch
+//          (never a copy), its frames and place ClipFlight's.
 import BreakdownLensModel
 import BreakdownTimeline
 import CoreGraphics
@@ -100,6 +108,40 @@ final class ClipOverlay {
     private var endCardImage: CIImage?
     private let sRGB = CGColorSpace(name: CGColorSpace.sRGB) ?? CGColorSpaceCreateDeviceRGB()
 
+    /// What a script's side-view track is built from, cheap to compare on every frame: its length and its kept beats.
+    /// (One overlay draws one script, so this only has to tell a new script from the last.)
+    private struct TrackKey: Equatable {
+        let frames: Int
+        let events: [Int]
+        let times: [Double]
+
+        init(_ script: ClipScript) {
+            frames = script.frames.count
+            events = script.beats.map(\.beat.caption.id)
+            times = script.beats.map(\.beat.time)
+        }
+    }
+
+    /// What changes the side view's picture: the jump, the part in focus, the clock (in the jump's steps), which way it
+    /// runs and the panel's size. Its place on the frame does not.
+    private struct FlightPictureKey: Equatable {
+        let story: FlightStoryKey
+        let focus: FlightFocus
+        let now: Double
+        let leftward: Bool
+        let width: CGFloat
+        let height: CGFloat
+    }
+
+    /// The side view on every frame of the script being drawn (ClipFlight.track), built once per script.
+    private var flightTrack: (key: TrackKey, cues: [ClipFlightCue?])?
+    /// The index the next frame is expected at, when frameImage is not given one: ClipRenderer draws every frame once,
+    /// in order.
+    private var nextFrame = 0
+    /// The last side view rendered. Only the last is kept: a hold repeats it frame after frame, and as the ball flies
+    /// each frame needs a new one, so older pictures are never asked for again.
+    private var flightPicture: (key: FlightPictureKey, image: CIImage?)?
+
     /// TableCamera's vertical field of view in degrees (TableCamera.fov, private there). The clip never rides, so the
     /// field of view never changes from it.
     nonisolated static let fovDegrees: Float = 45
@@ -160,13 +202,22 @@ final class ClipOverlay {
 
     // MARK: One frame
 
-    /// The frame as the film shows it: the rendered table, then (while a moment is held) the ring and its line, then
-    /// the note, then the end card at its fade. All in pixels, origin bottom left.
+    /// The frame as the film shows it: the rendered table, then the jump's side view while the replay is on a jump,
+    /// then (while a moment is held) the ring and its line, then the note, then the end card at its fade. All in
+    /// pixels, origin bottom left. `index` is the frame's place in the script; without it the overlay takes the frames
+    /// to come in order, once each, as ClipRenderer draws them.
     func frameImage(base: CIImage, frame f: ClipFrame, script: ClipScript, camera: TableCamera,
-                    timeline: Timeline) -> CIImage {
+                    timeline: Timeline, index frameIndex: Int? = nil) -> CIImage {
         let scale = ClipShape.pixelsPerPoint
         let height = shape.pixelSize.height
         var image = base
+
+        // The jump's side view. Its own block, not the note's: it stays up while the ball flies on after the hold,
+        // when the note has gone (ClipFlight). Asked on every frame, so the overlay keeps step with the script.
+        if let cue = flightCue(f, index: frameIndex, script: script, timeline: timeline),
+           let panel = flightImage(cue, frame: f, camera: camera, timeline: timeline) {
+            image = panel.composited(over: image)
+        }
 
         // The note: centred across the caption band, centred in it when it fits, else resting on its bottom margin
         // and reaching up over the table.
@@ -193,6 +244,71 @@ final class ClipOverlay {
             image = Self.fade(placed, opacity: f.endCard).composited(over: image)
         }
         return image.cropped(to: CGRect(origin: .zero, size: shape.pixelSize))
+    }
+
+    // MARK: The jump's side view
+
+    /// The side view this frame carries (ClipFlight.track, built once per script), or nil.
+    private func flightCue(_ f: ClipFrame, index: Int?, script: ClipScript, timeline: Timeline) -> ClipFlightCue? {
+        let key = TrackKey(script)
+        if flightTrack?.key != key {
+            flightTrack = (key, ClipFlight.track(script: script, timeline: timeline))
+            nextFrame = 0
+        }
+        guard let cues = flightTrack?.cues else { return nil }
+        let frames = script.frames
+        // The track is by frame index, and frames repeat exactly during a hold, so a frame cannot be found by its
+        // value alone: follow the given index, else the expected next one, checked against the frame itself.
+        var i = index ?? nextFrame
+        if !(frames.indices.contains(i) && frames[i] == f) {
+            // Out of step (ClipRenderer never is): the first frame like this one. Within a hold that may be an earlier
+            // copy of it, which shows the same panel; the next moving frame brings the cursor back in step.
+            guard let found = frames.firstIndex(of: f) else { return nil }
+            i = found
+        }
+        nextFrame = i + 1
+        return cues.indices.contains(i) ? cues[i] : nil
+    }
+
+    /// The side view for one frame, placed in film pixels and faded to the cue's opacity. Nil when the part in focus is
+    /// behind the camera: nothing on screen to draw it beside.
+    private func flightImage(_ cue: ClipFlightCue, frame f: ClipFrame, camera: TableCamera,
+                             timeline: Timeline) -> CIImage? {
+        // Cloth points lifted by a ball's radius, as the game lifts them (LeaderState.flightSketch), through the clip's
+        // camera on the clip's canvas.
+        let table = TableFrame(timeline.table)
+        let lift = table.ballRadius
+        let eye = camera.eye, forward = camera.forward, canvas = shape.canvas
+        guard let sketch = FlightSketch.make(captionID: cue.captionID, shape: cue.shape, focus: cue.focus,
+                                             clock: f.clock, project: { p in
+            Self.project(table.world(p, height: lift), eye: eye, forward: forward, canvas: canvas)
+        }) else { return nil }
+        let rect = ClipFlight.place(flight: sketch.screen, in: shape)
+
+        let key = FlightPictureKey(story: sketch.key, focus: sketch.focus, now: sketch.now, leftward: sketch.leftward,
+                                   width: rect.width, height: rect.height)
+        let picture: CIImage?
+        if let cached = flightPicture, cached.key == key {
+            picture = cached.image
+        } else {
+            // Laid out left to right whatever the language, as the game's panel is (CaptionLeader): the drawing is
+            // placed in screen points and mirrored by the sketch itself when the jump runs right to left.
+            let view = FlightSideView(sketch: sketch, accent: Palette(contrast: .standard).color(for: CaptionAccent.impact),
+                                      size: rect.size, style: .film)
+                .environment(\.layoutDirection, .leftToRight)
+            picture = render(view, proposedWidth: rect.width)
+            flightPicture = (key, picture)
+        }
+        guard let picture else { return nil }
+
+        // Placed as the note is: centred on its rect, from the rendered image's own size, in pixels from the bottom left.
+        let scale = ClipShape.pixelsPerPoint
+        let w = picture.extent.width / scale, h = picture.extent.height / scale
+        let left = rect.midX - w / 2, top = rect.midY - h / 2
+        let placed = picture
+            .transformed(by: CGAffineTransform(translationX: left * scale - picture.extent.minX,
+                                               y: shape.pixelSize.height - (top + h) * scale - picture.extent.minY))
+        return Self.fade(placed, opacity: cue.opacity)
     }
 
     /// An image with its alpha scaled (Core Image works on unpremultiplied colour here, so the colours stay right).

@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: hands the overlay each frame's index, so the jump's side
+//          view (ClipFlight) is looked up by frame rather than counted.)
 // PURPOSE: Draws a Lens clip's pictures (0.7.7, plans/23-Nov-2026-clips-plan.md, Step 6). The film is made from the
 //          recorded shot, frame by frame, not by recording the screen, so the same shot always makes the same film at
 //          full quality whatever else is on screen, on iPhone, iPad and Mac alike.
@@ -131,7 +133,7 @@ final class ClipRenderer {
             // A Metal texture's first row is the top of the picture; Core Image counts from the bottom: flip it.
             let base = raw.transformed(by: CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -CGFloat(height)))
             let composed = overlay.frameImage(base: base, frame: f, script: script, camera: camera,
-                                              timeline: source.timeline)
+                                              timeline: source.timeline, index: i)
             let buffer = try writer.nextBuffer()
             ciContext.render(composed, to: buffer, bounds: film, colorSpace: sRGB)
             try await writer.append(buffer, frame: i)

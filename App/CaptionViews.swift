@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9 jump replay, next: LeaderState builds the side view for any
+//          caption about a jump (the raised strike, a take-off, a landing) through FlightShape.story and
+//          FlightSketch.make, and the panel keeps one identity per jump, so it stays up from the strike to the last hop.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 4: CaptionLeader gains showChip (the ring
 //          stays, its title chip goes on the upright phone, where the anchored explanation blurb carries the title) and
 //          shares its ring radius (CaptionLeader.ringRadius) with that blurb; the worked equation line moves onto Caption
@@ -1025,10 +1028,11 @@ final class LeaderState {
     /// The upright phone's explanation blurb on screen (StageSpace), or zero; PhoneExplanation reports it (0.7.8) so
     /// the jump's side view keeps clear of it. It is not the card: the ring does not hide under it.
     var blurb: CGRect = .zero
-    /// The side view of a jump (0.7.8, FlightSideView) while a take-off caption is up, or nil.
+    /// The side view of a jump (0.7.8, FlightSideView) while a caption about a jump is up (0.7.9: the raised strike that
+    /// made it, a take-off or a landing), or nil.
     var flight: FlightSketch?
-    /// The last caption's flight shape, built once per caption (nil inside when that caption is not a take-off).
-    @ObservationIgnored private var flightShape: (id: Int, shape: FlightShape?)?
+    /// The last caption's jump and the part it is about, built once per caption (nil inside when it is about none).
+    @ObservationIgnored private var flightStory: (id: Int, story: (shape: FlightShape, focus: FlightFocus)?)?
 
     /// The two stroke lines projected to the screen: from the cue ball out along the aimed line and the struck line.
     struct StrokeMarks: Equatable {
@@ -1067,23 +1071,20 @@ final class LeaderState {
         ring = point
     }
 
-    /// The side view of a take-off caption's flight for this frame (FlightSideView), or nil for any other caption or
-    /// when the flight is off screen. The shape is built once per caption; only the progress and the screen place
-    /// change, in whole points and fortieths, so a still frame writes nothing.
+    /// The side view of a jump for this frame (FlightSideView), or nil when the caption is about no jump or the part
+    /// in focus is off screen. The jump is built once per caption; only the clock and the screen place change, in the
+    /// shape's steps and whole points, so a still frame writes nothing.
     private func flightSketch(for caption: Caption, model: ShowpieceModel,
                               project: (SIMD3<Float>) -> CGPoint?) -> FlightSketch? {
-        if flightShape?.id != caption.id {
-            flightShape = (caption.id, FlightShape.make(caption: caption, timeline: model.timeline))
+        if flightStory?.id != caption.id {
+            flightStory = (caption.id, FlightShape.story(for: caption, in: model.timeline))
         }
-        guard let shape = flightShape?.shape else { return nil }
+        guard let story = flightStory?.story else { return nil }
         let frame = TableFrame(model.timeline.table)
         let lift = frame.ballRadius
-        guard let a = project(frame.world(shape.from, height: lift)),
-              let b = project(frame.world(shape.to, height: lift)) else { return nil }
-        let rect = CGRect(x: min(a.x, b.x).rounded(), y: min(a.y, b.y).rounded(),
-                          width: abs(a.x - b.x).rounded(), height: abs(a.y - b.y).rounded())
-        let progress = (min(1, max(0, (model.time - shape.t0) / (shape.t1 - shape.t0))) * 40).rounded() / 40
-        return FlightSketch(captionID: caption.id, shape: shape, progress: progress, screen: rect, leftward: b.x < a.x)
+        return FlightSketch.make(captionID: caption.id, shape: story.shape, focus: story.focus, clock: model.time) {
+            project(frame.world($0, height: lift))
+        }
     }
 
     /// The stroke lines for this frame: both lines lie on the cloth (2 mm up, under the balls and the Lens trails'
@@ -1347,10 +1348,12 @@ struct CaptionLeader: View {
                 }
                 // The side view of a jump (0.7.8): beside the flight, clear of the card, the chip and the balls; left
                 // out when nothing fits, so it never covers the table's action or the words.
-                if explanations, let sketch = leader.flight, let at = flightCenter(sketch, in: geo.size) {
+                // Not on the upright phone (showChip off there): its explanation blurb carries the picture (0.7.9).
+                if explanations, showChip, let sketch = leader.flight, let at = flightCenter(sketch, in: geo.size) {
                     FlightSideView(sketch: sketch, accent: palette.color(for: CaptionAccent.impact), size: at.size)
                         .position(at.point)
-                        .id(sketch.captionID)
+                        // One panel for the whole jump (0.7.9): it stays up from the strike to the last hop.
+                        .id(sketch.key)
                         .transition(.opacity)
                 }
             }

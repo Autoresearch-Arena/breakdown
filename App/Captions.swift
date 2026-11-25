@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9 jump replay, next: raisedCueAngle, the cue's tilt read back
+//          from a take-off a raised strike made, shared by the raised strike's caption and the jump's side view. And a
+//          fix: flightTop no longer names a ball the flight runs into as the ball it jumped; the jump over a blocker
+//          said it passed over the 11 "with 0.0 cm to spare" when it cleared the 6 and hit the 11.)
 // Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: the take-off card says each number once: the
 //          flight height leads, then speed down and bounce up; its sentence tells the story without figures, keeping only
 //          the gap over the jumped ball; flightSegment and flightTop are shared with FlightSideView.)
@@ -635,7 +639,7 @@ enum CaptionEngine {
         let across = t.velocityBefore.length, down = takeOff.verticalSpeedDown
         let along = (across * across + down * down).squareRoot()
         guard along > 0.01 else { return nil }
-        let angle = atan2(down, across) * 180 / Double.pi
+        let angle = cueTilt(takeOff) * 180 / Double.pi
         var pieces = [String(localized: "The cue, raised \(f(angle, 0)) degrees, drives the ball at \(f(along)) m/s along its own line: \(f(across)) m/s across the cloth and \(f(down)) m/s down into the slate. The slate throws it back up at \(f(takeOff.verticalSpeedUp)) m/s, so it leaves the cloth.")]
         pieces += strikeSpinSentences(e.balls[0], radius: R)
         return Caption(id: id, time: e.time, title: String(localized: "The cue comes down on the ball"), pieces: pieces,
@@ -728,7 +732,15 @@ enum CaptionEngine {
         let R = timeline.table.ballRadius
         let steps = 80
         var best: (ball: Int, gap: Double)?
-        for other in 0..<timeline.ballCount where other != ball {
+        // A ball the flight runs into is hit, not jumped (the jump over a blocker flies on into the 11): its gap comes
+        // out as a rounding error above zero at the contact, so it is ruled out by the contact itself (0.7.9; it was
+        // named as the jumped ball "with 0.0 cm to spare", and the side view and the take-off's frame followed it).
+        let touched = Set(timeline.events.compactMap { e -> Int? in
+            guard e.kind == .ballBall, e.time >= seg.t0 - 1e-9, e.time <= seg.t1 + 1e-9,
+                  e.balls.contains(where: { $0.ball == ball }) else { return nil }
+            return e.balls.first { $0.ball != ball }?.ball
+        })
+        for other in 0..<timeline.ballCount where other != ball && !touched.contains(other) {
             var smallest = Double.infinity
             var passesOver = false
             for i in 0...steps {
@@ -742,9 +754,29 @@ enum CaptionEngine {
                 let up = fly.height - o.height
                 smallest = min(smallest, (across * across + up * up).squareRoot() - 2 * R)
             }
-            if passesOver, smallest > 0, smallest < (best?.gap ?? .infinity) { best = (ball: other, gap: smallest) }
+            if passesOver, smallest > 1e-5, smallest < (best?.gap ?? .infinity) { best = (ball: other, gap: smallest) }
         }
         return (peak: peak, over: best)
+    }
+
+    /// The cue's tilt below the horizontal, radians, read back from the take-off a raised strike made: the strike drove
+    /// the ball along the cue's own line, across the cloth at the take-off's velocityBefore and down at its
+    /// verticalSpeedDown, so the tilt is atan2(down, across) with no mass assumed (raisedCaption's angle).
+    private static func cueTilt(_ takeOff: LensEvent) -> Double {
+        atan2(takeOff.verticalSpeedDown, takeOff.balls.first?.velocityBefore.length ?? 0)
+    }
+
+    /// The cue's tilt (radians) when a raised cue strike threw the ball up at `takeOff`; nil when no cue strike made it
+    /// (a jump off another ball or a rail, or a miscue) or the strike barely moved the ball. Read by the side view of a
+    /// jump (FlightSideView), which draws the cue coming down onto the ball at this angle (0.7.9).
+    static func raisedCueAngle(_ takeOff: LensEvent, in timeline: Timeline) -> Double? {
+        guard takeOff.kind == .phaseTransition, takeOff.flight == .takeOff, let t = takeOff.balls.first else { return nil }
+        let struck = timeline.events.contains {
+            $0.kind == .cueStrike && $0.miscue != true && abs($0.time - takeOff.time) < 1e-9 && $0.balls.first?.ball == t.ball
+        }
+        let across = t.velocityBefore.length, down = takeOff.verticalSpeedDown
+        guard struck, (across * across + down * down).squareRoot() > 0.01 else { return nil }
+        return cueTilt(takeOff)
     }
 
     private static func flightCaption(_ e: LensEvent, id: Int, timeline: Timeline, facts: SurfaceFacts) -> Caption? {

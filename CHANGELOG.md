@@ -8,6 +8,43 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.9] - 25-November-2026
+
+### The jump replay, whole
+
+Author: Claude Opus 5.5 Medium (with three builders at the same level for the clip, the tests and the store preview
+route). Plan: plans/24-Nov-2026-jump-replay-plan.md, "Next".
+
+- What: The jump replay comes in closer and tells the whole story. A side picture shows the cue coming down on the ball, the push into the table and the bounce back up, then every hop until the ball settles, and it shows in shared clips too.
+- **Closer on the jump, for real.** The Boss found the zoom weak. Measured on the iPhone 17 Pro simulator
+  (-frameDebug), the jump over a blocker held its take-off at 1.3 times. Two causes: the take-off's rectangle held
+  every hop within a second, and the ball "jumped" was the wrong one. CaptionEngine.flightTop counted the 11, which
+  the cue ball flies into at the end of its flight, as passed over with a rounding error to spare, so the card said
+  it "passes over the 11 with 0.0 cm to spare", the side view drew the 11 as the blocker and the frame ran all the way
+  to it. flightTop now leaves out any ball the flight touches; the card names the 6 (1.3 cm to spare). The take-off
+  frames its first flight only, cut a ball's width past the ball it clears (PacePlan.takeOff).
+- **Nothing covers the jump on the upright phone.** The explanation blurb, anchored under the cue ball, now also keeps
+  clear of the jump's framed stretch and moves once if the camera's glide brings it underneath (PhoneExplanation), and
+  a jump's moment sits a little higher there (MomentFrame.flightShareScale) so the blurb fits below it. On that screen
+  the side view sits inside the blurb, under its figures (Blurb's new picture slot, FlightSideView's inline style);
+  there is no room for a separate panel as well. Other layouts keep the floating glass panel.
+- **Why it jumps.** When a raised cue strike made the jump, the side view now starts at the strike: the cue comes down
+  onto the ball at its real tilt (CaptionEngine.raisedCueAngle, read back from the take-off exactly as the strike's
+  caption reads it), with an arrow down into the slate and an arrow back up off the cloth, both on one scale for the
+  whole jump, so the slate's smaller give-back shows as a shorter arrow. A faint band under the cloth stands for the
+  slate.
+- **Through the landing.** The side view is the jump's whole story (FlightShape.story): every hop from the first
+  take-off until the ball stays on the cloth, split where it comes down. It stays up from the strike's caption through
+  the take-off's and every landing's (one panel per jump, FlightStoryKey), so it no longer vanishes halfway. A
+  landing's caption brightens the distance that flight carried along the cloth and the arrows of that landing's push.
+  The height marker is always the first flight's, the number the take-off card's title says.
+- **In shared clips.** Lens clips draw the same side view on a dark card (glass cannot go into a video), from the
+  strike's or take-off's hold until the ball has finished flying, fading in and out, placed clear of the note and
+  never left out (ClipFlight, ClipOverlay). The App Store's jump preview is filmed again with it.
+- The panel is a little taller (124 points, or 184 by 92 when crowded) to fit the arrows under the cloth. No new words.
+- Tests: BreakdownTests/JumpReplayTests.swift (the story and its parts) and BreakdownTests/ClipFlightTests.swift (which
+  clip frames carry the side view, and where it goes).
+
 ## [0.7.8] - 24-November-2026
 
 ### The jump replay

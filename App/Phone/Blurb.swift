@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: an optional picture slot under the chips, for the jump's
+//          side view inside its explanation.)
 // PURPOSE: The Blurb, the one text component of the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The
 //          Blurb"). Words on the upright phone are no longer full-width glass cards: each piece of text is a small
 //          blurb sized to its words, on thin material (regular once opened), corner 12, padding 10, at most 260 wide
@@ -63,6 +65,8 @@ struct Blurb: View {
     private let chips: [CaptionFigure]
     private let sentence: String?
     private let equation: String?
+    /// A picture under the chips (0.7.9: the jump's side view in its explanation), shown folded or open.
+    private let picture: AnyView?
     /// The content form: draws itself given whether the blurb is open.
     private let custom: ((Bool) -> AnyView)?
     /// The whole text for VoiceOver in the content form (nil: the content's own elements are read, combined).
@@ -94,13 +98,14 @@ struct Blurb: View {
     /// - foldedLines: how many lines of the sentence show while folded.
     /// - buttons: at most two are drawn; any more are ignored.
     init(title: String? = nil, figure: CaptionFigure? = nil, chips: [CaptionFigure] = [], sentence: String? = nil,
-         equation: String? = nil, folded: Binding<Bool>? = nil, startsFolded: Bool = true, foldedLines: Int = 3,
-         openMaxHeight: CGFloat = 420, buttons: [BlurbButton] = []) {
+         equation: String? = nil, picture: AnyView? = nil, folded: Binding<Bool>? = nil, startsFolded: Bool = true,
+         foldedLines: Int = 3, openMaxHeight: CGFloat = 420, buttons: [BlurbButton] = []) {
         self.title = title
         self.figure = figure
         self.chips = Array(chips.prefix(3))
         self.sentence = sentence
         self.equation = equation
+        self.picture = picture
         self.custom = nil
         self.spokenOverride = nil
         self.buttons = Array(buttons.prefix(2))
@@ -116,7 +121,7 @@ struct Blurb: View {
     init<Content: View>(accessibilityText: String? = nil, buttons: [BlurbButton] = [],
                         @ViewBuilder content: () -> Content) {
         let built = AnyView(content())
-        self.title = nil; self.figure = nil; self.chips = []; self.sentence = nil; self.equation = nil
+        self.title = nil; self.figure = nil; self.chips = []; self.sentence = nil; self.equation = nil; self.picture = nil
         self.custom = { _ in built }
         self.spokenOverride = accessibilityText
         self.buttons = Array(buttons.prefix(2))
@@ -131,7 +136,7 @@ struct Blurb: View {
     /// and opened forms; the blurb adds the tap, the dot while folded, the wider opened width and the scrolling.
     init<Content: View>(folded: Binding<Bool>, accessibilityText: String? = nil, openMaxHeight: CGFloat = 420,
                         buttons: [BlurbButton] = [], @ViewBuilder content: @escaping (_ open: Bool) -> Content) {
-        self.title = nil; self.figure = nil; self.chips = []; self.sentence = nil; self.equation = nil
+        self.title = nil; self.figure = nil; self.chips = []; self.sentence = nil; self.equation = nil; self.picture = nil
         self.custom = { AnyView(content($0)) }
         self.spokenOverride = accessibilityText
         self.buttons = Array(buttons.prefix(2))
@@ -205,6 +210,7 @@ struct Blurb: View {
             VStack(alignment: .leading, spacing: 4) {
                 if title != nil || figure != nil { titleLine }
                 if !chips.isEmpty { chipRow }
+                if let picture { picture }
                 if let sentence { sentenceLine(sentence, open: open) }
                 if let equation {
                     Text(verbatim: equation)

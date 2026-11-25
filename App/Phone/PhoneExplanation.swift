@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: the jump's side view sits inside its blurb here
+//          (FlightInBlurb), under the figures.)
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: on a jump the blurb also keeps clear of the stretch the
+//          camera frames (leader.flight's screen span: the take-off, the rise and the ball it clears), and moves once
+//          that stretch, growing as the camera glides in, would come under it. With the closer take-off frame the
+//          jumped ball sat under the blurb, anchored just below the cue ball.)
 // Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: the blurb reports where it sits to leader.blurb, so the jump's side view keeps clear of it.)
 // PURPOSE: The explanation on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The Blurb" and Part 4
 //          step 4). Two views, both used only by ShowpieceView's upright layout:
@@ -34,6 +40,51 @@
 //          and App/Phone/BlurbPlacement.swift (the side and the frame). The ring stays CaptionLeader's.
 import Foundation
 import SwiftUI
+
+/// Calls `moved` whenever the jump's framed stretch on screen changes (LeaderState.flight, whole points), from its own
+/// small view so the blurb's body is not redrawn every frame of a camera glide (0.7.9).
+private struct FlightWatch: View {
+    let leader: LeaderState
+    let moved: () -> Void
+
+    var body: some View {
+        Color.clear
+            .frame(width: 0, height: 0)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+            .onChange(of: leader.flight?.screen) { _, _ in moved() }
+    }
+}
+
+/// The jump's side view inside its explanation blurb on the upright phone (0.7.9): the same drawing as the floating
+/// panel elsewhere (FlightSideView, inline style), as wide as the blurb and 88 points tall. Nothing at all for a
+/// caption about no jump. Reads leader.flight itself, so only this small view redraws as the ball flies, never the
+/// blurb's words.
+private struct FlightInBlurb: View {
+    let leader: LeaderState
+    let captionID: Int
+    static let height: CGFloat = 88
+    @Environment(\.palette) private var palette
+    @State private var width: CGFloat = 0
+
+    var body: some View {
+        if let sketch = leader.flight, sketch.captionID == captionID {
+            Color.clear
+                .frame(maxWidth: .infinity)
+                .frame(height: Self.height)
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+                .overlay(alignment: .topLeading) {
+                    if width > 60 {
+                        FlightSideView(sketch: sketch, accent: palette.color(for: CaptionAccent.impact),
+                                       size: CGSize(width: width, height: Self.height), style: .inline)
+                            // Drawn in screen terms and mirrored by the sketch itself, whatever the reading direction.
+                            .environment(\.layoutDirection, .leftToRight)
+                    }
+                }
+                .accessibilityHidden(true)
+        }
+    }
+}
 
 // MARK: The explanation, anchored to its moment
 
@@ -104,6 +155,8 @@ struct PhoneExplanationBlurb: View {
                 RingMarks(leader: leader, figure: FlightShape.isTakeOff(caption, in: model.timeline) ? nil : caption.figures.first,
                           placed: shown, origin: origin,
                           tableArea: tableArea, figureSize: $figureSize, onRingMoved: { ringMoved(to: $0) })
+                // Watches the jump's framed stretch in its own small view, so this body is not redrawn per frame.
+                FlightWatch(leader: leader) { flightMoved() }
                 blurb(caption)
                     // The words keep the reader's direction; only the placement is in screen points.
                     .environment(\.layoutDirection, layoutDirection)
@@ -166,6 +219,9 @@ struct PhoneExplanationBlurb: View {
                      chips: Array(caption.figures.dropFirst()),
                      sentence: caption.detail.isEmpty ? nil : caption.detail,
                      equation: showsEquation && !equation.isEmpty ? equation : nil,
+                     // A jump's side view (0.7.9): inside its explanation on this screen, under the figures, since
+                     // there is no room here for a separate panel as well (CaptionLeader draws it elsewhere).
+                     picture: AnyView(FlightInBlurb(leader: leader, captionID: caption.id)),
                      folded: $folded)
     }
 
@@ -181,13 +237,32 @@ struct PhoneExplanationBlurb: View {
         return CGPoint(x: x, y: ring.y - figureSize.height / 2)
     }
 
-    /// What the blurb must never cover: the ring (with its stroke) and, when there is one, the lead figure beside it.
+    /// What the blurb must never cover: the ring (with its stroke), when there is one the lead figure beside it, and
+    /// on a jump the stretch the camera frames (0.7.9, flightClear).
     private func keepClear(ring: CGPoint, figure: Bool) -> CGRect {
         let r = CaptionLeader.ringRadius + Self.ringPad
-        let box = CGRect(x: ring.x - r, y: ring.y - r, width: 2 * r, height: 2 * r)
+        var box = CGRect(x: ring.x - r, y: ring.y - r, width: 2 * r, height: 2 * r)
+        if let flight = flightClear() { box = box.union(flight) }
         guard figure, figureSize.width > 0 else { return box }
         let at = Self.figureOrigin(ring: ring, figureSize: figureSize, tableArea: tableArea)
         return box.union(CGRect(origin: at, size: figureSize))
+    }
+
+    /// The jump's framed stretch on screen with a ring's margin (leader.flight, for the caption on screen), clipped to
+    /// the table area: the take-off, the rise and the ball it clears, so the blurb never sits on the jumped ball.
+    private func flightClear() -> CGRect? {
+        guard let f = leader.flight, f.captionID == caption?.id else { return nil }
+        let r = CaptionLeader.ringRadius + Self.ringPad
+        let box = f.screen.insetBy(dx: -r, dy: -r).intersection(tableArea)
+        return box.isNull || box.isEmpty ? nil : box
+    }
+
+    /// The jump's framed stretch moved (the camera glides in on the take-off and it grows): an anchored blurb it would
+    /// now run under is placed again, same side first, pushed past it.
+    private func flightMoved() {
+        guard let current = placed, current.caption == caption?.id, let clear = flightClear(),
+              clear.intersects(current.frame) else { return }
+        place(current.caption, keepSide: true)
     }
 
     /// Works out the blurb's place for caption `id`. keepSide: try the side it already has for this caption first

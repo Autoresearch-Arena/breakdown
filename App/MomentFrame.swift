@@ -38,6 +38,9 @@
 //          behind the menu (the backdrop), not during the first launch's opening (which stays exactly as calm as
 //          before), not while Ride flies; and in TableScene only with Reduce Motion off and the hand zoom at the fitted
 //          view. Launch with -noMomentFrame to switch it off for screenshot comparisons; -noPushIn makes its gate snap.
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: while the upright phone's blurb asks for a share, a jump's
+//          focus sits higher still (flightShareScale), so the blurb, now kept clear of the jump's framed stretch, and
+//          the side view both fit below it.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the gate's wall-clock read goes through SceneClock.now, so the clip's offscreen table eases on the clip's own clock; the live game is unchanged.)
 // SRP/DRY check: Pass - checked TableCamera (fitted framing, push-in; applies this answer, does not compute it),
 //          TableZoom (the hand's zoom; this hands it its view through momentLook and never sets its goal), ShotCamera
@@ -287,6 +290,9 @@ final class MomentFrame {
     /// about 0.35 while the upright phone's anchored explanation blurb shows (PhoneExplanationBlurb sets it and puts it
     /// back when it goes). Read by every MomentFrame each frame; written only by that view, on the main actor.
     static var blurbShare = 0.5
+    /// A jump's share is the blurb's times this (0.35 becomes about 0.23): the moment sits higher, so the blurb and the
+    /// jump's side view both fit below the framed stretch on the upright phone (0.7.9).
+    static let flightShareScale = 0.65
     private var lastClock = 0.0
 
     /// A new shot: the next moment eases in from the whole table.
@@ -325,16 +331,20 @@ final class MomentFrame {
         } else {
             gate = max(0, gate - dt / Self.gateTime)
         }
-        // The share eases like the gate (snaps where the gate snaps), toward what the screen asks now.
-        let wanted = min(0.95, max(0.05, Self.blurbShare))
+        let shaped = request.flatMap { MomentFraming.shape(at: clock, plan: $0.plan, frame: frame) }
+        // The share eases like the gate (snaps where the gate snaps), toward what the screen asks now. A jump (a focus
+        // allowed past the usual magnification, PacePlan.focusZoom) sits higher on the upright phone (0.7.9): its
+        // blurb goes below the whole framed stretch rather than just below the ball, and the side view below that.
+        var asked = Self.blurbShare
+        if asked < 0.5, let f = shaped, f.cap > MomentFraming.maxMagnification + 1e-3 { asked *= Self.flightShareScale }
+        let wanted = min(0.95, max(0.05, asked))
         if reduceMotion || Self.motionOff || gate == 0 {
             share = wanted
         } else {
             let step = dt / Self.gateTime * 0.5
             share += max(-step, min(step, wanted - share))
         }
-        guard gate > 0, let plan = request?.plan,
-              var focus = MomentFraming.shape(at: clock, plan: plan, frame: frame) else { return nil }
+        guard gate > 0, var focus = shaped else { return nil }
         focus.weight *= Float(MomentFraming.smooth(gate))
         focus.share = Float(share)
         return focus.weight > 1e-4 ? focus : nil

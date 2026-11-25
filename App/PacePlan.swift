@@ -8,6 +8,10 @@
 //          take-off (a jump), the first ball-to-ball hit that threw a ball a degree or more, and the end of the
 //          biggest bend (a masse). The first launch is untouched and never takes a signature.)
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: the take-off is framed on its own first flight only, and
+//          when it clears a ball (the ball the card names, not one it flies on into), only up to a little past that ball. It took in every hop within a second, so on the
+//          upright phone, where the jump runs up the screen and the room is smallest, the camera stopped at about two
+//          times while a pocket came in to three and a half. The side view and the landing beat show the rest.)
 // Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay, plans/24-Nov-2026-jump-replay-plan.md: the
 //          take-off's rectangle drops the roll after landing and most of the run-up, and focusZoom lets a take-off be
 //          magnified further than other beats, so the flying ball and the ball it clears are seen large.)
@@ -409,6 +413,7 @@ struct PacePlan: Equatable {
     /// `rollOut`: also the first part of the roll after the flight (the landing beat); the take-off stops at the
     /// landing point and keeps only the last few centimetres of run-up.
     private static func flight(of ball: Int, around t: Double, rollOut: Bool, in tl: Timeline) -> TableRect {
+        if !rollOut, let close = takeOff(of: ball, at: t, in: tl) { return close }
         let step = 1.0 / 120
         let start = max(0, t - 1), end = min(tl.duration, t + 1)
         var points: [(time: Double, position: Vec2)] = []
@@ -433,6 +438,37 @@ struct PacePlan: Equatable {
             let o = tl.state(ball: other, at: first.time)
             if o.pocketed { continue }
             if points.contains(where: { ($0.position - o.position).length < reach }) { rect.include(o.position) }
+        }
+        return rect
+    }
+
+    /// The take-off's rectangle (0.7.9): what the jump is about, kept small so the camera can come in close. The last
+    /// few centimetres of run-up and the first airborne stretch (CaptionEngine.flightSegment); when that flight clears a
+    /// ball (CaptionEngine.flightTop's `over`, the very ball the card and the side view name), only up to a ball's width
+    /// past it, with that ball in: the rise over it is the jump, and the Boss asked to see what was jumped
+    /// (23-Nov-2026). A ball the flight comes near but touches (the jump over a blocker flies on into the 11) is the
+    /// next beat's business, as are later hops; when the beats are close the camera glides on to them. Nil when no
+    /// flight starts at `t`, so the caller falls back to the older rule.
+    private static func takeOff(of ball: Int, at t: Double, in tl: Timeline) -> TableRect? {
+        guard let seg = CaptionEngine.flightSegment(ball: ball, startingAt: t, in: tl), seg.t1.isFinite,
+              seg.t1 > seg.t0 else { return nil }
+        let R = tl.table.ballRadius
+        let start = seg.position0
+        let end = seg.kinematics(at: seg.t1).position
+        guard (end - start).length > 1e-4 else { return nil }
+        let way = (end - start).normalized
+        var rect = TableRect(around: start)
+        rect.include(tl.state(ball: ball, at: max(0, t - 0.04)).position)
+        var cut = Double.infinity
+        if let over = CaptionEngine.flightTop(seg, ball: ball, in: tl).over {
+            let o = tl.state(ball: over.ball, at: t).position
+            rect.include(o)
+            cut = (o - start).dot(way) + 2 * R
+        }
+        let steps = 60
+        for i in 0...steps {
+            let p = seg.kinematics(at: seg.t0 + (seg.t1 - seg.t0) * Double(i) / Double(steps)).position
+            if (p - start).dot(way) <= cut { rect.include(p) }
         }
         return rect
     }
