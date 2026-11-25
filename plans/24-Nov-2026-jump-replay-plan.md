@@ -7,6 +7,8 @@ PURPOSE: Plan for fixing the jump replay in the Physics Lens (the guided replay'
          Captions.flightCaption, PacePlan.focusRegions and PacePlan.flight, MomentFrame (MomentFraming.frame,
          maxMagnification, fill), CaptionViews (CaptionFigureRow, the title's leading figure), LensLayer (the airborne
          trail and the flying ball's ground ring).
+Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 shipped Parts 1 to 3; added "Next", the three pieces that
+         would make the jump replay excellent, for the Boss to see before any of it is built.)
 SRP/DRY check: Pass - every change edits the code that already owns that job (captions in Captions.swift, framing in
          PacePlan and MomentFrame, drawing in LensLayer); the one new drawing, the side view, is a new file because
          nothing draws a ball's height today.
@@ -94,3 +96,21 @@ scripts/localization-merge.py and checked by scripts/translation-check.py.
 
 Small enough for one developer in one pass: Parts 1 and 2 first (they fix what the Boss saw), Part 3 after them, one
 compile, the tests above, version 0.7.8, CHANGELOG entry, push to TestFlight.
+
+## Next: what would make it excellent
+
+0.7.8 shipped Parts 1 to 3. Three pieces are left, in this order:
+
+1. **The side view in shared clips, then a new jump store preview.** Clips render the scene and the captions but not
+   the side view, and the jump over a blocker is the first store preview in every language. Draw the side view into
+   the clip's frame the same way the Lens draws it, then film and upload the jump preview again
+   (scripts/store-preview-encode.sh and scripts/store-preview-upload.py).
+2. **Show why it jumps.** The side view begins at take-off, so it shows the result and not the cause. Start it at
+   the strike instead: the cue raised at its real tilt, the cue ball pressed down into the slate, and the bounce
+   arrow up off the cloth, with the take-off card's Speed down and Bounce up tiles pointing at those two arrows.
+3. **Carry it through the landing.** Keep the side view up during the landing beat and draw the smaller hops after
+   the first landing, so the landing card's numbers have their picture too and the panel does not vanish halfway
+   through the story.
+
+Checks: an app test that a clip of the jump has the side view in its frames; the one spot check on the iPhone 17 Pro
+simulator; the store preview watched once before upload.
