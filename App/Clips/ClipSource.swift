@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: a clip of a shot with no highlight takes the moments the
+//          game's own replay holds (model.paceSignature, a trick's or a lesson's signature), so the jump's take-off and
+//          its side view stay in the App Store's short clip.)
 // PURPOSE: What one Lens clip is made from, and when the game offers one (0.7.7, plans/23-Nov-2026-clips-plan.md,
 //          Step 3).
 //          ClipSource holds plain values only (the recording, its surface and table, the struck ball, the cue's
@@ -66,7 +69,9 @@ struct ClipSource {
 
     /// A clip of a recording with no attempt behind it (the opening's showpiece break, for the self-test): a level cue
     /// through the centre, the struck ball read from the recording's own cue strike, and no settings record.
-    init(timeline: Timeline, surface: PlaySurface, table: TableKind, title: String?) {
+    /// `signature`: the moments to hold as headlines (the self-test passes the game's own, so a trick filmed for the
+    /// App Store keeps the trick's moments, 0.7.9).
+    init(timeline: Timeline, surface: PlaySurface, table: TableKind, title: String?, signature: [Int] = []) {
         self.timeline = timeline
         self.surface = surface
         self.table = table
@@ -75,7 +80,7 @@ struct ClipSource {
         strike = nil
         stroke = CueStroke()
         self.title = title
-        signature = []
+        self.signature = signature
         captions = CaptionEngine.make(from: timeline, surface: surface, table: table, striker: struck)
         record = nil
         motionHash = nil
@@ -118,8 +123,10 @@ enum ClipOffer {
             return ClipSource(attempt: a.attempt, title: WhatIfWords.title, signature: [], modeUsesBridge: false)
         }
         let highlight = m.highlightOnScreen
+        // No highlight (a trick shot or a lesson): the moments the game's own replay holds (0.7.9). Without them a
+        // short clip, the App Store's above all, let the jump over a blocker's take-off go to fit its time.
         return ClipSource(attempt: a.attempt, title: highlight.map { HighlightWords.title($0.kind) },
-                          signature: highlight?.signatureEvents ?? [], modeUsesBridge: m.strokeUsesBridge,
+                          signature: highlight?.signatureEvents ?? m.paceSignature, modeUsesBridge: m.strokeUsesBridge,
                           captions: m.captions)
     }
 

@@ -2,7 +2,8 @@
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9 jump replay, next: raisedCueAngle, the cue's tilt read back
 //          from a take-off a raised strike made, shared by the raised strike's caption and the jump's side view. And a
 //          fix: flightTop no longer names a ball the flight runs into as the ball it jumped; the jump over a blocker
-//          said it passed over the 11 "with 0.0 cm to spare" when it cleared the 6 and hit the 11.)
+//          said it passed over the 11 "with 0.0 cm to spare" when it cleared the 6 and hit the 11. And the landing's
+//          distance runs from where the ball last left the cloth, across a mid-air touch, not from that touch.)
 // Edited: Claude Opus 5.5 Medium, 24-November-2026 (0.7.8 jump replay: the take-off card says each number once: the
 //          flight height leads, then speed down and bounce up; its sentence tells the story without figures, keeping only
 //          the gap over the jumped ball; flightSegment and flightTop are shared with FlightSideView.)
@@ -808,10 +809,20 @@ enum CaptionEngine {
                            equation: "h = v↑² / (2·g)", accent: .impact, importance: 2, worked: worked,
                            figures: figures)
         case .landing:
-            // How far it flew: the airborne segment that ends here, from its start to here, across the cloth.
-            let seg: BallSegment? = timeline.segments.indices.contains(ball)
-                ? timeline.segments[ball].last(where: { $0.phase == .airborne && abs($0.t1 - e.time) < 1e-9 }) : nil
-            let flown = seg.map { ($0.kinematics(at: $0.t1).position - $0.position0).length } ?? 0
+            // How far it flew: from where it last left the cloth to here, across the cloth. A flight that touched a
+            // ball in mid-air is two airborne segments; the earlier ones are joined back to the take-off (0.7.9: the
+            // jump over a blocker, which flies into the 11, said it came down "1 cm from where it left the cloth").
+            var flown = 0.0
+            if timeline.segments.indices.contains(ball) {
+                let segs = timeline.segments[ball]
+                if var j = segs.lastIndex(where: { $0.phase == .airborne && abs($0.t1 - e.time) < 1e-9 }) {
+                    let landed = segs[j].kinematics(at: segs[j].t1).position
+                    while j > 0, segs[j - 1].phase == .airborne, segs[j - 1].t1.isFinite,
+                          abs(segs[j - 1].t1 - segs[j].t0) < 1e-7,
+                          segs[j - 1].kinematics(at: segs[j - 1].t1).height > 5e-4 { j -= 1 }
+                    flown = (landed - segs[j].position0).length
+                }
+            }
             let down = e.verticalSpeedDown, up = e.verticalSpeedUp
             let detail = e.phaseTo == .airborne
                 ? String(localized: "\(name(ball).capitalizedFirst) comes down \(f(flown * 100, 0)) cm from where it left the cloth, at \(f(down)) m/s, and the slate sends it back up at \(f(up)) m/s.")

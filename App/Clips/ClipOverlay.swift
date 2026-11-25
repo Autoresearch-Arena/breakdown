@@ -283,7 +283,16 @@ final class ClipOverlay {
                                              clock: f.clock, project: { p in
             Self.project(table.world(p, height: lift), eye: eye, forward: forward, canvas: canvas)
         }) else { return nil }
-        let rect = ClipFlight.place(flight: sketch.screen, in: shape)
+        // Clear of the flying ball as well as of the stretch in focus: as the camera follows the ball on, the stretch
+        // falls behind and the panel would otherwise sit on the ball's way.
+        let now = cue.shape.ball(at: f.clock)
+        var avoid: [CGRect] = []
+        if let b = Self.project(table.world(now.cloth, height: Float(now.centre)), eye: eye, forward: forward,
+                                canvas: canvas) {
+            let r = CaptionLeader.ringRadius
+            avoid.append(CGRect(x: b.x - r, y: b.y - r, width: 2 * r, height: 2 * r))
+        }
+        let rect = ClipFlight.place(flight: sketch.screen, in: shape, avoid: avoid)
 
         let key = FlightPictureKey(story: sketch.key, focus: sketch.focus, now: sketch.now, leftward: sketch.leftward,
                                    width: rect.width, height: rect.height)

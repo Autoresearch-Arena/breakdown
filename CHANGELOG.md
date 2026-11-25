@@ -22,7 +22,9 @@ route). Plan: plans/24-Nov-2026-jump-replay-plan.md, "Next".
   the cue ball flies into at the end of its flight, as passed over with a rounding error to spare, so the card said
   it "passes over the 11 with 0.0 cm to spare", the side view drew the 11 as the blocker and the frame ran all the way
   to it. flightTop now leaves out any ball the flight touches; the card names the 6 (1.3 cm to spare). The take-off
-  frames its first flight only, cut a ball's width past the ball it clears (PacePlan.takeOff).
+  frames its first flight only, cut a ball's width past the ball it clears (PacePlan.takeOff). The landing card had
+  the same kind of slip: after the mid-air hit on the 11 it said the cue ball "comes down 1 cm from where it left the
+  cloth"; the distance now runs from where the ball last left the cloth, across a mid-air touch (about 80 cm).
 - **Nothing covers the jump on the upright phone.** The explanation blurb, anchored under the cue ball, now also keeps
   clear of the jump's framed stretch and moves once if the camera's glide brings it underneath (PhoneExplanation), and
   a jump's moment sits a little higher there (MomentFrame.flightShareScale) so the blurb fits below it. On that screen
@@ -40,7 +42,11 @@ route). Plan: plans/24-Nov-2026-jump-replay-plan.md, "Next".
   The height marker is always the first flight's, the number the take-off card's title says.
 - **In shared clips.** Lens clips draw the same side view on a dark card (glass cannot go into a video), from the
   strike's or take-off's hold until the ball has finished flying, fading in and out, placed clear of the note and
-  never left out (ClipFlight, ClipOverlay). The App Store's jump preview is filmed again with it.
+  never left out (ClipFlight, ClipOverlay). A clip of a trick shot or a lesson now holds the same moments as the
+  game's own replay of it (ClipOffer.source takes model.paceSignature when there is no highlight): without them the
+  App Store's short jump clip had let the take-off go. The self-test that films the App Store previews works the
+  trick's moments out from its -trickPlay name, since the trick only sets them once its answer has played. The App
+  Store's jump preview is filmed again with all of it, in all twelve languages.
 - The panel is a little taller (124 points, or 184 by 92 when crowded) to fit the arrows under the cloth. No new words.
 - Tests: BreakdownTests/JumpReplayTests.swift (the story and its parts) and BreakdownTests/ClipFlightTests.swift (which
   clip frames carry the side view, and where it goes).

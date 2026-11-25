@@ -1222,6 +1222,11 @@ struct CaptionLeader: View {
             bottom = min(bottom, card.minY - gap)
         }
         var avoid = [card, leader.blurb]
+        // The moment's own ball (0.7.9): as the replay plays on, the flying ball leaves the stretch in focus behind.
+        if let ring = visibleRing {
+            let r = CaptionLeader.ringRadius
+            avoid.append(CGRect(x: ring.x - r, y: ring.y - r, width: 2 * r, height: 2 * r))
+        }
         if showChip, let ring = visibleRing, leader.title != nil, chipSize != .zero {
             let c = chipCenter(ring: ring, in: size)
             avoid.append(CGRect(x: c.x - chipSize.width / 2, y: c.y - chipSize.height / 2,

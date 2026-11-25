@@ -278,6 +278,14 @@ struct FlightShape: Equatable {
         return t0 + ((c - t0) / d * 160).rounded() / 160 * d
     }
 
+    /// Where the flying ball is at `clock` (held to the story): its point on the cloth under it, table metres, and the
+    /// height of its centre. The panel keeps clear of it on screen as well as of the stretch in focus (0.7.9).
+    func ball(at clock: Double) -> (cloth: Vec2, centre: Double) {
+        let p = arc[min(arc.count - 1, sample(at: clock))]
+        let way = (hops[0].to - hops[0].from).normalized
+        return (hops[0].from + way * p.x, p.y)
+    }
+
     /// The last arc sample at or before `clock`.
     func sample(at clock: Double) -> Int {
         guard let i = times.lastIndex(where: { $0 <= clock + 1e-9 }) else { return 0 }

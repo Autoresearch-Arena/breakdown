@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 25-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (place takes things to keep clear of: the overlay passes the flying
+//          ball, so the panel never sits on it as the camera follows the ball on toward the 11.)
 // PURPOSE: Which frames of a Lens clip carry the jump's side view, and where it goes on the frame (0.7.9, the jump
 //          replay plan's "Next": the side view in clips). Pure, like ClipScript: the same script and recording always
 //          give the same panel on the same frames, so the same jump always makes the same film.
@@ -107,11 +109,11 @@ enum ClipFlight {
     /// beside it on the table, under the header margin and above the caption band (FlightSideView.center); when
     /// nothing fits there, centred across the top at the largest size, held inside the canvas and above the band.
     /// MainActor only because FlightSideView, a view, is.
-    @MainActor static func place(flight: CGRect, in shape: ClipShape) -> CGRect {
+    @MainActor static func place(flight: CGRect, in shape: ClipShape, avoid: [CGRect] = []) -> CGRect {
         let bounds = CGRect(origin: .zero, size: shape.canvas)
         let top = CGFloat(shape.framingRequest.headerBottom) + gap
         let bottom = shape.captionBand.minY - gap
-        if let at = FlightSideView.center(flight: flight, bounds: bounds, top: top, bottom: bottom, avoid: [],
+        if let at = FlightSideView.center(flight: flight, bounds: bounds, top: top, bottom: bottom, avoid: avoid,
                                           gap: gap) {
             return CGRect(x: at.point.x - at.size.width / 2, y: at.point.y - at.size.height / 2,
                           width: at.size.width, height: at.size.height)

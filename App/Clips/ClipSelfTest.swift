@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: the clip holds the game's own headline moments, so the
+//          jump's App Store preview keeps its take-off and side view.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (-clipShape picks the shape, for the App Store previews.)
 // PURPOSE: The launch check for Lens clips (0.7.7, plans/23-Nov-2026-clips-plan.md, Step 10). Launched with
 //          -clipSelfTest, the app makes an upright clip of the shot on screen at launch (the opening's break) through
@@ -36,8 +38,16 @@ enum ClipSelfTest {
         started = true
         // Let the live table finish building first (its pictures are what the clip's table borrows).
         try? await Task.sleep(for: .seconds(2))
+        // The game's own headline moments, as a player's clip has them. A trick sets its signature only once its answer
+        // has played (TrickShotMode.update), long after these two seconds, so a trick launched with -trickPlay (the
+        // App Store previews) has its signature worked out here from the same lookup.
+        var signature = model.paceSignature
+        let args = ProcessInfo.processInfo.arguments
+        if signature.isEmpty, let i = args.firstIndex(of: "-trickPlay"), args.indices.contains(i + 1) {
+            signature = TrickSignature.events(forTrick: args[i + 1], in: model.timeline, captions: model.captions)
+        }
         let source = ClipSource(timeline: model.timeline, surface: model.physicsSurface, table: model.solvedTable,
-                                title: nil)
+                                title: nil, signature: signature)
         guard let script = ClipScript.make(timeline: source.timeline, captions: source.captions,
                                            signature: source.signature, replayBudget: shape.replayBudget) else {
             NSLog("CLIP-SELFTEST no moments to hold in the shot on screen -> FAIL")

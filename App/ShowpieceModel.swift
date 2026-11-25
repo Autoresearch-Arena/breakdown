@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: paceSignature is readable, so a clip of a trick shot holds
+//          the same moments as the game's replay of it, ClipOffer.source.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: owns
 //          bulletTime; finishStrike arms it last, advance steps it every frame before the stage switch and lets it hold
 //          and ease the plain explore step, step caps the clock at its contact, scrub cancels it, and a fresh rack
@@ -3649,7 +3651,7 @@ final class ShowpieceModel {
 
     /// Event indices the guided replay must hold as headline beats (a trick shot's or a highlight's signature).
     /// Cleared by load(_:).
-    private var paceSignature: [Int] = []
+    private(set) var paceSignature: [Int] = []
 
     /// Hold these events in the next guided replay of the recording on screen; rebuilds the pace plan at once.
     func setPaceSignature(_ events: [Int]) { paceSignature = events; refreshPacePlan() }
