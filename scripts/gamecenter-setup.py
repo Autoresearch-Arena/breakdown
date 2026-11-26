@@ -64,7 +64,8 @@ LOCALES = {"en": "en-US", "de": "de-DE", "es": "es-ES", "fr": "fr-FR", "it": "it
 TRANSLATED = [lang for lang in LOCALES if lang != "en"]
 POINTS_NOW = 800      # of Game Center's 1000; the rest waits for later achievements
 POINTS_MAX_EACH = 100  # Game Center's limit for one achievement
-DESCRIPTION_LIMIT = 255  # characters, for each description
+NAME_LIMIT = 30  # characters, for an achievement's name (Apple refused 32 on 26-Nov-2026)
+DESCRIPTION_LIMIT = 120  # characters, for each description (Apple refused 125 on 26-Nov-2026; 255 was wrong)
 
 # The two boards (GameCenterBoard in App/GameCenter/GameCenterQueue.swift).
 BOARDS = [
@@ -338,9 +339,13 @@ def plan():
             texts = {}
             for field in ("name", "sentence", "hint"):
                 text = localized(english[item["id"]][field], lang, table)
+                # A store-only shorter line where the game's own is past Apple's limit (STORE_SHORTER, below).
+                text = STORE_SHORTER.get((item["id"], lang, field), text)
                 if text is None:
                     what = "English words" if english[item["id"]][field] is None else f"{lang} translation"
                     problems.append(f"{item['id']}: no {what} for its {field}")
+                elif field == "name" and len(text) > NAME_LIMIT:
+                    problems.append(f"{item['id']}: {lang} name is over {NAME_LIMIT} characters")
                 elif field != "name" and len(text) > DESCRIPTION_LIMIT:
                     problems.append(f"{item['id']}: {lang} {field} is over {DESCRIPTION_LIMIT} characters")
                 texts[field] = text
@@ -389,7 +394,7 @@ def describe(items, boards, problems):
         print(f"  {PREFIX}{item['id']}: {item['points']} points, symbol {item['symbol']}, picture "
               f"{ART_OUT / (item['id'] + '.png')}")
         for lang, locale in LOCALES.items():
-            texts = item["locales"][lang]
+            texts = fit_store_limits(item["id"], lang, item["locales"][lang])
             print(f"    {locale:8} {texts['name']!r} | before: {texts['hint']!r} | after: {texts['sentence']!r}")
     if problems:
         print(f"\n{len(problems)} problems (--apply refuses to run until they are fixed):")
@@ -397,6 +402,32 @@ def describe(items, boards, problems):
             print(f"  {p}")
     else:
         print("\nNo problems found.")
+
+
+# App Store Connect caps an achievement's descriptions at 120 characters (refused on 26-Nov-2026). The game's own
+# sentences are longer in a few languages, so these store-only lines are used there instead. The game keeps its own
+# full sentence; only the Game Center copy is shorter. fit_store_limits refuses anything still too long, so a new
+# over-long sentence stops the dry run instead of a half-finished --apply.
+STORE_SHORTER = {
+    ("masse-curve", "es", "sentence"): "Mientras se deslizaba, el paño la llevó hacia donde giraba su efecto, no hacia donde iba.",
+    ("run-rack", "de", "hint"): "Im freien Spiel: anstoßen, dann mit jedem Stoß eine Kugel versenken, bis der Tisch leer ist.",
+    ("thrown-in", "fr", "name"): "Bille entraînée dedans",
+    ("trick-draw-masse-carom", "es", "name"): "Carambola massé con retroceso",
+    ("run-rack", "it", "hint"): "In gioco libero: break, poi una palla in buca a ogni colpo finché il tavolo è vuoto.",
+}
+
+def fit_store_limits(game_id, lang, texts):
+    """The achievement's words for App Store Connect: the game's own, with the store-only shorter lines above where
+    a description would pass Apple's limit. Raises when a description is still too long."""
+    out = dict(texts)
+    for field in ("name", "hint", "sentence"):
+        out[field] = STORE_SHORTER.get((game_id, lang, field), out[field])
+        if field == "name":
+            continue
+        if len(out[field]) > DESCRIPTION_LIMIT:
+            raise SystemExit(f"{game_id} {lang} {field} is {len(out[field])} characters; Apple allows "
+                             f"{DESCRIPTION_LIMIT}. Add a shorter store line to STORE_SHORTER.")
+    return out
 
 
 def apply(items, boards):
@@ -422,9 +453,10 @@ def apply(items, boards):
                           "defaultFormatter": "INTEGER", "submissionType": "BEST_SCORE", "scoreSortType": "DESC",
                           "scoreRangeStart": "0", "scoreRangeEnd": board["rangeEnd"]}
             if board["daily"]:
-                # Every twenty-four hours, starting at a midnight Coordinated Universal Time.
+                # Every twenty-four hours, starting at a midnight Coordinated Universal Time. Apple refuses a
+                # day-only duration ("P1D", 409 on 26-Nov-2026) and asks for time parts, so it is "PT24H".
                 attributes.update({"recurrenceStartDate": next_midnight_utc().strftime("%Y-%m-%dT%H:%M:%SZ"),
-                                   "recurrenceDuration": "P1D", "recurrenceRule": "FREQ=DAILY;INTERVAL=1"})
+                                   "recurrenceDuration": "PT24H", "recurrenceRule": "FREQ=DAILY;INTERVAL=1"})
             board_id = create("gameCenterLeaderboards", attributes, {"gameCenterDetail": ("gameCenterDetails", detail_id)})
             print(f"{board['id']}: created", flush=True)
         have = {loc["attributes"]["locale"] for loc in listing(f"/v1/gameCenterLeaderboards/{board_id}/localizations?limit=50")}
@@ -442,7 +474,9 @@ def apply(items, boards):
     existing = {a["attributes"]["vendorIdentifier"]: a["id"]
                 for a in listing(f"/v1/gameCenterDetails/{detail_id}/gameCenterAchievements?limit=200")}
     for item in items:
-        vendor = PREFIX + item["id"]
+        # Apple takes only letters, digits, underscores and full stops; the game's ids use dashes, so each dash
+        # becomes an underscore here and in GameCenterIDs.achievement.
+        vendor = PREFIX + item["id"].replace("-", "_")
         achievement_id = existing.get(vendor)
         if achievement_id is None:
             achievement_id = create("gameCenterAchievements",
@@ -454,7 +488,7 @@ def apply(items, boards):
                 for loc in listing(f"/v1/gameCenterAchievements/{achievement_id}/localizations?limit=50")}
         picture = art / f"{item['id']}.png"
         for lang, locale in LOCALES.items():
-            texts = item["locales"][lang]
+            texts = fit_store_limits(item["id"], lang, item["locales"][lang])
             localization_id = have.get(locale)
             if localization_id is None:
                 localization_id = create("gameCenterAchievementLocalizations",

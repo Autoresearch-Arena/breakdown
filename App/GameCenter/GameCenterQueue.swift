@@ -31,8 +31,10 @@ enum GameCenterIDs {
     static let prefix = "breakdown."
 
     /// The Game Center id of one of the game's achievements: "breakdown." plus the game's own permanent id
-    /// (Achievement.id, which the catalogue says must never change).
-    static func achievement(_ gameID: String) -> String { prefix + gameID }
+    /// (Achievement.id, which the catalogue says must never change), with each dash turned into an underscore:
+    /// App Store Connect takes only letters, digits, underscores and full stops in an id (refused on 26-Nov-2026).
+    /// scripts/gamecenter-setup.py makes the same ids the same way.
+    static func achievement(_ gameID: String) -> String { prefix + gameID.replacingOccurrences(of: "-", with: "_") }
 }
 
 struct GameCenterQueue: Codable, Equatable {

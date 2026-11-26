@@ -138,6 +138,7 @@ final class GameCenterQueueTests: XCTestCase {
         XCTAssertEqual(GameCenterBoard.daily.rawValue, "breakdown.daily")
         XCTAssertEqual(GameCenterBoard.streak.rawValue, "breakdown.streak")
         XCTAssertEqual(GameCenterIDs.achievement("bank"), "breakdown.bank")
+        XCTAssertEqual(GameCenterIDs.achievement("daily-first-try"), "breakdown.daily_first_try")
         XCTAssertEqual(GameCenterIDs.achievement(Achievements.everyTrick), "breakdown.every-trick")
     }
 }
