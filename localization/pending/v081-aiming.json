@@ -1,0 +1,2134 @@
+{
+ "keys": [
+  "Unit: N·s",
+  "Unit: N",
+  "Unit: J",
+  "Unit: turns/s",
+  "Unit: mm",
+  "Leaves at",
+  "Force",
+  "over %@ ms",
+  "What the ball gets",
+  "The physics",
+  "What you set",
+  "goes along the cue",
+  "goes %@",
+  "from a %@ swing",
+  "up from level",
+  "as planned",
+  "calm limit %@ %@",
+  "Shoot: rolling",
+  "%@ vs %@ planned",
+  "centre height",
+  "above",
+  "below",
+  "centre line",
+  "Shorter bridge",
+  "Longer bridge",
+  "Opens a field to type an exact value.",
+  "The %lld is cut %@.",
+  "The %lld is cut %@; the white goes %@.",
+  "Back spin with some right side.",
+  "Back spin with some left side.",
+  "Back spin, no side.",
+  "Top spin with some right side.",
+  "Top spin with some left side.",
+  "Top spin, no side.",
+  "Right side, no top or back spin.",
+  "Left side, no top or back spin.",
+  "No spin: a centre-ball hit.",
+  "Your stroke gave what you set."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "fr",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "de",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "it",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "pt",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "ja",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "ko",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Unit: N·s",
+   "text": "N·s"
+  },
+  {
+   "culture": "ru",
+   "key": "Unit: N·s",
+   "text": "Н·с"
+  },
+  {
+   "culture": "ar",
+   "key": "Unit: N·s",
+   "text": "ن·ث"
+  },
+  {
+   "culture": "es",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "fr",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "de",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "it",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "pt",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "ja",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "ko",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Unit: N",
+   "text": "N"
+  },
+  {
+   "culture": "ru",
+   "key": "Unit: N",
+   "text": "Н"
+  },
+  {
+   "culture": "ar",
+   "key": "Unit: N",
+   "text": "ن"
+  },
+  {
+   "culture": "es",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "fr",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "de",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "it",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "pt",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "ja",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "ko",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Unit: J",
+   "text": "J"
+  },
+  {
+   "culture": "ru",
+   "key": "Unit: J",
+   "text": "Дж"
+  },
+  {
+   "culture": "ar",
+   "key": "Unit: J",
+   "text": "جول"
+  },
+  {
+   "culture": "es",
+   "key": "Unit: turns/s",
+   "text": "vueltas/s"
+  },
+  {
+   "culture": "fr",
+   "key": "Unit: turns/s",
+   "text": "tours/s"
+  },
+  {
+   "culture": "de",
+   "key": "Unit: turns/s",
+   "text": "U/s"
+  },
+  {
+   "culture": "it",
+   "key": "Unit: turns/s",
+   "text": "giri/s"
+  },
+  {
+   "culture": "pt",
+   "key": "Unit: turns/s",
+   "text": "voltas/s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Unit: turns/s",
+   "text": "voltas/s"
+  },
+  {
+   "culture": "ja",
+   "key": "Unit: turns/s",
+   "text": "回転/秒"
+  },
+  {
+   "culture": "ko",
+   "key": "Unit: turns/s",
+   "text": "회전/초"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Unit: turns/s",
+   "text": "转/秒"
+  },
+  {
+   "culture": "ru",
+   "key": "Unit: turns/s",
+   "text": "об/с"
+  },
+  {
+   "culture": "ar",
+   "key": "Unit: turns/s",
+   "text": "دورة/ث"
+  },
+  {
+   "culture": "es",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "fr",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "de",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "it",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "pt",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "ja",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "ko",
+   "key": "Unit: mm",
+   "text": "mm"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Unit: mm",
+   "text": "毫米"
+  },
+  {
+   "culture": "ru",
+   "key": "Unit: mm",
+   "text": "мм"
+  },
+  {
+   "culture": "ar",
+   "key": "Unit: mm",
+   "text": "مم"
+  },
+  {
+   "culture": "es",
+   "key": "Leaves at",
+   "text": "Sale a"
+  },
+  {
+   "culture": "fr",
+   "key": "Leaves at",
+   "text": "Part à"
+  },
+  {
+   "culture": "de",
+   "key": "Leaves at",
+   "text": "Rollt los mit"
+  },
+  {
+   "culture": "it",
+   "key": "Leaves at",
+   "text": "Parte a"
+  },
+  {
+   "culture": "pt",
+   "key": "Leaves at",
+   "text": "Sai a"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Leaves at",
+   "text": "Sai a"
+  },
+  {
+   "culture": "ja",
+   "key": "Leaves at",
+   "text": "初速"
+  },
+  {
+   "culture": "ko",
+   "key": "Leaves at",
+   "text": "출발 속도"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Leaves at",
+   "text": "出球速度"
+  },
+  {
+   "culture": "ru",
+   "key": "Leaves at",
+   "text": "Уходит со скоростью"
+  },
+  {
+   "culture": "ar",
+   "key": "Leaves at",
+   "text": "تنطلق بسرعة"
+  },
+  {
+   "culture": "es",
+   "key": "Force",
+   "text": "Fuerza"
+  },
+  {
+   "culture": "fr",
+   "key": "Force",
+   "text": "Force"
+  },
+  {
+   "culture": "de",
+   "key": "Force",
+   "text": "Kraft"
+  },
+  {
+   "culture": "it",
+   "key": "Force",
+   "text": "Forza"
+  },
+  {
+   "culture": "pt",
+   "key": "Force",
+   "text": "Força"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Force",
+   "text": "Força"
+  },
+  {
+   "culture": "ja",
+   "key": "Force",
+   "text": "力"
+  },
+  {
+   "culture": "ko",
+   "key": "Force",
+   "text": "힘"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Force",
+   "text": "力"
+  },
+  {
+   "culture": "ru",
+   "key": "Force",
+   "text": "Сила"
+  },
+  {
+   "culture": "ar",
+   "key": "Force",
+   "text": "القوة"
+  },
+  {
+   "culture": "es",
+   "key": "over %@ ms",
+   "text": "en %@ ms"
+  },
+  {
+   "culture": "fr",
+   "key": "over %@ ms",
+   "text": "sur %@ ms"
+  },
+  {
+   "culture": "de",
+   "key": "over %@ ms",
+   "text": "über %@ ms"
+  },
+  {
+   "culture": "it",
+   "key": "over %@ ms",
+   "text": "in %@ ms"
+  },
+  {
+   "culture": "pt",
+   "key": "over %@ ms",
+   "text": "em %@ ms"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "over %@ ms",
+   "text": "em %@ ms"
+  },
+  {
+   "culture": "ja",
+   "key": "over %@ ms",
+   "text": "%@ ミリ秒間"
+  },
+  {
+   "culture": "ko",
+   "key": "over %@ ms",
+   "text": "%@ms 동안"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "over %@ ms",
+   "text": "持续 %@ 毫秒"
+  },
+  {
+   "culture": "ru",
+   "key": "over %@ ms",
+   "text": "за %@ мс"
+  },
+  {
+   "culture": "ar",
+   "key": "over %@ ms",
+   "text": "خلال %@ مللي ث"
+  },
+  {
+   "culture": "es",
+   "key": "What the ball gets",
+   "text": "Lo que recibe la bola"
+  },
+  {
+   "culture": "fr",
+   "key": "What the ball gets",
+   "text": "Ce que reçoit la bille"
+  },
+  {
+   "culture": "de",
+   "key": "What the ball gets",
+   "text": "Was die Kugel bekommt"
+  },
+  {
+   "culture": "it",
+   "key": "What the ball gets",
+   "text": "Cosa riceve la bilia"
+  },
+  {
+   "culture": "pt",
+   "key": "What the ball gets",
+   "text": "O que a bola recebe"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "What the ball gets",
+   "text": "O que a bola recebe"
+  },
+  {
+   "culture": "ja",
+   "key": "What the ball gets",
+   "text": "球が受けるもの"
+  },
+  {
+   "culture": "ko",
+   "key": "What the ball gets",
+   "text": "공이 받는 것"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "What the ball gets",
+   "text": "球得到的"
+  },
+  {
+   "culture": "ru",
+   "key": "What the ball gets",
+   "text": "Что получает шар"
+  },
+  {
+   "culture": "ar",
+   "key": "What the ball gets",
+   "text": "ما تأخذه الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "The physics",
+   "text": "La física"
+  },
+  {
+   "culture": "fr",
+   "key": "The physics",
+   "text": "La physique"
+  },
+  {
+   "culture": "de",
+   "key": "The physics",
+   "text": "Die Physik"
+  },
+  {
+   "culture": "it",
+   "key": "The physics",
+   "text": "La fisica"
+  },
+  {
+   "culture": "pt",
+   "key": "The physics",
+   "text": "A física"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The physics",
+   "text": "A física"
+  },
+  {
+   "culture": "ja",
+   "key": "The physics",
+   "text": "物理"
+  },
+  {
+   "culture": "ko",
+   "key": "The physics",
+   "text": "물리"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The physics",
+   "text": "物理"
+  },
+  {
+   "culture": "ru",
+   "key": "The physics",
+   "text": "Физика"
+  },
+  {
+   "culture": "ar",
+   "key": "The physics",
+   "text": "الفيزياء"
+  },
+  {
+   "culture": "es",
+   "key": "What you set",
+   "text": "Lo que ajustas"
+  },
+  {
+   "culture": "fr",
+   "key": "What you set",
+   "text": "Ce que tu règles"
+  },
+  {
+   "culture": "de",
+   "key": "What you set",
+   "text": "Was du einstellst"
+  },
+  {
+   "culture": "it",
+   "key": "What you set",
+   "text": "Cosa imposti"
+  },
+  {
+   "culture": "pt",
+   "key": "What you set",
+   "text": "O que defines"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "What you set",
+   "text": "O que você ajusta"
+  },
+  {
+   "culture": "ja",
+   "key": "What you set",
+   "text": "あなたの設定"
+  },
+  {
+   "culture": "ko",
+   "key": "What you set",
+   "text": "내가 정한 것"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "What you set",
+   "text": "你的设置"
+  },
+  {
+   "culture": "ru",
+   "key": "What you set",
+   "text": "Что ты задаёшь"
+  },
+  {
+   "culture": "ar",
+   "key": "What you set",
+   "text": "ما تضبطه أنت"
+  },
+  {
+   "culture": "es",
+   "key": "goes along the cue",
+   "text": "sale en la línea del taco"
+  },
+  {
+   "culture": "fr",
+   "key": "goes along the cue",
+   "text": "part dans l'axe de la queue"
+  },
+  {
+   "culture": "de",
+   "key": "goes along the cue",
+   "text": "läuft entlang des Queues"
+  },
+  {
+   "culture": "it",
+   "key": "goes along the cue",
+   "text": "va lungo la stecca"
+  },
+  {
+   "culture": "pt",
+   "key": "goes along the cue",
+   "text": "segue a linha do taco"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "goes along the cue",
+   "text": "segue a linha do taco"
+  },
+  {
+   "culture": "ja",
+   "key": "goes along the cue",
+   "text": "キューの線どおりに進む"
+  },
+  {
+   "culture": "ko",
+   "key": "goes along the cue",
+   "text": "큐 방향 그대로 감"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "goes along the cue",
+   "text": "沿球杆方向走"
+  },
+  {
+   "culture": "ru",
+   "key": "goes along the cue",
+   "text": "идёт по линии кия"
+  },
+  {
+   "culture": "ar",
+   "key": "goes along the cue",
+   "text": "تمضي مع خط العصا"
+  },
+  {
+   "culture": "es",
+   "key": "goes %@",
+   "text": "va %@"
+  },
+  {
+   "culture": "fr",
+   "key": "goes %@",
+   "text": "part %@"
+  },
+  {
+   "culture": "de",
+   "key": "goes %@",
+   "text": "läuft %@"
+  },
+  {
+   "culture": "it",
+   "key": "goes %@",
+   "text": "va %@"
+  },
+  {
+   "culture": "pt",
+   "key": "goes %@",
+   "text": "vai %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "goes %@",
+   "text": "vai %@"
+  },
+  {
+   "culture": "ja",
+   "key": "goes %@",
+   "text": "%@ にずれる"
+  },
+  {
+   "culture": "ko",
+   "key": "goes %@",
+   "text": "%@ 쪽으로 감"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "goes %@",
+   "text": "偏 %@"
+  },
+  {
+   "culture": "ru",
+   "key": "goes %@",
+   "text": "уходит %@"
+  },
+  {
+   "culture": "ar",
+   "key": "goes %@",
+   "text": "تنحرف %@"
+  },
+  {
+   "culture": "es",
+   "key": "from a %@ swing",
+   "text": "con un swing de %@"
+  },
+  {
+   "culture": "fr",
+   "key": "from a %@ swing",
+   "text": "pour un swing de %@"
+  },
+  {
+   "culture": "de",
+   "key": "from a %@ swing",
+   "text": "bei %@ Schwung"
+  },
+  {
+   "culture": "it",
+   "key": "from a %@ swing",
+   "text": "da uno swing di %@"
+  },
+  {
+   "culture": "pt",
+   "key": "from a %@ swing",
+   "text": "com um swing de %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "from a %@ swing",
+   "text": "com um swing de %@"
+  },
+  {
+   "culture": "ja",
+   "key": "from a %@ swing",
+   "text": "スイング %@ から"
+  },
+  {
+   "culture": "ko",
+   "key": "from a %@ swing",
+   "text": "스윙 %@에서"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "from a %@ swing",
+   "text": "来自 %@ 的挥杆"
+  },
+  {
+   "culture": "ru",
+   "key": "from a %@ swing",
+   "text": "при замахе %@"
+  },
+  {
+   "culture": "ar",
+   "key": "from a %@ swing",
+   "text": "من أرجحة %@"
+  },
+  {
+   "culture": "es",
+   "key": "up from level",
+   "text": "sobre la horizontal"
+  },
+  {
+   "culture": "fr",
+   "key": "up from level",
+   "text": "au-dessus de l'horizontale"
+  },
+  {
+   "culture": "de",
+   "key": "up from level",
+   "text": "über der Waagrechten"
+  },
+  {
+   "culture": "it",
+   "key": "up from level",
+   "text": "sopra l'orizzontale"
+  },
+  {
+   "culture": "pt",
+   "key": "up from level",
+   "text": "acima da horizontal"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "up from level",
+   "text": "acima da horizontal"
+  },
+  {
+   "culture": "ja",
+   "key": "up from level",
+   "text": "水平から上へ"
+  },
+  {
+   "culture": "ko",
+   "key": "up from level",
+   "text": "수평에서 위로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "up from level",
+   "text": "高于水平"
+  },
+  {
+   "culture": "ru",
+   "key": "up from level",
+   "text": "от горизонтали"
+  },
+  {
+   "culture": "ar",
+   "key": "up from level",
+   "text": "فوق المستوى الأفقي"
+  },
+  {
+   "culture": "es",
+   "key": "as planned",
+   "text": "como lo planeaste"
+  },
+  {
+   "culture": "fr",
+   "key": "as planned",
+   "text": "comme prévu"
+  },
+  {
+   "culture": "de",
+   "key": "as planned",
+   "text": "wie geplant"
+  },
+  {
+   "culture": "it",
+   "key": "as planned",
+   "text": "come previsto"
+  },
+  {
+   "culture": "pt",
+   "key": "as planned",
+   "text": "como planeado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "as planned",
+   "text": "como planejado"
+  },
+  {
+   "culture": "ja",
+   "key": "as planned",
+   "text": "計画どおり"
+  },
+  {
+   "culture": "ko",
+   "key": "as planned",
+   "text": "계획대로"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "as planned",
+   "text": "与计划一致"
+  },
+  {
+   "culture": "ru",
+   "key": "as planned",
+   "text": "как задумано"
+  },
+  {
+   "culture": "ar",
+   "key": "as planned",
+   "text": "كما خططت"
+  },
+  {
+   "culture": "es",
+   "key": "calm limit %@ %@",
+   "text": "límite tranquilo %1$@ %2$@"
+  },
+  {
+   "culture": "fr",
+   "key": "calm limit %@ %@",
+   "text": "limite calme %1$@ %2$@"
+  },
+  {
+   "culture": "de",
+   "key": "calm limit %@ %@",
+   "text": "ruhige Grenze %1$@ %2$@"
+  },
+  {
+   "culture": "it",
+   "key": "calm limit %@ %@",
+   "text": "limite calmo %1$@ %2$@"
+  },
+  {
+   "culture": "pt",
+   "key": "calm limit %@ %@",
+   "text": "limite calmo %1$@ %2$@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "calm limit %@ %@",
+   "text": "limite calmo %1$@ %2$@"
+  },
+  {
+   "culture": "ja",
+   "key": "calm limit %@ %@",
+   "text": "安定の上限 %1$@ %2$@"
+  },
+  {
+   "culture": "ko",
+   "key": "calm limit %@ %@",
+   "text": "안정 한계 %1$@ %2$@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "calm limit %@ %@",
+   "text": "平稳上限 %1$@ %2$@"
+  },
+  {
+   "culture": "ru",
+   "key": "calm limit %@ %@",
+   "text": "спокойный предел %1$@ %2$@"
+  },
+  {
+   "culture": "ar",
+   "key": "calm limit %@ %@",
+   "text": "حد الهدوء %1$@ %2$@"
+  },
+  {
+   "culture": "es",
+   "key": "Shoot: rolling",
+   "text": "Rodando"
+  },
+  {
+   "culture": "fr",
+   "key": "Shoot: rolling",
+   "text": "Ça roule"
+  },
+  {
+   "culture": "de",
+   "key": "Shoot: rolling",
+   "text": "Rollt noch"
+  },
+  {
+   "culture": "it",
+   "key": "Shoot: rolling",
+   "text": "In corsa"
+  },
+  {
+   "culture": "pt",
+   "key": "Shoot: rolling",
+   "text": "A rolar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shoot: rolling",
+   "text": "Rolando"
+  },
+  {
+   "culture": "ja",
+   "key": "Shoot: rolling",
+   "text": "転がり中"
+  },
+  {
+   "culture": "ko",
+   "key": "Shoot: rolling",
+   "text": "굴러가는 중"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shoot: rolling",
+   "text": "滚动中"
+  },
+  {
+   "culture": "ru",
+   "key": "Shoot: rolling",
+   "text": "Катятся"
+  },
+  {
+   "culture": "ar",
+   "key": "Shoot: rolling",
+   "text": "تتدحرج"
+  },
+  {
+   "culture": "es",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ frente a %2$@ planeado"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ contre %2$@ prévu"
+  },
+  {
+   "culture": "de",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ statt %2$@ geplant"
+  },
+  {
+   "culture": "it",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ contro %2$@ previsto"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ contra %2$@ planeado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ contra %2$@ planejado"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@（計画 %2$@）"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ (계획 %2$@)"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@（计划 %2$@）"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ при плане %2$@"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ vs %@ planned",
+   "text": "%1$@ مقابل %2$@ المخطط"
+  },
+  {
+   "culture": "es",
+   "key": "centre height",
+   "text": "a media altura"
+  },
+  {
+   "culture": "fr",
+   "key": "centre height",
+   "text": "à mi-hauteur"
+  },
+  {
+   "culture": "de",
+   "key": "centre height",
+   "text": "auf Mittelhöhe"
+  },
+  {
+   "culture": "it",
+   "key": "centre height",
+   "text": "a metà altezza"
+  },
+  {
+   "culture": "pt",
+   "key": "centre height",
+   "text": "a meia altura"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "centre height",
+   "text": "na altura do centro"
+  },
+  {
+   "culture": "ja",
+   "key": "centre height",
+   "text": "中心の高さ"
+  },
+  {
+   "culture": "ko",
+   "key": "centre height",
+   "text": "중심 높이"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "centre height",
+   "text": "中心高度"
+  },
+  {
+   "culture": "ru",
+   "key": "centre height",
+   "text": "по центру по высоте"
+  },
+  {
+   "culture": "ar",
+   "key": "centre height",
+   "text": "على ارتفاع المنتصف"
+  },
+  {
+   "culture": "es",
+   "key": "above",
+   "text": "arriba"
+  },
+  {
+   "culture": "fr",
+   "key": "above",
+   "text": "au-dessus"
+  },
+  {
+   "culture": "de",
+   "key": "above",
+   "text": "oberhalb"
+  },
+  {
+   "culture": "it",
+   "key": "above",
+   "text": "sopra"
+  },
+  {
+   "culture": "pt",
+   "key": "above",
+   "text": "acima"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "above",
+   "text": "acima"
+  },
+  {
+   "culture": "ja",
+   "key": "above",
+   "text": "上"
+  },
+  {
+   "culture": "ko",
+   "key": "above",
+   "text": "위"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "above",
+   "text": "上方"
+  },
+  {
+   "culture": "ru",
+   "key": "above",
+   "text": "выше"
+  },
+  {
+   "culture": "ar",
+   "key": "above",
+   "text": "فوق"
+  },
+  {
+   "culture": "es",
+   "key": "below",
+   "text": "abajo"
+  },
+  {
+   "culture": "fr",
+   "key": "below",
+   "text": "en dessous"
+  },
+  {
+   "culture": "de",
+   "key": "below",
+   "text": "unterhalb"
+  },
+  {
+   "culture": "it",
+   "key": "below",
+   "text": "sotto"
+  },
+  {
+   "culture": "pt",
+   "key": "below",
+   "text": "abaixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "below",
+   "text": "abaixo"
+  },
+  {
+   "culture": "ja",
+   "key": "below",
+   "text": "下"
+  },
+  {
+   "culture": "ko",
+   "key": "below",
+   "text": "아래"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "below",
+   "text": "下方"
+  },
+  {
+   "culture": "ru",
+   "key": "below",
+   "text": "ниже"
+  },
+  {
+   "culture": "ar",
+   "key": "below",
+   "text": "تحت"
+  },
+  {
+   "culture": "es",
+   "key": "centre line",
+   "text": "en la línea central"
+  },
+  {
+   "culture": "fr",
+   "key": "centre line",
+   "text": "sur l'axe"
+  },
+  {
+   "culture": "de",
+   "key": "centre line",
+   "text": "auf der Mittellinie"
+  },
+  {
+   "culture": "it",
+   "key": "centre line",
+   "text": "sulla linea centrale"
+  },
+  {
+   "culture": "pt",
+   "key": "centre line",
+   "text": "na linha central"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "centre line",
+   "text": "na linha central"
+  },
+  {
+   "culture": "ja",
+   "key": "centre line",
+   "text": "中心線上"
+  },
+  {
+   "culture": "ko",
+   "key": "centre line",
+   "text": "중심선"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "centre line",
+   "text": "中线上"
+  },
+  {
+   "culture": "ru",
+   "key": "centre line",
+   "text": "на центральной линии"
+  },
+  {
+   "culture": "ar",
+   "key": "centre line",
+   "text": "على خط المنتصف"
+  },
+  {
+   "culture": "es",
+   "key": "Shorter bridge",
+   "text": "Puente más corto"
+  },
+  {
+   "culture": "fr",
+   "key": "Shorter bridge",
+   "text": "Pont plus court"
+  },
+  {
+   "culture": "de",
+   "key": "Shorter bridge",
+   "text": "Kürzere Brücke"
+  },
+  {
+   "culture": "it",
+   "key": "Shorter bridge",
+   "text": "Ponte più corto"
+  },
+  {
+   "culture": "pt",
+   "key": "Shorter bridge",
+   "text": "Ponte mais curta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shorter bridge",
+   "text": "Ponte mais curta"
+  },
+  {
+   "culture": "ja",
+   "key": "Shorter bridge",
+   "text": "ブリッジを短く"
+  },
+  {
+   "culture": "ko",
+   "key": "Shorter bridge",
+   "text": "브리지 짧게"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shorter bridge",
+   "text": "缩短架杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Shorter bridge",
+   "text": "Короче мостик"
+  },
+  {
+   "culture": "ar",
+   "key": "Shorter bridge",
+   "text": "جسر أقصر"
+  },
+  {
+   "culture": "es",
+   "key": "Longer bridge",
+   "text": "Puente más largo"
+  },
+  {
+   "culture": "fr",
+   "key": "Longer bridge",
+   "text": "Pont plus long"
+  },
+  {
+   "culture": "de",
+   "key": "Longer bridge",
+   "text": "Längere Brücke"
+  },
+  {
+   "culture": "it",
+   "key": "Longer bridge",
+   "text": "Ponte più lungo"
+  },
+  {
+   "culture": "pt",
+   "key": "Longer bridge",
+   "text": "Ponte mais longa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Longer bridge",
+   "text": "Ponte mais longa"
+  },
+  {
+   "culture": "ja",
+   "key": "Longer bridge",
+   "text": "ブリッジを長く"
+  },
+  {
+   "culture": "ko",
+   "key": "Longer bridge",
+   "text": "브리지 길게"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Longer bridge",
+   "text": "加长架杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Longer bridge",
+   "text": "Длиннее мостик"
+  },
+  {
+   "culture": "ar",
+   "key": "Longer bridge",
+   "text": "جسر أطول"
+  },
+  {
+   "culture": "es",
+   "key": "Opens a field to type an exact value.",
+   "text": "Abre un campo para escribir un valor exacto."
+  },
+  {
+   "culture": "fr",
+   "key": "Opens a field to type an exact value.",
+   "text": "Ouvre un champ pour taper une valeur exacte."
+  },
+  {
+   "culture": "de",
+   "key": "Opens a field to type an exact value.",
+   "text": "Öffnet ein Feld, um einen genauen Wert einzutippen."
+  },
+  {
+   "culture": "it",
+   "key": "Opens a field to type an exact value.",
+   "text": "Apre un campo per scrivere un valore esatto."
+  },
+  {
+   "culture": "pt",
+   "key": "Opens a field to type an exact value.",
+   "text": "Abre um campo para escreveres um valor exato."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Opens a field to type an exact value.",
+   "text": "Abre um campo para você digitar um valor exato."
+  },
+  {
+   "culture": "ja",
+   "key": "Opens a field to type an exact value.",
+   "text": "正確な値を入力する欄を開きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Opens a field to type an exact value.",
+   "text": "정확한 값을 입력할 칸을 엽니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Opens a field to type an exact value.",
+   "text": "打开输入框，输入精确数值。"
+  },
+  {
+   "culture": "ru",
+   "key": "Opens a field to type an exact value.",
+   "text": "Открывает поле, чтобы ввести точное значение."
+  },
+  {
+   "culture": "ar",
+   "key": "Opens a field to type an exact value.",
+   "text": "يفتح خانة لتكتب قيمة دقيقة."
+  },
+  {
+   "culture": "es",
+   "key": "The %lld is cut %@.",
+   "text": "La %lld va cortada %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The %lld is cut %@.",
+   "text": "La %lld est coupée de %@."
+  },
+  {
+   "culture": "de",
+   "key": "The %lld is cut %@.",
+   "text": "Die %lld wird mit %@ geschnitten."
+  },
+  {
+   "culture": "it",
+   "key": "The %lld is cut %@.",
+   "text": "La %lld è tagliata di %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The %lld is cut %@.",
+   "text": "A %lld leva um corte de %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The %lld is cut %@.",
+   "text": "A %lld leva um corte de %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The %lld is cut %@.",
+   "text": "%lld番は %@ のカット。"
+  },
+  {
+   "culture": "ko",
+   "key": "The %lld is cut %@.",
+   "text": "%lld번 공은 %@ 컷."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The %lld is cut %@.",
+   "text": "%lld 号球切 %@。"
+  },
+  {
+   "culture": "ru",
+   "key": "The %lld is cut %@.",
+   "text": "Шар %lld срезан на %@."
+  },
+  {
+   "culture": "ar",
+   "key": "The %lld is cut %@.",
+   "text": "الكرة %lld مقطوعة بزاوية %@."
+  },
+  {
+   "culture": "es",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "La %lld va cortada %@; la blanca va %@."
+  },
+  {
+   "culture": "fr",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "La %lld est coupée de %@ ; la blanche part %@."
+  },
+  {
+   "culture": "de",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "Die %lld wird mit %@ geschnitten; die Weiße läuft %@."
+  },
+  {
+   "culture": "it",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "La %lld è tagliata di %@; la bianca va %@."
+  },
+  {
+   "culture": "pt",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "A %lld leva um corte de %@; a branca vai %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "A %lld leva um corte de %@; a branca vai %@."
+  },
+  {
+   "culture": "ja",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "%lld番は %@ のカット。手球は %@ にずれる。"
+  },
+  {
+   "culture": "ko",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "%lld번 공은 %@ 컷, 흰 공은 %@ 쪽으로 감."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "%lld 号球切 %@；母球偏 %@。"
+  },
+  {
+   "culture": "ru",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "Шар %lld срезан на %@; биток уходит %@."
+  },
+  {
+   "culture": "ar",
+   "key": "The %lld is cut %@; the white goes %@.",
+   "text": "الكرة %lld مقطوعة بزاوية %@؛ والبيضاء تنحرف %@."
+  },
+  {
+   "culture": "es",
+   "key": "Back spin with some right side.",
+   "text": "Efecto bajo con algo de efecto a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Back spin with some right side.",
+   "text": "Rétro avec un peu d'effet à droite."
+  },
+  {
+   "culture": "de",
+   "key": "Back spin with some right side.",
+   "text": "Rückläuferdrall mit etwas Rechtsdrall."
+  },
+  {
+   "culture": "it",
+   "key": "Back spin with some right side.",
+   "text": "Effetto basso con un po' di effetto a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Back spin with some right side.",
+   "text": "Efeito baixo com algum efeito à direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Back spin with some right side.",
+   "text": "Efeito baixo com um pouco de efeito à direita."
+  },
+  {
+   "culture": "ja",
+   "key": "Back spin with some right side.",
+   "text": "逆回転に少し右ひねり。"
+  },
+  {
+   "culture": "ko",
+   "key": "Back spin with some right side.",
+   "text": "아래 회전에 약간의 오른쪽 회전."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Back spin with some right side.",
+   "text": "下旋加一点右塞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Back spin with some right side.",
+   "text": "Нижнее вращение с небольшим правым боковым."
+  },
+  {
+   "culture": "ar",
+   "key": "Back spin with some right side.",
+   "text": "دوران خلفي مع قليل من الدوران لليمين."
+  },
+  {
+   "culture": "es",
+   "key": "Back spin with some left side.",
+   "text": "Efecto bajo con algo de efecto a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Back spin with some left side.",
+   "text": "Rétro avec un peu d'effet à gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Back spin with some left side.",
+   "text": "Rückläuferdrall mit etwas Linksdrall."
+  },
+  {
+   "culture": "it",
+   "key": "Back spin with some left side.",
+   "text": "Effetto basso con un po' di effetto a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Back spin with some left side.",
+   "text": "Efeito baixo com algum efeito à esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Back spin with some left side.",
+   "text": "Efeito baixo com um pouco de efeito à esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Back spin with some left side.",
+   "text": "逆回転に少し左ひねり。"
+  },
+  {
+   "culture": "ko",
+   "key": "Back spin with some left side.",
+   "text": "아래 회전에 약간의 왼쪽 회전."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Back spin with some left side.",
+   "text": "下旋加一点左塞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Back spin with some left side.",
+   "text": "Нижнее вращение с небольшим левым боковым."
+  },
+  {
+   "culture": "ar",
+   "key": "Back spin with some left side.",
+   "text": "دوران خلفي مع قليل من الدوران لليسار."
+  },
+  {
+   "culture": "es",
+   "key": "Back spin, no side.",
+   "text": "Efecto bajo, sin efecto lateral."
+  },
+  {
+   "culture": "fr",
+   "key": "Back spin, no side.",
+   "text": "Rétro, sans effet latéral."
+  },
+  {
+   "culture": "de",
+   "key": "Back spin, no side.",
+   "text": "Rückläuferdrall, kein Seitendrall."
+  },
+  {
+   "culture": "it",
+   "key": "Back spin, no side.",
+   "text": "Effetto basso, niente effetto laterale."
+  },
+  {
+   "culture": "pt",
+   "key": "Back spin, no side.",
+   "text": "Efeito baixo, sem efeito lateral."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Back spin, no side.",
+   "text": "Efeito baixo, sem efeito lateral."
+  },
+  {
+   "culture": "ja",
+   "key": "Back spin, no side.",
+   "text": "逆回転、ひねりなし。"
+  },
+  {
+   "culture": "ko",
+   "key": "Back spin, no side.",
+   "text": "아래 회전, 옆 회전 없음."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Back spin, no side.",
+   "text": "下旋，无塞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Back spin, no side.",
+   "text": "Нижнее вращение, без бокового."
+  },
+  {
+   "culture": "ar",
+   "key": "Back spin, no side.",
+   "text": "دوران خلفي، بلا دوران جانبي."
+  },
+  {
+   "culture": "es",
+   "key": "Top spin with some right side.",
+   "text": "Efecto alto con algo de efecto a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Top spin with some right side.",
+   "text": "Coulé avec un peu d'effet à droite."
+  },
+  {
+   "culture": "de",
+   "key": "Top spin with some right side.",
+   "text": "Nachläuferdrall mit etwas Rechtsdrall."
+  },
+  {
+   "culture": "it",
+   "key": "Top spin with some right side.",
+   "text": "Effetto alto con un po' di effetto a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Top spin with some right side.",
+   "text": "Efeito alto com algum efeito à direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Top spin with some right side.",
+   "text": "Efeito alto com um pouco de efeito à direita."
+  },
+  {
+   "culture": "ja",
+   "key": "Top spin with some right side.",
+   "text": "順回転に少し右ひねり。"
+  },
+  {
+   "culture": "ko",
+   "key": "Top spin with some right side.",
+   "text": "위 회전에 약간의 오른쪽 회전."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Top spin with some right side.",
+   "text": "上旋加一点右塞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Top spin with some right side.",
+   "text": "Верхнее вращение с небольшим правым боковым."
+  },
+  {
+   "culture": "ar",
+   "key": "Top spin with some right side.",
+   "text": "دوران أمامي مع قليل من الدوران لليمين."
+  },
+  {
+   "culture": "es",
+   "key": "Top spin with some left side.",
+   "text": "Efecto alto con algo de efecto a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Top spin with some left side.",
+   "text": "Coulé avec un peu d'effet à gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Top spin with some left side.",
+   "text": "Nachläuferdrall mit etwas Linksdrall."
+  },
+  {
+   "culture": "it",
+   "key": "Top spin with some left side.",
+   "text": "Effetto alto con un po' di effetto a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Top spin with some left side.",
+   "text": "Efeito alto com algum efeito à esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Top spin with some left side.",
+   "text": "Efeito alto com um pouco de efeito à esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Top spin with some left side.",
+   "text": "順回転に少し左ひねり。"
+  },
+  {
+   "culture": "ko",
+   "key": "Top spin with some left side.",
+   "text": "위 회전에 약간의 왼쪽 회전."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Top spin with some left side.",
+   "text": "上旋加一点左塞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Top spin with some left side.",
+   "text": "Верхнее вращение с небольшим левым боковым."
+  },
+  {
+   "culture": "ar",
+   "key": "Top spin with some left side.",
+   "text": "دوران أمامي مع قليل من الدوران لليسار."
+  },
+  {
+   "culture": "es",
+   "key": "Top spin, no side.",
+   "text": "Efecto alto, sin efecto lateral."
+  },
+  {
+   "culture": "fr",
+   "key": "Top spin, no side.",
+   "text": "Coulé, sans effet latéral."
+  },
+  {
+   "culture": "de",
+   "key": "Top spin, no side.",
+   "text": "Nachläuferdrall, kein Seitendrall."
+  },
+  {
+   "culture": "it",
+   "key": "Top spin, no side.",
+   "text": "Effetto alto, niente effetto laterale."
+  },
+  {
+   "culture": "pt",
+   "key": "Top spin, no side.",
+   "text": "Efeito alto, sem efeito lateral."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Top spin, no side.",
+   "text": "Efeito alto, sem efeito lateral."
+  },
+  {
+   "culture": "ja",
+   "key": "Top spin, no side.",
+   "text": "順回転、ひねりなし。"
+  },
+  {
+   "culture": "ko",
+   "key": "Top spin, no side.",
+   "text": "위 회전, 옆 회전 없음."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Top spin, no side.",
+   "text": "上旋，无塞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Top spin, no side.",
+   "text": "Верхнее вращение, без бокового."
+  },
+  {
+   "culture": "ar",
+   "key": "Top spin, no side.",
+   "text": "دوران أمامي، بلا دوران جانبي."
+  },
+  {
+   "culture": "es",
+   "key": "Right side, no top or back spin.",
+   "text": "Efecto a la derecha, sin efecto alto ni bajo."
+  },
+  {
+   "culture": "fr",
+   "key": "Right side, no top or back spin.",
+   "text": "Effet à droite, ni coulé ni rétro."
+  },
+  {
+   "culture": "de",
+   "key": "Right side, no top or back spin.",
+   "text": "Rechtsdrall, kein Vor- oder Rückläuferdrall."
+  },
+  {
+   "culture": "it",
+   "key": "Right side, no top or back spin.",
+   "text": "Effetto a destra, né alto né basso."
+  },
+  {
+   "culture": "pt",
+   "key": "Right side, no top or back spin.",
+   "text": "Efeito à direita, sem efeito alto nem baixo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Right side, no top or back spin.",
+   "text": "Efeito à direita, sem efeito alto nem baixo."
+  },
+  {
+   "culture": "ja",
+   "key": "Right side, no top or back spin.",
+   "text": "右ひねり、順回転も逆回転もなし。"
+  },
+  {
+   "culture": "ko",
+   "key": "Right side, no top or back spin.",
+   "text": "오른쪽 회전, 위아래 회전 없음."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Right side, no top or back spin.",
+   "text": "右塞，无上下旋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Right side, no top or back spin.",
+   "text": "Правое боковое, без верхнего и нижнего."
+  },
+  {
+   "culture": "ar",
+   "key": "Right side, no top or back spin.",
+   "text": "دوران لليمين، بلا دوران أمامي أو خلفي."
+  },
+  {
+   "culture": "es",
+   "key": "Left side, no top or back spin.",
+   "text": "Efecto a la izquierda, sin efecto alto ni bajo."
+  },
+  {
+   "culture": "fr",
+   "key": "Left side, no top or back spin.",
+   "text": "Effet à gauche, ni coulé ni rétro."
+  },
+  {
+   "culture": "de",
+   "key": "Left side, no top or back spin.",
+   "text": "Linksdrall, kein Vor- oder Rückläuferdrall."
+  },
+  {
+   "culture": "it",
+   "key": "Left side, no top or back spin.",
+   "text": "Effetto a sinistra, né alto né basso."
+  },
+  {
+   "culture": "pt",
+   "key": "Left side, no top or back spin.",
+   "text": "Efeito à esquerda, sem efeito alto nem baixo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Left side, no top or back spin.",
+   "text": "Efeito à esquerda, sem efeito alto nem baixo."
+  },
+  {
+   "culture": "ja",
+   "key": "Left side, no top or back spin.",
+   "text": "左ひねり、順回転も逆回転もなし。"
+  },
+  {
+   "culture": "ko",
+   "key": "Left side, no top or back spin.",
+   "text": "왼쪽 회전, 위아래 회전 없음."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Left side, no top or back spin.",
+   "text": "左塞，无上下旋。"
+  },
+  {
+   "culture": "ru",
+   "key": "Left side, no top or back spin.",
+   "text": "Левое боковое, без верхнего и нижнего."
+  },
+  {
+   "culture": "ar",
+   "key": "Left side, no top or back spin.",
+   "text": "دوران لليسار، بلا دوران أمامي أو خلفي."
+  },
+  {
+   "culture": "es",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Sin efecto: golpe al centro de la bola."
+  },
+  {
+   "culture": "fr",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Pas d'effet : un coup au centre de la bille."
+  },
+  {
+   "culture": "de",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Kein Drall: ein Stoß in die Kugelmitte."
+  },
+  {
+   "culture": "it",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Nessun effetto: un colpo al centro della bilia."
+  },
+  {
+   "culture": "pt",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Sem efeito: uma tacada ao centro da bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Sem efeito: uma tacada no centro da bola."
+  },
+  {
+   "culture": "ja",
+   "key": "No spin: a centre-ball hit.",
+   "text": "回転なし：球の中心を撞く。"
+  },
+  {
+   "culture": "ko",
+   "key": "No spin: a centre-ball hit.",
+   "text": "회전 없음: 공 중심 타격."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No spin: a centre-ball hit.",
+   "text": "无旋转：击打球心。"
+  },
+  {
+   "culture": "ru",
+   "key": "No spin: a centre-ball hit.",
+   "text": "Без вращения: удар в центр шара."
+  },
+  {
+   "culture": "ar",
+   "key": "No spin: a centre-ball hit.",
+   "text": "بلا دوران: ضربة في منتصف الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "Your stroke gave what you set.",
+   "text": "Tu tacada dio lo que ajustaste."
+  },
+  {
+   "culture": "fr",
+   "key": "Your stroke gave what you set.",
+   "text": "Ta frappe a donné ce que tu as réglé."
+  },
+  {
+   "culture": "de",
+   "key": "Your stroke gave what you set.",
+   "text": "Dein Stoß hat geliefert, was du eingestellt hast."
+  },
+  {
+   "culture": "it",
+   "key": "Your stroke gave what you set.",
+   "text": "La tua stecca ha dato quello che hai impostato."
+  },
+  {
+   "culture": "pt",
+   "key": "Your stroke gave what you set.",
+   "text": "A tua tacada deu o que definiste."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your stroke gave what you set.",
+   "text": "Sua tacada entregou o que você ajustou."
+  },
+  {
+   "culture": "ja",
+   "key": "Your stroke gave what you set.",
+   "text": "ストロークは設定どおりでした。"
+  },
+  {
+   "culture": "ko",
+   "key": "Your stroke gave what you set.",
+   "text": "스트로크가 설정한 그대로 나왔어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your stroke gave what you set.",
+   "text": "你的击球与设置一致。"
+  },
+  {
+   "culture": "ru",
+   "key": "Your stroke gave what you set.",
+   "text": "Твой удар дал то, что ты задал."
+  },
+  {
+   "culture": "ar",
+   "key": "Your stroke gave what you set.",
+   "text": "ضربتك أعطت ما ضبطته."
+  }
+ ]
+}

@@ -6,6 +6,9 @@
 //          stage 4 and stage 3 item 5: a tap on the swing figure opens the strike panel as a sheet over the lower half
 //          (StrikeSheet); the first instruction and the Pencil line sit at the top of the panel (StrikeHint); the cue
 //          angle is locked where the mode sets its own.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 14: the swing figure is cyan (a set value); the strike sheet it opens is the slimmer opaque one with
+//          What the ball gets and the physics line only; the tip picture takes the flat look.)
 // PURPOSE: The upright phone's aiming panel (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The aiming panel"), in place of
 //          ShotPanel on that layout only. ShowpieceView puts it in the bottom bar's one glass container, above
 //          PhoneStrip, while Your shot is open (and WhatIfPhonePanel in its place while a what-if shows). One regular
@@ -374,6 +377,8 @@ struct PhonePowerBar: View {
         let row = HStack(alignment: .firstTextBaseline, spacing: 6) {
             Text(verbatim: StrokeWords.swingFigure(power: model.activePower))
                 .font(.system(.headline, design: .monospaced))
+                // Aiming panel redesign: cyan, because the swing is something the player sets.
+                .foregroundStyle(palette.accent)
                 .lineLimit(1)
                 .fixedSize()
             Text(verbatim: StrokeWords.swingCaption(power: model.activePower, racked: model.racked,

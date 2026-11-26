@@ -17,6 +17,11 @@
 //          element reading its label, then the figure with its unit in words (StrikeSpoken); at the accessibility text
 //          sizes nothing shrinks to fit: no minimum scale, no line limit, and the hinge's fixed 10-point label follows
 //          the text size too.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 3: the strike panel no longer draws tiles (its lead band and physics line are StrikeLeadBand and
+//          StrikePhysicsLine, built on the instrument kit); the tile stays for NotebookNumbers. A tile given a planned
+//          figure no longer stacks four lines (Planned, the figure, Delivered, the figure): it shows the delivered
+//          figure with a DeltaChip under it ("+0.02 vs 2.40 planned"), the same worded chip the strike panel uses.)
 // SRP/DRY check: Pass - the one tile drawing in the app; NotebookNumbers and StrikePanel both use it. Formatting of the
 //          figures stays with their callers (NotebookNumbers' speedText, StrikeWords).
 import SwiftUI
@@ -52,17 +57,6 @@ struct NumberTile: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            if let planned {
-                // 0.7.10 everyone: each of the two figures is named in a word, not told by dim against bright alone.
-                figureWord(StrikeSpoken.plannedWord)
-                Text(verbatim: planned)
-                    .font(figureFont.weight(.regular))
-                    .foregroundStyle(.secondary)
-                    .opacity(0.7)
-                    .lineLimit(lines(1))
-                    .minimumScaleFactor(shrink(0.6))
-                figureWord(StrikeSpoken.deliveredWord)
-            }
             Text(verbatim: value)
                 .font(figureFont)
                 .foregroundStyle(palette.accent)
@@ -77,7 +71,10 @@ struct NumberTile: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(lines(2))
                 .minimumScaleFactor(shrink(0.85))
-            if let note {
+            if let planned {
+                // Aiming panel redesign: the delivered figure above, the change and the plan in one worded chip.
+                DeltaChip(text: StrikeWords.deltaChip(note ?? "", planned: planned))
+            } else if let note {
                 Text(verbatim: note)
                     .font(Theme.number)
                     .foregroundStyle(palette.slide)
@@ -99,18 +96,6 @@ struct NumberTile: View {
             }
         }
         .modifier(TileSpeech(label: label, spoken: spoken))
-    }
-
-    /// The one-word name over a figure after a shot ("Planned", "Delivered"), small, in the label's grey. Hidden from
-    /// VoiceOver, which hears both figures named in the tile's spoken value instead.
-    private func figureWord(_ word: String) -> some View {
-        Text(verbatim: word)
-            .font(.caption2.weight(.semibold))
-            .textCase(.uppercase)
-            .foregroundStyle(.secondary)
-            .lineLimit(lines(1))
-            .minimumScaleFactor(shrink(0.8))
-            .accessibilityHidden(true)
     }
 
     /// The figure's font: the notebook's headline digits, or a size up in the monospaced number design for the strike.

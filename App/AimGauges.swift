@@ -41,6 +41,17 @@
 //          mark's label wraps to the bar's width instead of running past the plus button, the room kept under the bar
 //          follows the bar's and the label's real heights instead of a fixed 8 points, and at the accessibility text
 //          sizes only the caret shows, so the label never hangs over the panel's next row.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 5: on the big screens the tip picture is a flat technical drawing at the size the layout hands it (rings
+//          every 5 mm with 10 and 20 labelled, a full crosshair, the dashed miscue ring, dotted leader lines from the
+//          axes to the handle), with the instrument kit's handle and its two millimetre figures under it (typeable,
+//          dotted underline); after a shot a hollow ring at the planned spot, a yellow dot where the tip hit and a line
+//          between, and the figures read "10.0 → 14.0 mm below". The power bar on the big screens (RoomyPowerBar) is a
+//          48-point bar (40 on the Mac) with a cyan fill, the white handle, a quiet hatch past the calm mark, the mark
+//          labelled "calm limit" with its figure, a whole-number m/s scale under it up to the cue's top swing, the
+//          Swing figure (typeable) and its zone word above it, and a yellow tick at the delivered swing after a shot.
+//          The small "draw, −10.0 mm" and "firm · swing 2.4 m/s" lines are gone there, so each figure is printed once.
+//          The phone's small picture takes the flat look and the kit's handle; its bar is unchanged.)
 // PURPOSE: The two small gauges beside the table in the shot panel. TipPicker is a picture of the cue ball: touch or
 //          drag on it to place the cue tip (up for follow, down for draw, left and right for side spin), with a faint
 //          ring marking how far from the middle the tip can go before the cue would slip off. PowerGauge is a bar
@@ -75,36 +86,154 @@ struct TipPicker: View {
         CGFloat(min(max(metres / model.cueBallRadius, 0.1), 0.95))
     }
 
+    /// The picture's side on the big screens, handed in by the shot panel's layout (nil: the panel's own minimum).
+    var size: CGFloat? = nil
+    /// The millimetre figures' size on the big screens, points (the layout picks it, scaled with the text there).
+    var figureSize: CGFloat = 26
+
     var body: some View {
         if roomy {
-            // 0.7.10 strike: the large picture with the tip's height and side in millimetres beside it (plan stage 3
-            // item 1), in the same readout the fine controls use.
-            HStack(alignment: .center, spacing: 10) {
-                picture
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(verbatim: ShotPanel.tipReadout(model.activeTipUp, vertical: true))
-                    Text(verbatim: ShotPanel.tipReadout(model.activeTipSide, vertical: false))
-                }
-                .font(Theme.number)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .accessibilityHidden(true)   // the picture's own value says it
+            // Aiming panel redesign: the flat drawing, then its two millimetre figures under it, each printed once.
+            let reading = StrikeReading.current(model)
+            VStack(alignment: .leading, spacing: 10) {
+                flatPicture(size: max(120, size ?? 148), comparison: reading?.comparison)
+                millimetres(reading)
             }
         } else {
             picture
         }
     }
 
-    /// The picture's side, points. On a phone it grows with text size for easy touching but stops at 72 points: past
-    /// that it would crowd out the table. On the big screens (0.7.10 strike) it is at least 132 points, growing with
-    /// the text to 180, so the tip can be placed without care.
-    private var pictureSize: CGFloat {
-        roomy ? min(max(132, side * 132 / 52), 180) : min(max(44, side), 72)
+    /// The tip's height and side in millimetres under the big picture, typeable; after a shot the delivered figure
+    /// follows the planned one with an arrow, in yellow, when the stroke moved it.
+    @ViewBuilder
+    private func millimetres(_ reading: StrikeReading.Reading?) -> some View {
+        let c = reading?.comparison
+        let up = model.activeTipUp, side = model.activeTipSide
+        let deliveredUp = c.flatMap { $0.differs(.tipUp) ? $0.delivered.tipUp : nil }
+        let deliveredSide = c.flatMap { $0.differs(.tipSide) ? $0.delivered.tipSide : nil }
+        VStack(alignment: .leading, spacing: 6) {
+            TypeableFigure(model: model, kind: .tipUp, spokenLabel: StrikeWords.tipUpLabel(up),
+                           spokenValue: reading.map { StrikeSpoken.tile(.tipUp, $0, differs: deliveredUp != nil) }
+                               ?? StrikeSpoken.millimetres(up)) {
+                Readout(figure: StrikeWords.millimetresFigure(up), size: figureSize, role: .set,
+                        editable: StrikeEntry.Kind.tipUp.isOpen(model),
+                        trailing: StrikeWords.tipUpWord(deliveredUp ?? up),
+                        delivered: deliveredUp.map(StrikeWords.millimetresFigure))
+            }
+            TypeableFigure(model: model, kind: .tipSide, spokenLabel: StrikeWords.tipSideLabel(side),
+                           spokenValue: reading.map { StrikeSpoken.tile(.tipSide, $0, differs: deliveredSide != nil) }
+                               ?? StrikeSpoken.millimetres(side)) {
+                Readout(figure: StrikeWords.millimetresFigure(side), size: figureSize, role: .set,
+                        editable: StrikeEntry.Kind.tipSide.isOpen(model),
+                        trailing: StrikeWords.tipSideWord(deliveredSide ?? side),
+                        delivered: deliveredSide.map(StrikeWords.millimetresFigure))
+            }
+        }
     }
 
-    /// The chalked tip's drawn width, points: big enough to see under a fingertip's edge on the 52-point picture, and
-    /// a little bigger on the large one.
-    private var dot: CGFloat { roomy ? 20 : Self.dot }
+    /// The big screens' picture: a flat technical drawing of the cue ball to scale. Rings every 5 mm (10 and 20
+    /// labelled), a full crosshair, the dashed ring at the miscue limit, dotted leader lines from the axes to the
+    /// handle, a lesson's band, and the kit's handle. After a shot that moved the tip: a hollow cyan ring where it was
+    /// set, a yellow dot where it hit and a line between them.
+    private func flatPicture(size: CGFloat, comparison c: StrikeComparison?) -> some View {
+        let radius = size / 2
+        let limit = radius * share(model.tipLimit)
+        let ring = radius * share(model.miscueLimit)
+        // Points per metre on the ball's face.
+        let scale = radius / CGFloat(model.cueBallRadius)
+        let travel = model.tipLimit
+        func spot(up: Double, side: Double) -> CGPoint {
+            CGPoint(x: radius + CGFloat(side / travel) * limit, y: radius - CGFloat(up / travel) * limit)
+        }
+        let handle = spot(up: model.activeTipUp, side: model.activeTipSide)
+        let moved = c.map { $0.differs(.tipUp) || $0.differs(.tipSide) } ?? false
+        let hit = c.map { spot(up: $0.delivered.tipUp, side: $0.delivered.tipSide) } ?? handle
+        let accent = palette.accent, delta = palette.delta
+        let handleSize = max(22, size * 0.12)
+        return ZStack {
+            Canvas { ctx, _ in
+                let disc = Path(ellipseIn: CGRect(x: 0, y: 0, width: size, height: size))
+                // A soft grey shade, no gloss: lighter toward the upper left, as a flat drawing hints the light.
+                ctx.fill(disc, with: .radialGradient(Gradient(colors: [Color(white: 0.86), Color(white: 0.72)]),
+                                                     center: CGPoint(x: radius * 0.8, y: radius * 0.7),
+                                                     startRadius: 0, endRadius: radius * 1.25))
+                ctx.stroke(disc, with: .color(.black.opacity(0.35)), lineWidth: 1)
+                // Rings every 5 mm out to the ball's edge.
+                var mm = 5.0
+                while CGFloat(mm / 1000) * scale < radius - 1 {
+                    let r = CGFloat(mm / 1000) * scale
+                    ctx.stroke(Path(ellipseIn: CGRect(x: radius - r, y: radius - r, width: r * 2, height: r * 2)),
+                               with: .color(.black.opacity(0.13)), lineWidth: 1)
+                    mm += 5
+                }
+                // The full crosshair: where centre is.
+                var cross = Path()
+                cross.move(to: CGPoint(x: 0, y: radius)); cross.addLine(to: CGPoint(x: size, y: radius))
+                cross.move(to: CGPoint(x: radius, y: 0)); cross.addLine(to: CGPoint(x: radius, y: size))
+                ctx.stroke(cross, with: .color(.black.opacity(0.30)), lineWidth: 1)
+                // 10 and 20 mm labelled on the horizontal axis, both sides.
+                let labelSize = max(9, size * 0.05)
+                for value in [10.0, 20.0] {
+                    let r = CGFloat(value / 1000) * scale
+                    guard r < radius - labelSize else { continue }
+                    let text = Text(verbatim: StrikeWords.number(value, decimals: 0))
+                        .font(.system(size: labelSize, weight: .medium, design: .monospaced))
+                        .foregroundStyle(Color.black.opacity(0.55))
+                    ctx.draw(text, at: CGPoint(x: radius + r, y: radius - labelSize * 0.8), anchor: .center)
+                    ctx.draw(text, at: CGPoint(x: radius - r, y: radius - labelSize * 0.8), anchor: .center)
+                }
+                // The miscue ring: past it the tip slips.
+                ctx.stroke(Path(ellipseIn: CGRect(x: radius - ring, y: radius - ring, width: ring * 2, height: ring * 2)),
+                           with: .color(.black.opacity(0.55)), style: StrokeStyle(lineWidth: 1.2, dash: [4, 3]))
+                // Dotted leader lines from each axis to the handle, so its height and side read off the rings.
+                var leaders = Path()
+                leaders.move(to: CGPoint(x: handle.x, y: radius)); leaders.addLine(to: handle)
+                leaders.move(to: CGPoint(x: radius, y: handle.y)); leaders.addLine(to: handle)
+                ctx.stroke(leaders, with: .color(accent.opacity(0.9)),
+                           style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [0.1, 4]))
+                if moved {
+                    // Planned (hollow ring) to delivered (solid yellow dot).
+                    var line = Path()
+                    line.move(to: handle); line.addLine(to: hit)
+                    ctx.stroke(line, with: .color(delta), lineWidth: 1.5)
+                }
+            }
+            .frame(width: size, height: size)
+            // A lesson's target band: where on the cue ball the shot works, clipped to the reachable disc.
+            if let band = tipBand(radius: radius, limit: limit) {
+                Path(band)
+                    .fill(palette.accent.opacity(0.30 * (zones?.strength ?? 1)))
+                    .overlay { Path(band).stroke(palette.accent.opacity(0.9 * (zones?.strength ?? 1)), lineWidth: 1) }
+                    .clipShape(Circle().inset(by: radius - limit))
+                    .allowsHitTesting(false)
+            }
+            if moved {
+                Circle().strokeBorder(palette.accent, lineWidth: 2.5)
+                    .frame(width: handleSize, height: handleSize)
+                    .position(handle)
+                    .allowsHitTesting(false)
+                Circle().fill(palette.delta)
+                    .overlay(Circle().strokeBorder(Color.black.opacity(0.7), lineWidth: 1.5))
+                    .frame(width: handleSize * 0.7, height: handleSize * 0.7)
+                    .position(hit)
+                    .allowsHitTesting(false)
+            } else {
+                InstrumentHandle(diameter: handleSize).position(handle)
+            }
+        }
+        .frame(width: size, height: size)
+        .contentShape(Circle())
+        .gesture(tipDrag(radius: radius, limit: limit, dot: handleSize))
+        .modifier(TipPictureAccess(model: model, open: open, zones: zones, locked: !tipOpen))
+    }
+
+    /// The picture's side, points. On a phone it grows with text size for easy touching but stops at 72 points: past
+    /// that it would crowd out the table.
+    private var pictureSize: CGFloat { min(max(44, side), 72) }
+
+    /// The chalked tip's drawn width on the phone's small picture, points.
+    private var dot: CGFloat { Self.dot }
 
     @ViewBuilder private var picture: some View {
         let size = pictureSize
@@ -114,17 +243,18 @@ struct TipPicker: View {
         let up = model.activeTipUp / model.tipLimit
         let across = model.activeTipSide / model.tipLimit
         ZStack {
+            // Aiming panel redesign: the flat look (a soft grey shade, no gloss), as the big picture.
             Circle()
-                .fill(RadialGradient(colors: [Color(white: 1.0), Color(white: 0.80)], center: .init(x: 0.38, y: 0.32),
-                                     startRadius: 1, endRadius: radius * 1.3))
+                .fill(RadialGradient(colors: [Color(white: 0.86), Color(white: 0.72)], center: .init(x: 0.4, y: 0.35),
+                                     startRadius: 0, endRadius: radius * 1.25))
                 .overlay(Circle().strokeBorder(.black.opacity(0.35), lineWidth: 1))
             // Cross hairs through the middle: where "centre" is.
             Path { p in
-                p.move(to: CGPoint(x: radius - limit * 0.6, y: radius)); p.addLine(to: CGPoint(x: radius + limit * 0.6, y: radius))
-                p.move(to: CGPoint(x: radius, y: radius - limit * 0.6)); p.addLine(to: CGPoint(x: radius, y: radius + limit * 0.6))
+                p.move(to: CGPoint(x: 0, y: radius)); p.addLine(to: CGPoint(x: radius * 2, y: radius))
+                p.move(to: CGPoint(x: radius, y: 0)); p.addLine(to: CGPoint(x: radius, y: radius * 2))
             }
-            .stroke(.black.opacity(0.18), lineWidth: 1)
-            Circle().strokeBorder(.black.opacity(0.28), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+            .stroke(.black.opacity(0.25), lineWidth: 1)
+            Circle().strokeBorder(.black.opacity(0.45), style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
                 .frame(width: ring * 2, height: ring * 2)
             // A lesson's target band: where on the cue ball the shot works, clipped to the reachable disc.
             if let band = tipBand(radius: radius, limit: limit) {
@@ -134,16 +264,19 @@ struct TipPicker: View {
                     .clipShape(Circle().inset(by: radius - limit))
                     .allowsHitTesting(false)
             }
-            // The chalked tip. Drawn dark with a pale rim so it reads on the white ball in every appearance.
-            Circle()
-                .fill(palette.accent)
-                .overlay(Circle().strokeBorder(.black.opacity(0.7), lineWidth: 1.5))
-                .frame(width: dot, height: dot)
+            // The chalked tip: the instrument kit's handle (aiming panel redesign).
+            InstrumentHandle(diameter: dot)
                 .offset(x: CGFloat(across) * limit, y: CGFloat(-up) * limit)
         }
         .frame(width: size, height: size)
         .contentShape(Circle())
-        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+        .gesture(tipDrag(radius: radius, limit: limit, dot: dot))
+        .modifier(TipPictureAccess(model: model, open: open, zones: zones, locked: !tipOpen))
+    }
+
+    /// The drag on either picture: the touch's place relative to the middle, as a share of the reachable disc.
+    private func tipDrag(radius: CGFloat, limit: CGFloat, dot: CGFloat) -> some Gesture {
+        DragGesture(minimumDistance: 0, coordinateSpace: .local)
             .onChanged { value in
                 // Locked in this lesson step: the touch does nothing (the model would refuse the change too).
                 guard tipOpen else { return }
@@ -170,16 +303,7 @@ struct TipPicker: View {
                 // The dot is drawn `dot` points wide; in metres of tip travel, half of that is how far outside a band
                 // the dot's centre can be while the dot still visibly overlaps it.
                 settleInBand(tolerance: Double(dot / 2 / max(1, limit)) * model.tipLimit)
-            })
-        .accessibilityElement()
-        .accessibilityLabel("Cue tip position")
-        .accessibilityHint("Drag on the ball to place the tip. Or use the actions.")
-        .accessibilityAddTraits(.allowsDirectInteraction)
-        // Access stream hook (0.7.0 item 46): the spoken amount and band, fine steps, band-aware quick actions and
-        // Into the marked band, none while locked (TableAccessLayer.swift).
-        .modifier(TipAccessActions(model: model, open: open, zones: zones))
-        .help("Cue tip: drag to choose follow, draw or side")
-        .lockedForStep(!tipOpen)
+            }
     }
 
     /// True when at least one of the picture's two values may change in this step.
@@ -244,6 +368,27 @@ struct TipPicker: View {
     }
 }
 
+/// The tip picture's VoiceOver element, help and lock, shared by the big and the small picture.
+private struct TipPictureAccess: ViewModifier {
+    let model: ShowpieceModel
+    let open: ShotControls
+    let zones: LessonZones?
+    let locked: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .accessibilityElement()
+            .accessibilityLabel("Cue tip position")
+            .accessibilityHint("Drag on the ball to place the tip. Or use the actions.")
+            .accessibilityAddTraits(.allowsDirectInteraction)
+            // Access stream hook (0.7.0 item 46): the spoken amount and band, fine steps, band-aware quick actions and
+            // Into the marked band, none while locked (TableAccessLayer.swift).
+            .modifier(TipAccessActions(model: model, open: open, zones: zones))
+            .help("Cue tip: drag to choose follow, draw or side")
+            .lockedForStep(locked)
+    }
+}
+
 // MARK: Power
 
 struct PowerGauge: View {
@@ -278,10 +423,23 @@ struct PowerGauge: View {
     /// alone is familiar and the label would only take room from the panel.
     static let calmLabelShowings = 3
 
+    /// Aiming panel redesign, the big screens: the swing figure's size, points (the layout picks it), and whether the
+    /// "Swing" label sits on the figure's line (the Mac and the fold) or on its own line above it (the upright iPad).
+    var figureSize: CGFloat = 26
+    var labelInline = false
+
     var body: some View {
+        if roomy {
+            roomyBody
+        } else {
+            smallBody
+        }
+    }
+
+    /// The phone's and the small layouts' bar, unchanged.
+    @ViewBuilder private var smallBody: some View {
         let fraction = model.powerFraction
         let calm = calmFraction
-        let warm = model.activePower > model.strokeZones.calmTopPower
         VStack(spacing: 6) {
             HStack(alignment: .firstTextBaseline) {
                 Text("Power").font(Theme.label).foregroundStyle(.secondary)
@@ -388,6 +546,259 @@ struct PowerGauge: View {
         .frame(minHeight: 44)
         .onAppear { noteCalmMark() }
         .onChange(of: calm < 1) { noteCalmMark() }
+        .modifier(PowerAccess(gauge: self))
+    }
+
+    // MARK: The big screens' bar (aiming panel redesign)
+
+    /// The swing range the bar spans, metres per second: the swing of the soft end and of the hard end (the cue's top
+    /// swing), from the cue profile, as the typed entry's range is.
+    private var swingRange: ClosedRange<Double> {
+        let r = model.powerRange
+        return CueProfile.swing(forPower: r.lowerBound)...CueProfile.swing(forPower: r.upperBound)
+    }
+
+    /// A swing as a share of the bar.
+    private func swingFraction(_ swing: Double) -> CGFloat {
+        let r = swingRange
+        return CGFloat(min(max((swing - r.lowerBound) / max(0.0001, r.upperBound - r.lowerBound), 0), 1))
+    }
+
+    private var roomyBarHeightNow: CGFloat {
+        #if os(macOS)
+        return 40
+        #else
+        return 48
+        #endif
+    }
+
+    /// The Swing figure (typeable) with its zone word, the bar with its calm mark and label, and the m/s scale.
+    @ViewBuilder private var roomyBody: some View {
+        let reading = StrikeReading.current(model)
+        let c = reading?.comparison
+        let swing = CueProfile.swing(forPower: model.activePower)
+        let word = PowerWords.word(speed: model.cueInHand.launchSpeed(forPower: model.activePower), racked: model.racked)
+        VStack(alignment: .leading, spacing: 6) {
+            Group {
+                if labelInline {
+                    HStack(alignment: .firstTextBaseline, spacing: 10) {
+                        swingLabel
+                        swingFigure(swing, reading)
+                        zoneWords(word, c)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 2) {
+                        swingLabel
+                        HStack(alignment: .firstTextBaseline, spacing: 18) {
+                            swingFigure(swing, reading)
+                            zoneWords(word, c)
+                        }
+                    }
+                }
+            }
+            .lineLimit(1)
+            VStack(alignment: .leading, spacing: 4) {
+                // Upright iPad: the calm label on its own line over the bar; Mac and fold: inside the hatch.
+                if !labelInline { calmLabelRow }
+                roomyBar(delivered: c.flatMap { $0.differs(.swing) ? swing + ($0.delivered.swing - $0.planned.swing) : nil })
+                    .overlay(alignment: .leading) { if labelInline { calmLabelInside } }
+                scale
+            }
+            .modifier(PowerAccess(gauge: self))
+        }
+        .onAppear { noteCalmMark() }
+        .onChange(of: calmFraction < 1) { noteCalmMark() }
+    }
+
+    private var swingLabel: some View {
+        Text(verbatim: StrikeWords.swingLabel)
+            .font(.system(size: max(13, figureSize * 0.55), weight: .semibold))
+            .foregroundStyle(.secondary)
+    }
+
+    private func swingFigure(_ swing: Double, _ reading: StrikeReading.Reading?) -> some View {
+        let moved = reading?.comparison?.differs(.swing) == true
+        return TypeableFigure(model: model, kind: .swing, spokenLabel: StrikeWords.swingLabel,
+                              spokenValue: reading.map { StrikeSpoken.tile(.swing, $0, differs: moved) }
+                                  ?? StrikeSpoken.speed(swing)) {
+            FigureLine(figure: StrikeWords.speedFigure(swing), size: figureSize, role: .set,
+                       editable: StrikeEntry.Kind.swing.isOpen(model))
+                .padding(.bottom, 4)
+        }
+    }
+
+    /// The zone word ("firm"), and after a shot "as planned" or the delta chip.
+    @ViewBuilder private func zoneWords(_ word: String, _ c: StrikeComparison?) -> some View {
+        Text(verbatim: c == nil || c?.differs(.swing) == true ? word : word + " · " + StrikeWords.asPlanned)
+            .font(.system(size: max(13, figureSize * 0.55)))
+            .foregroundStyle(.secondary)
+            .layoutPriority(-1)
+        if let c, c.differs(.swing) {
+            DeltaChip(text: StrikeWords.deltaChip(StrikeWords.signed(c.delivered.swing - c.planned.swing, decimals: 2),
+                                                  planned: StrikeWords.number(c.planned.swing, decimals: 2)))
+        }
+    }
+
+    /// The calm label inside the hatch past the mark (the Mac and the fold, where height is short); left out when the
+    /// hatch is narrower than the words.
+    private var calmLabelInside: some View {
+        GeometryReader { geo in
+            let calm = calmFraction
+            let room = geo.size.width * (1 - calm) - 24
+            if labelsCalm, calm < 1, !typeSize.isAccessibilitySize {
+                ViewThatFits(in: .horizontal) {
+                    Text(verbatim: StrikeWords.calmLimit(model.strokeZones.calmTopSwing))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .fixedSize()
+                    Color.clear.frame(width: 0)
+                }
+                .frame(width: max(0, room), alignment: .leading)
+                .frame(maxHeight: .infinity)
+                .offset(x: geo.size.width * calm + 12)
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    /// "calm limit 3.5 m/s" over the bar, starting at the mark, while this showing labels it (the count is unchanged:
+    /// the first few showings, calmLabelShowings); otherwise an empty line of the same height so the bar never moves.
+    private var calmLabelRow: some View {
+        GeometryReader { geo in
+            let calm = calmFraction
+            let barWidth = geo.size.width
+            if labelsCalm, calm < 1, !typeSize.isAccessibilitySize {
+                Text(verbatim: StrikeWords.calmLimit(model.strokeZones.calmTopSwing))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .fixedSize()
+                    .alignmentGuide(.leading) { d in
+                        // Starts just past the mark, slid back inside the bar if it would run off its end.
+                        -min(barWidth * calm + 8, max(0, barWidth - d.width))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .frame(height: 18)
+        .accessibilityHidden(true)
+    }
+
+    /// The bar: the track, the hatch past the calm mark, the cyan fill, a lesson's band, the calm mark, the delivered
+    /// tick after a shot, and the white handle at the fill's end. Dragged anywhere to set the swing.
+    private func roomyBar(delivered: Double?) -> some View {
+        let height = roomyBarHeightNow
+        let fraction = CGFloat(model.powerFraction)
+        let calm = CGFloat(calmFraction)
+        return GeometryReader { geo in
+            let w = geo.size.width
+            ZStack(alignment: .leading) {
+                Capsule().fill(Color.white.opacity(0.07))
+                // Past the calm mark: a quiet grey hatch (a harder swing drifts more there).
+                if calm < 1 {
+                    Canvas { ctx, size in
+                        var stripes = Path()
+                        var x = -size.height
+                        while x < size.width {
+                            stripes.move(to: CGPoint(x: x, y: size.height)); stripes.addLine(to: CGPoint(x: x + size.height, y: 0))
+                            x += 9
+                        }
+                        ctx.stroke(stripes, with: .color(.white.opacity(0.10)), lineWidth: 1.5)
+                    }
+                    .frame(width: w * (1 - calm), height: height)
+                    .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0,
+                                                      bottomTrailingRadius: height / 2, topTrailingRadius: height / 2))
+                    .offset(x: w * calm)
+                    .allowsHitTesting(false)
+                }
+                Capsule()
+                    .fill(palette.accent)
+                    .frame(width: max(height, w * fraction))
+                // A lesson's target band: the stretch of the bar where the shot works.
+                if let band = zones?.power {
+                    let lo = powerFraction(band.lowerBound), hi = powerFraction(band.upperBound)
+                    RoundedRectangle(cornerRadius: 4)
+                        .strokeBorder(palette.paper.opacity(0.95 * (zones?.strength ?? 1)), lineWidth: 1.5)
+                        .background(RoundedRectangle(cornerRadius: 4).fill(palette.paper.opacity(0.25 * (zones?.strength ?? 1))))
+                        .frame(width: max(4, w * (hi - lo)), height: height + 6)
+                        .offset(x: w * lo)
+                        .allowsHitTesting(false)
+                }
+                if calm < 1 {
+                    Rectangle()
+                        .fill(palette.paper.opacity(0.85))
+                        .frame(width: 2, height: height + 10)
+                        .offset(x: w * calm - 1)
+                        .allowsHitTesting(false)
+                }
+                if let delivered {
+                    // Where the stroke's swing landed, in yellow, after a shot.
+                    Rectangle()
+                        .fill(palette.delta)
+                        .frame(width: 3, height: height + 8)
+                        .offset(x: w * swingFraction(delivered) - 1.5)
+                        .allowsHitTesting(false)
+                }
+                InstrumentHandle(diameter: height * 0.9, style: .paper)
+                    .position(x: min(max(w * fraction - height / 2, height / 2), w - height / 2), y: height / 2)
+            }
+            .frame(height: height)
+            .contentShape(Rectangle().inset(by: -10))
+            .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+                guard open.contains(.power) else { return }
+                model.powerFraction = Double(value.location.x / max(1, w))
+            })
+        }
+        .frame(height: height)
+    }
+
+    /// The whole-number m/s scale under the bar, from the soft end to the cue's top swing, the unit after the last.
+    private var scale: some View {
+        let r = swingRange
+        let marks = Array(Int(r.lowerBound.rounded(.up))...max(Int(r.lowerBound.rounded(.up)), Int(r.upperBound.rounded(.down))))
+        return GeometryReader { geo in
+            ZStack(alignment: .topLeading) {
+                ForEach(marks, id: \.self) { n in
+                    let scaleWidth = geo.size.width
+                    let x = scaleWidth * swingFraction(Double(n))
+                    let last = n == marks.last
+                    VStack(spacing: 2) {
+                        Rectangle().fill(Color.secondary.opacity(0.7)).frame(width: 1, height: 6)
+                        Text(verbatim: last ? "\(StrikeWords.number(Double(n), decimals: 0)) \(UnitSymbol.shown("m/s"))"
+                                            : StrikeWords.number(Double(n), decimals: 0))
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                            .fixedSize()
+                    }
+                    // Centred on its mark; the first and last held inside the bar's width.
+                    .alignmentGuide(.leading) { d in
+                        -min(max(x - d.width / 2, 0), max(0, scaleWidth - d.width))
+                    }
+                }
+            }
+        }
+        .frame(height: 20)
+        .accessibilityHidden(true)
+    }
+}
+
+/// The power bar's VoiceOver element, help and lock, shared by the small and the big bar.
+private struct PowerAccess: ViewModifier {
+    let gauge: PowerGauge
+
+    func body(content: Content) -> some View {
+        gauge.accessible(content)
+    }
+}
+
+extension PowerGauge {
+    /// One adjustable VoiceOver element: the swing in a word and in metres per second, and the lesson's band.
+    fileprivate func accessible<Content: View>(_ content: Content) -> some View {
+        let fraction = model.powerFraction
+        let warm = model.activePower > model.strokeZones.calmTopPower
+        return content
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Power")
         // The lesson's power band, when one is marked, after the value (access stream hook, 0.7.0 item 46).
