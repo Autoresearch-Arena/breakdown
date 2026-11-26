@@ -1,5 +1,7 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: a "Shot of the day" row above Play, built from
+//          App/Daily/DailyMenuRow.swift's pieces, one marked line.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
 //          an Achievements row after Tables, with a mark of how many are earned whose symbol changes while some are
 //          new, opening the Achievements page; each marked "// 0.7.7 achievements:".)
@@ -348,6 +350,8 @@ struct TitleScreen: View {
                 }
                 .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
+            // 0.7.10 daily: Shot of the day, above Play; its words, streak mark and action are DailyMenuRow's.
+            MenuRow(verbatimTitle: DailyMenuRow.title, verbatimLine: DailyMenuRow.line(model), symbol: DailyMenuRow.symbol, mark: DailyMenuRow.mark(model).map { MenuRow.Mark(symbol: $0.symbol, text: $0.text, spoken: $0.spoken) }) { DailyMenuRow.open(model); onPlay() }
             MenuRow(verbatimTitle: Self.playTitle,
                     verbatimLine: String(localized: "Four games against the computer, or practise on your own."),
                     symbol: "circle.grid.cross", prominent: playHighlighted) { state.playListOpen = true }

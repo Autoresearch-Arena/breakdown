@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the names, sentences and hints of the shot of the
+//          day's three achievements; the new lines are in localization/pending/v0710-daily.json.)
 // PURPOSE: Every word of 0.7.7's achievements (plans/23-Nov-2026-achievements-plan.md, new file 2), in the
 //          HighlightWords pattern: each achievement's name, its one plain sentence about the physics, and the hint on how
 //          to earn it; the formatted lines (the date it was earned in the game's own number locale, "4 of 6", the menu's
@@ -65,6 +67,13 @@ enum AchievementWords {
         case Achievements.everyTrick: return String(localized: "Every trick shot")
         case Achievements.everyEscape:
             return String(localized: "Every way out", comment: "Achievement name: a medal won on every situation in Behind the 8-Ball")
+        // 0.7.10 daily: the shot of the day's three.
+        case Achievements.dailyStreakWeek:
+            return String(localized: "Seven days running", comment: "Achievement name: the shot of the day made seven days in a row")
+        case Achievements.dailyStreakMonth:
+            return String(localized: "Thirty days running", comment: "Achievement name: the shot of the day made thirty days in a row")
+        case Achievements.dailyFirstTry:
+            return String(localized: "First try", comment: "Achievement name: the shot of the day made on the first of its five tries")
         // Only an id that is not in the catalogue lands here (a trick shot or lesson removed in a later version whose
         // record is still stored); the catalogue's own ids are all named above.
         default: return a.id
@@ -91,6 +100,10 @@ enum AchievementWords {
         case Achievements.everyLesson: return String(localized: "You passed every lesson.")
         case Achievements.everyTrick: return String(localized: "You made every trick shot.")
         case Achievements.everyEscape: return String(localized: "You won a medal on every spot.")
+        // 0.7.10 daily: the shot of the day's three.
+        case Achievements.dailyStreakWeek: return String(localized: "You made the shot of the day seven days in a row.")
+        case Achievements.dailyStreakMonth: return String(localized: "You made the shot of the day thirty days in a row.")
+        case Achievements.dailyFirstTry: return String(localized: "You made the shot of the day on your first try.")
         default: return ""
         }
     }
@@ -129,6 +142,10 @@ enum AchievementWords {
         case Achievements.everyLesson: return String(localized: "Pass every lesson in Learn.")
         case Achievements.everyTrick: return String(localized: "Make every trick shot.")
         case Achievements.everyEscape: return String(localized: "Win a medal on each spot in Behind the 8-Ball.")
+        // 0.7.10 daily: the shot of the day's three.
+        case Achievements.dailyStreakWeek: return String(localized: "Make the shot of the day seven days in a row.")
+        case Achievements.dailyStreakMonth: return String(localized: "Make the shot of the day thirty days in a row.")
+        case Achievements.dailyFirstTry: return String(localized: "Make the shot of the day on your first try.")
         default: return ""
         }
     }

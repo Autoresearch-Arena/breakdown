@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: AchievementProgress carries the shot of the day's best
+//          streak and whether a day was made on its first try, and earns the three daily achievements from them.)
 // PURPOSE: Which achievements a recorded shot earns, and which collections the stored progress completes
 //          (plans/23-Nov-2026-achievements-plan.md, new file 4). Pure: no model, no UserDefaults, safe in tests.
 //          - AchievementJudge.shotAchievements reads one shot: ShotHighlightJudge.detect once (its moments map onto the
@@ -213,6 +215,9 @@ struct AchievementProgress: Equatable {
     /// TableKind and PlaySurface raw values a shot was struck on.
     var tablesPlayed: Set<String> = []
     var surfacesPlayed: Set<String> = []
+    // 0.7.10 daily: the shot of the day's longest streak and whether any day was made on its first try (DailyRecord).
+    var dailyBestStreak = 0
+    var dailyFirstTry = false
 
     /// Every collection achievement this progress has earned. Counts come from the content lists, never written in.
     static func earned(_ p: AchievementProgress) -> Set<String> {
@@ -242,6 +247,10 @@ struct AchievementProgress: Equatable {
         if PlaySurface.allCases.allSatisfy({ p.surfacesPlayed.contains($0.rawValue) }) {
             out.insert(Achievements.everySurface)
         }
+        // 0.7.10 daily: the shot of the day's streaks and first-try make.
+        if p.dailyBestStreak >= Achievements.dailyWeekDays { out.insert(Achievements.dailyStreakWeek) }
+        if p.dailyBestStreak >= Achievements.dailyMonthDays { out.insert(Achievements.dailyStreakMonth) }
+        if p.dailyFirstTry { out.insert(Achievements.dailyFirstTry) }
         return out
     }
 

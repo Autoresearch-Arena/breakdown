@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily, plans/25-Nov-2026-shot-of-the-day-plan.md stage 2
+//          item 6: a sixth group, Shot of the day, with three achievements: a streak of seven days, a streak of thirty,
+//          and a make on the first try. Their ids are permanent like every other.)
 // PURPOSE: The achievements catalogue for 0.7.7 (plans/23-Nov-2026-achievements-plan.md, new file 1). Every achievement
 //          the game can award, in the order the list shows them, in five groups: Shots (seventeen physically interesting
 //          things a single stroke can do), Games (beating the computer at each level, a shot on every table and on every
@@ -21,7 +24,8 @@ import Foundation
 
 /// The five sections of the achievements list, in the order they show.
 enum AchievementGroup: String, CaseIterable, Sendable {
-    case shots, games, lessons, tricks, escapes
+    // 0.7.10 daily: the shot of the day's group, after the trick shots.
+    case shots, games, lessons, tricks, daily, escapes
 
     /// The section's heading. "Lessons", "Trick shots" and "Behind the 8-Ball" are the menu's own, already translated.
     var title: String {
@@ -34,6 +38,8 @@ enum AchievementGroup: String, CaseIterable, Sendable {
                           comment: "Achievements list section: achievements for games against the computer, tables and playing surfaces")
         case .lessons: return String(localized: "Lessons")
         case .tricks: return String(localized: "Trick shots")
+        // 0.7.10 daily: the menu row's own name, the same key.
+        case .daily: return String(localized: "Shot of the day")
         case .escapes: return String(localized: "Behind the 8-Ball")
         }
     }
@@ -95,6 +101,13 @@ enum Achievements {
     static let everyLesson = "every-lesson"
     static let everyTrick = "every-trick"
     static let everyEscape = "every-escape"
+    // 0.7.10 daily: the shot of the day's three (permanent ids, as all the others).
+    static let dailyStreakWeek = "daily-streak-7"
+    static let dailyStreakMonth = "daily-streak-30"
+    static let dailyFirstTry = "daily-first-try"
+    /// The streak lengths the two streak achievements ask for, in days.
+    static let dailyWeekDays = 7
+    static let dailyMonthDays = 30
 
     static func lessonAchievementID(_ lessonID: String) -> String { lessonPrefix + lessonID }
     static func trickAchievementID(_ trickID: String) -> String { trickPrefix + trickID }
@@ -174,6 +187,10 @@ enum Achievements {
                                    progress: .none))
         }
         out.append(Achievement(id: everyTrick, group: .tricks, symbol: "wand.and.sparkles", progress: .tricks))
+        // 0.7.10 daily: one thing done once each, so no progress picture.
+        out.append(Achievement(id: dailyStreakWeek, group: .daily, symbol: "flame", progress: .none))
+        out.append(Achievement(id: dailyStreakMonth, group: .daily, symbol: "flame.fill", progress: .none))
+        out.append(Achievement(id: dailyFirstTry, group: .daily, symbol: "1.circle", progress: .none))
         out.append(Achievement(id: everyEscape, group: .escapes, symbol: "8.circle.fill", progress: .escapes))
         return out
     }

@@ -1,5 +1,6 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the status names the shot of the day, not Trick shots.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the top
 //          bar's title reads a frozen hit's status line for the length of the freeze.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
@@ -384,6 +385,7 @@ private struct NotebookTopBar: View {
         if let words = model.bulletTime.statusWords { return words }
         if model.stage != .explore && model.stage != .lead { return model.stageTitle }
         if let match = model.match { return NotebookWords.gameName(match.rules.kind) }
+        if DailyMode.showing(model) { return DailyShot.title }  // 0.7.10 daily: played as a trick shot, named as itself.
         if model.trickMode.isActive { return String(localized: "Trick shots") }
         if model.lessonMode.isActive { return String(localized: "Lessons") }
         if model.eightBallMode.isActive { return String(localized: "Behind the 8-Ball") }

@@ -7,6 +7,8 @@
 //          shot is about is a stop; before, only the push into the rack was, and the called ball went in unheld.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md T5: an
 //          unknown id that is a saved shot of the player's own gets its moments from OwnShotSignature.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: a shot of the day built from a trick shot holds that
+//          trick's own moments; its id is mapped back first, DailyShot.sourceTrickID.)
 // PURPOSE: For each authored trick shot, the moments its guided Lens replay must stop on (plans/22-Nov-2026-v074-
 //          glow-up-plan.md, F4 and stream lens-pacing): the jump's take-off and landing, the end of the masse's bend,
 //          the throw contact and so on, found in whichever recording of that shot is on screen (the answer or the
@@ -27,6 +29,8 @@ enum TrickSignature {
     /// not in this recording (a try that missed, or a beat too slow to caption), the cue ball's first hit stands in, so
     /// the replay still has its headline; empty only for an unknown id or a recording in which nothing was captioned.
     static func events(forTrick id: String, in timeline: Timeline, captions: [Caption]) -> [Int] {
+        // 0.7.10 daily: "daily-stop-dead" holds Stop Dead's moments; any other id is unchanged.
+        let id = DailyShot.sourceTrickID(id)
         let m = ShotMoments(timeline: timeline, captions: captions)
         let cue = cueBall
         let first = m.firstContact(of: cue)

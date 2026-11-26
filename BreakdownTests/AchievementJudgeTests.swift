@@ -8,6 +8,8 @@
 //          run of the rack starts, continues, ends and is earned as the plan says; the collections are earned exactly
 //          when their content lists are complete (counts read from the lists, never written here); and the drawing for
 //          any striking ball matches the trick list's drawing for ball 0.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the catalogue count includes the three shot of the day
+//          achievements; the daily progress earns them exactly at seven days, thirty days and a first-try make.)
 // SRP/DRY check: Pass - checks only. Solving reuses TestShots (EightBallJudge.solve and the break input), the reading of
 //          the shot is ShotFacts', the captions CaptionEngine's; the rules are the judge's, not restated here.
 @testable import Breakdown
@@ -221,13 +223,30 @@ final class AchievementJudgeTests: XCTestCase {
         XCTAssertTrue(AchievementProgress.earned(p).contains(Achievements.everyEscape))
     }
 
+    // 0.7.10 daily: the streak and first-try achievements, from the progress alone.
+    func testTheDailyAchievementsAreEarnedFromTheRecord() {
+        var p = AchievementProgress()
+        p.dailyBestStreak = Achievements.dailyWeekDays - 1
+        XCTAssertFalse(AchievementProgress.earned(p).contains(Achievements.dailyStreakWeek))
+        p.dailyBestStreak = Achievements.dailyWeekDays
+        XCTAssertTrue(AchievementProgress.earned(p).contains(Achievements.dailyStreakWeek))
+        XCTAssertFalse(AchievementProgress.earned(p).contains(Achievements.dailyStreakMonth))
+        p.dailyBestStreak = Achievements.dailyMonthDays
+        XCTAssertTrue(AchievementProgress.earned(p).contains(Achievements.dailyStreakMonth))
+        XCTAssertFalse(AchievementProgress.earned(p).contains(Achievements.dailyFirstTry))
+        p.dailyFirstTry = true
+        XCTAssertTrue(AchievementProgress.earned(p).contains(Achievements.dailyFirstTry))
+    }
+
     // MARK: The catalogue and the drawing
 
     func testTheCatalogueIsBuiltFromTheContent() {
         let ids = Achievements.all.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count, "duplicate achievement ids")
         XCTAssertEqual(ids.count, Achievements.shotIDs.count + ComputerLevel.allCases.count + 2 + Lessons.all.count + 1
-                       + TrickShots.all.filter { !$0.pending }.count + 1 + 1)
+                       + TrickShots.all.filter { !$0.pending }.count + 1 + 1
+                       // 0.7.10 daily: the shot of the day's two streaks and its first-try make.
+                       + 3)
         for a in Achievements.all {
             XCTAssertFalse(a.name.isEmpty, a.id)
             XCTAssertFalse(a.sentence.isEmpty, a.id)

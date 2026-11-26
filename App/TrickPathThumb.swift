@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: an optional mark, a ring with a centre dot on the bed,
+//          for the shot of the day's share picture (DailyShare), which draws the start with no path at all.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 polish P4: each drawing is a small table, not a thin outline:
 //          the bed filled with the cloth's green at low brightness, the six pockets as dark dots, the start balls as
 //          filled discs in their own colours (the cue ball white) and the paths a little thicker. Same size, same
@@ -190,6 +192,8 @@ final class TrickPathCache {
 /// The small drawing of one answer (about 96 by 48 points in a list row; full width at accessibility text sizes).
 struct TrickPathThumb: View {
     let path: TrickPath
+    // 0.7.10 daily: where the white ball should stop (the shot of the day's share picture); nil draws none.
+    var mark: Vec2? = nil
     @Environment(\.palette) private var palette
 
     /// The bed: the table cloth's green (SurfaceTextures.clothImage's base, 0.045, 0.40, 0.31) at a little over half its
@@ -266,6 +270,15 @@ struct TrickPathThumb: View {
             ctx.fill(disc, with: .color(Self.colour(of: b.ball)))
             let darkBall = b.ball == 8
             ctx.stroke(disc, with: .color(darkBall ? palette.paper.opacity(0.7) : Color.black.opacity(0.55)), lineWidth: 0.6)
+        }
+        // 0.7.10 daily: the mark, a ring a little wider than a ball with a dot at its centre, in the accent colour.
+        if let mark {
+            let c = at(mark)
+            let ring = r * 1.6
+            ctx.stroke(Path(ellipseIn: CGRect(x: c.x - ring, y: c.y - ring, width: 2 * ring, height: 2 * ring)),
+                       with: .color(palette.accent), style: StrokeStyle(lineWidth: 1.2, dash: [3, 2]))
+            ctx.fill(Path(ellipseIn: CGRect(x: c.x - 1.6, y: c.y - 1.6, width: 3.2, height: 3.2)),
+                     with: .color(palette.accent))
         }
     }
 }

@@ -15,6 +15,8 @@
 //          item 6: a report, after the pass and fail lines, of each raised-cue trick answer replayed at every offered
 //          cue angle, beside the run AuthoredTricks.cueAngleBands records for the judge; it never changes the exit
 //          status.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily, plans/25-Nov-2026-shot-of-the-day-plan.md stage 1
+//          item 8: the shot of the day bank is played too (DailyVerify.swift), its failures counted in the exit status.)
 // PURPOSE: "BreakProbe verify [generation]": plays every authored trick shot, lesson and Behind the 8-Ball escape the app
 //          carries, exactly as authored, on the chosen physics generation (default: the solver's default, the one the
 //          app ships), and prints one PASS or FAIL line each, with the reason for a failure. Returns whether all passed;
@@ -193,8 +195,11 @@ func runContentVerify(generation: Int) -> Bool {
         if let why { failures += 1; print("FAIL eightball \(f.situation) \(f.escape): \(why)") }
         else { print("PASS eightball \(f.situation) \(f.escape)") }
     }
+    // 0.7.10 daily: the shot of the day bank, each entry on its own surface, and the bank's own order (DailyVerify).
+    let dailyFailures = runDailyVerify(generation: generation)
+    failures += dailyFailures
     reportRaisedCueAngles(parameters: parameters)
-    let total = authoredTricks.count + ebFinal.count + authoredLessons.count + 2
+    let total = authoredTricks.count + ebFinal.count + authoredLessons.count + 2 + AuthoredDaily.all.count
     print(String(format: "== %d of %d authored shots pass on generation %d (%.1f s)", total - failures, total,
                  generation, Date().timeIntervalSince(start)))
     return failures == 0

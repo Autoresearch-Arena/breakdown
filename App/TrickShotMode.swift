@@ -1,4 +1,8 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily, plans/25-Nov-2026-shot-of-the-day-plan.md stage 2: a
+//          gate (TrickShotGate, set by DailyMode) is asked where a shot of the day differs: Watch it before the day is
+//          finished, Your turn and Try again after it, the starting settings, keeping progress, each judged try, and
+//          the shot leaving the table. Each use is marked "// 0.7.10 daily:"; with no gate nothing changes.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md T2 to
 //          T4: Watch it strikes a saved shot's kept stroke exactly (OwnShotProof.arm); Next shot after a saved shot
 //          walks the shelf; a saved shot's make is kept on the shelf, never in doneIDs.)
@@ -102,6 +106,9 @@ final class TrickShotMode {
     /// next, end and watch, so it is always the player's own choice for the try in front of them.
     var showAnswerPath = false
 
+    // 0.7.10 daily: the mode that put a shot of the day on the table (DailyMode), asked where that shot differs.
+    @ObservationIgnored weak var gate: (any TrickShotGate)?
+
     /// The player's own settings per shot, kept across watching the answer, so Your turn never hands them the answer.
     @ObservationIgnored private var playerSettings: [String: TrickSettings] = [:]
     /// The recording already judged, so each attempt is judged once.
@@ -162,6 +169,8 @@ final class TrickShotMode {
     /// Put a trick shot on the table, ready to watch or try. Closes the menu and the list.
     func begin(_ shot: TrickShot) {
         guard !shot.pending else { return }
+        // 0.7.10 daily: the shot on the table is leaving it for another (a shot of the day gives the surface back).
+        if let old = current, old.id != shot.id { gate?.left(old) }
         current = shot
         listOpen = false
         showAnswerPath = false
@@ -186,6 +195,8 @@ final class TrickShotMode {
     /// recording); the model then holds the clock at the strike while the ride mounts (0.7.6 stream ride).
     func watch() {
         guard let shot = current else { return }
+        // 0.7.10 daily: a shot of the day's answer is hidden until the day is finished.
+        guard gate?.mayWatch(shot) ?? true else { return }
         rememberPlayerSettings()
         showAnswerPath = false
         loadStart(with: shot.solution)
@@ -202,6 +213,8 @@ final class TrickShotMode {
     /// Your turn: the table back at the start with the player's own settings, aiming open.
     func yourTurn() {
         guard let shot = current else { return }
+        // 0.7.10 daily: no more tries once a shot of the day is finished.
+        guard gate?.mayTry(shot) ?? true else { return }
         ride(false)
         loadStart(with: playerSettings[shot.id] ?? defaultSettings(for: shot))
         if playerSettings[shot.id] == nil, !shot.isBreak { model.aimAtNearestBall() }
@@ -223,7 +236,8 @@ final class TrickShotMode {
 
     /// Try again after an attempt: same start, same settings, the last try kept as a ghost (the model's own retry).
     func tryAgain() {
-        guard current != nil else { return }
+        // 0.7.10 daily: no more tries once a shot of the day is finished.
+        guard let shot = current, gate?.mayTry(shot) ?? true else { return }
         if model.canTryAgain, let attempt = model.currentAttempt, startsAtTrick(attempt) {
             model.tryAgain()
             phase = .aiming
@@ -236,6 +250,8 @@ final class TrickShotMode {
     /// The next shot in the list that is ready to play, or the list itself after the last one.
     func next() {
         guard let shot = current else { listOpen = true; return }
+        // 0.7.10 daily: a shot of the day is not in the list; there is no next one until tomorrow.
+        if gate?.keepsProgress(shot) == false { return }
         // 0.7.7 make-it-again: a saved shot of the player's own walks the shelf (newest first), not the authored list.
         if OwnShot.isOwnID(shot.id) {
             if let n = OwnShotShelf.shared.next(after: shot.id) { OwnShotShelf.shared.play(n, model: model) } else { listOpen = true }
@@ -251,6 +267,8 @@ final class TrickShotMode {
 
     /// Leave trick-shot mode (free play from the menu).
     func end() {
+        // 0.7.10 daily: the shot on the table is leaving it (a shot of the day gives the surface back).
+        if let old = current { gate?.left(old) }
         ride(false)
         current = nil
         phase = .off
@@ -310,6 +328,8 @@ final class TrickShotMode {
             phase = .judged(verdict)
             // The card offers Try again; the panel closes so the table has the room while the verdict is read.
             requestAiming(false)
+            // 0.7.10 daily: a shot of the day counts the try (its record, its score) before the make is marked.
+            gate?.judged(shot, attempt: attempt, verdict: verdict)
             if verdict.made { markDone(shot) }
         default:
             break
@@ -333,7 +353,9 @@ final class TrickShotMode {
     /// Where a player starts before trying anything: straight at the head ball for the break, otherwise a medium
     /// stroke through the middle of the cue ball (the aim is then pointed at the nearest ball).
     private func defaultSettings(for shot: TrickShot) -> TrickSettings {
-        shot.isBreak ? TrickSettings(aim: 0, power: 10, tipUp: 0, tipSide: 0)
+        // 0.7.10 daily: a shot of the day starts from a plain stroke at its own cue angle.
+        if let s = gate?.startSettings(for: shot) { return s }
+        return shot.isBreak ? TrickSettings(aim: 0, power: 10, tipUp: 0, tipSide: 0)
                      : TrickSettings(aim: 0, power: 3, tipUp: 0, tipSide: 0)
     }
 
@@ -379,6 +401,8 @@ final class TrickShotMode {
     }
 
     private func markDone(_ shot: TrickShot) {
+        // 0.7.10 daily: a shot of the day's make glows and sounds, but is the daily record's, never the trick list's.
+        if gate?.keepsProgress(shot) == false { celebrations += 1; return }
         // 0.7.7 make-it-again: a saved shot's make is kept on the shelf, never in doneIDs (the authored progress).
         if OwnShot.isOwnID(shot.id) { celebrations += 1; OwnShotShelf.shared.noteMade(id: shot.id); return }
         celebrations += 1
