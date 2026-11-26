@@ -158,6 +158,10 @@ final class DailyMode: TrickShotGate {
         // Through the model's own surface change, so the Surface menu, the 3D cloth and the solver agree. Nothing is
         // re-solved: the table is still (loadTrickLayout solves a zero-speed shot).
         model.setSurface(s.surface)
+        // 0.7.10 coordinator: setSurface saves the surface as the player's own for the next launch. The shot's surface
+        // is not theirs, so the saved one stays theirs; quitting mid-shot no longer starts the next launch on the
+        // daily's ice or sand.
+        if let before = surfaceBefore { UserDefaults.standard.set(before.rawValue, forKey: PlaySurface.storageKey) }
     }
 
     /// Your turn on the shot on the table (the card's Take your shot).
