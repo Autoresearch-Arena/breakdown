@@ -11,6 +11,9 @@
 //          mark on the cloth: a thin ring just outside the outer pins and a soft disc under each pin, a translucent
 //          lightening of whatever surface is down. Visual only: pins, positions, radii, heights and every parameter are
 //          as they were, so every five-pin shot solves exactly as before.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: the solver numbers (size, balls, posts, pins, holes,
+//          start) moved unchanged to the package, BreakdownAuthored/AuthoredTables.swift (AuthoredTables.FivePin), and are read
+//          from there, so BreakProbe can solve and check a shot of the day on this table; looks and props stay here.)
 // PURPOSE: Five-pin billiards (Italian "cinque birilli"): a carom table with no
 //          pockets, five small turned pins standing in a cross (the "castle") on the centre spot, four white and the
 //          red one in the middle, two cue balls (white and yellow) and a red object ball. A player strikes their own
@@ -48,6 +51,7 @@
 //          the dispatch in TableKind.swift, the shared prop helpers (load, dress, plain pins) in TableProps.swift; the
 //          pin's shape lives in the Blender script, whose PIN_HEIGHT and SWIFT_CONTACT_R must equal pinHeight and
 //          pinContactRadius here. The castle mark's flat mesh is built with TableMeshes' MeshBuilder (read, not copied).
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
@@ -56,12 +60,17 @@ import Foundation
 import RealityKit
 
 enum FivePinTable: TableDefinition {
+    // 0.7.10 bank: every solver number below is read from the package (BreakdownAuthored, AuthoredTables.FivePin),
+    // where it moved unchanged with its reasons, so BreakProbe solves and checks a shot of the day on this table with
+    // the very same numbers. This file keeps the looks, the castle mark and the props.
+    private typealias Numbers = AuthoredTables.FivePin
+
     /// Playing surface between the cushion noses: 2.84 x 1.42 m.
-    static let tableSize = (length: 2.84, width: 1.42)
+    static let tableSize = Numbers.size
     /// 61.5 mm carom balls.
-    static let ballRadius = 0.0615 / 2
+    static let ballRadius = Numbers.ballRadius
     /// 205 to 220 g: the middle of the range.
-    static let ballMass = 0.210
+    static let ballMass = Numbers.ballMass
     /// A carom table: no pockets, the cushions run every side.
     static let pocketsEnabled = false
     static let posts: [Post] = []
@@ -69,29 +78,23 @@ enum FivePinTable: TableDefinition {
 
     // MARK: Pins
 
-    /// 25 mm tall; equal to PIN_HEIGHT in make_five_pin.py. A ball whose lowest point is higher
-    /// than this passes over.
-    static let pinHeight = 0.025
+    /// 25 mm tall; equal to PIN_HEIGHT in make_five_pin.py.
+    static let pinHeight = Numbers.pinHeight
     /// The effective contact radius against a 61.5 mm ball (see the header); equal to SWIFT_CONTACT_R in
-    /// make_five_pin.py, which recomputes it from the drawn profile and fails if the two drift apart.
-    static let pinContactRadius = 0.0024
-    /// Estimated: 1.07 cm3 (the model's volume) of turned hardwood or plastic, about 1 g.
-    static let pinMass = 0.001
+    /// make_five_pin.py.
+    static let pinContactRadius = Numbers.pinContactRadius
+    /// Estimated: about 1 g.
+    static let pinMass = Numbers.pinMass
     /// Centre-to-centre distance from the red pin to each white pin: 66 mm.
-    static let pinSpacing = 0.066
+    static let pinSpacing = Numbers.pinSpacing
     /// The red pin is pin 0, on the centre spot; the white pins are 1 to 4.
     static let redPinIndex = FivePinRules.redPin
 
     /// The centre spot, where the red pin stands.
-    static var castleCentre: Vec2 { Vec2(tableSize.length / 2, tableSize.width / 2) }
+    static var castleCentre: Vec2 { Numbers.castleCentre }
 
-    /// The castle: 0 the red pin on the centre spot, 1 and 2 the white pins along the long string (toward x = 0, then
-    /// toward x = L), 3 and 4 across it (toward y = 0, then toward y = W).
-    static var pins: [Pin] {
-        let c = castleCentre, s = pinSpacing
-        let spots = [c, Vec2(c.x - s, c.y), Vec2(c.x + s, c.y), Vec2(c.x, c.y - s), Vec2(c.x, c.y + s)]
-        return spots.map { Pin(center: $0, radius: pinContactRadius, mass: pinMass, height: pinHeight) }
-    }
+    /// The castle: 0 the red pin on the centre spot, 1 and 2 along the long string, 3 and 4 across it.
+    static var pins: [Pin] { Numbers.pins }
 
     // MARK: Balls and the start
 
@@ -101,21 +104,14 @@ enum FivePinTable: TableDefinition {
     static let redBallIndex = FivePinRules.redBall
 
     /// "Mouche mi-haute": the red ball's spot, in the middle of the upper half.
-    static var redSpot: Vec2 { Vec2(tableSize.length * 0.75, tableSize.width / 2) }
+    static var redSpot: Vec2 { Numbers.redSpot }
     /// "Mouche haute": the yellow's spot on the long string, 10 cm from the upper short cushion.
-    static var opponentSpot: Vec2 { Vec2(tableSize.length - 0.10, tableSize.width / 2) }
-    /// The white is placed freely, wholly inside the lower half: here at the half's edge, 20 cm from the near long
-    /// cushion, where the opening shot below plays from.
-    static var cueStart: Vec2 { Vec2(tableSize.length / 2 - 0.04, 0.20) }
+    static var opponentSpot: Vec2 { Numbers.opponentSpot }
+    /// The white's start at the edge of its half, 20 cm from the near long cushion, where the opening shot plays from.
+    static var cueStart: Vec2 { Numbers.cueStart }
 
     /// Sixteen positions, index 0 the cue ball, unused balls at NextShot.offTable.
-    static var startLayout: [Vec2] {
-        var l = [Vec2](repeating: NextShot.offTable, count: 16)
-        l[0] = cueStart
-        l[opponentBallIndex] = opponentSpot
-        l[redBallIndex] = redSpot
-        return l
-    }
+    static var startLayout: [Vec2] { Numbers.startLayout }
 
     /// The white cuts the yellow on its lower side; the yellow runs off the short cushion and the far long cushion into
     /// the castle (see the header: tuned on a copy of the solver's laws, the exact window may sit a little off).

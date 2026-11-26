@@ -25,6 +25,8 @@
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md T1:
 //          TrickShot carries the table it is played on, defaulting to the pool table, so a player's own saved shot on
 //          bumper pool or bar billiards is solved there.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: a trick shot starts on the table its library entry
+//          names (AuthoredTrick.table), which ShowpieceModel.physicsTable already solves and draws.)
 // PURPOSE: The trick-shot library as the app shows it. Every shot has its id, title, a one-sentence hook, where
 //          the balls start (only the balls it uses; every other ball is off the table), the authored answer (aim, power,
 //          cue-tip height and side; cue elevation for the massé, the jump and the carom), the goal the app checks from
@@ -210,7 +212,9 @@ enum TrickShots {
                          solution: TrickSettings(a.solution), goal: goal, usesBridge: a.usesBridge,
                          idea: idea, maths: maths, mathsSpoken: mathsSpoken, difficulty: difficulty,
                          window: TrickWindow(a.window), praise: praise, pending: false,
-                         cueAngles: AuthoredTricks.cueAngleBands[a.id])
+                         cueAngles: AuthoredTricks.cueAngleBands[a.id],
+                         // 0.7.10 bank: the table the library names (the pool table for every shot so far).
+                         table: TableKind(a.table))
     }
 
     // MARK: 1. The Called Break

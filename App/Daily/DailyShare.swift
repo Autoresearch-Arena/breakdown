@@ -8,6 +8,8 @@
 //          as a PNG to the temporary folder, handed to the one share sheet (ClipSharePresenter, App/Clips/ClipShare.swift)
 //          and removed when the sheet closes.
 //          Called by the result card's Share (DailyCard, DailyPhoneBlurbs), only once the day is finished.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: the picture draws the shot's own table, its holes
+//          in the bed among the pockets, for a shot of the day on another table.)
 // SRP/DRY check: Pass - checked ClipShare (the only share sheet, reused, not copied), TrickPathThumb (the small table
 //          drawing, reused with its new optional mark) and DailyTryDots (the dots, reused).
 import BreakdownLensModel
@@ -25,7 +27,7 @@ enum DailyShare {
     static func share(model: ShowpieceModel) {
         let daily = model.dailyMode
         guard let shot = daily.shot, let day = daily.result(forDay: shot.day), day.finished else { return }
-        let card = DailyShareCard(dayLabel: shot.dayLabel, date: date(ofDay: shot.day), path: startOnly(shot.start),
+        let card = DailyShareCard(dayLabel: shot.dayLabel, date: date(ofDay: shot.day), path: startOnly(shot.start, table: shot.table),
                                   mark: daily.mark, tries: day.tries, madeOnTry: day.madeOnTry, score: day.score,
                                   streak: daily.streak(asOf: shot.day))
         let renderer = ImageRenderer(content: card)
@@ -54,14 +56,15 @@ enum DailyShare {
         return start.formatted(style)
     }
 
-    /// The pool table with the balls at their starting places and no strokes at all (no cue path, no other ball's
-    /// path), for TrickPathThumb.
-    static func startOnly(_ start: [Vec2]) -> TrickPath {
-        let table = PoolParameters().tableSpec
+    /// The shot's table with the balls at their starting places and no strokes at all (no cue path, no other ball's
+    /// path), for TrickPathThumb. 0.7.10 bank: the shot's own table (its size and balls); on a table with holes in the
+    /// bed (bumper pool's cups, bar billiards' holes) those are drawn where the pockets would be.
+    static func startOnly(_ start: [Vec2], table kind: TableKind = .standard) -> TrickPath {
+        let table = kind.parameters.tableSpec
         let balls = start.indices.filter { NextShot.isOnTable(start[$0]) }
             .map { TrickPath.StartBall(ball: $0, position: start[$0]) }
-        return TrickPath(length: table.length, width: table.width, ballRadius: table.ballRadius, pockets: table.pockets,
-                         balls: balls, cue: [], objects: [])
+        return TrickPath(length: table.length, width: table.width, ballRadius: table.ballRadius,
+                         pockets: table.pockets + table.bedHoles.map(\.center), balls: balls, cue: [], objects: [])
     }
 
     /// Write a picture as a PNG file. False when it could not be written.

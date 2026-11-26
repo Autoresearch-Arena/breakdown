@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: each answer is solved on its own table and must stop
+//          on its written mark; a found shot says its goal in words.)
 // PURPOSE: The shot of the day's bank and day numbers (App/Daily/DailyBank.swift, DailyShot.swift and the package's
 //          AuthoredDaily; plans/25-Nov-2026-shot-of-the-day-plan.md, stage 1 item 7): the start is midnight UTC on 26
 //          November 2026; day numbers change exactly at midnight UTC and count back before the start; the entry for a
@@ -127,21 +129,31 @@ final class DailyBankTests: XCTestCase {
         XCTAssertEqual(DailyShot.sourceTrickID("stop-dead"), "stop-dead", "any other id is unchanged")
     }
 
-    /// The answer of every entry makes its own goal, solved as the app solves it on the entry's surface and judged as
-    /// the app judges a try; and the white ball's resting place, the mark when none is written, can be found.
+    /// The answer of every entry makes its own goal, solved as the app solves it on the entry's table and surface and
+    /// judged as the app judges a try; and it stops on its mark (0.7.10 bank: every entry writes its mark, the answer's
+    /// own resting place to the tenth of a millimetre, Stop Dead's its circle's centre).
     func testEveryAnswerMakesItsGoalAndHasAMark() throws {
         for e in AuthoredDaily.all {
             let shot = DailyShot(day: 0, entry: e)
             guard case .layout(let start) = shot.trick.setup else { return XCTFail("\(e.id) is not laid out") }
-            let tl = TestShots.shot(from: start, shot.trick.solution, on: shot.surface)
-            let attempt = TestShots.attempt(start: start, timeline: tl, shot.trick.solution, on: shot.surface)
+            XCTAssertEqual(shot.trick.table, TableKind(e.table), "\(e.id): the shot starts on its own table")
+            let tl = DailyShot.answerTimeline(of: e)
+            let attempt = TestShots.attempt(start: start, timeline: tl, shot.trick.solution, on: shot.surface,
+                                            table: shot.table)
             XCTAssertNil(TrickShotJudge.failure(shot.trick.goal, attempt), "\(e.id): the answer misses its own goal")
             XCTAssertTrue(TrickShotJudge.verdict(for: shot.trick, attempt: attempt).made, e.id)
             let mark = try XCTUnwrap(shot.findMark(), "\(e.id): no mark")
-            if e.mark == nil {
-                // The answer stops on its own mark, so it scores full precision.
-                XCTAssertLessThan((attempt.cueRest - mark).length, 1e-6, e.id)
-            }
+            XCTAssertLessThan((attempt.cueRest - mark).length, 0.01, "\(e.id): the answer stops on its mark")
+        }
+    }
+
+    /// 0.7.10 bank: every shot BreakProbe daily found says its goal in words, with the ball it leaves the cue ball on.
+    func testAnAuthoredShotSaysItsGoal() {
+        for e in AuthoredDaily.all where e.source == .authored {
+            let shot = DailyShot(day: 0, entry: e)
+            XCTAssertFalse(shot.trick.goalLine.isEmpty, e.id)
+            XCTAssertNotEqual(shot.trick.goalLine, String(localized: "Make the shot."), "\(e.id): a goal with no words")
+            XCTAssertFalse(shot.trick.idea.isEmpty, e.id)
         }
     }
 }

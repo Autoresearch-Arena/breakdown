@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: a trick shot names the table it starts on
+//          (AuthoredTrick.table, the pool table by default); AuthoredGoal unchanged.)
 // PURPOSE: The types of the authored answers library (bug plan after 0.6.6, item 38). Every authored trick shot, lesson
 //          and Behind the 8-Ball escape is written once, in this package module, as plain numbers: where the balls
 //          start, the stroke that makes it, what it must do, and how far each setting may stray. The app's TrickShots,
@@ -93,6 +95,9 @@ public struct AuthoredTrick: Sendable, Equatable {
     public let usesBridge: Bool
     /// 1 easy, 2 medium, 3 hard (the app's TrickDifficulty raw values).
     public let difficulty: Int
+    // 0.7.10 bank: the table a trick shot starts on (the app racks it there and solves on it); the pool table unless
+    // an entry names another. Last, with a default, so no entry in AuthoredTricks changes.
+    public var table: AuthoredTable = .standard
 }
 
 /// One lesson's numbers. A lesson that raises the cue does it to one of the angles the cue-angle control offers

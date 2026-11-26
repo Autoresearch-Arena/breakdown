@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: a shot on another table starts on that table.)
 // PURPOSE: The shot of the day's mode (App/Daily/DailyMode.swift; plans/25-Nov-2026-shot-of-the-day-plan.md, stage 2
 //          item 8), against the real model: today's shot goes on the table as a trick shot with its own id, on its own
 //          surface, from a plain stroke at its own cue angle; five tries, then Your turn and Try again do nothing;
@@ -84,6 +85,24 @@ final class DailyModeTests: XCTestCase {
             XCTAssertEqual(model.shotElevation, want, accuracy: 1e-12)
             XCTAssertNotEqual(model.shotPower, mode.shot?.trick.solution.power, "never the answer's power")
             model.trickMode.end()
+        }
+    }
+
+    /// 0.7.10 bank: a Friday shot starts on its own table, solved and drawn there, with its surface on; leaving it gives
+    /// the pool table back to free play (the player's chosen table was never changed).
+    func testAnotherTablesShotStartsOnItsTable() throws {
+        try withDevice { defaults in
+            let d = try XCTUnwrap(AuthoredDaily.all.firstIndex { $0.table != .standard }, "a shot on another table")
+            let entry = AuthoredDaily.all[d]
+            let model = ShowpieceModel()
+            let chosen = model.tableKind
+            let mode = DailyMode(model: model, defaults: defaults, clock: { Self.noon(ofDay: d) })
+            mode.begin()
+            XCTAssertEqual(model.physicsTable, TableKind(entry.table))
+            XCTAssertEqual(model.solvedTable, TableKind(entry.table), "the table on screen is the shot's")
+            XCTAssertEqual(model.tableKind, chosen, "the player's own table choice is untouched")
+            model.trickMode.end()
+            XCTAssertEqual(model.tableKind, chosen)
         }
     }
 

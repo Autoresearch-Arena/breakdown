@@ -3,6 +3,9 @@
 // Edited: Claude Opus 5.5 High, 20-November-2026 (searches use at most three threads unless BREAKPROBE_THREADS says otherwise; strikes carry cue elevation).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (proof plan package 4: tip windows stop at the miscue limit (tipReach)
 //          instead of 20 mm; generationParameters gives generation one its old numbers.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: the window walks take the parameters to solve on, the
+//          pool table's by default, so "BreakProbe daily" measures shots on other tables and surfaces; pocketName names a
+//          bed hole instead of indexing past the six pocket names.)
 // PURPOSE: The search machinery behind the trick shots (run by hand with "BreakProbe tricks"; never part of the app or
 //          of the package tests). It simulates a candidate shot with the real solver, checks it against a goal (which
 //          balls must drop and where, where the cue ball must stop, which ball the cue ball must touch first, no
@@ -40,6 +43,9 @@ let W = P.tableWidth
 let pockets = P.pocketCenters
 let pocketNames = ["bottom-left corner", "bottom-right corner", "top-left corner", "top-right corner",
                    "bottom side", "top side"]
+/// A pocket's name for the tool's output: an edge pocket by pocketNames, a hole in the bed (another table's cup or
+/// hole, pocket index 6 + j) by its number, so a shot on another table never indexes past the six names.
+func pocketName(_ k: Int) -> String { pocketNames.indices.contains(k) ? pocketNames[k] : "bed hole \(k - 6)" }
 
 /// How the cue strikes: aim in degrees counter-clockwise from the long axis, launch speed in metres per second,
 /// and the cue-tip offset from the ball's centre in metres (up is follow, down is draw; right side is positive).
@@ -139,8 +145,11 @@ func band(centre: Double, step: Double, limit: Double, _ ok: (Double) -> Bool) -
 }
 
 /// The aim band around a strike, in degrees, sampled every `step` degrees.
-func aimBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal, step: Double = 0.02, limit: Double = 4) -> (lo: Double, hi: Double)? {
-    band(centre: s.aim, step: step, limit: limit) { a in var t = s; t.aim = a; return passes(goal, simulate(layout, t)) }
+func aimBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal, step: Double = 0.02, limit: Double = 4,
+             parameters: PoolParameters = P) -> (lo: Double, hi: Double)? {
+    band(centre: s.aim, step: step, limit: limit) { a in
+        var t = s; t.aim = a; return passes(goal, simulate(layout, t, parameters: parameters))
+    }
 }
 
 /// Run `body` for every index in parallel and collect the results in order. The solver is a pure function of its
@@ -192,40 +201,42 @@ struct Authored: Sendable {
 /// Re-centre a strike in the middle of its aim, power and tip bands (twice, since each move shifts the others a
 /// little) and measure every band again from the final strike: those are the honest windows to report, walked
 /// outward from the very settings the app will play. Nil when the strike stops passing.
-func measured(_ id: String, _ layout: [Vec2], _ s: Strike, _ goal: Goal, note: String) -> Authored? {
+func measured(_ id: String, _ layout: [Vec2], _ s: Strike, _ goal: Goal, note: String,
+              parameters: PoolParameters = P) -> Authored? {
     var c = s
     for _ in 0..<2 {
-        guard let b = aimBand(layout, c, goal) else { return nil }
+        guard let b = aimBand(layout, c, goal, parameters: parameters) else { return nil }
         c.aim = ((b.lo + b.hi) / 2 / 0.01).rounded() * 0.01        // two decimals, the precision the data carries
-        guard let p = powerBand(layout, c, goal) else { return nil }
+        guard let p = powerBand(layout, c, goal, parameters: parameters) else { return nil }
         c.power = ((p.lo + p.hi) / 2 / 0.05).rounded() * 0.05
-        guard let t = tipUpBand(layout, c, goal) else { return nil }
+        guard let t = tipUpBand(layout, c, goal, parameters: parameters) else { return nil }
         c.tipUp = ((t.lo + t.hi) / 2 / 0.0005).rounded() * 0.0005
     }
-    guard let a = aimBand(layout, c, goal), let p = powerBand(layout, c, goal), let t = tipUpBand(layout, c, goal)
+    guard let a = aimBand(layout, c, goal, parameters: parameters), let p = powerBand(layout, c, goal, parameters: parameters),
+          let t = tipUpBand(layout, c, goal, parameters: parameters)
     else { return nil }
     return Authored(id: id, layout: layout, strike: c, goal: goal, aimBand: a, powerBand: p, tipBand: t, note: note)
 }
 
 /// Power band (metres per second) and tip bands (metres) around a strike, for the report.
-func powerBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: Double)? {
+func powerBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal, parameters: PoolParameters = P) -> (lo: Double, hi: Double)? {
     band(centre: s.power, step: 0.05, limit: 4) { v in
         guard v >= 0.5, v <= 8 else { return false }
-        var t = s; t.power = v; return passes(goal, simulate(layout, t))
+        var t = s; t.power = v; return passes(goal, simulate(layout, t, parameters: parameters))
     }
 }
 
-func tipUpBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: Double)? {
+func tipUpBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal, parameters: PoolParameters = P) -> (lo: Double, hi: Double)? {
     band(centre: s.tipUp, step: 0.0005, limit: 0.04) { v in
         guard insideGrip(up: v, side: s.tipSide) else { return false }
-        var t = s; t.tipUp = v; return passes(goal, simulate(layout, t))
+        var t = s; t.tipUp = v; return passes(goal, simulate(layout, t, parameters: parameters))
     }
 }
 
-func tipSideBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal) -> (lo: Double, hi: Double)? {
+func tipSideBand(_ layout: [Vec2], _ s: Strike, _ goal: Goal, parameters: PoolParameters = P) -> (lo: Double, hi: Double)? {
     band(centre: s.tipSide, step: 0.0005, limit: 0.04) { v in
         guard insideGrip(up: s.tipUp, side: v) else { return false }
-        var t = s; t.tipSide = v; return passes(goal, simulate(layout, t))
+        var t = s; t.tipSide = v; return passes(goal, simulate(layout, t, parameters: parameters))
     }
 }
 
@@ -239,7 +250,7 @@ func report(_ a: Authored) {
                  a.powerBand.lo, a.powerBand.hi, a.powerHalfWindow, a.tipBand.lo, a.tipBand.hi, a.tipHalfWindow, a.feelScore))
     if let t = tipSideBand(a.layout, s, a.goal) { print(String(format: "   side window: %+.4f to %+.4f m", t.lo, t.hi)) }
     let tl = simulate(a.layout, s)
-    let dropped = (1..<16).compactMap { b in pocketOf(b, tl).map { "\(b)->\(pocketNames[$0])" } }
+    let dropped = (1..<16).compactMap { b in pocketOf(b, tl).map { "\(b)->\(pocketName($0))" } }
     print("   dropped: \(dropped.joined(separator: ", ")); first hit \(firstStruck(tl).map(String.init) ?? "none"); cue rests at \(fmt(cueRest(tl)))")
     var balls: [String] = []
     for (k, v) in a.layout.enumerated() where NextShot.isOnTable(v) { balls.append("\(k): \(fmt(v))") }

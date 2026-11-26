@@ -33,6 +33,8 @@
 //          aim window holds an aim step, and "eightball wide <situation> <escape> [rails]" searches a kick round the full
 //          circle (item 30); "lessons stop-exercise <power>" tries the stop lesson at another power. The authored answers
 //          the tools check come from the package library, BreakdownAuthored (item 38).)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: "daily [kind ...]" grows the shot of the day bank,
+//          DailyAuthoring.swift, with a contact sheet of pictures per kind.)
 // SRP/DRY check: Pass - single-purpose command line probe, not shipped in the app.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -84,6 +86,9 @@ if args.first == "timing" {
     runEightBallAuthoring(only: Set(args.dropFirst()))
 } else if args.first == "sweep" {
     runRealWorldSweep(quick: args.dropFirst().contains("quick"), rails: args.dropFirst().contains("rails"))
+} else if args.first == "daily" {
+    // 0.7.10 bank: grow the shot of the day bank (DailyAuthoring.swift).
+    runDailyAuthoring(Array(args.dropFirst()))
 } else if args.first == "verify" {
     // The upload script reads the exit status: 0 only when every authored shot still works.
     let generation = args.dropFirst().first.flatMap { Int($0) } ?? PoolParameters().modelGeneration

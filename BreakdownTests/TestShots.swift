@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: attempt takes the table, the pool table by default.)
 // PURPOSE: Shared shots for the app's unit tests (the BreakdownTests target, hosted in the app). Every recording here is
 //          solved the way the app solves it: the table's numbers, then the surface's, written into the parameters of a
 //          NextShot or Rack input, then PoolSolver.simulate (EightBallJudge.solve is that same path for a layout and is
@@ -55,15 +56,20 @@ enum TestShots {
     /// The effective input is rebuilt the way the judge builds it (standard table, the surface, seed 1), so a retry
     /// with the same settings has the same input, as the model's own attempts do.
     static func attempt(start: [Vec2], timeline: Timeline, _ s: TrickSettings, isBreak: Bool = false,
-                        breakSeed: UInt64 = 0, on surface: PlaySurface = .cloth) -> ShotAttempt {
+                        breakSeed: UInt64 = 0, on surface: PlaySurface = .cloth,
+                        table: TableKind = .standard) -> ShotAttempt {
         let a = s.aim * Double.pi / 180
+        // 0.7.10 bank: an attempt on another table (a shot of the day's Friday) is built on that table.
+        var p = PoolParameters()
+        table.apply(to: &p)
+        surface.apply(to: &p)
         let input = NextShot.shot(from: start, direction: Vec2(cos(a), sin(a)), speed: s.power, tipUp: s.tipUp,
-                                  tipSide: s.tipSide, seed: 1, parameters: parameters(on: surface),
+                                  tipSide: s.tipSide, seed: 1, parameters: p,
                                   elevation: s.elevation ?? 0)
         return ShotAttempt(isBreak: isBreak, breakSeed: breakSeed, start: start, timeline: timeline, aim: s.aim,
                            power: s.power, powerRange: PlayerShotSpeed.ordinary, tipUp: s.tipUp, tipSide: s.tipSide,
                            elevation: s.elevation ?? 0, seed: isBreak ? breakSeed : 1, input: input, surface: surface,
-                           table: .standard, generation: input.parameters.modelGeneration)
+                           table: table, generation: input.parameters.modelGeneration)
     }
 
     // MARK: Hand-made recordings
