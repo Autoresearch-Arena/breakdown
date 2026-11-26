@@ -37,6 +37,9 @@
 //            column with an arrow toward it where the controls live there.
 //          LensCalloutCard - the same three steps as a card in the folding phone's panel, where nothing may cover the
 //            table; the bar is in that panel, below the card.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          the Lens tips name each path's shape as well as its colour for every player (dashed
+//          magenta sliding, solid cyan rolling); text(step:) no longer takes the setting.)
 // SRP/DRY check: Pass - checked LensLayer (draws the trails; its trailHold and trailFadeEnd decide which stretch is
 //          bright, read here, not copied), LensLegendChip (the colour key; these callouts teach it once and then the
 //          chip carries on), ShotPanel's one-time aiming hint (the pattern for "shown once, remembered, Options can bring
@@ -68,15 +71,13 @@ enum LensCallouts {
     /// Clock seconds a held beat must be past the start for the tips to begin on it (anything after the strike).
     static let startAfter = 1e-6
 
-    /// The tip's words. `withoutColour` (Differentiate Without Colour) names each line's shape as well, the way the
-    /// trails and the Lens key draw it then: sliding dashed, rolling solid. The colour words are the key's own, magenta
-    /// and cyan.
-    static func text(step: Int, withoutColour: Bool) -> String {
-        switch (step, withoutColour) {
-        case (0, false): return String(localized: "Magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
-        case (0, true): return String(localized: "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
-        case (1, false): return String(localized: "Cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
-        case (1, true): return String(localized: "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
+    /// The tip's words. Each line's shape is named as well as its colour, the way the trails and the Lens key draw it
+    /// for every player since 0.7.10: sliding dashed, rolling solid. The colour words are the key's own, magenta and
+    /// cyan.
+    static func text(step: Int) -> String {
+        switch step {
+        case 0: return String(localized: "Dashed magenta path: the ball is sliding. Its spin has not caught up with its speed yet, so it skids over the cloth.")
+        case 1: return String(localized: "Solid cyan path: the ball is rolling. The cloth has matched its spin to its speed.")
         default: return String(localized: "Drag the bar to move through the shot in time, forwards or back.")
         }
     }
@@ -303,8 +304,6 @@ struct LensCalloutBubble: View {
     @Binding var seen: Bool
     let arrow: Arrow?
     @Environment(\.palette) private var palette
-    /// Names each path's shape as well as its colour when colour alone may not tell them apart.
-    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
 
     private var last: Bool { step + 1 >= LensCallouts.count }
 
@@ -315,7 +314,7 @@ struct LensCalloutBubble: View {
                     .font(.title3)
                     .foregroundStyle(step == 0 ? palette.slide : palette.accent)
                     .accessibilityHidden(true)
-                Text(LensCallouts.text(step: step, withoutColour: withoutColour))
+                Text(LensCallouts.text(step: step))
                     .font(Theme.body)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
@@ -361,7 +360,6 @@ struct PhoneLensTipBlurb: View {
     let model: ShowpieceModel
     @AppStorage(LensCallouts.seenKey) private var seen = false
     @Environment(\.palette) private var palette
-    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
     @Environment(\.phoneUpright) private var upright
 
     private var tips: LensTipsShared { LensTipsShared.shared }
@@ -370,7 +368,7 @@ struct PhoneLensTipBlurb: View {
         if upright, tips.showing, !seen {
             let step = min(max(0, tips.step), LensCallouts.count - 1)
             let last = step + 1 >= LensCallouts.count
-            let text = LensCallouts.text(step: step, withoutColour: withoutColour)
+            let text = LensCallouts.text(step: step)
             let counter = String(localized: "\(step + 1) of \(LensCallouts.count)")
             Blurb(accessibilityText: text + " " + counter, buttons: [
                 BlurbButton(String(localized: "Not now")) {
@@ -412,7 +410,7 @@ struct PhoneLensTipBlurb: View {
     @ViewBuilder
     private func marker(_ step: Int) -> some View {
         if step < 2 {
-            LensTrailMark(color: step == 0 ? palette.slide : palette.accent, dashed: step == 0 && withoutColour)
+            LensTrailMark(color: step == 0 ? palette.slide : palette.accent, dashed: step == 0)
                 .alignmentGuide(.firstTextBaseline) { $0[VerticalAlignment.bottom] + 4 }
         } else {
             Image(systemName: "arrow.down")

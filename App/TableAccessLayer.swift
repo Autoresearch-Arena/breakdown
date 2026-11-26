@@ -46,6 +46,9 @@
 //          Used by TableStage (the table, with step-through) and AimOverlay (while aiming: double-tap a ball to aim at
 //          it, a pocket to aim the pot). Reads the model; writes it only by scrubbing the replay, by the aim actions
 //          (AimAccess) and by the tip actions (TipAccessActions, laid on the tip picture by AimGauges).
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Part D1: on the shot of the day the mark is an element of its own, "The mark", placed in the words a ball is
+//          placed in (TableWords.markValue), right after the cue ball in the swipe order.)
 // SRP/DRY check: Pass - checked CaptionViews.LeaderState (projects one ball per frame through the RealityView's own
 //          projector for the caption ring) and AimOverlay (projects through AimProjector); this layer reuses
 //          AimProjector rather than adding work to the per-frame scene closure. The words are TableWords; the caption
@@ -491,7 +494,7 @@ struct TableAccessLayer: View {
     // MARK: Ball, pocket and feature elements
 
     private struct Item: Identifiable {
-        /// Balls by number, pockets as 100 + index, bed holes 200 + j, pins 300 + k, posts 400 + k.
+        /// Balls by number, pockets as 100 + index, bed holes 200 + j, pins 300 + k, posts 400 + k, the daily mark 500.
         let id: Int
         let point: CGPoint
         let label: String
@@ -538,6 +541,14 @@ struct TableAccessLayer: View {
             out.append(Item(id: b, point: p, label: TableWords.ballLabel(b, cueBall: cueBall, table: kind),
                             value: TableWords.ballValue(b, cueBall: cueBall, layout: layout, table: table, kind: kind),
                             priority: Double(1000 - rank)))
+        }
+        // 0.7.10 everyone (plans/25-Nov-2026-everyone-can-play-plan.md Part D1): the shot of the day's mark, a place on
+        // the cloth, named and placed the way a ball is (TableWords.markValue), read right after the cue ball. Its id
+        // is in a range of its own (500); it is not a target, so it takes no aiming action.
+        if DailyMode.showing(model), let mark = model.dailyMode.mark, let p = proj.screen(mark, height: 0.002),
+           bounds.contains(p) {
+            out.append(Item(id: 500, point: p, label: TableWords.markLabel,
+                            value: TableWords.markValue(mark, table: table, kind: kind), priority: 999.5))
         }
         // Pockets, after the balls, in the eight-ball order. Only the edge pockets have names.
         if table.pocketsEnabled {

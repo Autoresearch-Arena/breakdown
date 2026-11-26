@@ -22,6 +22,9 @@
 //          Watch again), showAnswerPath (the trick card), setLens, setRide, setRate and setAutoRate (PlaybackControls).
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the More menu offers
 //          "Share clip" and the other shape (ClipMenuItems) right after What if; no new glass on the upright phone.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          the More menu gains Zoom (TableZoomMenuItems), so the upright phone zooms without a pinch
+//          or a double tap.)
 // SRP/DRY check: Pass - checked ShowpieceView's ScreenHeader, MenuBackButton and SurfaceMenuButton (shared with the
 //          notebook's top bar, unchanged; the surface rows are SurfaceMenuItems, used by both menus), and the trick and
 //          lesson cards' buttons (same mode calls, no new rules).
@@ -151,6 +154,12 @@ struct PhoneTitleRow: View {
             SurfaceMenuItems(model: model, offersEveryWorld: false)
         } label: {
             Label(String(localized: "Surface"), systemImage: model.surface.symbol)
+        }
+        // 0.7.10 everyone: zoom without a pinch or a double tap (TableZoomMenu).
+        Menu {
+            TableZoomMenuItems(model: model)
+        } label: {
+            Label(TableZoomWords.zoom, systemImage: "plus.magnifyingglass")
         }
         // What if: only after the player's own shot has come to rest (WhatIfButton's rule).
         if model.whatIf.canOpen && !model.whatIf.isShowing {

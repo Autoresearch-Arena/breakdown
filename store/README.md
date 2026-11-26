@@ -15,6 +15,8 @@ Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-202
 Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 Game Center: the privacy line says the game itself sends
          nothing and Apple carries a signed-in player's scores; a new section on the Game Center setup, the script that
          does it, and the steps to do by hand if App Store Connect refuses any of it.)
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone: the closing list ends with the classroom line in all
+         twelve languages, and pages/teachers.md is the page for teachers, published beside the other two.)
 SRP/DRY check: Pass - this folder holds only store copy. The game's own words are in App/Localizable.xcstrings; the
          screenshot framing and headlines are in store/screenshots.
 -->
@@ -29,7 +31,9 @@ out by the game's own physics solver, six lessons (stop, follow, draw, cut, curv
 nine-ball against the computer at three levels, the stroke (power is swing speed; a rushed or crooked stroke drifts off
 line), the eleven trick shots and Behind the 8-Ball's twelve spots with a card giving the aim, speed and spin the escape
 used, the three other tables, the ten surfaces. Counts come from the game's own lists (TrickShots, EightBallSituations,
-Lessons, PlaySurface); change them here in the same change that changes a list. The colour words are the Lens
+Lessons, PlaySurface); change them here in the same change that changes a list. The closing list ends with "For the
+curious and the classroom: the physics is shown in metric units, with its equations." (0.7.10): it says what the game
+shows, never who uses it. The colour words are the Lens
 legend's: magenta for sliding, cyan for rolling.
 
 Every claim must be one a reviewer can check on the device in five minutes (0.7.10). So the listing no longer says
@@ -43,7 +47,7 @@ Check every file against Apple's limits with `python3 scripts/store-listing-chec
 The 0.7.0 listing was uploaded to App Store Connect (the Boss signed off on 21-November-2026). The 0.7.10 wording is
 not uploaded until the Boss has read the English file.
 
-## Privacy policy and support page
+## Privacy policy, support page and the page for teachers
 
 `pages/privacy.md` and `pages/support.md` are the texts for the two pages App Store Connect asks for (Privacy Policy
 URL and Support URL). They are published on the studio site in the same style as its other game's store pages; the
@@ -52,6 +56,10 @@ Privacy answer "Data Not Collected": the game itself sends nothing and collects 
 own, no ads and no purchases. The one thing that can leave the device is Game Center: if the player chooses to sign in
 (the game asks only when Board is pressed), Apple carries their daily score, streak and achievements under Apple's
 own terms. Data Apple collects through Game Center is not the developer's to declare, so the answer stays the same.
+
+`pages/teachers.md` (0.7.10) is a third page, published beside the other two at /breakdown/teachers on the studio site:
+what the game shows a physics class, lesson by lesson, and how to hide the board for a class. How to play in the game
+and the support page link to it. It makes no claim about who uses the game.
 
 ## Game Center
 

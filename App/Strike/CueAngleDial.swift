@@ -12,6 +12,8 @@
 //          lock (lockedForStep). Where a trick shot or a Behind the 8-Ball situation sets its own angle
 //          (model.cueAngleLockedByMode) the dial still shows that angle, dimmed with a lock, and says why. For VoiceOver
 //          it is one adjustable element stepping through the offered angles, with the menu's spoken value.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          at the accessibility text sizes the angle's words wrap instead of shrinking to fit.)
 // SRP/DRY check: Pass - checked CueAngleMenu (the angles, the sine conversion, the words and the spoken value are all
 //          reused from it; nothing is listed twice) and FineControls' cue-angle slider (the same setter).
 import SwiftUI
@@ -23,6 +25,8 @@ struct CueAngleDial: View {
     var zoneStrength: Double = 1
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var side: CGFloat = 96
+    // 0.7.10 everyone: at the accessibility sizes the angle's words wrap instead of shrinking to fit.
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     /// The steepest angle on the dial: the last one the menu offers.
     private static let top = Double(CueAngleMenu.angles.last ?? 80)
@@ -43,8 +47,9 @@ struct CueAngleDial: View {
             dial(size: size)
             Text(verbatim: CueAngleMenu.words(degrees: degrees))
                 .font(Theme.number)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.7)
+                .multilineTextAlignment(.center)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: "Cue angle"))

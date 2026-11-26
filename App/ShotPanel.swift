@@ -76,6 +76,10 @@
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (Show the hint again is back in the upright phone's Shot options,
 //          plan Part 3: it brings back the aiming layer's groove hint, which the phone draws too.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Part C: every layout of the panel runs in the hand's order (shootSide, set by "Controls on the left"): for
+//          the left hand Shoot, the tip picture and the power bar sit on the left, on the phone sideways and in small
+//          windows as on the big screens.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -173,29 +177,49 @@ struct ShotPanel: View {
 
     // MARK: Layouts
 
+    // 0.7.10 everyone (plans/25-Nov-2026-everyone-can-play-plan.md Part C): every row runs in the hand's order. For a
+    // right hand the tip picture leads and Shoot ends the row; with "Controls on the left" (shootSide .left, handed down
+    // by ShowpieceView) the same controls run the other way, so Shoot, the tip picture and the power bar sit on the
+    // left. shootLast already accounts for a right-to-left language, so the corner is the physical one either way. Each
+    // order lists the same views (no second copy of a control), and the two orders are only ever swapped by the option.
+
     private var oneRow: some View {
         HStack(spacing: 10) {
-            TipPicker(model: model, open: open, zones: zones)
-            PowerGauge(model: model, open: open, zones: zones).frame(minWidth: 84)
-            cueAngle
-            tryAgainButton
-            fireButton()
-            moreMenu
+            if shootLast {
+                tipPicker
+                powerGauge.frame(minWidth: 84)
+                cueAngle
+                tryAgainButton
+                fireButton()
+                moreMenu
+            } else {
+                moreMenu
+                fireButton()
+                tryAgainButton
+                cueAngle
+                powerGauge.frame(minWidth: 84)
+                tipPicker
+            }
         }
     }
 
     private var twoRows: some View {
         VStack(spacing: 6) {
-            HStack(spacing: 12) {
-                TipPicker(model: model, open: open, zones: zones)
-                PowerGauge(model: model, open: open, zones: zones)
-            }
+            tipAndPower(spacing: 12)
             HStack(spacing: 10) {
-                moreMenu
-                cueAngle
-                Spacer(minLength: 0)
-                tryAgainButton
-                fireButton()
+                if shootLast {
+                    moreMenu
+                    cueAngle
+                    Spacer(minLength: 0)
+                    tryAgainButton
+                    fireButton()
+                } else {
+                    fireButton()
+                    tryAgainButton
+                    Spacer(minLength: 0)
+                    cueAngle
+                    moreMenu
+                }
             }
         }
     }
@@ -205,39 +229,77 @@ struct ShotPanel: View {
     /// under them, so its word is never cut to a few letters beside the others (#47).
     private var stacked: some View {
         VStack(spacing: 10) {
-            HStack(spacing: 12) {
-                TipPicker(model: model, open: open, zones: zones)
-                PowerGauge(model: model, open: open, zones: zones)
-            }
+            tipAndPower(spacing: 12)
             HStack(spacing: 10) {
-                moreMenu
-                cueAngle
-                Spacer(minLength: 0)
-                tryAgainButton
+                if shootLast {
+                    moreMenu
+                    cueAngle
+                    Spacer(minLength: 0)
+                    tryAgainButton
+                } else {
+                    tryAgainButton
+                    Spacer(minLength: 0)
+                    cueAngle
+                    moreMenu
+                }
             }
             fireButton(wide: true)
         }
     }
 
+    /// The tip picture and the power gauge side by side, the picture on the hand's outer side.
+    private func tipAndPower(spacing: CGFloat) -> some View {
+        HStack(spacing: spacing) {
+            if shootLast {
+                tipPicker
+                powerGauge
+            } else {
+                powerGauge
+                tipPicker
+            }
+        }
+    }
+
+    /// The tip picture and the power gauge, as every layout draws them.
+    private var tipPicker: some View { TipPicker(model: model, open: open, zones: zones) }
+    private var powerGauge: some View { PowerGauge(model: model, open: open, zones: zones) }
+
     // MARK: Roomy layouts (0.7.10 strike, plan stage 3)
 
     /// iPad, Mac and the open folding phone, one row: the large tip picture with its millimetres, the tall power bar
     /// with the cue-angle dial and the small buttons under it, and Shoot, the largest control, in the bottom corner on
-    /// the player's hand side (shootSide).
+    /// the player's hand side (shootSide). 0.7.10 everyone: for the left hand the whole row runs the other way.
     private var roomyRow: some View {
         HStack(alignment: .bottom, spacing: 12) {
-            if !shootLast { roomyFireButton }
-            TipPicker(model: model, open: open, zones: zones)
-            VStack(spacing: 8) {
-                PowerGauge(model: model, open: open, zones: zones).frame(minWidth: 180)
-                HStack(alignment: .bottom, spacing: 10) {
+            if shootLast {
+                tipPicker
+                roomyPowerColumn
+                roomyFireButton
+            } else {
+                roomyFireButton
+                roomyPowerColumn
+                tipPicker
+            }
+        }
+    }
+
+    /// The tall power bar with the dial and the small buttons under it, the dial on the hand's far side.
+    private var roomyPowerColumn: some View {
+        VStack(spacing: 8) {
+            powerGauge.frame(minWidth: 180)
+            HStack(alignment: .bottom, spacing: 10) {
+                if shootLast {
                     cueAngle
                     Spacer(minLength: 0)
                     moreMenu
                     tryAgainButton
+                } else {
+                    tryAgainButton
+                    moreMenu
+                    Spacer(minLength: 0)
+                    cueAngle
                 }
             }
-            if shootLast { roomyFireButton }
         }
     }
 
@@ -246,17 +308,29 @@ struct ShotPanel: View {
     private var roomyStacked: some View {
         VStack(spacing: 10) {
             HStack(alignment: .center, spacing: 12) {
-                TipPicker(model: model, open: open, zones: zones)
-                Spacer(minLength: 0)
-                cueAngle
+                if shootLast {
+                    tipPicker
+                    Spacer(minLength: 0)
+                    cueAngle
+                } else {
+                    cueAngle
+                    Spacer(minLength: 0)
+                    tipPicker
+                }
             }
-            PowerGauge(model: model, open: open, zones: zones)
+            powerGauge
             HStack(alignment: .bottom, spacing: 10) {
-                if !shootLast { roomyFireButton }
-                moreMenu
-                tryAgainButton
-                Spacer(minLength: 0)
-                if shootLast { roomyFireButton }
+                if shootLast {
+                    moreMenu
+                    tryAgainButton
+                    Spacer(minLength: 0)
+                    roomyFireButton
+                } else {
+                    roomyFireButton
+                    Spacer(minLength: 0)
+                    tryAgainButton
+                    moreMenu
+                }
             }
         }
     }

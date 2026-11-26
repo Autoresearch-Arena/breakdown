@@ -40,6 +40,9 @@
 //          setHoldPages (one page: this blurb never pages), MomentFrame.blurbShare and leader.blurb (0.7.8: where it sits,
 //          so the jump's side view keeps clear of it). Never writes leader.card: the
 //          ring hides itself under a reported card, and this blurb sits right beside its ring.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          the upright phone's Lens key draws sliding dashed and says both shapes for every
+//          player, as the trails now are.)
 // SRP/DRY check: Pass - checked CaptionViews.swift (CaptionStrip and CaptionArea are the other layouts' cards; the
 //          caption, its figures and its equation line come from there and Captions.swift, not rebuilt here; the Lens
 //          key's entries are LensKeyEntry, shared with LensLegendChip), App/Phone/Blurb.swift (the look and the fold)
@@ -414,16 +417,13 @@ private struct RingMarks: View {
 struct PhoneLensKeyBlurb: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
-    /// With Differentiate Without Colour on, the Lens draws sliding dashed and rolling solid; the key shows the same.
-    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
+    // 0.7.10 everyone: the Lens draws sliding dashed and rolling solid for every player; the key always shows the same.
 
     var body: some View {
         if model.lensOn {
-            Blurb(accessibilityText: withoutColour
-                    ? String(localized: "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling")
-                    : String(localized: "Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling")) {
+            Blurb(accessibilityText: String(localized: "Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling")) {
                 HStack(spacing: 12) {
-                    LensKeyEntry(name: "Sliding", color: palette.slide, dashed: withoutColour)
+                    LensKeyEntry(name: "Sliding", color: palette.slide, dashed: true)
                     LensKeyEntry(name: "Rolling", color: palette.accent)
                 }
                 .fixedSize()

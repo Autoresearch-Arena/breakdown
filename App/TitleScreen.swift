@@ -1,5 +1,9 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          How to play names the Lens paths by shape as well as colour (dashed and solid, as every player now sees
+//          them), the Controls page names the zoom button and menu, the keys and the controller buttons of the shot of
+//          the day, and a last row links to the page for teachers (TeachersLinkRow).)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, plans/25-Nov-2026-front-door-and-table-view-plan.md
 //          Stage 1 and the words plan's Part A row 6: one line per row (each row's sentence is now its VoiceOver hint
 //          and a line on How to play's new "The menu" page, MenuGuidePage); the intro paragraph under the name moved to
@@ -989,7 +993,8 @@ struct HowToPlaySheet: View {
              FirstInstruction.line(for: input) + " "
                 + String(localized: "The small picture of the white ball sets where the cue strikes it, for spin.")),
             (String(localized: "Read the Lens"),
-             String(localized: "Tap Lens to see the physics: magenta paths are balls sliding, cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
+             // 0.7.10 everyone: the paths named by shape as well as colour.
+             String(localized: "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
             (String(localized: "Try again"),
              String(localized: "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare.")),
             (String(localized: "Watch the trick shots"),
@@ -1044,6 +1049,8 @@ struct HowToPlaySheet: View {
                             rulesLink("Bar billiards", line: "Holes, pegs and a clock.", symbol: TableKind.barBilliards.symbol)
                         }
                     }
+                    // 0.7.10 everyone: the page for teachers, on the studio site (TeachersLink.swift).
+                    TeachersLinkRow()
                 }
                 .padding(24)
             }
@@ -1111,6 +1118,9 @@ private struct ControlsPage: View {
                  String(localized: "A stylus strokes like a finger. Where a raised cue is allowed, tilt it up past a writing grip to raise the cue.")),
                 (String(localized: "Zoom"),
                  String(localized: "Pinch to zoom and drag with two fingers to move around. Double-tap a ball to zoom in on it, and again to come back out.")),
+                // 0.7.10 everyone: the same zoom without a gesture (TableZoomMenu).
+                (String(localized: "Zoom without a gesture"),
+                 String(localized: "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.")),
             ]),
             InputSection(title: String(localized: "Pointer and keyboard"), symbol: "cursorarrow", rows: [
                 (String(localized: "Aim"),
@@ -1119,6 +1129,9 @@ private struct ControlsPage: View {
                  String(localized: "Press on the white ball, drag back to set the power and let go to play. Let go in front of the ball to change your mind.")),
                 (String(localized: "Keys"),
                  String(localized: "Arrow keys turn the aim and set the power, with Shift for bigger steps. Return plays the shot. Space plays or pauses the replay while the table is selected.")),
+                // 0.7.10 everyone: the shot of the day from the keyboard alone (DailyCard).
+                (String(localized: "Shot of the day"),
+                 String(localized: "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.")),
                 (String(localized: "Zoom"),
                  String(localized: "The View menu zooms in and out, and Actual Size shows the whole table again.")),
             ]),
@@ -1129,6 +1142,9 @@ private struct ControlsPage: View {
                  String(localized: "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.")),
                 (String(localized: "Your shot and the menu"),
                  String(localized: "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.")),
+                // 0.7.10 everyone: the shot of the day with a controller alone (DailyController), the mapping's line.
+                (String(localized: "Shot of the day"),
+                 String(localized: "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.")),
             ]),
         ]
     }

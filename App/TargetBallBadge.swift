@@ -22,6 +22,9 @@
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan Part 3: on the upright phone the badge is small, on
 //          thin material rather than glass, and placed clear of the rack and the target's neighbours; every other
 //          layout keeps the glass chip placed just above the target ball.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
+//          A6: a numbered pool ball's badge names it by number in words ("3 ball, solid", TableWords.ballLabel), not by
+//          its colour and a tiny printed number alone.)
 // SRP/DRY check: Pass - checked CaptionViews (CaptionLeader projects a caption's ball and places a glass chip; this
 //          places a different chip for a different moment, reusing the same projection maths from AimGeometry rather
 //          than copying it), AimOverlay (draws the guide; the badge sits in its layer with one line) and BallTextures
@@ -54,7 +57,10 @@ struct TargetBallBadge: View {
                 if let target = target(in: geo.size) {
                     // The table drawn on screen (the one the shot was solved on) says how the ball looks and is named.
                     let set = TableBallSet.for(table: model.solvedTable)
-                    BallBadgeChip(look: set.look(of: target.ball), label: set.label(of: target.ball), upright: upright)
+                    // 0.7.10 everyone: a numbered pool ball is named by its number in words too ("3 ball, solid"), so
+                    // the badge never leans on the ball's colour or its tiny printed number alone.
+                    let look = set.look(of: target.ball)
+                    BallBadgeChip(look: look, label: Self.label(look, ball: target.ball, set: set), upright: upright)
                         .onGeometryChange(for: CGSize.self) { $0.size } action: { badgeSize = $0 }
                         .position(place(target, in: geo.size))
                         .id(target.ball)
@@ -66,6 +72,13 @@ struct TargetBallBadge: View {
         .environment(\.layoutDirection, .leftToRight)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+    }
+
+    /// 0.7.10 everyone: the badge's words. A numbered pool ball says its number with its group, as VoiceOver names it
+    /// (TableWords.ballLabel: "3 ball, solid", "8 ball"); the small tables' balls keep their set's own word.
+    private static func label(_ look: BallLook, ball: Int, set: TableBallSet) -> String {
+        if case .pool(let number) = look, number > 0 { return TableWords.ballLabel(number, pool: true) }
+        return set.label(of: ball)
     }
 
     /// The ball the aim will hit first and where it is on screen: its centre and its on-screen radius. The same answer

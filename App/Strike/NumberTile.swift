@@ -11,6 +11,12 @@
 //            - editable: a small pencil mark in the corner, saying a tap types an exact value.
 //          On a big screen (notebookRoomy) the label follows the reader's text size; across the folding phone's hinge
 //          the narrow tiles keep the fixed small size they were laid out for (unchanged from NotebookNumbers).
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Parts A5 and D3-D4: after a shot the planned and delivered figures each carry a one-word label ("Planned",
+//          "Delivered"), so dim against bright is not the only difference; `spoken` makes the tile one VoiceOver
+//          element reading its label, then the figure with its unit in words (StrikeSpoken); at the accessibility text
+//          sizes nothing shrinks to fit: no minimum scale, no line limit, and the hinge's fixed 10-point label follows
+//          the text size too.)
 // SRP/DRY check: Pass - the one tile drawing in the app; NotebookNumbers and StrikePanel both use it. Formatting of the
 //          figures stays with their callers (NotebookNumbers' speedText, StrikeWords).
 import SwiftUI
@@ -28,38 +34,52 @@ struct NumberTile: View {
     var large = false
     /// Marks the tile as one a tap opens for typing an exact value.
     var editable = false
+    // 0.7.10 everyone: the tile's value as VoiceOver says it (the unit in words). Nil keeps the children combined,
+    // as NotebookNumbers has always read.
+    var spoken: String? = nil
     @Environment(\.palette) private var palette
     @Environment(\.notebookRoomy) private var roomy
+    // 0.7.10 everyone: at the accessibility sizes the text grows and wraps instead of shrinking to fit.
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// The smallest a line may shrink to: `normal` at the ordinary sizes, never at the accessibility sizes.
+    private func shrink(_ normal: CGFloat) -> CGFloat { typeSize.isAccessibilitySize ? 1 : normal }
+    /// One line at the ordinary sizes; as many as the text needs at the accessibility sizes.
+    private func lines(_ normal: Int) -> Int? { typeSize.isAccessibilitySize ? nil : normal }
 
     var body: some View {
         VStack(spacing: 2) {
             if let planned {
+                // 0.7.10 everyone: each of the two figures is named in a word, not told by dim against bright alone.
+                figureWord(StrikeSpoken.plannedWord)
                 Text(verbatim: planned)
                     .font(figureFont.weight(.regular))
                     .foregroundStyle(.secondary)
                     .opacity(0.7)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+                    .lineLimit(lines(1))
+                    .minimumScaleFactor(shrink(0.6))
+                figureWord(StrikeSpoken.deliveredWord)
             }
             Text(verbatim: value)
                 .font(figureFont)
                 .foregroundStyle(palette.accent)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                .lineLimit(lines(1))
+                .minimumScaleFactor(shrink(0.6))
             label
                 // On a big screen the label follows the reader's text size (it is read from further away); across the
-                // folding phone's hinge the narrow tiles keep the fixed small size they were laid out for.
-                .font(roomy ? Theme.label : .system(size: 10, weight: .semibold))
+                // folding phone's hinge the narrow tiles keep the fixed small size they were laid out for, except at
+                // the accessibility sizes (0.7.10 everyone), where every label follows the reader's size.
+                .font(roomy || typeSize.isAccessibilitySize ? Theme.label : .system(size: 10, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
+                .lineLimit(lines(2))
+                .minimumScaleFactor(shrink(0.85))
             if let note {
                 Text(verbatim: note)
                     .font(Theme.number)
                     .foregroundStyle(palette.slide)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
+                    .lineLimit(lines(1))
+                    .minimumScaleFactor(shrink(0.7))
             }
         }
         .frame(maxWidth: .infinity, minHeight: large ? 64 : 52)
@@ -75,11 +95,42 @@ struct NumberTile: View {
                     .accessibilityHidden(true)
             }
         }
-        .accessibilityElement(children: .combine)
+        .modifier(TileSpeech(label: label, spoken: spoken))
+    }
+
+    /// The one-word name over a figure after a shot ("Planned", "Delivered"), small, in the label's grey. Hidden from
+    /// VoiceOver, which hears both figures named in the tile's spoken value instead.
+    private func figureWord(_ word: String) -> some View {
+        Text(verbatim: word)
+            .font(.caption2.weight(.semibold))
+            .textCase(.uppercase)
+            .foregroundStyle(.secondary)
+            .lineLimit(lines(1))
+            .minimumScaleFactor(shrink(0.8))
+            .accessibilityHidden(true)
     }
 
     /// The figure's font: the notebook's headline digits, or a size up in the monospaced number design for the strike.
     private var figureFont: Font {
         large ? .system(.title3, design: .monospaced).weight(.semibold) : .headline.monospacedDigit()
+    }
+}
+
+/// 0.7.10 everyone: how a tile is read. With a spoken value the tile is one element, its label then the figure with its
+/// unit in words; without one its children are combined, as NotebookNumbers' tiles have always read.
+private struct TileSpeech: ViewModifier {
+    let label: Text
+    let spoken: String?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let spoken {
+            content
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(label)
+                .accessibilityValue(Text(verbatim: spoken))
+        } else {
+            content.accessibilityElement(children: .combine)
+        }
     }
 }
