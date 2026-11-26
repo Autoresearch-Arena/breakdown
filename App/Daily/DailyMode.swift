@@ -1,8 +1,5 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
-// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: begin saves the player's own surface back after
-//          putting the shot's on, so the shot's surface never becomes the player's saved choice. The wave 2 hooks are
-//          connected by App/GameCenter/DailyBoardLink.swift.)
 // PURPOSE: The shot of the day as a mode (plans/25-Nov-2026-shot-of-the-day-plan.md, stage 2 item 1). A daily shot is a
 //          trick shot with a date and a score, so this mode does not lay out, strike, replay or judge anything itself:
 //          it puts today's shot (DailyBank, DailyShot) on the table through TrickShotMode.begin, on the shot's own
@@ -159,10 +156,6 @@ final class DailyMode: TrickShotGate {
         // Through the model's own surface change, so the Surface menu, the 3D cloth and the solver agree. Nothing is
         // re-solved: the table is still (loadTrickLayout solves a zero-speed shot).
         model.setSurface(s.surface)
-        // 0.7.10 wiring: the shot's surface is the table's for now, never the player's saved choice. setSurface saves
-        // it, so the player's own is saved back: a launch after the app was closed on the shot (or on the shot a later
-        // launch set up behind the menu) starts on their surface, and that surface is the one given back on leaving.
-        if let before = surfaceBefore { UserDefaults.standard.set(before.rawValue, forKey: PlaySurface.storageKey) }
     }
 
     /// Your turn on the shot on the table (the card's Take your shot).
