@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
+//          D5: the menu's slow backdrop replay never starts with Reduce Motion on, so the table behind the menu is still.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: activeElevation refuses while a mode sets its own
 //          cue angle (cueAngleLockedByMode); finishStrike notes the controls for the strike panel (StrikeMemory).)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
@@ -2522,6 +2524,8 @@ final class ShowpieceModel {
         let args = ProcessInfo.processInfo.arguments
         guard hasSeenOpening, menuOpen, openingStage == .none, !TitleScreen.launchSkipsTitle,
               StoreScene.requested == nil, !args.contains("-retryCases") else { return }
+        // 0.7.10 everyone: with Reduce Motion on, the table behind the menu stays still (plan Part D5).
+        guard !TableCamera.reduceMotion else { return }
         beginBackdrop()
     }
 

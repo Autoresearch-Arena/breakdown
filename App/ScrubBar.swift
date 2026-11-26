@@ -92,8 +92,10 @@ struct ScrubBar: View {
         let thumbX: CGFloat = min(max(0, x - thumb / 2), w - thumb)
         return ZStack(alignment: .leading) {
             Capsule().fill(phoneStyle ? Color.white.opacity(0.25) : palette.track).frame(height: railHeight)
-            if !phoneStyle { ticks(duration: d) }
             Capsule().fill(phoneStyle ? Color.white : palette.accent).frame(width: max(railHeight, x), height: railHeight)
+            // 0.7.10 everyone: the marks over the played rail too, so the small shapes (a dot, a ring) that tell them
+            // apart are not hidden once the playhead passes them.
+            if !phoneStyle { ticks(duration: d) }
             // The phone's moment ticks go over the played rail, which is white too; their dark edge keeps them apart.
             if phoneStyle { momentTicks(duration: d) }
             Circle()

@@ -66,6 +66,7 @@ struct TableZoomMenuItems: View {
 
     /// The striking ball and where it is now: in the next shot's layout once the shot on screen has played out, else in
     /// the recording at the clock. Nil when it is off the table.
+    @MainActor
     static func strikingBall(_ model: ShowpieceModel) -> (ball: Int, place: Vec2)? {
         let ball = model.strikeBall
         if model.aimReady, model.layout.indices.contains(ball) {

@@ -76,6 +76,7 @@ struct TargetBallBadge: View {
 
     /// 0.7.10 everyone: the badge's words. A numbered pool ball says its number with its group, as VoiceOver names it
     /// (TableWords.ballLabel: "3 ball, solid", "8 ball"); the small tables' balls keep their set's own word.
+    @MainActor
     private static func label(_ look: BallLook, ball: Int, set: TableBallSet) -> String {
         if case .pool(let number) = look, number > 0 { return TableWords.ballLabel(number, pool: true) }
         return set.label(of: ball)
