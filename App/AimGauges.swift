@@ -600,7 +600,7 @@ struct PowerGauge: View {
             VStack(alignment: .leading, spacing: 4) {
                 // Upright iPad: the calm label on its own line over the bar; Mac and fold: inside the hatch.
                 if !labelInline { calmLabelRow }
-                roomyBar(delivered: c?.delivered.swing)
+                roomyBar(delivered: c.flatMap { $0.differs(.swing) ? swing + ($0.delivered.swing - $0.planned.swing) : nil })
                     .overlay(alignment: .leading) { if labelInline { calmLabelInside } }
                 scale
             }

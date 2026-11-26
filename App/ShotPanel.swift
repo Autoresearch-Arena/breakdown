@@ -402,9 +402,9 @@ struct ShotPanel: View {
             // The dial's degrees go under it in a slim band, so the dial's own height grows by their two lines.
             let dialFigure = compactWidth(width) ? small * 1.35 + 24 : 0
             let figureLines = 2 * small * 1.35 + 16
-            let tip = min(max(112, top - figureLines), 220, width * 0.36)
+            let tip = min(max(100, top - figureLines), 220, width * 0.36)
             // The dial shares the row with the tip column and its own degrees figure beside it (or under it).
-            let dial = min(max(roomy ? 116 : 100, top - 30 - dialFigure), 200, width * (compactWidth(width) ? 0.36 : 0.3))
+            let dial = min(max(roomy ? 104 : 96, top - 30 - dialFigure), 200, width * (compactWidth(width) ? 0.36 : 0.3))
             return BandMetrics(tip: tip, dial: dial, figure: figure, shootWidth: 150, shootHeight: roomy ? 136 : 72)
         }
 
@@ -429,8 +429,8 @@ struct ShotPanel: View {
                                                     InstrumentSize.button + 8 + 72)
                                               : max(InstrumentSize.button, small * 1.3 + 18)
             let lower = small * 1.4 + 6 + bar + 4 + 20 + 8 + lastRow + 21
-            let tipColumn = 112 + 2 * small * 1.35 + 16
-            let dialColumn = (roomy ? 116 : 100) + 30 + (compactWidth(width) ? small * 1.35 + 24 : 0)
+            let tipColumn = 100 + 2 * small * 1.35 + 16
+            let dialColumn = (roomy ? 104 : 96) + 30 + (compactWidth(width) ? small * 1.35 + 24 : 0)
             return max(tipColumn, dialColumn) + lower + chrome
         }
     }
@@ -588,6 +588,8 @@ struct ShotPanel: View {
         let rolling = refused && !model.aimReady && !model.isSolving
         return Button {
             hintSeen = true
+            // The big screens' hint line has no close button, so a shot also puts the Pencil line away (StrikeHint).
+            UserDefaults.standard.set(true, forKey: "pencilHintSeen")
             if model.fireStroke() == .breakStruck { isOpen = false }
         } label: {
             Text(verbatim: rolling ? StrikeWords.rollingWord : Self.actionWord(racked: model.racked))
