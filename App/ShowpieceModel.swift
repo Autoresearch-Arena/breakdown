@@ -1,6 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: activeElevation refuses while a mode sets its own
 //          cue angle (cueAngleLockedByMode); finishStrike notes the controls for the strike panel (StrikeMemory).)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part A row 7: the store's table-game and ruling scenes seat the computer, as every real game does, so their
+//          pictures say "Your shot" and never "Player 1 to shoot". Part B: a ride's hold is as long as the short
+//          sentence the card shows by default (Caption.readingText).)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: paceSignature is readable, so a clip of a trick shot holds
 //          the same moments as the game's replay of it, ClipOffer.source.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: owns
@@ -308,7 +312,7 @@ enum ComputerTurnStage: Equatable, Sendable {
 enum StoreScene: Equatable, Sendable {
     /// -storeMatch: eight-ball against the medium computer mid-game, after the computer's shot ("Why that shot").
     case match
-    /// -storeRuling: a two-player eight-ball ruling card after a foul.
+    /// -storeRuling: an eight-ball ruling card after a foul, against the computer (0.7.10).
     case ruling
     /// -storeLesson <1...6>: that lesson held on its key moment in the Lens.
     case lesson(Int)
@@ -1362,7 +1366,8 @@ final class ShowpieceModel {
         holdPage = 0
         let explanations = UserDefaults.standard.object(forKey: GameSettings.explanationsKey) as? Bool ?? true
         if explanations, lensOn, rideBeats.indices.contains(i), let c = rideBeats[i].caption {
-            holdDwell = pacePlan.dwell(for: c.detail)
+            // 0.7.10 words: the card shows the short form by default; the full text waits behind a tap.
+            holdDwell = pacePlan.dwell(for: c.readingText)
         } else {
             holdDwell = RideTiming.stillHold
         }
@@ -2728,10 +2733,11 @@ final class ShowpieceModel {
         }
     }
 
-    /// -storeRuling: two people at eight-ball, played until a foul is ruled; its card is the picture. After the break
+    /// -storeRuling: eight-ball against the computer, played until a foul is ruled; its card is the picture. After the break
     /// the shooter plays the softest stroke along the clearest line on the table, which touches no ball: a foul.
     private func storeRulingScene() async {
-        startMatch(.eightBall)
+        // 0.7.10 words: against the computer, as every real game is, so the card says "you" and not "Player 1".
+        startMatch(.eightBall, computer: .medium)
         for _ in 0..<12 {
             await storeWait { !isSolving && aimReady && match?.phase != .shooting }
             guard let m = match, !m.state.isOver else { return }
@@ -2739,6 +2745,9 @@ final class ShowpieceModel {
             switch m.phase {
             case .ruling, .handOver:
                 m.acknowledgeRuling()
+            case .aiming where m.computerSeatToAct != nil:
+                // 0.7.10 words: the computer plays its own turn; the person's foul is the picture.
+                await storeWait { match?.phase != .aiming || match !== m }
             case .aiming:
                 if racked { breakNow(); continue }
                 if placingCueBall { _ = confirmCueBallPlacement() }
@@ -2793,7 +2802,14 @@ final class ShowpieceModel {
     /// -storeTableGame kind: a few shots of a scored game, each struck at the nearest ball with the table's own
     /// default power, every ruling acknowledged, so the banner carries real scores. Bar billiards is played alone.
     private func storeTableGameScene(_ kind: MatchKind) async {
-        startMatch(kind, players: kind == .barBilliards ? 1 : 2)
+        // 0.7.10 words: against the medium computer, as the menu offers every two-seat game; two people sharing the
+        // device is offered nowhere, and their default names put "Player 1 to shoot" in the store pictures. Bar
+        // billiards is still played alone.
+        if kind == .barBilliards {
+            startMatch(kind, players: 1)
+        } else {
+            startMatch(kind, computer: .medium)
+        }
         // Four shots: enough for scores to show on the banner, few enough that the table still looks mid-game.
         var struck = 0
         for _ in 0..<12 where struck < 4 {
@@ -2802,6 +2818,10 @@ final class ShowpieceModel {
             switch m.phase {
             case .ruling, .handOver:
                 m.acknowledgeRuling()
+            case .aiming where m.computerSeatToAct != nil:
+                // 0.7.10 words: the computer plays its own turn (MatchOpponent); its shot counts towards the four.
+                await storeWait { match?.phase != .aiming || match !== m }
+                struck += 1
             case .aiming:
                 if placingCueBall { _ = confirmCueBallPlacement() }
                 storePersonStroke(m)
@@ -4223,8 +4243,10 @@ final class ShowpieceModel {
         guard !holdDwellChecked, lensOn, pacePlan.beats.indices.contains(i) else { return }
         holdDwellChecked = true
         let beat = pacePlan.beats[i]
-        if let shown = displayedCaption(), shown.id == beat.caption.id, shown.detail != beat.caption.detail {
-            holdDwell = max(holdDwell, pacePlan.dwell(for: shown.detail))
+        // 0.7.10 words: compared on what is shown by default (the short form; the stroke's sentence joins the full
+        // text behind the tap).
+        if let shown = displayedCaption(), shown.id == beat.caption.id, shown.readingText != beat.caption.readingText {
+            holdDwell = max(holdDwell, pacePlan.dwell(for: shown.readingText))
         }
     }
 

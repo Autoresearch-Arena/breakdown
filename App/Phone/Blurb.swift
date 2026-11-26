@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part A row 5 and Part B: an optional fullSentence. With one, the folded blurb shows its short sentence whole
+//          (wrapped, never cut with an ellipsis) and a tap opens the full one in its place; VoiceOver reads the full one.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: an optional picture slot under the chips, for the jump's
 //          side view inside its explanation.)
 // PURPOSE: The Blurb, the one text component of the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The
@@ -64,6 +67,9 @@ struct Blurb: View {
     private let figure: CaptionFigure?
     private let chips: [CaptionFigure]
     private let sentence: String?
+    /// 0.7.10 words: the whole text behind a short `sentence` (a caption's detail behind its short form). With one, the
+    /// folded blurb shows `sentence` whole, wrapped and never cut, and the opened blurb shows this in its place.
+    private let fullSentence: String?
     private let equation: String?
     /// A picture under the chips (0.7.9: the jump's side view in its explanation), shown folded or open.
     private let picture: AnyView?
@@ -98,12 +104,15 @@ struct Blurb: View {
     /// - foldedLines: how many lines of the sentence show while folded.
     /// - buttons: at most two are drawn; any more are ignored.
     init(title: String? = nil, figure: CaptionFigure? = nil, chips: [CaptionFigure] = [], sentence: String? = nil,
+         fullSentence: String? = nil,
          equation: String? = nil, picture: AnyView? = nil, folded: Binding<Bool>? = nil, startsFolded: Bool = true,
          foldedLines: Int = 3, openMaxHeight: CGFloat = 420, buttons: [BlurbButton] = []) {
         self.title = title
         self.figure = figure
         self.chips = Array(chips.prefix(3))
         self.sentence = sentence
+        // A full text that says no more than the sentence is no full text at all (nothing to open).
+        self.fullSentence = fullSentence == sentence ? nil : fullSentence
         self.equation = equation
         self.picture = picture
         self.custom = nil
@@ -122,6 +131,7 @@ struct Blurb: View {
                         @ViewBuilder content: () -> Content) {
         let built = AnyView(content())
         self.title = nil; self.figure = nil; self.chips = []; self.sentence = nil; self.equation = nil; self.picture = nil
+        self.fullSentence = nil
         self.custom = { _ in built }
         self.spokenOverride = accessibilityText
         self.buttons = Array(buttons.prefix(2))
@@ -137,6 +147,7 @@ struct Blurb: View {
     init<Content: View>(folded: Binding<Bool>, accessibilityText: String? = nil, openMaxHeight: CGFloat = 420,
                         buttons: [BlurbButton] = [], @ViewBuilder content: @escaping (_ open: Bool) -> Content) {
         self.title = nil; self.figure = nil; self.chips = []; self.sentence = nil; self.equation = nil; self.picture = nil
+        self.fullSentence = nil
         self.custom = { AnyView(content($0)) }
         self.spokenOverride = accessibilityText
         self.buttons = Array(buttons.prefix(2))
@@ -152,7 +163,11 @@ struct Blurb: View {
     private var isFolded: Bool { external?.wrappedValue ?? ownFolded }
 
     /// Words are hidden by the fold (measured; half a point of slack for rounding).
-    private var wordsHidden: Bool { sentence != nil && fullHeight > shownHeight + 0.5 }
+    private var wordsHidden: Bool {
+        // 0.7.10 words: a full text behind the short sentence is always more to read.
+        if fullSentence != nil { return true }
+        return sentence != nil && fullHeight > shownHeight + 0.5
+    }
 
     /// A tap does something: it opens hidden words, or folds an opened blurb back.
     private var canToggle: Bool {
@@ -260,11 +275,14 @@ struct Blurb: View {
 
     /// The sentence: foldedLines lines while folded, all of it once open. A hidden full copy behind it is measured, so
     /// the dot shows only when the fold really hides words.
-    private func sentenceLine(_ text: String, open: Bool) -> some View {
-        HStack(alignment: .lastTextBaseline, spacing: 6) {
+    private func sentenceLine(_ short: String, open: Bool) -> some View {
+        // 0.7.10 words: with a full text, the folded blurb shows the short sentence whole (no line limit, so it wraps
+        // and never ends in an ellipsis) and the opened blurb shows the full text in its place.
+        let text = open ? (fullSentence ?? short) : short
+        return HStack(alignment: .lastTextBaseline, spacing: 6) {
             Text(verbatim: text)
                 .font(Theme.body)
-                .lineLimit(open ? nil : foldedLines)
+                .lineLimit(open || fullSentence != nil ? nil : foldedLines)
                 .fixedSize(horizontal: false, vertical: true)
                 .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { shownHeight = $0 }
                 .background(alignment: .topLeading) {
@@ -319,7 +337,8 @@ struct Blurb: View {
         if let title { parts.append(title) }
         if let figure { parts.append(figure.text) }
         parts += chips.map { "\($0.label) \($0.text)" }
-        if let sentence { parts.append(sentence) }
+        // The whole text, folded or not (0.7.10 words: the full sentence behind a short one).
+        if let full = fullSentence ?? sentence { parts.append(full) }
         if let equation { parts.append(equation) }
         return parts.joined(separator: ". ")
     }

@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part A row 1: sentences(for:) takes foulHeaded. Under a "Foul" heading the foul line starts with what
+//          happened ("No ball reached a rail after the hit."), not "Foul:" again; where no heading shows (the settled
+//          line, the default) it keeps "Foul: ...".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui review: a game ended by the clock says "Time ran
 //          out." once, without "Time is up." on the same card.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
@@ -240,9 +244,11 @@ enum MatchWords {
     ///   - target: the ball the shooter had to hit first where the table fixes one (MatchMode.targetBall).
     ///   - mentionTimeUp: false for a routine ruling: in bar billiards every shot after the bar drops carries the
     ///     time-up reason, and the banner's bar-down line and the one-time announcement already say it.
+    ///   - foulHeaded: true when the words sit under a heading that already says "Foul" (the ruling card and the
+    ///     phone's ruling blurb, MatchCard.rulingTitle): the foul line then starts with what happened (0.7.10).
     static func sentences(for r: Ruling, names: [String], pocketed: [Int], firstBall: Int?,
                           kind: MatchKind = .eightBall, you: PlayerID? = nil, target: Int? = nil,
-                          mentionTimeUp: Bool = true) -> [String] {
+                          mentionTimeUp: Bool = true, foulHeaded: Bool = false) -> [String] {
         let shooter = name(r.shooter, in: names)
         let next = name(r.nextShooter, in: names)
         let shooterIsYou = r.shooter == you
@@ -274,7 +280,13 @@ enum MatchWords {
             let context = FoulContext(kind: kind, shooter: shooter, shooterIsYou: shooterIsYou, target: target)
             let what = r.fouls.map { foul($0, firstBall: firstBall, illegalBreak: illegalBreakFoul, context: context) }
                 .formatted(.list(type: .and).locale(AppLocale.numbers))
-            out.append(String(localized: "Foul: \(what)."))
+            // 0.7.10 words: under a "Foul" heading the sentence starts with what happened, capitalised; "Foul:" again
+            // would say the heading twice. Without a heading (the settled line) it keeps its "Foul:".
+            if foulHeaded {
+                out.append(String(localized: "\(what.capitalizedFirst)."))
+            } else {
+                out.append(String(localized: "Foul: \(what)."))
+            }
         }
         // The ball that won the game is said by the end line ("You pocketed the 9."), so the pot line lists only
         // what else dropped with it.

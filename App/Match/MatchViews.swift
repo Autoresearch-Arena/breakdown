@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, Part A row 1: rulingSentences takes headed; the card
+//          and the phone blurb, which show the "Foul" heading, no longer start the sentence with "Foul:" as well. The
+//          settled line under the banner has no heading and keeps it.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The pieces the
 //          upright phone's match blurbs (MatchPhoneBlurbs.swift) share with this card are lifted out so both say the
 //          same words: the ruling's title and sentences, the settled line, the Rematch hint and the announcements are
@@ -303,7 +306,8 @@ struct MatchCard: View {
     static func settledWords(_ r: Ruling, _ match: MatchMode) -> String {
         let points = TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames,
                                           you: match.you)
-        return (rulingSentences(r, match) + points).joined(separator: " ")
+        // 0.7.10 words: no heading above the settled line, so its foul keeps "Foul:".
+        return (rulingSentences(r, match, headed: false) + points).joined(separator: " ")
     }
 
     /// The ruling's heading. A ruling that ends the game is headed by the result (MatchWords.resultTitle: "You
@@ -356,11 +360,16 @@ struct MatchCard: View {
     /// dropped and the first ball the striking ball touched, so a wrong-ball foul names the ball), then, when the
     /// stroke went through with no call made, the suggested call it was held to. "Time is up." is said on a card
     /// only: a routine ruling after the bar drops would repeat it every shot.
-    static func rulingSentences(_ r: Ruling, _ match: MatchMode) -> [String] {
+    /// `headed` (0.7.10 words): the words sit under rulingTitle's heading, so a foul line under "Foul" starts with what
+    /// happened. The settled line has no heading and passes false.
+    static func rulingSentences(_ r: Ruling, _ match: MatchMode, headed: Bool = true) -> [String] {
+        // 0.7.10 words: the heading says "Foul" only for a foul that does not end the game (rulingTitle).
+        let foulHeaded = headed && r.result == nil && r.fouled
         var out = MatchWords.sentences(for: r, names: match.playerNames, pocketed: match.lastPocketed,
                                        firstBall: match.lastFirstBall, kind: match.state.kind, you: match.you,
                                        target: match.targetBall(for: r.shooter),
-                                       mentionTimeUp: match.lastRulingShow == .card && match.settledRuling == nil)
+                                       mentionTimeUp: match.lastRulingShow == .card && match.settledRuling == nil,
+                                       foulHeaded: foulHeaded)
         // Only for the shot itself, not for an answered choice that followed it.
         if match.lastCallWasSuggested, let call = match.lastShotCall, !r.reasons.contains(.choiceAnswered) {
             out.insert(MatchWords.suggestedCallUsed(call), at: 0)

@@ -9,6 +9,9 @@ Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, bug plan item 39: the les
         can play; eleven trick shots, not ten; the plan being worked on now is the 0.7.0 bug plan).
 Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the real games are played against the computer; the
         two-player option is no longer offered here as a selling point).
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+        Part C: only claims a reader can check on the device. "Real games" are full games; Behind the 8-Ball's card is
+        described by what it gives (the aim, speed and spin the escape used), not as advice for a real table.)
 PURPOSE: Explain the working game, how it is built and checked, how to build it, and where the project documents are.
 SRP/DRY check: Pass - checked the app's code, the CHANGELOG, the spec and the plans; detail stays in those documents
         and is linked, not repeated.
@@ -17,8 +20,8 @@ SRP/DRY check: Pass - checked the app's code, the CHANGELOG, the spec and the pl
 
 A pool game for iPhone, iPad and Mac that lets you see the physics working.
 
-Every shot is solved by our own physics engine before it plays, so every number the game shows you is one it really
-computed. After a shot the table can melt into a dark blueprint (the Physics Lens) where each ball leaves a glowing
+Every shot is solved by the game's own physics solver before it plays: every path and number on screen is one it
+worked out, and none is drawn by hand. After a shot the table can melt into a dark blueprint (the Physics Lens) where each ball leaves a glowing
 path, arrows show speed and spin, and short notes explain where the energy went. You can scrub back and forth through
 the shot, slow it down, ride along with the balls, and try it again to see what your change did.
 
@@ -33,7 +36,7 @@ Hosting under Autoresearch-Arena does not, by itself, establish legal ownership.
 
 - **Lessons.** Six short lessons (stop, follow, draw, cut, curve, jump), each showing the shot and why it works, then
   handing you the cue until you can play it yourself.
-- **Real games.** Eight-ball and nine-ball with the full rules (calls, fouls, ball in hand, the 8 on the break), against
+- **Full games.** Eight-ball and nine-ball with the full rules (calls, fouls, ball in hand, the 8 on the break), against
   the computer at easy, medium or hard, which shows why it chose each shot.
 - **The stroke.** Power is how fast you swing: on a touch screen you pull back from the white ball and push through
   it, and a rushed or crooked stroke drifts. A straight-stroke drill measures yours.
@@ -43,13 +46,13 @@ Hosting under Autoresearch-Arena does not, by itself, establish legal ownership.
   you what to change after a miss.
 - **Behind the 8-Ball.** Twelve puzzles in which you are hooked in a game of eight-ball and must find a legal way
   out (kicks, banks, jumps, massés, swerves, safeties). Each is scored for being legal, made as called, difficulty and
-  style, and shows how the same escape is played on a real table.
+  style, and its card ("On a real table") gives the aim, speed and spin the escape used.
 - **Free play.** Rack the balls and break, then keep shooting from wherever they stop, with aim, power, cue-tip height
   and side, a raised cue for jumps and massés, and the mechanical bridge.
 - **Watch the intro.** The opening: a break at full speed, a freeze, the melt into the Physics Lens, then the same
   break in slow motion with its explanation.
 - **Four tables.** The nine-foot pool table, bumper pool, five-pin billiards (no pockets, little pins in the middle)
-  and bar billiards (holes in the bed, pegs that must not fall). The three other tables are real games with their own
+  and bar billiards (holes in the bed, pegs that must not fall). The three other tables are full games with their own
   rules and score.
 - **Ten surfaces.** Ordinary cloth, tournament cloth, dive-bar felt, ice, glass, rubber, cork, carpet, sand and the
   Moon, each changing grip, rolling, spin and bounce in a way the Lens shows.

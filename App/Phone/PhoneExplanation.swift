@@ -2,6 +2,10 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plan stage 4 item 2: the strike's blurb gains one
 //          line when planned and delivered differ, the largest error only, StrikeReading.withPhoneLine.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part B: the blurb shows the caption's short form folded (title, lead figure, chips, Caption.short, whole and
+//          wrapped) and its full text once opened by a tap; the worked equation waits for the opened blurb unless it is
+//          a headline beat's.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: the jump's side view sits inside its blurb here
 //          (FlightInBlurb), under the figures.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: on a jump the blurb also keeps clear of the stretch the
@@ -213,15 +217,21 @@ struct PhoneExplanationBlurb: View {
     // MARK: The blurb
 
     private func blurb(_ caption: Caption) -> Blurb {
-        let showsEquation = maths || model.isHeadline(caption)
+        // 0.7.10 words: the maths-on equation belongs to the full text, so the folded short form leaves it for the tap; a
+        // headline beat's worked equation still shows folded, as it always has.
+        let hasShort = !caption.short.isEmpty
+        let showsEquation = model.isHeadline(caption) || (maths && (!hasShort || !folded))
         let equation = caption.equationLine
         return Blurb(title: caption.title.isEmpty ? nil : caption.title,
                      figure: caption.figures.first,
                      // The lead figure is in the title; the others are chips (at most two more).
                      chips: Array(caption.figures.dropFirst()),
-                     // 0.7.10 strike: the strike's own explanation gains one line when the stroke changed the
-                     // strike, the largest error only (StrikeReading.withPhoneLine).
-                     sentence: StrikeReading.withPhoneLine(caption.detail, caption: caption, model: model),
+                     // 0.7.10 words + strike: the short sentence folded, the detail once opened; the strike's own
+                     // explanation gains one line when the stroke changed the strike (StrikeReading.withPhoneLine),
+                     // shown folded too since it is the one thing the player needs from that blurb.
+                     sentence: StrikeReading.withPhoneLine(hasShort ? caption.short : caption.detail, caption: caption, model: model),
+                     fullSentence: hasShort && !caption.detail.isEmpty
+                         ? StrikeReading.withPhoneLine(caption.detail, caption: caption, model: model) : nil,
                      equation: showsEquation && !equation.isEmpty ? equation : nil,
                      // A jump's side view (0.7.9): inside its explanation on this screen, under the figures, since
                      // there is no room here for a separate panel as well (CaptionLeader draws it elsewhere).

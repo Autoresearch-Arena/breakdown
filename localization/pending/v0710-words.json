@@ -1,0 +1,2638 @@
+{
+ "keys": [
+  "The cue hands its speed to the ball.",
+  "The cue sends the ball off with backspin (draw).",
+  "The cue sends the ball off sliding, with almost no spin (stun).",
+  "The cue sends the ball off with some topspin (follow).",
+  "The cue sends the ball off already rolling (natural roll).",
+  "The cue sends the ball off with more topspin than rolling.",
+  "While %@ slid, its path bent to the left.",
+  "While %@ slid, its path bent to the right.",
+  "The cue comes down",
+  "The cue drives the ball into the slate, which throws it up.",
+  "The push down is too small to make the ball hop.",
+  "The tip met the ball too far from the centre and slid off.",
+  "Side spin pushes it off line",
+  "Hit right of centre, the ball is pushed off line to the left.",
+  "Hit left of centre, the ball is pushed off line to the right.",
+  "Part of the cue's push went into spin instead of speed.",
+  "The slate throws %@ up off the cloth.",
+  "%@ flies over %@ with %@ cm to spare.",
+  "%@ lands and bounces up again.",
+  "%@ lands and stays on the cloth.",
+  "%@ sails over the cushion and leaves the table.",
+  "%@ hands %@ percent of its energy to %@.",
+  "Friction at the contact dragged %@ off the line, to the left.",
+  "Friction at the contact dragged %@ off the line, to the right.",
+  "%@ bounces off the bumper, keeping %@ percent of its speed.",
+  "%@ bounces off the post, keeping %@ percent of its speed.",
+  "%@ knocks the black peg over: the whole score is lost.",
+  "%@ knocks a white peg over: this break's points are lost.",
+  "%@ knocks the pin over and rolls on.",
+  "%@ catches %@ and is turned away from the hole.",
+  "The rail pushes it down",
+  "The rail pushes %@ back and down into the cloth.",
+  "%@ keeps %@ percent of its speed straight into the rail.",
+  "Friction spun %@ up until it rolled without slipping.",
+  "%@ drops into the hole.",
+  "%@ drops into the cup.",
+  "%@ drops in.",
+  "%@ crosses the pocket too fast to drop.",
+  "%@ crosses the cup too fast to drop.",
+  "%@ crosses the hole too fast to drop.",
+  "%@ was wedged against the rubber and is brought to rest.",
+  "%lld wedged balls are brought to rest touching.",
+  "Again at %@: %@",
+  "The break: %lld ball hits",
+  "%lld ball hits at once",
+  "Shows every hit",
+  "%@."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "The cue hands its speed to the ball.",
+   "text": "El taco transmite su velocidad a la bola."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue hands its speed to the ball.",
+   "text": "La queue transmet sa vitesse à la bille."
+  },
+  {
+   "culture": "de",
+   "key": "The cue hands its speed to the ball.",
+   "text": "Das Queue gibt sein Tempo an die Kugel weiter."
+  },
+  {
+   "culture": "it",
+   "key": "The cue hands its speed to the ball.",
+   "text": "La stecca cede la sua velocità alla palla."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue hands its speed to the ball.",
+   "text": "O taco transfere a sua velocidade para a bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue hands its speed to the ball.",
+   "text": "O taco passa a velocidade para a bola."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue hands its speed to the ball.",
+   "text": "キューが球に速さを渡します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue hands its speed to the ball.",
+   "text": "큐가 공에 속도를 넘겨줍니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue hands its speed to the ball.",
+   "text": "球杆把速度交给了球。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue hands its speed to the ball.",
+   "text": "Кий передаёт свою скорость шару."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue hands its speed to the ball.",
+   "text": "العصا تنقل سرعتها إلى الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "El taco lanza la bola con efecto de retroceso (draw)."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "La queue lance la bille avec de l'effet rétro."
+  },
+  {
+   "culture": "de",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "Das Queue schickt die Kugel mit Rückwärtseffet los (Zieher)."
+  },
+  {
+   "culture": "it",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "La stecca lancia la palla con effetto a ritroso (draw)."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "O taco lança a bola com efeito de recuo (draw)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "O taco lança a bola com efeito de recuo (draw)."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "キューは球をバックスピン（引き球）で送り出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "큐가 공을 백스핀(끌어치기)으로 내보냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "球杆让球带着回旋（缩杆）出去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "Кий отправляет шар с обратным вращением (оттяжка)."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue sends the ball off with backspin (draw).",
+   "text": "العصا تطلق الكرة بدوران خلفي (سحب)."
+  },
+  {
+   "culture": "es",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "El taco lanza la bola deslizando, casi sin efecto (stun)."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "La queue lance la bille en glissade, presque sans effet (coup sec)."
+  },
+  {
+   "culture": "de",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "Das Queue schickt die Kugel rutschend los, fast ohne Effet (Stoppball)."
+  },
+  {
+   "culture": "it",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "La stecca lancia la palla che striscia, quasi senza effetto (stun)."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "O taco lança a bola a deslizar, quase sem efeito (stun)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "O taco lança a bola deslizando, quase sem efeito (stun)."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "キューは球を回転がほぼない滑る状態（ストップ）で送り出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "큐가 공을 회전 없이 미끄러지게(스턴) 내보냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "球杆让球几乎不带旋转地滑出去（定杆）。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "Кий отправляет шар скользить почти без вращения (стоп)."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue sends the ball off sliding, with almost no spin (stun).",
+   "text": "العصا تطلق الكرة منزلقة، تقريباً بلا دوران (توقيف)."
+  },
+  {
+   "culture": "es",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "El taco lanza la bola con algo de efecto alto (follow)."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "La queue lance la bille avec un peu d'effet coulé."
+  },
+  {
+   "culture": "de",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "Das Queue schickt die Kugel mit etwas Vorwärtseffet los (Nachläufer)."
+  },
+  {
+   "culture": "it",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "La stecca lancia la palla con un po' di effetto in avanti (follow)."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "O taco lança a bola com algum efeito alto (follow)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "O taco lança a bola com um pouco de efeito alto (follow)."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "キューは球を少しのトップスピン（押し球）で送り出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "큐가 공을 약간의 탑스핀(밀어치기)으로 내보냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "球杆让球带着一些上旋（跟杆）出去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "Кий отправляет шар с небольшим верхним вращением (накат)."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue sends the ball off with some topspin (follow).",
+   "text": "العصا تطلق الكرة ببعض الدوران الأمامي (متابعة)."
+  },
+  {
+   "culture": "es",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "El taco lanza la bola ya rodando (rodadura natural)."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "La queue lance la bille qui roule déjà (roulement naturel)."
+  },
+  {
+   "culture": "de",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "Das Queue schickt die Kugel schon rollend los (natürliches Rollen)."
+  },
+  {
+   "culture": "it",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "La stecca lancia la palla che già rotola (rotolamento naturale)."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "O taco lança a bola já a rolar (rolamento natural)."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "O taco lança a bola já rolando (rolamento natural)."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "キューは球をはじめから転がる状態（自然な転がり）で送り出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "큐가 공을 처음부터 구르게(자연스러운 구름) 내보냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "球杆让球一出去就在滚动（自然滚动）。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "Кий отправляет шар уже катящимся (естественное качение)."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue sends the ball off already rolling (natural roll).",
+   "text": "العصا تطلق الكرة وهي تتدحرج مسبقاً (تدحرج طبيعي)."
+  },
+  {
+   "culture": "es",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "El taco lanza la bola con más efecto alto que una bola que rueda."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "La queue lance la bille avec plus d'effet coulé qu'une bille qui roule."
+  },
+  {
+   "culture": "de",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "Das Queue schickt die Kugel mit mehr Vorwärtseffet los als beim Rollen."
+  },
+  {
+   "culture": "it",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "La stecca lancia la palla con più effetto in avanti di una palla che rotola."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "O taco lança a bola com mais efeito alto do que uma bola a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "O taco lança a bola com mais efeito alto do que uma bola rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "キューは球を転がる球より強いトップスピンで送り出します。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "큐가 공을 구르는 공보다 강한 탑스핀으로 내보냅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "球杆让球带着比滚动更强的上旋出去。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "Кий отправляет шар с более сильным верхним вращением, чем при качении."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue sends the ball off with more topspin than rolling.",
+   "text": "العصا تطلق الكرة بدوران أمامي أكثر من كرة متدحرجة."
+  },
+  {
+   "culture": "es",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Mientras %@ se deslizaba, su trayectoria se curvó a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Pendant que %@ glissait, sa trajectoire s'est courbée vers la gauche."
+  },
+  {
+   "culture": "de",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Während %@ rutschte, bog ihre Bahn nach links ab."
+  },
+  {
+   "culture": "it",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Mentre %@ strisciava, la sua traiettoria ha curvato a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Enquanto %@ deslizava, a trajetória curvou para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Enquanto %@ deslizava, a trajetória curvou para a esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "%@が滑っている間に、進路が左へ曲がりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "%@(이)가 미끄러지는 동안 경로가 왼쪽으로 휘었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "%@ 滑行时，路线向左弯了。"
+  },
+  {
+   "culture": "ru",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "Пока %@ скользил, его путь отклонился влево."
+  },
+  {
+   "culture": "ar",
+   "key": "While %@ slid, its path bent to the left.",
+   "text": "بينما كانت %@ تنزلق، انحنى مسارها إلى اليسار."
+  },
+  {
+   "culture": "es",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Mientras %@ se deslizaba, su trayectoria se curvó a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Pendant que %@ glissait, sa trajectoire s'est courbée vers la droite."
+  },
+  {
+   "culture": "de",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Während %@ rutschte, bog ihre Bahn nach rechts ab."
+  },
+  {
+   "culture": "it",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Mentre %@ strisciava, la sua traiettoria ha curvato a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Enquanto %@ deslizava, a trajetória curvou para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Enquanto %@ deslizava, a trajetória curvou para a direita."
+  },
+  {
+   "culture": "ja",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "%@が滑っている間に、進路が右へ曲がりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "%@(이)가 미끄러지는 동안 경로가 오른쪽으로 휘었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "%@ 滑行时，路线向右弯了。"
+  },
+  {
+   "culture": "ru",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "Пока %@ скользил, его путь отклонился вправо."
+  },
+  {
+   "culture": "ar",
+   "key": "While %@ slid, its path bent to the right.",
+   "text": "بينما كانت %@ تنزلق، انحنى مسارها إلى اليمين."
+  },
+  {
+   "culture": "es",
+   "key": "The cue comes down",
+   "text": "El taco baja sobre la bola"
+  },
+  {
+   "culture": "fr",
+   "key": "The cue comes down",
+   "text": "La queue descend sur la bille"
+  },
+  {
+   "culture": "de",
+   "key": "The cue comes down",
+   "text": "Das Queue kommt von oben"
+  },
+  {
+   "culture": "it",
+   "key": "The cue comes down",
+   "text": "La stecca scende sulla palla"
+  },
+  {
+   "culture": "pt",
+   "key": "The cue comes down",
+   "text": "O taco desce sobre a bola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue comes down",
+   "text": "O taco desce sobre a bola"
+  },
+  {
+   "culture": "ja",
+   "key": "The cue comes down",
+   "text": "キューが上から当たる"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue comes down",
+   "text": "큐가 위에서 내려침"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue comes down",
+   "text": "球杆从上压下"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue comes down",
+   "text": "Кий бьёт сверху"
+  },
+  {
+   "culture": "ar",
+   "key": "The cue comes down",
+   "text": "العصا تنزل على الكرة"
+  },
+  {
+   "culture": "es",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "El taco empuja la bola contra la pizarra, que la lanza hacia arriba."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "La queue enfonce la bille dans l'ardoise, qui la renvoie en l'air."
+  },
+  {
+   "culture": "de",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "Das Queue treibt die Kugel in die Schieferplatte, die sie hochwirft."
+  },
+  {
+   "culture": "it",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "La stecca spinge la palla contro l'ardesia, che la lancia in alto."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "O taco empurra a bola contra a ardósia, que a atira para cima."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "O taco empurra a bola contra a ardósia, que a joga para cima."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "キューが球をスレートに押しつけ、スレートが球を跳ね上げます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "큐가 공을 슬레이트로 밀어 넣고, 슬레이트가 공을 튕겨 올립니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "球杆把球压向石板，石板把它弹了起来。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "Кий вгоняет шар в плиту, и плита подбрасывает его вверх."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue drives the ball into the slate, which throws it up.",
+   "text": "العصا تدفع الكرة نحو اللوح الحجري، فيقذفها إلى الأعلى."
+  },
+  {
+   "culture": "es",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "El empuje hacia abajo es demasiado pequeño para que la bola salte."
+  },
+  {
+   "culture": "fr",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "La poussée vers le bas est trop faible pour faire sauter la bille."
+  },
+  {
+   "culture": "de",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "Der Druck nach unten ist zu klein, um die Kugel springen zu lassen."
+  },
+  {
+   "culture": "it",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "La spinta verso il basso è troppo piccola per far saltare la palla."
+  },
+  {
+   "culture": "pt",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "O empurrão para baixo é pequeno demais para fazer a bola saltar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "O empurrão para baixo é pequeno demais para fazer a bola pular."
+  },
+  {
+   "culture": "ja",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "下向きの押しが小さすぎて、球は跳ねません。"
+  },
+  {
+   "culture": "ko",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "아래로 미는 힘이 너무 작아 공이 뛰어오르지 않습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "向下的压力太小，球跳不起来。"
+  },
+  {
+   "culture": "ru",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "Толчок вниз слишком мал, чтобы шар подпрыгнул."
+  },
+  {
+   "culture": "ar",
+   "key": "The push down is too small to make the ball hop.",
+   "text": "الدفعة إلى الأسفل أصغر من أن تجعل الكرة تقفز."
+  },
+  {
+   "culture": "es",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "La suela tocó la bola demasiado lejos del centro y resbaló."
+  },
+  {
+   "culture": "fr",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "Le procédé a touché la bille trop loin du centre et a glissé."
+  },
+  {
+   "culture": "de",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "Die Pomeranze traf die Kugel zu weit von der Mitte und rutschte ab."
+  },
+  {
+   "culture": "it",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "Il cuoio ha colpito la palla troppo lontano dal centro ed è scivolato."
+  },
+  {
+   "culture": "pt",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "A sola tocou na bola longe demais do centro e escorregou."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "A sola tocou a bola longe demais do centro e escorregou."
+  },
+  {
+   "culture": "ja",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "タップが球の中心から離れすぎた所に当たり、滑りました。"
+  },
+  {
+   "culture": "ko",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "팁이 공의 중심에서 너무 먼 곳에 맞아 미끄러졌습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "皮头击球点离球心太远，滑开了。"
+  },
+  {
+   "culture": "ru",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "Наклейка попала слишком далеко от центра шара и соскользнула."
+  },
+  {
+   "culture": "ar",
+   "key": "The tip met the ball too far from the centre and slid off.",
+   "text": "لامس رأس العصا الكرة بعيداً جداً عن المركز فانزلق عنها."
+  },
+  {
+   "culture": "es",
+   "key": "Side spin pushes it off line",
+   "text": "El efecto lateral la desvía"
+  },
+  {
+   "culture": "fr",
+   "key": "Side spin pushes it off line",
+   "text": "L'effet latéral la dévie"
+  },
+  {
+   "culture": "de",
+   "key": "Side spin pushes it off line",
+   "text": "Seiteneffet drückt sie von der Linie"
+  },
+  {
+   "culture": "it",
+   "key": "Side spin pushes it off line",
+   "text": "L'effetto laterale la sposta"
+  },
+  {
+   "culture": "pt",
+   "key": "Side spin pushes it off line",
+   "text": "O efeito lateral desvia-a"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Side spin pushes it off line",
+   "text": "O efeito lateral a desvia"
+  },
+  {
+   "culture": "ja",
+   "key": "Side spin pushes it off line",
+   "text": "横回転でラインからずれる"
+  },
+  {
+   "culture": "ko",
+   "key": "Side spin pushes it off line",
+   "text": "옆회전이 선 밖으로 민다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Side spin pushes it off line",
+   "text": "侧旋把球推离瞄准线"
+  },
+  {
+   "culture": "ru",
+   "key": "Side spin pushes it off line",
+   "text": "Боковой винт уводит с линии"
+  },
+  {
+   "culture": "ar",
+   "key": "Side spin pushes it off line",
+   "text": "الدوران الجانبي يحرفها عن خطها"
+  },
+  {
+   "culture": "es",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "Golpeada a la derecha del centro, la bola sale desviada a la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "Frappée à droite du centre, la bille est déviée vers la gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "Rechts von der Mitte getroffen, wird die Kugel nach links von der Linie gedrückt."
+  },
+  {
+   "culture": "it",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "Colpita a destra del centro, la palla viene spinta fuori linea a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "Batida à direita do centro, a bola é desviada para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "Batida à direita do centro, a bola é desviada para a esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "中心より右を撞くと、球はラインから左へ押し出されます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "중심보다 오른쪽을 치면 공은 선에서 왼쪽으로 밀려납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "击在球心右侧，球被推离线路，偏向左边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "При ударе правее центра шар уводит с линии влево."
+  },
+  {
+   "culture": "ar",
+   "key": "Hit right of centre, the ball is pushed off line to the left.",
+   "text": "عند الضرب يمين المركز تُدفع الكرة عن خطها إلى اليسار."
+  },
+  {
+   "culture": "es",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "Golpeada a la izquierda del centro, la bola sale desviada a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "Frappée à gauche du centre, la bille est déviée vers la droite."
+  },
+  {
+   "culture": "de",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "Links von der Mitte getroffen, wird die Kugel nach rechts von der Linie gedrückt."
+  },
+  {
+   "culture": "it",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "Colpita a sinistra del centro, la palla viene spinta fuori linea a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "Batida à esquerda do centro, a bola é desviada para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "Batida à esquerda do centro, a bola é desviada para a direita."
+  },
+  {
+   "culture": "ja",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "中心より左を撞くと、球はラインから右へ押し出されます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "중심보다 왼쪽을 치면 공은 선에서 오른쪽으로 밀려납니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "击在球心左侧，球被推离线路，偏向右边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "При ударе левее центра шар уводит с линии вправо."
+  },
+  {
+   "culture": "ar",
+   "key": "Hit left of centre, the ball is pushed off line to the right.",
+   "text": "عند الضرب يسار المركز تُدفع الكرة عن خطها إلى اليمين."
+  },
+  {
+   "culture": "es",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Parte del empuje del taco se fue en efecto en lugar de velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Une partie de la poussée de la queue est passée dans l'effet au lieu de la vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Ein Teil des Queuestoßes ging in Effet statt in Tempo."
+  },
+  {
+   "culture": "it",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Parte della spinta della stecca è andata in effetto invece che in velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Parte do impulso do taco foi para o efeito em vez da velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Parte do impulso do taco virou efeito em vez de velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "キューの押しの一部が、速さではなく回転になりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "큐가 미는 힘의 일부가 속도 대신 회전이 되었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "球杆的推力有一部分变成了旋转，而不是速度。"
+  },
+  {
+   "culture": "ru",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "Часть толчка кия ушла во вращение, а не в скорость."
+  },
+  {
+   "culture": "ar",
+   "key": "Part of the cue's push went into spin instead of speed.",
+   "text": "ذهب جزء من دفعة العصا إلى الدوران بدلاً من السرعة."
+  },
+  {
+   "culture": "es",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "La pizarra lanza %@ hacia arriba, fuera del paño."
+  },
+  {
+   "culture": "fr",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "L'ardoise renvoie %@ en l'air, au-dessus du tapis."
+  },
+  {
+   "culture": "de",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "Die Schieferplatte wirft %@ vom Tuch hoch."
+  },
+  {
+   "culture": "it",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "L'ardesia lancia %@ in alto, via dal panno."
+  },
+  {
+   "culture": "pt",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "A ardósia atira %@ para cima, para fora do pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "A ardósia joga %@ para cima, para fora do pano."
+  },
+  {
+   "culture": "ja",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "スレートが%@をラシャの上へ跳ね上げます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "슬레이트가 %@(을)를 천 위로 튕겨 올립니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "石板把%@弹离台呢。"
+  },
+  {
+   "culture": "ru",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "Плита подбрасывает %@ над сукном."
+  },
+  {
+   "culture": "ar",
+   "key": "The slate throws %@ up off the cloth.",
+   "text": "اللوح الحجري يقذف %@ إلى الأعلى فوق الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ vuela sobre %2$@ con %3$@ cm de margen."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ passe au-dessus de %2$@ avec %3$@ cm de marge."
+  },
+  {
+   "culture": "de",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ fliegt mit %3$@ cm Luft über %2$@."
+  },
+  {
+   "culture": "it",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ vola sopra %2$@ con %3$@ cm di margine."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ voa por cima de %2$@ com %3$@ cm de folga."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ voa por cima de %2$@ com %3$@ cm de folga."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@は%3$@ cmの余裕で%2$@を飛び越えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@(이)가 %3$@ cm의 여유를 두고 %2$@ 위로 날아갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ 从 %2$@ 上方飞过，还留有 %3$@ cm 的余量。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ пролетает над %2$@ с запасом %3$@ см."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ flies over %@ with %@ cm to spare.",
+   "text": "%1$@ تطير فوق %2$@ بفارق %3$@ سم."
+  },
+  {
+   "culture": "es",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ cae y vuelve a rebotar hacia arriba."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ retombe et rebondit à nouveau."
+  },
+  {
+   "culture": "de",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ landet und springt wieder hoch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ atterra e rimbalza di nuovo in alto."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ aterra e volta a saltar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ cai e quica de novo para cima."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@は着地して、また跳ね上がります。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@(이)가 내려앉았다가 다시 튀어 오릅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ 落下后又弹了起来。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ приземляется и снова подскакивает."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ lands and bounces up again.",
+   "text": "%@ تهبط ثم ترتد إلى الأعلى مجدداً."
+  },
+  {
+   "culture": "es",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ cae y se queda en el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ retombe et reste sur le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ landet und bleibt auf dem Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ atterra e resta sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ aterra e fica no pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ cai e fica no pano."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@は着地して、ラシャの上にとどまります。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@(이)가 내려앉아 천 위에 머뭅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ 落下后留在了台呢上。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ приземляется и остаётся на сукне."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ lands and stays on the cloth.",
+   "text": "%@ تهبط وتبقى على الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ pasa por encima de la banda y sale de la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ passe au-dessus de la bande et quitte la table."
+  },
+  {
+   "culture": "de",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ fliegt über die Bande und verlässt den Tisch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ vola sopra la sponda ed esce dal tavolo."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ passa por cima da tabela e sai da mesa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ passa por cima da tabela e sai da mesa."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@はクッションを越えて台の外へ出ます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@(이)가 쿠션을 넘어 테이블 밖으로 나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ 越过库边，飞出了球台。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ перелетает через борт и покидает стол."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ sails over the cushion and leaves the table.",
+   "text": "%@ تعبر فوق الحافة وتغادر الطاولة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ pasa el %2$@ por ciento de su energía a %3$@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ transmet %2$@ pour cent de son énergie à %3$@."
+  },
+  {
+   "culture": "de",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ gibt %2$@ Prozent ihrer Energie an %3$@ weiter."
+  },
+  {
+   "culture": "it",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ cede il %2$@ per cento della sua energia a %3$@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ passa %2$@ por cento da sua energia a %3$@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ passa %2$@ por cento da energia para %3$@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@はエネルギーの%2$@パーセントを%3$@に渡します。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@(이)가 에너지의 %2$@퍼센트를 %3$@에 넘겨줍니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ 把百分之%2$@的能量交给了%3$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ передаёт %2$@ процентов своей энергии %3$@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ hands %@ percent of its energy to %@.",
+   "text": "%1$@ تنقل %2$@ في المئة من طاقتها إلى %3$@."
+  },
+  {
+   "culture": "es",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "La fricción en el contacto arrastró %@ fuera de la línea, hacia la izquierda."
+  },
+  {
+   "culture": "fr",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "Le frottement au contact a entraîné %@ hors de la ligne, vers la gauche."
+  },
+  {
+   "culture": "de",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "Die Reibung am Kontakt zog %@ von der Linie, nach links."
+  },
+  {
+   "culture": "it",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "L'attrito al contatto ha trascinato %@ fuori linea, a sinistra."
+  },
+  {
+   "culture": "pt",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "O atrito no contacto arrastou %@ para fora da linha, para a esquerda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "O atrito no contato arrastou %@ para fora da linha, para a esquerda."
+  },
+  {
+   "culture": "ja",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "接点の摩擦が%@をラインから左へ引きずりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "접점의 마찰이 %@(을)를 선에서 왼쪽으로 끌어냈습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "接触点的摩擦把%@拖离了线路，偏向左边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "Трение в точке контакта увело %@ с линии влево."
+  },
+  {
+   "culture": "ar",
+   "key": "Friction at the contact dragged %@ off the line, to the left.",
+   "text": "سحب الاحتكاك عند نقطة التلامس %@ عن الخط إلى اليسار."
+  },
+  {
+   "culture": "es",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "La fricción en el contacto arrastró %@ fuera de la línea, hacia la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "Le frottement au contact a entraîné %@ hors de la ligne, vers la droite."
+  },
+  {
+   "culture": "de",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "Die Reibung am Kontakt zog %@ von der Linie, nach rechts."
+  },
+  {
+   "culture": "it",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "L'attrito al contatto ha trascinato %@ fuori linea, a destra."
+  },
+  {
+   "culture": "pt",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "O atrito no contacto arrastou %@ para fora da linha, para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "O atrito no contato arrastou %@ para fora da linha, para a direita."
+  },
+  {
+   "culture": "ja",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "接点の摩擦が%@をラインから右へ引きずりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "접점의 마찰이 %@(을)를 선에서 오른쪽으로 끌어냈습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "接触点的摩擦把%@拖离了线路，偏向右边。"
+  },
+  {
+   "culture": "ru",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "Трение в точке контакта увело %@ с линии вправо."
+  },
+  {
+   "culture": "ar",
+   "key": "Friction at the contact dragged %@ off the line, to the right.",
+   "text": "سحب الاحتكاك عند نقطة التلامس %@ عن الخط إلى اليمين."
+  },
+  {
+   "culture": "es",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ rebota en el bumper y conserva el %2$@ por ciento de su velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ rebondit sur le bumper et garde %2$@ pour cent de sa vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ prallt vom Bumper ab und behält %2$@ Prozent ihres Tempos."
+  },
+  {
+   "culture": "it",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ rimbalza sul bumper e mantiene il %2$@ per cento della sua velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ ressalta no bumper e mantém %2$@ por cento da velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ quica no bumper e mantém %2$@ por cento da velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@はバンパーで跳ね返り、速さの%2$@パーセントを保ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@(이)가 범퍼에 튕겨 나오며 속도의 %2$@퍼센트를 유지합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ 从挡柱上弹回，保留了百分之%2$@的速度。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ отскакивает от бампера и сохраняет %2$@ процентов скорости."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ bounces off the bumper, keeping %@ percent of its speed.",
+   "text": "%1$@ ترتد عن المصدّ وتحتفظ بـ%2$@ في المئة من سرعتها."
+  },
+  {
+   "culture": "es",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ rebota en el poste y conserva el %2$@ por ciento de su velocidad."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ rebondit sur le plot et garde %2$@ pour cent de sa vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ prallt vom Pfosten ab und behält %2$@ Prozent ihres Tempos."
+  },
+  {
+   "culture": "it",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ rimbalza sul paletto e mantiene il %2$@ per cento della sua velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ ressalta no poste e mantém %2$@ por cento da velocidade."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ quica no poste e mantém %2$@ por cento da velocidade."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@はポストで跳ね返り、速さの%2$@パーセントを保ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@(이)가 기둥에 튕겨 나오며 속도의 %2$@퍼센트를 유지합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ 从柱子上弹回，保留了百分之%2$@的速度。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ отскакивает от столбика и сохраняет %2$@ процентов скорости."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ bounces off the post, keeping %@ percent of its speed.",
+   "text": "%1$@ ترتد عن العمود وتحتفظ بـ%2$@ في المئة من سرعتها."
+  },
+  {
+   "culture": "es",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ derriba el bolo negro: se pierde toda la puntuación."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ renverse la quille noire : tout le score est perdu."
+  },
+  {
+   "culture": "de",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ wirft den schwarzen Pin um: Die ganze Punktzahl ist weg."
+  },
+  {
+   "culture": "it",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ abbatte il birillo nero: si perde tutto il punteggio."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ derruba o pino preto: perde-se a pontuação toda."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ derruba o pino preto: a pontuação inteira é perdida."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@が黒いペグを倒しました。得点はすべて失われます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@(이)가 검은 페그를 쓰러뜨렸습니다. 점수를 모두 잃습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ 撞倒了黑色木桩：全部得分都没了。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ сбивает чёрный колышек: весь счёт потерян."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ knocks the black peg over: the whole score is lost.",
+   "text": "%@ تُسقط الوتد الأسود: يضيع المجموع كله."
+  },
+  {
+   "culture": "es",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ derriba un bolo blanco: se pierden los puntos de esta tacada."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ renverse une quille blanche : les points de cette série sont perdus."
+  },
+  {
+   "culture": "de",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ wirft einen weißen Pin um: Die Punkte dieser Serie sind weg."
+  },
+  {
+   "culture": "it",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ abbatte un birillo bianco: si perdono i punti di questa serie."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ derruba um pino branco: perdem-se os pontos desta série."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ derruba um pino branco: os pontos desta série são perdidos."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@が白いペグを倒しました。この連続の得点は失われます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@(이)가 흰 페그를 쓰러뜨렸습니다. 이번 연속 득점을 잃습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ 撞倒了白色木桩：这一轮的得分没了。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ сбивает белый колышек: очки этой серии потеряны."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ knocks a white peg over: this break's points are lost.",
+   "text": "%@ تُسقط وتداً أبيض: تضيع نقاط هذه السلسلة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ derriba el bolo y sigue rodando."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ renverse la quille et continue à rouler."
+  },
+  {
+   "culture": "de",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ wirft den Kegel um und rollt weiter."
+  },
+  {
+   "culture": "it",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ abbatte il birillo e continua a rotolare."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ derruba o pino e continua a rolar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ derruba o pino e continua rolando."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@はピンを倒して、転がり続けます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@(이)가 핀을 쓰러뜨리고 계속 굴러갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ 撞倒小柱后继续滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ сбивает кеглю и катится дальше."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ knocks the pin over and rolls on.",
+   "text": "%@ تُسقط الوتد وتواصل التدحرج."
+  },
+  {
+   "culture": "es",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ toca %2$@ y se desvía del agujero."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ accroche %2$@ et est détournée du trou."
+  },
+  {
+   "culture": "de",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ erwischt %2$@ und wird vom Loch weggelenkt."
+  },
+  {
+   "culture": "it",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ prende %2$@ e viene deviata dalla buca."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ toca %2$@ e é desviada do buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ pega %2$@ e é desviada do buraco."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@は%2$@に当たり、穴からそらされます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@(이)가 %2$@에 걸려 구멍에서 비껴 나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ 碰到了%2$@，被挡离了袋口。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ задевает %2$@ и отворачивает от лузы."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ catches %@ and is turned away from the hole.",
+   "text": "%1$@ تلمس %2$@ فتنحرف بعيداً عن الفتحة."
+  },
+  {
+   "culture": "es",
+   "key": "The rail pushes it down",
+   "text": "La banda la empuja hacia abajo"
+  },
+  {
+   "culture": "fr",
+   "key": "The rail pushes it down",
+   "text": "La bande la pousse vers le bas"
+  },
+  {
+   "culture": "de",
+   "key": "The rail pushes it down",
+   "text": "Die Bande drückt sie nach unten"
+  },
+  {
+   "culture": "it",
+   "key": "The rail pushes it down",
+   "text": "La sponda la spinge in basso"
+  },
+  {
+   "culture": "pt",
+   "key": "The rail pushes it down",
+   "text": "A tabela empurra-a para baixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The rail pushes it down",
+   "text": "A tabela a empurra para baixo"
+  },
+  {
+   "culture": "ja",
+   "key": "The rail pushes it down",
+   "text": "クッションが下へ押す"
+  },
+  {
+   "culture": "ko",
+   "key": "The rail pushes it down",
+   "text": "쿠션이 아래로 누름"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The rail pushes it down",
+   "text": "库边把球往下压"
+  },
+  {
+   "culture": "ru",
+   "key": "The rail pushes it down",
+   "text": "Борт прижимает вниз"
+  },
+  {
+   "culture": "ar",
+   "key": "The rail pushes it down",
+   "text": "الحافة تدفعها إلى الأسفل"
+  },
+  {
+   "culture": "es",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "La banda empuja %@ hacia atrás y hacia abajo, contra el paño."
+  },
+  {
+   "culture": "fr",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "La bande repousse %@ en arrière et vers le bas, dans le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "Die Bande drückt %@ zurück und nach unten ins Tuch."
+  },
+  {
+   "culture": "it",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "La sponda spinge %@ indietro e in basso, contro il panno."
+  },
+  {
+   "culture": "pt",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "A tabela empurra %@ para trás e para baixo, contra o pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "A tabela empurra %@ para trás e para baixo, contra o pano."
+  },
+  {
+   "culture": "ja",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "クッションが%@を押し返し、同時にラシャへ押しつけます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "쿠션이 %@(을)를 뒤로 밀면서 천 쪽 아래로도 누릅니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "库边把%@往回推，同时往下压向台呢。"
+  },
+  {
+   "culture": "ru",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "Борт отталкивает %@ назад и вниз, в сукно."
+  },
+  {
+   "culture": "ar",
+   "key": "The rail pushes %@ back and down into the cloth.",
+   "text": "الحافة تدفع %@ إلى الخلف وإلى الأسفل نحو الجوخ."
+  },
+  {
+   "culture": "es",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ conserva el %2$@ por ciento de su velocidad en línea recta contra la banda."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ garde %2$@ pour cent de sa vitesse en ligne droite contre la bande."
+  },
+  {
+   "culture": "de",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ behält %2$@ Prozent ihres Tempos senkrecht zur Bande."
+  },
+  {
+   "culture": "it",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ mantiene il %2$@ per cento della sua velocità verso la sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ mantém %2$@ por cento da velocidade em direção à tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ mantém %2$@ por cento da velocidade em direção à tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@はクッションに真っすぐ向かう速さの%2$@パーセントを保ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@(이)가 쿠션 쪽 속도의 %2$@퍼센트를 유지합니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ 保留了朝向库边方向百分之%2$@的速度。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ сохраняет %2$@ процентов скорости в направлении борта."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ keeps %@ percent of its speed straight into the rail.",
+   "text": "%1$@ تحتفظ بـ%2$@ في المئة من سرعتها المتجهة مباشرةً نحو الحافة."
+  },
+  {
+   "culture": "es",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "La fricción hizo girar %@ hasta que rodó sin resbalar."
+  },
+  {
+   "culture": "fr",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "Le frottement a fait tourner %@ jusqu'à ce qu'elle roule sans glisser."
+  },
+  {
+   "culture": "de",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "Die Reibung brachte %@ in Drehung, bis sie ohne Rutschen rollte."
+  },
+  {
+   "culture": "it",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "L'attrito ha fatto girare %@ finché non ha rotolato senza strisciare."
+  },
+  {
+   "culture": "pt",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "O atrito pôs %@ a rodar até rolar sem escorregar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "O atrito fez %@ girar até rolar sem escorregar."
+  },
+  {
+   "culture": "ja",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "摩擦が%@に回転をつけ、滑らずに転がるようになりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "마찰이 %@에 회전을 걸어, 미끄러지지 않고 구르게 되었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "摩擦让%@转了起来，直到它不再打滑地滚动。"
+  },
+  {
+   "culture": "ru",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "Трение раскрутило %@, и он покатился без проскальзывания."
+  },
+  {
+   "culture": "ar",
+   "key": "Friction spun %@ up until it rolled without slipping.",
+   "text": "جعل الاحتكاك %@ تدور حتى تدحرجت دون انزلاق."
+  },
+  {
+   "culture": "es",
+   "key": "%@ drops into the hole.",
+   "text": "%@ cae en el agujero."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ drops into the hole.",
+   "text": "%@ tombe dans le trou."
+  },
+  {
+   "culture": "de",
+   "key": "%@ drops into the hole.",
+   "text": "%@ fällt ins Loch."
+  },
+  {
+   "culture": "it",
+   "key": "%@ drops into the hole.",
+   "text": "%@ cade nella buca."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ drops into the hole.",
+   "text": "%@ cai no buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ drops into the hole.",
+   "text": "%@ cai no buraco."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ drops into the hole.",
+   "text": "%@が穴に落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ drops into the hole.",
+   "text": "%@(이)가 구멍에 떨어집니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ drops into the hole.",
+   "text": "%@ 落进了洞里。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ drops into the hole.",
+   "text": "%@ падает в лунку."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ drops into the hole.",
+   "text": "%@ تسقط في الفتحة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ drops into the cup.",
+   "text": "%@ cae en la copa."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ drops into the cup.",
+   "text": "%@ tombe dans la coupe."
+  },
+  {
+   "culture": "de",
+   "key": "%@ drops into the cup.",
+   "text": "%@ fällt in den Becher."
+  },
+  {
+   "culture": "it",
+   "key": "%@ drops into the cup.",
+   "text": "%@ cade nella coppa."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ drops into the cup.",
+   "text": "%@ cai no copo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ drops into the cup.",
+   "text": "%@ cai no copo."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ drops into the cup.",
+   "text": "%@がカップに落ちます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ drops into the cup.",
+   "text": "%@(이)가 컵에 떨어집니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ drops into the cup.",
+   "text": "%@ 落进了杯洞。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ drops into the cup.",
+   "text": "%@ падает в лунку-чашку."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ drops into the cup.",
+   "text": "%@ تسقط في الكأس."
+  },
+  {
+   "culture": "es",
+   "key": "%@ drops in.",
+   "text": "%@ entra en la tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ drops in.",
+   "text": "%@ tombe dans la poche."
+  },
+  {
+   "culture": "de",
+   "key": "%@ drops in.",
+   "text": "%@ fällt ein."
+  },
+  {
+   "culture": "it",
+   "key": "%@ drops in.",
+   "text": "%@ entra in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ drops in.",
+   "text": "%@ cai na caçapa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ drops in.",
+   "text": "%@ cai na caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ drops in.",
+   "text": "%@がポケットに入ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ drops in.",
+   "text": "%@(이)가 포켓에 들어갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ drops in.",
+   "text": "%@ 落袋。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ drops in.",
+   "text": "%@ падает в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ drops in.",
+   "text": "%@ يسقط في الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ cruza la tronera demasiado rápido para caer."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ traverse la poche trop vite pour tomber."
+  },
+  {
+   "culture": "de",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ läuft zu schnell über die Tasche, um zu fallen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ attraversa la buca troppo veloce per cadere."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ atravessa a caçapa depressa demais para cair."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ atravessa a caçapa rápido demais para cair."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@は速すぎて、落ちずにポケットを越えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@(이)가 너무 빨라 떨어지지 않고 포켓을 지나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ 太快，越过袋口没有落下。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ проходит над лузой слишком быстро, чтобы упасть."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ crosses the pocket too fast to drop.",
+   "text": "%@ تعبر الجيب بسرعة أكبر من أن تسقط."
+  },
+  {
+   "culture": "es",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ cruza la copa demasiado rápido para caer."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ traverse la coupe trop vite pour tomber."
+  },
+  {
+   "culture": "de",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ läuft zu schnell über den Becher, um zu fallen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ attraversa la coppa troppo veloce per cadere."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ atravessa o copo depressa demais para cair."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ atravessa o copo rápido demais para cair."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@は速すぎて、落ちずにカップを越えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@(이)가 너무 빨라 떨어지지 않고 컵을 지나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ 太快，越过杯洞没有落下。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ проходит над чашкой слишком быстро, чтобы упасть."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ crosses the cup too fast to drop.",
+   "text": "%@ تعبر الكأس بسرعة أكبر من أن تسقط."
+  },
+  {
+   "culture": "es",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ cruza el agujero demasiado rápido para caer."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ traverse le trou trop vite pour tomber."
+  },
+  {
+   "culture": "de",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ läuft zu schnell über das Loch, um zu fallen."
+  },
+  {
+   "culture": "it",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ attraversa la buca troppo veloce per cadere."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ atravessa o buraco depressa demais para cair."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ atravessa o buraco rápido demais para cair."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@は速すぎて、落ちずに穴を越えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@(이)가 너무 빨라 떨어지지 않고 구멍을 지나갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ 太快，越过洞口没有落下。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ проходит над лункой слишком быстро, чтобы упасть."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ crosses the hole too fast to drop.",
+   "text": "%@ تعبر الفتحة بسرعة أكبر من أن تسقط."
+  },
+  {
+   "culture": "es",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ estaba encajada contra la goma y se detiene."
+  },
+  {
+   "culture": "fr",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ était coincée contre le caoutchouc et est immobilisée."
+  },
+  {
+   "culture": "de",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ klemmte am Gummi und wird zur Ruhe gebracht."
+  },
+  {
+   "culture": "it",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ era incastrata contro la gomma e viene fermata."
+  },
+  {
+   "culture": "pt",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ estava presa contra a borracha e é parada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ estava presa contra a borracha e é parada."
+  },
+  {
+   "culture": "ja",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@はゴムに挟まっていたので、止められます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@(이)가 고무에 끼어 있어 멈춰 세워집니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ 卡在橡胶边上，被停了下来。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ был зажат у резины и останавливается."
+  },
+  {
+   "culture": "ar",
+   "key": "%@ was wedged against the rubber and is brought to rest.",
+   "text": "%@ كانت محشورة عند المطاط فتُوقَف."
+  },
+  {
+   "culture": "es",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld bolas encajadas se detienen tocándose."
+  },
+  {
+   "culture": "fr",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld billes coincées sont immobilisées en contact."
+  },
+  {
+   "culture": "de",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld verklemmte Kugeln kommen sich berührend zur Ruhe."
+  },
+  {
+   "culture": "it",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld palle incastrate vengono fermate a contatto."
+  },
+  {
+   "culture": "pt",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld bolas presas são paradas encostadas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld bolas presas são paradas encostadas."
+  },
+  {
+   "culture": "ja",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "挟まった%lld個の球は、触れ合ったまま止められます。"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "끼어 있던 공 %lld개가 맞닿은 채 멈춰 세워집니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "%lld 个卡住的球在相互接触中停了下来。"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "Зажатые шары (%lld) останавливаются, касаясь друг друга."
+  },
+  {
+   "culture": "ar",
+   "key": "%lld wedged balls are brought to rest touching.",
+   "text": "الكرات المحشورة (%lld) تُوقَف وهي متلامسة."
+  },
+  {
+   "culture": "es",
+   "key": "Again at %@: %@",
+   "text": "Otra vez a los %1$@: %2$@"
+  },
+  {
+   "culture": "fr",
+   "key": "Again at %@: %@",
+   "text": "De nouveau à %1$@ : %2$@"
+  },
+  {
+   "culture": "de",
+   "key": "Again at %@: %@",
+   "text": "Erneut bei %1$@: %2$@"
+  },
+  {
+   "culture": "it",
+   "key": "Again at %@: %@",
+   "text": "Di nuovo a %1$@: %2$@"
+  },
+  {
+   "culture": "pt",
+   "key": "Again at %@: %@",
+   "text": "De novo aos %1$@: %2$@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Again at %@: %@",
+   "text": "De novo aos %1$@: %2$@"
+  },
+  {
+   "culture": "ja",
+   "key": "Again at %@: %@",
+   "text": "%1$@にもう一度：%2$@"
+  },
+  {
+   "culture": "ko",
+   "key": "Again at %@: %@",
+   "text": "%1$@에 다시: %2$@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Again at %@: %@",
+   "text": "%1$@ 时再次：%2$@"
+  },
+  {
+   "culture": "ru",
+   "key": "Again at %@: %@",
+   "text": "Снова на %1$@: %2$@"
+  },
+  {
+   "culture": "ar",
+   "key": "Again at %@: %@",
+   "text": "مرة أخرى عند %1$@: %2$@"
+  },
+  {
+   "culture": "es",
+   "key": "The break: %lld ball hits",
+   "text": "La salida: %lld choques entre bolas"
+  },
+  {
+   "culture": "fr",
+   "key": "The break: %lld ball hits",
+   "text": "La casse : %lld chocs entre billes"
+  },
+  {
+   "culture": "de",
+   "key": "The break: %lld ball hits",
+   "text": "Der Anstoß: %lld Kugelstöße"
+  },
+  {
+   "culture": "it",
+   "key": "The break: %lld ball hits",
+   "text": "L'apertura: %lld urti tra palle"
+  },
+  {
+   "culture": "pt",
+   "key": "The break: %lld ball hits",
+   "text": "A abertura: %lld choques entre bolas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The break: %lld ball hits",
+   "text": "A abertura: %lld batidas entre bolas"
+  },
+  {
+   "culture": "ja",
+   "key": "The break: %lld ball hits",
+   "text": "ブレイク：球どうしの衝突%lld回"
+  },
+  {
+   "culture": "ko",
+   "key": "The break: %lld ball hits",
+   "text": "브레이크: 공끼리 %lld번 충돌"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The break: %lld ball hits",
+   "text": "开球：球与球碰撞 %lld 次"
+  },
+  {
+   "culture": "ru",
+   "key": "The break: %lld ball hits",
+   "text": "Разбой: столкновений шаров — %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "The break: %lld ball hits",
+   "text": "الكسر: %lld اصطدامات بين الكرات"
+  },
+  {
+   "culture": "es",
+   "key": "%lld ball hits at once",
+   "text": "%lld choques entre bolas a la vez"
+  },
+  {
+   "culture": "fr",
+   "key": "%lld ball hits at once",
+   "text": "%lld chocs entre billes d'un coup"
+  },
+  {
+   "culture": "de",
+   "key": "%lld ball hits at once",
+   "text": "%lld Kugelstöße auf einmal"
+  },
+  {
+   "culture": "it",
+   "key": "%lld ball hits at once",
+   "text": "%lld urti tra palle in un colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "%lld ball hits at once",
+   "text": "%lld choques entre bolas de uma vez"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld ball hits at once",
+   "text": "%lld batidas entre bolas de uma vez"
+  },
+  {
+   "culture": "ja",
+   "key": "%lld ball hits at once",
+   "text": "一度に球どうしの衝突%lld回"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld ball hits at once",
+   "text": "한꺼번에 공끼리 %lld번 충돌"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld ball hits at once",
+   "text": "一下子球与球碰撞 %lld 次"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld ball hits at once",
+   "text": "Сразу столкновений шаров — %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "%lld ball hits at once",
+   "text": "%lld اصطدامات بين الكرات دفعة واحدة"
+  },
+  {
+   "culture": "es",
+   "key": "Shows every hit",
+   "text": "Muestra cada choque"
+  },
+  {
+   "culture": "fr",
+   "key": "Shows every hit",
+   "text": "Montre chaque choc"
+  },
+  {
+   "culture": "de",
+   "key": "Shows every hit",
+   "text": "Zeigt jeden Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Shows every hit",
+   "text": "Mostra ogni urto"
+  },
+  {
+   "culture": "pt",
+   "key": "Shows every hit",
+   "text": "Mostra cada choque"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shows every hit",
+   "text": "Mostra cada batida"
+  },
+  {
+   "culture": "ja",
+   "key": "Shows every hit",
+   "text": "すべての衝突を表示します"
+  },
+  {
+   "culture": "ko",
+   "key": "Shows every hit",
+   "text": "모든 충돌을 보여 줍니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shows every hit",
+   "text": "显示每一次碰撞"
+  },
+  {
+   "culture": "ru",
+   "key": "Shows every hit",
+   "text": "Показывает каждое столкновение"
+  },
+  {
+   "culture": "ar",
+   "key": "Shows every hit",
+   "text": "يعرض كل اصطدام"
+  },
+  {
+   "culture": "es",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "fr",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "de",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "it",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "pt",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "ja",
+   "key": "%@.",
+   "text": "%@。"
+  },
+  {
+   "culture": "ko",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@.",
+   "text": "%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "%@.",
+   "text": "%@."
+  },
+  {
+   "culture": "ar",
+   "key": "%@.",
+   "text": "%@."
+  }
+ ]
+}
