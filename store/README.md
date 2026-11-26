@@ -44,8 +44,9 @@ a miscue's turn follows from the stroke, so the same shot always plays out the s
 
 Check every file against Apple's limits with `python3 scripts/store-listing-check.py` (it only reads the files).
 
-The 0.7.0 listing was uploaded to App Store Connect (the Boss signed off on 21-November-2026). The 0.7.10 wording is
-not uploaded until the Boss has read the English file.
+The 0.7.0 listing was uploaded to App Store Connect (the Boss signed off on 21-November-2026). The 0.7.10 wording went
+up with version 0.8.1 on 26-November-2026 (scripts/store-record.py); the Boss does not need to read the listing before
+an upload. Its availability step answers 409 when availability is already set; that is expected, nothing else fails.
 
 ## Privacy policy, support page and the page for teachers
 
