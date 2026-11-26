@@ -8,12 +8,13 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
-## [0.7.10] - 26-November-2026
+## [0.8.1] - 26-November-2026
 
 ### Shot of the day, the strike panel, a front door that shows the table
 
 Author: Claude Opus 5.5 Medium, coordinating eight builders at the same level in two waves. Plans: start at
 plans/25-Nov-2026-award-scores-order-plan.md; how it was built: plans/26-Nov-2026-v0710-coordination.md.
+Built as 0.7.10; the Boss named the version 0.8.1 for the size of the change.
 
 - What: A new Shot of the day, the same for everyone, with five tries, a score, a streak, a share card and Game Center boards; before every shot the strike in real units, and after it planned beside delivered; a menu that no longer hides the table; shorter captions that never move faster than you can read; honest store words; and controls for either hand, without colour or timed gestures.
 - **Shot of the day.** One shot a day for every player, chosen by the date in Coordinated Universal Time, from a bank
