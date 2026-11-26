@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the wave 2 hook is filled. A later launch with
+//          today's shot not yet tried, no game on the table and no saved match sets today's shot up behind the open
+//          menu (a turn after init, so its solve never holds up the first frame: DailyMode.begin, then
+//          ShowpieceModel.holdSetupBehindMenu, the player's own saved surface kept); otherwise the last table played, as
+//          before. The first launch is unchanged.)
 // PURPOSE: What the game opens on from the second launch on (0.7.10, plans/25-Nov-2026-front-door-and-table-view-plan.md,
 //          "Decisions already made"). The very first launch is untouched: it still puts a new player at the racked pool
 //          table with one line on how to shoot (ShowpieceModel.startOpeningIfFirstLaunch). Every later launch opens on
@@ -58,9 +63,32 @@ extension ShowpieceModel {
         // 0.7.10 frontdoor: wave 2 hook. When today's shot exists, is not yet played and no game is in progress (no saved
         // match: hasSavedMatch is false), set today's shot up here instead and return; otherwise fall through to the
         // last table played. Nothing is pushed either way: the menu stays open over a still table.
+        // 0.7.10 wiring: today's shot with no try yet, nothing on the table and no saved match: the shot goes on the
+        // table on its own surface, laid out ready and still, and the menu is opened again over it (its row is the way
+        // in). Never in the unit test host, where every new model would otherwise start on today's shot.
+        if !gameInProgress, !hasSavedMatch, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil,
+           dailyMode.result(forDay: dailyMode.today) == nil {
+            // A turn later, not inside init: begin solves the shot's mark, which must not hold up the first frame. The
+            // menu is over the table meanwhile, so the swap from the racked pool table is not seen.
+            Task { @MainActor [weak self] in self?.setUpTodaysShotBehindMenu() }
+            return
+        }
         let last = FrontDoor.lastTablePlayed
         // The pool table is already racked by init (every launch starts there), so only another table needs setting up.
         guard last != .standard else { return }
         setTable(last)
+    }
+
+    /// 0.7.10 wiring: today's shot set up behind the open menu, still, nothing pushed. Skipped when the player has
+    /// already left the menu (or started something) in the moment before it runs.
+    private func setUpTodaysShotBehindMenu() {
+        guard menuOpen, !gameInProgress else { return }
+        // The shot puts its own surface on the table, and setSurface saves it as the player's choice. Saved back at
+        // once, so a player who closes the app from this menu without playing starts the next launch on their own
+        // surface rather than the shot's (the shot gives the table's surface back itself when it leaves).
+        let own = UserDefaults.standard.string(forKey: PlaySurface.storageKey)
+        dailyMode.begin()
+        if let own { UserDefaults.standard.set(own, forKey: PlaySurface.storageKey) }
+        holdSetupBehindMenu()
     }
 }

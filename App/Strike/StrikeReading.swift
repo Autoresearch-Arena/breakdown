@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: cueAngleLockedByMode names the shot of the day.)
 // PURPOSE: The strike panel's link to the game (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stages 2 to 4).
 //          - ShowpieceModel.plannedStrike: the figures (StrikeFigures) of the strike the controls are set to now, built
 //            exactly as fireStroke builds the strike (aim, launch speed for the cue in hand, tip, the struck cue angle
@@ -36,6 +37,9 @@ extension ShowpieceModel {
     /// the dial, the menu, the typed entry, the sliders and the hint's Pencil line all follow.
     var cueAngleLockedByMode: Bool {
         trickMode.isActive || eightBallMode.isActive
+            // 0.7.10 wiring: the shot of the day sets its own angle (DailyMode.startSettings). It is played through
+            // the trick mode, so the line above already holds for it; named here so the rule stays true if that changes.
+            || DailyMode.showing(self)
     }
 
     /// True when the next shot's cue angle is the player's to set: a shot (a break is always level), no mode setting

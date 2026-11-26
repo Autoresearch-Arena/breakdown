@@ -14,6 +14,8 @@
 //          go to the camera through MenuScreenState.uprightBand). The highlighted row is the game's own accent colour,
 //          not the system's blue. The rows' words come from MenuGuide, one place, so the menu, its hints and How to
 //          play say the same thing.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: MenuGuide.daily, so How to play's menu page lists
+//          Shot of the day; its row is drawn from that entry like the others, today's state as its mark.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: a "Shot of the day" row above Play, built from
 //          App/Daily/DailyMenuRow.swift's pieces, one marked line.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
@@ -439,7 +441,8 @@ struct TitleScreen: View {
                 MenuGroup(title: String(localized: "Today",
                                         comment: "Main menu group heading: what to play today (today's shot, or the game you can go back to)")) {
                     // 0.7.10 daily: Shot of the day, first; its words, streak mark and action are DailyMenuRow's.
-                    MenuRow(verbatimTitle: DailyMenuRow.title, verbatimLine: DailyMenuRow.line(model), symbol: DailyMenuRow.symbol,
+                    // 0.7.10 wiring: drawn like every other row (MenuGuide.daily), today's state in its mark.
+                    MenuRow(entry: MenuGuide.daily,
                             mark: DailyMenuRow.mark(model).map { MenuRow.Mark(symbol: $0.symbol, text: $0.text, spoken: $0.spoken) }) {
                         DailyMenuRow.open(model); onPlay()
                     }
@@ -791,8 +794,16 @@ enum MenuGuide {
                   line: String(localized: "The opening break again, slowed down under the Physics Lens."))
     }
 
+    /// 0.7.10 wiring: Shot of the day, first in the Today group. The same name the shot's own screens use
+    /// (DailyWords.title) and the menu's general sentence about it (DailyWords.menuNew); today's state is the row's mark.
+    static var daily: MenuEntry {
+        MenuEntry(symbol: "calendar", title: DailyWords.title, line: DailyWords.menuNew)
+    }
+
     /// Every entry, in the menu's order, for the menu page in How to play.
-    static var all: [MenuEntry] { [play, tricks, eightBall, tables, learn, achievements, howTo, options, watchIntro] }
+    static var all: [MenuEntry] {
+        [daily, play, tricks, eightBall, tables, learn, achievements, howTo, options, watchIntro]  // 0.7.10 wiring: daily
+    }
 }
 
 // MARK: A group of entries

@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the result card's Board is the board's own
+//          BoardButton (App/GameCenter/GameCenterViews.swift); the phone's result blurb offers Board only while the
+//          board may show, with the board's sign-in line when a sign-in from it failed.)
 // PURPOSE: Everything the player sees of the shot of the day on the table (plans/25-Nov-2026-shot-of-the-day-plan.md,
 //          stage 2 items 2 and 3), kept small so the table stays big:
 //          DailyCard - the one card, where the trick card goes (TrickShotCard hands a daily shot to it, so on iPad, the
@@ -300,14 +303,14 @@ struct DailyCard: View {
                     .keyboardShortcut("s", modifiers: .command)
                     .accessibilityHint(DailyWords.shareHint)
                     // Wave 2: hidden until Game Center is connected (DailyMode.openBoard).
-                    if let open = daily.openBoard {
-                        styled(Button { open() } label: {
-                            Label(DailyWords.board, systemImage: "list.number").font(.headline).lineLimit(1)
-                                .frame(minHeight: Self.buttonHeight)
-                        }, prominent: false)
-                        // 0.7.10 everyone: Command-B opens the board from the keyboard.
-                        .keyboardShortcut("b", modifiers: .command)
-                        .accessibilityHint(DailyWords.boardHint)
+                    // 0.7.10 wiring: the board's own button (GameCenterViews.swift): it draws nothing with "Hide the
+                    // board" on, signs in the first time it is pressed, and says where to sign in if that fails.
+                    if daily.openBoard != nil {
+                        styled(BoardButton().font(.headline), prominent: false)
+                            .frame(minHeight: Self.buttonHeight)
+                            // 0.7.10 everyone: Command-B opens the board from the keyboard.
+                            .keyboardShortcut("b", modifiers: .command)
+                            .accessibilityHint(DailyWords.boardHint)
                     }
                 }
             }
@@ -402,6 +405,8 @@ struct DailyCard: View {
 /// button is the strip's (PhonePrimaryAction.daily); the blurbs carry the words and at most two small buttons.
 struct DailyPhoneBlurbs: View {
     let model: ShowpieceModel
+    /// 0.7.10 wiring: "Hide the board", read live so switching it hides Board at once, as BoardButton does.
+    @AppStorage(GameSettings.hideBoardKey) private var boardHidden = false
 
     private var trick: TrickShotMode { model.trickMode }
     private var daily: DailyMode { model.dailyMode }
@@ -446,8 +451,14 @@ struct DailyPhoneBlurbs: View {
         parts.append(DailyWords.streakSpoken(daily.streak(asOf: shot.day)))
         parts.append(DailyWords.nextShot(after: shot.day, now: Date()))
         var buttons = [BlurbButton(DailyWords.share, hint: DailyWords.shareHint) { DailyShare.share(model: model) }]
-        if let open = daily.openBoard { buttons.append(BlurbButton(DailyWords.board, hint: DailyWords.boardHint) { open() }) }
-        return Blurb(title: DailyWords.resultTitle(day), sentence: parts.joined(separator: ". ") + ".", buttons: buttons)
+        // 0.7.10 wiring: Board only while the board may show (not hidden, not a test launch), as BoardButton decides;
+        // when a sign-in from it did not work, the board's one line on where to sign in joins the sentence.
+        var sentence = parts.joined(separator: ". ") + "."
+        if let open = daily.openBoard, !boardHidden, GameCenter.enabled {
+            buttons.append(BlurbButton(DailyWords.board, hint: DailyWords.boardHint) { open() })
+            if GameCenter.shared.state == .unavailable { sentence += " " + GameCenterWords.signInNeeded }
+        }
+        return Blurb(title: DailyWords.resultTitle(day), sentence: sentence, buttons: buttons)
     }
 }
 
