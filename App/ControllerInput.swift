@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: on the shot of the day the card button presses the
+//          daily card's own main action (Take your shot, Try again, Watch the answer), not the trick card's.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: while the every-surface fan shows, left and right
 //          on the d-pad pick a surface, A plays the shot on the picked one in free play (else A keeps its job), and B
 //          closes the fan once the balls are at rest (while the replay runs B still skips); one new mapping row.)
@@ -335,6 +337,12 @@ final class GameControllerInput {
             return true
         }
         if pressLessonCard(model.lessonMode) { return true }
+        // 0.7.10 daily: the shot of the day's card has its own main action (the phone strip's, PhonePrimaryAction.daily).
+        if DailyMode.showing(model) {
+            guard let daily = PhonePrimaryAction.daily(model) else { return false }
+            daily.action()
+            return true
+        }
         if pressTrickCard(model.trickMode) { return true }
         if pressEightBallCard(model.eightBallMode, model: model) { return true }
         // The stroke drill's Again, shown once a drill stroke has played out.

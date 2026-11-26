@@ -351,7 +351,10 @@ struct TitleScreen: View {
                 .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
             // 0.7.10 daily: Shot of the day, above Play; its words, streak mark and action are DailyMenuRow's.
-            MenuRow(verbatimTitle: DailyMenuRow.title, verbatimLine: DailyMenuRow.line(model), symbol: DailyMenuRow.symbol, mark: DailyMenuRow.mark(model).map { MenuRow.Mark(symbol: $0.symbol, text: $0.text, spoken: $0.spoken) }) { DailyMenuRow.open(model); onPlay() }
+            MenuRow(verbatimTitle: DailyMenuRow.title, verbatimLine: DailyMenuRow.line(model), symbol: DailyMenuRow.symbol,
+                    mark: DailyMenuRow.mark(model).map { MenuRow.Mark(symbol: $0.symbol, text: $0.text, spoken: $0.spoken) }) {
+                DailyMenuRow.open(model); onPlay()
+            }
             MenuRow(verbatimTitle: Self.playTitle,
                     verbatimLine: String(localized: "Four games against the computer, or practise on your own."),
                     symbol: "circle.grid.cross", prominent: playHighlighted) { state.playListOpen = true }

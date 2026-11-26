@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the trick shot's More items stay off for the shot of
+//          the day, whose answer waits until the day is finished and whose card holds its own buttons.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: "Every surface" in the More menu right under What
 //          if (EveryWorldMenuItem, shown while the fan can open), and the Surface submenu leaves it out so it is not
 //          listed twice.)
@@ -186,7 +188,8 @@ struct PhoneTitleRow: View {
     private var modeItems: some View {
         let trick = model.trickMode
         let lessons = model.lessonMode
-        if trick.isActive {
+        // 0.7.10 daily: not for the shot of the day (its card holds Watch the answer once the day is finished).
+        if trick.isActive, !DailyMode.showing(model) {
             Button { model.showList(.tricks) } label: {
                 Label(String(localized: "All trick shots"), systemImage: "list.bullet")
             }
