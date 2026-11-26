@@ -127,8 +127,9 @@ final class GameCenter {
         flush()
     }
 
-    /// One achievement just earned (AchievementBook.earn). Reported at once while signed in; otherwise the next
-    /// sign-in reports it with every other earned one.
+    /// One achievement just earned (AchievementBook.earn). Reported at once while signed in. Otherwise nothing happens
+    /// now: the next sign-in reads the saved achievements record (AchievementBook saves it right after earning) and
+    /// reports every earned id Game Center has not accepted yet, this one included.
     func reportAchievement(_ id: String) {
         guard boardAllowed, state == .signedIn, Achievements.achievement(id: id) != nil else { return }
         report([id])
@@ -243,7 +244,11 @@ final class GameCenter {
 
     // MARK: The board
 
-    /// Game Center's own screen on today's board, everyone's scores (the player can switch to friends there).
+    /// Game Center's own screen on today's board, everyone's scores (the player can switch to friends there). The
+    /// trigger is GameKit's way to open that screen from the game's own button (made for games that hide the badge and
+    /// open Game Center from a controller); nothing in the SDK header ties it to the badge being on, so the badge stays
+    /// off. If a device ever shows nothing on Board, the fix is to set isActive true just before the trigger and false
+    /// again in its handler.
     private func openBoard() {
         GKAccessPoint.shared.isActive = false
         GKAccessPoint.shared.trigger(leaderboardID: GameCenterBoard.daily.rawValue, playerScope: .global,
