@@ -34,7 +34,7 @@
   "Tap a tile with a pencil mark to type an exact value.",
   "This shot sets its own cue angle.",
   "mm",
-  "Hover to aim. Stand the Pencil up as you stroke to raise the cue."
+  "Hover to aim. Stand the stylus up as you stroke to raise the cue."
  ],
  "translations": [
   {
@@ -1909,57 +1909,57 @@
   },
   {
    "culture": "es",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Pasa por encima para apuntar. Endereza el lápiz al golpear para levantar el taco."
   },
   {
    "culture": "fr",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Survolez pour viser. Redressez le crayon pendant le coup pour lever la queue."
   },
   {
    "culture": "de",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Zum Zielen darüber schweben. Stell den Stift beim Stoß auf, um das Queue anzuheben."
   },
   {
    "culture": "it",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Passa sopra per mirare. Raddrizza la penna mentre colpisci per alzare la stecca."
   },
   {
    "culture": "pt",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Passe por cima para apontar. Endireite o lápis ao dar a tacada para levantar o taco."
   },
   {
    "culture": "pt-BR",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Passe por cima para mirar. Endireite o lápis ao dar a tacada para levantar o taco."
   },
   {
    "culture": "ja",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "かざして狙います。ストローク中にペンを立てるとキューが上がります。"
   },
   {
    "culture": "ko",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "펜을 띄워 조준합니다. 스트로크하면서 펜을 세우면 큐가 올라갑니다."
   },
   {
    "culture": "zh-Hans",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "悬停以瞄准。出杆时把笔竖起来即可抬高球杆。"
   },
   {
    "culture": "ru",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "Наведите, чтобы прицелиться. Поднимите стилус вертикально во время удара, чтобы поднять кий."
   },
   {
    "culture": "ar",
-   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "key": "Hover to aim. Stand the stylus up as you stroke to raise the cue.",
    "text": "مرّر القلم فوق الطاولة للتصويب. ارفع القلم عموديًا أثناء الضربة لرفع العصا."
   }
  ]

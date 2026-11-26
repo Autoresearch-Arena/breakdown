@@ -8,7 +8,7 @@
 //          during the hand-over). It shows through the hand-over (the first minute's one instruction) and afterwards
 //          until dismissed or until the first pull or shot marks it seen (the stored "aimHintSeen", unchanged).
 //          A second line for the Pencil, once one has touched the table on this device (StylusPresence): "Hover to aim.
-//          Stand the Pencil up as you stroke to raise the cue." That is what the code does (hover previews the aim,
+//          Stand the stylus up as you stroke to raise the cue." That is what the code does (hover previews the aim,
 //          PointerAim; standing the Pencil up past a writing grip during a stroke raises the cue, StrokeGesture), and
 //          it is shown only where the cue angle is the player's (model.cueAngleIsPlayers): never for a break, a trick
 //          shot, a Behind the 8-Ball situation or a lesson step that holds the angle. Dismissed with the same button,
@@ -29,7 +29,7 @@ struct StrikeHint: View {
 
     /// The Pencil line, as the plan words it.
     static var pencilLine: String {
-        String(localized: "Hover to aim. Stand the Pencil up as you stroke to raise the cue.")
+        String(localized: "Hover to aim. Stand the stylus up as you stroke to raise the cue.")
     }
 
     /// The first instruction shows through the hand-over and until it has been seen.
