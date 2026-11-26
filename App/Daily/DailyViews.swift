@@ -19,6 +19,9 @@
 //          DailyWords - every sentence of the daily screens, menu row and share picture, through String(localized:);
 //            the new English lines are in localization/pending/v0710-daily.json with their translations.
 //          Nothing here shows the answer, its path or its settings before the day is finished, VoiceOver included.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
+//          B5: the result card's buttons have keys, so the day is played to a shared result from a keyboard alone:
+//          Return watches the answer while it is the main button, Command-S shares, Command-B opens the board.)
 // SRP/DRY check: Pass - views and words only. Flow is DailyMode, judging TrickShotJudge, the goal marks of the trick
 //          (balls and pockets) GoalMarks through TrickTableLayer; the card's pieces follow TrickShotCard's (glassCard,
 //          the button rows, the prominent style), the blurbs are App/Phone/Blurb.swift's, the rings and labels on the
@@ -285,12 +288,16 @@ struct DailyCard: View {
                     Label(DailyWords.watchAnswer, systemImage: "play.fill").font(.headline).lineLimit(1)
                         .frame(minHeight: Self.buttonHeight)
                 }, prominent: trick.phase != .explaining)
+                // 0.7.10 everyone: Return watches the answer while it is the card's main button (keyboard alone).
+                .keyboardShortcut(trick.phase != .explaining ? KeyboardShortcut.defaultAction : nil)
                 .accessibilityHint(DailyWords.watchAnswerHint)
                 if !compact {
                     styled(Button { DailyShare.share(model: model) } label: {
                         Label(DailyWords.share, systemImage: "square.and.arrow.up").font(.headline).lineLimit(1)
                             .frame(minHeight: Self.buttonHeight)
                     }, prominent: false)
+                    // 0.7.10 everyone: Command-S shares, so the day reaches a shared result from the keyboard alone.
+                    .keyboardShortcut("s", modifiers: .command)
                     .accessibilityHint(DailyWords.shareHint)
                     // Wave 2: hidden until Game Center is connected (DailyMode.openBoard).
                     if let open = daily.openBoard {
@@ -298,6 +305,8 @@ struct DailyCard: View {
                             Label(DailyWords.board, systemImage: "list.number").font(.headline).lineLimit(1)
                                 .frame(minHeight: Self.buttonHeight)
                         }, prominent: false)
+                        // 0.7.10 everyone: Command-B opens the board from the keyboard.
+                        .keyboardShortcut("b", modifiers: .command)
                         .accessibilityHint(DailyWords.boardHint)
                     }
                 }

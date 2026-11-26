@@ -121,6 +121,9 @@
 //          (Theme.slideRGB, renamed from amberRGB); the grid's edge pockets are drawn only when the table has them
 //          (pocketsEnabled), and BallTextures.gridImage now draws every pocket and bed hole as a real hole.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the held hit's drawing fade reads SceneClock.now, so the clip's offscreen table fades on the clip's own clock; the live game is unchanged.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Part A: sliding trails are dashed and rolling trails solid for every player, not only with Differentiate
+//          Without Colour on; the setting still picks dots over dashes for a held hit's tangent.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 //          The throw rule is CaptionEngine's (one rule for the words and the drawing).
 import BreakdownLensModel
@@ -206,7 +209,7 @@ final class LensLayer {
     static let sideFade = (lo: 0.02, mid: 0.12, full: 0.6)
     /// Clock seconds over which a pocketed ball's markers fade out (the ball itself sinks away in about 0.22 s).
     static let spinPocketFade = 0.2
-    /// Dashed sliding trails (Differentiate Without Colour): length of each dash and of each gap, metres along the
+    /// Dashed sliding trails (every player since 0.7.10): length of each dash and of each gap, metres along the
     /// path. A fresh line is up to about 5 cm wide (two half-widths of `half(speed)` at break speed), so a 6 cm dash
     /// is longer than the line is wide and reads as a dash, and a 4 cm gap is wide enough to see at a slow roll.
     static let dashLength = 0.06
@@ -377,10 +380,6 @@ final class LensLayer {
     private var ringMaterials: [LensEventKind: UnlitMaterial] = [:]
     /// The ring for a miscue (a cue strike whose tip slid off), separate from the ordinary strike ring.
     private var miscueMaterial: UnlitMaterial?
-    /// The last recording and frame the trails were built from, so a change of the colour setting can rebuild them.
-    private var lastBuild: (timeline: Timeline, frame: TableFrame)?
-    /// Whether the current trails were built dashed.
-    private var builtDashed = false
     private var settingObserver: NSObjectProtocol?
     private var arrowMaterial = UnlitMaterial()
     private var arrowGlowMaterial = UnlitMaterial()
@@ -514,19 +513,17 @@ final class LensLayer {
         root.addChild(aimLine)
         buildContact()
 
-        // Differentiate Without Colour switched while the app runs: rebuild the trails dashed or solid at once.
+        // Differentiate Without Colour switched while the app runs: the held hit's tangent follows at once.
         let change = LensTextures.differentiateWithoutColorChanged
         settingObserver = change.center.addObserver(forName: change.name, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.rebuildIfSettingChanged() }
         }
     }
 
-    /// Rebuild the current trails when the dashed setting no longer matches how they were built.
+    /// The setting changed: a held hit's tangent switches between dashes and dots at once (it is not rebuilt, only
+    /// swapped). 0.7.10 everyone: the trails are built dashed for every player, so the setting no longer rebuilds them.
     private func rebuildIfSettingChanged() {
-        // A held hit's tangent switches between dashes and dots at once too (it is not rebuilt, only swapped).
         pickTangent()
-        guard LensTextures.differentiateWithoutColor != builtDashed, let last = lastBuild else { return }
-        rebuild(timeline: last.timeline, frame: last.frame)
     }
 
     /// Switches on the system bloom for everything under `root`, where the system has it. Returns whether it is on.
@@ -696,17 +693,15 @@ final class LensLayer {
         for child in Array(trailRoot.children) { child.removeFromParent() }
         for child in Array(ringRoot.children) { child.removeFromParent() }
         trailEntities = [:]; trailOffsets = [:]; rings = []
-        lastBuild = (timeline, frame)
         // A new recording: any contact drawing belonged to the old one (its event index means nothing here), so it is
         // cut at once, a fade-out in progress included.
         cutContact()
-        builtDashed = LensTextures.differentiateWithoutColor
 
         // Gather every ball's ribbons into one mesh per colour.
         var builders: [MotionPhase: RibbonBuilder] = [.sliding: RibbonBuilder(), .rolling: RibbonBuilder(),
                                                       .airborne: RibbonBuilder()]
         for b in 0..<timeline.ballCount {
-            addTrails(for: b, timeline: timeline, frame: frame, dashSliding: builtDashed, into: &builders)
+            addTrails(for: b, timeline: timeline, frame: frame, into: &builders)
         }
         for (phase, builder) in builders {
             guard let mesh = builder.mesh(), let mat = trailMaterials[phase] else { continue }
@@ -860,7 +855,7 @@ final class LensLayer {
         return out
     }
 
-    private func addTrails(for ball: Int, timeline: Timeline, frame: TableFrame, dashSliding: Bool,
+    private func addTrails(for ball: Int, timeline: Timeline, frame: TableFrame,
                            into builders: inout [MotionPhase: RibbonBuilder]) {
         let segs = timeline.segments[ball]
         let tLimit = min(timeline.duration, timeline.pocketTime[ball] ?? .infinity)
@@ -898,8 +893,10 @@ final class LensLayer {
                 for dash in Self.dashes(pts, times: times, halves: halves, on: Self.airDash, off: Self.airGap) {
                     builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
                 }
-            } else if dashSliding && seg.phase == .sliding {
-                // Differentiate Without Colour: sliding is dashed, rolling solid (the legend chip matches).
+            } else if seg.phase == .sliding {
+                // 0.7.10 everyone: dashed for every player, not only with Differentiate Without Colour on, so the two
+                // phases differ in shape in a greyscale screenshot too (plans/25-Nov-2026-everyone-can-play-plan.md A2).
+                // Rolling stays solid; the legend chip matches.
                 for dash in Self.dashes(pts, times: times, halves: halves, on: Self.dashLength, off: Self.dashGap) {
                     builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
                 }

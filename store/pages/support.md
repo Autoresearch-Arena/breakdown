@@ -9,7 +9,11 @@ PURPOSE: The words of Breakdown's support page, for the page on the studio site 
          one instruction per input the game itself gives (bug plan item 1).
 Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 Game Center: the privacy answer says the game itself sends
          nothing, Apple carries a signed-in player's scores, and Hide the board stops the sign-in.)
-SRP/DRY check: Pass - the only support text for this game; privacy lives in store/pages/privacy.md.
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone: the Lens's paths named by shape and their real
+         colours (dashed magenta sliding, solid cyan rolling; "amber" was out of date), keyboard and controller alone,
+         the zoom button, Controls on the left, and a link to the page for teachers, store/pages/teachers.md.)
+SRP/DRY check: Pass - the only support text for this game; privacy lives in store/pages/privacy.md; the classroom
+         page is store/pages/teachers.md.
 -->
 # Breakdown: See the Physics. Support
 
@@ -45,8 +49,8 @@ Behind the 8-Ball are in the menu too.
 
 ## What is the Physics Lens?
 
-Turn it on after any shot and the replay slows down and explains itself: amber paths where a ball is sliding, cyan
-where it rolls, rings where balls hit, and a short sentence for each moment that matters. Turn on "Show the maths" in
+Turn it on after any shot and the replay slows down and explains itself: dashed magenta paths where a ball is
+sliding, solid cyan where it rolls, rings where balls hit, and a short sentence for each moment that matters. Turn on "Show the maths" in
 Options to see the equation behind every sentence. The tips that explain the colours show the first time; "Show the
 Lens tips again" in Options brings them back. "Watch the intro" in the menu plays the opening break again.
 
@@ -59,7 +63,14 @@ the game deletes it.
 
 Yes. The table works with VoiceOver: every ball and pocket can be found and aimed at, and each shot is described when it
 ends. The game also follows larger text sizes, Reduce Motion and Differentiate Without Colour, and can be played with a
-game controller.
+keyboard or a game controller alone. Nothing needs a pinch or a double tap: the zoom button above the table does the
+same. For a left hand, turn on "Controls on the left" in Options.
+
+## Can I use it in a physics lesson?
+
+Yes. The page for teachers says which lesson and which Lens explanation goes with each topic (momentum, friction,
+energy, spin, flight, gravity), how the numbers and equations are shown, and how to turn the board off for a class:
+[Breakdown for teachers](https://markbarney.net/breakdown/teachers). How to play, in the game, links to it too.
 
 ## Privacy
 

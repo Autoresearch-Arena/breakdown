@@ -31,6 +31,9 @@
 //          the gauges' own calls, the options' calls); Put away sets the isOpen binding, as Your shot's toggle does.
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          with Controls on the left (shootSide .left) the rows run the other way: Shoot, the
+//          power bar and the tip picture mirror to the left hand.)
 // SRP/DRY check: Pass - reuses TipPicker (AimGauges.swift), CueAngleMenu (phone form), ShotOptionsItems, FineControls
 //          and ShotStatusLine (ShotPanel.swift), MatchCallRow (CallControl.swift) and StrokeWords (the
 //          figure and caption). PhonePowerBar redraws PowerGauge's bar (AimGauges.swift is not part of this change):
@@ -80,6 +83,9 @@ struct PhoneAimPanel: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.phoneGlassNamespace) private var sharedGlass
+    // 0.7.10 everyone: which hand the rows are laid out for ("Controls on the left", handed down by ShowpieceView).
+    @Environment(\.shootSide) private var shootSide
+    @Environment(\.layoutDirection) private var layoutDirection
     /// Stands in when the panel is shown outside the bottom bar (no shared namespace), so the modifier always has one.
     @Namespace private var localGlass
     /// The open fine controls' height, scaled with the text: the aim row and about three sliders show, the rest
@@ -151,13 +157,29 @@ struct PhoneAimPanel: View {
     private var open: ShotControls { model.openControls }
     private var zones: LessonZones? { model.lessonZones }
 
+    /// 0.7.10 everyone: true when the rows run in the right hand's order (the tip picture first, Shoot last), as
+    /// ShotPanel's shootLast: the physical corner nearest the chosen hand, in either reading direction.
+    private var shootLast: Bool { (shootSide == .right) == (layoutDirection == .leftToRight) }
+
     private var rowOne: some View {
         HStack(alignment: .center, spacing: 12) {
-            TipPicker(model: model, open: open, zones: zones)
-            // 0.7.10 strike: a tap on the swing figure opens the strike panel (stage 4).
-            PhonePowerBar(model: model, open: open, zones: zones, onFigureTap: { strikeOpen = true })
-                .frame(maxWidth: .infinity)
+            // 0.7.10 everyone: for the left hand the row runs the other way, the tip picture on the right, as the
+            // whole panel mirrors (plans/25-Nov-2026-everyone-can-play-plan.md Part C).
+            if shootLast {
+                TipPicker(model: model, open: open, zones: zones)
+                powerBar
+            } else {
+                powerBar
+                TipPicker(model: model, open: open, zones: zones)
+            }
         }
+    }
+
+    /// The power bar, filling what the tip picture leaves.
+    private var powerBar: some View {
+        // 0.7.10 strike: a tap on the swing figure opens the strike panel (stage 4).
+        PhonePowerBar(model: model, open: open, zones: zones, onFigureTap: { strikeOpen = true })
+            .frame(maxWidth: .infinity)
     }
 
     // MARK: Row 2: put away, cue angle, options, fire (or the call)
@@ -171,9 +193,16 @@ struct PhoneAimPanel: View {
             // One row; when a long translation or a large text size does not fit, Shoot takes a row of its own.
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 8) {
-                    smallControls
-                    Spacer(minLength: 0)
-                    fireButton(wide: false)
+                    // 0.7.10 everyone: Shoot in the corner nearest the chosen hand.
+                    if shootLast {
+                        smallControls
+                        Spacer(minLength: 0)
+                        fireButton(wide: false)
+                    } else {
+                        fireButton(wide: false)
+                        Spacer(minLength: 0)
+                        smallControls
+                    }
                 }
                 stackedRowTwo
             }

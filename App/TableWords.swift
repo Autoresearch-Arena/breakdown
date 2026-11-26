@@ -41,6 +41,8 @@
 //          turn's; the tip's spoken value already names its millimetres (tipAmount), as the fine controls now show them.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone: markLabel and markValue, the shot of the day's
+//          mark placed in the words a ball is placed in, for its element in TableAccessLayer.)
 // SRP/DRY check: Pass - checked CaptionEngine (Captions.swift: the per-event physics sentences, reused as they are
 //          for "Step through the shot"; its ball-name strings are reused here), EightBallTypes (pocket, group and
 //          foul titles, reused) and EightBallJudge (its line tests now live in TableLines, used here). The ruling
@@ -392,6 +394,19 @@ enum TableWords {
             return String(localized: "It is against \(railPhrase(endRail, kind: kind)), \(amount(toSide)) ball-widths from \(railPhrase(sideRail, kind: kind)).")
         }
         return String(localized: "It is \(amount(toEnd)) ball-widths from \(railPhrase(endRail, kind: kind)) and \(amount(toSide)) from \(railPhrase(sideRail, kind: kind)).")
+    }
+
+    // 0.7.10 everyone (plans/25-Nov-2026-everyone-can-play-plan.md Part D1): the shot of the day's mark.
+    /// The mark's element name.
+    static var markLabel: String { String(localized: "The mark") }
+
+    /// The mark's element value: where it is, in the words a ball is placed in (the pool table's diamonds and pockets,
+    /// or a small table's cushions and fixed things), then what it is for.
+    static func markValue(_ p: Vec2, table: TableSpec, kind: TableKind) -> String {
+        if kind == .standard {
+            return capitalized(place(p, table: table)) + ". " + String(localized: "Where the white ball should stop.")
+        }
+        return placeSentence(p, table: table, kind: kind) + " " + String(localized: "Where the white ball should stop.")
     }
 
     /// An object ball's element value: where it is, then what blocks the straight line from the cue ball to it

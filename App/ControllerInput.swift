@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
+//          B5: on the shot of the day's result the Options button shares it and a left stick click opens the board
+//          (DailyController), so the day can be played to a shared result with a controller alone; the mapping says so.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: on the shot of the day the card button presses the
 //          daily card's own main action (Take your shot, Try again, Watch the answer), not the trick card's.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: while the every-surface fan shows, left and right
@@ -141,6 +144,9 @@ final class GameControllerInput {
                     action: String(localized: "Replays the shot with the Physics Lens, where the controller has this button.")),
             // 0.7.7 make-it-again: the left stick click.
             Mapping(control: OwnShotWords.leftStickControl, action: OwnShotWords.leftStickAction),
+            // 0.7.10 everyone: the two spare buttons on the shot of the day's result (DailyController).
+            Mapping(control: String(localized: "Shot of the day"),
+                    action: String(localized: "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.")),
             Mapping(control: String(localized: "Menu button"),
                     action: String(localized: "Opens or closes the menu.")),
         ]
@@ -244,6 +250,8 @@ final class GameControllerInput {
         case .y: model.requestShotPanel(.toggle)
         case .menu: pressMenu(model)
         case .options:
+            // 0.7.10 everyone: on the shot of the day's result, Share (DailyController); otherwise as before.
+            if DailyController.share(model) { return }
             // Try again, as the shot panel's button and the Mac's Command-T do: the retry, then Your shot opens so
             // the restored aim can be changed.
             guard model.canTryAgain else { return }
@@ -258,6 +266,8 @@ final class GameControllerInput {
                 model.replay(withLens: true)
             }
         case .leftStick:
+            // 0.7.10 everyone: on the shot of the day's result, the board (DailyController); otherwise as before.
+            if DailyController.board(model) { return }
             // 0.7.7 make-it-again: Make it again for the shot on screen (OwnShotShelf decides when it can be saved);
             // nothing when it cannot.
             if OwnShotShelf.shared.canSave(model) { OwnShotShelf.shared.save(from: model) }

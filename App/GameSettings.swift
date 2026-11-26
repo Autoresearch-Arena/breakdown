@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part C:
+//          "Controls on the left", controlsLeftKey, off by default, a toggle in a new Hands section.
+//          ShowpieceView reads it once and hands it down as the shootSide environment value (Shoot, the tip picture and
+//          the power bar swap sides on every layout) and, where the table and the notebook or column sit side by side,
+//          puts the table on the right.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 gamecenter, plans/25-Nov-2026-everyone-can-play-plan.md Part E
 //          item 2: "Hide the board", hideBoardKey and boardHidden, off by default. With it on the game never signs in to
 //          Game Center and no Board button is drawn (GameCenter and BoardButton read it); the daily shot, its score and
@@ -60,6 +65,11 @@ enum GameSettings {
     /// BoardButton). Off by default, so it is read with bool(forKey:), never through flag(), which reads a missing key
     /// as on and would hide the board on every fresh install.
     static let hideBoardKey = "optionHideBoard"
+    // 0.7.10 everyone: "Controls on the left", for playing with the left hand.
+    /// With it on, Shoot, the tip picture and the power bar sit on the left of every layout, and where the table and
+    /// the notebook (or the side column) share the screen side by side, the table is on the right. Read once, by
+    /// ShowpieceView (@AppStorage), which hands it down as the shootSide environment value. Off by default.
+    static let controlsLeftKey = "optionControlsOnLeft"
 
     /// Options default to on; reading a missing key as "on" keeps a fresh install fully featured.
     private static func flag(_ key: String) -> Bool { UserDefaults.standard.object(forKey: key) as? Bool ?? true }
@@ -88,6 +98,8 @@ struct OptionsSheet: View {
     @AppStorage(GameSettings.bulletTimeKey) private var bulletTime = true
     // 0.7.10 gamecenter
     @AppStorage(GameSettings.hideBoardKey) private var hideBoard = false
+    // 0.7.10 everyone
+    @AppStorage(GameSettings.controlsLeftKey) private var controlsLeft = false
 
     private var version: String {
         let info = Bundle.main.infoDictionary
@@ -143,6 +155,14 @@ struct OptionsSheet: View {
                     Text("Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.")
                 }
                 #endif
+                // 0.7.10 everyone: on every platform (the Mac's notebook swaps sides too).
+                Section {
+                    Toggle("Controls on the left", systemImage: "hand.raised", isOn: $controlsLeft)
+                } header: {
+                    Text("Hands")
+                } footer: {
+                    Text("Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.")
+                }
                 // 0.7.10 gamecenter: on every platform, the Mac's Settings window included.
                 Section {
                     Toggle("Hide the board", systemImage: "eye.slash", isOn: $hideBoard)

@@ -22,6 +22,9 @@
 //          the phone cyan and magenta mean only rolling and sliding. Touch area, haptics and VoiceOver are unchanged.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          the impact marks differ in shape as well as tint (the strike a tall line, a ball hit a dot,
+//          a cushion a short line, a pocket a triangle into the hole, a rim skip a ring), plan Part A4.)
 // SRP/DRY check: Pass - split out of ShowpieceView; tick colours come from Palette (the same ones the captions use).
 import BreakdownLensModel
 import BreakdownTimeline
@@ -89,8 +92,10 @@ struct ScrubBar: View {
         let thumbX: CGFloat = min(max(0, x - thumb / 2), w - thumb)
         return ZStack(alignment: .leading) {
             Capsule().fill(phoneStyle ? Color.white.opacity(0.25) : palette.track).frame(height: railHeight)
-            if !phoneStyle { ticks(duration: d) }
             Capsule().fill(phoneStyle ? Color.white : palette.accent).frame(width: max(railHeight, x), height: railHeight)
+            // 0.7.10 everyone: the marks over the played rail too, so the small shapes (a dot, a ring) that tell them
+            // apart are not hidden once the playhead passes them.
+            if !phoneStyle { ticks(duration: d) }
             // The phone's moment ticks go over the played rail, which is white too; their dark edge keeps them apart.
             if phoneStyle { momentTicks(duration: d) }
             Circle()
@@ -128,22 +133,50 @@ struct ScrubBar: View {
 
     // MARK: Ticks
 
+    /// 0.7.10 everyone (plans/25-Nov-2026-everyone-can-play-plan.md Part A4): each kind of mark has its own SHAPE as
+    /// well as its tint, so a greyscale screenshot (or a player who cannot tell the tints apart) still reads the bar:
+    ///   - the cue strike: a tall line;
+    ///   - a ball hitting a ball (and a pin knocked down, a jam brought to rest): a small round dot;
+    ///   - a cushion: a short line, like the rail it stands for;
+    ///   - a pocket: a small triangle pointing down, into the hole;
+    ///   - a rim skip (a near miss at a hole): a small hollow ring.
+    private enum TickShape { case tall, dot, short, intoHole, ring }
+
     private func ticks(duration d: Double) -> some View {
         Canvas { ctx, size in
+            let midY = size.height / 2
             for e in model.timeline.events {
-                var color: Color
-                var h: CGFloat = 8
+                let color: Color
+                let shape: TickShape
                 switch e.kind {
-                case .ballBall, .pinDown, .settledInContact: color = palette.impact
-                case .cushion: color = palette.cushion
-                case .pocket: color = palette.pocket; h = 14
-                case .rimSkip: color = palette.pocket       // a near miss at a hole: the pocket colour, short tick
-                case .cueStrike: color = palette.strike; h = 14
+                case .ballBall, .pinDown, .settledInContact: color = palette.impact; shape = .dot
+                case .cushion: color = palette.cushion; shape = .short
+                case .pocket: color = palette.pocket; shape = .intoHole
+                case .rimSkip: color = palette.pocket; shape = .ring
+                case .cueStrike: color = palette.strike; shape = .tall
                 case .phaseTransition: continue
                 }
                 let x = size.width * (e.time / d)
-                let rect = CGRect(x: x - 0.75, y: (size.height - h) / 2, width: 1.5, height: h)
-                ctx.fill(Path(rect), with: .color(color.opacity(0.85)))
+                let shading = GraphicsContext.Shading.color(color.opacity(0.85))
+                switch shape {
+                case .tall:
+                    ctx.fill(Path(CGRect(x: x - 0.75, y: midY - 7, width: 1.5, height: 14)), with: shading)
+                case .short:
+                    ctx.fill(Path(CGRect(x: x - 0.75, y: midY - 4, width: 1.5, height: 8)), with: shading)
+                case .dot:
+                    ctx.fill(Path(ellipseIn: CGRect(x: x - 2.75, y: midY - 2.75, width: 5.5, height: 5.5)), with: shading)
+                case .intoHole:
+                    // Sits just above the rail, its point touching it, so it reads as "down into the hole".
+                    var tri = Path()
+                    tri.move(to: CGPoint(x: x - 4, y: midY - 9))
+                    tri.addLine(to: CGPoint(x: x + 4, y: midY - 9))
+                    tri.addLine(to: CGPoint(x: x, y: midY - 2))
+                    tri.closeSubpath()
+                    ctx.fill(tri, with: shading)
+                case .ring:
+                    ctx.stroke(Path(ellipseIn: CGRect(x: x - 3, y: midY - 3, width: 6, height: 6)), with: shading,
+                               lineWidth: 1.25)
+                }
             }
         }
         .allowsHitTesting(false)

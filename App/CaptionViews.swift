@@ -85,6 +85,9 @@
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the ring's anchor is
 //          also a function of the timeline and the clock, LeaderState.anchor(of:timeline:time:), so the clip's ring sits
 //          on the same ball as the game's. The live ring is unchanged.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
+//          the Lens key (LensLegendChip, LensKeyEntry) draws sliding dashed and names both lines'
+//          shapes for every player, as the trails now are, not only with Differentiate Without Colour on.)
 // SRP/DRY check: Pass - split out of ShowpieceView. Wording stays in Captions.swift; colours come from Palette. The
 //          stroke lines reuse LeaderState's projection rather than a second per-frame overlay.
 import BreakdownLensModel
@@ -1033,10 +1036,10 @@ private struct StripSizer: View {
 /// as a last resort the heading drops so the row is never squeezed. Spoken as one sentence (label unchanged).
 struct LensLegendChip: View {
     @Environment(\.palette) private var palette
-    /// With Differentiate Without Colour on, the Lens draws sliding dashed and rolling solid; the key shows the same.
-    @Environment(\.accessibilityDifferentiateWithoutColor) private var withoutColour
+    // 0.7.10 everyone: the Lens draws sliding dashed and rolling solid for every player, and the key always shows the
+    // same, so shape carries the meaning as well as colour (plans/25-Nov-2026-everyone-can-play-plan.md Part A3).
 
-    /// `dashed`: the sliding entry when shape must carry the meaning (Differentiate Without Colour).
+    /// `dashed`: the sliding entry, drawn dashed as its trail is.
     private func entry(_ name: LocalizedStringKey, _ color: Color, dashed: Bool = false) -> some View {
         LensKeyEntry(name: name, color: color, dashed: dashed)
     }
@@ -1049,24 +1052,22 @@ struct LensLegendChip: View {
     }
 
     private var entries: some View {
-        HStack(spacing: 12) { entry("Sliding", palette.slide, dashed: withoutColour); entry("Rolling", palette.accent) }
+        HStack(spacing: 12) { entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
     }
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 12) { heading; entries }
             VStack(alignment: .leading, spacing: 4) { heading; entries }
-            VStack(alignment: .leading, spacing: 4) { heading; entry("Sliding", palette.slide, dashed: withoutColour); entry("Rolling", palette.accent) }
-            VStack(alignment: .leading, spacing: 4) { entry("Sliding", palette.slide, dashed: withoutColour); entry("Rolling", palette.accent) }
+            VStack(alignment: .leading, spacing: 4) { heading; entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
+            VStack(alignment: .leading, spacing: 4) { entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
         .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(withoutColour
-            ? Text("Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling")
-            : Text("Lens colours: magenta lines show a ball sliding, cyan lines a ball rolling"))
+        .accessibilityLabel(Text("Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling"))
     }
 }
 
@@ -1076,7 +1077,7 @@ struct LensLegendChip: View {
 struct LensKeyEntry: View {
     let name: LocalizedStringKey
     let color: Color
-    /// The sliding entry when shape must carry the meaning (Differentiate Without Colour): dashed, as the trail is.
+    /// The sliding entry: dashed, as the trail is (for every player since 0.7.10).
     var dashed = false
 
     var body: some View {

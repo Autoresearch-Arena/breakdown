@@ -1,0 +1,1462 @@
+{
+ "keys": [
+  "%@ metres per second",
+  "%@ newton seconds",
+  "about %@ newtons",
+  "%@ turns per second",
+  "%@ millimetres",
+  "%@ centimetres",
+  "no ball in line",
+  "planned %@, delivered %@",
+  "Planned",
+  "Delivered",
+  "Zoom in on the white ball",
+  "Zoom in",
+  "Whole table",
+  "Controls on the left",
+  "Hands",
+  "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+  "The mark",
+  "Where the white ball should stop.",
+  "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+  "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+  "Zoom without a gesture",
+  "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+  "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+  "For teachers",
+  "What the game shows a physics class, and how to use it in a lesson.",
+  "Opens the page in your browser"
+ ],
+ "translations": [
+  {
+   "culture": "ar",
+   "key": "%@ metres per second",
+   "text": "%@ متر في الثانية"
+  },
+  {
+   "culture": "de",
+   "key": "%@ metres per second",
+   "text": "%@ Meter pro Sekunde"
+  },
+  {
+   "culture": "es",
+   "key": "%@ metres per second",
+   "text": "%@ metros por segundo"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ metres per second",
+   "text": "%@ mètres par seconde"
+  },
+  {
+   "culture": "it",
+   "key": "%@ metres per second",
+   "text": "%@ metri al secondo"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ metres per second",
+   "text": "秒速%@メートル"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ metres per second",
+   "text": "초속 %@미터"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ metres per second",
+   "text": "%@ metros por segundo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ metres per second",
+   "text": "%@ metros por segundo"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ metres per second",
+   "text": "%@ метра в секунду"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ metres per second",
+   "text": "每秒 %@ 米"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ newton seconds",
+   "text": "%@ نيوتن ثانية"
+  },
+  {
+   "culture": "de",
+   "key": "%@ newton seconds",
+   "text": "%@ Newtonsekunden"
+  },
+  {
+   "culture": "es",
+   "key": "%@ newton seconds",
+   "text": "%@ newton segundos"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ newton seconds",
+   "text": "%@ newton-secondes"
+  },
+  {
+   "culture": "it",
+   "key": "%@ newton seconds",
+   "text": "%@ newton secondo"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ newton seconds",
+   "text": "%@ニュートン秒"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ newton seconds",
+   "text": "%@뉴턴초"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ newton seconds",
+   "text": "%@ newton-segundos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ newton seconds",
+   "text": "%@ newton-segundos"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ newton seconds",
+   "text": "%@ ньютон-секунды"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ newton seconds",
+   "text": "%@ 牛顿秒"
+  },
+  {
+   "culture": "ar",
+   "key": "about %@ newtons",
+   "text": "نحو %@ نيوتن"
+  },
+  {
+   "culture": "de",
+   "key": "about %@ newtons",
+   "text": "etwa %@ Newton"
+  },
+  {
+   "culture": "es",
+   "key": "about %@ newtons",
+   "text": "unos %@ newtons"
+  },
+  {
+   "culture": "fr",
+   "key": "about %@ newtons",
+   "text": "environ %@ newtons"
+  },
+  {
+   "culture": "it",
+   "key": "about %@ newtons",
+   "text": "circa %@ newton"
+  },
+  {
+   "culture": "ja",
+   "key": "about %@ newtons",
+   "text": "約%@ニュートン"
+  },
+  {
+   "culture": "ko",
+   "key": "about %@ newtons",
+   "text": "약 %@뉴턴"
+  },
+  {
+   "culture": "pt",
+   "key": "about %@ newtons",
+   "text": "cerca de %@ newtons"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "about %@ newtons",
+   "text": "cerca de %@ newtons"
+  },
+  {
+   "culture": "ru",
+   "key": "about %@ newtons",
+   "text": "около %@ ньютонов"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "about %@ newtons",
+   "text": "约 %@ 牛顿"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ turns per second",
+   "text": "%@ دورة في الثانية"
+  },
+  {
+   "culture": "de",
+   "key": "%@ turns per second",
+   "text": "%@ Umdrehungen pro Sekunde"
+  },
+  {
+   "culture": "es",
+   "key": "%@ turns per second",
+   "text": "%@ vueltas por segundo"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ turns per second",
+   "text": "%@ tours par seconde"
+  },
+  {
+   "culture": "it",
+   "key": "%@ turns per second",
+   "text": "%@ giri al secondo"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ turns per second",
+   "text": "毎秒%@回転"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ turns per second",
+   "text": "초당 %@바퀴"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ turns per second",
+   "text": "%@ voltas por segundo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ turns per second",
+   "text": "%@ voltas por segundo"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ turns per second",
+   "text": "%@ оборота в секунду"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ turns per second",
+   "text": "每秒 %@ 圈"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ millimetres",
+   "text": "%@ مليمتر"
+  },
+  {
+   "culture": "de",
+   "key": "%@ millimetres",
+   "text": "%@ Millimeter"
+  },
+  {
+   "culture": "es",
+   "key": "%@ millimetres",
+   "text": "%@ milímetros"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ millimetres",
+   "text": "%@ millimètres"
+  },
+  {
+   "culture": "it",
+   "key": "%@ millimetres",
+   "text": "%@ millimetri"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ millimetres",
+   "text": "%@ミリメートル"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ millimetres",
+   "text": "%@밀리미터"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ millimetres",
+   "text": "%@ milímetros"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ millimetres",
+   "text": "%@ milímetros"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ millimetres",
+   "text": "%@ миллиметра"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ millimetres",
+   "text": "%@ 毫米"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ centimetres",
+   "text": "%@ سنتيمتر"
+  },
+  {
+   "culture": "de",
+   "key": "%@ centimetres",
+   "text": "%@ Zentimeter"
+  },
+  {
+   "culture": "es",
+   "key": "%@ centimetres",
+   "text": "%@ centímetros"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ centimetres",
+   "text": "%@ centimètres"
+  },
+  {
+   "culture": "it",
+   "key": "%@ centimetres",
+   "text": "%@ centimetri"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ centimetres",
+   "text": "%@センチメートル"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ centimetres",
+   "text": "%@센티미터"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ centimetres",
+   "text": "%@ centímetros"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ centimetres",
+   "text": "%@ centímetros"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ centimetres",
+   "text": "%@ сантиметров"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ centimetres",
+   "text": "%@ 厘米"
+  },
+  {
+   "culture": "ar",
+   "key": "no ball in line",
+   "text": "لا كرة على الخط"
+  },
+  {
+   "culture": "de",
+   "key": "no ball in line",
+   "text": "keine Kugel in der Linie"
+  },
+  {
+   "culture": "es",
+   "key": "no ball in line",
+   "text": "ninguna bola en la línea"
+  },
+  {
+   "culture": "fr",
+   "key": "no ball in line",
+   "text": "aucune bille sur la ligne"
+  },
+  {
+   "culture": "it",
+   "key": "no ball in line",
+   "text": "nessuna biglia sulla linea"
+  },
+  {
+   "culture": "ja",
+   "key": "no ball in line",
+   "text": "ライン上に球なし"
+  },
+  {
+   "culture": "ko",
+   "key": "no ball in line",
+   "text": "선 위에 공 없음"
+  },
+  {
+   "culture": "pt",
+   "key": "no ball in line",
+   "text": "nenhuma bola na linha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "no ball in line",
+   "text": "nenhuma bola na linha"
+  },
+  {
+   "culture": "ru",
+   "key": "no ball in line",
+   "text": "на линии нет шара"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "no ball in line",
+   "text": "线上没有球"
+  },
+  {
+   "culture": "ar",
+   "key": "planned %@, delivered %@",
+   "text": "المخطط %@، والمنفّذ %@"
+  },
+  {
+   "culture": "de",
+   "key": "planned %@, delivered %@",
+   "text": "geplant %@, ausgeführt %@"
+  },
+  {
+   "culture": "es",
+   "key": "planned %@, delivered %@",
+   "text": "planeado %@, ejecutado %@"
+  },
+  {
+   "culture": "fr",
+   "key": "planned %@, delivered %@",
+   "text": "prévu %@, réalisé %@"
+  },
+  {
+   "culture": "it",
+   "key": "planned %@, delivered %@",
+   "text": "previsto %@, eseguito %@"
+  },
+  {
+   "culture": "ja",
+   "key": "planned %@, delivered %@",
+   "text": "計画 %@、実際 %@"
+  },
+  {
+   "culture": "ko",
+   "key": "planned %@, delivered %@",
+   "text": "계획 %@, 실제 %@"
+  },
+  {
+   "culture": "pt",
+   "key": "planned %@, delivered %@",
+   "text": "planeado %@, executado %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "planned %@, delivered %@",
+   "text": "planejado %@, executado %@"
+  },
+  {
+   "culture": "ru",
+   "key": "planned %@, delivered %@",
+   "text": "задумано %@, сделано %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "planned %@, delivered %@",
+   "text": "计划 %@，实际 %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Planned",
+   "text": "المخطط"
+  },
+  {
+   "culture": "de",
+   "key": "Planned",
+   "text": "Geplant"
+  },
+  {
+   "culture": "es",
+   "key": "Planned",
+   "text": "Planeado"
+  },
+  {
+   "culture": "fr",
+   "key": "Planned",
+   "text": "Prévu"
+  },
+  {
+   "culture": "it",
+   "key": "Planned",
+   "text": "Previsto"
+  },
+  {
+   "culture": "ja",
+   "key": "Planned",
+   "text": "計画"
+  },
+  {
+   "culture": "ko",
+   "key": "Planned",
+   "text": "계획"
+  },
+  {
+   "culture": "pt",
+   "key": "Planned",
+   "text": "Planeado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Planned",
+   "text": "Planejado"
+  },
+  {
+   "culture": "ru",
+   "key": "Planned",
+   "text": "Задумано"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Planned",
+   "text": "计划"
+  },
+  {
+   "culture": "ar",
+   "key": "Delivered",
+   "text": "المنفّذ"
+  },
+  {
+   "culture": "de",
+   "key": "Delivered",
+   "text": "Ausgeführt"
+  },
+  {
+   "culture": "es",
+   "key": "Delivered",
+   "text": "Ejecutado"
+  },
+  {
+   "culture": "fr",
+   "key": "Delivered",
+   "text": "Réalisé"
+  },
+  {
+   "culture": "it",
+   "key": "Delivered",
+   "text": "Eseguito"
+  },
+  {
+   "culture": "ja",
+   "key": "Delivered",
+   "text": "実際"
+  },
+  {
+   "culture": "ko",
+   "key": "Delivered",
+   "text": "실제"
+  },
+  {
+   "culture": "pt",
+   "key": "Delivered",
+   "text": "Executado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Delivered",
+   "text": "Executado"
+  },
+  {
+   "culture": "ru",
+   "key": "Delivered",
+   "text": "Сделано"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Delivered",
+   "text": "实际"
+  },
+  {
+   "culture": "ar",
+   "key": "Zoom in on the white ball",
+   "text": "تكبير على الكرة البيضاء"
+  },
+  {
+   "culture": "de",
+   "key": "Zoom in on the white ball",
+   "text": "Auf die weiße Kugel zoomen"
+  },
+  {
+   "culture": "es",
+   "key": "Zoom in on the white ball",
+   "text": "Acercar a la bola blanca"
+  },
+  {
+   "culture": "fr",
+   "key": "Zoom in on the white ball",
+   "text": "Zoomer sur la bille blanche"
+  },
+  {
+   "culture": "it",
+   "key": "Zoom in on the white ball",
+   "text": "Ingrandisci sulla palla bianca"
+  },
+  {
+   "culture": "ja",
+   "key": "Zoom in on the white ball",
+   "text": "白い球にズームイン"
+  },
+  {
+   "culture": "ko",
+   "key": "Zoom in on the white ball",
+   "text": "흰 공 확대"
+  },
+  {
+   "culture": "pt",
+   "key": "Zoom in on the white ball",
+   "text": "Aproximar à bola branca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Zoom in on the white ball",
+   "text": "Aproximar na bola branca"
+  },
+  {
+   "culture": "ru",
+   "key": "Zoom in on the white ball",
+   "text": "Приблизить белый шар"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Zoom in on the white ball",
+   "text": "放大白球"
+  },
+  {
+   "culture": "ar",
+   "key": "Zoom in",
+   "text": "تكبير"
+  },
+  {
+   "culture": "de",
+   "key": "Zoom in",
+   "text": "Hineinzoomen"
+  },
+  {
+   "culture": "es",
+   "key": "Zoom in",
+   "text": "Acercar"
+  },
+  {
+   "culture": "fr",
+   "key": "Zoom in",
+   "text": "Zoomer"
+  },
+  {
+   "culture": "it",
+   "key": "Zoom in",
+   "text": "Ingrandisci"
+  },
+  {
+   "culture": "ja",
+   "key": "Zoom in",
+   "text": "ズームイン"
+  },
+  {
+   "culture": "ko",
+   "key": "Zoom in",
+   "text": "확대"
+  },
+  {
+   "culture": "pt",
+   "key": "Zoom in",
+   "text": "Aproximar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Zoom in",
+   "text": "Aproximar"
+  },
+  {
+   "culture": "ru",
+   "key": "Zoom in",
+   "text": "Приблизить"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Zoom in",
+   "text": "放大"
+  },
+  {
+   "culture": "ar",
+   "key": "Whole table",
+   "text": "الطاولة كاملة"
+  },
+  {
+   "culture": "de",
+   "key": "Whole table",
+   "text": "Ganzer Tisch"
+  },
+  {
+   "culture": "es",
+   "key": "Whole table",
+   "text": "Toda la mesa"
+  },
+  {
+   "culture": "fr",
+   "key": "Whole table",
+   "text": "Toute la table"
+  },
+  {
+   "culture": "it",
+   "key": "Whole table",
+   "text": "Tutto il tavolo"
+  },
+  {
+   "culture": "ja",
+   "key": "Whole table",
+   "text": "テーブル全体"
+  },
+  {
+   "culture": "ko",
+   "key": "Whole table",
+   "text": "테이블 전체"
+  },
+  {
+   "culture": "pt",
+   "key": "Whole table",
+   "text": "Mesa inteira"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Whole table",
+   "text": "Mesa inteira"
+  },
+  {
+   "culture": "ru",
+   "key": "Whole table",
+   "text": "Весь стол"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Whole table",
+   "text": "整张球台"
+  },
+  {
+   "culture": "ar",
+   "key": "Controls on the left",
+   "text": "عناصر التحكم على اليسار"
+  },
+  {
+   "culture": "de",
+   "key": "Controls on the left",
+   "text": "Steuerung links"
+  },
+  {
+   "culture": "es",
+   "key": "Controls on the left",
+   "text": "Controles a la izquierda"
+  },
+  {
+   "culture": "fr",
+   "key": "Controls on the left",
+   "text": "Commandes à gauche"
+  },
+  {
+   "culture": "it",
+   "key": "Controls on the left",
+   "text": "Comandi a sinistra"
+  },
+  {
+   "culture": "ja",
+   "key": "Controls on the left",
+   "text": "操作を左側に"
+  },
+  {
+   "culture": "ko",
+   "key": "Controls on the left",
+   "text": "조작 버튼을 왼쪽에"
+  },
+  {
+   "culture": "pt",
+   "key": "Controls on the left",
+   "text": "Controlos à esquerda"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Controls on the left",
+   "text": "Controles à esquerda"
+  },
+  {
+   "culture": "ru",
+   "key": "Controls on the left",
+   "text": "Управление слева"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Controls on the left",
+   "text": "控件放在左侧"
+  },
+  {
+   "culture": "ar",
+   "key": "Hands",
+   "text": "اليدان"
+  },
+  {
+   "culture": "de",
+   "key": "Hands",
+   "text": "Hände"
+  },
+  {
+   "culture": "es",
+   "key": "Hands",
+   "text": "Manos"
+  },
+  {
+   "culture": "fr",
+   "key": "Hands",
+   "text": "Mains"
+  },
+  {
+   "culture": "it",
+   "key": "Hands",
+   "text": "Mani"
+  },
+  {
+   "culture": "ja",
+   "key": "Hands",
+   "text": "利き手"
+  },
+  {
+   "culture": "ko",
+   "key": "Hands",
+   "text": "손"
+  },
+  {
+   "culture": "pt",
+   "key": "Hands",
+   "text": "Mãos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hands",
+   "text": "Mãos"
+  },
+  {
+   "culture": "ru",
+   "key": "Hands",
+   "text": "Руки"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hands",
+   "text": "惯用手"
+  },
+  {
+   "culture": "ar",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "يضع زر الضرب وصورة نقطة الضرب وشريط القوة على اليسار. وحين تتقاسم الطاولة الشاشة جنبًا إلى جنب، تنتقل الطاولة إلى اليمين."
+  },
+  {
+   "culture": "de",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Legt Stoßen, das Bild für den Treffpunkt und die Kraftleiste nach links. Wo der Tisch sich den Bildschirm nebeneinander teilt, rückt der Tisch nach rechts."
+  },
+  {
+   "culture": "es",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Pone Tirar, la imagen de la punta y la barra de potencia a la izquierda. Donde la mesa comparte la pantalla lado a lado, la mesa pasa a la derecha."
+  },
+  {
+   "culture": "fr",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Place Tirer, l'image de l'effet et la barre de puissance à gauche. Quand la table partage l'écran côte à côte, elle passe à droite."
+  },
+  {
+   "culture": "it",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Mette Tira, l'immagine del cuoio e la barra della potenza a sinistra. Dove il tavolo divide lo schermo fianco a fianco, il tavolo passa a destra."
+  },
+  {
+   "culture": "ja",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "「打つ」、撞点の絵、強さのバーを左側に置きます。テーブルが画面を左右に分け合う配置では、テーブルが右側に移ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "치기, 당점 그림, 파워 바를 왼쪽에 둬요. 테이블이 화면을 좌우로 나눠 쓰는 곳에서는 테이블이 오른쪽으로 가요."
+  },
+  {
+   "culture": "pt",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Coloca Jogar, a imagem da ponta e a barra de força à esquerda. Onde a mesa partilha o ecrã lado a lado, a mesa passa para a direita."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Coloca Tacar, a imagem do efeito e a barra de força à esquerda. Onde a mesa divide a tela lado a lado, a mesa passa para a direita."
+  },
+  {
+   "culture": "ru",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "Ставит «Ударить», картинку наклейки и шкалу силы слева. Где стол делит экран бок о бок, стол уходит вправо."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.",
+   "text": "把击球按钮、杆头击点图和力度条放到左侧。球台与其他内容左右并排时，球台移到右侧。"
+  },
+  {
+   "culture": "ar",
+   "key": "The mark",
+   "text": "العلامة"
+  },
+  {
+   "culture": "de",
+   "key": "The mark",
+   "text": "Die Markierung"
+  },
+  {
+   "culture": "es",
+   "key": "The mark",
+   "text": "La marca"
+  },
+  {
+   "culture": "fr",
+   "key": "The mark",
+   "text": "La marque"
+  },
+  {
+   "culture": "it",
+   "key": "The mark",
+   "text": "Il segno"
+  },
+  {
+   "culture": "ja",
+   "key": "The mark",
+   "text": "目印"
+  },
+  {
+   "culture": "ko",
+   "key": "The mark",
+   "text": "표시"
+  },
+  {
+   "culture": "pt",
+   "key": "The mark",
+   "text": "A marca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The mark",
+   "text": "A marca"
+  },
+  {
+   "culture": "ru",
+   "key": "The mark",
+   "text": "Отметка"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The mark",
+   "text": "标记"
+  },
+  {
+   "culture": "ar",
+   "key": "Where the white ball should stop.",
+   "text": "حيث يجب أن تتوقف الكرة البيضاء."
+  },
+  {
+   "culture": "de",
+   "key": "Where the white ball should stop.",
+   "text": "Hier soll die weiße Kugel liegen bleiben."
+  },
+  {
+   "culture": "es",
+   "key": "Where the white ball should stop.",
+   "text": "Donde debe pararse la bola blanca."
+  },
+  {
+   "culture": "fr",
+   "key": "Where the white ball should stop.",
+   "text": "Là où la bille blanche doit s'arrêter."
+  },
+  {
+   "culture": "it",
+   "key": "Where the white ball should stop.",
+   "text": "Dove deve fermarsi la palla bianca."
+  },
+  {
+   "culture": "ja",
+   "key": "Where the white ball should stop.",
+   "text": "白い球を止めたい位置です。"
+  },
+  {
+   "culture": "ko",
+   "key": "Where the white ball should stop.",
+   "text": "흰 공이 멈춰야 할 곳이에요."
+  },
+  {
+   "culture": "pt",
+   "key": "Where the white ball should stop.",
+   "text": "Onde a bola branca deve parar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Where the white ball should stop.",
+   "text": "Onde a bola branca deve parar."
+  },
+  {
+   "culture": "ru",
+   "key": "Where the white ball should stop.",
+   "text": "Здесь должен остановиться белый шар."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Where the white ball should stop.",
+   "text": "白球应停下的位置。"
+  },
+  {
+   "culture": "ar",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "بعد انتهاء ضربة اليوم، يشارك زر الخيارات نتيجتك، ويفتح ضغط عصا التحكم اليسرى لوحة الصدارة."
+  },
+  {
+   "culture": "de",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Ist der Stoß des Tages fertig, teilt die Optionstaste dein Ergebnis, und ein Druck auf den linken Stick öffnet die Rangliste."
+  },
+  {
+   "culture": "es",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Cuando termines el tiro de hoy, el botón de opciones comparte tu resultado y pulsar el stick izquierdo abre la clasificación."
+  },
+  {
+   "culture": "fr",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Une fois le coup du jour terminé, le bouton Options partage ton résultat et un clic du stick gauche ouvre le classement."
+  },
+  {
+   "culture": "it",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Finito il colpo di oggi, il tasto Opzioni condivide il tuo risultato e un clic della levetta sinistra apre la classifica."
+  },
+  {
+   "culture": "ja",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "今日のショットが終わったら、オプションボタンで結果を共有し、左スティック押し込みでランキングを開きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "오늘의 샷을 마치면 옵션 버튼으로 결과를 공유하고, 왼쪽 스틱을 누르면 순위표가 열려요."
+  },
+  {
+   "culture": "pt",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Quando a tacada de hoje terminar, o botão de opções partilha o teu resultado e um clique do manípulo esquerdo abre a classificação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Quando a tacada de hoje terminar, o botão de opções compartilha seu resultado e um clique do analógico esquerdo abre a classificação."
+  },
+  {
+   "culture": "ru",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "Когда удар дня завершён, кнопка Options делится твоим результатом, а нажатие левого стика открывает рейтинг."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.",
+   "text": "今天的一杆结束后，选项键分享你的成绩，按下左摇杆打开排行榜。"
+  },
+  {
+   "culture": "ar",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "انقر على العدسة لترى الفيزياء: المسارات المتقطعة بلون الماجنتا للكرات المنزلقة، والمسارات المتصلة السماوية للكرات المتدحرجة، والأسمك أسرع. اسحب الشريط للتنقل في الضربة في الاتجاهين."
+  },
+  {
+   "culture": "de",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Tippe auf Lens, um die Physik zu sehen: Gestrichelte magentafarbene Linien zeigen gleitende Kugeln, durchgezogene türkisfarbene Linien rollende Kugeln, dickere Linien sind schneller. Ziehe die Leiste, um den Stoß in beide Richtungen durchzugehen."
+  },
+  {
+   "culture": "es",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Toca Lente para ver la física: las trayectorias magenta discontinuas son bolas deslizándose, las cian continuas son bolas rodando; cuanto más gruesa, más rápida. Arrastra la barra para recorrer el tiro en cualquiera de los dos sentidos."
+  },
+  {
+   "culture": "fr",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Touche Lentille pour voir la physique : les trajectoires magenta en pointillés sont des billes qui glissent, les trajectoires cyan pleines des billes qui roulent ; plus c'est épais, plus c'est rapide. Fais glisser la barre pour parcourir le coup dans les deux sens."
+  },
+  {
+   "culture": "it",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Tocca Lens per vedere la fisica: le linee magenta tratteggiate indicano palle che scivolano, quelle turchesi continue palle che rotolano, quelle più spesse sono più veloci. Trascina la barra per scorrere il tiro in entrambe le direzioni."
+  },
+  {
+   "culture": "ja",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "レンズをタップすると物理の動きが見られます。マゼンタの破線は滑っている球、水色の実線は転がっている球で、線が太いほど速く動いています。バーをドラッグすると、ショットを前後どちらにもたどれます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "렌즈를 탭하면 물리 움직임이 보여요. 자홍색 점선은 미끄러지는 공, 청록색 실선은 구르는 공이고, 선이 굵을수록 빨라요. 바를 드래그하면 샷을 앞뒤로 살펴볼 수 있어요."
+  },
+  {
+   "culture": "pt",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Toca em Lente para ver a física: os trajetos magenta tracejados são bolas a deslizar, os ciano contínuos são bolas a rolar, quanto mais grosso mais rápido. Arrasta a barra para percorrer a tacada nos dois sentidos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Toque em Lente para ver a física: os trajetos magenta tracejados são bolas deslizando, os ciano contínuos são bolas rolando, quanto mais grosso mais rápido. Arraste a barra para percorrer a tacada nos dois sentidos."
+  },
+  {
+   "culture": "ru",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "Нажми «Линза», чтобы увидеть физику: пурпурные пунктирные линии означают скользящие шары, голубые сплошные катящиеся, чем толще линия, тем быстрее. Перетащи полосу, чтобы просмотреть удар в любом направлении."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.",
+   "text": "点击透镜查看物理现象：洋红色虚线是滑动的球，青色实线是滚动的球，线越粗速度越快。拖动进度条，可以向前或向后浏览整个击球过程。"
+  },
+  {
+   "culture": "ar",
+   "key": "Zoom without a gesture",
+   "text": "التكبير بلا إيماءة"
+  },
+  {
+   "culture": "de",
+   "key": "Zoom without a gesture",
+   "text": "Zoomen ohne Geste"
+  },
+  {
+   "culture": "es",
+   "key": "Zoom without a gesture",
+   "text": "Zoom sin gestos"
+  },
+  {
+   "culture": "fr",
+   "key": "Zoom without a gesture",
+   "text": "Zoomer sans geste"
+  },
+  {
+   "culture": "it",
+   "key": "Zoom without a gesture",
+   "text": "Zoom senza gesti"
+  },
+  {
+   "culture": "ja",
+   "key": "Zoom without a gesture",
+   "text": "ジェスチャーなしでズーム"
+  },
+  {
+   "culture": "ko",
+   "key": "Zoom without a gesture",
+   "text": "제스처 없이 확대/축소"
+  },
+  {
+   "culture": "pt",
+   "key": "Zoom without a gesture",
+   "text": "Zoom sem gestos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Zoom without a gesture",
+   "text": "Zoom sem gestos"
+  },
+  {
+   "culture": "ru",
+   "key": "Zoom without a gesture",
+   "text": "Масштаб без жестов"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Zoom without a gesture",
+   "text": "不用手势缩放"
+  },
+  {
+   "culture": "ar",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "زر التكبير فوق الطاولة، أو «التكبير» في قائمة «المزيد» على الهاتف القائم، يكبّر على الكرة البيضاء، أو يكبّر، أو يصغّر، أو يعود إلى الطاولة كاملة."
+  },
+  {
+   "culture": "de",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "Die Zoomtaste über dem Tisch, oder Zoom im Menü Mehr auf einem aufrecht gehaltenen Telefon, zoomt auf die weiße Kugel, hinein, heraus oder zurück auf den ganzen Tisch."
+  },
+  {
+   "culture": "es",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "El botón de zoom sobre la mesa, o Zoom en el menú Más con el teléfono en vertical, acerca a la bola blanca, acerca, aleja o vuelve a toda la mesa."
+  },
+  {
+   "culture": "fr",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "Le bouton de zoom au-dessus de la table, ou Zoom dans le menu Plus sur un téléphone tenu droit, zoome sur la bille blanche, avant, arrière, ou revient à toute la table."
+  },
+  {
+   "culture": "it",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "Il pulsante dello zoom sopra il tavolo, o Zoom nel menu Altro con il telefono in verticale, ingrandisce sulla palla bianca, avvicina, allontana o torna a tutto il tavolo."
+  },
+  {
+   "culture": "ja",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "テーブルの上のズームボタン、または縦向きのスマートフォンでは「その他」メニューの「ズーム」で、白い球にズームイン、拡大、縮小、テーブル全体に戻すことができます。"
+  },
+  {
+   "culture": "ko",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "테이블 위의 확대/축소 버튼, 또는 세로로 든 휴대폰에서는 더 보기 메뉴의 확대/축소로 흰 공 확대, 확대, 축소, 테이블 전체 보기를 할 수 있어요."
+  },
+  {
+   "culture": "pt",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "O botão de zoom por cima da mesa, ou Zoom no menu Mais num telemóvel na vertical, aproxima à bola branca, aproxima, afasta ou volta à mesa inteira."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "O botão de zoom acima da mesa, ou Zoom no menu Mais com o celular na vertical, aproxima na bola branca, aproxima, afasta ou volta à mesa inteira."
+  },
+  {
+   "culture": "ru",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "Кнопка масштаба над столом или «Масштаб» в меню «Ещё» на телефоне в вертикальном положении приближает белый шар, приближает, отдаляет или возвращает весь стол."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The zoom button above the table, or Zoom in the More menu on a phone held upright, zooms in on the white ball, in, out, or back to the whole table.",
+   "text": "球台上方的缩放按钮，或竖握手机时“更多”菜单里的“缩放”，可以放大白球、放大、缩小，或回到整张球台。"
+  },
+  {
+   "culture": "ar",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "مفتاح Return يضرب ضربتك، أو يعيد المحاولة، أو يعرض الحل بعد انتهاء اليوم. Command-S يشارك نتيجتك وCommand-B يفتح لوحة الصدارة."
+  },
+  {
+   "culture": "de",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Return spielt deinen Stoß, versucht es noch einmal oder zeigt die Lösung, wenn der Tag vorbei ist. Befehl-S teilt dein Ergebnis, Befehl-B öffnet die Rangliste."
+  },
+  {
+   "culture": "es",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Intro juega tu tiro, vuelve a intentarlo o muestra la solución cuando acaba el día. Comando-S comparte tu resultado y Comando-B abre la clasificación."
+  },
+  {
+   "culture": "fr",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Entrée joue ton coup, recommence ou montre la réponse une fois la journée finie. Commande-S partage ton résultat et Commande-B ouvre le classement."
+  },
+  {
+   "culture": "it",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Invio gioca il tuo tiro, riprova o mostra la soluzione a giornata finita. Comando-S condivide il tuo risultato e Comando-B apre la classifica."
+  },
+  {
+   "culture": "ja",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Returnでショット、再挑戦、または一日が終わったら答えを見ます。Command-Sで結果を共有し、Command-Bでランキングを開きます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Return으로 샷을 치거나, 다시 시도하거나, 하루가 끝나면 정답을 봐요. Command-S로 결과를 공유하고 Command-B로 순위표를 열어요."
+  },
+  {
+   "culture": "pt",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Enter joga a tua tacada, tenta outra vez ou mostra a resposta quando o dia acaba. Comando-S partilha o teu resultado e Comando-B abre a classificação."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Return dá sua tacada, tenta de novo ou mostra a resposta quando o dia termina. Command-S compartilha seu resultado e Command-B abre a classificação."
+  },
+  {
+   "culture": "ru",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "Return делает твой удар, повторяет попытку или показывает ответ, когда день закончен. Command-S делится результатом, а Command-B открывает рейтинг."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Return takes your shot, tries again, or watches the answer once the day is done. Command-S shares your result and Command-B opens the board.",
+   "text": "回车键击球、再试一次，或在当天结束后观看答案。Command-S 分享你的成绩，Command-B 打开排行榜。"
+  },
+  {
+   "culture": "ar",
+   "key": "For teachers",
+   "text": "للمعلمين"
+  },
+  {
+   "culture": "de",
+   "key": "For teachers",
+   "text": "Für Lehrkräfte"
+  },
+  {
+   "culture": "es",
+   "key": "For teachers",
+   "text": "Para docentes"
+  },
+  {
+   "culture": "fr",
+   "key": "For teachers",
+   "text": "Pour les enseignants"
+  },
+  {
+   "culture": "it",
+   "key": "For teachers",
+   "text": "Per gli insegnanti"
+  },
+  {
+   "culture": "ja",
+   "key": "For teachers",
+   "text": "先生のみなさんへ"
+  },
+  {
+   "culture": "ko",
+   "key": "For teachers",
+   "text": "선생님을 위해"
+  },
+  {
+   "culture": "pt",
+   "key": "For teachers",
+   "text": "Para professores"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "For teachers",
+   "text": "Para professores"
+  },
+  {
+   "culture": "ru",
+   "key": "For teachers",
+   "text": "Для учителей"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "For teachers",
+   "text": "给老师"
+  },
+  {
+   "culture": "ar",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "ما تعرضه اللعبة لحصة الفيزياء، وكيف تستخدمها في الدرس."
+  },
+  {
+   "culture": "de",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "Was das Spiel einer Physikklasse zeigt und wie du es im Unterricht nutzt."
+  },
+  {
+   "culture": "es",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "Qué muestra el juego a una clase de física y cómo usarlo en una lección."
+  },
+  {
+   "culture": "fr",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "Ce que le jeu montre à une classe de physique, et comment t'en servir en cours."
+  },
+  {
+   "culture": "it",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "Cosa mostra il gioco a una classe di fisica e come usarlo in una lezione."
+  },
+  {
+   "culture": "ja",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "このゲームが物理の授業で見せられること、そして授業での使い方。"
+  },
+  {
+   "culture": "ko",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "이 게임이 물리 수업에서 보여 주는 것과 수업에서 쓰는 방법."
+  },
+  {
+   "culture": "pt",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "O que o jogo mostra a uma turma de física, e como o usar numa aula."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "O que o jogo mostra para uma turma de física, e como usá-lo em uma aula."
+  },
+  {
+   "culture": "ru",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "Что игра показывает на уроке физики и как использовать её на занятии."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "What the game shows a physics class, and how to use it in a lesson.",
+   "text": "这款游戏能给物理课展示什么，以及如何在课堂上使用。"
+  },
+  {
+   "culture": "ar",
+   "key": "Opens the page in your browser",
+   "text": "يفتح الصفحة في متصفحك"
+  },
+  {
+   "culture": "de",
+   "key": "Opens the page in your browser",
+   "text": "Öffnet die Seite in deinem Browser"
+  },
+  {
+   "culture": "es",
+   "key": "Opens the page in your browser",
+   "text": "Abre la página en tu navegador"
+  },
+  {
+   "culture": "fr",
+   "key": "Opens the page in your browser",
+   "text": "Ouvre la page dans ton navigateur"
+  },
+  {
+   "culture": "it",
+   "key": "Opens the page in your browser",
+   "text": "Apre la pagina nel tuo browser"
+  },
+  {
+   "culture": "ja",
+   "key": "Opens the page in your browser",
+   "text": "ブラウザでページを開きます"
+  },
+  {
+   "culture": "ko",
+   "key": "Opens the page in your browser",
+   "text": "브라우저에서 페이지를 열어요"
+  },
+  {
+   "culture": "pt",
+   "key": "Opens the page in your browser",
+   "text": "Abre a página no teu navegador"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Opens the page in your browser",
+   "text": "Abre a página no seu navegador"
+  },
+  {
+   "culture": "ru",
+   "key": "Opens the page in your browser",
+   "text": "Открывает страницу в твоём браузере"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Opens the page in your browser",
+   "text": "在浏览器中打开该页面"
+  }
+ ]
+}

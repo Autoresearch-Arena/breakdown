@@ -15,6 +15,11 @@
 //          (stage 3 item 6).
 //          Shown in the notebook beside the table on iPad, Mac and the open folding phone (StrikeSlot), and in a sheet
 //          over the lower half on the upright phone (StrikeSheet). Never over the table.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Part D items 3 and 4: each tile hands NumberTile its figure in spoken units (StrikeSpoken), planned then
+//          delivered after a shot, so VoiceOver reads "Force over 1 ms of tip contact, about 1700 newtons"; a typed
+//          tile's button says the same. At the accessibility text sizes the tiles go one per row (the slot and the sheet
+//          already scroll) instead of shrinking to fit.)
 // SRP/DRY check: Pass - checked NotebookNumbers (its tile lifted into NumberTile and reused here), FineControls (the
 //          sliders stay for the upright phone and VoiceOver; the setters are shared), StrikeFigures/StrikeReading (all
 //          numbers come from there; nothing is worked out in this view).
@@ -25,18 +30,26 @@ struct StrikePanel: View {
     /// The upright phone's sheet: slightly narrower tiles.
     var compact = false
     @Environment(\.palette) private var palette
+    // 0.7.10 everyone: at the accessibility sizes one tile per row, so no figure has to shrink to fit its tile.
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let reading = StrikeReading.current(model)
         VStack(alignment: .leading, spacing: 10) {
             header(reading)
             if let reading {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: compact ? 96 : 108), spacing: 8)], spacing: 8) {
+                LazyVGrid(columns: columns, spacing: 8) {
                     tiles(reading)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// As many tiles a row as fit at the ordinary text sizes; one a row at the accessibility sizes (0.7.10 everyone).
+    private var columns: [GridItem] {
+        if typeSize.isAccessibilitySize { return [GridItem(.flexible(), spacing: 8)] }
+        return [GridItem(.adaptive(minimum: compact ? 96 : 108), spacing: 8)]
     }
 
     // MARK: Header
@@ -77,33 +90,32 @@ struct StrikePanel: View {
     @ViewBuilder
     private func tiles(_ reading: StrikeReading.Reading) -> some View {
         let f = reading.shown
-        let c = reading.comparison
         // In three groups, so no builder block holds more than a handful of views.
         Group {
-        tile(.swing, value: StrikeWords.speed(f.swing), label: StrikeWords.swingLabel, c, planned: { StrikeWords.speed($0.swing) },
+        tile(.swing, value: StrikeWords.speed(f.swing), label: StrikeWords.swingLabel, reading, planned: { StrikeWords.speed($0.swing) },
              edit: .swing)
-        tile(.leaves, value: StrikeWords.speed(f.leaves), label: StrikeWords.leavesLabel, c,
+        tile(.leaves, value: StrikeWords.speed(f.leaves), label: StrikeWords.leavesLabel, reading,
              planned: { StrikeWords.speed($0.leaves) })
-        tile(.push, value: StrikeWords.push(f.push), label: StrikeWords.pushLabel, c, planned: { StrikeWords.push($0.push) })
-        tile(.force, value: StrikeWords.force(f.force), label: StrikeWords.forceLabel, c,
+        tile(.push, value: StrikeWords.push(f.push), label: StrikeWords.pushLabel, reading, planned: { StrikeWords.push($0.push) })
+        tile(.force, value: StrikeWords.force(f.force), label: StrikeWords.forceLabel, reading,
              planned: { StrikeWords.force($0.force) })
-        tile(.energy, value: StrikeWords.energy(f.energy), label: StrikeWords.energyLabel, c,
+        tile(.energy, value: StrikeWords.energy(f.energy), label: StrikeWords.energyLabel, reading,
              planned: { StrikeWords.energy($0.energy) })
         }
         Group {
-        tile(.topSpin, value: StrikeWords.spin(f.topSpin), label: StrikeWords.topSpinLabel(f.topSpin), c,
+        tile(.topSpin, value: StrikeWords.spin(f.topSpin), label: StrikeWords.topSpinLabel(f.topSpin), reading,
              planned: { StrikeWords.spin($0.topSpin) })
-        tile(.sideSpin, value: StrikeWords.spin(f.sideSpin), label: StrikeWords.sideSpinLabel(f.sideSpin), c,
+        tile(.sideSpin, value: StrikeWords.spin(f.sideSpin), label: StrikeWords.sideSpinLabel(f.sideSpin), reading,
              planned: { StrikeWords.spin($0.sideSpin) })
-        tile(.tipUp, value: StrikeWords.millimetres(f.tipUp), label: StrikeWords.tipUpLabel(f.tipUp), c,
+        tile(.tipUp, value: StrikeWords.millimetres(f.tipUp), label: StrikeWords.tipUpLabel(f.tipUp), reading,
              planned: { StrikeWords.millimetres($0.tipUp) }, edit: .tipUp)
-        tile(.tipSide, value: StrikeWords.millimetres(f.tipSide), label: StrikeWords.tipSideLabel(f.tipSide), c,
+        tile(.tipSide, value: StrikeWords.millimetres(f.tipSide), label: StrikeWords.tipSideLabel(f.tipSide), reading,
              planned: { StrikeWords.millimetres($0.tipSide) }, edit: .tipSide)
         }
         Group {
-        tile(.cueAngle, value: StrikeWords.degrees(f.cueAngle), label: StrikeWords.cueAngleLabel, c,
+        tile(.cueAngle, value: StrikeWords.degrees(f.cueAngle), label: StrikeWords.cueAngleLabel, reading,
              planned: { StrikeWords.degrees($0.cueAngle) }, edit: .cueAngle)
-        cutTile(f, c)
+        cutTile(f, reading)
         bridgeTile
         }
     }
@@ -111,13 +123,16 @@ struct StrikePanel: View {
     /// One figure's tile: the delivered figure bright and the planned one dimmed above it when they differ, with the
     /// error under the label; otherwise the one figure. `edit` makes it a button that opens the typed entry.
     @ViewBuilder
-    private func tile(_ figure: StrikeComparison.Figure, value: String, label: String, _ c: StrikeComparison?,
+    private func tile(_ figure: StrikeComparison.Figure, value: String, label: String, _ reading: StrikeReading.Reading,
                       planned: (StrikeFigures) -> String, edit: StrikeEntry.Kind? = nil) -> some View {
+        let c = reading.comparison
         let differs = c?.differs(figure) == true
         let numberTile = NumberTile(value: value, label: Text(verbatim: label),
                                     planned: differs ? c.map { planned($0.planned) } : nil,
                                     note: c.flatMap { StrikeWords.note(figure, $0) },
-                                    large: true, editable: edit.map { $0.isOpen(model) } ?? false)
+                                    large: true, editable: edit.map { $0.isOpen(model) } ?? false,
+                                    // 0.7.10 everyone: the figure in spoken units, planned then delivered after a shot.
+                                    spoken: StrikeSpoken.tile(figure, reading, differs: differs))
         if let edit {
             EditableTile(model: model, kind: edit, tile: numberTile)
         } else {
@@ -128,15 +143,17 @@ struct StrikePanel: View {
     /// The cut on the first ball in line ("–" with none). After a shot its note is the aim's error, which is what moved
     /// the cut (or would have, with no ball in line).
     @ViewBuilder
-    private func cutTile(_ f: StrikeFigures, _ c: StrikeComparison?) -> some View {
+    private func cutTile(_ f: StrikeFigures, _ reading: StrikeReading.Reading) -> some View {
         let dash = "–"
+        let c = reading.comparison
         let differs = c.map { $0.differs(.cut) || $0.differs(.aim) } ?? false
         let note: String? = c.flatMap { $0.differs(.aim) ? StrikeWords.note(.aim, $0) : StrikeWords.note(.cut, $0) }
         let numberTile = NumberTile(value: f.cut.map(StrikeWords.degrees) ?? dash,
                                     label: Text(verbatim: f.cut == nil ? StrikeWords.cutOnLabel(ball: nil)
                                                                        : StrikeWords.cutOnLabel(ball: f.cutBall)),
                                     planned: differs ? c.map { $0.planned.cut.map(StrikeWords.degrees) ?? dash } : nil,
-                                    note: note, large: true, editable: StrikeEntry.Kind.cut.isOpen(model))
+                                    note: note, large: true, editable: StrikeEntry.Kind.cut.isOpen(model),
+                                    spoken: StrikeSpoken.tile(.cut, reading, differs: differs))
         EditableTile(model: model, kind: .cut, tile: numberTile)
     }
 
@@ -145,7 +162,8 @@ struct StrikePanel: View {
         EditableTile(model: model, kind: .bridge,
                      tile: NumberTile(value: StrikeWords.centimetres(model.strokeBridgeLength),
                                       label: Text(verbatim: StrikeWords.bridgeLabel), large: true,
-                                      editable: StrikeEntry.Kind.bridge.isOpen(model)))
+                                      editable: StrikeEntry.Kind.bridge.isOpen(model),
+                                      spoken: StrikeSpoken.centimetres(model.strokeBridgeLength)))
     }
 }
 
@@ -179,6 +197,9 @@ private struct EditableTile: View {
             .disabled(!enabled)
             .hoverHighlight(.fill(cornerRadius: 14))
             .accessibilityHint(enabled ? StrikeWords.typeHint : "")
+            // 0.7.10 everyone: the button reads as its tile does, label then the figure in spoken units.
+            .accessibilityLabel(tile.label)
+            .accessibilityValue(Text(verbatim: tile.spoken ?? tile.value))
             .popover(isPresented: $open) {
                 StrikeEntryField(model: model, kind: kind)
                     .presentationCompactAdaptation(.popover)

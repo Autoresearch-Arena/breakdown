@@ -63,6 +63,9 @@
 //          numbers on the other.
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the round glass share
 //          button (ClipShareButton) sits before the Surface button in the top bar whenever a clip is offered.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Part B: the top bar's zoom button (TableZoomMenuButton) beside the Surface button, so the table zooms
+//          without a pinch or a double tap.)
 // SRP/DRY check: Pass - layout and page switching only. The words are in NotebookStory and NotebookDossier, the numbers
 //          in NotebookNumbers, the split rules in NotebookGeometry; every card, list and menu is the same view the other
 //          screens use, embedded.
@@ -406,7 +409,13 @@ private struct NotebookTopBar: View {
                 .minimumScaleFactor(0.8)
             Spacer(minLength: 0)
             ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
-            if model.rideStatus != nil { RideTitleChip(model: model) } else { SurfaceMenuButton(model: model) }
+            if model.rideStatus != nil {
+                RideTitleChip(model: model)
+            } else {
+                // 0.7.10 everyone: zoom without a pinch or a double tap (TableZoomMenu).
+                TableZoomMenuButton(model: model)
+                SurfaceMenuButton(model: model)
+            }
         }
     }
 }

@@ -25,6 +25,8 @@
 //          Owned by ShowpieceModel (dailyMode, made on first use); read by DailyViews, DailyMenuRow, DailyShare and,
 //          through the static `showing`, by the trick card, the phone's blurbs and primary action, the notebook's
 //          dossier and the table layer, which hand a daily shot over to the views here.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
+//          D2: when the day finishes its result is spoken once, through ShotNarration (DailyWords.resultSpoken).)
 // SRP/DRY check: Pass - checked TrickShotMode (the flow is reused through its gate, never copied), TrickShotJudge (made
 //          or missed is decided there only), EightBallMode (the surface is put on and given back the same way) and
 //          AchievementBook (the daily achievements are earned by its own sweep, from AchievementProgress).
@@ -178,6 +180,8 @@ final class DailyMode: TrickShotGate {
         recordVersion += 1
         if day.finished {
             let streak = record.streak(asOf: s.day)
+            // 0.7.10 everyone: the result, spoken once as it appears (joined to the shot's own summary by the one speaker).
+            ShotNarration.announce(DailyWords.resultSpoken(day, streak: streak))
             resultSink?.dailyFinished(DailyResult(day: s.day, shotID: s.entry.id, made: day.made, madeOnTry: day.madeOnTry,
                                                   tries: day.tries, distance: day.distance, score: day.score,
                                                   streak: streak, bestStreak: record.bestStreak))

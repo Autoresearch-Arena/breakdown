@@ -149,6 +149,15 @@
 //          pauses only while the table has keyboard focus, so it never swallows a space typed into a name field.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the round glass share
 //          button (ClipShareButton) sits just before the Surface button in ScreenHeader whenever a clip is offered.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
+//          Part C: "Controls on the left" is read here, once, and handed down as the shootSide environment value, so
+//          every aiming panel (ShotPanel, PhoneAimPanel, the notebook's and the column's) puts Shoot, the tip picture and
+//          the power bar on the left. Where the table and the notebook (iPad on its side, the open folding phone, the
+//          Mac) or the side column share the screen side by side, the one container is laid out in the other reading
+//          direction so the table moves to the right; each half is put back in the reader's own direction, so nothing
+//          inside it mirrors, and the table keeps its identity and its built scene (no second copy of any view). On a
+//          hinge the halves trade widths so the gap stays exactly on the hinge. Part B: the bridge for the zoom menu
+//          (TableZoomMenu) is handed down too.)
 // SRP/DRY check: Pass - the old 330-line view is split into TableStage, PlaybackControls, ScrubBar, CaptionViews,
 //          ShotPanel, Surfaces, MacChrome and Theme. This file only arranges them; flow stays in ShowpieceModel.
 import BreakdownPhysics
@@ -167,6 +176,8 @@ struct ShowpieceView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.layoutDirection) private var layoutDirection
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
+    // 0.7.10 everyone: the left-handed layout (Part C). One flag, read here only.
+    @AppStorage(GameSettings.controlsLeftKey) private var controlsLeft = false
     @ScaledMetric(relativeTo: .body) private var columnWidth: CGFloat = 320
     @Environment(\.dynamicTypeSize) private var typeSize
     /// The page shown in place of play: How to play, Options or Tables. In the notebook it is a page of the panel; in
@@ -234,16 +245,27 @@ struct ShowpieceView: View {
             // card with its own button is up (L-B), or a newly struck shot rolls (0.7.6, #45); see panelWaiting.
             let panelWaits = !wide && division == nil
                 && (Self.lensReplayCompact(model, size: geo.size) || matchCardWaits || shotRolling)
+            // 0.7.10 everyone: the table on the right and the notebook or column on the left, for the left hand, where
+            // the two sit side by side. Not under the table (a folding phone propped like a laptop): up and down is not
+            // a matter of hands.
+            let swapHalves = controlsLeft && split && laptopFold == nil
+            // On a hinge the halves trade widths so the gap stays on the hinge; beside the notebook the split is ours to
+            // draw, so the picture is simply mirrored and each half keeps its size.
+            let tradeWidths = swapHalves && fold != nil
             ZStack {
                 palette.ground.ignoresSafeArea()
                 // One container for every layout, so the table keeps its identity (and its built 3D scene) when the
                 // phone turns, folds or unfolds; only its frame and its neighbours change. The hinge itself stays empty.
                 (laptopFold != nil ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))) {
                     stage(geo: geo, wide: split, controlsInColumn: controlsInColumn,
-                          columnEdge: laptopFold != nil ? .bottom : (split ? .trailing : nil),
+                          columnEdge: laptopFold != nil ? .bottom : (split ? (swapHalves ? Edge.leading : Edge.trailing) : nil),
                           menuOnStage: division == nil && !menuOverWindow, header: division == nil, upright: upright)
-                        // Folding phone or notebook: the table owns the whole side before the division.
-                        .frame(width: bookFold.map { max(0, $0.minX) }, height: laptopFold.map { max(0, $0.minY) })
+                        // Folding phone or notebook: the table owns the whole side before the division (after it, on a
+                        // hinge with the halves swapped).
+                        .frame(width: bookFold.map { tradeWidths ? max(0, geo.size.width - $0.maxX) : max(0, $0.minX) },
+                               height: laptopFold.map { max(0, $0.minY) })
+                        // 0.7.10 everyone: the half itself in the reader's own direction (see the container below).
+                        .environment(\.layoutDirection, layoutDirection)
                     if let division {
                         Color.clear.frame(width: bookFold == nil ? nil : division.width,
                                           height: laptopFold == nil ? nil : division.height)
@@ -252,13 +274,18 @@ struct ShowpieceView: View {
                         // The other side: the whole notebook, menus and lists included.
                         NotebookPanel(model: model, leader: leader, showShotPanel: $showShotPanel, page: $page,
                                       pendingMatch: $pendingMatch, onHinge: fold != nil)
-                            .frame(width: bookFold.map { max(0, geo.size.width - $0.maxX) },
+                            .frame(width: bookFold.map { tradeWidths ? max(0, $0.minX) : max(0, geo.size.width - $0.maxX) },
                                    height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
-                            .overlay(alignment: laptopFold != nil ? .top : .leading) { panelHairline(top: laptopFold != nil) }
+                            // The hairline on the edge that meets the table: its trailing edge when the halves swap.
+                            .overlay(alignment: laptopFold != nil ? .top : (swapHalves ? .trailing : .leading)) {
+                                panelHairline(top: laptopFold != nil)
+                            }
+                            // 0.7.10 everyone: the half itself in the reader's own direction.
+                            .environment(\.layoutDirection, layoutDirection)
                     } else if split {
                         // The side column beside the table (Mac, iPad, a phone turned sideways).
                         sideColumn(geo: geo, controlsInColumn: controlsInColumn,
-                                   width: min(columnWidth, geo.size.width * 0.45), divider: .leading)
+                                   width: min(columnWidth, geo.size.width * 0.45), divider: swapHalves ? .trailing : .leading)
                             // Behind the menu the column is blank and quiet: no cards or Shoot showing through the
                             // veil, no Return or Escape from its buttons, nothing read aloud. Its width stays, so the
                             // table does not move when the menu comes or goes (item 2).
@@ -267,8 +294,13 @@ struct ShowpieceView: View {
                             .disabled(model.menuOpen)
                             .accessibilityHidden(model.menuOpen)
                             .animation(menuMotion, value: model.menuOpen)
+                            // 0.7.10 everyone: the half itself in the reader's own direction.
+                            .environment(\.layoutDirection, layoutDirection)
                     }
                 }
+                // 0.7.10 everyone: with the halves swapped the container alone runs the other way, so the table comes
+                // last; each half above is put back in the reader's own direction.
+                .environment(\.layoutDirection, swapHalves ? Self.flipped(layoutDirection) : layoutDirection)
                 // Lists, menus and option sheets stay out of sheets in the notebook: they are pages of its panel.
                 .environment(\.inlinePages, division != nil)
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
@@ -371,6 +403,10 @@ struct ShowpieceView: View {
                 }
             }
         }
+        // 0.7.10 everyone: which hand the aiming panels are laid out for (Part C), and the scene for the zoom menu
+        // (Part B), both handed down once from here.
+        .environment(\.shootSide, controlsLeft ? .left : .right)
+        .environment(\.zoomBridge, bridge)
         .focusedSceneValue(\.showpieceModel, model)
         .focusedSceneValue(\.sceneBridge, bridge)
         .focusedSceneValue(\.pendingMatchStart, $pendingMatch)
@@ -396,7 +432,8 @@ struct ShowpieceView: View {
         let i = geo.safeAreaInsets
         // SwiftUI's insets are leading and trailing, the camera's are left and right: turned round for right-to-left
         // languages, where the status badge and the home indicator stay where the hardware put them.
-        let leadingInset = i.leading
+        // 0.7.10 everyone: with the halves swapped for the left hand the column meets the table on its leading side.
+        let leadingInset = columnEdge == .leading ? 0 : i.leading
         let trailingInset = columnEdge == .trailing ? 0 : i.trailing
         let rtl = layoutDirection == .rightToLeft
         // 0.7.10 frontdoor: on the upright phone the open menu is the name at the top and a sheet over the lower half;
@@ -811,6 +848,11 @@ struct ShowpieceView: View {
     /// On a phone turned sideways there is no room under the table for the controls, so they join the column and the
     /// table gets the full height.
     /// The thin line where a panel meets the table (the top edge when the phone is propped like a laptop).
+    /// 0.7.10 everyone: the other reading direction, for the swapped halves' container.
+    private static func flipped(_ d: LayoutDirection) -> LayoutDirection {
+        d == .leftToRight ? .rightToLeft : .leftToRight
+    }
+
     @ViewBuilder private func panelHairline(top: Bool) -> some View {
         if top {
             Rectangle().fill(palette.track).frame(height: 1)
@@ -895,7 +937,8 @@ struct ShowpieceView: View {
         .frame(width: width)
         .frame(maxWidth: width == nil ? .infinity : nil)
         .background(palette.ground)
-        .overlay(alignment: divider == .top ? .top : .leading) {
+        // 0.7.10 everyone: the trailing edge when the halves swap for the left hand.
+        .overlay(alignment: divider == .top ? .top : (divider == .trailing ? .trailing : .leading)) {
             if divider == .top {
                 Rectangle().fill(palette.track).frame(height: 1)
             } else {
@@ -943,6 +986,8 @@ private struct ScreenHeader: View {
             if model.rideStatus != nil {
                 RideTitleChip(model: model)
             } else {
+                // 0.7.10 everyone: zoom without a pinch or a double tap (TableZoomMenu).
+                TableZoomMenuButton(model: model)
                 SurfaceMenuButton(model: model)
             }
             if model.stage != .explore && model.stage != .lead {

@@ -22,6 +22,8 @@
 //          centred line with a bright core about twice as wide, for the Lens marks (throw lines, contact drawing, spin
 //          marks), whose cores were a third of a strip already under a point wide on a phone; crossSection takes the
 //          core's edge as a parameter, defaulting to the old one, so the trails and soft lines are unchanged.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone: the setting's comment says what it still does;
+//          the sliding trails are dashed for every player now.)
 // SRP/DRY check: Pass - Lens picture generation only; colours arrive from Theme through the caller.
 import CoreGraphics
 import Foundation
@@ -44,9 +46,9 @@ enum LensTextures {
         #endif
     }
 
-    /// System "Differentiate Without Colour" setting. When on, the Lens draws a sliding path dashed and a rolling path
-    /// solid, so the two motion phases differ in shape and not only in magenta against cyan. Read whenever the trails
-    /// are rebuilt; LensLayer also rebuilds them when the setting changes (see `differentiateWithoutColorChanged`).
+    /// System "Differentiate Without Colour" setting. Since 0.7.10 the sliding trails are dashed for every player, so
+    /// this only picks dots over dashes for a held hit's tangent (LensLayer.pickTangent), switched at once when the
+    /// setting changes (see `differentiateWithoutColorChanged`).
     static var differentiateWithoutColor: Bool {
         #if canImport(UIKit)
         return UIAccessibility.shouldDifferentiateWithoutColor
