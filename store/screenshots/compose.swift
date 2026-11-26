@@ -14,6 +14,8 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 pictures: the headline is the system serif, semibold, the
 //          Boss's pick; the 08-tables frame on the upright iPhone is cropped to the tables and stacked one over two, as on
 //          the closed Duo, so the three tables fill the frame instead of three small whole screens in a row.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 pictures: the Mac's frames 07 and 08 show each table cropped
+//          from its window, side by side, instead of three whole windows.)
 // PURPOSE: Frame Breakdown's raw App Store screenshots for one device in any number of languages. Each frame gets a
 //          near-black gradient background with a soft felt-green glow, a short cyan accent bar, a white semibold serif
 //          headline (from captions/<lang>.json, at most two lines, shrunk to fit, the same size on every frame of a
@@ -117,6 +119,9 @@ let tableCrops: [String: (width: CGFloat, top: CGFloat, bottom: CGFloat)] = [
     "ipad-13": tableCrop,
     "duo-inner": (width: 0.476, top: 0.01, bottom: 0.955),
     "duo-outer": (width: 0.83, top: 0.0, bottom: 0.64),
+    // 0.8.1 pictures: the Mac window (1440 x 900 points) has the table left of the notebook, which starts at 58% of the
+    // width, under the 55-point toolbar. Whole windows three in a row came out tiny; the tables alone fill the frame.
+    "mac": (width: 0.58, top: 0.062, bottom: 1.0),
 ]
 // A frame's own crop where the device's default does not suit it: on the closed Duo the surface shots have their trick-shot
 // card right under the table, which would show in a tile that went down as far as the bumper-pool and bar tables.

@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1300" width="1000" height="1300" font-family="-apple-system, 'SF Pro Text', 'Helvetica Neue', Helvetica, sans-serif">
+  <!-- Breakdown aiming panel redesign, upright 13-inch iPad, aiming state. Claude Opus 5.5 Medium, 26-Nov-2026. -->
+  <defs>
+    <linearGradient id="felt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4f86"/><stop offset="1" stop-color="#163d69"/></linearGradient>
+    <linearGradient id="rail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a3c1e"/><stop offset="1" stop-color="#4a2a14"/></linearGradient>
+    <radialGradient id="ballshade" cx="0.42" cy="0.38" r="0.75"><stop offset="0" stop-color="#e4e8ee"/><stop offset="1" stop-color="#c3cad3"/></radialGradient>
+    <pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#1a2029"/><line x1="0" y1="0" x2="0" y2="7" stroke="#2c3542" stroke-width="2.5"/></pattern>
+  </defs>
+  <rect width="1000" height="1300" fill="#07090d"/>
+
+  <!-- table (unchanged, shown for context) -->
+  <text x="20" y="22" fill="#e9f2ff" font-size="14" font-weight="600">9:41 AM  Thu Nov 26</text>
+  <rect x="24" y="36" width="952" height="440" rx="30" fill="url(#rail)"/>
+  <rect x="68" y="72" width="864" height="368" rx="10" fill="url(#felt)"/>
+  <g fill="#04060a"><circle cx="88" cy="92" r="20"/><circle cx="500" cy="84" r="18"/><circle cx="912" cy="92" r="20"/><circle cx="88" cy="420" r="20"/><circle cx="500" cy="428" r="18"/><circle cx="912" cy="420" r="20"/></g>
+  <circle cx="300" cy="102" r="8" fill="#d8642a"/><circle cx="262" cy="186" r="8" fill="#1f8a3a"/><circle cx="700" cy="190" r="8" fill="#c42a2a"/>
+  <circle cx="726" cy="180" r="8" fill="#6a2a8a"/><circle cx="742" cy="194" r="8" fill="#111"/><circle cx="668" cy="206" r="8" fill="#2a4fc4"/>
+  <circle cx="800" cy="220" r="8" fill="#f1e6d0"/><circle cx="830" cy="220" r="8" fill="#e7dfc6"/><circle cx="838" cy="256" r="8" fill="#b02a2a"/>
+  <circle cx="762" cy="310" r="8" fill="#e8b42a"/><circle cx="696" cy="336" r="8" fill="#f3dc7a"/><circle cx="668" cy="400" r="8" fill="#2a4fc4"/>
+  <line x1="736" y1="138" x2="830" y2="322" stroke="#ff4db3" stroke-width="2.5"/>
+  <circle cx="830" cy="322" r="11" fill="none" stroke="#ff4db3" stroke-width="3"/><circle cx="830" cy="322" r="7" fill="#e9dcc0"/>
+  <line x1="830" y1="322" x2="856" y2="372" stroke="#4de0ff" stroke-width="2.5"/>
+  <circle cx="856" cy="372" r="8" fill="#f4f1ea"/><circle cx="856" cy="372" r="20" fill="none" stroke="#4de0ff" stroke-dasharray="4 4"/>
+  <line x1="866" y1="392" x2="944" y2="500" stroke="#c9a36a" stroke-width="5" stroke-linecap="round"/>
+  <rect x="768" y="278" width="120" height="26" rx="13" fill="#11161ecc"/><text x="828" y="296" fill="#fff" font-size="13" font-weight="600" text-anchor="middle">11 ball, stripe</text>
+  <rect x="752" y="362" width="92" height="36" rx="8" fill="#11161ecc"/><text x="798" y="377" fill="#fff" font-size="11" text-anchor="middle" font-weight="600">Ball goes here</text><text x="798" y="391" fill="#fff" font-size="11" text-anchor="middle" font-weight="600">1.2° left</text>
+
+  <!-- top bar -->
+  <circle cx="40" cy="512" r="17" fill="#161b23"/><path d="M44 504 L36 512 L44 520" stroke="#e9f2ff" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <text x="68" y="518" fill="#e9f2ff" font-size="18" font-weight="600">Free play</text>
+  <g fill="#161b23"><circle cx="852" cy="512" r="17"/><circle cx="897" cy="512" r="17"/><circle cx="942" cy="512" r="17"/></g>
+  <g stroke="#c6d0dc" stroke-width="1.8" fill="none" stroke-linecap="round"><path d="M846 514 v6 h12 v-6 M852 503 v11 M848 507 l4 -4 l4 4"/><circle cx="895" cy="510" r="5.5"/><path d="M899 514 l5 5"/><path d="M936 504 h12 v4 a6 6 0 0 1 -12 0 z M942 514 v5 M938 520 h8"/></g>
+
+  <!-- heading + plain sentence -->
+  <text x="24" y="562" fill="#f2f7ff" font-size="22" font-weight="700">Your strike</text>
+  <text x="976" y="561" fill="#8a95a5" font-size="15" font-weight="600" text-anchor="end">Step by step  ›</text>
+  <text x="24" y="590" fill="#aeb8c6" font-size="16">Back spin with some right side. The 11 is cut 3.4° and runs 1.2° left of the cue.</text>
+
+  <!-- 1. WHAT THE BALL GETS (lead band, results in paper white) -->
+  <rect x="16" y="606" width="968" height="146" rx="18" fill="#10151d" stroke="#1f2833"/>
+  <text x="36" y="630" fill="#6f7b8c" font-size="11.5" font-weight="700" letter-spacing="1.4">WHAT THE BALL GETS</text>
+  <g stroke="#232c38"><line x1="258" y1="644" x2="258" y2="734"/><line x1="500" y1="644" x2="500" y2="734"/><line x1="742" y1="644" x2="742" y2="734"/></g>
+  <g fill="#9aa6b6" font-size="14" font-weight="600"><text x="36" y="658">Cut on the 11</text><text x="278" y="658">Leaves at</text><text x="520" y="658">Back spin</text><text x="762" y="658">Right spin</text></g>
+  <g font-family="Menlo, 'SF Mono', monospace" font-weight="600" fill="#f2f7ff" font-size="44">
+    <text x="36" y="707">3.4<tspan font-size="24" font-weight="400" fill="#9aa6b6">°</tspan></text>
+    <text x="278" y="707">2.44<tspan font-size="20" font-weight="400" fill="#9aa6b6" dx="6">m/s</tspan></text>
+    <text x="520" y="707">11.9<tspan font-size="18" font-weight="400" fill="#9aa6b6" dx="6">turns/s</tspan></text>
+    <text x="762" y="707">6.8<tspan font-size="18" font-weight="400" fill="#9aa6b6" dx="6">turns/s</tspan></text>
+  </g>
+  <line x1="36" y1="715" x2="112" y2="715" stroke="#4de0ff" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <g fill="#6f7b8c" font-size="13"><text x="36" y="736">goes 1.2° left</text><text x="278" y="736">from a 2.40 m/s swing</text></g>
+
+  <!-- 2. THE PHYSICS (quiet ledger) -->
+  <rect x="16" y="762" width="968" height="38" rx="12" fill="#0c1016" stroke="#1a222c"/>
+  <text x="36" y="786" fill="#6f7b8c" font-size="11.5" font-weight="700" letter-spacing="1.4">THE PHYSICS</text>
+  <g font-family="Menlo, 'SF Mono', monospace" font-size="15" fill="#c3ccd8">
+    <text x="176" y="787"><tspan fill="#8a95a5" font-family="-apple-system, Helvetica, sans-serif" font-size="14">Push</tspan>  0.42 <tspan fill="#8a95a5">N·s</tspan></text>
+    <text x="420" y="787"><tspan fill="#8a95a5" font-family="-apple-system, Helvetica, sans-serif" font-size="14">Force</tspan>  ≈416 <tspan fill="#8a95a5">N</tspan><tspan fill="#6f7b8c" font-size="12" font-family="-apple-system, Helvetica, sans-serif">  over 1 ms</tspan></text>
+    <text x="720" y="787"><tspan fill="#8a95a5" font-family="-apple-system, Helvetica, sans-serif" font-size="14">Energy</tspan>  0.71 <tspan fill="#8a95a5">J</tspan></text>
+  </g>
+
+  <!-- 3. WHAT YOU SET (controls, each carrying its own figure, cyan = you can move it) -->
+  <rect x="16" y="812" width="968" height="362" rx="18" fill="#10151d" stroke="#1f2833"/>
+  <text x="36" y="836" fill="#6f7b8c" font-size="11.5" font-weight="700" letter-spacing="1.4">WHAT YOU SET</text>
+
+  <!-- tip picture: flat ball, 5 mm rings, crosshair, miscue limit, cyan handle -->
+  <circle cx="138" cy="944" r="90" fill="url(#ballshade)"/>
+  <g fill="none" stroke="#7c8794" stroke-opacity="0.45" stroke-width="0.9"><circle cx="138" cy="944" r="15.7"/><circle cx="138" cy="944" r="31.5"/><circle cx="138" cy="944" r="47.2"/><circle cx="138" cy="944" r="63"/><circle cx="138" cy="944" r="78.7"/></g>
+  <circle cx="138" cy="944" r="54" fill="none" stroke="#56606c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="48" y1="944" x2="228" y2="944" stroke="#6b7685" stroke-width="1"/><line x1="138" y1="854" x2="138" y2="1034" stroke="#6b7685" stroke-width="1"/>
+  <g font-family="Menlo, monospace" font-size="9" fill="#6b7685" text-anchor="middle"><text x="106.5" y="940">10</text><text x="169.5" y="940">10</text><text x="75" y="940">20</text><text x="201" y="940">20</text></g>
+  <path d="M138 975.5 H156 V944" fill="none" stroke="#0b8fae" stroke-width="1.2" stroke-dasharray="2 2"/>
+  <circle cx="156" cy="975.5" r="22" fill="#4de0ff" fill-opacity="0.18"/>
+  <circle cx="156" cy="975.5" r="13" fill="#4de0ff" stroke="#06323d" stroke-width="2.5"/>
+  <g font-family="Menlo, 'SF Mono', monospace" font-weight="600" fill="#4de0ff" font-size="24">
+    <text x="48" y="1076">10.0<tspan font-size="14" font-weight="400" fill="#9aa6b6" dx="6">mm</tspan><tspan font-family="-apple-system, Helvetica, sans-serif" font-size="14" font-weight="400" fill="#9aa6b6" dx="6">below</tspan></text>
+    <text x="48" y="1110">5.7<tspan font-size="14" font-weight="400" fill="#9aa6b6" dx="6">mm</tspan><tspan font-family="-apple-system, Helvetica, sans-serif" font-size="14" font-weight="400" fill="#9aa6b6" dx="6">right</tspan></text>
+  </g>
+  <line x1="48" y1="1083" x2="106" y2="1083" stroke="#4de0ff" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <line x1="48" y1="1117" x2="92" y2="1117" stroke="#4de0ff" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <line x1="250" y1="852" x2="250" y2="1156" stroke="#1f2833"/>
+
+  <!-- swing: figure over a 48 pt bar with a real m/s scale -->
+  <text x="270" y="858" fill="#9aa6b6" font-size="14" font-weight="600">Swing</text>
+  <text x="270" y="894" font-family="Menlo, 'SF Mono', monospace" font-weight="600" fill="#4de0ff" font-size="32">2.40<tspan font-size="17" font-weight="400" fill="#9aa6b6" dx="6">m/s</tspan></text>
+  <line x1="270" y1="901" x2="352" y2="901" stroke="#4de0ff" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <text x="418" y="893" fill="#9aa6b6" font-size="16">firm</text>
+  <rect x="270" y="910" width="490" height="48" rx="24" fill="#1c232d"/>
+  <path d="M556 910 H736 A24 24 0 0 1 736 958 H556 Z" fill="url(#hatch)"/>
+  <rect x="270" y="910" width="196" height="48" rx="24" fill="#4de0ff"/>
+  <line x1="556" y1="904" x2="556" y2="964" stroke="#e9f2ff" stroke-width="2"/>
+  <text x="566" y="900" fill="#8a95a5" font-size="12">calm limit 3.5 m/s</text>
+  <circle cx="466" cy="934" r="22" fill="#f2f7ff" stroke="#06323d" stroke-width="2.5"/>
+  <g stroke="#4a5462" stroke-width="1.2"><line x1="270" y1="964" x2="270" y2="972"/><line x1="351.7" y1="964" x2="351.7" y2="972"/><line x1="433.3" y1="964" x2="433.3" y2="972"/><line x1="515" y1="964" x2="515" y2="972"/><line x1="596.7" y1="964" x2="596.7" y2="972"/><line x1="678.3" y1="964" x2="678.3" y2="972"/><line x1="760" y1="964" x2="760" y2="972"/></g>
+  <g font-family="Menlo, monospace" font-size="11" fill="#6f7b8c" text-anchor="middle"><text x="270" y="986">0</text><text x="351.7" y="986">1</text><text x="433.3" y="986">2</text><text x="515" y="986">3</text><text x="596.7" y="986">4</text><text x="678.3" y="986">5</text><text x="752" y="986">6 m/s</text></g>
+
+  <!-- cue angle dial with figure beside the needle -->
+  <text x="270" y="1020" fill="#9aa6b6" font-size="14" font-weight="600">Cue angle</text>
+  <path d="M388 1156 A100 100 0 0 0 288 1056" fill="none" stroke="#2a323d" stroke-width="10" stroke-linecap="round"/>
+  <g stroke="#56606c" stroke-width="1.4"><line x1="394" y1="1156" x2="404" y2="1156"/><line x1="387.6" y1="1119.7" x2="397" y2="1116.3"/><line x1="363" y1="1081" x2="370" y2="1074"/><line x1="324.3" y1="1056.4" x2="327.7" y2="1047"/><line x1="288" y1="1050" x2="288" y2="1040"/></g>
+  <g font-family="Menlo, monospace" font-size="10" fill="#6f7b8c"><text x="408" y="1160">0°</text><text x="401" y="1114">20</text><text x="374" y="1070">45</text><text x="294" y="1042">90</text></g>
+  <line x1="288" y1="1156" x2="387.6" y2="1147.3" stroke="#4de0ff" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="387.6" cy="1147.3" r="12" fill="#4de0ff" stroke="#06323d" stroke-width="2.5"/>
+  <circle cx="288" cy="1156" r="8" fill="#d4d9e0"/>
+  <line x1="276" y1="1156" x2="404" y2="1156" stroke="#3a424d" stroke-width="1"/>
+  <text x="438" y="1086" font-family="Menlo, 'SF Mono', monospace" font-weight="600" fill="#4de0ff" font-size="32">5.0<tspan font-size="18" font-weight="400" fill="#9aa6b6">°</tspan></text>
+  <line x1="438" y1="1093" x2="496" y2="1093" stroke="#4de0ff" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <text x="438" y="1114" fill="#6f7b8c" font-size="13">up from level</text>
+
+  <!-- bridge -->
+  <text x="598" y="1020" fill="#9aa6b6" font-size="14" font-weight="600">Bridge</text>
+  <text x="598" y="1062" font-family="Menlo, 'SF Mono', monospace" font-weight="600" fill="#4de0ff" font-size="32">20<tspan font-size="17" font-weight="400" fill="#9aa6b6" dx="6">cm</tspan></text>
+  <line x1="598" y1="1069" x2="636" y2="1069" stroke="#4de0ff" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <rect x="598" y="1086" width="132" height="52" rx="26" fill="#1c232d" stroke="#2c3644"/>
+  <line x1="664" y1="1094" x2="664" y2="1130" stroke="#2c3644"/>
+  <path d="M621 1112 h20 M687 1112 h20 M697 1102 v20" stroke="#4de0ff" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- shoot column (hand side) -->
+  <line x1="772" y1="852" x2="772" y2="1156" stroke="#1f2833"/>
+  <rect x="790" y="850" width="178" height="166" rx="30" fill="#4de0ff"/>
+  <text x="879" y="943" fill="#04232c" font-size="32" font-weight="700" text-anchor="middle">Shoot</text>
+  <rect x="790" y="1030" width="124" height="56" rx="28" fill="none" stroke="#3a424d" stroke-width="1.5"/>
+  <path d="M810 1052 a8 8 0 1 1 -1 8" fill="none" stroke="#e9f2ff" stroke-width="2" stroke-linecap="round"/><path d="M806 1046 v7 h7" fill="none" stroke="#e9f2ff" stroke-width="2" stroke-linecap="round"/>
+  <text x="830" y="1064" fill="#e9f2ff" font-size="16" font-weight="600">Try again</text>
+  <circle cx="944" cy="1058" r="26" fill="none" stroke="#3a424d" stroke-width="1.5"/>
+  <g fill="#e9f2ff"><circle cx="934" cy="1058" r="2.6"/><circle cx="944" cy="1058" r="2.6"/><circle cx="954" cy="1058" r="2.6"/></g>
+
+  <!-- hint: one plain line, no card -->
+  <text x="24" y="1198" fill="#8a95a5" font-size="15">Drag on the table to aim. Pull back from the white ball, then push through it.</text>
+
+  <!-- scrubber + pills (unchanged in function) -->
+  <rect x="16" y="1212" width="968" height="34" rx="17" fill="#10151d"/>
+  <path d="M42 1221 L54 1229 L42 1237 Z" fill="#e9f2ff"/>
+  <rect x="72" y="1227" width="760" height="4" rx="2" fill="#2a323d"/><rect x="72" y="1227" width="740" height="4" rx="2" fill="#2a8fb0"/><circle cx="812" cy="1229" r="9" fill="#f2f7ff"/>
+  <text x="852" y="1234" fill="#c3ccd8" font-size="14">1×</text>
+  <rect x="306" y="1256" width="140" height="34" rx="17" fill="#161b23"/><text x="376" y="1278" fill="#e9f2ff" font-size="15" text-anchor="middle">Physics Lens</text>
+  <rect x="456" y="1256" width="88" height="34" rx="17" fill="#161b23"/><text x="500" y="1278" fill="#e9f2ff" font-size="15" text-anchor="middle">Ride</text>
+  <rect x="554" y="1256" width="116" height="34" rx="17" fill="#163a44" stroke="#4de0ff"/><text x="612" y="1278" fill="#4de0ff" font-size="15" text-anchor="middle" font-weight="600">Your shot</text>
+</svg>
