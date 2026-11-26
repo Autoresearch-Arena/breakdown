@@ -534,7 +534,11 @@ struct ShotOptionsItems: View {
         // On every layout, the upright phone too: clearing the flag brings back the aiming layer's groove hint
         // everywhere, and on the iPad and Mac the panel's hint card as well.
         if hintSeen {
-            Button { hintSeen = false } label: { Label("Show the hint again", systemImage: "questionmark.circle") }
+            // 0.7.10 strike: the Pencil line comes back with it (StrikeHint's own stored key).
+            Button {
+                hintSeen = false
+                UserDefaults.standard.set(false, forKey: "pencilHintSeen")
+            } label: { Label("Show the hint again", systemImage: "questionmark.circle") }
         }
     }
 }

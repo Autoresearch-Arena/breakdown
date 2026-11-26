@@ -43,7 +43,7 @@ struct StrikePanel: View {
 
     @ViewBuilder
     private func header(_ reading: StrikeReading.Reading?) -> some View {
-        let played: Bool = { if case .played = reading { return true }; return false }()
+        let played: Bool = { if case .played? = reading { return true }; return false }()
         VStack(alignment: .leading, spacing: 4) {
             Text(verbatim: played ? StrikeWords.playedHeading : StrikeWords.liveHeading)
                 .font(Theme.label)
@@ -78,6 +78,8 @@ struct StrikePanel: View {
     private func tiles(_ reading: StrikeReading.Reading) -> some View {
         let f = reading.shown
         let c = reading.comparison
+        // In three groups, so no builder block holds more than a handful of views.
+        Group {
         tile(.swing, value: StrikeWords.speed(f.swing), label: StrikeWords.swingLabel, c, planned: { StrikeWords.speed($0.swing) },
              edit: .swing)
         tile(.leaves, value: StrikeWords.speed(f.leaves), label: StrikeWords.leavesLabel, c,
@@ -87,6 +89,8 @@ struct StrikePanel: View {
              planned: { StrikeWords.force($0.force) })
         tile(.energy, value: StrikeWords.energy(f.energy), label: StrikeWords.energyLabel, c,
              planned: { StrikeWords.energy($0.energy) })
+        }
+        Group {
         tile(.topSpin, value: StrikeWords.spin(f.topSpin), label: StrikeWords.topSpinLabel(f.topSpin), c,
              planned: { StrikeWords.spin($0.topSpin) })
         tile(.sideSpin, value: StrikeWords.spin(f.sideSpin), label: StrikeWords.sideSpinLabel(f.sideSpin), c,
@@ -95,10 +99,13 @@ struct StrikePanel: View {
              planned: { StrikeWords.millimetres($0.tipUp) }, edit: .tipUp)
         tile(.tipSide, value: StrikeWords.millimetres(f.tipSide), label: StrikeWords.tipSideLabel(f.tipSide), c,
              planned: { StrikeWords.millimetres($0.tipSide) }, edit: .tipSide)
+        }
+        Group {
         tile(.cueAngle, value: StrikeWords.degrees(f.cueAngle), label: StrikeWords.cueAngleLabel, c,
              planned: { StrikeWords.degrees($0.cueAngle) }, edit: .cueAngle)
         cutTile(f, c)
         bridgeTile
+        }
     }
 
     /// One figure's tile: the delivered figure bright and the planned one dimmed above it when they differ, with the
@@ -181,8 +188,8 @@ private struct EditableTile: View {
 
 // MARK: The notebook's slot
 
-/// The slot beside the table that used to hold the commentary alone (NotebookPanel). While the player is aiming (the
-/// balls at rest, or before any shot) it shows the strike panel; while the balls move it gives way to the commentary,
+/// The slot beside the table that used to hold the commentary alone (NotebookPanel). While the player is aiming ("Your
+/// shot" open, the balls at rest or before any shot) it shows the strike panel; while the balls move it gives way to the commentary,
 /// as before; once a shot has played out the panel returns with planned against delivered, and a small switch brings
 /// the commentary back for reading ("Step by step"). With Explanations off the commentary is never drawn and the slot
 /// keeps the strike panel throughout. During the opening the slot keeps the commentary's own rule, so the first
@@ -190,18 +197,21 @@ private struct EditableTile: View {
 struct StrikeSlot: View {
     let model: ShowpieceModel
     let leader: LeaderState
+    /// "Your shot" is open: the player is aiming (NotebookPanel's showShotPanel). Closed, the slot is the commentary.
+    let aiming: Bool
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     /// The player asked for the commentary after the shot; back to the strike with each new recording.
     @State private var showSteps = false
 
-    /// True when the slot shows the strike at all (outside the opening). NotebookPanel reads it to keep the slot when
-    /// Explanations is off.
-    static func shows(_ model: ShowpieceModel) -> Bool { model.openingStage == .none }
+    /// True when the slot shows the strike at all: "Your shot" is open, outside the opening. NotebookPanel reads it to
+    /// keep the slot when Explanations is off. With "Your shot" closed the numbers strip shows instead, so two grids of
+    /// tiles never share the column.
+    static func shows(_ model: ShowpieceModel, aiming: Bool) -> Bool { aiming && model.openingStage == .none }
 
     var body: some View {
         Group {
-            if !Self.shows(model) {
-                // The first minute: the commentary's own rule (it draws nothing until the balls move).
+            if !Self.shows(model, aiming: aiming) {
+                // The first minute, or "Your shot" closed: the commentary's own rule.
                 if explanations { NotebookStory(model: model, leader: leader) } else { Color.clear }
             } else if !explanations {
                 strike

@@ -302,7 +302,7 @@ struct NotebookPanel: View {
         let free = size.height - 32 - 40 - keyHeight - bottomHeight - numbersHeight - gaps
         let storyMinimum: CGFloat = 140
         // 0.7.10 strike: the slot also holds the strike panel, which shows with Explanations off as well (StrikeSlot).
-        let showsStory = (explanations || StrikeSlot.shows(model)) && free - cardsHeight >= storyMinimum
+        let showsStory = (explanations || StrikeSlot.shows(model, aiming: showShotPanel)) && free - cardsHeight >= storyMinimum
         let cardsMax = max(120, showsStory ? free - storyMinimum : free)
         let overflows = cardsHeight > cardsMax
         return VStack(spacing: 12) {
@@ -311,7 +311,7 @@ struct NotebookPanel: View {
             FittingScroll(maxHeight: cardsMax) { measuredCards }
                 .fadesAtBottom(overflows)
             if showsStory {
-                StrikeSlot(model: model, leader: leader).frame(maxHeight: .infinity)  // 0.7.10 strike
+                StrikeSlot(model: model, leader: leader, aiming: showShotPanel).frame(maxHeight: .infinity)  // 0.7.10 strike
             } else {
                 Spacer(minLength: 0)
             }
@@ -336,7 +336,7 @@ struct NotebookPanel: View {
     /// keeps the top bar, the key and the controls (0.7.5 layouts item 9).
     private func twoColumns(_ size: CGSize) -> some View {
         // 0.7.10 strike: the second column keeps the slot (the strike panel) with Explanations off too, outside the opening.
-        let cardsBesideStory = explanations || StrikeSlot.shows(model)
+        let cardsBesideStory = explanations || StrikeSlot.shows(model, aiming: showShotPanel)
         // Padding (28), top bar (40), the key row and its gap, the lower edge and the gaps (30) are fixed; the cards
         // take the rest.
         let cardsMax = max(120, size.height - 28 - 40 - keyHeight - (model.lensOn ? 10 : 0) - bottomHeight - 30)
@@ -359,7 +359,7 @@ struct NotebookPanel: View {
             .frame(width: size.width * (onHinge ? 0.44 : 0.5))
             VStack(spacing: 10) {
                 if cardsBesideStory {
-                    StrikeSlot(model: model, leader: leader)  // 0.7.10 strike
+                    StrikeSlot(model: model, leader: leader, aiming: showShotPanel)  // 0.7.10 strike
                         .frame(maxHeight: .infinity)
                 } else {
                     FittingScroll(maxHeight: cardsMaxAlone) { measuredCards }

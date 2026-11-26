@@ -60,9 +60,9 @@ struct NotebookStory: View {
                     // player is playing, so nothing competes with the hand-over's one instruction.
                     ScrollView {
                         VStack(alignment: .leading, spacing: 10) {
-                            // 0.7.10 strike: the placeholder line is gone. Outside the opening the notebook's slot
-                            // shows the strike panel here instead (StrikeSlot, App/Strike/StrikePanel.swift), so this
-                            // empty page is only reached during the first minute, which stays one instruction.
+                            // 0.7.10 strike: the placeholder line is gone. While the player aims the notebook's slot
+                            // shows the strike panel here instead (StrikeSlot, App/Strike/StrikePanel.swift); this empty
+                            // page is left for the first minute and for "Your shot" closed before any shot.
                             if model.openingStage == .none {
                                 NotebookSurfaceCard(model: model, detailed: true)
                             }
