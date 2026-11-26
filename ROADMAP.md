@@ -10,6 +10,8 @@ Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.2: the release item no longe
         momentum artwork is the icon again, on the Mac too).
 Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5: the what-if fork and the other tables' computer are built, so
         the list names what is left).
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10: the daily challenge (Shot of the day) and trick shots on the
+        other tables are built, so they leave the list).
 PURPOSE: Say in one place where the list of unfinished work lives and what is next, without duplicating the plans.
 SRP/DRY check: Pass - the plans folder holds the steps; this page only points at them and names the order.
 -->
@@ -30,8 +32,8 @@ and scores on the three other tables.
    and iPad pointer, the look and sound, the release (the approved icon on the Mac too, the Mac on TestFlight, the store page), the
    controller and translations, and VoiceOver last.
 2. **What the spec still lacks** (its status note): the what-if fork shipped in 0.7.5 and the computer plays bumper pool
-   and five-pin since 0.7.4; next are predict-the-shot and the break challenge, a daily challenge, trick shots on the
-   other tables, and a computer for bar billiards (played alone against the clock today).
+   and five-pin since 0.7.4; next are predict-the-shot and the break challenge,
+   and a computer for bar billiards (played alone against the clock today).
 
 ## Later
 

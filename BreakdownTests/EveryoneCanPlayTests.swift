@@ -9,6 +9,7 @@
 // SRP/DRY check: Pass - checks only; the figures come from StrikeFigures.make (as StrikeFiguresTests builds them) and
 //          the day from DailyRecord.Day's own initialiser.
 @testable import Breakdown
+import BreakdownLensModel
 import BreakdownPhysics
 import XCTest
 

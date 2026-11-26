@@ -8,6 +8,48 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.7.10] - 26-November-2026
+
+### Shot of the day, the strike panel, a front door that shows the table
+
+Author: Claude Opus 5.5 Medium, coordinating eight builders at the same level in two waves. Plans: start at
+plans/25-Nov-2026-award-scores-order-plan.md; how it was built: plans/26-Nov-2026-v0710-coordination.md.
+
+- What: A new Shot of the day, the same for everyone, with five tries, a score, a streak, a share card and Game Center boards; before every shot the strike in real units, and after it planned beside delivered; a menu that no longer hides the table; shorter captions that never move faster than you can read; honest store words; and controls for either hand, without colour or timed gestures.
+- **Shot of the day.** One shot a day for every player, chosen by the date in Coordinated Universal Time, from a bank
+  of 105 shots in a weekly rhythm (Monday an easy pot with position, Tuesday a bank or kick, Wednesday a combination
+  or carom, Thursday spin, Friday bumper pool, five-pin or bar billiards, Saturday a strange surface, Sunday a jump or
+  massé). Five tries; the score is points for the try that made it plus points for stopping the white ball near the
+  mark. The answer stays hidden until the day is finished. The streak, a share picture that gives nothing away, three
+  new achievements. It is the first row of the menu. From the second launch on, an unplayed shot of the day waits on
+  the table behind the menu; the first launch is unchanged. Trick shots and daily shots now start on their own table.
+  BreakProbe has a new "daily" command that authored the bank; "verify" plays every one of them.
+- **Game Center.** A daily board that resets at midnight UTC, a longest-streak board and every achievement, set up on
+  App Store Connect by scripts/gamecenter-setup.py. The game never asks to sign in at launch: only the first press of
+  Board does. No corner badge over the table. "Hide the board" in Options turns it all off. The privacy page says the
+  game itself still sends nothing.
+- **The strike panel.** While aiming on iPad, Mac and the open folding phone, the notebook half shows the strike in
+  numbers: swing, the speed the ball leaves at, push, force (marked "about"), energy, spin, tip, cue angle, cut and
+  bridge. Tap a tile to type an exact value. After the shot each tile shows planned and delivered. The tip picker,
+  power bar and a new cue-angle dial are large on big screens; one hint, under the table. The upright phone opens the
+  same panel from its swing figure. A mode that sets its own cue angle locks the dial.
+- **Fewer words.** Every caption has a short form (heading, one figure, one sentence) with the full text behind a tap;
+  the lit caption never changes faster than it can be read; a break is one row; Reduce Motion stops the list
+  scrolling by itself. Rough edges fixed: "Foul" said twice, the cloth card drawn twice, zero tiles before a shot, a
+  caption cut off with an ellipsis, "Player 1" in store pictures.
+- **Honest claims.** The store page in all twelve languages, the README and the store notes claim only what a reviewer
+  can check: "Nothing is faked" and the "real" boasts are gone. A stylus line and a line for the classroom added.
+  Not uploaded until the Boss has read the English.
+- **Front door and table view.** One line per menu row in three groups (Today, Ways to play, More), the table in view
+  behind it, the game's own accent colour; the Tables page shows the four tables as pictures. On an upright iPad the
+  table's half ends where the table does. The floor round the table is lit instead of black. When the Lens zooms in,
+  a small plan of the table shows where the camera is looking.
+- **Everyone can play.** Sliding paths are dashed for everyone, rolling solid; the scrub bar's marks differ by shape;
+  zoom has a button and a menu as well as gestures; "Controls on the left" in Options mirrors the controls and swaps
+  the halves; the daily mark, result and strike tiles are spoken; the daily result card works from the keyboard and a
+  controller. A page for teachers (store/pages/teachers.md), linked from How to play.
+- Fixed at the merge: a daily shot's surface is never saved as the player's own.
+
 ## [0.7.9] - 25-November-2026
 
 ### The jump replay, whole

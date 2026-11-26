@@ -70,8 +70,10 @@ enum DailyHandover {
 /// The daily mode's result sink: hands each finished day to the board under DailyHandover's rule.
 @MainActor
 final class DailyBoardLink: DailyResultSink {
-    /// The mode reported from. The model owns both the mode and this link, so neither keeps the other alive.
-    unowned let mode: DailyMode
+    /// The mode reported from. The model owns both the mode and this link, so neither keeps the other alive. Weak,
+    /// not unowned (0.7.10 coordinator): the launch handover runs a turn later, and a mode made and dropped in that
+    /// turn (a test, a throwaway store scene) crashed the app reading an unowned reference that was already gone.
+    weak var mode: DailyMode?
     let poster: any DailyBoardPoster
 
     init(mode: DailyMode, poster: any DailyBoardPoster) {
@@ -97,7 +99,7 @@ final class DailyBoardLink: DailyResultSink {
     func dailyFinished(_ result: DailyResult) {
         // The record already holds the finished day (DailyMode saves before reporting); the rule reads it from there,
         // with the streak the mode worked out for that day.
-        guard let day = mode.result(forDay: result.day) else { return }
+        guard let mode, let day = mode.result(forDay: result.day) else { return }
         hand(day, streak: result.streak)
     }
 
@@ -107,6 +109,7 @@ final class DailyBoardLink: DailyResultSink {
     /// any number of times: a day handed over is marked sent and skipped after.
     func handOverUnsent() {
         // A copy of the days, so marking one sent while walking them is safe.
+        guard let mode else { return }
         for day in mode.record.days where !day.sent {
             hand(day, streak: mode.streak(asOf: day.day))
         }
@@ -114,6 +117,7 @@ final class DailyBoardLink: DailyResultSink {
 
     private func hand(_ day: DailyRecord.Day, streak: Int) {
         guard poster.boardAllowed else { return }
+        guard let mode else { return }
         let plan = DailyHandover.plan(for: day, streak: streak, today: mode.today)
         // The mode's own clock: the moment falls inside today, so GameCenter files the score under the same day.
         if let score = plan.score { poster.postDaily(score: score, playedAt: mode.clock()) }
