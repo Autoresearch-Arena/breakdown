@@ -77,7 +77,7 @@ func trickFailure(_ goal: Goal, _ tl: Timeline) -> String? {
     if tl.pocketTime[0] != nil { return "the cue ball scratched" }
     for d in goal.drops {
         guard let k = pocketOf(d.ball, tl) else { return "the \(d.ball) stayed up" }
-        if let want = d.pocket, want != k { return "the \(d.ball) dropped in the \(pocketNames[k]), not the \(pocketNames[want])" }
+        if let want = d.pocket, want != k { return "the \(d.ball) dropped in the \(pocketName(k)), not the \(pocketName(want))" }
     }
     if let first = goal.firstHit, firstStruck(tl) != first {
         let struck = firstStruck(tl).map(String.init) ?? "no ball"

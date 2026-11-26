@@ -7,6 +7,9 @@
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - the hole values, the red ball's number and the
 //          black skittle's number now come from BarBilliardsRules (BreakdownRules), which scores the game, so the
 //          table and the scoring read one copy.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: the solver numbers (size, balls, posts, pins, holes,
+//          start) moved unchanged to the package, BreakdownAuthored/AuthoredTables.swift (AuthoredTables.BarBilliards), and are read
+//          from there, so BreakProbe can solve and check a shot of the day on this table; looks and props stay here.)
 // PURPOSE: Bar billiards (the English pub game) as a place to play and watch the physics. No edge pockets: the
 //          cushions run round all four sides, and nine scoring holes are cut into the bed. Seen from the player's end
 //          (plan x = 0, where the D is): a diamond of four holes in the middle (200 nearest the player, a 50 each
@@ -36,6 +39,7 @@
 // SRP/DRY check: Pass - this table's data and props only; the solver features (posts, pins, bed holes, pockets off)
 //          live in BreakdownCore, the dispatch in TableKind.swift, shared prop helpers (plainPin, loadModel, dress) in
 //          TableProps.swift, which this file reuses rather than copying.
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
@@ -44,13 +48,17 @@ import Foundation
 import RealityKit
 
 enum BarBilliardsTable: TableDefinition {
-    /// Playing surface between the cushion noses: 1.42 m by 0.80 m (league layout,
-    /// inside the minimum of 78.7 cm by 138.4 to 143.5 cm).
-    static let tableSize = (length: 1.42, width: 0.80)
-    /// 1 7/8 inch (47.625 mm) balls (47.6 mm in the league-scale layout).
-    static let ballRadius: Double = 0.0238125
-    /// Estimate: a 57.15 mm, 170 g pool ball's density at 47.625 mm, 0.170 x (47.625 / 57.15)^3.
-    static let ballMass: Double = 0.170 * pow(47.625 / 57.15, 3.0)
+    // 0.7.10 bank: every solver number below is read from the package (BreakdownAuthored, AuthoredTables.BarBilliards),
+    // where it moved unchanged with its reasons, so BreakProbe solves and checks a shot of the day on this table with
+    // the very same numbers. This file keeps the looks and the props.
+    private typealias Numbers = AuthoredTables.BarBilliards
+
+    /// Playing surface between the cushion noses: 1.42 m by 0.80 m.
+    static let tableSize = Numbers.size
+    /// 1 7/8 inch (47.625 mm) balls.
+    static let ballRadius: Double = Numbers.ballRadius
+    /// Estimate: about 98 g.
+    static let ballMass: Double = Numbers.ballMass
     static let pocketsEnabled = false
 
     /// No fixed posts: the skittles fall when touched, so they are pins.
@@ -58,33 +66,8 @@ enum BarBilliardsTable: TableDefinition {
 
     // MARK: Holes
 
-    /// Drawn hole radius: the 55 mm inner diameter of a hole lining ring.
-    private static let holeRadius = 0.0275
-    /// A ball drops once its centre is 22 mm inside the hole's centre: well over the hole, not just touching the rim
-    /// (a ball's own radius is 23.8 mm, the hole's 27.5 mm).
-    private static let holeCapture = 0.022
-    private static var L: Double { tableSize.length }
-    private static var W: Double { tableSize.width }
-
-    /// Hole centre from its distance to the far cushion and its offset across from the centre line (as the league
-    /// layout measures them).
-    private static func hole(fromFar d: Double, across a: Double) -> BedHole {
-        BedHole(center: Vec2(L - d, W / 2 + a), radius: holeRadius, captureRadius: holeCapture)
-    }
-
     /// Order (bed hole j is pocket 6 + j): 0 = 200, 1 = 100, 2 and 3 = the 50s, 4 to 8 = the far row 30, 20, 10, 20, 30.
-    /// Hole values (BarBilliardsRules.holeValues): [200, 100, 50, 50, 30, 20, 10, 20, 30].
-    static let bedHoles: [BedHole] = [
-        hole(fromFar: 0.700, across: 0),          // 200, nearest the player, behind the black skittle
-        hole(fromFar: 0.330, across: 0),          // 100, back of the diamond, between the white skittles
-        hole(fromFar: 0.520, across: -0.250),     // 50
-        hole(fromFar: 0.520, across: 0.250),      // 50
-        hole(fromFar: 0.090, across: -0.300),     // 30
-        hole(fromFar: 0.090, across: -0.150),     // 20
-        hole(fromFar: 0.090, across: 0),          // 10
-        hole(fromFar: 0.090, across: 0.150),      // 20
-        hole(fromFar: 0.090, across: 0.300),      // 30
-    ]
+    static let bedHoles: [BedHole] = Numbers.bedHoles
     /// The points each hole scores, in `bedHoles` order; owned by the rules that score them.
     static let holeValues = BarBilliardsRules.holeValues
 
@@ -92,47 +75,22 @@ enum BarBilliardsTable: TableDefinition {
 
     /// Contact radius of the skittle's stalk at ball-centre height; the model's stalk (make_bar_billiards.py,
     /// SKITTLE_STALK_R) is exactly this.
-    private static let skittleRadius = 0.009
-    /// The cap's radius in the model, used to keep the black skittle's cap clear of the 200 hole.
-    private static let skittleCapRadius = 0.0195
-    /// 3 inch mushroom; a ball flying higher than this passes over.
-    private static let skittleHeight = 0.076
-    /// Estimate for turned beech of this shape.
-    private static let skittleMass = 0.025
-    /// Wood on phenolic, a little softer than the default pin knock.
-    private static let skittleRestitution = 0.7
+    static let skittleRadius = Numbers.skittleRadius
     /// Pin index of the black skittle (the others are white).
     static let blackPin = BarBilliardsRules.blackPeg
 
-    private static func skittle(_ c: Vec2) -> Pin {
-        Pin(center: c, radius: skittleRadius, mass: skittleMass, restitution: skittleRestitution, height: skittleHeight)
-    }
-
-    /// 0: black, in front of the 200 hole with its back edge 6 mm from the hole's front edge.
-    /// 1 and 2: white, level with the 100 hole, 178 mm (7 in) either side of its centre.
-    static let pins: [Pin] = [
-        skittle(Vec2(bedHoles[0].center.x - holeRadius - 0.006 - skittleCapRadius, W / 2)),
-        skittle(Vec2(bedHoles[1].center.x, W / 2 - 0.178)),
-        skittle(Vec2(bedHoles[1].center.x, W / 2 + 0.178)),
-    ]
+    /// 0: black, in front of the 200 hole. 1 and 2: white, level with the 100 hole either side of it.
+    static let pins: [Pin] = Numbers.pins
 
     // MARK: Start and default shot
 
-    /// The D spot, 300 mm from the player's cushion on the centre line, and the red spot 229 mm in front of it
-    /// (league layout). The scratch re-spot (L/4, W/2) = (0.355, 0.40) is clear of every hole and skittle.
-    private static let dSpot = Vec2(0.300, W / 2)
-    private static let redSpot = Vec2(0.300 + 0.229, W / 2)
+    /// The D spot, 300 mm from the player's cushion on the centre line.
+    private static let dSpot = Numbers.dSpot
     /// Ball 3 is drawn solid red; it stands in for the game's one red ball.
     static let redBall = BarBilliardsRules.redBall
 
-    /// Sixteen positions: a white (index 0, the cue ball) on the D spot and the red on its spot; the other six whites
-    /// are in the return tray, so off the table, as at the start of a real break.
-    static var startLayout: [Vec2] {
-        var l = [Vec2](repeating: NextShot.offTable, count: 16)
-        l[0] = dSpot
-        l[redBall] = redSpot
-        return l
-    }
+    /// A white on the D spot and the red on its spot; the other six whites off the table.
+    static var startLayout: [Vec2] { Numbers.startLayout }
 
     /// Plain ball from the D straight into the left 50 hole (as the player looks up the table), passing well clear of
     /// the red (95 mm) and the black skittle (150 mm). A straight centre-ball shot needs no throw or swerve to land, so

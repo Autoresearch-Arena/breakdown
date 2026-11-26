@@ -207,6 +207,8 @@
 //          (tryAgain(restoring:)). Launch flags put each store scene up (StoreScene).)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: init calls openOnLastTableIfLaterLaunch, in
 //          App/FrontDoor.swift, so a later launch shows the last table played behind the menu. One marked line.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: a comment in physicsTable says a trick shot or shot
+//          of the day on another table starts there; no code changed.)
 // PURPOSE: The showpiece's brain. Runs the cold open as a small state machine (normal break at full speed,
 //          freeze, melt into the Lens, rewind, slow-motion replay) on top of the recorded timeline, then hands
 //          control to the player: play, pause, scrub, speed, Lens on and off, a new break of their own, and then
@@ -3226,6 +3228,7 @@ final class ShowpieceModel {
     var physicsTable: TableKind {
         // 0.7.7 make-it-again: a saved shot of the player's own is solved, drawn and judged on the table it was made
         // on (bumper pool, bar billiards); authored shots and lessons keep the pool table (their table is the default).
+        // 0.7.10 bank: a trick shot or shot of the day whose entry names another table starts there too, by this line.
         if let own = trickModeStorage?.current, own.table != .standard { return own.table }
         if onPoolTableOnly { return .standard }
         if let m = match { return m.table }

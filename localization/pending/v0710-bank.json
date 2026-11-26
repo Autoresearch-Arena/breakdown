@@ -1,0 +1,734 @@
+{
+ "keys": [
+  "Then the cue ball must touch %@.",
+  "Then stop the cue ball on the mark, lined up on %@.",
+  "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+  "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+  "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+  "Each ball sends the next along the line through their centres, so line up the last contact first.",
+  "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+  "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+  "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+  "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+  "Side spin changes the angle the cue ball takes off a cushion.",
+  "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+  "A steep cue with side spin makes the cue ball curve as the spin grips the cloth."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Después la bola blanca tiene que tocar %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Ensuite, la bille blanche doit toucher %@."
+  },
+  {
+   "culture": "de",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Danach muss die weiße Kugel %@ berühren."
+  },
+  {
+   "culture": "it",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Poi la bianca deve toccare %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Depois a bola branca tem de tocar %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Depois a bola branca precisa tocar %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Then the cue ball must touch %@.",
+   "text": "そのあと手玉が%@に当たるようにしよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Then the cue ball must touch %@.",
+   "text": "그다음 수구가 %@에 닿아야 해."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Then the cue ball must touch %@.",
+   "text": "然后母球要碰到%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Then the cue ball must touch %@.",
+   "text": "Потом биток должен коснуться: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Then the cue ball must touch %@.",
+   "text": "بعدها يجب أن تلمس الكرة البيضاء %@."
+  },
+  {
+   "culture": "es",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Después deja la bola blanca en la marca, en línea con %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Puis arrête la bille blanche sur la marque, alignée sur %@."
+  },
+  {
+   "culture": "de",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Dann halte die weiße Kugel auf der Markierung an, in Linie mit %@."
+  },
+  {
+   "culture": "it",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Poi ferma la bianca sul segno, in linea con %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Depois para a bola branca na marca, alinhada com %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Depois pare a bola branca na marca, alinhada com %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "そのあと手玉を印の上で止めて、%@を狙える位置にしよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "그다음 수구를 표시 위에 세워 %@와 일직선이 되게 해."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "然后让母球停在标记上，正对%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "Потом останови биток на метке, на одной линии с: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Then stop the cue ball on the mark, lined up on %@.",
+   "text": "ثم أوقف الكرة البيضاء على العلامة، على خط واحد مع %@."
+  },
+  {
+   "culture": "es",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "La bola objetivo sale por la línea que une los dos centros en el contacto. Apunta para que esa línea vaya a la tronera."
+  },
+  {
+   "culture": "fr",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "La bille visée part le long de la ligne qui relie les deux centres au contact. Vise pour que cette ligne aille dans la poche."
+  },
+  {
+   "culture": "de",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "Die Objektkugel läuft beim Kontakt entlang der Linie durch beide Mittelpunkte. Ziele so, dass diese Linie ins Loch führt."
+  },
+  {
+   "culture": "it",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "La bilia colpita parte lungo la linea che unisce i due centri al contatto. Mira in modo che quella linea finisca in buca."
+  },
+  {
+   "culture": "pt",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "A bola objeto sai pela linha que une os dois centros no contacto. Aponta para que essa linha entre no buraco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "A bola da vez sai pela linha que une os dois centros no contato. Mire para que essa linha vá para a caçapa."
+  },
+  {
+   "culture": "ja",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "的球は、当たった瞬間の両球の中心を結ぶ線に沿って進む。その線がポケットに向かうように狙おう。"
+  },
+  {
+   "culture": "ko",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "목적구는 맞는 순간 두 공의 중심을 잇는 선을 따라 나가. 그 선이 포켓으로 향하게 겨눠."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "目标球沿着接触时两球球心的连线离开。瞄准时让这条线指向袋口。"
+  },
+  {
+   "culture": "ru",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "Прицельный шар уходит по линии через оба центра в момент удара. Целься так, чтобы эта линия шла в лузу."
+  },
+  {
+   "culture": "ar",
+   "key": "The object ball leaves along the line through both centres at contact. Aim so that line runs into the pocket.",
+   "text": "تنطلق الكرة المستهدفة على الخط المار بمركزي الكرتين لحظة التلامس. صوّب بحيث يتجه هذا الخط إلى الجيب."
+  },
+  {
+   "culture": "es",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Una bola sale de la banda más o menos con el ángulo con que llegó, así que apunta a la imagen de la tronera reflejada en esa banda."
+  },
+  {
+   "culture": "fr",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Une bille quitte la bande à peu près sous l'angle d'arrivée : vise le reflet de la poche dans cette bande."
+  },
+  {
+   "culture": "de",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Eine Kugel verlässt die Bande ungefähr im Winkel, in dem sie kam. Ziele also auf das Spiegelbild des Lochs in dieser Bande."
+  },
+  {
+   "culture": "it",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Una bilia lascia la sponda più o meno con l'angolo con cui è arrivata, quindi mira all'immagine riflessa della buca in quella sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Uma bola sai da tabela mais ou menos no ângulo em que chegou, por isso aponta para a imagem do buraco refletida nessa tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Uma bola sai da tabela mais ou menos no ângulo em que chegou, então mire na imagem da caçapa refletida nessa tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "球はクッションに入ってきたのとほぼ同じ角度で跳ね返る。だからそのクッションに映したポケットの鏡像を狙おう。"
+  },
+  {
+   "culture": "ko",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "공은 쿠션에 들어온 각도와 거의 같은 각도로 나가. 그러니 그 쿠션에 비친 포켓의 거울상을 겨눠."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "球离开库边的角度大约等于入射角，所以瞄准袋口在这条库边上的镜像。"
+  },
+  {
+   "culture": "ru",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "Шар отходит от борта примерно под тем же углом, под каким пришёл, поэтому целься в зеркальное отражение лузы в этом борту."
+  },
+  {
+   "culture": "ar",
+   "key": "A ball leaves a cushion at about the angle it came in, so aim at the pocket's mirror image in that cushion.",
+   "text": "تترك الكرة الحافة بزاوية قريبة من زاوية وصولها، لذا صوّب نحو صورة الجيب المنعكسة في تلك الحافة."
+  },
+  {
+   "culture": "es",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "La bola blanca sale de la banda más o menos con el ángulo reflejado, así que alcanza una bola que no ve en línea recta."
+  },
+  {
+   "culture": "fr",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "La bille blanche repart de la bande à peu près sous l'angle miroir : elle peut atteindre une bille qu'elle ne voit pas en ligne droite."
+  },
+  {
+   "culture": "de",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "Die weiße Kugel verlässt die Bande ungefähr im Spiegelwinkel und erreicht so eine Kugel, die sie nicht direkt sieht."
+  },
+  {
+   "culture": "it",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "La bianca esce dalla sponda più o meno con l'angolo speculare, così raggiunge una bilia che non vede in linea retta."
+  },
+  {
+   "culture": "pt",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "A bola branca sai da tabela mais ou menos no ângulo espelhado, por isso chega a uma bola que não vê em linha reta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "A bola branca sai da tabela mais ou menos no ângulo espelhado, então alcança uma bola que não enxerga em linha reta."
+  },
+  {
+   "culture": "ja",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "手玉はクッションからほぼ鏡のような角度で出ていくので、まっすぐには見えない球にも届く。"
+  },
+  {
+   "culture": "ko",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "수구는 쿠션에서 거의 거울 같은 각도로 나와서, 곧장 보이지 않는 공에도 닿을 수 있어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "母球以大约镜面对称的角度离开库边，所以能碰到直线上看不到的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "Биток отходит от борта примерно под зеркальным углом и достаёт шар, которого не видно напрямую."
+  },
+  {
+   "culture": "ar",
+   "key": "The cue ball comes off the cushion at about its mirror angle, so it can reach a ball it cannot see straight.",
+   "text": "تخرج الكرة البيضاء من الحافة بزاوية قريبة من الزاوية المنعكسة، فتصل إلى كرة لا تراها في خط مستقيم."
+  },
+  {
+   "culture": "es",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Cada bola manda a la siguiente por la línea que une sus centros, así que alinea primero el último contacto."
+  },
+  {
+   "culture": "fr",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Chaque bille envoie la suivante le long de la ligne qui relie leurs centres : aligne d'abord le dernier contact."
+  },
+  {
+   "culture": "de",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Jede Kugel schickt die nächste entlang der Linie durch ihre Mittelpunkte. Richte also zuerst den letzten Kontakt aus."
+  },
+  {
+   "culture": "it",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Ogni bilia manda la successiva lungo la linea che unisce i loro centri, quindi allinea prima l'ultimo contatto."
+  },
+  {
+   "culture": "pt",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Cada bola manda a seguinte pela linha que une os seus centros, por isso alinha primeiro o último contacto."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Cada bola manda a seguinte pela linha que une os centros, então alinhe primeiro o último contato."
+  },
+  {
+   "culture": "ja",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "それぞれの球は中心を結ぶ線に沿って次の球を送り出す。だから最後の当たりから先に合わせよう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "각 공은 두 중심을 잇는 선을 따라 다음 공을 보내. 그러니 마지막 충돌부터 먼저 맞춰."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "每颗球都沿两球球心的连线把下一颗球送出，所以先对准最后一次碰撞。"
+  },
+  {
+   "culture": "ru",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "Каждый шар посылает следующий по линии через их центры, поэтому сначала выстрой последнее касание."
+  },
+  {
+   "culture": "ar",
+   "key": "Each ball sends the next along the line through their centres, so line up the last contact first.",
+   "text": "كل كرة ترسل التالية على الخط المار بمركزيهما، لذا رتّب آخر تلامس أولًا."
+  },
+  {
+   "culture": "es",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "Tras un corte, una bola blanca sin efecto sale en ángulo recto con la trayectoria de la bola tocada. Eso la lleva a la segunda bola."
+  },
+  {
+   "culture": "fr",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "Après une coupe, une bille blanche sans effet part à angle droit de la trajectoire de la bille touchée. C'est ce qui l'envoie vers la deuxième bille."
+  },
+  {
+   "culture": "de",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "Nach einem Schnitt läuft eine weiße Kugel ohne Effet im rechten Winkel zur Bahn der getroffenen Kugel weg. So erreicht sie die zweite Kugel."
+  },
+  {
+   "culture": "it",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "Dopo un taglio, una bianca senza effetto parte ad angolo retto rispetto al percorso della bilia colpita. È così che arriva alla seconda bilia."
+  },
+  {
+   "culture": "pt",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "Depois de um corte, uma bola branca sem efeito sai em ângulo reto com a trajetória da bola tocada. É isso que a leva à segunda bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "Depois de um corte, uma bola branca sem efeito sai em ângulo reto com a trajetória da bola tocada. É isso que a leva até a segunda bola."
+  },
+  {
+   "culture": "ja",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "薄く当てたとき、回転のない手玉は的球の進路と直角に出ていく。それで二つ目の球に向かう。"
+  },
+  {
+   "culture": "ko",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "얇게 맞히면 회전 없는 수구는 목적구의 진로와 직각으로 나가. 그래서 두 번째 공으로 가."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "切球之后，不带旋转的母球会沿着与目标球路线成直角的方向离开，于是去碰第二颗球。"
+  },
+  {
+   "culture": "ru",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "После среза биток без вращения уходит под прямым углом к пути прицельного шара. Так он и идёт ко второму шару."
+  },
+  {
+   "culture": "ar",
+   "key": "After a cut, a stunned cue ball leaves at right angles to the object ball's path. That sends it on to the second ball.",
+   "text": "بعد الضربة المائلة، تخرج الكرة البيضاء بلا دوران بزاوية قائمة مع مسار الكرة المضروبة، فتتجه إلى الكرة الثانية."
+  },
+  {
+   "culture": "es",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Las bolas que se agarran al tocarse se arrastran de lado, así que una bola puede desviarse de su línea recta."
+  },
+  {
+   "culture": "fr",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Des billes qui accrochent au contact s'entraînent de côté : une bille peut ainsi être déviée de sa ligne droite."
+  },
+  {
+   "culture": "de",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Kugeln, die beim Kontakt aneinander haften, ziehen sich seitlich mit. So lässt sich eine Kugel von ihrer geraden Linie abdrängen."
+  },
+  {
+   "culture": "it",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Le bilie che fanno presa quando si toccano si trascinano di lato, così una bilia può essere spinta fuori dalla sua linea retta."
+  },
+  {
+   "culture": "pt",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Bolas que se agarram ao tocar arrastam-se de lado, por isso uma bola pode ser desviada da sua linha reta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Bolas que se agarram ao se tocar arrastam uma à outra de lado, então uma bola pode ser desviada da linha reta."
+  },
+  {
+   "culture": "ja",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "触れた瞬間に摩擦で食いつく球どうしは互いを横に引っぱる。だから球をまっすぐな線からずらせる。"
+  },
+  {
+   "culture": "ko",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "닿는 순간 서로 붙잡는 공들은 서로를 옆으로 끌어. 그래서 공을 직선에서 비껴 보낼 수 있어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "接触时相互咬住的球会把彼此向侧面带，所以球可以被带离直线。"
+  },
+  {
+   "culture": "ru",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "Шары, которые сцепляются при касании, тянут друг друга вбок, и шар можно увести с прямой линии."
+  },
+  {
+   "culture": "ar",
+   "key": "Balls that grip as they touch drag each other sideways, so a ball can be thrown off its straight line.",
+   "text": "الكرات التي تتماسك عند التلامس تسحب بعضها جانبًا، فيمكن إبعاد الكرة عن خطها المستقيم."
+  },
+  {
+   "culture": "es",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "El efecto bajo sigue actuando después del golpe: se agarra al paño y trae la bola blanca hacia atrás."
+  },
+  {
+   "culture": "fr",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "L'effet rétro continue d'agir après le choc : il accroche le tapis et ramène la bille blanche en arrière."
+  },
+  {
+   "culture": "de",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "Rückwärtsdrall wirkt nach dem Treffer weiter: Er greift ins Tuch und zieht die weiße Kugel zurück."
+  },
+  {
+   "culture": "it",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "L'effetto a scendere continua a lavorare dopo il colpo: fa presa sul panno e riporta indietro la bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "O efeito para trás continua a atuar depois do toque: agarra o pano e puxa a bola branca de volta."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "O efeito para trás continua agindo depois da tacada: agarra no pano e puxa a bola branca de volta."
+  },
+  {
+   "culture": "ja",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "引き球の回転は当たったあとも働き続け、ラシャをつかんで手玉を引き戻す。"
+  },
+  {
+   "culture": "ko",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "백스핀은 맞힌 뒤에도 계속 작용해. 천을 붙잡고 수구를 뒤로 끌어와."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "下旋在击球后继续起作用：它咬住台呢，把母球拉回来。"
+  },
+  {
+   "culture": "ru",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "Нижнее вращение работает и после удара: оно цепляется за сукно и тянет биток назад."
+  },
+  {
+   "culture": "ar",
+   "key": "Backspin keeps working after the hit: it grips the cloth and pulls the cue ball back.",
+   "text": "يستمر الدوران الخلفي بعد الضربة: يتمسك بالقماش ويسحب الكرة البيضاء إلى الوراء."
+  },
+  {
+   "culture": "es",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "El efecto alto sigue actuando después del golpe: se agarra al paño y empuja la bola blanca hacia delante."
+  },
+  {
+   "culture": "fr",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "L'effet coulé continue d'agir après le choc : il accroche le tapis et pousse la bille blanche vers l'avant."
+  },
+  {
+   "culture": "de",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "Vorwärtsdrall wirkt nach dem Treffer weiter: Er greift ins Tuch und treibt die weiße Kugel weiter."
+  },
+  {
+   "culture": "it",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "L'effetto a seguire continua a lavorare dopo il colpo: fa presa sul panno e spinge avanti la bianca."
+  },
+  {
+   "culture": "pt",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "O efeito para a frente continua a atuar depois do toque: agarra o pano e empurra a bola branca em frente."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "O efeito para a frente continua agindo depois da tacada: agarra no pano e leva a bola branca adiante."
+  },
+  {
+   "culture": "ja",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "押し球の回転は当たったあとも働き続け、ラシャをつかんで手玉を前へ進める。"
+  },
+  {
+   "culture": "ko",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "탑스핀은 맞힌 뒤에도 계속 작용해. 천을 붙잡고 수구를 앞으로 밀어."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "上旋在击球后继续起作用：它咬住台呢，推着母球向前。"
+  },
+  {
+   "culture": "ru",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "Верхнее вращение работает и после удара: оно цепляется за сукно и гонит биток вперёд."
+  },
+  {
+   "culture": "ar",
+   "key": "Topspin keeps working after the hit: it grips the cloth and drives the cue ball on.",
+   "text": "يستمر الدوران الأمامي بعد الضربة: يتمسك بالقماش ويدفع الكرة البيضاء إلى الأمام."
+  },
+  {
+   "culture": "es",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "El efecto lateral cambia el ángulo con que la bola blanca sale de la banda."
+  },
+  {
+   "culture": "fr",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "L'effet latéral change l'angle sous lequel la bille blanche quitte la bande."
+  },
+  {
+   "culture": "de",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "Seitlicher Effet ändert den Winkel, in dem die weiße Kugel die Bande verlässt."
+  },
+  {
+   "culture": "it",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "L'effetto laterale cambia l'angolo con cui la bianca lascia la sponda."
+  },
+  {
+   "culture": "pt",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "O efeito lateral muda o ângulo com que a bola branca sai da tabela."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "O efeito lateral muda o ângulo com que a bola branca sai da tabela."
+  },
+  {
+   "culture": "ja",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "横回転は、手玉がクッションから出ていく角度を変える。"
+  },
+  {
+   "culture": "ko",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "옆회전은 수구가 쿠션에서 나가는 각도를 바꿔."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "侧旋会改变母球离开库边的角度。"
+  },
+  {
+   "culture": "ru",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "Боковое вращение меняет угол, под которым биток отходит от борта."
+  },
+  {
+   "culture": "ar",
+   "key": "Side spin changes the angle the cue ball takes off a cushion.",
+   "text": "الدوران الجانبي يغيّر الزاوية التي تخرج بها الكرة البيضاء من الحافة."
+  },
+  {
+   "culture": "es",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Un taco levantado empuja la bola blanca contra la mesa, y rebota por encima de la bola que estorba."
+  },
+  {
+   "culture": "fr",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Une queue levée enfonce la bille blanche dans le tapis, et elle rebondit par-dessus la bille gênante."
+  },
+  {
+   "culture": "de",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Ein angehobenes Queue drückt die weiße Kugel in den Tisch, und sie springt über die Kugel im Weg."
+  },
+  {
+   "culture": "it",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Una stecca alzata spinge la bianca contro il piano, e lei rimbalza sopra la bilia che ostacola."
+  },
+  {
+   "culture": "pt",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Um taco levantado empurra a bola branca contra a mesa, e ela salta por cima da bola que está no caminho."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Um taco levantado empurra a bola branca contra a mesa, e ela pula por cima da bola no caminho."
+  },
+  {
+   "culture": "ja",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "キューを立てると手玉は台に押しつけられ、跳ね上がって邪魔な球を越える。"
+  },
+  {
+   "culture": "ko",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "큐를 세우면 수구가 바닥으로 눌렸다가 튀어 올라 앞을 막은 공을 넘어가."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "抬高球杆会把母球压向台面，它反弹起来越过挡路的球。"
+  },
+  {
+   "culture": "ru",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "Поднятый кий вдавливает биток в стол, и он подскакивает над шаром на пути."
+  },
+  {
+   "culture": "ar",
+   "key": "A raised cue drives the cue ball down into the bed, and it bounces up over the ball in the way.",
+   "text": "العصا المرفوعة تدفع الكرة البيضاء نحو سطح الطاولة، فترتد قافزة فوق الكرة التي في الطريق."
+  },
+  {
+   "culture": "es",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Un taco muy inclinado con efecto lateral hace que la bola blanca se curve cuando el efecto se agarra al paño."
+  },
+  {
+   "culture": "fr",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Une queue très inclinée avec de l'effet latéral fait courber la bille blanche quand l'effet accroche le tapis."
+  },
+  {
+   "culture": "de",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Ein steiles Queue mit seitlichem Effet lässt die weiße Kugel eine Kurve laufen, sobald der Drall ins Tuch greift."
+  },
+  {
+   "culture": "it",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Una stecca molto inclinata con effetto laterale fa curvare la bianca quando l'effetto fa presa sul panno."
+  },
+  {
+   "culture": "pt",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Um taco muito inclinado com efeito lateral faz a bola branca curvar quando o efeito agarra o pano."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Um taco bem inclinado com efeito lateral faz a bola branca curvar quando o efeito agarra no pano."
+  },
+  {
+   "culture": "ja",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "キューを大きく立てて横回転をかけると、回転がラシャをつかんで手玉が曲がる。"
+  },
+  {
+   "culture": "ko",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "큐를 가파르게 세우고 옆회전을 주면, 회전이 천을 붙잡으면서 수구가 휘어져."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "陡立的球杆加上侧旋，会让旋转咬住台呢，使母球走出弧线。"
+  },
+  {
+   "culture": "ru",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "Крутой кий с боковым вращением заставляет биток изгибаться, когда вращение цепляется за сукно."
+  },
+  {
+   "culture": "ar",
+   "key": "A steep cue with side spin makes the cue ball curve as the spin grips the cloth.",
+   "text": "العصا شديدة الميل مع الدوران الجانبي تجعل الكرة البيضاء تنحني حين يتمسك الدوران بالقماش."
+  }
+ ]
+}

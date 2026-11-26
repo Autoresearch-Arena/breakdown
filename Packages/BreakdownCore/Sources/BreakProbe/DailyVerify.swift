@@ -12,6 +12,9 @@
 //          far that resting place is from it: an entry with no written mark is scored against that very resting place
 //          in the app (DailyShot.answerRest), so these lines are what a later authoring pass writes in as marks.
 //          Returns the number of failures; ContentVerify.runContentVerify adds them to its own and its exit status.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: each entry is played on its own table as well as its
+//          surface; the bank must hold the weekly rhythm (a whole number of weeks, each day's kind of shot, a mark on
+//          every entry, a leave ball on the table), and every answer must still stop within a centimetre of its mark.)
 // SRP/DRY check: Pass - reuses simulate, probeStrike, probeGoal, trickFailure and generationParameters (TrickSearch and
 //          ContentVerify); the bank's numbers are the package library's (AuthoredDaily), never copied here.
 import BreakdownAuthored
@@ -20,9 +23,11 @@ import BreakdownPhysics
 import BreakdownTimeline
 import Foundation
 
-/// An entry's physics: the chosen generation with the entry's own cloth written in.
+/// An entry's physics: the chosen generation with the entry's own table, then its own cloth, written in (0.7.10 bank:
+/// the table first, the app's ShowpieceModel.solverCopy order).
 func dailyParameters(_ e: AuthoredDailyShot, generation: Int) -> PoolParameters {
     var p = generationParameters(generation)
+    e.table.apply(to: &p)
     e.surface.apply(to: &p)
     return p
 }
@@ -43,6 +48,19 @@ func dailyBankProblems(_ bank: [AuthoredDailyShot]) -> [String] {
     }
     for e in bank where !(e.window.aim > 0 && e.window.power > 0 && e.window.tipUp > 0) {
         out.append("\(e.id): a window of zero for aim, power or tip height")
+    }
+    // 0.7.10 bank: the weekly rhythm. A whole number of weeks, so it holds when the list wraps; every place on its day's
+    // kind of shot (AuthoredDaily.fits); every entry with a mark; a leave ball that is really on the table.
+    if bank.count % 7 != 0 { out.append("the bank holds \(bank.count) shots, not a whole number of weeks") }
+    for (i, e) in bank.enumerated() {
+        let day = AuthoredDaily.weekday(ofIndex: i)
+        if !AuthoredDaily.fits(e, on: day) {
+            out.append("\(e.id) (day \(i + 1), a \(day)) does not fit its day: \(e.family.rawValue) on \(e.table.rawValue), \(e.surface.rawValue)")
+        }
+        if e.mark == nil { out.append("\(e.id): no mark") }
+        if let l = e.leave, !(e.layout.indices.contains(l) && NextShot.isOnTable(e.layout[l])) {
+            out.append("\(e.id): its leave ball \(l) is not on the table")
+        }
     }
     return out
 }
@@ -71,7 +89,13 @@ func runDailyVerify(generation: Int) -> Int {
         var place = row.rest.map { String(format: "; the white ball rests at (%.4f, %.4f)", $0.x, $0.y) } ?? ""
         if let gap = row.markGap { place += String(format: ", %.1f cm from the written mark", gap * 100) }
         else if e.mark == nil { place += " (no written mark: the app scores against this resting place)" }
-        if let why = row.why { failures += 1; print("FAIL daily \(e.id): \(why)\(place)") }
+        // 0.7.10 bank: every mark is the answer's own resting place (Stop Dead's is its circle's centre), so the answer
+        // must still stop within a centimetre of it; further means the physics moved and the mark wants writing again.
+        var why = row.why
+        if why == nil, let gap = row.markGap, gap > 0.01 {
+            why = String(format: "the answer now stops %.1f cm from its mark", gap * 100)
+        }
+        if let why { failures += 1; print("FAIL daily \(e.id): \(why)\(place)") }
         else { print("PASS daily \(e.id)\(place)") }
     }
     for problem in dailyBankProblems(bank) {

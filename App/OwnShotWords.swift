@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: goalLine also takes the goal's parts, so the shot of
+//          the day's authored shots say their goal in these same translated words; the saved shot's line is unchanged.)
 // PURPOSE: Make it again (0.7.7, plans/23-Nov-2026-make-it-again-plan.md, new file 4): every word of the feature in
 //          one place. The buttons (Make it again, Play it now, their Mac menu forms), their VoiceOver hints, the shelf's
 //          title and footers, a row's status lines, Rename and Delete with the delete question, the controller mapping
@@ -137,15 +139,23 @@ enum OwnShotWords {
     /// The goal in words, every pocket named so nothing depends on seeing the rings: which balls into which pockets,
     /// the ball to touch first (unless it is the one ball potted, when saying it adds nothing), and the bank.
     static func goalLine(_ own: OwnShot) -> String {
-        let table = own.table ?? .standard
-        let list = own.drops.map { into($0, table: table) }.formatted(.list(type: .and).locale(AppLocale.numbers))
-        var sentences = [String(localized: "Pot \(list).",
-                                comment: "%@ is a list such as \"the 3 into the foot-left corner pocket and the 6 into the left side pocket\".")]
-        if let first = own.firstHit, !(own.drops.count == 1 && own.drops[0].ball == first) {
+        goalLine(drops: own.drops, firstHit: own.firstHit, bank: own.bank, table: own.table ?? .standard)
+    }
+
+    /// The same goal sentences from the goal's parts (0.7.10 bank: the shot of the day's authored shots say their goal
+    /// with these very words, DailyShot). A goal with no drops says only its first ball and its bank.
+    static func goalLine(drops: [OwnDrop], firstHit: Int?, bank: Int?, table: TableKind) -> String {
+        var sentences: [String] = []
+        if !drops.isEmpty {
+            let list = drops.map { into($0, table: table) }.formatted(.list(type: .and).locale(AppLocale.numbers))
+            sentences.append(String(localized: "Pot \(list).",
+                                    comment: "%@ is a list such as \"the 3 into the foot-left corner pocket and the 6 into the left side pocket\"."))
+        }
+        if let first = firstHit, !(drops.count == 1 && drops[0].ball == first) {
             sentences.append(String(localized: "Touch \(ball(first, table: table)) first.",
                                     comment: "%@ is a ball, e.g. \"the 3\": the cue ball must touch it first."))
         }
-        if let bank = own.bank {
+        if let bank {
             let line = String(localized: "\(ball(bank, table: table)) must come off a cushion on the way.",
                               comment: "%@ is a ball, e.g. \"the 6\": it must bank in. Sentence start; capitalise as the language needs.")
             sentences.append(capitalised(line))

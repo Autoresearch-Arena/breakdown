@@ -5,6 +5,9 @@
 //          the Blender-made bumpers and cup liners.)
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-rules) - the start layout takes each side's ball numbers
 //          from BumperPoolRules.sides (BreakdownRules), which plays the game, so the rack and the rules agree.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: the solver numbers (size, balls, posts, pins, holes,
+//          start) moved unchanged to the package, BreakdownAuthored/AuthoredTables.swift (AuthoredTables.BumperPool), and are read
+//          from there, so BreakProbe can solve and check a shot of the day on this table; looks and props stay here.)
 // PURPOSE: Bumper pool: a small rectangular table with no edge pockets; one cup (a hole in the bed) near the middle of
 //          each end, two rubber bumpers flanking each cup and a cross of eight bumpers in the centre (two per arm, one
 //          arm in line with the cups, an open middle just wide enough for a ball). Each side has five balls; the marked
@@ -24,6 +27,7 @@
 //          BreakdownCore, the dispatch in TableKind.swift, the shared prop helpers (load, dress, plain posts) in
 //          TableProps.swift; the bumper and liner geometry lives in the Blender script, whose RING_R, POST_H and
 //          LINER_OUTER_R must equal bumperRadius, bumperHeight and cupRadius here.
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
@@ -32,104 +36,36 @@ import Foundation
 import RealityKit
 
 enum BumperPoolTable: TableDefinition {
-    private static let inch = 0.0254
+    // 0.7.10 bank: every solver number below is read from the package (BreakdownAuthored, AuthoredTables.BumperPool),
+    // where it moved unchanged with its reasons, so BreakProbe solves and checks a shot of the day on this table with
+    // the very same numbers. This file keeps the looks and the props.
+    private typealias Numbers = AuthoredTables.BumperPool
 
     /// Playing surface between the cushion noses: 45.5 x 30 in.
-    static let tableSize = (length: 45.5 * inch, width: 30.0 * inch)
+    static let tableSize = Numbers.size
     /// 2-1/8 in bumper pool balls.
-    static let ballRadius = 2.125 * inch / 2
-    /// A 2-1/4 in, 170 g pool ball scaled by volume to 2-1/8 in: 170 g * (2.125 / 2.25)^3 = 143 g.
-    static let ballMass = 0.143
+    static let ballRadius = Numbers.ballRadius
+    /// 143 g (a pool ball scaled by volume).
+    static let ballMass = Numbers.ballMass
     /// Bumper pool has no edge pockets: the cushions run every side.
     static let pocketsEnabled = false
 
     // MARK: Bumpers (posts)
 
-    /// 2 in rubber ring: the contact radius is the ring's outer radius.
-    /// Equal to RING_R in make_bumper_pool.py.
-    static let bumperRadius = 1.0 * inch
-    /// Top of the chrome cap above the cloth, estimated (about 1.9 in); equal to POST_H in make_bumper_pool.py.
-    /// A ball must jump clear of this to pass over.
-    static let bumperHeight = 0.048
-    /// Lively moulded rubber: livelier than a cushion and a touch grippier.
-    static let bumperRestitution = 0.80
-    static let bumperFriction = 0.20
-
-    /// Middle of the table.
-    private static var middle: Vec2 { Vec2(tableSize.length / 2, tableSize.width / 2) }
-    /// Cross arm spacing from the middle (estimate). One arm lies on the cups' line, so a straight
-    /// shot down the middle meets a bumper; the open middle is reached between neighbouring inner bumpers on the
-    /// diagonals, whose rubber is 2 * (0.082 / sqrt 2 - 0.0254) = 65 mm apart against a 54 mm ball ("just large
-    /// enough to allow a ball to pass through"). The outer four sit about 4 in further out on each arm.
-    private static let crossInner = 0.082
-    private static let crossOuter = 0.180
-    /// The two bumpers flanking each cup: offset across from the cup's line and a little toward the middle, so they
-    /// guard its mouth but leave room to roll in (estimate).
-    private static let guardAcross = 0.075
-    private static let guardToward = 0.020
-
-    /// Twelve bumpers: 0 to 3 guard the cups (two at the x = 0 end, then two at the far end), 4 to 7 the cross's
-    /// inner ring (along the length, then across), 8 to 11 its outer ring.
-    static var posts: [Post] {
-        let c = middle, L = tableSize.length
-        var centres: [Vec2] = []
-        for x in [cupInset + guardToward, L - cupInset - guardToward] {
-            centres.append(Vec2(x, c.y - guardAcross))
-            centres.append(Vec2(x, c.y + guardAcross))
-        }
-        for d in [crossInner, crossOuter] {
-            centres.append(Vec2(c.x - d, c.y))   // the arm in line with the cups
-            centres.append(Vec2(c.x + d, c.y))
-            centres.append(Vec2(c.x, c.y - d))   // the arm across the table
-            centres.append(Vec2(c.x, c.y + d))
-        }
-        return centres.map {
-            Post(center: $0, radius: bumperRadius, restitution: bumperRestitution, friction: bumperFriction,
-                 height: bumperHeight)
-        }
-    }
+    /// Twelve bumpers: 0 to 3 guard the cups, 4 to 11 the centre cross (AuthoredTables.BumperPool.posts).
+    static var posts: [Post] { Numbers.posts }
 
     static let pins: [Pin] = []
 
     // MARK: Cups (bed holes)
 
-    /// Cup centre from the end cushion nose, on the table's long centre line (estimate, about 5.5 in).
-    private static let cupInset = 0.140
-    /// The hole cut in the bed: the liner's outside, 2.488 in; equal to LINER_OUTER_R in
-    /// make_bumper_pool.py.
-    static let cupRadius = 2.488 * inch / 2
-    /// The liner's opening is only 2.188 in for a 2.125 in ball, so the ball has to be nearly centred over the cup
-    /// before it drops: capture well inside the drawn hole.
-    static let cupCapture = 0.018
-
     /// Bed hole 0 (pocket index 6) at the x = 0 end, bed hole 1 (pocket index 7) at the far end.
-    static var bedHoles: [BedHole] {
-        [cupInset, tableSize.length - cupInset].map {
-            BedHole(center: Vec2($0, tableSize.width / 2), radius: cupRadius, captureRadius: cupCapture)
-        }
-    }
+    static var bedHoles: [BedHole] { Numbers.bedHoles }
 
     // MARK: Start and opening shot
 
-    /// Five balls a side, each set racked around the cup at its own end and played toward the far cup:
-    ///   near end (x = 0): ball 0 the marked ball (the cue ball) directly in front of cup 0, balls 1 to 4 two either
-    ///   side of that cup; far end: ball 9 the marked ball in front of cup 1, balls 10 to 13 either side of it.
-    /// Balls 5 to 8, 14 and 15 are off the table. The spots are estimates.
-    static var startLayout: [Vec2] {
-        var l = [Vec2](repeating: NextShot.offTable, count: 16)
-        let L = tableSize.length, midY = tableSize.width / 2
-        let markedX = cupInset + 0.080          // in front of the cup, toward the middle
-        let sideOffsets = [-0.260, -0.170, 0.170, 0.260]
-        // BumperPoolRules.sides: each side's marked ball first, then its other four.
-        let near = BumperPoolRules.sides[0], far = BumperPoolRules.sides[1]
-        l[near[0]] = Vec2(markedX, midY)
-        l[far[0]] = Vec2(L - markedX, midY)
-        for (i, dy) in sideOffsets.enumerated() {
-            l[near[1 + i]] = Vec2(cupInset, midY + dy)
-            l[far[1 + i]] = Vec2(L - cupInset, midY + dy)
-        }
-        return l
-    }
+    /// Five balls a side racked round each cup (AuthoredTables.BumperPool.startLayout).
+    static var startLayout: [Vec2] { Numbers.startLayout }
 
     /// The real opening shot: the marked ball banks off the shooter's right-hand cushion (plan y = 0 for a player at
     /// the x = 0 end) toward the far cup, where it meets the bumper guarding that cup. Aimed at the far cup's mirror

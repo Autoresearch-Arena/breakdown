@@ -3,6 +3,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 polish P2: five-pin's menu symbol is a cluster of dots, not a
 //          bowling figure.)
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: TableKind from the package's AuthoredTable, the
+//          table an authored shot of the day names, by the shared raw value.)
 // PURPOSE: Which table the game is played on: the standard nine-foot pool table, bumper pool, Italian five-pin
 //          billiards (cinque birilli) or bar billiards. Picked from the Surface menu's "Tables" section and kept in
 //          UserDefaults under "optionTable". A table is, like a surface, a set of numbers written into PoolParameters
@@ -14,6 +16,7 @@
 //          The contract for the table files is App/Tables/README.md.
 // SRP/DRY check: Pass - checked PlaySurface.swift (same pattern: an enum of choices that writes numbers into the
 //          parameters); the table geometry itself stays in the solver and TableBuilder, the per-table data in App/Tables.
+import BreakdownAuthored
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownTimeline
@@ -155,6 +158,12 @@ enum TableKind: String, CaseIterable, Identifiable, Sendable {
     /// The table's props, or nil for the standard table.
     @MainActor func makeProps(_ context: TablePropsContext) -> Entity? {
         definition?.makeProps(context)
+    }
+
+    // 0.7.10 bank: the table an authored shot names (AuthoredDaily, AuthoredTricks) as the app's table. The raw values
+    // are the same strings (AuthoredTable's header), so the mapping cannot drift; the pool table if one ever did not.
+    init(_ table: AuthoredTable) {
+        self = TableKind(rawValue: table.rawValue) ?? .standard
     }
 
     static let storageKey = "optionTable"
