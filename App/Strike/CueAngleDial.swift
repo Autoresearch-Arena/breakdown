@@ -14,6 +14,13 @@
 //          it is one adjustable element stepping through the offered angles, with the menu's spoken value.
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
 //          at the accessibility text sizes the angle's words wrap instead of shrinking to fit.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 6: a larger arc at the size the layout hands it (about a 100-point radius on the upright iPad) running
+//          from level to upright, ticks with figures at 0, 20, 45 and 90 degrees, the cue as a cyan needle ending in the
+//          instrument kit's handle, a flat grey pivot ball, the degrees as a typeable figure beside the dial (under it
+//          in a narrow column) with "up from level", and a faint ghost needle at the planned angle after a shot. The
+//          small "5° up" caption is gone (the figure is printed once). The drag still stops at the top angle offered.
+//          The dial and the figure are two VoiceOver elements: the adjustable dial, and the figure's typing button.)
 // SRP/DRY check: Pass - checked CueAngleMenu (the angles, the sine conversion, the words and the spoken value are all
 //          reused from it; nothing is listed twice) and FineControls' cue-angle slider (the same setter).
 import SwiftUI
@@ -41,16 +48,53 @@ struct CueAngleDial: View {
     /// The player's angle, degrees.
     private var degrees: Double { asin(min(max(model.activeElevation, 0), 0.995)) * 180 / .pi }
 
+    /// Aiming panel redesign: the dial's side, points, from the layout (about twice the 100-point arc radius on the
+    /// upright iPad), and the degrees figure's size. Nil keeps the old 88 to 140 points.
+    var size: CGFloat? = nil
+    var figureSize: CGFloat = 26
+    /// The degrees figure under the dial instead of beside it (a narrow column).
+    var figureBelow = false
+
     var body: some View {
-        let size = min(max(side, 88), 140)
-        VStack(spacing: 4) {
-            dial(size: size)
-            Text(verbatim: CueAngleMenu.words(degrees: degrees))
-                .font(Theme.number)
-                .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
-                .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.7)
-                .multilineTextAlignment(.center)
+        let reading = StrikeReading.current(model)
+        let planned = reading?.comparison?.planned.cueAngle
+        let layout = figureBelow ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                                 : AnyLayout(HStackLayout(alignment: .center, spacing: 14))
+        layout {
+            accessible(dial(size: size ?? min(max(side, 88), 140), ghost: planned))
+            readout(reading).fixedSize()
         }
+    }
+
+    /// The degrees, typeable, with "up from level" under them; after a shot "as planned" (the stroke never changes
+    /// the angle the cue is raised to, StrikeReading.comparison).
+    private func readout(_ reading: StrikeReading.Reading?) -> some View {
+        let moved = reading?.comparison?.differs(.cueAngle) == true
+        return VStack(alignment: .leading, spacing: 4) {
+            TypeableFigure(model: model, kind: .cueAngle, spokenLabel: StrikeWords.cueAngleLabel,
+                           spokenValue: reading.map { StrikeSpoken.tile(.cueAngle, $0, differs: moved) }
+                               ?? StrikeSpoken.degrees(degrees)) {
+                FigureLine(figure: StrikeWords.degreesFigure(degrees), size: figureSize, role: .set,
+                           editable: StrikeEntry.Kind.cueAngle.isOpen(model))
+                    .padding(.bottom, 4)
+            }
+            Text(verbatim: StrikeWords.upFromLevel)
+                .font(.system(size: max(12, figureSize * 0.55)))
+                .foregroundStyle(.secondary)
+                .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                .fixedSize(horizontal: false, vertical: true)
+            if reading?.comparison != nil {
+                Text(verbatim: StrikeWords.asPlanned)
+                    .font(.system(size: max(12, figureSize * 0.55)))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+        }
+    }
+
+    /// The dial as one adjustable VoiceOver element, stepping through the offered angles.
+    private func accessible<Content: View>(_ content: Content) -> some View {
+        content
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(localized: "Cue angle"))
         .accessibilityValue(TableWords.cueAngleValue(words: CueAngleMenu.words(degrees: degrees),
@@ -73,57 +117,81 @@ struct CueAngleDial: View {
         .help(model.cueAngleLockedByMode ? StrikeWords.lockedByMode : String(localized: "Cue angle"))
     }
 
-    /// The quarter circle: the ball at the lower leading corner, the arc, the lesson's band, the ticks at the offered
-    /// angles and the cue as the needle. Drawn in screen terms (left to right) whatever the reading direction: the cue
-    /// is a picture of a cue, not text.
-    private func dial(size: CGFloat) -> some View {
-        let ball = size * 0.14
-        let pivot = CGPoint(x: ball, y: size - ball)
-        let radius = size - ball * 1.6
-        return Canvas { ctx, _ in
-            func point(_ deg: Double, _ r: CGFloat) -> CGPoint {
-                let a = deg * .pi / 180
-                return CGPoint(x: pivot.x + r * CGFloat(cos(a)), y: pivot.y - r * CGFloat(sin(a)))
+    /// The quarter circle: the ball at the lower leading corner, the arc, the lesson's band, ticks at 0, 20, 45 and 90
+    /// degrees with their figures, and the cue as the needle, ending in the instrument kit's handle; after a shot a
+    /// faint ghost needle at the planned angle. Drawn in screen terms (left to right) whatever the reading direction:
+    /// the cue is a picture of a cue, not text.
+    private func dial(size: CGFloat, ghost: Double?) -> some View {
+        let ball = size * 0.07
+        let labelSize = max(10, size * 0.065)
+        // Room past the arc for the ticks and their figures (the 90 sits above the arc's top).
+        let labelRoom = 18 + labelSize * 1.9
+        let pivot = CGPoint(x: ball + 2, y: size - ball - 2)
+        let radius = size - ball - labelRoom
+        let degreesNow = degrees
+        let accent = palette.accent, track = palette.track, paper = palette.paper
+        let handle = max(22, size * 0.12)
+        // A point on the dial at an angle and a distance from the ball (a plain closure, so the canvas may call it).
+        let point: @Sendable (Double, CGFloat) -> CGPoint = { deg, r in
+            let a = deg * .pi / 180
+            return CGPoint(x: pivot.x + r * CGFloat(cos(a)), y: pivot.y - r * CGFloat(sin(a)))
+        }
+        return ZStack(alignment: .topLeading) {
+            Canvas { ctx, _ in
+                // An arc of the dial between two angles, as a fine polyline (a degree a step), so it bends the same way
+                // whatever a framework means by "clockwise" on a flipped canvas.
+                func arc(from a: Double, to b: Double) -> Path {
+                    var path = Path()
+                    let lo = min(a, b), hi = max(a, b)
+                    path.move(to: point(lo, radius))
+                    var d = lo
+                    while d < hi { d = min(hi, d + 1); path.addLine(to: point(d, radius)) }
+                    return path
+                }
+                // The arc from level to upright; the drag stops at the top angle offered (Self.top).
+                ctx.stroke(arc(from: 0, to: 90), with: .color(track), style: StrokeStyle(lineWidth: max(6, size * 0.045), lineCap: .round))
+                if let zone {
+                    ctx.stroke(arc(from: Double(zone.lowerBound), to: Double(zone.upperBound)),
+                               with: .color(accent.opacity(0.8 * zoneStrength)),
+                               style: StrokeStyle(lineWidth: max(10, size * 0.07), lineCap: .round))
+                }
+                // Ticks with their figures at 0, 20, 45 and 90 degrees.
+                for a in [0.0, 20.0, 45.0, 90.0] {
+                    var tick = Path()
+                    tick.move(to: point(a, radius + 6)); tick.addLine(to: point(a, radius + 14))
+                    ctx.stroke(tick, with: .color(.secondary), lineWidth: 1)
+                    let text = Text(verbatim: a == 0 ? StrikeWords.number(a, decimals: 0) + "°" : StrikeWords.number(a, decimals: 0))
+                        .font(.system(size: labelSize, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                    ctx.draw(text, at: point(a, radius + 14 + labelSize * 0.9), anchor: .center)
+                }
+                // The planned angle's ghost needle after a shot.
+                if let ghost {
+                    var g = Path()
+                    g.move(to: point(ghost, ball * 1.2)); g.addLine(to: point(ghost, radius))
+                    ctx.stroke(g, with: .color(paper.opacity(0.25)), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                }
+                // The cue: from just off the ball out to the arc.
+                var cue = Path()
+                cue.move(to: point(degreesNow, ball * 1.2)); cue.addLine(to: point(degreesNow, radius))
+                ctx.stroke(cue, with: .color(accent), style: StrokeStyle(lineWidth: max(3, size * 0.02), lineCap: .round))
+                // The ball: flat grey, as the tip picture.
+                ctx.fill(Path(ellipseIn: CGRect(x: pivot.x - ball, y: pivot.y - ball, width: ball * 2, height: ball * 2)),
+                         with: .color(Color(white: 0.80)))
             }
-            // An arc of the dial between two angles, as a fine polyline (a degree a step), so it bends the same way
-            // whatever a framework means by "clockwise" on a flipped canvas.
-            func arc(from a: Double, to b: Double) -> Path {
-                var path = Path()
-                let lo = min(a, b), hi = max(a, b)
-                path.move(to: point(lo, radius))
-                var d = lo
-                while d < hi { d = min(hi, d + 1); path.addLine(to: point(d, radius)) }
-                return path
-            }
-            // The arc from level to the top.
-            ctx.stroke(arc(from: 0, to: Self.top), with: .color(palette.track),
-                       style: StrokeStyle(lineWidth: 6, lineCap: .round))
-            // A lesson's marked angles, a brighter stretch of the arc.
-            if let zone {
-                ctx.stroke(arc(from: Double(zone.lowerBound), to: Double(zone.upperBound)),
-                           with: .color(palette.accent.opacity(0.8 * zoneStrength)),
-                           style: StrokeStyle(lineWidth: 10, lineCap: .round))
-            }
-            // A tick at every offered angle.
-            for a in CueAngleMenu.angles {
-                var tick = Path()
-                tick.move(to: point(Double(a), radius - 7)); tick.addLine(to: point(Double(a), radius + 5))
-                ctx.stroke(tick, with: .color(.secondary), lineWidth: 1)
-            }
-            // The cue: from just off the ball out past the arc, tip at the ball.
-            var cue = Path()
-            cue.move(to: point(degrees, ball * 1.2)); cue.addLine(to: point(degrees, radius + 6))
-            ctx.stroke(cue, with: .color(palette.paper), style: StrokeStyle(lineWidth: 4, lineCap: .round))
-            ctx.fill(Path(ellipseIn: CGRect(origin: point(degrees, radius + 6), size: .zero).insetBy(dx: -6, dy: -6)),
-                     with: .color(palette.accent))
-            // The ball.
-            ctx.fill(Path(ellipseIn: CGRect(x: pivot.x - ball, y: pivot.y - ball, width: ball * 2, height: ball * 2)),
-                     with: .color(.white))
+            .frame(width: size, height: size)
+            InstrumentHandle(diameter: handle)
+                .position(point(degreesNow, radius))
         }
         .frame(width: size, height: size)
         .environment(\.layoutDirection, .leftToRight)
         .contentShape(Rectangle())
-        .gesture(DragGesture(minimumDistance: 0).onChanged { value in
+        .gesture(angleDrag(pivot: pivot))
+    }
+
+    /// The drag on the dial: the angle from the ball to the finger, on whole degrees, settling on an offered angle.
+    private func angleDrag(pivot: CGPoint) -> some Gesture {
+        DragGesture(minimumDistance: 0).onChanged { value in
             guard !locked else { return }
             let dx = Double(value.location.x - pivot.x), dy = Double(pivot.y - value.location.y)
             // Behind the ball or below the cloth reads as level; past the top, the top.
@@ -136,8 +204,9 @@ struct CueAngleDial: View {
             }
             let sine = CueAngleMenu.sine(forAngle: Int(whole))
             if model.activeElevation != sine { model.activeElevation = sine }
-        })
+        }
     }
+
 }
 
 /// The dial's lock: a lesson step's own mark and words (lockedForStep), or, where the mode sets the angle, the same

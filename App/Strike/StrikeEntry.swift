@@ -10,6 +10,9 @@
 //          - StrikeEntry.setCut: aims so the launch line meets the first ball in line at the typed cut, keeping the
 //            ball on the side of the line it is on now, with the side-spin push undone (AimGeometry.cueAim), so the
 //            ball itself leaves along the line that gives that cut.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 7: BridgeControl, the bridge's figure and a minus and plus pill for the What-you-set band, writing
+//          through Kind.bridge's own range and binding.)
 // SRP/DRY check: Pass - checked FineControls (sliders for the same values, the same setters; kept for the upright phone
 //          and VoiceOver), AimGeometry (guideLine, cueAim reused) and CueAngleMenu (sine conversion reused).
 import BreakdownLensModel
@@ -177,5 +180,70 @@ struct StrikeEntryField: View {
         .frame(minWidth: 260)
         .onAppear { focused = true }
         .accessibilityElement(children: .contain)
+    }
+}
+
+// MARK: The bridge on the big screens
+
+/// Aiming panel redesign (step 7): the bridge as a control of its own in the What-you-set band: "Bridge", its figure in
+/// whole centimetres (typeable, the same StrikeEntryField), and a minus and plus pill that move it a centimetre a tap
+/// through the same setter (model.strokeBridge, via Kind.bridge's binding). The rest fixes its own length, so the
+/// control waits while it is in use.
+struct BridgeControl: View {
+    let model: ShowpieceModel
+    var figureSize: CGFloat = 26
+    /// The pill beside the figure (one row, the Mac's button row) instead of under it.
+    var inline = false
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        let layout = inline ? AnyLayout(HStackLayout(alignment: .center, spacing: 14))
+                            : AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+        layout {
+            TypeableFigure(model: model, kind: .bridge, spokenLabel: StrikeWords.bridgeLabel,
+                           spokenValue: StrikeSpoken.centimetres(model.strokeBridgeLength)) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(verbatim: StrikeWords.bridgeLabel)
+                        .font(.system(size: max(13, figureSize * 0.55), weight: .semibold))
+                        .foregroundStyle(.secondary)
+                    FigureLine(figure: StrikeWords.centimetresFigure(model.strokeBridgeLength), size: figureSize,
+                               role: .set, editable: StrikeEntry.Kind.bridge.isOpen(model))
+                        .padding(.bottom, 4)
+                }
+            }
+            pill
+        }
+    }
+
+    /// Minus and plus in one pill, a centimetre a tap, each at least 44 points.
+    private var pill: some View {
+        HStack(spacing: 0) {
+            step(-1, systemImage: "minus", label: StrikeWords.shorterBridge)
+            Rectangle().fill(palette.rule).frame(width: 1, height: 28).accessibilityHidden(true)
+            step(1, systemImage: "plus", label: StrikeWords.longerBridge)
+        }
+        .background(Color.white.opacity(0.06), in: .capsule)
+        .overlay(Capsule().strokeBorder(palette.rule, lineWidth: 1))
+        .disabled(!StrikeEntry.Kind.bridge.isOpen(model))
+    }
+
+    private func step(_ direction: Double, systemImage: String, label: String) -> some View {
+        Button {
+            let range = StrikeEntry.Kind.bridge.range(model)
+            let binding = StrikeEntry.Kind.bridge.binding(model)
+            // Whole centimetres: from the shown figure, one up or down, inside the bridge's range.
+            let now = (model.strokeBridgeLength * 100).rounded()
+            binding.wrappedValue = min(max(now + direction, range.lowerBound), range.upperBound)
+        } label: {
+            Image(systemName: systemImage)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(palette.accent)
+                .frame(width: InstrumentSize.stepperWidth, height: InstrumentSize.stepperHeight)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .hoverHighlight(.fill(cornerRadius: 24))
+        .accessibilityLabel(Text(verbatim: label))
+        .accessibilityValue(Text(verbatim: StrikeSpoken.centimetres(model.strokeBridgeLength)))
     }
 }

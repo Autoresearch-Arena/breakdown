@@ -80,6 +80,16 @@
 //          Part C: every layout of the panel runs in the hand's order (shootSide, set by "Controls on the left"): for
 //          the left hand Shoot, the tip picture and the power bar sit on the left, on the phone sideways and in small
 //          windows as on the big screens.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 8: on iPad, Mac and the open folding phone the panel is the What-you-set band (roomyPanel), a flat band
+//          where each control carries its own figure, printed once: the tip picture with its millimetres, the swing over
+//          a power bar with its m/s scale, the cue-angle dial with its degrees, the bridge with minus and plus, and Shoot
+//          the largest control in the bottom corner on the hand's side (a solid cyan rounded rectangle; disabled, an
+//          outline with grey "Rolling" while the balls move). Three columns on a band 760 points wide or more (the
+//          upright iPad); stacked on the Mac, the iPad sideways and the fold. With `fills` it takes the notebook's
+//          leftover height and grows the tip picture and dial into it (BandMetrics). The hint is one plain line under
+//          the band. Mirrored for the left hand. The old roomy row and stacked layouts are gone; the phone sideways and
+//          small windows keep the compact panel unchanged.)
 // SRP/DRY check: Pass - checked the 0.3.0 panel, whose slider row is kept (now only in the sheet) and whose model
 //          calls are unchanged; the break-or-shot choice is hidden behind the model's active values, so this file
 //          has one set of controls, not two.
@@ -107,41 +117,22 @@ struct ShotPanel: View {
     /// the aim row and about three sliders show, the rest scroll. Shorter than the folding phone's 340, because here
     /// the table shares the screen's height with the panel.
     @ScaledMetric(relativeTo: .body) private var phoneFineHeight: CGFloat = 260
+    /// Aiming panel redesign: in the notebook while the strike shows, the What-you-set band takes all the height it is
+    /// given (NotebookPanel.strikeColumn) and grows the tip picture and the dial into it.
+    var fills = false
+    /// The band's inner size, measured (its width and, when it fills, its height come from the notebook, never from
+    /// what is drawn inside it, so measuring it cannot loop).
+    @State private var bandSize: CGSize = .zero
+    /// The figures on the controls, points at the default text size (the upright iPad's; smaller in narrower bands).
+    @ScaledMetric(relativeTo: .title) private var controlFigureBase: CGFloat = 32
+    /// Shoot's word.
+    @ScaledMetric(relativeTo: .title) private var shootWordSize: CGFloat = 34
+    /// True on the big screens of the notebook (iPad and Mac), false across the folding phone's hinge.
+    @Environment(\.notebookRoomy) private var notebookRoomy
 
     var body: some View {
-        VStack(spacing: 8) {
-            // 0.7.10 strike: one hint, in one place (StrikeHint): the first instruction, through the hand-over too
-            // (the notebook's hand-over card no longer repeats it), and the Pencil line where the angle is the player's.
-            StrikeHint(model: model)
-            // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
-            statusLine
-            // The stance, when it is not a square one. The notebook shows it among its cards (NotebookPanel). Its room
-            // is kept while the panel is open, so the table does not slide as the stance changes with the aim (#44).
-            if !inlinePages { EquipmentCard(model: model, embedded: true, reservesRoom: true) }
-            // On a phone the open fine controls take the place of the tip picture and power bar (their sliders and
-            // Shoot are inside), so the panel grows by less and the table refits above it (#48).
-            if !(slidersOpen && phoneFine) {
-                Group {
-                    if typeSize.isAccessibilitySize {
-                        stacked
-                    } else if inlinePages {
-                        // 0.7.10 strike: iPad, Mac and the open folding phone: large controls, Shoot the largest, in
-                        // the bottom corner nearest the hand; one row where it fits, else stacked.
-                        ViewThatFits(in: .horizontal) { roomyRow; roomyStacked }
-                    } else {
-                        // Last, when neither row fits: Shoot alone on a full-width row, so it is never cut short (#47).
-                        ViewThatFits(in: .horizontal) { oneRow; twoRows; stacked }
-                    }
-                }
-                // The computer's turn: the person's controls stay visible but greyed out and still (item 16).
-                .disabled(!model.personControlsLive)
-                .opacity(model.personControlsLive ? 1 : 0.45)
-            }
-            if slidersOpen && finesInline {
-                FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
-                    .frame(height: inlinePages ? 340 : phoneFineHeight)
-                    .transition(.opacity)
-            }
+        Group {
+            if inlinePages { roomyPanel } else { compactPanel }
         }
         .tint(palette.accent)
         .animation(reduceMotion ? nil : .snappy, value: model.personControlsLive)
@@ -158,6 +149,40 @@ struct ShotPanel: View {
         // the sheet is left for the iPad and the Mac, where it opens beside or over a table with room to spare.
         .sheet(isPresented: Binding(get: { slidersOpen && !finesInline }, set: { if !finesInline { slidersOpen = $0 } })) {
             FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
+        }
+    }
+
+    /// The phone sideways and the small windows: the panel as it was before the redesign.
+    private var compactPanel: some View {
+        VStack(spacing: 8) {
+            // 0.7.10 strike: one hint, in one place (StrikeHint): the first instruction, through the hand-over too
+            // (the notebook's hand-over card no longer repeats it), and the Pencil line where the angle is the player's.
+            StrikeHint(model: model)
+            // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
+            statusLine
+            // The stance, when it is not a square one. Its room is kept while the panel is open, so the table does not
+            // slide as the stance changes with the aim (#44).
+            EquipmentCard(model: model, embedded: true, reservesRoom: true)
+            // On a phone the open fine controls take the place of the tip picture and power bar (their sliders and
+            // Shoot are inside), so the panel grows by less and the table refits above it (#48).
+            if !(slidersOpen && phoneFine) {
+                Group {
+                    if typeSize.isAccessibilitySize {
+                        stacked
+                    } else {
+                        // Last, when neither row fits: Shoot alone on a full-width row, so it is never cut short (#47).
+                        ViewThatFits(in: .horizontal) { oneRow; twoRows; stacked }
+                    }
+                }
+                // The computer's turn: the person's controls stay visible but greyed out and still (item 16).
+                .disabled(!model.personControlsLive)
+                .opacity(model.personControlsLive ? 1 : 0.45)
+            }
+            if slidersOpen && finesInline {
+                FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
+                    .frame(height: phoneFineHeight)
+                    .transition(.opacity)
+            }
         }
     }
 
@@ -264,102 +289,363 @@ struct ShotPanel: View {
     private var tipPicker: some View { TipPicker(model: model, open: open, zones: zones) }
     private var powerGauge: some View { PowerGauge(model: model, open: open, zones: zones) }
 
-    // MARK: Roomy layouts (0.7.10 strike, plan stage 3)
-
-    /// iPad, Mac and the open folding phone, one row: the large tip picture with its millimetres, the tall power bar
-    /// with the cue-angle dial and the small buttons under it, and Shoot, the largest control, in the bottom corner on
-    /// the player's hand side (shootSide). 0.7.10 everyone: for the left hand the whole row runs the other way.
-    private var roomyRow: some View {
-        HStack(alignment: .bottom, spacing: 12) {
-            if shootLast {
-                tipPicker
-                roomyPowerColumn
-                roomyFireButton
-            } else {
-                roomyFireButton
-                roomyPowerColumn
-                tipPicker
-            }
-        }
-    }
-
-    /// The tall power bar with the dial and the small buttons under it, the dial on the hand's far side.
-    private var roomyPowerColumn: some View {
-        VStack(spacing: 8) {
-            powerGauge.frame(minWidth: 180)
-            HStack(alignment: .bottom, spacing: 10) {
-                if shootLast {
-                    cueAngle
-                    Spacer(minLength: 0)
-                    moreMenu
-                    tryAgainButton
-                } else {
-                    tryAgainButton
-                    moreMenu
-                    Spacer(minLength: 0)
-                    cueAngle
-                }
-            }
-        }
-    }
-
-    /// The same where one row has no room (the notebook's narrower column). 0.8.1: two rows with nothing left empty
-    /// (the dial used to sit alone at the far end of a half-empty row, the Boss: "you're wasting space"): the tip
-    /// picture with the dial beside it and Shoot on the hand's side; under them the power bar with the two small
-    /// buttons at its end.
-    private var roomyStacked: some View {
-        VStack(spacing: 10) {
-            HStack(alignment: .bottom, spacing: 12) {
-                if shootLast {
-                    // The tip's millimetres beside its picture keep their room first.
-                    tipPicker.layoutPriority(1)
-                    cueAngle
-                    Spacer(minLength: 0)
-                    roomyFireButton
-                } else {
-                    roomyFireButton
-                    Spacer(minLength: 0)
-                    cueAngle
-                    tipPicker.layoutPriority(1)
-                }
-            }
-            // The power bar across the card, the two small buttons at its end on the hand's side.
-            HStack(alignment: .bottom, spacing: 10) {
-                if shootLast {
-                    powerGauge
-                    moreMenu
-                    tryAgainButton
-                } else {
-                    tryAgainButton
-                    moreMenu
-                    powerGauge
-                }
-            }
-        }
-    }
-
     /// True when Shoot comes last in a row: on the right for a right hand in a left-to-right layout, and mirrored for a
     /// right-to-left one, so it always sits in the physical corner nearest the chosen hand.
     private var shootLast: Bool { (shootSide == .right) == (layoutDirection == .leftToRight) }
 
-    /// Break or Shoot on the big screens: the largest control on the panel, the same model call as fireButton.
-    private var roomyFireButton: some View {
-        Button {
+    // MARK: The What-you-set band (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md step 8)
+
+    /// iPad, Mac and the open folding phone: the status line, the What-you-set band (each control carrying its own
+    /// figure, Shoot the largest control in the bottom corner on the hand's side), then the hint as one plain line.
+    private var roomyPanel: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
+            statusLine
+            if slidersOpen && finesInline {
+                // The folding phone's fine controls open inside the panel (VoiceOver's route there), not in a sheet.
+                FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
+                    .frame(height: 340)
+                    .transition(.opacity)
+            } else {
+                setBand
+            }
+            // One hint, in one place: a plain grey line under the band (StrikeHint's rules unchanged).
+            StrikeHint(model: model, plain: true)
+        }
+    }
+
+    /// The band itself: caption, then the wide three-column layout (a band at least 760 points wide: the upright
+    /// iPad) or the stacked one (the Mac window, the iPad sideways, the fold), in a scroll view at the accessibility
+    /// text sizes so nothing has to shrink. Mirrored for the left hand (shootLast).
+    private var setBand: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            BandCaption(text: StrikeWords.youSetCaption)
+            Group {
+                if typeSize.isAccessibilitySize {
+                    ScrollView { narrowBand(BandMetrics.narrow(height: 520, width: bandSize.width, scale: figureScale, roomy: notebookRoomy)) }
+                } else if bandSize.width >= 760 {
+                    let m = BandMetrics.wide(height: innerHeight, width: bandSize.width, scale: figureScale)
+                    // Every control at its smallest still taller than the room (a short window): it scrolls, never
+                    // overlaps the scrubber under it.
+                    ViewThatFits(in: .vertical) { wideBand(m); ScrollView { wideBand(m) } }
+                } else {
+                    let m = BandMetrics.narrow(height: innerHeight, width: bandSize.width, scale: figureScale, roomy: notebookRoomy)
+                    ViewThatFits(in: .vertical) { narrowBand(m); ScrollView { narrowBand(m) } }
+                }
+            }
+            // minHeight 0: when filling, the band's height is the notebook's leftover room and never the height of
+            // what is drawn inside it, so measuring it (bandSize) cannot feed back into the sizes it picks.
+            .frame(minHeight: fills ? 0 : nil, maxHeight: fills ? .infinity : nil, alignment: .top)
+        }
+        .frame(maxWidth: .infinity, minHeight: fills ? 0 : nil, maxHeight: fills ? .infinity : nil, alignment: .topLeading)
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { bandSize = $0 }
+        .bandSurface(padding: EdgeInsets(top: 12, leading: 18, bottom: 10, trailing: 18))
+        // The computer's turn: the person's controls stay visible but greyed out and still (item 16).
+        .disabled(!model.personControlsLive)
+        .opacity(model.personControlsLive ? 1 : 0.45)
+    }
+
+    /// The height the controls have under the caption: the measured band when it fills the notebook's leftover room,
+    /// else a fixed height that shows every control at its smallest comfortable size (while the commentary has the
+    /// room, as the balls roll).
+    private var innerHeight: CGFloat {
+        let caption: CGFloat = 20
+        if fills, bandSize.height > 0 { return bandSize.height - caption }
+        return bandSize.width >= 760 ? 300 : 380
+    }
+
+    /// The figures on the controls, as a share of their full size: smaller on the Mac and the fold.
+    private var figureScale: CGFloat {
+        if !notebookRoomy { return 0.66 }
+        return bandSize.width >= 760 ? 1 : 0.72
+    }
+
+    /// The sizes each control takes inside the band, worked out once from the room it has.
+    struct BandMetrics {
+        var tip: CGFloat
+        var dial: CGFloat
+        var figure: CGFloat
+        var shootWidth: CGFloat
+        var shootHeight: CGFloat
+
+        /// Three columns: the tip picture and its figures; the swing and its bar over the dial and the bridge; Shoot,
+        /// then Try again and the More menu. The tip and the dial grow into the height left after their figures.
+        static func wide(height: CGFloat, width: CGFloat, scale: CGFloat) -> BandMetrics {
+            let figure = 32 * scale
+            let figureLines = 2 * figure * 1.35 + 16
+            let tip = min(max(150, height - figureLines - 10), 240, width * 0.24)
+            // The swing block: label, figure, calm label, a 48-point bar and the scale, about 175 points.
+            let dial = min(max(110, height - 175 - 18), 230)
+            let shootHeight = min(max(110, height - 56 - 14), 230)
+            return BandMetrics(tip: tip, dial: dial, figure: figure, shootWidth: min(240, max(170, width * 0.2)),
+                               shootHeight: shootHeight)
+        }
+
+        /// Stacked: the tip picture with the dial beside it, then the swing and its bar, then the bridge and the small
+        /// buttons, with Shoot beside the last two rows on the hand's side.
+        static func narrow(height: CGFloat, width: CGFloat, scale: CGFloat, roomy: Bool) -> BandMetrics {
+            let figure = 32 * scale
+            // The two lower rows: the swing line, the bar (its calm label inside it here) and the scale, then the
+            // bridge row (its figure, or the small buttons where taller), with the gaps between them and the rule.
+            #if os(macOS)
+            let bar: CGFloat = 40
+            #else
+            let bar: CGFloat = 48
+            #endif
+            let small = figure * 0.85
+            let buttonRow = max(InstrumentSize.button, small * 1.3 + 18)
+            // In a slim band (compactWidth) Shoot drops under the small buttons beside the bridge, so that row grows.
+            let lastRow = compactWidth(width) ? max(small * 1.3 + 18 + InstrumentSize.stepperHeight + 8,
+                                                    InstrumentSize.button + 8 + 72) : buttonRow
+            let lower = small * 1.4 + 6 + bar + 4 + 20 + 8 + lastRow + 21
+            let top = height - lower
+            // The dial's degrees go under it in a slim band, so the dial's own height grows by their two lines.
+            let dialFigure = compactWidth(width) ? small * 1.35 + 24 : 0
+            let figureLines = 2 * small * 1.35 + 16
+            let tip = min(max(112, top - figureLines), 220, width * 0.36)
+            // The dial shares the row with the tip column and its own degrees figure beside it (or under it).
+            let dial = min(max(roomy ? 116 : 100, top - 30 - dialFigure), 200, width * (compactWidth(width) ? 0.36 : 0.3))
+            return BandMetrics(tip: tip, dial: dial, figure: figure, shootWidth: 150, shootHeight: roomy ? 136 : 72)
+        }
+
+        /// A slim band (a narrow window, a small fold): the dial's degrees under it, and Shoot under the small buttons.
+        static func compactWidth(_ width: CGFloat) -> Bool { width > 0 && width < 480 }
+
+        /// The least height the band needs with every control at its smallest (caption and padding included), for a
+        /// notebook column `columnWidth` wide. NotebookPanel keeps this much for the band, so the strike's figures
+        /// above scroll before Shoot would ever be pushed out of sight.
+        static func minimumHeight(columnWidth: CGFloat, roomy: Bool) -> CGFloat {
+            let width = columnWidth - 36
+            let chrome: CGFloat = 20 + 22 + 4
+            if width >= 760 { return 310 + chrome }
+            let scale: CGFloat = roomy ? 0.72 : 0.66
+            #if os(macOS)
+            let bar: CGFloat = 40
+            #else
+            let bar: CGFloat = 48
+            #endif
+            let small = 32 * scale * 0.85
+            let lastRow = compactWidth(width) ? max(small * 1.3 + 18 + InstrumentSize.stepperHeight + 8,
+                                                    InstrumentSize.button + 8 + 72)
+                                              : max(InstrumentSize.button, small * 1.3 + 18)
+            let lower = small * 1.4 + 6 + bar + 4 + 20 + 8 + lastRow + 21
+            let tipColumn = 112 + 2 * small * 1.35 + 16
+            let dialColumn = (roomy ? 116 : 100) + 30 + (compactWidth(width) ? small * 1.35 + 24 : 0)
+            return max(tipColumn, dialColumn) + lower + chrome
+        }
+    }
+
+    /// The upright iPad: three columns split by hairline rules, Shoot's column on the hand's side.
+    private func wideBand(_ m: BandMetrics) -> some View {
+        HStack(alignment: .top, spacing: 20) {
+            if shootLast {
+                tipColumn(m); HairlineRule(); middleColumn(m); HairlineRule(); shootColumn(m)
+            } else {
+                shootColumn(m); HairlineRule(); middleColumn(m); HairlineRule(); tipColumn(m)
+            }
+        }
+    }
+
+    private func tipColumn(_ m: BandMetrics) -> some View {
+        TipPicker(model: model, open: open, zones: zones, size: m.tip, figureSize: m.figure * 0.9)
+            .frame(minWidth: m.tip, alignment: .leading)
+    }
+
+    /// The swing over the dial and the bridge.
+    private func middleColumn(_ m: BandMetrics) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            PowerGauge(model: model, open: open, zones: zones, figureSize: m.figure, labelInline: false)
+            HStack(alignment: .top, spacing: 20) {
+                if model.elevationAllowed && !model.racked {
+                    VStack(alignment: .leading, spacing: 6) {
+                        controlLabel(StrikeWords.cueAngleLabel)
+                        dial(size: m.dial, figure: m.figure, below: false)
+                    }
+                }
+                Spacer(minLength: 0)
+                BridgeControl(model: model, figureSize: m.figure)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Shoot, then Try again and the More menu under it.
+    private func shootColumn(_ m: BandMetrics) -> some View {
+        VStack(spacing: 14) {
+            shootButton.frame(width: m.shootWidth, height: m.shootHeight)
+            HStack(spacing: 10) {
+                if shootLast { roomyTryAgain; roomyMore } else { roomyMore; roomyTryAgain }
+            }
+            .frame(width: m.shootWidth)
+        }
+    }
+
+    /// The Mac window, the iPad sideways, the fold: the tip picture and its figures with the dial beside it; under
+    /// them the swing and its bar, then the bridge, Try again and the More menu, with Shoot spanning those two rows in
+    /// the corner on the hand's side.
+    private func narrowBand(_ m: BandMetrics) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top, spacing: 18) {
+                if shootLast {
+                    TipPicker(model: model, open: open, zones: zones, size: m.tip, figureSize: m.figure * 0.78)
+                    narrowDial(m)
+                } else {
+                    narrowDial(m)
+                    TipPicker(model: model, open: open, zones: zones, size: m.tip, figureSize: m.figure * 0.78)
+                }
+            }
+            HairlineRule(vertical: false)
+            if BandMetrics.compactWidth(bandSize.width) {
+                slimLower(m)
+            } else {
+                HStack(alignment: .bottom, spacing: 16) {
+                    if shootLast {
+                        narrowLower(m); shootButton.frame(minWidth: m.shootWidth, maxWidth: m.shootWidth, minHeight: m.shootHeight, maxHeight: .infinity)
+                    } else {
+                        shootButton.frame(minWidth: m.shootWidth, maxWidth: m.shootWidth, minHeight: m.shootHeight, maxHeight: .infinity); narrowLower(m)
+                    }
+                }
+                // Shoot is as tall as the two rows beside it.
+                .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    /// A slim band: the swing and its bar across the band; under it the bridge on the far side, and on the hand's
+    /// side Try again and the More menu over Shoot, so Shoot still takes the bottom corner nearest the hand.
+    private func slimLower(_ m: BandMetrics) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            PowerGauge(model: model, open: open, zones: zones, figureSize: m.figure * 0.85, labelInline: true)
+            HStack(alignment: .bottom, spacing: 12) {
+                if shootLast {
+                    BridgeControl(model: model, figureSize: m.figure * 0.85).fixedSize()
+                    Spacer(minLength: 0)
+                    slimShootStack(m)
+                } else {
+                    slimShootStack(m)
+                    Spacer(minLength: 0)
+                    BridgeControl(model: model, figureSize: m.figure * 0.85).fixedSize()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func slimShootStack(_ m: BandMetrics) -> some View {
+        VStack(alignment: shootLast ? .trailing : .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                if shootLast { roomyTryAgain; roomyMore } else { roomyMore; roomyTryAgain }
+            }
+            shootButton.frame(width: m.shootWidth, height: 72)
+        }
+        .frame(maxWidth: 220)
+    }
+
+    @ViewBuilder private func narrowDial(_ m: BandMetrics) -> some View {
+        if model.elevationAllowed && !model.racked {
+            HStack(spacing: 0) {
+                HairlineRule().padding(.trailing, 18)
+                VStack(alignment: .leading, spacing: 6) {
+                    controlLabel(StrikeWords.cueAngleLabel)
+                    dial(size: m.dial, figure: m.figure * 0.85, below: BandMetrics.compactWidth(bandSize.width))
+                }
+            }
+        }
+    }
+
+    /// The swing and its bar, then the bridge with the two small buttons.
+    private func narrowLower(_ m: BandMetrics) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            PowerGauge(model: model, open: open, zones: zones, figureSize: m.figure * 0.85, labelInline: true)
+            HStack(alignment: .bottom, spacing: 12) {
+                BridgeControl(model: model, figureSize: m.figure * 0.85, inline: true)
+                    .fixedSize()
+                Spacer(minLength: 0)
+                if shootLast { roomyTryAgain; roomyMore } else { roomyMore; roomyTryAgain }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// A control's small label ("Cue angle").
+    private func controlLabel(_ text: String) -> some View {
+        Text(verbatim: text)
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(.secondary)
+    }
+
+    /// The cue-angle dial, where the model allows a raised cue (free play and matches) and for a shot.
+    private func dial(size: CGFloat, figure: CGFloat, below: Bool) -> some View {
+        CueAngleDial(model: model, zone: zones?.cueAngles, zoneStrength: zones?.strength ?? 1, size: size,
+                     figureSize: figure, figureBelow: below)
+    }
+
+    /// Break or Shoot on the big screens: the largest control, a solid cyan rounded rectangle with the word in the
+    /// ground's dark colour; the same model call as fireButton. Disabled, it is an outline: "Rolling" in grey while
+    /// the balls still move, else the word in grey (the status line says why).
+    private var shootButton: some View {
+        let refused = model.strokeRefusal != nil
+        let rolling = refused && !model.aimReady && !model.isSolving
+        return Button {
             hintSeen = true
             if model.fireStroke() == .breakStruck { isOpen = false }
         } label: {
-            Text(model.racked ? "Break" : "Shoot")
-                .font(.title2.weight(.bold))
+            Text(verbatim: rolling ? StrikeWords.rollingWord : Self.actionWord(racked: model.racked))
+                .font(.system(size: shootWordSize, weight: .bold))
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
-                .frame(minWidth: 120, minHeight: 72)
+                .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.6)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
         }
-        .buttonStyle(.glassProminent)
-        .foregroundStyle(palette.ground)
-        .controlSize(.large)
-        .disabled(model.strokeRefusal != nil)
+        .buttonStyle(ShootFace(accent: palette.accent, ground: palette.ground))
+        .disabled(refused)
         .accessibilityHint(model.strokeRefusal?.sentence
                            ?? (model.racked ? String(localized: "Plays your own break") : String(localized: "Plays your shot")))
+    }
+
+    /// Try again on the big screens: an outlined capsule, 52 points tall.
+    @ViewBuilder private var roomyTryAgain: some View {
+        if model.canTryAgain {
+            Button {
+                hintSeen = true
+                model.tryAgain()
+            } label: {
+                ViewThatFits(in: .horizontal) {
+                    Label("Try again", systemImage: "arrow.uturn.backward")
+                    Label("Try again", systemImage: "arrow.uturn.backward").labelStyle(.iconOnly)
+                }
+                .font(.headline)
+                .lineLimit(1)
+                .padding(.horizontal, 16)
+                .frame(minHeight: InstrumentSize.button)
+                .frame(maxWidth: .infinity)
+                .overlay(Capsule().strokeBorder(Color.secondary.opacity(0.6), lineWidth: 1))
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .hoverHighlight(.fill(cornerRadius: 26))
+            .accessibilityLabel("Try again")
+            .accessibilityHint("Puts the balls back where your last shot started, with the same aim, power and spin")
+            .transition(.opacity)
+        }
+    }
+
+    /// The More menu on the big screens: an outlined circle, 52 points.
+    private var roomyMore: some View {
+        Menu {
+            ShotOptionsItems(model: model, slidersOpen: $slidersOpen)
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.headline)
+                .frame(width: InstrumentSize.button, height: InstrumentSize.button)
+                .overlay(Circle().strokeBorder(Color.secondary.opacity(0.6), lineWidth: 1))
+                .contentShape(Circle())
+        }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .accessibilityLabel("More shot options")
     }
 
     // MARK: Pieces
@@ -502,6 +788,39 @@ struct ShotPanel: View {
     /// The word on the main shot button: Break for the opening rack, Shoot after that.
     static func actionWord(racked: Bool) -> String {
         racked ? String(localized: "Break") : String(localized: "Shoot")
+    }
+}
+
+// MARK: Shoot's face on the big screens
+
+/// Shoot on the big screens (aiming panel redesign): enabled, the one solid cyan fill on the panel with the word in the
+/// ground's dark colour; disabled, a 1-point outline with the word in grey, never a grey slab.
+private struct ShootFace: ButtonStyle {
+    let accent: Color
+    let ground: Color
+
+    func makeBody(configuration: Configuration) -> some View {
+        ShootFaceBody(configuration: configuration, accent: accent, ground: ground)
+    }
+}
+
+private struct ShootFaceBody: View {
+    let configuration: ButtonStyleConfiguration
+    let accent: Color
+    let ground: Color
+    @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
+        configuration.label
+            .foregroundStyle(isEnabled ? ground : Color.secondary)
+            .background { shape.fill(isEnabled ? accent : Color.clear) }
+            .overlay { if !isEnabled { shape.strokeBorder(Color.secondary.opacity(0.6), lineWidth: 1) } }
+            .contentShape(shape)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.98 : 1)
+            .hoverHighlight(.lift)
     }
 }
 

@@ -17,6 +17,11 @@
 //          FigureMark, so a figure's number wears the colour of the Lens mark it belongs to.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, foundation: the upright phone's blurb and control
 //          fonts, all system text styles.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 1: Palette.delta, the warm yellow used only for planned-against-delivered (raw deltaRGB / deltaHighRGB),
+//          the flat surface tokens band, ledger and rule, and the panel's figure fonts leadFigure, leadUnit,
+//          controlFigure, ledgerFigure and groupCaption, plus figure(size:) and unit(size:) for figures whose size the
+//          layout picks (always scaled with the text by the caller's @ScaledMetric).)
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
 //          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
@@ -42,6 +47,11 @@ enum Theme {
     static let cyanRGB: (Double, Double, Double) = (0.30, 0.88, 1.0)
     /// Paper: main text on the dark ground.
     static let paperRGB: (Double, Double, Double) = (0.92, 0.96, 1.0)
+    /// Warm yellow: planned against delivered only (the aiming panel's differences after a shot). Never a warning,
+    /// never on the table. The amber slot left free in 0.7.2, clear of the rolling cyan and the sliding magenta.
+    static let deltaRGB: (Double, Double, Double) = (0.98, 0.80, 0.35)
+    /// The same yellow under Increase Contrast.
+    static let deltaHighRGB: (Double, Double, Double) = (1.0, 0.88, 0.50)
 
     // MARK: Fonts (all system text styles: they scale with the reader's text size)
 
@@ -72,6 +82,31 @@ enum Theme {
     static var figureLabel: Font { .caption2.weight(.medium) }
     /// The lead figure in the title chip on the table: the chip's size, in the tile's rounded digits.
     static var figureChip: Font { .system(.caption, design: .rounded, weight: .bold).monospacedDigit() }
+
+    // MARK: The aiming panel (plans/26-Nov-2026-aiming-panel-redesign-plan.md)
+
+    /// What the ball gets: the four lead figures, large, monospaced, digits that do not jitter.
+    static var leadFigure: Font { .system(.largeTitle, design: .monospaced, weight: .semibold).monospacedDigit() }
+    /// The unit on a lead figure's baseline, a little over half its size.
+    static var leadUnit: Font { .system(.title3, design: .monospaced, weight: .medium) }
+    /// A figure carried by a control (the swing, the tip's millimetres, the cue angle, the bridge).
+    static var controlFigure: Font { .system(.title, design: .monospaced, weight: .semibold).monospacedDigit() }
+    /// A figure on the physics line (push, force, energy): quiet.
+    static var ledgerFigure: Font { .system(.callout, design: .monospaced).monospacedDigit() }
+    /// A band's caption ("WHAT THE BALL GETS"): small, bold, upper case, tracked.
+    static var groupCaption: Font { .caption.weight(.bold) }
+    /// The tracking a group caption is set with.
+    static let groupCaptionTracking: CGFloat = 1.4
+
+    /// A figure at a size the layout picked, in the panel's monospaced semibold. Callers pass a size from their own
+    /// @ScaledMetric, so the figure still follows the reader's text size.
+    static func figure(size: CGFloat) -> Font {
+        .system(size: size, weight: .semibold, design: .monospaced).monospacedDigit()
+    }
+    /// The unit beside a figure of `size`: about 55 percent of it, medium weight (the plan's "smaller grey unit").
+    static func unit(size: CGFloat) -> Font {
+        .system(size: max(10, size * 0.55), weight: .medium, design: .monospaced)
+    }
 
     // MARK: The upright phone's blurbs and controls (phone UI plan, Part 3)
 
@@ -132,6 +167,13 @@ struct Palette {
     /// The other future in a what-if: violet, clear of the cloth's green, the rolling cyan, the sliding magenta, the
     /// warm event colours and the cushion blue (never orange).
     let whatIf: Color
+    /// Planned against delivered (warm yellow, Theme.deltaRGB): the aiming panel's differences after a shot, and only
+    /// those.
+    let delta: Color
+    /// The aiming panel's flat band surface (#10151D) and the darker ledger line under it (#0C1016).
+    let band: Color, ledger: Color
+    /// A 1-point hairline between columns and around bands (#1F2833).
+    let rule: Color
 
     func color(for accent: CaptionAccent) -> Color {
         switch accent {
@@ -173,6 +215,12 @@ struct Palette {
         pocket = tone(C(1.0, 0.82, 0.25), C(1.0, 0.90, 0.50))
         // Violet: the one hue left clear of the default cloth's green-teal sheen and every colour above.
         whatIf = tone(C(0.72, 0.48, 1.0), C(0.84, 0.70, 1.0))
+        delta = tone(C(Theme.deltaRGB.0, Theme.deltaRGB.1, Theme.deltaRGB.2),
+                     C(Theme.deltaHighRGB.0, Theme.deltaHighRGB.1, Theme.deltaHighRGB.2))
+        // Flat, opaque surfaces: under Increase Contrast a touch lighter so the band's edge still shows on black.
+        band = tone(C(0.063, 0.082, 0.114), C(0.09, 0.11, 0.15))
+        ledger = tone(C(0.047, 0.063, 0.086), C(0.07, 0.09, 0.12))
+        rule = tone(C(0.122, 0.157, 0.20), C(0.30, 0.36, 0.44))
     }
 }
 

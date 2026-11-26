@@ -8,10 +8,25 @@
 //          reuses the game's existing "%@ m/s" line and the degrees its "%@°" line. "About" before the force is a word
 //          of its own in every language, never dropped. The new English lines are listed with their translations in
 //          localization/pending/v0710-strike.json.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 10: FigureText, a figure's number and unit apart, so the panel draws the unit smaller and grey on the
+//          number's baseline; one function per figure returns it, the unit from UnitSymbol (carrying the glued lines'
+//          translations). The glued functions stay for the notebook, the phone and the typed entry. New short labels,
+//          the three band captions, the sub-lines ("goes 1.2° left", "from a 2.40 m/s swing", "up from level", "as
+//          planned", "calm limit 3.5 m/s", "Rolling"), the delta chip ("+4.8 vs 11.9 planned"), and the plain sentence
+//          above the figures, before a shot (spin, then the cut) and after one (the biggest difference, through
+//          largestErrorLine). New English lines and their translations: localization/pending/v081-aiming.json.)
 // SRP/DRY check: Pass - checked StrokeWords (swing readouts, the stroke's result line), AimFork.turnWords ("%@° left"
 //          and "%@° right", reused for the aim's error), CueAngleMenu.shortWords ("%@°", reused) and NotebookInfo's
 //          private formatters (millimetres and degrees for the trick-shot window; kept there, these differ in sign).
 import Foundation
+
+/// A figure's number and its unit, apart (aiming panel redesign): the panel draws the unit smaller and grey on the
+/// number's baseline. `number` may carry a leading "≈" (the force), drawn with the number.
+struct FigureText: Equatable, Sendable {
+    var number: String
+    var unit: String
+}
 
 enum StrikeWords {
     // MARK: Numbers
@@ -49,6 +64,30 @@ enum StrikeWords {
     static func centimetres(_ metres: Double) -> String {
         Measurement(value: (metres * 100).rounded(), unit: UnitLength.centimeters)
             .formatted(.measurement(width: .abbreviated, usage: .asProvided).locale(AppLocale.numbers))
+    }
+
+    // MARK: Figures, number and unit apart (aiming panel redesign)
+
+    static func speedFigure(_ v: Double) -> FigureText { FigureText(number: number(v, decimals: 2), unit: UnitSymbol.shown("m/s")) }
+    static func pushFigure(_ v: Double) -> FigureText { FigureText(number: number(v, decimals: 2), unit: UnitSymbol.shown("N·s")) }
+    /// The force is an estimate: the "≈" sign rides with the number on screen (VoiceOver keeps saying "about", the
+    /// translated word, through StrikeSpoken.force).
+    static func forceFigure(_ v: Double) -> FigureText {
+        FigureText(number: "≈" + number(v, decimals: 0), unit: UnitSymbol.shown("N"))
+    }
+    static func energyFigure(_ v: Double) -> FigureText { FigureText(number: number(v, decimals: 2), unit: UnitSymbol.shown("J")) }
+    /// Spin without its sign: the label says top or back, left or right.
+    static func spinFigure(_ v: Double) -> FigureText {
+        FigureText(number: number(abs(v), decimals: 1), unit: UnitSymbol.shown("turns/s"))
+    }
+    /// The tip's distance from the centre without its sign: the word beside it says which way.
+    static func millimetresFigure(_ metres: Double) -> FigureText {
+        FigureText(number: number(abs(metres) * 1000, decimals: 1), unit: UnitSymbol.shown("mm"))
+    }
+    static func degreesFigure(_ v: Double) -> FigureText { FigureText(number: number(v, decimals: 1), unit: "°") }
+    /// The bridge, whole centimetres.
+    static func centimetresFigure(_ metres: Double) -> FigureText {
+        FigureText(number: number((metres * 100).rounded(), decimals: 0), unit: UnitSymbol.shown("cm"))
     }
 
     // MARK: Labels
@@ -89,6 +128,96 @@ enum StrikeWords {
     static func cutOnLabel(ball: Int?) -> String {
         guard let ball else { return String(localized: "No ball in line") }
         return String(localized: "Cut on the \(ball)")
+    }
+
+    // MARK: The aiming panel's short labels and sub-lines (aiming panel redesign)
+
+    static var leavesShortLabel: String { String(localized: "Leaves at") }
+    static var forceShortLabel: String { String(localized: "Force") }
+    /// Beside the force figure: the contact time it is worked out over.
+    static var forceOver: String {
+        String(localized: "over \(number(StrikeFigures.tipContactTime * 1000, decimals: 0)) ms")
+    }
+    static var ballGetsCaption: String { String(localized: "What the ball gets") }
+    static var physicsCaption: String { String(localized: "The physics") }
+    static var youSetCaption: String { String(localized: "What you set") }
+    static var playedStrokeHeading: String { String(localized: "Your stroke") }
+    /// Under the cut: where the white goes off the cue's line ("goes 1.2° left"), or that it goes along it.
+    static func turnLine(_ degrees: Double) -> String {
+        if abs(degrees) < 0.05 { return String(localized: "goes along the cue") }
+        return String(localized: "goes \(aimError(degrees))")
+    }
+    /// Under the speed the ball leaves at: the swing that gave it ("from a 2.40 m/s swing").
+    static func fromSwing(_ swing: Double) -> String { String(localized: "from a \(speed(swing)) swing") }
+    static var upFromLevel: String { String(localized: "up from level") }
+    static var asPlanned: String { String(localized: "as planned") }
+    /// The calm mark's label on the big power bar ("calm limit 3.5 m/s").
+    static func calmLimit(_ swing: Double) -> String {
+        String(localized: "calm limit \(number(swing, decimals: 1)) \(UnitSymbol.shown("m/s"))")
+    }
+    /// Disabled Shoot while the balls are still moving.
+    /// Its own key: "Rolling" already names the rolling motion in the Lens, which other languages word differently.
+    static var rollingWord: String {
+        String(localized: "Shoot: rolling", defaultValue: "Rolling",
+               comment: "On the disabled Shoot button while the balls are still moving after a shot.")
+    }
+    /// The delta chip under a figure the stroke changed: the signed difference and the planned figure, both in the
+    /// figure's number style ("+4.8 vs 11.9 planned"). Worded, so the difference is never told by its colour alone.
+    static func deltaChip(_ delta: String, planned: String) -> String {
+        String(localized: "\(delta) vs \(planned) planned")
+    }
+    /// The tip's direction words beside its millimetres.
+    static func tipUpWord(_ metres: Double) -> String {
+        if abs(metres) < 0.00005 { return String(localized: "centre height") }
+        return metres > 0 ? String(localized: "above") : String(localized: "below")
+    }
+    static func tipSideWord(_ metres: Double) -> String {
+        if abs(metres) < 0.00005 { return String(localized: "centre line") }
+        // The same "right" and "left" lines the fine controls show (ShotPanel.shownWord), read here directly.
+        return metres > 0 ? String(localized: "right") : String(localized: "left")
+    }
+    static var shorterBridge: String { String(localized: "Shorter bridge") }
+    static var longerBridge: String { String(localized: "Longer bridge") }
+    /// The accessibility hint on a figure a tap types into.
+    static var typeFigureHint: String { String(localized: "Opens a field to type an exact value.") }
+
+    // MARK: The plain sentence above the figures
+
+    /// Before a shot: the spin in words, then the cut on the ball in line and where the white goes off the cue.
+    /// "Back spin with some right side. The 11 is cut 3.4°; the white goes 1.2° left."
+    static func plainSentence(_ f: StrikeFigures) -> String {
+        var parts = [spinSentence(top: f.topSpin, side: f.sideSpin)]
+        if let cut = f.cut, let ball = f.cutBall {
+            let degrees = StrikeWords.degrees(cut)
+            if abs(f.turnDegrees) < 0.05 {
+                parts.append(String(localized: "The \(ball) is cut \(degrees)."))
+            } else {
+                parts.append(String(localized: "The \(ball) is cut \(degrees); the white goes \(aimError(f.turnDegrees))."))
+            }
+        }
+        return parts.joined(separator: " ")
+    }
+
+    /// The spin in a few words: top or back first, then any side.
+    static func spinSentence(top: Double, side: Double) -> String {
+        let vertical = abs(top) < 0.05 ? 0 : (top > 0 ? 1 : -1)
+        let across = abs(side) < 0.05 ? 0 : (side > 0 ? 1 : -1)
+        switch (vertical, across) {
+        case (-1, 1): return String(localized: "Back spin with some right side.")
+        case (-1, -1): return String(localized: "Back spin with some left side.")
+        case (-1, _): return String(localized: "Back spin, no side.")
+        case (1, 1): return String(localized: "Top spin with some right side.")
+        case (1, -1): return String(localized: "Top spin with some left side.")
+        case (1, _): return String(localized: "Top spin, no side.")
+        case (_, 1): return String(localized: "Right side, no top or back spin.")
+        case (_, -1): return String(localized: "Left side, no top or back spin.")
+        default: return String(localized: "No spin: a centre-ball hit.")
+        }
+    }
+
+    /// After a shot: the single biggest difference (largestErrorLine), or that the stroke gave what was set.
+    static func playedSentence(_ c: StrikeComparison) -> String {
+        largestErrorLine(c) ?? String(localized: "Your stroke gave what you set.")
     }
 
     // MARK: Headings

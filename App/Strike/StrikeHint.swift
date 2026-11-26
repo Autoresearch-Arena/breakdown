@@ -14,6 +14,9 @@
 //          shot, a Behind the 8-Ball situation or a lesson step that holds the angle. Dismissed with the same button,
 //          remembered on its own key, so it can still appear once for a player who dismissed the first line before
 //          ever picking up a Pencil.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (aiming panel redesign, plans/26-Nov-2026-aiming-panel-redesign-plan.md
+//          step 9: `plain`, the big screens' form: one grey line under the controls band, no card, no icon, no close
+//          button, the same show and hide rules.)
 // SRP/DRY check: Pass - checked ShotPanel's old hint (replaced by this view), OpeningCard and OpeningPhoneBlurb (their
 //          hand-over copies of the instruction are gone; the instruction itself stays FirstInstruction's) and
 //          ShotOptionsItems' "Show the hint again" (clears aimHintSeen, which brings this back).
@@ -26,6 +29,7 @@ struct StrikeHint: View {
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage("pencilHintSeen") private var pencilHintSeen = false
     @Environment(\.palette) private var palette
+    @ScaledMetric(relativeTo: .footnote) private var plainSize: CGFloat = 15
 
     /// The Pencil line, as the plan words it.
     static var pencilLine: String {
@@ -40,8 +44,26 @@ struct StrikeHint: View {
         StylusPresence.shared.seen && model.cueAngleIsPlayers && !pencilHintSeen
     }
 
+    /// Aiming panel redesign: on the big screens the hint is one plain grey line under the controls band, no card,
+    /// no icon and no close button; it keeps the same show and hide rules (the hand-over, then until seen).
+    var plain = false
+
     var body: some View {
-        if showsInstruction || showsPencil {
+        if plain && (showsInstruction || showsPencil) {
+            VStack(alignment: .leading, spacing: 2) {
+                if showsInstruction {
+                    Text(FirstInstruction.line(for: model.inputInUse))
+                }
+                if showsPencil {
+                    Text(verbatim: Self.pencilLine)
+                }
+            }
+            .font(.system(size: plainSize))
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .transition(.opacity)
+        } else if showsInstruction || showsPencil {
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: showsInstruction ? "hand.draw" : "pencil.tip")
                     .font(phone ? .body : .title3)

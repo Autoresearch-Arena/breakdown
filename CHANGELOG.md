@@ -56,6 +56,29 @@ Built as 0.7.10; the Boss named the version 0.8.1 for the size of the change.
   even rows (six, four, three or two a row) and grow to fill the room, with larger figures when tall. Where the
   controls card has no room for one row, it is the tip picture, the cue-angle dial and Shoot on one row and the power
   bar with the small buttons under it, so nothing floats alone.
+- **The aiming panel, redesigned (Claude Opus 5.5 Medium; plans/26-Nov-2026-aiming-panel-redesign-plan.md).**
+  What: while aiming on iPad, Mac and the open folding phone the panel reads in three bands. What the ball gets (the
+  cut, the speed it leaves at, top or back spin, side spin) in four big white figures; the physics (push, force,
+  energy) on one quiet line; and what you set, where each control carries its own figure, printed once: a flat
+  technical tip drawing with its two millimetre figures, the swing over a power bar with a metres-per-second scale and
+  its calm-limit mark, a cue-angle dial with degrees, the bridge with minus and plus, and Shoot as the biggest control
+  in the corner under your hand ("Rolling" in an outline while the balls move). Cyan only on what you can move; a
+  dotted underline means "tap to type it"; after a shot a warm yellow marks only what came out different from the
+  plan, drawn on the controls themselves and worded ("+4.8 vs 11.9 planned", "as planned"). The plain sentence sits
+  on top; "Step by step ›" is a link. The upright phone's strike sheet is short and opaque so the table and aim line
+  stay in view.
+  Why: the Boss found the aiming screen did not look good: twelve identical boxes, figures printed two or three times,
+  cyan on everything, a power bar with no scale, and the controls squeezed into a strip.
+  How: a shared instrument kit (App/Strike/Instrument.swift: handle, figure line, readout, delta chip, band surface);
+  figures split into number and unit (StrikeWords.FigureText, units through UnitSymbol with their existing
+  translations); the lead band and physics line replace the tile grid (StrikePanel); the shot panel's roomy layouts
+  become the What-you-set band, three columns on the upright iPad and stacked on the Mac, the iPad sideways and the
+  fold, which takes the notebook's leftover height (NotebookPanel.strikeColumn); new Palette.delta and flat surface
+  colours. No physics changes. Accessibility kept: spoken values per figure (planned then delivered), keyboard and
+  controller reach, Controls on the left mirrors the band, one figure a row at the largest text sizes. New words in
+  localization/pending/v081-aiming.json with all eleven translations. Built and looked at on the Mac only (a
+  1440 × 900 window and a narrower, taller one); the upright iPad's three-column band and the phone sheet are built
+  but not yet seen on a device.
 
 ## [0.7.9] - 25-November-2026
 
