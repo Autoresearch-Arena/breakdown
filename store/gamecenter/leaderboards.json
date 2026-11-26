@@ -1,0 +1,32 @@
+{
+ "breakdown.daily": {
+  "name": {
+   "en": "Shot of the day", "es": "Tiro del día", "fr": "Coup du jour", "de": "Stoß des Tages", "it": "Colpo del giorno",
+   "pt": "Tacada do dia", "pt-BR": "Tacada do dia", "ja": "今日のショット", "ko": "오늘의 샷", "zh-Hans": "今日一杆",
+   "ru": "Удар дня", "ar": "تسديدة اليوم"
+  },
+  "suffix": {
+   "en": " points", "es": " puntos", "fr": " points", "de": " Punkte", "it": " punti", "pt": " pontos", "pt-BR": " pontos",
+   "ja": "点", "ko": "점", "zh-Hans": " 分", "ru": " очк.", "ar": " نقطة"
+  },
+  "suffixSingular": {
+   "en": " point", "es": " punto", "fr": " point", "de": " Punkt", "it": " punto", "pt": " ponto", "pt-BR": " ponto",
+   "ja": "点", "ko": "점", "zh-Hans": " 分", "ru": " очк.", "ar": " نقطة"
+  }
+ },
+ "breakdown.streak": {
+  "name": {
+   "en": "Longest streak", "es": "Racha más larga", "fr": "Plus longue série", "de": "Längste Serie", "it": "Serie più lunga",
+   "pt": "Série mais longa", "pt-BR": "Maior sequência", "ja": "最長連続記録", "ko": "최장 연속 기록", "zh-Hans": "最长连胜",
+   "ru": "Самая длинная серия", "ar": "أطول سلسلة"
+  },
+  "suffix": {
+   "en": " days", "es": " días", "fr": " jours", "de": " Tage", "it": " giorni", "pt": " dias", "pt-BR": " dias",
+   "ja": "日", "ko": "일", "zh-Hans": " 天", "ru": " дн.", "ar": " يوم"
+  },
+  "suffixSingular": {
+   "en": " day", "es": " día", "fr": " jour", "de": " Tag", "it": " giorno", "pt": " dia", "pt-BR": " dia",
+   "ja": "日", "ko": "일", "zh-Hans": " 天", "ru": " дн.", "ar": " يوم"
+  }
+ }
+}

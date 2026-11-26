@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+Author: Claude Opus 5.5 Medium
+Date: 26-November-2026
+PURPOSE: The app's entitlements, for 0.7.10's Game Center boards and achievements (plans/25-Nov-2026-shot-of-the-day-plan.md
+         stage 3 item 1). One key: Game Center, which App/GameCenter/GameCenter.swift needs to sign the player in, post
+         the daily score and the streak, and report achievements. The same file serves the iPhone, iPad and Mac builds
+         of the one app target, through the target's CODE_SIGN_ENTITLEMENTS setting (Debug and Release).
+         The Mac's app sandbox is not written here: it comes from the target's ENABLE_APP_SANDBOX build setting, and the
+         outgoing connections Game Center needs in the sandbox from ENABLE_OUTGOING_NETWORK_CONNECTIONS, so this file
+         holds no Mac-only key that an iPhone build would carry.
+SRP/DRY check: Pass - the only entitlements file in the project; the sandbox stays in the build settings where it was.
+-->
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.game-center</key>
+	<true/>
+</dict>
+</plist>

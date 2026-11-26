@@ -1,0 +1,286 @@
+{
+ "keys": [
+  "Board",
+  "Hide the board",
+  "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+  "Shows today's scores from players everywhere.",
+  "The board needs you signed in on this device. Sign in from Settings, then try again."
+ ],
+ "translations": [
+  {
+   "culture": "ar",
+   "key": "Board",
+   "text": "لوحة الصدارة"
+  },
+  {
+   "culture": "de",
+   "key": "Board",
+   "text": "Rangliste"
+  },
+  {
+   "culture": "es",
+   "key": "Board",
+   "text": "Clasificación"
+  },
+  {
+   "culture": "fr",
+   "key": "Board",
+   "text": "Classement"
+  },
+  {
+   "culture": "it",
+   "key": "Board",
+   "text": "Classifica"
+  },
+  {
+   "culture": "ja",
+   "key": "Board",
+   "text": "ランキング"
+  },
+  {
+   "culture": "ko",
+   "key": "Board",
+   "text": "순위표"
+  },
+  {
+   "culture": "pt",
+   "key": "Board",
+   "text": "Classificação"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Board",
+   "text": "Classificação"
+  },
+  {
+   "culture": "ru",
+   "key": "Board",
+   "text": "Рейтинг"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Board",
+   "text": "排行榜"
+  },
+  {
+   "culture": "ar",
+   "key": "Hide the board",
+   "text": "إخفاء لوحة الصدارة"
+  },
+  {
+   "culture": "de",
+   "key": "Hide the board",
+   "text": "Rangliste ausblenden"
+  },
+  {
+   "culture": "es",
+   "key": "Hide the board",
+   "text": "Ocultar la clasificación"
+  },
+  {
+   "culture": "fr",
+   "key": "Hide the board",
+   "text": "Masquer le classement"
+  },
+  {
+   "culture": "it",
+   "key": "Hide the board",
+   "text": "Nascondi la classifica"
+  },
+  {
+   "culture": "ja",
+   "key": "Hide the board",
+   "text": "ランキングを隠す"
+  },
+  {
+   "culture": "ko",
+   "key": "Hide the board",
+   "text": "순위표 숨기기"
+  },
+  {
+   "culture": "pt",
+   "key": "Hide the board",
+   "text": "Ocultar a classificação"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hide the board",
+   "text": "Ocultar a classificação"
+  },
+  {
+   "culture": "ru",
+   "key": "Hide the board",
+   "text": "Скрыть рейтинг"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hide the board",
+   "text": "隐藏排行榜"
+  },
+  {
+   "culture": "ar",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "عند تفعيل هذا الخيار، لا تسجّل اللعبة الدخول أبدًا من أجل لوحة الصدارة ولا تعرض زر لوحة الصدارة. تسديدة اليوم ونتيجتها وسلسلتك تبقى تعمل كما هي."
+  },
+  {
+   "culture": "de",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Wenn das an ist, meldet sich das Spiel nie für die Rangliste an und zeigt keine Schaltfläche „Rangliste“. Der Stoß des Tages, seine Punkte und deine Serie funktionieren weiter."
+  },
+  {
+   "culture": "es",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Con esto activado, el juego nunca inicia sesión para la clasificación y no muestra el botón Clasificación. El tiro del día, su puntuación y tu racha siguen funcionando."
+  },
+  {
+   "culture": "fr",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Avec cette option, le jeu ne se connecte jamais pour le classement et n'affiche pas le bouton Classement. Le coup du jour, son score et ta série fonctionnent toujours."
+  },
+  {
+   "culture": "it",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Con questa opzione attiva, il gioco non accede mai per la classifica e non mostra il pulsante Classifica. Il colpo del giorno, il suo punteggio e la tua serie funzionano comunque."
+  },
+  {
+   "culture": "ja",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "オンにすると、ゲームはランキングのためにサインインせず、「ランキング」ボタンも表示しません。今日のショット、そのスコア、連続記録はそのまま使えます。"
+  },
+  {
+   "culture": "ko",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "켜 두면 게임이 순위표를 위해 로그인하지 않고 순위표 버튼도 보이지 않습니다. 오늘의 샷과 점수, 연속 기록은 그대로 작동합니다."
+  },
+  {
+   "culture": "pt",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Com isto ligado, o jogo nunca inicia sessão para a classificação e não mostra o botão Classificação. A tacada do dia, a sua pontuação e a tua série continuam a funcionar."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Com isto ativado, o jogo nunca entra na conta para a classificação e não mostra o botão Classificação. A tacada do dia, a pontuação dela e a sua sequência continuam funcionando."
+  },
+  {
+   "culture": "ru",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "Если это включено, игра никогда не входит в учётную запись ради рейтинга и не показывает кнопку «Рейтинг». Удар дня, его очки и твоя серия по-прежнему работают."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.",
+   "text": "开启后，游戏不会为排行榜登录，也不显示“排行榜”按钮。今日一杆、它的得分和你的连胜照常可用。"
+  },
+  {
+   "culture": "ar",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "يعرض نتائج اليوم للاعبين من كل مكان."
+  },
+  {
+   "culture": "de",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Zeigt die heutigen Punkte von Spielern überall."
+  },
+  {
+   "culture": "es",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Muestra las puntuaciones de hoy de jugadores de todo el mundo."
+  },
+  {
+   "culture": "fr",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Affiche les scores du jour des joueurs du monde entier."
+  },
+  {
+   "culture": "it",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Mostra i punteggi di oggi dei giocatori di tutto il mondo."
+  },
+  {
+   "culture": "ja",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "世界中のプレイヤーの今日のスコアを表示します。"
+  },
+  {
+   "culture": "ko",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "전 세계 플레이어의 오늘 점수를 보여 줍니다."
+  },
+  {
+   "culture": "pt",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Mostra as pontuações de hoje de jogadores de todo o mundo."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Mostra as pontuações de hoje de jogadores do mundo todo."
+  },
+  {
+   "culture": "ru",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "Показывает сегодняшние очки игроков со всего мира."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shows today's scores from players everywhere.",
+   "text": "显示世界各地玩家今天的得分。"
+  },
+  {
+   "culture": "ar",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "تحتاج لوحة الصدارة إلى تسجيل دخولك على هذا الجهاز. سجّل الدخول من الإعدادات، ثم حاول مرة أخرى."
+  },
+  {
+   "culture": "de",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "Für die Rangliste musst du auf diesem Gerät angemeldet sein. Melde dich in den Einstellungen an und versuch es dann noch einmal."
+  },
+  {
+   "culture": "es",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "La clasificación necesita que hayas iniciado sesión en este dispositivo. Inicia sesión desde Ajustes y vuelve a intentarlo."
+  },
+  {
+   "culture": "fr",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "Le classement demande que tu sois connecté sur cet appareil. Connecte-toi depuis Réglages, puis réessaie."
+  },
+  {
+   "culture": "it",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "La classifica richiede che tu abbia effettuato l'accesso su questo dispositivo. Accedi da Impostazioni, poi riprova."
+  },
+  {
+   "culture": "ja",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "ランキングを見るには、このデバイスでサインインしている必要があります。設定からサインインして、もう一度試してください。"
+  },
+  {
+   "culture": "ko",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "순위표를 보려면 이 기기에서 로그인해야 합니다. 설정에서 로그인한 다음 다시 시도하세요."
+  },
+  {
+   "culture": "pt",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "A classificação precisa que tenhas sessão iniciada neste dispositivo. Inicia sessão nas Definições e tenta outra vez."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "A classificação precisa que você esteja conectado neste dispositivo. Entre pelos Ajustes e tente de novo."
+  },
+  {
+   "culture": "ru",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "Для рейтинга нужно войти в учётную запись на этом устройстве. Войди в «Настройках» и попробуй ещё раз."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The board needs you signed in on this device. Sign in from Settings, then try again.",
+   "text": "排行榜需要你在这台设备上登录。请在“设置”中登录，然后再试一次。"
+  }
+ ]
+}

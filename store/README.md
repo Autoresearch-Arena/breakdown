@@ -9,6 +9,9 @@ PURPOSE: The App Store listing text for Breakdown, one file per language in the 
 Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items 39 and 41:
          the listing is rewritten in all twelve languages around the game as it is now, and the privacy policy and
          support page texts are in store/pages.)
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 Game Center: the privacy line says the game itself sends
+         nothing and Apple carries a signed-in player's scores; a new section on the Game Center setup, the script that
+         does it, and the steps to do by hand if App Store Connect refuses any of it.)
 SRP/DRY check: Pass - this folder holds only store copy. The game's own words are in App/Localizable.xcstrings; the
          screenshot framing and headlines are in store/screenshots.
 -->
@@ -35,4 +38,35 @@ The listing is uploaded to App Store Connect (the Boss signed off on 21-November
 `pages/privacy.md` and `pages/support.md` are the texts for the two pages App Store Connect asks for (Privacy Policy
 URL and Support URL). They are published on the studio site in the same style as its other game's store pages; the
 addresses then go into the app record. The privacy page must stay true to `App/PrivacyInfo.xcprivacy` and to the App
-Privacy answer "Data Not Collected": the app has no network code, no account, no ads and no purchases.
+Privacy answer "Data Not Collected": the game itself sends nothing and collects nothing, and it has no account of its
+own, no ads and no purchases. The one thing that can leave the device is Game Center: if the player chooses to sign in
+(the game asks only when Board is pressed), Apple carries their daily score, streak and achievements under Apple's
+own terms. Data Apple collects through Game Center is not the developer's to declare, so the answer stays the same.
+
+## Game Center
+
+The daily board, the streak board and one achievement per entry of the game's achievements list are set up in App
+Store Connect by `scripts/gamecenter-setup.py`. Run it with no flag first: it sends nothing and prints every board,
+achievement, word and picture it would send, in all twelve languages, with any missing translation listed. `--draw`
+draws the achievement pictures onto the Team 4TB drive to look at. `--apply` does the real calls, creating only what is
+missing, so it can be run again. The board names and their unit words are in `gamecenter/leaderboards.json`; the
+achievement names and sentences are the game's own translated words. Pictures are drawn by
+`gamecenter/achievement-art.swift`.
+
+The ids never change once live: `breakdown.daily`, `breakdown.streak`, and `breakdown.` plus each achievement's own id.
+800 of Game Center's 1000 points are shared out now; 200 are kept for achievements added later.
+
+If App Store Connect refuses a step, the script stops and prints Apple's answer. Do that part by hand once, in App
+Store Connect, under the app's Services tab, Game Center:
+
+1. Turn Game Center on for the app if it is off.
+2. Leaderboards, add a Recurring leaderboard: reference name Shot of the day, id `breakdown.daily`, score format
+   Integer, submission type Best score, sort High to low, range 0 to 1199, starts at the next midnight Coordinated
+   Universal Time, lasts one day, repeats every day. Add the twelve names and units from `gamecenter/leaderboards.json`.
+3. Add a Classic leaderboard: reference name Longest streak, id `breakdown.streak`, Integer, Best score, High to low,
+   range 0 to 100000, with its twelve names and units.
+4. Achievements: for each one the dry run prints, add it with the id, points and words it shows (the "before" words
+   are the description before it is earned, the "after" words once earned), shown before earned, not repeatable, with
+   its picture from the Team 4TB drive (`--draw` makes them) in every language.
+5. On the app version's page for iOS and for macOS, in the Game Center section, turn Game Center on and pick both
+   boards and every achievement before the version is submitted.

@@ -13,6 +13,11 @@ PURPOSE: The app's privacy manifest, which the App Store requires. It says Break
          It sits in the App folder, which Xcode's synchronized group puts in the app bundle as a resource.
          Add an entry here in the same change as any code that starts using another required-reason interface (file
          timestamps, disk space, active keyboards) or that sends anything off the device.
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 Game Center, checked and left unchanged: the game's own code
+        still sends nothing and collects nothing. Game Center (App/GameCenter/GameCenter.swift) carries a signed-in
+        player's daily score, streak and achievements through Apple's own service, which is Apple's data, not the
+        app's, so no collected data type is declared. Its saved queue of unsent scores and its two flags are the app's
+        own settings in UserDefaults, already covered by reason CA92.1.)
 SRP/DRY check: Pass - the only privacy manifest in the project; the package code uses none of these interfaces.
 -->
 <plist version="1.0">
