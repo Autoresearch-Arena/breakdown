@@ -1,6 +1,9 @@
 <!--
 Author: Claude Fable 5.2 Medium
 Date: 25-November-2026
+Edited: Claude Opus 5.5 Medium, 25-November-2026 (checked against the code: trick shots only rack the pool table, the
+        daily shot sets its own cue angle, the Pencil raises the cue only while stroking in free play and games, one
+        app target, the first-minute check before every push, a returning player is never pulled off a game).
 PURPOSE: Build plan for what a reviewer sees first and most: the main menu and the ordinary view of the table, on
          iPad and the open folding iPhone first. The menu stops hiding the table and stops being a wall of paragraphs;
          the table fills its half of the screen and stops floating in a black void; the store page leads with the
@@ -34,8 +37,10 @@ This plan fixes both. It does not add any feature.
 - **The very first launch does not change.** A new player still lands on the racked pool table with one line on how
   to shoot. That was the Boss's call after 0.7.0 and it works. If he would now rather a first launch opened on a more
   unusual table, that is one line to change in step 3 of Stage 1.
-- **From the second launch on, the game opens on today's shot,** on whatever table that shot uses. Until the Shot of
-  the day plan ships, it opens on the last table played.
+- **From the second launch on, the game opens on today's shot,** on whatever table that shot uses, but only when
+  today's shot is not yet played and no game is in progress. A game in progress reopens where it was left; a shot
+  already played today opens on the last table played. Until the Shot of the day plan ships, it opens on the last
+  table played. Nothing is pushed: no card, no lesson, just the table set up.
 - **Nothing covers the table on big screens.** That rule already exists and stays.
 
 ## Stage 1: the menu
@@ -116,8 +121,9 @@ Done when: at no point in the opening break replay is it unclear where on the ta
    strike panel with its figures; the Shot of the day result; bar billiards mid-game; a jump seen side on; then the
    rest.
 2. Take the iPad and folding-phone sets first and check them before the upright phone set.
-3. Add one line to the listing (`store/listing/en.json` and the eleven others) for the stylus: hover to aim, tilt to
-   raise the cue. It is built and nobody is told.
+3. Add one line to the listing (`store/listing/en.json` and the eleven others) for the stylus: hover to aim, and
+   stand the Pencil up as you stroke to raise the cue in free play and games. It is built and nobody is told. Word it
+   no wider than that; the trick-shot modes set their own angle.
 4. One simulator at a time. Shut each one down before starting the next.
 
 Done when the first three pictures on the store page could not be mistaken for any other pool game.

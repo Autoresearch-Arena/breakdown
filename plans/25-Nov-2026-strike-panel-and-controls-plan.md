@@ -1,6 +1,9 @@
 <!--
 Author: Claude Fable 5.2 Medium
 Date: 25-November-2026
+Edited: Claude Opus 5.5 Medium, 25-November-2026 (checked against the code: trick shots only rack the pool table, the
+        daily shot sets its own cue angle, the Pencil raises the cue only while stroking in free play and games, one
+        app target, the first-minute check before every push, a returning player is never pulled off a game).
 PURPOSE: Build plan for the strike panel: before every shot the player sees exactly what they are about to do to the
          ball, in real units (swing speed, the speed the ball leaves at, the push, the force, the energy, the spin, the
          tip offset, the cue angle), and after the shot sees what they planned beside what they delivered. Also makes
@@ -105,7 +108,11 @@ item 5.
    bottom-left when the left-handed option from the Everyone can play plan is on.
 5. **One hint, in one place.** The instruction "Drag on the table to aim. Pull back from the white ball, then push
    through it" sits over the top of the table on the upright phone. Move it below the table, into the panel, on
-   every layout. Add one more line for a stylus when one is in use: "Hover to aim. Tilt to raise the cue."
+   every layout. Add one more line for a stylus when one is in use: "Hover to aim. Stand the Pencil up as you stroke to raise
+   the cue." That is what the code does: hover aims (`App/PointerAim.swift`), and standing the Pencil up past a
+   writing grip during a stroke raises the cue (`pencil` in `App/Stroke/StrokeGesture.swift`). It does not raise the
+   cue in trick shots, Behind the 8-Ball or the daily shot, which set their own angle, so show this line only where
+   the angle is the player's.
 6. **Two fingers never needed.** Everything the bridge finger does can also be set on the panel.
 
 Done when: on an iPad a new player can set centre ball, a firm swing and a level cue, and shoot, with four taps or

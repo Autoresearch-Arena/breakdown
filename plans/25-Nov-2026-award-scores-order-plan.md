@@ -1,6 +1,9 @@
 <!--
 Author: Claude Fable 5.2 Medium
 Date: 25-November-2026
+Edited: Claude Opus 5.5 Medium, 25-November-2026 (checked against the code: trick shots only rack the pool table, the
+        daily shot sets its own cue angle, the Pencil raises the cue only while stroking in free play and games, one
+        app target, the first-minute check before every push, a returning player is never pulled off a game).
 PURPOSE: The front page for the five plans written on 25 November 2026 after a hostile "Apple reviewer" read of
          Breakdown 0.7.9. Says what score each award category would get today, what score each plan is meant to
          reach, the order to do the plans in, who can work at the same time, and what we stop doing meanwhile.
@@ -81,13 +84,15 @@ Two developers can work in parallel if they keep to these files:
 
 - **Developer A:** the words plan, then the front door plan. Owns App/Captions.swift, App/CaptionViews.swift,
   App/NotebookStory.swift, App/TitleScreen.swift, App/CameraFraming.swift, the store folder.
-- **Developer B:** the strike panel plan, then the Shot of the day plan. Owns App/ShotPanel.swift, App/AimGauges.swift,
+- **Developer B:** the strike panel plan, then the Shot of the day plan. Stage 4 of the daily plan changes
+  `ShowpieceModel.enterTrickTable` so trick shots can start on any table and surface; that is a shared file. Owns App/ShotPanel.swift, App/AimGauges.swift,
   App/Phone/PhoneAimPanel.swift, the new App/Strike and App/Daily folders, the BreakProbe tool.
 - **Shared, one writer at a time:** App/ShowpieceModel.swift, App/ShowpieceView.swift, App/NotebookPanel.swift,
   App/Localizable.xcstrings. Say in the team channel before you touch one of these, and keep the change small.
 
 Each developer works on a branch and does not compile while writing. The coordinator merges, compiles once, runs the
-four checks in scripts/testflight.py and pushes. The Boss tests on TestFlight himself.
+four checks in scripts/testflight.py, plays the first minute on a fresh simulator install and on a second launch
+(one simulator, shut down after), and pushes. The Boss tests on TestFlight himself.
 
 ## What we stop doing until these land
 
@@ -101,7 +106,7 @@ four checks in scripts/testflight.py and pushes. The Boss tests on TestFlight hi
 |---|---|---|
 | Game Center leaderboards | Yes | The daily board is the social hook. Apple's Games app shows friends' scores and lets them challenge each other, which is free promotion. |
 | Game Center achievements | Yes | The achievements are built and already have permanent names made for this. |
-| Apple Pencil as the cue | Already built, undersold | Hover aims and tilt raises the cue. It is not in the store page or the first-minute hint. The front door plan fixes that. |
+| Apple Pencil as the cue | Already built, undersold | Hover aims, and standing the Pencil up during a stroke raises the cue in free play and games. It is not in the store page or the first-minute hint. The front door plan fixes that. |
 | A home-screen widget | Later, small | Only useful once the daily shot exists: today's layout and the streak. Stage 5 of the daily plan. |
 | Progress following the player between iPad, iPhone and Mac | Later | Game Center carries the achievements and scores. The streak can follow through iCloud once the daily shot has proved itself. |
 | Shortcuts, Live Activities, playing over a call | No | None of them fits a one-minute pool shot. They would be boxes ticked, and reviewers can tell. |

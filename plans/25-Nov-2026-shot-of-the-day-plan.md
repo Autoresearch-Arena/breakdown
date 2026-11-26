@@ -1,6 +1,9 @@
 <!--
 Author: Claude Fable 5.2 Medium
 Date: 25-November-2026
+Edited: Claude Opus 5.5 Medium, 25-November-2026 (checked against the code: trick shots only rack the pool table, the
+        daily shot sets its own cue angle, the Pencil raises the cue only while stroking in free play and games, one
+        app target, the first-minute check before every push, a returning player is never pulled off a game).
 PURPOSE: Build plan for the Shot of the day: one authored shot each day, the same for every player in the world, with
          five tries, a score, a streak, a result card to share, and Game Center boards. This is the reason to open
          Breakdown every day. Written for a junior developer: every stage says which files to make, what goes in them,
@@ -31,12 +34,12 @@ player asks to see the board.
 - **Five tries.** A try is one strike from the shot's own layout.
 - **The answer is hidden until you finish.** There is no "Watch it" button before you have made the shot or used your
   five tries. After that the answer plays in the Lens like any trick shot.
-- **Score.** Try points plus precision points.
+- **Score.** Try points plus precision points. (Ties are left to Game Center.)
   - Try points: 1000 for the first try, 800, 600, 400, 200 for the fifth. Nothing if you never make it.
   - Precision points: 199 minus the distance from the white ball's resting place to the mark, counted in
     half-centimetres, never below zero. Only counted on the try that made it.
   - So the best possible score is 1199. Two players with the same score are ranked by who posted first; Game Center
-    does that by itself.
+    decides ties by its own rule.
 - **The physics is exact, so a leaked answer gives a perfect score.** We accept that, the way a word puzzle accepts
   that its answer can be looked up. The board that matters is the friends board.
 - **Streak.** Days in a row with a make. A missed day or five misses ends it.
@@ -91,9 +94,13 @@ Goal: a player can play today's shot from the menu, see a result, a streak and a
      judge's one-sentence advice exactly as trick shots do;
    - on a make it measures the white ball's resting place against the mark, scores it with `DailyScore`, and writes
      `DailyRecord`.
-   Check first that `TrickShotMode.begin` really moves the game to the shot's own table. The roadmap lists trick shots
-   on the other tables as not built. If it does not, stay on the pool table for this stage and leave other tables to
-   stage 4.
+   `TrickShotMode.begin` does not move the game to another table: it calls `ShowpieceModel.enterTrickTable`, which
+   racks the pool table, and it never sets a surface. So in this stage every daily shot is on the pool table with
+   tournament cloth. Other tables and surfaces wait for stage 4.
+   - **The cue angle is the shot's own.** Like trick shots and Behind the 8-Ball, the daily shot sets its cue angle;
+     the player cannot raise the cue there (see `raisedCueOpen` in `App/Stroke/StrokeGesture.swift`). On a jump or
+     massé day the raised cue is part of the puzzle's setup, not a hint. The strike panel's angle dial shows the
+     angle and is locked in this mode.
 2. **The mark on the cloth.** Draw it where trick shots draw their target zone (`TrickShotMode.markers`): a small
    ring with a centre dot. After a make, draw a thin line from the white ball to the mark with the distance beside it.
 3. **New file** `App/Daily/DailyViews.swift`:
@@ -125,12 +132,12 @@ share picture shows no answer, and opening it again shows the result and not a n
 Goal: the daily board, the streak board, and the achievements reported to Game Center. Sign-in is never shown at
 launch.
 
-1. **Project setup.** Add the Game Center capability to the app target (it adds an entitlements entry). Do this on
-   both the iPhone and iPad target and the Mac target.
+1. **Project setup.** Add the Game Center capability to the app target (it adds an entitlements entry). There is one
+   target, and it builds for iPhone, iPad and Mac; check the entitlement is present in the Mac build too.
 2. **Store setup, by script.** New file `scripts/gamecenter-setup.py`, in the style of `scripts/store-upload.py`. It
    turns Game Center on for the app record and creates:
    - a recurring leaderboard, id `breakdown.daily`, that resets every twenty-four hours at midnight Coordinated
-     Universal Time, highest score first;
+     Universal Time, highest score first. Game Center's own rule decides ties; do not promise players a tie-break;
    - an all-time leaderboard, id `breakdown.streak`, highest first;
    - one achievement per entry in `Achievement.swift`, id `breakdown.` plus the game's own id. The comment at the top
      of that file says the ids were made for this and must never change.
@@ -175,7 +182,8 @@ Goal: at least one hundred shots before the feature is announced, then thirty mo
    anything ugly, trivial or too like the day before.
 4. **Other tables and surfaces.** Friday shots are on bumper pool, five-pin or bar billiards; Saturday shots are on
    ice, glass, rubber, cork, carpet, sand or the Moon. If stage 2 found that trick shots cannot yet start on another
-   table, fix that first, here.
+   table or on another surface, fix that first, here: `enterTrickTable` must rack the shot's own table and set its
+   surface, for trick shots and daily shots alike.
 5. **Order the bank by the weekly rhythm,** easy on Monday through hard on Sunday. Never two of the same family in a
    row.
 
