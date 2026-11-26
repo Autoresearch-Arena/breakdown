@@ -1,4 +1,8 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: dailyMode is connected to the Game Center boards when
+//          made (DailyBoardLink, kept here) and keeps its record in a throwaway suite for the daily store scene; three
+//          store scenes (-storeLensBumper, -storeStrike, -storeDaily, played in App/StoreScenesDaily.swift, so storeWait
+//          is no longer private); holdSetupBehindMenu for a later launch that sets today's shot up behind the menu.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: activeElevation refuses while a mode sets its own
 //          cue angle (cueAngleLockedByMode); finishStrike notes the controls for the strike panel (StrikeMemory).)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
@@ -326,9 +330,17 @@ enum StoreScene: Equatable, Sendable {
     case drill
     /// -storeRide: a Ride replay held where the room and the lamp show.
     case ride
+    // 0.7.10 wiring: the three scenes that lead the store page (played in App/StoreScenesDaily.swift).
+    /// -storeLensBumper: a bumper pool shot held at its first contact under the Physics Lens.
+    case lensBumper
+    /// -storeStrike: free play after the break, a shot lined up with draw and side, the strike panel open.
+    case strike
+    /// -storeDaily: today's shot made, its result card up (a throwaway record, never the device's own).
+    case daily
 
-    /// The six flag names, for TitleScreen.launchSkipsTitle.
-    static let flags = ["-storeMatch", "-storeRuling", "-storeLesson", "-storeTableGame", "-storeDrill", "-storeRide"]
+    /// The flag names, for TitleScreen.launchSkipsTitle.
+    static let flags = ["-storeMatch", "-storeRuling", "-storeLesson", "-storeTableGame", "-storeDrill", "-storeRide",
+                        "-storeLensBumper", "-storeStrike", "-storeDaily"]  // 0.7.10 wiring: the last three
 
     /// The scene the launch arguments ask for, parsed once; nil on an ordinary launch.
     static var requested: StoreScene? { parsed }
@@ -358,6 +370,10 @@ enum StoreScene: Equatable, Sendable {
         }
         if args.contains("-storeDrill") { return .drill }
         if args.contains("-storeRide") { return .ride }
+        // 0.7.10 wiring: the three scenes that lead the store page.
+        if args.contains("-storeLensBumper") { return .lensBumper }
+        if args.contains("-storeStrike") { return .strike }
+        if args.contains("-storeDaily") { return .daily }
         return nil
     }
 }
@@ -2684,6 +2700,10 @@ final class ShowpieceModel {
         case .tableGame(let kind): await storeTableGameScene(kind)
         case .drill: await storeDrillScene()
         case .ride: storeRideScene()
+        // 0.7.10 wiring: App/StoreScenesDaily.swift.
+        case .lensBumper: await storeLensBumperScene()
+        case .strike: await storeStrikeScene()
+        case .daily: await storeDailyScene()
         }
         NSLog("STORESCENE %@ ready", String(describing: scene))
     }
@@ -2695,7 +2715,8 @@ final class ShowpieceModel {
 
     /// Wait until `done` holds, checking every 50 ms, at most storeStepLimit seconds. While a shot plays on screen it
     /// jumps to the shot's end, so the scene does not wait out real-time replays.
-    private func storeWait(_ done: () -> Bool) async {
+    // 0.7.10 wiring: no longer private, so the scenes in App/StoreScenesDaily.swift wait the same way.
+    func storeWait(_ done: () -> Bool) async {
         let steps = Int(Self.storeStepLimit / 0.05)
         for _ in 0..<steps {
             if done() { return }
@@ -3446,11 +3467,25 @@ final class ShowpieceModel {
     // 0.7.10 daily: the shot of the day (App/Daily/DailyMode.swift), made on first use and kept out of observation,
     // exactly as trickMode. It plays its shot through trickMode, so nothing else here needs to know about it.
     @ObservationIgnored private var dailyModeStorage: DailyMode?
+    // 0.7.10 wiring: the mode's link to the Game Center boards (App/GameCenter/DailyBoardLink.swift). Kept here because
+    // the mode holds its result sink weakly.
+    @ObservationIgnored private var dailyBoardLink: DailyBoardLink?
     var dailyMode: DailyMode {
         if let m = dailyModeStorage { return m }
-        let m = DailyMode(model: self)
+        // 0.7.10 wiring: the daily store scene plays on a throwaway record, never the device's own.
+        let m = DailyMode(model: self, defaults: StoreScene.dailyDefaults())
         dailyModeStorage = m
+        dailyBoardLink = DailyBoardLink.connect(m)  // 0.7.10 wiring
         return m
+    }
+
+    /// 0.7.10 wiring: a later launch has just set today's shot up (App/FrontDoor.swift). The table holds still behind
+    /// the open menu, and nothing counts as in progress yet, so the menu offers the Shot of the day row as the way in
+    /// rather than Continue.
+    func holdSetupBehindMenu() {
+        playing = false
+        menuOpen = true
+        gameInProgress = false
     }
 
     // 0.7.7 achievements: the achievements book, made on first use and kept out of observation, exactly as trickMode.

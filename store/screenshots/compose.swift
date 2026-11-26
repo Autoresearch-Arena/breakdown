@@ -6,6 +6,9 @@
 //          keys and SCENES= still match. Wave 2 adds the Lens on bumper pool, the strike panel and the daily result in
 //          front of them. The iPad's table crop follows the upright iPad's new split: the notebook band under the
 //          table now takes everything the table does not need (App/NotebookGeometry.swift belowPanel).)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: frames 11 to 13 (the Lens on bumper pool, the strike
+//          panel, the Shot of the day result) at the front of the frame list, with their captions first in every
+//          captions/<language>.json.)
 // PURPOSE: Frame Breakdown's raw App Store screenshots for one device in any number of languages. Each frame gets a
 //          near-black gradient background with a soft felt-green glow, a short cyan accent bar, a white heavy rounded
 //          headline (from captions/<lang>.json, at most two lines, shrunk to fit, the same size on every frame of a
@@ -72,6 +75,10 @@ let devices: [String: Device] = [
 // Frame name -> raw scene files shown in it (left to right). The frame name is also the caption key.
 // 0.7.10: in the store page's order (the same order as the keys of captions/<language>.json).
 let frames: [(name: String, scenes: [String])] = [
+    // 0.7.10 wiring: the three scenes that lead the page (scripts/store-shots.sh, 11 to 13).
+    ("11-lens-bumper", ["11-lens-bumper"]),
+    ("12-strike", ["12-strike"]),
+    ("13-daily", ["13-daily"]),
     ("08-tables", ["08a-bumper", "08b-fivepin", "08c-bar"]),
     ("10-jump", ["10-jump"]),
     ("01-lens", ["01-lens"]),

@@ -19,6 +19,9 @@
 #          frame list and the caption files' key order, changed to match. Wave 2 adds three scenes in front: the Lens on a
 #          bumper pool shot, the strike panel with its figures, and the Shot of the day result (see the marked spot).
 #          Take the iPad and folding-phone sets first and check them before the upright phone set; one simulator at a time.)
+# Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the three new scenes at the marked spot, 11 to 13,
+#          with their -storeLensBumper, -storeStrike and -storeDaily flags. The page now has thirteen frames;
+#          store-upload.py sends the first ten, so the drill, the surfaces and the Ride fall off the page's end.)
 # SRP/DRY check: Pass - the scene list only. Capturing is store-shot.sh; framing is compose.swift.
 set -e
 here=${0:A:h}
@@ -56,6 +59,14 @@ for lang in "$@"; do
   #
   # 0.7.10 frontdoor: wave 2 adds its three scenes here, in this order, ahead of everything below: the Lens on a
   # bumper pool shot, the strike panel with its planned figures, and the Shot of the day result.
+  # 0.7.10 wiring: the three scenes (App/StoreScenesDaily.swift). Each is struck and solved before it holds, as the
+  # table-game scenes are, so each waits as long as they do.
+  # 11 Bumper pool's first shot held just after its first contact, under the Physics Lens.
+  shot 8  "$out/11-lens-bumper.png" -storeLensBumper
+  # 12 Free play after the break: a shot lined up with draw and side, the strike panel showing its planned figures.
+  shot 8  "$out/12-strike.png"     -storeStrike
+  # 13 The Shot of the day made on its first try: the result card with the score and the streak (a throwaway record).
+  shot 8  "$out/13-daily.png"      -storeDaily
   # 08 The three other tables, each a scored game halfway through, framed side by side (bar billiards among them).
   shot 8  "$out/08a-bumper.png"    -storeTableGame bumperPool
   shot 8  "$out/08b-fivepin.png"   -storeTableGame fivePin

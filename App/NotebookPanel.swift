@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the numbers strip keeps no room before a shot while it
+//          has nothing to draw.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
 //          stage 2: the commentary's place holds StrikeSlot, which shows the strike panel while aiming and the commentary
 //          while the balls move; the slot stays with Explanations off, outside the opening.)
@@ -289,6 +291,10 @@ struct NotebookPanel: View {
     /// (0.7.5 layouts item 6, with NotebookStory's one line).
     private var showsNumbers: Bool {
         !modeActive && !showShotPanel && !typeSize.isAccessibilitySize && model.openingStage == .none
+            // 0.7.10 wiring: only when the strip has something to draw (NotebookNumbers' own rule): a shot's tiles, or
+            // with Explanations off the surface card. Before a shot with Explanations on it is empty, and its room
+            // would be held blank. (While aiming the strike slot holds that place, and the line above already says no.)
+            && (NotebookStory.hasShot(model) || !explanations)
     }
 
     /// One column, read like a book: top bar, cards, the commentary taking all the room left, the numbers, then the

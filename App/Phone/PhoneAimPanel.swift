@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the strike sheet starts open in the -storeStrike
+//          store scene.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
 //          stage 4 and stage 3 item 5: a tap on the swing figure opens the strike panel as a sheet over the lower half
 //          (StrikeSheet); the first instruction and the Pencil line sit at the top of the panel (StrikeHint); the cue
@@ -74,7 +76,9 @@ struct PhoneAimPanel: View {
     /// Bumped by each refusal to bounce the status line's mark once (nothing moves under Reduce Motion).
     @State private var refusalPulse = 0
     /// 0.7.10 strike: the strike panel's sheet, opened by a tap on the swing figure (StrikeSheet).
-    @State private var strikeOpen = false
+    // 0.7.10 wiring: open from the start in the strike store scene (-storeStrike), so the upright phone's picture shows
+    // the panel's figures as the bigger screens do.
+    @State private var strikeOpen = StoreScene.requested == .strike
 
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
