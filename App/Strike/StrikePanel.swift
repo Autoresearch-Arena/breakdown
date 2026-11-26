@@ -29,6 +29,10 @@ struct StrikePanel: View {
     let model: ShowpieceModel
     /// The upright phone's sheet: slightly narrower tiles.
     var compact = false
+    /// 0.8.1: the room the notebook gives the panel. When set, the twelve tiles are laid out in even rows (six, four,
+    /// three or two a row, the most that keep each tile at least 120 points wide) and grow to fill the height, so no
+    /// empty band is left between the figures and the controls (the Boss, 26-Nov-2026: "you're wasting space").
+    var fill: CGSize? = nil
     @Environment(\.palette) private var palette
     // 0.7.10 everyone: at the accessibility sizes one tile per row, so no figure has to shrink to fit its tile.
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -49,7 +53,31 @@ struct StrikePanel: View {
     /// As many tiles a row as fit at the ordinary text sizes; one a row at the accessibility sizes (0.7.10 everyone).
     private var columns: [GridItem] {
         if typeSize.isAccessibilitySize { return [GridItem(.flexible(), spacing: 8)] }
-        return [GridItem(.adaptive(minimum: compact ? 96 : 108), spacing: 8)]
+        if let n = evenColumns { return Array(repeating: GridItem(.flexible(), spacing: 8), count: n) }
+        // 0.8.1: 120 on big screens, so the panel's full width (about 560 points) gives three even rows of four,
+        // not two rows of five and a lonely two.
+        return [GridItem(.adaptive(minimum: compact ? 96 : 120), spacing: 8)]
+    }
+
+    /// How many tiles the strike panel draws; the even-row counts divide it.
+    private static let tileCount = 12
+    /// Height kept for the header line above the grid when filling.
+    private static let headerRoom: CGFloat = 34
+
+    /// The most tiles a row that divides the twelve evenly and keeps each tile 120 points wide (nil: not filling, or
+    /// at the accessibility sizes, where the tiles go one a row and scroll).
+    private var evenColumns: Int? {
+        guard let fill, !compact, !typeSize.isAccessibilitySize else { return nil }
+        return [6, 4, 3, 2].first { n in (fill.width - CGFloat(n - 1) * 8) / CGFloat(n) >= 120 } ?? 2
+    }
+
+    /// Each tile's height when filling: the room under the header shared by the rows, between the tile's own minimum
+    /// and a cap that keeps a tile from turning into a poster on a tall window.
+    private var tileHeight: CGFloat? {
+        guard let fill, let n = evenColumns else { return nil }
+        let rows = CGFloat((Self.tileCount + n - 1) / n)
+        let share = (fill.height - Self.headerRoom - (rows - 1) * 8) / rows - 12  // 12: the tile's own padding
+        return min(140, max(64, share))
     }
 
     // MARK: Header
@@ -132,7 +160,7 @@ struct StrikePanel: View {
                                     note: c.flatMap { StrikeWords.note(figure, $0) },
                                     large: true, editable: edit.map { $0.isOpen(model) } ?? false,
                                     // 0.7.10 everyone: the figure in spoken units, planned then delivered after a shot.
-                                    spoken: StrikeSpoken.tile(figure, reading, differs: differs))
+                                    spoken: StrikeSpoken.tile(figure, reading, differs: differs), fillHeight: tileHeight)
         if let edit {
             EditableTile(model: model, kind: edit, tile: numberTile)
         } else {
@@ -153,7 +181,7 @@ struct StrikePanel: View {
                                                                        : StrikeWords.cutOnLabel(ball: f.cutBall)),
                                     planned: differs ? c.map { $0.planned.cut.map(StrikeWords.degrees) ?? dash } : nil,
                                     note: note, large: true, editable: StrikeEntry.Kind.cut.isOpen(model),
-                                    spoken: StrikeSpoken.tile(.cut, reading, differs: differs))
+                                    spoken: StrikeSpoken.tile(.cut, reading, differs: differs), fillHeight: tileHeight)
         EditableTile(model: model, kind: .cut, tile: numberTile)
     }
 
@@ -163,7 +191,7 @@ struct StrikePanel: View {
                      tile: NumberTile(value: StrikeWords.centimetres(model.strokeBridgeLength),
                                       label: Text(verbatim: StrikeWords.bridgeLabel), large: true,
                                       editable: StrikeEntry.Kind.bridge.isOpen(model),
-                                      spoken: StrikeSpoken.centimetres(model.strokeBridgeLength)))
+                                      spoken: StrikeSpoken.centimetres(model.strokeBridgeLength), fillHeight: tileHeight))
     }
 }
 
@@ -259,15 +287,19 @@ struct StrikeSlot: View {
     /// The strike panel, scrolling inside the room it is given; before any shot the surface and table card follows it,
     /// as the commentary's empty page used to show.
     private var strike: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                StrikePanel(model: model)
-                if !NotebookStory.hasShot(model) {
-                    NotebookSurfaceCard(model: model, detailed: true)
+        // 0.8.1: the panel is told the room it has, so its tiles fill it in even rows (StrikePanel.fill). Before the
+        // first shot the surface card shares the room, so the tiles keep their own size then.
+        GeometryReader { geo in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    StrikePanel(model: model, fill: NotebookStory.hasShot(model) ? geo.size : nil)
+                    if !NotebookStory.hasShot(model) {
+                        NotebookSurfaceCard(model: model, detailed: true)
+                    }
                 }
             }
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .scrollBounceBehavior(.basedOnSize)
     }
 }
 

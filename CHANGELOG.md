@@ -50,6 +50,12 @@ Built as 0.7.10; the Boss named the version 0.8.1 for the size of the change.
   the halves; the daily mark, result and strike tiles are spoken; the daily result card works from the keyboard and a
   controller. A page for teachers (store/pages/teachers.md), linked from How to play.
 - Fixed at the merge: a daily shot's surface is never saved as the player's own.
+- **No wasted space while aiming (looked at on a Mac window and an upright 13-inch iPad).** The Boss found the big
+  screen's notebook split in two while aiming: a small controls card under an empty half, the strike's tiles squeezed
+  into the other. While "Your shot" is open the notebook is now one column at every width; the twelve tiles sit in
+  even rows (six, four, three or two a row) and grow to fill the room, with larger figures when tall. Where the
+  controls card has no room for one row, it is the tip picture, the cue-angle dial and Shoot on one row and the power
+  bar with the small buttons under it, so nothing floats alone.
 
 ## [0.7.9] - 25-November-2026
 

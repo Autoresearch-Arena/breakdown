@@ -303,33 +303,36 @@ struct ShotPanel: View {
         }
     }
 
-    /// The same where one row has no room (the notebook's narrower column): the tip picture beside the dial, the power
-    /// bar across, then the small buttons with Shoot in the bottom corner on the hand side.
+    /// The same where one row has no room (the notebook's narrower column). 0.8.1: two rows with nothing left empty
+    /// (the dial used to sit alone at the far end of a half-empty row, the Boss: "you're wasting space"): the tip
+    /// picture with the dial beside it and Shoot on the hand's side; under them the power bar with the two small
+    /// buttons at its end.
     private var roomyStacked: some View {
         VStack(spacing: 10) {
-            HStack(alignment: .center, spacing: 12) {
+            HStack(alignment: .bottom, spacing: 12) {
                 if shootLast {
-                    tipPicker
-                    Spacer(minLength: 0)
+                    // The tip's millimetres beside its picture keep their room first.
+                    tipPicker.layoutPriority(1)
                     cueAngle
+                    Spacer(minLength: 0)
+                    roomyFireButton
                 } else {
-                    cueAngle
+                    roomyFireButton
                     Spacer(minLength: 0)
-                    tipPicker
+                    cueAngle
+                    tipPicker.layoutPriority(1)
                 }
             }
-            powerGauge
+            // The power bar across the card, the two small buttons at its end on the hand's side.
             HStack(alignment: .bottom, spacing: 10) {
                 if shootLast {
+                    powerGauge
                     moreMenu
                     tryAgainButton
-                    Spacer(minLength: 0)
-                    roomyFireButton
                 } else {
-                    roomyFireButton
-                    Spacer(minLength: 0)
                     tryAgainButton
                     moreMenu
+                    powerGauge
                 }
             }
         }

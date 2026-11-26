@@ -37,6 +37,9 @@ struct NumberTile: View {
     // 0.7.10 everyone: the tile's value as VoiceOver says it (the unit in words). Nil keeps the children combined,
     // as NotebookNumbers has always read.
     var spoken: String? = nil
+    // 0.8.1: the height the strike panel gives each tile so its even rows fill the notebook's room (nil: the tile's
+    // own minimum). A tall tile draws its figure a size up.
+    var fillHeight: CGFloat? = nil
     @Environment(\.palette) private var palette
     @Environment(\.notebookRoomy) private var roomy
     // 0.7.10 everyone: at the accessibility sizes the text grows and wraps instead of shrinking to fit.
@@ -82,7 +85,7 @@ struct NumberTile: View {
                     .minimumScaleFactor(shrink(0.7))
             }
         }
-        .frame(maxWidth: .infinity, minHeight: large ? 64 : 52)
+        .frame(maxWidth: .infinity, minHeight: fillHeight ?? (large ? 64 : 52))
         .padding(.vertical, 6)
         .padding(.horizontal, large ? 4 : 1)
         .glassEffect(.regular, in: .rect(cornerRadius: 14, style: .continuous))
@@ -112,7 +115,8 @@ struct NumberTile: View {
 
     /// The figure's font: the notebook's headline digits, or a size up in the monospaced number design for the strike.
     private var figureFont: Font {
-        large ? .system(.title3, design: .monospaced).weight(.semibold) : .headline.monospacedDigit()
+        if large, let fillHeight, fillHeight >= 96 { return .system(.title, design: .monospaced).weight(.semibold) }
+        return large ? .system(.title3, design: .monospaced).weight(.semibold) : .headline.monospacedDigit()
     }
 }
 

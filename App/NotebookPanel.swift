@@ -202,7 +202,10 @@ struct NotebookPanel: View {
 
     @ViewBuilder
     private func play(size: CGSize) -> some View {
-        if ScreenLayout.panelColumns(for: size, onHinge: onHinge) == 2 {
+        // 0.8.1: while "Your shot" is open the panel is one column at every width. Two columns put the controls card
+        // under an empty half and squeezed the strike's tiles into the other half (the Boss, 26-Nov-2026: "you're
+        // wasting space"); in one column the tiles run the full width and the controls take their one wide row.
+        if ScreenLayout.panelColumns(for: size, onHinge: onHinge) == 2 && !StrikeSlot.shows(model, aiming: showShotPanel) {
             twoColumns(size)
         } else {
             oneColumn(size)
