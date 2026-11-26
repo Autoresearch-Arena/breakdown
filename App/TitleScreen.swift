@@ -1,5 +1,15 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, plans/25-Nov-2026-front-door-and-table-view-plan.md
+//          Stage 1 and the words plan's Part A row 6: one line per row (each row's sentence is now its VoiceOver hint
+//          and a line on How to play's new "The menu" page, MenuGuidePage); the intro paragraph under the name moved to
+//          that page too. Three short groups replace one list of ten: Today (Continue, and the spot marked for Shot of
+//          the day), Ways to play (Play a game, Trick shots, Behind the 8-Ball, Tables) and More (Learn, Achievements,
+//          How to play, Options, Watch the intro, as one row of tiles). On an upright phone the menu is the game's name
+//          at the top and a sheet over the lower half, with no veil, and the table framed between them (the two edges
+//          go to the camera through MenuScreenState.uprightBand). The highlighted row is the game's own accent colour,
+//          not the system's blue. The rows' words come from MenuGuide, one place, so the menu, its hints and How to
+//          play say the same thing.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
 //          an Achievements row after Tables, with a mark of how many are earned whose symbol changes while some are
 //          new, opening the Achievements page; each marked "// 0.7.7 achievements:".)
@@ -97,7 +107,7 @@
 //          skips it: the game opens on a racked pool table with the cue in hand and one line saying how to shoot,
 //          with no opening replay first. The menu is reached from the back button on the table, and later launches
 //          open on it.)
-//          It names the game, says in one line what it is, and offers, top to bottom: Continue (whatever is on the
+//          It names the game and offers, in three groups since 0.7.10 (Today, Ways to play, More): Continue (whatever is on the
 //          table, or the saved match after a relaunch), Play (Continue match, then the computer's level and the four
 //          games against it: Eight-ball, Nine-ball, Bumper pool and Five-pin billiards; then Practice and Straight
 //          stroke), Trick shots, Learn (the lessons, offered, never pushed), Behind the 8-Ball, Tables, Watch the
@@ -156,14 +166,29 @@ final class MenuScreenState {
     /// The Play list (the computer's level and its four games, Practice, Straight stroke) replaces the main list
     /// inside the same card. The level itself lives on the model (computerLevel), shared with the Tables pages.
     var playListOpen = false
+    /// 0.7.10 frontdoor: on an upright phone the open menu is the game's name at the top and a sheet over the lower
+    /// half, with the table framed between them. The name's bottom edge and the sheet's top edge in StageSpace, written
+    /// by that layout as it is laid out (nil until measured).
+    var uprightNameBottom: Double?
+    var uprightSheetTop: Double?
 
     private init() {}
+
+    /// 0.7.10 frontdoor: the band the table is framed into on an upright phone while the menu is up (from under the
+    /// name to the top of the sheet), or nil until both edges are measured. ShowpieceView hands it to the camera in
+    /// place of the hidden title row and bottom bar.
+    var uprightBand: (top: Double, bottom: Double)? {
+        guard let top = uprightNameBottom, let bottom = uprightSheetTop, bottom > top else { return nil }
+        return (top, bottom)
+    }
 
     /// The menu closed: back to the main list, no sheet, and the entrance plays again next time.
     func menuClosed() {
         shown = false
         sheet = nil
         playListOpen = false
+        uprightNameBottom = nil
+        uprightSheetTop = nil
     }
 }
 
@@ -190,6 +215,12 @@ struct TitleScreen: View {
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
+    /// 0.7.10 frontdoor: the phone held upright (the stage says so), where the menu is a sheet over the lower half.
+    @Environment(\.phoneUpright) private var phoneUpright
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// The height the upright sheet's rows want, measured, so the sheet is only as tall as they are (and scrolls past
+    /// its cap). Starts near the usual height so the first frame is close.
+    @State private var sheetContentHeight: CGFloat = 440
     /// The menu's open screens and its entrance (see MenuScreenState). A computed read of the shared instance, so the
     /// view's memberwise initializer is unchanged and Observation tracks every property the body reads.
     private var state: MenuScreenState { .shared }
@@ -218,12 +249,8 @@ struct TitleScreen: View {
         }
     }
 
-    /// The main menu's Play, and the title of the list it opens (bug 55). Its own key: the plain "Play" is the playback
-    /// button's word and was translated as media playback ("Lecture", "Reproducir"), which is not what this opens.
-    private static var playTitle: String {
-        String(localized: "Play a game",
-               comment: "Main menu entry and the title of the list it opens: play a game against the computer, or practise. A game, never media playback.")
-    }
+    /// The main menu's Play, and the title of the list it opens (bug 55): MenuGuide.play's own key.
+    private static var playTitle: String { MenuGuide.play.title }
 
     /// True when a launch switch asks for a specific screen, in which case the menu stays out of the way.
     /// -noTitle is there for anyone who wants the table straight away. The store scenes (StoreScene.flags) put their
@@ -236,32 +263,54 @@ struct TitleScreen: View {
         return switches.contains { args.contains($0) }
     }
 
-    /// The menu's own one line about the game: the same idea the store page leads with (item 39).
-    private static var intro: String {
-        String(localized: "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.")
-    }
-
     /// How strongly the table is dimmed behind the menu. Lighter while the opening's slow Lens replay plays behind it on
     /// a later launch (item 52), so the moving trails read through the glass; the card itself stays on its own glass,
     /// so the words keep their contrast either way.
     private var veilOpacity: Double { model.menuBackdropPlaying ? 0.5 : 0.62 }
 
+    /// 0.7.10 frontdoor: the upright phone's layout (the name at the top, a sheet over the lower half). Inline (the
+    /// notebook, the open folding phone) the menu keeps its own panel.
+    private var sheetLayout: Bool { phoneUpright && !inline }
+    /// The tallest the upright sheet gets, as a share of the screen's height inside the safe area; past it the rows
+    /// scroll inside the sheet, so the table above always keeps some of the screen.
+    private static let sheetMaxShare: CGFloat = 0.66
+
     var body: some View {
         ZStack {
-            // A dimmed veil over the table so the menu reads clearly and the room is still there behind it. Inline the
-            // menu has its own panel and the table beside it stays bright.
-            if !inline { palette.ground.opacity(veilOpacity).ignoresSafeArea() }
-            ScrollView {
-                card
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 24)
-                    .frame(maxWidth: 460)
-                    .frame(maxWidth: .infinity)
+            if !inline {
+                if sheetLayout {
+                    // 0.7.10 frontdoor: no veil on the upright phone; the table above the sheet stays bright. A
+                    // near-clear layer still takes the touches, so nothing behind the menu can be aimed or zoomed, and a
+                    // soft shade at the top keeps the name readable over the room.
+                    palette.ground.opacity(0.001).ignoresSafeArea().accessibilityHidden(true)
+                    LinearGradient(colors: [palette.ground.opacity(0.85), palette.ground.opacity(0)],
+                                   startPoint: .top, endPoint: .bottom)
+                        .frame(height: 200)
+                        .frame(maxHeight: .infinity, alignment: .top)
+                        .ignoresSafeArea(edges: .top)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                } else {
+                    // A dimmed veil over the table so the menu reads clearly and the room is still there behind it.
+                    // Inline the menu has its own panel and the table beside it stays bright.
+                    palette.ground.opacity(veilOpacity).ignoresSafeArea()
+                }
             }
-            // Centred while it fits, scrolls when it does not. A card forced to the screen's height squeezed the
-            // description down to one cut-off line.
-            .defaultScrollAnchor(.center, for: .alignment)
-            .scrollBounceBehavior(.basedOnSize)
+            if sheetLayout {
+                uprightMenu
+            } else {
+                ScrollView {
+                    card
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 24)
+                        .frame(maxWidth: 460)
+                        .frame(maxWidth: .infinity)
+                }
+                // Centred while it fits, scrolls when it does not. A card forced to the screen's height squeezed the
+                // description down to one cut-off line.
+                .defaultScrollAnchor(.center, for: .alignment)
+                .scrollBounceBehavior(.basedOnSize)
+            }
         }
         .opacity(state.shown ? 1 : 0)
         .transition(.opacity)
@@ -284,45 +333,88 @@ struct TitleScreen: View {
         .sheet(item: sheetItem) { shown in menuSheet(shown) }
     }
 
-    private var card: some View {
-        VStack(spacing: 28) {
-            VStack(spacing: 10) {
-                // The wordmark and tagline are the title; VoiceOver reads the wordmark as the screen's heading.
-                Text("BREAKDOWN")
-                    .font(Theme.display)
-                    .tracking(tracking)
-                    .foregroundStyle(palette.paper)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                    .accessibilityAddTraits(.isHeader)
-                Text("watch the physics think")
-                    .font(Theme.tagline)
-                    .foregroundStyle(palette.accent)
-                    .opacity(state.shown ? 1 : 0)
-                    .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: state.shown)
-                Text(Self.intro)
-                    .font(Theme.copy)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 2)
-            }
+    /// The game's name and its tagline. VoiceOver reads the wordmark as the screen's heading.
+    private var wordmark: some View {
+        VStack(spacing: sheetLayout ? 4 : 10) {
+            Text("BREAKDOWN")
+                .font(Theme.display)
+                .tracking(tracking)
+                .foregroundStyle(palette.paper)
+                .minimumScaleFactor(0.6)
+                .lineLimit(1)
+                .accessibilityAddTraits(.isHeader)
+            Text("watch the physics think")
+                .font(Theme.tagline)
+                .foregroundStyle(palette.accent)
+                .opacity(state.shown ? 1 : 0)
+                .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: state.shown)
+        }
+    }
 
-            Group {
-                if let request = pendingMatch {
-                    replaceList(request)
-                } else if state.playListOpen {
-                    playList
-                } else {
-                    mainList
+    /// Whichever list is up: the replace question, the Play list or the main list, crossfading between them.
+    private var menuContent: some View {
+        Group {
+            if let request = pendingMatch {
+                replaceList(request)
+            } else if state.playListOpen {
+                playList
+            } else {
+                mainList
+            }
+        }
+        .transition(.opacity)
+        .animation(reduceMotion ? nil : .snappy, value: state.playListOpen)
+        .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
+    }
+
+    /// Everywhere but the upright phone: the name and the lists on one glass card (centred over a dimmed table, or as
+    /// the notebook's menu page beside a bright one).
+    private var card: some View {
+        VStack(spacing: 24) {
+            wordmark
+            menuContent
+        }
+        .padding(24)
+        .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
+    }
+
+    /// 0.7.10 frontdoor: the upright phone. The name sits at the top over the room, the lists are a glass sheet over the
+    /// lower half that reaches under the home indicator, and the table is framed between the two: both edges are
+    /// written to MenuScreenState for the camera. The sheet is as tall as its rows and never taller than
+    /// sheetMaxShare of the screen; the Play list, which is longer, scrolls inside it.
+    private var uprightMenu: some View {
+        GeometryReader { geo in
+            VStack(spacing: 0) {
+                wordmark
+                    .padding(.top, 6)
+                    .padding(.horizontal, 16)
+                    .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { bottom in
+                        if state.uprightNameBottom != bottom { state.uprightNameBottom = bottom }
+                    }
+                Spacer(minLength: 12)
+                ScrollView {
+                    menuContent
+                        .padding(.horizontal, 16)
+                        .padding(.top, 18)
+                        .padding(.bottom, 10)
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
+                            if abs(sheetContentHeight - height) > 0.5 { sheetContentHeight = height }
+                        }
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .frame(height: min(max(sheetContentHeight, 1), geo.size.height * Self.sheetMaxShare))
+                .frame(maxWidth: .infinity)
+                .background(alignment: .top) {
+                    Color.clear
+                        .glassEffect(.regular, in: UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28,
+                                                                          style: .continuous))
+                        .ignoresSafeArea(edges: .bottom)
+                }
+                .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { top in
+                    if state.uprightSheetTop != top { state.uprightSheetTop = top }
                 }
             }
-            .transition(.opacity)
-            .animation(reduceMotion ? nil : .snappy, value: state.playListOpen)
-            .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
         }
-        .padding(28)
-        .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
     }
 
     // MARK: The main list
@@ -335,49 +427,73 @@ struct TitleScreen: View {
     private var continueHighlighted: Bool { resumable }
 
     private var mainList: some View {
-        VStack(spacing: 10) {
-            // Continue first whenever something is in progress. Return presses whichever entry is highlighted.
-            if model.gameInProgress {
-                MenuRow(title: "Continue", verbatimLine: liveLine, symbol: "play.fill", prominent: continueHighlighted) {
-                    model.closeMenu()
+        VStack(alignment: .leading, spacing: 16) {
+            // Today: what to go back to. Only drawn when it has a row, so a fresh launch never shows an empty heading.
+            if hasTodayRows {
+                MenuGroup(title: String(localized: "Today",
+                                        comment: "Main menu group heading: what to play today (today's shot, or the game you can go back to)")) {
+                    // 0.7.10 frontdoor: Shot of the day row goes here (wave 2)
+                    // Continue first whenever something is in progress. Return presses whichever entry is highlighted.
+                    if model.gameInProgress {
+                        MenuRow(title: "Continue", verbatimLine: liveLine, symbol: "play.fill", prominent: continueHighlighted) {
+                            model.closeMenu()
+                        }
+                        .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
+                    } else if model.hasSavedMatch {
+                        MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: continueHighlighted) {
+                            continueMatch()
+                        }
+                        .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
+                    }
                 }
-                .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
-            } else if model.hasSavedMatch {
-                MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: continueHighlighted) {
-                    continueMatch()
-                }
-                .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
             }
-            MenuRow(verbatimTitle: Self.playTitle,
-                    verbatimLine: String(localized: "Four games against the computer, or practise on your own."),
-                    symbol: "circle.grid.cross", prominent: playHighlighted) { state.playListOpen = true }
-                .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
-            // 0.7.4: the trick shots sit directly under Play, where people look first: they are the coolest thing the
-            // table shows. The lessons follow as an ordinary entry.
-            MenuRow(title: "Trick shots", line: "Watch a shot that looks impossible, see why it works, then make it.",
-                    symbol: "wand.and.sparkles", mark: trickMark) { model.showList(.tricks) }
-            MenuRow(title: "Learn", line: "Six short lessons: stop, follow, draw, cut, curve and jump.",
-                    symbol: "graduationcap", mark: lessonMark) { model.showList(.lessons) }
-            MenuRow(title: "Behind the 8-Ball", line: "Escape the nastiest spots in eight-ball and score each way out.",
-                    symbol: "8.circle.fill", mark: medalMark) { model.showList(.eightBall) }
-            MenuRow(title: "Tables", line: "Other tables, each a game of its own.", symbol: "square.grid.2x2") {
-                openPage(.tables, inline: onTables)
+            MenuGroup(title: Self.waysToPlayTitle) {
+                MenuRow(entry: MenuGuide.play, prominent: playHighlighted) { state.playListOpen = true }
+                    .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
+                // 0.7.4: the trick shots sit directly under Play, where people look first: they are the coolest thing the
+                // table shows.
+                MenuRow(entry: MenuGuide.tricks, mark: trickMark) { model.showList(.tricks) }
+                MenuRow(entry: MenuGuide.eightBall, mark: medalMark) { model.showList(.eightBall) }
+                MenuRow(entry: MenuGuide.tables) { openPage(.tables, inline: onTables) }
             }
-            // 0.7.7 achievements: the list of physics the player has pulled off.
-            MenuRow(title: "Achievements", line: "Physics you have pulled off, with the shot that did it.",
-                    symbol: "rosette", mark: achievementMark) {
-                openPage(.achievements, inline: onAchievements)
+            MenuGroup(title: String(localized: "More", comment: "Main menu group heading: the lessons, achievements, help, options and the intro")) {
+                moreEntries
             }
-            MenuRow(title: "Watch the intro", line: "The opening break again, slowed down under the Physics Lens.",
-                    symbol: "sparkles") {
-                model.trickMode.end(); model.eightBallMode.end(); model.watchBreak()
-            }
-            MenuRow(title: "How to play", line: "The controls, the Lens and the rules of each game.",
-                    symbol: "questionmark.circle") {
-                openPage(.howTo, inline: onHowTo)
-            }
-            MenuRow(title: "Options", line: "Sound, vibration, the aim guide and the tips.", symbol: "gearshape") {
-                openPage(.options, inline: onOptions)
+        }
+    }
+
+    /// The Today group has a row: the game on the table, or a saved match. (Wave 2 adds today's shot to this test.)
+    private var hasTodayRows: Bool { model.gameInProgress || model.hasSavedMatch }
+
+    /// The second group's heading. Its own key: the plain "Play" is the playback button's word (bug 55).
+    private static var waysToPlayTitle: String {
+        String(localized: "Ways to play",
+               comment: "Main menu group heading over Play a game, Trick shots, Behind the 8-Ball and Tables")
+    }
+
+    /// More: the lessons (offered, never pushed), the achievements, How to play, Options and the intro, as one row of
+    /// small tiles so the whole menu fits on an upright phone's lower half. From the second size above the default a
+    /// tile is too small for its name, so they become ordinary one-line rows.
+    @ViewBuilder private var moreEntries: some View {
+        let learn: () -> Void = { model.showList(.lessons) }
+        // 0.7.7 achievements: the list of physics the player has pulled off.
+        let achievements: () -> Void = { openPage(.achievements, inline: onAchievements) }
+        let howTo: () -> Void = { openPage(.howTo, inline: onHowTo) }
+        let options: () -> Void = { openPage(.options, inline: onOptions) }
+        let intro: () -> Void = { model.trickMode.end(); model.eightBallMode.end(); model.watchBreak() }
+        if typeSize >= .xxLarge {
+            MenuRow(entry: MenuGuide.learn, mark: lessonMark, action: learn)
+            MenuRow(entry: MenuGuide.achievements, mark: achievementMark, action: achievements)
+            MenuRow(entry: MenuGuide.howTo, action: howTo)
+            MenuRow(entry: MenuGuide.options, action: options)
+            MenuRow(entry: MenuGuide.watchIntro, action: intro)
+        } else {
+            HStack(spacing: 6) {
+                MenuTile(entry: MenuGuide.learn, mark: lessonMark, action: learn)
+                MenuTile(entry: MenuGuide.achievements, mark: achievementMark, action: achievements)
+                MenuTile(entry: MenuGuide.howTo, action: howTo)
+                MenuTile(entry: MenuGuide.options, action: options)
+                MenuTile(entry: MenuGuide.watchIntro, action: intro)
             }
         }
     }
@@ -607,10 +723,92 @@ struct ComputerLevelPicker: View {
     }
 }
 
+// MARK: The menu's entries, in words
+
+/// One main-menu entry as words: its symbol, its name and the one sentence saying what it opens.
+struct MenuEntry {
+    let symbol: String
+    let title: String
+    let line: String
+}
+
+/// 0.7.10 frontdoor: the main menu's entries in one place. The menu shows each name on one line and gives its sentence
+/// to VoiceOver as the hint; How to play's "The menu" page (MenuGuidePage) lists every name with its sentence. The keys
+/// are the ones the menu has always used, so the translations carry over.
+enum MenuGuide {
+    /// The menu's one line about the game (item 39), the lead of the menu page in How to play since 0.7.10.
+    static var intro: String {
+        String(localized: "A pool table that shows its own physics. Play four games against the computer, and see why every shot went where it did.")
+    }
+
+    /// Play a game: its own key (bug 55), since the plain "Play" is the playback button's word.
+    static var play: MenuEntry {
+        MenuEntry(symbol: "circle.grid.cross",
+                  title: String(localized: "Play a game",
+                                comment: "Main menu entry and the title of the list it opens: play a game against the computer, or practise. A game, never media playback."),
+                  line: String(localized: "Four games against the computer, or practise on your own."))
+    }
+    static var tricks: MenuEntry {
+        MenuEntry(symbol: "wand.and.sparkles", title: String(localized: "Trick shots"),
+                  line: String(localized: "Watch a shot that looks impossible, see why it works, then make it."))
+    }
+    static var eightBall: MenuEntry {
+        MenuEntry(symbol: "8.circle.fill", title: String(localized: "Behind the 8-Ball"),
+                  line: String(localized: "Escape the nastiest spots in eight-ball and score each way out."))
+    }
+    static var tables: MenuEntry {
+        MenuEntry(symbol: "square.grid.2x2", title: String(localized: "Tables"),
+                  line: String(localized: "Other tables, each a game of its own."))
+    }
+    static var learn: MenuEntry {
+        MenuEntry(symbol: "graduationcap", title: String(localized: "Learn"),
+                  line: String(localized: "Six short lessons: stop, follow, draw, cut, curve and jump."))
+    }
+    static var achievements: MenuEntry {
+        MenuEntry(symbol: "rosette", title: String(localized: "Achievements"),
+                  line: String(localized: "Physics you have pulled off, with the shot that did it."))
+    }
+    static var howTo: MenuEntry {
+        MenuEntry(symbol: "questionmark.circle", title: String(localized: "How to play"),
+                  line: String(localized: "The controls, the Lens and the rules of each game."))
+    }
+    static var options: MenuEntry {
+        MenuEntry(symbol: "gearshape", title: String(localized: "Options"),
+                  line: String(localized: "Sound, vibration, the aim guide and the tips."))
+    }
+    static var watchIntro: MenuEntry {
+        MenuEntry(symbol: "sparkles", title: String(localized: "Watch the intro"),
+                  line: String(localized: "The opening break again, slowed down under the Physics Lens."))
+    }
+
+    /// Every entry, in the menu's order, for the menu page in How to play.
+    static var all: [MenuEntry] { [play, tricks, eightBall, tables, learn, achievements, howTo, options, watchIntro] }
+}
+
+// MARK: A group of entries
+
+/// 0.7.10 frontdoor: a short heading over a few entries (Today, Ways to play, More).
+private struct MenuGroup<Content: View>: View {
+    let title: String
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(verbatim: title)
+                .font(Theme.label)
+                .foregroundStyle(.secondary)
+                .accessibilityAddTraits(.isHeader)
+            content
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
 // MARK: One menu entry
 
-/// A menu entry: symbol, name, one short line saying what it is, and an optional small progress mark at the end. The
-/// whole row is one button; VoiceOver reads the name, then the progress, and offers the line as the hint.
+/// A menu entry: symbol, name and an optional small progress mark at the end, on one line (0.7.10: the sentence saying
+/// what it is is no longer drawn; VoiceOver offers it as the hint, and How to play's menu page lists it). The whole row
+/// is one button; VoiceOver reads the name, then the progress, then the hint.
 private struct MenuRow: View {
     struct Mark {
         let symbol: String
@@ -651,6 +849,12 @@ private struct MenuRow: View {
                   prominent: prominent, mark: mark, action: action)
     }
 
+    /// 0.7.10 frontdoor: one of the main menu's entries, its words from MenuGuide.
+    init(entry: MenuEntry, prominent: Bool = false, mark: Mark? = nil, action: @escaping () -> Void) {
+        self.init(verbatimTitle: entry.title, verbatimLine: entry.line, symbol: entry.symbol, prominent: prominent,
+                  mark: mark, action: action)
+    }
+
     private init(titleText: Text, lineText: Text, symbol: String, prominent: Bool, mark: Mark?,
                  action: @escaping () -> Void) {
         self.title = titleText
@@ -668,21 +872,14 @@ private struct MenuRow: View {
                     .font(.title3)
                     .frame(width: 28)
                     .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 2) {
-                    // Wraps instead of ending in an ellipsis (bug 57): two lines, every line it needs at the
-                    // accessibility sizes. A name too long even for that shrinks a little before it is cut.
-                    title
-                        .font(Theme.heading)
-                        .lineLimit(typeSize.isAccessibilitySize ? nil : 2)
-                        .minimumScaleFactor(0.8)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                    line
-                        .font(Theme.body)
-                        .opacity(0.75)
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                // One line at the default sizes (0.7.10): a long name shrinks a little rather than wrapping. At the
+                // accessibility sizes it wraps onto every line it needs, never ending in an ellipsis (bug 57).
+                title
+                    .font(Theme.heading)
+                    .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                    .minimumScaleFactor(0.75)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 if let mark {
                     HStack(spacing: 4) {
@@ -696,18 +893,72 @@ private struct MenuRow: View {
                     .fixedSize()
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            // Thirty-six points of row inside the button's own padding: a touch target of at least 44 points, with
+            // ten rows still fitting the lower part of an upright phone.
+            .frame(maxWidth: .infinity, minHeight: 36, alignment: .leading)
             .contentShape(Rectangle())
         }
-        .controlSize(.large)
+        .controlSize(.regular)
         .accessibilityLabel(title)
         .accessibilityValue(mark.map { Text(verbatim: $0.spoken) } ?? Text(verbatim: ""))
         .accessibilityHint(line)
         if prominent {
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
+            // 0.7.10 frontdoor (words plan Part A row 6): the game's own accent, as the Shoot button, not the system's
+            // blue; dark words on it, since white on the bright cyan is too faint.
+            button.buttonStyle(.glassProminent).tint(palette.accent).foregroundStyle(palette.ground)
         } else {
             button.buttonStyle(.glass)
         }
+    }
+}
+
+/// 0.7.10 frontdoor: one of the More group's entries as a small tile: its symbol over its name, with its progress mark
+/// on the corner. Five fit across an upright phone. VoiceOver hears the same name, progress and hint as a row.
+private struct MenuTile: View {
+    let entry: MenuEntry
+    var mark: MenuRow.Mark? = nil
+    let action: () -> Void
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: entry.symbol)
+                    .font(.title3)
+                    .foregroundStyle(palette.accent)
+                    .frame(height: 24)
+                    .accessibilityHidden(true)
+                // A short name; the longest ones ("Achievements", "Watch the intro") take two lines or shrink a little.
+                Text(verbatim: entry.title)
+                    .font(Theme.label)
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.6)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, minHeight: 58)
+            .padding(.vertical, 6)
+            .padding(.horizontal, 3)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 14, style: .continuous))
+        .overlay(alignment: .topTrailing) {
+            if let mark {
+                Text(verbatim: mark.text)
+                    .font(Theme.number)
+                    .padding(.horizontal, 5)
+                    .padding(.vertical, 2)
+                    .background(Capsule().fill(palette.track))
+                    .fixedSize()
+                    .offset(x: 3, y: -5)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
+        }
+        .accessibilityLabel(Text(verbatim: entry.title))
+        .accessibilityValue(mark.map { Text(verbatim: $0.spoken) } ?? Text(verbatim: ""))
+        .accessibilityHint(Text(verbatim: entry.line))
     }
 }
 
@@ -749,6 +1000,12 @@ struct HowToPlaySheet: View {
                         ControlsPage()
                     } label: {
                         rulesLink("Controls", line: "Every gesture, key and button.", symbol: "hand.tap")
+                    }
+                    // 0.7.10 frontdoor: the main menu's entries with the sentence each one used to carry on the menu.
+                    NavigationLink {
+                        MenuGuidePage()
+                    } label: {
+                        rulesLink("The menu", line: "What each entry on the main menu opens.", symbol: "list.bullet")
                     }
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Rules")
@@ -895,6 +1152,48 @@ private struct ControlsPage: View {
             .padding(24)
         }
         .navigationTitle("Controls")
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
+    }
+}
+
+// MARK: The menu, explained
+
+/// 0.7.10 frontdoor: How to play's page about the main menu. The menu shows each entry's name on one line; this page
+/// keeps what the menu used to say under each name, and the menu's own line about the game, which used to sit under the
+/// game's name. Words from MenuGuide, so the menu and this page never disagree.
+private struct MenuGuidePage: View {
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(verbatim: MenuGuide.intro)
+                    .font(Theme.copy)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                ForEach(Array(MenuGuide.all.enumerated()), id: \.offset) { _, entry in
+                    HStack(alignment: .firstTextBaseline, spacing: 14) {
+                        Image(systemName: entry.symbol)
+                            .font(.title3)
+                            .foregroundStyle(palette.accent)
+                            .frame(width: 28)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(verbatim: entry.title).font(Theme.heading)
+                            Text(verbatim: entry.line)
+                                .font(Theme.copy)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+            .padding(24)
+        }
+        .navigationTitle("The menu")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
         #endif

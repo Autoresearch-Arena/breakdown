@@ -28,6 +28,12 @@
 //          (along the long side of the space it is given, upright when that space is taller than wide), and
 //          checkedWindows plus fitProblems hold the window shapes and the invariant check that Tools/framing-check runs
 //          for every iPad and Mac shape, so a unit-test target can call the same check later).
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, Stage 2: coverage(), how much of its half the
+//          table's rail outline covers at the warm angle, so Tools/framing-check can print the measure the plan asks
+//          for and hold the upright iPad to it. The fit itself is unchanged; the dark bands on an upright iPad came from
+//          the half's shape (NotebookGeometry.belowPanel now sizes it), not from the camera. Stage 1: a request may lay
+//          the table across a tall view (FramingRequest.liesAcross, tableYaw(for:) on a request), for the band above the
+//          upright phone's menu sheet. railReach, the rails' reach past the cloth, now lives here.)
 // SRP/DRY check: Pass - framing maths only; replaces the older single-formula framing that lived in TableCamera.
 import CoreGraphics
 import Foundation
@@ -69,6 +75,9 @@ struct FramingRequest: Equatable {
     /// Top edge of the control strip, or nil when the controls are somewhere else (the side column) and the table may
     /// run down to the bottom safe area.
     var controlsTop: Double?
+    /// 0.7.10 front door: lay the table across the view even when the view is taller than wide. Asked for only by the
+    /// upright phone's main menu, whose sheet over the lower half leaves a wide band above it (see tableYaw(for:)).
+    var liesAcross: Bool = false
 }
 
 /// The two rectangles the table is fitted to. `inner` holds the playing area, `outer` the whole table with its rails.
@@ -270,6 +279,21 @@ enum CameraFraming {
         size.width < size.height ? .pi / 2 : 0
     }
 
+    /// 0.7.10 front door: the table's orientation for a request. The view's shape decides, as above, unless the request
+    /// asks for the table to lie across (FramingRequest.liesAcross): the upright phone's main menu does, since its sheet
+    /// over the lower half leaves a band wider than tall above it, where a table standing up was a third of the size.
+    /// Asked for explicitly rather than read from the free space's shape, so no other layout can turn the table while
+    /// it is being played (a tall aiming panel on the phone must never lay it across mid-shot).
+    /// TableCamera uses this each frame; TableScene tells the Ride map the same answer, and LensPlan draws by it.
+    static func tableYaw(for request: FramingRequest) -> Float {
+        request.liesAcross ? 0 : tableYaw(for: request.size)
+    }
+
+    /// How far the rails and their wood reach past the cloth's edge, metres: the table's outline for the framing
+    /// (TableCamera) and the shape the notebook's split is sized for (NotebookGeometry.tableShape spells it out, since
+    /// the framing check compiles that file on its own).
+    static let railReach: Float = 0.21
+
     // MARK: Checking the fit (Tools/framing-check, and the app's unit tests once that target exists)
 
     /// A window shape the fit is checked on: the whole window's size in points and its safe-area insets. The checker
@@ -346,6 +370,25 @@ enum CameraFraming {
             }
         }
         return problems
+    }
+
+    /// How much of the 3D view the table's rail outline covers at the warm angle chosen for this shape, as shares of
+    /// the view's width and height (0 to 1), projected through `project` like fitProblems. The plan's measure for
+    /// "the table fills its half": near 1 on both means the table reaches every edge; a low height share is the dark
+    /// bands above and below it. Read by Tools/framing-check.
+    static func coverage(size: CGSize, framing: Framing, table: TableExtents, fovDegrees: Float) -> (width: Double, height: Double) {
+        let yaw = tableYaw(for: size)
+        let warm = warmElevation(size: size, framing: framing, yaw: yaw, table: table, fovDegrees: fovDegrees)
+        let p = pose(size: size, framing: framing, yaw: yaw, elevation: warm, table: table, fovDegrees: fovDegrees)
+        var left = Double.infinity, right = -Double.infinity, top = Double.infinity, bottom = -Double.infinity
+        for sx: Float in [-1, 1] { for sz: Float in [-1, 1] { for y in [Float(0), table.rimHeight] {
+            let q = project(SIMD3(sx * table.halfX, y, sz * table.halfZ), position: p.position, target: p.target,
+                            size: size, fovDegrees: fovDegrees)
+            left = min(left, Double(q.x)); right = max(right, Double(q.x))
+            top = min(top, Double(q.y)); bottom = max(bottom, Double(q.y))
+        } } }
+        let w = max(1, Double(size.width)), h = max(1, Double(size.height))
+        return ((right - left) / w, (bottom - top) / h)
     }
 
     /// Projects a world point to view points (origin top left) for a camera at `position` looking toward `target`

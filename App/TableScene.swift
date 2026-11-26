@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: the Ride map is told the table's orientation by
+//          the camera's own rule, CameraFraming.tableYaw(for:), so a table the request lays across reads right.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md, wiring
 //          only: bulletCue from TableStage makes the two touching balls glassy, steers BulletTimeCamera and hands the
 //          frozen hit to the Lens's contact drawing, whose parent (heldRoot) now sits beside the Lens root.)
@@ -440,8 +442,9 @@ final class TableScene {
         zoom.rideHold = shotCamera.flying || bulletCamera.flying
         // The title-row map's wedge: which way the camera faces on the table while the ride has the view.
         if !isOffscreen {  // 0.7.7 clips: the offscreen clip table leaves the live title-row map alone
+            // 0.7.10 frontdoor: the same rule the camera turns the table by (the request can lay it across).
             RideLive.shared.update(flying: shotCamera.flying, forward: camera.forward,
-                                   portrait: request.size.width < request.size.height)
+                                   portrait: CameraFraming.tableYaw(for: request) != 0)
         }
         // With the camera placed: the lamp shade's fade and each ball's picture for the size it now is on screen.
         detail?.view(eye: camera.eye, forward: camera.forward, focal: camera.focal)

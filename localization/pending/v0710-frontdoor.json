@@ -1,0 +1,230 @@
+{
+ "keys": [
+  "Today",
+  "Ways to play",
+  "The menu",
+  "What each entry on the main menu opens."
+ ],
+ "translations": [
+  {
+   "culture": "ar",
+   "key": "Today",
+   "text": "اليوم"
+  },
+  {
+   "culture": "de",
+   "key": "Today",
+   "text": "Heute"
+  },
+  {
+   "culture": "es",
+   "key": "Today",
+   "text": "Hoy"
+  },
+  {
+   "culture": "fr",
+   "key": "Today",
+   "text": "Aujourd'hui"
+  },
+  {
+   "culture": "it",
+   "key": "Today",
+   "text": "Oggi"
+  },
+  {
+   "culture": "ja",
+   "key": "Today",
+   "text": "今日"
+  },
+  {
+   "culture": "ko",
+   "key": "Today",
+   "text": "오늘"
+  },
+  {
+   "culture": "pt",
+   "key": "Today",
+   "text": "Hoje"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Today",
+   "text": "Hoje"
+  },
+  {
+   "culture": "ru",
+   "key": "Today",
+   "text": "Сегодня"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Today",
+   "text": "今天"
+  },
+  {
+   "culture": "ar",
+   "key": "Ways to play",
+   "text": "طرق اللعب"
+  },
+  {
+   "culture": "de",
+   "key": "Ways to play",
+   "text": "Spielarten"
+  },
+  {
+   "culture": "es",
+   "key": "Ways to play",
+   "text": "Formas de jugar"
+  },
+  {
+   "culture": "fr",
+   "key": "Ways to play",
+   "text": "Façons de jouer"
+  },
+  {
+   "culture": "it",
+   "key": "Ways to play",
+   "text": "Modi di giocare"
+  },
+  {
+   "culture": "ja",
+   "key": "Ways to play",
+   "text": "遊び方"
+  },
+  {
+   "culture": "ko",
+   "key": "Ways to play",
+   "text": "플레이 방법"
+  },
+  {
+   "culture": "pt",
+   "key": "Ways to play",
+   "text": "Formas de jogar"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Ways to play",
+   "text": "Formas de jogar"
+  },
+  {
+   "culture": "ru",
+   "key": "Ways to play",
+   "text": "Как играть"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Ways to play",
+   "text": "玩法"
+  },
+  {
+   "culture": "ar",
+   "key": "The menu",
+   "text": "القائمة"
+  },
+  {
+   "culture": "de",
+   "key": "The menu",
+   "text": "Das Menü"
+  },
+  {
+   "culture": "es",
+   "key": "The menu",
+   "text": "El menú"
+  },
+  {
+   "culture": "fr",
+   "key": "The menu",
+   "text": "Le menu"
+  },
+  {
+   "culture": "it",
+   "key": "The menu",
+   "text": "Il menu"
+  },
+  {
+   "culture": "ja",
+   "key": "The menu",
+   "text": "メニュー"
+  },
+  {
+   "culture": "ko",
+   "key": "The menu",
+   "text": "메뉴"
+  },
+  {
+   "culture": "pt",
+   "key": "The menu",
+   "text": "O menu"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The menu",
+   "text": "O menu"
+  },
+  {
+   "culture": "ru",
+   "key": "The menu",
+   "text": "Меню"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The menu",
+   "text": "菜单"
+  },
+  {
+   "culture": "ar",
+   "key": "What each entry on the main menu opens.",
+   "text": "ما يفتحه كل خيار في القائمة الرئيسية."
+  },
+  {
+   "culture": "de",
+   "key": "What each entry on the main menu opens.",
+   "text": "Was jeder Eintrag im Hauptmenü öffnet."
+  },
+  {
+   "culture": "es",
+   "key": "What each entry on the main menu opens.",
+   "text": "Qué abre cada opción del menú principal."
+  },
+  {
+   "culture": "fr",
+   "key": "What each entry on the main menu opens.",
+   "text": "Ce qu'ouvre chaque entrée du menu principal."
+  },
+  {
+   "culture": "it",
+   "key": "What each entry on the main menu opens.",
+   "text": "Cosa apre ogni voce del menu principale."
+  },
+  {
+   "culture": "ja",
+   "key": "What each entry on the main menu opens.",
+   "text": "メインメニューの各項目で開くもの。"
+  },
+  {
+   "culture": "ko",
+   "key": "What each entry on the main menu opens.",
+   "text": "메인 메뉴의 각 항목이 여는 화면."
+  },
+  {
+   "culture": "pt",
+   "key": "What each entry on the main menu opens.",
+   "text": "O que abre cada opção do menu principal."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "What each entry on the main menu opens.",
+   "text": "O que cada opção do menu principal abre."
+  },
+  {
+   "culture": "ru",
+   "key": "What each entry on the main menu opens.",
+   "text": "Что открывает каждый пункт главного меню."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "What each entry on the main menu opens.",
+   "text": "主菜单上每一项打开的内容。"
+  }
+ ]
+}

@@ -12,12 +12,20 @@ Edited: Claude Sonnet 5.5 Medium, 21-November-2026 (iPhone Duo sets: duo-inner, 
 Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, bug plan items 40 and 54: the new ten frames and their -store
          launch flags, the one-time settings pinned for the new game, the iPad crop for the notebook layout, the
          real-table frame re-shot and replaced first, and uploading every device with scripts/store-upload.py.)
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: the store page's order now leads with the unusual,
+         08-tables and 10-jump first; the frame names are unchanged. The upright iPad's table crop follows its new split.)
 SRP/DRY check: Pass - this folder holds only the screenshot framing script and the headlines. The listing text is in
          store/listing; the scenes themselves are the app's own launch flags, listed once in scripts/store-shots.sh.
 -->
 # Store screenshots
 
 Ten frames per language and device. Each frame is one moment of the game with a short headline above it.
+
+Since 0.7.10 the store page shows them in this order, which leads with what no other pool game has: 08-tables, 10-jump,
+01-lens, 02-match, 03-lesson, 04-real-table, 05-ruling, 06-drill, 07-surfaces, 09-ride. The names keep their old
+numbers, so the raw files and SCENES= still match; the order is compose.swift's frame list and the key order of
+captions/<language>.json. Three new scenes go in front once they exist (the Lens on a bumper pool shot, the strike
+panel, the Shot of the day result). The table below keeps the frames by name.
 
 | Frame | What it shows | Launch flags |
 |---|---|---|

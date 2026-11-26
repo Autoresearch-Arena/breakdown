@@ -16,6 +16,13 @@
 //          light painted on, so the far wall in the low Ride view reads as a dim wall instead of a void.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7: the room floor is a cool dark carpet, not wooden boards; the
 //          Boss found the room's wood fighting the table's rails.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, plans/25-Nov-2026-front-door-and-table-view-plan.md
+//          Stage 3: the floor no longer reads black from the usual camera. roomFloorImage writes finished screen colour
+//          (sRGB bytes) for an unlit material, and it wrote at most about 0.13 there, so its brightest boards were near
+//          black on screen; worse, a "table shadow" took the floor down to a tenth of that in a broad ring round the
+//          rails, which is exactly the strip of floor the overhead views show. Now the lamp's light lies on the floor
+//          as a band round the table (bright beside the rails, falling off into dark within about two metres), the
+//          table's shadow is the soft contact under its edge, and the far boards keep the old level beside the walls.)
 // PURPOSE: Draws the table's surface pictures in code so no image file ships: a woven billiard cloth with brushed
 //          nap and faint wear, walnut wood grain with pores, the dark floor that runs to the room's walls, the
 //          pocket-wall gradient that makes a well read as deep, and the other playing beds of the Surface menu.
@@ -474,11 +481,27 @@ enum SurfaceTextures {
                 let dist = (wx * wx + wz * wz).squareRoot()
                 // Pool of light: bright near the middle, falling off smoothly.
                 let pool = exp(-pow(dist / 2.6, 2))
-                // Table shadow: distance outside the table's footprint, softened over about half a metre.
-                let ox = max(0, abs(wx) - tableHalf.x + 0.1), oz = max(0, abs(wz) - tableHalf.y + 0.1)
-                let outside = (ox * ox + oz * oz).squareRoot()
-                let shadowMask = max(0, min(1, 1 - outside / 0.55))
-                let shade = 1 - 0.9 * shadowMask * shadowMask * (3 - 2 * shadowMask)
+                // 0.7.10 front door: distance from the table's outer edge (0 under the table), for the lamp's band of
+                // light round it and for the soft shadow right under the edge.
+                let ex = max(0, abs(wx) - tableHalf.x), ez = max(0, abs(wz) - tableHalf.y)
+                let edge = (ex * ex + ez * ez).squareRoot()
+                // The lamp's light on the floor round the table, as the overhead views see it: full beside the rails,
+                // a third of that a metre out, gone into the dark by about two metres (the edges of those views).
+                let band = exp(-pow(edge / 1.0, 2))
+                // Table shadow: dark under the table (only the low Ride views see under it), and a soft contact
+                // shadow just outside its edge, at most half dark and gone a quarter of a metre out. (Until 0.7.10 it
+                // reached half a metre out at nine tenths dark, so the floor the overhead views show read black.)
+                // Under the table it darkens from the contact shadow's half at the edge to a tenth over a quarter metre,
+                // so the floor has no step on the table's outline (the low Ride views look across it).
+                let inside = min(tableHalf.x - abs(wx), tableHalf.y - abs(wz))
+                let shade: Float
+                if inside > 0 {
+                    let k = min(1, inside / 0.25)
+                    shade = 0.5 - 0.4 * k * k * (3 - 2 * k)
+                } else {
+                    let contact = max(0, min(1, 1 - edge / 0.25))
+                    shade = 1 - 0.5 * contact * contact * (3 - 2 * contact)
+                }
                 // Dark wool carpet: a fine, even speckle and no lines at all. (Until 0.7.7 this was dark oiled boards;
                 // seen from above, their brown planks ran beside the rails and read as more wood next to the table's
                 // own, so the table's edge got lost. Only the table is wood now.)
@@ -491,7 +514,10 @@ enum SurfaceTextures {
                 let toWall = max(0, min(room.x - abs(wx), room.y - abs(wz)))
                 let k = min(1, toWall / 0.6)
                 let nearWall = 0.55 + 0.45 * k * k * (3 - 2 * k)
-                let v = (0.20 * pool * shade + ambient * shade) * tone * nearWall
+                // The band on top of the old pool and bounce. Beside the rails this comes to about 0.3 of full white
+                // on screen (a dim slate grey, well under the lit cloth), a metre out about half that, and by the walls
+                // the old level, which the Ride view's walls were matched to (wallSpillImage).
+                let v = (0.32 * band * shade + 0.20 * pool * shade + ambient * shade) * tone * nearWall
                 // A cool slate grey, away from the rails' warm brown, so the table's edge stands clear of the floor.
                 r.set(x, y, v * 0.60 + 0.004, v * 0.66 + 0.004, v * 0.72 + 0.005)
             }

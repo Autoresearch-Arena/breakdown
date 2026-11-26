@@ -1,4 +1,6 @@
 {
+  "08-tables": "Bumper pool, billard à cinq quilles et billard de bar",
+  "10-jump": "Coincé derrière la 8 ? Saute-la.",
   "01-lens": "Vois la physique à l'œuvre",
   "02-match": "Affronte l'ordinateur et vois pourquoi il joue ce coup",
   "03-lesson": "Six courtes leçons, de l'arrêt au saut",
@@ -6,7 +8,5 @@
   "05-ruling": "Les vraies règles du billard 8 et du billard 9",
   "06-drill": "La puissance, c'est la vitesse de ton geste",
   "07-surfaces": "Joue sur glace, verre, sable et même sur la Lune",
-  "08-tables": "Bumper pool, billard à cinq quilles et billard de bar",
-  "09-ride": "Suis la bille blanche de près",
-  "10-jump": "Coincé derrière la 8 ? Saute-la."
+  "09-ride": "Suis la bille blanche de près"
 }

@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: StageChrome.tableAcross, passed into the
+//          request as liesAcross, lays the table across the band above the upright phone's menu sheet.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: each
 //          frame hands the scene the freeze's cue, model.bulletTime.cue, beside the held Lens event.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream camera: each frame hands the scene the moment framing's
@@ -79,6 +81,9 @@ struct StageChrome: Equatable {
     /// False where the stage has no title row at all (the open Duo's table half, the table beside the notebook): an
     /// unmeasured headerBottom then means "nothing there", not "a row not measured yet" (0.7.5 layouts item 10).
     var hasHeader = true
+    /// 0.7.10 frontdoor: lay the table across even in a tall view (the upright phone's main menu; see
+    /// FramingRequest.liesAcross).
+    var tableAcross = false
 }
 
 /// Values the per-frame closure needs that change after the scene is built.
@@ -111,7 +116,8 @@ final class SceneBridge {
         let oy = Double(viewOrigin.y)
         let header = chrome.headerBottom.map { $0 - oy } ?? (chrome.safe.top + (chrome.hasHeader ? 40 : 0))
         let q = FramingRequest(size: viewSize, safe: chrome.safe, headerBottom: header,
-                               controlsTop: chrome.controlsTop.map { $0 - oy })
+                               controlsTop: chrome.controlsTop.map { $0 - oy },
+                               liesAcross: chrome.tableAcross)  // 0.7.10 frontdoor
         // Test hook: launch with -frameDebug to print the measured request whenever it changes.
         if Self.frameDebug, q != lastLogged { lastLogged = q; NSLog("FRAMING %@ origin=%@", String(describing: q), String(describing: viewOrigin)) }
         return q
