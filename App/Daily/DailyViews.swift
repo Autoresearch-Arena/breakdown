@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the phone's result blurb shows the score, the
+//          distance from the mark and the streak as figure chips, as the big-screen card's stats, instead of one sentence.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the result card's Board is the board's own
 //          BoardButton (App/GameCenter/GameCenterViews.swift); the phone's result blurb offers Board only while the
 //          board may show, with the board's sign-in line when a sign-in from it failed.)
@@ -446,19 +448,27 @@ struct DailyPhoneBlurbs: View {
     /// The result in one blurb: made on which try, the distance, the score, the streak and the next shot, with Share
     /// and (once wave 2 connects it) Board.
     private func result(_ shot: DailyShot, _ day: DailyRecord.Day) -> some View {
-        var parts = [DailyWords.scoreSpoken(day.score)]
-        if day.made, let d = day.distance { parts.append(DailyWords.fromMark(d)) }
-        parts.append(DailyWords.streakSpoken(daily.streak(asOf: shot.day)))
-        parts.append(DailyWords.nextShot(after: shot.day, now: Date()))
+        // 0.8.1 store: the score, the distance from the mark and the streak as figure chips (the big-screen card's
+        // three stats), so the result reads at a glance on the phone too; the sentence keeps only the next shot.
+        var chips = [CaptionFigure(amount: Double(day.score), value: DailyWords.number(day.score), unit: "",
+                                   label: DailyWords.scoreLabel, mark: .rolling)]
+        if day.made, let d = day.distance {
+            chips.append(CaptionFigure(amount: d * 100, value: DailyWords.centimetres(d), unit: "cm",
+                                       label: DailyWords.markLabel, mark: .sliding))
+        }
+        let streak = daily.streak(asOf: shot.day)
+        chips.append(CaptionFigure(amount: Double(streak), value: DailyWords.number(streak), unit: "",
+                                   label: DailyWords.streakLabel, mark: .pocket))
+        let parts = [DailyWords.nextShot(after: shot.day, now: Date())]
         var buttons = [BlurbButton(DailyWords.share, hint: DailyWords.shareHint) { DailyShare.share(model: model) }]
         // 0.7.10 wiring: Board only while the board may show (not hidden, not a test launch), as BoardButton decides;
         // when a sign-in from it did not work, the board's one line on where to sign in joins the sentence.
-        var sentence = parts.joined(separator: ". ") + "."
+        var sentence = parts.joined(separator: ". ")
         if let open = daily.openBoard, !boardHidden, GameCenter.enabled {
             buttons.append(BlurbButton(DailyWords.board, hint: DailyWords.boardHint) { open() })
             if GameCenter.shared.state == .unavailable { sentence += " " + GameCenterWords.signInNeeded }
         }
-        return Blurb(title: DailyWords.resultTitle(day), sentence: sentence, buttons: buttons)
+        return Blurb(title: DailyWords.resultTitle(day), chips: chips, sentence: sentence, buttons: buttons)
     }
 }
 

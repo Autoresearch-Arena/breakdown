@@ -14,6 +14,11 @@ Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, bug plan items 40 and 54:
          real-table frame re-shot and replaced first, and uploading every device with scripts/store-upload.py.)
 Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: the store page's order now leads with the unusual,
          08-tables and 10-jump first; the frame names are unchanged. The upright iPad's table crop follows its new split.)
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the Mac route exists, scripts/store-shots-mac.sh, which opens
+         the built Mac app by the same launch flags and captures its window.)
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 pictures: the headline is the system serif, semibold; the Shot
+         of the day frame shows the shot itself beside its result chips; the phone's strike sheet hugs its tiles so the
+         table and aim line stay above it; the Mac window is 1440 x 900 points; the header banner, below.)
 SRP/DRY check: Pass - this folder holds only the screenshot framing script and the headlines. The listing text is in
          store/listing; the scenes themselves are the app's own launch flags, listed once in scripts/store-shots.sh.
 -->
@@ -75,9 +80,25 @@ Raw shots land on the Team 4TB drive, never in git:
 
     /Volumes/Team 4TB/breakdown-build/store-shots/raw/<device>/<language>/<scene>.png
 
-Device names are `iphone-6.9`, `ipad-13`, `mac`, `duo-inner` and `duo-outer`. There is no Mac set yet: capturing the Mac app means opening game
-windows over the desktop of whoever is using the Mac, so it waits for a time the Boss chooses. compose.swift already
-frames Mac window captures of any size.
+Device names are `iphone-6.9`, `ipad-13`, `mac`, `duo-inner` and `duo-outer`.
+
+### The Mac (its own capture script)
+
+The Mac has no simulator, so `scripts/store-shots-mac.sh <path to Breakdown.app> <language> [language...]` opens the
+built Mac app itself, once per scene, with the same launch flags, waits and pinned settings, places its window on the
+Retina screen at 1440 x 900 points (handed to the app's remembered-frame name on the launch line, so nothing stored on
+the Mac changes), captures that window alone with no shadow (2880 x 1800 pixels) and quits the app. Build the app first,
+unsigned is fine (the command is in the script's header). It opens game windows on the Retina screen while it runs, and
+the terminal running it needs Screen Recording. `SCENES=` works as on the simulator. Raw shots land in raw/mac/.
+
+### The header banner (no upload route)
+
+The 3840 x 1646 banner is the Lens on bumper pool with no text: the Mac app opened by -storeLensBumper with the
+notebook hidden (-notebookPanelShown false), its window captured, cropped below the toolbar to the banner's shape, the
+one callout pill covered by the mirrored cloth beside it, and scaled up. It lives in
+`/Volumes/Team 4TB/breakdown-build/store-shots/header/`, with a small copy at store/review/header-preview.png. The App
+Store Connect API has no place to send it, so it is put up by hand where it is wanted. The iPhone and iPad simulators
+need WAIT_EXTRA=5 (6 for the iPad) or the Lens on bumper pool is still black and the strike sheet not yet up.
 
 ### The iPhone Duo (two sets from one simulator)
 

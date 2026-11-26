@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the upright phone's strike sheet is as tall as its
+//          tiles, at most about half the screen, so the table and the aim line stay in view above it.)
 // PURPOSE: The strike panel (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stage 2): a grid of number tiles
 //          (NumberTile, the tile NotebookNumbers draws) showing the strike the player is about to make, in real units,
 //          changing live as they aim, set the power, move the tip or raise the cue: swing, the speed the ball leaves
@@ -312,11 +314,22 @@ struct StrikeSheet: View {
     let model: ShowpieceModel
     @Binding var isOpen: Bool
     @Environment(\.palette) private var palette
+    /// 0.8.1 store: the tiles' measured height (0 until measured).
+    @State private var contentHeight: CGFloat = 0
+    /// The title bar above the tiles, about 56 points.
+    private static let titleBar: CGFloat = 56
+
+    private var detent: PresentationDetent {
+        // Below about half an upright phone (420 points); taller content (large text) keeps the half-screen sheet.
+        contentHeight > 0 && contentHeight + Self.titleBar < 420 ? .height(contentHeight + Self.titleBar) : .medium
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 StrikePanel(model: model, compact: true).padding(16)
+                    // 0.8.1 store: measured, so the sheet is only as tall as its tiles.
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
             }
             .navigationTitle(StrikeWords.liveHeading)
             #if os(iOS)
@@ -327,7 +340,9 @@ struct StrikeSheet: View {
             }
         }
         .tint(palette.accent)
-        .presentationDetents([.medium])
-        .presentationBackgroundInteraction(.enabled(upThrough: .medium))
+        // 0.8.1 store: the sheet hugs its tiles (plus the title bar), never taller than half the screen, so more of
+        // the table and the aim line stay in view above it; with large text it stays at half and scrolls.
+        .presentationDetents([detent])
+        .presentationBackgroundInteraction(.enabled(upThrough: detent))
     }
 }

@@ -22,6 +22,11 @@
 # Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the three new scenes at the marked spot, 11 to 13,
 #          with their -storeLensBumper, -storeStrike and -storeDaily flags. The page now has thirteen frames;
 #          store-upload.py sends the first ten, so the drill, the surfaces and the Ride fall off the page's end.)
+# Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 pictures: WAIT_EXTRA=<seconds> adds that much to every
+#          scene's wait. The 13-inch iPad simulator needs about six more: at the usual waits the Lens on bumper pool was
+#          still black and the strike scene was still settling its break.)
+# Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 pictures: the real-table scene waits 26 seconds; at 16 the
+#          massé was still rolling and the "On a real table" card had not come up.)
 # SRP/DRY check: Pass - the scene list only. Capturing is store-shot.sh; framing is compose.swift.
 set -e
 here=${0:A:h}
@@ -51,7 +56,9 @@ for lang in "$@"; do
   shot() {
     local name=${2:t}
     if [[ -n $SCENES ]] && [[ " $SCENES " != *" ${name%%-*} "* ]]; then return; fi
-    "$here/store-shot.sh" "$device" "$lang" "$@"
+    # WAIT_EXTRA lengthens every wait for a slower simulator (the first argument is the scene's wait).
+    local wait=$(( $1 + ${WAIT_EXTRA:-0} )); shift
+    "$here/store-shot.sh" "$device" "$lang" "$wait" "$@"
   }
   # The scenes are the app's own launch flags. The six -store flags (StoreScene in App/ShowpieceModel.swift) open their
   # scene straight away and hold it still, so they wait as long as the still aim scenes always have (6 to 8 seconds:
@@ -83,7 +90,7 @@ for lang in "$@"; do
   # 04 Behind the 8-Ball's full massé, made as called, with its "On a real table" card and the cloth's numbers.
   #    (Until 0.7.10 this was taken first, bug plan item 54: the folding-phone set uploaded before the physics retune
   #    stated old numbers. To retake it alone: SCENES="04" scripts/store-shots.sh <duo id> duo-inner ...)
-  shot 16 "$out/04-real-table.png" -eight masse-for-the-win -eightPlay B -eightRealTable
+  shot 26 "$out/04-real-table.png" -eight masse-for-the-win -eightPlay B -eightRealTable
   # 05 A two-player eight-ball ruling card after a foul: ball in hand.
   shot 8  "$out/05-ruling.png"     -storeRuling
   # 06 The straight-stroke drill with a measured stroke on its card (power is swing speed).

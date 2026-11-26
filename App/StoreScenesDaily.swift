@@ -15,6 +15,9 @@
 //            scene can be retaken and a real player's day is never touched.
 //          Each waits with the model's own storeWait, as the other scenes do, and touches the model only through its
 //          ordinary methods.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the daily scene holds at the start of the made try, so
+//          the picture shows the cue, the balls and the mark beside the result, not a bare table; the strike scene has a
+//          little less draw, so its back spin tile fits its figure.)
 // SRP/DRY check: Pass - checked ShowpieceModel's store scenes (the scene list, the waiting and the scripted person's
 //          stroke are theirs; these follow storePersonStroke's power rule rather than calling it, as it needs a match)
 //          and TrickShotMode.lineUpAnswer (reused to line up the daily answer).
@@ -67,7 +70,7 @@ extension ShowpieceModel {
         // angle, as the solver takes it), so every figure in the panel has something to say.
         let radius = physicsTable.parameters.ballRadius
         shotPower = 3.2
-        shotTipUp = -0.35 * radius
+        shotTipUp = -0.22 * radius  // 0.8.1 store: under ten turns a second, so the back spin tile fits its figure
         shotTipSide = 0.2 * radius
         activeElevation = sin(5 * Double.pi / 180)
         setLens(false)
@@ -88,5 +91,15 @@ extension ShowpieceModel {
             // the card does not wait on the view.
             trickMode.update()
         }
+        // 0.8.1 store: a made day leaves a bare table (every ball down). The picture shows the shot itself instead:
+        // the clock is put back to the start of the made try, so the cue, the balls and the mark are on the cloth
+        // beside the result card (scrubbing never re-judges a try). Tried and dropped: the Lens part way through,
+        // where its own callout covered the table and most balls were already down.
+        // -storeDailyAt <fraction of the shot> and -storeDailyLens YES/NO tune it from the launch line.
+        guard daily.finished else { return }
+        let args = UserDefaults.standard
+        let at = args.object(forKey: "storeDailyAt") != nil ? args.double(forKey: "storeDailyAt") : 0.02
+        setLens(args.object(forKey: "storeDailyLens") != nil ? args.bool(forKey: "storeDailyLens") : false)
+        scrub(to: duration * min(max(at, 0), 1))
     }
 }

@@ -9,8 +9,13 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: frames 11 to 13 (the Lens on bumper pool, the strike
 //          panel, the Shot of the day result) at the front of the frame list, with their captions first in every
 //          captions/<language>.json.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the upright iPad's frames 07 and 08 stack their table
+//          strips one over another at full width, as the closed Duo does, instead of one big tile and two small ones.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 pictures: the headline is the system serif, semibold, the
+//          Boss's pick; the 08-tables frame on the upright iPhone is cropped to the tables and stacked one over two, as on
+//          the closed Duo, so the three tables fill the frame instead of three small whole screens in a row.)
 // PURPOSE: Frame Breakdown's raw App Store screenshots for one device in any number of languages. Each frame gets a
-//          near-black gradient background with a soft felt-green glow, a short cyan accent bar, a white heavy rounded
+//          near-black gradient background with a soft felt-green glow, a short cyan accent bar, a white semibold serif
 //          headline (from captions/<lang>.json, at most two lines, shrunk to fit, the same size on every frame of a
 //          language) and the screenshot below it with rounded corners and a soft shadow. Frames 07 and 08 put two or
 //          three shots side by side (on iPad they are cropped to the table and laid out large; see tableCrop and
@@ -119,8 +124,20 @@ let frameCrops: [String: (width: CGFloat, top: CGFloat, bottom: CGFloat)] = [
     "duo-outer/07a-ice": (width: 0.83, top: 0.0, bottom: 0.435),
     "duo-outer/07b-moon": (width: 0.83, top: 0.0, bottom: 0.415),
 ]
-// Devices whose composites stack vertically instead of standing side by side.
-let stackedDevices: Set<String> = ["duo-outer"]
+// 0.8.1 pictures: the upright iPhone's frame 08. Three whole portrait screens in a row came out small, with the frame
+// mostly empty above and below them, so each is cropped to its table (from just under the title row's blurbs to just
+// above the scrub bar, measured on the 0.8.1 English shots) and the three are stacked, the first large on top and the
+// other two side by side under it. Frame 07's two shots stay whole and side by side.
+let phoneTableCrops: [String: (width: CGFloat, top: CGFloat, bottom: CGFloat)] = [
+    "iphone-6.9/08a-bumper": (width: 1.0, top: 0.245, bottom: 0.805),
+    "iphone-6.9/08b-fivepin": (width: 1.0, top: 0.30, bottom: 0.865),
+    "iphone-6.9/08c-bar": (width: 1.0, top: 0.235, bottom: 0.845),
+]
+// Devices whose composites stack vertically instead of standing side by side (the iPhone only for three-shot frames).
+// 0.8.1 store: the upright iPad too. Its table tiles are now wide strips (the table takes only the top 38 percent of the
+// screen), so the big-tile-plus-two layout left them small in a mostly empty frame; one over another, full width, fills it.
+let stackedDevices: Set<String> = ["duo-outer", "ipad-13"]
+let stackedThreeDevices: Set<String> = ["duo-outer", "iphone-6.9"]
 
 // iPad frame 08 shows its featured shot (five-pin, whose small pins need the room) large, the other two stacked beside it.
 let featuredScene = ["08-tables": "08b-fivepin"]
@@ -185,9 +202,12 @@ func loadCaptions(_ lang: String) -> [String: String] {
 
 // MARK: - Headline text
 
+/// The headline face: the system serif (New York), semibold, the Boss's pick (0.8.1). Its descriptor keeps the system
+/// font's cascade, so Japanese, Korean, Chinese, Arabic and Cyrillic still fall back to the system's fonts for those
+/// scripts; the plain system font stands in should the serif design be missing.
 func headlineFont(_ size: CGFloat) -> NSFont {
-    let base = NSFont.systemFont(ofSize: size, weight: .heavy)
-    if let rounded = base.fontDescriptor.withDesign(.rounded), let f = NSFont(descriptor: rounded, size: size) { return f }
+    let base = NSFont.systemFont(ofSize: size, weight: .semibold)
+    if let serif = base.fontDescriptor.withDesign(.serif), let f = NSFont(descriptor: serif, size: size) { return f }
     return base
 }
 
@@ -370,17 +390,20 @@ func render(shots: [CGImage], headline: String, fontSize: CGFloat, rtl: Bool, fe
         // Three tiles: one centred on top, two side by side beneath it, all one width. Much larger than three in a column.
         let g = W * 0.02
         let w = min((availW - g) / 2, (availH - g) / (aspects[0] > 0 ? (1 / aspects[0] + 1 / min(aspects[1], aspects[2])) : 2))
-        let h0 = w / aspects[0], h1 = w / aspects[1], h2 = w / aspects[2]
+        // 0.8.1 pictures: the top tile grows into whatever height the two below leave, up to the full width.
+        let h1 = w / aspects[1], h2 = w / aspects[2]
+        let w0 = max(w, min(availW, (availH - g - max(h1, h2)) * aspects[0]))
+        let h0 = w0 / aspects[0]
         let blockH = h0 + g + max(h1, h2)
         let blockTop = zoneTop + (availH - blockH) * 0.25
-        let x0 = (W - w) / 2
+        let x0 = (W - w0) / 2
         let leftX = (W - 2 * w - g) / 2
         // Reading order: the second tile on the leading side (the right for Arabic).
         let (xa, xb) = rtl ? (leftX + w + g, leftX) : (leftX, leftX + w + g)
-        rects = [CGRect(x: x0, y: top(blockTop + h0), width: w, height: h0),
+        rects = [CGRect(x: x0, y: top(blockTop + h0), width: w0, height: h0),
                  CGRect(x: xa, y: top(blockTop + h0 + g + h1), width: w, height: h1),
                  CGRect(x: xb, y: top(blockTop + h0 + g + h2), width: w, height: h2)]
-        glowTop = blockTop; glowW = 2 * w + g; glowH = blockH
+        glowTop = blockTop; glowW = max(w0, 2 * w + g); glowH = blockH
     } else if stacked, shots.count > 1 {
         let vGap = H * 0.014
         let invSum = aspects.reduce(0) { $0 + 1 / $1 }
@@ -485,15 +508,23 @@ for lang in languages {
         // Composites: table area only, so the tables are drawn large (see tableCrops). Only the iPad uses the
         // big-tile-plus-two layout.
         var featured: Int? = nil
-        if let crop = tableCrops[deviceName], images.count > 1 {
+        if images.count > 1, frame.scenes.allSatisfy({ phoneTableCrops["\(deviceName)/\($0)"] != nil }) {
+            images = zip(frame.scenes, images).compactMap { scene, image in
+                cropToTable(image, rtl: false, crop: phoneTableCrops["\(deviceName)/\(scene)"]!)
+            }
+        } else if let crop = tableCrops[deviceName], images.count > 1 {
             // Each scene may have its own crop (the moon's trick-shot card starts higher than the ice's).
             images = zip(frame.scenes, images).compactMap { scene, image in
                 cropToTable(image, rtl: rtl, crop: frameCrops["\(deviceName)/\(scene)"] ?? crop)
             }
-            if deviceName == "ipad-13" { featured = featuredScene[frame.name].flatMap { frame.scenes.firstIndex(of: $0) } }
+            // 0.8.1 store: the iPad stacks its wide table strips instead (stackedDevices), so no featured tile.
+            if deviceName == "ipad-13" && !stackedDevices.contains(deviceName) {
+                featured = featuredScene[frame.name].flatMap { frame.scenes.firstIndex(of: $0) }
+            }
         }
         guard let out = render(shots: images, headline: headline, fontSize: fontSize, rtl: rtl, featured: featured,
-                               stacked: stackedDevices.contains(deviceName) && images.count > 1) else { fail("Could not draw \(frame.name)") }
+                               stacked: images.count > 1 && (stackedDevices.contains(deviceName)
+                                        || (images.count == 3 && stackedThreeDevices.contains(deviceName)))) else { fail("Could not draw \(frame.name)") }
         let path = "\(outDir)/\(frame.name).png"
         guard writePNG(out, to: path) else { fail("Could not write \(path)") }
         print(path)

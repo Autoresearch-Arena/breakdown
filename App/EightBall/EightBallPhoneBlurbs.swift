@@ -2,6 +2,8 @@
 // Date: 22-November-2026
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
 //          aside for the every-surface fan, through model.otherFutureShowing.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the "On a real table" blurb starts open in the
+//          real-table store scene, so the upright phone's picture shows its rows.)
 // PURPOSE: Behind the 8-Ball on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "Every phone state" and
 //          Part 4 step 5): everything EightBallCard (EightBallViews.swift) shows on the other layouts, as small docked
 //          blurbs instead of one glass card. The situation's name is the title row's (PhoneTitle); a tap on it opens
@@ -276,7 +278,8 @@ struct EightBallPhoneBlurbs: View {
             }
         }
         // Each time it comes back (a new scored try, or the end of the try's Lens replay) it starts folded.
-        .onAppear { realTableFolded = true }
+        // 0.8.1 store: the real-table store scene (-eightRealTable) shows it open, so the picture carries its rows.
+        .onAppear { realTableFolded = !ProcessInfo.processInfo.arguments.contains("-eightRealTable") }
     }
 
     /// One row: a small label with the solver's number after it, then the plain words.
