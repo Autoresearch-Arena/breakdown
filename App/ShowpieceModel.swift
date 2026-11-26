@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: activeElevation refuses while a mode sets its own
+//          cue angle (cueAngleLockedByMode); finishStrike notes the controls for the strike panel (StrikeMemory).)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: paceSignature is readable, so a clip of a trick shot holds
 //          the same moments as the game's replay of it, ClipOffer.source.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: owns
@@ -1063,6 +1065,9 @@ final class ShowpieceModel {
                            aim: s.aim, power: s.power, powerRange: s.range, tipUp: s.up, tipSide: s.side,
                            elevation: s.elevation, seed: s.seed, input: prepared.input, surface: prepared.surface,
                            table: prepared.table, generation: prepared.generation, stroke: s.stroke))
+        // 0.7.10 strike: the controls as they stood for this strike, so the strike panel can show planned against
+        // delivered until the first control moves (StrikeMemory, App/Strike/StrikeReading.swift).
+        StrikeMemory.shared.struck(controls: controlValues, timelineVersion: timelineVersion)
         // Every shot and every break the player strikes plays at real speed in the ordinary view, the Lens left as the
         // player had it (plan item 14 for matches; 0.7.1 for every break: the Boss found a player's own break turning
         // into the slow Lens replay with its long cards far too much). The Lens is one tap away; Watch the intro keeps
@@ -1592,7 +1597,10 @@ final class ShowpieceModel {
     var activeElevation: Double {
         get { racked ? 0 : shotElevation }
         set {
-            guard openControls.contains(.elevation), elevationAllowed, personMayChangeControls else { return }
+            // 0.7.10 strike: a mode that sets its own angle (cueAngleLockedByMode, App/Strike/StrikeReading.swift)
+            // refuses every route too, as a lesson lock does.
+            guard openControls.contains(.elevation), elevationAllowed, personMayChangeControls,
+                  !cueAngleLockedByMode else { return }
             shotElevation = min(max(newValue, 0), Self.maxElevation)
         }
     }

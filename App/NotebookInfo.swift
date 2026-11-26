@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: NotebookNumbers' tile is lifted into NumberTile,
+//          App/Strike/NumberTile.swift, which the strike panel reuses; it draws exactly as before.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md N1: How
 //          forgiving is not shown for a saved shot of the player's own until its window has been measured.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (renamed, file NotebookInfo.swift (it was DuoInfo.swift), for the notebook layout it now serves on every big screen:
@@ -70,27 +72,9 @@ struct NotebookNumbers: View {
         }
     }
 
+    // 0.7.10 strike: the tile itself is NumberTile (App/Strike/NumberTile.swift), shared with the strike panel.
     private func tile(_ value: String, _ label: LocalizedStringKey) -> some View {
-        VStack(spacing: 2) {
-            Text(verbatim: value)
-                .font(.headline.monospacedDigit())
-                .foregroundStyle(palette.accent)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-            Text(label)
-                // On a big screen the label follows the reader's text size (it is read from further away); across the
-                // folding phone's hinge the narrow tiles keep the fixed small size they were laid out for.
-                .font(roomy ? Theme.label : .system(size: 10, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
-        }
-        .frame(maxWidth: .infinity, minHeight: 52)
-        .padding(.vertical, 6)
-        .padding(.horizontal, 1)
-        .glassEffect(.regular, in: .rect(cornerRadius: 14, style: .continuous))
-        .accessibilityElement(children: .combine)
+        NumberTile(value: value, label: Text(label))
     }
 
     private static func speedText(_ v: Double) -> String {

@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: the placeholder line "Once the balls move..." is
+//          removed; the notebook's slot shows the strike panel while aiming (StrikeSlot) and this view while the balls move.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts items 6 and 7, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          during the opening (and its hand-over) the story shows only its one line, not the surface card's friction
 //          constants and rail percentage, so the first screen is a racked table and one instruction; the Lens colour
@@ -58,10 +60,9 @@ struct NotebookStory: View {
                     // player is playing, so nothing competes with the hand-over's one instruction.
                     ScrollView {
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("Once the balls move, every hit is explained here.")
-                                .font(Theme.body)
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            // 0.7.10 strike: the placeholder line is gone. Outside the opening the notebook's slot
+                            // shows the strike panel here instead (StrikeSlot, App/Strike/StrikePanel.swift), so this
+                            // empty page is only reached during the first minute, which stays one instruction.
                             if model.openingStage == .none {
                                 NotebookSurfaceCard(model: model, detailed: true)
                             }

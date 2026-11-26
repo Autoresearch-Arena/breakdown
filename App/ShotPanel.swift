@@ -1,5 +1,11 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
+//          stage 3: on iPad, Mac and the open folding phone the panel lays out large (roomyRow, roomyStacked): the
+//          132-point tip picture, the tall power bar without minus and plus, the cue-angle dial (CueAngleDial) and Shoot
+//          as the largest control in the bottom corner on the hand side (the shootSide environment value). The hint is
+//          StrikeHint (one hint, in one place, with the Pencil line). Fine controls leave the More menu on those screens
+//          except for VoiceOver. The cue-angle menu and slider are locked where the mode sets its own angle.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md S1:
 //          Shot options offers Make it again / Play it now after Undo last shot (MakeItAgainMenuItem).)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: Try again falls back to its arrow alone when the
@@ -84,6 +90,9 @@ struct ShotPanel: View {
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    // 0.7.10 strike: which bottom corner Shoot takes on the big screens (wave 2's left-handed option flips it).
+    @Environment(\.shootSide) private var shootSide
+    @Environment(\.layoutDirection) private var layoutDirection
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSize
     @Environment(\.verticalSizeClass) private var verticalSize
@@ -97,8 +106,9 @@ struct ShotPanel: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            // The hand-over card already says the one thing to do; the hint waits until after it (item 1).
-            if !hintSeen && model.openingStage != .handOver { hint }
+            // 0.7.10 strike: one hint, in one place (StrikeHint): the first instruction, through the hand-over too
+            // (the notebook's hand-over card no longer repeats it), and the Pencil line where the angle is the player's.
+            StrikeHint(model: model)
             // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
             statusLine
             // The stance, when it is not a square one. The notebook shows it among its cards (NotebookPanel). Its room
@@ -110,6 +120,10 @@ struct ShotPanel: View {
                 Group {
                     if typeSize.isAccessibilitySize {
                         stacked
+                    } else if inlinePages {
+                        // 0.7.10 strike: iPad, Mac and the open folding phone: large controls, Shoot the largest, in
+                        // the bottom corner nearest the hand; one row where it fits, else stacked.
+                        ViewThatFits(in: .horizontal) { roomyRow; roomyStacked }
                     } else {
                         // Last, when neither row fits: Shoot alone on a full-width row, so it is never cut short (#47).
                         ViewThatFits(in: .horizontal) { oneRow; twoRows; stacked }
@@ -205,6 +219,72 @@ struct ShotPanel: View {
         }
     }
 
+    // MARK: Roomy layouts (0.7.10 strike, plan stage 3)
+
+    /// iPad, Mac and the open folding phone, one row: the large tip picture with its millimetres, the tall power bar
+    /// with the cue-angle dial and the small buttons under it, and Shoot, the largest control, in the bottom corner on
+    /// the player's hand side (shootSide).
+    private var roomyRow: some View {
+        HStack(alignment: .bottom, spacing: 12) {
+            if !shootLast { roomyFireButton }
+            TipPicker(model: model, open: open, zones: zones)
+            VStack(spacing: 8) {
+                PowerGauge(model: model, open: open, zones: zones).frame(minWidth: 180)
+                HStack(alignment: .bottom, spacing: 10) {
+                    cueAngle
+                    Spacer(minLength: 0)
+                    moreMenu
+                    tryAgainButton
+                }
+            }
+            if shootLast { roomyFireButton }
+        }
+    }
+
+    /// The same where one row has no room (the notebook's narrower column): the tip picture beside the dial, the power
+    /// bar across, then the small buttons with Shoot in the bottom corner on the hand side.
+    private var roomyStacked: some View {
+        VStack(spacing: 10) {
+            HStack(alignment: .center, spacing: 12) {
+                TipPicker(model: model, open: open, zones: zones)
+                Spacer(minLength: 0)
+                cueAngle
+            }
+            PowerGauge(model: model, open: open, zones: zones)
+            HStack(alignment: .bottom, spacing: 10) {
+                if !shootLast { roomyFireButton }
+                moreMenu
+                tryAgainButton
+                Spacer(minLength: 0)
+                if shootLast { roomyFireButton }
+            }
+        }
+    }
+
+    /// True when Shoot comes last in a row: on the right for a right hand in a left-to-right layout, and mirrored for a
+    /// right-to-left one, so it always sits in the physical corner nearest the chosen hand.
+    private var shootLast: Bool { (shootSide == .right) == (layoutDirection == .leftToRight) }
+
+    /// Break or Shoot on the big screens: the largest control on the panel, the same model call as fireButton.
+    private var roomyFireButton: some View {
+        Button {
+            hintSeen = true
+            if model.fireStroke() == .breakStruck { isOpen = false }
+        } label: {
+            Text(model.racked ? "Break" : "Shoot")
+                .font(.title2.weight(.bold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(minWidth: 120, minHeight: 72)
+        }
+        .buttonStyle(.glassProminent)
+        .foregroundStyle(palette.ground)
+        .controlSize(.large)
+        .disabled(model.strokeRefusal != nil)
+        .accessibilityHint(model.strokeRefusal?.sentence
+                           ?? (model.racked ? String(localized: "Plays your own break") : String(localized: "Plays your shot")))
+    }
+
     // MARK: Pieces
 
     /// Which controls are open now and the lesson's target bands, if any (everything open, nothing marked, outside a
@@ -241,11 +321,19 @@ struct ShotPanel: View {
     /// The raised cue, where the model allows it (free play and matches) and for a shot rather than the break.
     @ViewBuilder private var cueAngle: some View {
         if model.elevationAllowed && !model.racked {
-            // Through activeElevation, where a lesson's lock applies like power, tip and aim (item 12).
-            CueAngleMenu(sine: Binding(get: { model.activeElevation }, set: { model.activeElevation = $0 }),
-                         minHeight: Self.buttonHeight, zone: zones?.cueAngles,
-                         zoneStrength: zones?.strength ?? 1, locked: !open.contains(.elevation))
-                .controlSize(.regular)
+            if inlinePages {
+                // 0.7.10 strike: on the big screens the angle is a dial with the cue as its needle; a mode that sets
+                // its own angle shows it locked (CueAngleDial reads model.cueAngleLockedByMode).
+                CueAngleDial(model: model, zone: zones?.cueAngles, zoneStrength: zones?.strength ?? 1)
+            } else {
+                // Through activeElevation, where a lesson's lock applies like power, tip and aim (item 12).
+                // 0.7.10 strike: locked too where the mode sets its own angle.
+                CueAngleMenu(sine: Binding(get: { model.activeElevation }, set: { model.activeElevation = $0 }),
+                             minHeight: Self.buttonHeight, zone: zones?.cueAngles,
+                             zoneStrength: zones?.strength ?? 1,
+                             locked: !open.contains(.elevation) || model.cueAngleLockedByMode)
+                    .controlSize(.regular)
+            }
         }
     }
 
@@ -295,29 +383,6 @@ struct ShotPanel: View {
         .buttonStyle(.glass)
         .buttonBorderShape(.circle)
         .controlSize(.regular)
-    }
-
-    /// The one-time hint: the first instruction for the input in use. Dismissed by its own button; also marked seen by
-    /// the first pull or shot.
-    private var hint: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: "hand.draw").font(.title3).foregroundStyle(palette.accent).accessibilityHidden(true)
-            // The same one instruction the hand-over card gives, for the input in use (FirstInstruction).
-            Text(FirstInstruction.line(for: model.inputInUse))
-                .font(Theme.body)
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-            Button { hintSeen = true } label: {
-                Image(systemName: "xmark").frame(width: 30, height: 30)
-            }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel("Dismiss hint")
-        }
-        // The hint follows every text size, the largest included; past a few lines it scrolls inside its own height
-        // instead of pushing the table off the screen (accessibility plan, package 5; was a text-size cap). 150 points
-        // is about three lines of body text at the largest accessibility size, the most the panel can give it.
-        .scrollsWhenTaller(than: 150)
     }
 
     /// Height of the main buttons: the glass button adds padding, so this lands on 44 points or more on a touch screen.
@@ -411,6 +476,9 @@ struct ShotOptionsItems: View {
     @Binding var slidersOpen: Bool
     var phone = false
     @AppStorage("aimHintSeen") private var hintSeen = false
+    // 0.7.10 strike: on the big screens the strike panel's typed entries replace the sliders, except for VoiceOver.
+    @Environment(\.inlinePages) private var inlinePages
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOver
 
     /// True in plain free play: no match, no trick shot, no Behind the 8-Ball situation, no lesson on the table.
     private var freePlay: Bool {
@@ -426,7 +494,11 @@ struct ShotOptionsItems: View {
             } label: { Label("Try again", systemImage: "arrow.uturn.backward") }
             .accessibilityHint("Puts the balls back where your last shot started, with the same aim, power and spin")
         }
-        Button { slidersOpen = true } label: { Label("Fine controls", systemImage: "slider.horizontal.3") }
+        // 0.7.10 strike: kept on the upright phone, in the small layouts and for VoiceOver; on iPad, Mac and the open
+        // folding phone the strike panel's tiles take exact values instead (plan stage 2 item 5).
+        if phone || !inlinePages || voiceOver {
+            Button { slidersOpen = true } label: { Label("Fine controls", systemImage: "slider.horizontal.3") }
+        }
         if !model.racked {
             Button { model.aimAtNearestBall() } label: { Label("Aim at nearest ball", systemImage: "scope") }
                 .disabled(!open.contains(.aim))
@@ -521,7 +593,9 @@ struct FineControls: View {
                                                  set: { model.activeElevation = $0 < 0.5 ? 0 : sin($0 * .pi / 180) }),
                                   range: 0...Double(CueAngleMenu.angles.last ?? 80),
                                   readout: CueAngleMenu.words(degrees: asin(min(max(model.activeElevation, 0), 0.995)) * 180 / .pi))
-                        .disabled(!open.contains(.elevation)).lockedForStep(!open.contains(.elevation))
+                        // 0.7.10 strike: refused too where the mode sets its own angle (the model refuses anyway).
+                        .disabled(!open.contains(.elevation) || model.cueAngleLockedByMode)
+                        .lockedForStep(!open.contains(.elevation))
                     }
                     Button {
                         sheetOpen = false

@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
+//          stage 3 item 5: one hint, in one place. The hand-over card's instruction and the upright phone's docked
+//          instruction blurb (OpeningPhoneBlurb) are gone; the instruction is the shot panel's hint (StrikeHint) below the
+//          table on every layout. FirstInstruction is unchanged.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, header only: since 0.7.1 the first launch goes
 //          straight to the hand-over, so the opening replay, its tap-to-skip (skipOpening) and the Skip intro button
 //          are no longer reached on a first launch, and the first break's card hands straight back to play. The
@@ -167,21 +171,9 @@ struct OpeningCard: View {
     var body: some View {
         switch model.openingStage {
         case .handOver:
-            HStack(alignment: .center, spacing: 12) {
-                Image(systemName: "hand.draw")
-                    .font(.title2)
-                    .foregroundStyle(palette.accent)
-                    .accessibilityHidden(true)
-                Text(FirstInstruction.line(for: model.inputInUse))
-                    .font(Theme.heading)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isHeader)
-            .transition(.opacity)
+            // 0.7.10 strike: the hand-over's instruction is the shot panel's hint now (StrikeHint), below the table on
+            // every layout, so it is said in one place; this card no longer repeats it.
+            EmptyView()
         case .firstBreakCard:
             firstBreakCard
         case .playing where inlinePages:
@@ -263,28 +255,6 @@ struct OpeningCard: View {
 
 // MARK: The phone held upright
 
-/// The first minute's one instruction on the phone held upright (phone UI plan, Part 3 "Every phone state": "the docked
-/// instruction blurb, full sentence over two lines, fading once the break is struck, not on the first touch"). The
-/// instruction is the one for the input in use (FirstInstruction), drawn whole: a content blurb has no fold, so no word
-/// of the only instruction a new player gets is ever hidden. Its fade is the blurb's own transition, animated here on
-/// the opening's stage.
-struct OpeningPhoneBlurb: View {
-    let model: ShowpieceModel
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        Group {
-            if model.openingStage == .handOver {
-                let words = FirstInstruction.line(for: model.inputInUse)
-                Blurb(accessibilityText: words) {
-                    // The instruction is the screen's one heading-weight line, as the hand-over card's was.
-                    Text(verbatim: words)
-                        .font(Theme.blurbTitle)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .accessibilityAddTraits(.isHeader)
-            }
-        }
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.4), value: model.openingStage)
-    }
-}
+// 0.7.10 strike: OpeningPhoneBlurb, the instruction docked over the top of the table on the phone held upright, is gone:
+// the same instruction now sits in the aiming panel below the table (StrikeHint in PhoneAimPanel), which the hand-over
+// opens, so the table's top edge stays clear and the hint is in one place on every layout.

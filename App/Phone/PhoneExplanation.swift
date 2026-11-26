@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plan stage 4 item 2: the strike's blurb gains one
+//          line when planned and delivered differ, the largest error only, StrikeReading.withPhoneLine.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: the jump's side view sits inside its blurb here
 //          (FlightInBlurb), under the figures.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: on a jump the blurb also keeps clear of the stretch the
@@ -217,7 +219,9 @@ struct PhoneExplanationBlurb: View {
                      figure: caption.figures.first,
                      // The lead figure is in the title; the others are chips (at most two more).
                      chips: Array(caption.figures.dropFirst()),
-                     sentence: caption.detail.isEmpty ? nil : caption.detail,
+                     // 0.7.10 strike: the strike's own explanation gains one line when the stroke changed the
+                     // strike, the largest error only (StrikeReading.withPhoneLine).
+                     sentence: StrikeReading.withPhoneLine(caption.detail, caption: caption, model: model),
                      equation: showsEquation && !equation.isEmpty ? equation : nil,
                      // A jump's side view (0.7.9): inside its explanation on this screen, under the figures, since
                      // there is no room here for a separate panel as well (CaptionLeader draws it elsewhere).

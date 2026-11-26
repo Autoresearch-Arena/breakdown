@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: raisedCueOpen reads the model's cueAngleLockedByMode;
+//          a Pencil event notes StylusPresence for the hint's Pencil line.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (merge with the lessons: a locked power control is not moved by the
 //          stroke's depth).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0 touch stream, plans/21-Nov-2026-bugs-after-0-6-6-plan.md items
@@ -803,6 +805,8 @@ struct StrokeGestures: ViewModifier {
     /// angle reaches the menu's first raised step, so a grip that wobbles just past the line never flattens the cue.
     private func pencil(_ event: Event) {
         #if os(iOS)
+        // 0.7.10 strike: the Pencil has been used here, so the panel's hint can add its Pencil line (StylusPresence).
+        if event.kind == .pencil { StylusPresence.shared.noteSeen() }
         guard event.kind == .pencil, let pose = event.inputDevicePose, raisedCueOpen else { return }
         let altitude = pose.altitude.degrees
         let top = Double(CueAngleMenu.angles.last ?? 80)
@@ -819,8 +823,10 @@ struct StrokeGestures: ViewModifier {
 
     /// Trick shots and Behind the 8-Ball situations set their own cue angle; a break is always struck level. Everything
     /// else (free play, matches, a lesson step that opens the angle) is the model's lock to decide.
+    /// 0.7.10 strike: the mode rule is the model's one cueAngleLockedByMode (App/Strike/StrikeReading.swift), shared with
+    /// the strike panel's dial and the hint's Pencil line, so a mode added there (the daily shot) locks the Pencil too.
     private var raisedCueOpen: Bool {
-        !model.racked && !model.trickMode.isActive && !model.eightBallMode.isActive
+        !model.racked && !model.cueAngleLockedByMode
     }
 }
 

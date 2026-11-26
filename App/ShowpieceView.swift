@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: the upright phone's dock no longer holds the
+//          hand-over's instruction blurb; it is in the aiming panel below the table, StrikeHint.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the
 //          header's glass status label names a frozen hit, on one line, off the upright phone.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
@@ -603,7 +605,7 @@ struct ShowpieceView: View {
                 EightBallPhoneBlurbs(model: model, ideaOpen: $phoneIdeaOpen)
                 TrickPhoneBlurbs(model: model, ideaOpen: $phoneIdeaOpen)
                 LessonPhoneBlurbs(model: model, ideaOpen: $phoneIdeaOpen)
-                OpeningPhoneBlurb(model: model)
+                // 0.7.10 strike: the hand-over's instruction moved into the aiming panel below the table (StrikeHint).
             }
             Group {
                 ComparisonPhoneBlurb(model: model)

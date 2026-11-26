@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
+//          stage 4 and stage 3 item 5: a tap on the swing figure opens the strike panel as a sheet over the lower half
+//          (StrikeSheet); the first instruction and the Pencil line sit at the top of the panel (StrikeHint); the cue
+//          angle is locked where the mode sets its own.)
 // PURPOSE: The upright phone's aiming panel (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The aiming panel"), in place of
 //          ShotPanel on that layout only. ShowpieceView puts it in the bottom bar's one glass container, above
 //          PhoneStrip, while Your shot is open (and WhatIfPhonePanel in its place while a what-if shows). One regular
@@ -69,6 +73,8 @@ struct PhoneAimPanel: View {
     @State private var slidersOpen = false
     /// Bumped by each refusal to bounce the status line's mark once (nothing moves under Reduce Motion).
     @State private var refusalPulse = 0
+    /// 0.7.10 strike: the strike panel's sheet, opened by a tap on the swing figure (StrikeSheet).
+    @State private var strikeOpen = false
 
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -99,6 +105,8 @@ struct PhoneAimPanel: View {
         .onAppear { if ProcessInfo.processInfo.arguments.contains("-aimDemoSheet") { slidersOpen = true } }
         .animation(reduceMotion ? nil : .smooth, value: slidersOpen)
         .animation(reduceMotion ? nil : .snappy, value: model.personControlsLive)
+        // 0.7.10 strike: the strike in real units, over the lower half; the table stays in view and touchable above.
+        .sheet(isPresented: $strikeOpen) { StrikeSheet(model: model, isOpen: $strikeOpen) }
     }
 
     // MARK: Glass
@@ -106,6 +114,9 @@ struct PhoneAimPanel: View {
     /// The glass shape with its two rows (or the fine controls in place of row 1).
     private var panel: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // 0.7.10 strike: the first instruction (and the Pencil line) below the table, in the panel, instead of a
+            // blurb docked over the top of the table.
+            StrikeHint(model: model, phone: true)
             ShotStatusLine(model: model, pulse: refusalPulse)
             if slidersOpen {
                 FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
@@ -143,7 +154,8 @@ struct PhoneAimPanel: View {
     private var rowOne: some View {
         HStack(alignment: .center, spacing: 12) {
             TipPicker(model: model, open: open, zones: zones)
-            PhonePowerBar(model: model, open: open, zones: zones)
+            // 0.7.10 strike: a tap on the swing figure opens the strike panel (stage 4).
+            PhonePowerBar(model: model, open: open, zones: zones, onFigureTap: { strikeOpen = true })
                 .frame(maxWidth: .infinity)
         }
     }
@@ -215,7 +227,8 @@ struct PhoneAimPanel: View {
         if model.elevationAllowed && !model.racked {
             CueAngleMenu(sine: Binding(get: { model.activeElevation }, set: { model.activeElevation = $0 }),
                          zone: zones?.cueAngles, zoneStrength: zones?.strength ?? 1,
-                         locked: !open.contains(.elevation), phone: true)
+                         // 0.7.10 strike: locked too where the mode sets its own angle.
+                         locked: !open.contains(.elevation) || model.cueAngleLockedByMode, phone: true)
         }
     }
 
@@ -273,6 +286,8 @@ struct PhonePowerBar: View {
     let model: ShowpieceModel
     var open: ShotControls = .all
     var zones: LessonZones? = nil
+    /// 0.7.10 strike: a tap on the swing figure (and a VoiceOver action) opens the strike panel; nil: plain figure.
+    var onFigureTap: (() -> Void)? = nil
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 12
@@ -292,18 +307,7 @@ struct PhonePowerBar: View {
         let calm = calmFraction
         let warm = model.activePower > model.strokeZones.calmTopPower
         VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(verbatim: StrokeWords.swingFigure(power: model.activePower))
-                    .font(.system(.headline, design: .monospaced))
-                    .lineLimit(1)
-                    .fixedSize()
-                Text(verbatim: StrokeWords.swingCaption(power: model.activePower, racked: model.racked,
-                                                        cue: model.cueInHand))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-            }
+            figureRow
             bar(fraction: fraction, calm: calm)
             // The calm mark's label, the first few showings; at the accessibility sizes the mark alone (the words
             // would be wider than the bar).
@@ -325,8 +329,38 @@ struct PhonePowerBar: View {
             @unknown default: break
             }
         }
+        // 0.7.10 strike: the bar is one adjustable element, so the figure's button is offered as an action too.
+        .accessibilityAction(named: Text(StrikeWords.liveHeading)) { onFigureTap?() }
         .disabled(!open.contains(.power))
         .lockedForStep(!open.contains(.power))
+    }
+
+    /// The swing figure and its caption. 0.7.10 strike: a button that opens the strike panel when onFigureTap is set,
+    /// with a small chevron saying there is more behind it.
+    @ViewBuilder private var figureRow: some View {
+        let row = HStack(alignment: .firstTextBaseline, spacing: 6) {
+            Text(verbatim: StrokeWords.swingFigure(power: model.activePower))
+                .font(.system(.headline, design: .monospaced))
+                .lineLimit(1)
+                .fixedSize()
+            Text(verbatim: StrokeWords.swingCaption(power: model.activePower, racked: model.racked,
+                                                    cue: model.cueInHand))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            if onFigureTap != nil {
+                Image(systemName: "chevron.up.circle")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        if let onFigureTap {
+            Button(action: onFigureTap) { row.contentShape(Rectangle()) }
+                .buttonStyle(.plain)
+        } else {
+            row
+        }
     }
 
     private func bar(fraction: Double, calm: Double) -> some View {

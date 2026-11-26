@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
+//          stage 3 items 1 and 2: in the notebook (iPad, Mac, the open folding phone) the tip picture is at least 132
+//          points with the millimetres beside it, and the power bar is at least 28 points tall with no minus and plus.
+//          The phone and the small layouts are unchanged.)
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (the power readout and its spoken value carry a plain word before the
 //          number, soft to hard or break, from PowerWords).
@@ -61,6 +65,8 @@ struct TipPicker: View {
     var zones: LessonZones? = nil
     @Environment(\.palette) private var palette
     @ScaledMetric(relativeTo: .body) private var side: CGFloat = 52
+    /// 0.7.10 strike: iPad, Mac and the open folding phone (the notebook) draw the picture large, with the millimetres.
+    @Environment(\.inlinePages) private var roomy
 
     /// The picture is the cue ball to scale. The dot travels as far as the mode's tip travel (model.tipLimit) as a
     /// share of the ball's radius, and the dashed ring sits at the miscue limit (model.miscueLimit), where the tip slips
@@ -70,8 +76,38 @@ struct TipPicker: View {
     }
 
     var body: some View {
-        // Grows with text size for easy touching but stops at 72 points: past that it would crowd out the table.
-        let size = min(max(44, side), 72)
+        if roomy {
+            // 0.7.10 strike: the large picture with the tip's height and side in millimetres beside it (plan stage 3
+            // item 1), in the same readout the fine controls use.
+            HStack(alignment: .center, spacing: 10) {
+                picture
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(verbatim: ShotPanel.tipReadout(model.activeTipUp, vertical: true))
+                    Text(verbatim: ShotPanel.tipReadout(model.activeTipSide, vertical: false))
+                }
+                .font(Theme.number)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .accessibilityHidden(true)   // the picture's own value says it
+            }
+        } else {
+            picture
+        }
+    }
+
+    /// The picture's side, points. On a phone it grows with text size for easy touching but stops at 72 points: past
+    /// that it would crowd out the table. On the big screens (0.7.10 strike) it is at least 132 points, growing with
+    /// the text to 180, so the tip can be placed without care.
+    private var pictureSize: CGFloat {
+        roomy ? min(max(132, side * 132 / 52), 180) : min(max(44, side), 72)
+    }
+
+    /// The chalked tip's drawn width, points: big enough to see under a fingertip's edge on the 52-point picture, and
+    /// a little bigger on the large one.
+    private var dot: CGFloat { roomy ? 20 : Self.dot }
+
+    @ViewBuilder private var picture: some View {
+        let size = pictureSize
         let radius = size / 2
         let limit = radius * share(model.tipLimit)
         let ring = radius * share(model.miscueLimit)
@@ -102,7 +138,7 @@ struct TipPicker: View {
             Circle()
                 .fill(palette.accent)
                 .overlay(Circle().strokeBorder(.black.opacity(0.7), lineWidth: 1.5))
-                .frame(width: Self.dot, height: Self.dot)
+                .frame(width: dot, height: dot)
                 .offset(x: CGFloat(across) * limit, y: CGFloat(-up) * limit)
         }
         .frame(width: size, height: size)
@@ -133,7 +169,7 @@ struct TipPicker: View {
                 guard tipOpen else { return }
                 // The dot is drawn `dot` points wide; in metres of tip travel, half of that is how far outside a band
                 // the dot's centre can be while the dot still visibly overlaps it.
-                settleInBand(tolerance: Double(Self.dot / 2 / max(1, limit)) * model.tipLimit)
+                settleInBand(tolerance: Double(dot / 2 / max(1, limit)) * model.tipLimit)
             })
         .accessibilityElement()
         .accessibilityLabel("Cue tip position")
@@ -217,7 +253,13 @@ struct PowerGauge: View {
     /// The lesson's target bands, if any: the power band is drawn over the bar.
     var zones: LessonZones? = nil
     @Environment(\.palette) private var palette
-    @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 12
+    @ScaledMetric(relativeTo: .body) private var scaledBarHeight: CGFloat = 12
+    /// 0.7.10 strike: iPad, Mac and the open folding phone (the notebook) draw a tall bar with no minus and plus.
+    @Environment(\.inlinePages) private var roomy
+    /// The bar's height: 12 points scaled with the text, or at least 28 on the big screens (plan stage 3 item 2), where
+    /// it is big enough to drag and the strike panel's Swing tile takes exact values.
+    private var barHeight: CGFloat { roomy ? max(Self.roomyBarHeight, scaledBarHeight) : scaledBarHeight }
+    private static let roomyBarHeight: CGFloat = 28
     /// How many times the calm mark has been shown with its label (item 1). Stored on the device, so the label stops
     /// for good after the first few showings; the store-picture scripts can pin it (key in calmLabelKey).
     @AppStorage(PowerGauge.calmLabelKey) private var calmLabelShows = 0
@@ -252,7 +294,8 @@ struct PowerGauge: View {
             }
             HStack(spacing: 6) {
                 // One-finger power without a drag: a tap a step down, a tap a step up (accessibility plan, package 5).
-                stepButton(-1, systemImage: "minus", label: "Less power")
+                // 0.7.10 strike: not on the big screens, where the tall bar and the Swing tile do this.
+                if !roomy { stepButton(-1, systemImage: "minus", label: "Less power") }
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         Capsule().fill(palette.track)
@@ -332,7 +375,7 @@ struct PowerGauge: View {
                         .accessibilityHidden(true)
                     }
                 }
-                stepButton(1, systemImage: "plus", label: "More power")
+                if !roomy { stepButton(1, systemImage: "plus", label: "More power") }
             }
             // Room under the bar for the calm mark's label while it shows. The bar sits in the middle of the 44-point
             // step buttons, so the label first falls beside them; this keeps its lower half clear of whatever the shot

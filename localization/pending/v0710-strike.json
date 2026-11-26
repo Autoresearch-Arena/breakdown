@@ -1,0 +1,1966 @@
+{
+ "keys": [
+  "%@ N·s",
+  "about %@ N",
+  "%@ J",
+  "%@ turns/s",
+  "%@ mm",
+  "Swing",
+  "Ball leaves at",
+  "Push",
+  "Force over %@ ms of tip contact",
+  "Energy",
+  "Cut",
+  "No top or back spin",
+  "Top spin",
+  "Back spin",
+  "No side spin",
+  "Tip at centre height",
+  "Tip above centre",
+  "Tip below centre",
+  "Tip on the centre line",
+  "Tip right of centre",
+  "Tip left of centre",
+  "No ball in line",
+  "Cut on the %lld",
+  "Your strike",
+  "Planned and delivered",
+  "Dim: what you set. Bright: what your stroke gave.",
+  "Past the tip's grip: this hit slips off the ball.",
+  "%@ N",
+  "Planned against delivered: your stroke turned the cue %@.",
+  "Planned against delivered: the tip landed %@ of where you set it.",
+  "Planned against delivered: your stroke pushed the tip past its grip.",
+  "Tap a tile with a pencil mark to type an exact value.",
+  "This shot sets its own cue angle.",
+  "mm",
+  "Hover to aim. Stand the Pencil up as you stroke to raise the cue."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "de",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "it",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ N·s",
+   "text": "%@ N·s"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ N·s",
+   "text": "%@ Н·с"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ N·s",
+   "text": "%@ ن·ث"
+  },
+  {
+   "culture": "es",
+   "key": "about %@ N",
+   "text": "unos %@ N"
+  },
+  {
+   "culture": "fr",
+   "key": "about %@ N",
+   "text": "environ %@ N"
+  },
+  {
+   "culture": "de",
+   "key": "about %@ N",
+   "text": "etwa %@ N"
+  },
+  {
+   "culture": "it",
+   "key": "about %@ N",
+   "text": "circa %@ N"
+  },
+  {
+   "culture": "pt",
+   "key": "about %@ N",
+   "text": "cerca de %@ N"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "about %@ N",
+   "text": "cerca de %@ N"
+  },
+  {
+   "culture": "ja",
+   "key": "about %@ N",
+   "text": "約 %@ N"
+  },
+  {
+   "culture": "ko",
+   "key": "about %@ N",
+   "text": "약 %@ N"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "about %@ N",
+   "text": "约 %@ N"
+  },
+  {
+   "culture": "ru",
+   "key": "about %@ N",
+   "text": "около %@ Н"
+  },
+  {
+   "culture": "ar",
+   "key": "about %@ N",
+   "text": "نحو %@ ن"
+  },
+  {
+   "culture": "es",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "de",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "it",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ J",
+   "text": "%@ J"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ J",
+   "text": "%@ Дж"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ J",
+   "text": "%@ جول"
+  },
+  {
+   "culture": "es",
+   "key": "%@ turns/s",
+   "text": "%@ vueltas/s"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ turns/s",
+   "text": "%@ tours/s"
+  },
+  {
+   "culture": "de",
+   "key": "%@ turns/s",
+   "text": "%@ U/s"
+  },
+  {
+   "culture": "it",
+   "key": "%@ turns/s",
+   "text": "%@ giri/s"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ turns/s",
+   "text": "%@ voltas/s"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ turns/s",
+   "text": "%@ voltas/s"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ turns/s",
+   "text": "%@ 回転/秒"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ turns/s",
+   "text": "%@ 회전/초"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ turns/s",
+   "text": "%@ 转/秒"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ turns/s",
+   "text": "%@ об/с"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ turns/s",
+   "text": "%@ دورة/ث"
+  },
+  {
+   "culture": "es",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "de",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "it",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ mm",
+   "text": "%@ mm"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ mm",
+   "text": "%@ 毫米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ mm",
+   "text": "%@ мм"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ mm",
+   "text": "%@ مم"
+  },
+  {
+   "culture": "es",
+   "key": "Swing",
+   "text": "Golpe"
+  },
+  {
+   "culture": "fr",
+   "key": "Swing",
+   "text": "Élan"
+  },
+  {
+   "culture": "de",
+   "key": "Swing",
+   "text": "Schwung"
+  },
+  {
+   "culture": "it",
+   "key": "Swing",
+   "text": "Colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "Swing",
+   "text": "Balanço"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Swing",
+   "text": "Tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Swing",
+   "text": "スイング"
+  },
+  {
+   "culture": "ko",
+   "key": "Swing",
+   "text": "스윙"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Swing",
+   "text": "出杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Swing",
+   "text": "Замах"
+  },
+  {
+   "culture": "ar",
+   "key": "Swing",
+   "text": "الضربة"
+  },
+  {
+   "culture": "es",
+   "key": "Ball leaves at",
+   "text": "La bola sale a"
+  },
+  {
+   "culture": "fr",
+   "key": "Ball leaves at",
+   "text": "La bille part à"
+  },
+  {
+   "culture": "de",
+   "key": "Ball leaves at",
+   "text": "Ball startet mit"
+  },
+  {
+   "culture": "it",
+   "key": "Ball leaves at",
+   "text": "La biglia parte a"
+  },
+  {
+   "culture": "pt",
+   "key": "Ball leaves at",
+   "text": "A bola sai a"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Ball leaves at",
+   "text": "A bola sai a"
+  },
+  {
+   "culture": "ja",
+   "key": "Ball leaves at",
+   "text": "球の初速"
+  },
+  {
+   "culture": "ko",
+   "key": "Ball leaves at",
+   "text": "공의 출발 속도"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Ball leaves at",
+   "text": "球出速度"
+  },
+  {
+   "culture": "ru",
+   "key": "Ball leaves at",
+   "text": "Шар уходит со скоростью"
+  },
+  {
+   "culture": "ar",
+   "key": "Ball leaves at",
+   "text": "تنطلق الكرة بسرعة"
+  },
+  {
+   "culture": "es",
+   "key": "Push",
+   "text": "Impulso"
+  },
+  {
+   "culture": "fr",
+   "key": "Push",
+   "text": "Impulsion"
+  },
+  {
+   "culture": "de",
+   "key": "Push",
+   "text": "Impuls"
+  },
+  {
+   "culture": "it",
+   "key": "Push",
+   "text": "Impulso"
+  },
+  {
+   "culture": "pt",
+   "key": "Push",
+   "text": "Impulso"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Push",
+   "text": "Impulso"
+  },
+  {
+   "culture": "ja",
+   "key": "Push",
+   "text": "力積"
+  },
+  {
+   "culture": "ko",
+   "key": "Push",
+   "text": "충격량"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Push",
+   "text": "冲量"
+  },
+  {
+   "culture": "ru",
+   "key": "Push",
+   "text": "Импульс"
+  },
+  {
+   "culture": "ar",
+   "key": "Push",
+   "text": "الدفع"
+  },
+  {
+   "culture": "es",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Fuerza en %@ ms de contacto de la suela"
+  },
+  {
+   "culture": "fr",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Force sur %@ ms de contact du procédé"
+  },
+  {
+   "culture": "de",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Kraft über %@ ms Lederkontakt"
+  },
+  {
+   "culture": "it",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Forza in %@ ms di contatto del cuoio"
+  },
+  {
+   "culture": "pt",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Força em %@ ms de contacto da sola"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Força em %@ ms de contato da sola"
+  },
+  {
+   "culture": "ja",
+   "key": "Force over %@ ms of tip contact",
+   "text": "タップ接触 %@ ms の力"
+  },
+  {
+   "culture": "ko",
+   "key": "Force over %@ ms of tip contact",
+   "text": "팁 접촉 %@ ms 동안의 힘"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Force over %@ ms of tip contact",
+   "text": "皮头接触 %@ 毫秒内的力"
+  },
+  {
+   "culture": "ru",
+   "key": "Force over %@ ms of tip contact",
+   "text": "Сила за %@ мс касания наклейки"
+  },
+  {
+   "culture": "ar",
+   "key": "Force over %@ ms of tip contact",
+   "text": "القوة خلال %@ مللي ثانية من تلامس رأس العصا"
+  },
+  {
+   "culture": "es",
+   "key": "Energy",
+   "text": "Energía"
+  },
+  {
+   "culture": "fr",
+   "key": "Energy",
+   "text": "Énergie"
+  },
+  {
+   "culture": "de",
+   "key": "Energy",
+   "text": "Energie"
+  },
+  {
+   "culture": "it",
+   "key": "Energy",
+   "text": "Energia"
+  },
+  {
+   "culture": "pt",
+   "key": "Energy",
+   "text": "Energia"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Energy",
+   "text": "Energia"
+  },
+  {
+   "culture": "ja",
+   "key": "Energy",
+   "text": "エネルギー"
+  },
+  {
+   "culture": "ko",
+   "key": "Energy",
+   "text": "에너지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Energy",
+   "text": "能量"
+  },
+  {
+   "culture": "ru",
+   "key": "Energy",
+   "text": "Энергия"
+  },
+  {
+   "culture": "ar",
+   "key": "Energy",
+   "text": "الطاقة"
+  },
+  {
+   "culture": "es",
+   "key": "Cut",
+   "text": "Corte"
+  },
+  {
+   "culture": "fr",
+   "key": "Cut",
+   "text": "Coupe"
+  },
+  {
+   "culture": "de",
+   "key": "Cut",
+   "text": "Schnitt"
+  },
+  {
+   "culture": "it",
+   "key": "Cut",
+   "text": "Taglio"
+  },
+  {
+   "culture": "pt",
+   "key": "Cut",
+   "text": "Corte"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut",
+   "text": "Corte"
+  },
+  {
+   "culture": "ja",
+   "key": "Cut",
+   "text": "カット"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut",
+   "text": "컷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut",
+   "text": "切角"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut",
+   "text": "Срез"
+  },
+  {
+   "culture": "ar",
+   "key": "Cut",
+   "text": "القطع"
+  },
+  {
+   "culture": "es",
+   "key": "No top or back spin",
+   "text": "Sin efecto alto ni bajo"
+  },
+  {
+   "culture": "fr",
+   "key": "No top or back spin",
+   "text": "Ni effet haut ni rétro"
+  },
+  {
+   "culture": "de",
+   "key": "No top or back spin",
+   "text": "Kein Nachlauf- oder Rückläuferdrall"
+  },
+  {
+   "culture": "it",
+   "key": "No top or back spin",
+   "text": "Né effetto alto né basso"
+  },
+  {
+   "culture": "pt",
+   "key": "No top or back spin",
+   "text": "Sem efeito alto nem baixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No top or back spin",
+   "text": "Sem efeito alto nem baixo"
+  },
+  {
+   "culture": "ja",
+   "key": "No top or back spin",
+   "text": "順回転も逆回転もなし"
+  },
+  {
+   "culture": "ko",
+   "key": "No top or back spin",
+   "text": "위·아래 회전 없음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No top or back spin",
+   "text": "无上旋或下旋"
+  },
+  {
+   "culture": "ru",
+   "key": "No top or back spin",
+   "text": "Без верхнего и нижнего вращения"
+  },
+  {
+   "culture": "ar",
+   "key": "No top or back spin",
+   "text": "لا دوران علوي ولا خلفي"
+  },
+  {
+   "culture": "es",
+   "key": "Top spin",
+   "text": "Efecto alto"
+  },
+  {
+   "culture": "fr",
+   "key": "Top spin",
+   "text": "Effet haut"
+  },
+  {
+   "culture": "de",
+   "key": "Top spin",
+   "text": "Nachlaufdrall"
+  },
+  {
+   "culture": "it",
+   "key": "Top spin",
+   "text": "Effetto alto"
+  },
+  {
+   "culture": "pt",
+   "key": "Top spin",
+   "text": "Efeito alto"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Top spin",
+   "text": "Efeito alto"
+  },
+  {
+   "culture": "ja",
+   "key": "Top spin",
+   "text": "順回転"
+  },
+  {
+   "culture": "ko",
+   "key": "Top spin",
+   "text": "위 회전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Top spin",
+   "text": "上旋"
+  },
+  {
+   "culture": "ru",
+   "key": "Top spin",
+   "text": "Верхнее вращение"
+  },
+  {
+   "culture": "ar",
+   "key": "Top spin",
+   "text": "دوران علوي"
+  },
+  {
+   "culture": "es",
+   "key": "Back spin",
+   "text": "Efecto bajo"
+  },
+  {
+   "culture": "fr",
+   "key": "Back spin",
+   "text": "Rétro"
+  },
+  {
+   "culture": "de",
+   "key": "Back spin",
+   "text": "Rückläuferdrall"
+  },
+  {
+   "culture": "it",
+   "key": "Back spin",
+   "text": "Effetto basso"
+  },
+  {
+   "culture": "pt",
+   "key": "Back spin",
+   "text": "Efeito baixo"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Back spin",
+   "text": "Efeito baixo"
+  },
+  {
+   "culture": "ja",
+   "key": "Back spin",
+   "text": "逆回転"
+  },
+  {
+   "culture": "ko",
+   "key": "Back spin",
+   "text": "아래 회전"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Back spin",
+   "text": "下旋"
+  },
+  {
+   "culture": "ru",
+   "key": "Back spin",
+   "text": "Нижнее вращение"
+  },
+  {
+   "culture": "ar",
+   "key": "Back spin",
+   "text": "دوران خلفي"
+  },
+  {
+   "culture": "es",
+   "key": "No side spin",
+   "text": "Sin efecto lateral"
+  },
+  {
+   "culture": "fr",
+   "key": "No side spin",
+   "text": "Pas d'effet latéral"
+  },
+  {
+   "culture": "de",
+   "key": "No side spin",
+   "text": "Kein Seitendrall"
+  },
+  {
+   "culture": "it",
+   "key": "No side spin",
+   "text": "Nessun effetto laterale"
+  },
+  {
+   "culture": "pt",
+   "key": "No side spin",
+   "text": "Sem efeito lateral"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No side spin",
+   "text": "Sem efeito lateral"
+  },
+  {
+   "culture": "ja",
+   "key": "No side spin",
+   "text": "横回転なし"
+  },
+  {
+   "culture": "ko",
+   "key": "No side spin",
+   "text": "옆 회전 없음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No side spin",
+   "text": "无侧旋"
+  },
+  {
+   "culture": "ru",
+   "key": "No side spin",
+   "text": "Без бокового вращения"
+  },
+  {
+   "culture": "ar",
+   "key": "No side spin",
+   "text": "لا دوران جانبي"
+  },
+  {
+   "culture": "es",
+   "key": "Tip at centre height",
+   "text": "Suela a la altura del centro"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip at centre height",
+   "text": "Procédé à hauteur du centre"
+  },
+  {
+   "culture": "de",
+   "key": "Tip at centre height",
+   "text": "Leder auf Mittelhöhe"
+  },
+  {
+   "culture": "it",
+   "key": "Tip at centre height",
+   "text": "Cuoio all'altezza del centro"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip at centre height",
+   "text": "Sola à altura do centro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip at centre height",
+   "text": "Sola na altura do centro"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip at centre height",
+   "text": "タップは中心の高さ"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip at centre height",
+   "text": "팁은 중심 높이"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip at centre height",
+   "text": "皮头在中心高度"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip at centre height",
+   "text": "Наклейка на высоте центра"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip at centre height",
+   "text": "رأس العصا على ارتفاع المركز"
+  },
+  {
+   "culture": "es",
+   "key": "Tip above centre",
+   "text": "Suela por encima del centro"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip above centre",
+   "text": "Procédé au-dessus du centre"
+  },
+  {
+   "culture": "de",
+   "key": "Tip above centre",
+   "text": "Leder über der Mitte"
+  },
+  {
+   "culture": "it",
+   "key": "Tip above centre",
+   "text": "Cuoio sopra il centro"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip above centre",
+   "text": "Sola acima do centro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip above centre",
+   "text": "Sola acima do centro"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip above centre",
+   "text": "タップは中心より上"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip above centre",
+   "text": "팁은 중심 위"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip above centre",
+   "text": "皮头在中心上方"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip above centre",
+   "text": "Наклейка выше центра"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip above centre",
+   "text": "رأس العصا فوق المركز"
+  },
+  {
+   "culture": "es",
+   "key": "Tip below centre",
+   "text": "Suela por debajo del centro"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip below centre",
+   "text": "Procédé sous le centre"
+  },
+  {
+   "culture": "de",
+   "key": "Tip below centre",
+   "text": "Leder unter der Mitte"
+  },
+  {
+   "culture": "it",
+   "key": "Tip below centre",
+   "text": "Cuoio sotto il centro"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip below centre",
+   "text": "Sola abaixo do centro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip below centre",
+   "text": "Sola abaixo do centro"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip below centre",
+   "text": "タップは中心より下"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip below centre",
+   "text": "팁은 중심 아래"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip below centre",
+   "text": "皮头在中心下方"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip below centre",
+   "text": "Наклейка ниже центра"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip below centre",
+   "text": "رأس العصا تحت المركز"
+  },
+  {
+   "culture": "es",
+   "key": "Tip on the centre line",
+   "text": "Suela en la línea central"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip on the centre line",
+   "text": "Procédé sur l'axe"
+  },
+  {
+   "culture": "de",
+   "key": "Tip on the centre line",
+   "text": "Leder auf der Mittellinie"
+  },
+  {
+   "culture": "it",
+   "key": "Tip on the centre line",
+   "text": "Cuoio sulla linea centrale"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip on the centre line",
+   "text": "Sola na linha central"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip on the centre line",
+   "text": "Sola na linha central"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip on the centre line",
+   "text": "タップは中心線上"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip on the centre line",
+   "text": "팁은 중심선 위"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip on the centre line",
+   "text": "皮头在中线上"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip on the centre line",
+   "text": "Наклейка на центральной линии"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip on the centre line",
+   "text": "رأس العصا على خط المنتصف"
+  },
+  {
+   "culture": "es",
+   "key": "Tip right of centre",
+   "text": "Suela a la derecha del centro"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip right of centre",
+   "text": "Procédé à droite du centre"
+  },
+  {
+   "culture": "de",
+   "key": "Tip right of centre",
+   "text": "Leder rechts der Mitte"
+  },
+  {
+   "culture": "it",
+   "key": "Tip right of centre",
+   "text": "Cuoio a destra del centro"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip right of centre",
+   "text": "Sola à direita do centro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip right of centre",
+   "text": "Sola à direita do centro"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip right of centre",
+   "text": "タップは中心より右"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip right of centre",
+   "text": "팁은 중심 오른쪽"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip right of centre",
+   "text": "皮头在中心右侧"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip right of centre",
+   "text": "Наклейка правее центра"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip right of centre",
+   "text": "رأس العصا يمين المركز"
+  },
+  {
+   "culture": "es",
+   "key": "Tip left of centre",
+   "text": "Suela a la izquierda del centro"
+  },
+  {
+   "culture": "fr",
+   "key": "Tip left of centre",
+   "text": "Procédé à gauche du centre"
+  },
+  {
+   "culture": "de",
+   "key": "Tip left of centre",
+   "text": "Leder links der Mitte"
+  },
+  {
+   "culture": "it",
+   "key": "Tip left of centre",
+   "text": "Cuoio a sinistra del centro"
+  },
+  {
+   "culture": "pt",
+   "key": "Tip left of centre",
+   "text": "Sola à esquerda do centro"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tip left of centre",
+   "text": "Sola à esquerda do centro"
+  },
+  {
+   "culture": "ja",
+   "key": "Tip left of centre",
+   "text": "タップは中心より左"
+  },
+  {
+   "culture": "ko",
+   "key": "Tip left of centre",
+   "text": "팁은 중심 왼쪽"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tip left of centre",
+   "text": "皮头在中心左侧"
+  },
+  {
+   "culture": "ru",
+   "key": "Tip left of centre",
+   "text": "Наклейка левее центра"
+  },
+  {
+   "culture": "ar",
+   "key": "Tip left of centre",
+   "text": "رأس العصا يسار المركز"
+  },
+  {
+   "culture": "es",
+   "key": "No ball in line",
+   "text": "Ninguna bola en la línea"
+  },
+  {
+   "culture": "fr",
+   "key": "No ball in line",
+   "text": "Aucune bille sur la ligne"
+  },
+  {
+   "culture": "de",
+   "key": "No ball in line",
+   "text": "Keine Kugel in der Linie"
+  },
+  {
+   "culture": "it",
+   "key": "No ball in line",
+   "text": "Nessuna biglia sulla linea"
+  },
+  {
+   "culture": "pt",
+   "key": "No ball in line",
+   "text": "Nenhuma bola na linha"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "No ball in line",
+   "text": "Nenhuma bola na linha"
+  },
+  {
+   "culture": "ja",
+   "key": "No ball in line",
+   "text": "ライン上に球なし"
+  },
+  {
+   "culture": "ko",
+   "key": "No ball in line",
+   "text": "선 위에 공 없음"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "No ball in line",
+   "text": "线上没有球"
+  },
+  {
+   "culture": "ru",
+   "key": "No ball in line",
+   "text": "На линии нет шара"
+  },
+  {
+   "culture": "ar",
+   "key": "No ball in line",
+   "text": "لا كرة على الخط"
+  },
+  {
+   "culture": "es",
+   "key": "Cut on the %lld",
+   "text": "Corte a la %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Cut on the %lld",
+   "text": "Coupe sur la %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Cut on the %lld",
+   "text": "Schnitt auf die %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Cut on the %lld",
+   "text": "Taglio sulla %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Cut on the %lld",
+   "text": "Corte na %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Cut on the %lld",
+   "text": "Corte na %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Cut on the %lld",
+   "text": "%lld番へのカット"
+  },
+  {
+   "culture": "ko",
+   "key": "Cut on the %lld",
+   "text": "%lld번 공 컷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Cut on the %lld",
+   "text": "%lld 号球切角"
+  },
+  {
+   "culture": "ru",
+   "key": "Cut on the %lld",
+   "text": "Срез по шару %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Cut on the %lld",
+   "text": "القطع على الكرة %lld"
+  },
+  {
+   "culture": "es",
+   "key": "Your strike",
+   "text": "Tu golpe"
+  },
+  {
+   "culture": "fr",
+   "key": "Your strike",
+   "text": "Votre coup"
+  },
+  {
+   "culture": "de",
+   "key": "Your strike",
+   "text": "Dein Stoß"
+  },
+  {
+   "culture": "it",
+   "key": "Your strike",
+   "text": "Il tuo colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "Your strike",
+   "text": "A sua tacada"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Your strike",
+   "text": "Sua tacada"
+  },
+  {
+   "culture": "ja",
+   "key": "Your strike",
+   "text": "あなたのショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Your strike",
+   "text": "당신의 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Your strike",
+   "text": "你的出杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Your strike",
+   "text": "Ваш удар"
+  },
+  {
+   "culture": "ar",
+   "key": "Your strike",
+   "text": "ضربتك"
+  },
+  {
+   "culture": "es",
+   "key": "Planned and delivered",
+   "text": "Planeado y ejecutado"
+  },
+  {
+   "culture": "fr",
+   "key": "Planned and delivered",
+   "text": "Prévu et réalisé"
+  },
+  {
+   "culture": "de",
+   "key": "Planned and delivered",
+   "text": "Geplant und ausgeführt"
+  },
+  {
+   "culture": "it",
+   "key": "Planned and delivered",
+   "text": "Previsto ed eseguito"
+  },
+  {
+   "culture": "pt",
+   "key": "Planned and delivered",
+   "text": "Planeado e executado"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Planned and delivered",
+   "text": "Planejado e executado"
+  },
+  {
+   "culture": "ja",
+   "key": "Planned and delivered",
+   "text": "計画と実際"
+  },
+  {
+   "culture": "ko",
+   "key": "Planned and delivered",
+   "text": "계획과 실제"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Planned and delivered",
+   "text": "计划与实际"
+  },
+  {
+   "culture": "ru",
+   "key": "Planned and delivered",
+   "text": "Задумано и сделано"
+  },
+  {
+   "culture": "ar",
+   "key": "Planned and delivered",
+   "text": "المخطط والمنفّذ"
+  },
+  {
+   "culture": "es",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Atenuado: lo que ajustaste. Brillante: lo que dio tu golpe."
+  },
+  {
+   "culture": "fr",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Pâle : ce que vous avez réglé. Vif : ce que votre coup a donné."
+  },
+  {
+   "culture": "de",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Blass: was du eingestellt hast. Hell: was dein Stoß ergab."
+  },
+  {
+   "culture": "it",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Tenue: ciò che hai impostato. Acceso: ciò che ha dato il tuo colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Esbatido: o que definiu. Brilhante: o que a sua tacada deu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Apagado: o que você definiu. Brilhante: o que sua tacada deu."
+  },
+  {
+   "culture": "ja",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "薄い数字：設定した値。明るい数字：ストロークの結果。"
+  },
+  {
+   "culture": "ko",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "흐린 값: 설정한 값. 밝은 값: 스트로크가 낸 값."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "暗色：你设定的值。亮色：你的出杆实际给出的值。"
+  },
+  {
+   "culture": "ru",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "Бледное: что вы задали. Яркое: что дал ваш удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Dim: what you set. Bright: what your stroke gave.",
+   "text": "الباهت: ما ضبطته. الساطع: ما أعطته ضربتك."
+  },
+  {
+   "culture": "es",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "Fuera del agarre de la suela: este golpe resbala en la bola."
+  },
+  {
+   "culture": "fr",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "Au-delà de l'adhérence du procédé : ce coup glisse sur la bille."
+  },
+  {
+   "culture": "de",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "Jenseits des Lederhalts: Dieser Stoß rutscht von der Kugel ab."
+  },
+  {
+   "culture": "it",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "Oltre la presa del cuoio: questo colpo scivola sulla biglia."
+  },
+  {
+   "culture": "pt",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "Para além da aderência da sola: esta tacada escorrega na bola."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "Além da aderência da sola: esta tacada escorrega na bola."
+  },
+  {
+   "culture": "ja",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "タップのグリップを超えています：このショットは球から滑ります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "팁의 마찰 한계를 넘었습니다: 이 샷은 공에서 미끄러집니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "超出皮头的抓力：这一杆会从球上滑开。"
+  },
+  {
+   "culture": "ru",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "За пределом сцепления наклейки: этот удар соскользнёт с шара."
+  },
+  {
+   "culture": "ar",
+   "key": "Past the tip's grip: this hit slips off the ball.",
+   "text": "خارج قبضة رأس العصا: هذه الضربة تنزلق عن الكرة."
+  },
+  {
+   "culture": "es",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "de",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "it",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ N",
+   "text": "%@ N"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ N",
+   "text": "%@ Н"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ N",
+   "text": "%@ ن"
+  },
+  {
+   "culture": "es",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Planeado frente a ejecutado: tu golpe giró el taco %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Prévu contre réalisé : votre coup a tourné la queue de %@."
+  },
+  {
+   "culture": "de",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Geplant gegen ausgeführt: Dein Stoß hat das Queue um %@ gedreht."
+  },
+  {
+   "culture": "it",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Previsto contro eseguito: il tuo colpo ha girato la stecca di %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Planeado contra executado: a sua tacada rodou o taco %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Planejado contra executado: sua tacada girou o taco %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "計画と実際：ストロークでキューが%@ずれました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "계획 대비 실제: 스트로크로 큐가 %@ 돌아갔습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "计划与实际：你的出杆让球杆偏了%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "Задумано и сделано: ваш удар повернул кий на %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Planned against delivered: your stroke turned the cue %@.",
+   "text": "المخطط مقابل المنفّذ: أدارت ضربتك العصا %@."
+  },
+  {
+   "culture": "es",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Planeado frente a ejecutado: la suela tocó %@ de donde la pusiste."
+  },
+  {
+   "culture": "fr",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Prévu contre réalisé : le procédé a touché %@ de l'endroit choisi."
+  },
+  {
+   "culture": "de",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Geplant gegen ausgeführt: Das Leder traf %@ von der eingestellten Stelle."
+  },
+  {
+   "culture": "it",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Previsto contro eseguito: il cuoio ha colpito %@ rispetto al punto scelto."
+  },
+  {
+   "culture": "pt",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Planeado contra executado: a sola bateu %@ do ponto que definiu."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Planejado contra executado: a sola bateu %@ do ponto que você definiu."
+  },
+  {
+   "culture": "ja",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "計画と実際：タップは設定した位置から%@に当たりました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "계획 대비 실제: 팁이 설정한 곳에서 %@ 맞았습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "计划与实际：皮头落点比你设定的位置%@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "Задумано и сделано: наклейка попала на %@ от заданной точки."
+  },
+  {
+   "culture": "ar",
+   "key": "Planned against delivered: the tip landed %@ of where you set it.",
+   "text": "المخطط مقابل المنفّذ: أصاب رأس العصا %@ من الموضع الذي ضبطته."
+  },
+  {
+   "culture": "es",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Planeado frente a ejecutado: tu golpe llevó la suela más allá de su agarre."
+  },
+  {
+   "culture": "fr",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Prévu contre réalisé : votre coup a poussé le procédé au-delà de son adhérence."
+  },
+  {
+   "culture": "de",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Geplant gegen ausgeführt: Dein Stoß hat das Leder über seinen Halt hinaus geschoben."
+  },
+  {
+   "culture": "it",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Previsto contro eseguito: il tuo colpo ha spinto il cuoio oltre la sua presa."
+  },
+  {
+   "culture": "pt",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Planeado contra executado: a sua tacada levou a sola para além da aderência."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Planejado contra executado: sua tacada levou a sola além da aderência."
+  },
+  {
+   "culture": "ja",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "計画と実際：ストロークでタップがグリップの限界を超えました。"
+  },
+  {
+   "culture": "ko",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "계획 대비 실제: 스트로크가 팁을 마찰 한계 밖으로 밀었습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "计划与实际：你的出杆把皮头推出了抓力范围。"
+  },
+  {
+   "culture": "ru",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "Задумано и сделано: ваш удар вывел наклейку за предел сцепления."
+  },
+  {
+   "culture": "ar",
+   "key": "Planned against delivered: your stroke pushed the tip past its grip.",
+   "text": "المخطط مقابل المنفّذ: دفعت ضربتك رأس العصا خارج قبضته."
+  },
+  {
+   "culture": "es",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Toca una casilla con un lápiz para escribir un valor exacto."
+  },
+  {
+   "culture": "fr",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Touchez une case marquée d'un crayon pour saisir une valeur exacte."
+  },
+  {
+   "culture": "de",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Tippe auf eine Kachel mit Stift, um einen genauen Wert einzugeben."
+  },
+  {
+   "culture": "it",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Tocca un riquadro con la matita per scrivere un valore esatto."
+  },
+  {
+   "culture": "pt",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Toque num quadro com um lápis para escrever um valor exato."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Toque em um quadro com um lápis para digitar um valor exato."
+  },
+  {
+   "culture": "ja",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "鉛筆マークのタイルをタップすると正確な値を入力できます。"
+  },
+  {
+   "culture": "ko",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "연필 표시가 있는 칸을 탭하면 정확한 값을 입력할 수 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "轻点带铅笔标记的方块可输入精确数值。"
+  },
+  {
+   "culture": "ru",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "Коснитесь плитки с карандашом, чтобы ввести точное значение."
+  },
+  {
+   "culture": "ar",
+   "key": "Tap a tile with a pencil mark to type an exact value.",
+   "text": "اضغط على مربع عليه قلم لكتابة قيمة دقيقة."
+  },
+  {
+   "culture": "es",
+   "key": "This shot sets its own cue angle.",
+   "text": "Este tiro fija su propio ángulo del taco."
+  },
+  {
+   "culture": "fr",
+   "key": "This shot sets its own cue angle.",
+   "text": "Ce coup fixe son propre angle de queue."
+  },
+  {
+   "culture": "de",
+   "key": "This shot sets its own cue angle.",
+   "text": "Dieser Stoß legt seinen eigenen Queuewinkel fest."
+  },
+  {
+   "culture": "it",
+   "key": "This shot sets its own cue angle.",
+   "text": "Questo tiro fissa la propria inclinazione della stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "This shot sets its own cue angle.",
+   "text": "Esta tacada define o seu próprio ângulo do taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "This shot sets its own cue angle.",
+   "text": "Esta tacada define o próprio ângulo do taco."
+  },
+  {
+   "culture": "ja",
+   "key": "This shot sets its own cue angle.",
+   "text": "このショットはキューの角度が決まっています。"
+  },
+  {
+   "culture": "ko",
+   "key": "This shot sets its own cue angle.",
+   "text": "이 샷은 큐 각도가 정해져 있습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "This shot sets its own cue angle.",
+   "text": "这一杆的球杆角度是固定的。"
+  },
+  {
+   "culture": "ru",
+   "key": "This shot sets its own cue angle.",
+   "text": "У этого удара свой угол кия."
+  },
+  {
+   "culture": "ar",
+   "key": "This shot sets its own cue angle.",
+   "text": "هذه الضربة تحدد زاوية العصا بنفسها."
+  },
+  {
+   "culture": "es",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "fr",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "de",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "it",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "pt",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "ja",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "ko",
+   "key": "mm",
+   "text": "mm"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "mm",
+   "text": "毫米"
+  },
+  {
+   "culture": "ru",
+   "key": "mm",
+   "text": "мм"
+  },
+  {
+   "culture": "ar",
+   "key": "mm",
+   "text": "مم"
+  },
+  {
+   "culture": "es",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Pasa por encima para apuntar. Endereza el lápiz al golpear para levantar el taco."
+  },
+  {
+   "culture": "fr",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Survolez pour viser. Redressez le crayon pendant le coup pour lever la queue."
+  },
+  {
+   "culture": "de",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Zum Zielen darüber schweben. Stell den Stift beim Stoß auf, um das Queue anzuheben."
+  },
+  {
+   "culture": "it",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Passa sopra per mirare. Raddrizza la penna mentre colpisci per alzare la stecca."
+  },
+  {
+   "culture": "pt",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Passe por cima para apontar. Endireite o lápis ao dar a tacada para levantar o taco."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Passe por cima para mirar. Endireite o lápis ao dar a tacada para levantar o taco."
+  },
+  {
+   "culture": "ja",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "かざして狙います。ストローク中にペンを立てるとキューが上がります。"
+  },
+  {
+   "culture": "ko",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "펜을 띄워 조준합니다. 스트로크하면서 펜을 세우면 큐가 올라갑니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "悬停以瞄准。出杆时把笔竖起来即可抬高球杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "Наведите, чтобы прицелиться. Поднимите стилус вертикально во время удара, чтобы поднять кий."
+  },
+  {
+   "culture": "ar",
+   "key": "Hover to aim. Stand the Pencil up as you stroke to raise the cue.",
+   "text": "مرّر القلم فوق الطاولة للتصويب. ارفع القلم عموديًا أثناء الضربة لرفع العصا."
+  }
+ ]
+}

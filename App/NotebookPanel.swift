@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
+//          stage 2: the commentary's place holds StrikeSlot, which shows the strike panel while aiming and the commentary
+//          while the balls move; the slot stays with Explanations off, outside the opening.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the top
 //          bar's title reads a frozen hit's status line for the length of the freeze.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
@@ -298,7 +301,8 @@ struct NotebookPanel: View {
         let gaps = CGFloat((showsNumbers ? 4 : 3) + (model.lensOn ? 1 : 0)) * 12
         let free = size.height - 32 - 40 - keyHeight - bottomHeight - numbersHeight - gaps
         let storyMinimum: CGFloat = 140
-        let showsStory = explanations && free - cardsHeight >= storyMinimum
+        // 0.7.10 strike: the slot also holds the strike panel, which shows with Explanations off as well (StrikeSlot).
+        let showsStory = (explanations || StrikeSlot.shows(model)) && free - cardsHeight >= storyMinimum
         let cardsMax = max(120, showsStory ? free - storyMinimum : free)
         let overflows = cardsHeight > cardsMax
         return VStack(spacing: 12) {
@@ -307,7 +311,7 @@ struct NotebookPanel: View {
             FittingScroll(maxHeight: cardsMax) { measuredCards }
                 .fadesAtBottom(overflows)
             if showsStory {
-                NotebookStory(model: model, leader: leader).frame(maxHeight: .infinity)
+                StrikeSlot(model: model, leader: leader).frame(maxHeight: .infinity)  // 0.7.10 strike
             } else {
                 Spacer(minLength: 0)
             }
@@ -331,7 +335,8 @@ struct NotebookPanel: View {
     /// numbers at its foot): the cards move there instead, above the numbers when they show, and the first column
     /// keeps the top bar, the key and the controls (0.7.5 layouts item 9).
     private func twoColumns(_ size: CGSize) -> some View {
-        let cardsBesideStory = explanations
+        // 0.7.10 strike: the second column keeps the slot (the strike panel) with Explanations off too, outside the opening.
+        let cardsBesideStory = explanations || StrikeSlot.shows(model)
         // Padding (28), top bar (40), the key row and its gap, the lower edge and the gaps (30) are fixed; the cards
         // take the rest.
         let cardsMax = max(120, size.height - 28 - 40 - keyHeight - (model.lensOn ? 10 : 0) - bottomHeight - 30)
@@ -354,7 +359,7 @@ struct NotebookPanel: View {
             .frame(width: size.width * (onHinge ? 0.44 : 0.5))
             VStack(spacing: 10) {
                 if cardsBesideStory {
-                    NotebookStory(model: model, leader: leader)
+                    StrikeSlot(model: model, leader: leader)  // 0.7.10 strike
                         .frame(maxHeight: .infinity)
                 } else {
                     FittingScroll(maxHeight: cardsMaxAlone) { measuredCards }
