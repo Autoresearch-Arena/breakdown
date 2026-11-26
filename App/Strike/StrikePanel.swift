@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 upright iPad and phone: StrikeSlot scrolls in one scroll view
+//          of its own, not FittingScroll, whose branch switch remade the panel at two columns and froze the slot about
+//          70 points tall; the cut's sub-line clears its dotted underline; the phone sheet is as tall as its figures.)
 // PURPOSE: The strike panel (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stage 2; laid out as
 //          plans/26-Nov-2026-aiming-panel-redesign-plan.md, step 4): the strike the player is about to make, in real
 //          units, changing live as they aim, set the power, move the tip or raise the cue. Read first, in two bands:
@@ -251,7 +254,9 @@ struct StrikeLeadBand: View {
                 .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
                 .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.8)
             FigureLine(figure: figure, size: figureBase * size, role: .result, editable: editable)
-                .padding(.bottom, editable ? 6 : 0)
+                // The dotted underline hangs max(4, 16 %) of the figure under the number (FigureLine); the line under
+                // the figure starts clear of it.
+                .padding(.bottom, editable ? max(4, figureBase * size * 0.16) + 6 : 0)
             below()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -412,6 +417,8 @@ struct StrikeSlot: View {
     /// The most height the strike's heading and bands may take before they scroll (the rest goes to the controls).
     var strikeMaxHeight: CGFloat = .infinity
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
+    /// The strike's own height (heading, sentence and bands), measured inside the scroll view (strike(steps:)).
+    @State private var strikeNatural: CGFloat = 0
 
     /// True when the slot shows the strike at all: "Your shot" is open, outside the opening. NotebookPanel reads it to
     /// keep the slot when Explanations is off. With "Your shot" closed the numbers strip shows instead.
@@ -461,15 +468,28 @@ struct StrikeSlot: View {
 
     /// The strike's heading and bands, at their own height up to strikeMaxHeight, scrolling past it (the largest text
     /// sizes); before any shot the surface and table card follows, as the commentary's empty page used to show.
+    /// Not FittingScroll: its two branches (plain, or in a scroll view) are two identities, so switching between them
+    /// remade StrikePanel, whose column count comes from its measured width and starts at two columns. Two by two is
+    /// taller, so the remade panel measured past the cap, which picked the scroll branch, which remade it again: the
+    /// slot froze at the cap (about 70 points taller than the four-column strike, an empty gap on the upright iPad)
+    /// and the controls band under it lost that height. One scroll view, always there and only scrolling when the
+    /// content is taller than the cap, keeps one identity, so the measurement settles once.
     private func strike(steps: Bool) -> some View {
-        FittingScroll(maxHeight: strikeMaxHeight) {
+        let fits = strikeNatural <= strikeMaxHeight
+        return ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 StrikePanel(model: model, heading: true, onSteps: steps && explanations ? { showSteps = true } : nil)
                 if !NotebookStory.hasShot(model) {
                     NotebookSurfaceCard(model: model, detailed: true)
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { strikeNatural = $0 }
         }
+        .scrollDisabled(fits)
+        .scrollBounceBehavior(.basedOnSize)
+        // Its own height up to the cap; before the first measurement nothing (it is measured in the same pass).
+        .frame(height: min(strikeNatural, strikeMaxHeight))
     }
 }
 
@@ -484,6 +504,14 @@ struct StrikeSheet: View {
     @Binding var isOpen: Bool
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// The sheet's content, measured (0 until measured): the sheet is as tall as its figures, so the physics line is
+    /// never cut off at the bottom (a fixed 270 points was about 25 short), and at most about half an upright phone.
+    @State private var contentHeight: CGFloat = 0
+
+    /// Its own height while that is under 420 points (about half the phone); 270 before the first measurement.
+    private var detent: PresentationDetent {
+        contentHeight > 0 ? .height(min(contentHeight, 420)) : .height(270)
+    }
 
     var body: some View {
         ScrollView {
@@ -500,12 +528,13 @@ struct StrikeSheet: View {
             .padding(.horizontal, 16)
             .padding(.top, 6)
             .padding(.bottom, 16)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
         }
         .scrollBounceBehavior(.basedOnSize)
         .tint(palette.accent)
         // Opaque: no table showing through behind the figures.
         .presentationBackground(palette.band)
-        .presentationDetents(typeSize.isAccessibilitySize ? [.medium, .large] : [.height(270), .medium])
-        .presentationBackgroundInteraction(.enabled(upThrough: typeSize.isAccessibilitySize ? .medium : .height(270)))
+        .presentationDetents(typeSize.isAccessibilitySize ? [.medium, .large] : [detent, .medium])
+        .presentationBackgroundInteraction(.enabled(upThrough: typeSize.isAccessibilitySize ? .medium : detent))
     }
 }

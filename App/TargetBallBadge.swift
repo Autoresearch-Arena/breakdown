@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the badge leaves where it is drawn in a BadgeFrameBox, so
+//          AimOverlay can keep the side-spin fork's labels off it; on the upright phone "Ball goes here" sat under it.)
 // PURPOSE: The target-ball badge (look plan package 3). On a phone held upright the camera fits the whole table, so a
 //          ball is a few millimetres across and its number and stripe cannot be read. While aiming, the ball the cue
 //          ball will hit first gets a small floating badge above it (on glass everywhere but the upright phone, where
@@ -34,12 +36,20 @@ import BreakdownPhysics
 import BreakdownTimeline
 import SwiftUI
 
+/// Where the target-ball badge was last drawn, in AimOverlay's points. A plain reference box, not observed: the overlay's
+/// canvas redraws every frame and reads it, so a write never needs to start another pass.
+final class BadgeFrameBox {
+    var rect: CGRect?
+}
+
 struct TargetBallBadge: View {
     /// The target ball on screen; `clear` is the upright phone's keep-clear rectangle (nil on every other layout).
     typealias Target = (ball: Int, centre: CGPoint, radius: CGFloat, clear: CGRect?)
 
     let model: ShowpieceModel
     let bridge: SceneBridge
+    /// Where the badge is drawn this frame (nil when it is not), read by AimOverlay's canvas.
+    var frameBox: BadgeFrameBox? = nil
 
     @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     /// Set by ShowpieceView on the stage that holds AimOverlay; only the upright phone changes look and placement.
@@ -52,19 +62,28 @@ struct TargetBallBadge: View {
     private let gap: CGFloat = 10
 
     var body: some View {
-        TimelineView(.animation) { _ in
+        TimelineView(.animation) { context in
             GeometryReader { geo in
+                // 0.8.1: the frame's date is read here, so the placement is worked out again every frame. Without it
+                // the reader's content was not re-run once the strike sheet came up, and the badge stayed where the
+                // settling camera had left the ball (on it, or under it) while the table moved on.
+                let _ = context.date
                 if let target = target(in: geo.size) {
                     // The table drawn on screen (the one the shot was solved on) says how the ball looks and is named.
                     let set = TableBallSet.for(table: model.solvedTable)
                     // 0.7.10 everyone: a numbered pool ball is named by its number in words too ("3 ball, solid"), so
                     // the badge never leans on the ball's colour or its tiny printed number alone.
                     let look = set.look(of: target.ball)
+                    let at = place(target, in: geo.size)
+                    let _ = frameBox?.rect = CGRect(x: at.x - badgeSize.width / 2, y: at.y - badgeSize.height / 2,
+                                                    width: badgeSize.width, height: badgeSize.height)
                     BallBadgeChip(look: look, label: Self.label(look, ball: target.ball, set: set), upright: upright)
                         .onGeometryChange(for: CGSize.self) { $0.size } action: { badgeSize = $0 }
-                        .position(place(target, in: geo.size))
+                        .position(at)
                         .id(target.ball)
                         .transition(.opacity)
+                } else {
+                    let _ = frameBox?.rect = nil
                 }
             }
         }

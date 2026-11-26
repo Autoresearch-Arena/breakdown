@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the hint is left out while the strike sheet is up, which
+//          left it cut in half along the sheet's top edge.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the strike sheet starts open in the -storeStrike
 //          store scene.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
@@ -129,7 +131,9 @@ struct PhoneAimPanel: View {
         VStack(alignment: .leading, spacing: 10) {
             // 0.7.10 strike: the first instruction (and the Pencil line) below the table, in the panel, instead of a
             // blurb docked over the top of the table.
-            StrikeHint(model: model, phone: true)
+            // Not while the strike sheet is up: the sheet covers the panel, and the hint's card was left cut in half
+            // along the sheet's top edge.
+            if !strikeOpen { StrikeHint(model: model, phone: true) }
             ShotStatusLine(model: model, pulse: refusalPulse)
             if slidersOpen {
                 FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)

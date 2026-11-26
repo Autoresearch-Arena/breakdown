@@ -79,6 +79,7 @@ Built as 0.7.10; the Boss named the version 0.8.1 for the size of the change.
   localization/pending/v081-aiming.json with all eleven translations. Built and looked at on the Mac only (a
   1440 × 900 window and a narrower, taller one); the upright iPad's three-column band and the phone sheet are built
   but not yet seen on a device.
+- **The aiming panel on the upright iPad and phone, fixed (Claude Opus 5.5 Medium).** On the upright 13-inch iPad the strike froze about 70 points taller than itself (its scroll-or-not switch remade the panel, which measured two by two for a frame) and the What-you-set band, short by that and by an undercounted dial column, was cut off at the bottom; now no gap, every control whole, Try again worded, the swing label beside its figure when the band is short; the cut's line clears its dotted underline; the phone's strike sheet is as tall as its figures, with no half-hidden hint above it, and the target-ball badge follows the camera so the side-spin labels keep off it. Seen on the iPad, the iPhone and two Mac window sizes (store/review/fixed-*.png).
 
 ## [0.7.9] - 25-November-2026
 

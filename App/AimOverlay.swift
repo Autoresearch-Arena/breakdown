@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the side-spin fork's labels keep off the target-ball badge
+//          (its frame read from a BadgeFrameBox); along the line they would cover it, so they go beside the middle.)
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
 // Edited: Claude Opus 5.5 High, 20-November-2026 (test script "retry", also started by -retryDemo: a shot, Try again,
 //          a change of spin, the same shot again, ending on the comparison).
@@ -149,6 +151,8 @@ struct AimOverlay: View {
     /// True while a finger (or pointer) is carrying the lifted cue ball; letting go puts it down.
     @State private var placingDrag = false
     @State private var viewSize = CGSize(width: 400, height: 800)
+    /// Where the target-ball badge is drawn, so the fork's labels keep off it (drawFork).
+    @State private var badgeBox = BadgeFrameBox()
     @FocusState private var focused: Bool
     /// The VoiceOver adjust step for the aim, in the model's nudge units (a quarter degree for a shot, a millimetre
     /// at the lead ball for the break). Finer and Coarser walk through `aimSteps`.
@@ -173,7 +177,7 @@ struct AimOverlay: View {
             }
             .allowsHitTesting(false)
             .accessibilityHidden(true)
-            TargetBallBadge(model: model, bridge: bridge)
+            TargetBallBadge(model: model, bridge: bridge, frameBox: badgeBox)
             // VoiceOver and Switch Control: the Aim element under everything (touching bare cloth finds it), and
             // an element over every ball and pocket on top (touching a ball finds the ball).
             aimElement
@@ -882,20 +886,39 @@ struct AimOverlay: View {
         let gap: CGFloat = 6
         let ballBack = endClear + gap + half(ballPill.size, along: u)
         let cueBack = ballBack + half(ballPill.size, along: u) + gap + half(cuePill.size, along: u)
-        if cueBack + half(cuePill.size, along: u) + gap <= lineLength - startClear {
-            drawPill(&ctx, ballPill, at: CGPoint(x: ballEnd.x - u.dx * ballBack, y: ballEnd.y - u.dy * ballBack), size: size)
-            drawPill(&ctx, cuePill, at: CGPoint(x: ballEnd.x - u.dx * cueBack, y: ballEnd.y - u.dy * cueBack), size: size)
+        // A pill's box at a centre, to keep it off the target-ball badge (drawn by TargetBallBadge, a layer above).
+        func box(_ s: CGSize, _ c: CGPoint) -> CGRect { CGRect(x: c.x - s.width / 2, y: c.y - s.height / 2, width: s.width, height: s.height) }
+        let badge = badgeBox.rect?.insetBy(dx: -4, dy: -4)
+        let ballAt = CGPoint(x: ballEnd.x - u.dx * ballBack, y: ballEnd.y - u.dy * ballBack)
+        let cueAt = CGPoint(x: ballEnd.x - u.dx * cueBack, y: ballEnd.y - u.dy * cueBack)
+        let coversBadge = badge.map { $0.intersects(box(ballPill.size, ballAt)) || $0.intersects(box(cuePill.size, cueAt)) } ?? false
+        if cueBack + half(cuePill.size, along: u) + gap <= lineLength - startClear, !coversBadge {
+            drawPill(&ctx, ballPill, at: ballAt, size: size)
+            drawPill(&ctx, cuePill, at: cueAt, size: size)
             return
         }
-        // Too short: beside the middle of the line, on opposite sides. The ball's side is the one its end lies on
+        // Too short, or along the line they would cover the badge: beside the middle of the line, on opposite sides. The ball's side is the one its end lies on
         // relative to the cue's prong; on a line seen end-on either side will do.
         let n = CGVector(dx: -u.dy, dy: u.dx)
         let ballSide: CGFloat = ((ballEnd.x - cueEnd.x) * n.dx + (ballEnd.y - cueEnd.y) * n.dy) < 0 ? -1 : 1
         let mid = CGPoint(x: cueScreen.x + u.dx * lineLength / 2, y: cueScreen.y + u.dy * lineLength / 2)
         let ballOut = ballSide * (half(ballPill.size, along: n) + gap)
         let cueOut = -ballSide * (half(cuePill.size, along: n) + gap)
-        drawPill(&ctx, ballPill, at: CGPoint(x: mid.x + n.dx * ballOut, y: mid.y + n.dy * ballOut), size: size)
-        drawPill(&ctx, cuePill, at: CGPoint(x: mid.x + n.dx * cueOut, y: mid.y + n.dy * cueOut), size: size)
+        var ballMid = CGPoint(x: mid.x + n.dx * ballOut, y: mid.y + n.dy * ballOut)
+        var cueMid = CGPoint(x: mid.x + n.dx * cueOut, y: mid.y + n.dy * cueOut)
+        // Still on the badge (a short line ending at the target, the badge just above it): both slide back along the
+        // line toward the cue ball until clear, at most half the line.
+        if let badge {
+            var slid: CGFloat = 0
+            while slid < lineLength / 2,
+                  badge.intersects(box(ballPill.size, ballMid)) || badge.intersects(box(cuePill.size, cueMid)) {
+                ballMid.x -= u.dx * 4; ballMid.y -= u.dy * 4
+                cueMid.x -= u.dx * 4; cueMid.y -= u.dy * 4
+                slid += 4
+            }
+        }
+        drawPill(&ctx, ballPill, at: ballMid, size: size)
+        drawPill(&ctx, cuePill, at: cueMid, size: size)
     }
 
     /// A circle lying on the cloth at the ball's height, as a closed screen path (a squashed oval from a low camera).

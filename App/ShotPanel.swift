@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 upright iPad: BandMetrics.wide takes the dial column's real
+//          overhead (it was undercounted, so the band always fell back to its scroll view, cut off), puts the swing
+//          label inline when the band is short, and keeps Shoot's column wide enough for Try again's words.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
 //          stage 3: on iPad, Mac and the open folding phone the panel lays out large (roomyRow, roomyStacked): the
 //          132-point tip picture, the tall power bar without minus and plus, the cue-angle dial (CueAngleDial) and Shoot
@@ -367,6 +370,12 @@ struct ShotPanel: View {
         var figure: CGFloat
         var shootWidth: CGFloat
         var shootHeight: CGFloat
+        /// The wide band's swing label on the figure's line and the calm label inside the hatch (a short band).
+        var swingInline = false
+
+        /// The wide band's middle column without its dial: with the swing stacked, and with its label inline.
+        static let stackedSwingOverhead: CGFloat = 212
+        static let inlineSwingOverhead: CGFloat = 172
 
         /// Three columns: the tip picture and its figures; the swing and its bar over the dial and the bridge; Shoot,
         /// then Try again and the More menu. The tip and the dial grow into the height left after their figures.
@@ -374,11 +383,18 @@ struct ShotPanel: View {
             let figure = 32 * scale
             let figureLines = 2 * figure * 1.35 + 16
             let tip = min(max(150, height - figureLines - 10), 240, width * 0.24)
-            // The swing block: label, figure, calm label, a 48-point bar and the scale, about 175 points.
-            let dial = min(max(110, height - 175 - 18), 230)
+            // The middle column over the dial: the swing block (label, figure, calm label, a 48-point bar and the
+            // scale), its 18-point gap and the cue angle's label, about 210 points as measured on the upright iPad.
+            // It was taken as 193, so the column always came out taller than the band and the band fell back to its
+            // scroll view, cut off at the bottom. Where that leaves the dial under 110 points (the 13-inch iPad with
+            // the hint line showing), the swing's label goes on the figure's line and the calm label into the hatch,
+            // as on the Mac, which saves about 40 points for the dial.
+            let swingInline = height - stackedSwingOverhead < 110
+            let dial = min(max(96, height - (swingInline ? inlineSwingOverhead : stackedSwingOverhead)), 230)
             let shootHeight = min(max(110, height - 56 - 14), 230)
-            return BandMetrics(tip: tip, dial: dial, figure: figure, shootWidth: min(240, max(170, width * 0.2)),
-                               shootHeight: shootHeight)
+            // At least 210 wide, so Try again keeps its words beside the More button.
+            return BandMetrics(tip: tip, dial: dial, figure: figure, shootWidth: min(240, max(210, width * 0.22)),
+                               shootHeight: shootHeight, swingInline: swingInline)
         }
 
         /// Stacked: the tip picture with the dial beside it, then the swing and its bar, then the bridge and the small
@@ -417,7 +433,8 @@ struct ShotPanel: View {
         static func minimumHeight(columnWidth: CGFloat, roomy: Bool) -> CGFloat {
             let width = columnWidth - 36
             let chrome: CGFloat = 20 + 22 + 4
-            if width >= 760 { return 310 + chrome }
+            // The middle column with the dial at its smallest and the swing inline is the tallest of the three.
+            if width >= 760 { return 96 + inlineSwingOverhead + chrome }
             let scale: CGFloat = roomy ? 0.72 : 0.66
             #if os(macOS)
             let bar: CGFloat = 40
@@ -454,7 +471,7 @@ struct ShotPanel: View {
     /// The swing over the dial and the bridge.
     private func middleColumn(_ m: BandMetrics) -> some View {
         VStack(alignment: .leading, spacing: 18) {
-            PowerGauge(model: model, open: open, zones: zones, figureSize: m.figure, labelInline: false)
+            PowerGauge(model: model, open: open, zones: zones, figureSize: m.figure, labelInline: m.swingInline)
             HStack(alignment: .top, spacing: 20) {
                 if model.elevationAllowed && !model.racked {
                     VStack(alignment: .leading, spacing: 6) {
