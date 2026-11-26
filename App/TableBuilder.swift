@@ -27,6 +27,10 @@
 //          they arrive. Bar billiards' and bumper pool's bed holes get their metal lining rings. Reflections: the lamp's
 //          window in the reflection picture is laid along the table by working out each pixel's world direction from
 //          the documented cube layout (see lampEnvironmentImage), so the window and the bulbs share one mapping.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, Stage 3: the lamp's pool of light on the cloth.
+//          The spot light's full-strength cone (34 degrees each side) reached past every corner of the pool table, so
+//          only distance dimmed the corners and the pool read faint. Its full-strength cone is now 22 degrees and it
+//          fades to nothing at 62, so the middle of the table is clearly brighter than its corners on every surface.)
 // PURPOSE: Builds the STATIC warm table and everything that sits on it, as one group that fades out when the Lens
 //          melts in: the cloth bed (running under the cushions to the rail, with the pockets' and bed holes' holes cut
 //          through it), cushions with a sloped rounded nose and jaw-cut ends, a walnut rail frame with a rounded edge
@@ -573,8 +577,11 @@ enum TableBuilder {
     /// (the scene root) and keep lighting the balls while the table fades out in the Lens.
     static func addLights(to parent: Entity) {
         let lamp = Entity()
+        // 0.7.10 front door: a tighter cone (it was 34 and 70 degrees). From 2.3 m up the pool table's corners sit about
+        // 32 degrees out and its ends about 36, inside the fade between 22 and 62, so they get roughly four fifths and
+        // two thirds of the spot's strength while the middle gets all of it: a visible pool of light, not a spotlight.
         let spot = SpotLightComponent(color: PlatformColor(red: 1.0, green: 0.88, blue: 0.72, alpha: 1), intensity: 90_000,
-                                      innerAngleInDegrees: 34, outerAngleInDegrees: 70, attenuationRadius: 9)
+                                      innerAngleInDegrees: 22, outerAngleInDegrees: 62, attenuationRadius: 9)
         lamp.components.set(spot)
         var shadow = SpotLightComponent.Shadow()
         shadow.depthBias = 2.0

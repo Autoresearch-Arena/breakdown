@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: which way the table lies comes from the request
+//          (CameraFraming.tableYaw(for:)), so on an upright phone, where the main menu is now a sheet over the lower half,
+//          the table lies across the band left above it instead of standing small in it; the rail reach is
+//          CameraFraming's, shared with the notebook's split.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: update
 //          takes bullet time's camera, applied right after the ride's override and before the lamp shot.)
 // Edited: Claude Opus 5.5 High, 20-November-2026 (the table fills the screen: the playing area is framed between the
@@ -66,7 +70,7 @@ final class TableCamera {
     private let camera = PerspectiveCamera()
     private static let fov: Float = 45
     /// Metres the rails and corner blocks reach past the playing surface (cushion 0.04 plus rail 0.16, with a hair spare).
-    private static let railReach: Float = 0.21
+    private static let railReach: Float = CameraFraming.railReach  // 0.7.10 frontdoor: one value, shared
     /// Rail top height above the cloth, so the near rail's top edge is framed too.
     private static let railHeight: Float = 0.075
     /// Metres the playing area reaches past the cloth's cushion line: the corner pocket holes (0.065 radius round the
@@ -209,8 +213,8 @@ final class TableCamera {
         let m = Float(melt)
         let ease = m * m * (3 - 2 * m)
         // Portrait puts the long side up the screen: the camera moves round to the short edge.
-        let portrait = size.width < size.height
-        let yaw: Float = portrait ? .pi / 2 : 0
+        // 0.7.10 frontdoor: the request may lay the table across (the band above the upright phone's menu sheet).
+        let yaw = CameraFraming.tableYaw(for: q)
         let table = TableExtents(halfX: frame.length * 0.5 + Self.railReach, halfZ: frame.width * 0.5 + Self.railReach,
                                  rimHeight: Self.railHeight,
                                  playX: frame.length * 0.5 + Self.playReach, playZ: frame.width * 0.5 + Self.playReach)

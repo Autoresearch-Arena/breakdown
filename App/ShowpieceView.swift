@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: on the upright phone the open menu hands the
+//          camera the band between its name and its sheet; the Lens's small table plan (LensPlanLayer) sits over the
+//          stage; a shot played is remembered for the next launch (FrontDoor). Three small edits, each marked
+//          "// 0.7.10 frontdoor:".)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: the
 //          header's glass status label names a frozen hit, on one line, off the upright phone.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
@@ -298,6 +302,8 @@ struct ShowpieceView: View {
             // minute and anything behind the menu are left exactly as they were.
             .onChange(of: model.timelineVersion) { _, _ in
                 shotRolling = model.openingStage == .none && !model.menuOpen && model.stage == .explore && !model.aimReady
+                // 0.7.10 frontdoor: remember the table of a shot played, for the next launch (FrontDoor).
+                FrontDoor.noteTablePlayed(model)
             }
             .onChange(of: model.aimReady) { _, ready in if ready { shotRolling = false } }
             .onChange(of: showShotPanel) { _, open in
@@ -391,14 +397,19 @@ struct ShowpieceView: View {
         let leadingInset = i.leading
         let trailingInset = columnEdge == .trailing ? 0 : i.trailing
         let rtl = layoutDirection == .rightToLeft
+        // 0.7.10 frontdoor: on the upright phone the open menu is the name at the top and a sheet over the lower half;
+        // the table is framed in the band between them (MenuScreenState.uprightBand) instead of under the hidden bars.
+        let menuBand = upright && menuOnStage && model.menuOpen ? MenuScreenState.shared.uprightBand : nil
         let chrome = StageChrome(safe: FramingInsets(top: i.top, left: rtl ? trailingInset : leadingInset,
                                                      bottom: columnEdge == .bottom ? 0 : i.bottom,
                                                      right: rtl ? leadingInset : trailingInset),
-                                 headerBottom: header ? (upright ? phoneTableTop : headerBottom) : nil,
-                                 controlsTop: controlsInColumn ? nil : controlsTop,
+                                 headerBottom: header ? (menuBand?.top ?? (upright ? phoneTableTop : headerBottom)) : nil,
+                                 controlsTop: controlsInColumn ? nil : (menuBand?.bottom ?? controlsTop),
                                  // No title row on the Duo's table half and beside the notebook: the camera must not
                                  // keep room for one while the real edge is unmeasured (0.7.5 layouts item 10).
-                                 hasHeader: header)
+                                 hasHeader: header,
+                                 // 0.7.10 frontdoor: the band above the menu's sheet is wide, so the table lies across it.
+                                 tableAcross: menuBand != nil)
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, showCue: showShotPanel, chrome: chrome)
@@ -490,6 +501,8 @@ struct ShowpieceView: View {
             }
             // The Lens callouts.
             LensCalloutLayer(model: model, bridge: bridge)
+            // 0.7.10 frontdoor: the small plan of the whole table in a corner while the Lens camera is zoomed in.
+            LensPlanLayer(model: model, bridge: bridge)
             // The main menu, over everything, until the player picks something (and again from the back button).
             if model.menuOpen && menuOnStage {
                 TitleScreen(model: model, onPlay: { showShotPanel = true }, page: $page, pendingMatch: $pendingMatch)

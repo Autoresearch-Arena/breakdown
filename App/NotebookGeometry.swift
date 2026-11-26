@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, plans/25-Nov-2026-front-door-and-table-view-plan.md
+//          Stage 2: the band under the table on an upright iPad is sized from what the table needs, not a fixed share.
+//          At 40 percent of the height, capped at 520 points, the table half of an upright iPad was far taller than a
+//          table lying across it can fill at any camera angle, so the table covered only 55 to 61 percent of its
+//          half's height with dark bands above and below. The band now takes everything the table does not need
+//          (belowPanel), so the table reaches within a few points of all four edges of its half on every upright iPad,
+//          and the notebook gets the room. The table itself is no smaller: it was already as wide as its half.)
 // PURPOSE: The one rule for when a window is big enough for the notebook layout (the table on one side, the full
 //          notebook panel of cards, step-by-step story, numbers and controls on the other) and where the split goes.
 //          It reads only the window's size in points, never the device's name, so an iPad in split view or Stage
@@ -8,8 +15,8 @@
 //              keeps its existing phone layouts exactly as they were;
 //            - wider than tall: the panel sits beside the table, taking a fixed share of the width within a minimum and
 //              a maximum, and on very wide windows it is wide enough for two columns of its own;
-//            - taller than wide (an iPad held upright): the panel sits under the table, a share of the height within a
-//              minimum and a maximum; it is then short and wide, so it lays itself out in two columns.
+//            - taller than wide (an iPad held upright): the panel sits under the table and takes every point of height
+//              the table lying across the width does not need (belowPanel, 0.7.10); it lays itself out in two columns.
 //          A folding phone's hinge is not decided here: where the system reports a hinge (ScreenLayout.fold) the split
 //          follows the hinge instead. Every result is a continuous function of the size within each case, so live
 //          resizing slides the split smoothly; the only steps are where the panel moves from the side to the bottom or
@@ -49,12 +56,36 @@ enum NotebookGeometry {
 
     // MARK: Panel under the table (window taller than wide)
 
-    /// Share of the window's height the panel takes when it sits under the table.
-    static let belowShare: Double = 0.40
     /// Enough height for the top bar, one card and the playback controls in two columns.
     static let belowMinimum: Double = 340
-    /// Past this the table gets the extra height (a 13-inch iPad upright: 0.40 x 1376 = 550 is capped here).
-    static let belowMaximum: Double = 520
+    /// The table's side never gets shorter than this, whatever the panel would like (the framing check's floor too).
+    static let belowTableMinimum: Double = 360
+    /// The pool table's outline with its rails, short side over long side: (1.27 + 2 x 0.21) / (2.54 + 2 x 0.21) m, the
+    /// cloth plus TableCamera's rail reach on each side. The band is sized for this table; the other tables are
+    /// squarer or the same shape, and the warm view's angle (CameraFraming.warmElevation) tilts lower for them, so
+    /// they fill the same half too (measured with a port of CameraFraming's maths: bumper pool settles near 56
+    /// degrees, bar billiards near 62, the pool table and five-pin near 72, each within a few points of every edge).
+    static let tableShape: Double = (1.27 + 0.42) / (2.54 + 0.42)
+    /// How tall a table lying across the half looks per point of its width, against its real shape: the warm view
+    /// looks down at an angle, so the far half of the table is foreshortened. 0.82 puts the pool table's warm view at
+    /// about 72 degrees, inside the 48 to 74 the warm angle may take, so the camera can fill the height exactly.
+    static let tableForeshortening: Double = 0.82
+    /// Points the table's half keeps above and below the table: the iPad's status bar (24) and the framing's own
+    /// small gaps (CameraFraming.outerGap and gutter).
+    static let tableAllowance: Double = 42
+    /// The framing's side gutters together (CameraFraming.gutter on each side), so the width the table really gets.
+    static let tableSideGutters: Double = 16
+
+    /// The panel's height under the table in a window `size` taller than wide: everything the table does not need.
+    /// The table lies across the window's full width (CameraFraming.tableYaw: its half is then wider than tall), so its
+    /// height on screen follows from that width; the half is made that tall, and the panel takes the rest. Never less
+    /// than belowMinimum, and never so much that the table's side drops under belowTableMinimum. Continuous in the
+    /// size (it moves by at most one point per point the window is dragged), so live resizing slides the split.
+    static func belowPanel(for size: CGSize) -> Double {
+        let w = Double(size.width), h = Double(size.height)
+        let tableNeeds = (w - tableSideGutters) * tableShape * tableForeshortening + tableAllowance
+        return min(max(h - tableNeeds, belowMinimum), max(belowMinimum, h - belowTableMinimum))
+    }
 
     // MARK: Columns inside the panel
 
@@ -96,7 +127,8 @@ enum NotebookGeometry {
             return Split(side: .beside, panel: min(max(w * besideShare, low), besideMaximum))
         } else {
             guard h >= minimumHeightBelow else { return nil }
-            return Split(side: .below, panel: min(max(h * belowShare, belowMinimum), belowMaximum))
+            // 0.7.10 front door: sized from the table's need (belowPanel), not a fixed share of the height.
+            return Split(side: .below, panel: belowPanel(for: size))
         }
     }
 

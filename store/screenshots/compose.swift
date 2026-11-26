@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, plans/25-Nov-2026-front-door-and-table-view-plan.md
+//          Stage 5: the frames lead with the unusual: the three other tables (bar billiards among them) and the jump
+//          come first, then the rest in their old order; the frame names are unchanged, so the raw files, the caption
+//          keys and SCENES= still match. Wave 2 adds the Lens on bumper pool, the strike panel and the daily result in
+//          front of them. The iPad's table crop follows the upright iPad's new split: the notebook band under the
+//          table now takes everything the table does not need (App/NotebookGeometry.swift belowPanel).)
 // PURPOSE: Frame Breakdown's raw App Store screenshots for one device in any number of languages. Each frame gets a
 //          near-black gradient background with a soft felt-green glow, a short cyan accent bar, a white heavy rounded
 //          headline (from captions/<lang>.json, at most two lines, shrunk to fit, the same size on every frame of a
@@ -64,7 +70,10 @@ let devices: [String: Device] = [
 ]
 
 // Frame name -> raw scene files shown in it (left to right). The frame name is also the caption key.
+// 0.7.10: in the store page's order (the same order as the keys of captions/<language>.json).
 let frames: [(name: String, scenes: [String])] = [
+    ("08-tables", ["08a-bumper", "08b-fivepin", "08c-bar"]),
+    ("10-jump", ["10-jump"]),
     ("01-lens", ["01-lens"]),
     ("02-match", ["02-match"]),
     ("03-lesson", ["03-lesson"]),
@@ -72,19 +81,18 @@ let frames: [(name: String, scenes: [String])] = [
     ("05-ruling", ["05-ruling"]),
     ("06-drill", ["06-drill"]),
     ("07-surfaces", ["07a-ice", "07b-moon"]),
-    ("08-tables", ["08a-bumper", "08b-fivepin", "08c-bar"]),
     ("09-ride", ["09-ride"]),
-    ("10-jump", ["10-jump"]),
 ]
 
 // iPad composites show only the table area of each raw shot. The iPad set is shot upright, and since 0.6.6 an upright
 // iPad shows the notebook layout: the table across the top and the notebook panel as a band under it
-// (App/NotebookGeometry.swift). On the 13-inch iPad (1032 x 1376 points upright) that band is belowShare 0.40 of the
-// height, 550 points, capped at belowMaximum 520, so the table's space is the top 856 points: 856 / 1376 = 0.622 of the
-// height. The table spans the whole width, so nothing is cut at the sides (and Arabic needs no mirroring). The top
-// 0.060, the status bar and the title row's buttons, is the measurement the earlier side-column crop used for the same
-// row.
-let tableCrop = (width: CGFloat(1.0), top: CGFloat(0.060), bottom: CGFloat(0.622))
+// (App/NotebookGeometry.swift). Since 0.7.10 that band takes every point the table lying across the width does not need
+// (belowPanel): on the 13-inch iPad (1032 x 1376 points upright) the table needs (1032 - 16) x 0.5709 x 0.82 + 42 = 518
+// points, so the table's space is the top 518 points: 518 / 1376 = 0.376 of the height (it was 856 points, 0.622,
+// before). The table spans the whole width, so nothing is cut at the sides (and Arabic needs no mirroring). The top is
+// the status bar only, 24 points (0.017): the table's half has no title row, and since 0.7.10 its rails reach to just
+// under the status bar, so the old 0.060 would cut them. Re-measure both on the first 0.7.10 iPad set.
+let tableCrop = (width: CGFloat(1.0), top: CGFloat(0.017), bottom: CGFloat(0.376))
 
 // Per-device crops for the composite frames (07 and 08). Each is fractions of the raw shot: width (kept from the
 // leading side, the trailing side for Arabic), top and bottom.

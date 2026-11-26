@@ -11,6 +11,12 @@
 //          panel's size changes smoothly while a window is dragged wider or taller, and that the table side never gets
 //          too small to read. Prints PASS or FAIL with the broken cases.
 //          Not yet run: it was written in a batch where only the coordinator compiles. Run it once after the merge.
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, Stage 2: prints how much of its half each of
+//          the four tables covers on every window (CameraFraming.coverage), fails an upright iPad whose table covers
+//          less than 80 percent of its half's height (the dark bands the review found), and lets the band under the
+//          table move one point per point the window is dragged, since it now takes all the height the table does not
+//          need (NotebookGeometry.belowPanel); a jump is still caught. Not yet run: written in a batch where only the
+//          coordinator compiles.)
 // SRP/DRY check: Pass - test scaffolding only; the invariant itself lives in CameraFraming.fitProblems so a future unit
 //          test target calls the same code.
 import CoreGraphics
@@ -23,6 +29,14 @@ var cases = 0
 // pocket holes 0.08 m, rail tops 0.075 m above the cloth, a 45-degree field of view (TableCamera's constants).
 let table = TableExtents(halfX: 1.27 + 0.21, halfZ: 0.635 + 0.21, rimHeight: 0.075, playX: 1.27 + 0.08, playZ: 0.635 + 0.08)
 let fov: Float = 45
+
+/// The four tables as TableCamera frames them (cloth length and width in metres, from TableKind's table files: the pool
+/// table, bumper pool, five-pin billiards, bar billiards), with the same rail reach and pocket reach as the pool table.
+let tables: [(name: String, extents: TableExtents)] = [(2.54, 1.27, "pool"), (1.1557, 0.762, "bumper pool"),
+                                                       (2.84, 1.42, "five-pin"), (1.42, 0.80, "bar billiards")].map {
+    (name: $0.2, extents: TableExtents(halfX: Float($0.0) / 2 + 0.21, halfZ: Float($0.1) / 2 + 0.21, rimHeight: 0.075,
+                                       playX: Float($0.0) / 2 + 0.08, playZ: Float($0.1) / 2 + 0.08))
+}
 
 /// The 3D view's size and what floats over it, for a window, the way ShowpieceView lays it out.
 func stage(for window: CameraFraming.CheckedWindow) -> (size: CGSize, request: FramingRequest, layout: String) {
@@ -63,6 +77,30 @@ for window in CameraFraming.checkedWindows {
                                           fovDegrees: fov)
     let lies = CameraFraming.tableYaw(for: size) == 0 ? "across" : "upright"
     print("\(window.name) [\(layout)] table side \(Int(size.width)) x \(Int(size.height)), lies \(lies)")
+    // 0.7.10 front door: how much of its half each table covers (Stage 2's measure), and the upright iPad held to it.
+    for t in tables {
+        let c = CameraFraming.coverage(size: size, framing: framing, table: t.extents, fovDegrees: fov)
+        print("    \(t.name): covers \(Int((c.width * 100).rounded()))% of the width, \(Int((c.height * 100).rounded()))% of the height")
+        if layout == "notebook below" {
+            cases += 1
+            if c.height < 0.80 { problems.append("\(window.name): \(t.name) covers only \(Int(c.height * 100))% of its half's height") }
+            problems += CameraFraming.fitProblems(name: "\(window.name) (\(t.name))", size: size, framing: framing,
+                                                  table: t.extents, fovDegrees: fov)
+        }
+    }
+}
+
+// 1b. The open folding phone's table half (the hinge decides it, not NotebookGeometry), both ways round, measured only:
+//     its shape is the hardware's. 669 by 951 points is the inner screen (2007 by 2853 pixels at 3x), halved at the hinge.
+for (name, size) in [("Open folding phone, propped", CGSize(width: 669, height: 470)),
+                     ("Open folding phone, like a book", CGSize(width: 470, height: 669))] {
+    let request = FramingRequest(size: size, safe: FramingInsets(), headerBottom: 0, controlsTop: nil)
+    let framing = CameraFraming.framing(request)
+    print("\(name) table side \(Int(size.width)) x \(Int(size.height))")
+    for t in tables {
+        let c = CameraFraming.coverage(size: size, framing: framing, table: t.extents, fovDegrees: fov)
+        print("    \(t.name): covers \(Int((c.width * 100).rounded()))% of the width, \(Int((c.height * 100).rounded()))% of the height")
+    }
 }
 
 // 2. No phone ever gets the notebook: every iPhone held either way keeps its own layouts.
@@ -79,7 +117,9 @@ func sweep(_ sizes: [CGSize], label: String) {
         cases += 1
         let split = NotebookGeometry.split(for: size)
         if let a = last, let b = split, a.side == b.side {
-            let step = max(NotebookGeometry.besideShare, NotebookGeometry.belowShare) + 1e-9
+            // Beside: a share of the width. Below (0.7.10): every point the table does not need, so up to one point of
+            // panel per point dragged; anything more is a jump.
+            let step = (b.side == .beside ? NotebookGeometry.besideShare : 1.0) + 1e-9
             if abs(a.panel - b.panel) > step { problems.append("\(label): panel jumped \(a.panel) -> \(b.panel) at \(size)") }
         }
         if let b = split {
