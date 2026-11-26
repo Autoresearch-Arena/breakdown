@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part B: the side-column card and the strip under the table show the short form by default (the heading,
+//          the figures and Caption.short, one sentence) and the full text on a tap, a second tap folding it again;
+//          opened on a held beat, the replay waits while it is read. displayedCaption keeps the short form. Part A row
+//          5: a caption's words are never cut with an ellipsis; they wrap (the short form is what makes that fit).)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9 jump replay, next: LeaderState builds the side view for any
 //          caption about a jump (the raised strike, a take-off, a landing) through FlightShape.story and
 //          FlightSketch.make, and the panel keeps one identity per jump, so it stays up from the strike to the last hop.)
@@ -163,7 +168,7 @@ extension ShowpieceModel {
                        detail: c.detail + " " + sentence,
                        equation: c.equation, accent: c.accent, importance: c.importance, worked: c.worked,
                        sentences: (c.sentences.isEmpty ? [c.detail] : c.sentences) + [sentence],
-                       figures: c.figures)
+                       figures: c.figures, short: c.short)
     }
 
     /// True when `caption` is the caption of one of this replay's headline beats (0.7.6, #60): its worked equation shows
@@ -192,11 +197,22 @@ private struct CaptionContent: View {
     /// maths off. (The phone's strip lays its own lines out since 0.7.6; this view is the side column's and the
     /// notebook-free card's.)
     var headline = false
+    /// 0.7.10 words: false shows the short form (the one short sentence, no equation); true the whole detail with the
+    /// equation line as before. A caption without a short sentence always shows its detail.
+    var expanded = true
     @AppStorage(GameSettings.mathsKey) private var maths = false
+
+    /// The words under the figures: the short sentence while folded, the detail once opened.
+    private var words: String {
+        guard let caption else { return " " }
+        return expanded || caption.short.isEmpty ? caption.detail : caption.short
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
-            if maths || headline {
+            // 0.7.10 words: the maths-on equation belongs to the full text, so the short form leaves it for the tap; a
+            // headline beat's worked equation shows folded too, as it always has.
+            if headline || (maths && (expanded || caption?.short.isEmpty != false)) {
                 Text(verbatim: caption.map { CaptionContent.equationLine($0) } ?? " ")
                     .font(Theme.equation)
                     .foregroundStyle(accent)
@@ -210,7 +226,7 @@ private struct CaptionContent: View {
                 CaptionFigureRow(figures: caption.figures)
                     .padding(.vertical, 2)
             }
-            Text(verbatim: caption?.detail ?? " ")
+            Text(verbatim: words)
                 .font(Theme.body)
                 .reservedLines(reserved ? 3 : nil)
                 .fixedSize(horizontal: false, vertical: true)
@@ -379,20 +395,62 @@ struct CaptionCard: View {
     let caption: Caption
     /// A headline beat is held: the worked equation shows even with Show the maths off (CaptionContent.headline).
     var headline = false
+    /// 0.7.10 words: the model, so a card opened on a held beat can hold the replay while it is read (nil: no hold).
+    var model: ShowpieceModel? = nil
     @Environment(\.palette) private var palette
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(GameSettings.mathsKey) private var maths = false
+    /// 0.7.10 words: the full text is open. A new caption is a new card (CaptionArea gives each its own identity), so
+    /// every caption starts on its short form.
+    @State private var expanded = false
+    /// This card paused a held beat so the opened text could be read; folding it plays on.
+    @State private var pausedForReading = false
     /// Inner padding of the glass card.
     static let padding: CGFloat = 10
 
+    /// A tap does something only when there is more to read than the short form.
+    private var canOpen: Bool { !caption.short.isEmpty && caption.short != caption.detail }
+
+    private func toggle() {
+        guard canOpen else { return }
+        let opening = !expanded
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { expanded = opening }
+        if opening, let model, model.holding, model.playing {
+            // Held for reading: the hold's clock only runs while playing, so the beat waits for the reader.
+            model.playing = false
+            pausedForReading = true
+        } else if !opening, pausedForReading {
+            pausedForReading = false
+            if let model, model.holding { model.playing = true }
+        }
+    }
+
     var body: some View {
         let accent = palette.color(for: caption.accent)
-        CaptionContent(caption: caption, accent: accent, headline: headline)
+        CaptionContent(caption: caption, accent: accent, headline: headline, expanded: expanded || !canOpen)
             .captionGlass(accent: accent, palette: palette)
-        // One spoken sentence per caption; the equation is read last because it is decoration for most listeners.
+            .contentShape(Rectangle())
+            .onTapGesture { toggle() }
+        // One spoken sentence per caption (the whole detail, folded or not); the equation is read last because it is
+        // decoration for most listeners.
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(CaptionContent.spokenLabel(caption))
         .accessibilityValue(maths || headline ? CaptionContent.equationLine(caption) : "")
-        .accessibilityAddTraits(.updatesFrequently)
+        .accessibilityAddTraits(canOpen ? [.updatesFrequently, .isButton] : .updatesFrequently)
+        .accessibilityHint(canOpen ? Text(expanded ? String(localized: "Shows less") : String(localized: "Shows more"))
+                                   : Text(verbatim: ""))
+        .accessibilityAction { toggle() }
+        // Continue or Play moves on: an opened card folds back and the pause it made is forgotten.
+        .onChange(of: model?.playing ?? false) { _, playing in
+            if playing, expanded {
+                pausedForReading = false
+                expanded = false
+            }
+        }
+        .onDisappear {
+            if pausedForReading, let model, model.holding { model.playing = true }
+            pausedForReading = false
+        }
     }
 }
 
@@ -436,7 +494,7 @@ struct CaptionArea: View {
                     FittingScroll(maxHeight: maxHeight) {
                         // The equation is decided by the caption, not by the hold, so it does not drop out of a caption
                         // still on screen when the hold ends (#60).
-                        CaptionCard(caption: caption, headline: model.isHeadline(caption))
+                        CaptionCard(caption: caption, headline: model.isHeadline(caption), model: model)
                             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: {
                                 cardFrame = $0
                                 publish()
@@ -700,6 +758,10 @@ struct CaptionStrip: View {
     @State private var loose: LoosePage?
     /// The glass frame this strip last gave the leader, so clearing never wipes a frame another card has written since.
     @State private var reportedCard: CGRect = .zero
+    /// 0.7.10 words: the caption whose full text is open (a tap on the words); every other caption shows its short form.
+    @State private var opened: Int?
+    /// This strip paused a held beat so the opened text could be read; folding it (or a new caption) plays on.
+    @State private var pausedForReading = false
 
     /// Detail lines in the room at any text size (the cap may take some back at the largest sizes).
     static let detailLines = 4
@@ -768,6 +830,34 @@ struct CaptionStrip: View {
         reportedCard = .zero
     }
 
+    /// 0.7.10 words: true when the strip shows the caption's whole detail (paged as before): opened by a tap, or a
+    /// caption with no short form. Otherwise it shows the short sentence alone, which fits the room without pages.
+    private func showsFull(_ caption: Caption) -> Bool {
+        caption.short.isEmpty || caption.short == caption.detail || opened == caption.id
+    }
+
+    /// A tap on the words opens the full text, or folds it back. Opened on a held beat, the replay waits while it is read
+    /// (the hold's clock only runs while playing); folded, it plays on if this strip paused it.
+    private func toggleFull(_ caption: Caption) {
+        guard !caption.short.isEmpty, caption.short != caption.detail else { return }
+        if opened == caption.id {
+            opened = nil
+            resumeIfPaused()
+        } else {
+            opened = caption.id
+            if model.holding, model.playing {
+                model.playing = false
+                pausedForReading = true
+            }
+        }
+    }
+
+    private func resumeIfPaused() {
+        guard pausedForReading else { return }
+        pausedForReading = false
+        if model.holding { model.playing = true }
+    }
+
     var body: some View {
         // While the Lens tips are up the strip stands back (its room stays reserved, so the table does not move).
         let active = model.lensOn && !model.holdForTips ? model.displayedCaption() : nil
@@ -780,11 +870,13 @@ struct CaptionStrip: View {
         let room = min(reservedHeight, maxHeight)
         let guided = model.guided
         let holding = model.holding
-        let layout = caption.map { pageLayout(for: $0) }
+        // 0.7.10 words: only the opened full text is paged; the short form is one sentence and never needs pages.
+        let full = caption.map { showsFull($0) } ?? false
+        let layout = full ? caption.map { pageLayout(for: $0) } : nil
         let count = layout?.count ?? 1
         let index = caption.map { pageIndex(for: $0, count: count, guided: guided, holding: holding) } ?? 0
-        // The dots' room depends only on the caption (more than one sentence), never on how it was paged, so the title's
-        // width and the detail's room cannot change because of the pages they decide.
+        // The dots' room depends only on the caption (more than one sentence) and whether its full text is open, never
+        // on how it was paged, so the title's width and the detail's room cannot change because of the pages they decide.
         let dotsRoom = (layout?.chunks.count ?? 0) > 1
         // A ride's held hit is not guided pacing but still waits on Continue (0.7.6 Ride hand-over).
         let continueState: StripTitleRow.ContinueState = holding ? .live : (guided ? .waiting : .hidden)
@@ -816,11 +908,15 @@ struct CaptionStrip: View {
                         // Before the twin has measured, the room itself caps the words, so nothing grows over the table.
                         FittingScroll(maxHeight: detailRoom.height > 0 ? detailRoom.height
                                                  : (room > 0 ? room : .greatestFiniteMagnitude)) {
-                            Text(verbatim: layout?.text(index, detail: caption.detail) ?? caption.detail)
+                            // 0.7.10 words: the short sentence by default; the (paged) detail once opened by a tap.
+                            Text(verbatim: full ? (layout?.text(index, detail: caption.detail) ?? caption.detail)
+                                                : caption.short)
                                 .font(Theme.body)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .contentTransition(.opacity)
                         }
+                        .contentShape(Rectangle())
+                        .onTapGesture { toggleFull(caption) }
                         .accessibilityHidden(true)
                     }
                     .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -878,6 +974,9 @@ struct CaptionStrip: View {
         }
         .onChange(of: caption?.id) { _, _ in
             loose = nil
+            // 0.7.10 words: a new caption starts on its short form; a pause this strip made for reading ends.
+            opened = nil
+            resumeIfPaused()
             // Keep only the current caption's measurements once they pile up over many shots.
             if spanHeights.count > 200 {
                 let keep = Set(layout?.spanTexts ?? [])
@@ -885,6 +984,13 @@ struct CaptionStrip: View {
             }
         }
         .onChange(of: holding) { _, _ in loose = nil }
+        // 0.7.10 words: Continue or Play moves on, so the opened text folds and the reading pause is forgotten.
+        .onChange(of: model.playing) { _, playing in
+            if playing, opened != nil {
+                pausedForReading = false
+                opened = nil
+            }
+        }
         .onChange(of: caption == nil) { _, none in if none { clearCard() } }
         .onDisappear { clearCard() }
         // Remember the newest caption so it stays up between beats instead of leaving a blank card.

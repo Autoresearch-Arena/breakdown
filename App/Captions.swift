@@ -1,4 +1,10 @@
 // Author: Claude Sonnet 5.5 Medium
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part B: every caption carries a short form, Caption.short: one plain sentence of at most fourteen words, made
+//          from the same event and the same numbers as its full text, with no surface numbers (they are on the surface
+//          card). The views show the heading, the lead figure and this sentence by default and the full text on a tap;
+//          nothing is taken out of the full text. Three headings were cut to six words or fewer ("The cue comes down",
+//          "Side spin pushes it off line", "The rail pushes it down").)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9 jump replay, next: raisedCueAngle, the cue's tilt read back
 //          from a take-off a raised strike made, shared by the raised strike's caption and the jump's side view. And a
 //          fix: flightTop no longer names a ball the flight runs into as the ball it jumped; the jump over a blocker
@@ -147,18 +153,29 @@ struct Caption: Identifiable, Equatable {
     /// card shows them as tiles under the title and the table's title chip shows the lead one. Empty when the event has
     /// no number worth a tile.
     var figures: [CaptionFigure] = []
+    /// The short form's one sentence (0.7.10 words): at most fourteen words, made from the same event and numbers as
+    /// the detail, saying the one thing the heading is about. Shown with the heading and the lead figure by default;
+    /// the detail is shown on a tap. Empty only for a caption built without one, which then reads its detail.
+    var short: String = ""
+}
+
+extension Caption {
+    /// What a reader sees by default (0.7.10 words): the short sentence, or the detail when there is none. Reading
+    /// times are worked out from this (PacePlan, the notebook's lit row).
+    var readingText: String { short.isEmpty ? detail : short }
 }
 
 extension Caption {
     /// A caption built from its sentences (0.7.6): `detail` is exactly `pieces` joined by single spaces, which is how
     /// every detail was built before, so the text is unchanged and `sentences` always matches it. Declared in an
     /// extension so the memberwise initialiser stays available.
+    /// `short` is the short form's one sentence (0.7.10 words); every caption branch in CaptionEngine gives one.
     init(id: Int, time: Double, title: String, pieces: [String], equation: String, accent: CaptionAccent,
-         importance: Double, worked: String = "", figures: [CaptionFigure] = []) {
+         importance: Double, worked: String = "", figures: [CaptionFigure] = [], short: String = "") {
         // At most three figures, cut here in one place, so no caption's branch can crowd the card's row.
         self.init(id: id, time: time, title: title, detail: pieces.joined(separator: " "), equation: equation,
                   accent: accent, importance: importance, worked: worked, sentences: pieces,
-                  figures: Array(figures.prefix(CaptionEngine.maxFigures)))
+                  figures: Array(figures.prefix(CaptionEngine.maxFigures)), short: short)
     }
 }
 
@@ -459,6 +476,22 @@ enum CaptionEngine {
         return parts
     }
 
+    /// The plain strike's short sentence (0.7.10 words): what the cue sent the ball off with, in the same spin words as
+    /// strikeSpinSentences, from the same recorded spin against the same direction of travel. No numbers: the launch
+    /// speed is the lead figure beside it.
+    private static func strikeShort(_ b: ImpactBall, radius R: Double) -> String {
+        guard let share = rollShare(omega: b.omegaAfter, velocity: b.velocityAfter, radius: R) else {
+            return String(localized: "The cue hands its speed to the ball.")
+        }
+        switch spinState(share) {
+        case .back: return String(localized: "The cue sends the ball off with backspin (draw).")
+        case .stun: return String(localized: "The cue sends the ball off sliding, with almost no spin (stun).")
+        case .partial: return String(localized: "The cue sends the ball off with some topspin (follow).")
+        case .rolling: return String(localized: "The cue sends the ball off already rolling (natural roll).")
+        case .over: return String(localized: "The cue sends the ball off with more topspin than rolling.")
+        }
+    }
+
     /// What a rail did to the spin: the state the ball came in with, then the state it leaves with, each against its
     /// own direction of travel (a ball that came in rolling and kept its spin leaves with backspin, because its
     /// direction has turned round), and how much side spin it kept. Its sentences in order, empty when there is
@@ -540,6 +573,13 @@ enum CaptionEngine {
             }
         }
         return out
+    }
+
+    /// The bend's short sentence (0.7.10 words): which way, without the degrees (the lead figure carries them).
+    private static func bendShort(ball: Int, degrees turn: Double, names name: BallNames) -> String {
+        turn > 0
+            ? String(localized: "While \(name(ball)) slid, its path bent to the left.")
+            : String(localized: "While \(name(ball)) slid, its path bent to the right.")
     }
 
     private static func bendSentence(ball: Int, degrees turn: Double, names name: BallNames) -> String {
@@ -643,12 +683,13 @@ enum CaptionEngine {
         let angle = cueTilt(takeOff) * 180 / Double.pi
         var pieces = [String(localized: "The cue, raised \(f(angle, 0)) degrees, drives the ball at \(f(along)) m/s along its own line: \(f(across)) m/s across the cloth and \(f(down)) m/s down into the slate. The slate throws it back up at \(f(takeOff.verticalSpeedUp)) m/s, so it leaves the cloth.")]
         pieces += strikeSpinSentences(e.balls[0], radius: R)
-        return Caption(id: id, time: e.time, title: String(localized: "The cue comes down on the ball"), pieces: pieces,
+        return Caption(id: id, time: e.time, title: String(localized: "The cue comes down"), pieces: pieces,
                        equation: "v↓ = v · sin θ", accent: .strike, importance: 1e9,
                        worked: "v↓ = \(f(along, 2)) m/s · sin \(f(angle, 0))° = \(f(down, 2)) m/s",
                        figures: [figure(angle, 0, "°", String(localized: "Cue angle"), .strike),
                                  figure(along, 1, "m/s", String(localized: "Cue drive"), .strike),
-                                 figure(takeOff.verticalSpeedUp, 1, "m/s", String(localized: "Bounce up"), .impact)])
+                                 figure(takeOff.verticalSpeedUp, 1, "m/s", String(localized: "Bounce up"), .impact)],
+                       short: String(localized: "The cue drives the ball into the slate, which throws it up."))
     }
 
     /// The generation-two cue-strike captions for a level strike, or nil when none applies (generation 1, or a plain
@@ -668,7 +709,8 @@ enum CaptionEngine {
                            pieces: [String(localized: "The tip met the ball more than \(f(limit, 0)) percent of its radius from the centre, past where the tip can grip, and slid off. The ball leaves at only \(f(speed)) m/s, \(f(turn)) degrees off the line of the cue.")],
                            equation: "b / R > μ / √(1 + μ²)", accent: .strike, importance: 1e9,
                            figures: [launchFigure(speed),
-                                     figure(turn, 1, "°", String(localized: "Off the cue line"), .strike)])
+                                     figure(turn, 1, "°", String(localized: "Off the cue line"), .strike)],
+                           short: String(localized: "The tip met the ball too far from the centre and slid off."))
         }
         if turn >= 0.5 {
             // Positive sine: turned counter-clockwise, to the left of the cue, which is what a hit right of centre does.
@@ -678,14 +720,17 @@ enum CaptionEngine {
             // The caption is about side spin already; the spin sentence adds the topspin or backspin it carries.
             pieces += strikeSpinSentences(b, radius: R, side: false)
             // Off the pool table there is no "cue ball": each player strikes a ball of their own (0.7.5).
-            let title = facts.table == .standard ? String(localized: "Side spin pushes the cue ball off line")
-                                                 : String(localized: "Side spin pushes the ball off line")
+            // One heading on every table, six words (0.7.10 words): "it" is the struck ball whatever the table calls it.
+            let title = String(localized: "Side spin pushes it off line")
             // The push off line leads: it is what this caption is about.
             return Caption(id: id, time: e.time, title: title,
                            pieces: pieces, equation: "tan α = (5/2)·x·√(1 − x²) / (1 + m/mₑ + (5/2)·x²)",
                            accent: .strike, importance: 1e9,
                            figures: [figure(turn, 1, "°", String(localized: "Off the cue line"), .strike),
-                                     launchFigure(speed)] + [spinFigure(b, radius: R)].compactMap { $0 })
+                                     launchFigure(speed)] + [spinFigure(b, radius: R)].compactMap { $0 },
+                           short: sine > 0
+                               ? String(localized: "Hit right of centre, the ball is pushed off line to the left.")
+                               : String(localized: "Hit left of centre, the ball is pushed off line to the right."))
         }
         // A level strike launches at exactly the recorded speed with impulse m * speed, and its spin is
         // 5/2 * speed * b / R^2 (Simulation.applyStrike), so b / R = spin * R / (5/2 * speed). The ball's mass must
@@ -707,7 +752,8 @@ enum CaptionEngine {
                        worked: "v = v₀ · (\(f(M, 2)) + \(f(m, 2))) / (\(f(M, 2)) + \(f(m, 2)) + \(f(2.5)) · \(f(M, 2)) · \(f(x, 2))²) = \(f(factor, 2)) · v₀",
                        figures: [launchFigure(speed),
                                  figure(x * 100, 0, "%", String(localized: "Tip off centre"), .strike),
-                                 figure((1 - factor) * 100, 0, "%", String(localized: "Speed lost"), .strike)])
+                                 figure((1 - factor) * 100, 0, "%", String(localized: "Speed lost"), .strike)],
+                       short: String(localized: "Part of the cue's push went into spin instead of speed."))
     }
 
     // MARK: Flight
@@ -794,11 +840,14 @@ enum CaptionEngine {
             var pieces = [String(localized: "\(name(ball).capitalizedFirst) hits the slate going down, and the slate throws it back up off the cloth.")]
             var worked = ""
             var figures: [CaptionFigure] = []
+            // 0.7.10 words: the short form says what the jump does, or the gap over a jumped ball when there is one.
+            var short = String(localized: "The slate throws \(name(ball)) up off the cloth.")
             if let seg = flightSegment(ball: ball, startingAt: e.time, in: timeline) {
                 let top = flightTop(seg, ball: ball, in: timeline)
                 figures.append(figure(top.peak * 100, 1, "cm", String(localized: "Flight height"), .impact))
                 if let over = top.over {
                     pieces.append(String(localized: "It passes over \(name(over.ball)) with \(f(over.gap * 100)) cm to spare."))
+                    short = String(localized: "\(name(ball).capitalizedFirst) flies over \(name(over.ball)) with \(f(over.gap * 100)) cm to spare.")
                 }
                 let g = -seg.verticalAcceleration
                 if g > 0 { worked = "h = v↑² / (2·g) = \(f(up, 2))² / (2 · \(f(g, 2))) = \(f(up * up / (2 * g) * 100)) cm" }
@@ -807,7 +856,7 @@ enum CaptionEngine {
             figures.append(figure(up, 1, "m/s", String(localized: "Bounce up"), .impact))
             return Caption(id: id, time: e.time, title: String(localized: "Off the slate"), pieces: pieces,
                            equation: "h = v↑² / (2·g)", accent: .impact, importance: 2, worked: worked,
-                           figures: figures)
+                           figures: figures, short: short)
         case .landing:
             // How far it flew: from where it last left the cloth to here, across the cloth. A flight that touched a
             // ball in mid-air is two airborne segments; the earlier ones are joined back to the take-off (0.7.9: the
@@ -835,13 +884,17 @@ enum CaptionEngine {
                            equation: "v↑ = e · v↓", accent: .impact, importance: 2,
                            worked: bounces ? "v↑ = \(f(e0, 2)) · \(f(down, 2)) m/s = \(f(up, 2)) m/s" : "",
                            figures: [figure(flown * 100, 0, "cm", String(localized: "Flight distance"), .impact),
-                                     figure(down, 1, "m/s", String(localized: "Speed down"), .impact)])
+                                     figure(down, 1, "m/s", String(localized: "Speed down"), .impact)],
+                           short: e.phaseTo == .airborne
+                               ? String(localized: "\(name(ball).capitalizedFirst) lands and bounces up again.")
+                               : String(localized: "\(name(ball).capitalizedFirst) lands and stays on the cloth."))
         case .offTable:
             return Caption(id: id, time: e.time, title: String(localized: "Off the table"),
                            pieces: [String(localized: "\(name(ball).capitalizedFirst) sails over the cushion \(f(e.height * 100)) cm above the cloth at \(f(b.velocityBefore.length)) m/s and leaves the table.")],
                            equation: "h > h_nose", accent: .cushion, importance: 3,
                            figures: [figure(e.height * 100, 1, "cm", String(localized: "Height"), .cushion),
-                                     speedInFigure(b.velocityBefore.length, .cushion)])
+                                     speedInFigure(b.velocityBefore.length, .cushion)],
+                           short: String(localized: "\(name(ball).capitalizedFirst) sails over the cushion and leaves the table."))
         case .none:
             return nil
         }
@@ -874,11 +927,12 @@ enum CaptionEngine {
                 let angle = asin(min(1, s.elevation)) * 180 / Double.pi
                 var pieces = [String(localized: "The cue, raised \(f(angle, 0)) degrees, drives the ball down into the slate as well as forward. The push down is too small to make it hop, so the cloth takes it and the ball leaves at \(f(b.velocityAfter.length)) m/s across the cloth.")]
                 pieces += strikeSpinSentences(b, radius: R)
-                return Caption(id: id, time: e.time, title: String(localized: "The cue comes down on the ball"),
+                return Caption(id: id, time: e.time, title: String(localized: "The cue comes down"),
                                pieces: pieces, equation: "v↓ = v · sin θ", accent: .strike, importance: 1e9,
                                figures: [figure(angle, 0, "°", String(localized: "Cue angle"), .strike),
                                          launchFigure(b.velocityAfter.length)]
-                                   + [spinFigure(b, radius: R)].compactMap { $0 })
+                                   + [spinFigure(b, radius: R)].compactMap { $0 },
+                               short: String(localized: "The push down is too small to make the ball hop."))
             }
             if let special = strikeCaption(for: e, id: id, timeline: timeline, facts: facts) { return special }
             let speed = b.velocityAfter.length
@@ -893,7 +947,9 @@ enum CaptionEngine {
             return Caption(id: id, time: e.time, title: String(localized: "The cue hands over its speed"), pieces: pieces,
                            equation: "p = m · v", accent: .strike, importance: 1e9,
                            worked: consistent ? "p = m · v = \(f(m, 3)) kg · \(f(speed, 2)) m/s = \(f(m * speed, 2)) kg·m/s" : "",
-                           figures: [launchFigure(speed)] + [spinFigure(b, radius: R)].compactMap { $0 })
+                           figures: [launchFigure(speed)] + [spinFigure(b, radius: R)].compactMap { $0 },
+                           // The surface's numbers stay in the full text: the surface card shows them (0.7.10 words).
+                           short: strikeShort(b, radius: R))
         case .ballBall:
             guard e.balls.count == 2 else { return nil }
             let a = e.balls[0], b = e.balls[1]
@@ -915,6 +971,7 @@ enum CaptionEngine {
                 ? "J = (1 + \(f(eBB, 2))) · \(f(m, 3)) kg · \(f(closing, 2)) m/s / 2 = \(f(J, 3)) N·s" : ""
             var title = String(localized: "Energy handed off")
             var equation = "J = (1 + e) · m · v⊥ / 2"
+            var short = String(localized: "\(name(mover.ball).capitalizedFirst) hands \(f(share, 0)) percent of its energy to \(name(other.ball)).")
             var figures = [speedInFigure(mover.velocityBefore.length, .impact),
                            figure(share, 0, "%", String(localized: "Energy passed on"), .impact)]
             if let t = throwFacts(e) {
@@ -927,10 +984,13 @@ enum CaptionEngine {
                     : String(localized: "Friction between the balls dragged \(name(t.object)) \(f(abs(t.degrees))) degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses."))
                 title = String(localized: "Throw")
                 equation = "tan θ = v⊥ / v∥"
+                short = t.degrees > 0
+                    ? String(localized: "Friction at the contact dragged \(name(t.object)) off the line, to the left.")
+                    : String(localized: "Friction at the contact dragged \(name(t.object)) off the line, to the right.")
                 worked = "tan θ = \(f(t.across, 3)) / \(f(t.along, 3)) → θ = \(f(abs(t.degrees)))°"
             }
             return Caption(id: id, time: e.time, title: title, pieces: withBends(pieces), equation: equation,
-                           accent: .impact, importance: e.normalImpulse, worked: worked, figures: figures)
+                           accent: .impact, importance: e.normalImpulse, worked: worked, figures: figures, short: short)
         case .cushion where e.edge == .post:
             // A post on another table (a bumper): it throws the ball back like a cushion, with its own bounce.
             let b = e.balls[0]
@@ -946,7 +1006,10 @@ enum CaptionEngine {
             return Caption(id: id, time: e.time, title: title, pieces: withBends([detail]),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse,
                            figures: [speedInFigure(vin, .cushion),
-                                     figure(kept, 0, "%", String(localized: "Speed kept"), .cushion)])
+                                     figure(kept, 0, "%", String(localized: "Speed kept"), .cushion)],
+                           short: bumper
+                               ? String(localized: "\(name(b.ball).capitalizedFirst) bounces off the bumper, keeping \(f(kept, 0)) percent of its speed.")
+                               : String(localized: "\(name(b.ball).capitalizedFirst) bounces off the post, keeping \(f(kept, 0)) percent of its speed."))
         case .pinDown:
             // A standing pin knocked over: the ball pays a little speed for it.
             let b = e.balls[0]
@@ -960,13 +1023,17 @@ enum CaptionEngine {
                     ? String(localized: "The black peg down costs the whole score.")
                     : String(localized: "A white peg down costs the points of this break.")
                 let detail = String(localized: "\(name(b.ball).capitalizedFirst) knocks the peg over at \(f(b.velocityBefore.length)) m/s and rolls on at \(f(b.velocityAfter.length)) m/s.")
+                let short = e.feature == BarBilliardsRules.blackPeg
+                    ? String(localized: "\(name(b.ball).capitalizedFirst) knocks the black peg over: the whole score is lost.")
+                    : String(localized: "\(name(b.ball).capitalizedFirst) knocks a white peg over: this break's points are lost.")
                 return Caption(id: id, time: e.time, title: String(localized: "Peg down"), pieces: [detail, cost],
                                equation: equation, accent: .impact, importance: e.normalImpulse + 1,
-                               figures: pinFigures)
+                               figures: pinFigures, short: short)
             }
             return Caption(id: id, time: e.time, title: String(localized: "Pin down"),
                            pieces: [String(localized: "\(name(b.ball).capitalizedFirst) knocks the pin over at \(f(b.velocityBefore.length)) m/s and rolls on at \(f(b.velocityAfter.length)) m/s.")],
-                           equation: equation, accent: .impact, importance: e.normalImpulse + 1, figures: pinFigures)
+                           equation: equation, accent: .impact, importance: e.normalImpulse + 1, figures: pinFigures,
+                           short: String(localized: "\(name(b.ball).capitalizedFirst) knocks the pin over and rolls on."))
         case .cushion where e.edge != .rail:
             // A pocket jaw or knuckle: the ball reached the mouth and was turned away (or rattled). Worth saying even
             // when slow, because it is the answer to "why didn't that go in?".
@@ -976,7 +1043,8 @@ enum CaptionEngine {
             return Caption(id: id, time: e.time, title: title,
                            pieces: withBends([String(localized: "\(name(b.ball).capitalizedFirst) catches \(part) at \(f(b.velocityBefore.length)) m/s and is turned away from the hole. A little more to the middle of the pocket and it drops.")]),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse + 0.5,
-                           figures: [speedInFigure(b.velocityBefore.length, .cushion)])
+                           figures: [speedInFigure(b.velocityBefore.length, .cushion)],
+                           short: String(localized: "\(name(b.ball).capitalizedFirst) catches \(part) and is turned away from the hole."))
         case .cushion:
             let b = e.balls[0]
             let vin = b.velocityBefore.length
@@ -992,17 +1060,19 @@ enum CaptionEngine {
                 // the rail's push goes down into the cloth; the event carries the impulse the cloth took.
                 let pieces = [String(localized: "\(name(b.ball).capitalizedFirst) hits the rail at \(f(vin)) m/s. The rail's nose is above the ball's centre, so it pushes down as well as back, and the cloth takes \(f(bed * 1000, 0)) millinewton-seconds of that push. It keeps \(f(kept, 0)) percent of its speed straight into the rail.")] + spin
                 let nose = facts.p.cushionNoseHeight
-                return Caption(id: id, time: e.time, title: String(localized: "The rail pushes it into the cloth"),
+                return Caption(id: id, time: e.time, title: String(localized: "The rail pushes it down"),
                                pieces: withBends(pieces), equation: "sin θ = (h − R) / R", accent: .cushion,
                                importance: e.normalImpulse,
                                worked: "sin θ = (\(f(nose * 1000)) − \(f(R * 1000))) mm / \(f(R * 1000)) mm = \(f(facts.p.railContactSine, 2))",
-                               figures: railFigures)
+                               figures: railFigures,
+                               short: String(localized: "The rail pushes \(name(b.ball)) back and down into the cloth."))
             }
             let pieces = [String(localized: "\(name(b.ball).capitalizedFirst) hits the rail at \(f(vin)) m/s and keeps \(f(kept, 0)) percent of its speed straight into the rail. Sideways speed is trimmed by friction.")] + spin
             return Caption(id: id, time: e.time, title: String(localized: "The cushion pushes back"), pieces: withBends(pieces),
                            equation: "v⊥′ = −e · v⊥", accent: .cushion, importance: e.normalImpulse,
                            worked: "v⊥′ = −\(f(outward / inward, 2)) · \(f(inward, 2)) m/s = −\(f(outward, 2)) m/s",
-                           figures: railFigures)
+                           figures: railFigures,
+                           short: String(localized: "\(name(b.ball).capitalizedFirst) keeps \(f(kept, 0)) percent of its speed straight into the rail."))
         case .phaseTransition:
             // Jumps first: take-off, landing and flying off the table are phase changes that carry a flight mark.
             if e.flight != .none { return flightCaption(e, id: id, timeline: timeline, facts: facts) }
@@ -1054,11 +1124,14 @@ enum CaptionEngine {
                 return Caption(id: id, time: e.time, title: String(localized: "The path bends"),
                                pieces: [bendSentence(ball: b.ball, degrees: bend, names: facts.names), detail],
                                equation: "t = 2·Δv / (7·μ·g)", accent: .friction, importance: max(v, 0.7) * 0.12,
-                               worked: worked, figures: figures)
+                               worked: worked, figures: figures,
+                               short: bendShort(ball: b.ball, degrees: bend, names: facts.names))
             }
+            // The short form leaves the surface's friction and gravity to the surface card (0.7.10 words).
             return Caption(id: id, time: e.time, title: String(localized: "Skid turns into roll"), pieces: [detail],
                            equation: "t = 2·Δv / (7·μ·g)", accent: .friction, importance: v * 0.12, worked: worked,
-                           figures: figures)
+                           figures: figures,
+                           short: String(localized: "Friction spun \(name(b.ball)) up until it rolled without slipping."))
         case .pocket:
             let b = e.balls[0]
             let speed = f(b.velocityBefore.length)
@@ -1071,11 +1144,15 @@ enum CaptionEngine {
                                pieces: withBends([hole
                                    ? String(localized: "\(name(b.ball).capitalizedFirst) drops into the hole at \(speed) m/s.")
                                    : String(localized: "\(name(b.ball).capitalizedFirst) drops into the cup at \(speed) m/s.")]),
-                               equation: "ΔKE → 0", accent: .pocket, importance: 3, figures: entry)
+                               equation: "ΔKE → 0", accent: .pocket, importance: 3, figures: entry,
+                               short: hole
+                                   ? String(localized: "\(name(b.ball).capitalizedFirst) drops into the hole.")
+                                   : String(localized: "\(name(b.ball).capitalizedFirst) drops into the cup."))
             }
             return Caption(id: id, time: e.time, title: String(localized: "Pocketed"),
                            pieces: withBends([String(localized: "\(name(b.ball).capitalizedFirst) drops in at \(speed) m/s.")]),
-                           equation: "ΔKE → 0", accent: .pocket, importance: 3, figures: entry)
+                           equation: "ΔKE → 0", accent: .pocket, importance: 3, figures: entry,
+                           short: String(localized: "\(name(b.ball).capitalizedFirst) drops in."))
         case .rimSkip:
             // Generation 2: the ball crossed the hole too fast to fall far enough to catch the far edge (the solver's
             // test: the fall g t^2 / 2 during the crossing time t was under a third of the radius).
@@ -1092,7 +1169,10 @@ enum CaptionEngine {
             return Caption(id: id, time: e.time, title: title, pieces: withBends([detail]),
                            equation: "h = g · t² / 2", accent: .pocket, importance: 2.5,
                            figures: [figure(vin, 1, "m/s", String(localized: "Entry speed"), .pocket),
-                                     figure(b.velocityAfter.length, 1, "m/s", String(localized: "Speed out"), .pocket)])
+                                     figure(b.velocityAfter.length, 1, "m/s", String(localized: "Speed out"), .pocket)],
+                           short: !bed ? String(localized: "\(name(b.ball).capitalizedFirst) crosses the pocket too fast to drop.")
+                               : cup ? String(localized: "\(name(b.ball).capitalizedFirst) crosses the cup too fast to drop.")
+                               : String(localized: "\(name(b.ball).capitalizedFirst) crosses the hole too fast to drop."))
         case .settledInContact:
             // The jam guard (any generation): wedged balls chattering in bounces too small to see were brought to rest
             // touching; the event carries the energy taken out. One ball means it chattered between rubber faces.
@@ -1102,7 +1182,10 @@ enum CaptionEngine {
                 ? String(localized: "\(name(first.ball).capitalizedFirst) was wedged against the rubber, bouncing in place in bounces too small to see. It is brought to rest, and the \(energy) those bounces would have turned into heat are taken out at once.")
                 : String(localized: "\(e.balls.count) balls were wedged together, bouncing off each other in bounces too small to see. They are brought to rest touching, and the \(energy) those bounces would have turned into heat are taken out at once.")
             return Caption(id: id, time: e.time, title: String(localized: "Wedged and settled"), pieces: [detail],
-                           equation: "ΔE = E_before − E_after", accent: .impact, importance: 1)
+                           equation: "ΔE = E_before − E_after", accent: .impact, importance: 1,
+                           short: e.balls.count == 1
+                               ? String(localized: "\(name(first.ball).capitalizedFirst) was wedged against the rubber and is brought to rest.")
+                               : String(localized: "\(e.balls.count) wedged balls are brought to rest touching."))
         }
     }
 }

@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part A rows 3 and 4: NotebookNumbers draws no tiles before a shot exists (no "0.0 m/s, 0, 0, 0"), and no
+//          surface card of its own then while the commentary draws the detailed one, so the card is never drawn twice.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md N1: How
 //          forgiving is not shown for a saved shot of the player's own until its window has been measured.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (renamed, file NotebookInfo.swift (it was DuoInfo.swift), for the notebook layout it now serves on every big screen:
@@ -35,6 +38,8 @@ struct NotebookNumbers: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
     @Environment(\.notebookRoomy) private var roomy
+    // 0.7.10 words: with Explanations on, the commentary (NotebookStory) draws the detailed surface card before a shot.
+    @AppStorage(GameSettings.explanationsKey) private var explanations = true
 
     /// What the recording holds, counted once per redraw (the timeline changes only when a shot does).
     private struct Facts {
@@ -59,14 +64,21 @@ struct NotebookNumbers: View {
 
     var body: some View {
         let facts = Facts(model.timeline)
+        // 0.7.10 words: before any shot there is nothing to count, so no tiles of zeros (row 4); the surface card waits
+        // too while the commentary shows its detailed one (row 3).
+        let shot = NotebookStory.hasShot(model)
         VStack(spacing: 8) {
+            if shot {
             HStack(spacing: 8) {
                 tile(facts.cueSpeed.map(Self.speedText) ?? "–", "Cue speed")
                 tile(facts.ballHits.formatted(.number.locale(AppLocale.numbers)), "Ball hits")
                 tile(facts.railHits.formatted(.number.locale(AppLocale.numbers)), "Rail hits")
                 tile(facts.pocketed.formatted(.number.locale(AppLocale.numbers)), "Pocketed")
             }
-            NotebookSurfaceCard(model: model)
+            }
+            if shot || !explanations {
+                NotebookSurfaceCard(model: model)
+            }
         }
     }
 

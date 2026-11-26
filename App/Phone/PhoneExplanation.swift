@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part B: the blurb shows the caption's short form folded (title, lead figure, chips, Caption.short, whole and
+//          wrapped) and its full text once opened by a tap; the worked equation waits for the opened blurb unless it is
+//          a headline beat's.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: the jump's side view sits inside its blurb here
 //          (FlightInBlurb), under the figures.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: on a jump the blurb also keeps clear of the stretch the
@@ -211,13 +215,18 @@ struct PhoneExplanationBlurb: View {
     // MARK: The blurb
 
     private func blurb(_ caption: Caption) -> Blurb {
-        let showsEquation = maths || model.isHeadline(caption)
+        // 0.7.10 words: the maths-on equation belongs to the full text, so the folded short form leaves it for the tap; a
+        // headline beat's worked equation still shows folded, as it always has.
+        let hasShort = !caption.short.isEmpty
+        let showsEquation = model.isHeadline(caption) || (maths && (!hasShort || !folded))
         let equation = caption.equationLine
         return Blurb(title: caption.title.isEmpty ? nil : caption.title,
                      figure: caption.figures.first,
                      // The lead figure is in the title; the others are chips (at most two more).
                      chips: Array(caption.figures.dropFirst()),
-                     sentence: caption.detail.isEmpty ? nil : caption.detail,
+                     // 0.7.10 words: the short sentence folded, the detail once opened.
+                     sentence: hasShort ? caption.short : (caption.detail.isEmpty ? nil : caption.detail),
+                     fullSentence: hasShort && !caption.detail.isEmpty ? caption.detail : nil,
                      equation: showsEquation && !equation.isEmpty ? equation : nil,
                      // A jump's side view (0.7.9): inside its explanation on this screen, under the figures, since
                      // there is no room here for a separate panel as well (CaptionLeader draws it elsewhere).

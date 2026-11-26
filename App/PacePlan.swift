@@ -1,4 +1,8 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
+//          Part B: a beat's reading time is worked out from the short form the card shows by default (heading, one
+//          figure, one sentence), not the full text that waits behind a tap. The floor (2.5 seconds) and a third of a
+//          second per word already meet the plan's "at least two seconds, a third of a second per word".)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 foundation: hooks for signature beats, the held Lens beat, the shared computer level and the highlight offer; plans/22-Nov-2026-v074-glow-up-plan.md)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.4 lens-pacing, G1 "signature beats": a plan can be given a
 //          SIGNATURE, the events a trick shot or a highlight is about (TrickSignature, ShotHighlightJudge). Those are
@@ -319,7 +323,8 @@ struct PacePlan: Equatable {
         let capped = style == .firstLaunch
         beats = chosen
             .sorted { (captions[$0].time, captions[$0].id) < (captions[$1].time, captions[$1].id) }
-            .map { PaceBeat(caption: captions[$0], dwell: Self.readingTime(captions[$0].detail, capped: capped),
+            // 0.7.10 words: held for what the card shows by default, the short form (Caption.readingText).
+            .map { PaceBeat(caption: captions[$0], dwell: Self.readingTime(captions[$0].readingText, capped: capped),
                             headline: headlines.contains($0)) }
         focusRegions = beats.map { Self.focusRegion(of: $0.caption.id, in: tl, bends: bendsByEvent) }
         focusZoom = beats.map {
