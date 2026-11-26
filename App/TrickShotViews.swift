@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: a shot of the day is played as a trick shot but has
+//          its own card, blurbs and main button (App/Daily/DailyViews.swift), so the trick card's Watch it, list and
+//          Next shot never show for it; the table layer also draws its mark. Each hand-over is marked "0.7.10 daily".)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md V1 and
 //          V2: the list gains the "Your shots" section (OwnShotsSection) after the authored shots; GoalMarks rings a bed
 //          hole as well as an edge pocket, through TableSpec.holeCenter, for a saved shot on bumper pool or bar
@@ -204,7 +207,10 @@ struct TrickShotCard: View {
         // one card: this card steps back and returns when they are done, so the idea is never stacked under the tips.
         // While a what-if is open on the try (0.7.5, WhatIfFork.isShowing) its card is the one result card: this one
         // steps aside and comes back, unchanged, when the what-if closes.
-        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
+        // 0.7.10 daily: the shot of the day has its own card (the answer stays hidden until the day is finished).
+        if DailyMode.showing(model) {
+            DailyCard(model: model)
+        } else if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             VStack(alignment: .leading, spacing: 8) {
                 if compact { slim(shot) } else { content(shot) }
             }
@@ -480,7 +486,10 @@ struct TrickPhoneBlurbs: View {
     private var mode: TrickShotMode { model.trickMode }
 
     var body: some View {
-        if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
+        // 0.7.10 daily: the shot of the day's own blurbs.
+        if DailyMode.showing(model) {
+            DailyPhoneBlurbs(model: model)
+        } else if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
             // The idea while the answer replays in the Lens (folded to one line, its dot saying there is more), or
             // whenever the title opened it (then shown open; folding it puts it away).
             if mode.phase == .explaining || ideaOpen { idea(shot) }
@@ -553,6 +562,8 @@ extension PhonePrimaryAction {
     /// off-script shot. Nil while lining up (the aiming panel is the way on), outside a trick shot, and while a
     /// what-if is open (the trick card stepped aside for it too).
     static func trick(_ model: ShowpieceModel) -> PhonePrimaryAction? {
+        // 0.7.10 daily: the shot of the day's own main button.
+        if DailyMode.showing(model) { return daily(model) }
         let mode = model.trickMode
         guard mode.isActive, !model.otherFutureShowing else { return nil }
         switch mode.phase {
@@ -663,6 +674,8 @@ struct TrickTableLayer: View {
         else { return }
         if let answer = mode.answerPathOnCloth { drawAnswerPath(answer, &ctx, size: size, proj) }
         drawMarkers(&ctx, proj)
+        // 0.7.10 daily: the shot of the day's mark, and after a make the line to it.
+        DailyMarks.draw(model, accent: palette.accent, paper: palette.paper, in: &ctx, size: size, proj)
     }
 
     /// The answer's cue-ball path, faint beside the player's own (0.7.4): neutral white, long dashes, about half

@@ -10,6 +10,8 @@
 //          go to the camera through MenuScreenState.uprightBand). The highlighted row is the game's own accent colour,
 //          not the system's blue. The rows' words come from MenuGuide, one place, so the menu, its hints and How to
 //          play say the same thing.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: a "Shot of the day" row above Play, built from
+//          App/Daily/DailyMenuRow.swift's pieces, one marked line.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 achievements hooks, plans/23-Nov-2026-achievements-plan.md:
 //          an Achievements row after Tables, with a mark of how many are earned whose symbol changes while some are
 //          new, opening the Achievements page; each marked "// 0.7.7 achievements:".)
@@ -432,7 +434,11 @@ struct TitleScreen: View {
             if hasTodayRows {
                 MenuGroup(title: String(localized: "Today",
                                         comment: "Main menu group heading: what to play today (today's shot, or the game you can go back to)")) {
-                    // 0.7.10 frontdoor: Shot of the day row goes here (wave 2)
+                    // 0.7.10 daily: Shot of the day, first; its words, streak mark and action are DailyMenuRow's.
+                    MenuRow(verbatimTitle: DailyMenuRow.title, verbatimLine: DailyMenuRow.line(model), symbol: DailyMenuRow.symbol,
+                            mark: DailyMenuRow.mark(model).map { MenuRow.Mark(symbol: $0.symbol, text: $0.text, spoken: $0.spoken) }) {
+                        DailyMenuRow.open(model); onPlay()
+                    }
                     // Continue first whenever something is in progress. Return presses whichever entry is highlighted.
                     if model.gameInProgress {
                         MenuRow(title: "Continue", verbatimLine: liveLine, symbol: "play.fill", prominent: continueHighlighted) {
@@ -462,8 +468,8 @@ struct TitleScreen: View {
         }
     }
 
-    /// The Today group has a row: the game on the table, or a saved match. (Wave 2 adds today's shot to this test.)
-    private var hasTodayRows: Bool { model.gameInProgress || model.hasSavedMatch }
+    /// The Today group always has a row now: today's shot is always offered (0.7.10 daily).
+    private var hasTodayRows: Bool { true }
 
     /// The second group's heading. Its own key: the plain "Play" is the playback button's word (bug 55).
     private static var waysToPlayTitle: String {

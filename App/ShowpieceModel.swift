@@ -5,6 +5,8 @@
 //          Part A row 7: the store's table-game and ruling scenes seat the computer, as every real game does, so their
 //          pictures say "Your shot" and never "Player 1 to shoot". Part B: a ride's hold is as long as the short
 //          sentence the card shows by default (Caption.readingText).)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: owns dailyMode, the shot of the day, made on first
+//          use like trickMode; its record's version joins achievementStamp so the daily achievements are swept.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9: paceSignature is readable, so a clip of a trick shot holds
 //          the same moments as the game's replay of it, ClipOffer.source.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: owns
@@ -3257,7 +3259,9 @@ final class ShowpieceModel {
     /// sitting); the book sweeps its collections when it moves. -1 for a mode not made yet.
     var achievementStamp: [Int] {
         [lessonModeStorage?.doneIDs.count ?? -1, trickModeStorage?.doneIDs.count ?? -1,
-         eightBallModeStorage?.medals.count ?? -1, match?.sittingGames ?? -1]
+         eightBallModeStorage?.medals.count ?? -1, match?.sittingGames ?? -1,
+         // 0.7.10 daily: a try at the shot of the day (its streak and first-try achievements).
+         dailyModeStorage?.recordVersion ?? -1]
     }
 
     /// True while something that only makes sense on the pool table is up: an authored mode, or an eight-ball or
@@ -3436,6 +3440,16 @@ final class ShowpieceModel {
         if let m = trickModeStorage { return m }
         let m = TrickShotMode(model: self)
         trickModeStorage = m
+        return m
+    }
+
+    // 0.7.10 daily: the shot of the day (App/Daily/DailyMode.swift), made on first use and kept out of observation,
+    // exactly as trickMode. It plays its shot through trickMode, so nothing else here needs to know about it.
+    @ObservationIgnored private var dailyModeStorage: DailyMode?
+    var dailyMode: DailyMode {
+        if let m = dailyModeStorage { return m }
+        let m = DailyMode(model: self)
+        dailyModeStorage = m
         return m
     }
 

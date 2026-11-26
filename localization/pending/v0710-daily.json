@@ -1,0 +1,2246 @@
+{
+ "keys": [
+  "Shot of the day",
+  "any pocket",
+  "Bank the %lld into %@.",
+  "Pot the %lld in %@.",
+  "Make the shot.",
+  "In. That is today's shot.",
+  "Day %lld",
+  "Watch the answer",
+  "Shares a picture of your result. The answer is not in it.",
+  "Board",
+  "Shows how everyone did today",
+  "The answer, at full speed.",
+  "One try left.",
+  "%lld tries left.",
+  "Made it on try %lld.",
+  "Five misses today.",
+  "%@ cm from the mark",
+  "%@ cm",
+  "Score",
+  "Streak",
+  "From the mark",
+  "Streak: %lld",
+  "Score: %lld",
+  "Next shot in %@",
+  "Made on try %lld of %lld",
+  "All %lld tries used",
+  "One shot, the same for everyone today. Five tries.",
+  "One try left today.",
+  "%lld tries left today.",
+  "Made on try %lld today. Score %lld.",
+  "Missed today. A new shot tomorrow.",
+  "Seven days running",
+  "Thirty days running",
+  "First try",
+  "You made the shot of the day seven days in a row.",
+  "You made the shot of the day thirty days in a row.",
+  "You made the shot of the day on your first try.",
+  "Make the shot of the day seven days in a row.",
+  "Make the shot of the day thirty days in a row.",
+  "Make the shot of the day on your first try."
+ ],
+ "translations": [
+  {
+   "culture": "es",
+   "key": "Shot of the day",
+   "text": "Tiro del día"
+  },
+  {
+   "culture": "fr",
+   "key": "Shot of the day",
+   "text": "Coup du jour"
+  },
+  {
+   "culture": "de",
+   "key": "Shot of the day",
+   "text": "Stoß des Tages"
+  },
+  {
+   "culture": "it",
+   "key": "Shot of the day",
+   "text": "Colpo del giorno"
+  },
+  {
+   "culture": "pt",
+   "key": "Shot of the day",
+   "text": "Tacada do dia"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shot of the day",
+   "text": "Tacada do dia"
+  },
+  {
+   "culture": "ja",
+   "key": "Shot of the day",
+   "text": "今日のショット"
+  },
+  {
+   "culture": "ko",
+   "key": "Shot of the day",
+   "text": "오늘의 샷"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shot of the day",
+   "text": "每日一杆"
+  },
+  {
+   "culture": "ru",
+   "key": "Shot of the day",
+   "text": "Удар дня"
+  },
+  {
+   "culture": "ar",
+   "key": "Shot of the day",
+   "text": "ضربة اليوم"
+  },
+  {
+   "culture": "es",
+   "key": "any pocket",
+   "text": "cualquier tronera"
+  },
+  {
+   "culture": "fr",
+   "key": "any pocket",
+   "text": "n'importe quelle poche"
+  },
+  {
+   "culture": "de",
+   "key": "any pocket",
+   "text": "eine beliebige Tasche"
+  },
+  {
+   "culture": "it",
+   "key": "any pocket",
+   "text": "una buca qualsiasi"
+  },
+  {
+   "culture": "pt",
+   "key": "any pocket",
+   "text": "qualquer caçapa"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "any pocket",
+   "text": "qualquer caçapa"
+  },
+  {
+   "culture": "ja",
+   "key": "any pocket",
+   "text": "どこかのポケット"
+  },
+  {
+   "culture": "ko",
+   "key": "any pocket",
+   "text": "아무 포켓"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "any pocket",
+   "text": "任意袋口"
+  },
+  {
+   "culture": "ru",
+   "key": "any pocket",
+   "text": "любую лузу"
+  },
+  {
+   "culture": "ar",
+   "key": "any pocket",
+   "text": "أي جيب"
+  },
+  {
+   "culture": "es",
+   "key": "Bank the %lld into %@.",
+   "text": "Mete la %lld por banda en %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Bank the %lld into %@.",
+   "text": "Empoche la %lld par la bande dans %@."
+  },
+  {
+   "culture": "de",
+   "key": "Bank the %lld into %@.",
+   "text": "Spiele die %lld über die Bande in die %@."
+  },
+  {
+   "culture": "it",
+   "key": "Bank the %lld into %@.",
+   "text": "Manda la %lld di sponda nella %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Bank the %lld into %@.",
+   "text": "Encaçapa a %lld por tabela na %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Bank the %lld into %@.",
+   "text": "Encaçape a %lld de tabela na %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Bank the %lld into %@.",
+   "text": "%1$lld番をクッションに当てて%2$@に入れましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Bank the %lld into %@.",
+   "text": "%1$lld번을 쿠션에 맞혀 %2$@에 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Bank the %lld into %@.",
+   "text": "让%1$lld号球吃库后进入%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Bank the %lld into %@.",
+   "text": "Забей %lld-й от борта в лузу: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Bank the %lld into %@.",
+   "text": "أدخل الكرة %lld عبر الحافة في %@."
+  },
+  {
+   "culture": "es",
+   "key": "Pot the %lld in %@.",
+   "text": "Mete la %lld en %@."
+  },
+  {
+   "culture": "fr",
+   "key": "Pot the %lld in %@.",
+   "text": "Empoche la %lld dans %@."
+  },
+  {
+   "culture": "de",
+   "key": "Pot the %lld in %@.",
+   "text": "Versenke die %lld in der %@."
+  },
+  {
+   "culture": "it",
+   "key": "Pot the %lld in %@.",
+   "text": "Metti in buca la %lld nella %@."
+  },
+  {
+   "culture": "pt",
+   "key": "Pot the %lld in %@.",
+   "text": "Encaçapa a %lld na %@."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Pot the %lld in %@.",
+   "text": "Encaçape a %lld na %@."
+  },
+  {
+   "culture": "ja",
+   "key": "Pot the %lld in %@.",
+   "text": "%1$lld番を%2$@に入れましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Pot the %lld in %@.",
+   "text": "%1$lld번을 %2$@에 넣으세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Pot the %lld in %@.",
+   "text": "把%1$lld号球打进%2$@。"
+  },
+  {
+   "culture": "ru",
+   "key": "Pot the %lld in %@.",
+   "text": "Забей %lld-й в лузу: %@."
+  },
+  {
+   "culture": "ar",
+   "key": "Pot the %lld in %@.",
+   "text": "أدخل الكرة %lld في %@."
+  },
+  {
+   "culture": "es",
+   "key": "Make the shot.",
+   "text": "Logra el tiro."
+  },
+  {
+   "culture": "fr",
+   "key": "Make the shot.",
+   "text": "Réussis le coup."
+  },
+  {
+   "culture": "de",
+   "key": "Make the shot.",
+   "text": "Spiel den Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "Make the shot.",
+   "text": "Riesci nel colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "Make the shot.",
+   "text": "Faz a tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make the shot.",
+   "text": "Faça a tacada."
+  },
+  {
+   "culture": "ja",
+   "key": "Make the shot.",
+   "text": "ショットを決めましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Make the shot.",
+   "text": "샷을 성공시키세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make the shot.",
+   "text": "打成这一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Make the shot.",
+   "text": "Выполни удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Make the shot.",
+   "text": "نفّذ الضربة."
+  },
+  {
+   "culture": "es",
+   "key": "In. That is today's shot.",
+   "text": "Dentro. Ese es el tiro de hoy."
+  },
+  {
+   "culture": "fr",
+   "key": "In. That is today's shot.",
+   "text": "Dedans. C'est le coup du jour."
+  },
+  {
+   "culture": "de",
+   "key": "In. That is today's shot.",
+   "text": "Drin. Das ist der Stoß des Tages."
+  },
+  {
+   "culture": "it",
+   "key": "In. That is today's shot.",
+   "text": "Dentro. Questo è il colpo di oggi."
+  },
+  {
+   "culture": "pt",
+   "key": "In. That is today's shot.",
+   "text": "Entrou. É a tacada de hoje."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "In. That is today's shot.",
+   "text": "Entrou. Essa é a tacada de hoje."
+  },
+  {
+   "culture": "ja",
+   "key": "In. That is today's shot.",
+   "text": "入りました。これが今日のショットです。"
+  },
+  {
+   "culture": "ko",
+   "key": "In. That is today's shot.",
+   "text": "들어갔습니다. 오늘의 샷 성공입니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "In. That is today's shot.",
+   "text": "进了。今日这一杆完成。"
+  },
+  {
+   "culture": "ru",
+   "key": "In. That is today's shot.",
+   "text": "Есть! Это удар дня."
+  },
+  {
+   "culture": "ar",
+   "key": "In. That is today's shot.",
+   "text": "دخلت. هذه ضربة اليوم."
+  },
+  {
+   "culture": "es",
+   "key": "Day %lld",
+   "text": "Día %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Day %lld",
+   "text": "Jour %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Day %lld",
+   "text": "Tag %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Day %lld",
+   "text": "Giorno %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Day %lld",
+   "text": "Dia %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Day %lld",
+   "text": "Dia %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Day %lld",
+   "text": "%lld日目"
+  },
+  {
+   "culture": "ko",
+   "key": "Day %lld",
+   "text": "%lld일째"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Day %lld",
+   "text": "第 %lld 天"
+  },
+  {
+   "culture": "ru",
+   "key": "Day %lld",
+   "text": "День %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Day %lld",
+   "text": "اليوم %lld"
+  },
+  {
+   "culture": "es",
+   "key": "Watch the answer",
+   "text": "Ver la solución"
+  },
+  {
+   "culture": "fr",
+   "key": "Watch the answer",
+   "text": "Voir la réponse"
+  },
+  {
+   "culture": "de",
+   "key": "Watch the answer",
+   "text": "Lösung ansehen"
+  },
+  {
+   "culture": "it",
+   "key": "Watch the answer",
+   "text": "Guarda la soluzione"
+  },
+  {
+   "culture": "pt",
+   "key": "Watch the answer",
+   "text": "Ver a resposta"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Watch the answer",
+   "text": "Ver a resposta"
+  },
+  {
+   "culture": "ja",
+   "key": "Watch the answer",
+   "text": "答えを見る"
+  },
+  {
+   "culture": "ko",
+   "key": "Watch the answer",
+   "text": "정답 보기"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Watch the answer",
+   "text": "观看答案"
+  },
+  {
+   "culture": "ru",
+   "key": "Watch the answer",
+   "text": "Смотреть ответ"
+  },
+  {
+   "culture": "ar",
+   "key": "Watch the answer",
+   "text": "شاهد الحل"
+  },
+  {
+   "culture": "es",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Comparte una imagen de tu resultado. No incluye la solución."
+  },
+  {
+   "culture": "fr",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Partage une image de ton résultat. La réponse n'y figure pas."
+  },
+  {
+   "culture": "de",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Teilt ein Bild deines Ergebnisses. Die Lösung ist nicht darin."
+  },
+  {
+   "culture": "it",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Condivide un'immagine del tuo risultato. La soluzione non c'è."
+  },
+  {
+   "culture": "pt",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Partilha uma imagem do teu resultado. A resposta não aparece."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Compartilha uma imagem do seu resultado. A resposta não aparece."
+  },
+  {
+   "culture": "ja",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "結果の画像を共有します。答えは含まれません。"
+  },
+  {
+   "culture": "ko",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "결과 이미지를 공유합니다. 정답은 들어 있지 않습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "分享你的成绩图片，其中不含答案。"
+  },
+  {
+   "culture": "ru",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "Делится картинкой с твоим результатом. Ответа на ней нет."
+  },
+  {
+   "culture": "ar",
+   "key": "Shares a picture of your result. The answer is not in it.",
+   "text": "تشارك صورة لنتيجتك. الحل ليس فيها."
+  },
+  {
+   "culture": "es",
+   "key": "Board",
+   "text": "Clasificación"
+  },
+  {
+   "culture": "fr",
+   "key": "Board",
+   "text": "Classement"
+  },
+  {
+   "culture": "de",
+   "key": "Board",
+   "text": "Rangliste"
+  },
+  {
+   "culture": "it",
+   "key": "Board",
+   "text": "Classifica"
+  },
+  {
+   "culture": "pt",
+   "key": "Board",
+   "text": "Classificação"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Board",
+   "text": "Classificação"
+  },
+  {
+   "culture": "ja",
+   "key": "Board",
+   "text": "ランキング"
+  },
+  {
+   "culture": "ko",
+   "key": "Board",
+   "text": "순위표"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Board",
+   "text": "排行榜"
+  },
+  {
+   "culture": "ru",
+   "key": "Board",
+   "text": "Таблица"
+  },
+  {
+   "culture": "ar",
+   "key": "Board",
+   "text": "لوحة الترتيب"
+  },
+  {
+   "culture": "es",
+   "key": "Shows how everyone did today",
+   "text": "Muestra cómo les fue a todos hoy"
+  },
+  {
+   "culture": "fr",
+   "key": "Shows how everyone did today",
+   "text": "Montre les résultats de tout le monde aujourd'hui"
+  },
+  {
+   "culture": "de",
+   "key": "Shows how everyone did today",
+   "text": "Zeigt, wie es heute allen ergangen ist"
+  },
+  {
+   "culture": "it",
+   "key": "Shows how everyone did today",
+   "text": "Mostra com'è andata a tutti oggi"
+  },
+  {
+   "culture": "pt",
+   "key": "Shows how everyone did today",
+   "text": "Mostra como correu a todos hoje"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Shows how everyone did today",
+   "text": "Mostra como todo mundo se saiu hoje"
+  },
+  {
+   "culture": "ja",
+   "key": "Shows how everyone did today",
+   "text": "今日のみんなの結果を表示します"
+  },
+  {
+   "culture": "ko",
+   "key": "Shows how everyone did today",
+   "text": "오늘 모두의 결과를 보여 줍니다"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Shows how everyone did today",
+   "text": "显示今天所有人的成绩"
+  },
+  {
+   "culture": "ru",
+   "key": "Shows how everyone did today",
+   "text": "Показывает, как сегодня сыграли все"
+  },
+  {
+   "culture": "ar",
+   "key": "Shows how everyone did today",
+   "text": "تعرض نتائج الجميع اليوم"
+  },
+  {
+   "culture": "es",
+   "key": "The answer, at full speed.",
+   "text": "La solución, a velocidad real."
+  },
+  {
+   "culture": "fr",
+   "key": "The answer, at full speed.",
+   "text": "La réponse, à pleine vitesse."
+  },
+  {
+   "culture": "de",
+   "key": "The answer, at full speed.",
+   "text": "Die Lösung, in voller Geschwindigkeit."
+  },
+  {
+   "culture": "it",
+   "key": "The answer, at full speed.",
+   "text": "La soluzione, a piena velocità."
+  },
+  {
+   "culture": "pt",
+   "key": "The answer, at full speed.",
+   "text": "A resposta, à velocidade real."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "The answer, at full speed.",
+   "text": "A resposta, em velocidade real."
+  },
+  {
+   "culture": "ja",
+   "key": "The answer, at full speed.",
+   "text": "答えを実際の速さで。"
+  },
+  {
+   "culture": "ko",
+   "key": "The answer, at full speed.",
+   "text": "정답, 실제 속도로."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "The answer, at full speed.",
+   "text": "答案，以正常速度播放。"
+  },
+  {
+   "culture": "ru",
+   "key": "The answer, at full speed.",
+   "text": "Ответ на полной скорости."
+  },
+  {
+   "culture": "ar",
+   "key": "The answer, at full speed.",
+   "text": "الحل بالسرعة الكاملة."
+  },
+  {
+   "culture": "es",
+   "key": "One try left.",
+   "text": "Queda un intento."
+  },
+  {
+   "culture": "fr",
+   "key": "One try left.",
+   "text": "Il reste un essai."
+  },
+  {
+   "culture": "de",
+   "key": "One try left.",
+   "text": "Noch ein Versuch."
+  },
+  {
+   "culture": "it",
+   "key": "One try left.",
+   "text": "Resta un tentativo."
+  },
+  {
+   "culture": "pt",
+   "key": "One try left.",
+   "text": "Resta uma tentativa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "One try left.",
+   "text": "Resta uma tentativa."
+  },
+  {
+   "culture": "ja",
+   "key": "One try left.",
+   "text": "残り1回。"
+  },
+  {
+   "culture": "ko",
+   "key": "One try left.",
+   "text": "한 번 남았습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "One try left.",
+   "text": "还剩一次机会。"
+  },
+  {
+   "culture": "ru",
+   "key": "One try left.",
+   "text": "Осталась одна попытка."
+  },
+  {
+   "culture": "ar",
+   "key": "One try left.",
+   "text": "تبقّت محاولة واحدة."
+  },
+  {
+   "culture": "es",
+   "key": "%lld tries left.",
+   "text": "Quedan %lld intentos."
+  },
+  {
+   "culture": "fr",
+   "key": "%lld tries left.",
+   "text": "Il reste %lld essais."
+  },
+  {
+   "culture": "de",
+   "key": "%lld tries left.",
+   "text": "Noch %lld Versuche."
+  },
+  {
+   "culture": "it",
+   "key": "%lld tries left.",
+   "text": "Restano %lld tentativi."
+  },
+  {
+   "culture": "pt",
+   "key": "%lld tries left.",
+   "text": "Restam %lld tentativas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld tries left.",
+   "text": "Restam %lld tentativas."
+  },
+  {
+   "culture": "ja",
+   "key": "%lld tries left.",
+   "text": "残り%lld回。"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld tries left.",
+   "text": "%lld번 남았습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld tries left.",
+   "text": "还剩 %lld 次机会。"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld tries left.",
+   "text": "Осталось попыток: %lld."
+  },
+  {
+   "culture": "ar",
+   "key": "%lld tries left.",
+   "text": "المحاولات المتبقية: %lld."
+  },
+  {
+   "culture": "es",
+   "key": "Made it on try %lld.",
+   "text": "Lo lograste en el intento %lld."
+  },
+  {
+   "culture": "fr",
+   "key": "Made it on try %lld.",
+   "text": "Réussi à l'essai %lld."
+  },
+  {
+   "culture": "de",
+   "key": "Made it on try %lld.",
+   "text": "Geschafft im %lld. Versuch."
+  },
+  {
+   "culture": "it",
+   "key": "Made it on try %lld.",
+   "text": "Riuscito al tentativo %lld."
+  },
+  {
+   "culture": "pt",
+   "key": "Made it on try %lld.",
+   "text": "Conseguiste à tentativa %lld."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Made it on try %lld.",
+   "text": "Você conseguiu na tentativa %lld."
+  },
+  {
+   "culture": "ja",
+   "key": "Made it on try %lld.",
+   "text": "%lld回目で成功。"
+  },
+  {
+   "culture": "ko",
+   "key": "Made it on try %lld.",
+   "text": "%lld번째에 성공했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Made it on try %lld.",
+   "text": "第 %lld 次成功。"
+  },
+  {
+   "culture": "ru",
+   "key": "Made it on try %lld.",
+   "text": "Получилось с попытки %lld."
+  },
+  {
+   "culture": "ar",
+   "key": "Made it on try %lld.",
+   "text": "نجحت في المحاولة %lld."
+  },
+  {
+   "culture": "es",
+   "key": "Five misses today.",
+   "text": "Cinco fallos hoy."
+  },
+  {
+   "culture": "fr",
+   "key": "Five misses today.",
+   "text": "Cinq échecs aujourd'hui."
+  },
+  {
+   "culture": "de",
+   "key": "Five misses today.",
+   "text": "Heute fünf Fehlversuche."
+  },
+  {
+   "culture": "it",
+   "key": "Five misses today.",
+   "text": "Cinque errori oggi."
+  },
+  {
+   "culture": "pt",
+   "key": "Five misses today.",
+   "text": "Cinco falhanços hoje."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Five misses today.",
+   "text": "Cinco erros hoje."
+  },
+  {
+   "culture": "ja",
+   "key": "Five misses today.",
+   "text": "今日は5回とも失敗。"
+  },
+  {
+   "culture": "ko",
+   "key": "Five misses today.",
+   "text": "오늘은 다섯 번 모두 실패했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Five misses today.",
+   "text": "今天五次都没打进。"
+  },
+  {
+   "culture": "ru",
+   "key": "Five misses today.",
+   "text": "Сегодня пять промахов."
+  },
+  {
+   "culture": "ar",
+   "key": "Five misses today.",
+   "text": "خمس محاولات فاشلة اليوم."
+  },
+  {
+   "culture": "es",
+   "key": "%@ cm from the mark",
+   "text": "a %@ cm de la marca"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ cm from the mark",
+   "text": "à %@ cm de la marque"
+  },
+  {
+   "culture": "de",
+   "key": "%@ cm from the mark",
+   "text": "%@ cm von der Markierung entfernt"
+  },
+  {
+   "culture": "it",
+   "key": "%@ cm from the mark",
+   "text": "a %@ cm dal segno"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ cm from the mark",
+   "text": "a %@ cm da marca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ cm from the mark",
+   "text": "a %@ cm da marca"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ cm from the mark",
+   "text": "目印から%@ cm"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ cm from the mark",
+   "text": "표시에서 %@cm"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ cm from the mark",
+   "text": "距标记 %@ 厘米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ cm from the mark",
+   "text": "%@ см от отметки"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ cm from the mark",
+   "text": "على بعد %@ سم من العلامة"
+  },
+  {
+   "culture": "es",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "fr",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "de",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "it",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "pt",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "ja",
+   "key": "%@ cm",
+   "text": "%@ cm"
+  },
+  {
+   "culture": "ko",
+   "key": "%@ cm",
+   "text": "%@cm"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%@ cm",
+   "text": "%@ 厘米"
+  },
+  {
+   "culture": "ru",
+   "key": "%@ cm",
+   "text": "%@ см"
+  },
+  {
+   "culture": "ar",
+   "key": "%@ cm",
+   "text": "%@ سم"
+  },
+  {
+   "culture": "es",
+   "key": "Score",
+   "text": "Puntuación"
+  },
+  {
+   "culture": "fr",
+   "key": "Score",
+   "text": "Score"
+  },
+  {
+   "culture": "de",
+   "key": "Score",
+   "text": "Punkte"
+  },
+  {
+   "culture": "it",
+   "key": "Score",
+   "text": "Punteggio"
+  },
+  {
+   "culture": "pt",
+   "key": "Score",
+   "text": "Pontuação"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Score",
+   "text": "Pontuação"
+  },
+  {
+   "culture": "ja",
+   "key": "Score",
+   "text": "スコア"
+  },
+  {
+   "culture": "ko",
+   "key": "Score",
+   "text": "점수"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Score",
+   "text": "得分"
+  },
+  {
+   "culture": "ru",
+   "key": "Score",
+   "text": "Очки"
+  },
+  {
+   "culture": "ar",
+   "key": "Score",
+   "text": "النتيجة"
+  },
+  {
+   "culture": "es",
+   "key": "Streak",
+   "text": "Racha"
+  },
+  {
+   "culture": "fr",
+   "key": "Streak",
+   "text": "Série"
+  },
+  {
+   "culture": "de",
+   "key": "Streak",
+   "text": "Serie"
+  },
+  {
+   "culture": "it",
+   "key": "Streak",
+   "text": "Serie"
+  },
+  {
+   "culture": "pt",
+   "key": "Streak",
+   "text": "Sequência"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Streak",
+   "text": "Sequência"
+  },
+  {
+   "culture": "ja",
+   "key": "Streak",
+   "text": "連続日数"
+  },
+  {
+   "culture": "ko",
+   "key": "Streak",
+   "text": "연속 기록"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Streak",
+   "text": "连胜"
+  },
+  {
+   "culture": "ru",
+   "key": "Streak",
+   "text": "Серия"
+  },
+  {
+   "culture": "ar",
+   "key": "Streak",
+   "text": "السلسلة"
+  },
+  {
+   "culture": "es",
+   "key": "From the mark",
+   "text": "De la marca"
+  },
+  {
+   "culture": "fr",
+   "key": "From the mark",
+   "text": "De la marque"
+  },
+  {
+   "culture": "de",
+   "key": "From the mark",
+   "text": "Zur Markierung"
+  },
+  {
+   "culture": "it",
+   "key": "From the mark",
+   "text": "Dal segno"
+  },
+  {
+   "culture": "pt",
+   "key": "From the mark",
+   "text": "Da marca"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "From the mark",
+   "text": "Da marca"
+  },
+  {
+   "culture": "ja",
+   "key": "From the mark",
+   "text": "目印から"
+  },
+  {
+   "culture": "ko",
+   "key": "From the mark",
+   "text": "표시까지"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "From the mark",
+   "text": "离标记"
+  },
+  {
+   "culture": "ru",
+   "key": "From the mark",
+   "text": "До отметки"
+  },
+  {
+   "culture": "ar",
+   "key": "From the mark",
+   "text": "عن العلامة"
+  },
+  {
+   "culture": "es",
+   "key": "Streak: %lld",
+   "text": "Racha: %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Streak: %lld",
+   "text": "Série : %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Streak: %lld",
+   "text": "Serie: %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Streak: %lld",
+   "text": "Serie: %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Streak: %lld",
+   "text": "Sequência: %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Streak: %lld",
+   "text": "Sequência: %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Streak: %lld",
+   "text": "連続: %lld日"
+  },
+  {
+   "culture": "ko",
+   "key": "Streak: %lld",
+   "text": "연속 기록: %lld"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Streak: %lld",
+   "text": "连胜：%lld"
+  },
+  {
+   "culture": "ru",
+   "key": "Streak: %lld",
+   "text": "Серия: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Streak: %lld",
+   "text": "السلسلة: %lld"
+  },
+  {
+   "culture": "es",
+   "key": "Score: %lld",
+   "text": "Puntuación: %lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Score: %lld",
+   "text": "Score : %lld"
+  },
+  {
+   "culture": "de",
+   "key": "Score: %lld",
+   "text": "Punkte: %lld"
+  },
+  {
+   "culture": "it",
+   "key": "Score: %lld",
+   "text": "Punteggio: %lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Score: %lld",
+   "text": "Pontuação: %lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Score: %lld",
+   "text": "Pontuação: %lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Score: %lld",
+   "text": "スコア: %lld"
+  },
+  {
+   "culture": "ko",
+   "key": "Score: %lld",
+   "text": "점수: %lld"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Score: %lld",
+   "text": "得分：%lld"
+  },
+  {
+   "culture": "ru",
+   "key": "Score: %lld",
+   "text": "Очки: %lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Score: %lld",
+   "text": "النتيجة: %lld"
+  },
+  {
+   "culture": "es",
+   "key": "Next shot in %@",
+   "text": "Siguiente tiro en %@"
+  },
+  {
+   "culture": "fr",
+   "key": "Next shot in %@",
+   "text": "Prochain coup dans %@"
+  },
+  {
+   "culture": "de",
+   "key": "Next shot in %@",
+   "text": "Nächster Stoß in %@"
+  },
+  {
+   "culture": "it",
+   "key": "Next shot in %@",
+   "text": "Prossimo colpo tra %@"
+  },
+  {
+   "culture": "pt",
+   "key": "Next shot in %@",
+   "text": "Próxima tacada daqui a %@"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Next shot in %@",
+   "text": "Próxima tacada em %@"
+  },
+  {
+   "culture": "ja",
+   "key": "Next shot in %@",
+   "text": "次のショットまで%@"
+  },
+  {
+   "culture": "ko",
+   "key": "Next shot in %@",
+   "text": "다음 샷까지 %@"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Next shot in %@",
+   "text": "距下一杆还有 %@"
+  },
+  {
+   "culture": "ru",
+   "key": "Next shot in %@",
+   "text": "Следующий удар через %@"
+  },
+  {
+   "culture": "ar",
+   "key": "Next shot in %@",
+   "text": "الضربة التالية بعد %@"
+  },
+  {
+   "culture": "es",
+   "key": "Made on try %lld of %lld",
+   "text": "Lograda en el intento %1$lld de %2$lld"
+  },
+  {
+   "culture": "fr",
+   "key": "Made on try %lld of %lld",
+   "text": "Réussi à l'essai %1$lld sur %2$lld"
+  },
+  {
+   "culture": "de",
+   "key": "Made on try %lld of %lld",
+   "text": "Geschafft im Versuch %1$lld von %2$lld"
+  },
+  {
+   "culture": "it",
+   "key": "Made on try %lld of %lld",
+   "text": "Riuscito al tentativo %1$lld di %2$lld"
+  },
+  {
+   "culture": "pt",
+   "key": "Made on try %lld of %lld",
+   "text": "Conseguida à tentativa %1$lld de %2$lld"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Made on try %lld of %lld",
+   "text": "Conseguida na tentativa %1$lld de %2$lld"
+  },
+  {
+   "culture": "ja",
+   "key": "Made on try %lld of %lld",
+   "text": "%2$lld回中%1$lld回目で成功"
+  },
+  {
+   "culture": "ko",
+   "key": "Made on try %lld of %lld",
+   "text": "%2$lld번 중 %1$lld번째에 성공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Made on try %lld of %lld",
+   "text": "共 %2$lld 次，第 %1$lld 次成功"
+  },
+  {
+   "culture": "ru",
+   "key": "Made on try %lld of %lld",
+   "text": "Получилось с попытки %1$lld из %2$lld"
+  },
+  {
+   "culture": "ar",
+   "key": "Made on try %lld of %lld",
+   "text": "نجحت في المحاولة %1$lld من %2$lld"
+  },
+  {
+   "culture": "es",
+   "key": "All %lld tries used",
+   "text": "Usados los %lld intentos"
+  },
+  {
+   "culture": "fr",
+   "key": "All %lld tries used",
+   "text": "Les %lld essais sont utilisés"
+  },
+  {
+   "culture": "de",
+   "key": "All %lld tries used",
+   "text": "Alle %lld Versuche verbraucht"
+  },
+  {
+   "culture": "it",
+   "key": "All %lld tries used",
+   "text": "Usati tutti i %lld tentativi"
+  },
+  {
+   "culture": "pt",
+   "key": "All %lld tries used",
+   "text": "Usadas as %lld tentativas"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "All %lld tries used",
+   "text": "Usadas todas as %lld tentativas"
+  },
+  {
+   "culture": "ja",
+   "key": "All %lld tries used",
+   "text": "%lld回すべて使用済み"
+  },
+  {
+   "culture": "ko",
+   "key": "All %lld tries used",
+   "text": "%lld번 모두 사용함"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "All %lld tries used",
+   "text": "%lld 次机会已用完"
+  },
+  {
+   "culture": "ru",
+   "key": "All %lld tries used",
+   "text": "Использованы все %lld попыток"
+  },
+  {
+   "culture": "ar",
+   "key": "All %lld tries used",
+   "text": "استُخدمت المحاولات الـ%lld كلها"
+  },
+  {
+   "culture": "es",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Un tiro, el mismo para todos hoy. Cinco intentos."
+  },
+  {
+   "culture": "fr",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Un coup, le même pour tout le monde aujourd'hui. Cinq essais."
+  },
+  {
+   "culture": "de",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Ein Stoß, heute für alle derselbe. Fünf Versuche."
+  },
+  {
+   "culture": "it",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Un colpo, lo stesso per tutti oggi. Cinque tentativi."
+  },
+  {
+   "culture": "pt",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Uma tacada, a mesma para todos hoje. Cinco tentativas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Uma tacada, a mesma para todos hoje. Cinco tentativas."
+  },
+  {
+   "culture": "ja",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "今日は全員同じ1ショット。チャンスは5回。"
+  },
+  {
+   "culture": "ko",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "오늘 모두에게 같은 샷 하나. 기회는 다섯 번."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "今天所有人同一杆，五次机会。"
+  },
+  {
+   "culture": "ru",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "Один удар, сегодня одинаковый для всех. Пять попыток."
+  },
+  {
+   "culture": "ar",
+   "key": "One shot, the same for everyone today. Five tries.",
+   "text": "ضربة واحدة، نفسها للجميع اليوم. خمس محاولات."
+  },
+  {
+   "culture": "es",
+   "key": "One try left today.",
+   "text": "Hoy te queda un intento."
+  },
+  {
+   "culture": "fr",
+   "key": "One try left today.",
+   "text": "Il te reste un essai aujourd'hui."
+  },
+  {
+   "culture": "de",
+   "key": "One try left today.",
+   "text": "Heute noch ein Versuch."
+  },
+  {
+   "culture": "it",
+   "key": "One try left today.",
+   "text": "Oggi ti resta un tentativo."
+  },
+  {
+   "culture": "pt",
+   "key": "One try left today.",
+   "text": "Hoje resta-te uma tentativa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "One try left today.",
+   "text": "Hoje resta uma tentativa."
+  },
+  {
+   "culture": "ja",
+   "key": "One try left today.",
+   "text": "今日は残り1回。"
+  },
+  {
+   "culture": "ko",
+   "key": "One try left today.",
+   "text": "오늘 한 번 남았습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "One try left today.",
+   "text": "今天还剩一次机会。"
+  },
+  {
+   "culture": "ru",
+   "key": "One try left today.",
+   "text": "Сегодня осталась одна попытка."
+  },
+  {
+   "culture": "ar",
+   "key": "One try left today.",
+   "text": "تبقّت لك محاولة واحدة اليوم."
+  },
+  {
+   "culture": "es",
+   "key": "%lld tries left today.",
+   "text": "Hoy te quedan %lld intentos."
+  },
+  {
+   "culture": "fr",
+   "key": "%lld tries left today.",
+   "text": "Il te reste %lld essais aujourd'hui."
+  },
+  {
+   "culture": "de",
+   "key": "%lld tries left today.",
+   "text": "Heute noch %lld Versuche."
+  },
+  {
+   "culture": "it",
+   "key": "%lld tries left today.",
+   "text": "Oggi ti restano %lld tentativi."
+  },
+  {
+   "culture": "pt",
+   "key": "%lld tries left today.",
+   "text": "Hoje restam-te %lld tentativas."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "%lld tries left today.",
+   "text": "Hoje restam %lld tentativas."
+  },
+  {
+   "culture": "ja",
+   "key": "%lld tries left today.",
+   "text": "今日は残り%lld回。"
+  },
+  {
+   "culture": "ko",
+   "key": "%lld tries left today.",
+   "text": "오늘 %lld번 남았습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "%lld tries left today.",
+   "text": "今天还剩 %lld 次机会。"
+  },
+  {
+   "culture": "ru",
+   "key": "%lld tries left today.",
+   "text": "Сегодня осталось попыток: %lld."
+  },
+  {
+   "culture": "ar",
+   "key": "%lld tries left today.",
+   "text": "المحاولات المتبقية اليوم: %lld."
+  },
+  {
+   "culture": "es",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Hoy, lograda en el intento %1$lld. Puntuación %2$lld."
+  },
+  {
+   "culture": "fr",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Réussi aujourd'hui à l'essai %1$lld. Score %2$lld."
+  },
+  {
+   "culture": "de",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Heute im %1$lld. Versuch geschafft. Punkte: %2$lld."
+  },
+  {
+   "culture": "it",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Oggi riuscito al tentativo %1$lld. Punteggio %2$lld."
+  },
+  {
+   "culture": "pt",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Hoje, conseguida à tentativa %1$lld. Pontuação %2$lld."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Hoje, conseguida na tentativa %1$lld. Pontuação %2$lld."
+  },
+  {
+   "culture": "ja",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "今日は%1$lld回目で成功。スコア%2$lld。"
+  },
+  {
+   "culture": "ko",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "오늘 %1$lld번째에 성공. 점수 %2$lld."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "今天第 %1$lld 次成功。得分 %2$lld。"
+  },
+  {
+   "culture": "ru",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "Сегодня получилось с попытки %1$lld. Очки: %2$lld."
+  },
+  {
+   "culture": "ar",
+   "key": "Made on try %lld today. Score %lld.",
+   "text": "نجحت اليوم في المحاولة %1$lld. النتيجة %2$lld."
+  },
+  {
+   "culture": "es",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Hoy no salió. Mañana, un tiro nuevo."
+  },
+  {
+   "culture": "fr",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Raté aujourd'hui. Un nouveau coup demain."
+  },
+  {
+   "culture": "de",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Heute nicht geschafft. Morgen gibt es einen neuen Stoß."
+  },
+  {
+   "culture": "it",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Oggi niente. Domani un nuovo colpo."
+  },
+  {
+   "culture": "pt",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Hoje não deu. Amanhã há uma nova tacada."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Hoje não deu. Amanhã tem uma tacada nova."
+  },
+  {
+   "culture": "ja",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "今日は失敗。明日は新しいショット。"
+  },
+  {
+   "culture": "ko",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "오늘은 실패. 내일 새 샷이 나옵니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "今天没打进。明天换新的一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "Сегодня не вышло. Завтра новый удар."
+  },
+  {
+   "culture": "ar",
+   "key": "Missed today. A new shot tomorrow.",
+   "text": "لم تنجح اليوم. ضربة جديدة غدًا."
+  },
+  {
+   "culture": "es",
+   "key": "Seven days running",
+   "text": "Siete días seguidos"
+  },
+  {
+   "culture": "fr",
+   "key": "Seven days running",
+   "text": "Sept jours d'affilée"
+  },
+  {
+   "culture": "de",
+   "key": "Seven days running",
+   "text": "Sieben Tage am Stück"
+  },
+  {
+   "culture": "it",
+   "key": "Seven days running",
+   "text": "Sette giorni di fila"
+  },
+  {
+   "culture": "pt",
+   "key": "Seven days running",
+   "text": "Sete dias seguidos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Seven days running",
+   "text": "Sete dias seguidos"
+  },
+  {
+   "culture": "ja",
+   "key": "Seven days running",
+   "text": "7日連続"
+  },
+  {
+   "culture": "ko",
+   "key": "Seven days running",
+   "text": "7일 연속"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Seven days running",
+   "text": "连续七天"
+  },
+  {
+   "culture": "ru",
+   "key": "Seven days running",
+   "text": "Семь дней подряд"
+  },
+  {
+   "culture": "ar",
+   "key": "Seven days running",
+   "text": "سبعة أيام متتالية"
+  },
+  {
+   "culture": "es",
+   "key": "Thirty days running",
+   "text": "Treinta días seguidos"
+  },
+  {
+   "culture": "fr",
+   "key": "Thirty days running",
+   "text": "Trente jours d'affilée"
+  },
+  {
+   "culture": "de",
+   "key": "Thirty days running",
+   "text": "Dreißig Tage am Stück"
+  },
+  {
+   "culture": "it",
+   "key": "Thirty days running",
+   "text": "Trenta giorni di fila"
+  },
+  {
+   "culture": "pt",
+   "key": "Thirty days running",
+   "text": "Trinta dias seguidos"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Thirty days running",
+   "text": "Trinta dias seguidos"
+  },
+  {
+   "culture": "ja",
+   "key": "Thirty days running",
+   "text": "30日連続"
+  },
+  {
+   "culture": "ko",
+   "key": "Thirty days running",
+   "text": "30일 연속"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Thirty days running",
+   "text": "连续三十天"
+  },
+  {
+   "culture": "ru",
+   "key": "Thirty days running",
+   "text": "Тридцать дней подряд"
+  },
+  {
+   "culture": "ar",
+   "key": "Thirty days running",
+   "text": "ثلاثون يومًا متتاليًا"
+  },
+  {
+   "culture": "es",
+   "key": "First try",
+   "text": "A la primera"
+  },
+  {
+   "culture": "fr",
+   "key": "First try",
+   "text": "Du premier coup"
+  },
+  {
+   "culture": "de",
+   "key": "First try",
+   "text": "Beim ersten Versuch"
+  },
+  {
+   "culture": "it",
+   "key": "First try",
+   "text": "Al primo colpo"
+  },
+  {
+   "culture": "pt",
+   "key": "First try",
+   "text": "À primeira"
+  },
+  {
+   "culture": "pt-BR",
+   "key": "First try",
+   "text": "De primeira"
+  },
+  {
+   "culture": "ja",
+   "key": "First try",
+   "text": "一発成功"
+  },
+  {
+   "culture": "ko",
+   "key": "First try",
+   "text": "첫 시도 성공"
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "First try",
+   "text": "一次成功"
+  },
+  {
+   "culture": "ru",
+   "key": "First try",
+   "text": "С первой попытки"
+  },
+  {
+   "culture": "ar",
+   "key": "First try",
+   "text": "من المحاولة الأولى"
+  },
+  {
+   "culture": "es",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Lograste el tiro del día siete días seguidos."
+  },
+  {
+   "culture": "fr",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Tu as réussi le coup du jour sept jours d'affilée."
+  },
+  {
+   "culture": "de",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Du hast den Stoß des Tages sieben Tage in Folge geschafft."
+  },
+  {
+   "culture": "it",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Hai fatto il colpo del giorno sette giorni di fila."
+  },
+  {
+   "culture": "pt",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Fizeste a tacada do dia sete dias seguidos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Você acertou a tacada do dia sete dias seguidos."
+  },
+  {
+   "culture": "ja",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "今日のショットを7日連続で決めました。"
+  },
+  {
+   "culture": "ko",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "오늘의 샷을 7일 연속 성공했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "你连续七天打成了每日一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "Удар дня выполнен семь дней подряд."
+  },
+  {
+   "culture": "ar",
+   "key": "You made the shot of the day seven days in a row.",
+   "text": "نجحت في ضربة اليوم سبعة أيام متتالية."
+  },
+  {
+   "culture": "es",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Lograste el tiro del día treinta días seguidos."
+  },
+  {
+   "culture": "fr",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Tu as réussi le coup du jour trente jours d'affilée."
+  },
+  {
+   "culture": "de",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Du hast den Stoß des Tages dreißig Tage in Folge geschafft."
+  },
+  {
+   "culture": "it",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Hai fatto il colpo del giorno trenta giorni di fila."
+  },
+  {
+   "culture": "pt",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Fizeste a tacada do dia trinta dias seguidos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Você acertou a tacada do dia trinta dias seguidos."
+  },
+  {
+   "culture": "ja",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "今日のショットを30日連続で決めました。"
+  },
+  {
+   "culture": "ko",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "오늘의 샷을 30일 연속 성공했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "你连续三十天打成了每日一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "Удар дня выполнен тридцать дней подряд."
+  },
+  {
+   "culture": "ar",
+   "key": "You made the shot of the day thirty days in a row.",
+   "text": "نجحت في ضربة اليوم ثلاثين يومًا متتاليًا."
+  },
+  {
+   "culture": "es",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Lograste el tiro del día en tu primer intento."
+  },
+  {
+   "culture": "fr",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Tu as réussi le coup du jour à ton premier essai."
+  },
+  {
+   "culture": "de",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Du hast den Stoß des Tages im ersten Versuch geschafft."
+  },
+  {
+   "culture": "it",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Hai fatto il colpo del giorno al primo tentativo."
+  },
+  {
+   "culture": "pt",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Fizeste a tacada do dia à primeira tentativa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Você acertou a tacada do dia na primeira tentativa."
+  },
+  {
+   "culture": "ja",
+   "key": "You made the shot of the day on your first try.",
+   "text": "今日のショットを1回目で決めました。"
+  },
+  {
+   "culture": "ko",
+   "key": "You made the shot of the day on your first try.",
+   "text": "오늘의 샷을 첫 시도에 성공했습니다."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "You made the shot of the day on your first try.",
+   "text": "你第一次尝试就打成了每日一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "You made the shot of the day on your first try.",
+   "text": "Удар дня выполнен с первой попытки."
+  },
+  {
+   "culture": "ar",
+   "key": "You made the shot of the day on your first try.",
+   "text": "نجحت في ضربة اليوم من محاولتك الأولى."
+  },
+  {
+   "culture": "es",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Logra el tiro del día siete días seguidos."
+  },
+  {
+   "culture": "fr",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Réussis le coup du jour sept jours d'affilée."
+  },
+  {
+   "culture": "de",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Schaffe den Stoß des Tages sieben Tage in Folge."
+  },
+  {
+   "culture": "it",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Fai il colpo del giorno sette giorni di fila."
+  },
+  {
+   "culture": "pt",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Faz a tacada do dia sete dias seguidos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Acerte a tacada do dia sete dias seguidos."
+  },
+  {
+   "culture": "ja",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "今日のショットを7日連続で決めましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "오늘의 샷을 7일 연속 성공하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "连续七天打成每日一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "Выполни удар дня семь дней подряд."
+  },
+  {
+   "culture": "ar",
+   "key": "Make the shot of the day seven days in a row.",
+   "text": "انجح في ضربة اليوم سبعة أيام متتالية."
+  },
+  {
+   "culture": "es",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Logra el tiro del día treinta días seguidos."
+  },
+  {
+   "culture": "fr",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Réussis le coup du jour trente jours d'affilée."
+  },
+  {
+   "culture": "de",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Schaffe den Stoß des Tages dreißig Tage in Folge."
+  },
+  {
+   "culture": "it",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Fai il colpo del giorno trenta giorni di fila."
+  },
+  {
+   "culture": "pt",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Faz a tacada do dia trinta dias seguidos."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Acerte a tacada do dia trinta dias seguidos."
+  },
+  {
+   "culture": "ja",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "今日のショットを30日連続で決めましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "오늘의 샷을 30일 연속 성공하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "连续三十天打成每日一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "Выполни удар дня тридцать дней подряд."
+  },
+  {
+   "culture": "ar",
+   "key": "Make the shot of the day thirty days in a row.",
+   "text": "انجح في ضربة اليوم ثلاثين يومًا متتاليًا."
+  },
+  {
+   "culture": "es",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Logra el tiro del día en tu primer intento."
+  },
+  {
+   "culture": "fr",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Réussis le coup du jour à ton premier essai."
+  },
+  {
+   "culture": "de",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Schaffe den Stoß des Tages im ersten Versuch."
+  },
+  {
+   "culture": "it",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Fai il colpo del giorno al primo tentativo."
+  },
+  {
+   "culture": "pt",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Faz a tacada do dia à primeira tentativa."
+  },
+  {
+   "culture": "pt-BR",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Acerte a tacada do dia na primeira tentativa."
+  },
+  {
+   "culture": "ja",
+   "key": "Make the shot of the day on your first try.",
+   "text": "今日のショットを1回目で決めましょう。"
+  },
+  {
+   "culture": "ko",
+   "key": "Make the shot of the day on your first try.",
+   "text": "오늘의 샷을 첫 시도에 성공하세요."
+  },
+  {
+   "culture": "zh-Hans",
+   "key": "Make the shot of the day on your first try.",
+   "text": "第一次尝试就打成每日一杆。"
+  },
+  {
+   "culture": "ru",
+   "key": "Make the shot of the day on your first try.",
+   "text": "Выполни удар дня с первой попытки."
+  },
+  {
+   "culture": "ar",
+   "key": "Make the shot of the day on your first try.",
+   "text": "انجح في ضربة اليوم من محاولتك الأولى."
+  }
+ ]
+}

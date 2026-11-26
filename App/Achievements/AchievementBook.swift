@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the progress read for the sweep includes the shot of
+//          the day's record, from the book's own defaults, for the streak and first-try achievements.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
 //          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: The live achievements object the model owns (plans/23-Nov-2026-achievements-plan.md, new file 6). It:
@@ -165,6 +167,10 @@ final class AchievementBook {
         p.lessonsDone = model.lessonMode.doneIDs
         p.tricksDone = model.trickMode.doneIDs
         p.escapesWon = Set(model.eightBallMode.medals.keys)
+        // 0.7.10 daily: the shot of the day's record, read from the same defaults the book saves to.
+        let daily = DailyRecord.load(from: defaults)
+        p.dailyBestStreak = daily.bestStreak
+        p.dailyFirstTry = daily.hasFirstTryMake
         let matches = MatchRecord.load(from: defaults)
         p.levelsBeaten = Set(ComputerLevel.allCases.filter { matches.tally($0).won > 0 }.map(\.rawValue))
         return p
