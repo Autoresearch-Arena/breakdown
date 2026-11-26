@@ -19,6 +19,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 layouts item 14, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md:
 //          "Play here" says what it does: the game starts here and the one in the other window ends, a saved match
 //          kept to continue. The game is not carried across windows; the hint no longer says it moves.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 gamecenter: at launch GameCenter.launch signs in quietly,
+//          only if a sign-in has worked before and the board is not hidden. A first launch shows no sign-in.)
 // SRP/DRY check: Pass - shell only. Note SwiftUI.Scene is qualified because RealityKit also defines Scene.
 //          The colours come from Theme (palette.ground) and the timing from StartupAssets; nothing is repeated here.
 import SwiftUI
@@ -32,6 +34,8 @@ struct BreakdownApp: App {
         StartupLog.mark("app init")
         // Draw every table picture in the background right now; the main thread carries on with the window.
         StartupAssets.shared.prewarm()
+        // 0.7.10 gamecenter: a quiet sign-in for a returning player; nothing at all on a first launch.
+        GameCenter.shared.launch()
     }
 
     var body: some SwiftUI.Scene {

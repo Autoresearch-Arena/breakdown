@@ -1,6 +1,8 @@
 <!--
 Author: GPT-6.1 Sol (inherited reasoning)
 Date: 10-November-2026
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 Game Center: the line on what is needed to play says the game
+        itself sends nothing and Apple carries a signed-in player's daily board scores.)
 Edited: Claude Opus 5.5 High, 21-November-2026 (rewritten to describe the game as it is in the code today, per
         plans/21-Nov-2026-release-safety-plan.md package 4: the old milestone text, which listed pocket jaws and spin
         controls as not built, is gone; added how the game is checked before every upload).
@@ -124,5 +126,7 @@ without signing, pass an output folder on the Team 4TB drive:
 xcodebuild -project Breakdown.xcodeproj -scheme Breakdown -destination 'generic/platform=iOS Simulator' -derivedDataPath "/Volumes/Team 4TB/breakdown-build/dd-ios" CODE_SIGNING_ALLOWED=NO build
 ```
 
-No server, account, key or environment file is needed to build or play. Build success is not a substitute for looking
+No server, account, key or environment file is needed to build or play. The game itself sends nothing anywhere; the
+daily board is Apple's Game Center, and only if a player chooses to sign in (the game asks only when Board is pressed)
+does Apple carry their scores, under Apple's own terms. Build success is not a substitute for looking
 at the game and touching the controls on a device.

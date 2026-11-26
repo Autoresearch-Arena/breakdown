@@ -7,6 +7,8 @@ PURPOSE: The words of Breakdown's support page, for the page on the studio site 
          0.7.0 has them ("Learn", "Practice", "How to play", "Options", "Watch the intro", "Show the Lens tips again",
          "Show the maths"); if a label changes in the app, change it here too. The first-shot instructions match the
          one instruction per input the game itself gives (bug plan item 1).
+Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 Game Center: the privacy answer says the game itself sends
+         nothing, Apple carries a signed-in player's scores, and Hide the board stops the sign-in.)
 SRP/DRY check: Pass - the only support text for this game; privacy lives in store/pages/privacy.md.
 -->
 # Breakdown: See the Physics. Support
@@ -61,4 +63,6 @@ game controller.
 
 ## Privacy
 
-The game collects nothing and sends nothing anywhere. The privacy policy says so in full.
+The game collects nothing, and the game itself sends nothing anywhere. If you sign in to Game Center to see the daily
+board, Apple carries your scores under its own terms; Hide the board in Options keeps the game from ever signing in.
+The privacy policy says so in full.

@@ -2,6 +2,8 @@
 // Date: 23-November-2026
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the progress read for the sweep includes the shot of
 //          the day's record, from the book's own defaults, for the streak and first-try achievements.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 gamecenter: earn hands every newly earned id to
+//          GameCenter.reportAchievement, which sends it only while signed in to Game Center and the board is not hidden.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
 //          aside for the every-surface fan, through model.otherFutureShowing.)
 // PURPOSE: The live achievements object the model owns (plans/23-Nov-2026-achievements-plan.md, new file 6). It:
@@ -198,6 +200,9 @@ final class AchievementBook {
     private func earn(_ id: String, shot: AchievementShot?, quiet: Bool) -> Bool {
         let seen = quiet && model.openingStage != .none
         guard record.earn(id, on: Date(), shot: shot, seen: seen) else { return false }
+        // 0.7.10 gamecenter: every newly earned achievement, per shot or by a sweep, goes to Game Center too (nothing
+        // happens unless signed in; the next sign-in reports anything missed).
+        GameCenter.shared.reportAchievement(id)
         if !quiet { toasts.append(id) }
         return true
     }
