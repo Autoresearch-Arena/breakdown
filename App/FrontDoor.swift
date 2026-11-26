@@ -14,13 +14,17 @@
 //            - ShowpieceModel.openOnLastTableIfLaterLaunch: the model's init calls it once, after the first-launch
 //              check. On a later launch with the menu up and no launch flag asking for a screen, a remembered table
 //              other than the pool table is put up behind the menu through setTable (its start layout, still, ready to
-//              shoot, the menu left open). The pool table needs nothing: init already racks it.
+//              shoot, the menu left open). setTable also stores that table as the one chosen (TableKind.storageKey),
+//              which nothing reads at launch since 0.7.1; the in-memory tableKind is then the table on screen, as the
+//              notebook's table line expects. The pool table needs nothing: init already puts it up, still, at the
+//              start of the opening's break, behind the menu (the slow Lens backdrop of 0.7.5 is not started by any
+//              launch path today, so both cases are a still table).
 //          The marked spot in openOnLastTableIfLaterLaunch is where wave 2 makes a later launch open on today's shot
 //          instead, when today's shot is not yet played and no game is in progress.
 //          Reads and writes one UserDefaults key (lastTableKey). Reads the model's menuOpen, hasSeenOpening,
 //          playerShotOnScreen and solvedTable; changes it only through setTable.
-// SRP/DRY check: Pass - checked ShowpieceModel (tableKind and TableKind.storageKey hold the table CHOSEN from the
-//          Tables list, which a match on another table never changes, so a separate memory of the table PLAYED is
+// SRP/DRY check: Pass - checked ShowpieceModel (tableKind and TableKind.storageKey hold the table chosen from the
+//          Tables list, which a match on another table never changes, so a separate memory of the table played is
 //          needed), TitleScreen.launchSkipsTitle and StoreScene.requested (reused as the same guards the first-launch
 //          check uses).
 import Foundation

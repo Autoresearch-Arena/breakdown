@@ -472,8 +472,8 @@ struct TitleScreen: View {
     }
 
     /// More: the lessons (offered, never pushed), the achievements, How to play, Options and the intro, as one row of
-    /// small tiles so the whole menu fits on an upright phone's lower half. At the accessibility text sizes a tile is
-    /// too small for its name, so they become ordinary one-line rows.
+    /// small tiles so the whole menu fits on an upright phone's lower half. From the second size above the default a
+    /// tile is too small for its name, so they become ordinary one-line rows.
     @ViewBuilder private var moreEntries: some View {
         let learn: () -> Void = { model.showList(.lessons) }
         // 0.7.7 achievements: the list of physics the player has pulled off.
@@ -481,7 +481,7 @@ struct TitleScreen: View {
         let howTo: () -> Void = { openPage(.howTo, inline: onHowTo) }
         let options: () -> Void = { openPage(.options, inline: onOptions) }
         let intro: () -> Void = { model.trickMode.end(); model.eightBallMode.end(); model.watchBreak() }
-        if typeSize.isAccessibilitySize {
+        if typeSize >= .xxLarge {
             MenuRow(entry: MenuGuide.learn, mark: lessonMark, action: learn)
             MenuRow(entry: MenuGuide.achievements, mark: achievementMark, action: achievements)
             MenuRow(entry: MenuGuide.howTo, action: howTo)

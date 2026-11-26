@@ -6,7 +6,8 @@
 //          table lying across it can fill at any camera angle, so the table covered only 55 to 61 percent of its
 //          half's height with dark bands above and below. The band now takes everything the table does not need
 //          (belowPanel), so the table reaches within a few points of all four edges of its half on every upright iPad,
-//          and the notebook gets the room. The table itself is no smaller: it was already as wide as its half.)
+//          and the notebook gets the room. The table is the same size on screen as before (it was already as wide as
+//          its half); the half now ends where the table does.)
 // PURPOSE: The one rule for when a window is big enough for the notebook layout (the table on one side, the full
 //          notebook panel of cards, step-by-step story, numbers and controls on the other) and where the split goes.
 //          It reads only the window's size in points, never the device's name, so an iPad in split view or Stage
@@ -60,6 +61,9 @@ enum NotebookGeometry {
     static let belowMinimum: Double = 340
     /// The table's side never gets shorter than this, whatever the panel would like (the framing check's floor too).
     static let belowTableMinimum: Double = 360
+    /// The panel never takes more than this share of the height, so a very tall, narrow window keeps a table worth
+    /// looking at. It does not bite on any iPad held upright (the panel there is 62 to 66 percent).
+    static let belowMaximumShare: Double = 0.68
     /// The pool table's outline with its rails, short side over long side: (1.27 + 2 x 0.21) / (2.54 + 2 x 0.21) m, the
     /// cloth plus TableCamera's rail reach on each side. The band is sized for this table; the other tables are
     /// squarer or the same shape, and the warm view's angle (CameraFraming.warmElevation) tilts lower for them, so
@@ -79,12 +83,14 @@ enum NotebookGeometry {
     /// The panel's height under the table in a window `size` taller than wide: everything the table does not need.
     /// The table lies across the window's full width (CameraFraming.tableYaw: its half is then wider than tall), so its
     /// height on screen follows from that width; the half is made that tall, and the panel takes the rest. Never less
-    /// than belowMinimum, and never so much that the table's side drops under belowTableMinimum. Continuous in the
-    /// size (it moves by at most one point per point the window is dragged), so live resizing slides the split.
+    /// than belowMinimum, and never more than belowMaximumShare of the height or so much that the table's side drops
+    /// under belowTableMinimum. Continuous in the size (it moves by at most one point per point the window is dragged),
+    /// so live resizing slides the split.
     static func belowPanel(for size: CGSize) -> Double {
         let w = Double(size.width), h = Double(size.height)
         let tableNeeds = (w - tableSideGutters) * tableShape * tableForeshortening + tableAllowance
-        return min(max(h - tableNeeds, belowMinimum), max(belowMinimum, h - belowTableMinimum))
+        let most = max(belowMinimum, min(h - belowTableMinimum, h * belowMaximumShare))
+        return min(max(h - tableNeeds, belowMinimum), most)
     }
 
     // MARK: Columns inside the panel

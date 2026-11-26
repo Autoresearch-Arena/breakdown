@@ -491,9 +491,17 @@ enum SurfaceTextures {
                 // Table shadow: dark under the table (only the low Ride views see under it), and a soft contact
                 // shadow just outside its edge, at most half dark and gone a quarter of a metre out. (Until 0.7.10 it
                 // reached half a metre out at nine tenths dark, so the floor the overhead views show read black.)
-                let under = abs(wx) < tableHalf.x && abs(wz) < tableHalf.y
-                let contact = max(0, min(1, 1 - edge / 0.25))
-                let shade: Float = under ? 0.1 : 1 - 0.5 * contact * contact * (3 - 2 * contact)
+                // Under the table it darkens from the contact shadow's half at the edge to a tenth over a quarter metre,
+                // so the floor has no step on the table's outline (the low Ride views look across it).
+                let inside = min(tableHalf.x - abs(wx), tableHalf.y - abs(wz))
+                let shade: Float
+                if inside > 0 {
+                    let k = min(1, inside / 0.25)
+                    shade = 0.5 - 0.4 * k * k * (3 - 2 * k)
+                } else {
+                    let contact = max(0, min(1, 1 - edge / 0.25))
+                    shade = 1 - 0.5 * contact * contact * (3 - 2 * contact)
+                }
                 // Dark wool carpet: a fine, even speckle and no lines at all. (Until 0.7.7 this was dark oiled boards;
                 // seen from above, their brown planks ran beside the rails and read as more wood next to the table's
                 // own, so the table's edge got lost. Only the table is wood now.)
