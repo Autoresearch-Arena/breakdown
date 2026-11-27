@@ -1,5 +1,15 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the upright phone's thumb dock; the upright
+//          phone's parts only, the big-screen stage and the notebook wiring are as they were: three zones, the title
+//          row on an opaque ground band from the top edge (so the cue, the camera's moves and the rails never run into
+//          the status bar), the whole table, and the thumb dock (PhoneDock) at the foot. Every word that sat over the
+//          table moved into the dock: the docked blurbs, the anchored explanation, the what-if's and the every-surface
+//          fan's results and the achievement note are the dock's word sources now; on the cloth only marks remain, the
+//          ring with its bare lead figure (PhoneRingFigure) and Ride's small map. The camera's table area is the title
+//          row's bottom to the dock's measured top, and on the upright phone the rails stay inside it too (the framing's
+//          safe edges are those two), so the aiming controls growing out of the dock reframe the table above them. The
+//          legibility gradients and the bottom bar's glass container and identity are gone with the glass.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 4 follow-up: beside a big screen's column the
 //          reel and the Physics Lens, Ride and Aim tabs sit at the foot of the stage, measured for the camera.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets", the stage on
@@ -222,15 +232,12 @@ struct ShowpieceView: View {
     @State private var shotPanelHeight: CGFloat = 0
     /// The side column's visible scroll area (StageSpace), so the caption card there reports only what is on screen.
     @State private var columnViewport: CGRect = .zero
-    /// The upright phone (phone UI plan): the idea blurb opened from the title, what the strip moved into the title
-    /// row's menu, and the measured bottoms of the title row and of the docked blurbs (StageSpace), the higher of which
-    /// is where the camera's table area starts. The bar's top is written to controlsTop, as the bottom stack's was.
+    /// The upright phone (UI rethink package 6): the idea opened from the title, what the dock's action row moved into
+    /// the title row's menu, and the measured bottom of the title row (StageSpace), where the camera's table area
+    /// starts. The dock's top is written to controlsTop, as the bottom stack's was.
     @State private var phoneIdeaOpen = false
     @State private var stripOverflow = PhoneStripOverflow()
     @State private var phoneTitleBottom: Double?
-    @State private var phoneDockBottom: Double?
-    /// The bottom bar's glass namespace: "Your shot" and the aiming panel share one identity in it (PhoneGlassID).
-    @Namespace private var phoneGlass
 
     var body: some View {
         GeometryReader { geo in
@@ -466,8 +473,17 @@ struct ShowpieceView: View {
         // 0.7.10 frontdoor: on the upright phone the open menu is the name at the top and a sheet over the lower half;
         // the table is framed in the band between them (MenuScreenState.uprightBand) instead of under the hidden bars.
         let menuBand = upright && menuOnStage && model.menuOpen ? MenuScreenState.shared.uprightBand : nil
-        let chrome = StageChrome(safe: FramingInsets(top: i.top, left: rtl ? trailingInset : leadingInset,
-                                                     bottom: columnEdge == .bottom ? 0 : i.bottom,
+        // UI rethink package 6: on the upright phone, playing, the title row and the dock are opaque zones, so the
+        // rails too must stay between them. The framing's safe edges become the title row's bottom and the dock's top,
+        // turned into the full-bleed 3D view's own coordinates (its top is the screen's top, i.top above StageSpace's).
+        let phoneZones = upright && menuBand == nil
+        let insetTop = Double(i.top), insetBottom = Double(i.bottom)
+        let safeTop: Double = phoneZones ? insetTop + (phoneTitleBottom ?? Double(Theme.Size.titleRow)) : insetTop
+        let dockReach: Double? = controlsTop.map { Double(geo.size.height) + insetBottom - $0 }
+        let safeBottom: Double = phoneZones ? max(insetBottom, dockReach ?? insetBottom)
+                                            : (columnEdge == .bottom ? 0 : insetBottom)
+        let chrome = StageChrome(safe: FramingInsets(top: safeTop, left: rtl ? trailingInset : leadingInset,
+                                                     bottom: safeBottom,
                                                      right: rtl ? leadingInset : trailingInset),
                                  headerBottom: header ? (menuBand?.top ?? (upright ? phoneTableTop : headerBottom)) : nil,
                                  controlsTop: controlsInColumn ? (reelOnStage ? stageReelTop : nil)
@@ -480,10 +496,6 @@ struct ShowpieceView: View {
         return ZStack {
             // The aiming overlay draws the aim line, so the scene's own fixed-length line stays off.
             TableStage(model: model, bridge: bridge, leader: leader, showAim: false, showCue: showShotPanel, chrome: chrome)
-            // Upright phone: black-to-clear gradients behind the title row and the strip, drawn on the content layer
-            // under every drawing, so white labels read over any cloth (the table is not a scroll view, so the system's
-            // edge effect does nothing for it). They stay under Reduce Transparency.
-            if upright { PhoneContentGradients() }
             // Drag to aim, pull back to set power. Under the controls so they keep their touches.
             // The previous attempt, faint, while a shot is being retried. Never takes touches.
             // Both step aside while a what-if shows: the violet other future is then the only extra drawing (0.7.5).
@@ -519,28 +531,14 @@ struct ShowpieceView: View {
             // title row and the controls, so their buttons keep their own jobs while the opening plays (item 6).
             OpeningLayer(model: model, bridge: bridge, shotPanelOpen: $showShotPanel)
             if upright {
-                // The explanation, anchored above or below its moment inside the table area (BlurbPlacement), over the
-                // opening's tap layer so it can be opened with a tap.
-                // While a what-if shows, its result is the one result on screen (every mode blurb already steps aside
-                // for it), so the explanation is not mounted and the two anchored blurbs never overlap.
-                // 0.7.7 every-world: nor while the every-surface fan's blurb shows (otherFutureShowing).
+                // UI rethink package 6: the explanation's words are the dock's; on the cloth only the bare lead figure
+                // beside the ring (the ring itself is CaptionLeader's). While a what-if or the every-surface fan shows,
+                // its result is the one result, so the figure steps aside with the explanation.
                 if !model.otherFutureShowing {
-                    PhoneExplanationBlurb(model: model, leader: leader, tableArea: phoneTableArea(geo))
+                    PhoneRingFigure(model: model, leader: leader, tableArea: phoneTableArea(geo))
                         .opacity(model.menuOpen ? 0 : 1)
-                        .allowsHitTesting(!model.menuOpen)
-                        .accessibilityHidden(model.menuOpen)
                 }
-                // The what-if's result, anchored to where the two futures part (or the other cue ball's rest).
-                WhatIfPhoneBlurb(model: model, bridge: bridge, tableArea: phoneTableArea(geo))
-                    .opacity(model.menuOpen ? 0 : 1)
-                    .allowsHitTesting(!model.menuOpen)
-                    .accessibilityHidden(model.menuOpen)
-                // 0.7.7 every-world: the fan's sentence, anchored to the end of the shown surface's path.
-                EveryWorldPhoneBlurb(model: model, bridge: bridge, tableArea: phoneTableArea(geo))
-                    .opacity(model.menuOpen ? 0 : 1)
-                    .allowsHitTesting(!model.menuOpen)
-                    .accessibilityHidden(model.menuOpen)
-                phoneChrome
+                phoneChrome(geo)
             } else {
                 VStack(spacing: 6) {
                     if header {
@@ -626,130 +624,89 @@ struct ShowpieceView: View {
 
     // MARK: The upright phone (phone UI plan)
 
-    /// Where the camera's table area starts on the upright phone: the lower of the title row's bottom and the lowest
-    /// docked blurb's bottom (nil until the title row is measured; StageChrome then falls back to a typical row).
-    private var phoneTableTop: Double? {
-        [phoneTitleBottom, phoneDockBottom].compactMap { $0 }.max()
-    }
+    /// Where the camera's table area starts on the upright phone: the title row's bottom (nil until it is measured;
+    /// StageChrome then falls back to a typical row). Package 6: nothing is docked over the table any more.
+    private var phoneTableTop: Double? { phoneTitleBottom }
 
-    /// The table area in StageSpace: the full width, from under the title row or docked blurbs to the bar's top. Before
-    /// either edge is measured, a typical title row and the bottom of the view.
+    /// The table area in StageSpace: the full width, from under the title row to the dock's top. Before either edge is
+    /// measured, a typical title row and the bottom of the view.
     private func phoneTableArea(_ geo: GeometryProxy) -> CGRect {
-        let top = CGFloat(phoneTableTop ?? 50)
+        let top = CGFloat(phoneTableTop ?? Double(Theme.Size.titleRow))
         let bottom = CGFloat(controlsTop ?? Double(geo.size.height))
         return CGRect(x: 0, y: top, width: geo.size.width, height: max(0, bottom - top))
     }
 
-    /// Everything over the table on the upright phone except the explanation: the title row, the docked blurbs, Ride's
-    /// map, and the bottom bar in a bottom safe-area bar. Hidden (but still laid out and measured, so the table does
-    /// not jump), untouchable and silent behind the menu, as ScreenHeader and the bottom stack were.
-    private var phoneChrome: some View {
-        VStack(alignment: .leading, spacing: 6) {
+    /// The upright phone's three zones over the full-bleed table (UI rethink package 6): the title row on its ground
+    /// band at the top, the table's own room in the middle (only marks: Ride's small map in its top corner while a ride
+    /// shows its guides), and the thumb dock in a bottom safe-area bar. Hidden (but still laid out and measured, so the
+    /// table does not jump), untouchable and silent behind the menu, as ScreenHeader and the bottom stack were.
+    private func phoneChrome(_ geo: GeometryProxy) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
             PhoneTitleRow(model: model, ideaOpen: $phoneIdeaOpen, overflow: stripOverflow)
+                .padding(.horizontal, Theme.Space.pageMargin(.phone))
+                .padding(.bottom, Theme.Space.xs)
                 .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { bottom in
                     if phoneTitleBottom != bottom { phoneTitleBottom = bottom }
                 }
-            phoneDock
-                // The dock's bottom, only while something is docked (an empty stack has no height): the camera's
-                // table area starts under the lowest docked blurb.
-                .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
-                    let bottom: Double? = frame.height > 0.5 ? Double(frame.maxY) : nil
-                    if phoneDockBottom != bottom { phoneDockBottom = bottom }
+                // The ground band from the screen's top edge to the row's foot: an opaque zone, so the cue lying back
+                // from the cue ball, a camera move or a rail never runs into the status bar or under the words.
+                .background(alignment: .bottom) {
+                    palette.ground
+                        .ignoresSafeArea(edges: .top)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
                 }
-            // 0.7.7 achievements: the achievement note, a small blurb at the trailing edge right under the docked blurbs.
-            // Outside phoneDock on purpose, so the dock's measured bottom (and the camera) never move for it.
-            AchievementToast(model: model, style: .blurb)
-            Spacer(minLength: 0)
-            // Ride's small table map, docked bottom-left above the strip while a ride shows its guides; its status
-            // words are the title. Silent: the title already says what the ride is doing.
+            // Ride's small table map: a picture, not words, in the table's top corner while a ride shows its guides,
+            // so it is plain from where the ride is seen; the act itself is said in the dock's word strip.
             if model.rideShowsGuides {
-                Blurb { RideMap(model: model) }
+                RideMap(model: model)
+                    .padding(Theme.Space.xs)
+                    .background(palette.panel.opacity(0.9), in: Theme.Corner.tileShape)
+                    .padding(.top, Theme.Space.xs)
+                    .padding(.horizontal, Theme.Space.pageMargin(.phone))
                     .accessibilityHidden(true)
+                    .transition(.opacity)
             }
+            Spacer(minLength: 0)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 6)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .safeAreaBar(edge: .bottom) { phoneBar }
+        .safeAreaBar(edge: .bottom) { phoneDock(geo) }
         .opacity(model.menuOpen ? 0 : 1)
         .allowsHitTesting(!model.menuOpen)
-        // Disabled behind the menu, so the hidden back button's Escape and the blurbs' buttons do nothing there.
+        // Disabled behind the menu, so the hidden back button's Escape and the dock's buttons do nothing there.
         .disabled(model.menuOpen)
         .accessibilityHidden(model.menuOpen)
-        .animation(reduceMotion ? nil : .smooth, value: model.lensOn)
-        .animation(reduceMotion ? nil : .smooth, value: model.rideShowsGuides)
-        .animation(reduceMotion ? nil : .smooth, value: model.trickMode.isActive)
-        .animation(reduceMotion ? nil : .smooth, value: model.lessonMode.isActive)
-        .animation(reduceMotion ? nil : .smooth, value: model.eightBallMode.isActive)
-        // Blurbs fade on a mode's phase change instead of cutting.
-        .animation(reduceMotion ? nil : .smooth, value: model.trickMode.phase)
-        .animation(reduceMotion ? nil : .smooth, value: model.lessonMode.phase)
-        .animation(reduceMotion ? nil : .smooth, value: model.openingStage)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.lensOn)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.rideShowsGuides)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.trickMode.isActive)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.lessonMode.isActive)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.eightBallMode.isActive)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.openingStage)
         // A new trick shot or lesson starts with its idea folded again.
         .onChange(of: model.trickMode.current?.id) { _, _ in phoneIdeaOpen = false }
         .onChange(of: model.lessonMode.current?.id) { _, _ in phoneIdeaOpen = false }
     }
 
-    /// The docked blurbs, top down in the plan's order (Lens key, rulings and notices, the first-minute instruction, the
-    /// Lens tips), 6 apart (BlurbPlacement.dockSpacing). Each view shows nothing when it has nothing to say. The
-    /// what-if's result is not here: it is anchored over the stage (WhatIfPhoneBlurb, mounted in stage(...)).
-    private var phoneDock: some View {
-        VStack(alignment: .leading, spacing: BlurbPlacement.dockSpacing) {
-            Group {
-                PhoneLensKeyBlurb(model: model)
-                PlayPhoneBlurbs(model: model)
-                EightBallPhoneBlurbs(model: model, ideaOpen: $phoneIdeaOpen)
-                TrickPhoneBlurbs(model: model, ideaOpen: $phoneIdeaOpen)
-                LessonPhoneBlurbs(model: model, ideaOpen: $phoneIdeaOpen)
-                // 0.7.10 strike: the hand-over's instruction moved into the aiming panel below the table (StrikeHint).
+    /// The thumb dock (PhoneDock), 16 points in from the sides and just above the home indicator. Its top is the
+    /// camera's bottom edge (controlsTop), measured like the bottom stack's was, so the table frames above it and
+    /// reframes as the aiming controls grow out of it.
+    private func phoneDock(_ geo: GeometryProxy) -> some View {
+        PhoneDock(model: model, leader: leader, bridge: bridge, shotPanelOpen: $showShotPanel,
+                  // The primary action waits only while a shot struck at this table rolls (shotRolling is also set by
+                  // a mode's own demonstration, which keeps its "Your turn").
+                  shotLive: shotRolling && model.playerShotOnScreen
+                      // A trick's or lesson's own demonstration is never the player's live shot: its "Your turn" stays
+                      // for the whole watch, Ride included (seen missing on the iPhone 17).
+                      && model.trickMode.phase != .watching && model.lessonMode.phase != .watching
+                      // A match shot has its own button ("See the ruling", gated on the shot playing), the computer's
+                      // above all, so it is never held back here.
+                      && model.match?.phase != .shooting,
+                  overflow: $stripOverflow, ideaOpen: $phoneIdeaOpen, tableArea: phoneTableArea(geo))
+            .padding(.horizontal, Theme.Space.pageMargin(.phone))
+            .padding(.bottom, Theme.Space.xxs)
+            .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { top in
+                if controlsTop != top { controlsTop = top }
             }
-            Group {
-                ComparisonPhoneBlurb(model: model)
-                ContactArrivalPhoneBlurb(model: model)
-                StrokePhoneBlurbs(model: model)
-                PhoneLensTipBlurb(model: model)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    /// The bottom bar: in one glass container (spacing 8), the aiming panel, or the what-if's nudge panel while a what-if
-    /// shows, above the control strip. Its top is the camera's bottom edge (controlsTop), measured like the bottom
-    /// stack's was rather than read from the safe-area inset, so StageChrome's contract does not change.
-    private var phoneBar: some View {
-        GlassEffectContainer(spacing: 8) {
-            VStack(spacing: 8) {
-                if model.whatIf.isShowing {
-                    WhatIfPhonePanel(model: model)
-                } else if model.everyWorld.isShowing {
-                    // 0.7.7 every-world: the fan's chips in the aiming panel's place (never with the what-if's).
-                    EveryWorldPhonePanel(model: model)
-                } else if showShotPanel {
-                    PhoneAimPanel(model: model, isOpen: $showShotPanel)
-                }
-                // The primary action waits only while a shot struck at this table rolls (shotRolling is also set by a
-                // mode's own demonstration, which keeps its "Your turn").
-                PhoneStrip(model: model, shotPanelOpen: $showShotPanel,
-                           shotLive: shotRolling && model.playerShotOnScreen
-                               // A trick's or lesson's own demonstration is never the player's live shot: its "Your
-                               // turn" stays for the whole watch, Ride included (seen missing on the iPhone 17).
-                               && model.trickMode.phase != .watching && model.lessonMode.phase != .watching
-                               // A match shot has its own button ("See the ruling", gated on the shot playing), the
-                               // computer's above all, so it is never held back here.
-                               && model.match?.phase != .shooting,
-                           overflow: $stripOverflow)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 4)
-        .environment(\.phoneGlassNamespace, phoneGlass)
-        .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { top in
-            if controlsTop != top { controlsTop = top }
-        }
-        .animation(reduceMotion ? nil : .smooth, value: showShotPanel)
-        .animation(reduceMotion ? nil : .smooth, value: model.whatIf.isShowing)
-        // 0.7.7 every-world: the fan's panel comes and goes the same way.
-        .animation(reduceMotion ? nil : .smooth, value: model.everyWorld.isShowing)
     }
 
     /// "Watch the intro" (UI rethink package 7, moved from the main menu into How to play): any trick shot or situation
@@ -1171,23 +1128,3 @@ struct SurfaceMenuItems: View {
     }
 }
 
-/// The upright phone's content gradients (phone UI plan, Part 3 "Legibility"): black to clear, 120 points down from the
-/// top edge behind the title row and 160 points up from the bottom edge behind the strip, over the whole screen
-/// including the safe areas. Content, not glass; never takes touches; VoiceOver skips it.
-private struct PhoneContentGradients: View {
-    @Environment(\.palette) private var palette
-
-    var body: some View {
-        VStack(spacing: 0) {
-            // UI rethink package 7: the ground role, not bare black.
-            LinearGradient(colors: [palette.ground.opacity(0.7), palette.ground.opacity(0)], startPoint: .top, endPoint: .bottom)
-                .frame(height: 120)
-            Spacer(minLength: 0)
-            LinearGradient(colors: [palette.ground.opacity(0), palette.ground.opacity(0.7)], startPoint: .top, endPoint: .bottom)
-                .frame(height: 160)
-        }
-        .ignoresSafeArea()
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
-    }
-}

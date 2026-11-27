@@ -1,23 +1,26 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the thumb dock: the title row is the first of
+//          the upright phone's three zones, laid out as mockup-aiming-iphone.png: "Back" on the left and "Menu" on the
+//          right as the kit's worded glass controls (design language: every glass control carries its word; Menu is the
+//          word, not a symbol), and between them, centred, only what is being played (PhoneTitle), in the heading face
+//          and paper. The title opens the idea in the dock's sheet where there is one. "Skip" left the row for the
+//          dock's action row (every action lives in the dock). The row sits on the ground band ShowpieceView draws
+//          behind it, so the dimming under the glass is gone. The menu's items are unchanged.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the trick shot's More items stay off for the shot of
 //          the day, whose answer waits until the day is finished and whose card holds its own buttons.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: "Every surface" in the More menu right under What
 //          if (EveryWorldMenuItem, shown while the fan can open), and the Surface submenu leaves it out so it is not
 //          listed twice.)
-// PURPOSE: The upright phone's title row (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The title row"), in place of
-//          ScreenHeader on that layout only. Left: Back, the standard back chevron in a 44-point clear glass circle
-//          (it pauses and opens the main menu, as MenuBackButton). Then the title (PhoneTitle: a trick or lesson name
-//          with its difficulty, "Break", the match's turn and score, Ride's status words), one line of plain headline
-//          that shrinks to 0.8 before it truncates; the title is a button that opens and closes the idea blurb (the
-//          ideaOpen binding the trick, lesson and 8-ball blurbs read). Right: "Skip" while the opening plays, then More,
-//          the system ellipsis in a 44-point clear glass circle, a menu with Surface (a submenu), What if, Show the
-//          maths, All trick shots or All lessons, Watch again, Show the answer's path, and whatever the strip moved
-//          into it because its row was too wide (Ride, Lens, the speed). The two circles and Skip are clear glass over a
-//          35 per cent black dimming while the Lens is off (the warm table is bright and busy) and plain clear glass
-//          while it is on (the Lens view is dark).
-//          Every action is the call the existing UI already makes: openMenu (MenuBackButton), skipOpening (ScreenHeader's
-//          Tap to skip), setSurface (SurfaceMenuItems), whatIf.open (WhatIfButton), the maths option (GameSettings and
+// PURPOSE: The upright phone's title row (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The title row", redrawn by
+//          plans/26-Nov-2026-ui-rethink-plan.md package 6), in place of ScreenHeader on that layout only. Left: "Back"
+//          (it pauses and opens the main menu, as MenuBackButton). Centre: what is being played (PhoneTitle), one line
+//          of heading that shrinks to 0.8 before it truncates; a button that opens the idea (the ideaOpen binding the
+//          trick, lesson and 8-ball blurbs read; the dock opens its sheet on it) where there is one. Right: "Menu", a
+//          menu with Surface (a submenu), Zoom, What if, Share clip, Every surface, Show the maths, All trick shots or
+//          All lessons, Watch again, Show the answer's path, End match, and whatever the dock moved into it because
+//          its action row was too wide (Ride, Physics Lens).
+//          Every action is the call the existing UI already makes: openMenu (MenuBackButton), setSurface (SurfaceMenuItems), whatIf.open (WhatIfButton), the maths option (GameSettings and
 //          TrickShotMode.showMaths, as the trick card's button), showList (the cards' list buttons), watch (the cards'
 //          Watch again), showAnswerPath (the trick card), setLens, setRide, setRate and setAutoRate (PlaybackControls).
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: the More menu offers
@@ -32,31 +35,23 @@ import SwiftUI
 
 struct PhoneTitleRow: View {
     let model: ShowpieceModel
-    /// The idea blurb is open (a tap on the title opens and closes it).
+    /// The idea is open (a tap on the title opens it in the dock's sheet).
     @Binding var ideaOpen: Bool
     /// What the strip moved into the menu (PhoneStrip writes it, ShowpieceView owns it).
     var overflow = PhoneStripOverflow()
 
+    @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage(GameSettings.mathsKey) private var maths = false
 
-    /// Clear glass needs a dimming layer over the bright warm table; the Lens view is already dark.
-    private var dimmed: Bool { !model.lensOn }
-
     var body: some View {
-        HStack(spacing: 8) {
-            backButton
-            title
-            Spacer(minLength: 0)
-            // First minute only: the opening can be skipped from here as well as by a tap on the table.
-            if model.openingStage == .playing {
-                skipButton.transition(.opacity)
-            }
-            moreMenu
+        HStack(spacing: Theme.Space.xs) {
+            backButton.fixedSize()
+            title.frame(maxWidth: .infinity)
+            moreMenu.fixedSize()
         }
-        .frame(minHeight: 44)
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.openingStage)
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.lensOn)
+        .frame(minHeight: Theme.Size.titleRow)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: PhoneTitle.line(for: model))
     }
 
     // MARK: Back
@@ -66,84 +61,62 @@ struct PhoneTitleRow: View {
 
     private var backButton: some View {
         Button { model.openMenu() } label: {
-            Image(systemName: "chevron.backward")
-                .font(.body.weight(.semibold))
-                .frame(width: 44, height: 44)
-                .contentShape(Circle())
+            KitButtonLabel(String(localized: "Back"), systemImage: "chevron.backward")
         }
-        .buttonStyle(.plain)
-        .modifier(TitleGlass(shape: Circle(), dimmed: dimmed))
+        .buttonStyle(.kitGlass)
         .keyboardShortcut(escapeIsMine ? KeyboardShortcut.cancelAction : nil)
         .hoverHighlight()
-        .accessibilityLabel(String(localized: "Back"))
         .accessibilityHint(String(localized: "Pauses the game and opens the main menu"))
     }
 
     // MARK: Title
 
+    /// What is being played, centred, one line that shrinks a little before it truncates. A button that opens the idea
+    /// where there is one; otherwise a plain heading.
     @ViewBuilder
     private var title: some View {
         if let line = PhoneTitle.line(for: model) {
-            let text = titleText(line)
-            if line.isStatus {
-                // Status words (Ride, the opening) are read as a status, not offered as a button.
-                text.accessibilityLabel(Text(verbatim: String(localized: "Status: \(line.title)")))
+            let text = Text(verbatim: line.title)
+                .font(Theme.heading)
+                .foregroundStyle(palette.paper)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .multilineTextAlignment(.center)
+            if PhoneTitle.hasIdea(model) {
+                Button { ideaOpen.toggle() } label: {
+                    text.frame(minHeight: Theme.Size.minHit).contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(verbatim: line.spoken))
+                .accessibilityHint(String(localized: "Shows the idea"))
+                .accessibilityAddTraits(.isHeader)
             } else {
-                Button { ideaOpen.toggle() } label: { text.frame(minHeight: 44).contentShape(Rectangle()) }
-                    .buttonStyle(.plain)
+                text
                     .accessibilityLabel(Text(verbatim: line.spoken))
-                    .accessibilityHint(String(localized: "Shows the idea"))
-                    .accessibilityValue(ideaOpen ? String(localized: "Open") : "")
+                    .accessibilityAddTraits(.isHeader)
             }
         }
     }
 
-    /// "The Called Break · Hard": the title, then the detail in the secondary colour; one line, at most 258 wide,
-    /// shrinking to 0.8 before it truncates. White over the dark gradient behind the row.
-    private func titleText(_ line: PhoneTitle.Line) -> some View {
-        let main = Text(verbatim: line.title)
-        let full = line.detail.map { main + Text(verbatim: " · \($0)").foregroundStyle(.secondary) } ?? main
-        return full
-            .font(Theme.phoneTitle)
-            .foregroundStyle(.white)
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
-            .frame(maxWidth: 258, alignment: .leading)
-            .shadow(color: .black.opacity(0.5), radius: 3)
-    }
-
-    // MARK: Skip
-
-    private var skipButton: some View {
-        Button { model.skipOpening() } label: {
-            Text(String(localized: "Skip"))
-                .font(Theme.phoneControl)
-                .lineLimit(1)
-                .padding(.horizontal, 14)
-                .frame(minHeight: 44)
-                .contentShape(Capsule())
-        }
-        .buttonStyle(.plain)
-        .modifier(TitleGlass(shape: Capsule(), dimmed: dimmed))
-        .accessibilityHint(String(localized: "Goes straight to your own break"))
-    }
-
     // MARK: More
 
+    /// "Menu": the table's own menu (surface, zoom, what if, share, the maths, the mode's entries), the word on the
+    /// kit's glass capsule (package 6: the word, not an ellipsis; the design language's "Menu").
     private var moreMenu: some View {
         Menu {
             menuItems
         } label: {
-            Image(systemName: "ellipsis")
-                .font(.body.weight(.semibold))
-                .frame(width: 44, height: 44)
-                .contentShape(Circle())
-                .modifier(TitleGlass(shape: Circle(), dimmed: dimmed))
+            // The glass capsule's own padding plus these make it the same 44-point capsule as Back's.
+            KitButtonLabel(String(localized: "Menu"))
+                .frame(minHeight: Theme.Size.minHit - 2 * Theme.Space.xs)
+                .padding(.horizontal, Theme.Space.xxs)
+                .kitGlassCapsule()
+                .contentShape(Capsule())
         }
         .menuIndicator(.hidden)
         .buttonStyle(.plain)
         .hoverHighlight()
-        .accessibilityLabel(String(localized: "More"))
+        .accessibilityHint(String(localized: "Surface, zoom and more for this table"))
     }
 
     @ViewBuilder
@@ -244,7 +217,7 @@ struct PhoneTitleRow: View {
         }
     }
 
-    /// The strip's pieces that did not fit its row (Ride first, then Lens, then the speed), here instead.
+    /// The dock's toggles that did not fit its action row (Ride first, then Physics Lens), here instead.
     @ViewBuilder
     private var overflowItems: some View {
         if overflow.lens && PhoneStrip.showsLens(model) {
@@ -257,27 +230,6 @@ struct PhoneTitleRow: View {
                 Text(String(localized: "Ride camera"))
             }
         }
-        if overflow.speed {
-            Picker(String(localized: "Speed"), selection: PhoneStrip.speedSelection(model)) {
-                Text(String(localized: "Auto")).tag(Double?.none)
-                ForEach(PlaybackSpeed.rates.reversed(), id: \.self) { r in
-                    Text(verbatim: PhoneStrip.speedLabel(r)).tag(Optional(r))
-                }
-            }
-            .pickerStyle(.menu)
-        }
-    }
-}
-
-/// The title row's glass: clear and interactive, over a 35 per cent black dimming while the table behind is bright
-/// (HIG Materials: clear glass over bright content wants a dark dimming layer). The dimming is drawn under the glass.
-private struct TitleGlass<S: Shape>: ViewModifier {
-    let shape: S
-    let dimmed: Bool
-
-    func body(content: Content) -> some View {
-        content
-            .glassEffect(.clear.interactive(), in: shape)
-            .background { shape.fill(.black.opacity(dimmed ? 0.35 : 0)) }
+        // Package 6: the speed never moves here any more; the dock's shot reel always keeps its speed pill.
     }
 }

@@ -21,6 +21,10 @@
 //          kept to continue. The game is not carried across windows; the hint no longer says it moves.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 gamecenter: at launch GameCenter.launch signs in quietly,
 //          only if a sign-in has worked before and the board is not hidden. A first launch shows no sign-in.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 2's leftover note: the two hand-written ground
+//          colours are Palette.ground (the launch curtain's at standard contrast, as the launch screen); the extra iPad
+//          window's notice is drawn with the kit (the title role, paper and paper2, the kit's primary Play here and
+//          secondary Close this window, Theme spacing) instead of system fonts, grey and glass buttons.)
 // SRP/DRY check: Pass - shell only. Note SwiftUI.Scene is qualified because RealityKit also defines Scene.
 //          The colours come from Theme (palette.ground) and the timing from StartupAssets; nothing is repeated here.
 import SwiftUI
@@ -147,44 +151,43 @@ private struct OtherWindowNotice: View {
     let playHere: () -> Void
     /// This window's scene session, found from the view's own window so "Close this window" closes this one.
     @State private var session: UISceneSession?
-    private let ground = Color(red: 0.02, green: 0.03, blue: 0.05)
+    /// The ground and words from the palette (the environment's default is the standard-contrast palette, so this reads
+    /// right even where no PaletteProvider sits above it).
+    @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: Theme.Space.md) {
             Text(String(localized: "One game at a time"))
-                .font(.title2.weight(.semibold))
+                .font(Theme.title)
+                .foregroundStyle(palette.paper)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
             Text(String(localized: "The game is open in another window. Play here instead, or close this window."))
-                .font(.body)
-                .foregroundStyle(.secondary)
+                .font(Theme.body)
+                .foregroundStyle(palette.paper2)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            VStack(spacing: 10) {
-                Button(action: playHere) {
-                    Text(String(localized: "Play here")).font(.headline).frame(maxWidth: 280)
-                }
-                .buttonStyle(.glassProminent)
-                // Says what really happens: this window builds a fresh game and the other window's ends (the game
-                // itself does not move across windows; a saved match is kept and can be continued here).
-                .accessibilityHint(String(localized: "Plays here. The game in the other window ends; a saved match can be continued."))
+            // The kit's buttons: Play here the one primary, Close this window the secondary under it.
+            VStack(spacing: Theme.Space.sm) {
+                PrimaryButton(String(localized: "Play here"), fullWidth: true, action: playHere)
+                    // Says what really happens: this window builds a fresh game and the other window's ends (the game
+                    // itself does not move across windows; a saved match is kept and can be continued here).
+                    .accessibilityHint(String(localized: "Plays here. The game in the other window ends; a saved match can be continued."))
                 if let session {
-                    Button {
+                    SecondaryButton(String(localized: "Close this window"), fullWidth: true) {
                         UIApplication.shared.requestSceneSessionDestruction(session, options: nil) { error in
                             NSLog("BreakdownApp: the extra window could not be closed: %@", error.localizedDescription)
                         }
-                    } label: {
-                        Text(String(localized: "Close this window")).font(.headline).frame(maxWidth: 280)
                     }
-                    .buttonStyle(.glass)
                 }
             }
-            .controlSize(.large)
+            .frame(maxWidth: Theme.Size.sideColumn)
         }
-        .padding(32)
-        .frame(maxWidth: 480)
+        .padding(Theme.Space.xl)
+        .frame(maxWidth: Theme.Size.sideColumn + 2 * Theme.Space.xl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(ground.ignoresSafeArea())
+        .background(palette.ground.ignoresSafeArea())
+        .tint(palette.accent)
         .background(SceneSessionReader { session = $0 })
     }
 }
@@ -225,8 +228,9 @@ private struct LaunchCurtain: ViewModifier {
     @State private var revealing = false
     @State private var removed = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    /// The room's colour at standard contrast, which the launch screen also uses.
-    private let ground = Color(red: 0.02, green: 0.03, blue: 0.05)
+    /// The room's colour at standard contrast (Palette.ground), which the launch screen also uses. Fixed at standard
+    /// rather than read from the environment, so the cover matches the launch screen's colour exactly.
+    private let ground = Palette(contrast: .standard).ground
 
     func body(content: Content) -> some View {
         content

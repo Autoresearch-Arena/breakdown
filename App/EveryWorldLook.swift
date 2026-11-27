@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the surface line colour is
+//         marked for the design lint as the surfaces' own identity colours.)
 // PURPOSE: The colour each playing surface's line takes in "Same shot, every surface" (0.7.7,
 //          plans/23-Nov-2026-every-world-plan.md Build step 5): one normal value and one brighter value (for Increase
 //          Contrast) per surface, each in the surface's own bed family (cloth green, tournament blue, dive-bar olive, ice
@@ -21,7 +23,7 @@ extension PlaySurface {
     /// The surface's line colour; `contrast` .increased gives the brighter value.
     func fanColour(_ contrast: ColorSchemeContrast) -> Color {
         let v = contrast == .increased ? fanRGB.bright : fanRGB.normal
-        return Color(red: v.r, green: v.g, blue: v.b)
+        return Color(red: v.r, green: v.g, blue: v.b)  // design-lint: allow each surface's own line colour, defined with its normal and Increase Contrast values in fanRGB
     }
 
     /// Red, green and blue, 0 to 1. The brighter value is each normal one moved about 15 per cent of the way to white.

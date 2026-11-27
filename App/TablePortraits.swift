@@ -15,6 +15,9 @@
 //          A table whose picture fails (no GPU, a renderer error) is logged and keeps its symbol; nothing else waits.
 //          Read by TableList. Reads TableKind (start layouts, the table files), Rack (the pool table's rack),
 //          PoolSolver (a zero-speed shot is a still table), StartupAssets and TableScene.
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 7's leftover note: the picture clips to the kit's
+//          small corners (Theme.Corner.tileShape) instead of a bare 12 point radius, and the waiting symbol is the
+//          heading role in paper2 instead of a bare title font at a hand-picked opacity.)
 // SRP/DRY check: Pass - checked ClipRenderer (the same offscreen route; its writer, overlay and per-frame film loop are
 //          not needed for one still, so the few shared steps are repeated here with a pointer back to it rather than
 //          bending the clip type into a picture maker), TrickPathThumb (a flat drawing of the pool table only) and
@@ -166,12 +169,13 @@ struct TablePortrait: View {
             } else {
                 TablePlan.bed
                 Image(systemName: kind.symbol)
-                    .font(.title)
-                    .foregroundStyle(palette.paper.opacity(0.6))
+                    .font(Theme.heading)
+                    .foregroundStyle(palette.paper2)
             }
         }
         .aspectRatio(TablePortraits.pixelSize.width / TablePortraits.pixelSize.height, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        // The kit's small corners, the same shape the Tables cards and the table page clip it to.
+        .clipShape(Theme.Corner.tileShape)
         .onAppear { portraits.drawIfNeeded() }
         .accessibilityHidden(true)
     }

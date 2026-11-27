@@ -1,4 +1,10 @@
 // Author: Claude Sonnet 5.5 Medium
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 11, one glossary of shot names: the throw
+//          heading and the throw figure's label read the glossary's name (ShotTechnique.throwShot.name, ShotNames.swift),
+//          the same key as before, so a caption, the lesson and the trick shot say one word; the spin words inside the
+//          strike sentences, "draw" and "follow", are the glossary's words, and a comment there keeps them so. Bend and
+//          flight headings stay plain descriptions: a bend after a cut is not a massé, so no caption names a technique
+//          the recording does not show.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 9, the Physics Lens notebook,
 //          plans/26-Nov-2026-ui-rethink-plan.md: the path bend's short sentence carries its cause (the ball's spin makes
 //          the cloth pull it sideways while it slides), not only the way it bent; friction numbers follow the one
@@ -474,6 +480,9 @@ enum CaptionEngine {
         guard let share = rollShare(omega: b.omegaAfter, velocity: b.velocityAfter, radius: R) else { return [] }
         var parts: [String] = []
         let pct = f(abs(share) * 100, 0)
+        // UI rethink package 11: "draw" and "follow" in brackets are the glossary's names (ShotTechnique, ShotNames.swift)
+        // inside whole translated sentences; if a glossary name changes, these change with it. "Stun" is a state of the
+        // ball, not a seventh name.
         switch spinState(share) {
         case .back: parts.append(String(localized: "It leaves with backspin (draw): \(pct) percent of a rolling ball's spin, turning backwards."))
         case .stun: parts.append(String(localized: "It leaves with almost no topspin or backspin (stun): it slides until the cloth spins it up."))
@@ -997,12 +1006,13 @@ enum CaptionEngine {
             if let t = throwFacts(e) {
                 // Throw leads, in the throw sentence's degrees: friction at the contact did it, so it wears friction's
                 // magenta.
-                figures.insert(figure(abs(t.degrees), 1, "°", String(localized: "Throw"), .friction), at: 0)
+                figures.insert(figure(abs(t.degrees), 1, "°", ShotTechnique.throwShot.name, .friction), at: 0)
                 // Throw: friction at the contact sent the struck ball off the line of centres.
                 pieces.append(t.degrees > 0
                     ? String(localized: "Friction between the balls dragged \(name(t.object)) \(f(abs(t.degrees))) degrees to the left of the line of centres: that is throw, and it is why a soft cut aimed on the line misses.")
                     : String(localized: "Friction between the balls dragged \(name(t.object)) \(f(abs(t.degrees))) degrees to the right of the line of centres: that is throw, and it is why a soft cut aimed on the line misses."))
-                title = String(localized: "Throw")
+                // UI rethink package 11: the glossary's one name for it.
+                title = ShotTechnique.throwShot.name
                 equation = "tan θ = v⊥ / v∥"
                 short = t.degrees > 0
                     ? String(localized: "Friction at the contact dragged \(name(t.object)) off the line, to the left.")

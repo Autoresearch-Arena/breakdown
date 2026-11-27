@@ -2,6 +2,11 @@
 // Date: 26-November-2026
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 3, part C review: "Last shot" is now the kit's
 //          SecondaryButton (label style, the kit's device height) instead of a hand-drawn copy of it.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the current beat's tick is
+//          marked, so the reel, the notebook's lit row and the figure beside the ball all point at one moment. The tick
+//          of pacePlan.beats[currentBeatIndex()] grows taller and wider with a paper ring round its cap; on the phone
+//          strip's look the tick of the current moment (currentMoment) grows the same way. The speed pill is drawn
+//          inside SpeedPicker's menu label, so the whole pill opens the list. The API is unchanged.)
 // PURPOSE: UI rethink package 3 (the component kit), part C: the shot reel, the one playback bar on every device
 //          (plans/26-Nov-2026-design-language.md, "Playback bar"). In order: play, the track, the time in s, the speed
 //          pill, Replay, then an optional accessory the caller places (the scrub row's What if). 52 points high on the
@@ -129,17 +134,12 @@ struct ShotReel<Accessory: View>: View {
     }
 
     /// The speed: a capsule pill with the inline figure ("Auto", "½×") that opens the list (SpeedPicker's menu form).
+    /// The pill is drawn inside the menu's label (SpeedPicker's pill), so the whole capsule and its 44 point hit area
+    /// open the list, not only the words.
     private var speedPill: some View {
-        SpeedPicker(model: model, asMenu: true)
-            .font(Theme.inlineFigure)
-            .foregroundStyle(palette.paper)
+        SpeedPicker(model: model, asMenu: true, pill: true)
             .buttonStyle(.plain)
             .fixedSize()
-            .padding(.vertical, Theme.Space.chipVertical)
-            .padding(.horizontal, Theme.Space.chipHorizontal)
-            .background(palette.panelSunken, in: Capsule())
-            .frame(minHeight: Theme.Size.minHit)
-            .contentShape(Rectangle())
     }
 
     private var resolvedSurface: ShotReelSurface {
@@ -371,13 +371,19 @@ struct ShotReelTrack: View {
     /// The cap on a tall tick, so each kind reads in greyscale too (the everyone plan's Part A4 rule, kept).
     private enum TickCap { case none, dot, flat, intoHole, ring }
 
-    private struct Tick { let time: Double; let color: Color; let cap: TickCap; let headline: Bool }
+    private struct Tick {
+        let time: Double; let color: Color; let cap: TickCap; let headline: Bool
+        /// The moment the replay is on now (ShowpieceModel.currentBeatIndex): drawn larger, with a paper ring.
+        var current = false
+    }
 
     /// The paced beats in their caption's meaning colour and every pot in the pocket gold: tall ticks with their cap.
+    /// The current beat (the same one the notebook lights and the chip on the table shows) is marked as current.
     private var ticks: [Tick] {
         var out: [Tick] = []
         var beatTimes: [Double] = []
-        for beat in model.pacePlan.beats {
+        let currentIndex = model.currentBeatIndex()
+        for (index, beat) in model.pacePlan.beats.enumerated() {
             let cap: TickCap
             switch beat.caption.accent {
             case .strike: cap = .none
@@ -387,7 +393,7 @@ struct ShotReelTrack: View {
             case .friction: cap = .ring
             }
             out.append(Tick(time: beat.time, color: palette.color(for: beat.caption.accent), cap: cap,
-                            headline: beat.headline))
+                            headline: beat.headline, current: index == currentIndex))
             beatTimes.append(beat.time)
         }
         // Every pot, unless a beat already marks that very moment.
@@ -399,16 +405,21 @@ struct ShotReelTrack: View {
     }
 
     private func beatTicks(duration d: Double) -> some View {
+        // Read on the main actor here, not inside the Canvas's drawing closure (the model is main-actor).
         let ticks = self.ticks
         let tall = tallTick
         let edge = palette.ground
+        let ring = palette.paper
         return Canvas { ctx, size in
             let midY = size.height / 2
-            let top = midY - tall / 2
-            for t in ticks {
+            // The current beat last, so its larger tick and ring sit over any neighbour at nearly the same time.
+            for t in ticks.sorted(by: { !$0.current && $1.current }) {
+                // The current tick: 6 points taller (3 above, 3 below) and a point wider than its kind's tick.
+                let height: CGFloat = t.current ? tall + 6 : tall
+                let top = midY - height / 2
                 let x = size.width * CGFloat(min(1, max(0, t.time / d)))
-                let width: CGFloat = t.headline ? 3 : 2
-                let line = CGRect(x: x - width / 2, y: top, width: width, height: tall)
+                let width: CGFloat = (t.headline ? 3 : 2) + (t.current ? 1 : 0)
+                let line = CGRect(x: x - width / 2, y: top, width: width, height: height)
                 // A dark edge first, so the tick reads on the cyan played stretch and on glass alike.
                 ctx.fill(Path(line.insetBy(dx: -0.5, dy: -0.5)), with: .color(edge.opacity(0.5)))
                 ctx.fill(Path(line), with: .color(t.color))
@@ -431,6 +442,12 @@ struct ShotReelTrack: View {
                     ctx.stroke(Path(ellipseIn: CGRect(x: x - 3.5, y: top - 4, width: 7, height: 7)), with: shading,
                                lineWidth: 1.25)
                 }
+                if t.current {
+                    // A paper ring round the cap's place, over a dark edge so it reads on glass and on the cyan stretch.
+                    let ringRect = CGRect(x: x - 6, y: top - 9, width: 12, height: 12)
+                    ctx.stroke(Path(ellipseIn: ringRect), with: .color(edge.opacity(0.6)), lineWidth: 3)
+                    ctx.stroke(Path(ellipseIn: ringRect), with: .color(ring), lineWidth: 1.5)
+                }
             }
         }
         .allowsHitTesting(false)
@@ -441,11 +458,15 @@ struct ShotReelTrack: View {
     /// edge so it reads on the played and the unplayed rail alike.
     private func momentTicks(duration d: Double) -> some View {
         let captions = model.captions
+        // The moment the replay is on (the notebook's lit row), read here on the main actor: its tick grows.
+        let currentID = model.currentMoment()?.id
         return Canvas { ctx, size in
-            let h: CGFloat = 12
             for c in captions {
+                let current = c.id == currentID
+                let h: CGFloat = current ? 18 : 12
+                let w: CGFloat = current ? 3 : 2
                 let x = size.width * CGFloat(min(1, max(0, c.time / d)))
-                let rect = CGRect(x: x - 1, y: (size.height - h) / 2, width: 2, height: h)
+                let rect = CGRect(x: x - w / 2, y: (size.height - h) / 2, width: w, height: h)
                 ctx.fill(Path(rect.insetBy(dx: -0.5, dy: -0.5)), with: .color(.black.opacity(0.45)))
                 ctx.fill(Path(rect), with: .color(.white))
             }

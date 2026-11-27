@@ -15,6 +15,8 @@
 //          aiming layer (AimOverlay), which is only on screen while the panel is open.
 //          Projection is AimProjector, exactly as AimOverlay, GhostOverlay and the trick-shot layer use it.
 //          Legality comes from CueBallPlacement (FreePlayViews.swift), which asks the package.
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover lint note: an illegal cue-ball spot and an aim that meets another ball
+//          first are drawn in Palette.warning, the one colour for a foul or a miss, instead of the system red.)
 // SRP/DRY check: Pass - checked TrickTableLayer and EightBallTableLayer (same ring and projector pattern for their own
 //          marks) and AimOverlay (draws the live aim; this layer adds only placement and the hit-first mark).
 import BreakdownLensModel
@@ -88,8 +90,8 @@ struct PlayTableLayer: View {
                     ctx.stroke(disc, with: .color(palette.accent), style: StrokeStyle(lineWidth: 2.5))
                 } else {
                     // Red tint over the ball plus a dashed outline, so the shape also changes, not only the colour.
-                    ctx.fill(disc, with: .color(Color.red.opacity(0.45)))
-                    ctx.stroke(disc, with: .color(Color.red), style: StrokeStyle(lineWidth: 2.5, dash: [4, 3]))
+                    ctx.fill(disc, with: .color(palette.warning.opacity(0.45)))
+                    ctx.stroke(disc, with: .color(palette.warning), style: StrokeStyle(lineWidth: 2.5, dash: [4, 3]))
                 }
             }
         }
@@ -98,7 +100,7 @@ struct PlayTableLayer: View {
             // Red while the aim line meets another ball first: the guide's own ray cast says which ball that is.
             let first = AimGeometry.firstContact(layout: model.layout, from: model.aimOrigin,
                                                  direction: model.aimDirection, radius: table.ballRadius)?.ball
-            let colour = first == nil || first == low ? palette.accent : Color.red
+            let colour = first == nil || first == low ? palette.accent : palette.warning
             for (scale, width) in [(1.45, 2.0), (1.75, 1.2)] {
                 if let p = ring(model.layout[low], table.ballRadius * scale) {
                     ctx.stroke(p, with: .color(colour), style: StrokeStyle(lineWidth: width))

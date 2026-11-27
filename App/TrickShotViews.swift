@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the list's footer, Watch
+//          yours and its hint say "Physics Lens", the Lens's one name. The list stays the kit's SheetPage with its
+//          ListRow rows; as a page of the notebook it replaces the panel's whole content, as Options and How to play
+//          do, so its title and Done are the only ones on screen.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the list is the kit's sheet
 //          page with the kit's list rows (number or tick, title and hook in paper and paper2, five difficulty dots, the
 //          answer's drawing); the card is the kit's mode card in every phase (name and dots, one sentence, "How
@@ -108,7 +112,7 @@ struct TrickShotList: View {
             // 0.7.7 make-it-again: the player's own saved shots, "Your shots", after the authored ones.
             OwnShotsSection(mode: mode)
         } footer: {
-            Text("Watch each shot, see the physics behind it in the Lens, then make it yourself.")
+            Text("Watch each shot, see the physics behind it in the Physics Lens, then make it yourself.")
         }
         // The drawings are solved when the list is first opened, never at launch (TrickPathCache).
         .onAppear { paths.start() }
@@ -247,7 +251,7 @@ struct TrickShotCard: View {
         let contact = ContactButton.kitAction(model: model, reduceMotion: reduceMotion)
         if verdict.made {
             // The player's own make, slowly in the Lens, holding the moments the shot is about (0.7.4).
-            let watchYours = KitAction(String(localized: "Watch yours in the Lens"), systemImage: "eye") {
+            let watchYours = KitAction(String(localized: "Watch yours in the Physics Lens"), systemImage: "eye") {
                 mode.watchYours()
             }
             ModeResultCard(verdict: String(localized: "Made it!"), tone: .passed, corner: shot.title, lines: lines,
@@ -423,8 +427,8 @@ struct TrickPhoneBlurbs: View {
         var buttons: [BlurbButton] = []
         if let contact = ContactButton.blurbButton(model: model, reduceMotion: reduceMotion) { buttons.append(contact) }
         if verdict.made {
-            buttons.append(BlurbButton(String(localized: "Watch yours in the Lens"),
-                                       hint: String(localized: "Replays your stroke slowly in the Lens, stopping on the moments that made it")) {
+            buttons.append(BlurbButton(String(localized: "Watch yours in the Physics Lens"),
+                                       hint: String(localized: "Replays your stroke slowly in the Physics Lens, stopping on the moments that made it")) {
                 mode.watchYours()
             })
         }

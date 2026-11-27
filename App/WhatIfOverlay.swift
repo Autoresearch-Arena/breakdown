@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the legibility shadows
+//         under the other future's marks are the ground colour, not bare black.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream whatif item 5: the stub filled in.)
 // PURPOSE: Draws the other future of a what-if over the table (and over the Physics Lens): for at most three balls
@@ -111,7 +113,7 @@ struct WhatIfOverlay: View {
             // The hollow ghost ball, gone from the moment a pocket takes it.
             if alt.timeline.pocketTime[b].map({ t < $0 }) ?? true,
                let ring = TablePathStroke.ring(at: alt.timeline.state(ball: b, at: t).position, radius: radius, proj) {
-                ctx.stroke(ring, with: .color(.black.opacity(0.45 * strength)), style: StrokeStyle(lineWidth: 3.5))
+                ctx.stroke(ring, with: .color(palette.ground.opacity(0.45 * strength)), style: StrokeStyle(lineWidth: 3.5))
                 ctx.stroke(ring, with: .color(violet.opacity(0.95 * strength)), style: StrokeStyle(lineWidth: 1.8))
             }
             // Where it comes to rest in the other future: a dashed ring, as the last try's.
@@ -138,14 +140,14 @@ struct WhatIfOverlay: View {
         diamond.addLine(to: CGPoint(x: c.x, y: c.y + d))
         diamond.addLine(to: CGPoint(x: c.x - d, y: c.y))
         diamond.closeSubpath()
-        ctx.stroke(diamond, with: .color(.black.opacity(0.55 * strength)), style: StrokeStyle(lineWidth: 3, lineJoin: .round))
+        ctx.stroke(diamond, with: .color(palette.ground.opacity(0.55 * strength)), style: StrokeStyle(lineWidth: 3, lineJoin: .round))
         ctx.fill(diamond, with: .color(violet.opacity(strength)))
         for (heading, colour) in [(m.realHeading, paper), (m.alternateHeading, violet)] {
             guard let tip = Self.tick(from: m.point, heading: heading, at: c, proj) else { continue }
             var line = Path()
             line.move(to: c)
             line.addLine(to: tip)
-            ctx.stroke(line, with: .color(.black.opacity(0.5 * strength)), style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
+            ctx.stroke(line, with: .color(palette.ground.opacity(0.5 * strength)), style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
             ctx.stroke(line, with: .color(colour.opacity(strength)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
         }
     }

@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the ghost ring's shadow
+//         and the tag disc are the ground colour, not bare black; the tag symbol's size is marked for the design lint
+//         as table drawing.)
 // PURPOSE: Draws "Same shot, every surface" over the table (0.7.7, plans/23-Nov-2026-every-world-plan.md Build step 6,
 //          "What is drawn"). With nothing picked (the fan): for each other surface, the struck ball's whole path in that
 //          surface's colour, dotted over a dark underlay so it reads on any cloth, ending in a small round tag (a dark
@@ -32,6 +35,7 @@ struct EveryWorldOverlay: View {
     @Environment(\.inlinePages) private var inlinePages
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiate
     @Environment(\.colorSchemeContrast) private var contrast
+    @Environment(\.palette) private var palette
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -186,7 +190,7 @@ struct EveryWorldOverlay: View {
         if let pocket = tl.pocketTime[b], t >= pocket { return }
         guard let ring = TablePathStroke.ring(at: tl.state(ball: b, at: t).position, radius: tl.table.ballRadius, proj)
         else { return }
-        ctx.stroke(ring, with: .color(.black.opacity(0.45 * strength)), style: StrokeStyle(lineWidth: 3.5))
+        ctx.stroke(ring, with: .color(palette.ground.opacity(0.45 * strength)), style: StrokeStyle(lineWidth: 3.5))
         ctx.stroke(ring, with: .color(colour.opacity(0.95 * strength)), style: StrokeStyle(lineWidth: 1.8))
     }
 
@@ -196,10 +200,10 @@ struct EveryWorldOverlay: View {
         guard strength > 0, let c = proj.screen(point, height: Self.onCloth) else { return }
         let r = Self.tagRadius
         let disc = Path(ellipseIn: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
-        ctx.fill(disc, with: .color(.black.opacity(0.75 * strength)))
+        ctx.fill(disc, with: .color(palette.ground.opacity(0.75 * strength)))
         ctx.stroke(disc, with: .color(colour.opacity(strength)), style: StrokeStyle(lineWidth: 1))
         let symbol = ctx.resolve(Text(Image(systemName: s.symbol))
-            .font(.system(size: 10, weight: .semibold))
+            .font(.system(size: 10, weight: .semibold))  // design-lint: allow the symbol is sized to the fixed tag disc drawn on the table, not text
             .foregroundStyle(colour.opacity(strength)))
         ctx.draw(symbol, at: c)
     }

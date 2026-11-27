@@ -421,11 +421,10 @@ struct PacePlan: Equatable {
     }
 
     /// The velocity arrow's drawn length for a ball moving at `speed` m/s, metres from the ball's centre to the tip of
-    /// its head. A copy of LensLayer's own rule (the shaft is min(0.8, 0.02 + 0.05 v) long, the head starts 0.012 past
-    /// it and is LensLayer.arrowHeadLength, 0.034, long), because LensLayer is main-actor isolated and its numbers
-    /// cannot be read from this nonisolated plan. If LensLayer's arrow changes, change this with it.
+    /// its head: LensLayer's own rule (LensLayer.arrowReach, nonisolated so this plan can read it), so the frame and
+    /// the drawing cannot drift apart.
     static func strikeArrowReach(speed: Double) -> Double {
-        min(0.8, 0.02 + 0.05 * speed) + 0.012 + 0.034
+        LensLayer.arrowReach(speed: speed)
     }
 
     /// The strike's own reach (UI rethink package 9): the tip of the velocity arrow the Lens draws on the struck ball

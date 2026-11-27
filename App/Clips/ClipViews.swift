@@ -1,13 +1,21 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: Theme.blurbTitle is now
+//         Theme.label.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 10, "Achievements and sharing": the share
+//          button is the top bar's worded glass control, as Back, Zoom and Menu are (TopBarControlLabel on the menu
+//          glass: "Share" with its icon on big screens, the icon alone on a phone); the clip card is the panel surface
+//          with the kit's button row (Share or Try again the cyan primary on the right, Cancel or Close the secondary
+//          beside it) instead of glass and system button styles. The Mac's Playback menu items keep the menu bar's
+//          title case.)
 // PURPOSE: Every on-screen piece of Lens clips (0.7.7, plans/23-Nov-2026-clips-plan.md, Step 9):
-//            ClipShareButton  - the round glass share button beside the round Surface button (ScreenHeader on a phone
-//                               held sideways, iPad and Mac; the notebook's top bar on the open Duo, iPad and Mac). A
-//                               tap makes the standard shape; a long press (on the Mac a held click) offers both.
+//            ClipShareButton  - the glass "Share" control in the top bar, before the Surface/Menu control (ScreenHeader
+//                               on a phone held sideways, iPad and Mac; the notebook's top bar on the open Duo, iPad and
+//                               Mac). A tap makes the standard shape; a long press (on the Mac a held click) offers both.
 //            ClipMenuItems    - the upright phone's More menu rows: "Share clip" and the other shape ("Share the other
 //                               future" and its twin in a what-if). No new glass on the upright phone.
-//            ClipCard         - the slim card in PlayCards (so on the open Duo and iPad it lives in the words half, never
-//                               over the table): "Making your clip" with a progress bar and Cancel; "Your clip is
+//            ClipCard         - the slim panel card in PlayCards (so on the open Duo and iPad it lives in the words half,
+//                               never over the table): "Making your clip" with a progress bar and Cancel; "Your clip is
 //                               ready" with Share and Close; or a one-line reason with Try again and Close. Slim during
 //                               a guided Lens replay where the cards go slim (lensReplayCompact): title row and bar only.
 //            ClipPhoneBlurb   - the same three states as a docked blurb on the upright phone (at most two buttons).
@@ -19,15 +27,18 @@
 //                               used or its card closed, while the controls are still as the shot left them.
 //          Nothing pops up by itself and nothing is offered in the first minute (ClipOffer decides). Every control is an
 //          ordinary button with a label and hint; the progress bar carries its value for VoiceOver.
-// SRP/DRY check: Pass - checked SurfaceMenuButton (the round glass button this sits beside, same size and style),
-//          TableClearedCard and HighlightCard (the card's pieces follow theirs), Blurb (the phone blurb's two forms) and
-//          MacChrome's literal menu titles. Every rule lives in ClipOffer, every action in ClipMaker.
+// SRP/DRY check: Pass - checked SurfaceMenuButton and TableZoomMenuButton (the top bar's worded glass controls; this
+//          one wears the same TopBarControlLabel and menu glass), the kit's panel and KitButtonRow (the card's surface and
+//          buttons), Blurb (the phone blurb's two forms) and MacChrome's menu titles. Every rule lives in ClipOffer,
+//          every action in ClipMaker.
 import SwiftUI
 
 /// The words the clip's starts share.
 @MainActor
 enum ClipWords {
     static var shareClip: String { String(localized: "Share clip") }
+    /// The top bar control's word (the game's existing "Share").
+    static var share: String { String(localized: "Share") }
     static var hint: String { String(localized: "Makes a short video of this shot, ready to share") }
 
     /// A start's words for a shape: the standard shape is plain "Share clip"; the other one says which it is. In a
@@ -44,9 +55,9 @@ enum ClipWords {
     }
 }
 
-// MARK: The round share button
+// MARK: The top bar's share control
 
-/// The round glass share button. Shown only while a clip is offered (ClipOffer.available).
+/// The glass "Share" control. Shown only while a clip is offered (ClipOffer.available).
 struct ClipShareButton: View {
     let model: ShowpieceModel
 
@@ -58,17 +69,18 @@ struct ClipShareButton: View {
                 Button(ClipWords.title(standard, whatIf: whatIf)) { ClipOffer.start(model, shape: standard) }
                 Button(ClipWords.title(standard.other, whatIf: whatIf)) { ClipOffer.start(model, shape: standard.other) }
             } label: {
-                Label(ClipWords.shareClip, systemImage: "square.and.arrow.up")
-                    .labelStyle(.iconOnly)
-                    .font(.body.weight(.semibold))
-                    .frame(width: 22, height: 22)
+                // The word on big screens and the folding phone's panel, the icon alone on a phone, like Back, Zoom
+                // and Menu beside it.
+                TopBarControlLabel(ClipWords.share, systemImage: "square.and.arrow.up")
+                    .topBarMenuGlass()
             } primaryAction: {
                 ClipOffer.start(model, shape: standard)
             }
             .menuIndicator(.hidden)
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .controlSize(.regular)
+            // The label carries the glass itself (a Menu does not reliably take a custom button style); plain keeps the
+            // system's accent off it.
+            .menuStyle(.button)
+            .buttonStyle(.plain)
             .hoverHighlight()
             .accessibilityLabel(ClipWords.shareClip)
             .accessibilityHint(ClipWords.hint)
@@ -119,11 +131,15 @@ struct ClipCard: View {
     }
 
     private var card: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Image(systemName: "square.and.arrow.up").foregroundStyle(palette.accent).accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
+            HStack(spacing: Theme.Space.xs) {
+                Image(systemName: "square.and.arrow.up")
+                    .fontWeight(.medium)
+                    .foregroundStyle(palette.paper2)
+                    .accessibilityHidden(true)
                 Text(ClipCardText.heading(maker.phase))
                     .font(Theme.heading)
+                    .foregroundStyle(palette.paper)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityAddTraits(.isHeader)
@@ -135,47 +151,27 @@ struct ClipCard: View {
             if !compact { buttons }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
-        .tint(palette.accent)
+        // A card in the words half beside the table: the panel surface, never glass (the design's surfaces rule).
+        .kitPanel()
         .transition(.opacity)
     }
 
+    /// The kit's button row: the one primary on the right (Share, or Try again after a failure), the secondary beside
+    /// it (Cancel while making, Close otherwise).
     @ViewBuilder private var buttons: some View {
-        CardButtonRow {
-            switch maker.phase {
-            case .idle:
-                EmptyView()
-            case .making:
-                Button { maker.cancel() } label: {
-                    Label(String(localized: "Cancel"), systemImage: "xmark").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glass)
-            case .ready:
-                Button { maker.close() } label: {
-                    Label(String(localized: "Close"), systemImage: "xmark").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glass)
-                Button { maker.share() } label: {
-                    Label(String(localized: "Share"), systemImage: "square.and.arrow.up").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glassProminent)
-                .foregroundStyle(palette.ground)
-            case .failed:
-                Button { maker.close() } label: {
-                    Label(String(localized: "Close"), systemImage: "xmark").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glass)
-                Button { maker.retry() } label: {
-                    Label(String(localized: "Try again"), systemImage: "arrow.counterclockwise").font(.headline)
-                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
-                }
-                .buttonStyle(.glassProminent)
-                .foregroundStyle(palette.ground)
-            }
+        switch maker.phase {
+        case .idle:
+            EmptyView()
+        case .making:
+            KitButtonRow(secondary: KitAction(String(localized: "Cancel"), systemImage: "xmark") { maker.cancel() })
+        case .ready:
+            KitButtonRow(primary: KitAction(ClipWords.share, systemImage: "square.and.arrow.up") { maker.share() },
+                         secondary: KitAction(String(localized: "Close"), systemImage: "xmark") { maker.close() })
+        case .failed:
+            KitButtonRow(primary: KitAction(String(localized: "Try again"), systemImage: "arrow.counterclockwise") {
+                             maker.retry()
+                         },
+                         secondary: KitAction(String(localized: "Close"), systemImage: "xmark") { maker.close() })
         }
     }
 }
@@ -214,7 +210,7 @@ struct ClipPhoneBlurb: View {
             Blurb(accessibilityText: String(localized: "Making your clip"),
                   buttons: [BlurbButton(String(localized: "Cancel")) { maker.cancel() }]) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "Making your clip")).font(Theme.blurbTitle)
+                    Text(String(localized: "Making your clip")).font(Theme.label)
                     ProgressView(value: progress).frame(maxWidth: 200)
                 }
             }

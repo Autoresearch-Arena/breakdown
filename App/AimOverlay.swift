@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8, the open folding phone: on the fold's table
+//          half (tableMarksOnly) this layer draws marks only. The fork keeps its two prongs and a bare degree figure at
+//          the ball's prong; "Cue aims here", "Ball goes here", the "Bridge" pill and the live power pill are left off,
+//          and the target-ball badge steps aside too; the notebook panel's top line says what the marks mean. The pills'
+//          bare white and black became the palette's paper and ground. Projection stays AimProjector.forLayer.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -148,6 +153,8 @@ struct AimOverlay: View {
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     @Environment(\.palette) private var palette
+    /// UI rethink package 8: the open folding phone's table half, where only marks are drawn (LayoutFlags).
+    @Environment(\.tableMarksOnly) private var marksOnly
     @State private var cameraBox = AimProjector.CameraBox()
     /// True while a mouse or trackpad pulls back from the cue ball (a finger's pull is the stroke's: stroke.pullOn).
     @State private var pulling = false
@@ -184,6 +191,8 @@ struct AimOverlay: View {
             }
             .allowsHitTesting(false)
             .accessibilityHidden(true)
+            // UI rethink package 8: the badge reads tableMarksOnly itself and draws nothing on the fold's table half
+            // (its words are the panel's top line), leaving badgeBox empty so the fork never dodges a badge not drawn.
             TargetBallBadge(model: model, bridge: bridge, frameBox: badgeBox)
             // VoiceOver and Switch Control: the Aim element under everything (touching bare cloth finds it), and
             // an element over every ball and pocket on top (touching a ball finds the ball).
@@ -226,7 +235,7 @@ struct AimOverlay: View {
     /// remains the complete slider route.
     private var aimElement: some View {
         Rectangle()
-            .fill(Color.white.opacity(0.001))
+            .fill(palette.paper.opacity(0.001))
             .allowsHitTesting(false)
             .accessibilityElement()
             .accessibilityLabel("Aim")
@@ -581,7 +590,8 @@ struct AimOverlay: View {
         // The cue and the mechanical bridge are 3D models (CueRig); whenever the rest is in use (a shot that needs it,
         // or a stance out of reach), a small label names it beside its head.
         // Along the cue's own line, where CueRig stands the rest's head, not the launch line side spin bends.
-        if model.restInUse { drawBridgeLabel(&ctx, proj, origin: origin, dir: model.aimDirection, size: size) }
+        // UI rethink package 8: not on the fold's table half, where the panel's top line names the bridge instead.
+        if model.restInUse && !marksOnly { drawBridgeLabel(&ctx, proj, origin: origin, dir: model.aimDirection, size: size) }
 
         // A lesson's aim band: a faint fan from the cue ball between the two edge aims of the window, as far as the
         // first ball the middle of the band meets (or half a metre), so the line can be swung into it.
@@ -696,7 +706,9 @@ struct AimOverlay: View {
         let pullOn = pulling || stroke.pullOn
         let handle = Path(ellipseIn: CGRect(x: cueScreen.x - ringRadius, y: cueScreen.y - ringRadius, width: ringRadius * 2, height: ringRadius * 2))
         ctx.stroke(handle, with: .color(accent.opacity(pullOn ? 1 : 0.8)), style: StrokeStyle(lineWidth: pullOn ? 2.5 : 1.5, dash: pullOn ? [] : [5, 4]))
-        if pullOn { drawPowerBadge(&ctx, proj, origin: origin, cueScreen: cueScreen, ringRadius: ringRadius, size: size) }
+        // UI rethink package 8: on the fold's table half the swing bar in the panel beside it is the live reading, so
+        // no pill is laid on the cloth.
+        if pullOn && !marksOnly { drawPowerBadge(&ctx, proj, origin: origin, cueScreen: cueScreen, ringRadius: ringRadius, size: size) }
     }
 
     /// The live power percentage while pulling (0.7.6 #51 and #61). The pull runs back along the groove, so the finger
@@ -706,7 +718,7 @@ struct AimOverlay: View {
     private func drawPowerBadge(_ ctx: inout GraphicsContext, _ proj: AimProjector, origin: Vec2, cueScreen: CGPoint,
                                 ringRadius: CGFloat, size: CGSize) {
         let words = model.powerFraction.formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0)))
-        let text = ctx.resolve(Text(verbatim: words).font(.headline.monospacedDigit()).foregroundStyle(Color.white))
+        let text = ctx.resolve(Text(verbatim: words).font(.headline.monospacedDigit()).foregroundStyle(palette.paper))
         let measured = text.measure(in: size)
         let w = measured.width + 20, h = measured.height + 8
         // Ahead of the ball on screen: the opposite of the groove's back direction (the one a stroke lays). Straight up
@@ -727,7 +739,7 @@ struct AimOverlay: View {
         centre.y = min(max(centre.y, top + h / 2), max(top + h / 2, bottom - h / 2))
         centre.x = min(max(centre.x, 8 + w / 2), max(8 + w / 2, size.width - 8 - w / 2))
         let badge = CGRect(x: centre.x - w / 2, y: centre.y - h / 2, width: w, height: h)
-        ctx.fill(Path(roundedRect: badge, cornerRadius: badge.height / 2), with: .color(.black.opacity(0.65)))
+        ctx.fill(Path(roundedRect: badge, cornerRadius: badge.height / 2), with: .color(palette.ground.opacity(0.65)))
         ctx.draw(text, at: CGPoint(x: badge.midX, y: badge.midY))
     }
 
@@ -820,8 +832,10 @@ struct AimOverlay: View {
 
     /// Resolve a pill's lines (each entry one line, centred under the one before: a resolved Text in a Canvas cannot
     /// centre its own lines) and measure it. Nil with no lines.
-    private func makePill(_ ctx: GraphicsContext, _ lines: [Text], size: CGSize) -> Pill? {
-        let resolved = lines.map { ctx.resolve($0.font(.caption2.weight(.semibold)).foregroundStyle(Color.white)) }
+    /// - font: the label face by default; the fork's bare figure passes the figure face (UI rethink package 8).
+    private func makePill(_ ctx: GraphicsContext, _ lines: [Text], size: CGSize,
+                          font: Font = .caption2.weight(.semibold)) -> Pill? {
+        let resolved = lines.map { ctx.resolve($0.font(font).foregroundStyle(palette.paper)) }
         let sizes = resolved.map { $0.measure(in: size) }
         guard !sizes.isEmpty else { return nil }
         let width = sizes.map(\.width).max() ?? 0
@@ -836,7 +850,7 @@ struct AimOverlay: View {
         let y = min(max(centre.y - h / 2, 4), max(4, size.height - 4 - h))
         let box = CGRect(x: x, y: y, width: w, height: h)
         // A one-line pill is fully rounded; a two-line one keeps a soft corner rather than turning into a lozenge.
-        ctx.fill(Path(roundedRect: box, cornerRadius: min(box.height / 2, 9)), with: .color(.black.opacity(0.55)))
+        ctx.fill(Path(roundedRect: box, cornerRadius: min(box.height / 2, 9)), with: .color(palette.ground.opacity(0.55)))
         var top = box.minY + 2
         for (line, lineHeight) in zip(pill.lines, pill.heights) {
             ctx.draw(line, at: CGPoint(x: box.midX, y: top + lineHeight / 2))
@@ -885,6 +899,12 @@ struct AimOverlay: View {
               let ballEnd = proj.screen(origin + guide.direction * guide.reach) else { return }
         var prong = Path(); prong.move(to: cueStart); prong.addLine(to: cueEnd)
         ctx.stroke(prong, with: .color(palette.paper.opacity(0.6)), style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 4]))
+        // UI rethink package 8: on the fold's table half the fork carries only the bare turn ("1.2°") at the ball's
+        // prong; which way and what the prongs mean are the panel's top line.
+        if marksOnly {
+            drawForkFigure(&ctx, fork: fork, cueScreen: cueScreen, ballEnd: ballEnd, size: size, endClear: endClear)
+            return
+        }
         // The words are already localized by AimFork, so they are drawn verbatim (no second catalog lookup).
         guard let ballPill = makePill(ctx, [Text(verbatim: AimFork.ballLabel), Text(verbatim: fork.turnWords)], size: size),
               let cuePill = makePill(ctx, [Text(verbatim: AimFork.cueLabel)], size: size) else { return }
@@ -930,6 +950,22 @@ struct AimOverlay: View {
         }
         drawPill(&ctx, ballPill, at: ballMid, size: size)
         drawPill(&ctx, cuePill, at: cueMid, size: size)
+    }
+
+    /// UI rethink package 8: the fork's one mark on the fold's table half, the bare turn in degrees in the figure face
+    /// on a small pill, set back along the launch line from the drawn contact picture (`endClear`) as the worded pill
+    /// is elsewhere. The badge is not drawn there, so nothing else needs dodging.
+    private func drawForkFigure(_ ctx: inout GraphicsContext, fork: AimFork, cueScreen: CGPoint, ballEnd: CGPoint,
+                                size: CGSize, endClear: CGFloat) {
+        let figure = NumberStyle.angle(degrees: abs(fork.turnDegrees)).text
+        guard let pill = makePill(ctx, [Text(verbatim: figure)], size: size, font: Theme.inlineFigure) else { return }
+        let lineLength = hypot(ballEnd.x - cueScreen.x, ballEnd.y - cueScreen.y)
+        guard lineLength > 1 else { return }
+        let u = CGVector(dx: (ballEnd.x - cueScreen.x) / lineLength, dy: (ballEnd.y - cueScreen.y) / lineLength)
+        let along = abs(u.dx) * pill.size.width / 2 + abs(u.dy) * pill.size.height / 2
+        // Never back past the cue ball: on a short line the figure sits at the line's middle.
+        let back = min(endClear + 6 + along, lineLength / 2)
+        drawPill(&ctx, pill, at: CGPoint(x: ballEnd.x - u.dx * back, y: ballEnd.y - u.dy * back), size: size)
     }
 
     /// A circle lying on the cloth at the ball's height, as a closed screen path (a squashed oval from a low camera).

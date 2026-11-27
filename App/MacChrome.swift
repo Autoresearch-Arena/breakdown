@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink packages 4 and 9, leftover notes: the Playback menu
+//          names the Lens "Physics Lens" (Replay with Physics Lens, Watch It in the Physics Lens), in the Mac menu
+//          bar's title case; the window toolbar's one button, Notebook, shows its word beside its icon, as every
+//          toolbar icon on a big screen carries its word.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: one place for the modes. The
 //          window toolbar keeps only the notebook switch; play, Replay, speed and the Physics Lens, Ride and Aim toggles
 //          live with the shot reel and the tabs in the window (PlaybackControls), as on the iPad. The menus keep every
@@ -421,12 +425,12 @@ struct PlaybackCommands: Commands {
         // No key here: a bare space in the menu bar swallowed spaces typed into name fields (item 32). The space
         // bar plays and pauses while the table has keyboard focus instead (ShowpieceView).
         Button(isPlaying ? "Pause" : "Play") { model?.togglePlay() }
-        Button("Replay with Lens") { model?.replay(withLens: true) }
+        Button("Replay with Physics Lens") { model?.replay(withLens: true) }
             .keyboardShortcut("r", modifiers: .command)
         // The remarkable shot just played, replayed slowly in the Lens holding its key moment: the same as the
         // "Watch it in the Lens" button on the highlight card (the model decides when one is on offer, and the
         // item is greyed whenever the card is not showing). Shift-Command-R, beside Replay with Lens, is free.
-        Button("Watch It in the Lens") { model?.watchHighlight() }
+        Button("Watch It in the Physics Lens") { model?.watchHighlight() }
             .keyboardShortcut("r", modifiers: [.command, .shift])
             .disabled(model?.highlightOnOffer == nil)
         // 0.7.7 make-it-again: Make It Again (Shift-Command-S) saves the shot on screen as the player's own challenge;
@@ -520,6 +524,8 @@ struct ShowpieceToolbar: ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
             Toggle(isOn: $notebookShown) { Label("Notebook", systemImage: "sidebar.trailing") }
                 .toggleStyle(.button)
+                // Toolbar icons carry their words on big screens (design language, "iPad sideways and Mac").
+                .labelStyle(.titleAndIcon)
                 .help("Show or hide the notebook beside the table (Option-Command-I)")
         }
     }

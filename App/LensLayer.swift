@@ -124,6 +124,12 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md
 //          Part A: sliding trails are dashed and rolling trails solid for every player, not only with Differentiate
 //          Without Colour on; the setting still picks dots over dashes for a held hit's tangent.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: short sliding stretches draw
+//          solid. A sliding segment shorter than one dash plus one gap (dashLength + dashGap, about 10 cm) is built as
+//          one solid piece in the sliding colour instead of being cut into dashes, so a short slide no longer shows as
+//          a single stray dash. Longer slides are dashed as before; the clock-only picture is unchanged. The velocity
+//          arrow's lengths are nonisolated (arrowShaftLength, arrowHeadGap, arrowHeadLength, arrowReach), so
+//          PacePlan.strikeArrowReach reads the one rule instead of keeping a copy; the arrow draws exactly as before.)
 // SRP/DRY check: Pass - Lens drawing only; coordinates come from TableFrame, colours from Theme, pictures from LensTextures.
 //          The throw rule is CaptionEngine's (one rule for the words and the drawing).
 import BreakdownLensModel
@@ -240,8 +246,18 @@ final class LensLayer {
     /// In the Lens the balls are drawn this much larger at full melt (TableScene.apply's lensScale, look plan package 5);
     /// the jump ring clears the ball as drawn, not as recorded.
     static let lensBallGrowth: Float = 0.08
-    /// The velocity arrow's head length and shaft width, metres (buildStatic), for their screen floors.
-    static let arrowHeadLength: Float = 0.034
+    /// The velocity arrow's head length and shaft width, metres (buildStatic), for their screen floors. The head length
+    /// is nonisolated so the pace plan's framing can read the arrow's reach (arrowReach) without a copy of it.
+    nonisolated static let arrowHeadLength: Float = 0.034
+    /// How far past the shaft's end the head starts, metres.
+    nonisolated static let arrowHeadGap: Float = 0.012
+    /// The arrow's shaft length for a ball moving at `speed` m/s, metres: longer for a faster ball, at most 80 cm.
+    nonisolated static func arrowShaftLength(speed: Double) -> Double { min(0.8, 0.02 + 0.05 * speed) }
+    /// The whole drawn arrow, from the ball's centre to the head's tip, metres (PacePlan.strikeArrowReach reads it,
+    /// so the strike beat's frame keeps the tip in view).
+    nonisolated static func arrowReach(speed: Double) -> Double {
+        arrowShaftLength(speed: speed) + Double(arrowHeadGap) + Double(arrowHeadLength)
+    }
     static let arrowShaftWidth: Float = 0.042
     /// The impact ring's inner edge as a share of its radius, and the jam cross's bar half-width as a share of its arm:
     /// the band a ring or cross is drawn with is what LensMarkFloor.line holds above 2 points.
@@ -818,6 +834,14 @@ final class LensLayer {
         }
     }
 
+    /// A path's length in metres, along its points in three dimensions (the measure the dashes are cut by).
+    nonisolated static func pathLength(_ pts: [SIMD3<Float>]) -> Double {
+        guard pts.count >= 2 else { return 0 }
+        var total = 0.0
+        for i in 1..<pts.count { total += Double(simd_distance(pts[i - 1], pts[i])) }
+        return total
+    }
+
     /// Cuts one strip into dashes `on` metres long separated by `off`-metre gaps, measured along the path, so the
     /// pattern is even whatever the point spacing. Each cut point is placed by straight interpolation between its two
     /// neighbours, with its time and half-width interpolated the same way, so every dash still carries the exact
@@ -897,8 +921,15 @@ final class LensLayer {
                 // 0.7.10 everyone: dashed for every player, not only with Differentiate Without Colour on, so the two
                 // phases differ in shape in a greyscale screenshot too (plans/25-Nov-2026-everyone-can-play-plan.md A2).
                 // Rolling stays solid; the legend chip matches.
-                for dash in Self.dashes(pts, times: times, halves: halves, on: Self.dashLength, off: Self.dashGap) {
-                    builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
+                // UI rethink package 9: a slide shorter than one dash and one gap (about 10 cm) would show as a single
+                // stray dash, or nothing past it; it is built as one solid piece in the sliding colour instead, so a
+                // short slide still reads as a stretch of sliding (its colour says which phase it is).
+                if Self.pathLength(pts) < Self.dashLength + Self.dashGap {
+                    builders[seg.phase]?.addStrip(pts, times: times, halves: halves)
+                } else {
+                    for dash in Self.dashes(pts, times: times, halves: halves, on: Self.dashLength, off: Self.dashGap) {
+                        builders[seg.phase]?.addStrip(dash.pts, times: dash.times, halves: dash.halves)
+                    }
                 }
             } else {
                 builders[seg.phase]?.addStrip(pts, times: times, halves: halves)
@@ -1050,7 +1081,7 @@ final class LensLayer {
             let showArrow = ballVisible[b] && !s.pocketed && speed > 0.04 && m > 0.02
             arrow.root.isEnabled = showArrow
             if showArrow {
-                let len = Float(min(0.8, 0.02 + 0.05 * speed))
+                let len = Float(Self.arrowShaftLength(speed: speed))
                 let dir = frame.direction(s.velocity.normalized)
                 let yaw = -atan2(dir.z, dir.x)
                 // Above the ball wherever it is: a flying ball's arrow flies with it (height is zero on the cloth).
@@ -1062,7 +1093,7 @@ final class LensLayer {
                 let wide = LensMarkFloor.scale(natural: Self.arrowShaftWidth, points: LensMarkFloor.line, pointsPerMetre: ppm)
                 let head = LensMarkFloor.scale(natural: Self.arrowHeadLength, points: LensMarkFloor.head, pointsPerMetre: ppm)
                 arrow.shaft.scale = SIMD3(len, 1, wide)
-                arrow.head.position = SIMD3(len + 0.012, 0, 0)
+                arrow.head.position = SIMD3(len + Self.arrowHeadGap, 0, 0)
                 arrow.head.scale = SIMD3(head, 1, head)
             }
             // Spin markers reuse the state just read, so the Lens still asks the timeline once per ball per frame.

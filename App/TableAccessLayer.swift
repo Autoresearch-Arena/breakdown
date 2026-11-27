@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the two invisible
+//         VoiceOver hit areas are marked for the design lint.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: passes the person's seat to the spoken
 //          ruling).
 // Edited: 21-November-2026 by Claude Opus 5.5 High (tables-screens, one hook: the spoken ruling ends with everyone's
@@ -434,7 +436,7 @@ struct TableAccessLayer: View {
 
     private var tableElement: some View {
         Rectangle()
-            .fill(Color.white.opacity(0.001))
+            .fill(Color.white.opacity(0.001))  // design-lint: allow an invisible hit area for VoiceOver, never seen
             .accessibilityElement()
             .accessibilityLabel(Text(model.solvedTable.title))
             .accessibilityValue(Text(tableValue))
@@ -608,7 +610,7 @@ struct TableAccessLayer: View {
 
     @ViewBuilder private func element(_ item: Item) -> some View {
         let base = Rectangle()
-            .fill(Color.white.opacity(0.001))
+            .fill(Color.white.opacity(0.001))  // design-lint: allow an invisible hit area for VoiceOver, never seen
             .frame(width: side, height: side)
             .position(item.point)
             .accessibilityElement()

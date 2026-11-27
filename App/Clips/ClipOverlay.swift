@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: Theme.blurbFigure is now
+//         inlineFigure; the caption card's white and black are paper, paper2 and ground, its corner the card corner;
+//         the two bitmap strokes are marked as picture drawing for the design lint.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9, the jump replay plan's "Next": the jump's side view in clips.
 //          While the replay is on a jump (ClipFlight decides the frames and the fade, from the jump's own clock, not the
 //          note's), the game's FlightSideView is drawn in its dark film style beside the flight, placed by
@@ -38,6 +41,7 @@ import simd
 
 /// A held moment's note: title and lead figure, then the first sentence, white on a dark rounded card.
 struct ClipCaptionView: View {
+    @Environment(\.palette) private var palette
     let beat: ClipBeat
     let shape: ClipShape
 
@@ -46,8 +50,8 @@ struct ClipCaptionView: View {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(verbatim: beat.title).font(Theme.heading).lineLimit(2)
                 if let figure = beat.figure {
-                    Text(verbatim: "·").font(Theme.heading).foregroundStyle(.white.opacity(0.6))
-                    Text(verbatim: figure).font(Theme.blurbFigure).lineLimit(1).fixedSize()
+                    Text(verbatim: "·").font(Theme.heading).foregroundStyle(palette.paper2)
+                    Text(verbatim: figure).font(Theme.inlineFigure).lineLimit(1).fixedSize()
                 }
             }
             // The whole sentence: it shrinks to three quarters before it would ever be cut off.
@@ -57,12 +61,12 @@ struct ClipCaptionView: View {
                 .minimumScaleFactor(0.75)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(palette.paper)
         .padding(10)
         .background {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.black.opacity(0.62))
-                .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(.white.opacity(0.12)))
+            Theme.Corner.cardShape
+                .fill(palette.ground.opacity(0.62))
+                .overlay(Theme.Corner.cardShape.strokeBorder(palette.paper.opacity(0.12)))
         }
     }
 }
@@ -367,11 +371,11 @@ final class ClipOverlay {
         ctx.translateBy(x: 0, y: CGFloat(h))
         ctx.scaleBy(x: scale, y: -scale)
         ctx.translateBy(x: -pixelBox.minX / scale, y: -pixelBox.minY / scale)
-        ctx.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.9))
+        ctx.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.9))  // design-lint: allow a ring drawn into a clip frame bitmap (picture drawing, no environment)
         ctx.setLineWidth(line)
         ctx.strokeEllipse(in: CGRect(x: p.x - radius, y: p.y - radius, width: 2 * radius, height: 2 * radius))
         if let leader {
-            ctx.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.6))
+            ctx.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.6))  // design-lint: allow a leader drawn into a clip frame bitmap (picture drawing, no environment)
             ctx.move(to: leader.0)
             ctx.addLine(to: leader.1)
             ctx.strokePath()

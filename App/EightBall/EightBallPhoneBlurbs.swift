@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the upright phone's thumb dock: these blurbs
+//          are word sources of the dock now, so their words show in its word strip and its pull-up sheet, never over
+//          the table. "On a real table" is the strip's one line that opens the sheet, where its rows show in full (the
+//          table keeps its whole frame). The call's ball chips, pocket menu and Safety moved out of the words into the
+//          dock's aiming section (EightBallPhoneCallRow), still each its own button. "Lens replay" is "Physics Lens
+//          replay" (the one name; wave 2 note 44). The paper roles and the kit's type replace white, the system's
+//          secondary grey and the old blurb fonts.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
 //          aside for the every-surface fan, through model.otherFutureShowing.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the "On a real table" blurb starts open in the
@@ -12,9 +19,9 @@
 //            looking  - the story with the try ("Try 1 of 3") and its note (cloth, bridge, style cap), folded to three
 //                       lines; Same call and Watch a way out in the blurb; "Make your call" is the primary action.
 //                       After a shot with no call, the one line saying so instead of the story.
-//            calling  - what to tap, with Back; under it the ball chips, the pocket menu and Safety (the shared call
-//                       controls of App/Match/CallControl.swift), as glass controls straight over the table so each
-//                       stays its own button for VoiceOver (a blurb reads its words as one element).
+//            calling  - what to tap, with Cancel; the ball chips, the pocket menu and Safety (the shared call
+//                       controls of App/Match/CallControl.swift) are EightBallPhoneCallRow, in the dock's aiming
+//                       section, so each stays its own button for VoiceOver (a blurb reads its words as one element).
 //            watching - the hint's line and Skip.
 //            aiming / playing / scoring - the call (and the bridge's rule while aiming, Change call and Watch a way out;
 //                       "Scoring…" while the judge works).
@@ -46,6 +53,7 @@ struct EightBallPhoneBlurbs: View {
     @State private var scoreFolded = true
     /// The real-table blurb's fold: its one-line title, or every row.
     @State private var realTableFolded = true
+    @Environment(\.palette) private var palette
 
     private var mode: EightBallMode { model.eightBallMode }
 
@@ -81,11 +89,11 @@ struct EightBallPhoneBlurbs: View {
                 Blurb {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(verbatim: EightBallWords.callLine(mode))
-                            .font(Theme.body)
+                            .font(Theme.bodyCompact)
                             .fixedSize(horizontal: false, vertical: true)
                         HStack(spacing: 8) {
                             ProgressView().controlSize(.small).accessibilityHidden(true)
-                            Text(String(localized: "Scoring…")).font(Theme.label).foregroundStyle(.secondary)
+                            Text(String(localized: "Scoring…")).font(Theme.label).foregroundStyle(palette.paper2)
                         }
                     }
                 }
@@ -144,17 +152,9 @@ struct EightBallPhoneBlurbs: View {
     /// quick one, EightBallTableLayer).
     private func calling(_ s: EightBallSituation) -> some View {
         let words = [EightBallWords.callPrompt(mode, s), mode.callNote].compactMap { $0 }.joined(separator: " ")
-        return VStack(alignment: .leading, spacing: BlurbPlacement.dockSpacing) {
-            Blurb(sentence: words, startsFolded: false,
-                  buttons: [BlurbButton(String(localized: "Cancel")) { mode.cancelCalling() }])
-            CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
-                .frame(maxWidth: Blurb.openWidth, alignment: .leading)
-            HStack(spacing: 8) {
-                if mode.pendingBall != nil { CallPocketMenu(picked: nil) { mode.pick(pocket: $0) } }
-                CallSafetyButton { mode.callSafety() }
-            }
-            .controlSize(.regular)
-        }
+        // The controls themselves are EightBallPhoneCallRow, in the dock's aiming section (package 6).
+        return Blurb(sentence: words, startsFolded: false,
+                     buttons: [BlurbButton(String(localized: "Cancel")) { mode.cancelCalling() }])
     }
 
     // MARK: Aiming
@@ -199,29 +199,29 @@ struct EightBallPhoneBlurbs: View {
     private func scoreContent(_ v: EightBallVerdict, open: Bool, replaying: Bool) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(verbatim: EightBallWords.resultTitle(v)).font(Theme.blurbTitle).lineLimit(2)
-                Text(verbatim: "·").font(Theme.blurbTitle).foregroundStyle(.secondary)
-                Text(verbatim: v.total.formatted(.number.locale(AppLocale.numbers))).font(Theme.blurbFigure).foregroundStyle(.white)
+                Text(verbatim: EightBallWords.resultTitle(v)).font(Theme.label).lineLimit(2)
+                Text(verbatim: "·").font(Theme.label).foregroundStyle(palette.paper2)
+                Text(verbatim: v.total.formatted(.number.locale(AppLocale.numbers))).font(Theme.inlineFigure).foregroundStyle(palette.paper)
                     .lineLimit(1).fixedSize()
             }
             if !replaying {
                 Text(verbatim: v.medal.map { String(localized: "\($0.title) medal") }
                      ?? EightBallWords.tryLabel(v.tryNumber))
                     .font(Theme.label)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(palette.paper2)
                 // The sum, the total left out (it is the title's figure): "5 made  +3 difficulty  +2 style".
                 Text(verbatim: EightBallWords.sumTerms(v).dropLast().map { "\($0.value) \($0.label)" }
                         .joined(separator: "   "))
-                    .font(Theme.blurbChip)
-                    .foregroundStyle(.secondary)
+                    .font(Theme.inlineFigure)
+                    .foregroundStyle(palette.paper2)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityLabel(Text(verbatim: EightBallWords.spokenSum(v)))
                 if let line = EightBallWords.resultLine(v) {
-                    Text(verbatim: line).font(Theme.body).fixedSize(horizontal: false, vertical: true)
+                    Text(verbatim: line).font(Theme.bodyCompact).fixedSize(horizontal: false, vertical: true)
                 }
                 if open {
                     ForEach(Array(EightBallWords.scoreNotes(mode, v).enumerated()), id: \.offset) { _, n in
-                        Text(verbatim: n).font(Theme.label).foregroundStyle(.secondary)
+                        Text(verbatim: n).font(Theme.label).foregroundStyle(palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -232,7 +232,7 @@ struct EightBallPhoneBlurbs: View {
     /// Lens replay, then Try again after a make (Next is the primary action) or Watch a way out after a miss (Try
     /// again is the primary action).
     private func scoredButtons(_ s: EightBallSituation, _ v: EightBallVerdict) -> [BlurbButton] {
-        var out = [BlurbButton(String(localized: "Lens replay"),
+        var out = [BlurbButton(String(localized: "Physics Lens replay"),
                                hint: String(localized: "Replays your shot slowly and explains it")) {
             mode.lensReplay()
         }]
@@ -256,11 +256,11 @@ struct EightBallPhoneBlurbs: View {
         return Blurb(folded: $realTableFolded) { open in
             VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text(verbatim: String(localized: "On a real table: \(e.title)")).font(Theme.blurbTitle)
+                    Text(verbatim: String(localized: "On a real table: \(e.title)")).font(Theme.label)
                         .lineLimit(open ? nil : 1)
-                    Text(verbatim: "·").font(Theme.blurbTitle).foregroundStyle(.secondary)
+                    Text(verbatim: "·").font(Theme.label).foregroundStyle(palette.paper2)
                     Text(verbatim: String(localized: "Rated \(e.rating)")).font(Theme.label)
-                        .foregroundStyle(.secondary).lineLimit(1).fixedSize()
+                        .foregroundStyle(palette.paper2).lineLimit(1).fixedSize()
                 }
                 if open {
                     row(String(localized: "Aim"), c.aim, EightBallFormat.degrees(n.aimDegrees))
@@ -271,7 +271,7 @@ struct EightBallPhoneBlurbs: View {
                     if n.surface != .cloth {
                         Text(verbatim: EightBallWords.clothSentence(n))
                             .font(Theme.label)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -286,13 +286,13 @@ struct EightBallPhoneBlurbs: View {
     private func row(_ label: String, _ words: String?, _ number: String?) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
-                Text(verbatim: label).font(Theme.label).foregroundStyle(.secondary)
+                Text(verbatim: label).font(Theme.label).foregroundStyle(palette.paper2)
                 if let number {
-                    Text(verbatim: number).font(Theme.blurbChip).foregroundStyle(.white)
+                    Text(verbatim: number).font(Theme.inlineFigure).foregroundStyle(palette.paper)
                 }
             }
             if let words {
-                Text(verbatim: words).font(Theme.body).fixedSize(horizontal: false, vertical: true)
+                Text(verbatim: words).font(Theme.bodyCompact).fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -312,6 +312,31 @@ struct EightBallPhoneBlurbs: View {
 }
 
 // MARK: The primary action
+
+// MARK: The call, in the dock
+
+/// The call's own controls while a Behind the 8-ball call is being made (package 6): the ball chips, then the pocket
+/// menu once a ball is picked, and Safety, in the dock's aiming section under the word strip (whose words say what to
+/// tap, with Cancel). Each its own button for VoiceOver. Nothing outside the calling phase.
+struct EightBallPhoneCallRow: View {
+    let model: ShowpieceModel
+    private var mode: EightBallMode { model.eightBallMode }
+
+    var body: some View {
+        if mode.isActive, mode.current != nil, mode.phase == .calling, !model.holdForTips, !model.otherFutureShowing {
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
+                HStack(spacing: Theme.Space.xs) {
+                    if mode.pendingBall != nil { CallPocketMenu(picked: nil) { mode.pick(pocket: $0) } }
+                    CallSafetyButton { mode.callSafety() }
+                }
+                .controlSize(.regular)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .transition(.opacity)
+        }
+    }
+}
 
 extension PhonePrimaryAction {
     /// Behind the 8-Ball's primary action: "Make your call" while looking, then after a scored try Next when it went

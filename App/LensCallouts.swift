@@ -1,5 +1,13 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the leader's shadow is the
+//         ground colour; the bubble takes the card corner.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the upright phone's thumb dock: on the upright
+//          phone the tips are one of the dock's word sources, so their words, their counter and Not now and Next or
+//          Got it are the word strip's (the strip's buttons are the kit's quiet buttons), at the highest priority while
+//          they show. The pointer line now leaves from the word strip's top edge (PhoneWordStrip writes
+//          LensTipsShared.dockedFrame), up across the table to the trail it names: a mark, never words, on the cloth.
+//          Every other layout is as before.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 4: on the upright phone the tips are a
 //          docked blurb (PhoneLensTipBlurb, in the docked stack under the title row) with small glass "Not now" and
 //          "Next" or "Got it", and LensCalloutLayer stops drawing its own bubble there; it still decides when the tips
@@ -214,7 +222,7 @@ struct LensCalloutLayer: View {
         var line = Path()
         line.move(to: start)
         line.addLine(to: end)
-        ctx.stroke(line, with: .color(.black.opacity(0.45)), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+        ctx.stroke(line, with: .color(palette.ground.opacity(0.45)), style: StrokeStyle(lineWidth: 4, lineCap: .round))
         ctx.stroke(line, with: .color(colour), style: StrokeStyle(lineWidth: 2, lineCap: .round))
         let r: CGFloat = 9
         let ring = Path(ellipseIn: CGRect(x: end.x - r, y: end.y - r, width: r * 2, height: r * 2))
@@ -342,7 +350,7 @@ struct LensCalloutBubble: View {
                 .controlSize(.small)
             }
         }
-        .glassCard(cornerRadius: 20, padding: 12)
+        .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
         .accessibilityElement(children: .contain)
     }
 }
@@ -388,20 +396,17 @@ struct PhoneLensTipBlurb: View {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         marker(step)
                         Text(verbatim: text)
-                            .font(Theme.body)
+                            .font(Theme.bodyCompact)
+                            .foregroundStyle(palette.paper)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     Text(verbatim: counter)
-                        .font(Theme.label)
-                        .foregroundStyle(.secondary)
+                        .font(Theme.caption)
+                        .foregroundStyle(palette.paper2)
                 }
             }
-            // The pointer line (drawn by LensCalloutLayer) leaves from here.
-            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { frame in
-                let shared = LensTipsShared.shared
-                if shared.dockedFrame != frame { shared.dockedFrame = frame }
-            }
-            .onDisappear { LensTipsShared.shared.dockedFrame = .zero }
+            // Package 6: in the dock this Blurb draws nothing; the word strip shows it and reports its own frame as
+            // the pointer's start (PhoneWordStrip).
         }
     }
 
@@ -415,7 +420,7 @@ struct PhoneLensTipBlurb: View {
         } else {
             Image(systemName: "arrow.down")
                 .font(Theme.label)
-                .foregroundStyle(.white)
+                .foregroundStyle(palette.paper)
                 .accessibilityHidden(true)
         }
     }

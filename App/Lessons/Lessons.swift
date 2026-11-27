@@ -1,10 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
 // PURPOSE: The lesson path's data (plans/21-Nov-2026-first-minute-and-lessons-plan.md, package 3): six lessons in order,
-//          stop shot, follow, draw, cut and throw, curve, jump. A lesson is a trick shot with stages, so each one holds
-//          what a trick shot holds (a layout with only the balls it uses, the reference settings that make it, the goal
-//          the trick-shot judge checks, the measured skill window) plus what the lesson flow needs: the one control the
-//          lesson is about (the one unlocked in guided try 2), the moment of the recording the Watch beat stops on, the
+//          stop shot, follow, draw, throw, massé, jump (the glossary's names, ShotNames.swift). A lesson is a trick
+//          shot with stages, so each one holds what a trick shot holds (a layout with only the balls it uses, the
+//          reference settings that make it, the goal the trick-shot judge checks, the measured skill window) plus what
+//          the lesson flow needs: the one control the lesson is about (the one unlocked in guided try 2), the moment of the recording the Watch beat stops on, the
 //          cue angles that work when the lesson raises the cue, and the trick shot that uses the idea, suggested once
 //          the lesson is passed. Also the stop shot's second exercise (plans/21-Nov-2026-learn-from-a-retry-plan.md,
 //          section 4): the same line with the cue ball further back, where copying the lesson's settings misses.
@@ -32,8 +32,14 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #23: Cut and
 //          throw names its pocket in table words ("the corner nearest it"), not "top-right", which was only right with
 //          the phone sideways.)
-// SRP/DRY check: Pass - the app's types, words and lesson flow data; the numbers are read from the package library and
-//          converted by TrickShots' converters (TrickSettings(_:), TrickGoal(_:), TrickWindow(_:)). The judge is
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 11, one glossary of shot names: every lesson
+//          names its technique (Lesson.technique) and takes its title from the glossary (ShotNames.swift), so a lesson,
+//          its achievement and the trick shot built on it use one word: "Cut and throw" is now "Throw" and "Curve" is
+//          now "Massé", whose praise says massé too; the massé lesson's goal says "bend round" as its idea does; the throw
+//          lesson's hook names the throw it teaches.)
+// SRP/DRY check: Pass - the app's types, words and lesson flow data; titles are the glossary's (ShotTechnique.name);
+//          the numbers are read from the package library and converted by TrickShots' converters (TrickSettings(_:),
+//          TrickGoal(_:), TrickWindow(_:)). The judge is
 //          TrickShotJudge (each lesson exposes itself as a TrickShot for it, nothing is re-implemented); the search lives
 //          in the package's dev tool.
 import BreakdownAuthored
@@ -124,6 +130,8 @@ struct Lesson: Identifiable, Equatable {
     let id: String
     /// Its place in the path, from 1.
     let number: Int
+    /// The technique the lesson teaches (UI rethink package 11): its title is this technique's one name.
+    let technique: ShotTechnique
     let title: String
     /// One line for the list and the first card: what the lesson teaches.
     let hook: String
@@ -182,16 +190,19 @@ enum Lessons {
     /// One lesson: the package library's numbers with this file's words, its control, its Watch moment and its trick.
     /// A raised-cue lesson's reference elevation is the library's sine of its offered cue angle, the same formula as
     /// CueAngleMenu.sine(forAngle:), so the control can set it exactly (LessonTests checks).
-    private static func make(_ a: AuthoredLesson, title: String, hook: String, goalLine: String, idea: String,
-                             praise: String, control: LessonControl, moment: LessonMoment, trickID: String) -> Lesson {
-        Lesson(id: a.id, number: a.number, title: title, hook: hook, goalLine: goalLine, idea: idea, praise: praise,
-               control: control, layout: a.layout, reference: TrickSettings(a.reference), goal: TrickGoal(a.goal),
+    /// UI rethink package 11: the title is the technique's glossary name, never typed here, so it cannot drift.
+    private static func make(_ a: AuthoredLesson, technique: ShotTechnique, hook: String, goalLine: String,
+                             idea: String, praise: String, control: LessonControl, moment: LessonMoment,
+                             trickID: String) -> Lesson {
+        Lesson(id: a.id, number: a.number, technique: technique, title: technique.name, hook: hook, goalLine: goalLine,
+               idea: idea, praise: praise, control: control, layout: a.layout, reference: TrickSettings(a.reference),
+               goal: TrickGoal(a.goal),
                window: TrickWindow(a.window), cueAngles: a.cueAngles, moment: moment, trickID: trickID)
     }
 
     // MARK: 1. Stop shot
     static let stop = make(
-        AuthoredLessons.stop, title: String(localized: "Stop shot"),
+        AuthoredLessons.stop, technique: .stop,
         hook: String(localized: "Pot the ball and make the cue ball stop dead where it hits."),
         goalLine: String(localized: "Pot the 3. The cue ball must stop where it hit."),
         idea: String(localized: "Struck a little below centre, the cue ball arrives with its spin just worn off. With no spin left, it hands all its speed to the 3 and stops."),
@@ -200,7 +211,7 @@ enum Lessons {
 
     // MARK: 2. Follow
     static let follow = make(
-        AuthoredLessons.follow, title: String(localized: "Follow"),
+        AuthoredLessons.follow, technique: .follow,
         hook: String(localized: "Strike above centre and the cue ball rolls on after the ball it pots."),
         goalLine: String(localized: "Pot the 3 and roll on into the marked circle."),
         idea: String(localized: "At the hit the cue ball stops for an instant, but its topspin is still turning. The spin grips the cloth and drives it forward until it rolls."),
@@ -209,34 +220,34 @@ enum Lessons {
 
     // MARK: 3. Draw
     static let draw = make(
-        AuthoredLessons.draw, title: String(localized: "Draw"),
+        AuthoredLessons.draw, technique: .draw,
         hook: String(localized: "Strike below centre and the cue ball comes back toward you after the pot."),
         goalLine: String(localized: "Pot the 3 and bring the cue ball back into the marked circle."),
         idea: String(localized: "Struck low, the cue ball still carries backspin when it hits. It stops for an instant, then the backspin grips the cloth and pulls it back until it rolls."),
         praise: String(localized: "Drawn back. The backspin did the pulling."),
         control: .tipUp, moment: .rollAfterContact, trickID: "bridge-draw")
 
-    // MARK: 4. Cut and throw
+    // MARK: 4. Throw (a cut allowing for throw)
     static let cut = make(
-        AuthoredLessons.cut, title: String(localized: "Cut and throw"),
-        hook: String(localized: "Hit the ball off-centre to send it off at an angle into the pocket."),
+        AuthoredLessons.cut, technique: .throwShot,
+        hook: String(localized: "Cut the ball in at an angle, and allow for the throw that drags it along."),
         goalLine: String(localized: "Cut the 3 into the corner nearest it."),
         idea: String(localized: "The 3 leaves along the line through the two centres at contact. Friction there drags it a little along the cue ball's path, so cut a touch thinner than the line says."),
         praise: String(localized: "Cut in. You allowed for the throw."),
         control: .aim, moment: .contact, trickID: "throw-it")
 
-    // MARK: 5. Curve
+    // MARK: 5. Massé
     static let curve = make(
-        AuthoredLessons.curve, title: String(localized: "Curve"),
+        AuthoredLessons.curve, technique: .masse,
         hook: String(localized: "Raise the cue and hit to one side: the cue ball bends round a ball in its way."),
-        goalLine: String(localized: "Curve round the 4 and touch the 9 first."),
+        goalLine: String(localized: "Bend round the 4 and touch the 9 first."),
         idea: String(localized: "A raised cue struck right of centre spins the cue ball on a tilted axis. While it slides, the cloth pushes sideways on that spin and the path bends. Once it rolls, it runs straight."),
-        praise: String(localized: "Bent round the 4. That is a curve."),
+        praise: String(localized: "Bent round the 4. That is a massé."),
         control: .tipSide, moment: .firstRoll, trickID: "masse-curve")
 
     // MARK: 6. Jump
     static let jump = make(
-        AuthoredLessons.jump, title: String(localized: "Jump"),
+        AuthoredLessons.jump, technique: .jump,
         hook: String(localized: "Raise the cue steeply and the cue ball hops over a ball in its way."),
         goalLine: String(localized: "Jump the 6 and touch the 11 first."),
         idea: String(localized: "A raised cue drives the cue ball down into the slate, and the slate throws it up. It flies over the 6 and lands beyond it."),

@@ -32,6 +32,8 @@
 //          a score against the clock, without offering it as a game against a friend.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: bar billiards' clock rule
+//          names the Lens "Physics Lens".)
 // SRP/DRY check: Pass - checked MatchWords (the shared ruling sentences, game names and player names are reused from
 //          there, not repeated) and TableKind (table names and summaries reused). Nothing else words these games.
 import BreakdownRules
@@ -312,7 +314,7 @@ enum TableGameWords {
                 (String(localized: "Balls come back"),
                  String(localized: "Dropped balls come back to the tray and the red goes back on its spot, until time is up.")),
                 (String(localized: "Time up"),
-                 String(localized: "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. The game ends when the last white from the tray has been played, or when nothing is left on the table to hit. The clock stops while you watch a replay or the Lens.")),
+                 String(localized: "When the clock runs out a bar drops: balls that drop stay down. You play on with the whites left in the tray; whites resting on the table stay where they are. The game ends when the last white from the tray has been played, or when nothing is left on the table to hit. The clock stops while you watch a replay or the Physics Lens.")),
             ]
         case .eightBall, .nineBall:
             return []

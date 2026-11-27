@@ -42,6 +42,8 @@
 //          (TrickShotViews.swift), which carries the sentence itself so only one result card is ever up.
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover lint note: the card's corners and padding are Theme values (medium
+//          corners, 12 point padding) instead of bare numbers.)
 // SRP/DRY check: Pass - checked ShotAttempt.swift (the model stream owns the facts and RetryComparison; this file only
 //          words them) and ShotPanel.shownWord (spin words for the panel; these are whole sentences about a change).
 import SwiftUI
@@ -246,7 +248,7 @@ struct ContactArrivalLine: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .glassCard(cornerRadius: 20, padding: 12)
+            .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
             .accessibilityElement(children: .combine)
             .transition(.opacity)
         }

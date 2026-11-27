@@ -8,6 +8,9 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 5's leftover note: CallChipWrap lays out
+//          through the one shared WrappingRow (Surfaces.swift) from the leading edge instead of its own copy of the
+//          wrapping code; the chips sit as before, and a chip wider than the line now fits inside it.)
 // PURPOSE: Calling a ball and a pocket, shared by Behind the 8-Ball and the eight-ball match.
 //          CallBallChips    - the callable balls as the kit's chips, wrapping, the picked one selected. The complete
 //                             route for VoiceOver and the keyboard; tapping the table is only the quick route.
@@ -136,53 +139,21 @@ struct CallSafetyButton: View {
     }
 }
 
-/// The chips' layout: left to right from the leading edge, onto a new line when the next chip would not fit. (The
-/// kit's status line has the same layout privately, and WrappingRow in Surfaces.swift lines its rows up on the trailing
-/// edge, which a row of balls must not.)
+/// The chips' layout: left to right from the leading edge, onto a new line when the next chip would not fit. The one
+/// wrapping layout (WrappingRow, Surfaces.swift) laid out from the leading edge; this name stays for its callers here
+/// and in NotebookInfo.swift. A chip wider than the line is offered the line's width.
 struct CallChipWrap: Layout {
     var spacing: CGFloat
     var lineSpacing: CGFloat
 
-    /// Each line's subview indices and sizes, and the line's height.
-    private func lines(width: CGFloat, subviews: Subviews) -> [(items: [(Int, CGSize)], width: CGFloat, height: CGFloat)] {
-        var all: [(items: [(Int, CGSize)], width: CGFloat, height: CGFloat)] = []
-        var current: [(Int, CGSize)] = []
-        var lineWidth: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        for index in subviews.indices {
-            let size = subviews[index].sizeThatFits(.unspecified)
-            let needed = current.isEmpty ? size.width : lineWidth + spacing + size.width
-            if needed > width, !current.isEmpty {
-                all.append((current, lineWidth, lineHeight))
-                current = []
-                lineWidth = 0
-                lineHeight = 0
-            }
-            lineWidth = current.isEmpty ? size.width : lineWidth + spacing + size.width
-            lineHeight = max(lineHeight, size.height)
-            current.append((index, size))
-        }
-        if !current.isEmpty { all.append((current, lineWidth, lineHeight)) }
-        return all
-    }
+    private var row: WrappingRow { WrappingRow(alignment: .leading, spacing: spacing, lineSpacing: lineSpacing) }
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let all = lines(width: proposal.width ?? .infinity, subviews: subviews)
-        let height = all.reduce(0) { $0 + $1.height } + lineSpacing * CGFloat(max(0, all.count - 1))
-        return CGSize(width: all.map(\.width).max() ?? 0, height: height)
+        row.sizeThatFits(proposal: proposal, subviews: subviews, cache: &cache)
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        var y = bounds.minY
-        for line in lines(width: bounds.width, subviews: subviews) {
-            var x = bounds.minX
-            for (index, size) in line.items {
-                subviews[index].place(at: CGPoint(x: x, y: y + (line.height - size.height) / 2),
-                                      proposal: ProposedViewSize(size))
-                x += size.width + spacing
-            }
-            y += line.height + lineSpacing
-        }
+        row.placeSubviews(in: bounds, proposal: proposal, subviews: subviews, cache: &cache)
     }
 }
 

@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8, the open folding phone: on the fold's table
+//          half (tableMarksOnly, read from the canvas's own environment) TablePathStroke.label draws nothing, so the
+//          "Last try" word and every other layer's cloth label (the what-if's, the every-surface fan's, the trick
+//          shot's "Answer") leave the table; the rings and paths stay, and the notebook panel's top line names them.
+//          A caller whose label is a bare figure passes bareFigure: true to keep it. The dark pill and path underlay
+//          take the palette's ground; the comparison card's corner is Theme's.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -139,7 +145,7 @@ struct TablePathStroke {
     func draw(in ctx: inout GraphicsContext, _ proj: AimProjector) {
         guard let path = Self.line(points, proj) else { return }
         if let w = underlayWidth {
-            ctx.stroke(path, with: .color(.black.opacity(0.35)), style: StrokeStyle(lineWidth: w, lineCap: .round, lineJoin: .round))
+            ctx.stroke(path, with: .color(ctx.environment.palette.ground.opacity(0.35)), style: StrokeStyle(lineWidth: w, lineCap: .round, lineJoin: .round))
         }
         ctx.stroke(path, with: .color(colour), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round, dash: dash))
     }
@@ -199,13 +205,16 @@ struct TablePathStroke {
     }
 
     /// A small dark pill with a word in it, just below a spot on the cloth (the "Last try" label's look).
+    /// UI rethink package 8: on the open folding phone's table half (tableMarksOnly in the canvas's environment) a word
+    /// is never drawn on the cloth; only a caller whose label is a bare figure ("12 cm") passes `bareFigure` to keep it.
     static func label(_ text: Text, at spot: Vec2, colour: Color, in ctx: inout GraphicsContext, size: CGSize,
-                      _ proj: AimProjector) {
+                      _ proj: AimProjector, bareFigure: Bool = false) {
+        guard bareFigure || !ctx.environment.tableMarksOnly else { return }
         guard let at = proj.screen(spot, height: 0.001) else { return }
         let label = ctx.resolve(text.font(.caption2.weight(.semibold)).foregroundStyle(colour))
         let m = label.measure(in: size)
         let box = CGRect(x: at.x - m.width / 2 - 6, y: at.y + 14, width: m.width + 12, height: m.height + 4)
-        ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(.black.opacity(0.55)))
+        ctx.fill(Path(roundedRect: box, cornerRadius: box.height / 2), with: .color(ctx.environment.palette.ground.opacity(0.55)))
         ctx.draw(label, at: CGPoint(x: box.midX, y: box.midY))
     }
 }
@@ -256,7 +265,7 @@ struct ComparisonCard: View {
                 .buttonBorderShape(.circle)
                 .accessibilityLabel("Dismiss comparison")
             }
-            .glassCard(cornerRadius: 20, padding: 12)
+            .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
             .accessibilityElement(children: .contain)
             .transition(.opacity)
         }

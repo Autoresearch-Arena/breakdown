@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the Lens is named by its one
+//          name, "Physics Lens", where a player reads it.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets", layout only:
 //          the list is the kit's SheetPage (ground, serif title, cyan Done top right) with one panel group per section
 //          under its section label and the rows drawn as the design's list rows (sunken strip, small corners: the
@@ -339,7 +341,7 @@ struct AchievementDetail: View {
                 } else {
                     Image(systemName: "eye").fontWeight(.medium)
                 }
-                Text("Watch it in the Lens")
+                Text("Watch it in the Physics Lens")
             }
         }
         .buttonStyle(PrimaryButtonStyle(fullWidth: true))

@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover note: SpeedPicker can draw its menu
+//          label as the shot reel's speed pill (pill: true), so the whole capsule opens the list, not only its words.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: Replay's VoiceOver hints say
+//          "Physics Lens", the Lens's one name.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the reel shows only after a
 //          shot; while aiming it folds into the kit's "Last shot" button, which leads the tab row (the slim reel stays
 //          under the open console while the player's own shot is still rolling, item 8). The Lens, Ride and Aim tabs
@@ -101,8 +105,8 @@ struct ReplayButton: View {
                 .symbolEffect(.bounce, value: reduceMotion ? 0 : taps)
             }
         // With Ride on the replay rides behind the cue ball at the chosen pace, so slow motion is not promised then.
-        .accessibilityHint(model.rideOn ? String(localized: "Starts the shot again with the Lens on")
-                                        : String(localized: "Starts the shot again in slow motion with the Lens on"))
+        .accessibilityHint(model.rideOn ? String(localized: "Starts the shot again with the Physics Lens on")
+                                        : String(localized: "Starts the shot again in slow motion with the Physics Lens on"))
     }
 }
 
@@ -153,6 +157,16 @@ struct SpeedPicker: View {
     let model: ShowpieceModel
     /// A menu instead of a segmented control, for the largest text sizes and for narrow toolbars.
     var asMenu = false
+    /// The menu's label drawn as the shot reel's speed pill (a sunken capsule, the inline figure, a 44 point hit area),
+    /// inside the menu's own label so the whole pill opens the list, not only its words.
+    var pill = false
+    @Environment(\.palette) private var palette
+
+    init(model: ShowpieceModel, asMenu: Bool = false, pill: Bool = false) {
+        self.model = model
+        self.asMenu = asMenu
+        self.pill = pill
+    }
 
     private var selection: Binding<Double?> {
         // Auto (nil) while the replay paces itself; a fixed speed hands the pace to the player, and Auto hands it back.
@@ -183,9 +197,22 @@ struct SpeedPicker: View {
                 } label: {
                     // Its own key (0.7.6, bug 12): one short word in every language, where the list row's Auto may be
                     // a long one ("Automatisch").
-                    Text(model.chosenRate.map(PlaybackSpeed.label) ?? Self.autoShort)
-                        .lineLimit(1)
-                        .monospacedDigit()
+                    if pill {
+                        Text(model.chosenRate.map(PlaybackSpeed.label) ?? Self.autoShort)
+                            .lineLimit(1)
+                            .font(Theme.inlineFigure)
+                            .foregroundStyle(palette.paper)
+                            .fixedSize()
+                            .padding(.vertical, Theme.Space.chipVertical)
+                            .padding(.horizontal, Theme.Space.chipHorizontal)
+                            .background(palette.panelSunken, in: Capsule())
+                            .frame(minHeight: Theme.Size.minHit)
+                            .contentShape(Rectangle())
+                    } else {
+                        Text(model.chosenRate.map(PlaybackSpeed.label) ?? Self.autoShort)
+                            .lineLimit(1)
+                            .monospacedDigit()
+                    }
                 }
                 .menuIndicator(.hidden)
             } else {

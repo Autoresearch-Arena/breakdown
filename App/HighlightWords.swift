@@ -6,6 +6,8 @@
 //          the physics is the praise). Also the hint under "Watch it in the Lens", "Watch your best shot" on the Table
 //          cleared card, and the line on the card at the end of Watch the intro. Read by HighlightCard and IntroEndCard
 //          (FreePlayViews.swift), TableClearedCard and the match card's Lens offer (MatchViews.swift).
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the Lens is named by its one
+//          name, "Physics Lens", where a player reads it.)
 // SRP/DRY check: Pass - checked MatchWords, OpponentWords, TableGameWords and CaptionEngine (none names a kind of
 //          remarkable shot; the captions explain single events, these name the whole moment). Strings only, all through
 //          String(localized:), so Xcode extracts them; the existing "Watch it in the Lens", "Try the trick shot",
@@ -71,5 +73,5 @@ enum HighlightWords {
     static var watchBest: String { String(localized: "Watch your best shot") }
 
     /// The card at the end of Watch the intro, above Trick shots and Practice.
-    static var introEnd: String { String(localized: "Every trick shot can be watched like this: the answer, then the Lens.") }
+    static var introEnd: String { String(localized: "Every trick shot can be watched like this: the answer, then the Physics Lens.") }
 }

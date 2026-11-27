@@ -4,6 +4,11 @@
 //          badge stays over its ball in a narrow Mac window.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the badge leaves where it is drawn in a BadgeFrameBox, so
 //          AimOverlay can keep the side-spin fork's labels off it; on the upright phone "Ball goes here" sat under it.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8, the open folding phone: on the fold's table
+//          half (tableMarksOnly) the badge is not drawn and its box is left empty; its words ("3 ball, solid") are the
+//          first part of the notebook panel's top line, from targetWords(for:), the same answer the badge prints. The
+//          ball picture's printed number and outline carry the lint's allow mark (they are the ball, not interface
+//          colour); the label is the caption face, so the bigger Theme.label does not crowd the cloth.)
 // PURPOSE: The target-ball badge (look plan package 3). On a phone held upright the camera fits the whole table, so a
 //          ball is a few millimetres across and its number and stripe cannot be read. While aiming, the ball the cue
 //          ball will hit first gets a small floating badge above it (on glass everywhere but the upright phone, where
@@ -56,6 +61,8 @@ struct TargetBallBadge: View {
     @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     /// Set by ShowpieceView on the stage that holds AimOverlay; only the upright phone changes look and placement.
     @Environment(\.phoneUpright) private var upright
+    /// UI rethink package 8: the open folding phone's table half draws marks only (LayoutFlags); the badge steps aside.
+    @Environment(\.tableMarksOnly) private var marksOnly
     @State private var cameraBox = AimProjector.CameraBox()
     /// The badge's measured size, for keeping it on screen.
     @State private var badgeSize = CGSize(width: 90, height: 30)
@@ -72,7 +79,7 @@ struct TargetBallBadge: View {
                 // the reader's content was not re-run once the strike sheet came up, and the badge stayed where the
                 // settling camera had left the ball (on it, or under it) while the table moved on.
                 let _ = context.date
-                if let target = target(in: geo.size) {
+                if !marksOnly, let target = target(in: geo.size) {
                     // The table drawn on screen (the one the shot was solved on) says how the ball looks and is named.
                     let set = TableBallSet.for(table: model.solvedTable)
                     // 0.7.10 everyone: a numbered pool ball is named by its number in words too ("3 ball, solid"), so
@@ -104,6 +111,17 @@ struct TargetBallBadge: View {
     private static func label(_ look: BallLook, ball: Int, set: TableBallSet) -> String {
         if case .pool(let number) = look, number > 0 { return TableWords.ballLabel(number, pool: true) }
         return set.label(of: ball)
+    }
+
+    /// UI rethink package 8: the badge's words without the badge, for the notebook panel's top line on the open folding
+    /// phone: the ball the guide shows the cue ball hitting first, named as the badge names it. Nil whenever the badge
+    /// would not show (the Aim guide off, not ready to aim, the cue ball off the table, nothing in the line).
+    @MainActor
+    static func targetWords(for model: ShowpieceModel, aimGuide: Bool) -> String? {
+        guard aimGuide, model.aimReady, !model.placingCueBall, model.layout.count == 16, NextShot.isOnTable(model.aimOrigin),
+              let hit = AimGeometry.guideContact(for: model) else { return nil }
+        let set = TableBallSet.for(table: model.solvedTable)
+        return label(set.look(of: hit.ball), ball: hit.ball, set: set)
     }
 
     /// The ball the aim will hit first and where it is on screen: its centre and its on-screen radius. The same answer
@@ -174,7 +192,7 @@ private struct BallBadgeChip: View {
     @ScaledMetric(relativeTo: .caption) private var smallBall: CGFloat = 16
     private var ball: CGFloat { upright ? smallBall : fullBall }
 
-    private static func color(_ c: (Double, Double, Double)) -> Color { Color(red: c.0, green: c.1, blue: c.2) }
+    private static func color(_ c: (Double, Double, Double)) -> Color { Color(red: c.0, green: c.1, blue: c.2) }  // design-lint: allow ball colours
 
     var body: some View {
         let colour = Self.color(BallTextures.swatch(look))
@@ -191,7 +209,7 @@ private struct BallBadgeChip: View {
                         Text(verbatim: "\(number)")
                             .font(.system(size: ball * 0.40, weight: .heavy, design: .rounded))
                             .monospacedDigit()
-                            .foregroundStyle(Color.black)
+                            .foregroundStyle(Color.black)  // design-lint: allow the ball's printed number, not interface ink
                             .minimumScaleFactor(0.6)
                     }
                 case .plain:
@@ -204,10 +222,12 @@ private struct BallBadgeChip: View {
             }
             .frame(width: ball, height: ball)
             .clipShape(Circle())
-            .overlay(Circle().stroke(Color.black.opacity(0.35), lineWidth: 0.75))
+            .overlay(Circle().stroke(Color.black.opacity(0.35), lineWidth: 0.75))  // design-lint: allow the drawn ball's rim
             Text(label)
-                // The upright phone uses the plan's floor size (caption2) so the label stays small over the table.
-                .font(upright ? Theme.blurbChipLabel : Theme.label)
+                // The upright phone uses the plan's floor size so the label stays small over the table. UI rethink
+                // package 8: elsewhere the caption face too, now that Theme.label grew to Subheadline medium (the wave 1
+                // note on this line): the badge sits over the cloth and must stay a small chip.
+                .font(upright ? Theme.caption : Theme.caption.weight(.semibold))
                 .lineLimit(1)
                 .fixedSize()
         }

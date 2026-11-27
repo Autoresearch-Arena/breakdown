@@ -17,6 +17,11 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #39:
 //          WrappingRow offers an over-wide child the row's width and never starts it left of the row, so a long one-line
 //          button label truncates inside its card instead of spilling past the card's leading edge.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover notes: WrappingRow is now the one
+//          wrapping Layout, with an alignment (trailing by default, so the button rows lay out exactly as before;
+//          leading for the kit's status line and the call's chips) and its own line spacing (the item spacing by
+//          default); the kit's private StatusLineLayout and the call's CallChipWrap now go through it. glassCard's
+//          defaults are Theme values (medium corners, the card padding) instead of bare numbers.)
 // SRP/DRY check: Pass - checked the old view file, which repeated the panel background three times; they all use
 //          glassCard now. No other file builds surfaces.
 import SwiftUI
@@ -24,7 +29,8 @@ import SwiftUI
 extension View {
     /// The system's Liquid Glass look for something that floats over the scene. The system turns this into a more
     /// opaque surface by itself when Reduce Transparency is on, and raises its edge when Increase Contrast is on.
-    func glassCard(cornerRadius: CGFloat = 24, padding: CGFloat = 16) -> some View {
+    /// Every caller passes its own size today; the defaults are the design language's card corner and padding.
+    func glassCard(cornerRadius: CGFloat = Theme.Corner.medium, padding: CGFloat = Theme.Space.md) -> some View {
         self.padding(padding)
             .glassEffect(.regular, in: .rect(cornerRadius: cornerRadius, style: .continuous))
     }
@@ -104,11 +110,26 @@ enum ScreenLayout {
     }
 }
 
-/// A row of controls aligned to the trailing edge that wraps onto further lines when it does not fit, in reading order
-/// (the first controls on the first line). The cards' button rows use it as their fallback, so a narrow column gets two
-/// rows instead of every button on a row of its own.
+/// A row of views that wraps onto further lines when it does not fit, in reading order (the first views on the first
+/// line). The one wrapping layout of the app:
+/// - trailing (the default): the cards' button rows (CardButtonRow's fallback), so a narrow column gets two rows
+///   instead of every button on a row of its own;
+/// - leading: a line of readings or chips (the kit's KitStatusLine, the call's ball and pocket chips, CallChipWrap),
+///   which must start at the leading edge.
+/// `alignment` is read as leading, centre or trailing; any other value counts as leading. Lines sit `lineSpacing`
+/// apart (the item spacing when nil), and the views in a line share its vertical centre.
 struct WrappingRow: Layout {
-    var spacing: CGFloat = 8
+    var alignment: HorizontalAlignment = .trailing
+    var spacing: CGFloat = Theme.Space.xs
+    var lineSpacing: CGFloat? = nil
+
+    init(alignment: HorizontalAlignment = .trailing, spacing: CGFloat = Theme.Space.xs, lineSpacing: CGFloat? = nil) {
+        self.alignment = alignment
+        self.spacing = spacing
+        self.lineSpacing = lineSpacing
+    }
+
+    private var gapBetweenLines: CGFloat { lineSpacing ?? spacing }
 
     private struct Line { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
 
@@ -134,26 +155,29 @@ struct WrappingRow: Layout {
             all[at].height = max(all[at].height, size.height)
             all[at].indices.append(i)
         }
-        return all
+        // No views at all: no line, so an empty row takes no height.
+        return all.filter { !$0.indices.isEmpty }
     }
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let all = lines(width: proposal.width ?? .infinity, subviews: subviews)
-        let height = all.reduce(0) { $0 + $1.height } + spacing * CGFloat(max(0, all.count - 1))
+        let height = all.reduce(0) { $0 + $1.height } + gapBetweenLines * CGFloat(max(0, all.count - 1))
         return CGSize(width: all.map(\.width).max() ?? 0, height: height)
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         var y = bounds.minY
         for line in lines(width: bounds.width, subviews: subviews) {
-            // Trailing-aligned, but never starting left of the row: a line is at most the row's width (fittedSize).
-            var x = max(bounds.minX, bounds.maxX - line.width)
+            // Where the line starts, never left of the row: a line is at most the row's width (fittedSize).
+            let room = max(0, bounds.width - line.width)
+            var x = bounds.minX
+            if alignment == .trailing { x += room } else if alignment == .center { x += room / 2 }
             for i in line.indices {
                 let size = fittedSize(of: subviews[i], width: bounds.width)
                 subviews[i].place(at: CGPoint(x: x, y: y + (line.height - size.height) / 2), proposal: ProposedViewSize(size))
                 x += size.width + spacing
             }
-            y += line.height + spacing
+            y += line.height + gapBetweenLines
         }
     }
 }

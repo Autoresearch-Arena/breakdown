@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: Theme.number, phoneTitle
+//         and phoneControl are now inlineFigure, heading and label; Keep this one sits on paper, not bare white.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif stream, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md
 //          stream whatif item 6: the stubs filled in.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 whatif-review: the click haptic follows WhatIfFork.clicks, so
@@ -39,6 +41,8 @@
 //          On the upright phone the card gives way to two pieces: WhatIfPhonePanel (the nudge controls, in the aiming
 //          panel's place) and WhatIfPhoneBlurb (the result, an anchored blurb at the point where the two futures part,
 //          not docked).
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover lint note: the card's corners and padding are Theme values (medium
+//          corners, 12 point padding) instead of bare numbers.)
 // SRP/DRY check: Pass - the card follows TableClearedCard's glass card and ComparisonCard's close button; the words are
 //          WhatIfWords, the state WhatIfFork. Nothing else draws what-if controls. The compact form reuses the same
 //          header, picker, rows and actions as the full one; only their arrangement and the result's room differ.
@@ -142,7 +146,7 @@ struct WhatIfCard: View {
             buttons
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
+        .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
         .tint(palette.accent)
         .accessibilityElement(children: .contain)
         .transition(.opacity)
@@ -166,7 +170,7 @@ struct WhatIfCard: View {
             compactButtons
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
+        .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
         .tint(palette.accent)
         .accessibilityElement(children: .contain)
         .transition(.opacity)
@@ -488,7 +492,7 @@ private struct NudgeRow: View {
                 // accessibility text sizes it may take two lines instead, with the room for both kept, so the row's
                 // height does not change from one click to the next.
                 Text(readout)
-                    .font(Theme.number)
+                    .font(Theme.inlineFigure)
                     .foregroundStyle(fork.steps[control] == 0 ? palette.paper.opacity(0.7) : palette.whatIf)
                     .multilineTextAlignment(.center)
                     .lineLimit(typeSize.isAccessibilitySize ? 2 : 1, reservesSpace: true)
@@ -584,7 +588,7 @@ struct WhatIfPhonePanel: View {
     private var title: some View {
         HStack(spacing: 6) {
             Image(systemName: "arrow.triangle.branch").foregroundStyle(palette.whatIf).accessibilityHidden(true)
-            Text(WhatIfWords.title).font(Theme.phoneTitle).lineLimit(1).accessibilityAddTraits(.isHeader)
+            Text(WhatIfWords.title).font(Theme.heading).lineLimit(1).accessibilityAddTraits(.isHeader)
         }
         .fixedSize()
     }
@@ -592,7 +596,7 @@ struct WhatIfPhonePanel: View {
     @ViewBuilder private var buttons: some View {
         Button { fork.reset() } label: {
             Text(String(localized: "Reset"))
-                .font(Theme.phoneControl).lineLimit(1)
+                .font(Theme.label).lineLimit(1)
                 .padding(.horizontal, 14).frame(minHeight: 44)
                 .modifier(PhonePanelControl(shape: .capsule))
                 .contentShape(Capsule())
@@ -606,10 +610,10 @@ struct WhatIfPhonePanel: View {
         if fork.canKeep {
             Button { fork.keep() } label: {
                 Text(String(localized: "Keep this one"))
-                    .font(Theme.phoneControl).lineLimit(1)
+                    .font(Theme.label).lineLimit(1)
                     .padding(.horizontal, 16).frame(minHeight: 44)
                     .foregroundStyle(palette.ground)
-                    .background(.white, in: .capsule)
+                    .background(palette.paper, in: .capsule)
                     .contentShape(Capsule())
             }
             .buttonStyle(.plain)

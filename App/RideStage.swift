@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 12, Ride: RideWords gains the words that make
+//          it unmistakable what is being looked at and from where: the mount's own status ("Going down behind the cue
+//          ball"), the spoken announcements as the view switches from overhead to riding and back (posted by
+//          RideOverlay), and the word on the map ("You"). Nothing about the acts or their timing changes.)
 // PURPOSE: The Ride hand-over's shared pieces (plans/22-Nov-2026-ride-handover-plan.md, 0.7.6 stream ride). A ride is
 //          a short scene in acts, each named in the title row's status slot, with the clock held still while the camera
 //          moves so the player never watches two things change at once:
@@ -116,6 +120,33 @@ enum RideWords {
         let name = TableWords.ballName(ball, cueBall: ball, table: table)
         return String(localized: "Riding with \(name)",
                       comment: "Status in the title row while the camera rides with the struck ball; the argument is the ball's name with its article, for example 'the cue ball'")
+    }
+
+    /// The mount's status, while the camera leaves the overhead view and comes down behind the ball: says where the
+    /// view is going before it gets there. ShowpieceModel.rideStatus shows it for the mount act.
+    static func mounting(ball: Int, table: TableKind) -> String {
+        let name = TableWords.ballName(ball, cueBall: ball, table: table)
+        return String(localized: "Going down behind \(name)",
+                      comment: "Status in the title row while the camera leaves the overhead view and comes down behind the struck ball to ride with it; the argument is the ball's name with its article, for example 'the cue ball'")
+    }
+
+    /// Read out by VoiceOver as the view switches from the overhead table to riding (RideOverlay posts it once per
+    /// mount), so a player who cannot see the camera move still knows what the screen now shows and from where.
+    static func mountAnnouncement(ball: Int, table: TableKind) -> String {
+        let name = TableWords.ballName(ball, cueBall: ball, table: table)
+        return String(localized: "Ride: the view leaves the overhead table and follows \(name) from just behind it.",
+                      comment: "Spoken announcement as the Ride camera comes down from the overhead view to ride behind the struck ball; the argument is the ball's name with its article, for example 'the cue ball'")
+    }
+
+    /// Read out by VoiceOver as the ride rises back to the overhead view (RideOverlay posts it once per dismount).
+    static var dismountAnnouncement: String {
+        String(localized: "Ride: back to the overhead view of the whole table.",
+               comment: "Spoken announcement as the Ride camera rises from behind the ball back to the overhead view of the table")
+    }
+
+    /// The word on the ride's small table map, beside the dot for the ridden ball (the camera rides with it).
+    static var you: String {
+        String(localized: "You", comment: "Word on Ride's small table map beside the dot for the ball the camera rides with, the player's point of view")
     }
 
     static var backToTable: String {

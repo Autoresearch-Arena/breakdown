@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the Lens is named by its one
+//          name, "Physics Lens", where a player reads it.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the match is the state card
 //          with the kit's scoreboard strip first (MatchScoreboard: "You" and "Computer", the computer's level once as a
 //          badge, each seat's score, group or balls left, the cyan dot on whose turn it is, the target or nine-ball's
@@ -486,7 +488,7 @@ struct MatchCard: View {
     /// beside Continue, so the slim card keeps it too. Nil when nothing is offered.
     private var lensAction: KitAction? {
         guard model.offerLensReplay else { return nil }
-        return KitAction(String(localized: "Watch it in the Lens"), systemImage: "eye") { model.watchShotInLens() }
+        return KitAction(String(localized: "Watch it in the Physics Lens"), systemImage: "eye") { model.watchShotInLens() }
     }
 
     /// The remarkable shot on offer, or nil for the break (the ruling already says it was the break) and when nothing

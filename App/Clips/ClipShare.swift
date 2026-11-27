@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 10, "Achievements and sharing": the one route
+//          for a share picture too. sharePicture draws any SwiftUI view (the share picture, SharePictureCard) with
+//          ImageRenderer at three pixels a point, writes it as a PNG to the temporary folder, opens this same sheet and
+//          removes the file when the sheet closes. The drawing and writing moved here from DailyShare, so every result's
+//          picture and every clip leave the game through one place.)
 // PURPOSE: Opens the system's own share sheet for a finished Lens clip (0.7.7, plans/23-Nov-2026-clips-plan.md, Step
 //          8): on iPhone and iPad the activity sheet (save to the photo library, send in a message, pass to a nearby
 //          device and the rest; on iPad a popover from the bottom middle of the window, no arrow), on the Mac the
@@ -8,8 +13,12 @@
 //          picked, so ClipMaker knows the file is no longer in use.
 //          Presented from the top-most presented view controller of the foreground scene's key window (iOS) or the
 //          key window's content view (macOS); if there is none, onDone runs at once.
-// SRP/DRY check: Pass - the only share sheet in the app.
+//          sharePicture (package 10) hands a still picture to the same sheet: drawn, written, shared, removed.
+// SRP/DRY check: Pass - the only share sheet in the app, and the only place a share picture is drawn to a file.
 import Foundation
+import ImageIO
+import SwiftUI
+import UniformTypeIdentifiers
 #if canImport(UIKit)
 import UIKit
 #elseif canImport(AppKit)
@@ -18,6 +27,43 @@ import AppKit
 
 @MainActor
 enum ClipSharePresenter {
+    // MARK: A still picture (UI rethink package 10)
+
+    /// Draw `view` at three pixels a point, write it as `fileName`.png in the temporary folder, open the share sheet
+    /// and remove the file once the sheet closes. False (logged) when the picture could not be drawn or written; the
+    /// sheet is not opened then.
+    @discardableResult
+    static func sharePicture<V: View>(_ view: V, fileName: String) -> Bool {
+        let renderer = ImageRenderer(content: view)
+        renderer.scale = 3
+        guard let image = renderer.cgImage else {
+            NSLog("ClipSharePresenter: the share picture could not be drawn")
+            return false
+        }
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(fileName + ".png")
+        guard writePNG(image, to: url) else {
+            NSLog("ClipSharePresenter: the share picture could not be written to %@", url.path)
+            return false
+        }
+        present(url) {
+            // The sheet has closed: the file is no longer in use.
+            do { try FileManager.default.removeItem(at: url) } catch {
+                NSLog("ClipSharePresenter: the shared picture could not be removed: %@", error.localizedDescription)
+            }
+        }
+        return true
+    }
+
+    /// Write a picture as a PNG file. False when it could not be written.
+    private static func writePNG(_ image: CGImage, to url: URL) -> Bool {
+        guard let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)
+        else { return false }
+        CGImageDestinationAddImage(destination, image, nil)
+        return CGImageDestinationFinalize(destination)
+    }
+
+    // MARK: The sheet
+
     #if canImport(UIKit)
     static func present(_ url: URL, onDone: @escaping @MainActor () -> Void) {
         guard let root = topController() else { onDone(); return }

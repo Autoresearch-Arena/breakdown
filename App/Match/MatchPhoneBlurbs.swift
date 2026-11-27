@@ -1,9 +1,18 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
-// PURPOSE: A match on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "Every phone state": "Match: the
-//          title shows whose turn and the score; a ruling is a docked blurb with Continue as the primary action; a
-//          ruling that is a choice keeps both its buttons in the blurb and hides the primary action"). Everything the
-//          match card (MatchViews.swift) shows on the other layouts, as small docked blurbs instead of one glass card:
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the upright phone's thumb dock: these blurbs
+//          are word sources of the dock, so they show in its word strip and pull-up sheet, never over the table. The
+//          title row names the game only ("Eight-ball", PhoneTitle.match): whose turn and the score are the dock's
+//          scoreboard strip (MatchScoreboard, the kit's Scoreboard), so the standings here are the ones beside a
+//          scoreboard (MatchStandings besideScoreboard; wave 2 note 18). A ruling is headed by the kit's verdict word
+//          ("Foul", "Legal", "Loss of turn", RulingVerdict, as the ruling card) instead of the old titles, unless it
+//          ended the game. "Watch it in the Lens" is "Watch it in the Physics Lens" (the one name; wave 2 note 44). The
+//          kit's compact body and paper roles replace the old body and the system's grey.)
+// PURPOSE: A match on the upright phone (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "Every phone state", and
+//          plans/26-Nov-2026-ui-rethink-plan.md package 6: the title names the game, the dock's scoreboard says whose
+//          turn and the score; a ruling is the word strip's lead with Continue as the primary action; a ruling that is
+//          a choice keeps both its answers as the strip's buttons and hides the primary action). Everything the match
+//          card (MatchViews.swift) shows on the other layouts, as the dock's word sources instead of one card:
 //            aiming   - one status blurb: the computer thinking or lining up (and its choice prompt), the settled
 //                       routine ruling (folded to two lines, a tap opens the standings under it), and the standings
 //                       (MatchStandings: the ball to hit first, eight-ball's groups and balls left, the table games'
@@ -16,7 +25,8 @@
 //                       instead, and the Lens offer then moves to a second one-line blurb of its own.
 //            handOver - whose shot it is, and Ready as the primary action.
 //            over     - who won and why, the scores, the record; Menu in the blurb, Rematch as the primary action.
-//          Also PhoneTitle.match (the title row's words) and PhonePrimaryAction.match (the strip's white capsule). The
+//          Also PhoneTitle.match (the title row's words: the game's name) and PhonePrimaryAction.match (the dock's cyan
+//          primary). The
 //          announcements and the clock's haptic are not here: the blurbs come and go, so MatchFeedback is hosted by
 //          PlayTableLayer on the upright phone (FreePlayPhoneBlurbs.swift, PhonePlayFeedback).
 //          The call itself (eight-ball after the break) is not here: the plan puts the call row in the aiming panel
@@ -58,7 +68,7 @@ enum MatchPhone {
 
     /// "Watch it in the Lens", as the card's button: the break or the remarkable shot replayed slowly in the Lens.
     static func lensButton(_ model: ShowpieceModel) -> BlurbButton {
-        BlurbButton(String(localized: "Watch it in the Lens"),
+        BlurbButton(String(localized: "Watch it in the Physics Lens"),
                     hint: namedHighlight(model) == nil
                         ? String(localized: "Replays the break slowly with the physics drawn on the table")
                         : HighlightWords.watchHint) {
@@ -126,12 +136,12 @@ struct MatchPhoneBlurbs: View {
                 VStack(alignment: .leading, spacing: 6) {
                     computerLines(match)
                     Text(verbatim: MatchCard.settledWords(settled, match))
-                        .font(Theme.body)
+                        .font(Theme.bodyCompact)
                         .lineLimit(open ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
                     if open {
                         if showingWhy, let shot = why { reasons(shot) }
-                        MatchStandings(match: match)
+                        MatchStandings(match: match, besideScoreboard: true)
                     }
                 }
             }
@@ -139,7 +149,7 @@ struct MatchPhoneBlurbs: View {
             Blurb {
                 VStack(alignment: .leading, spacing: 6) {
                     computerLines(match)
-                    MatchStandings(match: match)
+                    MatchStandings(match: match, besideScoreboard: true)
                 }
             }
         }
@@ -151,14 +161,14 @@ struct MatchPhoneBlurbs: View {
         if match.computerSeatToAct != nil {
             if let choice = match.state.pendingChoice {
                 Text(verbatim: MatchWords.choicePrompt(choice, names: match.playerNames, you: match.you))
-                    .font(Theme.body)
+                    .font(Theme.bodyCompact)
                     .fixedSize(horizontal: false, vertical: true)
             }
             let lining = model.computerTurnStage == .staging || model.computerTurnStage == .striking
             HStack(spacing: 8) {
                 ProgressView().controlSize(.small).accessibilityHidden(true)
                 Text(verbatim: lining ? OpponentWords.liningUp : OpponentWords.thinking)
-                    .font(Theme.body)
+                    .font(Theme.bodyCompact)
             }
         }
     }
@@ -198,7 +208,8 @@ struct MatchPhoneBlurbs: View {
                 if shot != nil { out.append(whyButton(open: { rulingFolded = false })) }
                 return out
             }()
-            Blurb(title: MatchCard.rulingTitle(r, match),
+            // The kit's verdict word, as the ruling card heads it; a ruling that ended the game keeps its result.
+            Blurb(title: r.result == nil ? RulingVerdict(r).word : MatchCard.rulingTitle(r, match),
                   sentence: rulingText(r, match, shot: shot, choice: choice),
                   folded: $rulingFolded,
                   buttons: buttons)
@@ -231,7 +242,7 @@ struct MatchPhoneBlurbs: View {
     /// The Lens offer beside a choice (whose answers fill the ruling's two buttons): the shot named, one button.
     private func lensOfferBlurb() -> some View {
         let title = MatchPhone.namedHighlight(model).map { HighlightWords.title($0.kind) }
-            ?? String(localized: "Watch it in the Lens")
+            ?? String(localized: "Watch it in the Physics Lens")
         return Blurb(title: title, buttons: [MatchPhone.lensButton(model)])
     }
 
@@ -312,7 +323,7 @@ struct MatchPhoneBlurbs: View {
     private func reasons(_ shot: OpponentShot) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             ForEach(Array(OpponentWords.why(shot).enumerated()), id: \.offset) { _, s in
-                Text(verbatim: s).font(Theme.body).fixedSize(horizontal: false, vertical: true)
+                Text(verbatim: s).font(Theme.bodyCompact).fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -328,54 +339,11 @@ struct MatchPhoneBlurbs: View {
 // MARK: The title
 
 extension PhoneTitle {
-    /// The match's title on the upright phone, one line: whose turn and where the game stands. The result once the
-    /// game is over. Otherwise whose turn ("Your turn", "Your break", "Computer (Hard) to shoot") and, after a
-    /// middle dot, the score (five-pin and bar billiards; the person's first), the person's group (eight-ball) or
-    /// the ball to hit first (nine-ball). The person's turn says "Your turn", not "Your shot": "Your shot" is the
-    /// strip's button that brings the aiming panel back, and the two would read as one.
+    /// The match's title on the upright phone: the game's name only ("Eight-ball", "Bar billiards"). Package 6: the
+    /// design language's title row never says who is up or the score; the dock's scoreboard strip does.
     static func match(_ model: ShowpieceModel) -> String? {
         guard let match = model.match else { return nil }
-        let state = match.state
-        if match.phase == .over, let r = state.result {
-            return MatchWords.resultTitle(r, names: match.playerNames, you: match.you)
-        }
-        let isBreak = state.isBreak && !state.kind.isTableGame
-        let who: String
-        if state.turn == match.you {
-            who = isBreak ? String(localized: "Your break")
-                          : String(localized: "Title: Your turn", defaultValue: "Your turn",
-                                   comment: "Phone title row during a match, on the person's turn; short")
-        } else {
-            who = MatchWords.toShoot(MatchWords.name(state.turn, in: match.playerNames), isBreak: isBreak)
-        }
-        guard let detail = standing(match) else { return who }
-        return who + " · " + detail
-    }
-
-    /// The short standing after the turn: the score, the group or the ball to hit first; nil when there is none.
-    private static func standing(_ match: MatchMode) -> String? {
-        let state = match.state
-        if match.rules.keepsRunningScore {
-            let scores = state.players.map { p in
-                state.scores.indices.contains(p.id.index) ? state.scores[p.id.index] : 0
-            }
-            guard !scores.isEmpty else { return nil }
-            // Alone (bar billiards against the clock): the one score. Two seats: the person's first, so "12–8" on the
-            // person's line reads as theirs.
-            if scores.count == 1 { return scores[0].formatted(.number.locale(AppLocale.numbers)) }
-            var ordered = state.players.map(\.id)
-            if let you = match.you, let i = ordered.firstIndex(of: you) { ordered.insert(ordered.remove(at: i), at: 0) }
-            return ordered.map { id in
-                (state.scores.indices.contains(id.index) ? state.scores[id.index] : 0).formatted(.number.locale(AppLocale.numbers))
-            }.joined(separator: "–")
-        }
-        if state.kind == .eightBall, let you = match.you {
-            let words = MatchWords.groupLine(state.group(of: you), left: state.ballsRemaining(for: you).count,
-                                             tableOpen: state.tableOpen)
-            return words.isEmpty ? nil : words
-        }
-        if state.kind == .nineBall, let low = state.ballsLeft.min() { return MatchWords.hitFirst(low) }
-        return nil
+        return MatchWords.title(match.state.kind)
     }
 }
 

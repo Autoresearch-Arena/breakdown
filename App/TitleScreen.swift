@@ -1,5 +1,9 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 7's leftover notes: the words a player reads
+//          name the tab "Aim", not "Your shot", and the Lens "Physics Lens" (How to play's line, Read the Physics
+//          Lens and its tip, the trick-shots tip, the controller's Aim and the menu); the shot of the day's chip no
+//          longer checks for the old "circle" mark, which DailyMenuRow.mark no longer returns (nil hides the chip).)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets",
 //          plans/26-Nov-2026-ui-rethink-plan.md and mockup-menu-ipad.png: the menu is Shot of the day, Continue when
 //          something is in progress, Play (the cyan primary when nothing is), Trick shots, Behind the 8-ball and
@@ -644,7 +648,7 @@ struct TitleScreen: View {
     /// Today's shot's chip: its tries or the streak once there is something to show (DailyMenuRow.mark); nothing before
     /// the first try with no streak, as every progress chip hides until something is earned.
     private var dailyChip: MenuChip? {
-        guard let mark = DailyMenuRow.mark(model), mark.symbol != "circle" else { return nil }
+        guard let mark = DailyMenuRow.mark(model) else { return nil }
         return .value(mark.text)
     }
 
@@ -909,7 +913,7 @@ enum MenuGuide {
     }
     static var howTo: MenuEntry {
         MenuEntry(symbol: "questionmark.circle", title: String(localized: "How to play"),
-                  line: String(localized: "The controls, the Lens and the rules of each game."))
+                  line: String(localized: "The controls, the Physics Lens and the rules of each game."))
     }
     static var options: MenuEntry {
         MenuEntry(symbol: "slider.horizontal.3", title: String(localized: "Options"),
@@ -1105,13 +1109,13 @@ struct HowToPlaySheet: View {
             (String(localized: "Take your shot"),
              FirstInstruction.line(for: input) + " "
                 + String(localized: "The small picture of the white ball sets where the cue strikes it, for spin.")),
-            (String(localized: "Read the Lens"),
+            (String(localized: "Read the Physics Lens"),
              // 0.7.10 everyone: the paths named by shape as well as colour.
-             String(localized: "Tap Lens to see the physics: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
+             String(localized: "Tap Physics Lens: dashed magenta paths are balls sliding, solid cyan paths are balls rolling, thicker is faster. Drag the bar to scrub through the shot either way.")),
             (String(localized: "Try again"),
              String(localized: "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare.")),
             (String(localized: "Watch the trick shots"),
-             String(localized: "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Six short lessons wait under Lessons whenever you want them.")),
+             String(localized: "Tap Trick shots to watch a shot that looks impossible, see why it works in the Physics Lens, then make it yourself. Six short lessons wait under Lessons whenever you want them.")),
         ]
     }
 
@@ -1253,8 +1257,8 @@ private struct ControlsPage: View {
                  String(localized: "The left stick turns the aim. The right trigger adds power and the left trigger takes it away. The right stick moves the tip on the white ball.")),
                 (String(localized: "Buttons"),
                  String(localized: "A plays the shot, or presses the main button of the card on screen. B jumps to where the balls stopped. X turns the Physics Lens on or off. The shoulder buttons step through the explained moments.")),
-                (String(localized: "Your shot and the menu"),
-                 String(localized: "Y opens and closes Your shot. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.")),
+                (String(localized: "Aim and the menu"),
+                 String(localized: "Y opens and closes Aim. The Menu button opens the main menu. The direction pad moves a ball in hand and steps through the call.")),
                 // 0.7.10 everyone: the shot of the day with a controller alone (DailyController), the mapping's line.
                 (String(localized: "Shot of the day"),
                  String(localized: "Once today's shot is finished, the Options button shares your result and a left stick click opens the board.")),

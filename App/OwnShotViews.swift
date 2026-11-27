@@ -27,6 +27,8 @@
 //            cover the table's half.
 //          No sound and no haptic anywhere (CardButtonRow builds its content twice, so a haptic there could fire twice;
 //          the button's change of words is the feedback, and VoiceOver hears where the shot went).
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 4's leftover note: Make it again and Play it now
+//          are the kit's secondary button, as their siblings on the highlight card, instead of the system glass.)
 // SRP/DRY check: Pass - views only. The rules and actions are OwnShotShelf's, the words OwnShotWords', the drawing
 //          TrickPathThumb's; the row is the kit's ListRow, as TrickShotList's authored rows; the in-place name field follows the match card's
 //          PlayerNamesEditor; the card button is styled as HighlightCard's own buttons.
@@ -59,11 +61,12 @@ struct MakeItAgainButton: View {
     /// Styled as the card's other buttons (HighlightCard.details).
     private func button(_ title: String, symbol: String, hint: String,
                         action: @escaping @MainActor () -> Void) -> some View {
+        // The kit's secondary, as its siblings on HighlightCard (Share clip, Try the trick shot): the style sets the
+        // words' face and the capsule's height.
         Button(action: action) {
-            Label(title, systemImage: symbol).font(.headline)
-                .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+            Label(title, systemImage: symbol).lineLimit(1)
         }
-        .buttonStyle(.glass)
+        .buttonStyle(.kitSecondary)
         .accessibilityHint(hint)
     }
 }

@@ -17,6 +17,8 @@
 //          is closed and the Ride map is not up (Ride has its own map).
 //          Reads the model (lensOn, menuOpen, rideShowsGuides, timeline, time) and the SceneBridge (the table scene's
 //          camera, the 3D view's size and origin, the measured chrome). Writes nothing.
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover lint note: the plan's backing takes the kit's small corners and bar
+//          billiards' holes the ground colour, instead of a bare 6 point radius and black.)
 // SRP/DRY check: Pass - checked RideMap (its table drawing is now TablePlan, shared here rather than copied),
 //          LensCallouts (the same AimProjector and StageSpace pattern) and MomentFrame/TableZoom (they move the camera;
 //          this only reads where it ended up).
@@ -99,7 +101,7 @@ struct LensPlanLayer: View {
                              y: CGFloat(view.free.bottom) + dy - margin - size.height / 2)
         return Canvas { ctx, canvasSize in draw(&ctx, size: canvasSize, view: view) }
             .frame(width: size.width, height: size.height)
-            .background(palette.ground.opacity(0.55), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+            .background(palette.ground.opacity(0.55), in: Theme.Corner.tileShape)
             .position(centre)
             .opacity(view.zoomedPastRails ? 1 : 0)
             .animation(reduceMotion ? nil : .easeInOut(duration: 0.35), value: view.zoomedPastRails)
@@ -113,7 +115,7 @@ struct LensPlanLayer: View {
         // Bar billiards' holes in the bed, so its plan is its own table.
         for hole in tl.table.bedHoles {
             let c = map.at(hole.center)
-            ctx.fill(Path(ellipseIn: CGRect(x: c.x - 1.4, y: c.y - 1.4, width: 2.8, height: 2.8)), with: .color(.black))
+            ctx.fill(Path(ellipseIn: CGRect(x: c.x - 1.4, y: c.y - 1.4, width: 2.8, height: 2.8)), with: .color(palette.ground))
         }
         // The box: the cloth the camera is looking at, in the Lens's rolling cyan.
         var box = Path()

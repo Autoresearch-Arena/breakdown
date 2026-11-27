@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: Theme.phoneTitle and
+//          phoneControl are now heading and label; bare white is paper and paper2.)
 // PURPOSE: The controls and words of "Same shot, every surface" (0.7.7, plans/23-Nov-2026-every-world-plan.md Build
 //          step 7). Nothing here opens by itself, suggests itself, plays a sound or carries a badge.
 //            - EveryWorldMenuItem: the entry ("Every surface", square.3.layers.3d), shown only while the fan can open
@@ -28,6 +30,8 @@
 //          panel is one container labelled "Every surface"; each chip or row is a button named by its surface, whose
 //          value is that surface's sentence, selected when picked. ShowpieceView, NotebookPanel, PhoneTitleRow and
 //          SurfaceMenuItems mount these.
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover lint note: the card's corners and padding are Theme values (medium
+//          corners, 12 point padding) instead of bare numbers.)
 // SRP/DRY check: Pass - follows WhatIfViews (the card's glass, the compact rule, the phone panel's glass and
 //          PhonePanelControl, the anchored blurb's placement through BlurbPlacement, Blurb and BlurbLeader) without
 //          copying its what-if controls; the words are EveryWorldWords, the state EveryWorldFan, the colours
@@ -79,6 +83,7 @@ private func tapSurface(_ s: PlaySurface, _ fan: EveryWorldFan) {
 struct EveryWorldChipRow: View {
     let model: ShowpieceModel
     @Environment(\.colorSchemeContrast) private var contrast
+    @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var fan: EveryWorldFan { model.everyWorld }
@@ -109,9 +114,9 @@ struct EveryWorldChipRow: View {
                 Circle().fill(colour).frame(width: 8, height: 8)
                 Image(systemName: s.symbol).foregroundStyle(colour)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text(verbatim: s.title).font(Theme.phoneControl).lineLimit(1)
+                    Text(verbatim: s.title).font(Theme.label).lineLimit(1)
                     if isHome {
-                        Text(EveryWorldWords.playedHere).font(.caption2).foregroundStyle(.white.opacity(0.75)).lineLimit(1)
+                        Text(EveryWorldWords.playedHere).font(.caption2).foregroundStyle(palette.paper2).lineLimit(1)
                     }
                 }
             }
@@ -122,7 +127,7 @@ struct EveryWorldChipRow: View {
                 if isPicked {
                     Capsule().fill(colour).frame(height: 3).padding(.horizontal, 12).padding(.bottom, 3)
                 } else if isHome {
-                    Capsule().fill(.white).frame(height: 2).padding(.horizontal, 12).padding(.bottom, 3)
+                    Capsule().fill(palette.paper).frame(height: 2).padding(.horizontal, 12).padding(.bottom, 3)
                 }
             }
             .modifier(PhonePanelControl(shape: .capsule))
@@ -216,7 +221,7 @@ struct EveryWorldCard: View {
             buttons
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
+        .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
         .tint(palette.accent)
         .accessibilityElement(children: .contain)
         .transition(.opacity)
@@ -287,7 +292,7 @@ struct EveryWorldCard: View {
             compactButtons
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
+        .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
         .tint(palette.accent)
         .accessibilityElement(children: .contain)
         .transition(.opacity)
@@ -398,7 +403,7 @@ struct EveryWorldPhonePanel: View {
     private var title: some View {
         HStack(spacing: 6) {
             Image(systemName: EveryWorldWords.symbol).foregroundStyle(palette.accent).accessibilityHidden(true)
-            Text(EveryWorldWords.title).font(Theme.phoneTitle).lineLimit(1).accessibilityAddTraits(.isHeader)
+            Text(EveryWorldWords.title).font(Theme.heading).lineLimit(1).accessibilityAddTraits(.isHeader)
             if fan.showSpinner {
                 ProgressView().controlSize(.small).accessibilityLabel(EveryWorldWords.working)
             }
@@ -411,11 +416,11 @@ struct EveryWorldPhonePanel: View {
         if fan.canSwitch, let p = fan.picked {
             Button { fan.switchToPicked() } label: {
                 Text(EveryWorldWords.playOn(p))
-                    .font(Theme.phoneControl).lineLimit(1)
+                    .font(Theme.label).lineLimit(1)
                     .minimumScaleFactor(fixed ? 1 : 0.7)
                     .padding(.horizontal, 16).frame(minHeight: 44)
                     .foregroundStyle(palette.ground)
-                    .background(.white, in: .capsule)
+                    .background(palette.paper, in: .capsule)
                     .contentShape(Capsule())
             }
             .buttonStyle(.plain)

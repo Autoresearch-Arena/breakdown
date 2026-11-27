@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the Lens is named by its one
+//          name, "Physics Lens", where a player reads it.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the free-play cards (ball in
 //          hand, place the balls, table cleared, worth watching, the intro's end) are the kit's panel with its buttons:
 //          the main action the cyan primary, the others secondary, a worded quiet "Close" in place of the bare cross;
@@ -467,7 +469,7 @@ struct HighlightCard: View {
             }
             if offer.canWatch {
                 Button { model.watchHighlight() } label: {
-                    Label(String(localized: "Watch it in the Lens"), systemImage: "eye").lineLimit(1)
+                    Label(String(localized: "Watch it in the Physics Lens"), systemImage: "eye").lineLimit(1)
                 }
                 .buttonStyle(.kitPrimary)
                 .accessibilityHint(HighlightWords.watchHint)

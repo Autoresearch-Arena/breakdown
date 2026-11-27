@@ -5,6 +5,11 @@
 //          dots; the section titles are the kit's section labels; the replace question is a panel with the kit's
 //          buttons (Keep my saved game the way on, Start a new game a destructive secondary); the rules' numbers are
 //          plain sans in paper2, the details paper2, the spacing on the scale.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 5's leftover note: the page sets no title of its
+//          own: the Tables list's frontDoorPushedPage(title:onDone:) gives it the table's name, Done, the ground and
+//          the cyan tint, and How to play's rules links do the same for TableRulesPage, so one title is set. The side
+//          margins follow the kit's page margin for the device (16 on the phone, 20 on the fold's panel, 24 on big
+//          screens) and the sentences take the phone's compact body there.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: asks to replace only this game's save; Keep
 //          my saved game plays it).
 // PURPOSE: A table's game page, pushed from its entry in the Tables list (plans/21-Nov-2026-other-tables-games-plan.md
@@ -44,9 +49,20 @@ struct TableGamePage: View {
     /// Called once play has started (the Tables list opens the aiming controls and closes itself).
     let onStarted: () -> Void
     @Environment(\.palette) private var palette
+    private var device = KitDeviceReader()
     /// A new game was asked for while a match is saved: the request, held until the player says whether to replace
     /// the saved one.
     @State private var replacing: MatchStartRequest?
+
+    init(model: ShowpieceModel, table: TableKind, game: MatchKind, onStarted: @escaping () -> Void) {
+        self.model = model
+        self.table = table
+        self.game = game
+        self.onStarted = onStarted
+    }
+
+    /// The sentence size for the device: the compact body on the upright phone, the body elsewhere.
+    private var bodyFont: Font { device.current == .phone ? Theme.bodyCompact : Theme.body }
 
     /// The games the computer plays on these tables (0.7.4). Bar billiards stays a game played alone.
     private var playsTheComputer: Bool { game == .bumperPool || game == .fivePin }
@@ -55,8 +71,8 @@ struct TableGamePage: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.Space.lg) {
                 VStack(alignment: .leading, spacing: Theme.Space.xs) {
-                    Text(verbatim: table.summary).font(Theme.body).foregroundStyle(palette.paper2)
-                    Text(TableGameWords.gameLine(game)).font(Theme.body).foregroundStyle(palette.paper)
+                    Text(verbatim: table.summary).font(bodyFont).foregroundStyle(palette.paper2)
+                    Text(TableGameWords.gameLine(game)).font(bodyFont).foregroundStyle(palette.paper)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 if let request = replacing, let saved = MatchMode.savedSummary(for: request.kind) {
@@ -96,13 +112,11 @@ struct TableGamePage: View {
                     TableRulesSteps(game: game)
                 }
             }
-            .padding(Theme.Space.lg)
+            .padding(.horizontal, Theme.Space.pageMargin(device.current))
+            .padding(.vertical, Theme.Space.lg)
         }
+        // The title, Done, the ground and the tint are the caller's frontDoorPushedPage (TableList.page).
         .background(palette.ground)
-        .navigationTitle(Text(verbatim: table.title))
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 
     /// The person's record against the computer at the chosen level in this game ("2 won of 5 played"), or nil before
@@ -143,7 +157,7 @@ struct TableGamePage: View {
         }
         return VStack(alignment: .leading, spacing: Theme.Space.sm) {
             Text(String(localized: "A new game replaces your saved one: \(MatchWords.savedLine(saved))"))
-                .font(Theme.body)
+                .font(bodyFont)
                 .foregroundStyle(palette.paper)
                 .fixedSize(horizontal: false, vertical: true)
             KitButtonRow(primary: keep,
@@ -172,18 +186,22 @@ struct TableGamePage: View {
     }
 }
 
-/// The rules of one table game on their own page (the How to play sheet links here).
+/// The rules of one table game on their own page (the How to play sheet links here). Its title, Done and ground come
+/// from the caller's frontDoorPushedPage (HowToPlaySheet.rulesLink).
 struct TableRulesPage: View {
     let game: MatchKind
+    private var device = KitDeviceReader()
+
+    init(game: MatchKind) {
+        self.game = game
+    }
 
     var body: some View {
         ScrollView {
-            TableRulesSteps(game: game).padding(Theme.Space.lg)
+            TableRulesSteps(game: game)
+                .padding(.horizontal, Theme.Space.pageMargin(device.current))
+                .padding(.vertical, Theme.Space.lg)
         }
-        .navigationTitle(Text(MatchWords.title(game)))
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 }
 

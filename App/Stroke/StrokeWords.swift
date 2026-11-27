@@ -19,6 +19,8 @@
 //          player reads is here, for the screen and VoiceOver alike.
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 2's leftover note: the drill's speeds follow
+//          NumberStyle's one speed rule, two decimals below 10 m/s, instead of one decimal always.)
 // SRP/DRY check: Pass - checked PowerWords (the plain word, soft to hard, still comes from there and is decided by the
 //          ball's speed, which its bands were written for), RetryWords (the comparison's outcome half is its own; this
 //          file only adds the stroke half), StrokeEffect (decides whether the stroke changed what happened; this file
@@ -28,8 +30,9 @@ import Foundation
 enum StrokeWords {
     // MARK: Power readout
 
-    /// A metres-per-second number in the player's language, one decimal.
-    private static func speed(_ v: Double) -> String { String(format: "%.1f", locale: AppLocale.numbers, v) }
+    /// A metres-per-second number in the player's language, by the one speed rule (NumberStyle.speed: two decimals
+    /// below 10 m/s, one at 10 and over), so the drill's readouts match every other speed in the game.
+    private static func speed(_ v: Double) -> String { NumberStyle.speed(metresPerSecond: v).number }
 
     // The three readouts take the cue in hand (the caller passes model.cueInHand, the cue the game picked for this
     // shot): power is the swing, so the ball's speed, and the soft-to-hard word decided by it, depend on the cue's

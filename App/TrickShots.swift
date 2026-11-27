@@ -27,6 +27,11 @@
 //          bumper pool or bar billiards is solved there.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 bank: a trick shot starts on the table its library entry
 //          names (AuthoredTrick.table), which ShowpieceModel.physicsTable already solves and draws.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 11, one glossary of shot names: every title in
+//          sentence case ("Stop dead", "The long bridge draw"), the playful wording kept; each shot names the
+//          techniques it uses (TrickShot.techniques, read from TrickShots.techniques(forID:)) for the list row's meta
+//          line, in the glossary's words (ShotNames.line); the long bridge draw's hook says "draw", not "screw", and
+//          the massé's goal says "bend round", not "curve round", as the massé lesson does.)
 // PURPOSE: The trick-shot library as the app shows it. Every shot has its id, title, a one-sentence hook, where
 //          the balls start (only the balls it uses; every other ball is off the table), the authored answer (aim, power,
 //          cue-tip height and side; cue elevation for the massé, the jump and the carom), the goal the app checks from
@@ -42,6 +47,7 @@
 //          Pockets by index: 0 (0,0), 1 (2.54,0), 2 (0,1.27), 3 (2.54,1.27) corners; 4 (1.27,0), 5 (1.27,1.27) sides.
 //          Read by TrickShotMode (flow), TrickShotJudge (goals and windows) and TrickShotViews (titles and words).
 // SRP/DRY check: Pass - the app's types and words; the numbers are read from the package library, never retyped. The
+//          technique names are the glossary's (ShotNames.swift); only which shot uses which lives here. The
 //          converters from the library's types (TrickSettings(_:), TrickGoal(_:), TrickWindow(_:)) live here beside
 //          the types they build, and Lessons and EightBallSituations reuse them.
 import BreakdownAuthored
@@ -170,6 +176,15 @@ struct TrickShot: Identifiable, Equatable {
     var table: TableKind = .standard
 
     var isBreak: Bool { if case .rack = setup { return true } else { return false } }
+
+    // UI rethink package 11: the technique the playful title is about, for the list row's meta line.
+    /// The glossary's techniques this shot uses, in the order it uses them (TrickShots.techniques(forID:)). Computed
+    /// from the id, so the memberwise calls (Lessons, OwnShot, DailyShot) need no change; empty for a shot that is
+    /// none of the six (a bank, a kick, a break), for a lesson's bridge and for a player's own or the day's shot.
+    var techniques: [ShotTechnique] { TrickShots.techniques(forID: id) }
+
+    /// The meta line's words: the techniques in sentence case ("Draw and massé"), or nil when there are none.
+    var techniqueLine: String? { ShotNames.line(techniques) }
 }
 
 
@@ -196,6 +211,23 @@ enum TrickShots {
         (all.firstIndex { $0.id == shot.id } ?? 0) + 1
     }
 
+    /// Which of the glossary's techniques each authored shot is built on, by the library's permanent ids. Squirt and
+    /// side off the rail are about side spin, the break, the kick, the bank and the combination about angles: none of
+    /// the six, so they have no entry and no meta line. Only exact authored ids match, so the shot of the day
+    /// ("daily-" plus an id) never gives its trick away before the day ends.
+    private static let techniqueByID: [String: [ShotTechnique]] = [
+        "stop-dead": [.stop],
+        "bridge-draw": [.draw],
+        "follow-train": [.follow],
+        "throw-it": [.throwShot],
+        "masse-curve": [.masse],
+        "jump-over": [.jump],
+        "draw-masse-carom": [.draw, .masse],
+    ]
+
+    /// The techniques a shot with this id uses, or none.
+    static func techniques(forID id: String) -> [ShotTechnique] { techniqueByID[id] ?? [] }
+
     /// One shot: the package library's numbers with this file's words. A library difficulty outside 1 to 3 is an
     /// authoring mistake, stopped here rather than shown as some other difficulty.
     private static func make(_ a: AuthoredTrick, title: String, hook: String, goalLine: String, idea: String,
@@ -217,9 +249,9 @@ enum TrickShots {
                          table: TableKind(a.table))
     }
 
-    // MARK: 1. The Called Break
+    // MARK: 1. The called break
     static let calledBreak = make(
-        AuthoredTricks.calledBreak, title: String(localized: "The Called Break"),
+        AuthoredTricks.calledBreak, title: String(localized: "The called break"),
         hook: String(localized: "Call it before you hit it: break the rack and send the 3 into the far corner on its side."),
         goalLine: String(localized: "Break and drop the 3 in the far corner on its side of the rack."),
         idea: String(localized: "Where you strike the front ball decides which way the energy runs through the rack. Hit it a fraction off-centre and the push travels down one line of balls, out to the 3, and into the corner."),
@@ -227,9 +259,9 @@ enum TrickShots {
         mathsSpoken: String(localized: "At each contact a ball passes on its speed times the cosine of the angle between its path and the line through the two centres."),
         praise: String(localized: "Called it, and it went. That is a trick break."))
 
-    // MARK: 2. Stop Dead
+    // MARK: 2. Stop dead
     static let stopDead = make(
-        AuthoredTricks.stopDead, title: String(localized: "Stop Dead"),
+        AuthoredTricks.stopDead, title: String(localized: "Stop dead"),
         hook: String(localized: "Pot the 3 and make the cue ball freeze on the very spot where it struck."),
         goalLine: String(localized: "Pot the 3. The cue ball must stop where it hit."),
         idea: String(localized: "Strike just below centre so the backspin has worn off exactly as the cue ball arrives. With no spin left, it hands all its speed to the 3 and stops dead."),
@@ -237,19 +269,19 @@ enum TrickShots {
         mathsSpoken: String(localized: "Equal balls meeting head on with no spin: the cue ball's speed afterwards is zero, and the 3 leaves with the cue ball's speed."),
         praise: String(localized: "Stopped dead. All of its speed went into the 3."))
 
-    // MARK: 3. The Long Bridge Draw
+    // MARK: 3. The long bridge draw
     static let bridgeDraw = make(
-        AuthoredTricks.bridgeDraw, title: String(localized: "The Long Bridge Draw"),
-        hook: String(localized: "Pot the 6, then screw the cue ball back the whole length of the table to sink the 2 at the far end."),
+        AuthoredTricks.bridgeDraw, title: String(localized: "The long bridge draw"),
+        hook: String(localized: "Pot the 6, then draw the cue ball back the whole length of the table to sink the 2 at the far end."),
         goalLine: String(localized: "Pot the 6, then draw back to pot the 2."),
         idea: String(localized: "Hitting low puts backspin on the cue ball. The 6 takes its forward speed, and the backspin, still spinning, grips the cloth and pulls it all the way back."),
         maths: String(localized: "backspin into speed:  v_back = (2/7) · R · ω"),
         mathsSpoken: String(localized: "The speed the cue ball comes back with is two sevenths of its radius times its spin rate."),
         praise: String(localized: "The whole length of the table, on backspin alone."))
 
-    // MARK: 4. Follow-Through Train
+    // MARK: 4. Follow-through train
     static let followTrain = make(
-        AuthoredTricks.followTrain, title: String(localized: "Follow-Through Train"),
+        AuthoredTricks.followTrain, title: String(localized: "Follow-through train"),
         hook: String(localized: "Pot the 1, and let topspin carry the cue ball on to sink the 2 as well."),
         goalLine: String(localized: "Pot the 1 in the corner, then the 2 in the side."),
         idea: String(localized: "Topspin keeps driving after the hit. The cue ball glances off the 1 sideways, then its forward spin grips the cloth and bends it on toward the 2."),
@@ -257,9 +289,9 @@ enum TrickShots {
         mathsSpoken: String(localized: "A rolling cue ball that cuts half of the object ball ends up turned about 30 degrees off its original line."),
         praise: String(localized: "Two balls, one stroke. The topspin did the second half."))
 
-    // MARK: 5. Two-Rail Kick
+    // MARK: 5. Two-rail kick
     static let twoRailKick = make(
-        AuthoredTricks.twoRailKick, title: String(localized: "Two-Rail Kick"),
+        AuthoredTricks.twoRailKick, title: String(localized: "Two-rail kick"),
         hook: String(localized: "The 5 is hidden behind two balls. Send the cue ball the long way round, off two cushions, and pot it anyway."),
         goalLine: String(localized: "Off two cushions, hit the 5 first and pot it."),
         idea: String(localized: "A cushion sends a ball off at about the angle it came in, so each cushion is a mirror. Aim at the 5's reflection in the two cushions, and the cue ball finds it the long way round."),
@@ -267,9 +299,9 @@ enum TrickShots {
         mathsSpoken: String(localized: "The angle in is about the angle out; the cushion's grip and any spin bend it a few degrees."),
         praise: String(localized: "Round the houses and in. Two mirrors, one pocket."))
 
-    // MARK: 7. Combination Chain
+    // MARK: 7. Combination chain
     static let comboChain = make(
-        AuthoredTricks.comboChain, title: String(localized: "Combination Chain"),
+        AuthoredTricks.comboChain, title: String(localized: "Combination chain"),
         hook: String(localized: "Hit the 3, which hits the 4, which sinks the 7. One push down a line of balls."),
         goalLine: String(localized: "Hit the 3 first. The 7 must drop."),
         idea: String(localized: "Each ball can only push the next one along the line through their two centres, so the last contact, not your first, decides where the 7 goes."),
@@ -277,9 +309,9 @@ enum TrickShots {
         mathsSpoken: String(localized: "Each ball leaves along the line through the two centres at the moment of contact, plus a little throw."),
         praise: String(localized: "Three balls, one line, the 7 down."))
 
-    // MARK: 6. Cross-Side Bank
+    // MARK: 6. Cross-side bank
     static let crossBank = make(
-        AuthoredTricks.crossBank, title: String(localized: "Cross-Side Bank"),
+        AuthoredTricks.crossBank, title: String(localized: "Cross-side bank"),
         hook: String(localized: "Send the 5 away from the pocket, off the far cushion, and back across the table into the side."),
         goalLine: String(localized: "Bank the 5 off the far cushion into the marked side pocket."),
         idea: String(localized: "Picture the pocket's reflection behind the far cushion and send the 5 at that. The cushion turns it back on the mirror line, into the real pocket."),
@@ -287,9 +319,9 @@ enum TrickShots {
         mathsSpoken: String(localized: "Aim at the mirror image of the pocket: its distance behind the cushion equals the real pocket's distance in front."),
         praise: String(localized: "Off the far cushion and home. The mirror never lies."))
 
-    // MARK: 8. Throw It In
+    // MARK: 8. Throw it in
     static let throwIt = make(
-        AuthoredTricks.throwIt, title: String(localized: "Throw It In"),
+        AuthoredTricks.throwIt, title: String(localized: "Throw it in"),
         hook: String(localized: "The 2 and the 8 are touching, lined up to miss the pocket. Side spin drags the 8 in anyway."),
         goalLine: String(localized: "Hit the 2 and throw the 8 into the corner nearest the 8."),
         idea: String(localized: "Touching balls rub as they part. Left spin on the cue ball spins the 2, and the friction between the 2 and the 8 drags the 8 off its line and into the pocket."),
@@ -297,19 +329,19 @@ enum TrickShots {
         mathsSpoken: String(localized: "The throw angle grows with the friction between the balls and how fast their surfaces slip past each other."),
         praise: String(localized: "Thrown in. Friction did what the angle could not."))
 
-    // MARK: 9. The Massé
+    // MARK: 9. The massé
     static let masse = make(
-        AuthoredTricks.masse, title: String(localized: "The Massé"),
+        AuthoredTricks.masse, title: String(localized: "The massé"),
         hook: String(localized: "The 4 blocks the way to the 9. Raise the cue, hit the side of the cue ball, and it bends round."),
-        goalLine: String(localized: "Curve round the 4 and pot the 9 in the corner beside it."),
+        goalLine: String(localized: "Bend round the 4 and pot the 9 in the corner beside it."),
         idea: String(localized: "A raised cue struck off-centre spins the cue ball about a tilted axis. As it slides, the cloth's friction pushes sideways on that spin and the path curves."),
         maths: String(localized: "sideways push:  F = μ m g, along the slip of the spinning contact point"),
         mathsSpoken: String(localized: "The cloth pushes with the ball's weight times the friction, in the direction its spinning contact point slips."),
         praise: String(localized: "Bent it round. That is a massé."))
 
-    // MARK: 10. Jump the Blocker
+    // MARK: 10. Jump the blocker
     static let jumpOver = make(
-        AuthoredTricks.jumpOver, title: String(localized: "Jump the Blocker"),
+        AuthoredTricks.jumpOver, title: String(localized: "Jump the blocker"),
         hook: String(localized: "The 6 sits right in the way. Hit down on the cue ball and it hops clean over to sink the 11."),
         goalLine: String(localized: "Jump the 6 and pot the 11 in the corner beyond it."),
         idea: String(localized: "A raised cue drives the cue ball down into the slate. The slate pushes back, the ball leaves the cloth, flies over the 6, bounces and rolls on into the 11."),
@@ -317,9 +349,9 @@ enum TrickShots {
         mathsSpoken: String(localized: "The height is the upward speed squared over twice gravity, and the hop's length is twice the upward speed times the forward speed over gravity."),
         praise: String(localized: "Clean over the top."))
 
-    // MARK: 11. Draw-Massé Carom
+    // MARK: 11. Draw-massé carom
     static let drawMasseCarom = make(
-        AuthoredTricks.drawMasseCarom, title: String(localized: "Draw-Massé Carom"),
+        AuthoredTricks.drawMasseCarom, title: String(localized: "Draw-massé carom"),
         hook: String(localized: "Hit the 4 first, then bring the cue ball back around to the 9."),
         goalLine: String(localized: "Hit the 4 first, then bring the cue ball back around to the 9."),
         idea: String(localized: "Raise the cue and strike low and to the side. Backspin brings the cue ball back, and the tilted spin bends its path toward the 9."),
@@ -339,13 +371,13 @@ enum TrickShots {
         mathsSpoken: String(localized: "The angle off the cue's line grows with how far from centre the tip strikes, and shrinks the heavier the ball is against the light end of the cue's shaft: at the strongest side, about two and a half degrees."),
         praise: String(localized: "You allowed for the squirt, and it went in with the side on."))
 
-    // MARK: 13. Side Off the Rail (0.7.4)
+    // MARK: 13. Side off the rail (0.7.4)
     // Left side here is running side: the cue ball goes down and to the right into the bottom cushion, and its spin grips
     // the cushion's nose along the rail (BreakdownPhysics: Impacts.rail, the coupled rail, grip 0.15 along it), adding
     // speed along the rail, so it leaves wider than a plain ball on the same line (70.4 degrees from the normal against
     // 67.7; AuthoredTricks records the run).
     static let sideOffRail = make(
-        AuthoredTricks.sideOffRail, title: String(localized: "Side Off the Rail"),
+        AuthoredTricks.sideOffRail, title: String(localized: "Side off the rail"),
         hook: String(localized: "The 9 and the 10 hide the 7. Kick off one cushion with strong left side, and the spin opens the angle off the rail."),
         goalLine: String(localized: "With strong left side, off one cushion, hit the 7 first and pot it in the corner nearest it."),
         idea: String(localized: "Side spin grips the cushion as the ball turns off it. Spin that turns the same way the ball runs along the rail pushes it on along the rail, so it leaves at a wider angle than it came in."),

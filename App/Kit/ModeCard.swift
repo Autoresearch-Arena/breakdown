@@ -4,6 +4,9 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 3 part A review: the name is the heading on
 //          every device, as the design language's mode card says; the status line wraps from the leading edge through
 //          its own small layout, since the shared WrappingRow lines its rows up on the trailing edge.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover notes: the status line wraps through
+//          the one shared WrappingRow (Surfaces.swift), now with a leading alignment; the private StatusLineLayout copy
+//          is gone. The line looks the same.)
 // PURPOSE: The mode card (design language, "Mode card"), the one card every mode fills in: shot of the day, trick
 //          shots, behind the 8-ball, lessons, drills, the table games. In order: (1) the name row, the item's name
 //          (heading) with its five difficulty dots on the right; (2) one
@@ -17,9 +20,8 @@
 // SRP/DRY check: Pass - checked the trick, lesson, situation, drill and daily cards (each builds its own glass card,
 //          heading, status words and buttons); this is the one frame they move into in package 5. Surface, buttons,
 //          dots, figures (KitFigure) and the section label (SectionLabel) come from the kit; numbers come in already
-//          written by NumberStyle. Known near-duplicate: StatusLineLayout repeats WrappingRow (Surfaces.swift) with a
-//          leading edge instead of a trailing one; the two should become one Layout with an alignment once that file
-//          is open to this package.
+//          written by NumberStyle. The status line's wrapping is the shared WrappingRow (Surfaces.swift) laid out from
+//          the leading edge, the same layout the button rows and the call's chips use.
 import SwiftUI
 
 /// One figure in a status line: a caption word ("Tries", "Best") and its figure, with an optional unit in grey on the
@@ -57,7 +59,7 @@ struct KitStatusLine: View {
     @Environment(\.palette) private var palette
 
     var body: some View {
-        StatusLineLayout(spacing: Theme.Space.sm, lineSpacing: Theme.Space.xxs) {
+        WrappingRow(alignment: .leading, spacing: Theme.Space.sm, lineSpacing: Theme.Space.xxs) {
             ForEach(items) { item in
                 HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xxs) {
                     Text(item.label)
@@ -70,64 +72,6 @@ struct KitStatusLine: View {
                 .accessibilityLabel(item.label)
                 .accessibilityValue(item.spoken)
             }
-        }
-    }
-}
-
-/// The status line's layout: items left to right from the leading edge, onto a new line when the next would not fit.
-/// (The shared WrappingRow in Surfaces.swift is trailing-aligned for button rows, which a line of readings must not be.)
-/// An item wider than the line is offered the line's width.
-private struct StatusLineLayout: Layout {
-    var spacing: CGFloat
-    var lineSpacing: CGFloat
-
-    private func size(of subview: LayoutSubview, width: CGFloat) -> CGSize {
-        let ideal = subview.sizeThatFits(.unspecified)
-        guard width.isFinite, ideal.width > width else { return ideal }
-        let fitted = subview.sizeThatFits(ProposedViewSize(width: max(0, width), height: nil))
-        return CGSize(width: min(fitted.width, width), height: fitted.height)
-    }
-
-    /// Each line's subview indices, sizes and height.
-    private func lines(width: CGFloat, subviews: Subviews) -> [(items: [(Int, CGSize)], width: CGFloat, height: CGFloat)] {
-        var all: [(items: [(Int, CGSize)], width: CGFloat, height: CGFloat)] = []
-        var current: [(Int, CGSize)] = []
-        var lineWidth: CGFloat = 0
-        var lineHeight: CGFloat = 0
-        for index in subviews.indices {
-            let itemSize = size(of: subviews[index], width: width)
-            let needed = current.isEmpty ? itemSize.width : lineWidth + spacing + itemSize.width
-            if needed > width, !current.isEmpty {
-                all.append((current, lineWidth, lineHeight))
-                current = []
-                lineWidth = 0
-                lineHeight = 0
-            }
-            lineWidth = current.isEmpty ? itemSize.width : lineWidth + spacing + itemSize.width
-            lineHeight = max(lineHeight, itemSize.height)
-            current.append((index, itemSize))
-        }
-        if !current.isEmpty { all.append((current, lineWidth, lineHeight)) }
-        return all
-    }
-
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let all = lines(width: proposal.width ?? .infinity, subviews: subviews)
-        let height = all.reduce(0) { $0 + $1.height } + lineSpacing * CGFloat(max(0, all.count - 1))
-        return CGSize(width: all.map(\.width).max() ?? 0, height: height)
-    }
-
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        var y = bounds.minY
-        for line in lines(width: bounds.width, subviews: subviews) {
-            var x = bounds.minX
-            for (index, itemSize) in line.items {
-                // Items in a line share its vertical centre; each is one short caption-and-figure pair.
-                subviews[index].place(at: CGPoint(x: x, y: y + (line.height - itemSize.height) / 2),
-                                      proposal: ProposedViewSize(itemSize))
-                x += itemSize.width + spacing
-            }
-            y += line.height + lineSpacing
         }
     }
 }

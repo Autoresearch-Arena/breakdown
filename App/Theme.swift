@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the old font aliases
+//          (tagline, sectionTitle, copy, number, figure, figureUnit, figureLabel, figureChip, ledgerFigure,
+//          groupCaption and its tracking, the blurb and phone fonts) are deleted; every caller now names the role it
+//          aliased.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2, the rest of the design tokens: one text
 //          scale by role (display, title, heading, body and bodyCompact, label, section, caption, the equation style),
 //          the figure family (FigureSize lead, control, inline with their unit fonts, 55 percent, medium, never under
@@ -213,57 +217,6 @@ enum Theme {
     static func unit(size: CGFloat, captionSize: CGFloat) -> Font {
         .system(size: max(captionSize, size * unitScale), weight: .medium, design: .monospaced)
     }
-
-    // MARK: Old font names (aliases, to be removed once callers move; UI rethink package 3 deletes them)
-    //
-    // Each points at the role it now means. The rounded figure design and the italics are retired with them (the
-    // equation style keeps its italics). heading, body, label and display above are not aliases: they are the roles.
-
-    /// The tagline under the title. Alias, to be removed once callers move: `body` (italics retired).
-    static var tagline: Font { body }
-    /// Section titles on the opening screen ("How it works"). Alias, to be removed once callers move: `title` (the
-    /// serif page title, not the small `section` label).
-    static var sectionTitle: Font { title }
-    /// Running text on the opening screen. Alias, to be removed once callers move: `body`.
-    static var copy: Font { body }
-    /// Live numbers. Alias, to be removed once callers move: `inlineFigure`.
-    static var number: Font { inlineFigure }
-    /// A caption figure's number on its tile. Alias, to be removed once callers move: `controlFigure` (tile figures
-    /// are control size; the rounded design is retired).
-    static var figure: Font { controlFigure }
-    /// The unit beside a tile figure. Alias, to be removed once callers move: `controlUnit`.
-    static var figureUnit: Font { controlUnit }
-    /// The few words under a figure's number. Alias, to be removed once callers move: `caption`.
-    static var figureLabel: Font { caption }
-    /// The lead figure in the title chip on the table. Alias, to be removed once callers move: `inlineFigure`.
-    static var figureChip: Font { inlineFigure }
-    /// A figure on the physics line. Alias, to be removed once callers move: `inlineFigure`.
-    static var ledgerFigure: Font { inlineFigure }
-    /// A band's caption ("WHAT THE BALL GETS"). Alias, to be removed once callers move: `section`.
-    static var groupCaption: Font { section }
-    /// The tracking a group caption is set with. Alias, to be removed once callers move: `sectionTracking`.
-    static var groupCaptionTracking: CGFloat { sectionTracking }
-
-    /// A blurb's title ("Throw"). Alias, to be removed once callers move: `label` (the nearest role in size; the
-    /// phone's card titles move to `heading` with the kit).
-    static var blurbTitle: Font { label }
-    /// The lead figure after a blurb's title. Alias, to be removed once callers move: `inlineFigure`.
-    static var blurbFigure: Font { inlineFigure }
-    /// A figure chip's number. Alias, to be removed once callers move: `inlineFigure`.
-    static var blurbChip: Font { inlineFigure }
-    /// The few words after a chip's number. Alias, to be removed once callers move: `caption` (nothing goes under the
-    /// caption size any more).
-    static var blurbChipLabel: Font { caption }
-    /// The worked equation in a blurb. Alias, to be removed once callers move: `equationCompact`.
-    static var blurbEquation: Font { equationCompact }
-    /// A blurb's small buttons. Alias, to be removed once callers move: `label`.
-    static var blurbButton: Font { label }
-    /// The upright phone's worded controls. Alias, to be removed once callers move: `label`.
-    static var phoneControl: Font { label }
-    /// The speed capsule. Alias, to be removed once callers move: `inlineFigure`.
-    static var phoneSpeed: Font { inlineFigure }
-    /// The title row's title. Alias, to be removed once callers move: `heading`.
-    static var phoneTitle: Font { heading }
 
     // MARK: Devices (which margins, paddings and heights apply)
 

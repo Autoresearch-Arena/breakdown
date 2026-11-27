@@ -3,6 +3,12 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily, plans/25-Nov-2026-shot-of-the-day-plan.md stage 2
 //          item 6: a sixth group, Shot of the day, with three achievements: a streak of seven days, a streak of thirty,
 //          and a make on the first try. Their ids are permanent like every other.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 11, one glossary of shot names: a shot
+//          achievement that is one of the six techniques names it (Achievement.technique, from one table here), so its
+//          name can be the glossary's (ShotNames.swift) and match the lesson and the trick shot; the ids stay as shipped.
+//          The Behind the 8-ball heading is sentence case, the menu's own key. Achievement.name reads the glossary for
+//          those five, so "Dead stop", "Draw back", "Massé curve", "Over the top" and "Thrown in" become the techniques'
+//          names.)
 // PURPOSE: The achievements catalogue for 0.7.7 (plans/23-Nov-2026-achievements-plan.md, new file 1). Every achievement
 //          the game can award, in the order the list shows them, in five groups: Shots (seventeen physically interesting
 //          things a single stroke can do), Games (beating the computer at each level, a shot on every table and on every
@@ -22,7 +28,7 @@
 import BreakdownRules
 import Foundation
 
-/// The five sections of the achievements list, in the order they show.
+/// The six sections of the achievements list, in the order they show.
 enum AchievementGroup: String, CaseIterable, Sendable {
     // 0.7.10 daily: the shot of the day's group, after the trick shots.
     case shots, games, lessons, tricks, daily, escapes
@@ -40,7 +46,10 @@ enum AchievementGroup: String, CaseIterable, Sendable {
         case .tricks: return String(localized: "Trick shots")
         // 0.7.10 daily: the menu row's own name, the same key.
         case .daily: return String(localized: "Shot of the day")
-        case .escapes: return String(localized: "Behind the 8-Ball")
+        // UI rethink package 11: sentence case, the menu entry's own key (TitleScreen.MenuEntry.eightBall).
+        case .escapes:
+            return String(localized: "Menu: behind the 8-ball", defaultValue: "Behind the 8-ball",
+                          comment: "Main menu entry: the eight-ball situations to escape. Sentence case.")
         }
     }
 }
@@ -60,9 +69,16 @@ struct Achievement: Identifiable, Equatable, Sendable {
     let symbol: String
     let progress: AchievementProgressKind
 
-    var name: String { AchievementWords.name(self) }
+    /// UI rethink package 11: a technique achievement wears the glossary's one name (ShotTechnique.name), the word the
+    /// lesson and the trick shot use; every other achievement keeps its own name from AchievementWords.
+    var name: String { technique?.name ?? AchievementWords.name(self) }
     var sentence: String { AchievementWords.sentence(self) }
     var hint: String { AchievementWords.hint(self) }
+
+    /// The glossary technique this shot achievement is (UI rethink package 11), or nil: its name should be the
+    /// technique's one name (ShotTechnique.name), the word the lesson and the trick shot use. Data, not words: the
+    /// mapping is from the permanent id, never from a title.
+    var technique: ShotTechnique? { Achievements.technique(forShot: id) }
 
     /// The lesson this achievement is for (lesson-<id>), or nil.
     var lessonID: String? {
@@ -135,6 +151,15 @@ enum Achievements {
     /// The remarkable moment a shot achievement is, for reusing that moment's already translated sentence; nil for the
     /// shot achievements that have their own words.
     static func highlightKind(forShot id: String) -> HighlightKind? { fromHighlight.first { $0.id == id }?.kind }
+
+    /// The shot achievements that are one of the glossary's six techniques (UI rethink package 11). Follow has no
+    /// achievement of its own; every other shot achievement is about something besides the stroke.
+    private static let techniqueByShot: [String: ShotTechnique] = [
+        "dead-stop": .stop, "draw-back": .draw, "masse-curve": .masse, "jump-clear": .jump, "thrown-in": .throwShot,
+    ]
+
+    /// The technique a shot achievement is, or nil.
+    static func technique(forShot id: String) -> ShotTechnique? { techniqueByShot[id] }
 
     /// Symbols for the shot achievements (all present in SF Symbols on iOS 26 and macOS 26; if one draws blank, swap
     /// it for "star.circle" here: the id never changes).

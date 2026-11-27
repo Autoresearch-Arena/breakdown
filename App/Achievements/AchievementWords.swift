@@ -2,6 +2,11 @@
 // Date: 23-November-2026
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: the names, sentences and hints of the shot of the
 //          day's three achievements; the new lines are in localization/pending/v0710-daily.json.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 10, "Achievements and sharing": each
+//          achievement's one-line target for the list's unearned rows, with the judge's real thresholds written through
+//          NumberStyle (the dead stop's speed and ball radius, the draw's distances, the curve's and the throw's angles,
+//          the jump's take-off speed, the daily streak lengths), never a number written in here; the summary band's
+//          words; "Try it" and its hint; the lesson hints name the menu's "Lessons", not the old "Learn".)
 // PURPOSE: Every word of 0.7.7's achievements (plans/23-Nov-2026-achievements-plan.md, new file 2), in the
 //          HighlightWords pattern: each achievement's name, its one plain sentence about the physics, and the hint on how
 //          to earn it; the formatted lines (the date it was earned in the game's own number locale, "4 of 6", the menu's
@@ -13,11 +18,15 @@
 //          localization/pending/v077-achievements.json with all eleven translations.
 //          Read by Achievement (name, sentence, hint), AchievementBook (spoken lines), AchievementViews and TitleScreen
 //          (the menu row's mark).
-// SRP/DRY check: Pass - checked HighlightWords (its sentences are reused, never restated), OpponentWords
+//          Package 10 adds target (the one line an unearned row shows), the summary band's lines and "Try it".
+// SRP/DRY check: Pass - checked ShotHighlightJudge, AchievementJudge and Achievements (the thresholds are read from
+//          their constants, never restated), HighlightWords (its sentences are reused, never restated), OpponentWords
 //          (ComputerLevel.title is reused for the progress picture), TitleScreen's lessonMark and trickMark (the "%lld/%lld"
 //          and "%lld of %lld" keys are reused as they build them) and NumberStyle (AppLocale.numbers, the game's number
 //          locale, for the date). Strings only.
+import BreakdownPhysics
 import BreakdownRules
+import BreakdownTimeline
 import Foundation
 
 enum AchievementWords {
@@ -110,7 +119,7 @@ enum AchievementWords {
 
     /// How to earn it, shown while it is not earned yet.
     static func hint(_ a: Achievement) -> String {
-        if a.lessonID != nil { return String(localized: "Pass this lesson in Learn.") }
+        if a.lessonID != nil { return String(localized: "Pass this lesson in Lessons.") }
         if a.trickID != nil { return String(localized: "Make this trick shot in Trick shots.") }
         if let level = a.level {
             switch level {
@@ -139,15 +148,128 @@ enum AchievementWords {
         case "red-pin": return String(localized: "On the five-pin table, knock down only the red pin.")
         case Achievements.everyTable: return String(localized: "Play a shot on each table in Tables.")
         case Achievements.everySurface: return String(localized: "Play a shot on each surface in the Surface menu.")
-        case Achievements.everyLesson: return String(localized: "Pass every lesson in Learn.")
+        case Achievements.everyLesson: return String(localized: "Pass every lesson in Lessons.")
         case Achievements.everyTrick: return String(localized: "Make every trick shot.")
-        case Achievements.everyEscape: return String(localized: "Win a medal on each spot in Behind the 8-Ball.")
+        case Achievements.everyEscape: return String(localized: "Win a medal on each spot in Behind the 8-ball.")
         // 0.7.10 daily: the shot of the day's three.
         case Achievements.dailyStreakWeek: return String(localized: "Make the shot of the day seven days in a row.")
         case Achievements.dailyStreakMonth: return String(localized: "Make the shot of the day thirty days in a row.")
         case Achievements.dailyFirstTry: return String(localized: "Make the shot of the day on your first try.")
         default: return ""
         }
+    }
+
+    // MARK: The one line (UI rethink package 10)
+
+    /// The one line an unearned row shows: what the judge looks for, with its real thresholds. Shot achievements read
+    /// their numbers from ShotHighlightJudge and AchievementJudge's own constants, through NumberStyle, so the line
+    /// can never drift from the rule. Collections, lessons, trick shots and levels say what to do in a few words.
+    static func target(_ a: Achievement) -> String {
+        if a.lessonID != nil { return String(localized: "Pass this lesson.") }
+        if a.trickID != nil { return String(localized: "Make this trick shot.") }
+        if let level = a.level {
+            return String(localized: "Win a game against the computer at \(level.title).",
+                          comment: "Achievement target; the placeholder is the computer's level, e.g. 'Easy'")
+        }
+        switch a.id {
+        case "dead-stop":
+            let speed = NumberStyle.speed(metresPerSecond: ShotHighlightJudge.stopSpeed).text
+            let radius = NumberStyle.distance(metres: TableKind.standard.parameters.tableSpec.ballRadius).text
+            return String(localized: "Hit at \(speed) or more, pot the ball, and stop within \(radius).",
+                          comment: "Dead stop achievement target. First placeholder the cue ball's speed into the hit ('1.00 m/s'), second a distance ('2.9 cm', one ball radius)")
+        case "draw-back":
+            let near = NumberStyle.distance(metres: ShotHighlightJudge.drawDistance).text
+            let far = NumberStyle.distance(metres: ShotHighlightJudge.drawDistance
+                                                   * ShotHighlightJudge.plainDrawFactor).text
+            return String(localized: "Draw back \(near) with a ball down, or \(far) without.",
+                          comment: "Draw back achievement target. Placeholders are distances, e.g. '60 cm' and '120 cm'")
+        case "masse-curve":
+            let bend = NumberStyle.angle(degrees: ShotHighlightJudge.curveDegrees).text
+            return String(localized: "A raised cue bends the path \(bend) or more before the first hit.",
+                          comment: "Masse curve achievement target; the placeholder is an angle, e.g. '10.0°'")
+        case "jump-clear":
+            let up = NumberStyle.speed(metresPerSecond: ShotHighlightJudge.jumpSpeed).text
+            return String(localized: "Take off at \(up) upward or more and pass over a ball.",
+                          comment: "Over the top achievement target; the placeholder is an upward speed, e.g. '0.50 m/s'")
+        case "thrown-in":
+            let throwAngle = NumberStyle.angle(degrees: ShotHighlightJudge.throwDegrees).text
+            return String(localized: "Throw a ball \(throwAngle) or more into a pocket its straight line would miss.",
+                          comment: "Thrown in achievement target; the placeholder is an angle, e.g. '1.5°'")
+        case "combination": return String(localized: "One object ball knocks another one in.")
+        case "kick": return String(localized: "Two cushions before the first ball, or one and a ball drops.")
+        case "bank": return String(localized: "A ball drops off a cushion after its last hit.")
+        case "carom": return String(localized: "Glance off one ball into another, and that one drops.")
+        case "two-at-once": return String(localized: "Two or more balls drop from one stroke.")
+        case "jaw-in": return String(localized: "A ball touches the pocket's jaw and still drops.")
+        case "rattle-out": return String(localized: "A ball touches one pocket's jaws twice and stays up.")
+        case "too-fast": return String(localized: "A ball crosses a hole too fast to fall in.")
+        case "big-break": return String(localized: "Three or more balls drop on one break, on the pool table.")
+        case "run-rack": return String(localized: "Free play: a ball down with every shot from the break to an empty table.")
+        case "bumper-cup": return String(localized: "Bumper pool: a ball into a cup off a bumper.")
+        case "red-pin": return String(localized: "Five-pin: the red pin down, and no other.")
+        case Achievements.everyTable: return String(localized: "Play a shot on every table.")
+        case Achievements.everySurface: return String(localized: "Play a shot on every surface.")
+        case Achievements.everyLesson: return String(localized: "Pass every lesson.")
+        case Achievements.everyTrick: return String(localized: "Make every trick shot.")
+        case Achievements.everyEscape: return String(localized: "Win a medal on every spot.")
+        case Achievements.dailyStreakWeek:
+            return String(localized: "Make the shot of the day \(Achievements.dailyWeekDays) days in a row.",
+                          comment: "Daily streak achievement target; the placeholder is a number of days")
+        case Achievements.dailyStreakMonth:
+            return String(localized: "Make the shot of the day \(Achievements.dailyMonthDays) days in a row.",
+                          comment: "Daily streak achievement target; the placeholder is a number of days")
+        case Achievements.dailyFirstTry: return String(localized: "Make the shot of the day on your first try.")
+        default: return hint(a)
+        }
+    }
+
+    // MARK: The summary band (UI rethink package 10)
+
+    /// The band's label under its figure: "Earned".
+    static var summaryEarned: String {
+        String(localized: "Earned",
+               comment: "Achievements summary band: the label under the count of achievements earned")
+    }
+
+    /// The band's figure: "12 of 44" (the existing "%lld of %lld" key).
+    static func summaryFigure(earned: Int, total: Int) -> String { progress(done: earned, total: total) }
+
+    /// "3 new since you last looked"; nil when nothing is new.
+    static func summaryNew(_ count: Int) -> String? {
+        count > 0 ? String(localized: "\(count) new since you last looked",
+                           comment: "Achievements summary band: how many were earned since the list was last opened")
+                  : nil
+    }
+
+    /// "Latest: Bank shot", the most recently earned one.
+    static func summaryLatest(name: String) -> String {
+        String(localized: "Latest: \(name)",
+               comment: "Achievements summary band: the most recently earned achievement's name")
+    }
+
+    /// Before anything is earned: what the list is for, in one line.
+    static var summaryNone: String {
+        String(localized: "Play any shot; the remarkable ones earn these.",
+               comment: "Achievements summary band before any achievement is earned")
+    }
+
+    /// The band for VoiceOver, one element: "12 of 44 earned, 3 new" (the menu row's own keys), then the latest.
+    static func summarySpoken(earned: Int, total: Int, new: Int, latest: String?) -> String {
+        let count = menuSpoken(earned: earned, total: total, new: new)
+        guard let latest else { return count }
+        return count + ". " + summaryLatest(name: latest)
+    }
+
+    // MARK: Try it (UI rethink package 10)
+
+    /// The unearned achievement page's primary button.
+    static var tryIt: String {
+        String(localized: "Try it", comment: "Button on an achievement not yet earned: goes where it can be earned")
+    }
+
+    /// Its VoiceOver hint.
+    static var tryItHint: String {
+        String(localized: "Closes the list and sets up the table where this can be earned.")
     }
 
     // MARK: Formatted lines

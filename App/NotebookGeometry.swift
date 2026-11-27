@@ -1,5 +1,15 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8, the upright iPad's table share settled: the band
+//          under the table stays belowPanel, sized from what the table needs, not the design language's 58 percent
+//          (Theme.Size.uprightTableShare, read by nothing). The table lies across the iPad's width, so its height on
+//          screen is fixed by that width: about 383 points of a 1133-point iPad mini, 418 of an 1180-point 11-inch
+//          iPad, 518 of a 1376-point 13-inch one, a third of the height (34 to 38 percent) with its rails a few points
+//          from the half's edges. A 58 percent half would be 650 to 800 points tall round that same table, about 270
+//          points of empty dark ground above and below it, the dead bands 0.7.10 removed, and the notebook would lose
+//          that room. "Framed tight to the rails", the other half of the same rule, wins. No change to the maths.
+//          The hinge keeps its own column rule; its panel's margins are Theme.Space.pageMargin(.foldPanel), set in
+//          NotebookPanel.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the panel beside the table is
 //          the design language's side column, about 400 points (380 to 440, following the window: a third of its
 //          width, held between the two), so the table gets the rest; and without a hinge the panel is always one
@@ -88,6 +98,8 @@ enum NotebookGeometry {
     static let tableSideGutters: Double = 16
 
     /// The panel's height under the table in a window `size` taller than wide: everything the table does not need.
+    /// UI rethink package 8: deliberately not a fixed share of the height (the design language's 58 percent): the table's
+    /// height follows from the width, so any fixed share leaves dark bands round it on some iPad (see the header).
     /// The table lies across the window's full width (CameraFraming.tableYaw: its half is then wider than tall), so its
     /// height on screen follows from that width; the half is made that tall, and the panel takes the rest. Never less
     /// than belowMinimum, and never more than belowMaximumShare of the height or so much that the table's side drops

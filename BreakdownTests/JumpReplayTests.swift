@@ -6,6 +6,8 @@
 //          picture's peak is the take-off title's height; a caption about no jump gets no side view; FlightSketch.make
 //          frames the part in focus and keeps its clock inside the story; a ball that bounces after its first landing
 //          gives at least two hops.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the flight height is checked
+//          against NumberStyle.distance, the rule the card now prints with, not a fixed one-decimal format.)
 // PURPOSE: Checks for the jump replay (0.7.8, plans/24-Nov-2026-jump-replay-plan.md) on the authored jump over a
 //          blocker, solved for real: the take-off card says the flight height once outside its worked equation and
 //          leads with it; the take-off beat may be magnified further than other beats and its rectangle holds the
@@ -241,8 +243,9 @@ final class JumpReplayTests: XCTestCase {
         let height = try XCTUnwrap(c.figures.first, "the take-off card has no lead figure")
         XCTAssertEqual(height.unit, "cm", "the take-off card does not lead with the flight height")
         XCTAssertEqual(height.amount, shape.peakGap * 100, accuracy: 0.05, "the title and the picture disagree on the height")
-        // Exactly as the card prints it: one decimal in the player's number style (CaptionEngine.f).
-        XCTAssertEqual(height.value, String(format: "%.1f", locale: AppLocale.numbers, shape.peakGap * 100))
+        // Exactly as the card prints it: NumberStyle's one rule for distances (whole centimetres from 10 cm up, one
+        // decimal below), so a higher jump cannot break the check.
+        XCTAssertEqual(height.value, NumberStyle.distance(metres: shape.peakGap).number)
     }
 
     /// A caption about anything but a jump (a ball-ball hit, a cushion, a ball starting to roll) gets no side view.

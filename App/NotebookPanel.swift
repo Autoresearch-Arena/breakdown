@@ -1,5 +1,12 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8, the open folding phone: across the hinge the
+//          table half draws marks only, so the panel's top line (TableMarksLine, under the top bar) says what they mean:
+//          the ringed ball ("3 ball, solid"), the fork's two lines with the turn, the bridge, the last try's ring, the
+//          answer's path, the what-if and the every-surface fan; it is measured into every height budget, so Shoot stays in sight, and left
+//          out of the calm first minute. The top bar runs Back, title, Zoom, Share, Menu (the design's order), its title
+//          gives way before the worded buttons do (it drops on the fold's narrow panel, then the buttons go to icons),
+//          and "Behind the 8-ball" is the menu's sentence-case name. Margins stay Theme.Space.pageMargin(.foldPanel).)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 4 follow-up: reelOnStage moves the reel and the
 //          Physics Lens, Ride and Aim tabs to the stage under the table beside a big screen's column, so the column holds
 //          the whole console: the strike's figures and Shoot no longer scroll out of sight.)
@@ -88,6 +95,8 @@
 // SRP/DRY check: Pass - layout and page switching only. The words are in NotebookStory and NotebookDossier, the numbers
 //          in NotebookNumbers, the split rules in NotebookGeometry; every card, list and menu is the same view the other
 //          screens use, embedded.
+import BreakdownLensModel
+import BreakdownPhysics
 import BreakdownRules
 import SwiftUI
 
@@ -153,6 +162,9 @@ struct NotebookPanel: View {
     @State private var numbersMeasured: CGFloat = 0
     /// Measured height of the Lens colour key's row (0.7.5); it wraps onto more lines at large text sizes.
     @State private var keyMeasured: CGFloat = 0
+    /// UI rethink package 8: measured height of the table marks' line across the hinge (0 while it is not shown).
+    @State private var marksMeasured: CGFloat = 0
+    @AppStorage(GameSettings.aimGuideKey) private var aimGuide = true
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     /// The strike slot's "Step by step": the commentary asked for after a shot (StrikeSlot's binding).
     @State private var showSteps = false
@@ -170,6 +182,8 @@ struct NotebookPanel: View {
         // UI rethink package 4: the kit's buttons, cards and reel size themselves for this panel.
         .kitDevice(onHinge ? .foldPanel : .big)
         .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: pageKey)
+        // UI rethink package 8: the marks line comes and goes with the marks (aiming, a retry's ghost).
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: markParts.map(\.id))
     }
 
     /// Which page shows, for the cross-fade between them.
@@ -360,6 +374,31 @@ struct NotebookPanel: View {
         model.lensOn ? (keyMeasured > 0 ? keyMeasured : 34) : 0
     }
 
+    /// UI rethink package 8: what the marks on the table half mean, only across the hinge (elsewhere the layers still
+    /// label the cloth themselves) and only when there is a mark to explain.
+    private var markParts: [TableMarksWords.Part] {
+        onHinge ? TableMarksWords.parts(model: model, aiming: showShotPanel, aimGuide: aimGuide) : []
+    }
+
+    /// The table marks' line, directly under the top bar across the hinge (the top line of the panel: the labels the
+    /// table half no longer draws). Measured for the height budgets; nothing at all when there is nothing to say.
+    @ViewBuilder
+    private var marksRow: some View {
+        let parts = markParts
+        if !parts.isEmpty {
+            TableMarksLine(parts: parts)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { marksMeasured = $0 }
+                .transition(.opacity)
+        }
+    }
+
+    /// The marks line's room in a budget, its gap included: nothing while it is not shown; before the first
+    /// measurement, one line of label text (24).
+    private var marksRoom: CGFloat {
+        markParts.isEmpty ? 0 : (marksMeasured > 0 ? marksMeasured : 24) + gap
+    }
+
     /// The cards block, reporting its natural height (for the commentary's room and the fade at the bottom).
     private var measuredCards: some View {
         cards.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { cardsHeight = $0 }
@@ -386,6 +425,7 @@ struct NotebookPanel: View {
         let numbersHeight: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) : 0
         let gaps = CGFloat((showsNumbers ? 4 : 3) + (model.lensOn ? 1 : 0)) * gap
         let free = size.height - 2 * Theme.Space.md - Theme.Size.minHit - keyHeight - bottomHeight - numbersHeight - gaps
+            - marksRoom  // UI rethink package 8
         let storyMinimum: CGFloat = 140
         // 0.7.10 strike: the slot also holds the strike panel, which shows with Explanations off as well (StrikeSlot).
         let showsStory = (explanations || StrikeSlot.shows(model, aiming: showShotPanel)) && free - cardsHeight >= storyMinimum
@@ -393,6 +433,7 @@ struct NotebookPanel: View {
         let overflows = cardsHeight > cardsMax
         return VStack(spacing: gap) {
             NotebookTopBar(model: model)
+            marksRow
             keyRow
             FittingScroll(maxHeight: cardsMax) { measuredCards }
                 .fadesAtBottom(overflows)
@@ -433,12 +474,13 @@ struct NotebookPanel: View {
         let controlsMin = ShotPanel.consoleMinimumHeight(width: size.width - 2 * margin - 2 * padding)
             + max(Theme.Space.lg, shotChromeMeasured)
         // Split into named parts so the type checker has short sums to solve (one long CGFloat chain is slow to check).
-        let topRoom: CGFloat = 2 * Theme.Space.md + Theme.Size.minHit + gap + keyRoom
+        let topRoom: CGFloat = 2 * Theme.Space.md + Theme.Size.minHit + gap + keyRoom + marksRoom
         let cardRoom: CGFloat = cardsShown(cardsMax) + 2 * padding + Theme.Space.md
         let taken: CGFloat = topRoom + lowerFixed + cardRoom + controlsMin
         let strikeMax: CGFloat = max(120, size.height - taken)
         return VStack(spacing: gap) {
             NotebookTopBar(model: model)
+            marksRow
             keyRow
             FittingScroll(maxHeight: cardsMax) { measuredCards }
                 .fadesAtBottom(cardsHeight > cardsMax)
@@ -483,13 +525,14 @@ struct NotebookPanel: View {
         // Padding (28), top bar (40), the key row and its gap, the lower edge and the gaps (30) are fixed; the cards
         // take the rest.
         let cardsMax = max(120, size.height - 2 * Theme.Space.sm - Theme.Size.minHit - keyHeight - (model.lensOn ? gap : 0)
-                                 - bottomHeight - 2 * gap)
+                                 - bottomHeight - 2 * gap - marksRoom)
         // In the second column the cards have the whole height but the padding and, when shown, the numbers and a gap.
         let numbersRoom: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) + gap : 0
         let cardsMaxAlone = max(120, size.height - 2 * Theme.Space.sm - numbersRoom)
         return HStack(alignment: .top, spacing: Theme.Space.sm) {
             VStack(spacing: gap) {
                 NotebookTopBar(model: model)
+                marksRow
                 keyRow
                 if cardsBesideStory {
                     FittingScroll(maxHeight: cardsMax) { measuredCards }
@@ -538,34 +581,202 @@ private struct NotebookTopBar: View {
         if DailyMode.showing(model) { return DailyShot.title }  // 0.7.10 daily: played as a trick shot, named as itself.
         if model.trickMode.isActive { return String(localized: "Trick shots") }
         if model.lessonMode.isActive { return String(localized: "Lessons") }
-        if model.eightBallMode.isActive { return String(localized: "Behind the 8-Ball") }
+        // UI rethink package 8: the menu's own sentence-case name (TitleScreen), so the game uses one name.
+        if model.eightBallMode.isActive {
+            return String(localized: "Menu: behind the 8-ball", defaultValue: "Behind the 8-ball",
+                          comment: "Main menu entry: the eight-ball situations to escape. Sentence case.")
+        }
         return String(localized: "Free play")
     }
 
     var body: some View {
         // The worded controls where they fit whole; in a narrow column (a small Mac window) the same controls as icons,
         // never words cut to "B..." and "Me..." (UI rethink package 4 follow-up).
+        // UI rethink package 8: the title gives way first. On the open folding phone's narrow panel the worded row
+        // without the title comes before the icons; the icon row keeps a title that truncates rather than squeezing
+        // the buttons. The title is also the panel's heading for VoiceOver, so it is spoken when it is not shown.
         ViewThatFits(in: .horizontal) {
-            row
-            row.kitDevice(.phone)
+            row(showsTitle: true)
+            row(showsTitle: false)
+            row(showsTitle: true).kitDevice(.phone)
         }
     }
 
-    private var row: some View {
+    /// The design's order (UI rethink package 8, from the package 4 note): Back, the title, then Zoom, Share and Menu.
+    /// During Ride the Ride chip takes Zoom's and Menu's place, with Share before it.
+    private func row(showsTitle: Bool) -> some View {
         HStack(spacing: Theme.Space.sm) {
             MenuBackButton(model: model)
-            Text(verbatim: title)
-                .font(Theme.heading)
-                .lineLimit(1)
-                .fixedSize()
+            if showsTitle {
+                Text(verbatim: title)
+                    .font(Theme.heading)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .layoutPriority(-1)
+                    .accessibilityAddTraits(.isHeader)
+            } else {
+                // Dropped from sight for room, still the panel's heading for VoiceOver.
+                Color.clear.frame(width: 1, height: 1)
+                    .accessibilityElement()
+                    .accessibilityLabel(Text(verbatim: title))
+                    .accessibilityAddTraits(.isHeader)
+            }
             Spacer(minLength: 0)
-            ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
             if model.rideStatus != nil {
+                ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
                 RideTitleChip(model: model)
             } else {
                 // 0.7.10 everyone: zoom without a pinch or a double tap (TableZoomMenu).
                 TableZoomMenuButton(model: model)
+                ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
                 SurfaceMenuButton(model: model)
+            }
+        }
+    }
+}
+
+// MARK: The table marks' line (UI rethink package 8)
+
+/// What the marks on the open folding phone's table half mean, in words: the labels the table layers draw on the cloth
+/// everywhere else and leave off across the hinge (tableMarksOnly, LayoutFlags.swift). Each part names the mark as it
+/// looks ("Ringed", "Dashed line") and what it means, from the same answers the layers draw from, so the line and the
+/// marks always agree.
+enum TableMarksWords {
+    struct Part: Identifiable, Equatable {
+        let id: String
+        /// The mark as it looks on the cloth, in the secondary face (left out when the line is short of room).
+        let mark: String
+        /// What the mark means.
+        let words: String
+        /// A measured value after the words, in the figure face (the fork's turn).
+        var figure: NumberStyle.Reading? = nil
+        /// Words after the figure ("left").
+        var after: String = ""
+
+        /// The whole part as one phrase for VoiceOver ("Solid line, ball goes here 1.2° left").
+        var spoken: String {
+            [mark, [words, figure?.text ?? "", after].filter { !$0.isEmpty }.joined(separator: " ")]
+                .joined(separator: ", ")
+        }
+    }
+
+    /// The parts for what is on the table now. `aiming`: "Your shot" is open, so AimOverlay is up; `aimGuide`: the
+    /// Aim guide option (off, the badge and the fork are not drawn, so they are not named either).
+    @MainActor
+    static func parts(model: ShowpieceModel, aiming: Bool, aimGuide: Bool) -> [Part] {
+        var parts: [Part] = []
+        // When AimOverlay draws at all (its own guard in draw(_:size:)).
+        let drawsAim = aiming && model.aimReady && !model.placingCueBall && model.layout.count == 16
+            && NextShot.isOnTable(model.aimOrigin)
+        if drawsAim {
+            // The target-ball badge's words: the ball the guide's ring is round.
+            if let target = TargetBallBadge.targetWords(for: model, aimGuide: aimGuide) {
+                parts.append(Part(id: "target",
+                                  mark: String(localized: "Table marks: ringed", defaultValue: "Ringed",
+                                               comment: "Names the ring drawn round the ball the aim hits first."),
+                                  words: target))
+            }
+            // The side-spin fork: the dashed prong is the cue's line, the bright one the ball's, turned by the figure
+            // the table half still draws bare.
+            if aimGuide, let fork = AimGeometry.fork(for: model) {
+                parts.append(Part(id: "cue",
+                                  mark: String(localized: "Table marks: dashed line", defaultValue: "Dashed line",
+                                               comment: "Names the thin dashed line drawn along the cue's own aim."),
+                                  words: AimFork.cueLabel))
+                parts.append(Part(id: "ball",
+                                  mark: String(localized: "Table marks: solid line", defaultValue: "Solid line",
+                                               comment: "Names the bright aim line the ball really leaves along."),
+                                  words: AimFork.ballLabel,
+                                  figure: NumberStyle.angle(degrees: abs(fork.turnDegrees)),
+                                  after: fork.turnDegrees > 0
+                                      ? String(localized: "Table marks: left", defaultValue: "left",
+                                               comment: "After a turn in degrees: the ball leaves to the shooter's left.")
+                                      : String(localized: "Table marks: right", defaultValue: "right",
+                                               comment: "After a turn in degrees: the ball leaves to the shooter's right.")))
+            }
+            // The mechanical bridge's "Bridge" pill.
+            if model.restInUse {
+                parts.append(Part(id: "bridge",
+                                  mark: String(localized: "Bridge"),
+                                  words: String(localized: "Table marks: the cue rests on it",
+                                                defaultValue: "the cue rests on it",
+                                                comment: "After the word Bridge: the cue lies on the mechanical bridge.")))
+            }
+        }
+        // The last try's rest ring (GhostOverlay draws it while a ghost shows and no other future does).
+        if let ghost = model.ghost, !model.otherFutureShowing, !ghost.cueBallScratched {
+            parts.append(Part(id: "lastTry",
+                              mark: String(localized: "Table marks: dashed ring", defaultValue: "Dashed ring",
+                                           comment: "Names the small dashed ring where the last try's cue ball stopped."),
+                              words: String(localized: "Last try")))
+        }
+        // A trick shot's answer path and its rest ring (TrickShotViews).
+        if model.trickMode.answerPathOnCloth?.rest != nil {
+            parts.append(Part(id: "answer",
+                              mark: String(localized: "Table marks: long dashes", defaultValue: "Long dashes",
+                                           comment: "Names the long-dashed path of a trick shot's answer."),
+                              words: String(localized: "Answer")))
+        }
+        // The what-if's other future (WhatIfOverlay).
+        if model.whatIf.isShowing {
+            parts.append(Part(id: "whatIf",
+                              mark: String(localized: "Table marks: violet", defaultValue: "Violet",
+                                           comment: "Names the violet paths of the other future in a what-if."),
+                              words: WhatIfWords.title))
+        }
+        // The every-surface fan (EveryWorldOverlay): its path titles leave the cloth too; the card names each surface.
+        if model.everyWorld.isShowing {
+            parts.append(Part(id: "everyWorld",
+                              mark: String(localized: "Table marks: coloured paths", defaultValue: "Coloured paths",
+                                           comment: "Names the coloured paths of the same shot on every other surface."),
+                              words: EveryWorldWords.title))
+        }
+        return parts
+    }
+}
+
+/// The panel's top line across the hinge: one line of what the table half's marks mean. When the marks' names do not
+/// fit it drops them and keeps the meanings; when even that does not fit (a large text size) each part takes a line of
+/// its own. One VoiceOver element.
+private struct TableMarksLine: View {
+    let parts: [TableMarksWords.Part]
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            line(marks: true)
+            line(marks: false)
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                ForEach(parts) { piece($0, marks: true).lineLimit(2) }
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: String(localized: "Table marks",
+                                                  comment: "VoiceOver name of the panel line saying what the table's marks mean.")))
+        .accessibilityValue(Text(verbatim: parts.map(\.spoken).joined(separator: ". ")))
+    }
+
+    private func line(marks: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
+            ForEach(parts) { piece($0, marks: marks).lineLimit(1) }
+        }
+    }
+
+    private func piece(_ part: TableMarksWords.Part, marks: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xxs) {
+            if marks {
+                Text(verbatim: part.mark)
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+            }
+            Text(verbatim: part.words)
+                .font(Theme.label)
+                .foregroundStyle(palette.paper)
+            if let figure = part.figure { KitFigure(figure, size: .inline) }
+            if !part.after.isEmpty {
+                Text(verbatim: part.after)
+                    .font(Theme.label)
+                    .foregroundStyle(palette.paper)
             }
         }
     }

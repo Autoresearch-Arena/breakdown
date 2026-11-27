@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the upright phone's thumb dock: these blurbs
+//          are word sources of the dock (PhoneDock), so they show in its word strip and pull-up sheet, never over the
+//          table; their small buttons are the strip's quiet buttons and the primary action is the dock's cyan capsule.
+//          The ball-in-hand spot reads in paper when free and in the warning role when not (it was white and system
+//          red), still with its icon; the words are the upright phone's compact body.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md F2:
 //          HighlightPhoneBlurb's small buttons start with Make it again / Play it now when the shot can be saved.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 coordinator: what steps aside for the what-if now also steps
@@ -18,12 +23,12 @@
 //            IntroEndPhoneBlurb     - the end of Watch the intro: its line, Practice and Close in the blurb, Trick
 //                                     shots as the primary action.
 //            MatchPhoneBlurbs       - the match (App/Match/MatchPhoneBlurbs.swift).
-//          Also PhonePrimaryAction.freePlay (the strip's white capsule for these) and PhonePlayFeedback, the
+//          Also PhonePrimaryAction.freePlay (the dock's cyan primary for these) and PhonePlayFeedback, the
 //          always-present observer PlayTableLayer hosts on the upright phone: the match's announcements and clock
 //          haptic (MatchFeedback) and the cleared rack's success haptic, which the blurbs cannot hold because they come
 //          and go with what they show.
-//          Colour: the old cards' cyan accents are white here (Part 3: cyan means rolling only); an illegal spot stays
-//          red with its icon, so it never depends on colour alone.
+//          Colour: paper words (cyan means rolling and "you can act here" only); an illegal spot is the warning role
+//          with its icon, so it never depends on colour alone.
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 clips, plans/23-Nov-2026-clips-plan.md: ClipPhoneBlurb comes first
 //          in PlayPhoneBlurbs, the cleared-table blurb offers "Share your best shot" as its second button, and the
 //          strip's primary action is "Share clip" after a watched or closed highlight (PhonePrimaryAction.clip).)
@@ -76,6 +81,7 @@ struct PlaceBallsPhoneBlurb: View {
 
 struct BallInHandPhoneBlurb: View {
     let model: ShowpieceModel
+    @Environment(\.palette) private var palette
 
     var body: some View {
         if BallInHandCard.isVisible(model) {
@@ -83,19 +89,21 @@ struct BallInHandPhoneBlurb: View {
             let problem = model.placingCueBall
                 ? CueBallPlacement.problem(CueBallPlacement.legality(of: spot, model)) : nil
             Blurb(buttons: buttons) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                     Text(verbatim: CueBallPlacement.heading(model))
-                        .font(Theme.blurbTitle)
+                        .font(Theme.heading)
+                        .foregroundStyle(palette.paper)
                         .accessibilityAddTraits(.isHeader)
                     Text(verbatim: CueBallPlacement.instructions(model))
-                        .font(Theme.body)
+                        .font(Theme.bodyCompact)
+                        .foregroundStyle(palette.paper)
                         .fixedSize(horizontal: false, vertical: true)
                     if model.placingCueBall {
                         // The spot under the ball: words AND an icon, red only when it is not legal.
                         Label(problem ?? String(localized: "Free spot"),
                               systemImage: problem == nil ? "checkmark.circle" : "xmark.octagon")
                             .font(Theme.label)
-                            .foregroundStyle(problem == nil ? Color.white : Color.red)
+                            .foregroundStyle(problem == nil ? palette.paper : palette.warning)
                             .accessibilityLabel(Text(verbatim: CueBallPlacement.spoken(model, at: spot, problem: problem)))
                     }
                 }
@@ -182,7 +190,7 @@ struct HighlightPhoneBlurb: View {
         }
     }
 
-    /// Try the trick shot when it is allowed, and Close. "Watch it in the Lens" is the strip's primary action.
+    /// Try the trick shot when it is allowed, and Close. "Watch it" (in the Physics Lens) is the dock's primary action.
     private func buttons(_ offer: ShowpieceModel.HighlightCardOffer) -> [BlurbButton] {
         var out: [BlurbButton] = []
         // 0.7.7 make-it-again: Make it again (or Play it now) first when the shot can be saved; the blurb draws the

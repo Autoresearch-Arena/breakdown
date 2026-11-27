@@ -23,6 +23,13 @@
 //          progress, the clock held. Landed: the overhead view. Reduce Motion: each act cuts. RidePlan.firstStruck
 //          names the first ball hit (the rings and the map). selfTest also checks the mount and the dismount: no turn
 //          faster than the ride's limit and the ball pinned during the orbit (RideCheck's new fields).)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 12, Ride: a LOW chase camera with the ridden ball
+//          large in the lower third. The chase eye comes down from 42 cm to 22 cm over the cloth and in from 62 cm to
+//          30 cm behind the ball, so the ball reads about twice as large (roughly a seventh of an upright phone's width,
+//          a fifth of a big screen's height) while the balls it is heading for stay in view beyond it; the crane after
+//          the first contact is unchanged, so the rack opening and the struck ball's run are still seen from above. The
+//          lens (rideFov, shared with bullet time) and the ball's place in the free space are unchanged. The eye stays
+//          well over the rail tops, and the rail lift still raises it when it backs out past a cushion.)
 // PURPOSE: Ride the shot: a chase view of the cue ball. When Ride is on, the camera sits behind and above the cue
 //          ball, looks the way it is travelling and follows it for the whole shot (it never hands over to the ball it
 //          hits). After the first contact it cranes up and back so the rack opening, or the struck ball's run to its
@@ -233,12 +240,14 @@ final class ShotCamera {
     /// everything near it while keeping good depth precision on the cloth and rails.
     static let rideNear: Float = 0.02
     static let overheadNear: Float = 0.05
-    /// The chase view: the eye sits well above the rail tops (7.5 cm) and about a dozen ball widths behind the cue ball,
-    /// so the cue ball reads as a ball in the lower part of the screen with the balls it is heading for in view
-    /// beyond it, and the camera can see over a whole rack as it opens. The first ride sat a ball width behind at
-    /// rail height: the cue ball filled half the screen and the rack was a wall (the Boss found it "a weird view").
-    static let eyeHeight: Float = 0.42
-    static let back: Float = 0.62
+    /// The chase view (UI rethink package 12): low and close, about three ball widths over the cloth (well above the
+    /// rail tops, 7.5 cm) and five behind the ball, so the ridden ball is large in the lower third of the screen with
+    /// the balls it is heading for in view beyond it. Two earlier settings bracket it: the first ride sat a ball width
+    /// behind at rail height (the ball filled half the screen and the rack was a wall, "a weird view"), and 0.7.5 to
+    /// 0.8.2 sat 42 cm up and 62 cm back, where the ball was a small dot. The crane after the contact (below) still
+    /// lifts the view over a whole rack as it opens.
+    static let eyeHeight: Float = 0.22
+    static let back: Float = 0.30
     /// Where the camera cranes to after the first contact, and how long that takes (clock seconds).
     static let craneHeight: Float = 0.85
     static let craneBack: Float = 0.95
@@ -505,7 +514,7 @@ final class ShotCamera {
         return frameInFreeSpace(shot, free: free, size: size)
     }
 
-    /// The camera a couple of ball widths behind a ball at `centre`, heading along `heading`. Its target is the ball
+    /// The camera a few ball widths behind a ball at `centre`, heading along `heading`. Its target is the ball
     /// itself (its centre): frameInFreeSpace then turns the view so the ball lands in the lower third of the free space
     /// (0.7.6 #20; before, a point 0.38 m ahead was centred and the ball itself sat at the cards' edge).
     static func follow(centre c: Vec2, heading h: Vec2, frame: TableFrame, fov: Float,

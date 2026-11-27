@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 4's leftover note: the controller's button words
+//          name the tab "Aim", not "Your shot", and the Lens by its one name, "Physics Lens".)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
 //          B5: on the shot of the day's result the Options button shares it and a left stick click opens the board
 //          (DailyController), so the day can be played to a shared result with a controller alone; the mapping says so.)
@@ -125,13 +127,13 @@ final class GameControllerInput {
             Mapping(control: String(localized: "Right stick"),
                     action: String(localized: "Moves the tip on the cue ball: follow, draw and side.")),
             Mapping(control: String(localized: "A button"),
-                    action: String(localized: "Presses the main button of the card on screen. With no card up, it continues a held moment of a Lens replay, shoots while Your shot is open and opens Your shot when it is closed.")),
+                    action: String(localized: "Presses the main button of the card on screen. With no card up, it continues a held moment of a Physics Lens replay, shoots while Aim is open and opens Aim when it is closed.")),
             Mapping(control: String(localized: "B button"),
                     action: String(localized: "Skips to where the balls stop.")),
             Mapping(control: String(localized: "X button"),
                     action: String(localized: "Turns the Physics Lens on or off.")),
             Mapping(control: String(localized: "Y button"),
-                    action: String(localized: "Opens or closes Your shot.")),
+                    action: String(localized: "Opens or closes Aim.")),
             Mapping(control: String(localized: "D-pad"),
                     action: String(localized: "Moves ball in hand. In eight-ball, left and right pick the ball to call and up and down the pocket. Otherwise left and right turn the aim finely, and up and down raise or lower the cue.")),
             // 0.7.7 every-world: the d-pad, A and B while the every-surface fan is open.

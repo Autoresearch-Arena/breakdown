@@ -1,5 +1,15 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6: no words on the cloth. The player's stroke is
+//          drawn as its two marks only (the aimed line dashed and faint, the line the cue really took solid); "Your
+//          aim" and "Your stroke" are no longer written beside them on any device (wave 2 notes 9 and 48: words belong
+//          in the panel, or on the upright phone in the dock's word strip), and the full Physics Lens key gains the row
+//          that names the two lines, "Your strike" (the one name, StrikeWords.liveHeading). The caption card's surface
+//          (the side column's card and the strip under the table) is the opaque house panel with its rule edge
+//          instead of system glass (the design language's reading surface). The caption tile is CaptionFigureTile, so
+//          it never meets the kit's FigureTile (wave 1 note 17). CaptionLeader gains showFlight, on by default, so the
+//          jump's side view shows beside the flight on the upright phone as well (it was inside the explanation blurb,
+//          which no longer sits on the table): the graphic stays on screen, only words moved into the dock.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 9, the Physics Lens notebook,
 //          plans/26-Nov-2026-ui-rethink-plan.md and 26-Nov-2026-design-language.md: the big-screen chip beside the ring
 //          carries no words now, only the moment's lead figure as the kit's Chip with its meaning-colour dot (the
@@ -362,15 +372,24 @@ private extension View {
         self.padding(.leading, 4).padding(CaptionCard.padding)
     }
 
-    /// The card's glass and accent bar alone, without the padding.
+    /// The card's surface and accent bar alone, without the padding. UI rethink package 6: the opaque house panel with
+    /// its hairline rule edge (the design language's reading surface; glass never holds a paragraph).
     func captionGlassSurface(accent: Color) -> some View {
-        self
-            // Plain system Liquid Glass, untinted, like every other panel in the app (the Boss: "all of it should be
-            // liquid glass, Apple native"). The card now sits below the table, not over the Lens grid, so the system's
-            // own glass keeps the words readable; Reduce Transparency still turns it solid.
-            .glassEffect(.regular, in: Theme.Corner.cardShape)
+        modifier(CaptionPanelSurface(accent: accent))
+    }
+}
+
+/// The caption card's surface: the house panel (opaque, rule edge, card corner) and the moment's accent bar.
+private struct CaptionPanelSurface: ViewModifier {
+    let accent: Color
+    @Environment(\.palette) private var palette
+
+    func body(content: Content) -> some View {
+        content
+            .background(palette.panel, in: Theme.Corner.cardShape)
+            .overlay { Theme.Corner.cardShape.strokeBorder(palette.rule, lineWidth: Theme.Size.hairline) }
             .overlay(alignment: .leading) {
-                Capsule().fill(accent).frame(width: 3).padding(.vertical, 12).padding(.leading, 5)
+                Capsule().fill(accent).frame(width: 3).padding(.vertical, Theme.Space.sm).padding(.leading, 5)  // design-lint: allow the accent bar's inset, inside the card's 4-point leading pad
             }
     }
 }
@@ -1155,6 +1174,11 @@ struct LensKeyPage: View {
                            line: String(localized: "Spreads where something was hit: warm for the cue or a ball, blue for a rail, gold for a pocket.")) {
                     LensKeyDrawing(kind: .burst)
                 }
+                // UI rethink package 6: the stroke's two lines carry no words on the cloth; this row names them.
+                LensKeyRow(name: StrikeWords.liveHeading,
+                           line: String(localized: "Two lines from the cue ball: dashed where you aimed, solid where the cue really sent it.")) {
+                    LensKeyDrawing(kind: .stroke)
+                }
             }
         }
     }
@@ -1197,7 +1221,7 @@ private struct LensKeyRow<Mark: View>: View {
 /// velocity arrow's glow), the ring (drawn in paper here, since on the table it takes the colour of whichever moment
 /// it marks), and the burst (three small rings, warm, blue and gold, for a ball or the cue, a rail and a pocket).
 private struct LensKeyDrawing: View {
-    enum Kind { case arrow, ring, burst }
+    enum Kind { case arrow, ring, burst, stroke }
     let kind: Kind
     @Environment(\.palette) private var palette
 
@@ -1231,6 +1255,16 @@ private struct LensKeyDrawing: View {
                     ctx.stroke(Path(ellipseIn: CGRect(x: x - r * 0.5, y: mid.y - r * 0.5, width: r, height: r)),
                                with: .color(c.opacity(0.6)), lineWidth: 1)
                 }
+            case .stroke:
+                // As CaptionLeader draws the player's stroke: from the cue ball, the aim dashed and faint, the cue's
+                // real line solid, parting by a few degrees.
+                let from = CGPoint(x: 3, y: mid.y)
+                var aimed = Path(); aimed.move(to: from); aimed.addLine(to: CGPoint(x: size.width - 2, y: mid.y - size.height * 0.3))
+                var struck = Path(); struck.move(to: from); struck.addLine(to: CGPoint(x: size.width - 2, y: mid.y + size.height * 0.1))
+                ctx.stroke(aimed, with: .color(palette.paper.opacity(0.6)),
+                           style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 5]))
+                ctx.stroke(struck, with: .color(palette.paper), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                ctx.fill(Path(ellipseIn: CGRect(x: from.x - 3, y: from.y - 3, width: 6, height: 6)), with: .color(palette.paper))
             }
         }
         .accessibilityHidden(true)
@@ -1238,8 +1272,8 @@ private struct LensKeyDrawing: View {
 }
 
 /// One entry of the Lens colour key: a short glowing line like the trail it stands for (three dashes, or one solid
-/// stroke), then its word. Shared by LensLegendChip (the title-row chip on the other layouts) and PhoneLensKeyBlurb (the
-/// upright phone's one-line docked key), so both draw the key the same way.
+/// stroke), then its word. Shared by LensLegendChip (the title-row chip on the other layouts) and the upright phone's
+/// dock (PhoneWordStrip's one-line key and the sheet's key card), so all draw the key the same way.
 struct LensKeyEntry: View {
     let name: LocalizedStringKey
     let color: Color
@@ -1302,8 +1336,9 @@ final class LeaderState {
     var stageRect: CGRect = .zero
     /// The player's stroke lines on screen (StageSpace), or nil (LensStroke.onScreen decides when).
     var stroke: StrokeMarks?
-    /// The upright phone's explanation blurb on screen (StageSpace), or zero; PhoneExplanation reports it (0.7.8) so
-    /// the jump's side view keeps clear of it. It is not the card: the ring does not hide under it.
+    /// The upright phone's thumb dock on screen (StageSpace), or zero; PhoneDock reports it (UI rethink package 6; it
+    /// was the explanation blurb, 0.7.8) so the jump's side view keeps clear of it. It is not the card: the ring does
+    /// not hide under it.
     var blurb: CGRect = .zero
     /// The side view of a jump (0.7.8, FlightSideView) while a caption about a jump is up (0.7.9: the raised strike that
     /// made it, a take-off or a landing), or nil.
@@ -1421,6 +1456,10 @@ struct CaptionLeader: View {
     /// Draw the figure chip beside the ring. Off on the upright phone (phone UI plan): the anchored explanation blurb
     /// carries the moment there, and the chip repeated it and collided with it. The ring and the stroke lines stay.
     var showChip = true
+    /// Draw a jump's side view beside its flight. On everywhere (UI rethink package 6: the upright phone too, now that
+    /// its explanation's words live in the dock; the picture stays on screen beside the jump, never folded away, and
+    /// keeps clear of the dock, which reports its frame to leader.blurb).
+    var showFlight = true
     @Environment(\.palette) private var palette
     @Environment(\.layoutDirection) private var layoutDirection
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
@@ -1513,8 +1552,8 @@ struct CaptionLeader: View {
     }
 
     /// The player's stroke (item 4): the aimed line faint and dashed, the line the cue really took bright and solid,
-    /// both from the cue ball, each labelled at its far end. The labels are pushed apart across the two ends, so they
-    /// never sit on each other however small the gap.
+    /// both from the cue ball. Marks only (UI rethink package 6): the Physics Lens key names the two lines ("Your
+    /// strike"), so no words sit on the cloth.
     private func drawStroke(_ m: LeaderState.StrokeMarks, in ctx: inout GraphicsContext) {
         let o = m.opacity
         var aimed = Path(); aimed.move(to: m.from); aimed.addLine(to: m.aimedEnd)
@@ -1523,21 +1562,6 @@ struct CaptionLeader: View {
                    style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 5]))
         ctx.stroke(struck, with: .color(palette.ground.opacity(0.35 * o)), style: StrokeStyle(lineWidth: 4, lineCap: .round))
         ctx.stroke(struck, with: .color(palette.paper.opacity(o)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
-        // Which way to push each label: away from the other line's end; if the ends sit on one point, across the line.
-        var nx = m.aimedEnd.x - m.struckEnd.x, ny = m.aimedEnd.y - m.struckEnd.y
-        var len = hypot(nx, ny)
-        if len < 1 {
-            nx = -(m.struckEnd.y - m.from.y); ny = m.struckEnd.x - m.from.x
-            len = max(1, hypot(nx, ny))
-        }
-        nx /= len; ny /= len
-        let push: CGFloat = 14
-        let aimedAt = CGPoint(x: m.aimedEnd.x + nx * push, y: m.aimedEnd.y + ny * push)
-        let struckAt = CGPoint(x: m.struckEnd.x - nx * push, y: m.struckEnd.y - ny * push)
-        ctx.draw(Text(verbatim: String(localized: "Your aim")).font(Theme.label)
-                    .foregroundStyle(palette.paper.opacity(0.75 * o)), at: aimedAt, anchor: .center)
-        ctx.draw(Text(verbatim: String(localized: "Your stroke")).font(Theme.label.weight(.semibold))
-                    .foregroundStyle(palette.paper.opacity(o)), at: struckAt, anchor: .center)
     }
 
     var body: some View {
@@ -1581,8 +1605,8 @@ struct CaptionLeader: View {
                 }
                 // The side view of a jump (0.7.8): beside the flight, clear of the card, the chip and the balls; left
                 // out when nothing fits, so it never covers the table's action or the words.
-                // Not on the upright phone (showChip off there): its explanation blurb carries the picture (0.7.9).
-                if explanations, showChip, let sketch = leader.flight, let at = flightCenter(sketch, in: geo.size) {
+                // On the upright phone too (package 6): the dock's frame is in leader.blurb, so it stays above it.
+                if explanations, showFlight, let sketch = leader.flight, let at = flightCenter(sketch, in: geo.size) {
                     FlightSideView(sketch: sketch, accent: palette.color(for: CaptionAccent.impact), size: at.size)
                         .position(at.point)
                         // One panel for the whole jump (0.7.9): it stays up from the strike to the last hop.

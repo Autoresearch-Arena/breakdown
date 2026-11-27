@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: Theme.blurbTitle is now
+//         Theme.label.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -29,6 +31,8 @@
 //          - StrokeShape: a small drawing of a stroke's shape (the drill card's trace), sideways wander enlarged.
 //          - StrokeTraceOverlay: the stroke's trace kept with the attempt, drawn faintly on the cloth behind the cue
 //            ball while its replay plays, projected through the live camera like the ghost.
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3's leftover lint note: the card's corners and padding are Theme values (medium
+//          corners, 12 point padding) instead of bare numbers.)
 // SRP/DRY check: Pass - checked GhostOverlay (the same projector-and-Canvas pattern for the last try; this draws the
 //          stroke, not the balls), ComparisonCard and TableClearedCard (the card look and button sizes are theirs) and
 //          StrokeWords (every sentence comes from there).
@@ -98,7 +102,7 @@ struct StrokeResultCard: View {
                     .accessibilityHint(String(localized: "Starts the straight-stroke drill: the cue ball alone, stroked up the table and back"))
                 }
             }
-            .glassCard(cornerRadius: 20, padding: 12)
+            .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
             .tint(palette.accent)
             .accessibilityElement(children: .contain)
             .transition(.opacity)
@@ -179,7 +183,7 @@ struct StrokeDrillCard: View {
                 .controlSize(.regular)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
+            .glassCard(cornerRadius: Theme.Corner.medium, padding: Theme.Space.sm)
             .tint(palette.accent)
             .accessibilityElement(children: .contain)
             .transition(.opacity)
@@ -239,7 +243,7 @@ struct StrokePhoneBlurbs: View {
                                      hint: String(localized: "Puts the cue ball back on the head spot")) { drill.again() }]
                       : []) { open in
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(String(localized: "Straight stroke")).font(Theme.blurbTitle)
+                    Text(String(localized: "Straight stroke")).font(Theme.label)
                     if model.aimReady, let result = drill.last {
                         Text(StrokeWords.verdict(result)).font(Theme.body)
                             .lineLimit(open ? nil : 2)

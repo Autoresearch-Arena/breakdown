@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 5's leftover note: the list's title is the
+//          menu's own sentence-case name, "Behind the 8-ball" (the menu's key), so the game uses one name. The list
+//          stays the kit's SheetPage with its ListRow rows.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the list is the kit's sheet
 //          page with the kit's list rows (number or medal, title and story, five dots from the hardest way out's rating,
 //          best score, cloth and bridge, the start layout drawn small; "Rated up to" is said by the dots now, and by
@@ -237,7 +240,9 @@ struct EightBallList: View {
     var body: some View {
         // UI rethink package 5: the kit's sheet page and list rows, as the trick shots and lessons lists. Done closes
         // the list, as Close did.
-        SheetPage(title: String(localized: "Behind the 8-Ball"), onDone: { mode.listOpen = false }) {
+        SheetPage(title: String(localized: "Menu: behind the 8-ball", defaultValue: "Behind the 8-ball",
+                                comment: "Main menu entry: the eight-ball situations to escape. Sentence case."),
+                  onDone: { mode.listOpen = false }) {
             if EightBallSituations.all.isEmpty {
                 ContentUnavailableView {
                     Label("No situations yet", systemImage: "8.circle")
