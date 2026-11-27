@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink wave 3 note 28: a trick shot's line carries the
+//          technique it uses (TrickShot.techniqueLine, package 11) as its detail, so the phone names the technique as
+//          the list's meta line does; still no difficulty after the name (wave 3 note 7). PhoneTitleRow reads the
+//          detail aloud with the title.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the thumb dock: the title row says only what
 //          is being played (design language, "Upright iPhone": "never who is up or the score"). The first minute is
 //          "Break" (wave 2 note 6: the hand-over too, as the notebook's top bar does), then the trick shot's, the
@@ -11,7 +15,8 @@
 //          hit's status line, right after the ride's.)
 // PURPOSE: What the upright phone's title row says (plans/22-Nov-2026-phone-ui-plan.md, Part 3 "The title row", and
 //          plans/26-Nov-2026-ui-rethink-plan.md package 6): the name of the thing being played, one line. Words only;
-//          PhoneTitleRow draws them. `isStatus` and `detail` are kept for callers (always false and nil now).
+//          PhoneTitleRow draws them. `detail` is a trick shot's technique ("Draw and massé"), nil for everything
+//          else; `isStatus` is kept for callers (always false now).
 //          PhoneTitle.match(_:) (MatchPhoneBlurbs.swift) names the match's game.
 // SRP/DRY check: Pass - checked NotebookPanel's top bar (the same order of cases, but it names the mode, "Trick shots",
 //          where the phone names the item, as the design language's examples do), DailyShot.title, MatchWords.title and
@@ -42,7 +47,8 @@ enum PhoneTitle {
         // 0.7.10 daily: played as a trick shot, named as itself.
         if DailyMode.showing(model) { return Line(title: DailyShot.title) }
         let trick = model.trickMode
-        if trick.isActive, let shot = trick.current { return Line(title: shot.title) }
+        // The trick's playful title, then the technique it uses, as the list names it; never the difficulty.
+        if trick.isActive, let shot = trick.current { return Line(title: shot.title, detail: shot.techniqueLine) }
         let lessons = model.lessonMode
         if lessons.isActive, let lesson = lessons.current { return Line(title: lesson.title) }
         let eightBall = model.eightBallMode

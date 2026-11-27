@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8 turned on: across a hinge the stage half
+//          sets tableMarksOnly, so the open folding phone's table half draws marks only and its words are said on the
+//          panel's top line; the panel and a big screen's notebook beside its table keep their words.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6, the upright phone's thumb dock; the upright
 //          phone's parts only, the big-screen stage and the notebook wiring are as they were: three zones, the title
 //          row on an opaque ground band from the top edge (so the cue, the camera's moves and the rails never run into
@@ -291,6 +294,10 @@ struct ShowpieceView: View {
                                height: laptopFold.map { max(0, $0.minY) })
                         // 0.7.10 everyone: the half itself in the reader's own direction (see the container below).
                         .environment(\.layoutDirection, layoutDirection)
+                        // UI rethink package 8: across a hinge the table half draws marks only; every word it would
+                        // print on the cloth is said on the panel's top line instead (LayoutFlags.tableMarksOnly). The
+                        // stage half only: the panel and the notebook beside a big screen's table keep their words.
+                        .environment(\.tableMarksOnly, fold != nil)
                     if let division {
                         Color.clear.frame(width: bookFold == nil ? nil : division.width,
                                           height: laptopFold == nil ? nil : division.height)
@@ -335,7 +342,8 @@ struct ShowpieceView: View {
                 // The line to the card only where the card is beside the table; upright, the card is a strip far below.
                 // On the upright phone the ring stays but its title chip goes: the anchored blurb carries the title and
                 // the chip collided with it (phone UI plan, Part 3).
-                CaptionLeader(leader: leader, showLine: split, showChip: !upright)
+                // UI rethink package 8: no title chip on the open folding phone's table half either (no words there).
+                CaptionLeader(leader: leader, showLine: split, showChip: !upright && fold == nil)
                 // The main menu over the whole window in the side-column layout, so its veil and card span the window
                 // and not just the table beside a busy column (item 2). Above the leader line. It comes and goes with
                 // the system's smooth motion, as it does over the table (stage()); the animation is on this container

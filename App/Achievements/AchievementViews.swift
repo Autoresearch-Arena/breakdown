@@ -10,6 +10,12 @@
 //          unearned row's name is paper3, never the system's grey. The detail is a pushed page on the ground with the
 //          kit's primary button for "Watch it in the Lens"; the end note's button is the kit's secondary button and
 //          the note's card is the panel surface. What the rows say and do is unchanged.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 10, "Achievements and sharing", proposed by
+//          package 10 for this file's owner: a summary band heads the list (earned of total, what is new since the
+//          last visit, the latest one earned); an unearned row is one line under its name, the real target
+//          (AchievementWords.target, the judge's own thresholds), with "Not earned yet" for VoiceOver; every row opens
+//          its page; an unearned page says how to earn it and offers "Try it" (AchievementTryIt), which closes the list
+//          and sets up the table.)
 // PURPOSE: Every view of 0.7.7's achievements (plans/23-Nov-2026-achievements-plan.md, new file 7):
 //          - AchievementList, the page the menu opens (a sheet on phones, a page of the notebook on the open Duo, iPad and
 //            Mac): five sections, every achievement always listed. An earned one shows its symbol lit, its name, the date,
@@ -50,11 +56,20 @@ struct AchievementList: View {
 
     private var book: AchievementBook { model.achievements }
 
+    /// The most recently earned achievement's name, for the summary band; nil before anything is earned.
+    private var latestName: String? {
+        Achievements.all
+            .compactMap { a in book.earned(a.id).map { (a, $0.date) } }
+            .max { $0.1 < $1.1 }?.0.name
+    }
+
     var body: some View {
         // Read once per render: the progress the collections' rows count from.
         let progress = book.currentProgress()
         NavigationStack {
             SheetPage(title: AchievementWords.listTitle, onDone: onClose) {
+                AchievementSummaryBand(earned: book.earnedCount, total: book.total, new: newOnOpen.count,
+                                       latest: latestName)
                 ForEach(AchievementGroup.allCases, id: \.self) { group in
                     SheetGroup(group.title) {
                         ForEach(Achievements.inGroup(group)) { a in
@@ -77,23 +92,19 @@ struct AchievementList: View {
         .onAppear { newOnOpen = book.listOpened() }
     }
 
-    /// An earned row pushes its page; an unearned row is plain text (not a disabled button), so VoiceOver reads it.
+    /// Every row pushes its page: an earned one its shot and "Watch it", an unearned one how to earn it and "Try it".
     @ViewBuilder
     private func entry(_ a: Achievement, progress: AchievementProgress) -> some View {
         let earned = book.earned(a.id)
         let row = AchievementRow(achievement: a, earned: earned, isNew: newOnOpen.contains(a.id),
                                  drawing: book.drawings[a.id], drawingPending: book.drawingPending(a.id),
                                  count: book.progress(of: a, in: progress), items: progress.items(a.progress),
-                                 stacked: typeSize.isAccessibilitySize, opens: earned != nil)
-        if earned != nil {
-            NavigationLink {
-                AchievementDetail(model: model, achievement: a, onClose: onClose)
-                    .frontDoorPushedPage(title: a.name, onDone: onClose)
-            } label: { row }
-                .buttonStyle(.plain)
-        } else {
-            row
-        }
+                                 stacked: typeSize.isAccessibilitySize, opens: true)
+        NavigationLink {
+            AchievementDetail(model: model, achievement: a, onClose: onClose)
+                .frontDoorPushedPage(title: a.name, onDone: onClose)
+        } label: { row }
+            .buttonStyle(.plain)
     }
 }
 
@@ -158,9 +169,10 @@ private struct AchievementRow: View {
         .frame(maxWidth: .infinity, minHeight: Theme.Size.minHit, alignment: .leading)
         .background(palette.panelSunken, in: Theme.Corner.tileShape)
         .contentShape(Theme.Corner.tileShape)
-        // One element: the name, then earned and when (or not yet), then the sentence or the hint, then the count. The
-        // drawing and the dots are hidden (TrickPathThumb already is).
+        // One element: the name, then earned and when, then the sentence or the target, then the count; an unearned row
+        // adds "Not earned yet" as its value. The drawing and the dots are hidden (TrickPathThumb already is).
         .accessibilityElement(children: .combine)
+        .accessibilityValue(earned == nil ? Text(verbatim: AchievementWords.notEarned) : Text(verbatim: ""))
     }
 
     private var words: some View {
@@ -194,13 +206,15 @@ private struct AchievementRow: View {
                         .foregroundStyle(palette.paper2)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    Text(verbatim: AchievementWords.notEarned)
+                    // UI rethink package 10: one line, the real target. It wraps only at the accessibility sizes (the
+                    // row stacks there); "Not earned yet" is said by VoiceOver (the row's value) and shown by the dim
+                    // symbol and name.
+                    Text(verbatim: AchievementWords.target(achievement))
                         .font(Theme.caption)
-                        .foregroundStyle(palette.paper3)
-                    Text(verbatim: achievement.hint)
-                        .font(bodyFont)
                         .foregroundStyle(palette.paper2)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(stacked ? nil : 1)
+                        .minimumScaleFactor(stacked ? 1 : 0.85)
+                        .fixedSize(horizontal: false, vertical: stacked)
                 }
                 if let count {
                     Text(verbatim: AchievementWords.progress(done: count.done, total: count.total))
@@ -276,14 +290,32 @@ struct AchievementDetail: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                 }
-                Text(verbatim: achievement.sentence)
-                    .font(bodyFont)
-                    .foregroundStyle(palette.paper)
-                    .fixedSize(horizontal: false, vertical: true)
                 if let earned {
+                    Text(verbatim: achievement.sentence)
+                        .font(bodyFont)
+                        .foregroundStyle(palette.paper)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(verbatim: AchievementWords.earnedOn(earned.date))
                         .font(Theme.caption)
                         .foregroundStyle(palette.paper2)
+                } else {
+                    // UI rethink package 10: not earned yet. The real target, how to earn it, then "Try it".
+                    Text(verbatim: AchievementWords.target(achievement))
+                        .font(bodyFont)
+                        .foregroundStyle(palette.paper)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(verbatim: achievement.hint)
+                        .font(bodyFont)
+                        .foregroundStyle(palette.paper2)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if let place = AchievementTryIt.place(achievement, progress: book.currentProgress(), model: model) {
+                        PrimaryButton(AchievementWords.tryIt, systemImage: "play", fullWidth: true) {
+                            // Close the list first, as Watch it does, so nothing sits over the table it sets up.
+                            onClose()
+                            AchievementTryIt.start(place, model: model)
+                        }
+                        .accessibilityHint(Text(verbatim: AchievementWords.tryItHint))
+                    }
                 }
                 if hasShot {
                     watchButton
@@ -293,7 +325,7 @@ struct AchievementDetail: View {
                             .foregroundStyle(palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                } else {
+                } else if earned != nil {
                     Text(verbatim: AchievementWords.noSingleShot)
                         .font(bodyFont)
                         .foregroundStyle(palette.paper2)
@@ -328,8 +360,8 @@ struct AchievementDetail: View {
         }
     }
 
-    /// "Watch it in the Lens": solve first (a spinner on the button meanwhile, off the main thread), then close the page,
-    /// and only then start the replay. The order matters: in the notebook the panel shows a set page whatever the menu
+    /// "Watch it in the Physics Lens": solve first (a spinner on the button meanwhile, off the main thread), then close
+    /// the page, and only then start the replay. The order matters: in the notebook the panel shows a set page whatever the menu
     /// is doing, so a page left set would hide the replay's words and controls.
     private var watchButton: some View {
         Button {
@@ -360,6 +392,57 @@ struct AchievementDetail: View {
             onClose()
             model.watchAchievementShot(replay.attempt, signature: replay.signature, id: id)
         }
+    }
+}
+
+// MARK: The summary band (UI rethink package 10)
+
+/// The list's first group: how many are earned of how many (the control figure), what is new since the last visit
+/// (a cyan dot, the list's own "new" mark) and the latest one earned; before anything is earned, one line on what the
+/// list is for. One element for VoiceOver.
+private struct AchievementSummaryBand: View {
+    let earned: Int
+    let total: Int
+    let new: Int
+    let latest: String?
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            VStack(alignment: .leading, spacing: Theme.Space.figureToLabel) {
+                Text(verbatim: AchievementWords.summaryFigure(earned: earned, total: total))
+                    .font(Theme.controlFigure)
+                    .foregroundStyle(palette.paper)
+                Text(verbatim: AchievementWords.summaryEarned)
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+            }
+            if let line = AchievementWords.summaryNew(new) {
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xs) {
+                    Circle().fill(palette.accent)
+                        .frame(width: Theme.Space.xs, height: Theme.Space.xs)
+                    Text(verbatim: line)
+                        .font(Theme.label)
+                        .foregroundStyle(palette.paper)
+                }
+            }
+            if let latest {
+                Text(verbatim: AchievementWords.summaryLatest(name: latest))
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+                    .fixedSize(horizontal: false, vertical: true)
+            } else {
+                Text(verbatim: AchievementWords.summaryNone)
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .kitPanel()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: AchievementWords.summarySpoken(earned: earned, total: total, new: new,
+                                                                         latest: latest)))
     }
 }
 

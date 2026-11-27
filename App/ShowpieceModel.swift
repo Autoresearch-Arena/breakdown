@@ -1,4 +1,7 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink, Ride's chase camera follow-up: rideStatus names the
+//          mount act with RideWords.mounting ("Going down behind the cue ball"); the roll and the hold keep "Riding
+//          with ...".)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part
 //          D5: the menu's slow backdrop replay never starts with Reduce Motion on, so the table behind the menu is still.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: dailyMode is connected to the Game Center boards when
@@ -1241,7 +1244,10 @@ final class ShowpieceModel {
     var rideStatus: String? {
         switch rideAct {
         case .none, .landed: return nil
-        case .mount, .hold: return RideWords.riding(ball: ridePlan.cueBall, table: solvedTable)
+        // UI rethink package 11: the mount says where the view is going as it leaves the overhead table (beside the
+        // VoiceOver announcement RideOverlay posts); the hold keeps "Riding with ...".
+        case .mount: return RideWords.mounting(ball: ridePlan.cueBall, table: solvedTable)
+        case .hold: return RideWords.riding(ball: ridePlan.cueBall, table: solvedTable)
         // The first ride ever says once how to leave it (work package 9).
         case .roll: return rideTipThisRide ? RideWords.tip : RideWords.riding(ball: ridePlan.cueBall, table: solvedTable)
         case .dismount: return RideWords.backToTable

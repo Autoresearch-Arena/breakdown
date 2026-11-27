@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink wave 3 notes: each list row names the shot's technique
+//          (TrickShot.techniqueLine, package 11) in its meta line beside the dots, and VoiceOver reads it after the
+//          title; Made it and Missed carry the one share picture's quiet Share (ResultShare, package 10); on the phone
+//          held upright the trick's main action before watching is Your turn, as on the card, with Watch it as the
+//          blurb's small button.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the list's footer, Watch
 //          yours and its hint say "Physics Lens", the Lens's one name. The list stays the kit's SheetPage with its
 //          ListRow rows; as a page of the notebook it replaces the panel's whole content, as Options and How to play
@@ -129,9 +134,10 @@ struct TrickShotList: View {
     private func row(_ shot: TrickShot) -> some View {
         let leading: ListRow<DifficultyDots, AnyView>.Leading = mode.isDone(shot) ? .done
             : (shot.pending ? .none : .number(TrickShots.listNumber(of: shot)))
+        // The playful title stays; the technique it uses is named in the meta line beside the dots (package 11).
         return ListRow(leading: leading, title: shot.title,
                        line: shot.pending ? String(localized: "Coming next. \(shot.hook)") : shot.hook,
-                       showsChevron: !shot.pending,
+                       best: shot.techniqueLine, showsChevron: !shot.pending,
                        difficulty: { DifficultyDots(level: ModeDifficulty.dots(shot.difficulty)) },
                        picture: { thumb(shot) })
             .opacity(shot.pending ? 0.6 : 1)
@@ -147,7 +153,9 @@ struct TrickShotList: View {
     private func spoken(_ shot: TrickShot) -> String {
         let state = shot.pending ? String(localized: "coming next")
             : (mode.isDone(shot) ? String(localized: "made") : String(localized: "not made yet"))
-        return String(localized: "Shot \(TrickShots.listNumber(of: shot)), \(shot.title), \(shot.difficulty.label), \(state). \(shot.hook)")
+        // The technique, when the shot names one, straight after the title, as the row shows it.
+        let title = shot.techniqueLine.map { "\(shot.title), \($0)" } ?? shot.title
+        return String(localized: "Shot \(TrickShots.listNumber(of: shot)), \(title), \(shot.difficulty.label), \(state). \(shot.hook)")
     }
 }
 
@@ -254,13 +262,17 @@ struct TrickShotCard: View {
             let watchYours = KitAction(String(localized: "Watch yours in the Physics Lens"), systemImage: "eye") {
                 mode.watchYours()
             }
-            ModeResultCard(verdict: String(localized: "Made it!"), tone: .passed, corner: shot.title, lines: lines,
+            let made = String(localized: "Made it!")
+            ModeResultCard(verdict: made, tone: .passed, corner: shot.title, lines: lines,
                            tryAgain: tryAgainAction, next: nextAction,
+                           share: share(shot, verdict: made, tone: .passed),
                            more: [watchYours, contact, answerPathAction].compactMap { $0 })
                 .modeShortcut(nextAction, .defaultAction)
         } else {
-            ModeResultCard(verdict: String(localized: "Missed"), tone: .foul, corner: shot.title, lines: lines,
+            let missed = String(localized: "Missed")
+            ModeResultCard(verdict: missed, tone: .foul, corner: shot.title, lines: lines,
                            tryAgain: watchAction(again: false), next: tryAgainAction,
+                           share: share(shot, verdict: missed, tone: .foul),
                            more: [contact, answerPathAction].compactMap { $0 })
                 .modeShortcut(tryAgainAction, .defaultAction)
         }
@@ -315,6 +327,13 @@ struct TrickShotCard: View {
 
     private var turnAction: KitAction {
         KitAction(String(localized: "Your turn"), systemImage: "target") { mode.yourTurn() }
+    }
+
+    /// The one share picture's quiet Share (package 10): the try over its own table, the trick's title as the corner
+    /// word. Nil while no shot is on the table, so the button hides itself.
+    private func share(_ shot: TrickShot, verdict: String, tone: ResultTone) -> KitAction? {
+        ResultShare.action(model: model, mode: String(localized: "Trick shots"), corner: shot.title, verdict: verdict,
+                           tone: tone)
     }
 
     private func watchAction(again: Bool) -> KitAction {
@@ -392,16 +411,17 @@ struct TrickPhoneBlurbs: View {
               folded: ideaFolded, foldedLines: 1)
     }
 
-    /// The phase's own words. Explaining has none beyond the idea; Watch it, Your turn, Try again and Next shot are the
-    /// strip's primary action (PhonePrimaryAction.trick).
+    /// The phase's own words. Explaining has none beyond the idea; Your turn, Try again and Next shot are the strip's
+    /// primary action (PhonePrimaryAction.trick), and Watch it is the ready blurb's small button.
     @ViewBuilder
     private func phaseBlurb(_ shot: TrickShot) -> some View {
         switch mode.phase {
         case .ready:
-            // The hook, and Your turn for a player who wants to skip the answer (Watch it is the primary action).
+            // The hook, and Watch it for a player who wants to see the answer first (Your turn is the primary action,
+            // the card's way on).
             Blurb(sentence: shot.hook, buttons: [
-                BlurbButton(String(localized: "Your turn"),
-                            hint: String(localized: "Puts the balls back and opens the aiming controls")) { mode.yourTurn() }
+                BlurbButton(String(localized: "Watch it"),
+                            hint: String(localized: "Plays the answer, then explains it in the Physics Lens")) { mode.watch() }
             ])
         case .watching:
             Blurb(sentence: String(localized: "Watch the answer. \(shot.goalLine)"))
@@ -438,9 +458,9 @@ struct TrickPhoneBlurbs: View {
 }
 
 extension PhonePrimaryAction {
-    /// The trick shot's way on, the old card's prominent button (phone UI plan, Part 3 "The control strip"): "Watch
-    /// it" before the answer has been watched; "Your turn" while the answer plays and replays in the Lens (one word for
-    /// the whole replay, so it never changes under the thumb); "Next shot" after a make; "Try again" after a miss or an
+    /// The trick shot's way on, the card's primary button (phone UI plan, Part 3 "The control strip"): "Your turn"
+    /// before the answer is watched (wave 3 note 5: the card's way on; Watch it is the blurb's small button) and while
+    /// the answer plays and replays in the Lens (one word for the whole replay, so it never changes under the thumb); "Next shot" after a make; "Try again" after a miss or an
     /// off-script shot. Nil while lining up (the aiming panel is the way on), outside a trick shot, and while a
     /// what-if is open (the trick card stepped aside for it too).
     static func trick(_ model: ShowpieceModel) -> PhonePrimaryAction? {
@@ -449,12 +469,7 @@ extension PhonePrimaryAction {
         let mode = model.trickMode
         guard mode.isActive, !model.otherFutureShowing else { return nil }
         switch mode.phase {
-        case .ready:
-            return PhonePrimaryAction(title: String(localized: "Watch it"),
-                                      hint: String(localized: "Plays the answer, then explains it in the Physics Lens")) {
-                mode.watch()
-            }
-        case .watching, .explaining:
+        case .ready, .watching, .explaining:
             return PhonePrimaryAction(title: String(localized: "Your turn"),
                                       hint: String(localized: "Puts the balls back and opens the aiming controls")) {
                 mode.yourTurn()

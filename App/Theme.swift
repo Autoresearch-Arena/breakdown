@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (wave 3 note 31: Palette.color(for: FigureMark) gives the neutral
+//          mark paper2, so a figure chip with no meaning (the daily blurb's) draws in the second paper colour.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 3, the closing sweep: the old font aliases
 //          (tagline, sectionTitle, copy, number, figure, figureUnit, figureLabel, figureChip, ledgerFigure,
 //          groupCaption and its tracking, the blurb and phone fonts) are deleted; every caller now names the role it
@@ -432,6 +434,10 @@ struct Palette {
         case .cushion: return cushion
         case .friction: return friction
         case .pocket: return pocket
+        // The neutral mark (wave 3 note 31): a figure with no meaning colour, such as the daily blurb's score,
+        // distance and streak chips, draws in paper2. Written as default so this file builds whether or not
+        // FigureMark (Captions.swift, another owner) has gained its .neutral case yet; every other case is named above.
+        default: return paper2
         }
     }
 

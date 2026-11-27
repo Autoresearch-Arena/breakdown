@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8 follow-up: on a short panel the strike and the
+//          controls scroll together, so the console never spills over the reel and tabs on the open folding phone.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8, the open folding phone: across the hinge the
 //          table half draws marks only, so the panel's top line (TableMarksLine, under the top bar) says what they mean:
 //          the ringed ball ("3 ball, solid"), the fork's two lines with the turn, the bridge, the last try's ring, the
@@ -486,18 +488,15 @@ struct NotebookPanel: View {
                 .fadesAtBottom(cardsHeight > cardsMax)
                 // With no card to show, its gap goes too, so the console starts right under the top bar.
                 .padding(.bottom, cardsHeight > 0 ? 0 : -gap)
-            VStack(alignment: .leading, spacing: Theme.Space.md) {
-                StrikeSlot(model: model, leader: leader, aiming: showShotPanel, showSteps: $showSteps,
-                           strikeMaxHeight: strikeMax)
-                if showShotPanel {
-                    // The controls at their own natural height, first claim on the room (layout priority), so Shoot is
-                    // always in sight; "Your strike" above takes what is left and scrolls (UI rethink package 4
-                    // follow-up: with the console filling, a 900-point Mac window pushed Shoot under the edge).
-                    ShotPanel(model: model, isOpen: $showShotPanel, framed: false,
-                              onChromeHeight: { h in if abs(h - shotChromeMeasured) > 0.5 { shotChromeMeasured = h } })
-                        .fixedSize(horizontal: false, vertical: true)
-                        .layoutPriority(1)
-                        .transition(.opacity)
+            // A short panel (the open folding phone, a short window): "Your strike" and the controls scroll together as
+            // one stack, so nothing is drawn over the reel and tabs under them; a tall one keeps the controls whole with
+            // the strike's figures scrolling above them (UI rethink package 8 follow-up).
+            Group {
+                if onHinge || size.height < 760 {
+                    ScrollView { consoleStack(strikeMax: .infinity) }
+                        .scrollBounceBehavior(.basedOnSize)
+                } else {
+                    consoleStack(strikeMax: strikeMax)
                 }
             }
             .frame(minHeight: 0, maxHeight: .infinity, alignment: .top)
@@ -511,6 +510,24 @@ struct NotebookPanel: View {
         .padding(.horizontal, margin)
         .padding(.top, Theme.Space.md)
         .padding(.bottom, Theme.Space.xs)
+    }
+
+    /// "Your strike" over the console's controls: the controls at their own natural height with first claim on the
+    /// room (layout priority), so Shoot is always in sight; "Your strike" takes what is left, up to `strikeMax`, and
+    /// scrolls past it (UI rethink package 4 follow-up: with the console filling, a 900-point Mac window pushed Shoot
+    /// under the edge).
+    private func consoleStack(strikeMax: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Space.md) {
+            StrikeSlot(model: model, leader: leader, aiming: showShotPanel, showSteps: $showSteps,
+                       strikeMaxHeight: strikeMax)
+            if showShotPanel {
+                ShotPanel(model: model, isOpen: $showShotPanel, framed: false,
+                          onChromeHeight: { h in if abs(h - shotChromeMeasured) > 0.5 { shotChromeMeasured = h } })
+                    .fixedSize(horizontal: false, vertical: true)
+                    .layoutPriority(1)
+                    .transition(.opacity)
+            }
+        }
     }
 
     /// Two columns: the top bar, cards and the controls on the leading side, the commentary and the numbers on the

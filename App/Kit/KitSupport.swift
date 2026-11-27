@@ -3,10 +3,14 @@
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 3, the component kit part A: first version.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 3 part A review: the preview stage sets the
 //          device through the kit's own kitDevice modifier.)
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink wave 2 note 16: KitAction carries an optional VoiceOver
+//          hint and an optional keyboard shortcut, and View.kitActionAccess(_:) puts both on the button that shows the
+//          action, so the kit's buttons can take them in one line each.)
 // PURPOSE: The few shared pieces the buttons and cards in App/Kit (part A) lean on, kept in one place so they never
 //          repeat them. Which device a kit view lays out for is not here: it is the kitDevice environment value and
 //          KitDeviceReader in SheetPage.swift (part B), which every kit view reads. (1) KitAction, one worded button's
-//          title, optional outline icon, role and closure, the way cards take their buttons. (2) KitButtonLabel, the
+//          title, optional outline icon, role, optional VoiceOver hint and keyboard shortcut, and closure, the way cards
+//          take their buttons; View.kitActionAccess(_:) gives a button the action's hint and shortcut. (2) KitButtonLabel, the
 //          one label every button wears: an optional outline icon leading a word. (3) KitPreviewStage, the dark
 //          ground every kit preview sits on (the window forces dark at its root; previews do not inherit that).
 // SRP/DRY check: Pass - checked LayoutFlags.swift, Surfaces.swift and the part B kit files (SheetPage owns the
@@ -23,19 +27,50 @@ struct KitAction: Identifiable {
     let systemImage: String?
     let role: ButtonRole?
     let isEnabled: Bool
+    /// What VoiceOver says the button does ("Puts the balls back where the shot started"), already localized; nil
+    /// when the word says it all.
+    let hint: String?
+    /// The key that presses the button (Return for a card's main action, Command-S for Share); nil for none.
+    let shortcut: KeyboardShortcut?
     let action: @MainActor () -> Void
 
     init(_ title: String, systemImage: String? = nil, role: ButtonRole? = nil, isEnabled: Bool = true,
-         id: String? = nil, action: @escaping @MainActor () -> Void) {
+         id: String? = nil, hint: String? = nil, shortcut: KeyboardShortcut? = nil,
+         action: @escaping @MainActor () -> Void) {
         self.id = id ?? title
         self.title = title
         self.systemImage = systemImage
         self.role = role
         self.isEnabled = isEnabled
+        self.hint = hint
+        self.shortcut = shortcut
         self.action = action
     }
 
     var isDestructive: Bool { role == .destructive }
+}
+
+extension View {
+    /// The action's VoiceOver hint and keyboard shortcut on the button that shows it. Each is added only when the
+    /// action has one, so a plain action changes nothing.
+    func kitActionAccess(_ item: KitAction) -> some View {
+        accessibilityHint(Text(verbatim: item.hint ?? ""))
+            .modifier(KitShortcut(shortcut: item.shortcut))
+    }
+}
+
+/// A keyboard shortcut when there is one, nothing otherwise.
+private struct KitShortcut: ViewModifier {
+    let shortcut: KeyboardShortcut?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let shortcut {
+            content.keyboardShortcut(shortcut)
+        } else {
+            content
+        }
+    }
 }
 
 /// The one label every kit button wears: an optional leading outline icon (medium weight, the design language's icon

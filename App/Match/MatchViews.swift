@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink wave 3 note 22: the game-ending ruling and the match
+//          result carry the one share picture's quiet Share (ResultShare, App/SharePicture.swift), the game's name as
+//          the picture's mode.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 9's leftover note: the Lens is named by its one
 //          name, "Physics Lens", where a player reads it.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the match is the state card
@@ -344,12 +347,16 @@ struct MatchCard: View {
 
     /// A ruling that ends the game, in the result card: headed by the result ("You win!" in pocket gold, a loss in
     /// warning, a game with no winner in paper), never "Keep shooting"; its sentences and points say why (in the slim
-    /// form too, #34, except while a guided replay plays), then Continue with "Watch it in the Lens" beside it.
+    /// form too, #34, except while a guided replay plays), then Continue with "Watch it in the Physics Lens" beside it
+    /// and the one share picture's quiet Share on the left.
     @ViewBuilder
     private func endingRuling(_ r: Ruling, _ match: MatchMode) -> some View {
         let lines = replaying ? [] : Self.rulingSentences(r, match)
-        ModeResultCard(verdict: Self.rulingTitle(r, match), tone: Self.tone(r.result, match), lines: lines,
-                       tryAgain: lensAction, next: continueAction(match)) {
+        let verdict = Self.rulingTitle(r, match)
+        let tone = Self.tone(r.result, match)
+        ModeResultCard(verdict: verdict, tone: tone, lines: lines,
+                       tryAgain: lensAction, next: continueAction(match),
+                       share: share(match, verdict: verdict, tone: tone)) {
             if !replaying {
                 VStack(alignment: .leading, spacing: Theme.Space.xs) {
                     if !match.lastPoints.isEmpty { pointsSection(match) }
@@ -359,6 +366,12 @@ struct MatchCard: View {
             }
         }
         .modeShortcut(continueAction(match), .defaultAction)
+    }
+
+    /// The one share picture's quiet Share (package 10): the game's name ("Eight-ball") as the mode, the result as the
+    /// verdict, the last shot over its own table. Nil while no shot is on the table, so the button hides itself.
+    private func share(_ match: MatchMode, verdict: String, tone: ResultTone) -> KitAction? {
+        ResultShare.action(model: model, mode: MatchWords.title(match.state.kind), verdict: verdict, tone: tone)
     }
 
     /// A result's colour: the person's win in pocket gold, a game with no winner in paper, a loss in warning.
@@ -583,8 +596,10 @@ struct MatchCard: View {
             if !model.menuOpen { model.openMenu() }
         }
         if let r = match.state.result {
-            ModeResultCard(verdict: MatchWords.resultTitle(r, names: match.playerNames, you: match.you),
-                           tone: Self.tone(r, match), lines: resultLines(r, match), tryAgain: menu, next: rematch)
+            let verdict = MatchWords.resultTitle(r, names: match.playerNames, you: match.you)
+            let tone = Self.tone(r, match)
+            ModeResultCard(verdict: verdict, tone: tone, lines: resultLines(r, match), tryAgain: menu, next: rematch,
+                           share: share(match, verdict: verdict, tone: tone))
                 .modeShortcut(rematch, .defaultAction)
         } else {
             actionsPanel { KitButtonRow(primary: rematch, secondary: menu) }

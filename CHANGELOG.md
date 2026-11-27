@@ -8,6 +8,40 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.8.3] - 27-November-2026
+
+### One design for the whole game
+
+Author: Claude Opus 5.5 Medium, coordinating builders at the same level in five waves. Plan:
+plans/26-Nov-2026-ui-rethink-plan.md, packages 2 to 12; the rules: plans/26-Nov-2026-design-language.md.
+
+- What: Every screen now follows one design: one calm dark panel, one style of number with its unit, one shape of button, the same card for every mode, the table always the biggest thing on screen, a thumb dock on the phone, marks only on the folding phone's table half, a new Ride camera, achievements with Try it, one share picture, and one name for each shot.
+- **The rules and the kit (packages 2 and 3).** One text scale by role, one figure family (lead, control, inline) with
+  grey units never under the caption size, one precision rule per unit, spacing steps, three corner radii. A
+  component kit in App/Kit (primary, secondary and quiet buttons, panel, mode, result and ruling cards, difficulty
+  dots, figure tiles, chips, progress chips, list rows, section labels, the sheet page, the scoreboard, the shot reel,
+  the swing bar). The old font names are gone, and scripts/design-lint.py finds no bare colour, font size or corner
+  radius left in the app.
+- **The shot console (4).** One console on every big screen: "Your strike" with what the ball gets, then the controls
+  with Shoot and Try again; planned against delivered only in the Last shot card; the reel only after a shot. Beside
+  a big screen's column the reel and the Physics Lens, Ride and Aim tabs sit under the table, and the controls keep
+  their whole height so Shoot always shows. The first minute is the table, one sentence, the tip, the swing and Break.
+- **The mode frame (5).** Every mode fills in the same mode, result and ruling cards; five difficulty dots
+  everywhere; a scoreboard on every match; the lists use one row with a small table drawing; the cloth card spells
+  out its figures; How forgiving tiles where a mode sets up a shot.
+- **The front door and the sheets (7).** On big screens the table fills the stage and the menu is a side column;
+  every sheet uses the sheet page; Options in four groups; Tables as full cards with real figures.
+- **The Physics Lens notebook (9).** One current beat drives the chip, the row and the reel's tick; repeats fold into
+  one row; the full key opens from the legend; the jump side view gives height and clearance in cm.
+- **The phone (6).** Three zones: the title row, the whole table, the thumb dock with a fixed word strip and More, the
+  reel and the action row; every action in the dock.
+- **The open folding phone (8).** The table half draws marks only; every label moves to the panel's top line.
+- **Achievements and sharing (10), shot names (11), Ride (12).** A summary band, the real threshold on each shot
+  achievement and Try it; one share picture drawn from the real table; stop, follow, draw, throw, massé and jump named
+  one way everywhere; a low chase camera for Ride that says what it is showing.
+- 161 new phrases translated into the eleven other languages.
+- Not done here: the store pictures are not re-shot for the new design yet.
+
 ## [0.8.2] - 26-November-2026
 
 ### The design review's visible bugs, and one meaning per colour

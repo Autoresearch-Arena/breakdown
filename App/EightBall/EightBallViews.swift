@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink wave 3 note 22: the scored result card carries the one
+//          share picture's quiet Share (ResultShare, App/SharePicture.swift), with the medal or try as its corner word
+//          and the score on its status line.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 5's leftover note: the list's title is the
 //          menu's own sentence-case name, "Behind the 8-ball" (the menu's key), so the game uses one name. The list
 //          stays the kit's SheetPage with its ListRow rows.)
@@ -325,6 +328,12 @@ struct EightBallList: View {
 
 struct EightBallCard: View {
     let model: ShowpieceModel
+
+    /// The mode's name, the menu's own sentence-case key, for the share picture.
+    static var modeName: String {
+        String(localized: "Menu: behind the 8-ball", defaultValue: "Behind the 8-ball",
+               comment: "Main menu entry: the eight-ball situations to escape. Sentence case.")
+    }
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
@@ -464,16 +473,21 @@ struct EightBallCard: View {
         let realTable = mode.escapeForCard(v) == nil ? nil
             : KitAction(String(localized: "On a real table"), systemImage: "book.closed") { mode.showingRealTable = true }
         let more = [realTable].compactMap { $0 } + watchActions(s)
+        // The one share picture's quiet Share (package 10): the medal or the try as its corner word, the score on its
+        // status line. Nil while no shot is on the table.
+        let share = ResultShare.action(model: model, mode: Self.modeName, corner: corner,
+                                       verdict: EightBallWords.resultTitle(v), tone: tone,
+                                       status: [KitStatusItem(String(localized: "Score"), figure: "\(v.total)")])
         return Group {
             if v.madeAsCalled {
                 ModeResultCard(verdict: EightBallWords.resultTitle(v), tone: tone, corner: corner, lines: lines,
                                score: "\(v.total)", scoreBreakdown: Array(terms),
-                               tryAgain: tryAgainAction, next: nextAction, more: [lensAction] + more)
+                               tryAgain: tryAgainAction, next: nextAction, share: share, more: [lensAction] + more)
                     .modeShortcut(nextAction, .defaultAction)
             } else {
                 ModeResultCard(verdict: EightBallWords.resultTitle(v), tone: tone, corner: corner, lines: lines,
                                score: "\(v.total)", scoreBreakdown: Array(terms),
-                               tryAgain: lensAction, next: tryAgainAction, more: more)
+                               tryAgain: lensAction, next: tryAgainAction, share: share, more: more)
                     .modeShortcut(tryAgainAction, .defaultAction)
             }
         }

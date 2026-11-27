@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink wave 3 note 22: every result card (passed, made, missed,
+//          in each step) carries the one share picture's quiet Share, ResultShare from App/SharePicture.swift.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the list is the kit's sheet
 //          page with the kit's list rows (number or tick, title and hook, five dots from the trick shot built on the
 //          lesson's idea, a small drawing of the start layout); the card is the kit's mode card in every phase, with
@@ -205,7 +207,7 @@ struct LessonCard: View {
     ///   the pass shot missed: Try again, with Back to the lesson's stroke beside it;
     ///   the exercise:         Try again (primary after a miss), All lessons under More after a make;
     ///   a guided try:         Next step after a make, Try again after a miss, the other beside it.
-    /// See the contact is under More whenever the cue ball touched a ball.
+    /// See the contact is under More whenever the cue ball touched a ball; Share is quiet on the left of every result.
     @ViewBuilder
     private func judged(_ lesson: Lesson, _ step: LessonMode.Step, _ verdict: TrickVerdict) -> some View {
         let passed = verdict.made && step == .pass
@@ -215,6 +217,9 @@ struct LessonCard: View {
         let tone: ResultTone = verdict.made ? .passed : .foul
         let corner = LessonWords.stepName(step)
         let lines = judgedLines(passed: passed, verdict)
+        // The one share picture's quiet Share (package 10), nil while no shot is on the table.
+        let share = ResultShare.action(model: model, mode: String(localized: "Lessons"), corner: corner,
+                                       verdict: word, tone: tone)
         if passed {
             let trick = mode.suggestedTrick.map { _ in
                 KitAction(String(localized: "Try the trick shot"), systemImage: "wand.and.sparkles") {
@@ -226,7 +231,7 @@ struct LessonCard: View {
                 : nil
             ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
                            tryAgain: trick, next: nextLessonAction,
-                           more: [distance, contact].compactMap { $0 })
+                           share: share, more: [distance, contact].compactMap { $0 })
                 .modeShortcut(nextLessonAction, .defaultAction)
         } else if step == .pass {
             // A missed pass shot: Try again keeps the player's own settings; this puts the lesson's stroke back.
@@ -234,24 +239,24 @@ struct LessonCard: View {
                 mode.backToLessonStroke()
             }
             ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
-                           tryAgain: back, next: tryAgainAction, more: [contact].compactMap { $0 })
+                           tryAgain: back, next: tryAgainAction, share: share, more: [contact].compactMap { $0 })
                 .modeShortcut(tryAgainAction, .defaultAction)
         } else if step == .exercise {
             if verdict.made {
                 ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
-                               tryAgain: tryAgainAction, more: [listAction, contact].compactMap { $0 })
+                               tryAgain: tryAgainAction, share: share, more: [listAction, contact].compactMap { $0 })
             } else {
                 ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
-                               next: tryAgainAction, more: [contact].compactMap { $0 })
+                               next: tryAgainAction, share: share, more: [contact].compactMap { $0 })
                     .modeShortcut(tryAgainAction, .defaultAction)
             }
         } else if verdict.made {
             ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
-                           tryAgain: tryAgainAction, next: nextStepAction, more: [contact].compactMap { $0 })
+                           tryAgain: tryAgainAction, next: nextStepAction, share: share, more: [contact].compactMap { $0 })
                 .modeShortcut(nextStepAction, .defaultAction)
         } else {
             ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
-                           tryAgain: nextStepAction, next: tryAgainAction, more: [contact].compactMap { $0 })
+                           tryAgain: nextStepAction, next: tryAgainAction, share: share, more: [contact].compactMap { $0 })
                 .modeShortcut(tryAgainAction, .defaultAction)
         }
     }

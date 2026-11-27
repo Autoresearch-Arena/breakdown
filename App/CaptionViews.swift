@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 8 and the wave 3 notes: LensLegendChip lies flat
+//          on the panel's sunken surface inside the notebook panel (inlinePages) and keeps its glass over the table; the
+//          full key's Sliding row says that a slide shorter than about 10 cm shows as one short solid magenta stroke,
+//          as LensLayer now draws it.)
 // Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 6: no words on the cloth. The player's stroke is
 //          drawn as its two marks only (the aimed line dashed and faint, the line the cue really took solid); "Your
 //          aim" and "Your stroke" are no longer written beside them on any device (wave 2 notes 9 and 48: words belong
@@ -1067,6 +1071,8 @@ private struct StripSizer: View {
 /// air, the arrow, the ring and the burst), a popover on the big screens and a sheet on the phone.
 struct LensLegendChip: View {
     @Environment(\.palette) private var palette
+    /// True inside the notebook panel (NotebookPanel.swift), where the chip is drawn flat on the panel.
+    @Environment(\.inlinePages) private var inlinePages
     /// The full key is open.
     @State private var showsKey = false
     // 0.7.10 everyone: the Lens draws sliding dashed and rolling solid for every player, and the key always shows the
@@ -1111,7 +1117,9 @@ struct LensLegendChip: View {
             .padding(.horizontal, Theme.Space.sm)
             .padding(.vertical, Theme.Space.xs)
             .frame(minHeight: Theme.Size.minHit)
-            .glassEffect(.regular, in: Theme.Corner.cardShape)
+            // Inside the notebook panel (inlinePages) the chip lies flat on the panel's sunken surface like the rest of
+            // the panel; over the table (the title row) it keeps its glass.
+            .modifier(LensChipSurface(flat: inlinePages))
             .contentShape(Theme.Corner.cardShape)
         }
         .buttonStyle(.plain)
@@ -1131,6 +1139,21 @@ struct LensLegendChip: View {
     }
 }
 
+/// LensLegendChip's surface: flat on the panel's sunken surface inside the notebook panel, system glass over the table.
+private struct LensChipSurface: ViewModifier {
+    let flat: Bool
+    @Environment(\.palette) private var palette
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if flat {
+            content.background(palette.panelSunken, in: Theme.Corner.cardShape)
+        } else {
+            content.glassEffect(.regular, in: Theme.Corner.cardShape)
+        }
+    }
+}
+
 /// The full Physics Lens key (UI rethink package 9), opened from LensLegendChip: every mark the Lens draws, each drawn
 /// as the table draws it and named with one plain line. Lines: sliding (magenta, dashed), rolling (cyan, solid), a ball
 /// in the air (paper, dashed). Marks: the arrow (where a ball is heading; its length is its speed), the ring (the ball
@@ -1141,6 +1164,13 @@ struct LensKeyPage: View {
     var onDone: (() -> Void)? = nil
     @Environment(\.palette) private var palette
 
+    /// The Sliding row's second sentence: a slide shorter than one dash plus one gap (LensLayer.dashLength plus
+    /// dashGap, about 10 cm) is drawn as one short solid stroke, not a stray dash.
+    private var shortSlideLine: String {
+        String(localized: "A slide shorter than about 10 cm shows as one short solid magenta stroke.",
+               comment: "Physics Lens key, Sliding row, second sentence")
+    }
+
     var body: some View {
         SheetPage(title: String(localized: "Physics Lens"), onDone: onDone) {
             Text(String(localized: "The lines and marks drawn on the table while the Physics Lens is on."))
@@ -1148,8 +1178,10 @@ struct LensKeyPage: View {
                 .foregroundStyle(palette.paper2)
                 .fixedSize(horizontal: false, vertical: true)
             SheetGroup(String(localized: "Lines")) {
+                // A slide shorter than one dash and one gap is drawn as one solid piece (LensLayer), so the row says so.
                 LensKeyRow(name: String(localized: "Sliding"),
-                           line: String(localized: "The bottom of the ball slips on the cloth, and friction works on it.")) {
+                           line: String(localized: "The bottom of the ball slips on the cloth, and friction works on it.")
+                               + " " + shortSlideLine) {
                     LensTrailMark(color: palette.slide, dashed: true)
                 }
                 LensKeyRow(name: String(localized: "Rolling"),
