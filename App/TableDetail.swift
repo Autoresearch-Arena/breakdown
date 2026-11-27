@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: no ball contact shadow while the Physics Lens
+//          shows; its patch hid the Lens grid and left a dark square behind every ball.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (bug plan items 21, 23 and 56: this file is now the one owner of which
 //          picture each ball wears. It dresses the balls in the table's own ball set (TableBallSet: plain whites and a
 //          red for bar billiards, white, yellow and red for five-pin, bumper pool's red and white sides with their
@@ -180,14 +182,17 @@ final class TableDetail {
     /// (world), `lift` how far its lowest point is above the cloth, `radius` the table's ball radius (the shadow's
     /// scale), `drawn` the radius it is drawn at now (another table's size and the Lens's enlargement included, for its
     /// size on screen); `onCloth` is false when it has dropped, flown off or is hidden, which hides the shadow.
-    func ball(_ b: Int, centre: SIMD3<Float>, lift: Float, radius: Float, drawn: Float, onCloth: Bool, tableHalf: SIMD2<Float>) {
+    func ball(_ b: Int, centre: SIMD3<Float>, lift: Float, radius: Float, drawn: Float, onCloth: Bool, tableHalf: SIMD2<Float>,
+              lensShowing: Bool = false) {
         guard b < shadows.count else { return }
         centres[b] = centre
         drawnRadii[b] = drawn
         let s = shadows[b]
         // Only over the bed: a ball sailing past the cushion has no cloth under it.
         let over = abs(centre.x) <= tableHalf.x && abs(centre.z) <= tableHalf.y
-        guard onCloth, over else {
+        // UI rethink package 1: no contact shadow while the Physics Lens shows. The shadow's square patch sits just above
+        // the Lens grid and still hides it once the table has faded, so each ball wore a dark square in the Lens.
+        guard onCloth, over, !lensShowing else {
             if s.isEnabled { s.isEnabled = false }
             return
         }

@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // PURPOSE: Calling a ball and a pocket, shared by Behind the 8-Ball and the eight-ball match.
 //          CallBallChips    - the callable balls as round buttons, the picked one highlighted. The complete route for
 //                             VoiceOver and the keyboard; tapping the table is only the quick route.
@@ -150,7 +153,7 @@ struct MatchCallControl: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(prompt)
                 .font(refusedForCall ? Theme.heading : Theme.body)
-                .foregroundStyle(refusedForCall ? palette.slide : palette.paper.opacity(0.9))
+                .foregroundStyle(refusedForCall ? palette.warning : palette.paper.opacity(0.9))
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
             CallBallChips(balls: callable, picked: shownBall) { b in
@@ -181,7 +184,7 @@ struct MatchCallControl: View {
         .padding(4)
         .background {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(palette.slide, lineWidth: pulsing ? 3 : 0)
+                .stroke(palette.warning, lineWidth: pulsing ? 3 : 0)
         }
         .scaleEffect(pulsing && !reduceMotion ? 1.03 : 1)
         .onChange(of: model.refusalSerial) { _, _ in

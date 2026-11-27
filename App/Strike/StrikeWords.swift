@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: lastShotLabel for the "Last shot" section.)
 // PURPOSE: Every word and number format the strike panel shows (plans/25-Nov-2026-strike-panel-and-controls-plan.md,
 //          "Words"): each figure in its unit, in the game's own number style (AppLocale.numbers), the tile labels, the
 //          error notes in plain units ("0.4° left", "2 mm left"), the panel's headings, and the one line the upright
@@ -228,6 +229,8 @@ enum StrikeWords {
     static var playedKey: String { String(localized: "Dim: what you set. Bright: what your stroke gave.") }
     static var miscueLine: String { String(localized: "Past the tip's grip: this hit slips off the ball.") }
     static var stepsLabel: String { String(localized: "Step by step") }
+    /// The notebook slot's section that opens planned against delivered for the shot just played (UI rethink package 1).
+    static var lastShotLabel: String { String(localized: "Last shot") }
 
     // MARK: Errors in plain units
 

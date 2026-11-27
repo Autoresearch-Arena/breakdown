@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: projects through AimProjector.forLayer, the
+//          3D view's own measured frame, so the aim marks stay on the balls in a narrow Mac window.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the side-spin fork's labels keep off the target-ball badge
 //          (its frame read from a BadgeFrameBox); along the line they would cover it, so they go beside the middle.)
 // Edited: Claude Haiku 5.5 High, 20-November-2026 (player-facing words wrapped for translation: String(localized:) so they reach the string catalog, and numbers formatted for the player's language).
@@ -151,6 +156,8 @@ struct AimOverlay: View {
     /// True while a finger (or pointer) is carrying the lifted cue ball; letting go puts it down.
     @State private var placingDrag = false
     @State private var viewSize = CGSize(width: 400, height: 800)
+    /// This layer's frame in StageSpace, for AimProjector.forLayer (UI rethink package 1).
+    @State private var layerFrame: CGRect?
     /// Where the target-ball badge is drawn, so the fork's labels keep off it (drawFork).
     @State private var badgeBox = BadgeFrameBox()
     @FocusState private var focused: Bool
@@ -186,6 +193,7 @@ struct AimOverlay: View {
         }
         .ignoresSafeArea()
         .onGeometryChange(for: CGSize.self) { $0.size } action: { viewSize = $0 }
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { layerFrame = $0 }
         // Keyboard: Mac, and iPad with a keyboard. The layer takes focus when it appears so the arrows work at once.
         .focusable()
         .focused($focused)
@@ -419,7 +427,8 @@ struct AimOverlay: View {
 
     private func projector(size: CGSize) -> AimProjector? {
         guard let root = bridge.table?.root else { return nil }
-        return AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
+        return AimProjector.forLayer(camera: cameraBox.find(in: root), bridge: bridge, layerFrame: layerFrame,
+                                     layerSize: size, frame: TableFrame(model.timeline.table))
     }
 
     /// Drag to aim: the line swings through the table point under the finger or pointer. A lesson step with the aim
@@ -631,7 +640,9 @@ struct AimOverlay: View {
             }
             // The ball it will hit, ringed, and the spot where they touch. The dot is sized from the drawn ball (a
             // third of its radius, between 2.5 and 6 points), so it marks the touch without covering it.
-            if let ring = circle(proj, pic.target, radius * 1.3 * pic.scale) { ctx.stroke(ring, with: .color(magenta), lineWidth: 2.5) }
+            // UI rethink package 2: a target mark is paper, so magenta on the cloth means sliding (the object ball's line
+            // below keeps it: the struck ball leaves sliding).
+            if let ring = circle(proj, pic.target, radius * 1.3 * pic.scale) { ctx.stroke(ring, with: .color(paper), lineWidth: 2.5) }
             if let touch = proj.screen(pic.touch) {
                 let dot = min(6, max(2.5, pic.drawnPoints * 0.3))
                 ctx.fill(Path(ellipseIn: CGRect(x: touch.x - dot, y: touch.y - dot, width: dot * 2, height: dot * 2)), with: .color(paper))

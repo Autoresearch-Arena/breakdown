@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: AimProjector.forLayer projects through the 3D
+//          view's measured frame and shifts into the drawing layer's, so the aim marks stay on the balls in a narrow Mac
+//          window.)
 // PURPOSE: The maths behind "aim by touching the table", with no drawing and no model writes. Two parts.
 //          (1) AimGeometry: a plain ray cast over ball centres that answers "if the cue ball goes this way, what does
 //          it hit first?". It finds the first object ball whose centre comes within two ball radii of the cue ball's
@@ -386,6 +389,9 @@ struct AimProjector {
     private let size: CGSize
     private let tanHalf: Float
     private let frame: TableFrame
+    /// From the 3D view's own coordinates to the drawing layer's (UI rethink package 1): zero when the layer and the
+    /// 3D view share one frame, else the gap between their origins (see forLayer).
+    private var shift = CGVector.zero
 
     /// The camera entity in a scene, found once and kept. Looking for it walks the whole scene, which is wasted work
     /// every frame, so the overlay keeps one of these.
@@ -418,6 +424,22 @@ struct AimProjector {
 
     private var aspect: Float { Float(size.width / size.height) }
 
+    /// The projector for a drawing layer laid over the table (UI rethink package 1). It projects through the 3D view's
+    /// own measured size and shifts by the gap between that view's origin and the layer's, both in StageSpace, as the
+    /// Lens rings and the Lens plan already do. A layer that assumed its own frame was the 3D view's drew the aim marks
+    /// well above the balls in a narrow Mac window, where the two frames differ. With no layer frame measured yet, or no
+    /// 3D view measured, it falls back to the layer's own size, as before.
+    @MainActor
+    static func forLayer(camera: PerspectiveCamera?, bridge: SceneBridge, layerFrame: CGRect?, layerSize: CGSize,
+                         frame: TableFrame) -> AimProjector? {
+        guard let layerFrame, bridge.viewMeasured, bridge.viewSize.width > 1, bridge.viewSize.height > 1 else {
+            return AimProjector(camera: camera, size: layerSize, frame: frame)
+        }
+        var p = AimProjector(camera: camera, size: bridge.viewSize, frame: frame)
+        p?.shift = CGVector(dx: bridge.viewOrigin.x - layerFrame.origin.x, dy: bridge.viewOrigin.y - layerFrame.origin.y)
+        return p
+    }
+
     /// Where a table position (at `height` metres above the cloth) lands on the screen; nil if behind the camera.
     func screen(_ p: Vec2, height: Float? = nil) -> CGPoint? {
         let world = frame.world(p, height: height ?? frame.ballRadius)
@@ -426,12 +448,13 @@ struct AimProjector {
         guard depth > 0.01 else { return nil }
         let nx = c.x / depth / (tanHalf * aspect)
         let ny = c.y / depth / tanHalf
-        return CGPoint(x: CGFloat((nx + 1) / 2) * size.width, y: CGFloat((1 - ny) / 2) * size.height)
+        return CGPoint(x: CGFloat((nx + 1) / 2) * size.width + shift.dx, y: CGFloat((1 - ny) / 2) * size.height + shift.dy)
     }
 
     /// The table position under a screen point, on the plane through the balls' centres; nil if the touch is above
     /// the horizon or otherwise misses the plane.
-    func table(at point: CGPoint) -> Vec2? {
+    func table(at layerPoint: CGPoint) -> Vec2? {
+        let point = CGPoint(x: layerPoint.x - shift.dx, y: layerPoint.y - shift.dy)
         let nx = Float(point.x / size.width) * 2 - 1
         let ny = 1 - Float(point.y / size.height) * 2
         let dirCamera = SIMD4<Float>(nx * tanHalf * aspect, ny * tanHalf, -1, 0)

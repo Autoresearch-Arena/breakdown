@@ -1,5 +1,10 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: onChromeHeight reports the status and hint
+//          lines' measured height, so the notebook keeps their real room and the band no longer rides over the strike.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 upright iPad: BandMetrics.wide takes the dial column's real
 //          overhead (it was undercounted, so the band always fell back to its scroll view, cut off), puts the swing
 //          label inline when the band is short, and keeps Shoot's column wide enough for Try again's words.)
@@ -123,6 +128,12 @@ struct ShotPanel: View {
     /// Aiming panel redesign: in the notebook while the strike shows, the What-you-set band takes all the height it is
     /// given (NotebookPanel.strikeColumn) and grows the tip picture and the dial into it.
     var fills = false
+    /// UI rethink package 1: told the height of the panel's parts around the band (the status line and the hint line,
+    /// with their gaps), so the notebook can keep that room for them instead of a guess. In a narrow Mac window the hint
+    /// wraps, the guess fell short, and the controls were pushed up over the strike's physics band.
+    var onChromeHeight: ((CGFloat) -> Void)? = nil
+    @State private var statusHeight: CGFloat = 0
+    @State private var hintHeight: CGFloat = 0
     /// The band's inner size, measured (its width and, when it fills, its height come from the notebook, never from
     /// what is drawn inside it, so measuring it cannot loop).
     @State private var bandSize: CGSize = .zero
@@ -304,6 +315,7 @@ struct ShotPanel: View {
         VStack(alignment: .leading, spacing: 8) {
             // Why the last stroke was refused, or that the computer is playing (items 2 and 16).
             statusLine
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { statusHeight = $0; reportChrome() }
             if slidersOpen && finesInline {
                 // The folding phone's fine controls open inside the panel (VoiceOver's route there), not in a sheet.
                 FineControls(model: model, isOpen: $isOpen, sheetOpen: $slidersOpen)
@@ -314,7 +326,14 @@ struct ShotPanel: View {
             }
             // One hint, in one place: a plain grey line under the band (StrikeHint's rules unchanged).
             StrikeHint(model: model, plain: true)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { hintHeight = $0; reportChrome() }
         }
+    }
+
+    /// The status and hint lines' heights with the gaps they bring (a line drawn empty brings none).
+    private func reportChrome() {
+        let gaps = CGFloat((statusHeight > 0.5 ? 1 : 0) + (hintHeight > 0.5 ? 1 : 0)) * 8
+        onChromeHeight?(statusHeight + hintHeight + gaps)
     }
 
     /// The band itself: caption, then the wide three-column layout (a band at least 760 points wide: the upright
@@ -860,7 +879,7 @@ struct ShotStatusLine: View {
         if let text = computer ? Optional(ShotRefusal.notYourTurn.sentence) : model.lastRefusal?.sentence {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 Image(systemName: computer ? "cpu" : "exclamationmark.circle")
-                    .foregroundStyle(computer ? palette.accent : palette.slide)
+                    .foregroundStyle(computer ? palette.accent : palette.warning)
                     .symbolEffect(.bounce, value: pulse)
                     .accessibilityHidden(true)
                 Text(text)

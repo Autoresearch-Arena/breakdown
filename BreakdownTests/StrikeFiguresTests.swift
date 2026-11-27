@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: the swing scale's labels never touch.)
 // PURPOSE: The strike panel's figures (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stage 1, StrikeFigures):
 //          a centre hit leaves at the launch speed; an off-centre hit leaves slower; the push is mass times speed; a
 //          centre hit has no spin; planned and delivered are equal when the stroke adds no error. Also pins the
@@ -151,5 +152,21 @@ final class StrikeFiguresTests: XCTestCase {
         XCTAssertTrue(b.differs(.tipSide))
         XCTAssertTrue(b.differs(.sideSpin))
         XCTAssertFalse(b.differs(.swing))
+    }
+
+    // MARK: The swing scale's labels (UI rethink package 1)
+
+    /// On a narrow scale the labels thin out so neighbours keep a label's width apart, and the last always shows.
+    func testSwingScaleLabelsNeverTouch() {
+        let marks = Array(1...12)
+        for width in [180.0, 260.0, 420.0, 900.0] {
+            let w = CGFloat(width)
+            let at: (Int) -> CGFloat = { w * CGFloat($0 - 1) / 11 }
+            let shown = PowerGauge.labelledMarks(marks, width: w, position: at).sorted()
+            XCTAssertEqual(shown.last, 12, "the last label (with its unit) was dropped at \(width) points")
+            for (a, b) in zip(shown, shown.dropFirst()) {
+                XCTAssertGreaterThanOrEqual(at(b) - at(a), 30, "labels \(a) and \(b) touch at \(width) points")
+            }
+        }
     }
 }

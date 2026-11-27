@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: projects through AimProjector.forLayer, so the
+//          last try's paths stay on the table in a narrow Mac window.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (learn from a retry, view side: the ghost also marks where the last
 //          try's cue ball first touched a ball, a small hollow ring with a dot, so pausing the live replay at its own
 //          contact (See the contact) shows both contacts side by side; the comparison card now words the model's
@@ -50,6 +55,8 @@ struct GhostOverlay: View {
     @State private var paths: (version: Int, cue: [Vec2], object: [Vec2], rest: Vec2?) = (-1, [], [], nil)
     /// Where the last try's cue ball was at its first touch of another ball; nil when it touched none.
     @State private var contact: Vec2?
+    /// This layer's frame in StageSpace, for AimProjector.forLayer (UI rethink package 1).
+    @State private var layerFrame: CGRect?
 
     var body: some View {
         TimelineView(.animation) { _ in
@@ -57,6 +64,7 @@ struct GhostOverlay: View {
         }
         .allowsHitTesting(false)
         .ignoresSafeArea()
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { layerFrame = $0 }
         .accessibilityHidden(true)
         .onChange(of: model.ghostVersion, initial: true) { _, version in
             // Sampled once per ghost; the per-frame work is only projecting the points.
@@ -73,7 +81,8 @@ struct GhostOverlay: View {
 
     private func draw(_ ctx: inout GraphicsContext, size: CGSize) {
         guard model.ghost != nil, !paths.cue.isEmpty, let root = bridge.table?.root,
-              let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
+              let proj = AimProjector.forLayer(camera: cameraBox.find(in: root), bridge: bridge, layerFrame: layerFrame,
+                                               layerSize: size, frame: TableFrame(model.timeline.table))
         else { return }
         // A kept what-if future (0.7.5): its cue-ball path, faint violet, as the target of the try about to be played.
         // Only for the retry it was kept for (the same ghost) and only until that try is struck (an attempt exists).
@@ -85,7 +94,7 @@ struct GhostOverlay: View {
         let radius = model.timeline.table.ballRadius
         // The two paths through the shared cloth-path drawing (TablePathStroke), with the same colours and dashes as
         // before it was shared.
-        TablePathStroke(points: paths.object, colour: palette.slide.opacity(0.35), lineWidth: 2, dash: [2, 5])
+        TablePathStroke(points: paths.object, colour: palette.paper.opacity(0.3), lineWidth: 2, dash: [2, 5])
             .draw(in: &ctx, proj)
         TablePathStroke(points: paths.cue, colour: paper.opacity(0.6), lineWidth: 2, dash: [7, 5], underlayWidth: 4)
             .draw(in: &ctx, proj)

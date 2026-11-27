@@ -1,5 +1,8 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: NotebookNumbers' tile is lifted into NumberTile,
 //          App/Strike/NumberTile.swift, which the strike panel reuses; it draws exactly as before.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
@@ -282,8 +285,8 @@ struct NotebookDossier: View {
 
     private func heading(_ title: LocalizedStringKey, symbol: String) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: symbol).foregroundStyle(palette.slide).accessibilityHidden(true)
-            Text(title).font(Theme.label).foregroundStyle(palette.slide)
+            Image(systemName: symbol).foregroundStyle(palette.paper).accessibilityHidden(true)
+            Text(title).font(Theme.label).foregroundStyle(palette.paper)
         }
         .accessibilityAddTraits(.isHeader)
     }

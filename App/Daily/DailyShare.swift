@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // PURPOSE: The shot of the day's share picture (plans/25-Nov-2026-shot-of-the-day-plan.md, stage 2 item 5): the date
 //          (the day's own date in Coordinated Universal Time, written in the game's number locale), the day number, the
 //          table with the balls at their starting places and the mark (TrickPathThumb, given a path with no strokes in
@@ -102,7 +105,7 @@ struct DailyShareCard: View {
             HStack(alignment: .firstTextBaseline) {
                 Text(verbatim: DailyWords.title).font(.title3.weight(.semibold)).foregroundStyle(palette.paper)
                 Spacer(minLength: 0)
-                Text(verbatim: DailyWords.day(dayLabel)).font(.headline).foregroundStyle(palette.slide)
+                Text(verbatim: DailyWords.day(dayLabel)).font(.headline).foregroundStyle(palette.paper2)
             }
             TrickPathThumb(path: path, mark: mark)
                 .frame(maxWidth: .infinity)

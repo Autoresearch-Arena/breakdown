@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // PURPOSE: Make it again (0.7.7, plans/23-Nov-2026-make-it-again-plan.md, new file 5): every view of the feature.
 //          MakeItAgainButton - the button on free play's worth-watching card (HighlightCard's CardButtonRow, hook F1):
 //            Make it again while the shot on screen can be saved, Play it now once it is saved, and Make it again
@@ -255,11 +258,11 @@ struct OwnShotRow: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Text(own.made ? OwnShotWords.madeAgain : OwnShotWords.notMadeYet)
                     .font(Theme.label)
-                    .foregroundStyle(palette.slide)
+                    .foregroundStyle(palette.paper2)
                 if let detail = OwnShotWords.detail(own) {
                     Text(detail)
                         .font(Theme.label)
-                        .foregroundStyle(palette.slide)
+                        .foregroundStyle(palette.paper2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if let note = OwnShotWords.proofLine(own, proof: proof) {

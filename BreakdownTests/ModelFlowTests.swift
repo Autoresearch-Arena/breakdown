@@ -3,6 +3,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow review: the saved match files are kept and put back
 //          too, since the table-on-screen test starts and ends a match and the lists test continues any save; Auto is
 //          checked behind the menu; BreakdownTimeline imported for the timeline's members.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: the strike panel's planned-against-delivered
+//          reading ends once the next shot can be aimed.)
 // PURPOSE: Checks for the 0.7.5 model-flow fixes in ShowpieceModel (plans/22-Nov-2026-v075-whatif-and-gaps-plan.md,
 //          stream model-flow, and the coordinator's addition M-A), run against the real model and real solves:
 //          Practice and Watch the intro go back to the pool table after another table was played; the three mode
@@ -289,6 +291,28 @@ final class ModelFlowTests: XCTestCase {
         XCTAssertFalse(model.lensOn, "the Lens was left drawn behind the menu")
         model.closeMenu()
         XCTAssertFalse(model.lensOn, "Continue came back to the Lens")
+    }
+
+    // MARK: The strike panel's reading (UI rethink package 1)
+
+    /// Planned against delivered shows while the shot plays and ends once the next shot can be aimed.
+    func testStrikeReadingEndsWhenTheNextShotCanBeAimed() throws {
+        prepareDevice(); defer { restoreDevice() }
+        let model = ShowpieceModel()
+        let trick = try XCTUnwrap(layoutTrick, "no playable trick shot")
+        model.trickMode.begin(trick)
+        model.shootNow()
+        XCTAssertNotNil(model.currentAttempt, "the trick shot's stroke left no attempt")
+        model.scrub(to: model.duration * 0.5)
+        if case .live = StrikeReading.current(model) {
+            XCTFail("the panel left planned against delivered while the shot was still playing")
+        }
+        model.scrub(to: model.duration)
+        XCTAssertTrue(model.aimReady)
+        if case .played = StrikeReading.current(model) {
+            XCTFail("the panel kept the last shot's figures once the next shot could be aimed")
+        }
+        model.trickMode.end()
     }
 
     // MARK: Ride around guided replays (item 8)

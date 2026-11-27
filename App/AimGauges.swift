@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: the swing bar's warm stretch is gold, not the
+//          sliding magenta.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: the swing scale labels thin out by width so no
+//          two touch; the upright iPad printed "11 12" as "1112".)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
 //          stage 3 items 1 and 2: in the notebook (iPad, Mac, the open folding phone) the tip picture is at least 132
 //          points with the millimetres beside it, and the power bar is at least 28 points tall with no minus and plus.
@@ -460,7 +464,7 @@ struct PowerGauge: View {
                         // The gradient spans the whole bar and a capsule-shaped mask reveals the part below the power
                         // level, so the fill gets warmer as power rises instead of squashing the colours into the fill.
                         Capsule()
-                            .fill(LinearGradient(colors: [palette.accent, palette.slide, Self.hot], startPoint: .leading, endPoint: .trailing))
+                            .fill(LinearGradient(colors: [palette.accent, palette.pocket, Self.hot], startPoint: .leading, endPoint: .trailing))
                             .mask(alignment: .leading) { Capsule().frame(width: max(barHeight, geo.size.width * fraction)) }
                         // A lesson's target band: the stretch of the bar where the shot works.
                         if let band = zones?.power {
@@ -755,13 +759,17 @@ struct PowerGauge: View {
     }
 
     /// The whole-number m/s scale under the bar, from the soft end to the cue's top swing, the unit after the last.
+    /// UI rethink package 1: every whole number keeps its tick, but only every first, second or fifth number carries a
+    /// label, the smallest step that leaves room between labels at this width (an upright iPad printed "1112"). The
+    /// last label (with its unit) always shows, and a label too near it gives way.
     private var scale: some View {
         let r = swingRange
         let marks = Array(Int(r.lowerBound.rounded(.up))...max(Int(r.lowerBound.rounded(.up)), Int(r.upperBound.rounded(.down))))
         return GeometryReader { geo in
+            let scaleWidth = geo.size.width
+            let labelled = Self.labelledMarks(marks, width: scaleWidth) { scaleWidth * swingFraction(Double($0)) }
             ZStack(alignment: .topLeading) {
                 ForEach(marks, id: \.self) { n in
-                    let scaleWidth = geo.size.width
                     let x = scaleWidth * swingFraction(Double(n))
                     let last = n == marks.last
                     VStack(spacing: 2) {
@@ -771,6 +779,7 @@ struct PowerGauge: View {
                             .font(.system(size: 12, design: .monospaced))
                             .foregroundStyle(.secondary)
                             .fixedSize()
+                            .opacity(labelled.contains(n) ? 1 : 0)
                     }
                     // Centred on its mark; the first and last held inside the bar's width.
                     .alignmentGuide(.leading) { d in
@@ -781,6 +790,22 @@ struct PowerGauge: View {
         }
         .frame(height: 20)
         .accessibilityHidden(true)
+    }
+
+    /// The marks that carry a label at this width: the smallest step of one, two, five or ten that keeps neighbouring
+    /// labels a label apart, plus the last mark, with any label crowding the last (which also carries the unit) dropped.
+    /// `position` maps a mark to its x on the scale.
+    nonisolated static func labelledMarks(_ marks: [Int], width: CGFloat, position: (Int) -> CGFloat) -> Set<Int> {
+        guard let first = marks.first, let last = marks.last else { return [] }
+        // A two-digit label at the scale's 12-point monospaced size is about 15 points wide; keep a label's width
+        // clear between neighbours, and the wider last label (number and unit) about 46 points from the one before it.
+        let gap: CGFloat = 30, lastGap: CGFloat = 46
+        let perUnit = marks.count > 1 ? abs(position(last) - position(first)) / CGFloat(last - first) : width
+        let step = [1, 2, 5, 10].first { CGFloat($0) * perUnit >= gap } ?? 10
+        var shown = Set(marks.filter { ($0 - first) % step == 0 })
+        shown = shown.filter { $0 == last || abs(position(last) - position($0)) >= lastGap }
+        shown.insert(last)
+        return shown
     }
 }
 

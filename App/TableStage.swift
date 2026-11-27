@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: SceneBridge.viewMeasured, so drawing layers
+//          use the 3D view's frame only once it has been measured.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: StageChrome.tableAcross, passed into the
 //          request as liesAcross, lays the table across the band above the upright phone's menu sheet.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md: each
@@ -98,6 +100,8 @@ final class SceneBridge {
     var chrome = StageChrome()
     /// The size of the 3D view itself, which the camera frames the table to.
     var viewSize = CGSize(width: 800, height: 600)
+    /// True once the 3D view's frame has been measured (viewSize and viewOrigin are real, not the defaults).
+    var viewMeasured = false
     /// Where the 3D view's top-left corner sits in StageSpace (negative when it extends under the safe areas).
     var viewOrigin = CGPoint.zero
     /// VoiceOver is running, so a finished shot is spoken (ShotNarration.frame). Set from the view's environment.
@@ -200,6 +204,7 @@ struct TableStage: View {
         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: {
             bridge.viewSize = $0.size
             bridge.viewOrigin = $0.origin
+            bridge.viewMeasured = true
         }
         // Pinch to zoom, two fingers to pan, double tap a ball to centre on it (see TableZoom).
         .modifier(TableZoomGestures(model: model, bridge: bridge))

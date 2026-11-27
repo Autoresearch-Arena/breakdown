@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, Part A row 1: rulingSentences takes headed; the card
 //          and the phone blurb, which show the "Foul" heading, no longer start the sentence with "Foul:" as well. The
 //          settled line under the banner has no heading and keeps it.)
@@ -320,10 +323,10 @@ struct MatchCard: View {
         if let result = r.result {
             let won = Self.personWon(result, match)
             symbol = won ? "trophy.fill" : "flag.fill"
-            colour = won ? palette.accent : palette.slide
+            colour = won ? palette.accent : palette.warning
         } else if r.fouled {
             symbol = "exclamationmark.triangle.fill"
-            colour = palette.slide
+            colour = palette.warning
         } else {
             symbol = r.turnPasses ? "arrow.left.arrow.right" : "checkmark.circle.fill"
             colour = palette.accent
@@ -382,7 +385,7 @@ struct MatchCard: View {
     private func pointsSection(_ match: MatchMode) -> some View {
         Text(String(localized: "How the points came"))
             .font(Theme.label)
-            .foregroundStyle(palette.slide)
+            .foregroundStyle(palette.paper2)
             .accessibilityAddTraits(.isHeader)
         ForEach(Array(TableGameWords.lines(match.lastPoints, kind: match.state.kind, names: match.playerNames,
                                            you: match.you).enumerated()),
@@ -573,7 +576,7 @@ struct MatchCard: View {
             let won = Self.personWon(r, match)
             HStack(spacing: 8) {
                 Image(systemName: won ? "trophy.fill" : (r.winner == nil ? "flag.checkered" : "flag.fill"))
-                    .foregroundStyle(won || r.winner == nil ? palette.pocket : palette.slide).accessibilityHidden(true)
+                    .foregroundStyle(won || r.winner == nil ? palette.pocket : palette.warning).accessibilityHidden(true)
                 Text(MatchWords.resultTitle(r, names: match.playerNames, you: match.you)).font(Theme.heading)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -758,7 +761,7 @@ struct TurnBanner: View {
                                           isYou: state.turn == match.you))
             .font(Theme.heading)
             .fixedSize(horizontal: false, vertical: true)
-        let game = Text(MatchWords.title(state.kind)).font(Theme.label).foregroundStyle(palette.slide)
+        let game = Text(MatchWords.title(state.kind)).font(Theme.label).foregroundStyle(palette.paper2)
         if typeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -990,7 +993,7 @@ private struct TableGameLines: View {
                     let whites = bar.whitesLeftToPlay(in: state, layout: match.model.layout)
                     Text(TableGameWords.barDown(whitesLeft: whites))
                         .font(Theme.label)
-                        .foregroundStyle(palette.slide)
+                        .foregroundStyle(palette.paper2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }

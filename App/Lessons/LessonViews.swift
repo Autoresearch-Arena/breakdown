@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.6 stream cards, plans/22-Nov-2026-phone-bug-hunt.md #38: paused
 //          on the lesson's moment the card shows the idea and its buttons even in the slim form, so the lesson no longer
 //          freezes on its moment with only a heading and Your turn.)
@@ -184,8 +187,8 @@ struct LessonCard: View {
             buttons { turnButton(prominent: false) }
         case .keyMoment:
             HStack(spacing: 6) {
-                Image(systemName: "lightbulb.fill").foregroundStyle(palette.slide).accessibilityHidden(true)
-                Text("The idea").font(Theme.label).foregroundStyle(palette.slide)
+                Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
+                Text("The idea").font(Theme.label).foregroundStyle(palette.paper)
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
@@ -215,12 +218,12 @@ struct LessonCard: View {
         let passed = verdict.made && step == .pass
         HStack(spacing: 8) {
             Image(systemName: verdict.made ? "checkmark.seal.fill" : "arrow.uturn.backward.circle")
-                .foregroundStyle(verdict.made ? palette.accent : palette.slide)
+                .foregroundStyle(verdict.made ? palette.accent : palette.warning)
                 .accessibilityHidden(true)
             Text(passed ? String(localized: "Lesson passed") : (verdict.made ? String(localized: "Made it!") : String(localized: "Missed")))
                 .font(Theme.heading)
             Spacer(minLength: 0)
-            Text(verbatim: stepName(step)).font(Theme.label).foregroundStyle(palette.slide)
+            Text(verbatim: stepName(step)).font(Theme.label).foregroundStyle(palette.paper2)
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
@@ -317,7 +320,7 @@ struct LessonCard: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(String(localized: "Lesson \(lesson.number): \(lesson.title)")).font(Theme.heading).lineLimit(2)
             Spacer(minLength: 0)
-            if let step { Text(verbatim: stepName(step)).font(Theme.label).foregroundStyle(palette.slide) }
+            if let step { Text(verbatim: stepName(step)).font(Theme.label).foregroundStyle(palette.paper2) }
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)

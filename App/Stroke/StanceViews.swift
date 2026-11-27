@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: the lifted card's edge is cyan (selected) and the
+//          drawn cue paper2; the sliding magenta means sliding only.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, first minute: EquipmentCard draws nothing during
 //          the first-launch hand-over, so no pulsing "Break cue picked" card sits beside the one instruction. The break
 //          cue is still picked, and EquipmentRows.current is unchanged, since it also feeds the spoken stance line.)
@@ -151,11 +153,11 @@ struct EquipmentCard: View {
             stack
                 .padding(.horizontal, 10).padding(.vertical, 6)
                 .background(RoundedRectangle(cornerRadius: 14).fill(palette.paper.opacity(0.06)))
-                .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(palette.slide.opacity(lifted ? 0.8 : 0.3), lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(palette.accent.opacity(lifted ? 0.8 : 0.3), lineWidth: 1))
         } else {
             stack
                 .glassCard(cornerRadius: 20, padding: 12)
-                .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(palette.slide.opacity(lifted ? 0.8 : 0), lineWidth: 1.5))
+                .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(palette.accent.opacity(lifted ? 0.8 : 0), lineWidth: 1.5))
         }
     }
 
@@ -212,7 +214,7 @@ struct StancePictogram: View {
 
     var body: some View {
         Canvas { ctx, size in
-            Self.draw(picture, in: &ctx, size: size, ink: palette.paper, cue: palette.slide)
+            Self.draw(picture, in: &ctx, size: size, ink: palette.paper, cue: palette.paper2)
         }
         .accessibilityHidden(true)
     }

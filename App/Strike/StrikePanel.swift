@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: LastShotSection, a "Last shot" row under the
+//          live figures that opens planned against delivered for the shot just played; the live figures no longer swap.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 upright iPad and phone: StrikeSlot scrolls in one scroll view
 //          of its own, not FittingScroll, whose branch switch remade the panel at two columns and froze the slot about
 //          70 points tall; the cut's sub-line clears its dotted underline; the phone sheet is as tall as its figures.)
@@ -117,7 +122,7 @@ struct StrikePanel: View {
             }
             if let figures = reading?.shown, figures.miscue {
                 Label { Text(verbatim: StrikeWords.miscueLine) } icon: {
-                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(palette.slide)
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(palette.warning)
                 }
                 .font(.system(size: sentenceSize))
                 .fixedSize(horizontal: false, vertical: true)
@@ -419,6 +424,8 @@ struct StrikeSlot: View {
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     /// The strike's own height (heading, sentence and bands), measured inside the scroll view (strike(steps:)).
     @State private var strikeNatural: CGFloat = 0
+    /// The "Last shot" section is open; closed again with each new recording.
+    @State private var lastShotOpen = false
 
     /// True when the slot shows the strike at all: "Your shot" is open, outside the opening. NotebookPanel reads it to
     /// keep the slot when Explanations is off. With "Your shot" closed the numbers strip shows instead.
@@ -463,7 +470,7 @@ struct StrikeSlot: View {
                 strike(steps: NotebookStory.hasShot(model))
             }
         }
-        .onChange(of: model.timelineVersion) { _, _ in showSteps = false }
+        .onChange(of: model.timelineVersion) { _, _ in showSteps = false; lastShotOpen = false }
     }
 
     /// The strike's heading and bands, at their own height up to strikeMaxHeight, scrolling past it (the largest text
@@ -479,6 +486,11 @@ struct StrikeSlot: View {
         return ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 StrikePanel(model: model, heading: true, onSteps: steps && explanations ? { showSteps = true } : nil)
+                // UI rethink package 1: the shot just played, planned against delivered, in its own section under the
+                // live figures (the live figures no longer swap to it once the next shot can be aimed).
+                if model.aimReady, let last = StrikeReading.lastShot(model) {
+                    LastShotSection(model: model, comparison: last, open: $lastShotOpen)
+                }
                 if !NotebookStory.hasShot(model) {
                     NotebookSurfaceCard(model: model, detailed: true)
                 }
@@ -490,6 +502,44 @@ struct StrikeSlot: View {
         .scrollBounceBehavior(.basedOnSize)
         // Its own height up to the cap; before the first measurement nothing (it is measured in the same pass).
         .frame(height: min(strikeNatural, strikeMaxHeight))
+    }
+}
+
+// MARK: The last shot
+
+/// The shot just played, planned against delivered (UI rethink package 1): a "Last shot" row that opens the lead band and
+/// the physics line for that shot, under the live figures. The live figures always describe the next shot.
+struct LastShotSection: View {
+    let model: ShowpieceModel
+    let comparison: StrikeComparison
+    @Binding var open: Bool
+    @ScaledMetric(relativeTo: .callout) private var labelSize: CGFloat = 16
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button { open.toggle() } label: {
+                HStack(spacing: 6) {
+                    Text(verbatim: StrikeWords.lastShotLabel)
+                    Image(systemName: open ? "chevron.down" : "chevron.right").imageScale(.small)
+                        .accessibilityHidden(true)
+                }
+                .font(.system(size: labelSize, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .frame(minHeight: 32)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(open ? .isSelected : [])
+            if open {
+                let reading = StrikeReading.Reading.played(comparison)
+                Text(verbatim: StrikeWords.playedSentence(comparison))
+                    .font(.system(size: labelSize))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                StrikeLeadBand(model: model, reading: reading, columns: 2, size: 0.62)
+                StrikePhysicsLine(reading: reading)
+            }
+        }
     }
 }
 

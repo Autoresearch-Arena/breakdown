@@ -1,6 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: cueAngleLockedByMode names the shot of the day.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: planned against delivered only while the
+//          shot that made it is still playing; once the next shot can be aimed the panel shows the live plan.)
 // PURPOSE: The strike panel's link to the game (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stages 2 to 4).
 //          - ShowpieceModel.plannedStrike: the figures (StrikeFigures) of the strike the controls are set to now, built
 //            exactly as fireStroke builds the strike (aim, launch speed for the cue in hand, tip, the struck cue angle
@@ -81,14 +83,28 @@ enum StrikeReading {
         case played(StrikeComparison)
     }
 
-    /// The reading for the panel now. Planned against delivered while the last recorded strike is the one on screen and
-    /// no control has moved since it was struck; otherwise the live plan; nil when there is nothing to strike.
+    /// The reading for the panel now. Planned against delivered while the last recorded strike is the one on screen, is
+    /// still playing (or scrubbed back into), and no control has moved since it was struck; otherwise the live plan; nil
+    /// when there is nothing to strike.
     @MainActor
     static func current(_ model: ShowpieceModel) -> Reading? {
-        if let attempt = model.currentAttempt, StrikeMemory.shared.isUntouched(model) {
+        // UI rethink package 1: the comparison belongs to the shot being watched. Once the recording has run out and
+        // the next shot can be aimed, the balls stand somewhere new (a new rack, the other player's turn, or simply the
+        // next shot), so the old figures would describe a strike that is no longer on the table.
+        if let attempt = model.currentAttempt, model.playerShotOnScreen, !model.aimReady,
+           StrikeMemory.shared.isUntouched(model) {
             return .played(comparison(for: attempt))
         }
         return model.plannedStrike.map { .live($0) }
+    }
+
+    /// Planned against delivered for the player's shot still on screen, for the "Last shot" section the notebook slot
+    /// offers once the next shot can be aimed (UI rethink package 1). Nil before any shot or once another recording
+    /// has replaced it.
+    @MainActor
+    static func lastShot(_ model: ShowpieceModel) -> StrikeComparison? {
+        guard let attempt = model.currentAttempt, model.playerShotOnScreen else { return nil }
+        return comparison(for: attempt)
     }
 
     /// Planned against delivered for a played attempt. The delivered strike is the attempt's input strike (the stroke's

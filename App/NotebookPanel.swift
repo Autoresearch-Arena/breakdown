@@ -1,5 +1,7 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: the strike column's height budget uses the
+//          measured hint, status and playback heights, so the controls never ride over the strike's physics band.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the numbers strip keeps no room before a shot while it
 //          has nothing to draw.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
@@ -131,6 +133,10 @@ struct NotebookPanel: View {
     /// Measured height of the lower edge (aiming controls and playback controls) and of the numbers strip; both grow
     /// when their buttons wrap onto two rows.
     @State private var bottomMeasured: CGFloat = 0
+    /// UI rethink package 1: the shot panel's status and hint lines, and the playback controls, measured, for the strike
+    /// column's height budget (they were guessed, and the guess fell short in a narrow Mac window).
+    @State private var shotChromeMeasured: CGFloat = 0
+    @State private var playbackMeasured: CGFloat = 0
     @State private var numbersMeasured: CGFloat = 0
     /// Measured height of the Lens colour key's row (0.7.5); it wraps onto more lines at large text sizes.
     @State private var keyMeasured: CGFloat = 0
@@ -264,11 +270,13 @@ struct NotebookPanel: View {
             }
             if showShotPanel {
                 // Aiming panel redesign: the panel draws its own flat What-you-set band here (no glass card).
-                ShotPanel(model: model, isOpen: $showShotPanel, fills: fills)
+                ShotPanel(model: model, isOpen: $showShotPanel, fills: fills,
+                          onChromeHeight: { h in if abs(h - shotChromeMeasured) > 0.5 { shotChromeMeasured = h } })
                     .frame(minHeight: fills ? 0 : nil, maxHeight: fills ? .infinity : nil)
                     .transition(.opacity)
             }
             PlaybackControls(model: model, shotPanelOpen: $showShotPanel, compact: true)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { playbackMeasured = $0 }
         }
         .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
         .animation(reduceMotion ? nil : .snappy, value: showsContinue)
@@ -373,10 +381,15 @@ struct NotebookPanel: View {
                 .fadesAtBottom(cardsHeight > cardsMax)
                 // With no card to show, its gap goes too, so the strike starts right under the top bar.
                 .padding(.bottom, cardsHeight > 0 ? 0 : -10)
-            // The strike's figures may take what the controls band does not need at its smallest (and at least
-            // 180 points); past that they scroll, so Shoot is never pushed out of sight.
+            // The strike's figures may take what the controls band does not need at its smallest; past that they
+            // scroll, so Shoot is never pushed out of sight. UI rethink package 1: the hint and status lines, the
+            // playback controls, Continue and the Lens key are their measured heights, not guesses (a wrapped hint in a
+            // narrow Mac window pushed the band up over the physics line), and the floor is lower (120 points), since
+            // the band scrolls rather than overlap when the window is very short.
+            let lowerFixed = max(30, shotChromeMeasured) + max(46, playbackMeasured + 10) + (showsContinue ? 60 : 0)
+            let keyRoom = model.lensOn ? keyHeight + 10 : 0
             StrikeSlot(model: model, leader: leader, aiming: showShotPanel, showSteps: $showSteps,
-                       strikeMaxHeight: max(180, size.height - 24 - 30 - 30 - 46 - cardsShown(cardsMax)
+                       strikeMaxHeight: max(120, size.height - 24 - 30 - 10 - keyRoom - lowerFixed - cardsShown(cardsMax)
                                             - ShotPanel.BandMetrics.minimumHeight(columnWidth: size.width - 32,
                                                                                   roomy: !onHinge)))
             lowerEdge(fills: true)

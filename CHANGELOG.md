@@ -8,6 +8,36 @@ SRP/DRY check: Pass — checked existing README, specification and history; link
 
 All notable changes to this project are listed here, newest first. Versions follow SemVer.
 
+## [0.8.2] - 26-November-2026
+
+### The design review's visible bugs, and one meaning per colour
+
+Author: Claude Opus 5.5 Medium. Plan: plans/26-Nov-2026-ui-rethink-plan.md, packages 1 and 2 (the design language is
+plans/26-Nov-2026-design-language.md).
+
+- What: The aim marks stay on the balls in a narrow Mac window; the strike panel shows the shot you are about to play, with the last shot in its own section; no card covers another on the Mac; the swing scale's numbers no longer run together; no dark squares behind the balls in the Physics Lens; pink now means sliding only, and fouls and misses are red-orange.
+- **Aim marks on the balls (Mac).** Every drawing layer over the table assumed its own frame was the 3D view's. In a
+  narrow Mac window they differ, and the aim ring, line, ghost ball and labels sat well above the balls. The aim
+  layer, the last-try ghost, the target badge and the pointer preview now project through the 3D view's own measured
+  frame (AimProjector.forLayer), as the Lens rings already did.
+- **The strike panel describes the next shot.** Once a shot has played out and the next can be aimed, the panel shows
+  the live plan; the last shot's planned against delivered moved to a "Last shot" section under it. During the replay
+  the comparison shows as before.
+- **No card over another (Mac).** The notebook's strike column measures the hint, status and playback heights instead
+  of guessing; a wrapped hint in a narrow window used to push the controls up over the physics band.
+- **Swing scale labels.** Every whole number keeps its tick; only every first, second or fifth carries a label, the
+  smallest step that leaves room at the bar's width; the last label (with m/s) always shows.
+- **No squares in the Lens.** Each ball's soft contact shadow is a square patch that sat just above the Lens grid and
+  blotted it out once the table faded; the shadows now step aside while the Lens shows.
+- **One meaning per colour.** New palette roles from the design language: warning (red-orange) for fouls, misses,
+  refusals and losses; paper2 and paper3 for secondary and tertiary text; panel, panelSunken; one contact colour for
+  strikes and hits; pocket and cushion take the language's values. Headings, try counts, tags, difficulty and day
+  labels no longer wear the sliding magenta; the target ring on the cloth is paper; the swing bar's warm stretch is gold.
+  The delta yellow is retired. The window tint is the cyan, so no system blue or green. Units never fall under the
+  caption size.
+- Not done here: the Lens store frame is not re-shot yet (no simulator runs at night), and packages 3 to 9 of the plan
+  (the shared component kit, the shot console, the mode card, the phone's thumb dock and the rest) are still ahead.
+
 ## [0.8.1] - 26-November-2026
 
 ### Shot of the day, the strike panel, a front door that shows the table

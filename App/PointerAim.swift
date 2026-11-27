@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: projects through AimProjector.forLayer, so a
+//          click lands where the pointer is in a narrow Mac window.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, gauges-pointer stream, item 31 and the pointer half of item 2
 //          of plans/21-Nov-2026-bugs-after-0-6-6-plan.md, following docs/v07-contracts.md section 4. Hover no longer
 //          writes the aim: moving the pointer to the Shoot button, the tip picture or the cue ball dragged the line with
@@ -94,6 +96,8 @@ private final class PointerAimState {
 
     let cameraBox = AimProjector.CameraBox()
     var size = CGSize(width: 1, height: 1)
+    /// The layer's frame in StageSpace, for AimProjector.forLayer (UI rethink package 1).
+    var layerFrame: CGRect?
     var hovering = false
     /// Where the pointer or the Pencil hovers over the cloth, in the layer's own points, while a preview may be drawn;
     /// nil otherwise.
@@ -141,6 +145,7 @@ struct PointerAim: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onGeometryChange(for: CGSize.self) { $0.size } action: { state.size = $0 }
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { state.layerFrame = $0 }
             // The hover preview, over the aiming layer's own drawing; it never takes a touch or a click. Redrawn every
             // frame while it shows, so it follows the camera if the table is zoomed under a still pointer.
             .overlay {
@@ -178,7 +183,8 @@ struct PointerAim: ViewModifier {
     /// The camera maths for this layer, from the live camera entity; nil before the scene exists.
     private static func projector(state: PointerAimState, bridge: SceneBridge, model: ShowpieceModel) -> AimProjector? {
         guard let root = bridge.table?.root else { return nil }
-        return AimProjector(camera: state.cameraBox.find(in: root), size: state.size, frame: TableFrame(model.timeline.table))
+        return AimProjector.forLayer(camera: state.cameraBox.find(in: root), bridge: bridge, layerFrame: state.layerFrame,
+                                     layerSize: state.size, frame: TableFrame(model.timeline.table))
     }
 
     private func projector() -> AimProjector? { Self.projector(state: state, bridge: bridge, model: model) }
@@ -262,8 +268,9 @@ struct PointerAim: ViewModifier {
     /// still stops at anything in its way, and no ring.
     private func drawPreview(_ ctx: inout GraphicsContext, size: CGSize) {
         guard let point = state.previewPoint, state.press == nil, aimOpenNow,
-              let proj = AimProjector(camera: bridge.table.flatMap { state.cameraBox.find(in: $0.root) }, size: size,
-                                      frame: TableFrame(model.timeline.table)),
+              let proj = AimProjector.forLayer(camera: bridge.table.flatMap { state.cameraBox.find(in: $0.root) },
+                                               bridge: bridge, layerFrame: state.layerFrame, layerSize: size,
+                                               frame: TableFrame(model.timeline.table)),
               let spot = proj.table(at: point), let direction = previewDirection(toward: spot) else { return }
         let table = model.timeline.table
         let r = table.ballRadius

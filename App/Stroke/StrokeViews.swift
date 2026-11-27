@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (0.7.0, items 4 and 45 of plans/21-Nov-2026-bugs-after-0-6-6-plan.md:
 //          the result card shows whenever the stroke changed what happened, in either zone (StrokeEffect), and offers
 //          the straight-stroke drill in free play; the drill card says it measures a finger stroke, names the turn of
@@ -73,7 +76,7 @@ struct StrokeResultCard: View {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "scribble")
                         .font(.headline)
-                        .foregroundStyle(palette.slide)
+                        .foregroundStyle(palette.paper2)
                         .accessibilityHidden(true)
                     Text(line)
                         .font(Theme.body)

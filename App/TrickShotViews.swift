@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 daily: a shot of the day is played as a trick shot but has
 //          its own card, blurbs and main button (App/Daily/DailyViews.swift), so the trick card's Watch it, list and
 //          Next shot never show for it; the table layer also draws its mark. Each hand-over is marked "0.7.10 daily".)
@@ -174,7 +177,7 @@ struct TrickShotList: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Text(shot.difficulty.label)
                     .font(Theme.label)
-                    .foregroundStyle(palette.slide)
+                    .foregroundStyle(palette.paper2)
             }
             Spacer(minLength: 0)
         }
@@ -240,8 +243,8 @@ struct TrickShotCard: View {
             buttons { turnButton(prominent: false) }
         case .explaining:
             HStack(spacing: 6) {
-                Image(systemName: "lightbulb.fill").foregroundStyle(palette.slide).accessibilityHidden(true)
-                Text("The idea").font(Theme.label).foregroundStyle(palette.slide)
+                Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
+                Text("The idea").font(Theme.label).foregroundStyle(palette.paper)
             }
             line(shot.idea)
             if mode.showMaths, let maths = shot.maths {
@@ -275,7 +278,7 @@ struct TrickShotCard: View {
         case .judged(let verdict):
             HStack(spacing: 8) {
                 Image(systemName: verdict.made ? "checkmark.seal.fill" : "arrow.uturn.backward.circle")
-                    .foregroundStyle(verdict.made ? palette.accent : palette.slide)
+                    .foregroundStyle(verdict.made ? palette.accent : palette.warning)
                     .accessibilityHidden(true)
                 Text(verdict.made ? "Made it!" : "Missed").font(Theme.heading)
             }
@@ -345,7 +348,7 @@ struct TrickShotCard: View {
     /// The idea in the slim card: two lines at most, the light bulb before it as in the full card.
     private func slimIdea(_ shot: TrickShot) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 6) {
-            Image(systemName: "lightbulb.fill").foregroundStyle(palette.slide).accessibilityHidden(true)
+            Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
             Text(shot.idea)
                 .font(Theme.body)
                 .foregroundStyle(palette.paper.opacity(0.9))
@@ -370,7 +373,7 @@ struct TrickShotCard: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(shot.title).font(Theme.heading).lineLimit(2)
             Spacer(minLength: 0)
-            Text(shot.difficulty.label).font(Theme.label).foregroundStyle(palette.slide)
+            Text(shot.difficulty.label).font(Theme.label).foregroundStyle(palette.paper2)
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)

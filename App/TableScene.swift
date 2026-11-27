@@ -1,4 +1,6 @@
 // Author: Claude Sonnet 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: tells TableDetail when the Lens shows, so the
+//          balls' contact shadows step aside and leave no dark squares on the Lens grid.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: the Ride map is told the table's orientation by
 //          the camera's own rule, CameraFraming.tableYaw(for:), so a table the request lays across reads right.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 bullet time, plans/23-Nov-2026-bullet-time-plan.md, wiring
@@ -379,7 +381,7 @@ final class TableScene {
             balls[b].orientation = frame.orientation(s.orientation)
             balls[b].scale = SIMD3(repeating: scale * ballScale * lensScale)
             detail?.ball(b, centre: pos, lift: lift, radius: R, drawn: R * ballScale * lensScale,
-                         onCloth: visible && !s.pocketed, tableHalf: tableHalf)
+                         onCloth: visible && !s.pocketed, tableHalf: tableHalf, lensShowing: m > 0.001)
             // 0.7.7 bullet-time: the two touching balls of a frozen hit turn a little glassy, so the lines read.
             bodies[b].components.set(OpacityComponent(opacity: 1 - 0.55 * max(m, bulletCue?.glass(for: b) ?? 0)))
             markers[b].components.set(OpacityComponent(opacity: m))

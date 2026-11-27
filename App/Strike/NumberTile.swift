@@ -1,5 +1,6 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: a tile's note is paper2, not the sliding magenta.)
 // PURPOSE: One number tile: a figure in the monospaced number font, in the accent colour, with a short label under it,
 //          on a small glass rectangle. Lifted out of NotebookNumbers (App/NotebookInfo.swift) so the shot's figures
 //          after it is played (NotebookNumbers) and the strike's figures before and after it (StrikePanel) are drawn by
@@ -77,7 +78,7 @@ struct NumberTile: View {
             } else if let note {
                 Text(verbatim: note)
                     .font(Theme.number)
-                    .foregroundStyle(palette.slide)
+                    .foregroundStyle(palette.paper2)
                     .lineLimit(lines(1))
                     .minimumScaleFactor(shrink(0.7))
             }

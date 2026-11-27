@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1 store: the phone's result blurb shows the score, the
 //          distance from the mark and the streak as figure chips, as the big-screen card's stats, instead of one sentence.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the result card's Board is the board's own
@@ -163,7 +166,7 @@ struct DailyTryDots: View {
 
     private func colour(_ i: Int) -> Color {
         if madeOnTry == i { return palette.accent }
-        if i <= tries { return palette.slide }
+        if i <= tries { return palette.paper }
         return palette.paper.opacity(0.5)
     }
 }
@@ -204,7 +207,7 @@ struct DailyCard: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(verbatim: DailyWords.title).font(Theme.heading).lineLimit(2)
             Spacer(minLength: 0)
-            Text(verbatim: DailyWords.day(shot.dayLabel)).font(Theme.label).foregroundStyle(palette.slide)
+            Text(verbatim: DailyWords.day(shot.dayLabel)).font(Theme.label).foregroundStyle(palette.paper2)
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
@@ -256,8 +259,8 @@ struct DailyCard: View {
         case .explaining:
             if !compact {
                 HStack(spacing: 6) {
-                    Image(systemName: "lightbulb.fill").foregroundStyle(palette.slide).accessibilityHidden(true)
-                    Text(verbatim: DailyWords.idea).font(Theme.label).foregroundStyle(palette.slide)
+                    Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
+                    Text(verbatim: DailyWords.idea).font(Theme.label).foregroundStyle(palette.paper)
                 }
                 line(shot.trick.idea)
                 if trick.showMaths, let maths = shot.trick.maths {
@@ -274,7 +277,7 @@ struct DailyCard: View {
         if !compact {
             HStack(spacing: 8) {
                 Image(systemName: day.made ? "checkmark.seal.fill" : "calendar.badge.clock")
-                    .foregroundStyle(day.made ? palette.accent : palette.slide)
+                    .foregroundStyle(day.made ? palette.accent : palette.warning)
                     .accessibilityHidden(true)
                 Text(verbatim: DailyWords.resultTitle(day)).font(Theme.heading)
             }

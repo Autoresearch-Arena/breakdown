@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2, plans/26-Nov-2026-design-language.md: new
+//          roles warning (fouls and misses, red-orange), paper2, paper3, panel, panelSunken and contact (strike and
+//          impact merged); pocket and cushion take the language's values; the delta yellow is retired (delta is paper2);
+//          a unit's size never falls under the caption size.)
 // Edited: Claude Haiku 5.5 Medium, 18-November-2026 (added the section-title and running-text styles for the title screen).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 5, a decision: the game is always dark. The room
 //          is a dim pool hall with one lamp over the table, the 3D scene is lit for that, and BreakdownApp forces the
@@ -47,11 +51,9 @@ enum Theme {
     static let cyanRGB: (Double, Double, Double) = (0.30, 0.88, 1.0)
     /// Paper: main text on the dark ground.
     static let paperRGB: (Double, Double, Double) = (0.92, 0.96, 1.0)
-    /// Warm yellow: planned against delivered only (the aiming panel's differences after a shot). Never a warning,
-    /// never on the table. The amber slot left free in 0.7.2, clear of the rolling cyan and the sliding magenta.
-    static let deltaRGB: (Double, Double, Double) = (0.98, 0.80, 0.35)
-    /// The same yellow under Increase Contrast.
-    static let deltaHighRGB: (Double, Double, Double) = (1.0, 0.88, 0.50)
+    /// Red-orange: a foul, a miss, a loss of turn (UI rethink package 2; Palette.warning). The old delta yellow for
+    /// planned against delivered is retired: the difference has no hue of its own.
+    static let warningRGB: (Double, Double, Double) = (1.0, 0.416, 0.239)
 
     // MARK: Fonts (all system text styles: they scale with the reader's text size)
 
@@ -104,8 +106,9 @@ enum Theme {
         .system(size: size, weight: .semibold, design: .monospaced).monospacedDigit()
     }
     /// The unit beside a figure of `size`: about 55 percent of it, medium weight (the plan's "smaller grey unit").
+    /// UI rethink package 2: never under the caption size (12 points), up from a ten-point floor.
     static func unit(size: CGFloat) -> Font {
-        .system(size: max(10, size * 0.55), weight: .medium, design: .monospaced)
+        .system(size: max(12, size * 0.55), weight: .medium, design: .monospaced)
     }
 
     // MARK: The upright phone's blurbs and controls (phone UI plan, Part 3)
@@ -167,9 +170,19 @@ struct Palette {
     /// The other future in a what-if: violet, clear of the cloth's green, the rolling cyan, the sliding magenta, the
     /// warm event colours and the cushion blue (never orange).
     let whatIf: Color
-    /// Planned against delivered (warm yellow, Theme.deltaRGB): the aiming panel's differences after a shot, and only
-    /// those.
+    /// Planned against delivered. UI rethink package 2: the warm yellow is retired (the design language gives the
+    /// difference no hue of its own), so this is paper2 now, kept under its old name for the views that still use it.
     let delta: Color
+    /// UI rethink package 2 (plans/26-Nov-2026-design-language.md, "Colour: the roles"):
+    /// a foul, a miss, a loss of turn, a refused stroke or a destructive action (red-orange, #FF6A3D). The sliding
+    /// magenta now means sliding and friction only.
+    let warning: Color
+    /// Secondary text (paper at 64 percent) and tertiary text (paper at 40 percent).
+    let paper2: Color, paper3: Color
+    /// Every reading surface (the same flat surface as band) and a strip set into one (the same as ledger).
+    let panel: Color, panelSunken: Color
+    /// A strike or a ball-on-ball hit: one warm colour (strike and impact are merged into it).
+    let contact: Color
     /// The aiming panel's flat band surface (#10151D) and the darker ledger line under it (#0C1016).
     let band: Color, ledger: Color
     /// A 1-point hairline between columns and around bands (#1F2833).
@@ -207,20 +220,27 @@ struct Palette {
         paper = tone(C(0.92, 0.96, 1.0), C(1, 1, 1))
         ground = tone(C(0.02, 0.03, 0.05), C(0, 0, 0))
         track = tone(C(1, 1, 1, 0.18), C(1, 1, 1, 0.38))
-        strike = tone(C(1.0, 0.93, 0.55), C(1.0, 0.97, 0.75))
-        impact = tone(C(1.0, 0.85, 0.55), C(1.0, 0.92, 0.72))
-        cushion = tone(C(0.55, 0.72, 1.0), C(0.72, 0.84, 1.0))
+        // UI rethink package 2: strike and impact are one contact colour (#FFD98C), kept pale so it stays apart in
+        // lightness from the deep gold of a pocket.
+        contact = tone(C(1.0, 0.851, 0.549), C(1.0, 0.922, 0.722))
+        strike = contact
+        impact = contact
+        cushion = tone(C(0.549, 0.722, 1.0), C(0.722, 0.839, 1.0))
         // Friction is what makes a ball slide and slow, so its captions wear the sliding magenta.
         friction = tone(C(1.0, 0.30, 0.70), C(1.0, 0.52, 0.82))
-        pocket = tone(C(1.0, 0.82, 0.25), C(1.0, 0.90, 0.50))
+        pocket = tone(C(1.0, 0.761, 0.102), C(1.0, 0.851, 0.40))
         // Violet: the one hue left clear of the default cloth's green-teal sheen and every colour above.
         whatIf = tone(C(0.72, 0.48, 1.0), C(0.84, 0.70, 1.0))
-        delta = tone(C(Theme.deltaRGB.0, Theme.deltaRGB.1, Theme.deltaRGB.2),
-                     C(Theme.deltaHighRGB.0, Theme.deltaHighRGB.1, Theme.deltaHighRGB.2))
+        paper2 = tone(C(0.92, 0.96, 1.0, 0.64), C(1, 1, 1, 0.72))
+        paper3 = tone(C(0.92, 0.96, 1.0, 0.40), C(1, 1, 1, 0.50))
+        delta = paper2
+        warning = tone(C(1.0, 0.416, 0.239), C(1.0, 0.58, 0.44))
         // Flat, opaque surfaces: under Increase Contrast a touch lighter so the band's edge still shows on black.
         band = tone(C(0.063, 0.082, 0.114), C(0.09, 0.11, 0.15))
         ledger = tone(C(0.047, 0.063, 0.086), C(0.07, 0.09, 0.12))
         rule = tone(C(0.122, 0.157, 0.20), C(0.30, 0.36, 0.44))
+        panel = band
+        panelSunken = ledger
     }
 }
 
@@ -243,6 +263,8 @@ struct PaletteProvider: ViewModifier {
 
     func body(content: Content) -> some View {
         let palette = Palette(contrast: contrast)
-        content.environment(\.palette, palette)
+        // UI rethink package 2: the window tint is the cyan, so switches, links and icons never fall back to the
+        // system's blue or green.
+        content.environment(\.palette, palette).tint(palette.accent)
     }
 }

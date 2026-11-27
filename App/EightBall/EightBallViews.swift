@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
+//          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
+//          magenta is left for sliding and friction.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The card's
 //          words are lifted into EightBallWords (the try label, the call prompt and call line, the situation's note,
 //          the result's title and what went wrong, the scorecard's notes, the sum's terms, the cloth sentence) so the
@@ -310,7 +313,7 @@ struct EightBallList: View {
                     .fixedSize(horizontal: false, vertical: true)
                 Text(details(s))
                     .font(Theme.label)
-                    .foregroundStyle(palette.slide)
+                    .foregroundStyle(palette.paper2)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
@@ -486,14 +489,14 @@ struct EightBallCard: View {
     private func scorecard(_ s: EightBallSituation, _ v: EightBallVerdict) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: resultSymbol(v))
-                .foregroundStyle(v.medal?.tint(palette) ?? (v.legal ? palette.accent : palette.slide))
+                .foregroundStyle(v.medal?.tint(palette) ?? (v.legal ? palette.accent : palette.warning))
                 .accessibilityHidden(true)
             Text(resultTitle(v)).font(Theme.heading).lineLimit(2)
             Spacer(minLength: 0)
             if let m = v.medal {
                 Text(String(localized: "\(m.title) medal")).font(Theme.label).foregroundStyle(m.tint(palette))
             } else {
-                Text(tryLabel(v.tryNumber)).font(Theme.label).foregroundStyle(palette.slide)
+                Text(tryLabel(v.tryNumber)).font(Theme.label).foregroundStyle(palette.paper2)
             }
         }
         .accessibilityElement(children: .combine)
@@ -599,7 +602,7 @@ struct EightBallCard: View {
                 Image(systemName: "book.closed").foregroundStyle(palette.accent).accessibilityHidden(true)
                 Text(String(localized: "On a real table: \(e.title)")).font(Theme.heading).lineLimit(2)
                 Spacer(minLength: 0)
-                Text(String(localized: "Rated \(e.rating)")).font(Theme.label).foregroundStyle(palette.slide)
+                Text(String(localized: "Rated \(e.rating)")).font(Theme.label).foregroundStyle(palette.paper2)
             }
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isHeader)
@@ -616,7 +619,7 @@ struct EightBallCard: View {
     private func realRow(_ label: String, _ words: String?, _ number: String?) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(alignment: .firstTextBaseline) {
-                Text(label).font(Theme.label).foregroundStyle(palette.slide)
+                Text(label).font(Theme.label).foregroundStyle(palette.paper2)
                 Spacer(minLength: 8)
                 if let number, words != nil {
                     Text(number).font(Theme.number).foregroundStyle(palette.accent)
@@ -642,7 +645,7 @@ struct EightBallCard: View {
         let keeps = RailKeep.percent(parameters: n.surface.parameters)
         let keepsStd = RailKeep.percent(parameters: std)
         return VStack(alignment: .leading, spacing: 2) {
-            Text(String(localized: "Cloth: \(n.surface.title)")).font(Theme.label).foregroundStyle(palette.slide)
+            Text(String(localized: "Cloth: \(n.surface.title)")).font(Theme.label).foregroundStyle(palette.paper2)
             Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 12, verticalSpacing: 2) {
                 GridRow {
                     Text("")
@@ -681,7 +684,7 @@ struct EightBallCard: View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(String(localized: "\(s.number). \(s.title)")).font(Theme.heading).lineLimit(2)
             Spacer(minLength: 0)
-            Text(tryLabel(tryNumber ?? mode.nextTry)).font(Theme.label).foregroundStyle(palette.slide)
+            Text(tryLabel(tryNumber ?? mode.nextTry)).font(Theme.label).foregroundStyle(palette.paper2)
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
@@ -701,7 +704,7 @@ struct EightBallCard: View {
     private func note(_ text: String, warning: Bool = false) -> some View {
         Text(text)
             .font(Theme.label)
-            .foregroundStyle(warning ? palette.slide : palette.paper.opacity(0.75))
+            .foregroundStyle(warning ? palette.warning : palette.paper.opacity(0.75))
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
     }

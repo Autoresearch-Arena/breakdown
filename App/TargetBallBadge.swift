@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: projects through AimProjector.forLayer, so the
+//          badge stays over its ball in a narrow Mac window.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the badge leaves where it is drawn in a BadgeFrameBox, so
 //          AimOverlay can keep the side-spin fork's labels off it; on the upright phone "Ball goes here" sat under it.)
 // PURPOSE: The target-ball badge (look plan package 3). On a phone held upright the camera fits the whole table, so a
@@ -57,6 +59,8 @@ struct TargetBallBadge: View {
     @State private var cameraBox = AimProjector.CameraBox()
     /// The badge's measured size, for keeping it on screen.
     @State private var badgeSize = CGSize(width: 90, height: 30)
+    /// This layer's frame in StageSpace, for AimProjector.forLayer (UI rethink package 1).
+    @State private var layerFrame: CGRect?
 
     /// Gap between the ball's top edge and the badge, and the least distance the badge keeps from the screen's edges.
     private let gap: CGFloat = 10
@@ -87,6 +91,7 @@ struct TargetBallBadge: View {
                 }
             }
         }
+        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(StageSpace.name)) } action: { layerFrame = $0 }
         // Placed in screen points from the 3D projection, which does not mirror for right-to-left languages.
         .environment(\.layoutDirection, .leftToRight)
         .allowsHitTesting(false)
@@ -107,7 +112,8 @@ struct TargetBallBadge: View {
     private func target(in size: CGSize) -> Target? {
         guard aimGuide, model.aimReady, model.layout.count == 16, NextShot.isOnTable(model.aimOrigin),
               let root = bridge.table?.root,
-              let proj = AimProjector(camera: cameraBox.find(in: root), size: size, frame: TableFrame(model.timeline.table))
+              let proj = AimProjector.forLayer(camera: cameraBox.find(in: root), bridge: bridge, layerFrame: layerFrame,
+                                               layerSize: size, frame: TableFrame(model.timeline.table))
         else { return nil }
         let r = model.timeline.table.ballRadius
         guard let hit = AimGeometry.guideContact(for: model),

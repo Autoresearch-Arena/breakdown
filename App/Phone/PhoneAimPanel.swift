@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 22-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: the swing bar's warm stretch is gold, not the
+//          sliding magenta.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.8.1: the hint is left out while the strike sheet is up, which
 //          left it cut in half along the sheet's top edge.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the strike sheet starts open in the -storeStrike
@@ -412,7 +414,7 @@ struct PhonePowerBar: View {
                 // The gradient spans the whole bar and a capsule mask reveals the part below the power level, so the
                 // fill warms as power rises.
                 Capsule()
-                    .fill(LinearGradient(colors: [palette.accent, palette.slide, Self.hot],
+                    .fill(LinearGradient(colors: [palette.accent, palette.pocket, Self.hot],
                                          startPoint: .leading, endPoint: .trailing))
                     .mask(alignment: .leading) {
                         Capsule().frame(width: max(barHeight, geo.size.width * fraction))
