@@ -24,6 +24,8 @@
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 match-ui, plans/22-Nov-2026-v075-whatif-and-gaps-plan.md B2:
 //          the result card's tally for this sitting, "This sitting: you 2, computer 1." (MatchMode.sittingWins). The
 //          card's record line reuses levelRecord.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the degrees in "Why that shot"
+//          follow NumberStyle's angle rule, one decimal, instead of up to two.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - checked MatchWords (the ruling, turn and call words stay there and are not repeated; pocket
@@ -60,10 +62,9 @@ enum OpponentWords {
     static var liningUp: String { String(localized: "Lining up its shot…") }
     static var whyThatShot: String { String(localized: "Why that shot") }
 
-    /// A number of degrees for these lines: at most two decimals, in the player's language.
-    private static func degrees(_ x: Double) -> String {
-        abs(x).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...2)))
-    }
+    /// A number of degrees for these lines: NumberStyle's one rule for an angle (one decimal), in the player's
+    /// language. The sentences carry the word "degrees" themselves, so this is the number alone.
+    private static func degrees(_ x: Double) -> String { NumberStyle.angle(degrees: abs(x)).number }
 
     /// "Why that shot": what the computer went for and why, in plain words, then what its hand did.
     static func why(_ shot: OpponentShot) -> [String] {

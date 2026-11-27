@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: outside the upright phone
+//          the menu is the kit's secondary capsule (panel fill, rule edge, paper words) instead of a glass button; its
+//          words take the label role and the phone form's gaps and height take the spacing and hit-size tokens.)
 // Edited: Claude Opus 5.5 High, 21-November-2026 (lessons: optional target band and lock. The angles inside a lesson's
 //          band (LessonZones.cueAngles) carry a target mark in the menu, and the label shows the mark while the chosen
 //          angle is inside it; a locked menu is disabled and marked "Locked for this step". Defaults leave every other
@@ -109,7 +112,7 @@ struct CueAngleMenu: View {
                     Label(Self.words(degrees: Double(angle)), systemImage: icon)
                     Label(Self.shortWords(degrees: angle), systemImage: icon)
                 }
-                .font(.headline).lineLimit(1)
+                .font(Theme.label).lineLimit(1)
                 .frame(minHeight: minHeight)
             }
         }
@@ -124,17 +127,17 @@ struct CueAngleMenu: View {
     /// The phone form's label: "Level", or the bare degrees ("30°"), in the panel's control font, on a faint capsule
     /// 44 high. Inside a lesson's band a small target mark follows the words, as the default form's icon does.
     private func phoneLabel(_ angle: Int) -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Theme.Space.xxs) {
             Text(verbatim: angle == 0 ? Self.words(degrees: 0) : Self.shortWords(degrees: angle))
-                .font(Theme.phoneControl.monospacedDigit())
+                .font(Theme.inlineFigure)
                 .lineLimit(1)
             if zone?.contains(angle) == true && zoneStrength >= 0.5 {
-                Image(systemName: "scope").font(.caption).accessibilityHidden(true)
+                Image(systemName: "scope").font(Theme.caption).accessibilityHidden(true)
             }
         }
         .fixedSize()
-        .padding(.horizontal, 14)
-        .frame(minHeight: 44)
+        .padding(.horizontal, Theme.Space.sm)
+        .frame(minHeight: Theme.Size.minHit)
         .modifier(PhonePanelControl(shape: .capsule))
         .contentShape(Capsule())
     }
@@ -149,7 +152,8 @@ private struct CueAngleMenuStyle: ViewModifier {
         if phone {
             content.buttonStyle(.plain).menuIndicator(.hidden)
         } else {
-            content.buttonStyle(.glass)
+            // The kit's secondary capsule: this menu sits on the panel, not over the table, so no glass.
+            content.menuStyle(.button).buttonStyle(.kitSecondary).menuIndicator(.hidden)
         }
     }
 }

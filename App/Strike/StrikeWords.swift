@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: one name, "Your strike",
+//          before and after a shot (playedStrokeHeading now reads it); the calm limit in two decimals below 10 m/s, the
+//          speed rule; differenceWords for the "Last shot" card ("0.13 under", "0.4 over"); aimTab, the bottom tab's
+//          new name "Aim".)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: lastShotLabel for the "Last shot" section.)
 // PURPOSE: Every word and number format the strike panel shows (plans/25-Nov-2026-strike-panel-and-controls-plan.md,
 //          "Words"): each figure in its unit, in the game's own number style (AppLocale.numbers), the tile labels, the
@@ -142,7 +146,9 @@ enum StrikeWords {
     static var ballGetsCaption: String { String(localized: "What the ball gets") }
     static var physicsCaption: String { String(localized: "The physics") }
     static var youSetCaption: String { String(localized: "What you set") }
-    static var playedStrokeHeading: String { String(localized: "Your stroke") }
+    /// UI rethink package 4: one name before and after a shot. Kept as its own name for its callers; it reads the live
+    /// heading ("Your strike").
+    static var playedStrokeHeading: String { liveHeading }
     /// Under the cut: where the white goes off the cue's line ("goes 1.2° left"), or that it goes along it.
     static func turnLine(_ degrees: Double) -> String {
         if abs(degrees) < 0.05 { return String(localized: "goes along the cue") }
@@ -152,9 +158,10 @@ enum StrikeWords {
     static func fromSwing(_ swing: Double) -> String { String(localized: "from a \(speed(swing)) swing") }
     static var upFromLevel: String { String(localized: "up from level") }
     static var asPlanned: String { String(localized: "as planned") }
-    /// The calm mark's label on the big power bar ("calm limit 3.5 m/s").
+    /// The calm mark's label on the swing bar ("calm limit 5.30 m/s"). UI rethink package 4: the speed rule, two
+    /// decimals below 10 m/s and one at 10 and over (NumberStyle.speed), in place of one decimal always.
     static func calmLimit(_ swing: Double) -> String {
-        String(localized: "calm limit \(number(swing, decimals: 1)) \(UnitSymbol.shown("m/s"))")
+        String(localized: "calm limit \(number(swing, decimals: abs(swing) < 10 ? 2 : 1)) \(UnitSymbol.shown("m/s"))")
     }
     /// Disabled Shoot while the balls are still moving.
     /// Its own key: "Rolling" already names the rolling motion in the Lens, which other languages word differently.
@@ -231,6 +238,19 @@ enum StrikeWords {
     static var stepsLabel: String { String(localized: "Step by step") }
     /// The notebook slot's section that opens planned against delivered for the shot just played (UI rethink package 1).
     static var lastShotLabel: String { String(localized: "Last shot") }
+    /// UI rethink package 4: the bottom tab that opens the strike's controls, renamed from "Your shot".
+    static var aimTab: String { String(localized: "Aim") }
+
+    /// UI rethink package 4: the worded difference in the "Last shot" card, after the delivered figure ("2.61 m/s, 0.13
+    /// under"): the size of the change in the figure's own precision, then over or under the plan; "as planned" when it
+    /// rounds to nothing. Paper2, with an up or down arrow beside it, never a hue of its own (the design language).
+    static func differenceWords(_ delta: Double, decimals: Int) -> String {
+        let size = number(abs(delta), decimals: decimals)
+        if size == number(0, decimals: decimals) { return asPlanned }
+        return delta > 0
+            ? String(localized: "\(size) over", comment: "Last shot card: the delivered figure was this much above the planned one")
+            : String(localized: "\(size) under", comment: "Last shot card: the delivered figure was this much below the planned one")
+    }
 
     // MARK: Errors in plain units
 

@@ -1,12 +1,18 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the ball chips are the kit's
+//          chips and wrap onto more lines instead of scrolling sideways; the six pockets are chips too (CallPocketChips),
+//          the chosen one selected; Safety is a secondary button and "Call it" the call's one primary (the kit's cyan
+//          capsule, also on the upright phone's call row); the pocket menu is a secondary button; the refusal's pulse
+//          outline takes the kit's small corners.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
 // PURPOSE: Calling a ball and a pocket, shared by Behind the 8-Ball and the eight-ball match.
-//          CallBallChips    - the callable balls as round buttons, the picked one highlighted. The complete route for
-//                             VoiceOver and the keyboard; tapping the table is only the quick route.
-//          CallPocketMenu   - the six pockets by name in a menu.
+//          CallBallChips    - the callable balls as the kit's chips, wrapping, the picked one selected. The complete
+//                             route for VoiceOver and the keyboard; tapping the table is only the quick route.
+//          CallPocketChips  - the six pockets as chips, the chosen one selected (the match's call and the 8-ball card).
+//          CallPocketMenu   - the six pockets by name in a menu (the upright phone's 8-ball blurb).
 //          CallSafetyButton - "Safety": no ball, just a legal hit.
 //          MatchCallControl - the match's whole call: it keeps the two-step pick (ball, then pocket) itself, because
 //                             MatchMode only stores the finished call (setCall). It pre-selects the ball the cue is
@@ -37,7 +43,8 @@ import SwiftUI
 // MARK: The small shared pieces
 
 /// The glass button adds its own padding; this lands the buttons on 44 points or more on a touch screen (the same
-/// number the trick-shot and 8-ball cards use).
+/// number the trick-shot and 8-ball cards used). Still read by the cards outside the mode frame (ClipViews,
+/// WhatIfViews), whose own packages move them onto the kit.
 enum CallMetrics {
     #if os(iOS)
     static let buttonHeight: CGFloat = 30
@@ -46,50 +53,62 @@ enum CallMetrics {
     #endif
 }
 
+/// The callable balls as the kit's chips, wrapping onto more lines when they do not fit (never a sideways scroll that
+/// hides some of them); the picked ball is the selected chip (the cyan edge). Each chip is a button with a 44 point hit
+/// area, named "Ball 3" for VoiceOver, with the selected trait on the picked one.
 struct CallBallChips: View {
     let balls: [Int]
     let picked: Int?
     let pick: (Int) -> Void
-    @Environment(\.palette) private var palette
 
     var body: some View {
         if !balls.isEmpty {
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(balls, id: \.self) { b in
-                        let isPicked = picked == b
-                        chip(b, isPicked: isPicked)
-                            .buttonBorderShape(.circle)
-                            .accessibilityLabel(String(localized: "Ball \(b)"))
-                            .accessibilityAddTraits(isPicked ? .isSelected : [])
+            CallChipWrap(spacing: Theme.Space.xs, lineSpacing: Theme.Space.xxs) {
+                ForEach(balls, id: \.self) { b in
+                    let isPicked = picked == b
+                    Button { pick(b) } label: {
+                        Chip(value: b.formatted(.number.locale(AppLocale.numbers)), selected: isPicked)
+                            .frame(minWidth: Theme.Size.minHit, minHeight: Theme.Size.minHit)
+                            .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(String(localized: "Ball \(b)"))
+                    .accessibilityAddTraits(isPicked ? .isSelected : [])
                 }
-                .padding(.vertical, 2)
             }
-            .scrollIndicators(.hidden)
-        }
-    }
-
-    @ViewBuilder
-    private func chip(_ b: Int, isPicked: Bool) -> some View {
-        let button = Button { pick(b) } label: {
-            Text("\(b)").font(.headline.monospacedDigit())
-                .frame(minWidth: 30, minHeight: CallMetrics.buttonHeight)
-        }
-        if isPicked {
-            // Dark text on the bright accent, as every prominent button in the app.
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
-        } else {
-            button.buttonStyle(.glass)
         }
     }
 }
 
+/// The six pockets as word chips, wrapping like the balls; the chosen pocket is the selected chip (UI rethink package 5:
+/// the chosen pocket shows as a chip, not as the label of a prominent menu).
+struct CallPocketChips: View {
+    let picked: EightBallPocket?
+    let pick: (EightBallPocket) -> Void
+
+    var body: some View {
+        CallChipWrap(spacing: Theme.Space.xs, lineSpacing: Theme.Space.xxs) {
+            ForEach(EightBallPocket.allCases, id: \.self) { p in
+                let isPicked = picked == p
+                Button { pick(p) } label: {
+                    Chip(word: p.title, selected: isPicked)
+                        .frame(minHeight: Theme.Size.minHit)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(p.title)
+                .accessibilityAddTraits(isPicked ? .isSelected : [])
+            }
+        }
+    }
+}
+
+/// The six pockets by name in a menu (the upright phone's 8-ball blurb). A secondary button now: "Call it" is the one
+/// primary of the call.
 struct CallPocketMenu: View {
     /// The pocket already picked, shown on the button; nil shows the plain "Pocket" label.
     let picked: EightBallPocket?
     let pick: (EightBallPocket) -> Void
-    @Environment(\.palette) private var palette
 
     var body: some View {
         Menu {
@@ -99,11 +118,10 @@ struct CallPocketMenu: View {
                 }
             }
         } label: {
-            Label(picked?.title ?? String(localized: "Pocket"), systemImage: "circle.dashed").font(.headline).lineLimit(1)
-                .frame(minHeight: CallMetrics.buttonHeight)
+            KitButtonLabel(picked?.title ?? String(localized: "Pocket"), systemImage: "circle.dashed")
         }
-        .buttonStyle(.glassProminent)
-        .foregroundStyle(palette.ground)
+        .menuStyle(.button)
+        .buttonStyle(.kitSecondary)
         .accessibilityLabel(String(localized: "Pick the pocket"))
         .accessibilityValue(picked?.title ?? "")
     }
@@ -113,30 +131,83 @@ struct CallSafetyButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            Label("Safety", systemImage: "shield").font(.headline).lineLimit(1)
-                .frame(minHeight: CallMetrics.buttonHeight)
+        SecondaryButton(String(localized: "Safety"), systemImage: "shield") { action() }
+            .accessibilityHint(String(localized: "Calls a safety: no ball, just a legal hit that leaves your opponent hooked"))
+    }
+}
+
+/// The chips' layout: left to right from the leading edge, onto a new line when the next chip would not fit. (The
+/// kit's status line has the same layout privately, and WrappingRow in Surfaces.swift lines its rows up on the trailing
+/// edge, which a row of balls must not.)
+struct CallChipWrap: Layout {
+    var spacing: CGFloat
+    var lineSpacing: CGFloat
+
+    /// Each line's subview indices and sizes, and the line's height.
+    private func lines(width: CGFloat, subviews: Subviews) -> [(items: [(Int, CGSize)], width: CGFloat, height: CGFloat)] {
+        var all: [(items: [(Int, CGSize)], width: CGFloat, height: CGFloat)] = []
+        var current: [(Int, CGSize)] = []
+        var lineWidth: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            let needed = current.isEmpty ? size.width : lineWidth + spacing + size.width
+            if needed > width, !current.isEmpty {
+                all.append((current, lineWidth, lineHeight))
+                current = []
+                lineWidth = 0
+                lineHeight = 0
+            }
+            lineWidth = current.isEmpty ? size.width : lineWidth + spacing + size.width
+            lineHeight = max(lineHeight, size.height)
+            current.append((index, size))
         }
-        .buttonStyle(.glass)
-        .accessibilityHint(String(localized: "Calls a safety: no ball, just a legal hit that leaves your opponent hooked"))
+        if !current.isEmpty { all.append((current, lineWidth, lineHeight)) }
+        return all
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let all = lines(width: proposal.width ?? .infinity, subviews: subviews)
+        let height = all.reduce(0) { $0 + $1.height } + lineSpacing * CGFloat(max(0, all.count - 1))
+        return CGSize(width: all.map(\.width).max() ?? 0, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for line in lines(width: bounds.width, subviews: subviews) {
+            var x = bounds.minX
+            for (index, size) in line.items {
+                subviews[index].place(at: CGPoint(x: x, y: y + (line.height - size.height) / 2),
+                                      proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += line.height + lineSpacing
+        }
     }
 }
 
 // MARK: The match's call
 
-/// The call for one match shot. Shown by the turn banner while MatchMode.mustCall is true (eight-ball after the break;
-/// never in nine-ball, whose rules use no calls).
+/// The call for one match shot. Shown by the match card while MatchMode.mustCall is true (eight-ball after the break;
+/// never in nine-ball, whose rules use no calls). The prompt, the callable balls as wrapping chips, the six pockets as
+/// chips once a ball is shown (the chosen one selected), then Safety beside "Call it", the one primary.
 struct MatchCallControl: View {
     let model: ShowpieceModel
     let match: MatchMode
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    private var deviceReader = KitDeviceReader()
     /// The ball picked and the pocket picked, before "Call it" hands the finished call to the match. Nil until the
-    /// player touches a chip or the pocket menu; until then the suggestion from the aim stands in for them.
+    /// player touches a chip; until then the suggestion from the aim stands in for them.
     @State private var ball: Int?
     @State private var pocket: EightBallPocket?
     /// True for the moments the card flashes after a stroke was refused for want of a call.
     @State private var pulsing = false
+
+    init(model: ShowpieceModel, match: MatchMode) {
+        self.model = model
+        self.match = match
+    }
 
     private var choice: MatchCallChoice { MatchCallChoice(match: match, ball: ball, pocket: pocket) }
     private var callable: [Int] { choice.callable }
@@ -150,40 +221,32 @@ struct MatchCallControl: View {
     private var shownPocket: EightBallPocket? { choice.shownPocket }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(prompt)
-                .font(refusedForCall ? Theme.heading : Theme.body)
-                .foregroundStyle(refusedForCall ? palette.warning : palette.paper.opacity(0.9))
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            Text(verbatim: prompt)
+                .font(refusedForCall ? Theme.heading : (deviceReader.current == .phone ? Theme.bodyCompact : Theme.body))
+                .foregroundStyle(refusedForCall ? palette.warning : palette.paper)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            SectionLabel(String(localized: "Ball"))
             CallBallChips(balls: callable, picked: shownBall) { b in
                 ball = b
                 if b != suggestion?.ball { pocket = nil }
             }
-            // Safety, the pocket and Call it: one row, or a column at the largest text sizes, so the pocket's name is
-            // never cut off (item 43).
-            CardButtonRow {
-                CallSafetyButton { match.setCall(.safety); ball = nil; pocket = nil }
-                if shownBall != nil {
-                    CallPocketMenu(picked: shownPocket) { pocket = $0 }
-                }
-                if let b = shownBall, let p = shownPocket {
-                    Button { match.setCall(.ball(b, pocket: p)); ball = nil; pocket = nil } label: {
-                        Label("Call it", systemImage: "checkmark").font(.headline).lineLimit(1)
-                            .frame(minHeight: CallMetrics.buttonHeight)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .foregroundStyle(palette.ground)
-                    .accessibilityLabel(MatchWords.callLine(.ball(b, pocket: p)))
-                    .accessibilityHint(String(localized: "Makes this your call for the shot"))
-                }
+            if shownBall != nil {
+                SectionLabel(String(localized: "Pocket"))
+                CallPocketChips(picked: shownPocket) { pocket = $0 }
             }
+            // Safety beside Call it: one row, or a column at the largest text sizes, so nothing is cut off (item 43).
+            KitButtonRow(primary: callItAction, secondary: KitAction(String(localized: "Safety"), systemImage: "shield") {
+                match.setCall(.safety); ball = nil; pocket = nil
+            })
+            .modeShortcut(callItAction, .defaultAction)
         }
-        // The pulse: an outline in the warning colour that flashes twice (and, unless Reduce Motion is on, the card
+        // The pulse: an outline in the warning colour that flashes twice (and, unless Reduce Motion is on, the call
         // swells a little), so the eye goes to the call the moment a stroke is refused for want of one.
-        .padding(4)
+        .padding(Theme.Space.xxs)
         .background {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
+            Theme.Corner.tileShape
                 .stroke(palette.warning, lineWidth: pulsing ? 3 : 0)
         }
         .scaleEffect(pulsing && !reduceMotion ? 1.03 : 1)
@@ -192,6 +255,14 @@ struct MatchCallControl: View {
             // The table's line and the screen reader say the same thing.
             AccessibilityNotification.Announcement(ShotRefusal.noCall.sentence).post()
             pulse()
+        }
+    }
+
+    /// "Call it", once a ball and a pocket are shown (picked or suggested); nil until then.
+    private var callItAction: KitAction? {
+        guard let b = shownBall, let p = shownPocket else { return nil }
+        return KitAction(String(localized: "Call it"), systemImage: "checkmark") {
+            match.setCall(.ball(b, pocket: p)); ball = nil; pocket = nil
         }
     }
 
@@ -272,13 +343,13 @@ struct MatchCallRow: View {
         let shownBall = choice.shownBall
         let shownPocket = choice.shownPocket
         // One row, Call it at the right; a column when the row does not fit (a long pocket name, the largest text).
-        let row = HStack(spacing: 8) {
+        let row = HStack(spacing: Theme.Space.xs) {
             safety
             callMenu(shownBall, shownPocket)
             Spacer(minLength: 0)
             callIt(shownBall, shownPocket)
         }
-        let column = VStack(alignment: .leading, spacing: 8) {
+        let column = VStack(alignment: .leading, spacing: Theme.Space.xs) {
             safety
             callMenu(shownBall, shownPocket)
             callIt(shownBall, shownPocket)
@@ -295,10 +366,10 @@ struct MatchCallRow: View {
     private var safety: some View {
         Button { match.setCall(.safety); ball = nil; pocket = nil } label: {
             Text("Safety")
-                .font(Theme.phoneControl)
+                .font(Theme.label)
                 .lineLimit(1)
-                .padding(.horizontal, 14)
-                .frame(minHeight: 44)
+                .padding(.horizontal, Theme.Space.md)
+                .frame(minHeight: Theme.Size.minHit)
                 .modifier(PhonePanelControl(shape: .capsule))
                 .contentShape(Capsule())
         }
@@ -310,18 +381,13 @@ struct MatchCallRow: View {
     @ViewBuilder
     private func callIt(_ shownBall: Int?, _ shownPocket: EightBallPocket?) -> some View {
         if let b = shownBall, let p = shownPocket {
+            // The kit's primary capsule (cyan, ground words), the call's one primary, at the phone's 50 points.
             Button { match.setCall(.ball(b, pocket: p)); ball = nil; pocket = nil } label: {
-                Text("Call it")
-                    .font(Theme.phoneControl)
+                KitButtonLabel(String(localized: "Call it"))
                     .lineLimit(1)
                     .fixedSize()
-                    .padding(.horizontal, 16)
-                    .frame(minHeight: 44)
-                    .foregroundStyle(palette.ground)
-                    .background(.white, in: .capsule)
-                    .contentShape(Capsule())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.kitPrimary)
             .accessibilityLabel(MatchWords.callLine(.ball(b, pocket: p)))
             .accessibilityHint(String(localized: "Makes this your call for the shot"))
         }
@@ -353,11 +419,11 @@ struct MatchCallRow: View {
             }
         } label: {
             Text(verbatim: menuTitle(shownBall, shownPocket))
-                .font(Theme.phoneControl)
+                .font(Theme.label)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
-                .padding(.horizontal, 14)
-                .frame(minHeight: 44)
+                .padding(.horizontal, Theme.Space.md)
+                .frame(minHeight: Theme.Size.minHit)
                 .modifier(PhonePanelControl(shape: .capsule))
                 .contentShape(Capsule())
         }

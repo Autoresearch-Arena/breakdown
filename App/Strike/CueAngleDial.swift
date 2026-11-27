@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the dial shows the live
+//          angle only (the planned ghost needle and "as planned" went to the "Last shot" card); its words and tick
+//          figures take the kit's text roles and paper3; the ball's grey is CueBallInk's; `showsFigure` lets a narrow
+//          console hide the degrees beside the dial when it prints them as a figure of its own.)
 // PURPOSE: The cue angle as a quarter-circle dial with the cue as its needle (plans/25-Nov-2026-strike-panel-and-
 //          controls-plan.md, stage 3 item 3), for the shot panel on iPad, Mac and the open folding phone, where it takes
 //          the place of the cue-angle menu (CueAngleMenu stays on the upright phone and in small layouts). The ball sits
@@ -55,40 +59,33 @@ struct CueAngleDial: View {
     /// The degrees figure under the dial instead of beside it (a narrow column).
     var figureBelow = false
 
+    /// The degrees and "up from level" beside or under the dial (off where the console prints them itself).
+    var showsFigure = true
+
     var body: some View {
         let reading = StrikeReading.current(model)
-        let planned = reading?.comparison?.planned.cueAngle
-        let layout = figureBelow ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
-                                 : AnyLayout(HStackLayout(alignment: .center, spacing: 14))
+        let layout = figureBelow ? AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Space.xs))
+                                 : AnyLayout(HStackLayout(alignment: .center, spacing: Theme.Space.sm))
         layout {
-            accessible(dial(size: size ?? min(max(side, 88), 140), ghost: planned))
-            readout(reading).fixedSize()
+            accessible(dial(size: size ?? min(max(side, 88), 140)))
+            if showsFigure { readout(reading).fixedSize() }
         }
     }
 
-    /// The degrees, typeable, with "up from level" under them; after a shot "as planned" (the stroke never changes
-    /// the angle the cue is raised to, StrikeReading.comparison).
+    /// The degrees, typeable, with "up from level" under them. Always the live angle (UI rethink package 4).
     private func readout(_ reading: StrikeReading.Reading?) -> some View {
-        let moved = reading?.comparison?.differs(.cueAngle) == true
-        return VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Space.figureToLabel) {
             TypeableFigure(model: model, kind: .cueAngle, spokenLabel: StrikeWords.cueAngleLabel,
-                           spokenValue: reading.map { StrikeSpoken.tile(.cueAngle, $0, differs: moved) }
-                               ?? StrikeSpoken.degrees(degrees)) {
+                           spokenValue: StrikeSpoken.degrees(degrees)) {
                 FigureLine(figure: StrikeWords.degreesFigure(degrees), size: figureSize, role: .set,
                            editable: StrikeEntry.Kind.cueAngle.isOpen(model))
-                    .padding(.bottom, 4)
+                    .padding(.bottom, Theme.Space.xxs)
             }
             Text(verbatim: StrikeWords.upFromLevel)
-                .font(.system(size: max(12, figureSize * 0.55)))
-                .foregroundStyle(.secondary)
+                .font(Theme.caption)
+                .foregroundStyle(palette.paper2)
                 .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
                 .fixedSize(horizontal: false, vertical: true)
-            if reading?.comparison != nil {
-                Text(verbatim: StrikeWords.asPlanned)
-                    .font(.system(size: max(12, figureSize * 0.55)))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
         }
     }
 
@@ -119,9 +116,10 @@ struct CueAngleDial: View {
 
     /// The quarter circle: the ball at the lower leading corner, the arc, the lesson's band, ticks at 0, 20, 45 and 90
     /// degrees with their figures, and the cue as the needle, ending in the instrument kit's handle; after a shot a
-    /// faint ghost needle at the planned angle. Drawn in screen terms (left to right) whatever the reading direction:
+    /// faint ghost needle at the planned angle (gone in UI rethink package 4). Drawn in screen terms (left to right)
+    /// whatever the reading direction:
     /// the cue is a picture of a cue, not text.
-    private func dial(size: CGFloat, ghost: Double?) -> some View {
+    private func dial(size: CGFloat) -> some View {
         let ball = size * 0.07
         let labelSize = max(10, size * 0.065)
         // Room past the arc for the ticks and their figures (the 90 sits above the arc's top).
@@ -129,7 +127,7 @@ struct CueAngleDial: View {
         let pivot = CGPoint(x: ball + 2, y: size - ball - 2)
         let radius = size - ball - labelRoom
         let degreesNow = degrees
-        let accent = palette.accent, track = palette.track, paper = palette.paper
+        let accent = palette.accent, track = palette.track, tickInk = palette.paper3
         let handle = max(22, size * 0.12)
         // A point on the dial at an angle and a distance from the ball (a plain closure, so the canvas may call it).
         let point: @Sendable (Double, CGFloat) -> CGPoint = { deg, r in
@@ -159,17 +157,11 @@ struct CueAngleDial: View {
                 for a in [0.0, 20.0, 45.0, 90.0] {
                     var tick = Path()
                     tick.move(to: point(a, radius + 6)); tick.addLine(to: point(a, radius + 14))
-                    ctx.stroke(tick, with: .color(.secondary), lineWidth: 1)
+                    ctx.stroke(tick, with: .color(tickInk), lineWidth: Theme.Size.hairline)
                     let text = Text(verbatim: a == 0 ? StrikeWords.number(a, decimals: 0) + "°" : StrikeWords.number(a, decimals: 0))
-                        .font(.system(size: labelSize, design: .monospaced))
-                        .foregroundStyle(.secondary)
+                        .font(Theme.figure(size: labelSize).weight(.regular))
+                        .foregroundStyle(tickInk)
                     ctx.draw(text, at: point(a, radius + 14 + labelSize * 0.9), anchor: .center)
-                }
-                // The planned angle's ghost needle after a shot.
-                if let ghost {
-                    var g = Path()
-                    g.move(to: point(ghost, ball * 1.2)); g.addLine(to: point(ghost, radius))
-                    ctx.stroke(g, with: .color(paper.opacity(0.25)), style: StrokeStyle(lineWidth: 3, lineCap: .round))
                 }
                 // The cue: from just off the ball out to the arc.
                 var cue = Path()
@@ -177,7 +169,7 @@ struct CueAngleDial: View {
                 ctx.stroke(cue, with: .color(accent), style: StrokeStyle(lineWidth: max(3, size * 0.02), lineCap: .round))
                 // The ball: flat grey, as the tip picture.
                 ctx.fill(Path(ellipseIn: CGRect(x: pivot.x - ball, y: pivot.y - ball, width: ball * 2, height: ball * 2)),
-                         with: .color(Color(white: 0.80)))
+                         with: .color(CueBallInk.dial))
             }
             .frame(width: size, height: size)
             InstrumentHandle(diameter: handle)
@@ -222,7 +214,7 @@ private struct DialLock: ViewModifier {
         } else if mode {
             content.opacity(0.55)
                 .overlay(alignment: .topTrailing) {
-                    Image(systemName: "lock.fill").font(.caption2).foregroundStyle(.secondary).accessibilityHidden(true)
+                    Image(systemName: "lock.fill").font(Theme.caption).foregroundStyle(.secondary).accessibilityHidden(true)
                 }
         } else {
             content

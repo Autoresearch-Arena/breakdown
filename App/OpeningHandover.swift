@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the first-break card is the
+//          kit's panel with its buttons ("Learn the shots" the cyan primary, "Keep playing" secondary, "Skip intro" a
+//          secondary capsule), an outline icon in paper2, Theme's gaps. The first minute itself (the table, the sentence,
+//          the tip picture, the swing and Break, titled "Break") is drawn by ShotPanel's calm console and NotebookPanel.
+//          Keep playing's VoiceOver hint names the renamed tab, "Opens Aim on this table".)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike, plans/25-Nov-2026-strike-panel-and-controls-plan.md
 //          stage 3 item 5: one hint, in one place. The hand-over card's instruction and the upright phone's docked
 //          instruction blurb (OpeningPhoneBlurb) are gone; the instruction is the shot panel's hint (StrikeHint) below the
@@ -178,12 +183,9 @@ struct OpeningCard: View {
             firstBreakCard
         case .playing where inlinePages:
             Button { model.skipOpening() } label: {
-                Label("Skip intro", systemImage: "forward.end.fill")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, minHeight: 30)
+                Label("Skip intro", systemImage: "forward.end")
             }
-            .buttonStyle(.glass)
-            .controlSize(.regular)
+            .buttonStyle(SecondaryButtonStyle(fullWidth: true))
             .accessibilityHint("Goes straight to your own break")
             .transition(.opacity)
         default:
@@ -195,21 +197,21 @@ struct OpeningCard: View {
 
     /// One short card after the player's first break: what it did, then the lessons first and the table second.
     private var firstBreakCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "sparkles").foregroundStyle(palette.accent).accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
+            HStack(spacing: Theme.Space.xs) {
+                Image(systemName: "sparkles").foregroundStyle(palette.paper2).accessibilityHidden(true)
                 Text(String(localized: "Your first break")).font(Theme.heading)
             }
             .accessibilityAddTraits(.isHeader)
             Text(breakLine)
                 .font(Theme.body)
-                .foregroundStyle(palette.paper.opacity(0.9))
+                .foregroundStyle(palette.paper)
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
             buttons
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
+        .kitPanel()
         .tint(palette.accent)
         .transition(.opacity)
         .onAppear { AccessibilityNotification.Announcement(breakLine).post() }
@@ -217,23 +219,20 @@ struct OpeningCard: View {
 
     @ViewBuilder private var buttons: some View {
         let keep = Button { model.keepPlayingAfterFirstBreak() } label: {
-            Label(String(localized: "Keep playing"), systemImage: "target").font(.headline).lineLimit(1)
-                .frame(minHeight: CallMetrics.buttonHeight)
+            Label(String(localized: "Keep playing"), systemImage: "target").lineLimit(1)
         }
-        .buttonStyle(.glass)
-        .accessibilityHint(String(localized: "Opens Your shot on this table"))
+        .buttonStyle(.kitSecondary)
+        .accessibilityHint(String(localized: "Opens Aim on this table"))
         let learn = Button { model.learnAfterFirstBreak() } label: {
-            Label(String(localized: "Learn the shots"), systemImage: "graduationcap").font(.headline).lineLimit(1)
-                .frame(minHeight: CallMetrics.buttonHeight)
+            Label(String(localized: "Learn the shots"), systemImage: "graduationcap").lineLimit(1)
         }
-        .buttonStyle(.glassProminent)
-        .foregroundStyle(palette.ground)
+        .buttonStyle(.kitPrimary)
         .keyboardShortcut(.defaultAction)
         .accessibilityHint(String(localized: "Opens the six lessons"))
         if typeSize.isAccessibilitySize {
-            VStack(alignment: .trailing, spacing: 8) { learn; keep }.frame(maxWidth: .infinity, alignment: .trailing)
+            VStack(alignment: .trailing, spacing: Theme.Space.xs) { learn; keep }.frame(maxWidth: .infinity, alignment: .trailing)
         } else {
-            HStack(spacing: 8) { Spacer(minLength: 0); keep; learn }.controlSize(.regular)
+            HStack(spacing: Theme.Space.xs) { Spacer(minLength: 0); keep; learn }
         }
     }
 

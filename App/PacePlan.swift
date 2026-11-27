@@ -1,4 +1,9 @@
 // Author: Claude Opus 5.5 High
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 9, the Physics Lens notebook,
+//          plans/26-Nov-2026-ui-rethink-plan.md: the strike beat's rectangle keeps the tip of the strike's velocity arrow
+//          and the first ball the struck ball meets in frame (strikeReach), so the camera's close-up on the strike shows
+//          where the ball is sent and what it is sent at; on the opening break the arrow ran off the screen's edge and
+//          the rack was out of sight.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
 //          Part B: a beat's reading time is worked out from the short form the card shows by default (heading, one
 //          figure, one sentence), not the full text that waits behind a tap. The floor (2.5 seconds) and a third of a
@@ -380,7 +385,11 @@ struct PacePlan: Equatable {
         }
         switch e.kind {
         case .cueStrike:
-            for b in balls.prefix(1) { rect = rect.union(path(of: b, from: e.time, metres: strikePath, in: tl)) }
+            for b in balls.prefix(1) {
+                rect = rect.union(path(of: b, from: e.time, metres: strikePath, in: tl))
+                // UI rethink package 9: the arrow's tip and the first ball it is sent at stay in frame.
+                rect = rect.union(strikeReach(of: b, strike: e, in: tl))
+            }
         case .ballBall, .settledInContact:
             for b in balls.prefix(2) { rect = rect.union(path(of: b, from: e.time, metres: hitPath, in: tl)) }
         case .phaseTransition:
@@ -409,6 +418,36 @@ struct PacePlan: Equatable {
             }
         }
         return rect.outset(by: tl.table.ballRadius)
+    }
+
+    /// The velocity arrow's drawn length for a ball moving at `speed` m/s, metres from the ball's centre to the tip of
+    /// its head. A copy of LensLayer's own rule (the shaft is min(0.8, 0.02 + 0.05 v) long, the head starts 0.012 past
+    /// it and is LensLayer.arrowHeadLength, 0.034, long), because LensLayer is main-actor isolated and its numbers
+    /// cannot be read from this nonisolated plan. If LensLayer's arrow changes, change this with it.
+    static func strikeArrowReach(speed: Double) -> Double {
+        min(0.8, 0.02 + 0.05 * speed) + 0.012 + 0.034
+    }
+
+    /// The strike's own reach (UI rethink package 9): the tip of the velocity arrow the Lens draws on the struck ball
+    /// as it leaves the tip, and the first ball it then meets, where it sits at the strike. With these in the strike
+    /// beat's rectangle the camera never cuts the arrow off at the screen's edge or frames the cue ball alone on an
+    /// empty grid while the ball it is aimed at waits out of sight. A first ball farther than a table's length is not
+    /// chased (it never is on a real table, but a recording without one should not widen the frame to nothing).
+    private static func strikeReach(of ball: Int, strike e: LensEvent, in tl: Timeline) -> TableRect {
+        let start = tl.state(ball: ball, at: e.time).position
+        var rect = TableRect(around: start)
+        if let leaving = e.balls.first(where: { $0.ball == ball })?.velocityAfter, leaving.length > 0.04 {
+            rect.include(start + leaving.normalized * strikeArrowReach(speed: leaving.length))
+        }
+        let firstHit = tl.events.first {
+            $0.kind == .ballBall && $0.time >= e.time && $0.balls.contains { $0.ball == ball }
+        }
+        if let hit = firstHit, let other = hit.balls.first(where: { $0.ball != ball })?.ball,
+           tl.segments.indices.contains(other), !tl.segments[other].isEmpty {
+            let at = tl.state(ball: other, at: e.time).position
+            if (at - start).length <= tl.table.length { rect.include(at) }
+        }
+        return rect
     }
 
     /// The flight `ball` is in at clock time `t` (a take-off starts one, a landing ends one or starts a bounce): every

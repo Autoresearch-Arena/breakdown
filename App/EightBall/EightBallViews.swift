@@ -1,5 +1,16 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the list is the kit's sheet
+//          page with the kit's list rows (number or medal, title and story, five dots from the hardest way out's rating,
+//          best score, cloth and bridge, the start layout drawn small; "Rated up to" is said by the dots now, and by
+//          VoiceOver); the card is the kit's mode card in every phase (the try in its status line; calling shows the
+//          balls and then the pockets as wrapping chips under "Your call"; the ways out, Back and the list under More)
+//          and the kit-style result card once scored (the medal or try on its right, the total with its sum behind
+//          More, Next or Try again, the Lens replay and On a real table beside it). The medals' own colours are gone:
+//          a medal is pocket gold, its metal in words. The numbers follow NumberStyle (two decimals for a speed under
+//          10 m/s, a tip to a tenth of a millimetre, friction to two or three significant figures). No "How forgiving"
+//          tiles: a situation has no measured window before a try (the judge measures the player's windows only after a
+//          make). The glow follows the screen's own corners.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -47,7 +58,7 @@
 //          EightBallList - the list of situations in a sheet from the menu: number (or the medal won), title, story,
 //            best score, the hardest authored way out, the cloth when it is not the standard one, the bridge; the
 //            running total and the scoring sentence. With no situations yet it says so plainly.
-//          EightBallCard - the compact glass card at the bottom edge (top of the side column on iPad, Mac and
+//          EightBallCard - the kit's mode card at the bottom edge (top of the side column on iPad, Mac and
 //            landscape), hosted beside TrickShotCard. Looking: the story, Make your call, Watch an escape (the hint,
 //            which caps style at 2). Calling: the prompt, your callable balls and the six pockets as buttons (the
 //            complete route for VoiceOver; tapping the table is the quick route), Safety, Back. Aiming: the call and
@@ -62,55 +73,39 @@
 //            flags (-eightList, -eight <id>). Only while calling does it take touches: a tap is projected onto the table
 //            with AimProjector (as AimOverlay does) and picks the nearest ball or pocket. It forwards the model's
 //            playback changes to EightBallMode.update() and opens or closes the shot panel when the mode asks.
-//          Standard controls (Liquid Glass buttons, a List, Menus, SF Symbols), Dynamic Type (button rows fall back to
-//          a column), VoiceOver labels, Reduce Motion (the glow only fades; the card changes without animation).
+//          The kit's sheet page, list row, mode card, chips and buttons, Dynamic Type (button rows fall back to a
+//          column), VoiceOver labels, Reduce Motion (the glow only fades; the card changes without animation).
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
 // SRP/DRY check: Pass - views only. Flow is EightBallMode, data EightBallSituations, the cloth numbers come from
-//          RealTableNumbers and PlaySurface.parameters; projection is AimProjector; card styling is the shared
-//          glassCard. The card's small pieces (header, line, button row, prominent style) follow TrickShotCard's so the
-//          two cards look and behave the same; they are private there, so they are repeated here rather than shared.
+//          RealTableNumbers and PlaySurface.parameters; projection is AimProjector; the card, rows, chips and sheet are
+//          the kit's, the difficulty mapping, start drawing and result card ModeFrameKit's, shared with every mode.
 import BreakdownLensModel
 import BreakdownPhysics
 import BreakdownRules
 import SwiftUI
 
-// MARK: Shared small pieces
+// MARK: Numbers
 
-private extension EightBallMedal {
-    var symbol: String { "medal.fill" }
-
-    func tint(_ palette: Palette) -> Color {
-        switch self {
-        case .gold: return palette.pocket
-        case .silver: return Color(white: 0.72)
-        // Its own muted bronze, brown rather than orange: a medal's colour names the metal, so it does not follow the
-        // sliding colour (Palette.slide, magenta) it borrowed before 0.7.2.
-        case .bronze: return Color(red: 0.72, green: 0.53, blue: 0.38)
-        }
-    }
-}
-
-/// Numbers for the cards, in the player's own number format. Also read by the upright phone's real-table blurb.
+/// Numbers for the cards, through NumberStyle's one rule per unit (UI rethink package 5: an angle one decimal, a speed
+/// two decimals under 10 m/s, a tip offset in mm to one decimal). Also read by the upright phone's real-table blurb.
 enum EightBallFormat {
-    static func decimal(_ x: Double, _ places: Int) -> String {
-        String(format: "%.\(places)f", locale: AppLocale.numbers, x)
-    }
+    /// `x` with `places` decimals in the game's number language (NumberStyle.decimal).
+    static func decimal(_ x: Double, _ places: Int) -> String { NumberStyle.decimal(x, places: places) }
 
-    static func degrees(_ x: Double) -> String { String(localized: "\(decimal(x, 1))°") }
-    static func speed(_ x: Double) -> String { String(localized: "\(decimal(x, 1)) m/s") }
+    static func degrees(_ x: Double) -> String { NumberStyle.angle(degrees: x).text }
+    static func speed(_ x: Double) -> String { NumberStyle.speed(metresPerSecond: x).text }
 
     /// The cue angle as words: level, or the angle above level (shared with the cue-angle menu).
     static func cueAngle(_ degrees: Double) -> String { CueAngleMenu.words(degrees: degrees) }
 
-    /// Tip offsets in millimetres, "centre" when both are zero.
+    /// Tip offsets in millimetres to one decimal (NumberStyle.tipOffset's precision), "centre" when both round to zero.
     static func tip(up: Double, side: Double) -> String {
         var parts: [String] = []
-        let u = (up * 1000).rounded(), s = (side * 1000).rounded()
-        if u > 0 { parts.append(String(localized: "\(decimal(u, 0)) mm above")) }
-        if u < 0 { parts.append(String(localized: "\(decimal(-u, 0)) mm below")) }
-        if s > 0 { parts.append(String(localized: "\(decimal(s, 0)) mm right")) }
-        if s < 0 { parts.append(String(localized: "\(decimal(-s, 0)) mm left")) }
+        let u = NumberStyle.decimal(abs(up) * 1000, places: 1), s = NumberStyle.decimal(abs(side) * 1000, places: 1)
+        let zero = NumberStyle.decimal(0, places: 1)
+        if u != zero { parts.append(up > 0 ? String(localized: "\(u) mm above") : String(localized: "\(u) mm below")) }
+        if s != zero { parts.append(side > 0 ? String(localized: "\(s) mm right") : String(localized: "\(s) mm left")) }
         return parts.isEmpty ? String(localized: "Centre") : parts.formatted(.list(type: .and).locale(AppLocale.numbers))
     }
 }
@@ -222,10 +217,12 @@ enum EightBallWords {
     static func clothSentence(_ n: RealTableNumbers) -> String {
         let std = PlaySurface.cloth.parameters
         let d = EightBallFormat.decimal
+        // Friction and resistance by NumberStyle's coefficient rule (two or three significant figures), as the card.
+        func c(_ x: Double) -> String { NumberStyle.coefficient(x).number }
         let pace = d(RailKeep.pace, 0)
         let keeps = RailKeep.percent(parameters: n.surface.parameters)
         let keepsStd = RailKeep.percent(parameters: std)
-        return String(localized: "Cloth: \(n.surface.title). Sliding friction \(d(n.slidingFriction, 2)), standard \(d(std.slidingFriction, 2)). Rolling resistance \(d(n.rollingResistance, 3)), standard \(d(std.rollingResistance, 3)). A ball rolling straight into a rail at \(pace) metres per second keeps \(keeps) percent of its speed, standard \(keepsStd) percent.")
+        return String(localized: "Cloth: \(n.surface.title). Sliding friction \(c(n.slidingFriction)), standard \(c(std.slidingFriction)). Rolling resistance \(c(n.rollingResistance)), standard \(c(std.rollingResistance)). A ball rolling straight into a rail at \(pace) metres per second keeps \(keeps) percent of its speed, standard \(keepsStd) percent.")
     }
 }
 
@@ -238,27 +235,29 @@ struct EightBallList: View {
     @Environment(\.inlinePages) private var inlinePages
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if EightBallSituations.all.isEmpty {
-                    ContentUnavailableView {
-                        Label("No situations yet", systemImage: "8.circle")
-                    } description: {
-                        Text(String(localized: "The tables are still being set up. They will show here when they're ready."))
-                    }
-                } else {
-                    list
+        // UI rethink package 5: the kit's sheet page and list rows, as the trick shots and lessons lists. Done closes
+        // the list, as Close did.
+        SheetPage(title: String(localized: "Behind the 8-Ball"), onDone: { mode.listOpen = false }) {
+            if EightBallSituations.all.isEmpty {
+                ContentUnavailableView {
+                    Label("No situations yet", systemImage: "8.circle")
+                } description: {
+                    Text(String(localized: "The tables are still being set up. They will show here when they're ready."))
                 }
+            } else {
+                list
             }
-            .navigationTitle(String(localized: "Behind the 8-Ball"))
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Close") { mode.listOpen = false } }
+        } footer: {
+            if !EightBallSituations.all.isEmpty {
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                    Text(String(localized: "Make it as called for 5, plus up to 5 for difficulty and up to 5 for style. A legal miss earns 1. A foul earns nothing. Each retry costs 1."))
+                    Text(String(localized: "Bronze for a make, silver at 10, gold at 13."))
+                    Text(String(localized: "Why the name? In eight-ball, hitting the 8 first is a foul. In an older pool game, sitting behind the 8 was bad luck."))
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .tint(palette.accent)
         #if os(macOS)
         // A sheet's own minimum size; as a page of the Mac notebook it takes the panel's size (0.7.5: the minimum
         // pushed the list past the panel's edge). Nil sizes rather than an if, so the view keeps its identity.
@@ -267,69 +266,43 @@ struct EightBallList: View {
     }
 
     private var list: some View {
-        List {
-            Section {
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
+            // The one sentence, then the running total in paper (a counter is paper, never a physics colour).
+            Text(String(localized: "You're hooked. Call your ball and pocket, then get out."))
+                .font(Theme.body)
+                .foregroundStyle(palette.paper2)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(String(localized: "Your total: \(mode.runningTotal)"))
+                .font(Theme.label.monospacedDigit())
+                .foregroundStyle(palette.paper)
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
                 ForEach(EightBallSituations.all) { s in
                     Button { mode.begin(s) } label: { row(s) }
+                        .buttonStyle(.plain)
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel(spoken(s))
                         .accessibilityHint(String(localized: "Sets the table up"))
                 }
-            } header: {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "You're hooked. Call your ball and pocket, then get out."))
-                        .textCase(nil)
-                    Text(String(localized: "Your total: \(mode.runningTotal)"))
-                        .font(Theme.label)
-                        .foregroundStyle(palette.accent)
-                        .textCase(nil)
-                }
-            } footer: {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "Make it as called for 5, plus up to 5 for difficulty and up to 5 for style. A legal miss earns 1. A foul earns nothing. Each retry costs 1."))
-                    Text(String(localized: "Bronze for a make, silver at 10, gold at 13."))
-                    Text(String(localized: "Why the name? In eight-ball, hitting the 8 first is a foul. In an older pool game, sitting behind the 8 was bad luck."))
-                }
             }
         }
     }
 
+    /// The kit's list row: the number (or the medal, in pocket gold), the title and story, the five dots of its hardest
+    /// way out with the best score, the cloth and the bridge, and the start layout drawn small.
     private func row(_ s: EightBallSituation) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 14) {
-            ZStack {
-                if let m = mode.medal(s) {
-                    Image(systemName: m.symbol).foregroundStyle(m.tint(palette))
-                } else {
-                    Text("\(s.number)").font(Theme.equation).foregroundStyle(palette.accent)
-                }
-            }
-            .font(.title3)
-            .frame(minWidth: 28)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(s.title).font(Theme.heading).foregroundStyle(.primary)
-                Text(s.story)
-                    .font(Theme.body)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(details(s))
-                    .font(Theme.label)
-                    .foregroundStyle(palette.paper2)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.vertical, 6)
-        .contentShape(Rectangle())
+        let leading: ListRow<DifficultyDots, ModeStartThumb>.Leading = mode.medal(s) != nil ? .medal : .number(s.number)
+        return ListRow(leading: leading, title: s.title, line: s.story, best: details(s),
+                       difficulty: { DifficultyDots(level: ModeDifficulty.dots(rating: s.topRating)) },
+                       picture: { ModeStartThumb(layout: s.setup) })
     }
 
-    /// "Best 9 · Up to 5 · Tournament cloth · Bridge"
-    private func details(_ s: EightBallSituation) -> String {
+    /// "Best 9 · Tournament cloth · Bridge" (the difficulty is the dots), or nil when there is nothing to add.
+    private func details(_ s: EightBallSituation) -> String? {
         var parts: [String] = []
         if let b = mode.best(s) { parts.append(String(localized: "Best \(b)")) }
-        parts.append(String(localized: "Rated up to \(s.topRating)"))
         if s.surface != .cloth { parts.append(s.surface.title) }
         if s.usesBridge { parts.append(String(localized: "Bridge")) }
-        return parts.joined(separator: " · ")
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
     private func spoken(_ s: EightBallSituation) -> String {
@@ -349,9 +322,9 @@ struct EightBallCard: View {
     let model: ShowpieceModel
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var typeSize
     /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
-    /// card, heading and main button only, so the table keeps its height.
+    /// card, heading and main button only, so the table keeps its height. The kit's ModeCard slims itself on the same
+    /// flag; this card picks the one action it keeps.
     @Environment(\.lensReplayCompact) private var compact
 
     private var mode: EightBallMode { model.eightBallMode }
@@ -361,275 +334,185 @@ struct EightBallCard: View {
         // the one thing to read; it returns as soon as they are done. While a what-if is open on the try (0.7.5,
         // WhatIfFork.isShowing) its card is the one result card: this one steps aside and comes back when it closes.
         if let s = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
-            VStack(alignment: .leading, spacing: 8) {
+            Group {
                 if compact { slim(s) } else { content(s) }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
-            .tint(palette.accent)
-            .animation(reduceMotion ? nil : .snappy, value: mode.phase)
-            .animation(reduceMotion ? nil : .snappy, value: mode.showingRealTable)
+            .animation(reduceMotion ? nil : Theme.Motion.standard, value: mode.phase)
+            .animation(reduceMotion ? nil : Theme.Motion.standard, value: mode.showingRealTable)
             // The medal's sound and its buzz are played together by SoundBoard (EightBallTableLayer, beside the glow),
-            // so the card no longer adds a haptic of its own on top.
+            // so the card adds no haptic of its own on top.
             .transition(.opacity)
         }
     }
 
+    /// The situation's name: "3. Hooked behind the 8".
+    private func name(_ s: EightBallSituation) -> String { String(localized: "\(s.number). \(s.title)") }
+
+    /// The try in the status line ("Try 2 of 3", or "Practice"): the next try's by default.
+    private func status(_ tryNumber: Int? = nil) -> [KitStatusItem] {
+        [KitStatusItem(EightBallWords.tryLabel(tryNumber ?? mode.nextTry), figure: "")]
+    }
+
     @ViewBuilder
     private func content(_ s: EightBallSituation) -> some View {
+        let dots = ModeDifficulty.dots(rating: s.topRating)
         switch mode.phase {
         case .looking:
-            header(s)
-            if mode.isAtStart {
-                line(s.story)
-                if let extra = situationNote(s) { note(extra) }
-            } else {
-                line(String(localized: "That shot had no call, so it doesn't count. Make your call first."))
-            }
-            buttons {
-                watchMenu(s)
-                if mode.call != nil {
-                    styled(Button { mode.aimWithCall() } label: {
-                        Label("Same call", systemImage: "target").font(.headline).lineLimit(1)
-                            .frame(minHeight: Self.buttonHeight)
-                    }, prominent: false)
-                    .accessibilityHint(String(localized: "Opens the aiming controls with the call you made"))
-                }
-                callButton(prominent: true)
-                listButton
-            }
+            let goal = mode.isAtStart
+                ? ([s.story] + (EightBallWords.situationNote(mode, s).map { [$0] } ?? [])).joined(separator: " ")
+                : String(localized: "That shot had no call, so it doesn't count. Make your call first.")
+            let same = mode.call == nil ? nil
+                : KitAction(String(localized: "Same call"), systemImage: "target") { mode.aimWithCall() }
+            ModeCard(name: name(s), difficulty: dots, goal: goal, status: status(),
+                     primary: callAction, secondary: same, more: watchActions(s) + [listAction])
+                .modeShortcut(callAction, .defaultAction)
         case .calling:
-            header(s)
-            line(EightBallWords.callPrompt(mode, s))
-            if let n = mode.callNote { note(n, warning: true) }
-            CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
-            buttons {
-                if mode.pendingBall != nil { CallPocketMenu(picked: nil) { mode.pick(pocket: $0) } }
-                CallSafetyButton { mode.callSafety() }
-                Button { mode.cancelCalling() } label: {
-                    Label("Back", systemImage: "xmark").labelStyle(.iconOnly)
-                        .frame(minWidth: 30, minHeight: Self.buttonHeight)
+            // Your call: the balls you may call as chips, then the six pockets once a ball is picked (picking the
+            // pocket makes the call); Safety beside it, Back under More. The table's taps are the quick route.
+            ModeCard(name: name(s), difficulty: dots, goal: EightBallWords.callPrompt(mode, s), status: status(),
+                     tilesTitle: String(localized: "Your call", comment: "Section label over the ball and pocket chips while calling a shot."),
+                     primary: nil,
+                     secondary: KitAction(String(localized: "Safety"), systemImage: "shield") { mode.callSafety() },
+                     more: [KitAction(String(localized: "Back"), systemImage: "xmark") { mode.cancelCalling() }]) {
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                    if let n = mode.callNote {
+                        Text(verbatim: n)
+                            .font(Theme.label)
+                            .foregroundStyle(palette.warning)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    CallBallChips(balls: mode.callableBalls, picked: mode.pendingBall) { mode.pick(ball: $0) }
+                    if mode.pendingBall != nil {
+                        CallPocketChips(picked: nil) { mode.pick(pocket: $0) }
+                    }
                 }
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-                .accessibilityLabel(String(localized: "Back"))
             }
         case .watching:
-            header(s)
-            line(String(localized: "Watching a way out. Your style here is now capped at 2."))
-            buttons {
-                styled(Button { mode.skipHint() } label: {
-                    Label("Skip", systemImage: "forward.end.fill").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: false)
-                .accessibilityHint(String(localized: "Jumps to the end of the escape"))
-            }
+            ModeCard(name: name(s), difficulty: dots,
+                     goal: String(localized: "Watching a way out. Your style here is now capped at 2."),
+                     status: status(),
+                     primary: nil,
+                     secondary: KitAction(String(localized: "Skip"), systemImage: "forward.end") { mode.skipHint() })
         case .aiming:
-            header(s)
-            line(callLine)
-            if s.usesBridge {
-                note(String(localized: "Too far to reach: the bridge is legal, and touching a ball with it is a foul."))
-            }
-            // No cue-angle menu here (0.7.5): the shot panel's own (CueAngleMenu, ShotPanel) is the one control, so the
-            // card no longer shows a second copy of it beside the panel.
-            buttons {
-                styled(Button { mode.startCalling() } label: {
-                    Label("Change call", systemImage: "hand.tap").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: false)
-                watchMenu(s)
-            }
+            // Lining up: the aiming panel's Shoot is the screen's one primary. No cue-angle menu here (0.7.5): the
+            // shot panel's own is the one control.
+            ModeCard(name: name(s), difficulty: dots, goal: aimingLine(s), status: status(), primary: nil,
+                     secondary: KitAction(String(localized: "Change call"), systemImage: "hand.tap") { mode.startCalling() },
+                     more: watchActions(s))
         case .playing:
-            header(s)
-            line(callLine)
+            ModeCard(name: name(s), difficulty: dots, goal: EightBallWords.callLine(mode), status: status(), primary: nil)
         case .scoring:
             // The judge is working on a background task; the table stays live and the card says so.
-            header(s)
-            line(callLine)
-            HStack(spacing: 8) {
-                ProgressView().controlSize(.small)
-                Text("Scoring…").font(.subheadline).foregroundStyle(.secondary)
+            ModeCard(name: name(s), difficulty: dots, goal: EightBallWords.callLine(mode), status: status(),
+                     tilesTitle: String(localized: "Scoring…"), primary: nil) {
+                ProgressView()
+                    .controlSize(.small)
+                    .accessibilityLabel(String(localized: "Scoring…"))
             }
-            .accessibilityElement(children: .combine)
         case .scored(let v):
-            if mode.showingRealTable {
-                realTable(s, verdict: v)
+            if mode.showingRealTable, let e = mode.escapeForCard(v) {
+                realTable(s, e, v)
             } else {
                 scorecard(s, v)
             }
-            scoredButtons(s, v)
         case .off:
             EmptyView()
         }
     }
 
-    /// The slim card (0.7.5, lensReplayCompact): the situation's heading and the one button that moves it on, so the
-    /// player's Lens replay on a phone held upright keeps the table its height. After a scored try, Next when it went
-    /// as called and Try again otherwise; the heading alone in any other phase.
-    @ViewBuilder
-    private func slim(_ s: EightBallSituation) -> some View {
-        // A scored try's replay is headed by that try's number, as the scorecard it replaces was (0.7.6, #41), not the
-        // next try's.
-        if case .scored(let v) = mode.phase { header(s, tryNumber: v.tryNumber) } else { header(s) }
-        if case .scored(let v) = mode.phase {
-            buttons {
-                if v.madeAsCalled { nextButton } else { tryAgainButton(prominent: true) }
-            }
+    /// The call, and the bridge's rule when the ball is out of reach.
+    private func aimingLine(_ s: EightBallSituation) -> String {
+        var line = EightBallWords.callLine(mode)
+        if s.usesBridge {
+            line += " " + String(localized: "Too far to reach: the bridge is legal, and touching a ball with it is a foul.")
         }
+        return line
     }
 
-    // MARK: Calling
-
-    /// "You called the 3 in the foot-left corner." or "You called Safety."
-    private var callLine: String { EightBallWords.callLine(mode) }
+    /// The slim card (0.7.5, lensReplayCompact): the situation's name and the one action that moves it on, so the
+    /// player's Lens replay on a phone held upright keeps the table its height. After a scored try, Next when it went
+    /// as called and Try again otherwise; the name alone in any other phase. A scored try's replay is named with that
+    /// try's number (0.7.6, #41), not the next try's: the slim card drops the status line, so the number joins the name.
+    @ViewBuilder
+    private func slim(_ s: EightBallSituation) -> some View {
+        let dots = ModeDifficulty.dots(rating: s.topRating)
+        if case .scored(let v) = mode.phase {
+            ModeCard(name: name(s) + " · " + EightBallWords.tryLabel(v.tryNumber), difficulty: dots,
+                     goal: EightBallWords.resultTitle(v), primary: v.madeAsCalled ? nextAction : tryAgainAction)
+        } else {
+            ModeCard(name: name(s), difficulty: dots, goal: s.story, primary: nil)
+        }
+    }
 
     // MARK: Scored
 
-    @ViewBuilder
+    /// The result card: the result in its colour (a foul or a lost game in warning, a make in pocket gold), the medal
+    /// or the try on its right, one line on what went wrong (or the judge's sentence when it adds to the title), the
+    /// scorecard's notes, the total with its sum behind More, then Next (after a make) or Try again, with the Physics
+    /// Lens replay, On a real table and the ways out under More.
     private func scorecard(_ s: EightBallSituation, _ v: EightBallVerdict) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Image(systemName: resultSymbol(v))
-                .foregroundStyle(v.medal?.tint(palette) ?? (v.legal ? palette.accent : palette.warning))
-                .accessibilityHidden(true)
-            Text(resultTitle(v)).font(Theme.heading).lineLimit(2)
-            Spacer(minLength: 0)
-            if let m = v.medal {
-                Text(String(localized: "\(m.title) medal")).font(Theme.label).foregroundStyle(m.tint(palette))
-            } else {
-                Text(tryLabel(v.tryNumber)).font(Theme.label).foregroundStyle(palette.paper2)
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
-        // One line under the title, never the same news twice: what went wrong, or else the judge's sentence when it
-        // adds something to the title (a plain "Made as called." does not).
-        if let words = EightBallWords.resultLine(v) { line(words) }
-        sum(v)
-        ForEach(Array(EightBallWords.scoreNotes(mode, v).enumerated()), id: \.offset) { _, n in note(n) }
-    }
-
-    private func resultSymbol(_ v: EightBallVerdict) -> String {
-        if v.gameLost { return "xmark.octagon.fill" }
-        if v.fouled { return "exclamationmark.triangle.fill" }
-        if v.madeAsCalled { return v.medal?.symbol ?? "checkmark.seal.fill" }
-        if v.call == .safety && v.safetyLeftHooked { return "shield.fill" }
-        return "arrow.uturn.backward.circle"
-    }
-
-    private func resultTitle(_ v: EightBallVerdict) -> String { EightBallWords.resultTitle(v) }
-
-    private func tryLabel(_ n: Int) -> String { EightBallWords.tryLabel(n) }
-
-    /// The sum in one row: made 5 + difficulty + style − retry = total (or escape 1, safety 3, foul 0).
-    private func sum(_ v: EightBallVerdict) -> some View {
-        let all = EightBallWords.sumTerms(v)
-        let last = all.count - 1
-        let totalFont = Font.title3.monospacedDigit().weight(.bold)
-        let termFont = Font.headline.monospacedDigit()
-        return HStack(alignment: .firstTextBaseline, spacing: 12) {
-            ForEach(Array(all.enumerated()), id: \.offset) { i, t in
-                VStack(spacing: 0) {
-                    Text(t.value)
-                        .font(i == last ? totalFont : termFont)
-                        .foregroundStyle(i == last ? palette.accent : palette.paper)
-                    Text(t.label).font(.caption2).foregroundStyle(.secondary)
-                }
-                .fixedSize()
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.vertical, 2)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(EightBallWords.spokenSum(v))
-    }
-
-    private func scoredButtons(_ s: EightBallSituation, _ v: EightBallVerdict) -> some View {
-        buttons {
-            Button { mode.lensReplay() } label: {
-                Label("Physics Lens replay", systemImage: "eye").labelStyle(.iconOnly)
-                    .frame(minWidth: 30, minHeight: Self.buttonHeight)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel(String(localized: "Physics Lens replay"))
-            .accessibilityHint(String(localized: "Replays your shot slowly and explains it"))
-            if mode.escapeForCard(v) != nil {
-                Button { mode.showingRealTable.toggle() } label: {
-                    Label(mode.showingRealTable ? "Your score" : "On a real table",
-                          systemImage: mode.showingRealTable ? "list.number" : "book.closed")
-                        .labelStyle(.iconOnly)
-                        .frame(minWidth: 30, minHeight: Self.buttonHeight)
-                }
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-                .accessibilityLabel(mode.showingRealTable ? String(localized: "Your score")
-                                                          : String(localized: "On a real table"))
-                .accessibilityHint(String(localized: "How to play this way out on a real table"))
-            }
-            watchMenu(s)
+        let tone: ResultTone = !v.legal || v.fouled ? .foul : (v.madeAsCalled ? .pocketed : .plain)
+        let corner = v.medal.map { String(localized: "\($0.title) medal") } ?? EightBallWords.tryLabel(v.tryNumber)
+        let lines = (EightBallWords.resultLine(v).map { [$0] } ?? []) + EightBallWords.scoreNotes(mode, v)
+        // The sum's terms but the total, each with its name ("difficulty +3"); the total is the score itself.
+        let terms = EightBallWords.sumTerms(v).dropLast().map { KitStatusItem($0.label, figure: $0.value) }
+        let realTable = mode.escapeForCard(v) == nil ? nil
+            : KitAction(String(localized: "On a real table"), systemImage: "book.closed") { mode.showingRealTable = true }
+        let more = [realTable].compactMap { $0 } + watchActions(s)
+        return Group {
             if v.madeAsCalled {
-                // An icon here, so the five buttons stay on one row and Next stays on screen.
-                Button { mode.tryAgain() } label: {
-                    Label("Try again", systemImage: "arrow.uturn.backward").labelStyle(.iconOnly)
-                        .frame(minWidth: 30, minHeight: Self.buttonHeight)
-                }
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-                .accessibilityLabel(String(localized: "Try again"))
-                .accessibilityHint(String(localized: "Puts the balls back, with the same call and your last settings"))
-                nextButton
+                ModeResultCard(verdict: EightBallWords.resultTitle(v), tone: tone, corner: corner, lines: lines,
+                               score: "\(v.total)", scoreBreakdown: Array(terms),
+                               tryAgain: tryAgainAction, next: nextAction, more: [lensAction] + more)
+                    .modeShortcut(nextAction, .defaultAction)
             } else {
-                tryAgainButton(prominent: true)
+                ModeResultCard(verdict: EightBallWords.resultTitle(v), tone: tone, corner: corner, lines: lines,
+                               score: "\(v.total)", scoreBreakdown: Array(terms),
+                               tryAgain: lensAction, next: tryAgainAction, more: more)
+                    .modeShortcut(tryAgainAction, .defaultAction)
             }
         }
-    }
-
-    private var nextButton: some View {
-        styled(Button { mode.next() } label: {
-            Label("Next", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: true)
-        .keyboardShortcut(.defaultAction)
+        .accessibilityHint(EightBallWords.spokenSum(v))
     }
 
     // MARK: On a real table
 
-    @ViewBuilder
-    private func realTable(_ s: EightBallSituation, verdict v: EightBallVerdict) -> some View {
-        if let e = mode.escapeForCard(v) {
-            let c = e.card, n = c.numbers
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Image(systemName: "book.closed").foregroundStyle(palette.accent).accessibilityHidden(true)
-                Text(String(localized: "On a real table: \(e.title)")).font(Theme.heading).lineLimit(2)
-                Spacer(minLength: 0)
-                Text(String(localized: "Rated \(e.rating)")).font(Theme.label).foregroundStyle(palette.paper2)
+    /// "On a real table" in place of the score: where to aim, how to hold the cue, how hard, the tip, the commonest
+    /// miss, each in plain words with the solver's figure beside it, and the cloth's numbers next to the standard
+    /// cloth's when the situation is set on another cloth. Your score turns the card back.
+    private func realTable(_ s: EightBallSituation, _ e: EightBallEscape, _ v: EightBallVerdict) -> some View {
+        let c = e.card, n = c.numbers
+        let back = KitAction(String(localized: "Your score"), systemImage: "list.number") { mode.showingRealTable = false }
+        return ModeResultCard(verdict: String(localized: "On a real table: \(e.title)"), tone: .plain,
+                              corner: String(localized: "Rated \(e.rating)"),
+                              tryAgain: back, next: v.madeAsCalled ? nextAction : tryAgainAction) {
+            VStack(alignment: .leading, spacing: Theme.Space.sm) {
+                realRow(String(localized: "Aim"), c.aim, EightBallFormat.degrees(n.aimDegrees))
+                realRow(String(localized: "Cue"), c.cue, EightBallFormat.cueAngle(n.elevationDegrees))
+                realRow(String(localized: "Speed"), c.speed, EightBallFormat.speed(n.speed))
+                realRow(String(localized: "Tip"), nil, EightBallFormat.tip(up: n.tipUp, side: n.tipSide))
+                realRow(String(localized: "Common miss"), c.commonMiss, nil)
+                if n.surface != .cloth { clothRow(n) }
             }
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isHeader)
-            realRow(String(localized: "Aim"), c.aim, EightBallFormat.degrees(n.aimDegrees))
-            realRow(String(localized: "Cue"), c.cue, EightBallFormat.cueAngle(n.elevationDegrees))
-            realRow(String(localized: "Speed"), c.speed, EightBallFormat.speed(n.speed))
-            realRow(String(localized: "Tip"), nil, EightBallFormat.tip(up: n.tipUp, side: n.tipSide))
-            realRow(String(localized: "Common miss"), c.commonMiss, nil)
-            if n.surface != .cloth { clothRow(n) }
         }
     }
 
-    /// One row: a small label, the plain words, and the solver's number beside them.
+    /// One row: a section-style label, the plain words, and the solver's figure beside the label (paper, its unit
+    /// grey).
     private func realRow(_ label: String, _ words: String?, _ number: String?) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Theme.Space.figureToLabel) {
             HStack(alignment: .firstTextBaseline) {
-                Text(label).font(Theme.label).foregroundStyle(palette.paper2)
-                Spacer(minLength: 8)
+                Text(verbatim: label).font(Theme.label).foregroundStyle(palette.paper2)
+                Spacer(minLength: Theme.Space.xs)
                 if let number, words != nil {
-                    Text(number).font(Theme.number).foregroundStyle(palette.accent)
+                    KitFigure(text: number, size: .inline)
                 }
             }
             if let words {
-                Text(words).font(Theme.body).foregroundStyle(palette.paper.opacity(0.9))
+                Text(verbatim: words).font(Theme.body).foregroundStyle(palette.paper)
                     .fixedSize(horizontal: false, vertical: true)
             } else if let number {
-                Text(number).font(Theme.body).foregroundStyle(palette.paper.opacity(0.9))
+                Text(verbatim: number).font(Theme.body).foregroundStyle(palette.paper)
             }
         }
         .accessibilityElement(children: .combine)
@@ -640,35 +523,35 @@ struct EightBallCard: View {
     /// not as the raw restitution, which the tuned rail no longer makes equal to what a ball gets back.
     private func clothRow(_ n: RealTableNumbers) -> some View {
         let std = PlaySurface.cloth.parameters
-        let d = EightBallFormat.decimal
-        let pace = d(RailKeep.pace, 0)
+        let pace = EightBallFormat.decimal(RailKeep.pace, 0)
         let keeps = RailKeep.percent(parameters: n.surface.parameters)
         let keepsStd = RailKeep.percent(parameters: std)
-        return VStack(alignment: .leading, spacing: 2) {
+        func percent(_ p: Int) -> String {
+            // The player's own percent style (the sign's place and spacing differ by language).
+            (Double(p) / 100).formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0)))
+        }
+        return VStack(alignment: .leading, spacing: Theme.Space.xxs) {
             Text(String(localized: "Cloth: \(n.surface.title)")).font(Theme.label).foregroundStyle(palette.paper2)
-            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 12, verticalSpacing: 2) {
+            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: Theme.Space.sm, verticalSpacing: Theme.Space.xxs) {
                 GridRow {
-                    Text("")
-                    Text(n.surface.title).font(.caption2).foregroundStyle(.secondary)
-                    Text(String(localized: "Standard")).font(.caption2).foregroundStyle(.secondary)
+                    Text(verbatim: "")
+                    Text(verbatim: n.surface.title).font(Theme.caption).foregroundStyle(palette.paper2)
+                    Text(String(localized: "Standard")).font(Theme.caption).foregroundStyle(palette.paper2)
                 }
                 GridRow {
-                    Text(String(localized: "Sliding friction")).font(.caption)
-                    Text(d(n.slidingFriction, 2)).font(Theme.number)
-                    Text(d(std.slidingFriction, 2)).font(Theme.number).foregroundStyle(.secondary)
+                    Text(String(localized: "Sliding friction")).font(Theme.caption).foregroundStyle(palette.paper)
+                    KitFigure(NumberStyle.coefficient(n.slidingFriction), size: .inline)
+                    KitFigure(NumberStyle.coefficient(std.slidingFriction), size: .inline, color: palette.paper2)
                 }
                 GridRow {
-                    Text(String(localized: "Rolling resistance")).font(.caption)
-                    Text(d(n.rollingResistance, 3)).font(Theme.number)
-                    Text(d(std.rollingResistance, 3)).font(Theme.number).foregroundStyle(.secondary)
+                    Text(String(localized: "Rolling resistance")).font(Theme.caption).foregroundStyle(palette.paper)
+                    KitFigure(NumberStyle.coefficient(n.rollingResistance), size: .inline)
+                    KitFigure(NumberStyle.coefficient(std.rollingResistance), size: .inline, color: palette.paper2)
                 }
                 GridRow {
-                    Text(String(localized: "Rail keeps at \(pace) m/s")).font(.caption)
-                    // The player's own percent style (the sign's place and spacing differ by language).
-                    Text(verbatim: (Double(keeps) / 100).formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0))))
-                        .font(Theme.number)
-                    Text(verbatim: (Double(keepsStd) / 100).formatted(.percent.locale(AppLocale.numbers).precision(.fractionLength(0))))
-                        .font(Theme.number).foregroundStyle(.secondary)
+                    Text(String(localized: "Rail keeps at \(pace) m/s")).font(Theme.caption).foregroundStyle(palette.paper)
+                    KitFigure(text: percent(keeps), size: .inline)
+                    KitFigure(text: percent(keepsStd), size: .inline, color: palette.paper2)
                 }
             }
         }
@@ -676,120 +559,37 @@ struct EightBallCard: View {
         .accessibilityLabel(EightBallWords.clothSentence(n))
     }
 
-    // MARK: Pieces
+    // MARK: Actions
 
-    /// The situation's heading with a try label: the next try's by default, or a given try's (the scored try being
-    /// replayed in the slim card).
-    private func header(_ s: EightBallSituation, tryNumber: Int? = nil) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(String(localized: "\(s.number). \(s.title)")).font(Theme.heading).lineLimit(2)
-            Spacer(minLength: 0)
-            Text(tryLabel(tryNumber ?? mode.nextTry)).font(Theme.label).foregroundStyle(palette.paper2)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+    private var callAction: KitAction {
+        KitAction(String(localized: "Make your call"), systemImage: "hand.tap") { mode.startCalling() }
     }
 
-    /// The cloth and the bridge, when they matter: one small line under the story.
-    private func situationNote(_ s: EightBallSituation) -> String? { EightBallWords.situationNote(mode, s) }
-
-    private func line(_ text: String) -> some View {
-        Text(text)
-            .font(Theme.body)
-            .foregroundStyle(palette.paper.opacity(0.9))
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
+    private var tryAgainAction: KitAction {
+        KitAction(String(localized: "Try again"), systemImage: "arrow.uturn.backward") { mode.tryAgain() }
     }
 
-    private func note(_ text: String, warning: Bool = false) -> some View {
-        Text(text)
-            .font(Theme.label)
-            .foregroundStyle(warning ? palette.warning : palette.paper.opacity(0.75))
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
+    private var nextAction: KitAction {
+        KitAction(String(localized: "Next"), systemImage: "arrow.forward") { mode.next() }
     }
 
-    /// One row of buttons, right-aligned; a column when the text is too large for one row.
-    private func buttons<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        let row = content()
-        return Group {
-            if typeSize.isAccessibilitySize {
-                VStack(alignment: .trailing, spacing: 8) { row }.frame(maxWidth: .infinity, alignment: .trailing)
-            } else {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { Spacer(minLength: 0); row }
-                    WrappingRow { row }.frame(maxWidth: .infinity, alignment: .trailing)
-                }
+    private var lensAction: KitAction {
+        KitAction(String(localized: "Physics Lens replay"), systemImage: "eye") { mode.lensReplay() }
+    }
+
+    private var listAction: KitAction {
+        KitAction(String(localized: "All situations"), systemImage: "list.bullet") { mode.listOpen = true }
+    }
+
+    /// The hint: watch one of the authored ways out, each named with its rating. Before a make it caps style at 2,
+    /// which the card says once watching starts.
+    private func watchActions(_ s: EightBallSituation) -> [KitAction] {
+        s.escapes.map { e in
+            KitAction(String(localized: "\(e.title), rated \(e.rating)"), systemImage: "play", id: "watch-" + e.id) {
+                mode.watch(e)
             }
         }
-        .controlSize(.regular)
     }
-
-    private func callButton(prominent: Bool) -> some View {
-        styled(Button { mode.startCalling() } label: {
-            Label("Make your call", systemImage: "hand.tap").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint(String(localized: "Pick a ball, then a pocket, or call Safety"))
-    }
-
-    private func tryAgainButton(prominent: Bool) -> some View {
-        styled(Button { mode.tryAgain() } label: {
-            Label("Try again", systemImage: "arrow.uturn.backward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint(String(localized: "Puts the balls back, with the same call and your last settings"))
-    }
-
-    /// The hint: watch one of the authored ways out. Before a make it caps style at 2, and the menu says so.
-    @ViewBuilder
-    private func watchMenu(_ s: EightBallSituation) -> some View {
-        if !s.escapes.isEmpty {
-            Menu {
-                Section {
-                    ForEach(s.escapes) { e in
-                        Button(String(localized: "\(e.title), rated \(e.rating)")) { mode.watch(e) }
-                    }
-                } header: {
-                    Text(String(localized: "Watching caps your style here at 2."))
-                }
-            } label: {
-                Label("Watch a way out", systemImage: "play.fill").labelStyle(.iconOnly)
-                    .frame(minWidth: 30, minHeight: Self.buttonHeight)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel(String(localized: "Watch a way out"))
-            .accessibilityHint(String(localized: "Plays an escape. Your style here is then capped at 2."))
-        }
-    }
-
-    private var listButton: some View {
-        Button { mode.listOpen = true } label: {
-            Label("All situations", systemImage: "list.bullet").labelStyle(.iconOnly)
-                .frame(minWidth: 30, minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .accessibilityLabel(String(localized: "All situations"))
-    }
-
-    @ViewBuilder
-    private func styled(_ button: some View, prominent: Bool) -> some View {
-        if prominent {
-            // Dark text on the bright accent: white on cyan is too faint (as the Shoot button).
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
-        } else {
-            button.buttonStyle(.glass)
-        }
-    }
-
-    /// The glass button adds its own padding; this lands the buttons on 44 points or more on a touch screen.
-    #if os(iOS)
-    private static let buttonHeight: CGFloat = 30
-    #else
-    private static let buttonHeight: CGFloat = 0
-    #endif
 }
 
 // MARK: Over the table
@@ -828,7 +628,8 @@ struct EightBallTableLayer: View {
                 }
             }
             // A medal: a short glow around the edge of the screen. It only fades, so it is the same with Reduce Motion.
-            RoundedRectangle(cornerRadius: 48, style: .continuous)
+            // The screen's own corners (ContainerRelativeShape), not a card's: no corner number of its own.
+            ContainerRelativeShape()
                 .strokeBorder(palette.accent, lineWidth: 6)
                 .blur(radius: 10)
                 .opacity(glow)

@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the list is the kit's sheet
+//          page with the kit's list rows (number or tick, title and hook in paper and paper2, five difficulty dots, the
+//          answer's drawing); the card is the kit's mode card in every phase (name and dots, one sentence, "How
+//          forgiving" tiles while the shot is set up or lined up, the way on bottom right, the rest under More) and the
+//          kit-style result card once judged (Made it in pocket gold, Missed in warning, the judge's line and the
+//          retry's difference under it). The word tags for difficulty are gone. The slim form keeps its own rule, the
+//          idea above Your turn while the answer is explained (#64). The glow follows the screen's own corners.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -44,11 +51,11 @@
 //          TrickShotList - the list of the trick shots, in a sheet from the menu: number (or a tick once made), title,
 //            hook and difficulty, and beside them a small drawing of the answer's real path (above the text at
 //            accessibility text sizes); a shot that waits on new physics shows as "Coming next" and cannot be opened.
-//          TrickShotCard - one compact glass card at the bottom edge, above the controls (or at the top of the side
-//            column on iPad, Mac and landscape): the hook and Watch it / Your turn; the one idea while the answer
-//            replays in the Lens, with the maths behind a button; Made it or Missed with one line on what to change,
-//            Try again and Next shot, Watch yours in the Lens after a make, and Show the answer's path once the answer
-//            has been watched. One or two lines of text and one row of buttons.
+//          TrickShotCard - the kit's mode card, above the controls (or at the top of the side column on iPad, Mac and
+//            landscape): the shot's name and five dots, the hook and Your turn / Watch it with "How forgiving"; the one
+//            idea while the answer replays in the Lens, with the maths under More; Made it or Missed in the result card
+//            with one line on what to change, Next shot or Try again, and Watch yours in the Lens, See the contact and
+//            the answer's path under More. One sentence and one row of buttons.
 //          TrickPhoneBlurbs - the phone held upright only (ShowpieceView's dock): the card's words without the card, as
 //            blurbs (App/Phone/Blurb.swift). The shot's name and difficulty are the title row's, the main button is the
 //            strip's primary action (PhonePrimaryAction.trick, below), and the list, Watch again, Show the maths and
@@ -62,11 +69,12 @@
 //            labelled), and a short glow around the screen when a shot is made. It also hosts the list
 //            sheet, handles the launch flags (-trickList, -trick <id>, -trickPlay <id>), forwards the model's playback
 //            changes to TrickShotMode.update(), and opens or closes the shot panel when the mode asks.
-//          Standard controls throughout (Liquid Glass buttons, a List, SF Symbols), Dynamic Type (button rows fall back
-//          to two rows and the text wraps), VoiceOver labels, and Reduce Motion (the glow fades without movement; the
-//          card changes without animation).
+//          The kit throughout (SheetPage, ListRow, DifficultyDots, ModeCard, the result card of ModeFrameKit.swift),
+//          Dynamic Type (the kit's button row falls back to a column and the text wraps), VoiceOver labels, and Reduce
+//          Motion (the glow fades without movement; the card changes without animation).
 // SRP/DRY check: Pass - views only. Flow is TrickShotMode, data TrickShots; projection to the screen is AimProjector
-//          (as in GhostOverlay and AimOverlay); card styling is the shared glassCard. The goal marks are drawn once,
+//          (as in GhostOverlay and AimOverlay); the card, list row and sheet are the kit's (App/Kit), the difficulty
+//          mapping and forgiving tiles ModeFrameKit's, shared with every mode. The goal marks are drawn once,
 //          by GoalMarks here, for this layer and LessonTableLayer, with the ghost overlay's ring path
 //          (TablePathStroke.ring) rather than a third copy of it.
 import BreakdownLensModel
@@ -78,41 +86,32 @@ import SwiftUI
 
 struct TrickShotList: View {
     let mode: TrickShotMode
-    @Environment(\.palette) private var palette
-    @Environment(\.dynamicTypeSize) private var typeSize
     /// True when the list is a page of the notebook (iPad, Mac, the open Duo) rather than a sheet of its own.
     @Environment(\.inlinePages) private var inlinePages
     /// The answers' drawings, solved once per run when this list first appears.
     private var paths: TrickPathCache { TrickPathCache.shared }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    ForEach(TrickShots.all) { shot in
-                        Button { mode.begin(shot) } label: { row(shot) }
-                            .disabled(shot.pending)
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel(spoken(shot))
-                            .accessibilityHint(shot.pending ? "" : "Sets up the shot on the table")
-                    }
-                } footer: {
-                    Text("Watch each shot, see the physics behind it in the Lens, then make it yourself.")
+        // UI rethink package 5: the kit's sheet page (ground, serif title, Done top right) and the kit's list row, as
+        // the lessons and Behind the 8-Ball lists. Done closes the list, as Close did.
+        SheetPage(title: String(localized: "Trick shots"), onDone: { mode.listOpen = false }) {
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                ForEach(TrickShots.all) { shot in
+                    Button { mode.begin(shot) } label: { row(shot) }
+                        .buttonStyle(.plain)
+                        .disabled(shot.pending)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(spoken(shot))
+                        .accessibilityHint(shot.pending ? "" : String(localized: "Sets up the shot on the table"))
                 }
-                // 0.7.7 make-it-again: the player's own saved shots, "Your shots", after the authored ones.
-                OwnShotsSection(mode: mode)
             }
-            // The drawings are solved when the list is first opened, never at launch (TrickPathCache).
-            .onAppear { paths.start() }
-            .navigationTitle("Trick shots")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Close") { mode.listOpen = false } }
-            }
+            // 0.7.7 make-it-again: the player's own saved shots, "Your shots", after the authored ones.
+            OwnShotsSection(mode: mode)
+        } footer: {
+            Text("Watch each shot, see the physics behind it in the Lens, then make it yourself.")
         }
-        .tint(palette.accent)
+        // The drawings are solved when the list is first opened, never at launch (TrickPathCache).
+        .onAppear { paths.start() }
         #if os(macOS)
         // A sheet's own minimum size; as a page of the Mac notebook it takes the panel's size instead (0.7.5: the
         // minimum pushed the list past the panel's edge). One frame with nil sizes, not an if, so the view keeps its
@@ -121,68 +120,24 @@ struct TrickShotList: View {
         #endif
     }
 
-    /// The row: the text, and the answer's drawing beside it (above it, full width, at accessibility text sizes, where
-    /// the text needs the whole width). A shot whose drawing failed shows the text alone, as before 0.7.4.
-    @ViewBuilder
+    /// The kit's list row: the shot's place in the easiest-first order (a tick once made, no mark while it waits on
+    /// new physics), its title and hook in paper and paper2, its five difficulty dots, and the answer's drawing.
     private func row(_ shot: TrickShot) -> some View {
-        if typeSize.isAccessibilitySize {
-            VStack(alignment: .leading, spacing: 8) {
-                thumb(shot, fullWidth: true)
-                rowText(shot)
-            }
-        } else {
-            HStack(alignment: .center, spacing: 12) {
-                rowText(shot)
-                thumb(shot, fullWidth: false)
-            }
-        }
+        let leading: ListRow<DifficultyDots, AnyView>.Leading = mode.isDone(shot) ? .done
+            : (shot.pending ? .none : .number(TrickShots.listNumber(of: shot)))
+        return ListRow(leading: leading, title: shot.title,
+                       line: shot.pending ? String(localized: "Coming next. \(shot.hook)") : shot.hook,
+                       showsChevron: !shot.pending,
+                       difficulty: { DifficultyDots(level: ModeDifficulty.dots(shot.difficulty)) },
+                       picture: { thumb(shot) })
+            .opacity(shot.pending ? 0.6 : 1)
     }
 
-    /// The answer's drawing (TrickPathThumb), or the room for it while it is being solved, or nothing when it failed.
-    @ViewBuilder
-    private func thumb(_ shot: TrickShot, fullWidth: Bool) -> some View {
-        if let path = paths.paths[shot.id] {
-            if fullWidth {
-                TrickPathThumb(path: path).frame(maxWidth: .infinity)
-            } else {
-                TrickPathThumb(path: path).frame(width: 96, height: 48)
-            }
-        } else if !shot.pending, paths.isPending(shot.id) {
-            Color.clear
-                .aspectRatio(2, contentMode: .fit)
-                .frame(width: fullWidth ? nil : 96, height: fullWidth ? nil : 48)
-                .frame(maxWidth: fullWidth ? .infinity : nil)
-                .accessibilityHidden(true)
-        }
-    }
-
-    private func rowText(_ shot: TrickShot) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 14) {
-            ZStack {
-                if mode.isDone(shot) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.accent)
-                } else if shot.pending {
-                    Image(systemName: "lock.fill").foregroundStyle(.secondary)
-                } else {
-                    Text("\(TrickShots.listNumber(of: shot))").font(Theme.equation).foregroundStyle(palette.accent)
-                }
-            }
-            .font(.title3)
-            .frame(minWidth: 28)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(shot.title).font(Theme.heading).foregroundStyle(shot.pending ? .secondary : .primary)
-                Text(shot.pending ? String(localized: "Coming next. \(shot.hook)") : shot.hook)
-                    .font(Theme.body)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(shot.difficulty.label)
-                    .font(Theme.label)
-                    .foregroundStyle(palette.paper2)
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.vertical, 6)
-        .contentShape(Rectangle())
+    /// The answer's drawing (TrickPathThumb), or an empty table-sized room while it is being solved or when it failed,
+    /// so the rows keep one shape.
+    private func thumb(_ shot: TrickShot) -> AnyView {
+        if let path = paths.paths[shot.id] { return AnyView(TrickPathThumb(path: path)) }
+        return AnyView(Color.clear)
     }
 
     private func spoken(_ shot: TrickShot) -> String {
@@ -196,11 +151,10 @@ struct TrickShotList: View {
 
 struct TrickShotCard: View {
     let model: ShowpieceModel
-    @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var typeSize
     /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
-    /// card, heading and main button only, so the table keeps its height.
+    /// card, heading and main button only, so the table keeps its height. The kit's ModeCard reads the same flag and
+    /// slims itself to its name and primary; this card picks what that primary is for each phase.
     @Environment(\.lensReplayCompact) private var compact
 
     private var mode: TrickShotMode { model.trickMode }
@@ -214,264 +168,185 @@ struct TrickShotCard: View {
         if DailyMode.showing(model) {
             DailyCard(model: model)
         } else if let shot = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
-            VStack(alignment: .leading, spacing: 8) {
+            Group {
                 if compact { slim(shot) } else { content(shot) }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
-            .tint(palette.accent)
-            .animation(reduceMotion ? nil : .snappy, value: mode.phase)
+            .animation(reduceMotion ? nil : Theme.Motion.standard, value: mode.phase)
             // The make's success haptic is TrickTableLayer's (with the glow and the sound), so it fires in every layout.
             .transition(.opacity)
         }
     }
 
+    /// Every phase in the kit's mode card (or, once judged, the result card): the shot's name and five dots, one
+    /// sentence, "How forgiving" while the shot is being set up, and the button row with the way on at the bottom
+    /// right.
     @ViewBuilder
     private func content(_ shot: TrickShot) -> some View {
+        let dots = ModeDifficulty.dots(shot.difficulty)
         switch mode.phase {
         case .ready:
-            header(shot)
-            line(shot.hook)
-            buttons {
-                watchButton(prominent: false)
-                turnButton(prominent: true)
-                listButton
+            // Watching first is the shot's path, but nothing is gated: Your turn is the way on, Watch it beside it.
+            if Self.showsForgiving(shot) {
+                ModeCard(name: shot.title, difficulty: dots, goal: shot.hook,
+                         primary: turnAction, secondary: watchAction(again: false), more: [listAction]) {
+                    ForgivingTiles(window: shot.window, isBreak: shot.isBreak)
+                }
+                .modeShortcut(turnAction, .defaultAction)
+            } else {
+                ModeCard(name: shot.title, difficulty: dots, goal: shot.hook,
+                         primary: turnAction, secondary: watchAction(again: false), more: [listAction])
+                    .modeShortcut(turnAction, .defaultAction)
             }
         case .watching:
-            header(shot)
-            line(String(localized: "Watch the answer. \(shot.goalLine)"))
-            buttons { turnButton(prominent: false) }
+            ModeCard(name: shot.title, difficulty: dots, goal: String(localized: "Watch the answer. \(shot.goalLine)"),
+                     primary: turnAction)
         case .explaining:
-            HStack(spacing: 6) {
-                Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
-                Text("The idea").font(Theme.label).foregroundStyle(palette.paper)
-            }
-            line(shot.idea)
+            // The one idea while the answer replays in the Lens; the worked equation under "The maths" when asked for.
             if mode.showMaths, let maths = shot.maths {
-                Text(maths)
-                    .font(Theme.equation)
-                    .foregroundStyle(palette.paper)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel("The maths: \(shot.mathsSpoken ?? maths)")
-            }
-            buttons {
-                if shot.maths != nil {
-                    Button { mode.showMaths.toggle() } label: {
-                        Label(mode.showMaths ? "Hide the maths" : "Show the maths", systemImage: "function")
-                            .labelStyle(.iconOnly).frame(minWidth: 30, minHeight: Self.buttonHeight)
-                    }
-                    .buttonStyle(.glass).buttonBorderShape(.circle)
-                    .accessibilityLabel(mode.showMaths ? "Hide the maths" : "Show the maths")
+                ModeCard(name: shot.title, difficulty: dots, goal: shot.idea,
+                         tilesTitle: String(localized: "The maths"),
+                         primary: turnAction, secondary: watchAction(again: true), more: mathsActions(shot)) {
+                    ModeMaths(maths: maths, spoken: shot.mathsSpoken)
                 }
-                watchButton(prominent: false, again: true)
-                turnButton(prominent: true)
+            } else {
+                ModeCard(name: shot.title, difficulty: dots, goal: shot.idea,
+                         primary: turnAction, secondary: watchAction(again: true), more: mathsActions(shot))
             }
         case .aiming:
-            header(shot)
-            line(shot.usesBridge ? String(localized: "\(shot.goalLine) The ball is out of reach, so the bridge holds the cue.")
-                                 : shot.goalLine)
-            buttons {
-                answerPathButton
-                watchButton(prominent: false)
-                listButton
+            // Lining up: the aiming panel's Shoot is the screen's one primary, so this card has none.
+            if Self.showsForgiving(shot) {
+                ModeCard(name: shot.title, difficulty: dots, goal: aimingLine(shot),
+                         primary: nil, secondary: watchAction(again: false),
+                         more: [answerPathAction, listAction].compactMap { $0 }) {
+                    ForgivingTiles(window: shot.window, isBreak: shot.isBreak)
+                }
+            } else {
+                ModeCard(name: shot.title, difficulty: dots, goal: aimingLine(shot),
+                         primary: nil, secondary: watchAction(again: false),
+                         more: [answerPathAction, listAction].compactMap { $0 })
             }
         case .judged(let verdict):
-            HStack(spacing: 8) {
-                Image(systemName: verdict.made ? "checkmark.seal.fill" : "arrow.uturn.backward.circle")
-                    .foregroundStyle(verdict.made ? palette.accent : palette.warning)
-                    .accessibilityHidden(true)
-                Text(verdict.made ? "Made it!" : "Missed").font(Theme.heading)
-            }
-            .accessibilityElement(children: .combine)
-            line(verdict.line)
-            // After a retry, the one difference between the two tries, here on the one result card (the general
-            // comparison card steps aside while this card is up).
-            if let c = model.retryComparison { line(RetryWords.sentence(c)) }
-            buttons {
-                // Back to the moment of contact, with the last try's trail beside it (shown when a ball was touched).
-                ContactButton(model: model)
-                // The answer's path beside this try, once the answer has been watched (0.7.4).
-                answerPathButton
-                if verdict.made {
-                    // The player's own make, slowly in the Lens, holding the moments the shot is about (0.7.4).
-                    styled(Button { mode.watchYours() } label: {
-                        Label("Watch yours in the Lens", systemImage: "eye").font(.headline).lineLimit(1)
-                            .frame(minHeight: Self.buttonHeight)
-                    }, prominent: false)
-                    .accessibilityHint("Replays your stroke slowly in the Lens, stopping on the moments that made it")
-                    tryAgainButton(prominent: false)
-                    nextShotButton
-                } else {
-                    watchButton(prominent: false)
-                    tryAgainButton(prominent: true)
-                }
-            }
+            judged(shot, verdict)
         case .offScript:
-            header(shot)
-            line(String(localized: "That shot started from where the balls stopped. Try again puts them back for the trick."))
-            buttons { tryAgainButton(prominent: true); listButton }
+            ModeCard(name: shot.title, difficulty: dots,
+                     goal: String(localized: "That shot started from where the balls stopped. Try again puts them back for the trick."),
+                     primary: tryAgainAction, more: [listAction])
+                .modeShortcut(tryAgainAction, .defaultAction)
         case .off:
             EmptyView()
         }
     }
 
-    /// The slim card (0.7.5, lensReplayCompact): the shot's heading and the one button that moves the shot on, so a
+    /// Made it or Missed, in the result card: the judge's one line on what to change, the retry's one difference
+    /// (RetryWords; the general comparison card steps aside while this card is up), then after a make Next shot with
+    /// Try again beside it, after a miss Try again with Watch it beside it; See the contact, Watch yours in the Lens and
+    /// the answer's path under More.
+    @ViewBuilder
+    private func judged(_ shot: TrickShot, _ verdict: TrickVerdict) -> some View {
+        let lines = [verdict.line] + (model.retryComparison.map { [RetryWords.sentence($0)] } ?? [])
+        let contact = ContactButton.kitAction(model: model, reduceMotion: reduceMotion)
+        if verdict.made {
+            // The player's own make, slowly in the Lens, holding the moments the shot is about (0.7.4).
+            let watchYours = KitAction(String(localized: "Watch yours in the Lens"), systemImage: "eye") {
+                mode.watchYours()
+            }
+            ModeResultCard(verdict: String(localized: "Made it!"), tone: .passed, corner: shot.title, lines: lines,
+                           tryAgain: tryAgainAction, next: nextAction,
+                           more: [watchYours, contact, answerPathAction].compactMap { $0 })
+                .modeShortcut(nextAction, .defaultAction)
+        } else {
+            ModeResultCard(verdict: String(localized: "Missed"), tone: .foul, corner: shot.title, lines: lines,
+                           tryAgain: watchAction(again: false), next: tryAgainAction,
+                           more: [contact, answerPathAction].compactMap { $0 })
+                .modeShortcut(tryAgainAction, .defaultAction)
+        }
+    }
+
+    /// The slim card (0.7.5, lensReplayCompact): the shot's name and the one action that moves the shot on, so a
     /// guided Lens replay on a phone held upright keeps the table its height. Your turn while the answer is set up,
-    /// played or explained; after a try, Next shot for a make and Try again for a miss; nothing more while aiming.
-    /// While the answer is explained (0.7.6, #64) the shot's one idea sits beside Your turn, at most two lines, so the
-    /// card carries what the replay is for and no empty glass; VoiceOver reads the whole idea.
+    /// played or explained; after a try, Next shot for a make and Try again for a miss; the name alone while aiming.
+    /// While the answer is explained (0.7.6, #64) the shot's one idea stays above Your turn, so the card carries what
+    /// the replay is for: the card's own slimming is turned off there and only the idea and Your turn are passed.
     @ViewBuilder
     private func slim(_ shot: TrickShot) -> some View {
-        header(shot)
+        let dots = ModeDifficulty.dots(shot.difficulty)
         switch mode.phase {
         case .explaining:
-            if typeSize.isAccessibilitySize {
-                slimIdea(shot)
-                buttons { turnButton(prominent: true) }
-            } else {
-                HStack(alignment: .center, spacing: 10) {
-                    slimIdea(shot)
-                    turnButton(prominent: true).fixedSize().controlSize(.regular)
-                }
-            }
+            ModeCard(name: shot.title, difficulty: dots, goal: shot.idea, primary: turnAction)
+                .environment(\.lensReplayCompact, false)
         case .ready, .watching:
-            buttons { turnButton(prominent: true) }
+            ModeCard(name: shot.title, difficulty: dots, goal: shot.hook, primary: turnAction)
         case .judged(let verdict):
-            buttons { if verdict.made { nextShotButton } else { tryAgainButton(prominent: true) } }
+            ModeCard(name: shot.title, difficulty: dots, goal: verdict.line,
+                     primary: verdict.made ? nextAction : tryAgainAction)
         case .offScript:
-            buttons { tryAgainButton(prominent: true) }
-        case .aiming, .off:
+            ModeCard(name: shot.title, difficulty: dots, goal: shot.goalLine, primary: tryAgainAction)
+        case .aiming:
+            ModeCard(name: shot.title, difficulty: dots, goal: shot.goalLine, primary: nil)
+        case .off:
             EmptyView()
         }
     }
 
-    /// The idea in the slim card: two lines at most, the light bulb before it as in the full card.
-    private func slimIdea(_ shot: TrickShot) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 6) {
-            Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
-            Text(shot.idea)
-                .font(Theme.body)
-                .foregroundStyle(palette.paper.opacity(0.9))
-                .lineLimit(2)
-                .accessibilityLabel(shot.idea)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
     // MARK: Pieces
 
-    private var nextShotButton: some View {
-        Button { mode.next() } label: {
-            Label("Next shot", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glassProminent).foregroundStyle(palette.ground)
-        .keyboardShortcut(.defaultAction)
+    /// What to do while lining up, with the bridge's reason when the ball is out of reach.
+    private func aimingLine(_ shot: TrickShot) -> String {
+        shot.usesBridge ? String(localized: "\(shot.goalLine) The ball is out of reach, so the bridge holds the cue.")
+                        : shot.goalLine
     }
 
-    private func header(_ shot: TrickShot) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(shot.title).font(Theme.heading).lineLimit(2)
-            Spacer(minLength: 0)
-            Text(shot.difficulty.label).font(Theme.label).foregroundStyle(palette.paper2)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
-    }
+    /// True when a shot's "How forgiving" tiles can be shown: its window is measured (0.7.7: a saved shot's window is
+    /// not measured yet, so it shows none rather than made-up numbers).
+    static func showsForgiving(_ shot: TrickShot) -> Bool { !OwnShotShelf.shared.isUnmeasured(shot) }
 
-    private func line(_ text: String) -> some View {
-        Text(text)
-            .font(Theme.body)
-            .foregroundStyle(palette.paper.opacity(0.9))
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    /// One row of buttons, right-aligned; two rows when the text is too large for one.
-    private func buttons<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        let row = content()
-        return Group {
-            if typeSize.isAccessibilitySize {
-                VStack(alignment: .trailing, spacing: 8) { row }.frame(maxWidth: .infinity, alignment: .trailing)
-            } else {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { Spacer(minLength: 0); row }
-                    WrappingRow { row }.frame(maxWidth: .infinity, alignment: .trailing)
-                }
-            }
-        }
-        .controlSize(.regular)
-    }
-
-    private func watchButton(prominent: Bool, again: Bool = false) -> some View {
-        styled(Button { mode.watch() } label: {
-            Label(again ? "Watch again" : "Watch it", systemImage: again ? "arrow.counterclockwise" : "play.fill")
-                .font(.headline).lineLimit(1).frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint("Plays the answer, then explains it in the Physics Lens")
-    }
-
-    private func turnButton(prominent: Bool) -> some View {
-        styled(Button { mode.yourTurn() } label: {
-            Label("Your turn", systemImage: "target").font(.headline).lineLimit(1).frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint("Puts the balls back and opens the aiming controls")
-    }
-
-    private func tryAgainButton(prominent: Bool) -> some View {
-        styled(Button { mode.tryAgain() } label: {
-            Label("Try again", systemImage: "arrow.uturn.backward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint("Puts the balls back where the shot started, with your last aim, power and spin")
-    }
-
-    /// Show / Hide the answer's path: an icon button, offered once the answer has been watched, while the player lines
-    /// up or reads the verdict (TrickShotMode.offersAnswerPath). The path itself is drawn by TrickTableLayer.
-    @ViewBuilder
-    private var answerPathButton: some View {
-        if mode.offersAnswerPath {
-            let shown = mode.showAnswerPath
-            Button { mode.showAnswerPath.toggle() } label: {
-                Label(shown ? "Hide the answer's path" : "Show the answer's path",
-                      systemImage: shown ? "point.topleft.down.to.point.bottomright.curvepath.fill"
-                                         : "point.topleft.down.to.point.bottomright.curvepath")
-                    .labelStyle(.iconOnly)
-                    .frame(minWidth: 30, minHeight: Self.buttonHeight)
-            }
-            .buttonStyle(.glass)
-            .buttonBorderShape(.circle)
-            .accessibilityLabel(shown ? "Hide the answer's path" : "Show the answer's path")
-            .accessibilityHint("Draws the answer's cue-ball path faintly on the cloth beside your own")
+    /// True while the card itself shows the forgiving tiles (the shot being set up or lined up), so the notebook's
+    /// dossier does not show them a second time beside it.
+    static func cardShowsForgiving(_ mode: TrickShotMode) -> Bool {
+        switch mode.phase {
+        case .ready, .aiming: return true
+        default: return false
         }
     }
 
-    private var listButton: some View {
-        Button { mode.listOpen = true } label: {
-            Label("All trick shots", systemImage: "list.bullet").labelStyle(.iconOnly)
-                .frame(minWidth: 30, minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .accessibilityLabel("All trick shots")
+    private var turnAction: KitAction {
+        KitAction(String(localized: "Your turn"), systemImage: "target") { mode.yourTurn() }
     }
 
-    @ViewBuilder
-    private func styled(_ button: some View, prominent: Bool) -> some View {
-        if prominent {
-            // Dark text on the bright accent: white on cyan is too faint (as the Shoot button).
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
-        } else {
-            button.buttonStyle(.glass)
-        }
+    private func watchAction(again: Bool) -> KitAction {
+        KitAction(again ? String(localized: "Watch again") : String(localized: "Watch it"),
+                  systemImage: again ? "arrow.counterclockwise" : "play") { mode.watch() }
     }
 
-    /// The glass button adds its own padding; this lands the buttons on 44 points or more on a touch screen.
-    #if os(iOS)
-    private static let buttonHeight: CGFloat = 30
-    #else
-    private static let buttonHeight: CGFloat = 0
-    #endif
+    private var tryAgainAction: KitAction {
+        KitAction(String(localized: "Try again"), systemImage: "arrow.uturn.backward") { mode.tryAgain() }
+    }
+
+    private var nextAction: KitAction {
+        KitAction(String(localized: "Next shot"), systemImage: "arrow.forward") { mode.next() }
+    }
+
+    private var listAction: KitAction {
+        KitAction(String(localized: "All trick shots"), systemImage: "list.bullet") { mode.listOpen = true }
+    }
+
+    /// Show / Hide the maths, when the shot has an equation.
+    private func mathsActions(_ shot: TrickShot) -> [KitAction] {
+        guard shot.maths != nil else { return [] }
+        return [KitAction(mode.showMaths ? String(localized: "Hide the maths") : String(localized: "Show the maths"),
+                          systemImage: "function") { mode.showMaths.toggle() }]
+    }
+
+    /// Show / Hide the answer's path, offered once the answer has been watched, while the player lines up or reads the
+    /// verdict (TrickShotMode.offersAnswerPath). The path itself is drawn by TrickTableLayer.
+    private var answerPathAction: KitAction? {
+        guard mode.offersAnswerPath else { return nil }
+        let shown = mode.showAnswerPath
+        return KitAction(shown ? String(localized: "Hide the answer's path") : String(localized: "Show the answer's path"),
+                         systemImage: "point.topleft.down.to.point.bottomright.curvepath") {
+            mode.showAnswerPath.toggle()
+        }
+    }
 }
 
 // MARK: The phone held upright
@@ -617,7 +492,8 @@ struct TrickTableLayer: View {
                 }
             }
             // The make: a short glow around the edge of the screen. It only fades, so it is the same with Reduce Motion.
-            RoundedRectangle(cornerRadius: 48, style: .continuous)
+            // The screen's own corners (ContainerRelativeShape), not a card's: no corner number of its own.
+            ContainerRelativeShape()
                 .strokeBorder(palette.accent, lineWidth: 6)
                 .blur(radius: 10)
                 .opacity(glow)

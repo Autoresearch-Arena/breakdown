@@ -1,5 +1,12 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the reel shows only after a
+//          shot; while aiming it folds into the kit's "Last shot" button, which leads the tab row (the slim reel stays
+//          under the open console while the player's own shot is still rolling, item 8). The Lens, Ride and Aim tabs
+//          ("Your shot" is renamed "Aim") are the kit's capsules, cyan when on and the secondary surface when off, right
+//          aligned, on every device the Mac included, so the modes have one place; they come after the first shot (until
+//          then only Aim, and only while the controls are closed, so they can always be opened again). The Mac's reel
+//          carries play, speed and Replay itself now its window toolbar no longer does.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: Your shot is plain and disabled during the
 //          computer's turn on iPhone and iPad).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (Replay moved into the scrub row beside the speed menu, so Physics
@@ -99,15 +106,26 @@ struct ReplayButton: View {
     }
 }
 
-/// A button that stays on or off. Its label is constant, so its width never changes; state is shown by the tint
-/// and spoken as a toggle with an on or off value.
+/// A button that stays on or off: a tab. Its label is constant, so its width never changes; state is shown by the fill
+/// and spoken as a toggle with an on or off value. `title` is already localized. UI rethink package 4: on the big
+/// screens and the fold's panel the kit's capsules (the cyan primary when on, the secondary surface when off); on the
+/// phone, where the row floats over the 3D table, the off state is the kit's glass capsule (the design language keeps
+/// glass for controls over the table) and the on state the cyan primary.
 struct ToggleButton: View {
-    let title: LocalizedStringKey
+    let title: String
     let symbol: String
     let isOn: Bool
     var fill = false
     let action: () -> Void
-    @Environment(\.palette) private var palette
+    private var deviceReader = KitDeviceReader()
+
+    init(title: String, symbol: String, isOn: Bool, fill: Bool = false, action: @escaping () -> Void) {
+        self.title = title
+        self.symbol = symbol
+        self.isOn = isOn
+        self.fill = fill
+        self.action = action
+    }
 
     private var button: some View {
         Button(action: action) {
@@ -116,22 +134,18 @@ struct ToggleButton: View {
                 .fixedSize(horizontal: !fill, vertical: false)
                 .frame(maxWidth: fill ? .infinity : nil)
         }
-        .tint(isOn ? palette.accent : nil)
         .accessibilityAddTraits(.isToggle)
         .accessibilityValue(isOn ? "On" : "Off")
     }
 
     var body: some View {
-        #if os(iOS)
-        // Floating over the scene: switched on is a solid accent glass button with dark text, off is plain glass.
         if isOn {
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
+            button.buttonStyle(PrimaryButtonStyle(fullWidth: fill))
+        } else if deviceReader.current == .phone {
+            button.buttonStyle(GlassControlStyle())
         } else {
-            button.buttonStyle(.glass)
+            button.buttonStyle(SecondaryButtonStyle(fullWidth: fill))
         }
-        #else
-        button
-        #endif
     }
 }
 
@@ -188,141 +202,162 @@ struct SpeedPicker: View {
 struct PlaybackControls: View {
     let model: ShowpieceModel
     @Binding var shotPanelOpen: Bool
-    /// Regular-size buttons, so Lens, Ride and Your shot share one row in a narrow column (the iPhone Duo's panel).
+    /// The folding phone's panel: the reel and buttons at the fold panel's size.
     var compact = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var widthClass
+    @Environment(\.verticalSizeClass) private var heightClass
+    #endif
 
     var body: some View {
-        VStack(spacing: 8) {
-            // While aiming on a still table the shot panel takes this place. Whenever a shot struck at this table is on
-            // screen the row stays, slim, under the panel, so the player can replay and scrub their own shot (item 8).
-            if !shotPanelOpen {
-                scrubRow(slim: false)
-            } else if model.playerShotOnScreen {
-                scrubRow(slim: true).controlSize(.small)
+        let shot = NotebookStory.hasShot(model)
+        // While aiming the reel folds into "Last shot", except while the player's own shot is still rolling, when the
+        // slim reel stays under the console so it can be scrubbed and slowed (item 8).
+        let folded = shot && shotPanelOpen && !(model.playerShotOnScreen && !model.aimReady)
+        VStack(spacing: Theme.Space.sm) {
+            if shot && !folded {
+                scrubRow(slim: shotPanelOpen)
             }
-            #if os(iOS)
-            buttons   // on the Mac these live in the window toolbar
-            #endif
+            tabs(lastShot: folded, all: shot && model.openingStage == .none)
         }
+        .kitDevice(device)
     }
 
-    /// The shot reel (App/Kit/ShotReel.swift) with What if after Replay. On the Mac the reel leaves out play, speed
-    /// and Replay, which the window toolbar carries.
+    /// The shot reel (App/Kit/ShotReel.swift) with What if after Replay: play, the track, the time, speed and Replay.
     private func scrubRow(slim: Bool) -> some View {
-        #if os(iOS)
-        return ShotReel(model: model, device: device, slim: slim) {
+        ShotReel(model: model, device: device, slim: slim) {
             // What if, beside Replay: only after the player's own shot has come to rest (invisible otherwise, its slot
             // kept so the track does not change width; 0.7.6, bug 31). At the accessibility text sizes it is a worded
-            // full-width row in the stacked buttons instead.
+            // full-width row in the stacked tabs instead.
             if !typeSize.isAccessibilitySize {
                 WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
             }
         }
+    }
+
+    /// Which layout the reel and tabs sit in: the folding phone's panel in compact mode, a phone when either size class
+    /// is compact (upright or sideways, or a narrow iPad window), otherwise the big screens (always on the Mac).
+    private var device: Theme.Device {
+        if compact { return .foldPanel }
+        #if os(iOS)
+        return widthClass == .compact || heightClass == .compact ? .phone : .big
         #else
-        return ShotReel(model: model, device: .big, transport: false, slim: slim) {
-            WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
-        }
+        return .big
         #endif
     }
 
-    #if os(iOS)
-    @Environment(\.horizontalSizeClass) private var widthClass
-    @Environment(\.verticalSizeClass) private var heightClass
-
-    /// Which layout the reel sits in: the folding phone's panel in compact mode, a phone when either size class is
-    /// compact (upright or sideways, or a narrow iPad window), otherwise the big screens.
-    private var device: Theme.Device {
-        if compact { return .foldPanel }
-        return widthClass == .compact || heightClass == .compact ? .phone : .big
-    }
-    #endif
-
-    // MARK: Buttons (iPhone and iPad)
+    // MARK: The tabs
 
     /// The Lens toggle. `full` picks the clear name "Physics Lens"; the short "Lens" is the fallback for tight rows.
-    /// Not a ViewThatFits of its own: inside a row it would always be offered the whole width (the Spacer gives way)
-    /// and pick the long name, which would make the outer ViewThatFits think one row fits when it does not. Instead
-    /// `buttons` lists long and short versions of each layout and one measurement chooses.
+    /// Not a ViewThatFits of its own: inside a row it would always be offered the whole width and pick the long name,
+    /// which would make the outer ViewThatFits think one row fits when it does not. `tabs` lists long and short
+    /// versions of each layout and one measurement chooses.
     private func lens(full: Bool, fill: Bool = false) -> some View {
-        ToggleButton(title: full ? "Physics Lens" : "Lens", symbol: "viewfinder", isOn: model.lensOn, fill: fill) {
+        ToggleButton(title: full ? String(localized: "Physics Lens") : String(localized: "Lens"), symbol: "viewfinder",
+                     isOn: model.lensOn, fill: fill) {
             model.setLens(!model.lensOn)
         }
         .accessibilityLabel("Physics Lens")
     }
 
-    /// Ride: the replay camera chases the cue ball. Named "Ride" on the button and spoken in full. (Its old hint said
-    /// it hands over to the ball it hits; it no longer does, and no new string is wanted, so the hint is gone.)
+    /// Ride: the replay camera chases the cue ball. Named "Ride" on the button and spoken in full.
     private func ride(fill: Bool = false) -> some View {
-        ToggleButton(title: "Ride", symbol: "video", isOn: model.rideOn, fill: fill) { model.setRide(!model.rideOn) }
-            .accessibilityLabel("Ride camera")
+        ToggleButton(title: String(localized: "Ride"), symbol: "video", isOn: model.rideOn, fill: fill) {
+            model.setRide(!model.rideOn)
+        }
+        .accessibilityLabel("Ride camera")
     }
 
-    /// The computer is thinking or shooting (0.7.5, L-A): Your shot is drawn plain and cannot be pressed, so it never
-    /// looks like the person's turn while it is not.
+    /// The computer is thinking or shooting (0.7.5, L-A): Aim is drawn off and cannot be pressed, so it never looks like
+    /// the person's turn while it is not.
     private var computersTurn: Bool { model.computerTurnStage != .none }
 
-    private var shot: some View {
-        ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen && !computersTurn) { shotPanelOpen.toggle() }
-            .disabled(computersTurn)
+    /// Aim (UI rethink package 4, renamed from "Your shot"): opens and closes the console's controls.
+    private func aim(fill: Bool = false) -> some View {
+        ToggleButton(title: StrikeWords.aimTab, symbol: "target", isOn: shotPanelOpen && !computersTurn, fill: fill) {
+            shotPanelOpen.toggle()
+        }
+        .disabled(computersTurn)
     }
 
-    private var buttons: some View {
-        GlassEffectContainer(spacing: 8) {
+    /// The reel folded while aiming: the kit's secondary "Last shot", which replays the last shot with the Lens.
+    private func lastShotButton(fill: Bool = false) -> some View {
+        LastShotReelButton(device: device) { model.replay(withLens: true) }
+            .frame(maxWidth: fill ? .infinity : nil)
+    }
+
+    /// `all`: the Lens, Ride and Aim (after the first shot, outside the opening). Before that only Aim, and only while
+    /// the controls are closed, so the first minute stays calm and the controls can always be opened again.
+    @ViewBuilder
+    private func tabs(lastShot: Bool, all: Bool) -> some View {
+        if all || lastShot {
             Group {
                 if typeSize.isAccessibilitySize {
-                    stacked
+                    stacked(lastShot: lastShot, all: all)
                 } else {
                     // Widest first: the full Lens name on one row, the short name on one row, then the same on two.
                     ViewThatFits(in: .horizontal) {
-                        oneRow(fullLens: true)
-                        oneRow(fullLens: false)
-                        twoRows(fullLens: true)
-                        twoRows(fullLens: false)
+                        oneRow(fullLens: true, lastShot: lastShot, all: all)
+                        oneRow(fullLens: false, lastShot: lastShot, all: all)
+                        twoRows(fullLens: true, lastShot: lastShot, all: all)
+                        twoRows(fullLens: false, lastShot: lastShot, all: all)
                     }
                 }
             }
-            .buttonStyle(.glass)
-            .controlSize(compact ? .regular : .large)
-        }
-    }
-
-    private func oneRow(fullLens: Bool) -> some View {
-        HStack(spacing: 8) {
-            Spacer(minLength: 0)
-            lens(full: fullLens)
-            ride()
-            shot
-            Spacer(minLength: 0)
-        }
-    }
-
-    /// Narrow columns (a phone turned sideways, a small window) and narrow phones.
-    private func twoRows(fullLens: Bool) -> some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 8) {
+        } else if !shotPanelOpen && !computersTurn {
+            HStack(spacing: Theme.Space.xs) {
                 Spacer(minLength: 0)
+                aim()
+            }
+        }
+    }
+
+    /// "Last shot" on the leading side, the tabs on the trailing side (the primary side).
+    private func oneRow(fullLens: Bool, lastShot: Bool, all: Bool) -> some View {
+        HStack(spacing: Theme.Space.xs) {
+            if lastShot { lastShotButton() }
+            Spacer(minLength: 0)
+            if all {
                 lens(full: fullLens)
                 ride()
-                Spacer(minLength: 0)
+                aim()
             }
-            HStack(spacing: 8) { Spacer(minLength: 0); shot; Spacer(minLength: 0) }
+        }
+    }
+
+    /// Narrow columns (a phone turned sideways, a small window, the side column with a long translation).
+    private func twoRows(fullLens: Bool, lastShot: Bool, all: Bool) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            if lastShot {
+                HStack(spacing: Theme.Space.xs) { lastShotButton(); Spacer(minLength: 0) }
+            }
+            if all {
+                HStack(spacing: Theme.Space.xs) {
+                    Spacer(minLength: 0)
+                    lens(full: fullLens)
+                    ride()
+                }
+                HStack(spacing: Theme.Space.xs) { Spacer(minLength: 0); aim() }
+            }
         }
     }
 
     /// Largest text sizes: everything full width, one control per row, with words on every button.
-    private var stacked: some View {
-        VStack(spacing: 8) {
-            // A full-width row: the long name nearly always fits; the short one is the fallback at the very largest sizes.
-            ViewThatFits(in: .horizontal) {
-                lens(full: true, fill: true)
-                lens(full: false, fill: true)
+    private func stacked(lastShot: Bool, all: Bool) -> some View {
+        VStack(spacing: Theme.Space.xs) {
+            if lastShot { lastShotButton(fill: true) }
+            if all {
+                // A full-width row: the long name nearly always fits; the short one is the fallback at the very largest.
+                ViewThatFits(in: .horizontal) {
+                    lens(full: true, fill: true)
+                    lens(full: false, fill: true)
+                }
+                ride(fill: true)
+                aim(fill: true)
+                // The what-if entry with its words, where the reel's icon-only buttons are hardest to read.
+                WhatIfButton(model: model, fill: true)
             }
-            ride(fill: true)
-            ToggleButton(title: "Your shot", symbol: "target", isOn: shotPanelOpen && !computersTurn, fill: true) { shotPanelOpen.toggle() }
-                .disabled(computersTurn)
-            // The what-if entry with its words, where the scrub row's icon-only buttons are hardest to read.
-            WhatIfButton(model: model, fill: true)
         }
     }
 }

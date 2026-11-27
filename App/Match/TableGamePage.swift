@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: each way to play is the
+//          kit's list row (no tinted highlighted row), "Play the computer" carrying the chosen level as five difficulty
+//          dots; the section titles are the kit's section labels; the replace question is a panel with the kit's
+//          buttons (Keep my saved game the way on, Start a new game a destructive secondary); the rules' numbers are
+//          plain sans in paper2, the details paper2, the spacing on the scale.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 coordinator: asks to replace only this game's save; Keep
 //          my saved game plays it).
 // PURPOSE: A table's game page, pushed from its entry in the Tables list (plans/21-Nov-2026-other-tables-games-plan.md
@@ -48,51 +53,52 @@ struct TableGamePage: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(verbatim: table.summary).font(Theme.body).foregroundStyle(.secondary)
-                    Text(TableGameWords.gameLine(game)).font(Theme.body)
+            VStack(alignment: .leading, spacing: Theme.Space.lg) {
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                    Text(verbatim: table.summary).font(Theme.body).foregroundStyle(palette.paper2)
+                    Text(TableGameWords.gameLine(game)).font(Theme.body).foregroundStyle(palette.paper)
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 if let request = replacing, let saved = MatchMode.savedSummary(for: request.kind) {
                     replaceQuestion(saved, request: request)
                 }
-                // Bumper pool and five-pin are played against the computer (highlighted); bar billiards alone against
-                // the clock (highlighted); every table can be practised, plain. Two players on one device is never
-                // offered.
-                VStack(alignment: .leading, spacing: 10) {
+                // Bumper pool and five-pin are played against the computer; bar billiards alone against the clock;
+                // every table can be practised. Two players on one device is never offered. UI rethink package 5: each
+                // way to play is the kit's list row (no tinted "highlighted" row; the computer's level is its five
+                // dots).
+                VStack(alignment: .leading, spacing: Theme.Space.sectionToContent) {
                     if playsTheComputer {
-                        Text("Against the computer")
-                            .font(Theme.heading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        SectionLabel(String(localized: "Against the computer"))
                             .accessibilityAddTraits(.isHeader)
                         ComputerLevelPicker(model: model, leading: true)
-                        playButton(String(localized: "Play the computer"), line: recordLine,
-                                   symbol: "person.and.background.dotted", prominent: true) {
+                        playRow(String(localized: "Play the computer"), line: recordLine,
+                                level: ModeDifficulty.dots(model.computerLevel)) {
                             start(MatchStartRequest(kind: game, computer: model.computerLevel))
                         }
                     }
-                    if game == .barBilliards {
-                        playButton(String(localized: "Play alone"), line: TableGameWords.best(BarBilliardsBest.best()),
-                                   symbol: "person.fill", prominent: true) {
-                            start(MatchStartRequest(kind: game, players: 1))
+                    VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                        if game == .barBilliards {
+                            playRow(String(localized: "Play alone"), line: TableGameWords.best(BarBilliardsBest.best())) {
+                                start(MatchStartRequest(kind: game, players: 1))
+                            }
+                        }
+                        playRow(String(localized: "Practice"),
+                                line: String(localized: "Knock the balls around with no turns and no score.")) {
+                            model.playTable(table)
+                            onStarted()
                         }
                     }
-                    playButton(String(localized: "Practice"), line: String(localized: "Knock the balls around with no turns and no score."),
-                               symbol: "scope", prominent: false) {
-                        model.playTable(table)
-                        onStarted()
-                    }
+                    .padding(.top, playsTheComputer ? Theme.Space.xs : 0)
                 }
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("How to play")
-                        .font(Theme.sectionTitle)
+                VStack(alignment: .leading, spacing: Theme.Space.sectionToContent) {
+                    SectionLabel(String(localized: "How to play"))
                         .accessibilityAddTraits(.isHeader)
                     TableRulesSteps(game: game)
                 }
             }
-            .padding(24)
+            .padding(Theme.Space.lg)
         }
+        .background(palette.ground)
         .navigationTitle(Text(verbatim: table.title))
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
@@ -127,52 +133,38 @@ struct TableGamePage: View {
     }
 
     /// The question, in the page itself (no alert, so on the open folding phone and big screens it stays in the side
-    /// panel beside the table): which game is saved, and whether to replace it.
+    /// panel beside the table): which game is saved, and whether to replace it. Keeping it is the way on (it plays the
+    /// saved game); starting anew is a destructive secondary in warning words.
     private func replaceQuestion(_ saved: SavedMatchSummary, request: MatchStartRequest) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        // Keeping it plays it: this game's own save, picked up where it was left (0.7.5, one save per game).
+        let keep = KitAction(String(localized: "Keep my saved game")) {
+            replacing = nil
+            if model.continueSavedMatch(kind: request.kind) { onStarted() }
+        }
+        return VStack(alignment: .leading, spacing: Theme.Space.sm) {
             Text(String(localized: "A new game replaces your saved one: \(MatchWords.savedLine(saved))"))
                 .font(Theme.body)
+                .foregroundStyle(palette.paper)
                 .fixedSize(horizontal: false, vertical: true)
-            CardButtonRow {
-                // Keeping it plays it: this game's own save, picked up where it was left (0.7.5, one save per game).
-                Button {
-                    replacing = nil
-                    if model.continueSavedMatch(kind: request.kind) { onStarted() }
-                } label: {
-                    Text(String(localized: "Keep my saved game")).font(.headline).lineLimit(1)
-                }
-                .buttonStyle(.glass)
-                .keyboardShortcut(.cancelAction)
-                Button(role: .destructive) { begin(request) } label: {
-                    Text(String(localized: "Start a new game")).font(.headline).lineLimit(1)
-                }
-                .buttonStyle(.glassProminent)
-            }
+            KitButtonRow(primary: keep,
+                         secondary: KitAction(String(localized: "Start a new game"), role: .destructive) { begin(request) })
+                .modeShortcut(keep, .cancelAction)
         }
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.track.opacity(0.5)))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .kitPanel()
     }
 
-    /// One way to play as a full-width button: symbol, name and an optional line under it (nil draws no line, as
-    /// "Play the computer" before its first finished game).
-    private func playButton(_ title: String, line: String?, symbol: String, prominent: Bool,
-                            action: @escaping () -> Void) -> some View {
+    /// One way to play as the kit's list row: its name and an optional line under it (nil draws no line, as "Play the
+    /// computer" before its first finished game), with the computer's level as five dots where there is one.
+    @ViewBuilder
+    private func playRow(_ title: String, line: String?, level: Int? = nil,
+                         action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 12) {
-                Image(systemName: symbol).font(.title3).frame(width: 28).accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(Theme.heading)
-                    if let line {
-                        Text(line).font(Theme.body).opacity(0.8).fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                Spacer(minLength: 0)
+            if let level {
+                ListRow(leading: .none, title: title, line: line, difficulty: { DifficultyDots(level: level) })
+            } else {
+                ListRow(leading: .none, title: title, line: line)
             }
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(prominent ? palette.accent.opacity(0.25) : palette.track.opacity(0.5)))
-            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
@@ -186,7 +178,7 @@ struct TableRulesPage: View {
 
     var body: some View {
         ScrollView {
-            TableRulesSteps(game: game).padding(24)
+            TableRulesSteps(game: game).padding(Theme.Space.lg)
         }
         .navigationTitle(Text(MatchWords.title(game)))
         #if os(iOS)
@@ -195,24 +187,27 @@ struct TableRulesPage: View {
     }
 }
 
-/// The rules as numbered steps, then the note that this is one version of a game played many ways.
+/// The rules as numbered steps, then the note that this is one version of a game played many ways. The numbers are
+/// plain sans in paper2 (design language: list numbers are never italic serif), the step's title paper, its detail
+/// paper2.
 struct TableRulesSteps: View {
     let game: MatchKind
     @Environment(\.palette) private var palette
+    @ScaledMetric(relativeTo: .headline) private var numberWidth: CGFloat = Theme.Space.lg
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: Theme.Space.lg) {
             ForEach(Array(TableGameWords.steps(game).enumerated()), id: \.offset) { index, step in
-                HStack(alignment: .firstTextBaseline, spacing: 14) {
-                    Text("\(index + 1)")
-                        .font(Theme.equation)
-                        .foregroundStyle(palette.accent)
-                        .frame(width: 24, alignment: .leading)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(step.title).font(Theme.heading)
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
+                    Text(verbatim: (index + 1).formatted(.number.locale(AppLocale.numbers)))
+                        .font(Theme.heading.monospacedDigit())
+                        .foregroundStyle(palette.paper2)
+                        .frame(width: numberWidth, alignment: .leading)
+                    VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                        Text(step.title).font(Theme.heading).foregroundStyle(palette.paper)
                         Text(step.detail)
-                            .font(Theme.copy)
-                            .foregroundStyle(.secondary)
+                            .font(Theme.body)
+                            .foregroundStyle(palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -221,7 +216,7 @@ struct TableRulesSteps: View {
             }
             Text(TableGameWords.oneVersion)
                 .font(Theme.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(palette.paper2)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }

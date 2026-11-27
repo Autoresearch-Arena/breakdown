@@ -1,5 +1,9 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: one place for the modes. The
+//          window toolbar keeps only the notebook switch; play, Replay, speed and the Physics Lens, Ride and Aim toggles
+//          live with the shot reel and the tabs in the window (PlaybackControls), as on the iPad. The menus keep every
+//          item and key; the Shot menu's "Your Shot" is renamed "Aim" with the tab.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 every-world: the Playback menu's "Every Surface..."
 //          (Shift-Command-U) right after What If..., enabled exactly while the every-surface fan can open and is not up.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md C1:
@@ -52,7 +56,7 @@
 //            - the menus and their shortcuts. Game: Continue Match, New Free Game (Command-N), New Game (eight-ball,
 //              nine-ball, bumper pool and five-pin against the computer at each level, bar billiards alone), Learn,
 //              Straight Stroke Drill, Trick Shots, Behind the 8-Ball, Watch the Intro, Main Menu, Tables, Surface.
-//              Shot: Your Shot (Command-Y), Shoot or Break (Command-Return), aim a quarter degree either way (Command-Left and Right), power (Command-Up and
+//              Shot: Aim (Command-Y), Shoot or Break (Command-Return), aim a quarter degree either way (Command-Left and Right), power (Command-Up and
 //              Down), the cue tip (Option and the arrows, Option-0 to centre it), Call Pocket (Option-1 to 6, Option-S for
 //              a safety) when the game asks for a call. View: Physics Lens (Command-L), Ride Camera (Command-E), Show
 //              Notebook (Option-Command-I), Zoom In, Zoom Out, Actual Size (Command-plus, -minus, -0). Playback: Play or
@@ -62,10 +66,10 @@
 //              speeds (Command-1 to 4) and Auto, Next and Previous Explained Moment (Command-] and Command-[), Try
 //              Again (Command-T), What If... (Shift-Command-T), Every Surface... (Shift-Command-U). Help: How to Play
 //              (Command-?).
-//            - behind the main menu the Shot and Playback menus and the toolbar's playback controls are disabled, so
-//              nothing acts on the table the menu covers.
-//            - the Mac window toolbar (play, speed, replay, Lens, Ride, Your shot, the notebook), reusing the play, replay
-//              and speed controls from PlaybackControls and the system's own toggle buttons;
+//            - behind the main menu the Shot and Playback menus are disabled, so nothing acts on the table the menu
+//              covers.
+//            - the Mac window toolbar: the notebook switch only (UI rethink package 4); play, speed and Replay are on the
+//              shot reel and the Physics Lens, Ride and Aim are the tabs under it, in the window (PlaybackControls);
 //            - the Mac window's single-window rule and its remembered frame, and the Settings window's content;
 //            - the plumbing that lets menu items reach the front window's model, shot-panel switch, page switch and
 //              notebook switch (focused values set by ShowpieceView).
@@ -289,7 +293,8 @@ struct ShotCommands: Commands {
 
     @ViewBuilder private var shotItems: some View {
         // Not on the computer's turn: Your shot is the person's (L-A), as the toolbar's toggle shows.
-        Button("Your Shot") { shotPanelOpen?.wrappedValue.toggle() }
+        // UI rethink package 4: named as the tab is, "Aim".
+        Button(StrikeWords.aimTab) { shotPanelOpen?.wrappedValue.toggle() }
             .keyboardShortcut("y", modifiers: .command)
             .disabled(shotPanelOpen == nil || (model.map { $0.computerTurnStage != .none } ?? false))
         Button((model?.racked ?? false) ? "Break" : "Shoot") {
@@ -509,40 +514,10 @@ struct ShowpieceToolbar: ToolbarContent {
     @Binding var notebookShown: Bool
 
     var body: some ToolbarContent {
-        // Behind the main menu the playback controls and Your shot are disabled, so a click in the toolbar does
-        // nothing to the table the menu covers (0.7.5). The Lens, Ride and the notebook switch stay: they change
-        // the view, not the game.
-        ToolbarItemGroup(placement: .navigation) {
-            PlayPauseButton(model: model).labelStyle(.iconOnly).help("Play or pause (space)")
-                .disabled(model.menuOpen)
-            ReplayButton(model: model).labelStyle(.iconOnly).help("Replay with the Lens (Command-R)")
-                .disabled(model.menuOpen)
-        }
-        ToolbarItem(placement: .principal) {
-            SpeedPicker(model: model).frame(minWidth: 220)
-                .help("Playback speed: Auto slows for each explained moment, or pick a fixed speed (Command-1 to 4)")
-                .disabled(model.menuOpen)
-        }
+        // UI rethink package 4: one place for the modes. Play, Replay and speed are on the shot reel, and the Physics
+        // Lens, Ride and Aim are the tabs under it, in the window as on the iPad (PlaybackControls); the menus and their
+        // keys keep every one of them. The toolbar keeps the notebook switch, which changes the window, not the game.
         ToolbarItemGroup(placement: .primaryAction) {
-            // Real toggles: the system draws the pressed state, so on and off are visible in the toolbar.
-            Toggle(isOn: Binding(get: { model.lensOn }, set: { model.setLens($0) })) {
-                Label("Physics Lens", systemImage: "viewfinder")
-            }
-            .toggleStyle(.button)
-            .help("Show the Physics Lens (Command-L)")
-            Toggle(isOn: Binding(get: { model.rideOn }, set: { model.setRide($0) })) {
-                Label("Ride", systemImage: "video")
-            }
-            .toggleStyle(.button)
-            .help("Ride camera: the replay follows the balls at table height (Command-E)")
-            // On the computer's turn Your shot is not the person's: drawn off (not lit) and disabled, though the panel
-            // itself may still be open, greyed (L-A).
-            Toggle(isOn: Binding(get: { shotPanelOpen && !computersTurn }, set: { shotPanelOpen = $0 })) {
-                Label("Your shot", systemImage: "target")
-            }
-            .toggleStyle(.button)
-            .help("Take your own shot (Command-Y)")
-            .disabled(model.menuOpen || computersTurn)
             Toggle(isOn: $notebookShown) { Label("Notebook", systemImage: "sidebar.trailing") }
                 .toggleStyle(.button)
                 .help("Show or hide the notebook beside the table (Option-Command-I)")

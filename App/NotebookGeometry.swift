@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the panel beside the table is
+//          the design language's side column, about 400 points (380 to 440, following the window: a third of its
+//          width, held between the two), so the table gets the rest; and without a hinge the panel is always one
+//          column, the step list a tab of the same column, so the upright iPad's band has no empty second column.
+//          The names the framing check reads (besideShare, besideMinimum, twoColumnWidth, belowPanel) are kept.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door, plans/25-Nov-2026-front-door-and-table-view-plan.md
 //          Stage 2: the band under the table on an upright iPad is sized from what the table needs, not a fixed share.
 //          At 40 percent of the height, capped at 520 points, the table half of an upright iPad was far taller than a
@@ -44,16 +49,18 @@ enum NotebookGeometry {
 
     // MARK: Panel beside the table (window wider than tall)
 
-    /// Share of the window's width the panel takes. Chosen so the panel reaches the two-column width (below) on a 13-inch
-    /// iPad in landscape (1376 points wide: 0.42 x 1376 = 578) but not on an 11-inch one (1180: 496), and so a Mac window
-    /// at its default 1120 points keeps one comfortable column (470).
-    static let besideShare: Double = 0.42
-    /// The narrowest readable panel: the cards' button rows were laid out for a 320-point phone-width column.
-    static let besideMinimum: Double = 320
-    /// At the accessibility text sizes the same words need more width, so the panel starts wider.
-    static let besideMinimumLargeText: Double = 380
-    /// The widest the panel gets (two columns of about 370 points); past this the extra width goes to the table.
-    static let besideMaximum: Double = 760
+    /// Share of the window's width the panel takes (0.42 before UI rethink package 4, which reached two columns on a
+    /// 13-inch iPad).
+    /// UI rethink package 4: a third of the width, so an 11-inch iPad sideways (1180 points) gets the 400-point side
+    /// column of the design language and a 13-inch one or a wide Mac window reaches the 440-point cap. Continuous in
+    /// the width (the framing check's sweep allows a step of at most this share per point dragged).
+    static let besideShare: Double = 0.34
+    /// The narrowest panel beside the table: the design language's narrowest side column (the Mac's 380).
+    static let besideMinimum: Double = 380
+    /// At the accessibility text sizes the same words need more width, so the panel starts at the widest column.
+    static let besideMinimumLargeText: Double = 440
+    /// The widest the panel gets (the design language's 440); past this the extra width goes to the table.
+    static let besideMaximum: Double = 440
 
     // MARK: Panel under the table (window taller than wide)
 
@@ -144,8 +151,10 @@ enum NotebookGeometry {
     ///   again wider than tall. A tall half keeps one column, as it was designed.
     /// Without a hinge, two columns whenever the panel is wide enough for two readable ones (twoColumnWidth): a very
     /// wide window's side panel, or the short and wide band under the table on an iPad held upright.
+    /// UI rethink package 4: without a hinge, always one column (the design language: "the notebook and step list are a
+    /// tab of the same column, not a second column"; the upright iPad's band is one full-width column with no gaps).
     static func panelColumns(width: Double, height: Double, onHinge: Bool) -> Int {
         if onHinge { return width > 560 && width > height * 1.25 ? 2 : 1 }
-        return width >= twoColumnWidth ? 2 : 1
+        return 1
     }
 }

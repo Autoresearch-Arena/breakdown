@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 24-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 9, the Physics Lens notebook,
+//          plans/26-Nov-2026-ui-rethink-plan.md: the side view writes the two numbers a jump is about as bare figures in
+//          cm (NumberStyle.distance, the one rule for a distance on the table): the peak height beside the height
+//          marker, and the clearance over the jumped ball (FlightShape.clearance, flightTop's own gap) above that ball,
+//          with a short dotted mark for the gap. Figures only, no words, as everything drawn over the table is. The
+//          panel's corners are the design language's medium corner, and the clip's dark card takes its colours from
+//          the palette.)
 // Edited: Claude Opus 5.5 Medium, 25-November-2026 (0.7.9, plans/24-Nov-2026-jump-replay-plan.md "Next": the side view
 //          tells the whole jump. FlightShape is now the jump's story, from the first take-off through every hop until
 //          the ball stays on the cloth, and FlightFocus says which part of it the caption on screen is about (the raised
@@ -30,7 +37,7 @@
 //          free place on the table; nowhere if nothing fits, so it never covers the balls or the words; on the open Duo
 //          the table half only).
 //          Decoration only: hidden from VoiceOver (the caption already speaks the numbers) and never takes touches. No
-//          words are drawn in it, so it needs no translation.
+//          words are drawn in it, only figures with their units (UnitSymbol, in the shown language).
 // SRP/DRY check: Pass - checked Captions.swift (the flight and cue lookups are reused, not copied), CaptionLeader (the
 //          chip's placement rules are followed in the same order, with the panel added as one more thing to keep clear
 //          of), LensLayer (draws the flight from above in 3D; nothing drew it side on) and ClipOverlay (its note's dark
@@ -98,6 +105,9 @@ struct FlightShape: Equatable {
     /// point, so the picture and the title always agree.
     let peakAlong: Double
     let peakGap: Double
+    /// The smallest gap between the flying ball and the ball the first flight passes over, metres (CaptionEngine.flightTop's
+    /// own clearance, the number the take-off card says), or nil when it passes over none. UI rethink package 9.
+    var clearance: Double? = nil
     let radius: Double
     /// The cue's tilt below the horizontal (radians) when a raised cue strike made the jump, else nil.
     let cueAngle: Double?
@@ -231,7 +241,7 @@ struct FlightShape: Equatable {
         }
         let shape = FlightShape(ball: ball, t0: first.t0, t1: hops[hops.count - 1].t1, arc: arc, times: times,
                                 hops: hops, launch: launch, landings: landings, blocker: blocker, peakAlong: peakAlong,
-                                peakGap: max(0, top.peak), radius: R,
+                                peakGap: max(0, top.peak), clearance: top.over.map { max(0, $0.gap) }, radius: R,
                                 cueAngle: takeOff.flatMap { CaptionEngine.raisedCueAngle($0, in: timeline) })
         return (shape, hopOf)
     }
@@ -348,14 +358,14 @@ struct FlightSideView: View {
         Group {
             switch style {
             case .glass:
-                canvas.glassEffect(.regular.tint(accent.opacity(0.10)), in: .rect(cornerRadius: 14))
+                canvas.glassEffect(.regular.tint(accent.opacity(0.10)), in: Theme.Corner.cardShape)
             case .inline:
                 canvas
             case .film:
                 canvas.background {
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(.black.opacity(0.62))
-                        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.12)))
+                    Theme.Corner.cardShape
+                        .fill(palette.ground.opacity(0.62))
+                        .overlay(Theme.Corner.cardShape.strokeBorder(palette.rule, lineWidth: Theme.Size.hairline))
                 }
             }
         }
@@ -369,7 +379,7 @@ struct FlightSideView: View {
         let focus = sketch.focus
         let paper = palette.paper
         let cueColor = palette.color(for: CaptionAccent.strike)
-        ctx.clip(to: Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 14))
+        ctx.clip(to: Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: Theme.Corner.medium))
 
         // The arrows' lengths, table metres, on one scale for every push of the story, so a slower push is a shorter
         // arrow: the longest is two ball radii, the shortest drawn three fifths of one.
@@ -442,6 +452,21 @@ struct FlightSideView: View {
             let rect = ball(at: point(b))
             ctx.fill(Path(ellipseIn: rect), with: .color(paper.opacity(0.18)))
             ctx.stroke(Path(ellipseIn: rect), with: .color(paper.opacity(0.7)), lineWidth: 1.2)
+            // The clearance over it (UI rethink package 9): a short dotted mark up from its top as tall as the gap,
+            // and the gap as a bare figure in cm beside it.
+            if let gap = s.clearance {
+                let crown = CGPoint(x: rect.midX, y: rect.minY)
+                let rise = max(2, CGFloat(gap) * scale)
+                var mark = Path()
+                mark.move(to: crown); mark.addLine(to: CGPoint(x: crown.x, y: crown.y - rise))
+                ctx.stroke(mark, with: .color(paper.opacity(0.7)), style: StrokeStyle(lineWidth: 1, dash: [2, 2]))
+                // Beside the ball's top on the landing side, level with the gap, so the figure sits under the arc
+                // that came down past it rather than on it.
+                let side: CGFloat = sketch.leftward ? -1 : 1
+                ctx.draw(Self.figure(NumberStyle.distance(metres: gap), color: paper),
+                         at: CGPoint(x: crown.x + side * (r * 0.7 + 4), y: crown.y - rise / 2),
+                         anchor: sketch.leftward ? .trailing : .leading)
+            }
         }
 
         // The whole story faint and dashed, the part already flown bright.
@@ -468,6 +493,12 @@ struct FlightSideView: View {
                     tick.move(to: CGPoint(x: peakX - 4, y: y)); tick.addLine(to: CGPoint(x: peakX + 4, y: y))
                 }
                 ctx.stroke(tick, with: .color(paper.opacity(strength)), lineWidth: 1.2)
+                // The height as a bare figure in cm beside the marker (UI rethink package 9), on the side away from
+                // the way the jump runs, so it sits over the run-up rather than over the arc.
+                let label = Self.figure(NumberStyle.distance(metres: s.peakGap), color: paper.opacity(strength))
+                let side: CGFloat = sketch.leftward ? 1 : -1
+                ctx.draw(label, at: CGPoint(x: peakX + side * 6, y: (base + underside) / 2),
+                         anchor: sketch.leftward ? .leading : .trailing)
                 // The ball at the top, faint, so the marker visibly ends at its underside.
                 if let peak = s.arc.prefix(through: max(0, min(s.arc.count - 1, s.sample(at: s.hops[0].t1))))
                     .min(by: { abs($0.x - s.peakAlong) < abs($1.x - s.peakAlong) }) {
@@ -510,6 +541,19 @@ struct FlightSideView: View {
         let now = point(s.arc[flown])
         ctx.fill(Path(ellipseIn: ball(at: now)), with: .color(paper))
         ctx.stroke(Path(ellipseIn: ball(at: now)), with: .color(accent), lineWidth: 1.5)
+    }
+
+    /// A bare figure for the drawing (UI rethink package 9): the number in the inline figure face and its unit smaller
+    /// in paper2, on one baseline, as the kit's KitFigure draws one (a Canvas cannot host that view, so the same two
+    /// fonts are set on one attributed run). No words: only the unit's symbol in the shown language.
+    private static func figure(_ reading: NumberStyle.Reading, color: Color) -> Text {
+        var number = AttributedString(reading.number)
+        number.font = Theme.inlineFigure
+        number.foregroundColor = color
+        var unit = AttributedString(NumberStyle.hugs(reading.unitKey) ? reading.unit : "\u{00A0}" + reading.unit)
+        unit.font = Theme.inlineUnit
+        unit.foregroundColor = color.opacity(0.64)
+        return Text(number + unit)
     }
 
     /// Where the panel's centre goes: below, above, right or left of the flight on screen, whichever first lies wholly

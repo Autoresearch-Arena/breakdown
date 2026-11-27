@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the list is the kit's sheet
+//          page with the kit's list rows (number or tick, title and hook, five dots from the trick shot built on the
+//          lesson's idea, a small drawing of the start layout); the card is the kit's mode card in every phase, with
+//          "How forgiving" tiles from the lesson's measured window while it is set up and lined up, and the kit-style
+//          result card once judged (the step's name on its right). The slim form keeps its own rule: the full card on
+//          the lesson's moment (#38). The glow follows the screen's own corners.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -28,9 +34,10 @@
 // PURPOSE: Everything the player sees of lesson mode (LessonMode), kept small so the table stays big, on the trick-shot
 //          views' pattern:
 //          LessonList       - the six lessons in a sheet from the menu's Learn (a page of the notebook on the open
-//                             folding phone, iPad and Mac): number or a tick once passed, title and one line. Nothing
-//                             is locked: any lesson can be opened at any time.
-//          LessonCard       - one compact glass card above the controls (or in the side column, or as a card of the
+//                             folding phone, iPad and Mac): number or a tick once passed, title and one line, five
+//                             dots and the start layout drawn small. Nothing is locked: any lesson can be opened at any
+//                             time.
+//          LessonCard       - the kit's mode card above the controls (or in the side column, or as a card of the
 //                             notebook panel): the lesson and Watch it; what to watch for while it plays; the idea while
 //                             the replay is paused on the lesson's moment, with Your turn; for each try a line saying
 //                             what is set, what is open and where the marks are; then Made it or Missed with the judge's
@@ -51,11 +58,11 @@
 //                             list sheet, forwards the model's playback changes to LessonMode.update() and its clock to
 //                             tick() (so the Lens replay stops on the lesson's moment), and opens or closes the shot panel
 //                             when the mode asks.
-//          Standard controls (Liquid Glass buttons, a List, SF Symbols), Dynamic Type (button rows wrap, text wraps),
+//          The kit's sheet page, list row, mode card and buttons, Dynamic Type (button rows wrap, text wraps),
 //          VoiceOver (the card's header and state read as one; the step line says which controls are locked), Reduce
 //          Motion (the glow only fades; the card changes without animation).
-// SRP/DRY check: Pass - views only. Flow is LessonMode, data Lessons; projection to the screen is AimProjector, card
-//          styling the shared glassCard, the result card's retry pieces RetryWords and ContactButton, as in
+// SRP/DRY check: Pass - views only. Flow is LessonMode, data Lessons; projection to the screen is AimProjector, the
+//          card, rows and sheet the kit's (difficulty, forgiving tiles and result card from ModeFrameKit.swift), the result card's retry pieces RetryWords and ContactButton, as in
 //          TrickShotViews. The trick card itself is not reused because its phases and buttons differ step by step.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -65,33 +72,25 @@ import SwiftUI
 
 struct LessonList: View {
     let mode: LessonMode
-    @Environment(\.palette) private var palette
     /// True when the list is a page of the notebook (iPad, Mac, the open Duo) rather than a sheet of its own.
     @Environment(\.inlinePages) private var inlinePages
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    ForEach(Lessons.all) { lesson in
-                        Button { mode.begin(lesson) } label: { row(lesson) }
-                            .accessibilityElement(children: .combine)
-                            .accessibilityLabel(spoken(lesson))
-                            .accessibilityHint(String(localized: "Sets up the lesson on the table"))
-                    }
-                } footer: {
-                    Text("Watch each lesson, try it three times with less help each time, then pass it on your own.")
+        // UI rethink package 5: the kit's sheet page and list rows, as the trick shots and Behind the 8-Ball lists.
+        // Done closes the list, as Close did.
+        SheetPage(title: String(localized: "Lessons"), onDone: { mode.listOpen = false }) {
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                ForEach(Lessons.all) { lesson in
+                    Button { mode.begin(lesson) } label: { row(lesson) }
+                        .buttonStyle(.plain)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(spoken(lesson))
+                        .accessibilityHint(String(localized: "Sets up the lesson on the table"))
                 }
             }
-            .navigationTitle("Lessons")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Close") { mode.listOpen = false } }
-            }
+        } footer: {
+            Text("Watch each lesson, try it three times with less help each time, then pass it on your own.")
         }
-        .tint(palette.accent)
         #if os(macOS)
         // A sheet's own minimum size; as a page of the Mac notebook it takes the panel's size (0.7.5: the minimum
         // pushed the list past the panel's edge). Nil sizes rather than an if, so the view keeps its identity.
@@ -99,28 +98,12 @@ struct LessonList: View {
         #endif
     }
 
+    /// The kit's list row: the lesson's number (a tick once passed), title and hook, five dots, and its start layout.
     private func row(_ lesson: Lesson) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 14) {
-            ZStack {
-                if mode.isDone(lesson) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(palette.accent)
-                } else {
-                    Text(verbatim: "\(lesson.number)").font(Theme.equation).foregroundStyle(palette.accent)
-                }
-            }
-            .font(.title3)
-            .frame(minWidth: 28)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(verbatim: lesson.title).font(Theme.heading).foregroundStyle(.primary)
-                Text(verbatim: lesson.hook)
-                    .font(Theme.body)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(.vertical, 6)
-        .contentShape(Rectangle())
+        let leading: ListRow<DifficultyDots, ModeStartThumb>.Leading = mode.isDone(lesson) ? .done : .number(lesson.number)
+        return ListRow(leading: leading, title: lesson.title, line: lesson.hook,
+                       difficulty: { DifficultyDots(level: ModeDifficulty.dots(lesson: lesson)) },
+                       picture: { ModeStartThumb(layout: lesson.layout) })
     }
 
     private func spoken(_ lesson: Lesson) -> String {
@@ -133,11 +116,10 @@ struct LessonList: View {
 
 struct LessonCard: View {
     let model: ShowpieceModel
-    @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var typeSize
     /// On a phone held upright while a guided Lens replay plays (set by ShowpieceView, App/LayoutFlags.swift): the slim
-    /// card, heading and main button only, so the table keeps its height.
+    /// card, heading and main button only, so the table keeps its height. The kit's ModeCard slims itself on the same
+    /// flag; this card picks the one action it keeps.
     @Environment(\.lensReplayCompact) private var compact
 
     private var mode: LessonMode { model.lessonMode }
@@ -149,262 +131,194 @@ struct LessonCard: View {
         // While a what-if is open on the try (0.7.5, WhatIfFork.isShowing) its card is the one result card: this one
         // steps aside and comes back, unchanged, when the what-if closes.
         if let lesson = mode.current, mode.isActive, !model.holdForTips, !model.otherFutureShowing {
-            VStack(alignment: .leading, spacing: 8) {
+            Group {
                 // Paused on the lesson's moment the full card shows, slim or not: the idea is the reason the replay
-                // stopped there (0.7.6, #38; the guided flag stays on while the clock is held on the moment).
-                if compact && mode.phase != .keyMoment { slim(lesson) } else { content(lesson) }
+                // stopped there (0.7.6, #38; the guided flag stays on while the clock is held on the moment). The kit
+                // card's own slimming is turned off there for the same reason.
+                if compact && mode.phase != .keyMoment {
+                    slim(lesson)
+                } else {
+                    content(lesson).environment(\.lensReplayCompact, false)
+                }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
-            .tint(palette.accent)
-            .animation(reduceMotion ? nil : .snappy, value: mode.phase)
+            .animation(reduceMotion ? nil : Theme.Motion.standard, value: mode.phase)
             // The pass's success haptic is LessonTableLayer's (with the glow and the sound), so it fires in every layout.
             .transition(.opacity)
         }
     }
 
+    /// The lesson's name as the card's name: "Lesson 2: Follow".
+    private func name(_ lesson: Lesson) -> String { String(localized: "Lesson \(lesson.number): \(lesson.title)") }
+
     @ViewBuilder
     private func content(_ lesson: Lesson) -> some View {
+        let dots = ModeDifficulty.dots(lesson: lesson)
         switch mode.phase {
         case .ready:
-            header(lesson, step: nil)
-            line(lesson.hook)
-            buttons {
-                listButton
-                // Watching first is the lesson's path, but nothing is gated: a player who knows the shot may go
-                // straight to the first try.
-                turnButton(prominent: false)
-                styled(Button { mode.watch() } label: {
-                    Label("Watch it", systemImage: "play.fill").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: true)
-                .accessibilityHint(String(localized: "Plays a perfect example, then slows it down in the Physics Lens"))
+            // Watching first is the lesson's path, but nothing is gated: a player who knows the shot may go straight to
+            // the first try.
+            ModeCard(name: name(lesson), difficulty: dots, goal: lesson.hook,
+                     primary: watchAction, secondary: turnAction, more: [listAction]) {
+                ForgivingTiles(window: lesson.window, isBreak: false)
             }
+            .modeShortcut(watchAction, .defaultAction)
         case .watching, .replaying:
-            header(lesson, step: nil)
-            line(mode.phase == .watching ? String(localized: "Watch a perfect example. \(lesson.goalLine)")
-                                         : String(localized: "Now slowed down in the Physics Lens. It stops on the moment that matters."))
-            buttons { turnButton(prominent: false) }
+            ModeCard(name: name(lesson), difficulty: dots,
+                     goal: mode.phase == .watching
+                        ? String(localized: "Watch a perfect example. \(lesson.goalLine)")
+                        : String(localized: "Now slowed down in the Physics Lens. It stops on the moment that matters."),
+                     primary: turnAction)
         case .keyMoment:
-            HStack(spacing: 6) {
-                Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
-                Text("The idea").font(Theme.label).foregroundStyle(palette.paper)
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isHeader)
-            line(lesson.idea)
-            buttons {
-                watchAgainButton
-                turnButton(prominent: true)
-            }
+            ModeCard(name: name(lesson), difficulty: dots, goal: lesson.idea,
+                     primary: turnAction, secondary: watchAgainAction)
+                .modeShortcut(turnAction, .defaultAction)
         case .aiming(let step):
-            header(lesson, step: step)
-            line(stepLine(lesson, step))
-            if step == .pass || step == .exercise { line(step == .exercise ? Lessons.stopExercise.trick.goalLine : lesson.goalLine) }
-            buttons { listButton }
+            // Lining up: the aiming panel's Shoot is the screen's one primary. The step's name leads its line, as the
+            // card's corner said it before.
+            ModeCard(name: name(lesson), difficulty: dots, goal: aimingLine(lesson, step),
+                     primary: nil, more: [listAction]) {
+                ForgivingTiles(window: step == .exercise ? Lessons.stopExercise.window : lesson.window, isBreak: false)
+            }
         case .judged(let step, let verdict):
             judged(lesson, step, verdict)
-        case .offScript(let step):
-            header(lesson, step: step)
-            line(String(localized: "That shot started from where the balls stopped. Try again puts them back for the lesson."))
-            buttons { tryAgainButton(prominent: true) }
+        case .offScript:
+            ModeCard(name: name(lesson), difficulty: dots,
+                     goal: String(localized: "That shot started from where the balls stopped. Try again puts them back for the lesson."),
+                     primary: tryAgainAction)
+                .modeShortcut(tryAgainAction, .defaultAction)
         case .off:
             EmptyView()
         }
     }
 
+    /// The step's name, what is set, open and marked in it, and for the pass shot and the exercise their goal.
+    private func aimingLine(_ lesson: Lesson, _ step: LessonMode.Step) -> String {
+        var parts = [LessonWords.stepName(step) + ".", LessonWords.stepLine(lesson, step, powerHeld: mode.powerHeld)]
+        if step == .pass { parts.append(lesson.goalLine) }
+        if step == .exercise { parts.append(Lessons.stopExercise.trick.goalLine) }
+        return parts.joined(separator: " ")
+    }
+
+    /// Lesson passed, Made it or Missed in the result card, the step's name on its right; the judge's line, the retry's
+    /// one difference (RetryWords) and, after a pass, the trick shot built on the idea. The way on bottom right:
+    ///   passed:               Next lesson, with Try the trick shot beside it; A new distance (the stop lesson) under More;
+    ///   the pass shot missed: Try again, with Back to the lesson's stroke beside it;
+    ///   the exercise:         Try again (primary after a miss), All lessons under More after a make;
+    ///   a guided try:         Next step after a make, Try again after a miss, the other beside it.
+    /// See the contact is under More whenever the cue ball touched a ball.
     @ViewBuilder
     private func judged(_ lesson: Lesson, _ step: LessonMode.Step, _ verdict: TrickVerdict) -> some View {
         let passed = verdict.made && step == .pass
-        HStack(spacing: 8) {
-            Image(systemName: verdict.made ? "checkmark.seal.fill" : "arrow.uturn.backward.circle")
-                .foregroundStyle(verdict.made ? palette.accent : palette.warning)
-                .accessibilityHidden(true)
-            Text(passed ? String(localized: "Lesson passed") : (verdict.made ? String(localized: "Made it!") : String(localized: "Missed")))
-                .font(Theme.heading)
-            Spacer(minLength: 0)
-            Text(verbatim: stepName(step)).font(Theme.label).foregroundStyle(palette.paper2)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
-        line(verdict.line)
-        // After a retry, the one difference between the two tries, here on the one result card.
-        if let c = model.retryComparison { line(RetryWords.sentence(c)) }
-        if passed, let trick = mode.suggestedTrick {
-            line(String(localized: "The trick shot \(trick.title) is built on this idea."))
-        }
-        buttons {
-            // Back to the moment of contact, with the last try's trail beside it (shown when a ball was touched).
-            ContactButton(model: model)
-            if passed {
-                if lesson.id == Lessons.stop.id {
-                    plainButton(String(localized: "A new distance"), symbol: "arrow.left.and.right") { mode.startExercise() }
-                        .accessibilityHint(String(localized: "The same pot with the cue ball further back"))
+        let contact = ContactButton.kitAction(model: model, reduceMotion: reduceMotion)
+        let word = passed ? String(localized: "Lesson passed")
+            : (verdict.made ? String(localized: "Made it!") : String(localized: "Missed"))
+        let tone: ResultTone = verdict.made ? .passed : .foul
+        let corner = LessonWords.stepName(step)
+        let lines = judgedLines(passed: passed, verdict)
+        if passed {
+            let trick = mode.suggestedTrick.map { _ in
+                KitAction(String(localized: "Try the trick shot"), systemImage: "wand.and.sparkles") {
+                    mode.playSuggestedTrick()
                 }
-                if mode.suggestedTrick != nil {
-                    plainButton(String(localized: "Try the trick shot"), symbol: "wand.and.sparkles") { mode.playSuggestedTrick() }
-                }
-                nextLessonButton
-            } else if step == .pass || step == .exercise {
-                // A missed pass shot: Try again keeps the player's own settings; this puts the lesson's stroke back.
-                if step == .pass && !verdict.made {
-                    plainButton(String(localized: "Back to the lesson's stroke"), symbol: "arrow.counterclockwise") {
-                        mode.backToLessonStroke()
-                    }
-                    .accessibilityHint(String(localized: "Puts the balls back with the lesson's own aim, power and spin"))
-                }
-                tryAgainButton(prominent: !verdict.made)
-                if verdict.made { listButton }
-            } else {
-                tryAgainButton(prominent: !verdict.made)
-                nextStepButton(prominent: verdict.made)
             }
+            let distance = lesson.id == Lessons.stop.id
+                ? KitAction(String(localized: "A new distance"), systemImage: "arrow.left.and.right") { mode.startExercise() }
+                : nil
+            ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
+                           tryAgain: trick, next: nextLessonAction,
+                           more: [distance, contact].compactMap { $0 })
+                .modeShortcut(nextLessonAction, .defaultAction)
+        } else if step == .pass {
+            // A missed pass shot: Try again keeps the player's own settings; this puts the lesson's stroke back.
+            let back = KitAction(String(localized: "Back to the lesson's stroke"), systemImage: "arrow.counterclockwise") {
+                mode.backToLessonStroke()
+            }
+            ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
+                           tryAgain: back, next: tryAgainAction, more: [contact].compactMap { $0 })
+                .modeShortcut(tryAgainAction, .defaultAction)
+        } else if step == .exercise {
+            if verdict.made {
+                ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
+                               tryAgain: tryAgainAction, more: [listAction, contact].compactMap { $0 })
+            } else {
+                ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
+                               next: tryAgainAction, more: [contact].compactMap { $0 })
+                    .modeShortcut(tryAgainAction, .defaultAction)
+            }
+        } else if verdict.made {
+            ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
+                           tryAgain: tryAgainAction, next: nextStepAction, more: [contact].compactMap { $0 })
+                .modeShortcut(nextStepAction, .defaultAction)
+        } else {
+            ModeResultCard(verdict: word, tone: tone, corner: corner, lines: lines,
+                           tryAgain: nextStepAction, next: tryAgainAction, more: [contact].compactMap { $0 })
+                .modeShortcut(tryAgainAction, .defaultAction)
         }
     }
 
-    /// The slim card (0.7.5, lensReplayCompact): the lesson's heading and the one button that moves the lesson on, so a
+    /// The judge's line, the retry's difference and, after a pass, the trick shot built on the idea.
+    private func judgedLines(passed: Bool, _ verdict: TrickVerdict) -> [String] {
+        var lines = [verdict.line]
+        // After a retry, the one difference between the two tries, here on the one result card.
+        if let c = model.retryComparison { lines.append(RetryWords.sentence(c)) }
+        if passed, let trick = mode.suggestedTrick {
+            lines.append(String(localized: "The trick shot \(trick.title) is built on this idea."))
+        }
+        return lines
+    }
+
+    /// The slim card (0.7.5, lensReplayCompact): the lesson's name and the one action that moves the lesson on, so a
     /// guided Lens replay on a phone held upright keeps the table its height. Your turn during the Watch beat; after a
-    /// try, Next lesson for a pass, Next step for a made guided try, Try again otherwise; nothing more while aiming.
+    /// try, Next lesson for a pass, Next step for a made guided try, Try again otherwise; the name alone while aiming.
     /// Never used for the key moment itself (body shows the full card there, with the idea).
     @ViewBuilder
     private func slim(_ lesson: Lesson) -> some View {
-        header(lesson, step: mode.step)
+        let dots = ModeDifficulty.dots(lesson: lesson)
         switch mode.phase {
         case .ready, .watching, .replaying, .keyMoment:
-            buttons { turnButton(prominent: true) }
+            ModeCard(name: name(lesson), difficulty: dots, goal: lesson.hook, primary: turnAction)
         case .judged(let step, let verdict):
-            buttons {
-                if verdict.made && step == .pass {
-                    nextLessonButton
-                } else if verdict.made && step != .exercise {
-                    nextStepButton(prominent: true)
-                } else {
-                    tryAgainButton(prominent: true)
-                }
-            }
+            let action = verdict.made && step == .pass ? nextLessonAction
+                : (verdict.made && step != .exercise ? nextStepAction : tryAgainAction)
+            ModeCard(name: name(lesson), difficulty: dots, goal: verdict.line, primary: action)
         case .offScript:
-            buttons { tryAgainButton(prominent: true) }
-        case .aiming, .off:
+            ModeCard(name: name(lesson), difficulty: dots, goal: lesson.goalLine, primary: tryAgainAction)
+        case .aiming:
+            ModeCard(name: name(lesson), difficulty: dots, goal: lesson.goalLine, primary: nil)
+        case .off:
             EmptyView()
         }
     }
 
-    private var nextLessonButton: some View {
-        styled(Button { mode.nextLesson() } label: {
-            Label("Next lesson", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: true)
-        .keyboardShortcut(.defaultAction)
+    // MARK: Actions
+
+    private var watchAction: KitAction {
+        KitAction(String(localized: "Watch it"), systemImage: "play") { mode.watch() }
     }
 
-    private func nextStepButton(prominent: Bool) -> some View {
-        styled(Button { mode.nextStep() } label: {
-            Label("Next step", systemImage: "arrow.forward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint(String(localized: "Goes on to the next try, with less help"))
+    private var watchAgainAction: KitAction {
+        KitAction(String(localized: "Watch again"), systemImage: "arrow.counterclockwise") { mode.watch() }
     }
 
-    // MARK: Words
-
-    /// The step's name and line (LessonWords, shared with the upright phone's blurbs).
-    private func stepName(_ step: LessonMode.Step) -> String { LessonWords.stepName(step) }
-
-    private func stepLine(_ lesson: Lesson, _ step: LessonMode.Step) -> String {
-        LessonWords.stepLine(lesson, step, powerHeld: mode.powerHeld)
+    private var turnAction: KitAction {
+        KitAction(String(localized: "Your turn"), systemImage: "target") { mode.yourTurn() }
     }
 
-    // MARK: Pieces
-
-    private func header(_ lesson: Lesson, step: LessonMode.Step?) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(String(localized: "Lesson \(lesson.number): \(lesson.title)")).font(Theme.heading).lineLimit(2)
-            Spacer(minLength: 0)
-            if let step { Text(verbatim: stepName(step)).font(Theme.label).foregroundStyle(palette.paper2) }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+    private var tryAgainAction: KitAction {
+        KitAction(String(localized: "Try again"), systemImage: "arrow.uturn.backward") { mode.tryAgain() }
     }
 
-    private func line(_ text: String) -> some View {
-        Text(verbatim: text)
-            .font(Theme.body)
-            .foregroundStyle(palette.paper.opacity(0.9))
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
+    private var nextLessonAction: KitAction {
+        KitAction(String(localized: "Next lesson"), systemImage: "arrow.forward") { mode.nextLesson() }
     }
 
-    /// One row of buttons, right-aligned; two rows when the text is too large for one (as the trick card).
-    private func buttons<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        let row = content()
-        return Group {
-            if typeSize.isAccessibilitySize {
-                VStack(alignment: .trailing, spacing: 8) { row }.frame(maxWidth: .infinity, alignment: .trailing)
-            } else {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { Spacer(minLength: 0); row }
-                    WrappingRow { row }.frame(maxWidth: .infinity, alignment: .trailing)
-                }
-            }
-        }
-        .controlSize(.regular)
+    private var nextStepAction: KitAction {
+        KitAction(String(localized: "Next step"), systemImage: "arrow.forward") { mode.nextStep() }
     }
 
-    private func turnButton(prominent: Bool) -> some View {
-        styled(Button { mode.yourTurn() } label: {
-            Label("Your turn", systemImage: "target").font(.headline).lineLimit(1).frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint(String(localized: "Puts the balls back and opens the aiming controls"))
+    private var listAction: KitAction {
+        KitAction(String(localized: "All lessons"), systemImage: "list.bullet") { mode.listOpen = true }
     }
-
-    private var watchAgainButton: some View {
-        styled(Button { mode.watch() } label: {
-            Label("Watch again", systemImage: "arrow.counterclockwise").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: false)
-    }
-
-    private func tryAgainButton(prominent: Bool) -> some View {
-        styled(Button { mode.tryAgain() } label: {
-            Label("Try again", systemImage: "arrow.uturn.backward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: prominent)
-        .accessibilityHint(String(localized: "Puts the balls back where the shot started, with your last aim, power and spin"))
-    }
-
-    private func plainButton(_ title: String, symbol: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Label(title, systemImage: symbol).font(.headline).lineLimit(1).frame(minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glass)
-    }
-
-    private var listButton: some View {
-        Button { mode.listOpen = true } label: {
-            Label("All lessons", systemImage: "list.bullet").labelStyle(.iconOnly)
-                .frame(minWidth: 30, minHeight: Self.buttonHeight)
-        }
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .accessibilityLabel(String(localized: "All lessons"))
-    }
-
-    @ViewBuilder
-    private func styled(_ button: some View, prominent: Bool) -> some View {
-        if prominent {
-            // Dark text on the bright accent: white on cyan is too faint (as the Shoot button).
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
-        } else {
-            button.buttonStyle(.glass)
-        }
-    }
-
-    /// The glass button adds its own padding; this lands the buttons on 44 points or more on a touch screen.
-    #if os(iOS)
-    private static let buttonHeight: CGFloat = 30
-    #else
-    private static let buttonHeight: CGFloat = 0
-    #endif
 }
 
 // MARK: Words shared by the card and the blurbs
@@ -647,7 +561,8 @@ struct LessonTableLayer: View {
                 }
             }
             // A lesson passed: a short glow around the edge of the screen. It only fades, the same with Reduce Motion.
-            RoundedRectangle(cornerRadius: 48, style: .continuous)
+            // The screen's own corners (ContainerRelativeShape), not a card's: no corner number of its own.
+            ContainerRelativeShape()
                 .strokeBorder(palette.accent, lineWidth: 6)
                 .blur(radius: 10)
                 .opacity(glow)

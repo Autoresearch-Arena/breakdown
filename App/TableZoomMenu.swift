@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets": the zoom
+//          button is the kit's glass control and carries its word, "Zoom", on big screens (TopBarControlLabel); a phone
+//          keeps the icon alone. The entries and what they do are unchanged.)
 // PURPOSE: Zoom without a gesture (plans/25-Nov-2026-everyone-can-play-plan.md, Part B items 2 and 3). The table zooms by
 //          pinch, two-finger drag and double tap (TableZoomGestures); a player who cannot pinch or double-tap had only
 //          the Mac's View menu and VoiceOver's actions. This adds the same zoom as plain menu entries, on every layout:
@@ -80,7 +83,8 @@ struct TableZoomMenuItems: View {
     }
 }
 
-/// The round glass zoom button for the title row and the notebook's top bar.
+/// The glass zoom button for the title row and the notebook's top bar: "Zoom" with its icon on big screens, the icon
+/// alone on a phone (UI rethink package 7).
 struct TableZoomMenuButton: View {
     let model: ShowpieceModel
 
@@ -88,15 +92,14 @@ struct TableZoomMenuButton: View {
         Menu {
             TableZoomMenuItems(model: model)
         } label: {
-            Label(TableZoomWords.zoom, systemImage: "plus.magnifyingglass")
-                .labelStyle(.iconOnly)
-                .font(.body.weight(.semibold))
-                .frame(width: 22, height: 22)
+            TopBarControlLabel(TableZoomWords.zoom, systemImage: "plus.magnifyingglass")
+                .topBarMenuGlass()
         }
         .menuIndicator(.hidden)
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .controlSize(.regular)
+        // The label carries the glass itself (a Menu does not reliably take a custom button style); plain keeps the
+        // system's accent off it.
+        .menuStyle(.button)
+        .buttonStyle(.plain)
         .hoverHighlight()
         .accessibilityLabel(TableZoomWords.zoom)
     }

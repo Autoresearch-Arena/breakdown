@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: BridgeControl's label is the
+//          kit's label role in paper2, its pill the sunken surface with a hairline edge, its hover the small corner;
+//          `showsLabel` lets the console's control row print "Bridge" as its own label.)
 // PURPOSE: Typing an exact value into the strike panel (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stage 2
 //          item 4, and stage 3 item 6). A tap on the Swing, Tip, Cue angle, Cut or Bridge tile opens a small number field
 //          with a stepper, so a player can enter 2.60 or step by a hundredth. Each field writes the same model values the
@@ -150,6 +153,7 @@ struct StrikeEntryField: View {
     let model: ShowpieceModel
     let kind: StrikeEntry.Kind
     @FocusState private var focused: Bool
+    @Environment(\.palette) private var palette
 
     var body: some View {
         let range = kind.range(model)
@@ -158,12 +162,12 @@ struct StrikeEntryField: View {
         // brought back inside it before it reaches the model.
         let clamped = Binding<Double>(get: { value.wrappedValue },
                                       set: { value.wrappedValue = min(max($0, range.lowerBound), range.upperBound) })
-        VStack(alignment: .leading, spacing: 10) {
-            Text(verbatim: kind.name).font(Theme.label).foregroundStyle(.secondary)
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
+            Text(verbatim: kind.name).font(Theme.label).foregroundStyle(palette.paper2)
+            HStack(spacing: Theme.Space.xs) {
                 TextField(kind.name, value: clamped,
                           format: .number.locale(AppLocale.numbers).precision(.fractionLength(kind.decimals)))
-                    .font(.system(.title3, design: .monospaced).weight(.semibold))
+                    .font(Theme.controlFigure)
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .focused($focused)
@@ -171,13 +175,14 @@ struct StrikeEntryField: View {
                     #if os(iOS)
                     .keyboardType(.numbersAndPunctuation)
                     #endif
-                Text(verbatim: kind.unit).font(Theme.body).foregroundStyle(.secondary)
+                Text(verbatim: kind.unit).font(Theme.controlUnit).foregroundStyle(palette.paper2)
                 Stepper(kind.name, value: clamped, in: range, step: kind.step)
                     .labelsHidden()
             }
         }
-        .padding(16)
+        .padding(Theme.Space.md)
         .frame(minWidth: 260)
+        .tint(palette.accent)
         .onAppear { focused = true }
         .accessibilityElement(children: .contain)
     }
@@ -194,21 +199,25 @@ struct BridgeControl: View {
     var figureSize: CGFloat = 26
     /// The pill beside the figure (one row, the Mac's button row) instead of under it.
     var inline = false
+    /// "Bridge" over the figure; off where the console's control row labels it.
+    var showsLabel = true
     @Environment(\.palette) private var palette
 
     var body: some View {
-        let layout = inline ? AnyLayout(HStackLayout(alignment: .center, spacing: 14))
-                            : AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+        let layout = inline ? AnyLayout(HStackLayout(alignment: .center, spacing: Theme.Space.sm))
+                            : AnyLayout(VStackLayout(alignment: .leading, spacing: Theme.Space.xs))
         layout {
             TypeableFigure(model: model, kind: .bridge, spokenLabel: StrikeWords.bridgeLabel,
                            spokenValue: StrikeSpoken.centimetres(model.strokeBridgeLength)) {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(verbatim: StrikeWords.bridgeLabel)
-                        .font(.system(size: max(13, figureSize * 0.55), weight: .semibold))
-                        .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: Theme.Space.figureToLabel) {
+                    if showsLabel {
+                        Text(verbatim: StrikeWords.bridgeLabel)
+                            .font(Theme.label)
+                            .foregroundStyle(palette.paper2)
+                    }
                     FigureLine(figure: StrikeWords.centimetresFigure(model.strokeBridgeLength), size: figureSize,
                                role: .set, editable: StrikeEntry.Kind.bridge.isOpen(model))
-                        .padding(.bottom, 4)
+                        .padding(.bottom, Theme.Space.xxs)
                 }
             }
             pill
@@ -219,11 +228,11 @@ struct BridgeControl: View {
     private var pill: some View {
         HStack(spacing: 0) {
             step(-1, systemImage: "minus", label: StrikeWords.shorterBridge)
-            Rectangle().fill(palette.rule).frame(width: 1, height: 28).accessibilityHidden(true)
+            Rectangle().fill(palette.rule).frame(width: Theme.Size.hairline, height: Theme.Space.lg).accessibilityHidden(true)
             step(1, systemImage: "plus", label: StrikeWords.longerBridge)
         }
-        .background(Color.white.opacity(0.06), in: .capsule)
-        .overlay(Capsule().strokeBorder(palette.rule, lineWidth: 1))
+        .background(palette.panelSunken, in: .capsule)
+        .overlay(Capsule().strokeBorder(palette.rule, lineWidth: Theme.Size.hairline))
         .disabled(!StrikeEntry.Kind.bridge.isOpen(model))
     }
 
@@ -236,13 +245,13 @@ struct BridgeControl: View {
             binding.wrappedValue = min(max(now + direction, range.lowerBound), range.upperBound)
         } label: {
             Image(systemName: systemImage)
-                .font(.title3.weight(.semibold))
+                .font(Theme.heading)
                 .foregroundStyle(palette.accent)
                 .frame(width: InstrumentSize.stepperWidth, height: InstrumentSize.stepperHeight)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .hoverHighlight(.fill(cornerRadius: 24))
+        .hoverHighlight(.fill(cornerRadius: Theme.Corner.capsule(height: InstrumentSize.stepperHeight)))
         .accessibilityLabel(Text(verbatim: label))
         .accessibilityValue(Text(verbatim: StrikeSpoken.centimetres(model.strokeBridgeLength)))
     }

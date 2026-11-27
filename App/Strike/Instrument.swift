@@ -1,5 +1,10 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the editable mark is the
+//          kit's KitEditableMark (1.5 points, always cyan; DottedUnderline is gone); the delta role and Readout's
+//          planned-to-delivered form are gone, since planned against delivered lives only in the "Last shot" card;
+//          BandCaption is the kit's section label; bandSurface is the panel (or, for the ledger, the sunken strip) with
+//          Theme's corners; the handle's ring and the chip's corners take tokens.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: the difference chip is paper2 on a sunken chip,
 //          the delivered figure paper; the delta yellow is retired.)
 // PURPOSE: The aiming panel's shared instrument kit (plans/26-Nov-2026-aiming-panel-redesign-plan.md, step 2), so the
@@ -58,7 +63,7 @@ struct InstrumentHandle: View {
     var body: some View {
         Circle()
             .fill(style == .accent ? palette.accent : palette.paper)
-            .overlay(Circle().strokeBorder(Color.black.opacity(0.75), lineWidth: max(1.5, diameter * 0.09)))
+            .overlay(Circle().strokeBorder(palette.ground.opacity(0.75), lineWidth: max(1.5, diameter * 0.09)))
             .frame(width: diameter, height: diameter)
             .background {
                 Circle()
@@ -72,24 +77,9 @@ struct InstrumentHandle: View {
 
 // MARK: Figures
 
-/// The dotted underline under a figure a tap types into: round dots in the figure's own colour.
-struct DottedUnderline: View {
-    var color: Color
-    var body: some View {
-        Canvas { ctx, size in
-            var p = Path()
-            p.move(to: CGPoint(x: 1, y: size.height / 2)); p.addLine(to: CGPoint(x: size.width - 1, y: size.height / 2))
-            ctx.stroke(p, with: .color(color), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [0.1, 5]))
-        }
-        .frame(height: 3)
-        .allowsHitTesting(false)
-        .accessibilityHidden(true)
-    }
-}
-
-/// What a figure is to the player: something they set (cyan), a result that follows (paper white), or a delivered
-/// figure that differs from the plan (delta yellow).
-enum FigureRole { case set, result, delta }
+/// What a figure is to the player: something they set (cyan) or a result that follows (paper). UI rethink package 4:
+/// the delta role went with the delta yellow; a delivered figure is a result, in paper, inside the "Last shot" card.
+enum FigureRole { case set, result }
 
 /// A figure's number with its unit, smaller and grey, on the same baseline.
 struct FigureLine: View {
@@ -107,12 +97,13 @@ struct FigureLine: View {
                 .font(Theme.figure(size: size))
                 .foregroundStyle(color)
                 .overlay(alignment: .bottom) {
-                    if editable { DottedUnderline(color: color).offset(y: max(4, size * 0.16)) }
+                    // The kit's editable mark: 1.5 points, dotted, always cyan (its only meaning).
+                    if editable { KitEditableMark().offset(y: max(Theme.Space.xxs, size * 0.16)) }
                 }
             if !figure.unit.isEmpty {
                 Text(verbatim: figure.unit)
                     .font(Theme.unit(size: size))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(palette.paper2)
             }
         }
         // One line at the ordinary sizes; at the accessibility sizes nothing shrinks (0.7.10 everyone), it wraps.
@@ -124,13 +115,12 @@ struct FigureLine: View {
         switch role {
         case .set: return palette.accent
         case .result: return palette.paper
-        case .delta: return palette.delta
         }
     }
 }
 
-/// A label, a figure and an optional word on the figure's baseline; after a shot, optionally the planned figure, an
-/// arrow and the delivered one in the delta yellow ("10.0 → 14.0 mm below").
+/// A label, a figure and an optional word on the figure's baseline ("6.3 mm below"). UI rethink package 4: always the
+/// live figure; the planned-to-delivered form went to the "Last shot" card.
 struct Readout: View {
     var label: String? = nil
     let figure: FigureText
@@ -139,33 +129,23 @@ struct Readout: View {
     var editable = false
     /// A word after the unit, on the same baseline ("firm", "below").
     var trailing: String? = nil
-    /// After a shot, when the delivered figure differs: `figure` is then the planned one and this the delivered.
-    var delivered: FigureText? = nil
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Theme.Space.figureToLabel) {
             if let label {
                 Text(verbatim: label)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .font(Theme.label)
+                    .foregroundStyle(palette.paper2)
                     .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
             }
             HStack(alignment: .firstTextBaseline, spacing: size * 0.18) {
-                if let delivered {
-                    // Planned in its own colour, then the arrow and the delivered figure in yellow: the arrow and the
-                    // order say which is which, not the colour alone.
-                    Text(verbatim: figure.number).font(Theme.figure(size: size)).foregroundStyle(palette.accent)
-                    Text(verbatim: "→").font(Theme.unit(size: size)).foregroundStyle(palette.delta)
-                    FigureLine(figure: delivered, size: size, role: .delta)
-                } else {
-                    FigureLine(figure: figure, size: size, role: role, editable: editable)
-                }
+                FigureLine(figure: figure, size: size, role: role, editable: editable)
                 if let trailing {
                     Text(verbatim: trailing)
-                        .font(Theme.unit(size: size).weight(.regular))
-                        .foregroundStyle(.secondary)
+                        .font(Theme.label)
+                        .foregroundStyle(palette.paper2)
                         .fixedSize()
                 }
             }
@@ -175,20 +155,20 @@ struct Readout: View {
     }
 }
 
-/// The yellow pill under a figure the stroke changed. Its text always names the plan ("+4.8 vs 11.9 planned").
+/// The worded difference chip ("+4.8 vs 11.9 planned"): paper2 on a sunken chip, no hue of its own. UI rethink package
+/// 4: no longer drawn under the live figures; kept for any caller that words a plan beside a figure.
 struct DeltaChip: View {
     let text: String
     @Environment(\.palette) private var palette
 
     var body: some View {
         Text(verbatim: text)
-            .font(.footnote.monospaced().weight(.semibold))
+            .font(Theme.inlineFigure)
             .foregroundStyle(palette.paper2)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            // UI rethink package 2: no hue of its own; a quiet sunken chip with a hairline edge.
-            .background(palette.panelSunken, in: .rect(cornerRadius: 6, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).strokeBorder(palette.rule, lineWidth: 1))
+            .padding(.horizontal, Theme.Space.chipHorizontal)
+            .padding(.vertical, Theme.Space.chipVertical)
+            // The kit's chip surface: sunken, small corners, no edge.
+            .background(palette.panelSunken, in: Theme.Corner.tileShape)
             .fixedSize(horizontal: false, vertical: true)
     }
 }
@@ -211,7 +191,7 @@ struct TypeableFigure<Content: View>: View {
         Button { open = true } label: { content.contentShape(Rectangle()) }
             .buttonStyle(.plain)
             .disabled(!enabled)
-            .hoverHighlight(.fill(cornerRadius: 10))
+            .hoverHighlight(.fill(cornerRadius: Theme.Corner.small))
             .accessibilityLabel(Text(verbatim: spokenLabel))
             .accessibilityValue(Text(verbatim: spokenValue))
             .accessibilityHint(enabled ? StrikeWords.typeFigureHint : "")
@@ -224,15 +204,12 @@ struct TypeableFigure<Content: View>: View {
 
 // MARK: Bands
 
-/// A band's caption: small, bold, upper case, tracked, grey. A heading for VoiceOver.
+/// A band's caption ("WHAT THE BALL GETS"): the kit's section label (caption, bold, upper case, tracked, paper2), a
+/// heading for VoiceOver.
 struct BandCaption: View {
     let text: String
     var body: some View {
-        Text(verbatim: text)
-            .font(Theme.groupCaption)
-            .tracking(Theme.groupCaptionTracking)
-            .textCase(.uppercase)
-            .foregroundStyle(.secondary)
+        SectionLabel(text)
             .lineLimit(1)
             .accessibilityAddTraits(.isHeader)
     }
@@ -245,7 +222,7 @@ struct HairlineRule: View {
     var body: some View {
         Rectangle()
             .fill(palette.rule)
-            .frame(width: vertical ? 1 : nil, height: vertical ? nil : 1)
+            .frame(width: vertical ? Theme.Size.hairline : nil, height: vertical ? nil : Theme.Size.hairline)
             .accessibilityHidden(true)
     }
 }
@@ -259,15 +236,22 @@ private struct BandSurface: ViewModifier {
         content
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(ledger ? palette.ledger : palette.band, in: .rect(cornerRadius: 16, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(palette.rule, lineWidth: 1))
+            // UI rethink package 4: the house panel (hairline edge, medium corners), or for the ledger the sunken strip
+            // (no edge, small corners), as the design language's surfaces say.
+            .background(ledger ? palette.panelSunken : palette.panel,
+                        in: RoundedRectangle(cornerRadius: ledger ? Theme.Corner.small : Theme.Corner.medium, style: .continuous))
+            .overlay {
+                if !ledger { Theme.Corner.cardShape.strokeBorder(palette.rule, lineWidth: Theme.Size.hairline) }
+            }
     }
 }
 
 extension View {
     /// The flat band surface: an opaque rounded rectangle with a hairline edge. `ledger` takes the darker tone (the
     /// physics line).
-    func bandSurface(ledger: Bool = false, padding: EdgeInsets = EdgeInsets(top: 14, leading: 18, bottom: 14, trailing: 18))
+    func bandSurface(ledger: Bool = false,
+                     padding: EdgeInsets = EdgeInsets(top: Theme.Space.md, leading: Theme.Space.md,
+                                                      bottom: Theme.Space.md, trailing: Theme.Space.md))
         -> some View {
         modifier(BandSurface(ledger: ledger, padding: padding))
     }

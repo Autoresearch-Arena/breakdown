@@ -1,5 +1,8 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: no mark before today's first
+//          try while there is no streak (the progress chip's rule: hidden until something is earned; the empty ring and
+//          "0/5" are gone); the made tick and the streak's flame are outline symbols, as the kit's icons.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the row is now drawn like every other menu row, from
 //          MenuGuide.daily (its name, symbol and one general sentence, also listed on How to play's menu page), so
 //          today's state moved from the sentence into the row's mark: a ring of today's state with the tries used out
@@ -8,9 +11,8 @@
 // PURPOSE: The menu's "Shot of the day" row (plans/25-Nov-2026-shot-of-the-day-plan.md, stage 2 item 4): its name,
 //          symbol, the one line that shows today's state (not played yet, tries left, made on which try and the score,
 //          or missed), its mark and what it does (puts today's shot on the table). The mark shows today's state at a
-//          glance: nothing tried yet, the streak (a flame and the number) while there is one, else an empty ring and
-//          "0/5"; tries used, a half ring and "2/5"; made, a tick and the try that made it ("2/5"); missed, a cross and
-//          "5/5". VoiceOver
+//          glance: nothing tried yet, the streak (a flame and the number) while there is one, else no mark; tries used,
+//          a half ring and "2/5"; made, a tick and the try that made it ("2/5"); missed, a cross and "5/5". VoiceOver
 //          reads the state's whole sentence and the streak. TitleScreen's MenuRow draws it (that view is private to the
 //          menu's file, so TitleScreen turns the mark's plain values into its own MenuRow.Mark), first in the Today
 //          group. No reminders and no pop-ups: this row is the only place the day's state is shown.
@@ -32,20 +34,22 @@ enum DailyMenuRow {
         return DailyWords.menuOpen(triesLeft: day.triesLeft)
     }
 
-    /// Today's state as the menu's mark (see the file header), always one. Plain values, so TitleScreen turns them into
-    /// its own MenuRow.Mark.
+    /// Today's state as the menu's mark (see the file header): none before today's first try with no streak, as a
+    /// progress chip is hidden until something is earned. Plain values, so TitleScreen turns them into its own
+    /// MenuRow.Mark.
     static func mark(_ model: ShowpieceModel) -> (symbol: String, text: String, spoken: String)? {
         let daily = model.dailyMode
         let streak = daily.streak(asOf: daily.today)
         let streakWords = streak > 0 ? " " + DailyWords.streakSpoken(streak) : ""
         guard let day = daily.result(forDay: daily.today), day.tries > 0 else {
-            // Not tried yet: the streak while there is one, else an empty ring and none of the five tries used.
-            guard streak > 0 else {
-                return ("circle", String(localized: "\(0)/\(DailyRecord.maxTries)"), line(model))
-            }
-            return ("flame.fill", DailyWords.number(streak), DailyWords.streakSpoken(streak))
+            // Not tried yet: the streak while there is one. With no streak there is no mark at all (UI rethink package
+            // 5): a progress chip is hidden until something is earned, as on every menu row; the row's own line says
+            // what the shot of the day is.
+            guard streak > 0 else { return nil }
+            return ("flame", DailyWords.number(streak), DailyWords.streakSpoken(streak))
         }
-        let symbol = day.made ? "checkmark.circle.fill" : day.finished ? "xmark.circle" : "circle.lefthalf.filled"
+        // Outline symbols, as every icon in the kit (no filled icon beside outline ones).
+        let symbol = day.made ? "checkmark.circle" : day.finished ? "xmark.circle" : "circle.lefthalf.filled"
         // The same "3/10" form the other rows' marks use; the try that made it, or the tries used.
         let used = day.madeOnTry ?? day.tries
         let text = String(localized: "\(used)/\(DailyRecord.maxTries)")

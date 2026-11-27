@@ -1,5 +1,13 @@
 // Author: Claude Opus 5.5 High
 // Date: 23-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets", layout only:
+//          the list is the kit's SheetPage (ground, serif title, cyan Done top right) with one panel group per section
+//          under its section label and the rows drawn as the design's list rows (sunken strip, small corners: the
+//          tick or the achievement's symbol leading, name in heading paper, the date or "Not earned yet" and the
+//          sentence or hint in paper2, the count, the drawing or dots trailing, a paper3 chevron on earned rows); an
+//          unearned row's name is paper3, never the system's grey. The detail is a pushed page on the ground with the
+//          kit's primary button for "Watch it in the Lens"; the end note's button is the kit's secondary button and
+//          the note's card is the panel surface. What the rows say and do is unchanged.)
 // PURPOSE: Every view of 0.7.7's achievements (plans/23-Nov-2026-achievements-plan.md, new file 7):
 //          - AchievementList, the page the menu opens (a sheet on phones, a page of the notebook on the open Duo, iPad and
 //            Mac): five sections, every achievement always listed. An earned one shows its symbol lit, its name, the date,
@@ -44,28 +52,20 @@ struct AchievementList: View {
         // Read once per render: the progress the collections' rows count from.
         let progress = book.currentProgress()
         NavigationStack {
-            List {
+            SheetPage(title: AchievementWords.listTitle, onDone: onClose) {
                 ForEach(AchievementGroup.allCases, id: \.self) { group in
-                    Section {
+                    SheetGroup(group.title) {
                         ForEach(Achievements.inGroup(group)) { a in
                             entry(a, progress: progress)
                         }
-                    } header: {
-                        Text(verbatim: group.title)
-                    } footer: {
-                        if group == AchievementGroup.allCases.last {
-                            Text(verbatim: AchievementWords.footer)
-                        }
                     }
                 }
+            } footer: {
+                Text(verbatim: AchievementWords.footer)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .navigationTitle(Text(verbatim: AchievementWords.listTitle))
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Close") { onClose() } }
-            }
+            .frontDoorSheetRoot()
         }
         .tint(palette.accent)
         #if os(macOS)
@@ -78,21 +78,24 @@ struct AchievementList: View {
     /// An earned row pushes its page; an unearned row is plain text (not a disabled button), so VoiceOver reads it.
     @ViewBuilder
     private func entry(_ a: Achievement, progress: AchievementProgress) -> some View {
-        let row = AchievementRow(achievement: a, earned: book.earned(a.id), isNew: newOnOpen.contains(a.id),
+        let earned = book.earned(a.id)
+        let row = AchievementRow(achievement: a, earned: earned, isNew: newOnOpen.contains(a.id),
                                  drawing: book.drawings[a.id], drawingPending: book.drawingPending(a.id),
                                  count: book.progress(of: a, in: progress), items: progress.items(a.progress),
-                                 stacked: typeSize.isAccessibilitySize)
-        if book.earned(a.id) != nil {
+                                 stacked: typeSize.isAccessibilitySize, opens: earned != nil)
+        if earned != nil {
             NavigationLink {
                 AchievementDetail(model: model, achievement: a, onClose: onClose)
+                    .frontDoorPushedPage(title: a.name, onDone: onClose)
             } label: { row }
+                .buttonStyle(.plain)
         } else {
             row
         }
     }
 }
 
-/// One row of the list.
+/// One row of the list, in the design's list row form.
 private struct AchievementRow: View {
     let achievement: Achievement
     let earned: AchievementRecord.Earned?
@@ -105,74 +108,108 @@ private struct AchievementRow: View {
     let items: [AchievementProgressItem]
     /// Accessibility text sizes: the drawing goes above the words, full width.
     let stacked: Bool
+    /// The row opens the achievement's page (earned rows): a chevron says so.
+    let opens: Bool
     @Environment(\.palette) private var palette
+    private var device = KitDeviceReader()
+    /// The leading column and the drawing follow the reader's text size, as the kit's list row's do.
+    @ScaledMetric(relativeTo: .headline) private var leadingWidth: CGFloat = 28
+    @ScaledMetric(relativeTo: .headline) private var thumbWidth: CGFloat = 72
 
-    /// The drawing's width in a row.
-    static let thumbWidth: CGFloat = 64
+    init(achievement: Achievement, earned: AchievementRecord.Earned?, isNew: Bool, drawing: TrickPath?,
+         drawingPending: Bool, count: (done: Int, total: Int)?, items: [AchievementProgressItem], stacked: Bool,
+         opens: Bool) {
+        self.achievement = achievement
+        self.earned = earned
+        self.isNew = isNew
+        self.drawing = drawing
+        self.drawingPending = drawingPending
+        self.count = count
+        self.items = items
+        self.stacked = stacked
+        self.opens = opens
+    }
 
     var body: some View {
         Group {
             if stacked {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
                     trailing(fullWidth: true)
                     words
                 }
             } else {
-                HStack(alignment: .center, spacing: 12) {
+                HStack(alignment: .center, spacing: Theme.Space.sm) {
                     words
                     Spacer(minLength: 0)
                     trailing(fullWidth: false)
+                    if opens {
+                        Image(systemName: "chevron.right")
+                            .font(Theme.caption.weight(.semibold))
+                            .foregroundStyle(palette.paper3)
+                            .accessibilityHidden(true)
+                    }
                 }
             }
         }
-        .padding(.vertical, 4)
-        .contentShape(Rectangle())
+        .padding(.vertical, Theme.Space.sm)
+        .padding(.horizontal, Theme.Space.md)
+        .frame(maxWidth: .infinity, minHeight: Theme.Size.minHit, alignment: .leading)
+        .background(palette.panelSunken, in: Theme.Corner.tileShape)
+        .contentShape(Theme.Corner.tileShape)
         // One element: the name, then earned and when (or not yet), then the sentence or the hint, then the count. The
         // drawing and the dots are hidden (TrickPathThumb already is).
         .accessibilityElement(children: .combine)
     }
 
     private var words: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 14) {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
+            // Leading: the achievement's own symbol, cyan once earned (the list row's "done" mark), paper3 before.
             Image(systemName: achievement.symbol)
-                .font(.title3)
-                .foregroundStyle(earned != nil ? palette.accent : Color.secondary)
-                .frame(minWidth: 28)
+                .font(Theme.heading)
+                .fontWeight(.medium)
+                .foregroundStyle(earned != nil ? palette.accent : palette.paper3)
+                .frame(width: leadingWidth)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 3) {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xs) {
                     Text(verbatim: achievement.name)
                         .font(Theme.heading)
-                        .foregroundStyle(earned != nil ? Color.primary : Color.secondary)
+                        .foregroundStyle(earned != nil ? palette.paper : palette.paper3)
+                        .fixedSize(horizontal: false, vertical: true)
                     if isNew {
-                        Circle().fill(palette.accent).frame(width: 7, height: 7).accessibilityHidden(true)
+                        // New since the list was last opened: a small cyan dot, the selected-state colour.
+                        Circle().fill(palette.accent)
+                            .frame(width: Theme.Space.xs, height: Theme.Space.xs)
+                            .accessibilityHidden(true)
                     }
                 }
                 if let earned {
                     Text(verbatim: AchievementWords.earnedOn(earned.date))
-                        .font(Theme.label)
-                        .foregroundStyle(.secondary)
+                        .font(Theme.caption)
+                        .foregroundStyle(palette.paper2)
                     Text(verbatim: achievement.sentence)
-                        .font(Theme.body)
+                        .font(bodyFont)
+                        .foregroundStyle(palette.paper2)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
                     Text(verbatim: AchievementWords.notEarned)
-                        .font(Theme.label)
-                        .foregroundStyle(.secondary)
+                        .font(Theme.caption)
+                        .foregroundStyle(palette.paper3)
                     Text(verbatim: achievement.hint)
-                        .font(Theme.body)
-                        .foregroundStyle(.secondary)
+                        .font(bodyFont)
+                        .foregroundStyle(palette.paper2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 if let count {
                     Text(verbatim: AchievementWords.progress(done: count.done, total: count.total))
-                        .font(Theme.label)
-                        .monospacedDigit()
-                        .foregroundStyle(earned != nil ? palette.accent : Color.secondary)
+                        .font(Theme.inlineFigure)
+                        .foregroundStyle(earned != nil ? palette.paper : palette.paper2)
                 }
             }
         }
     }
+
+    private var bodyFont: Font { device.current == .phone ? Theme.bodyCompact : Theme.body }
 
     /// The kept shot's drawing (or its room while it is solved), else a collection's dots, else nothing.
     @ViewBuilder
@@ -181,17 +218,19 @@ private struct AchievementRow: View {
             if fullWidth {
                 TrickPathThumb(path: drawing).frame(maxWidth: .infinity)
             } else {
-                TrickPathThumb(path: drawing).frame(width: Self.thumbWidth, height: Self.thumbWidth / 2)
+                TrickPathThumb(path: drawing)
+                    .frame(width: thumbWidth, height: thumbWidth / 2)
+                    .clipShape(Theme.Corner.tileShape)
             }
         } else if earned?.shot != nil, drawingPending {
             Color.clear
                 .aspectRatio(2, contentMode: .fit)
-                .frame(width: fullWidth ? nil : Self.thumbWidth, height: fullWidth ? nil : Self.thumbWidth / 2)
+                .frame(width: fullWidth ? nil : thumbWidth, height: fullWidth ? nil : thumbWidth / 2)
                 .frame(maxWidth: fullWidth ? .infinity : nil)
                 .accessibilityHidden(true)
         } else if !items.isEmpty {
             AchievementProgressPicture(items: items, compact: true)
-                .frame(width: fullWidth ? nil : Self.thumbWidth)
+                .frame(width: fullWidth ? nil : thumbWidth)
         }
     }
 }
@@ -206,55 +245,62 @@ struct AchievementDetail: View {
     /// True while "Watch it in the Lens" solves the kept shot.
     @State private var solving = false
     @Environment(\.palette) private var palette
+    private var device = KitDeviceReader()
+
+    init(model: ShowpieceModel, achievement: Achievement, onClose: @escaping () -> Void) {
+        self.model = model
+        self.achievement = achievement
+        self.onClose = onClose
+    }
 
     private var book: AchievementBook { model.achievements }
     private var earned: AchievementRecord.Earned? { book.earned(achievement.id) }
     private var hasShot: Bool { earned?.shot != nil }
+    private var bodyFont: Font { device.current == .phone ? Theme.bodyCompact : Theme.body }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: Theme.Space.md) {
                 picture
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
                     Image(systemName: achievement.symbol)
-                        .font(.title2)
+                        .font(Theme.title)
+                        .fontWeight(.medium)
                         .foregroundStyle(palette.accent)
                         .accessibilityHidden(true)
                     Text(verbatim: achievement.name)
-                        .font(Theme.sectionTitle)
+                        .font(Theme.title)
+                        .foregroundStyle(palette.paper)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
                 }
                 Text(verbatim: achievement.sentence)
-                    .font(Theme.copy)
+                    .font(bodyFont)
+                    .foregroundStyle(palette.paper)
                     .fixedSize(horizontal: false, vertical: true)
                 if let earned {
                     Text(verbatim: AchievementWords.earnedOn(earned.date))
-                        .font(Theme.label)
-                        .foregroundStyle(.secondary)
+                        .font(Theme.caption)
+                        .foregroundStyle(palette.paper2)
                 }
                 if hasShot {
                     watchButton
                     if book.changedPhysics.contains(achievement.id) {
                         Text(verbatim: AchievementWords.playedAgain)
-                            .font(Theme.body)
-                            .foregroundStyle(.secondary)
+                            .font(bodyFont)
+                            .foregroundStyle(palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 } else {
                     Text(verbatim: AchievementWords.noSingleShot)
-                        .font(Theme.body)
-                        .foregroundStyle(.secondary)
+                        .font(bodyFont)
+                        .foregroundStyle(palette.paper2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            .padding(20)
+            .padding(Theme.Space.pageMargin(device.current))
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .navigationTitle(Text(verbatim: achievement.name))
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
         // Opened before the rows' solves reached this one (or straight after the end note opened the list): start them.
         .onAppear { if hasShot, book.drawings[achievement.id] == nil { book.startDrawings() } }
     }
@@ -264,16 +310,19 @@ struct AchievementDetail: View {
     private var picture: some View {
         if hasShot {
             if let drawing = book.drawings[achievement.id] {
-                TrickPathThumb(path: drawing).frame(maxWidth: .infinity)
+                TrickPathThumb(path: drawing)
+                    .frame(maxWidth: .infinity)
+                    .clipShape(Theme.Corner.tileShape)
             } else if book.drawingPending(achievement.id) {
                 Color.clear
                     .aspectRatio(2, contentMode: .fit)
                     .frame(maxWidth: .infinity)
-                    .overlay { ProgressView() }
+                    .overlay { ProgressView().tint(palette.paper2) }
                     .accessibilityHidden(true)
             }
         } else if achievement.progress != .none {
             AchievementProgressPicture(items: book.currentProgress().items(achievement.progress), compact: false)
+                .kitPanel()
         }
     }
 
@@ -284,19 +333,16 @@ struct AchievementDetail: View {
         Button {
             watch()
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: Theme.Space.xs) {
                 if solving {
-                    ProgressView().controlSize(.small)
+                    ProgressView().controlSize(.small).tint(palette.ground)
                 } else {
-                    Image(systemName: "eye")
+                    Image(systemName: "eye").fontWeight(.medium)
                 }
                 Text("Watch it in the Lens")
             }
-            .font(.headline)
-            .frame(maxWidth: .infinity, minHeight: 44)
         }
-        .buttonStyle(.glassProminent)
-        .foregroundStyle(palette.ground)
+        .buttonStyle(PrimaryButtonStyle(fullWidth: true))
         .disabled(solving)
         .accessibilityHint(Text(verbatim: HighlightWords.watchHint))
     }
@@ -323,29 +369,33 @@ struct AchievementProgressPicture: View {
     let compact: Bool
     @Environment(\.palette) private var palette
 
+    /// The dot's size in a row: two base steps.
+    private static let dot: CGFloat = Theme.Space.xs
+
     var body: some View {
         if compact {
-            LazyVGrid(columns: Array(repeating: GridItem(.fixed(8), spacing: 4), count: 6), alignment: .leading,
-                      spacing: 4) {
+            LazyVGrid(columns: Array(repeating: GridItem(.fixed(Self.dot), spacing: Theme.Space.xxs), count: 6),
+                      alignment: .leading, spacing: Theme.Space.xxs) {
                 ForEach(items) { item in
                     Circle()
                         .fill(item.done ? palette.accent : Color.clear)
-                        .overlay(Circle().stroke(item.done ? palette.accent : palette.track, lineWidth: 1))
-                        .frame(width: 8, height: 8)
+                        .overlay(Circle().stroke(item.done ? palette.accent : palette.paper3, lineWidth: Theme.Size.hairline))
+                        .frame(width: Self.dot, height: Self.dot)
                 }
             }
             .accessibilityHidden(true)
         } else {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: 10, alignment: .leading)], alignment: .leading,
-                      spacing: 10) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 130), spacing: Theme.Space.sm, alignment: .leading)],
+                      alignment: .leading, spacing: Theme.Space.sm) {
                 ForEach(items) { item in
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Image(systemName: item.done ? "checkmark.circle.fill" : (item.symbol ?? "circle"))
-                            .foregroundStyle(item.done ? palette.accent : Color.secondary)
+                    HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xs) {
+                        Image(systemName: item.done ? "checkmark.circle" : (item.symbol ?? "circle"))
+                            .fontWeight(.medium)
+                            .foregroundStyle(item.done ? palette.accent : palette.paper3)
                             .accessibilityHidden(true)
                         Text(verbatim: item.name)
                             .font(Theme.body)
-                            .foregroundStyle(item.done ? Color.primary : Color.secondary)
+                            .foregroundStyle(item.done ? palette.paper : palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .accessibilityElement(children: .combine)
@@ -415,9 +465,10 @@ struct AchievementToast: View {
             case .blurb:
                 Blurb(accessibilityText: AchievementWords.toastSpoken(name: a.name)) { earnedContent(a) }
             case .card:
+                // UI rethink package 7: a card in the panel beside the table is the panel surface, not glass.
                 earnedContent(a)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .glassCard(cornerRadius: 18, padding: 12)
+                    .kitPanel()
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(verbatim: AchievementWords.toastSpoken(name: a.name)))
             }
@@ -430,35 +481,34 @@ struct AchievementToast: View {
                     endedContent(a, sentence: sentence)
                 }
             case .card:
-                HStack(alignment: .center, spacing: 12) {
+                HStack(alignment: .center, spacing: Theme.Space.sm) {
                     endedContent(a, sentence: sentence)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel(Text(verbatim: sentence))
                     Spacer(minLength: 0)
-                    // A side offer, not the card's main button: a plain bordered button.
-                    Button { book.openList() } label: {
-                        Text(verbatim: AchievementWords.listTitle).font(.subheadline.weight(.semibold))
-                    }
-                    .buttonStyle(.bordered)
+                    // A side offer, not the card's main action: the kit's secondary button.
+                    SecondaryButton(AchievementWords.listTitle) { book.openList() }
                 }
-                .glassCard(cornerRadius: 18, padding: 12)
+                .kitPanel()
             }
         }
     }
 
     /// The symbol in the accent colour, the caption "Achievement earned" and the name.
     private func earnedContent(_ a: Achievement) -> some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: Theme.Space.sm) {
             Image(systemName: a.symbol)
-                .font(.title3)
+                .font(Theme.heading)
+                .fontWeight(.medium)
                 .foregroundStyle(palette.accent)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 Text(verbatim: AchievementWords.earnedCaption)
-                    .font(Theme.label)
-                    .foregroundStyle(.secondary)
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
                 Text(verbatim: a.name)
-                    .font(Theme.blurbTitle)
+                    .font(Theme.label)
+                    .foregroundStyle(palette.paper)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -466,13 +516,15 @@ struct AchievementToast: View {
 
     /// The symbol and "That was your Bank shot."
     private func endedContent(_ a: Achievement, sentence: String) -> some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: Theme.Space.sm) {
             Image(systemName: a.symbol)
-                .font(.title3)
+                .font(Theme.heading)
+                .fontWeight(.medium)
                 .foregroundStyle(palette.accent)
                 .accessibilityHidden(true)
             Text(verbatim: sentence)
-                .font(Theme.blurbTitle)
+                .font(Theme.label)
+                .foregroundStyle(palette.paper)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }

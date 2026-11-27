@@ -1,5 +1,15 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 9, the Physics Lens notebook,
+//          plans/26-Nov-2026-ui-rethink-plan.md and 26-Nov-2026-design-language.md: the big-screen chip beside the ring
+//          carries no words now, only the moment's lead figure as the kit's Chip with its meaning-colour dot (the
+//          heading is in the notebook's lit row; on iPad, Mac and the open folding phone nothing but marks and a bare
+//          figure sits on the cloth), and LeaderState follows the one current moment (ShowpieceModel.currentMoment,
+//          NotebookStory.swift), the same one the lit row and the reel's tick show. The Physics Lens key chip is a
+//          button now: it opens the full key (LensKeyPage: sliding, rolling, in the air, the arrow, the ring and the
+//          burst, each drawn as the Lens draws it, with one line each). The caption tile, the card's glass and the
+//          stroke lines' shadow take the design tokens (corners, spacing, palette, figure fonts) in place of bare
+//          values. One name to players: "Physics Lens".)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
 //          Part B: the side-column card and the strip under the table show the short form by default (the heading,
 //          the figures and Caption.short, one sentence) and the full text on a tap, a second tap folding it again;
@@ -306,12 +316,12 @@ private struct CaptionFigureTile: View {
 
     private var reading: AttributedString {
         var number = AttributedString(figure?.value ?? " ")
-        number.font = Theme.figure
+        number.font = Theme.controlFigure
         // The degree and percent signs hug their number, as in the figure's own text; other units sit after a no-break
         // space.
         let unit = figure?.unit ?? " "
         var tail = AttributedString(unit == "°" || unit == "%" ? unit : "\u{00A0}" + UnitSymbol.shown(unit))
-        tail.font = Theme.figureUnit
+        tail.font = Theme.controlUnit
         return number + tail
     }
 
@@ -323,15 +333,15 @@ private struct CaptionFigureTile: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
             Text(verbatim: figure?.label ?? " ")
-                .font(Theme.figureLabel)
-                .foregroundStyle(.secondary)
+                .font(Theme.caption)
+                .foregroundStyle(palette.paper2)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 5)
+        .padding(.horizontal, Theme.Space.xs)
+        .padding(.vertical, Theme.Space.xxs)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(color.opacity(0.14), in: .rect(cornerRadius: 10, style: .continuous))
+        .background(color.opacity(0.14), in: Theme.Corner.tileShape)
     }
 }
 
@@ -358,7 +368,7 @@ private extension View {
             // Plain system Liquid Glass, untinted, like every other panel in the app (the Boss: "all of it should be
             // liquid glass, Apple native"). The card now sits below the table, not over the Lens grid, so the system's
             // own glass keeps the words readable; Reduce Transparency still turns it solid.
-            .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
+            .glassEffect(.regular, in: Theme.Corner.cardShape)
             .overlay(alignment: .leading) {
                 Capsule().fill(accent).frame(width: 3).padding(.vertical, 12).padding(.leading, 5)
             }
@@ -1033,9 +1043,13 @@ private struct StripSizer: View {
 /// a magenta line for a ball sliding and a cyan line for a ball rolling. Whenever the blueprint view is up the player
 /// can read what it is and what its colours mean. It replaces the baked 3D legend that used to take a band of height
 /// off the table. Text follows Dynamic Type; when one row does not fit beside the back button the pieces stack, and
-/// as a last resort the heading drops so the row is never squeezed. Spoken as one sentence (label unchanged).
+/// as a last resort the heading drops so the row is never squeezed. Spoken as one sentence.
+/// UI rethink package 9: the chip is a button; a tap opens the full key (LensKeyPage: the two lines, a ball in the
+/// air, the arrow, the ring and the burst), a popover on the big screens and a sheet on the phone.
 struct LensLegendChip: View {
     @Environment(\.palette) private var palette
+    /// The full key is open.
+    @State private var showsKey = false
     // 0.7.10 everyone: the Lens draws sliding dashed and rolling solid for every player, and the key always shows the
     // same, so shape carries the meaning as well as colour (plans/25-Nov-2026-everyone-can-play-plan.md Part A3).
 
@@ -1045,29 +1059,181 @@ struct LensLegendChip: View {
     }
 
     private var heading: some View {
-        Text("Physics Lens")
-            .font(Theme.label.weight(.bold))
-            .foregroundStyle(palette.accent)
-            .lineLimit(1)
+        HStack(spacing: Theme.Space.xxs) {
+            Text("Physics Lens")
+                .font(Theme.label.weight(.bold))
+                .foregroundStyle(palette.accent)
+                .lineLimit(1)
+            // The chip opens the full key: the outline info mark says so beside its word.
+            Image(systemName: "info.circle")
+                .font(Theme.caption.weight(.medium))
+                .foregroundStyle(palette.accent)
+                .accessibilityHidden(true)
+        }
     }
 
     private var entries: some View {
-        HStack(spacing: 12) { entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
+        HStack(spacing: Theme.Space.sm) { entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
     }
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) { heading; entries }
-            VStack(alignment: .leading, spacing: 4) { heading; entries }
-            VStack(alignment: .leading, spacing: 4) { heading; entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
-            VStack(alignment: .leading, spacing: 4) { entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent) }
+        Button { showsKey = true } label: {
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: Theme.Space.sm) { heading; entries }
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) { heading; entries }
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                    heading; entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent)
+                }
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                    entry("Sliding", palette.slide, dashed: true); entry("Rolling", palette.accent)
+                }
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, Theme.Space.sm)
+            .padding(.vertical, Theme.Space.xs)
+            .frame(minHeight: Theme.Size.minHit)
+            .glassEffect(.regular, in: Theme.Corner.cardShape)
+            .contentShape(Theme.Corner.cardShape)
         }
-        .fixedSize(horizontal: false, vertical: true)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
+        .buttonStyle(.plain)
+        .foregroundStyle(palette.paper)
+        .hoverHighlight()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling"))
+        .accessibilityLabel(Text(String(localized: "Physics Lens lines: dashed magenta lines show a ball sliding, solid cyan lines a ball rolling")))
+        .accessibilityHint(Text(String(localized: "Shows the full Physics Lens key")))
+        .accessibilityAddTraits(.isButton)
+        .popover(isPresented: $showsKey) {
+            LensKeyPage(onDone: { showsKey = false })
+                .frame(minWidth: Theme.Size.sideColumnMacMin, idealWidth: Theme.Size.sideColumn,
+                       minHeight: Theme.Size.sideColumn)
+                .presentationCompactAdaptation(.sheet)
+                .presentationDetents([.medium, .large])
+        }
+    }
+}
+
+/// The full Physics Lens key (UI rethink package 9), opened from LensLegendChip: every mark the Lens draws, each drawn
+/// as the table draws it and named with one plain line. Lines: sliding (magenta, dashed), rolling (cyan, solid), a ball
+/// in the air (paper, dashed). Marks: the arrow (where a ball is heading; its length is its speed), the ring (the ball
+/// the notebook is talking about now) and the burst (a ring that spreads where something was hit, in the colour of what
+/// it hit: warm for the cue or a ball, blue for a rail, gold for a pocket). The colours are the palette's meaning
+/// colours, the same ones LensLayer tints its marks with, so the key and the cloth agree. A sheet page from the kit.
+struct LensKeyPage: View {
+    var onDone: (() -> Void)? = nil
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        SheetPage(title: String(localized: "Physics Lens"), onDone: onDone) {
+            Text(String(localized: "The lines and marks drawn on the table while the Physics Lens is on."))
+                .font(Theme.body)
+                .foregroundStyle(palette.paper2)
+                .fixedSize(horizontal: false, vertical: true)
+            SheetGroup(String(localized: "Lines")) {
+                LensKeyRow(name: String(localized: "Sliding"),
+                           line: String(localized: "The bottom of the ball slips on the cloth, and friction works on it.")) {
+                    LensTrailMark(color: palette.slide, dashed: true)
+                }
+                LensKeyRow(name: String(localized: "Rolling"),
+                           line: String(localized: "The ball rolls cleanly: its bottom no longer slips.")) {
+                    LensTrailMark(color: palette.accent)
+                }
+                LensKeyRow(name: String(localized: "In the air"),
+                           line: String(localized: "A jumping ball, with a ring on the cloth where it lands.")) {
+                    LensTrailMark(color: palette.paper, dashed: true)
+                }
+            }
+            SheetGroup(String(localized: "Marks")) {
+                LensKeyRow(name: String(localized: "Arrow"),
+                           line: String(localized: "Where a ball is heading. The longer the arrow, the faster the ball.")) {
+                    LensKeyDrawing(kind: .arrow)
+                }
+                LensKeyRow(name: String(localized: "Ring"),
+                           line: String(localized: "Circles the ball the notebook is talking about now.")) {
+                    LensKeyDrawing(kind: .ring)
+                }
+                LensKeyRow(name: String(localized: "Burst"),
+                           line: String(localized: "Spreads where something was hit: warm for the cue or a ball, blue for a rail, gold for a pocket.")) {
+                    LensKeyDrawing(kind: .burst)
+                }
+            }
+        }
+    }
+}
+
+/// One entry of the full key: its drawing in a fixed box, its name (heading) and one line (caption, paper2), read by
+/// VoiceOver as one sentence.
+private struct LensKeyRow<Mark: View>: View {
+    let name: String
+    let line: String
+    let mark: Mark
+    @Environment(\.palette) private var palette
+    /// The drawing's box, scaled with the reader's text size so the marks grow with the words.
+    @ScaledMetric(relativeTo: .headline) private var box: CGFloat = 40
+
+    init(name: String, line: String, @ViewBuilder mark: () -> Mark) {
+        self.name = name
+        self.line = line
+        self.mark = mark()
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: Theme.Space.sm) {
+            mark.frame(width: box, height: box * 0.6)
+            VStack(alignment: .leading, spacing: Theme.Space.figureToLabel) {
+                Text(verbatim: name).font(Theme.heading).foregroundStyle(palette.paper)
+                Text(verbatim: line)
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: name + ". " + line))
+    }
+}
+
+/// The key's three mark drawings, in the meaning colours the Lens tints them with: the arrow (contact warm, as the
+/// velocity arrow's glow), the ring (drawn in paper here, since on the table it takes the colour of whichever moment
+/// it marks), and the burst (three small rings, warm, blue and gold, for a ball or the cue, a rail and a pocket).
+private struct LensKeyDrawing: View {
+    enum Kind { case arrow, ring, burst }
+    let kind: Kind
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        Canvas { ctx, size in
+            let mid = CGPoint(x: size.width / 2, y: size.height / 2)
+            switch kind {
+            case .arrow:
+                var shaft = Path()
+                shaft.move(to: CGPoint(x: 2, y: mid.y)); shaft.addLine(to: CGPoint(x: size.width - 10, y: mid.y))
+                ctx.stroke(shaft, with: .color(palette.contact), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                var head = Path()
+                head.move(to: CGPoint(x: size.width - 12, y: mid.y - 6))
+                head.addLine(to: CGPoint(x: size.width - 2, y: mid.y))
+                head.addLine(to: CGPoint(x: size.width - 12, y: mid.y + 6))
+                head.closeSubpath()
+                ctx.fill(head, with: .color(palette.contact))
+            case .ring:
+                let r = min(size.width, size.height) / 2 - 2
+                ctx.fill(Path(ellipseIn: CGRect(x: mid.x - r * 0.55, y: mid.y - r * 0.55, width: r * 1.1, height: r * 1.1)),
+                         with: .color(palette.paper.opacity(0.85)))
+                ctx.stroke(Path(ellipseIn: CGRect(x: mid.x - r, y: mid.y - r, width: 2 * r, height: 2 * r)),
+                           with: .color(palette.paper), lineWidth: 2)
+            case .burst:
+                let colours = [palette.contact, palette.cushion, palette.pocket]
+                let r = min(size.width / 6, size.height / 2) - 1
+                for (i, c) in colours.enumerated() {
+                    let x = size.width * (CGFloat(i) + 0.5) / 3
+                    ctx.stroke(Path(ellipseIn: CGRect(x: x - r, y: mid.y - r, width: 2 * r, height: 2 * r)),
+                               with: .color(c), lineWidth: 1.5)
+                    ctx.stroke(Path(ellipseIn: CGRect(x: x - r * 0.5, y: mid.y - r * 0.5, width: r, height: r)),
+                               with: .color(c.opacity(0.6)), lineWidth: 1)
+                }
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
@@ -1119,9 +1285,13 @@ enum StageSpace { static let name = "stage" }
 final class LeaderState {
     var ring: CGPoint?
     var accent: CaptionAccent = .impact
-    /// The current caption's short title, drawn as a chip beside the ring (already localized by Captions.swift).
+    /// The current moment's caption id (ShowpieceModel.currentMoment, UI rethink package 9), or nil: the moment the
+    /// ring, the figure beside it, the notebook's lit row and the reel's marked tick all show.
+    var momentID: Int?
+    /// The current caption's short title (already localized by Captions.swift). UI rethink package 9: no longer drawn
+    /// on the table (the words live in the notebook); kept for readers that name the moment.
     var title: String?
-    /// The current caption's lead figure (0.7.6), shown after the title in the chip when both fit on one line.
+    /// The current caption's lead figure (0.7.6): the one bare figure drawn beside the ring on the big screens.
     var figure: CaptionFigure?
     var card: CGRect = .zero
     /// Bottom edge of the title row (StageSpace); the chip beside the ring stays below it.
@@ -1159,9 +1329,11 @@ final class LeaderState {
         if stroke != marks { stroke = marks }
         // Same gate as the caption card and strip (the Lens is up, the tips are not), so a ring never shows without
         // its words.
-        guard model.lensOn, !model.menuOpen, !model.holdForTips, let caption = model.activeCaption(),
+        // UI rethink package 9: the one current moment (ShowpieceModel.currentMoment), the same the notebook lights.
+        guard model.lensOn, !model.menuOpen, !model.holdForTips, let caption = model.currentMoment(),
               let world = Self.anchor(of: caption, in: model), let point = project(world) else {
             if ring != nil { ring = nil }
+            if momentID != nil { momentID = nil }
             if title != nil { title = nil }
             if figure != nil { figure = nil }
             if flight != nil { flight = nil }
@@ -1170,6 +1342,7 @@ final class LeaderState {
         let sketch = flightSketch(for: caption, model: model, project: project)
         if flight != sketch { flight = sketch }
         if accent != caption.accent { accent = caption.accent }
+        if momentID != caption.id { momentID = caption.id }
         if title != caption.title { title = caption.title }
         // A take-off's height is in the card's title and the side view; the chip leaves it off (0.7.8).
         let lead = FlightShape.isTakeOff(caption, in: model.timeline) ? nil : caption.figures.first
@@ -1237,33 +1410,28 @@ final class LeaderState {
     }
 }
 
-/// A ring around the ball, the caption's short title as a small glass chip beside it (not on the upright phone, see
-/// showChip), and (only when the card sits beside the table, in the wide layout) a thin line back to the card. Decoration only: hidden from VoiceOver (the
+/// A ring around the ball, the moment's lead figure as a small chip beside it (not on the upright phone, see showChip;
+/// no words, UI rethink package 9: on the big screens only marks and a bare figure sit on the cloth), and (only when the
+/// card sits beside the table, in the wide layout) a thin line back to the card. Decoration only: hidden from VoiceOver (the
 /// card or strip already speaks the caption) and never takes touches, so aiming drags pass straight through.
 struct CaptionLeader: View {
     let leader: LeaderState
     /// Draw the line to the card. Off on a phone held upright, where the card is a strip far below the table.
     var showLine = true
-    /// Draw the caption's title chip beside the ring. Off on the upright phone (phone UI plan): the anchored explanation
-    /// blurb carries the title there, and the chip repeated it and collided with it. The ring and the stroke lines stay.
+    /// Draw the figure chip beside the ring. Off on the upright phone (phone UI plan): the anchored explanation blurb
+    /// carries the moment there, and the chip repeated it and collided with it. The ring and the stroke lines stay.
     var showChip = true
     @Environment(\.palette) private var palette
     @Environment(\.layoutDirection) private var layoutDirection
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
     /// The chip's measured size, for keeping it on screen.
     @State private var chipSize: CGSize = .zero
-    /// The chip title's width on one line, measured from a hidden copy, so the chip is only as wide as its words.
-    @State private var titleWidth: CGFloat = 0
-    /// The lead figure's width on one line (0.7.6), measured the same way, to decide whether it fits after the title.
-    @State private var figureWidth: CGFloat = 0
 
     /// The ring's radius. Shared with the upright phone's explanation blurb, which keeps clear of the ring.
     static let ringRadius: CGFloat = 20
     private var ringRadius: CGFloat { Self.ringRadius }
     /// Gap between the ring and the chip, and the least distance the chip keeps from the screen's edges.
-    private let gap: CGFloat = 8
-    /// Space between the title and the lead figure in the chip.
-    private let figureSpacing: CGFloat = 6
+    private let gap: CGFloat = Theme.Space.xs
 
     /// The ring point, unless the ball is under the card: a ring drawn over the card would strike through its words.
     private var visibleRing: CGPoint? {
@@ -1334,7 +1502,7 @@ struct CaptionLeader: View {
             let r = CaptionLeader.ringRadius
             avoid.append(CGRect(x: ring.x - r, y: ring.y - r, width: 2 * r, height: 2 * r))
         }
-        if showChip, let ring = visibleRing, leader.title != nil, chipSize != .zero {
+        if showChip, let ring = visibleRing, leader.figure != nil, chipSize != .zero {
             let c = chipCenter(ring: ring, in: size)
             avoid.append(CGRect(x: c.x - chipSize.width / 2, y: c.y - chipSize.height / 2,
                                 width: chipSize.width, height: chipSize.height))
@@ -1353,7 +1521,7 @@ struct CaptionLeader: View {
         var struck = Path(); struck.move(to: m.from); struck.addLine(to: m.struckEnd)
         ctx.stroke(aimed, with: .color(palette.paper.opacity(0.6 * o)),
                    style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 5]))
-        ctx.stroke(struck, with: .color(.black.opacity(0.35 * o)), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+        ctx.stroke(struck, with: .color(palette.ground.opacity(0.35 * o)), style: StrokeStyle(lineWidth: 4, lineCap: .round))
         ctx.stroke(struck, with: .color(palette.paper.opacity(o)), style: StrokeStyle(lineWidth: 2, lineCap: .round))
         // Which way to push each label: away from the other line's end; if the ends sit on one point, across the line.
         var nx = m.aimedEnd.x - m.struckEnd.x, ny = m.aimedEnd.y - m.struckEnd.y
@@ -1397,66 +1565,19 @@ struct CaptionLeader: View {
                     let rect = CGRect(x: ring.x - ringRadius, y: ring.y - ringRadius, width: ringRadius * 2, height: ringRadius * 2)
                     ctx.stroke(Path(ellipseIn: rect), with: .color(color), lineWidth: 2)
                 }
-                // The chip is a SwiftUI view, not drawn in the Canvas, because a Canvas cannot host Liquid Glass.
-                if showChip, explanations, let ring = visibleRing, let title = leader.title {
-                    let color = palette.color(for: leader.accent)
-                    // At most the stage's width less the edge gaps and the chip's own padding; a longer title (a long
-                    // translation, a large text size) wraps onto a second line instead of running off the screen (#59).
-                    let cap = max(40, stageBounds(geo.size).width - 2 * gap - 20)
-                    let figure = leader.figure
-                    let titleRoom = titleWidth.rounded(.up) + 1
-                    // The lead figure (0.7.6) joins the title only when both fit on one line inside the cap; otherwise it
-                    // is left off rather than wrapped, and the card's tile still shows it.
-                    let withFigure = figure != nil && titleWidth > 0 && figureWidth > 0
-                        && titleRoom + figureSpacing + figureWidth.rounded(.up) + 1 <= cap
-                    HStack(spacing: figureSpacing) {
-                        Text(verbatim: title)
-                            .font(Theme.label)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.center)
-                            // Its own one-line width when that fits, the cap otherwise (measured below, so a short title
-                            // keeps a short chip).
-                            .frame(width: titleWidth > 0 ? min(titleRoom, cap) : nil)
-                            .fixedSize(horizontal: false, vertical: true)
-                        if withFigure, let figure {
-                            // The same number as the card's tile, in the tile's colour.
-                            Text(verbatim: figure.text)
-                                .font(Theme.figureChip)
-                                .foregroundStyle(palette.color(for: figure.mark))
-                                .lineLimit(1)
-                                .fixedSize()
-                        }
-                    }
-                    .background {
-                        Text(verbatim: title)
-                            .font(Theme.label)
-                            .lineLimit(1)
-                            .fixedSize()
-                            .hidden()
-                            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { titleWidth = $0 }
-                    }
-                    .background {
-                        // The figure measured on its own line, in the font the chip draws it with.
-                        Text(verbatim: figure?.text ?? "")
-                            .font(Theme.figureChip)
-                            .lineLimit(1)
-                            .fixedSize()
-                            .hidden()
-                            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { figureWidth = $0 }
-                    }
-                    // The words keep the player's reading direction (the figure follows the title in it); only the
-                    // placement is in screen points.
-                    .environment(\.layoutDirection, layoutDirection)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 5)
-                    // System glass; the caption's colour shows only as a faint tint, so it reads as native glass.
-                    .glassEffect(.regular.tint(color.opacity(0.15)), in: .capsule)
-                    .onGeometryChange(for: CGSize.self) { $0.size } action: { chipSize = $0 }
-                    .position(chipCenter(ring: ring, in: geo.size))
-                    // A new caption's chip fades in at its own ball rather than sliding across the table; an
-                    // opacity fade is also what Reduce Motion asks for.
-                    .id(title + (figure?.text ?? ""))
-                    .transition(.opacity)
+                // The chip is a SwiftUI view, not drawn in the Canvas: the kit's Chip (UI rethink package 9), the
+                // moment's lead figure with its meaning-colour dot and no words, so the cloth carries a bare figure
+                // only. A moment without a figure (a take-off: its height is in the side view) draws the ring alone.
+                if showChip, explanations, let ring = visibleRing, let figure = leader.figure {
+                    Chip(value: figure.text, dot: palette.color(for: figure.mark))
+                        // The figure keeps the player's reading direction; only the placement is in screen points.
+                        .environment(\.layoutDirection, layoutDirection)
+                        .onGeometryChange(for: CGSize.self) { $0.size } action: { chipSize = $0 }
+                        .position(chipCenter(ring: ring, in: geo.size))
+                        // A new moment's chip fades in at its own ball rather than sliding across the table; an
+                        // opacity fade is also what Reduce Motion asks for.
+                        .id((leader.momentID ?? -1).description + figure.text)
+                        .transition(.opacity)
                 }
                 // The side view of a jump (0.7.8): beside the flight, clear of the card, the chip and the balls; left
                 // out when nothing fits, so it never covers the table's action or the words.
@@ -1469,7 +1590,7 @@ struct CaptionLeader: View {
                         .transition(.opacity)
                 }
             }
-            .animation(.easeOut(duration: 0.2), value: leader.title)
+            .animation(Theme.Motion.standard, value: leader.momentID)
         }
         // The ring and chip are placed in screen points from the 3D projection, which does not mirror for
         // right-to-left languages, so this layer is laid out left to right whatever the language.

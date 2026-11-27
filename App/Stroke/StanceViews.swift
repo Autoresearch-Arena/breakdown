@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the equipment card is the
+//          kit's surface (a sunken strip inside the shot panel, the kit's panel among the notebook's cards), its edge
+//          cyan only while it pulses, its corners the kit's; the rows' gaps and the bridge readout (label paper2, figure
+//          the inline figure in paper) are on the kit's scale. Its rows, pictograms and words are unchanged.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: the lifted card's edge is cyan (selected) and the
 //          drawn cue paper2; the sliding magenta means sliding only.)
 // Edited: Claude Opus 5.5 High, 22-November-2026 (0.7.5 model-flow, first minute: EquipmentCard draws nothing during
@@ -137,8 +141,8 @@ struct EquipmentCard: View {
         } else if room > 0 {
             // Nothing to say: the same room as an empty faint plate (the rows' plate without its outline), so the
             // panel keeps its height as the aim swings. Silent for VoiceOver.
-            RoundedRectangle(cornerRadius: 14)
-                .fill(palette.paper.opacity(0.03))
+            Theme.Corner.tileShape
+                .fill(palette.panelSunken)
                 .frame(maxWidth: .infinity)
                 .frame(height: room)
                 .accessibilityHidden(true)
@@ -150,14 +154,19 @@ struct EquipmentCard: View {
         let stack = EquipmentRowList(rows: rows)
             .frame(maxWidth: .infinity, alignment: .leading)
         if embedded {
+            // Inside the shot panel: a sunken strip (the kit's surface for a strip set into a panel), no edge at rest;
+            // the cyan edge only while it pulses, as a selected chip's.
             stack
-                .padding(.horizontal, 10).padding(.vertical, 6)
-                .background(RoundedRectangle(cornerRadius: 14).fill(palette.paper.opacity(0.06)))
-                .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(palette.accent.opacity(lifted ? 0.8 : 0.3), lineWidth: 1))
+                .padding(.horizontal, Theme.Space.sm).padding(.vertical, Theme.Space.xs)
+                .background(palette.panelSunken, in: Theme.Corner.tileShape)
+                .overlay(Theme.Corner.tileShape.strokeBorder(palette.accent.opacity(lifted ? 0.8 : 0),
+                                                              lineWidth: Theme.Size.editableUnderline))
         } else {
+            // Among the notebook's cards: the kit's panel, the cyan edge only while it pulses.
             stack
-                .glassCard(cornerRadius: 20, padding: 12)
-                .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(palette.accent.opacity(lifted ? 0.8 : 0), lineWidth: 1.5))
+                .kitPanel()
+                .overlay(Theme.Corner.cardShape.strokeBorder(palette.accent.opacity(lifted ? 0.8 : 0),
+                                                             lineWidth: Theme.Size.editableUnderline))
         }
     }
 
@@ -188,9 +197,9 @@ struct EquipmentRowList: View {
     @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
             ForEach(rows) { row in
-                HStack(spacing: 10) {
+                HStack(spacing: Theme.Space.sm) {
                     StancePictogram(picture: row.picture)
                         .frame(width: 44, height: 30)
                     Text(row.line)
@@ -346,15 +355,16 @@ struct StancePictogram: View {
 /// rest's head. Read-only: the bridge is set on the table, by a second finger while stroking.
 struct BridgeReadout: View {
     let model: ShowpieceModel
+    @Environment(\.palette) private var palette
 
     var body: some View {
         let readout = StanceWords.bridgeReadout(length: model.strokeBridgeLength, source: source)
-        HStack(spacing: 8) {
-            Text("Bridge").font(Theme.label).foregroundStyle(.secondary)
-            Spacer(minLength: 8)
-            Text(readout).font(Theme.number).multilineTextAlignment(.trailing)
+        HStack(spacing: Theme.Space.xs) {
+            Text("Bridge").font(Theme.label).foregroundStyle(palette.paper2)
+            Spacer(minLength: Theme.Space.xs)
+            Text(readout).font(Theme.inlineFigure).foregroundStyle(palette.paper).multilineTextAlignment(.trailing)
         }
-        .frame(minHeight: 44)
+        .frame(minHeight: Theme.Size.minHit)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Bridge"))
         .accessibilityValue(readout)

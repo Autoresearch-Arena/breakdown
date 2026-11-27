@@ -1,4 +1,11 @@
 // Author: Claude Sonnet 5.5 Medium
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 9, the Physics Lens notebook,
+//          plans/26-Nov-2026-ui-rethink-plan.md: the path bend's short sentence carries its cause (the ball's spin makes
+//          the cloth pull it sideways while it slides), not only the way it bent; friction numbers follow the one
+//          coefficient rule and gravity the one m/s² rule in NumberStyle (two or three significant figures; two
+//          decimals), so a sentence and a figure never print the same quantity two ways. A jump's flight height and its
+//          clearance over the jumped ball follow the one cm rule (NumberStyle.distance), the numbers the side view
+//          draws.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 words, plans/25-Nov-2026-fewer-words-and-honest-claims-plan.md
 //          Part B: every caption carries a short form, Caption.short: one plain sentence of at most fourteen words, made
 //          from the same event and the same numbers as its full text, with no surface numbers (they are on the surface
@@ -319,9 +326,15 @@ enum CaptionEngine {
         String(format: "%.\(digits)f", locale: AppLocale.numbers, x)
     }
 
-    /// A friction number with its meaningful digits (0.2, 0.025, 0.0025), in the player's number style.
+    /// A friction number with its meaningful digits, in the player's number style: NumberStyle's one coefficient rule
+    /// (two or three significant figures: 0.20, 0.025, 0.0025), so the sentences match every other screen (UI rethink 9).
     private static func coefficient(_ x: Double) -> String {
-        x.formatted(.number.locale(AppLocale.numbers).precision(.significantDigits(1...2)))
+        NumberStyle.coefficient(x).number
+    }
+
+    /// Gravity's number as NumberStyle writes it (two decimals: 9.81, 1.62); the sentence carries the m/s² itself.
+    private static func gravity(_ g: Double) -> String {
+        NumberStyle.gravity(metresPerSecondSquared: g).number
     }
 
     /// A "times as far" ratio: one decimal below 10 (8, 6.1, 0.4), whole numbers above (12).
@@ -388,7 +401,7 @@ enum CaptionEngine {
         if s.gravityOnly {
             // Same friction numbers, weaker gravity: the friction force is the friction number times the weight, and
             // the weight is mass times g, so both distances grow by the same ratio of gravities.
-            return [String(localized: "On the Moon the friction numbers are the same as on cloth, but gravity is \(f(s.p.gravity)) m/s² instead of \(f(s.cloth.gravity)). Friction pushes back with the friction number times the ball's weight, and weight is mass times gravity, so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")]
+            return [String(localized: "On the Moon the friction numbers are the same as on cloth, but gravity is \(gravity(s.p.gravity)) m/s² instead of \(gravity(s.cloth.gravity)). Friction pushes back with the friction number times the ball's weight, and weight is mass times gravity, so a ball skids about \(ratio(skid)) times as far before it rolls and rolls about \(ratio(roll)) times as far.")]
         }
         let mu = coefficient(s.p.slidingFriction), cr = coefficient(s.p.rollingResistance)
         let muCloth = coefficient(s.cloth.slidingFriction), crCloth = coefficient(s.cloth.rollingResistance)
@@ -575,11 +588,14 @@ enum CaptionEngine {
         return out
     }
 
-    /// The bend's short sentence (0.7.10 words): which way, without the degrees (the lead figure carries them).
+    /// The bend's short sentence (0.7.10 words): which way, without the degrees (the lead figure carries them). UI
+    /// rethink package 9: it carries the cause too, in the full sentence's own terms (the cloth pulls along the slip of
+    /// the ball's bottom, and the ball's spin is what makes that slip point off its line), so the one sentence a reader
+    /// sees by default says why the path curved, not only that it did. Fourteen words or fewer.
     private static func bendShort(ball: Int, degrees turn: Double, names name: BallNames) -> String {
         turn > 0
-            ? String(localized: "While \(name(ball)) slid, its path bent to the left.")
-            : String(localized: "While \(name(ball)) slid, its path bent to the right.")
+            ? String(localized: "Its spin made the cloth pull \(name(ball)) to the left while it slid.")
+            : String(localized: "Its spin made the cloth pull \(name(ball)) to the right while it slid.")
     }
 
     private static func bendSentence(ball: Int, degrees turn: Double, names name: BallNames) -> String {
@@ -844,10 +860,14 @@ enum CaptionEngine {
             var short = String(localized: "The slate throws \(name(ball)) up off the cloth.")
             if let seg = flightSegment(ball: ball, startingAt: e.time, in: timeline) {
                 let top = flightTop(seg, ball: ball, in: timeline)
-                figures.append(figure(top.peak * 100, 1, "cm", String(localized: "Flight height"), .impact))
+                // UI rethink package 9: the height and the gap in NumberStyle's one cm rule, the same numbers the jump's
+                // side view (FlightSideView) draws beside its marks, so the card and the picture never print them two ways.
+                figures.append(CaptionFigure(amount: top.peak * 100, value: NumberStyle.distance(metres: top.peak).number,
+                                             unit: "cm", label: String(localized: "Flight height"), mark: .impact))
                 if let over = top.over {
-                    pieces.append(String(localized: "It passes over \(name(over.ball)) with \(f(over.gap * 100)) cm to spare."))
-                    short = String(localized: "\(name(ball).capitalizedFirst) flies over \(name(over.ball)) with \(f(over.gap * 100)) cm to spare.")
+                    let gap = NumberStyle.distance(metres: over.gap).number
+                    pieces.append(String(localized: "It passes over \(name(over.ball)) with \(gap) cm to spare."))
+                    short = String(localized: "\(name(ball).capitalizedFirst) flies over \(name(over.ball)) with \(gap) cm to spare.")
                 }
                 let g = -seg.verticalAcceleration
                 if g > 0 { worked = "h = v↑² / (2·g) = \(f(up, 2))² / (2 · \(f(g, 2))) = \(f(up * up / (2 * g) * 100)) cm" }
@@ -1092,7 +1112,7 @@ enum CaptionEngine {
                 guard let seg else { return nil }
                 let skid = e.time - seg.t0
                 let secs = f(skid, skid < 1 ? 2 : 1)
-                let mu = coefficient(facts.p.slidingFriction), g = f(facts.p.gravity)
+                let mu = coefficient(facts.p.slidingFriction), g = gravity(facts.p.gravity)
                 detail = facts.gravityOnly
                     ? String(localized: "On the Moon, the same sliding friction as cloth (\(mu)) under only \(g) m/s² of gravity took \(secs) seconds to slow \(name(b.ball)) and spin it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.")
                     : String(localized: "On \(facts.surface.title), sliding friction of \(mu) under gravity of \(g) m/s² took \(secs) seconds to slow \(name(b.ball)) and spin it up until the bottom of the ball stopped slipping. It now rolls at \(f(v)) m/s.")

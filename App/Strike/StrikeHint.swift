@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the plain line is the body
+//          role in paper2; the card form's close button is the kit's worded quiet "Done" instead of a bare cross.)
 // PURPOSE: One hint, in one place (plans/25-Nov-2026-strike-panel-and-controls-plan.md, stage 3 item 5). The first
 //          instruction for the input in use (FirstInstruction: on touch "Drag on the table to aim. Pull back from the
 //          white ball, then push through it.") sits inside the shot panel, below the table, on every layout: in
@@ -29,7 +31,6 @@ struct StrikeHint: View {
     @AppStorage("aimHintSeen") private var hintSeen = false
     @AppStorage("pencilHintSeen") private var pencilHintSeen = false
     @Environment(\.palette) private var palette
-    @ScaledMetric(relativeTo: .footnote) private var plainSize: CGFloat = 15
 
     /// The Pencil line, as the plan words it.
     static var pencilLine: String {
@@ -50,7 +51,7 @@ struct StrikeHint: View {
 
     var body: some View {
         if plain && (showsInstruction || showsPencil) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 if showsInstruction {
                     Text(FirstInstruction.line(for: model.inputInUse))
                 }
@@ -58,41 +59,37 @@ struct StrikeHint: View {
                     Text(verbatim: Self.pencilLine)
                 }
             }
-            .font(.system(size: plainSize))
-            .foregroundStyle(.secondary)
+            .font(Theme.body)
+            .foregroundStyle(palette.paper2)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
             .transition(.opacity)
         } else if showsInstruction || showsPencil {
-            HStack(alignment: .top, spacing: 10) {
+            HStack(alignment: .top, spacing: Theme.Space.sm) {
                 Image(systemName: showsInstruction ? "hand.draw" : "pencil.tip")
-                    .font(phone ? .body : .title3)
+                    .font(phone ? Theme.bodyCompact : Theme.heading)
                     .foregroundStyle(palette.accent)
                     .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                     if showsInstruction {
                         Text(FirstInstruction.line(for: model.inputInUse))
-                            .font(phone ? Theme.blurbTitle : Theme.body)
+                            .font(phone ? Theme.label : Theme.body)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     if showsPencil {
                         Text(verbatim: Self.pencilLine)
                             .font(Theme.body)
-                            .foregroundStyle(showsInstruction ? .secondary : .primary)
+                            .foregroundStyle(showsInstruction ? palette.paper2 : palette.paper)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 Spacer(minLength: 0)
                 // The first minute's instruction stays until the break is struck; after it, the hint can be put away.
                 if model.openingStage != .handOver {
-                    Button {
+                    QuietButton(StrikeWords.doneWord) {
                         hintSeen = true
                         pencilHintSeen = true
-                    } label: {
-                        Image(systemName: "xmark").frame(width: 30, height: 30)
                     }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.circle)
                     .accessibilityLabel("Dismiss hint")
                 }
             }

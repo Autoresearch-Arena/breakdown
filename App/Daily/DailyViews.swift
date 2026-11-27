@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 5, the mode frame: the card is the kit's mode
+//          card while the day is open (the name and five dots, the goal, the day and tries left in the status line,
+//          "How forgiving" from the shot's measured window while it is set up and lined up, Take your shot or Try
+//          again) and the kit-style result card after a miss and once the day is finished (made on which try in pocket
+//          gold or five misses in warning, the distance from the mark at the lead size, the streak, the score, the next
+//          shot's time, Watch the answer with Share quiet and Board under More; the keys are kept). Centimetres follow
+//          NumberStyle's table-distance rule. The five dots mark the make in pocket gold and a try to come in paper3.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -10,9 +17,9 @@
 //          board may show, with the board's sign-in line when a sign-in from it failed.)
 // PURPOSE: Everything the player sees of the shot of the day on the table (plans/25-Nov-2026-shot-of-the-day-plan.md,
 //          stage 2 items 2 and 3), kept small so the table stays big:
-//          DailyCard - the one card, where the trick card goes (TrickShotCard hands a daily shot to it, so on iPad, the
-//            Mac and the open folding phone it sits in the notebook half and never covers the table). While playing:
-//            the goal in one line and five dots for the tries, with Take your shot or Try again and, after a miss, the
+//          DailyCard - the kit's mode card, where the trick card goes (TrickShotCard hands a daily shot to it, so on iPad,
+//            the Mac and the open folding phone it sits in the notebook half and never covers the table). While playing:
+//            the goal in one line, the day and tries left, with Take your shot or Try again and, after a miss, the
 //            judge's one sentence (TrickShotJudge, as trick shots show it). Once the day is finished (a make or five
 //            tries): the result card, made on which try, the distance from the mark, the score and the streak, the
 //            time until the next shot, and Watch the answer, Share and Board (Board only once wave 2 sets
@@ -31,8 +38,8 @@
 //          B5: the result card's buttons have keys, so the day is played to a shared result from a keyboard alone:
 //          Return watches the answer while it is the main button, Command-S shares, Command-B opens the board.)
 // SRP/DRY check: Pass - views and words only. Flow is DailyMode, judging TrickShotJudge, the goal marks of the trick
-//          (balls and pockets) GoalMarks through TrickTableLayer; the card's pieces follow TrickShotCard's (glassCard,
-//          the button rows, the prominent style), the blurbs are App/Phone/Blurb.swift's, the rings and labels on the
+//          (balls and pockets) GoalMarks through TrickTableLayer; the card is the kit's (ModeCard, ModeResultCard and
+//          the forgiving tiles of ModeFrameKit.swift, as TrickShotCard), the blurbs are App/Phone/Blurb.swift's, the rings and labels on the
 //          cloth TablePathStroke's.
 import BreakdownLensModel
 import BreakdownPhysics
@@ -82,10 +89,9 @@ enum DailyWords {
         return String(localized: "Five misses today.")
     }
 
-    /// Centimetres, one decimal at most, in the game's number locale: "4.5".
-    static func centimetres(_ metres: Double) -> String {
-        (metres * 100).formatted(.number.locale(AppLocale.numbers).precision(.fractionLength(0...1)))
-    }
+    /// Centimetres by NumberStyle's table-distance rule (whole, one decimal under 10 cm), in the game's number
+    /// language: "4.5", "12".
+    static func centimetres(_ metres: Double) -> String { NumberStyle.distance(metres: metres).number }
 
     /// "4.5 cm from the mark", for the card and VoiceOver.
     static func fromMark(_ metres: Double) -> String {
@@ -96,6 +102,10 @@ enum DailyWords {
     static func centimetreLabel(_ metres: Double) -> String { String(localized: "\(centimetres(metres)) cm") }
 
     static var scoreLabel: String { String(localized: "Score") }
+    /// The status line's word before the tries still to play.
+    static var triesLeftLabel: String {
+        String(localized: "Tries left", comment: "Shot of the day card: the word before how many of the five tries are left.")
+    }
     static var streakLabel: String { String(localized: "Streak") }
     static var markLabel: String { String(localized: "From the mark") }
 
@@ -146,7 +156,7 @@ struct DailyTryDots: View {
 
     var body: some View {
         let total = DailyRecord.maxTries
-        HStack(spacing: 6) {
+        HStack(spacing: Theme.Space.xxs) {
             ForEach(1...total, id: \.self) { i in
                 Image(systemName: symbol(i))
                     .foregroundStyle(colour(i))
@@ -164,10 +174,11 @@ struct DailyTryDots: View {
         return "circle"
     }
 
+    /// The make in pocket gold (a pass, as the result card's verdict), a used try in paper, a try to come in paper3.
     private func colour(_ i: Int) -> Color {
-        if madeOnTry == i { return palette.accent }
+        if madeOnTry == i { return palette.pocket }
         if i <= tries { return palette.paper }
-        return palette.paper.opacity(0.5)
+        return palette.paper3
     }
 }
 
@@ -175,11 +186,12 @@ struct DailyTryDots: View {
 
 struct DailyCard: View {
     let model: ShowpieceModel
-    @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var typeSize
-    /// The slim card on a phone held upright during a guided Lens replay (as TrickShotCard).
+    /// The slim card on a phone held upright during a guided Lens replay (as TrickShotCard): the kit's ModeCard slims
+    /// itself to its name and primary on the same flag.
     @Environment(\.lensReplayCompact) private var compact
+    /// 0.7.10 wiring: "Hide the board", read live so switching it hides Board at once, as BoardButton does.
+    @AppStorage(GameSettings.hideBoardKey) private var boardHidden = false
 
     private var trick: TrickShotMode { model.trickMode }
     private var daily: DailyMode { model.dailyMode }
@@ -187,221 +199,171 @@ struct DailyCard: View {
     var body: some View {
         // Steps back for the Lens tips and a what-if, as the trick card does.
         if DailyMode.showing(model), let shot = daily.shot, !model.holdForTips, !model.otherFutureShowing {
-            VStack(alignment: .leading, spacing: 8) {
-                header(shot)
+            Group {
                 if let day = daily.current, day.finished {
                     finished(shot, day)
                 } else {
                     playing(shot)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
-            .tint(palette.accent)
-            .animation(reduceMotion ? nil : .snappy, value: trick.phase)
+            // This card decides its own slim form (its compact branches below), so the kit cards' own slimming is
+            // off: the miss's sentence and the tries left stay, as before.
+            .environment(\.lensReplayCompact, false)
+            .animation(reduceMotion ? nil : Theme.Motion.standard, value: trick.phase)
             .transition(.opacity)
         }
     }
 
-    private func header(_ shot: DailyShot) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Text(verbatim: DailyWords.title).font(Theme.heading).lineLimit(2)
-            Spacer(minLength: 0)
-            Text(verbatim: DailyWords.day(shot.dayLabel)).font(Theme.label).foregroundStyle(palette.paper2)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
+    /// The tries still to play, as a status figure.
+    private var triesLeft: KitStatusItem {
+        KitStatusItem(DailyWords.triesLeftLabel, figure: DailyWords.number(DailyRecord.maxTries - daily.triesUsed))
+    }
+
+    /// The day ("Day 12") and the tries left, the status line of every playing card.
+    private func status(_ shot: DailyShot) -> [KitStatusItem] {
+        [KitStatusItem(DailyWords.day(shot.dayLabel), figure: ""), triesLeft]
     }
 
     // MARK: Playing
 
+    /// While the day is open: the goal, the day and tries left, "How forgiving" while the shot is set up, Take your
+    /// shot or Try again. After a miss, the result card with the judge's one sentence (TrickShotJudge, as trick shots
+    /// show it) and the retry's difference.
     @ViewBuilder
     private func playing(_ shot: DailyShot) -> some View {
-        let tries = daily.triesUsed
+        let dots = ModeDifficulty.dots(shot.trick.difficulty)
         switch trick.phase {
         case .judged(let verdict) where !verdict.made:
-            line(verdict.line)
-            if !compact, let c = model.retryComparison { line(RetryWords.sentence(c)) }
-            dotsRow(tries: tries, made: nil, note: DailyWords.triesLeft(DailyRecord.maxTries - tries))
-            buttons { tryAgainButton }
+            // The judge's sentence always; the retry's difference only in the full card (as before).
+            let lines = [verdict.line] + (compact ? [] : (model.retryComparison.map { [RetryWords.sentence($0)] } ?? []))
+            ModeResultCard(verdict: DailyWords.missed, tone: .foul, corner: DailyWords.day(shot.dayLabel),
+                           lines: lines, status: [triesLeft], next: tryAgainAction)
+                .modeShortcut(tryAgainAction, .defaultAction)
         case .offScript:
-            line(DailyWords.offScript)
-            dotsRow(tries: tries, made: nil, note: DailyWords.triesLeft(DailyRecord.maxTries - tries))
-            buttons { tryAgainButton }
+            ModeCard(name: DailyWords.title, difficulty: dots, goal: DailyWords.offScript, status: status(shot),
+                     primary: tryAgainAction)
+                .modeShortcut(tryAgainAction, .defaultAction)
         case .aiming:
-            if !compact {
-                line(shot.trick.usesBridge
-                     ? String(localized: "\(shot.trick.goalLine) The ball is out of reach, so the bridge holds the cue.")
-                     : shot.trick.goalLine)
+            // Lining up: the aiming panel's Shoot is the screen's one primary. Slim: the name and the tries left.
+            if compact {
+                ModeCard(name: DailyWords.title, difficulty: dots, goal: DailyWords.triesLeft(DailyRecord.maxTries - daily.triesUsed),
+                         primary: nil)
+            } else {
+                ModeCard(name: DailyWords.title, difficulty: dots,
+                         goal: shot.trick.usesBridge
+                            ? String(localized: "\(shot.trick.goalLine) The ball is out of reach, so the bridge holds the cue.")
+                            : shot.trick.goalLine,
+                         status: status(shot), primary: nil) {
+                    ForgivingTiles(window: shot.trick.window, isBreak: shot.trick.isBreak)
+                }
             }
-            dotsRow(tries: tries, made: nil, note: DailyWords.triesLeft(DailyRecord.maxTries - tries))
         default:
-            if !compact { line(shot.trick.goalLine) }
-            dotsRow(tries: tries, made: nil, note: DailyWords.triesLeft(DailyRecord.maxTries - tries))
-            buttons {
-                styled(Button { daily.takeShot() } label: {
-                    Label(DailyWords.takeShot, systemImage: "target").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: true)
-                .keyboardShortcut(.defaultAction)
-                .accessibilityHint(DailyWords.takeShotHint)
+            // Slim: the tries left and Take your shot, no goal line and no tiles (as before).
+            if compact {
+                ModeCard(name: DailyWords.title, difficulty: dots,
+                         goal: DailyWords.triesLeft(DailyRecord.maxTries - daily.triesUsed), primary: takeShotAction)
+                    .modeShortcut(takeShotAction, .defaultAction)
+            } else {
+                ModeCard(name: DailyWords.title, difficulty: dots, goal: shot.trick.goalLine, status: status(shot),
+                         primary: takeShotAction) {
+                    ForgivingTiles(window: shot.trick.window, isBreak: shot.trick.isBreak)
+                }
+                .modeShortcut(takeShotAction, .defaultAction)
             }
         }
     }
 
     // MARK: Finished
 
+    /// Once the day is finished (a make or five tries), and whenever the shot is opened again the same day: the result
+    /// card. Made on which try (pocket gold) or five misses (warning); the distance from the mark at the lead size
+    /// after a make; the streak; the score; the time until the next shot; then Watch the answer, Share (quiet,
+    /// Command-S) and Board under More (Command-B) while the board may show. While the answer replays in the Lens its
+    /// one idea leads the words, with the maths under "The maths" when asked for.
     @ViewBuilder
     private func finished(_ shot: DailyShot, _ day: DailyRecord.Day) -> some View {
-        switch trick.phase {
-        case .watching:
-            line(DailyWords.watching)
-        case .explaining:
-            if !compact {
-                HStack(spacing: 6) {
-                    Image(systemName: "lightbulb.fill").foregroundStyle(palette.paper).accessibilityHidden(true)
-                    Text(verbatim: DailyWords.idea).font(Theme.label).foregroundStyle(palette.paper)
-                }
-                line(shot.trick.idea)
-                if trick.showMaths, let maths = shot.trick.maths {
-                    Text(verbatim: maths)
-                        .font(Theme.equation)
-                        .foregroundStyle(palette.paper)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel(shot.trick.mathsSpoken ?? maths)
-                }
-            }
-        default:
-            EmptyView()
-        }
-        if !compact {
-            HStack(spacing: 8) {
-                Image(systemName: day.made ? "checkmark.seal.fill" : "calendar.badge.clock")
-                    .foregroundStyle(day.made ? palette.accent : palette.warning)
-                    .accessibilityHidden(true)
-                Text(verbatim: DailyWords.resultTitle(day)).font(Theme.heading)
-            }
-            .accessibilityElement(children: .combine)
-            DailyTryDots(tries: day.tries, madeOnTry: day.madeOnTry)
-            stats(shot, day)
-            TimelineView(.periodic(from: .now, by: 30)) { context in
-                Text(verbatim: DailyWords.nextShot(after: shot.day, now: context.date))
-                    .font(Theme.label)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        if trick.phase != .watching {
-            buttons {
-                styled(Button { daily.watchAnswer() } label: {
-                    Label(DailyWords.watchAnswer, systemImage: "play.fill").font(.headline).lineLimit(1)
-                        .frame(minHeight: Self.buttonHeight)
-                }, prominent: trick.phase != .explaining)
-                // 0.7.10 everyone: Return watches the answer while it is the card's main button (keyboard alone).
-                .keyboardShortcut(trick.phase != .explaining ? KeyboardShortcut.defaultAction : nil)
-                .accessibilityHint(DailyWords.watchAnswerHint)
-                if !compact {
-                    styled(Button { DailyShare.share(model: model) } label: {
-                        Label(DailyWords.share, systemImage: "square.and.arrow.up").font(.headline).lineLimit(1)
-                            .frame(minHeight: Self.buttonHeight)
-                    }, prominent: false)
-                    // 0.7.10 everyone: Command-S shares, so the day reaches a shared result from the keyboard alone.
-                    .keyboardShortcut("s", modifiers: .command)
-                    .accessibilityHint(DailyWords.shareHint)
-                    // Wave 2: hidden until Game Center is connected (DailyMode.openBoard).
-                    // 0.7.10 wiring: the board's own button (GameCenterViews.swift): it draws nothing with "Hide the
-                    // board" on, signs in the first time it is pressed, and says where to sign in if that fails.
-                    if daily.openBoard != nil {
-                        styled(BoardButton().font(.headline), prominent: false)
-                            .frame(minHeight: Self.buttonHeight)
-                            // 0.7.10 everyone: Command-B opens the board from the keyboard.
-                            .keyboardShortcut("b", modifiers: .command)
-                            .accessibilityHint(DailyWords.boardHint)
-                    }
-                }
-            }
-        }
-    }
-
-    /// Score, distance from the mark (a make only) and streak, side by side.
-    private func stats(_ shot: DailyShot, _ day: DailyRecord.Day) -> some View {
-        HStack(spacing: 8) {
-            stat(DailyWords.scoreLabel, DailyWords.number(day.score))
-            if day.made, let d = day.distance {
-                stat(DailyWords.markLabel, DailyWords.centimetreLabel(d))
-            }
-            stat(DailyWords.streakLabel, DailyWords.number(daily.streak(asOf: shot.day)))
-        }
-    }
-
-    private func stat(_ label: String, _ value: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(verbatim: value).font(Theme.figure)
-            Text(verbatim: label).font(Theme.figureLabel).foregroundStyle(.secondary)
-        }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
-        .background(.white.opacity(0.06), in: .rect(cornerRadius: 10))
-        .accessibilityElement(children: .combine)
-    }
-
-    // MARK: Pieces (as TrickShotCard's)
-
-    private func dotsRow(tries: Int, made: Int?, note: String) -> some View {
-        HStack(spacing: 10) {
-            DailyTryDots(tries: tries, madeOnTry: made)
-            Text(verbatim: note).font(Theme.label).foregroundStyle(.secondary)
-        }
-    }
-
-    private var tryAgainButton: some View {
-        styled(Button { daily.tryAgain() } label: {
-            Label(DailyWords.tryAgain, systemImage: "arrow.uturn.backward").font(.headline).lineLimit(1)
-                .frame(minHeight: Self.buttonHeight)
-        }, prominent: true)
-        .keyboardShortcut(.defaultAction)
-        .accessibilityHint(DailyWords.tryAgainHint)
-    }
-
-    private func line(_ text: String) -> some View {
-        Text(verbatim: text)
-            .font(Theme.body)
-            .foregroundStyle(palette.paper.opacity(0.9))
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    /// One row of buttons, right-aligned; two rows when the text is too large for one.
-    private func buttons<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
-        let row = content()
-        return Group {
-            if typeSize.isAccessibilitySize {
-                VStack(alignment: .trailing, spacing: 8) { row }.frame(maxWidth: .infinity, alignment: .trailing)
-            } else {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { Spacer(minLength: 0); row }
-                    WrappingRow { row }.frame(maxWidth: .infinity, alignment: .trailing)
-                }
-            }
-        }
-        .controlSize(.regular)
-    }
-
-    @ViewBuilder
-    private func styled(_ button: some View, prominent: Bool) -> some View {
-        if prominent {
-            // Dark text on the bright accent, as the trick card's.
-            button.buttonStyle(.glassProminent).foregroundStyle(palette.ground)
+        let watch = trick.phase == .watching ? nil : watchAction
+        if compact {
+            // Slim: the result's title and Watch the answer (the old slim card's one button).
+            ModeCard(name: DailyWords.title, difficulty: ModeDifficulty.dots(shot.trick.difficulty),
+                     goal: DailyWords.resultTitle(day), primary: watch)
+                .modeShortcut(watch, .defaultAction)
         } else {
-            button.buttonStyle(.glass)
+            ModeResultCard(verdict: DailyWords.resultTitle(day), tone: day.made ? .passed : .foul,
+                           corner: DailyWords.day(shot.dayLabel), lines: lines(shot),
+                           figure: day.made ? day.distance.map { NumberStyle.distance(metres: $0) } : nil,
+                           figureCaption: DailyWords.markLabel,
+                           status: [KitStatusItem(DailyWords.streakLabel,
+                                                  figure: DailyWords.number(daily.streak(asOf: shot.day)))],
+                           score: DailyWords.number(day.score), scoreLabel: DailyWords.scoreLabel,
+                           next: watch, share: shareAction, more: [boardAction].compactMap { $0 }) {
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                    if trick.phase == .explaining, trick.showMaths, let maths = shot.trick.maths {
+                        SectionLabel(String(localized: "The maths"))
+                        ModeMaths(maths: maths, spoken: shot.trick.mathsSpoken)
+                    }
+                    DailyNextShotLine(day: shot.day)
+                }
+            }
+            // 0.7.10 everyone: Return watches the answer while it is the card's main button, Command-S shares and
+            // Command-B opens the board, so the day reaches a shared result from the keyboard alone.
+            .modeShortcut(watch, .defaultAction)
+            .modeShortcut(shareAction, KeyboardShortcut("s", modifiers: .command))
+            .modeShortcut(boardAction, KeyboardShortcut("b", modifiers: .command))
         }
     }
 
-    /// The glass button adds its own padding; this lands the buttons on 44 points or more on a touch screen.
-    #if os(iOS)
-    private static let buttonHeight: CGFloat = 30
-    #else
-    private static let buttonHeight: CGFloat = 0
-    #endif
+    /// The finished card's words: the answer playing, or its idea while it is explained; then the board's sign-in line
+    /// when a sign-in from it did not work.
+    private func lines(_ shot: DailyShot) -> [String] {
+        var out: [String] = []
+        switch trick.phase {
+        case .watching: out.append(DailyWords.watching)
+        case .explaining: out.append(shot.trick.idea)
+        default: break
+        }
+        if boardAction != nil, GameCenter.shared.state == .unavailable { out.append(GameCenterWords.signInNeeded) }
+        return out
+    }
+
+    // MARK: Actions
+
+    private var takeShotAction: KitAction {
+        KitAction(DailyWords.takeShot, systemImage: "target") { daily.takeShot() }
+    }
+
+    private var tryAgainAction: KitAction {
+        KitAction(DailyWords.tryAgain, systemImage: "arrow.uturn.backward") { daily.tryAgain() }
+    }
+
+    private var watchAction: KitAction {
+        KitAction(DailyWords.watchAnswer, systemImage: "play") { daily.watchAnswer() }
+    }
+
+    private var shareAction: KitAction {
+        KitAction(DailyWords.share, systemImage: "square.and.arrow.up") { DailyShare.share(model: model) }
+    }
+
+    /// Board, only while the board may show (wave 2 connected it, "Hide the board" is off, not a test launch), as
+    /// BoardButton and the phone's blurb decide.
+    private var boardAction: KitAction? {
+        guard let open = daily.openBoard, !boardHidden, GameCenter.enabled else { return nil }
+        return KitAction(DailyWords.board, systemImage: "list.number") { open() }
+    }
+}
+
+/// "Next shot in 5 hr, 12 min", in caption paper2, refreshed every half minute.
+private struct DailyNextShotLine: View {
+    let day: Int
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 30)) { context in
+            Text(verbatim: DailyWords.nextShot(after: day, now: context.date))
+                .font(Theme.caption)
+                .foregroundStyle(palette.paper2)
+        }
+    }
 }
 
 // MARK: The phone held upright

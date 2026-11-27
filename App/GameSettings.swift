@@ -1,5 +1,11 @@
 // Author: Claude Opus 5.5 High
 // Date: 20-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets": Options is
+//          the kit's SheetPage on the ground (serif title, cyan Done top right) in four panel groups, Feel, Physics
+//          Lens, Aiming and hands (the old Aiming, Stroke and Hands sections) and Board, with cyan switches, each
+//          section's explanation as a caption under its switch, one "Show all tips again" row in place of the two tip
+//          buttons (it clears both keys), and the version in caption at the foot. The switches are switches on the Mac
+//          too (its default outside a form is a checkbox). No system grouped grey or blue.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md Part C:
 //          "Controls on the left", controlsLeftKey, off by default, a toggle in a new Hands section.
 //          ShowpieceView reads it once and hands it down as the shootSide environment value (Shoot, the tip picture and
@@ -100,6 +106,9 @@ struct OptionsSheet: View {
     @AppStorage(GameSettings.hideBoardKey) private var hideBoard = false
     // 0.7.10 everyone
     @AppStorage(GameSettings.controlsLeftKey) private var controlsLeft = false
+    @Environment(\.palette) private var palette
+    /// True when shown as a page of the notebook rather than a sheet (NotebookPanel sets it).
+    @Environment(\.inlinePages) private var inlinePages
 
     private var version: String {
         let info = Bundle.main.infoDictionary
@@ -108,83 +117,104 @@ struct OptionsSheet: View {
         return "\(v) (\(b))"
     }
 
+    /// UI rethink package 7: the kit's sheet page in four groups (Feel, Physics Lens, Aiming and hands, Board), the
+    /// switches in the cyan tint, one "Show all tips again" row, and the version in caption at the foot. Each group's
+    /// explanation is now a caption under the switch it explains (a sheet group has no footer), so no words are lost.
     var body: some View {
-        NavigationStack {
-            Form {
-                // 0.7.7 bullet-time: written with a header and footer (the Physics Lens section's form) so the new
-                // toggle can say what it does; the header's words are the same "Feel" key as before.
-                Section {
-                    Toggle("Sound", systemImage: "speaker.wave.2", isOn: $sound)
-                    #if os(iOS)
-                    Toggle("Vibration", systemImage: "iphone.radiowaves.left.and.right", isOn: $haptics)
-                    #endif
-                    // After the iOS-only block, so the Mac has it too.
-                    Toggle("Freeze the big hits", systemImage: "pause.circle", isOn: $bulletTime)
-                } header: {
-                    Text("Feel")
-                } footer: {
-                    Text("On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.")
-                }
-                Section {
-                    Toggle("Shot explanations", systemImage: "text.bubble", isOn: $explanations)
-                    Toggle("Show the maths", systemImage: "function", isOn: $maths)
-                        .disabled(!explanations)
-                } header: {
-                    Text("Physics Lens")
-                } footer: {
-                    Text("Explanations say what happened at each moment of the shot. The maths adds the equation behind it.")
-                }
-                Section {
-                    Toggle("Aim guide", systemImage: "scope", isOn: $aimGuide)
-                    Button("Show the aiming tips again", systemImage: "questionmark.circle") { hintSeen = false }
-                        .disabled(!hintSeen)
-                    Button("Show the Lens tips again", systemImage: "scribble.variable") { lensTipsSeen = false }
-                        .disabled(!lensTipsSeen)
-                } header: {
-                    Text("Aiming")
-                } footer: {
-                    Text("The guide shows the first ball you will hit and where both balls head next. Turn it off to judge the angle yourself.")
-                }
+        SheetPage(title: String(localized: "Options"), onDone: { isOpen = false }) {
+            SheetGroup(String(localized: "Feel")) {
+                OptionSwitch("Sound", systemImage: "speaker.wave.2", isOn: $sound)
+                #if os(iOS)
+                OptionSwitch("Vibration", systemImage: "iphone.radiowaves.left.and.right", isOn: $haptics)
+                #endif
+                // After the iOS-only row, so the Mac has it too.
+                OptionSwitch("Freeze the big hits", systemImage: "pause.circle", isOn: $bulletTime,
+                             note: "On a rare hit, time stops for a moment and the camera swings round the two balls to show the push between them.")
+            }
+            SheetGroup(String(localized: "Physics Lens")) {
+                OptionSwitch("Shot explanations", systemImage: "text.bubble", isOn: $explanations)
+                OptionSwitch("Show the maths", systemImage: "function", isOn: $maths,
+                             note: "Explanations say what happened at each moment of the shot. The maths adds the equation behind it.")
+                    .disabled(!explanations)
+            }
+            SheetGroup(String(localized: "Options group: aiming and hands", defaultValue: "Aiming and hands",
+                              comment: "Options group heading over the aim guide, shooting with the button only, controls on the left and showing the tips again.")) {
+                OptionSwitch("Aim guide", systemImage: "scope", isOn: $aimGuide,
+                             note: "The guide shows the first ball you will hit and where both balls head next. Turn it off to judge the angle yourself.")
                 #if os(iOS)
                 // Touch only: a pointer, the keys and a controller never shoot on a push.
-                Section {
-                    Toggle("Shoot with the button only", systemImage: "hand.tap", isOn: $buttonOnly)
-                } header: {
-                    Text("Stroke")
-                } footer: {
-                    Text("Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.")
-                }
+                OptionSwitch("Shoot with the button only", systemImage: "hand.tap", isOn: $buttonOnly,
+                             note: "Pulling back from the white ball still sets the power and measures your stroke, but pushing through it no longer plays the shot. Only the Shoot or Break button does.")
                 #endif
                 // 0.7.10 everyone: on every platform (the Mac's notebook swaps sides too).
-                Section {
-                    Toggle("Controls on the left", systemImage: "hand.raised", isOn: $controlsLeft)
-                } header: {
-                    Text("Hands")
-                } footer: {
-                    Text("Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.")
-                }
-                // 0.7.10 gamecenter: on every platform, the Mac's Settings window included.
-                Section {
-                    Toggle("Hide the board", systemImage: "eye.slash", isOn: $hideBoard)
-                } header: {
-                    Text("Board")
-                } footer: {
-                    Text("With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.")
-                }
-                Section {
-                    LabeledContent("Version", value: version)
+                OptionSwitch("Controls on the left", systemImage: "hand.raised", isOn: $controlsLeft,
+                             note: "Puts Shoot, the tip picture and the power bar on the left. Where the table shares the screen side by side, the table moves to the right.")
+                // One row for every tip: the aiming tips (ShotPanel's aimHintSeen) and the three Lens callouts
+                // (LensCallouts.seenKey) play again. Quiet, cyan, and dimmed once nothing is left to show again.
+                QuietButton(String(localized: "Options: show all tips again", defaultValue: "Show all tips again",
+                                   comment: "Options row that shows the aiming tips and the Physics Lens tips again."),
+                            systemImage: "questionmark.circle", isEnabled: hintSeen || lensTipsSeen) {
+                    hintSeen = false
+                    lensTipsSeen = false
                 }
             }
-            .navigationTitle("Options")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Done") { isOpen = false } }
+            // 0.7.10 gamecenter: on every platform, the Mac's Settings window included.
+            SheetGroup(String(localized: "Board")) {
+                OptionSwitch("Hide the board", systemImage: "eye.slash", isOn: $hideBoard,
+                             note: "With this on, the game never signs in for the board and shows no Board button. Today's shot, its score and your streak still work.")
             }
+        } footer: {
+            Text(String(localized: "Options: version line", defaultValue: "Version \(version)",
+                        comment: "The last line of Options: the game's version and build, e.g. Version 0.8.2 (41)."))
         }
         #if os(macOS)
-        .frame(minWidth: 420, minHeight: 460)
+        // A sheet's or the Settings window's minimum size only: as a notebook page it takes the panel's size.
+        .frame(minWidth: inlinePages ? nil : 420, minHeight: inlinePages ? nil : 460)
         #endif
+    }
+}
+
+/// UI rethink package 7: one switch in Options: its outline icon in paper2, its name, the cyan switch, and, where the
+/// option needs it, one caption under it saying what it does. The words are the existing catalog keys.
+private struct OptionSwitch: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    @Binding var isOn: Bool
+    var note: LocalizedStringKey? = nil
+    @Environment(\.palette) private var palette
+    @Environment(\.isEnabled) private var isEnabled
+    private var device = KitDeviceReader()
+
+    init(_ title: LocalizedStringKey, systemImage: String, isOn: Binding<Bool>, note: LocalizedStringKey? = nil) {
+        self.title = title
+        self.systemImage = systemImage
+        self._isOn = isOn
+        self.note = note
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+            Toggle(isOn: $isOn) {
+                Label {
+                    Text(title)
+                        .font(device.current == .phone ? Theme.bodyCompact : Theme.body)
+                        .foregroundStyle(isEnabled ? palette.paper : palette.paper3)
+                } icon: {
+                    Image(systemName: systemImage)
+                        .fontWeight(.medium)
+                        .foregroundStyle(palette.paper2)
+                }
+            }
+            // A switch on the Mac too (its default outside a form is a checkbox), in the cyan of "you can act here".
+            .toggleStyle(.switch)
+            .tint(palette.accent)
+            .frame(minHeight: Theme.Size.minHit)
+            if let note {
+                Text(note)
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
     }
 }

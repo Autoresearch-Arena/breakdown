@@ -1,5 +1,20 @@
 // Author: Claude Haiku 5.5 High
 // Date: 18-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets",
+//          plans/26-Nov-2026-ui-rethink-plan.md and mockup-menu-ipad.png: the menu is Shot of the day, Continue when
+//          something is in progress, Play (the cyan primary when nothing is), Trick shots, Behind the 8-ball and
+//          Lessons, each with its sentence and, inside the row, the kit's progress chip (hidden until something is
+//          earned), and Shot of the day its difficulty dots; then three tiles, Achievements, How to play and Options.
+//          No "Today" heading. "Watch the intro" moved
+//          into How to play (a row there, through the frontDoorWatchIntro environment value); Tables moved into the Play
+//          list and onto the notebook page's "The table" card, which shows the table on screen with its real figures.
+//          Everything sits on the panel surface (opaque, rule edge, medium corners), rows are sunken list rows, no
+//          glass and no system grey or blue: the card over a dimmed table, the upright phone's sheet, and the notebook's
+//          page, which now fills its column from the top and takes two columns on a wide page (the upright iPad's
+//          bottom panel), so there is no empty band. The computer's level is three chips instead of the system's
+//          segmented control; the replace question uses the kit's primary, secondary and quiet buttons. How to play is
+//          the kit's SheetPage with panel groups and list rows; its pushed pages sit on the ground with Done top
+//          right; list numbers are plain sans in paper2. Every action, keyboard shortcut and VoiceOver reading is kept.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 everyone, plans/25-Nov-2026-everyone-can-play-plan.md:
 //          How to play names the Lens paths by shape as well as colour (dashed and solid, as every player now sees
 //          them), the Controls page names the zoom button and menu, the keys and the controller buttons of the shot of
@@ -111,7 +126,9 @@
 //          (FirstInstruction) and gains a Controls page: the push, the bridge finger, practice strokes, the Pencil, tap
 //          to aim, pinch, pan, double tap, the pointer and keys, and the controller. The store scenes' launch flags
 //          skip the menu.)
-// PURPOSE: The main menu, laid over the live table, dimmed, so the room stays visible behind it. (A first launch
+// PURPOSE: (Since UI rethink package 7 the entries and their order are as the latest Edited line says; the rest of
+//          this paragraph is the history of what each entry does.)
+//          The main menu, laid over the live table, dimmed, so the room stays visible behind it. (A first launch
 //          skips it: the game opens on a racked pool table with the cue in hand and one line saying how to shoot,
 //          with no opening replay first. The menu is reached from the back button on the table, and later launches
 //          open on it.)
@@ -129,6 +146,7 @@
 //          Palette, and the controls named in the instructions are the real labels in PlaybackControls, ShotPanel and
 //          AimOverlay. Progress is read from the modes (TrickShotMode.isDone, EightBallMode.medals), never stored here.
 //          The rules pages describe what the rules engine does (BreakdownRules) in words; they hold no rule logic.
+import BreakdownAuthored
 import BreakdownRules
 import SwiftUI
 
@@ -222,16 +240,26 @@ struct TitleScreen: View {
     private var inline: Bool { onHowTo != nil }
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = 10
+    /// The wordmark's tracking (the display role's +6, wordmark only), scaled with the text size.
+    @ScaledMetric(relativeTo: .largeTitle) private var tracking: CGFloat = Theme.displayTracking
     /// 0.7.10 frontdoor: the phone held upright (the stage says so), where the menu is a sheet over the lower half.
     @Environment(\.phoneUpright) private var phoneUpright
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// The device the kit lays out for, when the host says (the notebook sets it); see `device`.
+    @Environment(\.kitDevice) private var kitDevice
     /// The height the upright sheet's rows want, measured, so the sheet is only as tall as they are (and scrolls past
     /// its cap). Starts near the usual height so the first frame is close.
     @State private var sheetContentHeight: CGFloat = 440
+    /// UI rethink package 7: the width the menu has as the notebook's page, measured; a wide page (the upright iPad's
+    /// bottom panel) lays the menu out in two columns so no band of it stands empty.
+    @State private var inlineWidth: CGFloat = 0
     /// The menu's open screens and its entrance (see MenuScreenState). A computed read of the shared instance, so the
     /// view's memberwise initializer is unchanged and Observation tracks every property the body reads.
     private var state: MenuScreenState { .shared }
+
+    /// The device the menu lays out for: the host's word when it gives one (the notebook: a big screen's column or the
+    /// open folding phone's panel), else the phone, since every other host of the menu is a phone-sized screen.
+    private var device: Theme.Device { kitDevice ?? (inline ? .big : .phone) }
 
     /// The menu's own sheet. Inline (the notebook) the panel shows these as its own pages, so a sheet left open before
     /// the phone unfolded is remembered but never presented over the table.
@@ -272,8 +300,8 @@ struct TitleScreen: View {
     }
 
     /// How strongly the table is dimmed behind the menu. Lighter while the opening's slow Lens replay plays behind it on
-    /// a later launch (item 52), so the moving trails read through the glass; the card itself stays on its own glass,
-    /// so the words keep their contrast either way.
+    /// a later launch (item 52), so the moving trails read through; the card itself is the opaque panel, so the words
+    /// keep their contrast either way.
     private var veilOpacity: Double { model.menuBackdropPlaying ? 0.5 : 0.62 }
 
     /// 0.7.10 frontdoor: the upright phone's layout (the name at the top, a sheet over the lower half). Inline (the
@@ -282,6 +310,11 @@ struct TitleScreen: View {
     /// The tallest the upright sheet gets, as a share of the screen's height inside the safe area; past it the rows
     /// scroll inside the sheet, so the table above always keeps some of the screen.
     private static let sheetMaxShare: CGFloat = 0.66
+    /// The widest the centred card gets over a dimmed table (a phone turned sideways, a small window).
+    private static let cardMaxWidth: CGFloat = 460
+    /// UI rethink package 7: the notebook page's width from which the menu takes two columns (the upright iPad's bottom
+    /// panel); the sideways iPad's and the Mac's side column stay one column.
+    private static let twoColumnWidth: CGFloat = 640
 
     var body: some View {
         ZStack {
@@ -306,12 +339,14 @@ struct TitleScreen: View {
             }
             if sheetLayout {
                 uprightMenu
+            } else if inline {
+                inlineMenu
             } else {
                 ScrollView {
                     card
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 24)
-                        .frame(maxWidth: 460)
+                        .padding(.horizontal, Theme.Space.md)
+                        .padding(.vertical, Theme.Space.lg)
+                        .frame(maxWidth: Self.cardMaxWidth)
                         .frame(maxWidth: .infinity)
                 }
                 // Centred while it fits, scrolls when it does not. A card forced to the screen's height squeezed the
@@ -341,9 +376,11 @@ struct TitleScreen: View {
         .sheet(item: sheetItem) { shown in menuSheet(shown) }
     }
 
-    /// The game's name and its tagline. VoiceOver reads the wordmark as the screen's heading.
+    /// The game's name and its line, in the serif face; the line in paper2 (cyan means "you can act here", never a
+    /// tagline). VoiceOver reads the wordmark as the screen's heading. Leading in the notebook's column, centred
+    /// elsewhere.
     private var wordmark: some View {
-        VStack(spacing: sheetLayout ? 4 : 10) {
+        VStack(alignment: inline ? .leading : .center, spacing: sheetLayout ? Theme.Space.xxs : Theme.Space.xs) {
             Text("BREAKDOWN")
                 .font(Theme.display)
                 .tracking(tracking)
@@ -352,11 +389,13 @@ struct TitleScreen: View {
                 .lineLimit(1)
                 .accessibilityAddTraits(.isHeader)
             Text("watch the physics think")
-                .font(Theme.tagline)
-                .foregroundStyle(palette.accent)
+                .font(Theme.body)
+                .fontDesign(.serif)
+                .foregroundStyle(palette.paper2)
                 .opacity(state.shown ? 1 : 0)
                 .animation(reduceMotion ? nil : .smooth(duration: 0.8).delay(0.25), value: state.shown)
         }
+        .frame(maxWidth: .infinity, alignment: inline ? .leading : .center)
     }
 
     /// Whichever list is up: the replace question, the Play list or the main list, crossfading between them.
@@ -371,40 +410,97 @@ struct TitleScreen: View {
             }
         }
         .transition(.opacity)
-        .animation(reduceMotion ? nil : .snappy, value: state.playListOpen)
-        .animation(reduceMotion ? nil : .snappy, value: pendingMatch)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: state.playListOpen)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: pendingMatch)
+        .kitDevice(device)
     }
 
-    /// Everywhere but the upright phone: the name and the lists on one glass card (centred over a dimmed table, or as
-    /// the notebook's menu page beside a bright one).
+    /// A phone turned sideways or a small window: the name and the lists on one panel card, centred over a dimmed table.
     private var card: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: Theme.Space.lg) {
             wordmark
             menuContent
         }
-        .padding(24)
-        .glassEffect(.regular, in: .rect(cornerRadius: 28, style: .continuous))
+        .kitPanel()
+        .kitDevice(device)
     }
 
-    /// 0.7.10 frontdoor: the upright phone. The name sits at the top over the room, the lists are a glass sheet over the
+    /// UI rethink package 7: the menu as the notebook's page (the side column on a sideways iPad and the Mac, the open
+    /// folding phone's panel, the upright iPad's full-width bottom panel). It fills the page from the top: the name on
+    /// the ground, the lists on one panel, and the table on screen with its real figures (the way into Tables). A wide
+    /// page puts the name and the table on the left and the lists on the right, so no band of the page stands empty.
+    private var inlineMenu: some View {
+        let twoColumns = inlineWidth >= Self.twoColumnWidth && !typeSize.isAccessibilitySize
+        return ScrollView {
+            Group {
+                if twoColumns {
+                    HStack(alignment: .top, spacing: Theme.Space.lg) {
+                        VStack(alignment: .leading, spacing: Theme.Space.cardGap(device)) {
+                            wordmark
+                            tableCard
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        menuContent
+                            .kitPanel()
+                            .frame(maxWidth: .infinity, alignment: .top)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: Theme.Space.cardGap(device)) {
+                        wordmark
+                            .padding(.bottom, Theme.Space.xs)
+                        menuContent
+                            .kitPanel()
+                        tableCard
+                    }
+                }
+            }
+            .padding(Theme.Space.pageMargin(device))
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+            if abs(inlineWidth - width) > 0.5 { inlineWidth = width }
+        }
+        .kitDevice(device)
+    }
+
+    /// The table on screen and its real figures (bed, ball, pockets), with Tables as the card's one quiet action.
+    private var tableCard: some View {
+        let kind = model.solvedTable
+        return PanelCard(title: String(localized: "Menu: the table", defaultValue: "The table",
+                                       comment: "Main menu card heading over the table on screen and its figures."),
+                         titleAction: KitAction(String(localized: "Tables")) { openPage(.tables, inline: onTables) }) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                Text(verbatim: kind.title)
+                    .font(Theme.heading)
+                    .foregroundStyle(palette.paper)
+                TableFiguresLine(kind: kind)
+            }
+        }
+    }
+
+    /// 0.7.10 frontdoor: the upright phone. The name sits at the top over the room, the lists are a panel sheet over the
     /// lower half that reaches under the home indicator, and the table is framed between the two: both edges are
     /// written to MenuScreenState for the camera. The sheet is as tall as its rows and never taller than
-    /// sheetMaxShare of the screen; the Play list, which is longer, scrolls inside it.
+    /// sheetMaxShare of the screen; the Play list, which is longer, scrolls inside it. UI rethink package 7: the sheet is
+    /// the panel surface (opaque, rule edge, medium corners), not glass.
     private var uprightMenu: some View {
-        GeometryReader { geo in
+        let sheetShape = UnevenRoundedRectangle(topLeadingRadius: Theme.Corner.medium,
+                                                topTrailingRadius: Theme.Corner.medium, style: .continuous)
+        return GeometryReader { geo in
             VStack(spacing: 0) {
                 wordmark
-                    .padding(.top, 6)
-                    .padding(.horizontal, 16)
+                    .padding(.top, Theme.Space.xs)
+                    .padding(.horizontal, Theme.Space.pageMargin(.phone))
                     .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { bottom in
                         if state.uprightNameBottom != bottom { state.uprightNameBottom = bottom }
                     }
-                Spacer(minLength: 12)
+                Spacer(minLength: Theme.Space.sm)
                 ScrollView {
                     menuContent
-                        .padding(.horizontal, 16)
-                        .padding(.top, 18)
-                        .padding(.bottom, 10)
+                        .padding(.horizontal, Theme.Space.pageMargin(.phone))
+                        .padding(.top, Theme.Space.md)
+                        .padding(.bottom, Theme.Space.sm)
                         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
                             if abs(sheetContentHeight - height) > 0.5 { sheetContentHeight = height }
                         }
@@ -413,9 +509,9 @@ struct TitleScreen: View {
                 .frame(height: min(max(sheetContentHeight, 1), geo.size.height * Self.sheetMaxShare))
                 .frame(maxWidth: .infinity)
                 .background(alignment: .top) {
-                    Color.clear
-                        .glassEffect(.regular, in: UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28,
-                                                                          style: .continuous))
+                    sheetShape
+                        .fill(palette.panel)
+                        .overlay { sheetShape.stroke(palette.rule, lineWidth: Theme.Size.hairline) }
                         .ignoresSafeArea(edges: .bottom)
                 }
                 .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { top in
@@ -423,6 +519,7 @@ struct TitleScreen: View {
                 }
             }
         }
+        .kitDevice(.phone)
     }
 
     // MARK: The main list
@@ -430,53 +527,70 @@ struct TitleScreen: View {
     /// Something to go back to: the game on the table, or after a relaunch the saved match.
     private var resumable: Bool { model.gameInProgress || model.hasSavedMatch }
 
-    /// Continue is highlighted whenever there is something to go back to. (Since 0.7.1 nothing steers the player into
-    /// the lessons: Learn is an ordinary entry and Play, or Continue, leads.)
-    private var continueHighlighted: Bool { resumable }
+    /// The gap between the menu's rows.
+    private var rowGap: CGFloat { Theme.Space.xs }
 
+    /// UI rethink package 7 (mockup-menu-ipad.png): Shot of the day, Continue when something is in progress (the
+    /// screen's primary then), Play (the primary when nothing is), Trick shots, Behind the 8-ball and Lessons, then three
+    /// tiles: Achievements, How to play and Options. No heading over the first part. "Watch the intro" moved into How to
+    /// play; Tables is in the Play list and on the table card. Progress chips sit inside their rows and show only once
+    /// something is earned.
     private var mainList: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Today: what to go back to. Only drawn when it has a row, so a fresh launch never shows an empty heading.
-            if hasTodayRows {
-                MenuGroup(title: String(localized: "Today",
-                                        comment: "Main menu group heading: what to play today (today's shot, or the game you can go back to)")) {
-                    // 0.7.10 daily: Shot of the day, first; its words, streak mark and action are DailyMenuRow's.
-                    // 0.7.10 wiring: drawn like every other row (MenuGuide.daily), today's state in its mark.
-                    MenuRow(entry: MenuGuide.daily,
-                            mark: DailyMenuRow.mark(model).map { MenuRow.Mark(symbol: $0.symbol, text: $0.text, spoken: $0.spoken) }) {
-                        DailyMenuRow.open(model); onPlay()
-                    }
-                    // Continue first whenever something is in progress. Return presses whichever entry is highlighted.
-                    if model.gameInProgress {
-                        MenuRow(title: "Continue", verbatimLine: liveLine, symbol: "play.fill", prominent: continueHighlighted) {
-                            model.closeMenu()
-                        }
-                        .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
-                    } else if model.hasSavedMatch {
-                        MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: continueHighlighted) {
-                            continueMatch()
-                        }
-                        .keyboardShortcut(continueHighlighted ? KeyboardShortcut.defaultAction : nil)
-                    }
-                }
+        VStack(alignment: .leading, spacing: rowGap) {
+            // 0.7.10 daily: Shot of the day, first; its words and state are DailyMenuRow's.
+            MenuRow(title: MenuGuide.daily.title, line: DailyMenuRow.line(model), chip: dailyChip,
+                    spoken: DailyMenuRow.mark(model)?.spoken, difficulty: dailyDifficulty) {
+                DailyMenuRow.open(model); onPlay()
             }
-            MenuGroup(title: Self.waysToPlayTitle) {
-                MenuRow(entry: MenuGuide.play, prominent: playHighlighted) { state.playListOpen = true }
-                    .keyboardShortcut(playHighlighted ? KeyboardShortcut.defaultAction : nil)
-                // 0.7.4: the trick shots sit directly under Play, where people look first: they are the coolest thing the
-                // table shows.
-                MenuRow(entry: MenuGuide.tricks, mark: trickMark) { model.showList(.tricks) }
-                MenuRow(entry: MenuGuide.eightBall, mark: medalMark) { model.showList(.eightBall) }
-                MenuRow(entry: MenuGuide.tables) { openPage(.tables, inline: onTables) }
+            // Continue first whenever something is in progress, as the screen's one primary; Return presses it.
+            if model.gameInProgress {
+                continueBlock(String(localized: "Continue"), line: liveLine) { model.closeMenu() }
+            } else if model.hasSavedMatch {
+                continueBlock(String(localized: "Continue match"), line: savedLine) { continueMatch() }
             }
-            MenuGroup(title: String(localized: "More", comment: "Main menu group heading: the lessons, achievements, help, options and the intro")) {
-                moreEntries
+            SectionLabel(Self.waysToPlayTitle)
+                .padding(.top, Theme.Space.xs)
+            if resumable {
+                MenuRow(entry: MenuGuide.play) { state.playListOpen = true }
+            } else {
+                // Nothing to go back to: Play is the primary, on Return.
+                PrimaryButton(Self.playTitle, fullWidth: true) { state.playListOpen = true }
+                    .keyboardShortcut(.defaultAction)
+                    .accessibilityHint(Text(verbatim: MenuGuide.play.line))
             }
+            // 0.7.4: the trick shots sit directly under Play, where people look first.
+            MenuRow(entry: MenuGuide.tricks, chip: .progress(trickProgress.done, trickProgress.total),
+                    spoken: String(localized: "\(trickProgress.done) of \(trickProgress.total) made")) {
+                model.showList(.tricks)
+            }
+            MenuRow(entry: MenuGuide.eightBall, chip: .progress(medalProgress.done, medalProgress.total),
+                    spoken: String(localized: "\(medalProgress.done) of \(medalProgress.total) medals won")) {
+                model.showList(.eightBall)
+            }
+            // The lessons: offered, never pushed (never the primary).
+            MenuRow(entry: MenuGuide.learn, chip: .progress(lessonProgress.done, lessonProgress.total),
+                    spoken: String(localized: "\(lessonProgress.done) of \(lessonProgress.total) passed")) {
+                model.showList(.lessons)
+            }
+            SectionLabel(String(localized: "More", comment: "Main menu group heading: the lessons, achievements, help, options and the intro"))
+                .padding(.top, Theme.Space.xs)
+            moreEntries
         }
     }
 
-    /// The Today group always has a row now: today's shot is always offered (0.7.10 daily).
-    private var hasTodayRows: Bool { true }
+    /// Continue as the screen's primary, with the line saying what it goes back to under it.
+    private func continueBlock(_ title: String, line: String, action: @escaping () -> Void) -> some View {
+        VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+            PrimaryButton(title, fullWidth: true) { action() }
+                .keyboardShortcut(.defaultAction)
+                .accessibilityHint(Text(verbatim: line))
+            Text(verbatim: line)
+                .font(Theme.caption)
+                .foregroundStyle(palette.paper2)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityHidden(true)
+        }
+    }
 
     /// The second group's heading. Its own key: the plain "Play" is the playback button's word (bug 55).
     private static var waysToPlayTitle: String {
@@ -484,35 +598,32 @@ struct TitleScreen: View {
                comment: "Main menu group heading over Play a game, Trick shots, Behind the 8-Ball and Tables")
     }
 
-    /// More: the lessons (offered, never pushed), the achievements, How to play, Options and the intro, as one row of
-    /// small tiles so the whole menu fits on an upright phone's lower half. From the second size above the default a
-    /// tile is too small for its name, so they become ordinary one-line rows.
+    /// Achievements, How to play and Options as three tiles side by side. From the second size above the default a
+    /// tile is too small for its name, so they become ordinary rows.
     @ViewBuilder private var moreEntries: some View {
-        let learn: () -> Void = { model.showList(.lessons) }
         // 0.7.7 achievements: the list of physics the player has pulled off.
         let achievements: () -> Void = { openPage(.achievements, inline: onAchievements) }
         let howTo: () -> Void = { openPage(.howTo, inline: onHowTo) }
         let options: () -> Void = { openPage(.options, inline: onOptions) }
-        let intro: () -> Void = { model.trickMode.end(); model.eightBallMode.end(); model.watchBreak() }
+        let b = model.achievements
+        let achievementSpoken = AchievementWords.menuSpoken(earned: b.earnedCount, total: b.total, new: b.newCount)
         if typeSize >= .xxLarge {
-            MenuRow(entry: MenuGuide.learn, mark: lessonMark, action: learn)
-            MenuRow(entry: MenuGuide.achievements, mark: achievementMark, action: achievements)
+            MenuRow(entry: MenuGuide.achievements, chip: .progress(b.earnedCount, b.total), spoken: achievementSpoken,
+                    action: achievements)
             MenuRow(entry: MenuGuide.howTo, action: howTo)
             MenuRow(entry: MenuGuide.options, action: options)
-            MenuRow(entry: MenuGuide.watchIntro, action: intro)
         } else {
-            HStack(spacing: 6) {
-                MenuTile(entry: MenuGuide.learn, mark: lessonMark, action: learn)
-                MenuTile(entry: MenuGuide.achievements, mark: achievementMark, action: achievements)
+            HStack(alignment: .top, spacing: rowGap) {
+                // Sparkles while some are new since the list was last opened (the old mark's symbol), the outline
+                // rosette otherwise.
+                MenuTile(entry: MenuGuide.achievements, symbol: b.newCount > 0 ? "sparkles" : nil,
+                         chip: .progress(b.earnedCount, b.total), spoken: achievementSpoken, action: achievements)
                 MenuTile(entry: MenuGuide.howTo, action: howTo)
                 MenuTile(entry: MenuGuide.options, action: options)
-                MenuTile(entry: MenuGuide.watchIntro, action: intro)
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
-
-    /// Play is highlighted only when there is nothing to go back to and no next step left (the whole path is done).
-    private var playHighlighted: Bool { !resumable }
 
     /// The live game's line: a match names itself (which game, against whom, whose shot); anything else is the table as
     /// it was left.
@@ -530,120 +641,119 @@ struct TitleScreen: View {
             ?? String(localized: "Pick up your saved match where you left it.")
     }
 
+    /// Today's shot's chip: its tries or the streak once there is something to show (DailyMenuRow.mark); nothing before
+    /// the first try with no streak, as every progress chip hides until something is earned.
+    private var dailyChip: MenuChip? {
+        guard let mark = DailyMenuRow.mark(model), mark.symbol != "circle" else { return nil }
+        return .value(mark.text)
+    }
+
+    /// Today's shot's difficulty on the five-dot scale (mockup-menu-ipad.png), read from the day's bank entry, the
+    /// same mapping the shot's own card uses (ModeDifficulty); nil if the entry's rating is not one the game knows.
+    private var dailyDifficulty: Int? {
+        let entry = DailyBank.entry(forDay: model.dailyMode.today)
+        return TrickDifficulty(rawValue: entry.difficulty).map { ModeDifficulty.dots($0) }
+    }
+
     /// Lessons passed out of the six.
-    private var lessonMark: MenuRow.Mark {
-        let passed = model.lessonMode.passedCount
-        let total = Lessons.all.count
-        return MenuRow.Mark(symbol: "checkmark.circle.fill",
-                            text: String(localized: "\(passed)/\(total)"),
-                            spoken: String(localized: "\(passed) of \(total) passed"))
+    private var lessonProgress: (done: Int, total: Int) {
+        (model.lessonMode.passedCount, Lessons.all.count)
     }
 
     /// Trick shots made out of the ones that can be played.
-    private var trickMark: MenuRow.Mark {
+    private var trickProgress: (done: Int, total: Int) {
         let mode = model.trickMode
         let playable = TrickShots.all.filter { !$0.pending }
-        let made = playable.filter { mode.isDone($0) }.count
-        return MenuRow.Mark(symbol: "checkmark.circle.fill",
-                            text: String(localized: "\(made)/\(playable.count)"),
-                            spoken: String(localized: "\(made) of \(playable.count) made"))
-    }
-
-    /// 0.7.7 achievements: achievements earned out of all of them. The symbol is sparkles while some are new since the
-    /// list was last opened; VoiceOver hears the counts, the new ones included.
-    private var achievementMark: MenuRow.Mark {
-        let b = model.achievements
-        return MenuRow.Mark(symbol: AchievementWords.menuSymbol(new: b.newCount),
-                            text: AchievementWords.menuMark(earned: b.earnedCount, total: b.total),
-                            spoken: AchievementWords.menuSpoken(earned: b.earnedCount, total: b.total, new: b.newCount))
+        return (playable.filter { mode.isDone($0) }.count, playable.count)
     }
 
     /// Medals won out of the situations there are.
-    private var medalMark: MenuRow.Mark {
-        let won = model.eightBallMode.medals.count
-        let total = EightBallSituations.all.count
-        return MenuRow.Mark(symbol: "medal.fill",
-                            text: String(localized: "\(won)/\(total)"),
-                            spoken: String(localized: "\(won) of \(total) medals won"))
+    private var medalProgress: (done: Int, total: Int) {
+        (model.eightBallMode.medals.count, EightBallSituations.all.count)
     }
 
     // MARK: The Play list
 
+    /// The list's back step and title: "Back" in the quiet style, then the serif title.
     private func listHeader(_ title: String, back: @escaping () -> Void) -> some View {
-        HStack {
-            Button(action: back) {
-                Label("Back", systemImage: "chevron.backward")
-                    .font(.body.weight(.semibold))
-            }
-            .buttonStyle(.glass)
-            .controlSize(.regular)
-            Spacer(minLength: 0)
-            // Already translated (the menu's own Play key, bug 55).
+        VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+            QuietButton(String(localized: "Back"), systemImage: "chevron.backward") { back() }
+                // The quiet button keeps its 44 point hit area; it spills into the gap above the title.
+                .padding(.leading, -Theme.Space.xs)
             Text(verbatim: title)
-                .font(Theme.sectionTitle)
-                .multilineTextAlignment(.center)
+                .font(Theme.title)
+                .foregroundStyle(palette.paper)
                 .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 0)
-            // Balances the Back button so the title sits in the middle.
-            Color.clear.frame(width: 44, height: 1).accessibilityHidden(true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     /// The computer first: its level and its four games lead the list, so one tap on Play and one on a game starts a
-    /// match against it. Practice and the stroke drill follow. The level is the model's (computerLevel), so a level
-    /// picked here is the one the Tables pages show, and the reverse.
+    /// match against it. Practice, the stroke drill and the Tables page follow. The level is the model's
+    /// (computerLevel), so a level picked here is the one the Tables pages show, and the reverse.
     private var playList: some View {
-        VStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: rowGap) {
             listHeader(Self.playTitle) { state.playListOpen = false }
             if model.hasSavedMatch {
-                MenuRow(title: "Continue match", verbatimLine: savedLine, symbol: "play.fill", prominent: true) { continueMatch() }
-                    .keyboardShortcut(.defaultAction)
+                continueBlock(String(localized: "Continue match"), line: savedLine) { continueMatch() }
             }
-            Text("Against the computer")
-                .font(Theme.heading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .accessibilityAddTraits(.isHeader)
-            ComputerLevelPicker(model: model)
-            // Highlighted (and on Return) when no saved match is waiting; with one, Continue match keeps both.
-            MenuRow(title: "Eight-ball", line: "You against the computer. Claim a group, clear it, sink the 8.",
-                    symbol: "8.circle", prominent: !model.hasSavedMatch,
-                    mark: recordMark(.eightBall, level: model.computerLevel)) {
+            SectionLabel(String(localized: "Against the computer"))
+                .padding(.top, Theme.Space.xs)
+            ComputerLevelPicker(model: model, leading: true)
+            // On Return when no saved match is waiting; with one, Continue match keeps Return.
+            MenuRow(title: String(localized: "Eight-ball"),
+                    line: String(localized: "You against the computer. Claim a group, clear it, sink the 8."),
+                    chip: recordChip(.eightBall), spoken: recordSpoken(.eightBall)) {
                 start(MatchStartRequest(kind: .eightBall, computer: model.computerLevel))
             }
             .keyboardShortcut(model.hasSavedMatch ? nil : KeyboardShortcut.defaultAction)
-            MenuRow(title: "Nine-ball", line: "You against the computer. Lowest ball first; sink the 9 to win.",
-                    symbol: "9.circle", mark: recordMark(.nineBall, level: model.computerLevel)) {
+            MenuRow(title: String(localized: "Nine-ball"),
+                    line: String(localized: "You against the computer. Lowest ball first; sink the 9 to win."),
+                    chip: recordChip(.nineBall), spoken: recordSpoken(.nineBall)) {
                 start(MatchStartRequest(kind: .nineBall, computer: model.computerLevel))
             }
             // The other tables' games (0.7.4: the computer plays them too), named as the notebook and the Tables list
             // name them. The match itself puts its own table on (MatchMode, from the request's kind).
-            MenuRow(verbatimTitle: NotebookWords.gameName(.bumperPool),
-                    verbatimLine: String(localized: "You against the computer. Bank your balls past the bumpers into your cup."),
-                    symbol: TableKind.bumperPool.symbol, mark: recordMark(.bumperPool, level: model.computerLevel)) {
+            MenuRow(title: NotebookWords.gameName(.bumperPool),
+                    line: String(localized: "You against the computer. Bank your balls past the bumpers into your cup."),
+                    chip: recordChip(.bumperPool), spoken: recordSpoken(.bumperPool)) {
                 start(MatchStartRequest(kind: .bumperPool, computer: model.computerLevel))
             }
-            MenuRow(verbatimTitle: NotebookWords.gameName(.fivePin),
-                    verbatimLine: String(localized: "You against the computer. Drive its ball into the pins. First to \(FivePinRules.standardTarget)."),
-                    symbol: TableKind.fivePin.symbol, mark: recordMark(.fivePin, level: model.computerLevel)) {
+            MenuRow(title: NotebookWords.gameName(.fivePin),
+                    line: String(localized: "You against the computer. Drive its ball into the pins. First to \(FivePinRules.standardTarget)."),
+                    chip: recordChip(.fivePin), spoken: recordSpoken(.fivePin)) {
                 start(MatchStartRequest(kind: .fivePin, computer: model.computerLevel))
             }
-            MenuRow(title: "Practice", line: "Your own break on a fresh rack. No turns, no fouls.", symbol: "triangle") {
+            SectionLabel(String(localized: "Menu: on your own", defaultValue: "On your own",
+                                comment: "Main menu's Play list heading over Practice, Straight stroke and Tables: things played alone."))
+                .padding(.top, Theme.Space.xs)
+            MenuRow(title: String(localized: "Practice"),
+                    line: String(localized: "Your own break on a fresh rack. No turns, no fouls.")) {
                 model.trickMode.end(); model.eightBallMode.end(); model.startGame(); onPlay()
             }
-            MenuRow(title: "Straight stroke", line: "Send the cue ball up the table and back. Does it return to the cue?",
-                    symbol: "arrow.up.and.down") {
+            MenuRow(title: String(localized: "Straight stroke"),
+                    line: String(localized: "Send the cue ball up the table and back. Does it return to the cue?")) {
                 model.strokeDrill.begin(); onPlay()
             }
+            // UI rethink package 7: Tables left the main list; it is a way to play, so it lives here.
+            MenuRow(entry: MenuGuide.tables) { openPage(.tables, inline: onTables) }
         }
     }
 
-    /// Games won out of games finished against the computer at one level, for one game; no mark before the first.
-    private func recordMark(_ kind: MatchKind, level: ComputerLevel) -> MenuRow.Mark? {
-        let r = MatchRecord.record(kind: kind, level: level)
+    /// Games won out of games finished against the computer at one level, for one game; no chip before the first.
+    private func recordChip(_ kind: MatchKind) -> MenuChip? {
+        let r = MatchRecord.record(kind: kind, level: model.computerLevel)
         let played = r.won + r.lost
         guard played > 0 else { return nil }
-        return MenuRow.Mark(symbol: "trophy.fill", text: String(localized: "\(r.won)/\(played)"),
-                            spoken: String(localized: "\(r.won) won of \(played) played"))
+        return .value(String(localized: "\(r.won)/\(played)"))
+    }
+
+    /// The same record for VoiceOver ("2 won of 5 played"); nil before the first.
+    private func recordSpoken(_ kind: MatchKind) -> String? {
+        let r = MatchRecord.record(kind: kind, level: model.computerLevel)
+        let played = r.won + r.lost
+        guard played > 0 else { return nil }
+        return String(localized: "\(r.won) won of \(played) played")
     }
 
     // MARK: Replacing the saved match
@@ -653,33 +763,33 @@ struct TitleScreen: View {
         MatchMode.savedSummary(for: request.kind).map { MatchWords.savedLine($0) } ?? savedLine
     }
 
-    /// The one save slot is taken: say which game it holds and ask before a new one replaces it (item 18).
+    /// The one save slot is taken: say which game it holds and ask before a new one replaces it (item 18). Keeping it is
+    /// the primary, starting the new game the secondary, Cancel quiet.
     private func replaceList(_ request: MatchStartRequest) -> some View {
-        VStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
             Text(String(localized: "Replace your saved game?"))
-                .font(Theme.sectionTitle)
-                .multilineTextAlignment(.center)
+                .font(Theme.title)
+                .foregroundStyle(palette.paper)
                 .accessibilityAddTraits(.isHeader)
             Text(([replacedLine(request), String(localized: "A new game ends it for good.")]).joined(separator: " "))
-                .font(Theme.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+                .font(device == .phone ? Theme.bodyCompact : Theme.body)
+                .foregroundStyle(palette.paper2)
                 .fixedSize(horizontal: false, vertical: true)
-            MenuRow(verbatimTitle: String(localized: "Keep my saved game"), verbatimLine: replacedLine(request),
-                    symbol: "play.fill", prominent: true) {
+            PrimaryButton(String(localized: "Keep my saved game"), fullWidth: true) {
                 pendingMatch = nil
                 continueMatch(kind: request.kind)
             }
             .keyboardShortcut(.defaultAction)
-            MenuRow(verbatimTitle: String(localized: "Start the new game"),
-                    verbatimLine: NotebookWords.gameName(request.kind), symbol: "arrow.triangle.2.circlepath") {
+            .accessibilityHint(Text(verbatim: replacedLine(request)))
+            SecondaryButton(String(localized: "Start the new game"), fullWidth: true) {
                 pendingMatch = nil
                 request.start(on: model)
                 onPlay()
             }
-            Button(String(localized: "Cancel")) { pendingMatch = nil }
-                .buttonStyle(.glass)
+            .accessibilityHint(Text(verbatim: NotebookWords.gameName(request.kind)))
+            QuietButton(String(localized: "Cancel")) { pendingMatch = nil }
                 .keyboardShortcut(.cancelAction)
+                .frame(maxWidth: .infinity)
         }
     }
 
@@ -705,30 +815,41 @@ struct TitleScreen: View {
 
 // MARK: The computer's level
 
-/// The computer's level (Easy, Medium, Hard) as a segmented choice, and one line on what that level plays like. Bound
-/// to the model's computerLevel, so the main menu's Play list and the Tables pages of bumper pool and five-pin show and
-/// set one shared choice, remembered on the device across launches (0.7.5). The model is @Observable, so reading
-/// computerLevel here redraws the picker and the line whichever screen changed it.
+/// The computer's level (Easy, Medium, Hard) as three chips, the chosen one in the selected state (a cyan edge), and one
+/// line on what that level plays like. Bound to the model's computerLevel, so the main menu's Play list and the Tables
+/// pages of bumper pool and five-pin show and set one shared choice, remembered on the device across launches (0.7.5).
+/// The model is @Observable, so reading computerLevel here redraws the chips and the line whichever screen changed it.
+/// UI rethink package 7: chips in place of the system's segmented control, whose grey track the design has no place for.
 struct ComputerLevelPicker: View {
     let model: ShowpieceModel
-    /// Centred in the menu's card; leading on a Tables page, where everything else is leading.
+    /// Centred in a card; leading on a Tables page and in the Play list, where everything else is leading.
     var leading = false
+    @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(alignment: leading ? .leading : .center, spacing: 10) {
-            // An explicit binding, as the Mac's Tables and Surface pickers do: the view holds the model as a plain
-            // constant (it is a class), so there is no projected $ binding to hand the picker.
-            // Its own key (bug 55): the plain "Level" is the cue-angle word, translated as flat. Heard, not seen: a
-            // segmented picker does not draw its label.
-            Picker(String(localized: "Computer level",
-                          comment: "Label of the picker for how well the computer plays: Easy, Medium or Hard. Read aloud by VoiceOver."),
-                   selection: Binding(get: { model.computerLevel }, set: { model.computerLevel = $0 })) {
-                ForEach(ComputerLevel.allCases, id: \.self) { level in Text(level.title).tag(level) }
+        VStack(alignment: leading ? .leading : .center, spacing: Theme.Space.xs) {
+            HStack(spacing: Theme.Space.xs) {
+                ForEach(ComputerLevel.allCases, id: \.self) { level in
+                    let chosen = level == model.computerLevel
+                    Button {
+                        model.computerLevel = level
+                    } label: {
+                        Chip(word: level.title, selected: chosen)
+                            .frame(minHeight: Theme.Size.minHit)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text(verbatim: level.title))
+                    .accessibilityAddTraits(chosen ? .isSelected : [])
+                }
             }
-            .pickerStyle(.segmented)
+            // Its own key (bug 55): the plain "Level" is the cue-angle word, translated as flat. Heard, not seen.
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(Text(String(localized: "Computer level",
+                                            comment: "Label of the picker for how well the computer plays: Easy, Medium or Hard. Read aloud by VoiceOver.")))
             Text(model.computerLevel.line)
                 .font(Theme.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(palette.paper2)
                 .multilineTextAlignment(leading ? .leading : .center)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -745,9 +866,10 @@ struct MenuEntry {
     let line: String
 }
 
-/// 0.7.10 frontdoor: the main menu's entries in one place. The menu shows each name on one line and gives its sentence
-/// to VoiceOver as the hint; How to play's "The menu" page (MenuGuidePage) lists every name with its sentence. The keys
-/// are the ones the menu has always used, so the translations carry over.
+/// 0.7.10 frontdoor: the main menu's entries in one place. The menu shows each name with its sentence under it (UI
+/// rethink package 7); How to play's "The menu" page (MenuGuidePage) lists every name with its sentence. The keys are
+/// the ones the menu has always used, so the translations carry over, except the two names package 7 put in sentence
+/// case and the menu's own words ("Lessons", "Behind the 8-ball").
 enum MenuGuide {
     /// The menu's one line about the game (item 39), the lead of the menu page in How to play since 0.7.10.
     static var intro: String {
@@ -765,16 +887,20 @@ enum MenuGuide {
         MenuEntry(symbol: "wand.and.sparkles", title: String(localized: "Trick shots"),
                   line: String(localized: "Watch a shot that looks impossible, see why it works, then make it."))
     }
+    /// UI rethink package 7: sentence case, as every title is ("Behind the 8-ball").
     static var eightBall: MenuEntry {
-        MenuEntry(symbol: "8.circle.fill", title: String(localized: "Behind the 8-Ball"),
+        MenuEntry(symbol: "8.circle",
+                  title: String(localized: "Menu: behind the 8-ball", defaultValue: "Behind the 8-ball",
+                                comment: "Main menu entry: the eight-ball situations to escape. Sentence case."),
                   line: String(localized: "Escape the nastiest spots in eight-ball and score each way out."))
     }
     static var tables: MenuEntry {
-        MenuEntry(symbol: "square.grid.2x2", title: String(localized: "Tables"),
+        MenuEntry(symbol: "rectangle", title: String(localized: "Tables"),
                   line: String(localized: "Other tables, each a game of its own."))
     }
+    /// The six lessons, named "Lessons" on the menu (UI rethink package 7), the notebook's word for them.
     static var learn: MenuEntry {
-        MenuEntry(symbol: "graduationcap", title: String(localized: "Learn"),
+        MenuEntry(symbol: "graduationcap", title: String(localized: "Lessons"),
                   line: String(localized: "Six short lessons: stop, follow, draw, cut, curve and jump."))
     }
     static var achievements: MenuEntry {
@@ -786,199 +912,171 @@ enum MenuGuide {
                   line: String(localized: "The controls, the Lens and the rules of each game."))
     }
     static var options: MenuEntry {
-        MenuEntry(symbol: "gearshape", title: String(localized: "Options"),
+        MenuEntry(symbol: "slider.horizontal.3", title: String(localized: "Options"),
                   line: String(localized: "Sound, vibration, the aim guide and the tips."))
     }
+    /// In How to play since UI rethink package 7, no longer on the main menu.
     static var watchIntro: MenuEntry {
         MenuEntry(symbol: "sparkles", title: String(localized: "Watch the intro"),
                   line: String(localized: "The opening break again, slowed down under the Physics Lens."))
     }
 
-    /// 0.7.10 wiring: Shot of the day, first in the Today group. The same name the shot's own screens use
-    /// (DailyWords.title) and the menu's general sentence about it (DailyWords.menuNew); today's state is the row's mark.
+    /// 0.7.10 wiring: Shot of the day, first on the menu. The same name the shot's own screens use (DailyWords.title)
+    /// and the menu's general sentence about it (DailyWords.menuNew); today's state is the row's line and chip.
     static var daily: MenuEntry {
         MenuEntry(symbol: "calendar", title: DailyWords.title, line: DailyWords.menuNew)
     }
 
-    /// Every entry, in the menu's order, for the menu page in How to play.
+    /// Every entry, in the menu's order, for the menu page in How to play (UI rethink package 7: Tables is inside Play,
+    /// the intro inside How to play, so both are listed after the menu's own entries).
     static var all: [MenuEntry] {
-        [daily, play, tricks, eightBall, tables, learn, achievements, howTo, options, watchIntro]  // 0.7.10 wiring: daily
-    }
-}
-
-// MARK: A group of entries
-
-/// 0.7.10 frontdoor: a short heading over a few entries (Today, Ways to play, More).
-private struct MenuGroup<Content: View>: View {
-    let title: String
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(verbatim: title)
-                .font(Theme.label)
-                .foregroundStyle(.secondary)
-                .accessibilityAddTraits(.isHeader)
-            content
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        [daily, play, tricks, eightBall, learn, achievements, howTo, options, tables, watchIntro]
     }
 }
 
 // MARK: One menu entry
 
-/// A menu entry: symbol, name and an optional small progress mark at the end, on one line (0.7.10: the sentence saying
-/// what it is is no longer drawn; VoiceOver offers it as the hint, and How to play's menu page lists it). The whole row
-/// is one button; VoiceOver reads the name, then the progress, then the hint.
-private struct MenuRow: View {
-    struct Mark {
-        let symbol: String
-        /// Short, for the eye ("3/10").
-        let text: String
-        /// Whole, for VoiceOver ("3 of 10 made").
-        let spoken: String
-    }
+/// A row's chip: a progress count (the kit's ProgressChip: hidden until one is earned, a tick when all are), or a plain
+/// figure (today's tries, a won-of-played record).
+private enum MenuChip {
+    case progress(Int, Int)
+    case value(String)
+}
 
-    let title: Text
-    let line: Text
-    let symbol: String
-    var prominent = false
-    var mark: Mark? = nil
-    let action: () -> Void
-    @Environment(\.palette) private var palette
-    @Environment(\.dynamicTypeSize) private var typeSize
-
-    /// Fixed words, looked up in the string catalog. (Distinct labels for run-time words below, so a string literal
-    /// never picks an unlocalized overload.)
-    init(title: LocalizedStringKey, line: LocalizedStringKey, symbol: String, prominent: Bool = false, mark: Mark? = nil,
-         action: @escaping () -> Void) {
-        self.init(titleText: Text(title), lineText: Text(line), symbol: symbol, prominent: prominent, mark: mark,
-                  action: action)
-    }
-
-    /// A fixed name with a line built at run time (already translated), such as the saved match's summary.
-    init(title: LocalizedStringKey, verbatimLine: String, symbol: String, prominent: Bool = false, mark: Mark? = nil,
-         action: @escaping () -> Void) {
-        self.init(titleText: Text(title), lineText: Text(verbatim: verbatimLine), symbol: symbol, prominent: prominent,
-                  mark: mark, action: action)
-    }
-
-    /// A name and line built at run time (already translated), such as the next step ("Next: Lesson 2, Follow").
-    init(verbatimTitle: String, verbatimLine: String, symbol: String, prominent: Bool = false, mark: Mark? = nil,
-         action: @escaping () -> Void) {
-        self.init(titleText: Text(verbatim: verbatimTitle), lineText: Text(verbatim: verbatimLine), symbol: symbol,
-                  prominent: prominent, mark: mark, action: action)
-    }
-
-    /// 0.7.10 frontdoor: one of the main menu's entries, its words from MenuGuide.
-    init(entry: MenuEntry, prominent: Bool = false, mark: Mark? = nil, action: @escaping () -> Void) {
-        self.init(verbatimTitle: entry.title, verbatimLine: entry.line, symbol: entry.symbol, prominent: prominent,
-                  mark: mark, action: action)
-    }
-
-    private init(titleText: Text, lineText: Text, symbol: String, prominent: Bool, mark: Mark?,
-                 action: @escaping () -> Void) {
-        self.title = titleText
-        self.line = lineText
-        self.symbol = symbol
-        self.prominent = prominent
-        self.mark = mark
-        self.action = action
-    }
+private struct MenuChipView: View {
+    let chip: MenuChip
 
     var body: some View {
-        let button = Button(action: action) {
-            HStack(alignment: .center, spacing: 12) {
-                Image(systemName: symbol)
-                    .font(.title3)
-                    .frame(width: 28)
-                    .accessibilityHidden(true)
-                // One line at the default sizes (0.7.10): a long name shrinks a little rather than wrapping. At the
-                // accessibility sizes it wraps onto every line it needs, never ending in an ellipsis (bug 57).
-                title
-                    .font(Theme.heading)
-                    .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
-                    .minimumScaleFactor(0.75)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                Spacer(minLength: 0)
-                if let mark {
-                    HStack(spacing: 4) {
-                        Image(systemName: mark.symbol)
-                        Text(verbatim: mark.text).monospacedDigit()
-                    }
-                    .font(Theme.label)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(palette.track))
-                    .fixedSize()
-                }
-            }
-            // Thirty-six points of row inside the button's own padding: a touch target of at least 44 points, with
-            // ten rows still fitting the lower part of an upright phone.
-            .frame(maxWidth: .infinity, minHeight: 36, alignment: .leading)
-            .contentShape(Rectangle())
-        }
-        .controlSize(.regular)
-        .accessibilityLabel(title)
-        .accessibilityValue(mark.map { Text(verbatim: $0.spoken) } ?? Text(verbatim: ""))
-        .accessibilityHint(line)
-        if prominent {
-            // 0.7.10 frontdoor (words plan Part A row 6): the game's own accent, as the Shoot button, not the system's
-            // blue; dark words on it, since white on the bright cyan is too faint.
-            button.buttonStyle(.glassProminent).tint(palette.accent).foregroundStyle(palette.ground)
-        } else {
-            button.buttonStyle(.glass)
+        switch chip {
+        case .progress(let earned, let total): ProgressChip(earned: earned, total: total)
+        case .value(let text): Chip(value: text)
         }
     }
 }
 
-/// 0.7.10 frontdoor: one of the More group's entries as a small tile: its symbol over its name, with its progress mark
-/// on the corner. Five fit across an upright phone. VoiceOver hears the same name, progress and hint as a row.
+/// UI rethink package 7: a menu entry as the design's list row: the name in heading paper, its one sentence in paper2
+/// under it, the chip on the right inside the row, a paper3 chevron; a sunken strip with small corners. The whole row
+/// is one button; VoiceOver reads the name, then the progress, then the sentence as the hint.
+private struct MenuRow: View {
+    let title: String
+    let line: String?
+    var chip: MenuChip? = nil
+    var spoken: String? = nil
+    /// Difficulty on the five-dot scale, as a meta line under the sentence (the kit's list row's place for it).
+    var difficulty: Int? = nil
+    let action: () -> Void
+    @Environment(\.palette) private var palette
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.kitDevice) private var kitDevice
+
+    init(title: String, line: String?, chip: MenuChip? = nil, spoken: String? = nil, difficulty: Int? = nil,
+         action: @escaping () -> Void) {
+        self.title = title
+        self.line = line
+        self.chip = chip
+        self.spoken = spoken
+        self.difficulty = difficulty
+        self.action = action
+    }
+
+    /// One of the main menu's entries, its words from MenuGuide.
+    init(entry: MenuEntry, chip: MenuChip? = nil, spoken: String? = nil, action: @escaping () -> Void) {
+        self.init(title: entry.title, line: entry.line, chip: chip, spoken: spoken, action: action)
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: Theme.Space.sm) {
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                    // One line at the default sizes: a long name shrinks a little rather than wrapping. At the
+                    // accessibility sizes it wraps onto every line it needs, never ending in an ellipsis (bug 57).
+                    Text(verbatim: title)
+                        .font(Theme.heading)
+                        .foregroundStyle(palette.paper)
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                        .minimumScaleFactor(0.8)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if let line {
+                        Text(verbatim: line)
+                            .font(kitDevice == .phone ? Theme.bodyCompact : Theme.body)
+                            .foregroundStyle(palette.paper2)
+                            .lineLimit(typeSize.isAccessibilitySize ? nil : 2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let difficulty {
+                        DifficultyDots(level: difficulty)
+                            .padding(.top, Theme.Space.xxs)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if let chip { MenuChipView(chip: chip).fixedSize() }
+                Image(systemName: "chevron.right")
+                    .font(Theme.caption.weight(.semibold))
+                    .foregroundStyle(palette.paper3)
+                    .accessibilityHidden(true)
+            }
+            .padding(.vertical, Theme.Space.sm)
+            .padding(.horizontal, Theme.Space.md)
+            .frame(maxWidth: .infinity, minHeight: Theme.Size.minHit, alignment: .leading)
+            .background(palette.panelSunken, in: Theme.Corner.tileShape)
+            .contentShape(Theme.Corner.tileShape)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: title))
+        .accessibilityValue(Text(verbatim: spokenValue))
+        .accessibilityHint(Text(verbatim: line ?? ""))
+    }
+
+    /// The progress (or today's state), then the difficulty, as the row's one VoiceOver value.
+    private var spokenValue: String {
+        var parts: [String] = []
+        if let spoken, !spoken.isEmpty { parts.append(spoken) }
+        if let difficulty {
+            parts.append(String(localized: "Menu: difficulty spoken", defaultValue: "Difficulty \(difficulty) of 5",
+                                comment: "VoiceOver for the difficulty dots on a main menu row, e.g. Difficulty 3 of 5."))
+        }
+        return parts.joined(separator: ", ")
+    }
+}
+
+/// UI rethink package 7: one of the three tiles (Achievements, How to play, Options): the outline icon in paper2 over
+/// the name, the progress chip under it once something is earned; a sunken strip with small corners. VoiceOver hears
+/// the same name, progress and hint as a row.
 private struct MenuTile: View {
     let entry: MenuEntry
-    var mark: MenuRow.Mark? = nil
+    /// A symbol in place of the entry's own (Achievements while some are new).
+    var symbol: String? = nil
+    var chip: MenuChip? = nil
+    var spoken: String? = nil
     let action: () -> Void
     @Environment(\.palette) private var palette
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 4) {
-                Image(systemName: entry.symbol)
-                    .font(.title3)
-                    .foregroundStyle(palette.accent)
-                    .frame(height: 24)
+            VStack(spacing: Theme.Space.xxs) {
+                Image(systemName: symbol ?? entry.symbol)
+                    .font(Theme.heading)
+                    .fontWeight(.medium)
+                    .foregroundStyle(palette.paper2)
                     .accessibilityHidden(true)
-                // A short name; the longest ones ("Achievements", "Watch the intro") take two lines or shrink a little.
+                // A short name; the longest ("Achievements") shrinks a little or takes two lines.
                 Text(verbatim: entry.title)
                     .font(Theme.label)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(palette.paper)
                     .lineLimit(2)
-                    .minimumScaleFactor(0.6)
+                    .minimumScaleFactor(0.7)
                     .multilineTextAlignment(.center)
+                if let chip { MenuChipView(chip: chip).fixedSize() }
             }
-            .frame(maxWidth: .infinity, minHeight: 58)
-            .padding(.vertical, 6)
-            .padding(.horizontal, 3)
-            .contentShape(Rectangle())
+            .padding(.vertical, Theme.Space.sm)
+            .padding(.horizontal, Theme.Space.xxs)
+            .frame(maxWidth: .infinity, minHeight: Theme.Size.minHit, maxHeight: .infinity)
+            .background(palette.panelSunken, in: Theme.Corner.tileShape)
+            .contentShape(Theme.Corner.tileShape)
         }
         .buttonStyle(.plain)
-        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 14, style: .continuous))
-        .overlay(alignment: .topTrailing) {
-            if let mark {
-                Text(verbatim: mark.text)
-                    .font(Theme.number)
-                    .padding(.horizontal, 5)
-                    .padding(.vertical, 2)
-                    .background(Capsule().fill(palette.track))
-                    .fixedSize()
-                    .offset(x: 3, y: -5)
-                    .allowsHitTesting(false)
-                    .accessibilityHidden(true)
-            }
-        }
         .accessibilityLabel(Text(verbatim: entry.title))
-        .accessibilityValue(mark.map { Text(verbatim: $0.spoken) } ?? Text(verbatim: ""))
+        .accessibilityValue(Text(verbatim: spoken ?? ""))
         .accessibilityHint(Text(verbatim: entry.line))
     }
 }
@@ -986,7 +1084,9 @@ private struct MenuTile: View {
 // MARK: How to play
 
 /// The steps of the game, in plain words, the controls for every input, and the rules of each game, in a sheet from
-/// the menu (a page of the side panel in the notebook, which shows this same view).
+/// the menu (a page of the side panel in the notebook, which shows this same view). UI rethink package 7: the kit's
+/// SheetPage (ground, serif title, cyan Done top right) with panel groups, the pushed pages on the ground with Done in
+/// the same place, and "Watch the intro", which left the main menu, as a row here.
 struct HowToPlaySheet: View {
     @Binding var isOpen: Bool
     /// The input in use, so "Take your shot" teaches the stroke for the way this player plays (FirstInstruction).
@@ -994,6 +1094,8 @@ struct HowToPlaySheet: View {
     @Environment(\.palette) private var palette
     /// True when shown as a page of the notebook rather than a sheet (NotebookPanel sets it).
     @Environment(\.inlinePages) private var inlinePages
+    /// "Watch the intro", handed down by ShowpieceView; nil where there is no table to play it on.
+    @Environment(\.frontDoorWatchIntro) private var watchIntro
 
     private var steps: [(title: String, detail: String)] {
         [
@@ -1009,69 +1111,72 @@ struct HowToPlaySheet: View {
             (String(localized: "Try again"),
              String(localized: "Missed? Tap Try again. The balls go back where they were, with the same aim and power. Change one thing, shoot, and your last try stays on the table to compare.")),
             (String(localized: "Watch the trick shots"),
-             String(localized: "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Learn has six short lessons whenever you want them.")),
+             String(localized: "Tap Trick shots to watch a shot that looks impossible, see why it works in the Lens, then make it yourself. Six short lessons wait under Lessons whenever you want them.")),
         ]
     }
 
+
+    private func close() { isOpen = false }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
+            SheetPage(title: String(localized: "How to play"), onDone: close) {
+                SheetGroup {
                     NumberedSteps(steps: steps)
+                }
+                SheetGroup {
+                    // UI rethink package 7: the intro, moved here from the main menu. It closes the page and plays
+                    // the opening break again under the Lens.
+                    if let watchIntro {
+                        Button {
+                            close()
+                            watchIntro()
+                        } label: {
+                            ListRow(leading: .none, title: MenuGuide.watchIntro.title, line: MenuGuide.watchIntro.line,
+                                    showsChevron: false)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     NavigationLink {
                         ControlsPage()
+                            .frontDoorPushedPage(title: String(localized: "Controls"), onDone: close)
                     } label: {
-                        rulesLink("Controls", line: "Every gesture, key and button.", symbol: "hand.tap")
+                        ListRow(leading: .none, title: String(localized: "Controls"),
+                                line: String(localized: "Every gesture, key and button."))
                     }
-                    // 0.7.10 frontdoor: the main menu's entries with the sentence each one used to carry on the menu.
+                    .buttonStyle(.plain)
+                    // 0.7.10 frontdoor: the main menu's entries with the sentence each one carries.
                     NavigationLink {
                         MenuGuidePage()
+                            .frontDoorPushedPage(title: String(localized: "The menu"), onDone: close)
                     } label: {
-                        rulesLink("The menu", line: "What each entry on the main menu opens.", symbol: "list.bullet")
+                        ListRow(leading: .none, title: String(localized: "The menu"),
+                                line: String(localized: "What each entry on the main menu opens."))
                     }
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Rules")
-                            .font(Theme.sectionTitle)
-                            .accessibilityAddTraits(.isHeader)
-                        NavigationLink {
-                            RulesPage(title: "Eight-ball", rules: RulesPage.eightBall)
-                        } label: {
-                            rulesLink("Eight-ball", line: "Solids, stripes and the 8.", symbol: "8.circle")
-                        }
-                        NavigationLink {
-                            RulesPage(title: "Nine-ball", rules: RulesPage.nineBall)
-                        } label: {
-                            rulesLink("Nine-ball", line: "Lowest ball first, and the 9 wins.", symbol: "9.circle")
-                        }
-                        // The other tables' games (tables-screens): the same rules their Tables pages show.
-                        NavigationLink {
-                            TableRulesPage(game: .bumperPool)
-                        } label: {
-                            rulesLink("Bumper pool", line: "Five balls each, sunk in the far cup.", symbol: TableKind.bumperPool.symbol)
-                        }
-                        NavigationLink {
-                            TableRulesPage(game: .fivePin)
-                        } label: {
-                            rulesLink("Five-pin billiards", line: "Pins, a red ball and points.", symbol: TableKind.fivePin.symbol)
-                        }
-                        NavigationLink {
-                            TableRulesPage(game: .barBilliards)
-                        } label: {
-                            rulesLink("Bar billiards", line: "Holes, pegs and a clock.", symbol: TableKind.barBilliards.symbol)
-                        }
-                    }
-                    // 0.7.10 everyone: the page for teachers, on the studio site (TeachersLink.swift).
-                    TeachersLinkRow()
+                    .buttonStyle(.plain)
                 }
-                .padding(24)
+                SheetGroup(String(localized: "Rules")) {
+                    rulesLink(String(localized: "Eight-ball"), line: String(localized: "Solids, stripes and the 8.")) {
+                        RulesPage(rules: RulesPage.eightBall)
+                    }
+                    rulesLink(String(localized: "Nine-ball"), line: String(localized: "Lowest ball first, and the 9 wins.")) {
+                        RulesPage(rules: RulesPage.nineBall)
+                    }
+                    // The other tables' games (tables-screens): the same rules their Tables pages show.
+                    rulesLink(String(localized: "Bumper pool"), line: String(localized: "Five balls each, sunk in the far cup.")) {
+                        TableRulesPage(game: .bumperPool)
+                    }
+                    rulesLink(String(localized: "Five-pin billiards"), line: String(localized: "Pins, a red ball and points.")) {
+                        TableRulesPage(game: .fivePin)
+                    }
+                    rulesLink(String(localized: "Bar billiards"), line: String(localized: "Holes, pegs and a clock.")) {
+                        TableRulesPage(game: .barBilliards)
+                    }
+                }
+                // 0.7.10 everyone: the page for teachers, on the studio site (TeachersLink.swift).
+                TeachersLinkRow()
             }
-            .navigationTitle("How to play")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) { Button("Done") { isOpen = false } }
-            }
+            .frontDoorSheetRoot()
         }
         .tint(palette.accent)
         #if os(macOS)
@@ -1081,21 +1186,14 @@ struct HowToPlaySheet: View {
         #endif
     }
 
-    private func rulesLink(_ title: LocalizedStringKey, line: LocalizedStringKey, symbol: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: symbol).font(.title3).foregroundStyle(palette.accent).frame(width: 28).accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(Theme.heading).foregroundStyle(.primary)
-                Text(line).font(Theme.body).foregroundStyle(.secondary)
-            }
-            Spacer(minLength: 0)
-            Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
-                .accessibilityHidden(true)
+    /// One rules page's row: the kit's list row, pushing the page on the ground with Done top right.
+    private func rulesLink<Page: View>(_ title: String, line: String, @ViewBuilder page: @escaping () -> Page) -> some View {
+        NavigationLink {
+            page().frontDoorPushedPage(title: title, onDone: close)
+        } label: {
+            ListRow(leading: .none, title: title, line: line)
         }
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(palette.track.opacity(0.5)))
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .combine)
+        .buttonStyle(.plain)
     }
 }
 
@@ -1105,8 +1203,12 @@ struct HowToPlaySheet: View {
 /// StrokeTracker), the bridge finger and practice strokes, the Pencil's tilt, tap to aim (AimOverlay), pinch, pan and
 /// double tap (TableZoom); the pointer's hover, click and release (PointerAim), the keys (AimOverlay.handleKey, the
 /// View menu's zoom, the space bar on the table); and the controller as plan item 42 maps it (ControllerInput).
+/// UI rethink package 7: one panel group per input under its section label.
 private struct ControlsPage: View {
     @Environment(\.palette) private var palette
+    private var device = KitDeviceReader()
+
+    init() {}
 
     private struct InputSection {
         let title: String
@@ -1160,21 +1262,20 @@ private struct ControlsPage: View {
         ]
     }
 
+
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: Theme.Space.cardGap(device.current)) {
                 ForEach(Array(sections.enumerated()), id: \.offset) { _, section in
-                    VStack(alignment: .leading, spacing: 14) {
-                        Label(section.title, systemImage: section.symbol)
-                            .font(Theme.sectionTitle)
-                            .foregroundStyle(palette.accent)
-                            .accessibilityAddTraits(.isHeader)
+                    SheetGroup(section.title) {
                         ForEach(Array(section.rows.enumerated()), id: \.offset) { _, row in
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(row.title).font(Theme.heading)
-                                Text(row.detail)
-                                    .font(Theme.copy)
-                                    .foregroundStyle(.secondary)
+                            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                                Text(verbatim: row.title)
+                                    .font(Theme.heading)
+                                    .foregroundStyle(palette.paper)
+                                Text(verbatim: row.detail)
+                                    .font(device.current == .phone ? Theme.bodyCompact : Theme.body)
+                                    .foregroundStyle(palette.paper2)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                             .accessibilityElement(children: .combine)
@@ -1182,75 +1283,85 @@ private struct ControlsPage: View {
                     }
                 }
             }
-            .padding(24)
+            .padding(Theme.Space.pageMargin(device.current))
         }
-        .navigationTitle("Controls")
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 }
 
 // MARK: The menu, explained
 
-/// 0.7.10 frontdoor: How to play's page about the main menu. The menu shows each entry's name on one line; this page
-/// keeps what the menu used to say under each name, and the menu's own line about the game, which used to sit under the
-/// game's name. Words from MenuGuide, so the menu and this page never disagree.
+/// 0.7.10 frontdoor: How to play's page about the main menu: each entry's name with what it opens, and the menu's own
+/// line about the game. Words from MenuGuide, so the menu and this page never disagree.
 private struct MenuGuidePage: View {
     @Environment(\.palette) private var palette
+    private var device = KitDeviceReader()
+
+    init() {}
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: Theme.Space.cardGap(device.current)) {
                 Text(verbatim: MenuGuide.intro)
-                    .font(Theme.copy)
-                    .foregroundStyle(.secondary)
+                    .font(bodyFont)
+                    .foregroundStyle(palette.paper2)
                     .fixedSize(horizontal: false, vertical: true)
-                ForEach(Array(MenuGuide.all.enumerated()), id: \.offset) { _, entry in
-                    HStack(alignment: .firstTextBaseline, spacing: 14) {
-                        Image(systemName: entry.symbol)
-                            .font(.title3)
-                            .foregroundStyle(palette.accent)
-                            .frame(width: 28)
-                            .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(verbatim: entry.title).font(Theme.heading)
-                            Text(verbatim: entry.line)
-                                .font(Theme.copy)
-                                .foregroundStyle(.secondary)
-                                .fixedSize(horizontal: false, vertical: true)
+                SheetGroup {
+                    ForEach(Array(MenuGuide.all.enumerated()), id: \.offset) { _, entry in
+                        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
+                            Image(systemName: entry.symbol)
+                                .font(Theme.heading)
+                                .fontWeight(.medium)
+                                .foregroundStyle(palette.paper2)
+                                .frame(minWidth: Theme.Space.lg)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                                Text(verbatim: entry.title)
+                                    .font(Theme.heading)
+                                    .foregroundStyle(palette.paper)
+                                Text(verbatim: entry.line)
+                                    .font(bodyFont)
+                                    .foregroundStyle(palette.paper2)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
+                        .accessibilityElement(children: .combine)
                     }
-                    .accessibilityElement(children: .combine)
                 }
             }
-            .padding(24)
+            .padding(Theme.Space.pageMargin(device.current))
         }
-        .navigationTitle("The menu")
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
+
+    private var bodyFont: Font { device.current == .phone ? Theme.bodyCompact : Theme.body }
 }
 
-/// A numbered list of short titled paragraphs: the How to play steps and each rules page.
+/// A numbered list of short titled paragraphs: the How to play steps and each rules page. The numbers are plain sans
+/// in paper2 (the design's list numbers), the titles heading paper, the paragraphs paper2.
 private struct NumberedSteps: View {
     let steps: [(title: String, detail: String)]
     @Environment(\.palette) private var palette
+    private var device = KitDeviceReader()
+    @ScaledMetric(relativeTo: .headline) private var numberWidth: CGFloat = 24
+
+    init(steps: [(title: String, detail: String)]) {
+        self.steps = steps
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: Theme.Space.md) {
             ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
-                HStack(alignment: .firstTextBaseline, spacing: 14) {
-                    Text("\(index + 1)")
-                        .font(Theme.equation)
-                        .foregroundStyle(palette.accent)
-                        .frame(width: 24, alignment: .leading)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(step.title).font(Theme.heading)
-                        Text(step.detail)
-                            .font(Theme.copy)
-                            .foregroundStyle(.secondary)
+                HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
+                    Text(verbatim: (index + 1).formatted(.number.locale(AppLocale.numbers)))
+                        .font(Theme.heading.monospacedDigit())
+                        .foregroundStyle(palette.paper2)
+                        .frame(width: numberWidth, alignment: .leading)
+                    VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                        Text(verbatim: step.title)
+                            .font(Theme.heading)
+                            .foregroundStyle(palette.paper)
+                        Text(verbatim: step.detail)
+                            .font(device.current == .phone ? Theme.bodyCompact : Theme.body)
+                            .foregroundStyle(palette.paper2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -1262,19 +1373,21 @@ private struct NumberedSteps: View {
 }
 
 /// The rules of one game, in our own plain words. They describe what the match rules in BreakdownRules decide; the
-/// rulings themselves come from there, never from this text.
+/// rulings themselves come from there, never from this text. The title is set by its pusher (frontDoorPushedPage).
 private struct RulesPage: View {
-    let title: LocalizedStringKey
     let rules: [(title: String, detail: String)]
+    private var device = KitDeviceReader()
+
+    init(rules: [(title: String, detail: String)]) {
+        self.rules = rules
+    }
 
     var body: some View {
         ScrollView {
-            NumberedSteps(steps: rules).padding(24)
+            NumberedSteps(steps: rules)
+                .padding(Theme.Space.pageMargin(device.current))
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .navigationTitle(title)
-        #if os(iOS)
-        .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 
     static var eightBall: [(title: String, detail: String)] {

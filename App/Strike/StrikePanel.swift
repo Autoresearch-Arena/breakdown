@@ -1,5 +1,12 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: one name, "Your strike",
+//          before and after a shot, set in the serif title with "Step by step" as a quiet worded button; the four lead
+//          figures are the kit's figure tiles (lead size, four in a row on a wide console, two by two otherwise, one a
+//          row at the accessibility sizes) and the physics a sunken strip, both always the live figures with no chips;
+//          planned against delivered lives only in the "Last shot" card (LastShotSection): the delivered figure in paper,
+//          an up or down arrow and the worded difference in paper2 ("2.61 m/s, 0.13 under"). The bands no longer draw
+//          their own surfaces: in the notebook the console's one panel holds them, on the phone the sheet does.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: one meaning per colour. Fouls, misses and
 //          refusals take Palette.warning; headings, try counts, tags and difficulty take paper or paper2; the sliding
 //          magenta is left for sliding and friction.)
@@ -39,25 +46,22 @@ import SwiftUI
 
 struct StrikePanel: View {
     let model: ShowpieceModel
-    /// The upright phone's sheet: two by two, no band surfaces (the sheet is the surface), smaller figures.
+    /// The upright phone's sheet: two by two, the control figure size, no heading.
     var compact = false
     /// The notebook's heading row and plain sentence above the bands; `onSteps` opens the commentary ("Step by step").
     var heading = false
     var onSteps: (() -> Void)? = nil
-    @Environment(\.notebookRoomy) private var roomy
     @Environment(\.dynamicTypeSize) private var typeSize
-    @ScaledMetric(relativeTo: .title2) private var headingSize: CGFloat = 22
-    @ScaledMetric(relativeTo: .callout) private var sentenceSize: CGFloat = 16
-    /// The panel's width, measured, which picks four columns or two (the parent's width never depends on it).
-    @State private var width: CGFloat = 0
     @Environment(\.palette) private var palette
+    /// The panel's width, measured, which picks four tiles a row or two (the parent's width never depends on it).
+    @State private var width: CGFloat = 0
 
     var body: some View {
         let reading = StrikeReading.current(model)
-        VStack(alignment: .leading, spacing: compact ? 12 : 8) {
+        VStack(alignment: .leading, spacing: Theme.Space.md) {
             if heading { headingRow(reading) }
             if let reading {
-                StrikeLeadBand(model: model, reading: reading, columns: columns, size: leadScale, framed: !compact)
+                StrikeLeadBand(model: model, reading: reading, columns: columns, size: compact ? 0 : 1, framed: !compact)
                 StrikePhysicsLine(reading: reading, framed: !compact)
             }
         }
@@ -65,72 +69,48 @@ struct StrikePanel: View {
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
     }
 
-    /// Four columns where each keeps about 150 points (the upright iPad's full-width panel), else two by two; one a
-    /// row at the accessibility text sizes.
+    /// Four tiles a row where each keeps about 150 points (the upright iPad's full-width console), else two by two;
+    /// one a row at the accessibility text sizes.
     private var columns: Int {
         if typeSize.isAccessibilitySize { return 1 }
         if compact { return 2 }
-        return width >= 660 ? 4 : 2
-    }
-
-    /// How large the lead figures are, as a share of the full-width size: full across four columns, smaller two by
-    /// two, smaller again on the folding phone's half and the phone's sheet.
-    private var leadScale: CGFloat {
-        if compact || !roomy { return 0.62 }
-        return columns == 4 ? 1 : 0.66
+        return width >= 640 ? 4 : 2
     }
 
     // MARK: Heading
 
-    /// The "Step by step" link's height: a 44-point touch target on a touch screen, a line's height under a pointer.
-    #if os(macOS)
-    private static let linkHeight: CGFloat = 28
-    #else
-    private static let linkHeight: CGFloat = 44
-    #endif
-
     @ViewBuilder
     private func headingRow(_ reading: StrikeReading.Reading?) -> some View {
-        let played = reading?.comparison
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(verbatim: played == nil ? StrikeWords.liveHeading : StrikeWords.playedStrokeHeading)
-                    .font(.system(size: headingSize, weight: .bold))
-                    .accessibilityAddTraits(.isHeader)
-                Spacer(minLength: 8)
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            HStack(alignment: .firstTextBaseline, spacing: Theme.Space.sm) {
+                // One name before and after a shot (UI rethink package 4).
+                KitCardTitle(StrikeWords.liveHeading, style: .title)
+                Spacer(minLength: Theme.Space.xs)
                 if let onSteps {
-                    Button(action: onSteps) {
-                        HStack(spacing: 4) {
-                            Text(verbatim: StrikeWords.stepsLabel)
-                            Image(systemName: "chevron.right").imageScale(.small).accessibilityHidden(true)
-                        }
-                        .font(.system(size: sentenceSize, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(minHeight: Self.linkHeight)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .hoverHighlight(.fill(cornerRadius: 8))
+                    QuietButton(StrikeWords.stepsLabel, systemImage: "list.bullet", action: onSteps)
+                        // The quiet button keeps its 44-point hit area without pushing the sentence down by all of it.
+                        .padding(.vertical, -Theme.Space.sm)
                 }
             }
             // The plain sentence: the spin and the cut in words before a shot, the biggest difference after it.
             if let reading {
-                Text(verbatim: played.map(StrikeWords.playedSentence) ?? StrikeWords.plainSentence(reading.shown))
-                    .font(.system(size: sentenceSize))
-                    .foregroundStyle(.secondary)
+                Text(verbatim: reading.comparison.map(StrikeWords.playedSentence) ?? StrikeWords.plainSentence(reading.shown))
+                    .font(Theme.body)
+                    .foregroundStyle(palette.paper2)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if let figures = reading?.shown, figures.miscue {
                 Label { Text(verbatim: StrikeWords.miscueLine) } icon: {
-                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(palette.warning)
+                    Image(systemName: "exclamationmark.triangle").foregroundStyle(palette.warning)
                 }
-                .font(.system(size: sentenceSize))
+                .font(Theme.body)
+                .foregroundStyle(palette.paper)
                 .fixedSize(horizontal: false, vertical: true)
             }
             if model.cueAngleLockedByMode && !model.racked {
                 Text(verbatim: StrikeWords.lockedByMode)
-                    .font(.system(size: sentenceSize))
-                    .foregroundStyle(.secondary)
+                    .font(Theme.body)
+                    .foregroundStyle(palette.paper2)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -138,7 +118,7 @@ struct StrikePanel: View {
 }
 
 extension StrikeReading.Reading {
-    /// The figures the panel shows: the live plan, or what the stroke delivered.
+    /// The figures the panel shows: the live plan, or what the stroke delivered while that shot is being watched.
     var shown: StrikeFigures {
         switch self {
         case .live(let f): return f
@@ -155,201 +135,117 @@ extension StrikeReading.Reading {
 
 // MARK: What the ball gets
 
-/// The four lead figures: the cut, the speed the ball leaves at, top or back spin, side spin. Columns split by hairline
-/// rules, no boxes. `size` scales the full-width figure size (46 points at the default text size).
+/// The four lead figures as the kit's figure tiles: the cut on the first ball in line (typeable), the speed the ball
+/// leaves at, top or back spin, side spin. Always one figure each, never a planned-against-delivered chip (the "Last
+/// shot" card holds that). `size` 1 is the lead figure size, 0 the control size (the phone's sheet). `framed` puts the
+/// section label ("WHAT THE BALL GETS") above the tiles.
 struct StrikeLeadBand: View {
     let model: ShowpieceModel
     let reading: StrikeReading.Reading
     let columns: Int
     var size: CGFloat = 1
-    /// On a band surface with its caption (the notebook); the phone's sheet draws neither.
     var framed = true
-    @ScaledMetric(relativeTo: .largeTitle) private var figureBase: CGFloat = 46
-    @ScaledMetric(relativeTo: .subheadline) private var labelSize: CGFloat = 15
-    @ScaledMetric(relativeTo: .footnote) private var subSize: CGFloat = 13
-    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        let content = VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: Theme.Space.sectionToContent) {
             if framed { BandCaption(text: StrikeWords.ballGetsCaption) }
             grid
         }
-        if framed { content.bandSurface(padding: EdgeInsets(top: 12, leading: 18, bottom: 10, trailing: 18)) } else { content }
     }
 
-    /// One row of four, two rows of two with a rule between them, or one a row.
+    private var figureSize: Theme.FigureSize { size >= 0.9 ? .lead : .control }
+
+    /// One row of four, two rows of two, or one a row (FigureTileRow stacks them at the accessibility sizes).
     @ViewBuilder private var grid: some View {
-        let cells = [cell(.cut), cell(.leaves), cell(.topSpin), cell(.sideSpin)]
         switch columns {
         case 4:
-            HStack(alignment: .top, spacing: 16) {
-                cells[0]; HairlineRule(); cells[1]; HairlineRule(); cells[2]; HairlineRule(); cells[3]
-            }
-            .fixedSize(horizontal: false, vertical: true)
+            FigureTileRow { cutTile; leavesTile; topSpinTile; sideSpinTile }
         case 2:
-            VStack(spacing: 6) {
-                HStack(alignment: .top, spacing: 16) { cells[0]; HairlineRule(); cells[1] }
-                    .fixedSize(horizontal: false, vertical: true)
-                HairlineRule(vertical: false)
-                HStack(alignment: .top, spacing: 16) { cells[2]; HairlineRule(); cells[3] }
-                    .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading, spacing: Theme.Space.sm) {
+                FigureTileRow { cutTile; leavesTile }
+                FigureTileRow { topSpinTile; sideSpinTile }
             }
         default:
-            VStack(alignment: .leading, spacing: 12) { cells[0]; cells[1]; cells[2]; cells[3] }
+            VStack(alignment: .leading, spacing: Theme.Space.sm) { cutTile; leavesTile; topSpinTile; sideSpinTile }
         }
     }
 
-    private enum Lead { case cut, leaves, topSpin, sideSpin }
-
-    @ViewBuilder
-    private func cell(_ lead: Lead) -> some View {
+    /// The cut, typeable where the model lets the player set it: a tap opens the exact entry.
+    private var cutTile: some View {
         let f = reading.shown
-        let c = reading.comparison
-        switch lead {
-        case .cut:
-            let differs = c.map { $0.differs(.cut) || $0.differs(.aim) } ?? false
-            let label = f.cut == nil ? StrikeWords.cutOnLabel(ball: nil) : StrikeWords.cutOnLabel(ball: f.cutBall)
-            let figure = f.cut.map(StrikeWords.degreesFigure) ?? FigureText(number: "–", unit: "")
-            TypeableFigure(model: model, kind: .cut, spokenLabel: label,
-                           spokenValue: StrikeSpoken.tile(.cut, reading, differs: differs)) {
-                column(label: label, figure: figure, editable: StrikeEntry.Kind.cut.isOpen(model)) {
-                    if let c {
-                        below(chip: differs ? cutChip(c) : nil)
-                    } else {
-                        sub(StrikeWords.turnLine(f.turnDegrees))
-                    }
-                }
-            }
-        case .leaves:
-            plain(.leaves, label: StrikeWords.leavesShortLabel, figure: StrikeWords.speedFigure(f.leaves),
-                  sub: StrikeWords.fromSwing(f.swing), decimals: 2, magnitude: false)
-        case .topSpin:
-            plain(.topSpin, label: StrikeWords.topSpinLabel(f.topSpin), figure: StrikeWords.spinFigure(f.topSpin),
-                  sub: nil, decimals: 1, magnitude: true)
-        case .sideSpin:
-            plain(.sideSpin, label: StrikeWords.sideSpinLabel(f.sideSpin), figure: StrikeWords.spinFigure(f.sideSpin),
-                  sub: nil, decimals: 1, magnitude: true)
+        let label = f.cut == nil ? StrikeWords.cutOnLabel(ball: nil) : StrikeWords.cutOnLabel(ball: f.cutBall)
+        let figure = f.cut.map(StrikeWords.degreesFigure) ?? FigureText(number: "–", unit: "")
+        return TypeableFigure(model: model, kind: .cut, spokenLabel: label,
+                              spokenValue: StrikeSpoken.tile(.cut, .live(f), differs: false)) {
+            FigureTile(label: label, figure: figure, note: StrikeWords.turnLine(f.turnDegrees), size: figureSize,
+                       editable: StrikeEntry.Kind.cut.isOpen(model))
         }
     }
 
-    /// A lead column that is a result only (not typeable): one VoiceOver element, label then spoken value.
-    private func plain(_ figure: StrikeComparison.Figure, label: String, figure text: FigureText, sub line: String?,
-                       decimals: Int, magnitude: Bool) -> some View {
-        let c = reading.comparison
-        let differs = c?.differs(figure) == true
-        return column(label: label, figure: text, editable: false) {
-            if let c {
-                below(chip: differs ? chip(figure, c, decimals: decimals, magnitude: magnitude) : nil)
-            } else {
-                sub(line)
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: label))
-        .accessibilityValue(Text(verbatim: StrikeSpoken.tile(figure, reading, differs: differs)))
+    private var leavesTile: some View {
+        let f = reading.shown
+        return FigureTile(label: StrikeWords.leavesShortLabel, figure: StrikeWords.speedFigure(f.leaves),
+                          note: StrikeWords.fromSwing(f.swing), size: figureSize,
+                          spoken: StrikeSpoken.tile(.leaves, .live(f), differs: false))
     }
 
-    /// Label, figure, and the line under it; every column keeps three lines so the rows line up.
-    private func column<Below: View>(label: String, figure: FigureText, editable: Bool,
-                                     @ViewBuilder below: () -> Below) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(verbatim: label)
-                .font(.system(size: labelSize, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
-                .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.8)
-            FigureLine(figure: figure, size: figureBase * size, role: .result, editable: editable)
-                // The dotted underline hangs max(4, 16 %) of the figure under the number (FigureLine); the line under
-                // the figure starts clear of it.
-                .padding(.bottom, editable ? max(4, figureBase * size * 0.16) + 6 : 0)
-            below()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    private var topSpinTile: some View {
+        let f = reading.shown
+        return FigureTile(label: StrikeWords.topSpinLabel(f.topSpin), figure: StrikeWords.spinFigure(f.topSpin),
+                          size: figureSize, spoken: StrikeSpoken.tile(.topSpin, .live(f), differs: false))
     }
 
-    /// The sub-line under a live figure (or an empty line, so the column keeps its height).
-    private func sub(_ line: String?, secondary: Bool = false) -> some View {
-        Text(verbatim: line ?? " ")
-            .font(.system(size: subSize))
-            .foregroundStyle(secondary ? HierarchicalShapeStyle.secondary : HierarchicalShapeStyle.tertiary)
-            .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
-            .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.8)
-    }
-
-    /// After a shot: the delta chip, or "as planned".
-    @ViewBuilder private func below(chip: String?) -> some View {
-        if let chip {
-            DeltaChip(text: chip)
-        } else {
-            sub(StrikeWords.asPlanned, secondary: true)
-        }
-    }
-
-    /// The chip for a figure that moved: the signed difference and the planned figure, both as the figure shows them
-    /// (spin as a size, without its sign, because the label says which way).
-    private func chip(_ f: StrikeComparison.Figure, _ c: StrikeComparison, decimals: Int, magnitude: Bool) -> String? {
-        guard let a = StrikeComparison.value(f, of: c.planned), let b = StrikeComparison.value(f, of: c.delivered) else {
-            return nil
-        }
-        let shownA = magnitude ? abs(a) : a, shownB = magnitude ? abs(b) : b
-        return StrikeWords.deltaChip(StrikeWords.signed(shownB - shownA, decimals: decimals),
-                                     planned: StrikeWords.number(shownA, decimals: decimals))
-    }
-
-    /// The cut's chip: the change in the cut where there is one, else the aim's turn ("0.4° left") against the plan.
-    private func cutChip(_ c: StrikeComparison) -> String {
-        let planned = c.planned.cut.map(StrikeWords.degrees) ?? "–"
-        if c.differs(.cut), let a = c.planned.cut, let b = c.delivered.cut {
-            return StrikeWords.deltaChip(StrikeWords.signed(b - a, decimals: 1) + "°", planned: planned)
-        }
-        return StrikeWords.deltaChip(StrikeWords.aimError(c.aimError), planned: planned)
+    private var sideSpinTile: some View {
+        let f = reading.shown
+        return FigureTile(label: StrikeWords.sideSpinLabel(f.sideSpin), figure: StrikeWords.spinFigure(f.sideSpin),
+                          size: figureSize, spoken: StrikeSpoken.tile(.sideSpin, .live(f), differs: false))
     }
 }
 
 // MARK: The physics
 
-/// Push, force and energy on one quiet line (two when narrow, one a row at the accessibility sizes). After a shot each
-/// figure is the delivered one, followed by its signed change in the delta yellow when it moved.
+/// Push, force and energy on one sunken strip (two lines when narrow, one a row at the accessibility sizes), in the
+/// inline figure. Always the figures of the strike shown, never a difference (the "Last shot" card holds that).
+/// `framed` leads the strip with its caption ("THE PHYSICS").
 struct StrikePhysicsLine: View {
     let reading: StrikeReading.Reading
     var framed = true
-    @ScaledMetric(relativeTo: .callout) private var figureSize: CGFloat = 16
-    @ScaledMetric(relativeTo: .callout) private var labelSize: CGFloat = 14
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.palette) private var palette
 
     var body: some View {
-        let content = Group {
+        Group {
             if typeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 8) { BandCaption(text: StrikeWords.physicsCaption); items }
+                VStack(alignment: .leading, spacing: Theme.Space.xs) { caption; items }
             } else {
                 ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 12) {
-                        BandCaption(text: StrikeWords.physicsCaption).fixedSize()
-                        items
-                    }
-                    VStack(alignment: .leading, spacing: 6) {
-                        BandCaption(text: StrikeWords.physicsCaption)
-                        HStack(spacing: 14) { items }
+                    HStack(spacing: Theme.Space.sm) { caption.fixedSize(); items }
+                    VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                        caption
+                        HStack(spacing: Theme.Space.md) { items }
                     }
                     // A slim column: push and energy share a line, the force (with its contact time) has its own.
-                    VStack(alignment: .leading, spacing: 4) {
-                        BandCaption(text: StrikeWords.physicsCaption)
-                        HStack(spacing: 14) { pushItem; Spacer(minLength: 0); energyItem }
+                    VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                        caption
+                        HStack(spacing: Theme.Space.md) { pushItem; Spacer(minLength: 0); energyItem }
                         forceItem
                     }
-                    VStack(alignment: .leading, spacing: 4) {
-                        BandCaption(text: StrikeWords.physicsCaption)
-                        VStack(alignment: .leading, spacing: 4) { items }
+                    VStack(alignment: .leading, spacing: Theme.Space.xxs) {
+                        caption
+                        VStack(alignment: .leading, spacing: Theme.Space.xxs) { items }
                     }
                 }
             }
         }
-        if framed {
-            content.bandSurface(ledger: true, padding: EdgeInsets(top: 8, leading: 18, bottom: 8, trailing: 18))
-        } else {
-            content
-        }
+        .padding(.horizontal, Theme.Space.sm)
+        .padding(.vertical, Theme.Space.xs)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        // The sunken strip: set into the panel, no edge, small corners.
+        .background(palette.panelSunken, in: Theme.Corner.tileShape)
+    }
+
+    @ViewBuilder private var caption: some View {
+        if framed { BandCaption(text: StrikeWords.physicsCaption) }
     }
 
     @ViewBuilder private var items: some View {
@@ -361,78 +257,68 @@ struct StrikePhysicsLine: View {
     }
 
     private var pushItem: some View {
-        item(.push, label: StrikeWords.pushLabel, figure: StrikeWords.pushFigure(reading.shown.push), decimals: 2,
+        item(.push, label: StrikeWords.pushLabel, figure: StrikeWords.pushFigure(reading.shown.push),
              spokenLabel: StrikeWords.pushLabel)
     }
 
     private var forceItem: some View {
         item(.force, label: StrikeWords.forceShortLabel, figure: StrikeWords.forceFigure(reading.shown.force),
-             decimals: 0, note: StrikeWords.forceOver, spokenLabel: StrikeWords.forceLabel)
+             note: StrikeWords.forceOver, spokenLabel: StrikeWords.forceLabel)
     }
 
     private var energyItem: some View {
         item(.energy, label: StrikeWords.energyLabel, figure: StrikeWords.energyFigure(reading.shown.energy),
-             decimals: 2, spokenLabel: StrikeWords.energyLabel)
+             spokenLabel: StrikeWords.energyLabel)
     }
 
-    private func item(_ figure: StrikeComparison.Figure, label: String, figure text: FigureText, decimals: Int,
-                      note: String? = nil, spokenLabel: String) -> some View {
-        let c = reading.comparison
-        let differs = c?.differs(figure) == true
-        return HStack(alignment: .firstTextBaseline, spacing: 6) {
+    private func item(_ figure: StrikeComparison.Figure, label: String, figure text: FigureText, note: String? = nil,
+                      spokenLabel: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xs) {
             Text(verbatim: label)
-                .font(.system(size: labelSize))
-                .foregroundStyle(.secondary)
-            FigureLine(figure: text, size: figureSize, role: .result)
+                .font(Theme.label)
+                .foregroundStyle(palette.paper2)
+            KitFigure(text, size: .inline)
             if let note {
-                Text(verbatim: note).font(.system(size: labelSize * 0.8)).foregroundStyle(.secondary)
-            }
-            if differs, let c, let a = StrikeComparison.value(figure, of: c.planned),
-               let b = StrikeComparison.value(figure, of: c.delivered) {
-                // The change, signed, in yellow; VoiceOver hears planned then delivered (the element's value).
-                Text(verbatim: StrikeWords.signed(b - a, decimals: decimals))
-                    .font(.system(size: labelSize * 0.85, design: .monospaced).weight(.semibold))
-                    .foregroundStyle(palette.paper2)
+                Text(verbatim: note).font(Theme.caption).foregroundStyle(palette.paper2)
             }
         }
         .fixedSize()
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: spokenLabel))
-        .accessibilityValue(Text(verbatim: StrikeSpoken.tile(figure, reading, differs: differs)))
+        .accessibilityValue(Text(verbatim: StrikeSpoken.tile(figure, .live(reading.shown), differs: false)))
     }
 }
 
 // MARK: The notebook's slot
 
 /// The slot beside or under the table that used to hold the commentary alone (NotebookPanel). While the player is
-/// aiming ("Your shot" open, the balls at rest or before any shot) it shows the strike panel's heading, sentence and two
-/// bands; while the balls move it gives way to the commentary, as before; once a shot has played out the panel returns
-/// with planned against delivered, and "Step by step ›" in the heading row brings the commentary back for reading (with
-/// a "‹ Your strike" link back). With Explanations off the commentary is never drawn and the slot keeps the strike
-/// throughout. During the opening the slot keeps the commentary's own rule, so the first minute stays one instruction
-/// beside a racked table.
+/// aiming ("Aim" open, the balls at rest or before any shot) it shows "Your strike": the heading, the sentence and the
+/// live figures; while the balls move it gives way to the commentary, as before; once a shot has played out the strike
+/// returns with the "Last shot" card under it, and "Step by step" in the heading row brings the commentary back for
+/// reading (with a "Your strike" link back). With Explanations off the commentary is never drawn and the slot keeps the
+/// strike throughout. During the opening the slot keeps the commentary's own rule, so the first minute stays calm.
 struct StrikeSlot: View {
     let model: ShowpieceModel
     let leader: LeaderState
-    /// "Your shot" is open: the player is aiming (NotebookPanel's showShotPanel). Closed, the slot is the commentary.
+    /// "Aim" is open: the player is aiming (NotebookPanel's showShotPanel). Closed, the slot is the commentary.
     let aiming: Bool
     /// The player asked for the commentary after the shot (owned by NotebookPanel, which lays the column out by it);
     /// back to the strike with each new recording.
     @Binding var showSteps: Bool
-    /// The most height the strike's heading and bands may take before they scroll (the rest goes to the controls).
+    /// The most height the strike's heading and figures may take before they scroll (the rest goes to the controls).
     var strikeMaxHeight: CGFloat = .infinity
     @AppStorage(GameSettings.explanationsKey) private var explanations = true
-    /// The strike's own height (heading, sentence and bands), measured inside the scroll view (strike(steps:)).
+    /// The strike's own height (heading, sentence and figures), measured inside the scroll view (strike(steps:)).
     @State private var strikeNatural: CGFloat = 0
-    /// The "Last shot" section is open; closed again with each new recording.
+    /// The "Last shot" card is open; closed again with each new recording.
     @State private var lastShotOpen = false
 
-    /// True when the slot shows the strike at all: "Your shot" is open, outside the opening. NotebookPanel reads it to
-    /// keep the slot when Explanations is off. With "Your shot" closed the numbers strip shows instead.
+    /// True when the slot shows the strike at all: "Aim" is open, outside the opening. NotebookPanel reads it to keep
+    /// the slot when Explanations is off. With "Aim" closed the numbers strip shows instead.
     static func shows(_ model: ShowpieceModel, aiming: Bool) -> Bool { aiming && model.openingStage == .none }
 
-    /// True when the slot is drawing the strike panel now (not the commentary): NotebookPanel then hands the leftover
-    /// height to the controls band instead of to the slot.
+    /// True when the slot is drawing the strike now (not the commentary): NotebookPanel then hands the leftover height
+    /// to the controls instead of to the slot.
     @MainActor
     static func showsStrike(_ model: ShowpieceModel, aiming: Bool, explanations: Bool, showSteps: Bool) -> Bool {
         guard shows(model, aiming: aiming) else { return false }
@@ -444,7 +330,7 @@ struct StrikeSlot: View {
     var body: some View {
         Group {
             if !Self.shows(model, aiming: aiming) {
-                // The first minute, or "Your shot" closed: the commentary's own rule.
+                // The first minute, or "Aim" closed: the commentary's own rule.
                 if explanations { NotebookStory(model: model, leader: leader) } else { Color.clear }
             } else if !explanations {
                 strike(steps: false)
@@ -452,18 +338,8 @@ struct StrikeSlot: View {
                 // The balls are moving (or the replay is being read): the commentary, as before.
                 NotebookStory(model: model, leader: leader)
             } else if NotebookStory.hasShot(model) && showSteps {
-                VStack(alignment: .leading, spacing: 8) {
-                    Button { showSteps = false } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left").imageScale(.small).accessibilityHidden(true)
-                            Text(verbatim: StrikeWords.liveHeading)
-                        }
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(minHeight: 44)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                    QuietButton(StrikeWords.liveHeading, systemImage: "chevron.left") { showSteps = false }
                     NotebookStory(model: model, leader: leader)
                 }
             } else {
@@ -473,21 +349,17 @@ struct StrikeSlot: View {
         .onChange(of: model.timelineVersion) { _, _ in showSteps = false; lastShotOpen = false }
     }
 
-    /// The strike's heading and bands, at their own height up to strikeMaxHeight, scrolling past it (the largest text
+    /// The strike's heading and figures, at their own height up to strikeMaxHeight, scrolling past it (the largest text
     /// sizes); before any shot the surface and table card follows, as the commentary's empty page used to show.
-    /// Not FittingScroll: its two branches (plain, or in a scroll view) are two identities, so switching between them
-    /// remade StrikePanel, whose column count comes from its measured width and starts at two columns. Two by two is
-    /// taller, so the remade panel measured past the cap, which picked the scroll branch, which remade it again: the
-    /// slot froze at the cap (about 70 points taller than the four-column strike, an empty gap on the upright iPad)
-    /// and the controls band under it lost that height. One scroll view, always there and only scrolling when the
-    /// content is taller than the cap, keeps one identity, so the measurement settles once.
+    /// One scroll view, always there and only scrolling when the content is taller than the cap, keeps one identity, so
+    /// the measurement settles once (a switch between a plain and a scrolling branch remade StrikePanel and froze the
+    /// slot at the cap, 0.8.1).
     private func strike(steps: Bool) -> some View {
-        let fits = strikeNatural <= strikeMaxHeight
         return ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: Theme.Space.md) {
                 StrikePanel(model: model, heading: true, onSteps: steps && explanations ? { showSteps = true } : nil)
-                // UI rethink package 1: the shot just played, planned against delivered, in its own section under the
-                // live figures (the live figures no longer swap to it once the next shot can be aimed).
+                // The shot just played, planned against delivered, in its own card under the live figures (the live
+                // figures never swap to it).
                 if model.aimReady, let last = StrikeReading.lastShot(model) {
                     LastShotSection(model: model, comparison: last, open: $lastShotOpen)
                 }
@@ -498,64 +370,167 @@ struct StrikeSlot: View {
             .fixedSize(horizontal: false, vertical: true)
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { strikeNatural = $0 }
         }
-        .scrollDisabled(fits)
         .scrollBounceBehavior(.basedOnSize)
         // Its own height up to the cap; before the first measurement nothing (it is measured in the same pass).
-        .frame(height: min(strikeNatural, strikeMaxHeight))
+        // UI rethink package 4 follow-up: it may also be squeezed below that (minHeight 0), so the console under it
+        // keeps its whole height and Shoot never scrolls out of sight; the figures scroll instead.
+        .frame(minHeight: 0, idealHeight: min(strikeNatural, strikeMaxHeight), maxHeight: min(strikeNatural, strikeMaxHeight))
     }
 }
 
 // MARK: The last shot
 
-/// The shot just played, planned against delivered (UI rethink package 1): a "Last shot" row that opens the lead band and
-/// the physics line for that shot, under the live figures. The live figures always describe the next shot.
+/// The "Last shot" card (UI rethink package 4, from package 1's section): the shot just played, planned against
+/// delivered. Its title row opens it; open, the plain sentence (the biggest difference), then one row per figure the
+/// stroke changed: the figure's name, the delivered figure in paper, an up or down arrow and the worded difference in
+/// paper2 ("2.61 m/s  ↓ 0.13 under"). Never a hue of its own; the live figures above always describe the next shot.
+/// A sunken strip set into the console's panel, so it reads as a card of its own without a second panel edge.
 struct LastShotSection: View {
     let model: ShowpieceModel
     let comparison: StrikeComparison
     @Binding var open: Bool
-    @ScaledMetric(relativeTo: .callout) private var labelSize: CGFloat = 16
+    @Environment(\.palette) private var palette
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
             Button { open.toggle() } label: {
-                HStack(spacing: 6) {
+                HStack(spacing: Theme.Space.xs) {
                     Text(verbatim: StrikeWords.lastShotLabel)
-                    Image(systemName: open ? "chevron.down" : "chevron.right").imageScale(.small)
+                        .font(Theme.heading)
+                        .foregroundStyle(palette.paper)
+                    Spacer(minLength: Theme.Space.xs)
+                    Image(systemName: open ? "chevron.up" : "chevron.down")
+                        .font(Theme.caption)
+                        .foregroundStyle(palette.paper3)
                         .accessibilityHidden(true)
                 }
-                .font(.system(size: labelSize, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .frame(minHeight: 32)
+                .frame(minHeight: Theme.Size.minHit)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityAddTraits(open ? .isSelected : [])
+            .accessibilityAddTraits(.isHeader)
+            .accessibilityValue(Text(open ? String(localized: "Shown") : String(localized: "Hidden")))
             if open {
-                let reading = StrikeReading.Reading.played(comparison)
                 Text(verbatim: StrikeWords.playedSentence(comparison))
-                    .font(.system(size: labelSize))
-                    .foregroundStyle(.secondary)
+                    .font(Theme.body)
+                    .foregroundStyle(palette.paper2)
                     .fixedSize(horizontal: false, vertical: true)
-                StrikeLeadBand(model: model, reading: reading, columns: 2, size: 0.62)
-                StrikePhysicsLine(reading: reading)
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                    ForEach(rows, id: \.label) { row in
+                        LastShotRow(row: row)
+                    }
+                }
+                .transition(.opacity)
             }
         }
+        .padding(.horizontal, Theme.Space.sm)
+        .padding(.vertical, Theme.Space.xxs)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(palette.panelSunken, in: Theme.Corner.tileShape)
+        .animation(Theme.Motion.standard, value: open)
+    }
+
+    /// One row per figure the stroke changed, in the panel's order. Spin and the tip read as sizes (their labels say
+    /// which way), so their differences are differences of size.
+    private var rows: [LastShotRow.Row] {
+        let c = comparison, p = c.planned, d = c.delivered
+        var out: [LastShotRow.Row] = []
+        func add(_ f: StrikeComparison.Figure, label: String, figure: FigureText, planned a: Double?, delivered b: Double?,
+                 decimals: Int, scale: Double = 1) {
+            guard c.differs(f), let a, let b else { return }
+            out.append(LastShotRow.Row(label: label, figure: figure, delta: (b - a) * scale, decimals: decimals,
+                                       spoken: StrikeSpoken.tile(f, .played(c), differs: true)))
+        }
+        if let cut = d.cut {
+            add(.cut, label: StrikeWords.cutLabel, figure: StrikeWords.degreesFigure(cut), planned: p.cut, delivered: d.cut,
+                decimals: 1)
+        }
+        if c.differs(.aim) && !c.differs(.cut) {
+            // The aim turned but the cut printed the same: the turn itself, as the shooter sees it ("0.4° left").
+            out.append(LastShotRow.Row(label: StrikeWords.aimTab, figure: FigureText(number: StrikeWords.aimError(c.aimError),
+                                                                                    unit: ""),
+                                       delta: nil, decimals: 1,
+                                       spoken: StrikeSpoken.tile(.aim, .played(c), differs: true)))
+        }
+        add(.swing, label: StrikeWords.swingLabel, figure: StrikeWords.speedFigure(d.swing), planned: p.swing,
+            delivered: d.swing, decimals: 2)
+        add(.leaves, label: StrikeWords.leavesShortLabel, figure: StrikeWords.speedFigure(d.leaves), planned: p.leaves,
+            delivered: d.leaves, decimals: 2)
+        add(.topSpin, label: StrikeWords.topSpinLabel(d.topSpin), figure: StrikeWords.spinFigure(d.topSpin),
+            planned: abs(p.topSpin), delivered: abs(d.topSpin), decimals: 1)
+        add(.sideSpin, label: StrikeWords.sideSpinLabel(d.sideSpin), figure: StrikeWords.spinFigure(d.sideSpin),
+            planned: abs(p.sideSpin), delivered: abs(d.sideSpin), decimals: 1)
+        add(.tipUp, label: StrikeWords.tipUpLabel(d.tipUp), figure: StrikeWords.millimetresFigure(d.tipUp),
+            planned: abs(p.tipUp), delivered: abs(d.tipUp), decimals: 1, scale: 1000)
+        add(.tipSide, label: StrikeWords.tipSideLabel(d.tipSide), figure: StrikeWords.millimetresFigure(d.tipSide),
+            planned: abs(p.tipSide), delivered: abs(d.tipSide), decimals: 1, scale: 1000)
+        add(.push, label: StrikeWords.pushLabel, figure: StrikeWords.pushFigure(d.push), planned: p.push,
+            delivered: d.push, decimals: 2)
+        add(.force, label: StrikeWords.forceShortLabel, figure: StrikeWords.forceFigure(d.force), planned: p.force,
+            delivered: d.force, decimals: 0)
+        add(.energy, label: StrikeWords.energyLabel, figure: StrikeWords.energyFigure(d.energy), planned: p.energy,
+            delivered: d.energy, decimals: 2)
+        return out
+    }
+}
+
+/// One row of the "Last shot" card: name, delivered figure, arrow and worded difference; one VoiceOver element that says
+/// planned then delivered.
+private struct LastShotRow: View {
+    struct Row {
+        let label: String
+        let figure: FigureText
+        /// Delivered minus planned in the figure's shown unit; nil for a row that is words only (the aim's turn).
+        let delta: Double?
+        let decimals: Int
+        let spoken: String
+    }
+
+    let row: Row
+    @Environment(\.palette) private var palette
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.xs) {
+            Text(verbatim: row.label)
+                .font(Theme.label)
+                .foregroundStyle(palette.paper2)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            Spacer(minLength: Theme.Space.xs)
+            if row.figure.unit.isEmpty {
+                Text(verbatim: row.figure.number).font(Theme.label).foregroundStyle(palette.paper)
+            } else {
+                KitFigure(row.figure, size: .inline)
+            }
+            if let delta = row.delta {
+                Image(systemName: delta > 0 ? "arrow.up" : "arrow.down")
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+                Text(verbatim: StrikeWords.differenceWords(delta, decimals: row.decimals))
+                    .font(Theme.caption)
+                    .foregroundStyle(palette.paper2)
+                    .fixedSize()
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: row.label))
+        .accessibilityValue(Text(verbatim: row.spoken))
     }
 }
 
 // MARK: The upright phone's sheet
 
-/// The strike panel on the upright phone (stage 4): opened by a tap on the swing figure in the aiming panel, as a short
-/// opaque sheet (about 270 points) over the bottom of the screen, so the table and the aim line stay in view above it.
-/// What the ball gets, two by two, and the physics line only: the phone's aiming panel already carries the set figures.
-/// The table can still be touched to aim while it is open, and the figures follow.
+/// The strike's figures on the upright phone: opened by a tap on the swing figure in the aiming panel, as a short opaque
+/// sheet over the bottom of the screen, so the table and the aim line stay in view above it. What the ball gets, two by
+/// two, and the physics line only: the phone's aiming panel already carries the set figures. The table can still be
+/// touched to aim while it is open, and the figures follow.
 struct StrikeSheet: View {
     let model: ShowpieceModel
     @Binding var isOpen: Bool
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
-    /// The sheet's content, measured (0 until measured): the sheet is as tall as its figures, so the physics line is
-    /// never cut off at the bottom (a fixed 270 points was about 25 short), and at most about half an upright phone.
+    /// The sheet's content, measured (0 until measured): the sheet is as tall as its figures, and at most about half an
+    /// upright phone.
     @State private var contentHeight: CGFloat = 0
 
     /// Its own height while that is under 420 points (about half the phone); 270 before the first measurement.
@@ -565,26 +540,30 @@ struct StrikeSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: Theme.Space.sm) {
                 HStack(alignment: .firstTextBaseline) {
-                    BandCaption(text: StrikeWords.ballGetsCaption)
-                    Spacer(minLength: 8)
-                    Button(StrikeWords.doneWord) { isOpen = false }
-                        .font(.subheadline.weight(.semibold))
-                        .frame(minHeight: 44)
+                    // One name everywhere (UI rethink package 4).
+                    Text(verbatim: StrikeWords.liveHeading)
+                        .font(Theme.heading)
+                        .foregroundStyle(palette.paper)
+                        .accessibilityAddTraits(.isHeader)
+                    Spacer(minLength: Theme.Space.xs)
+                    QuietButton(StrikeWords.doneWord) { isOpen = false }
                 }
+                BandCaption(text: StrikeWords.ballGetsCaption)
                 StrikePanel(model: model, compact: true)
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 6)
-            .padding(.bottom, 16)
+            .padding(.horizontal, Theme.Space.md)
+            .padding(.top, Theme.Space.xs)
+            .padding(.bottom, Theme.Space.md)
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
         }
         .scrollBounceBehavior(.basedOnSize)
         .tint(palette.accent)
-        // Opaque: no table showing through behind the figures.
-        .presentationBackground(palette.band)
+        // Opaque: the house panel, no table showing through behind the figures.
+        .presentationBackground(palette.panel)
         .presentationDetents(typeSize.isAccessibilitySize ? [.medium, .large] : [detent, .medium])
         .presentationBackgroundInteraction(.enabled(upThrough: typeSize.isAccessibilitySize ? .medium : detent))
+        .kitDevice(.phone)
     }
 }

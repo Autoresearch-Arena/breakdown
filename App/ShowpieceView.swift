@@ -1,5 +1,20 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 4 follow-up: beside a big screen's column the
+//          reel and the Physics Lens, Ride and Aim tabs sit at the foot of the stage, measured for the camera.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 7, "The front door and the sheets", the stage on
+//          big screens: the notebook panel is told it is a big screen's column (or the open folding phone's panel)
+//          through the kit's device value, so the menu, the sheets and the cards inside it lay out for it; "Watch the
+//          intro" travels down to How to play as an environment value (frontDoorWatchIntro), since it left the main
+//          menu; the top-bar controls carry their words on big screens (the notebook's top bar, and the title row over
+//          the table only on a big screen with its panel put away; a phone turned sideways or a small window keeps the
+//          icons, whatever its size class): "Back" (it opens the main menu, as before), "Menu" for what was the
+//          surface grid (the Surface menu's rows, unchanged), and "Zoom"; the status labels
+//          and "Tap to skip" are the kit's glass pill; the hairlines where a panel meets the table are the rule role;
+//          the aiming panel in the side column and the bottom stack sits on the panel surface it draws itself, no
+//          longer wrapped in glass; the upright
+//          phone's legibility gradients are the ground role, not bare black. The notebook column's hooks, every
+//          measured edge and the camera's chrome are unchanged.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 strike: the upright phone's dock no longer holds the
 //          hand-over's instruction blurb; it is in the aiming panel below the table, StrikeHint.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 front door: on the upright phone the open menu hands the
@@ -172,6 +187,8 @@ struct ShowpieceView: View {
     /// Real laid-out edges in StageSpace, measured from the views themselves, for the camera (see StageChrome).
     @State private var headerBottom: Double?
     @State private var controlsTop: Double?
+    /// The top of the reel and tabs on the stage beside a big screen's column (UI rethink package 4), for the camera.
+    @State private var stageReelTop: Double?
     @Environment(\.palette) private var palette
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.layoutDirection) private var layoutDirection
@@ -259,7 +276,8 @@ struct ShowpieceView: View {
                 (laptopFold != nil ? AnyLayout(VStackLayout(spacing: 0)) : AnyLayout(HStackLayout(spacing: 0))) {
                     stage(geo: geo, wide: split, controlsInColumn: controlsInColumn,
                           columnEdge: laptopFold != nil ? .bottom : (split ? (swapHalves ? Edge.leading : Edge.trailing) : nil),
-                          menuOnStage: division == nil && !menuOverWindow, header: division == nil, upright: upright)
+                          menuOnStage: division == nil && !menuOverWindow, header: division == nil, upright: upright,
+                          headerDevice: tableOnly ? .big : .phone, reelOnStage: bookFold != nil && fold == nil)
                         // Folding phone or notebook: the table owns the whole side before the division (after it, on a
                         // hinge with the halves swapped).
                         .frame(width: bookFold.map { tradeWidths ? max(0, geo.size.width - $0.maxX) : max(0, $0.minX) },
@@ -273,7 +291,11 @@ struct ShowpieceView: View {
                     if division != nil {
                         // The other side: the whole notebook, menus and lists included.
                         NotebookPanel(model: model, leader: leader, showShotPanel: $showShotPanel, page: $page,
-                                      pendingMatch: $pendingMatch, onHinge: fold != nil)
+                                      pendingMatch: $pendingMatch, onHinge: fold != nil,
+                                      reelOnStage: bookFold != nil && fold == nil)
+                            // UI rethink package 7: the kit lays the panel out as the open folding phone's panel or a
+                            // big screen's column (margins, paddings, button heights), whatever the size class says.
+                            .kitDevice(fold != nil ? .foldPanel : .big)
                             .frame(width: bookFold.map { tradeWidths ? max(0, $0.minX) : max(0, geo.size.width - $0.maxX) },
                                    height: laptopFold.map { max(0, geo.size.height - $0.maxY) })
                             // The hairline on the edge that meets the table: its trailing edge when the halves swap.
@@ -407,6 +429,9 @@ struct ShowpieceView: View {
         // (Part B), both handed down once from here.
         .environment(\.shootSide, controlsLeft ? .left : .right)
         .environment(\.zoomBridge, bridge)
+        // UI rethink package 7: "Watch the intro" now lives in How to play, which three hosts show (the page sheet here,
+        // the menu's own sheet, the notebook's page); the action reaches all of them from here.
+        .environment(\.frontDoorWatchIntro, watchIntroAction)
         .focusedSceneValue(\.showpieceModel, model)
         .focusedSceneValue(\.sceneBridge, bridge)
         .focusedSceneValue(\.pendingMatchStart, $pendingMatch)
@@ -424,9 +449,11 @@ struct ShowpieceView: View {
     /// `menuOnStage` is false when the main menu is shown on the other panel of a folding phone instead; `header` is false
     /// there too, since the panel's top bar carries the buttons and the table has nothing over it.
     /// `upright` is the phone held upright: the phone layout's title row, blurbs and bottom bar replace ScreenHeader and
-    /// the bottom stack (see phoneChrome).
+    /// the bottom stack (see phoneChrome). `headerDevice` is the device ScreenHeader's controls lay out for: .big (words
+    /// beside the icons) only on a big screen with its panel put away.
     private func stage(geo: GeometryProxy, wide: Bool, controlsInColumn: Bool, columnEdge: Edge?, menuOnStage: Bool,
-                       header: Bool = true, upright: Bool = false) -> some View {
+                       header: Bool = true, upright: Bool = false, headerDevice: Theme.Device = .phone,
+                       reelOnStage: Bool = false) -> some View {
         // The 3D view is full-bleed; the camera is told the safe areas and the measured edges of what floats over it.
         // Where the table's view stops at the column or the fold it has no safe inset on that side.
         let i = geo.safeAreaInsets
@@ -443,7 +470,8 @@ struct ShowpieceView: View {
                                                      bottom: columnEdge == .bottom ? 0 : i.bottom,
                                                      right: rtl ? leadingInset : trailingInset),
                                  headerBottom: header ? (menuBand?.top ?? (upright ? phoneTableTop : headerBottom)) : nil,
-                                 controlsTop: controlsInColumn ? nil : (menuBand?.bottom ?? controlsTop),
+                                 controlsTop: controlsInColumn ? (reelOnStage ? stageReelTop : nil)
+                                                               : (menuBand?.bottom ?? controlsTop),
                                  // No title row on the Duo's table half and beside the notebook: the camera must not
                                  // keep room for one while the real edge is unmeasured (0.7.5 layouts item 10).
                                  hasHeader: header,
@@ -517,11 +545,29 @@ struct ShowpieceView: View {
                 VStack(spacing: 6) {
                     if header {
                         ScreenHeader(model: model)
+                            // UI rethink package 7: the top-bar controls carry their words on a big screen with its
+                            // panel put away (tableOnly); a phone turned sideways or a small window keeps the icons,
+                            // whatever its size class says (a large phone sideways is regular width).
+                            .kitDevice(headerDevice)
                             .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).maxY } action: { headerBottom = $0 }
                     }
                     Spacer(minLength: 0)
                     // Hidden (but still measured, so the table does not jump) while the menu is up. Disabled too, so the
                     // cards' Return and Escape shortcuts do not fire behind the menu (0.7.5 layouts item 1).
+                    if controlsInColumn && reelOnStage {
+                        // UI rethink package 4: beside a big screen's column the reel ("Last shot" while aiming) and
+                        // the Physics Lens, Ride and Aim tabs sit at the foot of the stage under the table, as
+                        // mockup-aiming-ipad.png draws them; their top is the camera's bottom edge.
+                        PlaybackControls(model: model, shotPanelOpen: $showShotPanel)
+                            .kitDevice(.big)
+                            .onGeometryChange(for: Double.self) { $0.frame(in: .named(StageSpace.name)).minY } action: { top in
+                                if stageReelTop != top { stageReelTop = top }
+                            }
+                            .opacity(model.menuOpen ? 0 : 1)
+                            .allowsHitTesting(!model.menuOpen)
+                            .disabled(model.menuOpen)
+                            .accessibilityHidden(model.menuOpen)
+                    }
                     if !controlsInColumn {
                         bottomStack(geo: geo, wide: wide)
                             .opacity(model.menuOpen ? 0 : 1)
@@ -706,6 +752,17 @@ struct ShowpieceView: View {
         .animation(reduceMotion ? nil : .smooth, value: model.everyWorld.isShowing)
     }
 
+    /// "Watch the intro" (UI rethink package 7, moved from the main menu into How to play): any trick shot or situation
+    /// ends and the opening break plays again under the Physics Lens (the model's watchBreak closes the menu itself).
+    private var watchIntroAction: @MainActor () -> Void {
+        let model = model
+        return {
+            model.trickMode.end()
+            model.eightBallMode.end()
+            model.watchBreak()
+        }
+    }
+
     /// How the menu comes and goes: the system's smooth motion, a short plain fade with Reduce Motion. Shared by the
     /// menu over the table, the menu over the whole window and the side column stepping aside for it.
     private var menuMotion: Animation {
@@ -767,7 +824,8 @@ struct ShowpieceView: View {
         // Your shot between the cards and the playback row, never inside the scroll, so Shoot is always on screen
         // however tall the match or trick card above it is (#36).
         if showPanel {
-            ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+            // UI rethink package 7: the panel surface, not glass; ShotPanel draws the kit's panel itself (package 4).
+            ShotPanel(model: model, isOpen: $showShotPanel)
                 .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { shotPanelHeight = $0 }
                 .transition(.opacity)
         }
@@ -855,9 +913,9 @@ struct ShowpieceView: View {
 
     @ViewBuilder private func panelHairline(top: Bool) -> some View {
         if top {
-            Rectangle().fill(palette.track).frame(height: 1)
+            Rectangle().fill(palette.rule).frame(height: Theme.Size.hairline)
         } else {
-            Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea()
+            Rectangle().fill(palette.rule).frame(width: Theme.Size.hairline).ignoresSafeArea()
         }
     }
 
@@ -904,7 +962,7 @@ struct ShowpieceView: View {
                             }
                         }
                         if showShotPanel {
-                            ShotPanel(model: model, isOpen: $showShotPanel).glassCard()
+                            ShotPanel(model: model, isOpen: $showShotPanel)  // its own panel surface (package 4)
                                 .id(ColumnPart.shotPanel)
                                 .transition(.opacity)
                                 // Opened below the cards, out of sight in a short column: the column brings it into
@@ -940,9 +998,9 @@ struct ShowpieceView: View {
         // 0.7.10 everyone: the trailing edge when the halves swap for the left hand.
         .overlay(alignment: divider == .top ? .top : (divider == .trailing ? .trailing : .leading)) {
             if divider == .top {
-                Rectangle().fill(palette.track).frame(height: 1)
+                Rectangle().fill(palette.rule).frame(height: Theme.Size.hairline)
             } else {
-                Rectangle().fill(palette.track).frame(width: 1).ignoresSafeArea()
+                Rectangle().fill(palette.rule).frame(width: Theme.Size.hairline).ignoresSafeArea()
             }
         }
     }
@@ -969,35 +1027,31 @@ private struct ScreenHeader: View {
             // are also a button, for anyone who taps them rather than the table.
             if model.openingStage == .playing {
                 Button { model.skipOpening() } label: {
-                    Label(String(localized: "Tap to skip"), systemImage: "forward.end.fill")
-                        .font(Theme.label)
-                        .lineLimit(1)
+                    KitButtonLabel(String(localized: "Tap to skip"), systemImage: "forward.end")
                 }
-                .buttonStyle(.glass)
-                .controlSize(.small)
+                .buttonStyle(.kitGlass)
                 .accessibilityHint("Goes straight to your own break")
                 .transition(.opacity)
                 Spacer(minLength: 0)
             }
-            ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
             // A ride names its acts here, with the small table map (0.7.6 stream ride, RideMap.swift). The surface
             // button steps aside meanwhile, so the chip fits beside the back button and the Lens key on a regular
             // iPhone held upright; picking a surface mid-ride would re-solve the shot anyway.
+            // UI rethink package 7: the design's order, Zoom, Share, Menu.
             if model.rideStatus != nil {
+                ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
                 RideTitleChip(model: model)
             } else {
                 // 0.7.10 everyone: zoom without a pinch or a double tap (TableZoomMenu).
                 TableZoomMenuButton(model: model)
+                ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
                 SurfaceMenuButton(model: model)
             }
             if model.stage != .explore && model.stage != .lead {
+                // The kit's glass pill: one line on glass (UI rethink package 7), a little smaller in a narrow row.
                 Text(model.stageTitle)
-                    .font(Theme.label)
-                    .multilineTextAlignment(.trailing)
-                    .lineLimit(2)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
+                    .minimumScaleFactor(0.8)
+                    .kitGlassCapsule()
                     .transition(.opacity)
                     .accessibilityLabel("Status: \(model.stageTitle)")
             }
@@ -1005,13 +1059,8 @@ private struct ScreenHeader: View {
             // header's height (and with it the free space the camera frames into) never changes mid-freeze.
             if let words = model.bulletTime.statusWords {
                 Text(words)
-                    .font(Theme.label)
-                    .multilineTextAlignment(.trailing)
-                    .lineLimit(1)
                     .minimumScaleFactor(0.8)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 16, style: .continuous))
+                    .kitGlassCapsule()
                     .transition(.opacity)
                     .accessibilityLabel("Status: \(words)")
             }
@@ -1020,17 +1069,18 @@ private struct ScreenHeader: View {
         // Disabled behind the menu, so the hidden back button's Escape and the skip button do nothing there (0.7.5).
         .disabled(model.menuOpen)
         .accessibilityHidden(model.menuOpen)
-        .animation(.easeOut(duration: 0.25), value: model.stage)
-        .animation(.easeOut(duration: 0.25), value: model.lensOn)
-        .animation(.easeOut(duration: 0.25), value: model.openingStage)
-        .animation(.easeOut(duration: 0.25), value: model.rideAct)
+        .animation(Theme.Motion.standard, value: model.stage)
+        .animation(Theme.Motion.standard, value: model.lensOn)
+        .animation(Theme.Motion.standard, value: model.openingStage)
+        .animation(Theme.Motion.standard, value: model.rideAct)
         // 0.7.7 bullet-time
-        .animation(.easeOut(duration: 0.25), value: model.bulletTime.statusWords)
+        .animation(Theme.Motion.standard, value: model.bulletTime.statusWords)
     }
 }
 
-/// The round glass back button that pauses the game and opens the main menu; shared by the title row over the table
-/// and the notebook panel's top bar.
+/// The glass back button that pauses the game and opens the main menu; shared by the title row over the table and the
+/// notebook panel's top bar. UI rethink package 7: it reads "Back" beside its chevron on big screens (the top bar's
+/// controls carry their words), the chevron alone on a phone; "Menu" is now the word on the menu of surfaces.
 struct MenuBackButton: View {
     let model: ShowpieceModel
 
@@ -1039,19 +1089,14 @@ struct MenuBackButton: View {
 
     var body: some View {
         Button { model.openMenu() } label: {
-            Label("Menu", systemImage: "chevron.backward")
-                .labelStyle(.iconOnly)
-                .font(.body.weight(.semibold))
-                .frame(width: 22, height: 22)
+            TopBarControlLabel(String(localized: "Back"), systemImage: "chevron.backward")
         }
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .controlSize(.regular)
+        .buttonStyle(.kitGlass)
         // Escape opens the menu on the Mac and with a hardware keyboard, except while the menu is already open or the
         // match card's End-this-game is asking: Escape is then theirs (it cancels), claimed once (0.7.5 layouts item 1).
         .keyboardShortcut(escapeIsMine ? KeyboardShortcut.cancelAction : nil)
         .hoverHighlight()
-        .accessibilityLabel("Menu")
+        .accessibilityLabel(Text(String(localized: "Back")))
         .accessibilityHint("Pauses the game and opens the main menu")
     }
 }
@@ -1060,25 +1105,38 @@ struct MenuBackButton: View {
 /// that opens a menu of every surface with a check beside the chosen one. Tables are not here: a table is a different game, chosen from the main menu (TableList). Picking one re-solves the shot on screen on
 /// that surface and replays it (ShowpieceModel.setSurface). It lives in the title row because that row is there anyway
 /// and its right side is empty in play, so the picker costs the table nothing.
+/// UI rethink package 7: on big screens the button is the word "Menu" (the grid of the cloth's symbol is gone from the
+/// top bar); on a phone it keeps the current surface's symbol alone. The rows inside are unchanged.
 struct SurfaceMenuButton: View {
     let model: ShowpieceModel
+    private var device = KitDeviceReader()
+
+    init(model: ShowpieceModel) {
+        self.model = model
+    }
+
+    /// The word on the button and for VoiceOver: "Menu" where the word shows, "Surface" where only the symbol does.
+    private var title: String {
+        device.current == .phone ? String(localized: "Surface") : String(localized: "Menu")
+    }
 
     var body: some View {
         Menu {
             SurfaceMenuItems(model: model)
         } label: {
-            Label("Surface", systemImage: model.surface.symbol)
-                .labelStyle(.iconOnly)
-                .font(.body.weight(.semibold))
-                .frame(width: 22, height: 22)
+            TopBarControlLabel(title, systemImage: nil, phoneIcon: model.surface.symbol)
+                .topBarMenuGlass()
         }
         .menuIndicator(.hidden)
-        .buttonStyle(.glass)
-        .buttonBorderShape(.circle)
-        .controlSize(.regular)
+        // The label carries the glass itself (a Menu does not reliably take a custom button style); plain keeps the
+        // system's accent off it.
+        .menuStyle(.button)
+        .buttonStyle(.plain)
         .hoverHighlight()
-        .accessibilityLabel("Surface")
+        .accessibilityLabel(Text(verbatim: title))
         .accessibilityValue(model.surface.title)
+        .accessibilityHint(Text(String(localized: "Surface menu: hint", defaultValue: "Choose what the table's bed is made of.",
+                                       comment: "VoiceOver hint of the top bar's Menu button, which lists the playing surfaces.")))
     }
 }
 
@@ -1117,12 +1175,15 @@ struct SurfaceMenuItems: View {
 /// top edge behind the title row and 160 points up from the bottom edge behind the strip, over the whole screen
 /// including the safe areas. Content, not glass; never takes touches; VoiceOver skips it.
 private struct PhoneContentGradients: View {
+    @Environment(\.palette) private var palette
+
     var body: some View {
         VStack(spacing: 0) {
-            LinearGradient(colors: [.black.opacity(0.7), .clear], startPoint: .top, endPoint: .bottom)
+            // UI rethink package 7: the ground role, not bare black.
+            LinearGradient(colors: [palette.ground.opacity(0.7), palette.ground.opacity(0)], startPoint: .top, endPoint: .bottom)
                 .frame(height: 120)
             Spacer(minLength: 0)
-            LinearGradient(colors: [.clear, .black.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [palette.ground.opacity(0), palette.ground.opacity(0.7)], startPoint: .top, endPoint: .bottom)
                 .frame(height: 160)
         }
         .ignoresSafeArea()

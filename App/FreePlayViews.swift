@@ -1,5 +1,9 @@
 // Author: Claude Opus 5.5 High
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the free-play cards (ball in
+//          hand, place the balls, table cleared, worth watching, the intro's end) are the kit's panel with its buttons:
+//          the main action the cyan primary, the others secondary, a worded quiet "Close" in place of the bare cross;
+//          outline icons in paper2; the bad-spot line takes the warning colour; gaps are Theme's.)
 // Edited: Claude Opus 5.5 High, 23-November-2026 (0.7.7 make it again, plans/23-Nov-2026-make-it-again-plan.md F1:
 //          HighlightCard's button row starts with Make it again / Play it now (MakeItAgainButton, OwnShotViews.swift).)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (phone UI plan, Part 4 step 5: no change on screen. The rules the
@@ -196,15 +200,15 @@ struct BallInHandCard: View {
         if visible {
             let spot = CueBallPlacement.spot(model)
             let problem = model.placingCueBall ? CueBallPlacement.problem(CueBallPlacement.legality(of: spot, model)) : nil
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Image(systemName: "hand.raised.fill").foregroundStyle(palette.accent).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                HStack(spacing: Theme.Space.xs) {
+                    Image(systemName: "hand.raised").foregroundStyle(palette.paper2).accessibilityHidden(true)
                     Text(heading).font(Theme.heading)
                 }
                 .accessibilityAddTraits(.isHeader)
                 Text(instructions)
                     .font(Theme.body)
-                    .foregroundStyle(palette.paper.opacity(0.9))
+                    .foregroundStyle(palette.paper)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if model.placingCueBall {
@@ -212,7 +216,7 @@ struct BallInHandCard: View {
                     Label(problem ?? String(localized: "Free spot"),
                           systemImage: problem == nil ? "checkmark.circle" : "xmark.octagon")
                         .font(Theme.label)
-                        .foregroundStyle(problem == nil ? palette.accent : Color.red)
+                        .foregroundStyle(problem == nil ? palette.accent : palette.warning)
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabel(objectBall ? MatchWords.balls([model.placingBall]) : String(localized: "Cue ball"))
                         .accessibilityValue(CueBallPlacement.spoken(model, at: spot, problem: problem))
@@ -225,7 +229,7 @@ struct BallInHandCard: View {
                 buttons
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
+            .kitPanel()
             .tint(palette.accent)
             .transition(.opacity)
         }
@@ -245,30 +249,26 @@ struct BallInHandCard: View {
                 // Cancel only when lifting it was the player's own choice; owed ball in hand must be placed.
                 if model.ballInHand == .none {
                     Button { model.cancelPlacement() } label: {
-                        Text("Cancel").font(.headline).lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                        Text("Cancel").lineLimit(1)
                     }
-                    .buttonStyle(.glass)
+                    .buttonStyle(.kitSecondary)
                 }
                 Button { CueBallPlacement.place(model) } label: {
-                    Label(String(localized: "Place it"), systemImage: "checkmark").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
+                    Label(String(localized: "Place it"), systemImage: "checkmark").lineLimit(1)
                 }
-                .buttonStyle(.glassProminent)
-                .foregroundStyle(palette.ground)
+                .buttonStyle(.kitPrimary)
                 .keyboardShortcut(.defaultAction)
             } else {
                 Button { model.beginPlacingCueBall() } label: {
-                    Label(String(localized: "Pick up the cue ball"), systemImage: "hand.raised").font(.headline)
-                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                    Label(String(localized: "Pick up the cue ball"), systemImage: "hand.raised").lineLimit(1)
                 }
-                .buttonStyle(.glassProminent)
-                .foregroundStyle(palette.ground)
+                .buttonStyle(.kitPrimary)
             }
         }
         if typeSize.isAccessibilitySize {
-            VStack(alignment: .trailing, spacing: 8) { row }.frame(maxWidth: .infinity, alignment: .trailing)
+            VStack(alignment: .trailing, spacing: Theme.Space.xs) { row }.frame(maxWidth: .infinity, alignment: .trailing)
         } else {
-            HStack(spacing: 8) { Spacer(minLength: 0); row }.controlSize(.regular)
+            HStack(spacing: Theme.Space.xs) { Spacer(minLength: 0); row }.controlSize(.regular)
         }
     }
 }
@@ -292,19 +292,19 @@ struct PlaceBallsCard: View {
 
     var body: some View {
         if visible {
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "hand.raised").foregroundStyle(palette.accent).accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .top, spacing: Theme.Space.sm) {
+                Image(systemName: "hand.raised").foregroundStyle(palette.paper2).accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                     Text(String(localized: "Place the balls")).font(Theme.heading)
                     Text(String(localized: "Touch or click any ball to pick it up, then drag it where you want it. Place it puts it down."))
                         .font(Theme.body)
-                        .foregroundStyle(palette.paper.opacity(0.9))
+                        .foregroundStyle(palette.paper)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
+            .kitPanel()
             .accessibilityElement(children: .combine)
             .transition(.opacity)
         }
@@ -336,9 +336,9 @@ struct TableClearedCard: View {
     }
 
     private var card: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Image(systemName: "checkmark.seal.fill").foregroundStyle(palette.accent).accessibilityHidden(true)
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            HStack(spacing: Theme.Space.xs) {
+                Image(systemName: "checkmark.seal").foregroundStyle(palette.paper2).accessibilityHidden(true)
                 Text(String(localized: "Table cleared")).font(Theme.heading)
             }
             .accessibilityAddTraits(.isHeader)
@@ -347,7 +347,7 @@ struct TableClearedCard: View {
             if !compact { details }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .glassCard(cornerRadius: 22, padding: 12)
+        .kitPanel()
         .tint(palette.accent)
         .onAppear { ShotNarration.announce(String(localized: "Table cleared")) }
         .transition(.opacity)
@@ -357,7 +357,7 @@ struct TableClearedCard: View {
     @ViewBuilder private var details: some View {
         Text(Self.shotsLine(model))
             .font(Theme.body)
-            .foregroundStyle(palette.paper.opacity(0.9))
+            .foregroundStyle(palette.paper)
             .frame(maxWidth: .infinity, alignment: .leading)
         // The rack's best remarkable shot, replayed in the Lens; Menu and Rack again end that replay first.
         if model.canWatchBestShot {
@@ -366,32 +366,28 @@ struct TableClearedCard: View {
                 if ClipOffer.bestShotAvailable(model) {
                     Button { ClipOffer.startBestShot(model) } label: {
                         Label(String(localized: "Share your best shot"), systemImage: "square.and.arrow.up")
-                            .font(.headline).lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                            .lineLimit(1)
                     }
-                    .buttonStyle(.glass)
+                    .buttonStyle(.kitSecondary)
                     .accessibilityHint(ClipWords.hint)
                 }
                 Button { model.watchBestShot() } label: {
-                    Label(HighlightWords.watchBest, systemImage: "eye").font(.headline).lineLimit(1)
-                        .frame(minHeight: CallMetrics.buttonHeight)
+                    Label(HighlightWords.watchBest, systemImage: "eye").lineLimit(1)
                 }
-                .buttonStyle(.glass)
+                .buttonStyle(.kitSecondary)
                 .accessibilityHint(HighlightWords.watchHint)
             }
         }
-        HStack(spacing: 8) {
+        HStack(spacing: Theme.Space.xs) {
             Spacer(minLength: 0)
             Button { model.openMenu() } label: {
-                Label("Menu", systemImage: "chevron.backward").font(.headline).lineLimit(1)
-                    .frame(minHeight: CallMetrics.buttonHeight)
+                Label("Menu", systemImage: "chevron.backward").lineLimit(1)
             }
-            .buttonStyle(.glass)
+            .buttonStyle(.kitSecondary)
             Button { model.rackAgain() } label: {
-                Label(String(localized: "Rack again"), systemImage: "triangle").font(.headline).lineLimit(1)
-                    .frame(minHeight: CallMetrics.buttonHeight)
+                Label(String(localized: "Rack again"), systemImage: "triangle").lineLimit(1)
             }
-            .buttonStyle(.glassProminent)
-            .foregroundStyle(palette.ground)
+            .buttonStyle(.kitPrimary)
             .keyboardShortcut(.defaultAction)
         }
         .controlSize(.regular)
@@ -420,10 +416,10 @@ struct HighlightCard: View {
         // Steps aside while a what-if is showing (0.7.5); it comes back on the what-if's close.
         if let offer = model.highlightCard, !model.otherFutureShowing {
             let kind = offer.highlight.kind
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "eye.circle.fill").foregroundStyle(palette.accent).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                HStack(spacing: Theme.Space.xs) {
+                    HStack(spacing: Theme.Space.xs) {
+                        Image(systemName: "eye.circle").foregroundStyle(palette.paper2).accessibilityHidden(true)
                         Text(HighlightWords.title(kind)).font(Theme.heading).fixedSize(horizontal: false, vertical: true)
                     }
                     .accessibilityAddTraits(.isHeader)
@@ -433,7 +429,7 @@ struct HighlightCard: View {
                 if !compact { details(offer) }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
+            .kitPanel()
             .tint(palette.accent)
             .onAppear { ShotNarration.announce(HighlightWords.title(kind)) }
             .transition(.opacity)
@@ -442,47 +438,38 @@ struct HighlightCard: View {
 
     /// The card's close button: gone until the next remarkable shot.
     private var closeButton: some View {
-        Button { model.dismissHighlight() } label: {
-            Image(systemName: "xmark").frame(width: 30, height: 30)
-        }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.circle)
-        .accessibilityLabel(String(localized: "Close"))
+        QuietButton(String(localized: "Close")) { model.dismissHighlight() }
     }
 
     /// The physics line and the buttons: everything under the title.
     @ViewBuilder private func details(_ offer: ShowpieceModel.HighlightCardOffer) -> some View {
         Text(HighlightWords.line(offer.highlight.kind))
             .font(Theme.body)
-            .foregroundStyle(palette.paper.opacity(0.9))
+            .foregroundStyle(palette.paper)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, alignment: .leading)
         CardButtonRow {
             // 0.7.7 clips: a short film of this shot, ready to share.
             if ClipOffer.available(model) {
                 Button { ClipOffer.start(model) } label: {
-                    Label(ClipWords.shareClip, systemImage: "square.and.arrow.up").font(.headline)
-                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                    Label(ClipWords.shareClip, systemImage: "square.and.arrow.up").lineLimit(1)
                 }
-                .buttonStyle(.glass)
+                .buttonStyle(.kitSecondary)
                 .accessibilityHint(ClipWords.hint)
             }
             // 0.7.7 make-it-again: Make it again (or Play it now once saved), first in the row.
             MakeItAgainButton(model: model)
             if offer.canTryTrick {
                 Button { model.tryHighlightTrick() } label: {
-                    Label(String(localized: "Try the trick shot"), systemImage: "scope").font(.headline)
-                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                    Label(String(localized: "Try the trick shot"), systemImage: "scope").lineLimit(1)
                 }
-                .buttonStyle(.glass)
+                .buttonStyle(.kitSecondary)
             }
             if offer.canWatch {
                 Button { model.watchHighlight() } label: {
-                    Label(String(localized: "Watch it in the Lens"), systemImage: "eye").font(.headline)
-                        .lineLimit(1).frame(minHeight: CallMetrics.buttonHeight)
+                    Label(String(localized: "Watch it in the Lens"), systemImage: "eye").lineLimit(1)
                 }
-                .buttonStyle(.glassProminent)
-                .foregroundStyle(palette.ground)
+                .buttonStyle(.kitPrimary)
                 .accessibilityHint(HighlightWords.watchHint)
             }
         }
@@ -498,39 +485,31 @@ struct IntroEndCard: View {
     var body: some View {
         // Steps aside while a what-if is showing (0.7.5), like every result card.
         if model.introEndOffered, !model.otherFutureShowing {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "sparkles").foregroundStyle(palette.accent).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Theme.Space.xs) {
+                HStack(alignment: .top, spacing: Theme.Space.xs) {
+                    Image(systemName: "sparkles").foregroundStyle(palette.paper2).accessibilityHidden(true)
                     Text(HighlightWords.introEnd)
                         .font(Theme.body)
-                        .foregroundStyle(palette.paper.opacity(0.9))
+                        .foregroundStyle(palette.paper)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    Button { model.dismissIntroEnd() } label: {
-                        Image(systemName: "xmark").frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.circle)
-                    .accessibilityLabel(String(localized: "Close"))
+                    QuietButton(String(localized: "Close")) { model.dismissIntroEnd() }
                 }
                 CardButtonRow {
                     // Practice: a fresh rack on the pool table and Your shot open, as the menu's Practice does
                     // (0.7.5; startGame racks the pool table whatever table was chosen before).
                     Button { model.startGame(); model.requestShotPanel(.open) } label: {
-                        Label(String(localized: "Practice"), systemImage: "triangle").font(.headline).lineLimit(1)
-                            .frame(minHeight: CallMetrics.buttonHeight)
+                        Label(String(localized: "Practice"), systemImage: "triangle").lineLimit(1)
                     }
-                    .buttonStyle(.glass)
+                    .buttonStyle(.kitSecondary)
                     Button { model.showList(.tricks) } label: {
-                        Label(String(localized: "Trick shots"), systemImage: "sparkles").font(.headline).lineLimit(1)
-                            .frame(minHeight: CallMetrics.buttonHeight)
+                        Label(String(localized: "Trick shots"), systemImage: "sparkles").lineLimit(1)
                     }
-                    .buttonStyle(.glassProminent)
-                    .foregroundStyle(palette.ground)
+                    .buttonStyle(.kitPrimary)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassCard(cornerRadius: 22, padding: 12)
+            .kitPanel()
             .tint(palette.accent)
             .onAppear { ShotNarration.announce(HighlightWords.introEnd) }
             .transition(.opacity)

@@ -1,5 +1,15 @@
 // Author: Claude Sonnet 5.5 Medium
 // Date: 21-November-2026
+// Edited: Claude Opus 5.5 Medium, 27-November-2026 (UI rethink package 4 follow-up: reelOnStage moves the reel and the
+//          Physics Lens, Ride and Aim tabs to the stage under the table beside a big screen's column, so the column holds
+//          the whole console: the strike's figures and Shoot no longer scroll out of sight.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 4, the shot console: the notebook is one column
+//          on every big screen (two only across a folding phone's hinge, as designed), so the upright iPad has no empty
+//          second column; while "Your strike" shows, it and the controls are one console card (the kit's panel) that
+//          takes all the height left, with the reel or its "Last shot" button and the Physics Lens, Ride and Aim tabs
+//          under it; the first minute (the hand-over) is the top bar titled "Break" and one calm card (the sentence, the
+//          tip picture, the swing and Break), no story, no reel, no tabs; margins and gaps are Theme's; the kit's device
+//          is set here (.big, or .foldPanel across the hinge); the fade mask's black stops carry the lint's allow mark.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 1: the strike column's height budget uses the
 //          measured hint, status and playback heights, so the controls never ride over the strike's physics band.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (0.7.10 wiring: the numbers strip keeps no room before a shot while it
@@ -122,6 +132,9 @@ struct NotebookPanel: View {
     @Binding var pendingMatch: MatchStartRequest?
     /// True across a folding phone's hinge, where the panel's original column rule and text sizes stay as designed.
     let onHinge: Bool
+    /// The reel and the Physics Lens, Ride and Aim tabs sit on the stage under the table instead of in this column
+    /// (the panel beside the table on a big screen, as mockup-aiming-ipad.png draws it), so the column is the console.
+    var reelOnStage = false
     @Environment(\.palette) private var palette
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -154,6 +167,8 @@ struct NotebookPanel: View {
         }
         .background(palette.ground)
         .environment(\.notebookRoomy, !onHinge)
+        // UI rethink package 4: the kit's buttons, cards and reel size themselves for this panel.
+        .kitDevice(onHinge ? .foldPanel : .big)
         .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: pageKey)
     }
 
@@ -213,8 +228,39 @@ struct NotebookPanel: View {
         model.trickMode.isActive || model.eightBallMode.isActive || model.lessonMode.isActive
     }
 
+    /// UI rethink package 4: the first minute, while the controls are open at the hand-over.
+    private var calm: Bool { model.openingStage == .handOver && showShotPanel }
+
     @ViewBuilder
     private func play(size: CGSize) -> some View {
+        if calm {
+            calmColumn
+        } else {
+            playColumns(size: size)
+        }
+    }
+
+    /// The first minute (principle 7, calm first): the top bar, titled "Break", and one card beside the table with the
+    /// sentence, the tip picture, the swing in m/s and Break (ShotPanel's calm console). No story, no reel, no tabs:
+    /// they come after the first shot lands.
+    private var calmColumn: some View {
+        VStack(spacing: gap) {
+            NotebookTopBar(model: model)
+            ShotPanel(model: model, isOpen: $showShotPanel)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, margin)
+        .padding(.vertical, Theme.Space.md)
+    }
+
+    /// The kit's device for this panel: the fold's panel across a hinge, the big screens otherwise.
+    private var device: Theme.Device { onHinge ? .foldPanel : .big }
+    /// The side margin and the gap between blocks, from Theme (24 and 16 on iPad and Mac, 20 and 16 on the fold).
+    private var margin: CGFloat { Theme.Space.pageMargin(device) }
+    private var gap: CGFloat { Theme.Space.cardGap(device) }
+
+    @ViewBuilder
+    private func playColumns(size: CGSize) -> some View {
         // 0.8.1: while "Your shot" is open the panel is one column at every width. Two columns put the controls card
         // under an empty half and squeezed the strike's tiles into the other half (the Boss, 26-Nov-2026: "you're
         // wasting space"); in one column the tiles run the full width and the controls take their one wide row.
@@ -229,7 +275,7 @@ struct NotebookPanel: View {
 
     /// The cards that belong to the mode on the table and the mode's details.
     private var cards: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: Theme.Space.sm) {
             // 0.7.7 achievements: the achievement note, first card, on the panel's half (nothing over the table).
             AchievementToast(model: model, style: .card)
             WhatIfCard(model: model)
@@ -250,43 +296,48 @@ struct NotebookPanel: View {
         }
     }
 
-    /// The panel's lower edge: Continue while a guided Lens replay holds a moment, the aiming controls (tip picture,
-    /// power gauge, Shoot) while "Your shot" is open, and the playback controls. At the bottom so a thumb reaches them
-    /// while the other hand aims on the table.
-    /// `fills` (aiming panel redesign): the controls band takes all the height it is given (strikeColumn); the lower
-    /// edge is then not measured, since its height is the leftover, not its own.
-    private func lowerEdge(fills: Bool = false) -> some View {
-        VStack(spacing: 10) {
-            // A held moment is moved on from here: the notebook has no caption strip with its own Continue, and the
-            // story's rows only jump the clock (0.7.5 layouts item 4). The same button and the same model call
-            // (nextBeat) as the strip on a phone; no Return shortcut, as there. Not while the opening runs: the first
-            // minute's notebook is its one line, and the opening's holds end by themselves (review fix).
-            if showsContinue {
-                HStack {
-                    Spacer(minLength: 0)
-                    ContinueButton(model: model)
-                }
-                .transition(.opacity)
-            }
+    /// The panel's lower edge outside the strike column: Continue while a guided Lens replay holds a moment, the
+    /// console's controls on their own panel while "Aim" is open, then the reel and the tabs. At the bottom so a thumb
+    /// reaches them while the other hand aims on the table.
+    private func lowerEdge() -> some View {
+        VStack(spacing: Theme.Space.sm) {
+            continueRow
             if showShotPanel {
-                // Aiming panel redesign: the panel draws its own flat What-you-set band here (no glass card).
-                ShotPanel(model: model, isOpen: $showShotPanel, fills: fills,
+                // The console's controls on their own panel (the strike column puts them in the console card instead).
+                ShotPanel(model: model, isOpen: $showShotPanel,
                           onChromeHeight: { h in if abs(h - shotChromeMeasured) > 0.5 { shotChromeMeasured = h } })
-                    .frame(minHeight: fills ? 0 : nil, maxHeight: fills ? .infinity : nil)
                     .transition(.opacity)
             }
-            PlaybackControls(model: model, shotPanelOpen: $showShotPanel, compact: true)
-                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { playbackMeasured = $0 }
+            if !reelOnStage { reelAndTabs }
         }
-        .animation(reduceMotion ? nil : .snappy, value: showShotPanel)
-        .animation(reduceMotion ? nil : .snappy, value: showsContinue)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { if !fills { bottomMeasured = $0 } }
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: showShotPanel)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: showsContinue)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { bottomMeasured = $0 }
     }
 
-    /// The lower edge's height before it has been measured once: the playback controls alone (90), or with the shot
-    /// panel's two rows and its glass card (about 180), plus about one button's row (50) while Continue shows.
+    /// Continue for a held Lens moment: the notebook has no caption strip with its own Continue, and the story's rows
+    /// only jump the clock (0.7.5 layouts item 4). Not while the opening runs (review fix).
+    @ViewBuilder private var continueRow: some View {
+        if showsContinue {
+            HStack {
+                Spacer(minLength: 0)
+                ContinueButton(model: model)
+            }
+            .transition(.opacity)
+        }
+    }
+
+    /// The reel (only after a shot; a "Last shot" button while aiming) and the Physics Lens, Ride and Aim tabs, which
+    /// PlaybackControls holds back until the first shot.
+    private var reelAndTabs: some View {
+        PlaybackControls(model: model, shotPanelOpen: $showShotPanel, compact: onHinge)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { playbackMeasured = $0 }
+    }
+
+    /// The lower edge's height before it has been measured once: the reel and tabs alone (about 110), or with the
+    /// console's controls (about 520), plus about one button's row (50) while Continue shows.
     private var bottomHeight: CGFloat {
-        bottomMeasured > 0 ? bottomMeasured : (showShotPanel ? 420 : 90) + (showsContinue ? 50 : 0)
+        bottomMeasured > 0 ? bottomMeasured : (showShotPanel ? 520 : 110) + (showsContinue ? 50 : 0)
     }
 
     /// Continue shows on the lower edge while a guided replay holds a moment, except during the opening (review fix).
@@ -333,14 +384,14 @@ struct NotebookPanel: View {
         // The fixed parts: padding (32), top bar (40), the Lens key's row, the lower edge, the numbers, and the gaps
         // between blocks (one more while the key row shows).
         let numbersHeight: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) : 0
-        let gaps = CGFloat((showsNumbers ? 4 : 3) + (model.lensOn ? 1 : 0)) * 12
-        let free = size.height - 32 - 40 - keyHeight - bottomHeight - numbersHeight - gaps
+        let gaps = CGFloat((showsNumbers ? 4 : 3) + (model.lensOn ? 1 : 0)) * gap
+        let free = size.height - 2 * Theme.Space.md - Theme.Size.minHit - keyHeight - bottomHeight - numbersHeight - gaps
         let storyMinimum: CGFloat = 140
         // 0.7.10 strike: the slot also holds the strike panel, which shows with Explanations off as well (StrikeSlot).
         let showsStory = (explanations || StrikeSlot.shows(model, aiming: showShotPanel)) && free - cardsHeight >= storyMinimum
         let cardsMax = max(120, showsStory ? free - storyMinimum : free)
         let overflows = cardsHeight > cardsMax
-        return VStack(spacing: 12) {
+        return VStack(spacing: gap) {
             NotebookTopBar(model: model)
             keyRow
             FittingScroll(maxHeight: cardsMax) { measuredCards }
@@ -357,48 +408,67 @@ struct NotebookPanel: View {
             }
             lowerEdge()
         }
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.lensOn)
-        // Slightly narrower side padding than the other layouts: the trick-shot and 8-ball cards keep their buttons on
-        // one row only if the column is a few points wider.
-        .padding(.horizontal, onHinge ? 10 : 16)
-        .padding(.vertical, 16)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.lensOn)
+        .padding(.horizontal, margin)
+        .padding(.vertical, Theme.Space.md)
     }
 
-    /// Aiming panel redesign: the column while the strike shows. Top bar, the Lens key, the cards (capped at a fifth of
-    /// the height, scrolling past it), the strike's heading, sentence and two bands at their own height (scrolling past
-    /// about half the height, at the largest text sizes), then the controls band, which takes all the height left and
-    /// grows its tip picture and dial into it, the hint line and the scrubber. Nothing is stretched to fill: the one
-    /// flexible block is the controls band.
-    /// The height the cards take in the strike column: their own, up to the cap, plus their gap; nothing without cards.
-    private func cardsShown(_ cap: CGFloat) -> CGFloat { cardsHeight > 0 ? min(cardsHeight, cap) + 10 : 0 }
+    /// The column while "Your strike" shows (UI rethink package 4): the top bar, the Lens key, the mode's cards (capped
+    /// at a fifth of the height, scrolling past it), then one console card holding "Your strike" (heading, sentence and
+    /// the live figures, at their own height, scrolling past what the controls leave them) and the controls, which take
+    /// all the height left and grow the tip picture and dial into it; under the card, Continue when a Lens moment holds,
+    /// then the reel or its "Last shot" button and the tabs. Nothing is stretched to fill but the controls.
+    /// The height the cards take: their own, up to the cap, plus their gap; nothing without cards.
+    private func cardsShown(_ cap: CGFloat) -> CGFloat { cardsHeight > 0 ? min(cardsHeight, cap) + gap : 0 }
 
     private func strikeColumn(_ size: CGSize) -> some View {
         let cardsMax = max(100, size.height * 0.2)
-        return VStack(spacing: 10) {
+        let padding = Theme.Space.cardPadding(device)
+        // UI rethink package 1: the measured parts (the status and hint lines, the reel and tabs, Continue, the key),
+        // never guesses. The controls keep at least their smallest height; the strike's figures take the rest and scroll
+        // past it, so Shoot is never pushed out of sight.
+        let reelRoom: CGFloat = reelOnStage ? 0 : max(Theme.Size.minHit, playbackMeasured) + gap
+        let lowerFixed = reelRoom + (showsContinue ? Theme.Size.minHit + gap : 0)
+        let keyRoom = model.lensOn ? keyHeight + gap : 0
+        let controlsMin = ShotPanel.consoleMinimumHeight(width: size.width - 2 * margin - 2 * padding)
+            + max(Theme.Space.lg, shotChromeMeasured)
+        // Split into named parts so the type checker has short sums to solve (one long CGFloat chain is slow to check).
+        let topRoom: CGFloat = 2 * Theme.Space.md + Theme.Size.minHit + gap + keyRoom
+        let cardRoom: CGFloat = cardsShown(cardsMax) + 2 * padding + Theme.Space.md
+        let taken: CGFloat = topRoom + lowerFixed + cardRoom + controlsMin
+        let strikeMax: CGFloat = max(120, size.height - taken)
+        return VStack(spacing: gap) {
             NotebookTopBar(model: model)
             keyRow
             FittingScroll(maxHeight: cardsMax) { measuredCards }
                 .fadesAtBottom(cardsHeight > cardsMax)
-                // With no card to show, its gap goes too, so the strike starts right under the top bar.
-                .padding(.bottom, cardsHeight > 0 ? 0 : -10)
-            // The strike's figures may take what the controls band does not need at its smallest; past that they
-            // scroll, so Shoot is never pushed out of sight. UI rethink package 1: the hint and status lines, the
-            // playback controls, Continue and the Lens key are their measured heights, not guesses (a wrapped hint in a
-            // narrow Mac window pushed the band up over the physics line), and the floor is lower (120 points), since
-            // the band scrolls rather than overlap when the window is very short.
-            let lowerFixed = max(30, shotChromeMeasured) + max(46, playbackMeasured + 10) + (showsContinue ? 60 : 0)
-            let keyRoom = model.lensOn ? keyHeight + 10 : 0
-            StrikeSlot(model: model, leader: leader, aiming: showShotPanel, showSteps: $showSteps,
-                       strikeMaxHeight: max(120, size.height - 24 - 30 - 10 - keyRoom - lowerFixed - cardsShown(cardsMax)
-                                            - ShotPanel.BandMetrics.minimumHeight(columnWidth: size.width - 32,
-                                                                                  roomy: !onHinge)))
-            lowerEdge(fills: true)
-                .frame(minHeight: 0, maxHeight: .infinity, alignment: .bottom)
+                // With no card to show, its gap goes too, so the console starts right under the top bar.
+                .padding(.bottom, cardsHeight > 0 ? 0 : -gap)
+            VStack(alignment: .leading, spacing: Theme.Space.md) {
+                StrikeSlot(model: model, leader: leader, aiming: showShotPanel, showSteps: $showSteps,
+                           strikeMaxHeight: strikeMax)
+                if showShotPanel {
+                    // The controls at their own natural height, first claim on the room (layout priority), so Shoot is
+                    // always in sight; "Your strike" above takes what is left and scrolls (UI rethink package 4
+                    // follow-up: with the console filling, a 900-point Mac window pushed Shoot under the edge).
+                    ShotPanel(model: model, isOpen: $showShotPanel, framed: false,
+                              onChromeHeight: { h in if abs(h - shotChromeMeasured) > 0.5 { shotChromeMeasured = h } })
+                        .fixedSize(horizontal: false, vertical: true)
+                        .layoutPriority(1)
+                        .transition(.opacity)
+                }
+            }
+            .frame(minHeight: 0, maxHeight: .infinity, alignment: .top)
+            // One console card: the kit's panel round "Your strike" and the controls together.
+            .kitPanel()
+            continueRow
+            if !reelOnStage { reelAndTabs }
         }
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.lensOn)
-        .padding(.horizontal, onHinge ? 10 : 16)
-        .padding(.top, 16)
-        .padding(.bottom, 8)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.lensOn)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: showsContinue)
+        .padding(.horizontal, margin)
+        .padding(.top, Theme.Space.md)
+        .padding(.bottom, Theme.Space.xs)
     }
 
     /// Two columns: the top bar, cards and the controls on the leading side, the commentary and the numbers on the
@@ -412,12 +482,13 @@ struct NotebookPanel: View {
         let cardsBesideStory = explanations || StrikeSlot.shows(model, aiming: showShotPanel)
         // Padding (28), top bar (40), the key row and its gap, the lower edge and the gaps (30) are fixed; the cards
         // take the rest.
-        let cardsMax = max(120, size.height - 28 - 40 - keyHeight - (model.lensOn ? 10 : 0) - bottomHeight - 30)
+        let cardsMax = max(120, size.height - 2 * Theme.Space.sm - Theme.Size.minHit - keyHeight - (model.lensOn ? gap : 0)
+                                 - bottomHeight - 2 * gap)
         // In the second column the cards have the whole height but the padding and, when shown, the numbers and a gap.
-        let numbersRoom: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) + 10 : 0
-        let cardsMaxAlone = max(120, size.height - 28 - numbersRoom)
-        return HStack(alignment: .top, spacing: 14) {
-            VStack(spacing: 10) {
+        let numbersRoom: CGFloat = showsNumbers ? (numbersMeasured > 0 ? numbersMeasured : 128) + gap : 0
+        let cardsMaxAlone = max(120, size.height - 2 * Theme.Space.sm - numbersRoom)
+        return HStack(alignment: .top, spacing: Theme.Space.sm) {
+            VStack(spacing: gap) {
                 NotebookTopBar(model: model)
                 keyRow
                 if cardsBesideStory {
@@ -430,7 +501,7 @@ struct NotebookPanel: View {
             // Half the panel on a big screen, where the controls column holds the aiming controls too; the folding
             // phone keeps the share it was laid out with.
             .frame(width: size.width * (onHinge ? 0.44 : 0.5))
-            VStack(spacing: 10) {
+            VStack(spacing: gap) {
                 if cardsBesideStory {
                     StrikeSlot(model: model, leader: leader, aiming: showShotPanel, showSteps: $showSteps)  // 0.7.10 strike
                         .frame(maxHeight: .infinity)
@@ -445,8 +516,8 @@ struct NotebookPanel: View {
                 }
             }
         }
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: model.lensOn)
-        .padding(14)
+        .animation(reduceMotion ? nil : Theme.Motion.standard, value: model.lensOn)
+        .padding(Theme.Space.sm)
     }
 }
 
@@ -460,6 +531,8 @@ private struct NotebookTopBar: View {
     private var title: String {
         // 0.7.7 bullet-time: a frozen hit names its moment on the words half for the length of the freeze.
         if let words = model.bulletTime.statusWords { return words }
+        // UI rethink package 4: the first minute is titled by what it is, "Break", on every device.
+        if model.openingStage == .handOver { return ShotPanel.actionWord(racked: true) }
         if model.stage != .explore && model.stage != .lead { return model.stageTitle }
         if let match = model.match { return NotebookWords.gameName(match.rules.kind) }
         if DailyMode.showing(model) { return DailyShot.title }  // 0.7.10 daily: played as a trick shot, named as itself.
@@ -470,12 +543,21 @@ private struct NotebookTopBar: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
+        // The worded controls where they fit whole; in a narrow column (a small Mac window) the same controls as icons,
+        // never words cut to "B..." and "Me..." (UI rethink package 4 follow-up).
+        ViewThatFits(in: .horizontal) {
+            row
+            row.kitDevice(.phone)
+        }
+    }
+
+    private var row: some View {
+        HStack(spacing: Theme.Space.sm) {
             MenuBackButton(model: model)
             Text(verbatim: title)
                 .font(Theme.heading)
                 .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                .fixedSize()
             Spacer(minLength: 0)
             ClipShareButton(model: model)  // 0.7.7 clips: shown only while a clip is offered
             if model.rideStatus != nil {
@@ -493,9 +575,9 @@ private extension View {
     /// When a block is taller than its room and scrolls, its last lines fade out to say there is more.
     func fadesAtBottom(_ overflows: Bool) -> some View {
         mask {
-            LinearGradient(stops: [.init(color: .black, location: 0),
-                                   .init(color: .black, location: overflows ? 0.9 : 1),
-                                   .init(color: overflows ? .clear : .black, location: 1)],
+            LinearGradient(stops: [.init(color: .black, location: 0),  // design-lint: allow a mask's opaque stop, never drawn
+                                   .init(color: .black, location: overflows ? 0.9 : 1),  // design-lint: allow a mask stop
+                                   .init(color: overflows ? .clear : .black, location: 1)],  // design-lint: allow a mask stop
                            startPoint: .top, endPoint: .bottom)
         }
     }
