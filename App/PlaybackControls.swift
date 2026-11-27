@@ -35,8 +35,16 @@
 //          keep the full word. The What if button keeps its slot in the scrub row, so the bar never changes width.)
 // Edited: Claude Opus 5.5 Medium, 22-November-2026 (numbers are written in the game's own language, AppLocale.numbers
 //          in NumberStyle.swift: French and German get "6,7" even on a phone set to another region.)
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 3, the component kit, part C: the scrub row is
+//          the shot reel (App/Kit/ShotReel.swift): play, the track, the time in s, the speed pill and Replay in that
+//          order, 52 points high on the big screens and 44 on a phone, a panel on the big screens and glass on a phone.
+//          What if keeps its slot after Replay as the reel's accessory. The Mac keeps the track, the time and What if
+//          only (its window toolbar carries play, speed and Replay). PlaybackControls keeps its initialisers, the slim row
+//          under the open shot panel while the player's own shot is on screen, compact mode, and the Lens, Ride and Your
+//          shot buttons exactly as they were. The pieces below (PlayPauseButton, ReplayButton, ToggleButton,
+//          SpeedPicker, PlaybackSpeed) stay here: the Mac toolbar and the phone strip use them too.)
 // SRP/DRY check: Pass - split out of ShowpieceView, which had separate chip and round-button builders; one
-//          ToggleButton now serves both iPhone and iPad toggles.
+//          ToggleButton now serves both iPhone and iPad toggles. The scrub row is ShotReel, drawn once in App/Kit.
 import SwiftUI
 
 enum PlaybackSpeed {
@@ -189,9 +197,9 @@ struct PlaybackControls: View {
             // While aiming on a still table the shot panel takes this place. Whenever a shot struck at this table is on
             // screen the row stays, slim, under the panel, so the player can replay and scrub their own shot (item 8).
             if !shotPanelOpen {
-                scrubRow
+                scrubRow(slim: false)
             } else if model.playerShotOnScreen {
-                scrubRow.controlSize(.small)
+                scrubRow(slim: true).controlSize(.small)
             }
             #if os(iOS)
             buttons   // on the Mac these live in the window toolbar
@@ -199,34 +207,36 @@ struct PlaybackControls: View {
         }
     }
 
-    private var scrubRow: some View {
-        HStack(spacing: 10) {
-            #if os(iOS)
-            PlayPauseButton(model: model).labelStyle(.iconOnly).buttonBorderShape(.circle)
-                .buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
-            #endif
-            ScrubBar(model: model)
-            #if os(iOS)
-            // On a phone the speed lives here, where the time read-out was: one fewer row over the table.
-            SpeedPicker(model: model, asMenu: true).fixedSize().buttonStyle(.plain).frame(minHeight: 44)
-            // Replay lives in the scrub row too (it is a playback control), so the button row below has room for
-            // Physics Lens, Ride and Your shot on one line instead of leaving Your shot alone on a second row.
-            ReplayButton(model: model).labelStyle(.iconOnly).buttonStyle(.plain).frame(minWidth: 44, minHeight: 44)
-            // What if, beside Replay: only after the player's own shot has come to rest (invisible otherwise, its
-            // slot kept so the scrub bar does not change width; 0.7.6, bug 31). At the accessibility text sizes it is a
-            // worded full-width row in the stacked buttons instead.
+    /// The shot reel (App/Kit/ShotReel.swift) with What if after Replay. On the Mac the reel leaves out play, speed
+    /// and Replay, which the window toolbar carries.
+    private func scrubRow(slim: Bool) -> some View {
+        #if os(iOS)
+        return ShotReel(model: model, device: device, slim: slim) {
+            // What if, beside Replay: only after the player's own shot has come to rest (invisible otherwise, its slot
+            // kept so the track does not change width; 0.7.6, bug 31). At the accessibility text sizes it is a worded
+            // full-width row in the stacked buttons instead.
             if !typeSize.isAccessibilitySize {
                 WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
             }
-            #else
-            if !typeSize.isAccessibilitySize { TimeReadout(model: model) }
-            WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
-            #endif
         }
-        .padding(.leading, 8)
-        .padding(.trailing, 8)
-        .glassEffect(.regular, in: .capsule)
+        #else
+        return ShotReel(model: model, device: .big, transport: false, slim: slim) {
+            WhatIfButton(model: model, reserveSlot: true).labelStyle(.iconOnly).buttonStyle(.plain)
+        }
+        #endif
     }
+
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var widthClass
+    @Environment(\.verticalSizeClass) private var heightClass
+
+    /// Which layout the reel sits in: the folding phone's panel in compact mode, a phone when either size class is
+    /// compact (upright or sideways, or a narrow iPad window), otherwise the big screens.
+    private var device: Theme.Device {
+        if compact { return .foldPanel }
+        return widthClass == .compact || heightClass == .compact ? .phone : .big
+    }
+    #endif
 
     // MARK: Buttons (iPhone and iPad)
 

@@ -1,5 +1,12 @@
 // Author: Claude Sonnet 5.5 High
 // Date: 13-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2, the rest of the design tokens: one text
+//          scale by role (display, title, heading, body and bodyCompact, label, section, caption, the equation style),
+//          the figure family (FigureSize lead, control, inline with their unit fonts, 55 percent, medium, never under
+//          the caption size, and size-taking helpers), the spacing steps and per-device margins, paddings and gaps
+//          (Space), the three corners (Corner), button and bar heights (Size) and the motion timings (Motion). The old
+//          font names stay as aliases pointing at the roles until package 3 moves their callers; rounded design and
+//          italics are retired except in the equation style. label and body now mean their roles, so they grow.)
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2, plans/26-Nov-2026-design-language.md: new
 //          roles warning (fouls and misses, red-orange), paper2, paper3, panel, panelSunken and contact (strike and
 //          impact merged); pocket and cushion take the language's values; the delta yellow is retired (delta is paper, the worded difference paper2);
@@ -29,10 +36,12 @@
 // PURPOSE: The one place for Breakdown's look. (1) The Palette: every colour the screen draws by hand, defined once
 //          with a normal and a high-contrast value and resolved from the reader's Increase Contrast setting, then
 //          handed down the view tree through the environment (see PaletteProvider). Always dark (see the note on
-//          Palette). (2) The font
-//          choices: all of them are system text styles, so everything scales with Dynamic Type and Bold Text; there
-//          are no typed-in point sizes. (3) The raw colour triples the 3D scene reads (LensLayer), kept here so the
-//          screen and the scene never drift apart. Text on glass uses the system's primary and secondary styles and is
+//          Palette). (2) The type: the text scale by role and the figure family, all system text styles (or sizes
+//          the caller scales with @ScaledMetric), so everything follows Dynamic Type and Bold Text. (3) The layout
+//          tokens: spacing steps, page margins, card padding and gaps, corner radii, button and bar heights, motion.
+//          Every value comes from plans/26-Nov-2026-design-language.md; when the two disagree, that page wins.
+//          (4) The raw colour triples the 3D scene reads (LensLayer), kept here so the screen and the scene never
+//          drift apart. Text on glass uses the system's primary and secondary styles and is
 //          not part of the palette on purpose: the system already adapts those to contrast and transparency settings.
 // SRP/DRY check: Pass - checked ShowpieceView, LensLayer and TableBuilder; the colour copies that lived in the view
 //          (caption accents, scrub tick colours, panel colours) now read from Palette. Raw triples keep their names.
@@ -55,83 +64,343 @@ enum Theme {
     /// planned against delivered is retired: the difference has no hue of its own.
     static let warningRGB: (Double, Double, Double) = (1.0, 0.416, 0.239)
 
-    // MARK: Fonts (all system text styles: they scale with the reader's text size)
+    // MARK: The text scale by role (design language, "Type": the text scale)
+    //
+    // Every role is a system text style, so it follows the reader's text size and Bold Text. No rounded design anywhere
+    // and no italics except the equation style. Colour is not part of a font: titles, body and figures are paper,
+    // section labels and captions paper2 (Palette), set by the view or the kit.
 
-    /// The big title on the opening screen: New York serif.
+    /// display: the game's name and sheet titles on big screens. Large Title, serif (New York), semibold. The wordmark
+    /// alone is set with `displayTracking`.
     static var display: Font { .system(.largeTitle, design: .serif, weight: .semibold) }
-    /// The tagline under the title.
-    static var tagline: Font { .system(.title3, design: .serif).italic() }
-    /// Section titles on the opening screen ("How it works"): New York serif, semibold.
-    static var sectionTitle: Font { .system(.title2, design: .serif, weight: .semibold) }
-    /// Running text on the opening screen: the standard body style, so it scales with the reader's text size.
-    static var copy: Font { .body }
-    /// Equations: New York serif, italic so the variables read as variables.
-    static var equation: Font { .system(.title3, design: .serif, weight: .medium).italic() }
-    /// Titles on cards.
+    /// The tracking of the wordmark (the game's name) only; other display text is untracked.
+    static let displayTracking: CGFloat = 6
+    /// title: page and sheet titles, the mode card's item name on big screens. Title 2, serif, semibold.
+    static var title: Font { .system(.title2, design: .serif, weight: .semibold) }
+    /// heading: card titles, list row titles, the phone's title row. Headline (sans, semibold).
     static var heading: Font { .headline }
-    /// Body copy.
-    static var body: Font { .subheadline }
-    /// Small labels such as the status line and row names.
-    static var label: Font { .caption.weight(.semibold) }
-    /// Live numbers: monospaced digits so they do not jitter as they change.
-    static var number: Font { .caption.monospaced().monospacedDigit() }
-    /// A caption figure's number on its tile (0.7.6): large, rounded, with monospaced digits so a column of numbers
-    /// lines up and a number does not change width as it is read off a different moment.
-    static var figure: Font { .system(.title3, design: .rounded, weight: .bold).monospacedDigit() }
-    /// The unit beside a figure's number ("m/s"): smaller, on the number's baseline.
-    static var figureUnit: Font { .system(.caption, design: .rounded, weight: .semibold) }
-    /// The few words under a figure's number ("Launch speed").
-    static var figureLabel: Font { .caption2.weight(.medium) }
-    /// The lead figure in the title chip on the table: the chip's size, in the tile's rounded digits.
-    static var figureChip: Font { .system(.caption, design: .rounded, weight: .bold).monospacedDigit() }
+    /// body: the plain sentence and paragraphs on big screens (iPad, Mac, the open folding phone's panel). Body.
+    /// The upright phone uses `bodyCompact`; a single font cannot know the device, so the caller picks.
+    /// (Up from Subheadline before UI rethink package 2: the old name now means the role.)
+    static var body: Font { .body }
+    /// body on the upright phone: Subheadline.
+    static var bodyCompact: Font { .subheadline }
+    /// label: control names ("Swing", "Cue angle") and button words. Subheadline, medium.
+    /// (Up from caption semibold before UI rethink package 2: the old name now means the role.)
+    static var label: Font { .subheadline.weight(.medium) }
+    /// section: every section label everywhere ("WHAT THE BALL GETS", list headers in sheets). Caption, bold; the view
+    /// upper-cases the words, sets `sectionTracking` and paints it paper2 (the kit's SectionLabel does all three).
+    static var section: Font { .caption.weight(.bold) }
+    /// The tracking every section label is set with.
+    static let sectionTracking: CGFloat = 1.4
+    /// caption: notes under figures, footers, the version line. Caption, regular, paper2.
+    static var caption: Font { .caption }
+    /// The equation style, the one place italics remain: worked equations only, serif italic so the variables read as
+    /// variables. Big screens.
+    static var equation: Font { .system(.title3, design: .serif, weight: .medium).italic() }
+    /// The equation style at the upright phone's body size.
+    static var equationCompact: Font { .system(.subheadline, design: .serif).italic() }
 
-    // MARK: The aiming panel (plans/26-Nov-2026-aiming-panel-redesign-plan.md)
+    // MARK: The figure family (design language, "The figure face")
+    //
+    // One face for every measured value: system monospaced, semibold, tabular digits, in three sizes. The unit sits on
+    // the figure's baseline at 55 percent of the figure's size, medium weight, paper2, never under the caption size.
+    // Words after a figure are the label role in paper2, not a figure font. Each size's unit font is the system text
+    // style nearest 55 percent of the figure's style, floored at caption, so both still scale with the reader's text:
+    // lead (Large Title) takes a Title 3 unit, control (Title) a Subheadline unit, inline (Subheadline) a Caption unit
+    // (55 percent of it would fall under the caption floor).
 
-    /// What the ball gets: the four lead figures, large, monospaced, digits that do not jitter.
-    static var leadFigure: Font { .system(.largeTitle, design: .monospaced, weight: .semibold).monospacedDigit() }
-    /// The unit on a lead figure's baseline, a little over half its size.
-    static var leadUnit: Font { .system(.title3, design: .monospaced, weight: .medium) }
-    /// A figure carried by a control (the swing, the tip's millimetres, the cue angle, the bridge).
-    static var controlFigure: Font { .system(.title, design: .monospaced, weight: .semibold).monospacedDigit() }
-    /// A figure on the physics line (push, force, energy): quiet.
-    static var ledgerFigure: Font { .system(.callout, design: .monospaced).monospacedDigit() }
-    /// A band's caption ("WHAT THE BALL GETS"): small, bold, upper case, tracked.
-    static var groupCaption: Font { .caption.weight(.bold) }
-    /// The tracking a group caption is set with.
-    static let groupCaptionTracking: CGFloat = 1.4
+    /// The three figure sizes, with what a layout needs to size a figure itself: the text style it scales with (for
+    /// `@ScaledMetric(relativeTo:)`) and that style's size at the default text size on this platform.
+    enum FigureSize: CaseIterable, Sendable {
+        /// The four "what the ball gets" figures, the result figure on a result card. Built from Large Title.
+        case lead
+        /// A figure carried by a control (swing, tip, cue angle, bridge), scoreboard numbers, tile figures (daily,
+        /// how forgiving, Lens summary). Built from Title.
+        case control
+        /// Figures inside a sentence, chips, the physics line, menu progress chips, the speed pill. Built from
+        /// Subheadline.
+        case inline
 
-    /// A figure at a size the layout picked, in the panel's monospaced semibold. Callers pass a size from their own
-    /// @ScaledMetric, so the figure still follows the reader's text size.
+        /// The text style the figure is built from.
+        var textStyle: Font.TextStyle {
+            switch self {
+            case .lead: return .largeTitle
+            case .control: return .title
+            case .inline: return .subheadline
+            }
+        }
+
+        /// The text style its unit is built from (the nearest style to 55 percent, floored at caption).
+        var unitTextStyle: Font.TextStyle {
+            switch self {
+            case .lead: return .title3
+            case .control: return .subheadline
+            case .inline: return .caption
+            }
+        }
+
+        /// The figure's point size at the default text size, the seed for a caller's
+        /// `@ScaledMetric(relativeTo: size.textStyle) var s = size.baseSize`. These are the system's own sizes for the
+        /// styles above (they differ between the phone and tablet and the Mac), so a scaled figure matches the
+        /// text-style one at every text size.
+        var baseSize: CGFloat {
+            #if os(macOS)
+            switch self {
+            case .lead: return 26
+            case .control: return 22
+            case .inline: return 11
+            }
+            #else
+            switch self {
+            case .lead: return 34
+            case .control: return 28
+            case .inline: return 15
+            }
+            #endif
+        }
+
+        /// The figure's font.
+        var font: Font {
+            .system(textStyle, design: .monospaced, weight: .semibold).monospacedDigit()
+        }
+
+        /// Its unit's font.
+        var unitFont: Font {
+            .system(unitTextStyle, design: .monospaced, weight: .medium)
+        }
+    }
+
+    /// The caption style's size at the default text size on this platform: the floor under every unit. Seed a caller's
+    /// `@ScaledMetric(relativeTo: .caption)` with it and pass the result to `unit(size:captionSize:)`.
+    static var captionBaseSize: CGFloat {
+        #if os(macOS)
+        return 10
+        #else
+        return 12
+        #endif
+    }
+
+    /// The share of a figure's size its unit takes.
+    static let unitScale: CGFloat = 0.55
+
+    /// lead figure: Large Title, monospaced semibold, tabular digits.
+    static var leadFigure: Font { FigureSize.lead.font }
+    /// The unit beside a lead figure (Title 3, monospaced medium).
+    static var leadUnit: Font { FigureSize.lead.unitFont }
+    /// control figure: Title, monospaced semibold, tabular digits.
+    static var controlFigure: Font { FigureSize.control.font }
+    /// The unit beside a control figure (Subheadline, monospaced medium).
+    static var controlUnit: Font { FigureSize.control.unitFont }
+    /// inline figure: Subheadline, monospaced semibold, tabular digits.
+    static var inlineFigure: Font { FigureSize.inline.font }
+    /// The unit beside an inline figure (Caption, monospaced medium: the floor).
+    static var inlineUnit: Font { FigureSize.inline.unitFont }
+
+    /// A figure at a size the layout picked, in the figure face. Callers pass a size from their own @ScaledMetric
+    /// (seeded with `FigureSize.baseSize`), so the figure still follows the reader's text size.
     static func figure(size: CGFloat) -> Font {
         .system(size: size, weight: .semibold, design: .monospaced).monospacedDigit()
     }
-    /// The unit beside a figure of `size`: about 55 percent of it, medium weight (the plan's "smaller grey unit").
-    /// UI rethink package 2: never under the caption size (12 points), up from a ten-point floor.
+    /// The unit beside a figure of `size`: 55 percent of it, medium weight, never under 12 points (the caption size at
+    /// the default text size). Returns a plain Font so callers can still change its weight.
     static func unit(size: CGFloat) -> Font {
-        .system(size: max(12, size * 0.55), weight: .medium, design: .monospaced)
+        unit(size: size, captionSize: 12)
+    }
+    /// The unit beside a figure of `size`, floored at `captionSize`: pass the caller's own scaled caption size so the
+    /// floor grows with the reader's text as the caption does (a fixed floor would let the unit fall under the caption
+    /// at large text sizes).
+    static func unit(size: CGFloat, captionSize: CGFloat) -> Font {
+        .system(size: max(captionSize, size * unitScale), weight: .medium, design: .monospaced)
     }
 
-    // MARK: The upright phone's blurbs and controls (phone UI plan, Part 3)
+    // MARK: Old font names (aliases, to be removed once callers move; UI rethink package 3 deletes them)
+    //
+    // Each points at the role it now means. The rounded figure design and the italics are retired with them (the
+    // equation style keeps its italics). heading, body, label and display above are not aliases: they are the roles.
 
-    /// A blurb's title ("Throw"): subheadline semibold.
-    static var blurbTitle: Font { .subheadline.weight(.semibold) }
-    /// The lead figure after a blurb's title ("2.1°"): bold monospaced, so it reads as a measured number.
-    static var blurbFigure: Font { .system(.subheadline, design: .monospaced, weight: .bold) }
-    /// A figure chip's number: caption monospaced.
-    static var blurbChip: Font { .system(.caption, design: .monospaced, weight: .semibold) }
-    /// The few words after a chip's number: caption 2 (11 points at the default size, the smallest text on the phone).
-    static var blurbChipLabel: Font { .caption2 }
-    /// The worked equation in a blurb: italic caption.
-    static var blurbEquation: Font { .caption.italic() }
-    /// A blurb's small glass buttons.
-    static var blurbButton: Font { .subheadline.weight(.semibold) }
-    /// The upright phone's worded controls (Lens, Ride, the primary action, Skip): subheadline semibold, one weight
-    /// whatever their state, so joined glass never jumps.
-    static var phoneControl: Font { .subheadline.weight(.semibold) }
-    /// The speed capsule: monospaced, so "Auto", "1×" and "⅒×" keep the rail's width steady.
-    static var phoneSpeed: Font { .system(.subheadline, design: .monospaced, weight: .semibold) }
-    /// The title row's title: plain headline.
-    static var phoneTitle: Font { .headline }
+    /// The tagline under the title. Alias, to be removed once callers move: `body` (italics retired).
+    static var tagline: Font { body }
+    /// Section titles on the opening screen ("How it works"). Alias, to be removed once callers move: `title` (the
+    /// serif page title, not the small `section` label).
+    static var sectionTitle: Font { title }
+    /// Running text on the opening screen. Alias, to be removed once callers move: `body`.
+    static var copy: Font { body }
+    /// Live numbers. Alias, to be removed once callers move: `inlineFigure`.
+    static var number: Font { inlineFigure }
+    /// A caption figure's number on its tile. Alias, to be removed once callers move: `controlFigure` (tile figures
+    /// are control size; the rounded design is retired).
+    static var figure: Font { controlFigure }
+    /// The unit beside a tile figure. Alias, to be removed once callers move: `controlUnit`.
+    static var figureUnit: Font { controlUnit }
+    /// The few words under a figure's number. Alias, to be removed once callers move: `caption`.
+    static var figureLabel: Font { caption }
+    /// The lead figure in the title chip on the table. Alias, to be removed once callers move: `inlineFigure`.
+    static var figureChip: Font { inlineFigure }
+    /// A figure on the physics line. Alias, to be removed once callers move: `inlineFigure`.
+    static var ledgerFigure: Font { inlineFigure }
+    /// A band's caption ("WHAT THE BALL GETS"). Alias, to be removed once callers move: `section`.
+    static var groupCaption: Font { section }
+    /// The tracking a group caption is set with. Alias, to be removed once callers move: `sectionTracking`.
+    static var groupCaptionTracking: CGFloat { sectionTracking }
+
+    /// A blurb's title ("Throw"). Alias, to be removed once callers move: `label` (the nearest role in size; the
+    /// phone's card titles move to `heading` with the kit).
+    static var blurbTitle: Font { label }
+    /// The lead figure after a blurb's title. Alias, to be removed once callers move: `inlineFigure`.
+    static var blurbFigure: Font { inlineFigure }
+    /// A figure chip's number. Alias, to be removed once callers move: `inlineFigure`.
+    static var blurbChip: Font { inlineFigure }
+    /// The few words after a chip's number. Alias, to be removed once callers move: `caption` (nothing goes under the
+    /// caption size any more).
+    static var blurbChipLabel: Font { caption }
+    /// The worked equation in a blurb. Alias, to be removed once callers move: `equationCompact`.
+    static var blurbEquation: Font { equationCompact }
+    /// A blurb's small buttons. Alias, to be removed once callers move: `label`.
+    static var blurbButton: Font { label }
+    /// The upright phone's worded controls. Alias, to be removed once callers move: `label`.
+    static var phoneControl: Font { label }
+    /// The speed capsule. Alias, to be removed once callers move: `inlineFigure`.
+    static var phoneSpeed: Font { inlineFigure }
+    /// The title row's title. Alias, to be removed once callers move: `heading`.
+    static var phoneTitle: Font { heading }
+
+    // MARK: Devices (which margins, paddings and heights apply)
+
+    /// The three layouts the design language sizes for. The caller decides which one it is in (ScreenLayout and the
+    /// fold reading in Surfaces.swift know the window); these tokens only say what each one gets.
+    enum Device: CaseIterable, Sendable {
+        /// The upright iPhone (and any phone layout without a side column).
+        case phone
+        /// The open folding phone's words panel.
+        case foldPanel
+        /// iPad, either way up, and the Mac.
+        case big
+    }
+
+    // MARK: Spacing (design language, "Spacing and grid")
+
+    /// The spacing steps. Base unit 4 points; no other gap in a view. Each name is a step, not a meaning, so the kit
+    /// picks the step and the meanings below say which step a common gap takes.
+    enum Space {
+        /// 4: between a figure and its label below.
+        static let xxs: CGFloat = 4
+        /// 8: between a section label and its content.
+        static let xs: CGFloat = 8
+        /// 12: between cards on the phone; a figure tile's padding.
+        static let sm: CGFloat = 12
+        /// 16: the phone's page margin and card padding; between cards on big screens.
+        static let md: CGFloat = 16
+        /// 24: the big-screen page margin.
+        static let lg: CGFloat = 24
+        /// 32.
+        static let xl: CGFloat = 32
+        /// 48.
+        static let xxl: CGFloat = 48
+        /// Every step, smallest first (for the drift lint and tests).
+        static let steps: [CGFloat] = [xxs, xs, sm, md, lg, xl, xxl]
+
+        /// Between a section label and its content.
+        static let sectionToContent: CGFloat = xs
+        /// Between a figure and its label below.
+        static let figureToLabel: CGFloat = xxs
+
+        /// The page's side margin: 16 on the upright phone, 20 on the open folding phone's panel, 24 on iPad and Mac.
+        /// (20 is the one value off the steps; the design language sets it for the fold's narrower half.)
+        static func pageMargin(_ device: Device) -> CGFloat {
+            switch device {
+            case .phone: return md
+            case .foldPanel: return 20
+            case .big: return lg
+            }
+        }
+        /// The padding inside a card: 16 on the phone, 20 on big screens (and the fold's panel, which uses the
+        /// big-screen column).
+        static func cardPadding(_ device: Device) -> CGFloat {
+            device == .phone ? md : 20
+        }
+        /// The gap between cards: 12 on the phone, 16 on big screens.
+        static func cardGap(_ device: Device) -> CGFloat {
+            device == .phone ? sm : md
+        }
+
+        /// A figure tile's padding.
+        static let tilePadding: CGFloat = sm
+        /// A chip's padding: 6 top and bottom, 10 either side.
+        static let chipVertical: CGFloat = 6
+        static let chipHorizontal: CGFloat = 10
+        /// The size of the meaning-colour dot leading an event chip.
+        static let chipDot: CGFloat = 3
+
+        /// Big-screen panels lay out on a 12 column grid with 16 point gutters inside the panel's own width.
+        static let gridColumns = 12
+        static let gridGutter: CGFloat = md
+    }
+
+    // MARK: Corners (design language, "Corners")
+
+    /// The three corner radii. No bare corner number in a view.
+    enum Corner {
+        /// 8: chips, figure tiles, list thumbnails, the tip picture's frame.
+        static let small: CGFloat = 8
+        /// 16: cards, panels, sheets' groups, the playback bar.
+        static let medium: CGFloat = 16
+        /// The capsule's radius for a shape of `height`: half of it. Every button, pill and progress chip; prefer
+        /// SwiftUI's Capsule() shape, this is for drawing code that needs the number.
+        static func capsule(height: CGFloat) -> CGFloat { height / 2 }
+        /// The radius of something nested inside a container of `outer` radius and `padding`: concentric (the outer
+        /// radius minus the padding), never under `small`.
+        static func nested(in outer: CGFloat, padding: CGFloat) -> CGFloat { max(small, outer - padding) }
+
+        /// The card and panel shape (medium, continuous corners).
+        static var cardShape: RoundedRectangle { RoundedRectangle(cornerRadius: medium, style: .continuous) }
+        /// The chip and tile shape (small, continuous corners).
+        static var tileShape: RoundedRectangle { RoundedRectangle(cornerRadius: small, style: .continuous) }
+    }
+
+    // MARK: Sizes (design language, "Components" and "Layout per device")
+
+    enum Size {
+        /// A primary or secondary button's height: 50 on the phone, 56 on big screens.
+        static func button(_ device: Device) -> CGFloat { device == .phone ? buttonPhone : buttonBig }
+        static let buttonPhone: CGFloat = 50
+        static let buttonBig: CGFloat = 56
+        /// Shoot and Break on big screens: the primary at the full action column's height, at least this tall.
+        static let actionColumnMin: CGFloat = 112
+        /// The smallest hit area of anything tappable, quiet buttons included.
+        static let minHit: CGFloat = 44
+        /// The upright phone's title row.
+        static let titleRow: CGFloat = 44
+        /// The playback bar ("shot reel"): 52 on big screens, 44 on the phone.
+        static func playbackBar(_ device: Device) -> CGFloat { device == .phone ? 44 : 52 }
+        /// The big-screen side column: 400 on iPad; on the Mac it follows the window between 380 and 440.
+        static let sideColumn: CGFloat = 400
+        static let sideColumnMacMin: CGFloat = 380
+        static let sideColumnMacMax: CGFloat = 440
+        /// The upright iPad gives the table this share of the height.
+        static let uprightTableShare: CGFloat = 0.58
+        /// Hairline dividers and panel edges.
+        static let hairline: CGFloat = 1
+        /// The dotted cyan underline of a figure the player can tap to type (its only meaning).
+        static let editableUnderline: CGFloat = 1.5
+        /// Two neighbouring scale labels are thinned when they sit closer than their own width plus this.
+        static let tickLabelGap: CGFloat = 8
+    }
+
+    // MARK: Motion (design language, "Motion")
+
+    enum Motion {
+        /// The standard ease: 0.25 s, ease out (cards appearing, chips changing, a sheet's content).
+        static var standard: Animation { .easeOut(duration: 0.25) }
+        /// Only for something the finger drags.
+        static var drag: Animation { .spring(response: 0.35, dampingFraction: 0.85) }
+        /// One camera move per beat on the table: 0.6 to 0.9 s, ease in and out.
+        static let cameraMin: Double = 0.6
+        static let cameraMax: Double = 0.9
+        static func camera(duration: Double) -> Animation {
+            .easeInOut(duration: min(cameraMax, max(cameraMin, duration)))
+        }
+    }
 }
 
 // MARK: - Palette

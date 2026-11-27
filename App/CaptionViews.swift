@@ -284,10 +284,10 @@ struct CaptionFigureRow: View {
         HStack(spacing: 6) {
             ForEach(0..<CaptionEngine.maxFigures, id: \.self) { i in
                 if figures.indices.contains(i) {
-                    FigureTile(figure: figures[i])
+                    CaptionFigureTile(figure: figures[i])
                 } else {
                     // A blank tile of the same build keeps the column and the row's height.
-                    FigureTile(figure: nil).hidden()
+                    CaptionFigureTile(figure: nil).hidden()
                 }
             }
         }
@@ -300,7 +300,7 @@ struct CaptionFigureRow: View {
 /// colour of the Lens mark the number describes, the label small underneath, on a faint wash of that colour. The number
 /// and unit are one Text (an AttributedString with two fonts) so they shrink together when a column is narrow, never
 /// wrapping or cutting the number. nil draws the same build blank.
-private struct FigureTile: View {
+private struct CaptionFigureTile: View {
     let figure: CaptionFigure?
     @Environment(\.palette) private var palette
 
