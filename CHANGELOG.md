@@ -33,9 +33,11 @@ plans/26-Nov-2026-design-language.md).
   refusals and losses; paper2 and paper3 for secondary and tertiary text; panel, panelSunken; one contact colour for
   strikes and hits; pocket and cushion take the language's values. Headings, try counts, tags, difficulty and day
   labels no longer wear the sliding magenta; the target ring on the cloth is paper; the swing bar's warm stretch is gold.
-  The delta yellow is retired. The window tint is the cyan, so no system blue or green. Units never fall under the
+  The delta yellow is retired: the delivered figure and its marks are paper, the worded difference paper2. The window tint is the cyan, so no system blue or green. Units never fall under the
   caption size.
-- Not done here: the Lens store frame is not re-shot yet (no simulator runs at night), and packages 3 to 9 of the plan
+- Not done here: the upright phone's strike sheet has no Last shot section yet (its caption still names the largest
+  error during the replay; the phone's dock is package 6); the Lens store frame is not re-shot yet (no simulator runs
+  at night); and packages 3 to 9 of the plan
   (the shared component kit, the shot console, the mode card, the phone's thumb dock and the rest) are still ahead.
 
 ## [0.8.1] - 26-November-2026

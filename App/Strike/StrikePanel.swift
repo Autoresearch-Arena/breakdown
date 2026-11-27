@@ -392,7 +392,7 @@ struct StrikePhysicsLine: View {
                 // The change, signed, in yellow; VoiceOver hears planned then delivered (the element's value).
                 Text(verbatim: StrikeWords.signed(b - a, decimals: decimals))
                     .font(.system(size: labelSize * 0.85, design: .monospaced).weight(.semibold))
-                    .foregroundStyle(palette.delta)
+                    .foregroundStyle(palette.paper2)
             }
         }
         .fixedSize()

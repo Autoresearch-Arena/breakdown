@@ -1,5 +1,7 @@
 // Author: Claude Opus 5.5 Medium
 // Date: 26-November-2026
+// Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2: the difference chip is paper2 on a sunken chip,
+//          the delivered figure paper; the delta yellow is retired.)
 // PURPOSE: The aiming panel's shared instrument kit (plans/26-Nov-2026-aiming-panel-redesign-plan.md, step 2), so the
 //          tip picture, the power bar and the cue-angle dial stop looking like three different apps and every figure on
 //          the panel is drawn one way:
@@ -181,10 +183,12 @@ struct DeltaChip: View {
     var body: some View {
         Text(verbatim: text)
             .font(.footnote.monospaced().weight(.semibold))
-            .foregroundStyle(palette.delta)
+            .foregroundStyle(palette.paper2)
             .padding(.horizontal, 8)
             .padding(.vertical, 2)
-            .background(palette.delta.opacity(0.15), in: .rect(cornerRadius: 6, style: .continuous))
+            // UI rethink package 2: no hue of its own; a quiet sunken chip with a hairline edge.
+            .background(palette.panelSunken, in: .rect(cornerRadius: 6, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).strokeBorder(palette.rule, lineWidth: 1))
             .fixedSize(horizontal: false, vertical: true)
     }
 }

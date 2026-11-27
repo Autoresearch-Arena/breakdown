@@ -2,7 +2,7 @@
 // Date: 13-November-2026
 // Edited: Claude Opus 5.5 Medium, 26-November-2026 (UI rethink package 2, plans/26-Nov-2026-design-language.md: new
 //          roles warning (fouls and misses, red-orange), paper2, paper3, panel, panelSunken and contact (strike and
-//          impact merged); pocket and cushion take the language's values; the delta yellow is retired (delta is paper2);
+//          impact merged); pocket and cushion take the language's values; the delta yellow is retired (delta is paper, the worded difference paper2);
 //          a unit's size never falls under the caption size.)
 // Edited: Claude Haiku 5.5 Medium, 18-November-2026 (added the section-title and running-text styles for the title screen).
 // Edited: Claude Opus 5.5 High, 21-November-2026 (look plan package 5, a decision: the game is always dark. The room
@@ -171,7 +171,8 @@ struct Palette {
     /// warm event colours and the cushion blue (never orange).
     let whatIf: Color
     /// Planned against delivered. UI rethink package 2: the warm yellow is retired (the design language gives the
-    /// difference no hue of its own), so this is paper2 now, kept under its old name for the views that still use it.
+    /// difference no hue of its own), so this is paper now (the delivered figure and its marks), kept under its old
+    /// name for the views that still use it; the worded difference is paper2.
     let delta: Color
     /// UI rethink package 2 (plans/26-Nov-2026-design-language.md, "Colour: the roles"):
     /// a foul, a miss, a loss of turn, a refused stroke or a destructive action (red-orange, #FF6A3D). The sliding
@@ -233,7 +234,9 @@ struct Palette {
         whatIf = tone(C(0.72, 0.48, 1.0), C(0.84, 0.70, 1.0))
         paper2 = tone(C(0.92, 0.96, 1.0, 0.64), C(1, 1, 1, 0.72))
         paper3 = tone(C(0.92, 0.96, 1.0, 0.40), C(1, 1, 1, 0.50))
-        delta = paper2
+        // The delivered figure and its marks (the dot on the tip picture, the swing tick) read in paper, so they still
+        // stand out from the paper2 text around them; the worded difference itself is paper2 (DeltaChip).
+        delta = paper
         warning = tone(C(1.0, 0.416, 0.239), C(1.0, 0.58, 0.44))
         // Flat, opaque surfaces: under Increase Contrast a touch lighter so the band's edge still shows on black.
         band = tone(C(0.063, 0.082, 0.114), C(0.09, 0.11, 0.15))
